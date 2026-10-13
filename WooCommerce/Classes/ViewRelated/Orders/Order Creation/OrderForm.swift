@@ -415,6 +415,7 @@ struct OrderForm: View {
 
                 ExpandableBottomSheet(safeAreaInsets: sheetSafeAreaInsets,
                                       containerHeight: containerHeight,
+                                      keyboardInset: max(0, safeAreaInsets.bottom - sheetSafeAreaInsets.bottom),
                                       onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                     VStack(spacing: .zero) {
                         HStack {

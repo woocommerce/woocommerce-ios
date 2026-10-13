@@ -22,15 +22,20 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
     /// Height of that container inside its safe area; caps the expanded sheet.
     private let containerHeight: CGFloat
 
+    /// Height of the keyboard region below the sheet; the sheet background extends behind it to cover the keyboard toolbar gap.
+    private let keyboardInset: CGFloat
+
     private var onChangeOfExpansion: ((Bool) -> Void)?
 
     public init(safeAreaInsets: EdgeInsets,
                 containerHeight: CGFloat,
+                keyboardInset: CGFloat = 0,
                 onChangeOfExpansion: ((Bool) -> Void)? = nil,
                 @ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
                 @ViewBuilder expandableContent: @escaping () -> ExpandableContent) {
         self.safeAreaInsets = safeAreaInsets
         self.containerHeight = containerHeight
+        self.keyboardInset = keyboardInset
         self.onChangeOfExpansion = onChangeOfExpansion
         self.alwaysVisibleContent = alwaysVisibleContent
         self.expandableContent = expandableContent
@@ -178,6 +183,9 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         )
+        .background(alignment: .bottom) {
+            keyboardBackground
+        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             /// When user swipes to move the app to the background, the drag gesture is started but never finishes.
             /// This workaround cancels the dragging when the app re-enters the foreground
@@ -214,6 +222,16 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     private var hasMeasuredCollapsedContent: Bool {
         fixedContentSize.height > 0 && chevronSize.height > 0
+    }
+
+    /// Drawn below the sheet frame, behind the keyboard, so the keyboard toolbar gap shows the sheet background.
+    @ViewBuilder private var keyboardBackground: some View {
+        if keyboardInset > 0 {
+            Color(.listForeground(modal: false))
+                .frame(height: keyboardInset)
+                .offset(y: keyboardInset)
+                .allowsHitTesting(false)
+        }
     }
 }
 

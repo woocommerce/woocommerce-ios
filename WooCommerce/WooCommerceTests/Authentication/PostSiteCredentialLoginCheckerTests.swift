@@ -234,7 +234,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
-            case .fetchSiteInfo(_, let completion):
+            case .fetchSiteInfo(_, _, let completion):
                 completion(.success(Site.fake().copy(isWooCommerceActive: false)))
             default:
                 break
@@ -265,7 +265,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
-            case .fetchSiteInfo(_, let completion):
+            case .fetchSiteInfo(_, _, let completion):
                 completion(.success(Site.fake().copy(isWooCommerceActive: true)))
             default:
                 break

@@ -86,24 +86,24 @@ public protocol ProductsRemoteProtocol {
                               orderBy: ProductsRemote.OrderKey,
                               order: ProductsRemote.Order) async throws -> [ProductReport]
 
-    func loadProductsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) func loadProductsForPointOfSale(for siteID: Int64,
                                     productTypes: [ProductType],
                                     pageNumber: Int) async throws -> PagedItems<POSProduct>
 
-    func searchProductsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
                                       productTypes: [ProductType],
                                       pageNumber: Int) async throws -> PagedItems<POSProduct>
 
-    func loadPopularProductsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
                                            pageNumber: Int,
                                            perPage: Int) async throws -> PagedItems<POSProduct>
 
-    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
+    nonisolated(nonsending) func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
                                                    globalUniqueID: String) async throws -> POSProduct
 
-    func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct
+    nonisolated(nonsending) func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct
 }
 
 extension ProductsRemoteProtocol {
@@ -245,7 +245,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - productTypes: A list of product types to be included in the results.
     /// - pageNumber: Index of page that should be retrieved.
     ///
-    public func loadProductsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) public func loadProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType] = [.simple],
                                            pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
         let parameters = pointOfSaleProductFetchParameters(
@@ -265,7 +265,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///   - productTypes: The product types to filter by.
     ///   - pageNumber: Number of page that should be retrieved.
     ///
-    public func loadPopularProductsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) public func loadPopularProductsForPointOfSale(for siteID: Int64,
                                                   productTypes: [ProductType] = [.simple],
                                                   pageNumber: Int = 1,
                                                   perPage: Int = Default.pageSize) async throws -> PagedItems<POSProduct> {
@@ -305,7 +305,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         return parameters
     }
 
-    private func makePagedPointOfSaleProductsRequest(for siteID: Int64,
+    nonisolated(nonsending) private func makePagedPointOfSaleProductsRequest(for siteID: Int64,
                                                      pageNumber: Int,
                                                      parameters: RequestParameterConvertibleDictionary) async throws -> PagedItems<POSProduct> {
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -329,7 +329,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Parameter productTypes: A list of product types to be included in the results.
     /// - Parameter pageNumber: Index of page that should be retrieved.
     ///
-    public func searchProductsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) public func searchProductsForPointOfSale(for siteID: Int64,
                                              query: String,
                                              productTypes: [ProductType] = [.simple],
                                              pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
@@ -365,7 +365,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Returns: A POSProduct if found
     /// - Throws: Error if the product is not found or if there's a network error
     ///
-    public func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
+    nonisolated(nonsending) public func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
                                                        globalUniqueID: String) async throws -> POSProduct {
         let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.globalUniqueID: globalUniqueID,
@@ -394,7 +394,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Returns: A POSProduct if found
     /// - Throws: Error if the product is not found or if there's a network error
     ///
-    public func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+    nonisolated(nonsending) public func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
         let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ","),
             ParameterKey.posProductsOnly: String(true)

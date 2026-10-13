@@ -12,6 +12,8 @@ struct MockOrderCardPresentPaymentEligibilityActionHandler: MockActionHandler {
         switch action {
         case let .checkEligibility(_, _, _, onCompletion):
             onCompletion(.success(.eligible))
+        case let .checkOrderContainsSubscription(_, _, onCompletion):
+            onCompletion(.success(false))
         }
     }
 }

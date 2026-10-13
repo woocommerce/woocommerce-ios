@@ -77,6 +77,10 @@ final class StorePickerViewController: UIViewController {
     ///
     private let configuration: StorePickerConfiguration
 
+    /// Whether this picker is part of a login journey. `.listStores` is opened from the login
+    /// error screens, which are themselves reachable outside a login, so the caller decides.
+    private let isFromLogin: Bool
+
     /// View model for the controller
     ///
     private let viewModel: StorePickerViewModel
@@ -181,6 +185,7 @@ final class StorePickerViewController: UIViewController {
     private let featureFlagService: FeatureFlagService
 
     init(configuration: StorePickerConfiguration,
+         isFromLogin: Bool? = nil,
          appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -189,6 +194,7 @@ final class StorePickerViewController: UIViewController {
              source.present(modal, animated: true, completion: completion)
          }) {
         self.configuration = configuration
+        self.isFromLogin = isFromLogin ?? (configuration == .login)
         self.analytics = analytics
         self.errorPresenter = errorPresenter
         self.appleIDCredentialChecker = appleIDCredentialChecker
@@ -394,8 +400,10 @@ private extension StorePickerViewController {
     }
 
     func presentSiteDiscovery() {
-        ServiceLocator.authenticationManager.noteSiteDiscoveryOrigin(isFromLogin: configuration == .login)
-        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
+        // One predicate for both gates, so the address screen's step and the outcome steps
+        // that follow it cannot disagree about whether this is a login.
+        ServiceLocator.authenticationManager.noteSiteDiscoveryOrigin(isFromLogin: isFromLogin)
+        guard let viewController = WordPressAuthenticator.siteDiscoveryUI(tracksLoginSteps: isFromLogin) else {
             return
         }
         navigationController?.show(viewController, sender: nil)

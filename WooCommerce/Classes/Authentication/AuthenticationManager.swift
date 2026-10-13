@@ -398,7 +398,11 @@ class AuthenticationManager: Authentication {
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            return accountMismatchUI(for: siteURL, siteCredentials: credentials?.wporg, with: matcher, in: navigationController)
+            return accountMismatchUI(for: siteURL,
+                                     siteCredentials: credentials?.wporg,
+                                     with: matcher,
+                                     reportsLoginStep: reportsLoginStep,
+                                     in: navigationController)
         }
 
         /// No Woo found
@@ -1180,10 +1184,12 @@ private extension AuthenticationManager {
     func accountMismatchUI(for siteURL: String,
                            siteCredentials: WordPressOrgCredentials?,
                            with matcher: ULAccountMatcher,
+                           reportsLoginStep: Bool = false,
                            in navigationController: UINavigationController) -> UIViewController {
         let viewModel = WrongAccountErrorViewModel(siteURL: siteURL,
                                                    showsConnectedStores: matcher.hasConnectedStores,
                                                    siteCredentials: siteCredentials,
+                                                   reportsLoginStep: reportsLoginStep,
                                                    onJetpackSetupCompletion: { email, xmlrpc in
             WordPressAuthenticator.showVerifyEmailForWPCom(
                 from: navigationController,
@@ -1257,9 +1263,11 @@ private extension AuthenticationManager {
     ///
     func jetpackSetupUI(for siteURL: String,
                         connectionMissingOnly: Bool,
+                        reportsLoginStep: Bool = false,
                         in navigationController: UINavigationController) -> UIViewController {
         let viewModel = JetpackSetupRequiredViewModel(siteURL: siteURL,
-                                                      connectionOnly: connectionMissingOnly)
+                                                      connectionOnly: connectionMissingOnly,
+                                                      reportsLoginStep: reportsLoginStep)
         let jetpackSetupUI = ULErrorViewController(viewModel: viewModel)
         return jetpackSetupUI
     }
@@ -1277,12 +1285,17 @@ private extension AuthenticationManager {
 
         guard !site.isWPCom && !site.isCommerceGarden else {
             // The site doesn't belong to the current account since it was not included in the site picker.
-            return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+            return accountMismatchUI(for: site.url,
+                                     siteCredentials: nil,
+                                     with: matcher,
+                                     reportsLoginStep: isSiteDiscoveryFromLogin,
+                                     in: navigationController)
         }
 
         // Shows the native Jetpack flow during the site discovery flow.
         return jetpackSetupUI(for: site.url,
                               connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
+                              reportsLoginStep: isSiteDiscoveryFromLogin,
                               in: navigationController)
     }
 }

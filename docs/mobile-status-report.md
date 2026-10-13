@@ -11,8 +11,9 @@ network, and on the login screen it is the only device information a ticket woul
 
 ## AI support chat
 
-Every new AI support chat includes the Mobile Status Report in its first outgoing request, as a labeled section
-of `context.troubleshootingResults`. Existing connectivity diagnostics and other context are preserved. The report
+Every new AI support chat includes the Mobile Status Report in its first outgoing request, appended to
+`context.troubleshootingResults` with its own heading and a blank line separating it from existing diagnostics.
+Existing connectivity diagnostics and other context are preserved. The report
 is background context and is not displayed as a chat bubble. It is generated locally, including before login;
 login-failure chats supply the failed site's address independently of the selected store.
 

@@ -723,9 +723,11 @@ final class SupportChatViewModel {
         state = .sending
 
         // Preparing context is local; the sending state prevents a second submission while it awaits system lookups.
+        let hasDiagnosticsContext = chatID == nil && (diagnosticsContext ?? initialContext) != nil
         let context = chatID == nil ? await prepareInitialContext() : nil
         guard !Task.isCancelled else {
             markLastUserMessageAsFailed()
+            inputText = trimmedText
             state = .idle
             return
         }
@@ -738,7 +740,7 @@ final class SupportChatViewModel {
         analytics.track(event: WooAnalyticsEvent.SupportChat.messageSent(
             entryPoint: entryPoint,
             isFirstMessage: isFirstMessage,
-            hasDiagnosticsContext: context != nil
+            hasDiagnosticsContext: hasDiagnosticsContext
         ))
 
         let action = SupportChatAction.sendMessage(
@@ -764,8 +766,7 @@ final class SupportChatViewModel {
         let report = await mobileStatusReportProvider.generateReport(siteAddress: supportSiteAddress ?? contextSiteAddress)
         if !report.isEmpty {
             let existing: String? = if case .string(let text) = context["troubleshootingResults"] { text } else { nil }
-            let section = "## Mobile Status Report\n" + report
-            context["troubleshootingResults"] = .string([existing, section].compactMap { $0 }.joined(separator: "\n\n"))
+            context["troubleshootingResults"] = .string([existing, report].compactMap { $0 }.joined(separator: "\n\n"))
         }
         preparedInitialContext = context
         return context

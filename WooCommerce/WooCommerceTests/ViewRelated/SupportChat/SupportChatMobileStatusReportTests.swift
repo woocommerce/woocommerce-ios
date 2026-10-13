@@ -10,7 +10,7 @@ struct SupportChatMobileStatusReportTests {
     func test_first_message_when_chat_is_new_then_merges_mobile_report_and_preserves_other_context(entryPoint: SupportChatViewModel.EntryPoint) async {
         // Given
         let provider = MockMobileStatusReportProvider()
-        provider.report = "# Mobile Status Report\nOS: iOS 27\n# No store selected"
+        provider.report = "### Mobile Status Report generated via the WooCommerce iOS app ###\n## Device\nOS: iOS 27\n# No store selected"
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         var sentContext: RequestParameterDictionary?
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -28,11 +28,48 @@ struct SupportChatMobileStatusReportTests {
 
         // Then
         #expect(provider.generateReportSiteAddresses == ["https://failed.example.com"])
-        #expect(sentContext?["troubleshootingResults"] == .string("Connectivity failed\n\n## Mobile Status Report\n" + provider.report))
+        #expect(sentContext?["troubleshootingResults"] == .string("Connectivity failed\n\n" + provider.report))
         #expect(sentContext?["site_url"] == context["site_url"])
         #expect(sentContext?["selectedSiteId"] == context["selectedSiteId"])
         #expect(sut.messages.first?.content.text == "Help with my store")
         #expect(!sut.messages.contains { $0.content.text?.contains("Mobile Status Report") == true })
+    }
+
+    @Test(arguments: [false, true])
+    func test_first_message_when_report_is_added_then_analytics_reflects_original_context(hasInitialContext: Bool) async {
+        // Given
+        let provider = MockMobileStatusReportProvider()
+        let analyticsProvider = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        var sentContext: RequestParameterDictionary?
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(botSlug, _, _, _, context, completion) = action else { return }
+            sentContext = context
+            completion(.success(SupportChatResponse(chatID: 123, sessionID: "session", botSlug: botSlug, botVersion: "1",
+                                                   messages: [SupportChatMessage(messageID: 1, role: .bot, content: "Try this", context: nil)])))
+        }
+        let initialContext: RequestParameterDictionary? = hasInitialContext ? ["site_url": .string("https://example.com")] : nil
+        let sut = SupportChatViewModel(mobileStatusReportProvider: provider, entryPoint: .helpAndSupport, stores: stores,
+                                      analytics: WooAnalytics(analyticsProvider: analyticsProvider), initialContext: initialContext,
+                                      onContactHumanSupport: { _, _, _, _, _ in })
+        analyticsProvider.clearEvents()
+        sut.inputText = "Help with my store"
+
+        // When
+        await sut.sendMessage()
+
+        // Then
+        #expect(sentContext?["troubleshootingResults"] == .string(provider.report))
+        #expect(analyticsProvider.received(event: "support_chat_message_sent", with: ["has_diagnostics_context": hasInitialContext]))
+
+        // When
+        analyticsProvider.clearEvents()
+        sut.inputText = "A follow-up"
+        await sut.sendMessage()
+
+        // Then
+        #expect(sentContext == nil)
+        #expect(analyticsProvider.received(event: "support_chat_message_sent", with: ["has_diagnostics_context": false]))
     }
 
     @Test func test_initial_message_when_report_is_preparing_then_shows_sending_state_and_rejects_duplicate_submission() async {
@@ -118,7 +155,7 @@ struct SupportChatMobileStatusReportTests {
         #expect(sendCount == 0)
     }
 
-    @Test func test_send_when_preparation_is_cancelled_then_does_not_dispatch_and_restores_input_availability() async {
+    @Test func test_send_when_preparation_is_cancelled_then_does_not_dispatch_and_restores_message_for_retry() async {
         // Given
         let provider = MockMobileStatusReportProvider()
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -138,7 +175,17 @@ struct SupportChatMobileStatusReportTests {
         #expect(sendCount == 0)
         #expect(sut.state == .idle)
         #expect(sut.messages.first?.failed == true)
+        #expect(sut.inputText == "Login failed")
         #expect(sut.isContactHumanSupportButtonEnabled)
+
+        // When
+        await sut.sendMessage()
+
+        // Then
+        #expect(sendCount == 1)
+        #expect(sut.messages.last?.content.text == "Login failed")
+        #expect(sut.inputText.isEmpty)
+        #expect(provider.generateReportSiteAddresses.count == 1)
     }
 
     @Test func test_send_when_report_is_empty_then_preserves_available_diagnostics() async {

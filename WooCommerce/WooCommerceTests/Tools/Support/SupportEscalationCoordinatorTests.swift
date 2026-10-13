@@ -25,7 +25,7 @@ struct SupportEscalationCoordinatorTests {
 
         // Then
         let request = try #require(zendesk.latestSupportRequest)
-        #expect(request.customFields[33538949515668] == chatID.map { String($0) })
+        #expect(request.customFields[ZendeskCustomFieldIDs.aiChatID] == chatID.map { String($0) })
         #expect(request.customFields[22054927] == "https://example.com")
         #expect(request.customFields[MobileStatusReportZendesk.customFieldID] != nil)
     }
@@ -54,7 +54,7 @@ struct SupportEscalationCoordinatorTests {
 
             // Then: changing the support area preserves the chat ID and existing metadata.
             let request = try #require(zendesk.latestSupportRequest)
-            #expect(request.customFields[33538949515668] == chatID.map { String($0) })
+            #expect(request.customFields[ZendeskCustomFieldIDs.aiChatID] == chatID.map { String($0) })
             #expect(request.customFields[22054927] == "https://example.com")
             #expect(request.customFields[MobileStatusReportZendesk.customFieldID] != nil)
         }
@@ -81,7 +81,7 @@ struct SupportEscalationCoordinatorTests {
 
         // Then
         let request = try #require(zendesk.latestSupportRequest)
-        #expect(request.customFields[33538949515668] == "789")
+        #expect(request.customFields[ZendeskCustomFieldIDs.aiChatID] == "789")
         #expect(viewModel.shouldShowSuccessAlert)
     }
 

@@ -122,6 +122,14 @@ extension SupportFormMetaDataSource {
     }
 }
 
+/// Zendesk custom field IDs shared with support form tests.
+///
+enum ZendeskCustomFieldIDs {
+    // Must be included at ticket creation for the transcript-linking webhook to run.
+    // Zendesk's Support SDK requires this field to be visible and editable by end users.
+    static let aiChatID: Int64 = 33538949515668
+}
+
 /// Zendesk Constant Values
 ///
 private enum ZendeskForms {
@@ -133,9 +141,7 @@ private enum ZendeskForms {
         static let category: Int64 = 25176003
         static let subCategory: Int64 = 25176023
         static let siteAddress: Int64 = 22054927
-        // Must be included at ticket creation for the transcript-linking webhook to run.
-        // Zendesk's Support SDK requires this field to be visible and editable by end users.
-        static let aiChatID: Int64 = 33538949515668
+        static let aiChatID = ZendeskCustomFieldIDs.aiChatID
     }
 
     /// Custom Field Values

@@ -1,6 +1,6 @@
 ---
 name: auto-login
-description: "Log the simulator into a live WooCommerce store through the DEBUG shortcut. Use WireMock UI login when mocks are requested. Jurassic Ninja is one option when no site is specified."
+description: "Log in to a test store on an iOS simulator. Use live-store DEBUG login by default, WireMock when mocks are requested, and the specified store for \"my site\"."
 user-invocable: true
 allowed-tools: "Bash, Read, mcp__mobile-mcp__*"
 argument-hint: "[mocks|site] [UDID] [site-address] [credential-file]"
@@ -19,11 +19,12 @@ Skill arguments `mocks` and `site` select the flow; they are not `launch.sh` fla
 
 ## Prepare the Simulator
 
-Use `/simulator` to select a device and `/build` to build the current DEBUG app.
+Use `/simulator` to select a device. Reuse a successful current DEBUG build, or use `/build`
+when one is unavailable. Keep its app and runtime frameworks together.
 Install it with `xcrun simctl install <UDID> <path-to-.app>` before launch.
 Use Xcode's standard signed simulator build. Simulator Keychain entitlements can be embedded in
 the executable; empty `codesign` entitlement output alone does not justify re-signing the app.
-For a missing mobile-mcp device helper, follow `.claude/rules/verification.md`.
+For helper errors, timeouts, device identity, and runtime frameworks, follow `.claude/rules/verification.md`.
 
 ## WireMock UI Login
 
@@ -46,14 +47,31 @@ then a suitable existing test store. If neither is available,
 read the full descriptions of available MCP tools, including generic provider loaders,
 before asking for credentials. If a loader advertises Jurassic Ninja, load that provider
 and read its schemas. A missing standalone tool does not establish provider unavailability.
+When selecting a provider, name the connected schema inspected and offer available site/access options.
+If discovery is unavailable, report why. Mark uninspected schemas as unverified; a shortened tool
+description cannot rule out a provider.
 
 Jurassic Ninja is one option alongside other providers or a user-supplied site.
-Offer available options. If temporary site creation is already authorized, use a suitable provider
+If temporary site creation is already authorized, use a suitable provider
 without asking for credentials that provisioning supplies. A request to create a temporary test site
 includes creating its test login credential. A provisioned site is a real test store.
 Install and activate WooCommerce, wait for readiness, and prepare the required plugins and data.
 Get the actual WordPress username from site configuration or a user lookup.
 A returned password does not identify its username. Report provider failures and offer another option.
+
+### Validate Existing Access
+
+Before reusing a listed site, including one from another task, confirm that its data fits the task
+and that authorized credentials or an authenticated admin session still work. Readiness and site
+metadata alone do not prove access. Verify the authenticated user before creating a test user.
+One-click admin URLs can be single-use or expired; a redirect to the public site is not admin access.
+Use a fresh provider-issued link only when available and authorized. SSH denial can mean a missing
+registered key, not a broken store; use an existing authorized key or another authorized access route.
+Do not retry consumed links, change existing credentials, or register keys to bypass denied access.
+
+If existing access is unusable, report the access failure and request protected credentials or
+same-site manual login. For an unspecified test store, offer a fresh site; provision only when
+creation is authorized. For `my site` or a specified URL, preserve that store and wait for usable access.
 
 ### Prepare Credentials
 

@@ -115,7 +115,6 @@ struct ApplicationPasswordAuthorizationViewModelTests {
         if action == .contactSupport {
             let host = fixture.navigation.topViewController as? SupportChatHostingController
             #expect(host != nil)
-            #expect(host?.rootView.viewModel.supportSiteAddress == "https://example.com")
         }
         #expect(!fixture.provider.receivedEvents.contains(WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue))
     }

@@ -96,8 +96,54 @@ struct SupportChatViewModelTests {
         // Then
         #expect(requests.count == 1)
         #expect(sut.messages.isEmpty)
-        guard case let .fetchChat(_, chatID, sessionID, _) = requests.first else {
+        guard case let .fetchChat(botSlug, chatID, sessionID, completion) = requests.first else {
             Issue.record("Expected fetch")
+            return
+        }
+        #expect(chatID == 123)
+        #expect(sessionID == "session")
+
+        // When: the transcript loads and the screen appears again.
+        completion(.success(SupportChatResponse(
+            chatID: chatID,
+            sessionID: "session",
+            botSlug: botSlug,
+            botVersion: "1.0",
+            messages: [SupportChatMessage(messageID: 1, role: .user, content: "Help", context: nil)]
+        )))
+        await sut.startIfNeeded()
+
+        // Then
+        #expect(requests.count == 1)
+        #expect(sut.messages.count == 1)
+        #expect(sut.messages.first?.content.text == "Help")
+        #expect(sut.state == .idle)
+    }
+
+    @Test func test_start_when_resume_fails_then_retries_on_next_appearance() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var requests = [SupportChatAction]()
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { requests.append($0) }
+        let sut = SupportChatViewModel(entryPoint: .chatHistory, stores: stores,
+                                      chatID: 123, sessionID: "session", onContactHumanSupport: Self.noopContactHumanSupport)
+        await sut.startIfNeeded()
+        guard case let .fetchChat(_, _, _, completion) = requests.first else {
+            Issue.record("Expected fetch")
+            return
+        }
+        completion(.failure(NSError(domain: "Test", code: 500)))
+
+        // When
+        await sut.startIfNeeded()
+        await sut.startIfNeeded()
+
+        // Then
+        #expect(requests.count == 2)
+        #expect(sut.messages.isEmpty)
+        #expect(sut.state == .sending)
+        guard case let .fetchChat(_, chatID, sessionID, _) = requests.last else {
+            Issue.record("Expected retry fetch")
             return
         }
         #expect(chatID == 123)

@@ -8,6 +8,7 @@ import protocol Yosemite.StoresManager
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
 
+@MainActor
 final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let currencyFormatter: CurrencyFormatter
     @Published private var latestPaymentEvent: CardPresentPaymentEvent = .idle
@@ -24,7 +25,6 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         paymentEventPublisher.assign(to: &$latestPaymentEvent)
     }
 
-    @MainActor
     func collectPaymentTask(for order: Order,
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
@@ -99,12 +99,16 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                     )
                 }
             } onCancel: {
+                // Invalidate synchronously so no payment can start after cancellation.
+                // Cancelling the current step needs the main actor.
                 invalidatablePaymentOrchestrator.invalidatePayment()
-                switch latestPaymentEvent {
-                    case .show(let eventDetails):
-                        onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
-                    case .idle, .showOnboarding:
-                        return
+                Task { @MainActor in
+                    switch self.latestPaymentEvent {
+                        case .show(let eventDetails):
+                            self.onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
+                        case .idle, .showOnboarding:
+                            return
+                    }
                 }
             }
         }

@@ -86,23 +86,26 @@ private extension POSRefundReviewView {
     }
 
     var refundReasonSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            HStack {
-                Text(Localization.refundReasonLabel)
-                    .font(.posBodyLargeBold)
-                    .foregroundColor(.posOnSurface)
-                Spacer()
-                Button(action: onAddReason) {
+        Button(action: onAddReason) {
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                HStack {
+                    Text(Localization.refundReasonLabel)
+                        .font(.posBodyLargeBold)
+                        .foregroundColor(.posOnSurface)
+                    Spacer()
                     Text(refundReason != nil ? Localization.editReasonButton : Localization.addReasonButton)
                         .font(.posBodyMediumRegular(underline: true))
                         .foregroundColor(Color.posLink)
                 }
-                .accessibilityLabel(refundReason != nil ? Localization.editReasonAccessibilityLabel : Localization.addReasonAccessibilityLabel)
+                Text(refundReason ?? Localization.reasonPlaceholder)
+                    .font(.posBodyMediumRegular())
+                    .foregroundColor(refundReason != nil ? .posOnSurfaceVariantHighest : .posOnSurfaceVariantLowest)
             }
-            Text(refundReason ?? Localization.reasonPlaceholder)
-                .font(.posBodyMediumRegular())
-                .foregroundColor(refundReason != nil ? .posOnSurfaceVariantHighest : .posOnSurfaceVariantLowest)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+        .accessibilityLabel(refundReason != nil ? Localization.editReasonAccessibilityLabel : Localization.addReasonAccessibilityLabel)
+        .accessibilityValue(refundReason ?? "")
     }
 
     var buttonsSection: some View {

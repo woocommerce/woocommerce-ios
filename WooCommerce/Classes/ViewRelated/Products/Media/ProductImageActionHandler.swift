@@ -93,7 +93,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                                          onUpdate: @escaping OnAllStatusesUpdate) -> AnyCancellable {
         let id = UUID()
 
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.async { [weak self, observer] in
             guard let self else {
                 return
             }
@@ -133,7 +133,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                                               onAssetUpload: @escaping OnAssetUpload) -> AnyCancellable {
         let id = UUID()
 
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.async { [weak self, observer] in
             guard let self else {
                 return
             }

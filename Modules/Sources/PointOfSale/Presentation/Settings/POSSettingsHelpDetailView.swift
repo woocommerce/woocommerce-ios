@@ -16,7 +16,6 @@ struct POSSettingsHelpDetailView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(title: Localization.helpTitle)
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
             ScrollView {
                 VStack(spacing: POSSpacing.small) {

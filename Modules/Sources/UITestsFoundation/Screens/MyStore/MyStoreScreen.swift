@@ -9,7 +9,7 @@ public final class MyStoreScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ { $0.staticTexts["Your WooCommerce Store"] }],
+            expectedElementGetters: [ { $0.staticTexts["my-store-title"] }],
             app: app,
             waitTimeout: 60
         )
@@ -47,8 +47,7 @@ public final class MyStoreScreen: ScreenObject {
     }
 
     func verifyStatsForTimeframeLoaded(timeframe: String) -> MyStoreScreen {
-        let textPredicate = NSPredicate(format: "label MATCHES %@", timeframe)
-        let element = app.staticTexts.containing(textPredicate).element
+        let element = app.staticTexts["performance-\(timeframe)"]
         let elementExists = element.waitForExistence(timeout: 30)
 
         XCTAssertTrue(elementExists, "\(timeframe) chart not displayed")
@@ -57,20 +56,20 @@ public final class MyStoreScreen: ScreenObject {
     }
 
     public func verifyTodayStatsLoaded() -> MyStoreScreen {
-        return verifyStatsForTimeframeLoaded(timeframe: "Today")
+        return verifyStatsForTimeframeLoaded(timeframe: "time-range-today")
     }
 
     public func verifyThisWeekStatsLoaded() -> MyStoreScreen {
-        return verifyStatsForTimeframeLoaded(timeframe: "This Week")
+        return verifyStatsForTimeframeLoaded(timeframe: "time-range-this-week")
     }
 
     public func verifyThisMonthStatsLoaded() -> MyStoreScreen {
-        return verifyStatsForTimeframeLoaded(timeframe: "This Month")
+        return verifyStatsForTimeframeLoaded(timeframe: "time-range-this-month")
     }
 
     @discardableResult
     public func verifyThisYearStatsLoaded() -> MyStoreScreen {
-        return verifyStatsForTimeframeLoaded(timeframe: "This Year")
+        return verifyStatsForTimeframeLoaded(timeframe: "time-range-this-year")
     }
 
     public func getRevenueValue() -> String {

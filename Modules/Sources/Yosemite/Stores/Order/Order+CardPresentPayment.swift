@@ -13,7 +13,7 @@ import protocol Storage.StorageManagerType
     ///
     /// - Parameters:
     ///     - cardPresentPaymentsConfiguration: The current configuration for the card payment. Use to check the validity of the order currency.
-    ///     - products: A list of products linked to the store. Used to check whether the order contains any product of type subscription.
+    ///     - products: A list of products linked to the store. Used to check whether the order contains any legacy subscription product type.
     ///
     func cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                        products: [Product]) -> OrderCardPresentPaymentEligibility {
@@ -76,6 +76,6 @@ import protocol Storage.StorageManagerType
     }
 
     private func containsAnySubscription(from products: [Product]) -> Bool {
-        products.contains { $0.productType == .subscription }
+        products.contains { $0.productType.isSubscription }
     }
 }

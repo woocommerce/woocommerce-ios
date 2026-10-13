@@ -440,6 +440,8 @@ struct OrderForm: View {
                 .ignoresSafeArea(edges: .horizontal)
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("order-form-screen")
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

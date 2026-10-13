@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] POS: Fixed Settings controls being identified as headings for accessibility. [https://github.com/woocommerce/woocommerce-ios/pull/18071]
 - [**] In-Person Payments: Fixed setup for stores without WooPayments or Stripe installed. [https://github.com/woocommerce/woocommerce-ios/pull/18047]
 - [*] Payments: In-person card payments are now hidden for orders sold as a subscription, including variable and plan-based subscriptions the previous check missed. [https://github.com/woocommerce/woocommerce-ios/pull/17986]
 - [*] Products: When sorting by title, loading more products no longer inserts them in the middle of the list. [https://github.com/woocommerce/woocommerce-ios/pull/18035]

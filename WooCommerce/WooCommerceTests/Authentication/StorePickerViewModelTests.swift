@@ -287,6 +287,7 @@ final class StorePickerViewModelTests: XCTestCase {
 
     /// Mirrors `StorePickerViewController.refreshResults()`: sync, then report what is on screen.
     private func makeViewModel(configuration: StorePickerConfiguration,
+                               isFromLogin: Bool? = nil,
                                tracker: AuthenticatorAnalyticsTracker,
                                syncSucceeds: Bool = true) -> StorePickerViewModel {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -303,6 +304,7 @@ final class StorePickerViewModelTests: XCTestCase {
             }
         }
         return StorePickerViewModel(configuration: configuration,
+                                    isFromLogin: isFromLogin,
                                     stores: stores,
                                     storageManager: storageManager,
                                     tracker: tracker)
@@ -405,6 +407,35 @@ final class StorePickerViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(events.contains { $0.properties["step"] == "no_woo_stores" })
+        XCTAssertFalse(events.contains { $0.properties["step"] == "site_list" })
+    }
+
+    func test_trackLoginOutcome_when_listing_stores_from_a_login_error_screen_then_reports_site_list() {
+        // Given a login that hit an error screen and recovered through "See connected stores",
+        // which opens a listStores picker while still mid-login
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: true))
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = makeViewModel(configuration: .listStores, isFromLogin: true, tracker: tracker)
+
+        // When
+        refreshAndReport(viewModel)
+
+        // Then
+        waitUntil { events.contains { $0.properties["step"] == "site_list" } }
+    }
+
+    func test_trackLoginOutcome_when_listing_stores_outside_a_login_then_reports_nothing() {
+        // Given the same picker opened from an error screen reached outside a login
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: true))
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = makeViewModel(configuration: .listStores, isFromLogin: false, tracker: tracker)
+
+        // When
+        refreshAndReport(viewModel)
+
+        // Then
         XCTAssertFalse(events.contains { $0.properties["step"] == "site_list" })
     }
 

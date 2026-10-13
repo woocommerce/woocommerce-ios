@@ -409,6 +409,46 @@ final class StorePickerCoordinatorTests: XCTestCase {
         }
         return fixture
     }
+
+    func test_didSelectStore_when_recovering_from_a_login_error_screen_then_reports_success() {
+        // Given a login that hit "Wrong account?" and recovered through "See connected stores",
+        // which opens a listStores picker while still mid-login
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        tracker.set(flow: .epilogue)
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .listStores,
+                                                 isFromLogin: true,
+                                                 switchStoreUseCase: MockSwitchStoreUseCase(),
+                                                 tracker: tracker)
+
+        // When
+        coordinator.didSelectStore(with: 123) {}
+
+        // Then the login reached a store, so it ends like any other
+        waitUntil {
+            events.filter { $0.properties["step"] == "success" }.count == 1
+        }
+    }
+
+    func test_didSelectStore_when_listing_stores_outside_a_login_then_does_not_report_success() {
+        // Given the same picker opened from an error screen reached outside a login
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .listStores,
+                                                 isFromLogin: false,
+                                                 switchStoreUseCase: MockSwitchStoreUseCase(),
+                                                 tracker: tracker)
+
+        // When
+        let completed = expectation(description: "store switched")
+        coordinator.didSelectStore(with: 123) { completed.fulfill() }
+        wait(for: [completed], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertFalse(events.contains { $0.properties["step"] == "success" })
+    }
 }
 
 @MainActor

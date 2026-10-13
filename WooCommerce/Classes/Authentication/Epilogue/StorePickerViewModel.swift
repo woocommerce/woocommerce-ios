@@ -33,6 +33,10 @@ final class StorePickerViewModel {
     ///
     private let configuration: StorePickerConfiguration
 
+    /// Whether this picker belongs to a login journey. `.listStores` is opened from the login
+    /// error screens, which are reachable outside a login too, so the caller says which it is.
+    private let isFromLogin: Bool
+
     private let storageManager: StorageManagerType
     private let stores: StoresManager
     private let userDefaults: UserDefaults
@@ -41,12 +45,14 @@ final class StorePickerViewModel {
     private let roleEligibilityUseCase: RoleEligibilityUseCase
     private var hasTrackedLoginOutcome = false
     init(configuration: StorePickerConfiguration,
+         isFromLogin: Bool? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
          tracker: AuthenticatorAnalyticsTracker = .shared) {
         self.configuration = configuration
+        self.isFromLogin = isFromLogin ?? (configuration == .login)
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
@@ -73,7 +79,7 @@ final class StorePickerViewModel {
     /// but an empty one proves nothing about the account and is left unreported.
     ///
     func trackLoginOutcome(syncSucceeded: Bool) {
-        guard configuration == .login, !hasTrackedLoginOutcome else {
+        guard isFromLogin, !hasTrackedLoginOutcome else {
             return
         }
 

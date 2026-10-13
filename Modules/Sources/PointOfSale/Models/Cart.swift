@@ -138,9 +138,17 @@ extension Cart {
         case .simpleProduct(let simpleProduct):
             return PurchasableItem(id: id, item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
         case .variation(let variation):
-            return PurchasableItem(id: id, item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+            return PurchasableItem(id: id,
+                                   item: variation,
+                                   title: variation.parentProductName,
+                                   subtitle: variation.name.isEmpty ? nil : variation.name,
+                                   quantity: 1)
         case .searchResultVariation(let variation, _):
-            return PurchasableItem(id: id, item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+            return PurchasableItem(id: id,
+                                   item: variation,
+                                   title: variation.parentProductName,
+                                   subtitle: variation.name.isEmpty ? nil : variation.name,
+                                   quantity: 1)
         case .variableParentProduct, .coupon:
             return nil
         }

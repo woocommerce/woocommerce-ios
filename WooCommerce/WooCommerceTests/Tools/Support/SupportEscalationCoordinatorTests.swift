@@ -7,6 +7,84 @@ import Yosemite
 @MainActor
 struct SupportEscalationCoordinatorTests {
 
+    @Test(arguments: [Int64(123), Int64.max, nil])
+    func test_createTicketDirectly_when_escalating_then_sets_optional_ai_chat_id(chatID: Int64?) async throws {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk)
+
+        // When
+        coordinator.handleEscalation(chatID: chatID,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
+
+        // Then
+        let request = try #require(zendesk.latestSupportRequest)
+        #expect(request.customFields[33538949515668] == chatID.map { String($0) })
+        #expect(request.customFields[22054927] == "https://example.com")
+        #expect(request.customFields[MobileStatusReportZendesk.customFieldID] != nil)
+    }
+
+    @Test(arguments: [Int64(456), nil])
+    func test_supportForm_when_escalating_then_sets_optional_ai_chat_id(chatID: Int64?) async throws {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk)
+
+        // When
+        coordinator.handleEscalation(chatID: chatID,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: nil,
+                                     entryPoint: .helpAndSupport)
+        let viewModel = try #require(supportFormViewModel(from: navigationController))
+        for area in viewModel.areas {
+            viewModel.selectArea(area)
+            viewModel.siteAddress = "https://example.com"
+            viewModel.subject = "Subject"
+            viewModel.description = "Additional details"
+            await viewModel.submitSupportRequest()
+
+            // Then: changing the support area preserves the chat ID and existing metadata.
+            let request = try #require(zendesk.latestSupportRequest)
+            #expect(request.customFields[33538949515668] == chatID.map { String($0) })
+            #expect(request.customFields[22054927] == "https://example.com")
+            #expect(request.customFields[MobileStatusReportZendesk.customFieldID] != nil)
+        }
+    }
+
+    @Test func test_createTicketDirectly_when_fails_then_fallback_form_retains_ai_chat_id() async throws {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .failure(NSError(domain: "Test", code: 500)))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk)
+
+        // When
+        coordinator.handleEscalation(chatID: 789,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
+        let viewModel = try #require(supportFormViewModel(from: navigationController))
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        viewModel.description = "Additional details"
+        await viewModel.submitSupportRequest()
+
+        // Then
+        let request = try #require(zendesk.latestSupportRequest)
+        #expect(request.customFields[33538949515668] == "789")
+        #expect(viewModel.shouldShowSuccessAlert)
+    }
+
     // MARK: - Routing Tests
 
     @Test func handleEscalation_when_supportAreaInfo_is_nil_then_shows_support_form() async throws {

@@ -110,11 +110,14 @@ struct OtherPluginsSupportDataSource: SupportFormMetaDataSource {
 }
 
 extension SupportFormMetaDataSource {
-    /// Adds site address to the datasource metadata
+    /// Adds site address and optional AI chat context to the datasource metadata.
     ///
-    @MainActor func customFields(siteAddress: String) -> [Int64: String] {
+    @MainActor func customFields(siteAddress: String, aiChatID: Int64? = nil) -> [Int64: String] {
         var fields = customFields
         fields[ZendeskForms.IDs.siteAddress] = siteAddress
+        if let aiChatID {
+            fields[ZendeskForms.IDs.aiChatID] = String(aiChatID)
+        }
         return fields
     }
 }
@@ -130,6 +133,9 @@ private enum ZendeskForms {
         static let category: Int64 = 25176003
         static let subCategory: Int64 = 25176023
         static let siteAddress: Int64 = 22054927
+        // Must be included at ticket creation for the transcript-linking webhook to run.
+        // Zendesk's Support SDK requires this field to be visible and editable by end users.
+        static let aiChatID: Int64 = 33538949515668
     }
 
     /// Custom Field Values

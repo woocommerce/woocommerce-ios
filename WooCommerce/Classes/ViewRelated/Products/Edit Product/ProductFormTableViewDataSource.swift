@@ -79,10 +79,9 @@ extension ProductFormTableViewDataSource: UITableViewDataSource {
 }
 
 private extension ProductFormTableViewDataSource {
+    @MainActor
     func configure(_ cell: UITableViewCell, section: ProductFormSection, indexPath: IndexPath) {
-        MainActor.assumeIsolated {
-            cell.accessibilityIdentifier = nil
-        }
+        cell.accessibilityIdentifier = nil
         switch section {
         case .primaryFields(let rows):
             configureCellInPrimaryFieldsSection(cell, row: rows[indexPath.row])
@@ -95,6 +94,7 @@ private extension ProductFormTableViewDataSource {
 // MARK: Configure rows in Primary Fields Section
 //
 private extension ProductFormTableViewDataSource {
+    @MainActor
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
         case .images(let editable, let isStorePublic, let allowsMultipleImages, let isVariation):
@@ -105,9 +105,7 @@ private extension ProductFormTableViewDataSource {
                             isVariation: isVariation)
         case .linkedProductsPromo(let viewModel):
             configureLinkedProductsPromo(cell: cell, viewModel: viewModel)
-            MainActor.assumeIsolated {
-                cell.accessibilityIdentifier = "product-linked-products-promo-cell"
-            }
+            cell.accessibilityIdentifier = "product-linked-products-promo-cell"
         case .name(let name, let editable, let productStatus):
             configureName(cell: cell, name: name, isEditable: editable, productStatus: productStatus)
         case .variationName(let name):
@@ -387,6 +385,7 @@ private extension ProductFormTableViewDataSource {
 // MARK: Configure rows in Settings Fields Section
 //
 private extension ProductFormTableViewDataSource {
+    @MainActor
     func configureCellInSettingsFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.SettingsRow) {
         let accessibilityIdentifier: String?
         switch row {
@@ -404,9 +403,7 @@ private extension ProductFormTableViewDataSource {
             accessibilityIdentifier = nil
         }
         if let accessibilityIdentifier {
-            MainActor.assumeIsolated {
-                cell.accessibilityIdentifier = accessibilityIdentifier
-            }
+            cell.accessibilityIdentifier = accessibilityIdentifier
         }
 
         switch row {
@@ -442,15 +439,13 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
+    @MainActor
     func configureSettings(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
         guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
             fatalError()
         }
         cell.updateUI(viewModel: viewModel.toCellViewModel())
-        let detailsAccessibilityIdentifier = viewModel.detailsAccessibilityIdentifier
-        MainActor.assumeIsolated {
-            cell.detailsAccessibilityIdentifier = detailsAccessibilityIdentifier
-        }
+        cell.detailsAccessibilityIdentifier = viewModel.detailsAccessibilityIdentifier
     }
 
     func configureReviews(cell: UITableViewCell,

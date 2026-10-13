@@ -126,6 +126,13 @@ protocol FilterType {
 
     /// Whether the filter is set to a non-empty value.
     var isActive: Bool { get }
+
+    /// The identifier used to locate the filter value in UI tests.
+    var accessibilityIdentifier: String { get }
+}
+
+extension FilterType {
+    var accessibilityIdentifier: String { description }
 }
 
 /// Allows the user to filter a list of models with generic filters.
@@ -555,6 +562,7 @@ private extension FilterListViewController {
             cell.selectionStyle = .default
             cell.updateUI(title: model.cellViewModel.title, value: model.cellViewModel.value)
             let accessibilityIdentifier = model.accessibilityIdentifier
+            // ListSelectorCommand is nonisolated; UIKit calls this helper on the main actor.
             MainActor.assumeIsolated {
                 cell.accessibilityIdentifier = accessibilityIdentifier
             }
@@ -607,13 +615,7 @@ private extension FilterListViewController {
 
         func configureCell(cell: BasicTableViewCell, model: FilterType) {
             cell.textLabel?.text = model.description
-            let accessibilityIdentifier: String
-            if type(of: model) == ProductStockStatus?.self, let stockStatus = model as? ProductStockStatus? {
-                accessibilityIdentifier = "product-stock-status-\(stockStatus?.rawValue ?? "all")"
-            } else {
-                accessibilityIdentifier = model.description
-            }
-            cell.accessibilityIdentifier = accessibilityIdentifier
+            cell.accessibilityIdentifier = model.accessibilityIdentifier
             cell.accessoryView = nil
 
             if let promotable = model as? PromotableProductType, !promotable.isAvailable {

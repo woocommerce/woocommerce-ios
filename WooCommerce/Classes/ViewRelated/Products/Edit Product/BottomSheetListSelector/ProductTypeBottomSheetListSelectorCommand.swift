@@ -62,6 +62,7 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
                                                                     numberOfLinesForTitle: 0,
                                                                     numberOfLinesForText: 0)
         let accessibilityIdentifier = "product-type-option-\(model.id)"
+        // BottomSheetListSelectorCommand is nonisolated; UIKit calls this helper on the main actor.
         MainActor.assumeIsolated {
             cell.accessibilityIdentifier = accessibilityIdentifier
         }

@@ -5,10 +5,12 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 import os
 import shutil
 import subprocess
 import sys
+import urllib.request
 from pathlib import Path
 
 
@@ -53,6 +55,17 @@ def check_simulator_locale(device: str) -> tuple[bool, str]:
     details = [line.strip() for line in result.stderr.splitlines() if line.strip()]
     reason = details[-1] if details else "simulator language check failed"
     return False, f"simulator language: {reason}"
+
+
+def check_lab_store(url: str) -> tuple[bool, str]:
+    """An expired Jurassic Ninja store stops answering, and only the setup skill can replace it."""
+    try:
+        with urllib.request.urlopen(f"{url.rstrip('/')}/?rest_route=/", timeout=15) as response:
+            if "namespaces" in json.load(response):
+                return True, "the lab store responds"
+    except (OSError, ValueError):
+        pass
+    return False, "the lab store doesn't respond; run the /setup-test-stores skill"
 
 
 def missing_environment(flows: list[Path], environment: dict[str, str], args: argparse.Namespace) -> list[str]:
@@ -158,6 +171,9 @@ def main() -> int:
 
     missing = missing_environment(flows if 'flows' in locals() else [], environment, args)
     checks.append((not missing, "required credentials are present" if not missing else "missing variables: " + ", ".join(missing)))
+    lab_url = RUNNER.select_store_environment(environment, "lab").get("MAESTRO_WOO_JETPACK_STORE_URL", "")
+    if lab_url and any(RUNNER.flow_store(flow, args.store) == "lab" for flow in (flows if 'flows' in locals() else [])):
+        checks.append(check_lab_store(lab_url))
     checks.extend((False, problem) for problem in selection_problems(flows if 'flows' in locals() else [], args))
 
     print("WooCommerce iOS Maestro doctor")

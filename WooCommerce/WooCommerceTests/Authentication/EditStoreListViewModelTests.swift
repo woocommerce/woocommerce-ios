@@ -1,4 +1,5 @@
 import Foundation
+import struct NetworkingCore.Site
 import Testing
 import Yosemite
 @testable import WooCommerce

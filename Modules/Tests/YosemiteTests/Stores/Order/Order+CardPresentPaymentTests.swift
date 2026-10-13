@@ -62,6 +62,16 @@ final class Order_CardPresentPaymentTests: XCTestCase {
         XCTAssertEqual(order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: [product]), .ineligible)
     }
 
+    func test_eligibility_when_there_is_a_variable_subscription_product_then_is_not_eligible() {
+        // Given
+        let productID: Int64 = 1
+        let product = Product.fake().copy(productID: productID, productTypeKey: "variable-subscription")
+        let order = eligibleOrder.copy(items: [OrderItem.fake().copy(productID: productID)])
+
+        // Then
+        XCTAssertEqual(order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: [product]), .ineligible)
+    }
+
     func test_eligibility_when_only_currency_is_unsupported_then_returns_currency_reason() {
         for currency in ["EUR", "eur"] {
             // Given

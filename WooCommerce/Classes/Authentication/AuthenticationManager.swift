@@ -74,6 +74,10 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the QR-login coordinator while the flow is active.
     private var qrLoginCoordinator: QRLoginCoordinator?
 
+    /// Whether site discovery was entered from the login epilogue rather than from an
+    /// in-app store switch. Only the former is part of a login journey.
+    private var isSiteDiscoveryFromLogin = false
+
     /// Availability gate for the QR-login prologue / deep link entry.
     private let qrLoginAvailability: QRLoginAvailabilityProvider
 
@@ -383,6 +387,7 @@ class AuthenticationManager: Authentication {
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
                              credentials: AuthenticatorCredentials? = nil,
+                             reportsLoginStep: Bool = false,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController? {
 
@@ -393,13 +398,18 @@ class AuthenticationManager: Authentication {
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            return accountMismatchUI(for: siteURL, siteCredentials: credentials?.wporg, with: matcher, in: navigationController)
+            return accountMismatchUI(for: siteURL,
+                                     siteCredentials: credentials?.wporg,
+                                     with: matcher,
+                                     reportsLoginStep: reportsLoginStep,
+                                     in: navigationController)
         }
 
         /// No Woo found
         if let matchedSite = matcher.matchedSite(originalURL: siteURL),
            matchedSite.isWooCommerceActive == false {
             return noWooUI(for: matchedSite,
+                           reportsLoginStep: reportsLoginStep,
                            with: matcher,
                            navigationController: navigationController,
                            onStorePickerDismiss: onStorePickerDismiss)
@@ -539,6 +549,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                 return
             } else {
                 let noWoo = noWooUI(for: matchedSite,
+                                    reportsLoginStep: isSiteDiscoveryFromLogin,
                                     with: matcher,
                                     navigationController: navigationController,
                                     onStorePickerDismiss: {})
@@ -788,6 +799,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         if let vc = errorViewController(for: siteURL,
                                         with: matcher,
                                         credentials: credentials,
+                                        reportsLoginStep: true,
                                         navigationController: navigationController,
                                         onStorePickerDismiss: onDismiss) {
             loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)
@@ -1143,6 +1155,11 @@ private extension AuthenticationManager {
         // poisons later `woocommerce://qr-login` deep links.
         qrLoginCoordinator = nil
 
+        // Every route here has finished signing in, so the steps that follow belong to the
+        // epilogue. `errorViewController` sets this too, but it is skipped on the signup
+        // epilogue, which would otherwise leave the social-login flow in place.
+        AuthenticatorAnalyticsTracker.shared.set(flow: .epilogue)
+
         // Start the store picker
         let config = StorePickerConfiguration.login
         storePickerCoordinator = StorePickerCoordinator(navigationController,
@@ -1167,10 +1184,12 @@ private extension AuthenticationManager {
     func accountMismatchUI(for siteURL: String,
                            siteCredentials: WordPressOrgCredentials?,
                            with matcher: ULAccountMatcher,
+                           reportsLoginStep: Bool = false,
                            in navigationController: UINavigationController) -> UIViewController {
         let viewModel = WrongAccountErrorViewModel(siteURL: siteURL,
                                                    showsConnectedStores: matcher.hasConnectedStores,
                                                    siteCredentials: siteCredentials,
+                                                   reportsLoginStep: reportsLoginStep,
                                                    onJetpackSetupCompletion: { email, xmlrpc in
             WordPressAuthenticator.showVerifyEmailForWPCom(
                 from: navigationController,
@@ -1186,12 +1205,14 @@ private extension AuthenticationManager {
     /// The error screen to be displayed when the user tries to enter a site without WooCommerce.
     ///
     func noWooUI(for site: Site,
+                 reportsLoginStep: Bool = false,
                  with matcher: ULAccountMatcher = .init(),
                  navigationController: UINavigationController,
                  onStorePickerDismiss: @escaping () -> Void) -> UIViewController {
         let viewModel = NoWooErrorViewModel(
             site: site,
             showsConnectedStores: matcher.hasConnectedStores,
+            reportsLoginStep: reportsLoginStep,
             onSetupCompletion: { [weak self] siteID in
                 guard let self else { return }
                 self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
@@ -1242,9 +1263,11 @@ private extension AuthenticationManager {
     ///
     func jetpackSetupUI(for siteURL: String,
                         connectionMissingOnly: Bool,
+                        reportsLoginStep: Bool = false,
                         in navigationController: UINavigationController) -> UIViewController {
         let viewModel = JetpackSetupRequiredViewModel(siteURL: siteURL,
-                                                      connectionOnly: connectionMissingOnly)
+                                                      connectionOnly: connectionMissingOnly,
+                                                      reportsLoginStep: reportsLoginStep)
         let jetpackSetupUI = ULErrorViewController(viewModel: viewModel)
         return jetpackSetupUI
     }
@@ -1262,17 +1285,28 @@ private extension AuthenticationManager {
 
         guard !site.isWPCom && !site.isCommerceGarden else {
             // The site doesn't belong to the current account since it was not included in the site picker.
-            return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+            return accountMismatchUI(for: site.url,
+                                     siteCredentials: nil,
+                                     with: matcher,
+                                     reportsLoginStep: isSiteDiscoveryFromLogin,
+                                     in: navigationController)
         }
 
         // Shows the native Jetpack flow during the site discovery flow.
         return jetpackSetupUI(for: site.url,
                               connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
+                              reportsLoginStep: isSiteDiscoveryFromLogin,
                               in: navigationController)
     }
 }
 
 extension AuthenticationManager {
+    /// Records whether the store picker about to present site discovery belongs to the login
+    /// epilogue. Site discovery is also reachable from an in-app store switch, which is not one.
+    func noteSiteDiscoveryOrigin(isFromLogin: Bool) {
+        isSiteDiscoveryFromLogin = isFromLogin
+    }
+
     /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.
     /// Internal so tests can verify that the authentication callback forwards its validated endpoint context.
     ///

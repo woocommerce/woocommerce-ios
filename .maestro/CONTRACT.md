@@ -98,6 +98,7 @@ Only the Core owner edits `.maestro/subflows/`. Shared names are:
 - `navigate_to_products.yaml`
 - `navigate_to_more_menu.yaml`
 - `wait_for_age_range_check.yaml`
+- `toggle_pay_in_person.yaml`
 
 Flow filenames use the Android-equivalent names in the implementation plan.
 iOS-only system files are `ios_quick_actions.yaml`,

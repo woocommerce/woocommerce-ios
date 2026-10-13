@@ -1,0 +1,14 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    text: "${FROM}"
+    rightOf: "Pay In Person"
+- extendedWaitUntil:
+    visible: "${CONFIRM} Pay In Person\\?"
+    timeout: 10000
+- tapOn: "${CONFIRM}"
+- extendedWaitUntil:
+    visible:
+      text: "${TO}"
+      rightOf: "Pay In Person"
+    timeout: 20000

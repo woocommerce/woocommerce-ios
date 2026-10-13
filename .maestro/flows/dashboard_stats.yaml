@@ -95,7 +95,6 @@ tags:
 # dates next to the range title.
 - tapOn:
     id: "store-stats-chart"
-    point: "70%,50%"
 - scrollUntilVisible:
     element:
       text: "[A-Za-z]+ [0-9]{4}"

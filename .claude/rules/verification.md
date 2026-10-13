@@ -8,6 +8,16 @@ Agents can verify their changes work from a user's perspective using two complem
 - **Booted iOS simulator** — `xcrun simctl boot <UDID>`
 - **mobile-mcp** — auto-configured via `.mcp.json` (project-scoped, no manual setup needed)
 
+### Clean Simulator Setup
+
+If mobile-mcp reports `Agent is not installed on the device` on a fresh simulator, run:
+
+```bash
+npx -y mobilecli@1.0.17 agent install --device <UDID>
+```
+
+Confirm that mobile-mcp can read the target simulator's UI elements before continuing.
+
 ## `/verify` — E2E Simulator Verification
 
 Builds the app, launches on the simulator, and uses mobile-mcp to navigate the UI and verify features work. Auto-detects which features changed via `git diff` and the feature map.
@@ -16,7 +26,7 @@ Builds the app, launches on the simulator, and uses mobile-mcp to navigate the U
 /verify              # auto-detect scope from git diff
 ```
 
-**Environment-aware**: The agent first assesses the current state — if the simulator already has a built app with an active session (the common case during development), it just builds, re-launches, and verifies. It only sets up WireMock mocked environment when there's no existing session, deterministic mock data is needed, or the user explicitly requests it.
+**Environment selection**: `/verify` reuses a suitable session, otherwise defaults to WireMock unless a live store is requested or required. Follow `.claude/skills/auto-login/SKILL.md` with `mocks` for WireMock or its default live-store flow.
 
 **Feature map**: `.claude/references/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
 

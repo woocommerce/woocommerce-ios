@@ -2,6 +2,7 @@ import Foundation
 import PointOfSale
 import WooFoundation
 import Combine
+import os
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import protocol Yosemite.StoresManager
@@ -12,6 +13,8 @@ import enum Yosemite.PaymentChannel
 final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let currencyFormatter: CurrencyFormatter
     @Published private var latestPaymentEvent: CardPresentPaymentEvent = .idle
+    /// Set when this flow's task is cancelled, so `latestPaymentEvent` keeps the event the cancellation applies to.
+    private let isCancelled = OSAllocatedUnfairLock(initialState: false)
     private let stores: StoresManager
     private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
 
@@ -22,7 +25,9 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         self.currencyFormatter = currencyFormatter
         self.stores = stores
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
-        paymentEventPublisher.assign(to: &$latestPaymentEvent)
+        paymentEventPublisher
+            .filter { [isCancelled] _ in isCancelled.withLock { $0 } == false }
+            .assign(to: &$latestPaymentEvent)
     }
 
     func collectPaymentTask(for order: Order,
@@ -99,9 +104,11 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                     )
                 }
             } onCancel: {
-                // Invalidate synchronously so no payment can start after cancellation.
-                // Cancelling the current step needs the main actor.
+                // Invalidate and freeze the current event synchronously, so no payment can start after
+                // cancellation and the step cancelled below is the one shown when the task was cancelled.
+                // Cancelling that step needs the main actor.
                 invalidatablePaymentOrchestrator.invalidatePayment()
+                self.isCancelled.withLock { $0 = true }
                 Task { @MainActor in
                     switch self.latestPaymentEvent {
                         case .show(let eventDetails):

@@ -88,7 +88,11 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
                 } else {
                     /// Refresh coupons in background
                     Task { @MainActor in
-                        try await synchronizeCoupons(for: couponReports)
+                        do {
+                            try await synchronizeCoupons(for: couponReports)
+                        } catch {
+                            DDLogError("⛔️ Failed to refresh most active coupons: \(error)")
+                        }
                     }
                 }
             }

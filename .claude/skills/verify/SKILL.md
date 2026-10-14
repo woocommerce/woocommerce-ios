@@ -1,6 +1,6 @@
 ---
 name: verify
-description: Build the app, launch on simulator, and verify feature behavior via mobile-mcp interaction. Use after making changes to visually confirm they work from a user's perspective.
+description: "Verify a requested app flow or changed feature on an iOS simulator with UI evidence. Reuse a suitable session or set up mocks by default."
 user-invocable: true
 allowed-tools: "Bash, Read, Grep, Glob, mcp__mobile-mcp__*"
 ---
@@ -29,15 +29,13 @@ For an existing suitable session, skip Step 3. Use mock-specific launch argument
 
 ## Step 2: Detect Feature Scope
 
-Determine which features were changed:
+Use the user's requested flow first. For changed features, collect paths from the committed
+diff against the requested base, staged changes, unstaged changes, and relevant untracked files.
+Use the parent branch as the base for stacked work; otherwise use `trunk`.
 
-```bash
-git diff --name-only trunk...HEAD
-```
-
-If no diff against trunk, fall back to `git diff --name-only HEAD~1`.
-
-Read `.claude/references/feature-map.json` and match changed file paths against `pathPatterns` for each feature. Collect all matched features. If no features match, **skip verification entirely** — report which files changed, note that none matched any feature path pattern, and stop (do not proceed to Steps 3-8).
+Match these paths against `.claude/references/feature-map.json`. If no paths match,
+verify the explicitly requested flow. If no flow is requested, report the unmatched paths
+and the verification gap instead of claiming success.
 
 ## Step 3: Prepare the Selected Environment
 
@@ -54,10 +52,10 @@ Use the `/simulator` skill approach to discover a booted simulator UDID.
 ```bash
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination "platform=iOS Simulator,id=<UDID>" \
-  build 2>&1 | tail -30
+  build > <task-build-log> 2>&1
 ```
 
-If the build fails, analyze errors and report. The build must succeed — verification requires the current code.
+Check the exit status and retain the full log outside the repository. If the build fails, report the first error. Verification of code changes requires a successful current build.
 
 ## Step 5: Launch App
 
@@ -94,7 +92,7 @@ Wait 5 seconds for the app to settle.
 
 ## Step 6: Navigate and Verify
 
-Use mobile-mcp tools (`list_elements_on_screen`, `click_on_screen_at_coordinates`, `take_screenshot`) to interact with the app.
+Read the available mobile-mcp tool schemas. Confirm the target device with a `simctl` screenshot before interaction; follow `.claude/rules/verification.md` for helper or device mismatches.
 
 Consult `.claude/references/screen-identifiers.md` for screen identification, element lookup, and navigation flows (including login flow when using mocked environment).
 

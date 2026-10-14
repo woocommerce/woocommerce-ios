@@ -23,6 +23,7 @@ private extension ProductStatus {
 struct ProductsTabProductViewModel {
     let imageUrl: String?
     let name: String
+    let stockStatusKey: String
     let productVariation: ProductVariation?
     let detailsAttributedString: NSAttributedString
     let isSelected: Bool
@@ -42,6 +43,7 @@ struct ProductsTabProductViewModel {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          imageService: ImageService = ServiceLocator.imageService) {
 
+        stockStatusKey = product.stockStatusKey
         imageUrl = product.imageURL?.absoluteString
         name = product.name.isEmpty ? Localization.noTitle : product.name
         self.productVariation = productVariation

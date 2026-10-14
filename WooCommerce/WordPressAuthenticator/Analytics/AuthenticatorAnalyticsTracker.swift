@@ -206,6 +206,18 @@ public class AuthenticatorAnalyticsTracker {
         /// The signed-in account owns no site with WooCommerce.
         ///
         case noWooStores = "no_woo_stores"
+
+        /// The store picker put the account's sites on screen for the merchant to choose from.
+        ///
+        case siteList = "site_list"
+
+        /// Jetpack is installed on the site but not connected to the signed-in account.
+        ///
+        case jetpackNotConnected = "jetpack_not_connected"
+
+        /// Jetpack is not installed on the site.
+        ///
+        case jetpackNotInstalled = "jetpack_not_installed"
     }
 
     public enum ClickTarget: String {

@@ -19,6 +19,10 @@ final class AddAttributeOptionsViewController: UIViewController, GhostableViewCo
     ///
     private let onCompletion: (Product) -> Void
 
+    /// Option name typed but not added yet. Kept when the table reloads, for example after a switch changes.
+    ///
+    private var newOptionName: String?
+
     /// Keyboard management
     ///
     private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -295,11 +299,14 @@ private extension AddAttributeOptionsViewController {
     }
 
     func configureTextField(cell: TextFieldTableViewCell) {
-        let viewModel = TextFieldTableViewCell.ViewModel(text: nil,
+        let viewModel = TextFieldTableViewCell.ViewModel(text: newOptionName,
                                                          placeholder: Localization.optionNameCellPlaceholder,
-                                                         onTextChange: nil,
+                                                         onTextChange: { [weak self] text in
+                                                            self?.newOptionName = text
+                                                         },
                                                          onTextDidBeginEditing: nil,
                                                          onTextDidReturn: { [weak self] text in
+                                                            self?.newOptionName = nil
                                                             if let text {
                                                                 self?.viewModel.addNewOption(name: text)
                                                             }

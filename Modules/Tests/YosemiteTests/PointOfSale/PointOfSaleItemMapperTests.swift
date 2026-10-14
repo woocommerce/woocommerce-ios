@@ -3,6 +3,7 @@ import Testing
 import WooFoundation
 @testable import Yosemite
 
+@MainActor
 struct PointOfSaleItemMapperTests {
     private var currencySettings: CurrencySettings!
     private var sut: PointOfSaleItemMapper!
@@ -138,7 +139,27 @@ struct PointOfSaleItemMapperTests {
 
     // MARK: - Test Data Factory Methods
 
-    private static func createSimpleProduct1() -> POSProduct {
+    @Test func test_mapping_when_currency_settings_change_then_uses_updated_formatting() {
+        // Given
+        let product = POSProduct.fake().copy(productTypeKey: "simple", price: "25.50")
+        currencySettings.currencyCode = .USD
+        let initialItem = sut.mapProductToPOSItem(product: product)
+
+        // When
+        currencySettings.currencyCode = .EUR
+        let updatedItem = sut.mapProductToPOSItem(product: product)
+
+        // Then
+        guard case .simpleProduct(let initialProduct) = initialItem,
+              case .simpleProduct(let updatedProduct) = updatedItem else {
+            Issue.record("Expected simple products before and after the currency change")
+            return
+        }
+        #expect(initialProduct.formattedPrice == "$25.50")
+        #expect(updatedProduct.formattedPrice == "€25.50")
+    }
+
+    nonisolated private static func createSimpleProduct1() -> POSProduct {
         POSProduct.fake().copy(
             productID: 123,
             name: "Simple Product 1",
@@ -151,7 +172,7 @@ struct PointOfSaleItemMapperTests {
         )
     }
 
-    private static func createSimpleProduct2() -> POSProduct {
+    nonisolated private static func createSimpleProduct2() -> POSProduct {
         POSProduct.fake().copy(
             productID: 124,
             name: "Simple Product 2",
@@ -164,7 +185,7 @@ struct PointOfSaleItemMapperTests {
         )
     }
 
-    private static func createVariableProduct1() -> POSProduct {
+    nonisolated private static func createVariableProduct1() -> POSProduct {
         POSProduct.fake().copy(
             productID: 125,
             name: "Variable Product 1",
@@ -174,7 +195,7 @@ struct PointOfSaleItemMapperTests {
         )
     }
 
-    private static func createVariableProduct2() -> POSProduct {
+    nonisolated private static func createVariableProduct2() -> POSProduct {
         POSProduct.fake().copy(
             productID: 126,
             name: "Variable Product 2",
@@ -184,7 +205,7 @@ struct PointOfSaleItemMapperTests {
         )
     }
 
-    private static func createParentProduct() -> POSVariableParentProduct {
+    nonisolated private static func createParentProduct() -> POSVariableParentProduct {
         POSVariableParentProduct(
             id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent Product",
@@ -194,7 +215,7 @@ struct PointOfSaleItemMapperTests {
         )
     }
 
-    private static func createVariation1() -> POSProductVariation {
+    nonisolated private static func createVariation1() -> POSProductVariation {
         POSProductVariation.fake().copy(
             productID: 125,
             productVariationID: 456,
@@ -204,7 +225,7 @@ struct PointOfSaleItemMapperTests {
         )
     }
 
-    private static func createVariation2() -> POSProductVariation {
+    nonisolated private static func createVariation2() -> POSProductVariation {
         POSProductVariation.fake().copy(
             productID: 125,
             productVariationID: 457,

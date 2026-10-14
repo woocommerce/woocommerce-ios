@@ -5,6 +5,7 @@ import WooFoundation
 @testable import Yosemite
 
 @Suite("PointOfSaleLocalBarcodeScanService Tests")
+@MainActor
 struct PointOfSaleLocalBarcodeScanServiceTests {
     private let siteID: Int64 = 123
     private var grdbManager: GRDBManager!
@@ -14,6 +15,7 @@ struct PointOfSaleLocalBarcodeScanServiceTests {
         grdbManager = try GRDBManager()
 
         // Initialize site
+        let siteID = siteID
         try await grdbManager.databaseConnection.write { db in
             try PersistedSite(id: siteID).insert(db)
         }

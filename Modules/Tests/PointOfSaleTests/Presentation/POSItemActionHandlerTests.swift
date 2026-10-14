@@ -113,7 +113,7 @@ private func makePointOfSaleAggregateModel(
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol? = nil,
-    barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = MockPointOfSaleBarcodeScanService()
+    barcodeScanService: PointOfSaleBarcodeScanServiceProtocol? = nil
 ) -> PointOfSaleAggregateModel {
     let cardPresentPaymentService = cardPresentPaymentService ?? MockCardPresentPaymentService()
 
@@ -130,7 +130,7 @@ private func makePointOfSaleAggregateModel(
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         searchHistoryService: searchHistoryService,
         popularPurchasableItemsController: popularPurchasableItemsController ?? MockPointOfSaleItemsController(),
-        barcodeScanService: barcodeScanService,
+        barcodeScanService: barcodeScanService ?? MockPointOfSaleBarcodeScanService(),
         receiptSender: MockPOSReceiptSender(),
         siteID: 0
     )

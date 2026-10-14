@@ -1,4 +1,6 @@
 import XCTest
+@testable import WordPressAuthenticator
+import WordPressShared
 @testable import WooCommerce
 
 final class JetpackSetupRequiredViewModelTests: XCTestCase {
@@ -172,31 +174,77 @@ final class JetpackSetupRequiredViewModelTests: XCTestCase {
     }
 
     // MARK: - Analytics
-    func test_jetpack_connection_error_is_tracked_when_the_view_is_loaded_when_connectionOnly_is_true() {
-        // Given
+    func test_viewDidLoad_tracks_the_legacy_screen_viewed_event_when_jetpack_is_not_installed() {
+        // Given Jetpack is not installed, the `connectionOnly == false` branch
         let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let mockAuthentication = MockAuthentication()
-        let viewModel = JetpackSetupRequiredViewModel(siteURL: testSiteURL, connectionOnly: true, authentication: mockAuthentication, analytics: analytics)
+        let viewModel = JetpackSetupRequiredViewModel(siteURL: testSiteURL,
+                                                      connectionOnly: false,
+                                                      reportsLoginStep: false,
+                                                      authentication: MockAuthentication(),
+                                                      analytics: WooAnalytics(analyticsProvider: analyticsProvider))
 
         // When
         viewModel.viewDidLoad(nil)
 
-        // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connection_error_shown" }))
+        // Then the legacy event is still tracked, which is what covers the out-of-login case
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("login_jetpack_required_screen_viewed"))
     }
 
-    func test_jetpack_required_error_is_tracked_when_the_view_is_loaded_when_connectionOnly_is_false() {
-        // Given
+    func test_viewDidLoad_reports_no_login_step_outside_a_login_journey() {
+        // Given the screen was reached from an in-app store switch
+        var events: [AnalyticsEvent] = []
         let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let mockAuthentication = MockAuthentication()
-        let viewModel = JetpackSetupRequiredViewModel(siteURL: testSiteURL, connectionOnly: false, authentication: mockAuthentication, analytics: analytics)
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = JetpackSetupRequiredViewModel(siteURL: testSiteURL,
+                                                      connectionOnly: true,
+                                                      reportsLoginStep: false,
+                                                      authentication: MockAuthentication(),
+                                                      analytics: WooAnalytics(analyticsProvider: analyticsProvider),
+                                                      tracker: tracker)
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then no login step, but the screen is still counted by the legacy event
+        XCTAssertTrue(events.isEmpty)
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("login_jetpack_connection_error_shown"))
+    }
+
+    func test_viewDidLoad_reports_jetpack_not_connected_when_connectionOnly_is_true() {
+        // Given
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = JetpackSetupRequiredViewModel(siteURL: testSiteURL,
+                                                      connectionOnly: true,
+                                                      reportsLoginStep: true,
+                                                      authentication: MockAuthentication(),
+                                                      tracker: tracker)
 
         // When
         viewModel.viewDidLoad(nil)
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_required_screen_viewed" }))
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.properties["step"], "jetpack_not_connected")
+        XCTAssertEqual(events.first?.properties["url"], "test.com")
+    }
+
+    func test_viewDidLoad_reports_jetpack_not_installed_when_connectionOnly_is_false() {
+        // Given
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = JetpackSetupRequiredViewModel(siteURL: testSiteURL,
+                                                      connectionOnly: false,
+                                                      reportsLoginStep: true,
+                                                      authentication: MockAuthentication(),
+                                                      tracker: tracker)
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.properties["step"], "jetpack_not_installed")
+        XCTAssertEqual(events.first?.properties["url"], "test.com")
     }
 }

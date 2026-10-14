@@ -1,4 +1,6 @@
 import Foundation
+import enum NetworkingCore.Credentials
+import struct NetworkingCore.Site
 import Storage
 import enum WooFoundation.CurrencyCode
 

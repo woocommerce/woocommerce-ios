@@ -1,5 +1,6 @@
 import TestKit
-import WordPressAuthenticator
+import WordPressShared
+@testable import WordPressAuthenticator
 import XCTest
 import Yosemite
 import YosemiteTestHelpers
@@ -144,6 +145,44 @@ final class StorePickerCoordinatorTests: XCTestCase {
         for configuration in [StorePickerConfiguration.login, .listStores] {
             try assertPluginRetry(configuration: configuration)
         }
+    }
+
+    func test_didSelectStore_when_logging_in_then_reports_success() {
+        // Given a login that has reached the point of choosing a store
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        tracker.set(flow: .epilogue)
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .login,
+                                                 switchStoreUseCase: MockSwitchStoreUseCase(),
+                                                 tracker: tracker)
+
+        // When
+        coordinator.didSelectStore(with: 123) {}
+
+        // Then the login ends where the store does, matching where Android reports it
+        waitUntil {
+            events.filter { $0.properties["step"] == "success" }.count == 1
+        }
+        XCTAssertEqual(events.first(where: { $0.properties["step"] == "success" })?.properties["flow"], "epilogue")
+    }
+
+    func test_didSelectStore_when_switching_stores_then_does_not_report_success() {
+        // Given a merchant already signed in, changing store
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .switchingStores,
+                                                 switchStoreUseCase: MockSwitchStoreUseCase(),
+                                                 tracker: tracker)
+
+        // When
+        let completed = expectation(description: "store switched")
+        coordinator.didSelectStore(with: 123) { completed.fulfill() }
+        wait(for: [completed], timeout: Constants.expectationTimeout)
+
+        // Then no login is happening, so no login step is invented
+        XCTAssertFalse(events.contains { $0.properties["step"] == "success" })
     }
 
     @MainActor
@@ -369,6 +408,46 @@ final class StorePickerCoordinatorTests: XCTestCase {
             fixture.completeRequirements = nil
         }
         return fixture
+    }
+
+    func test_didSelectStore_when_recovering_from_a_login_error_screen_then_reports_success() {
+        // Given a login that hit "Wrong account?" and recovered through "See connected stores",
+        // which opens a listStores picker while still mid-login
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        tracker.set(flow: .epilogue)
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .listStores,
+                                                 isFromLogin: true,
+                                                 switchStoreUseCase: MockSwitchStoreUseCase(),
+                                                 tracker: tracker)
+
+        // When
+        coordinator.didSelectStore(with: 123) {}
+
+        // Then the login reached a store, so it ends like any other
+        waitUntil {
+            events.filter { $0.properties["step"] == "success" }.count == 1
+        }
+    }
+
+    func test_didSelectStore_when_listing_stores_outside_a_login_then_does_not_report_success() {
+        // Given the same picker opened from an error screen reached outside a login
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .listStores,
+                                                 isFromLogin: false,
+                                                 switchStoreUseCase: MockSwitchStoreUseCase(),
+                                                 tracker: tracker)
+
+        // When
+        let completed = expectation(description: "store switched")
+        coordinator.didSelectStore(with: 123) { completed.fulfill() }
+        wait(for: [completed], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertFalse(events.contains { $0.properties["step"] == "success" })
     }
 }
 

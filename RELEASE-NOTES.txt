@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] In-Person Payments: The payment amount no longer shows in a smaller font when you try a card payment again after canceling. [https://github.com/woocommerce/woocommerce-ios/pull/18085]
 - [*] POS: Tap the full refund row to view details or add and edit a refund reason. [https://github.com/woocommerce/woocommerce-ios/pull/18072]
 - [*] POS: Fixed a blank line above cart prices for variations without attributes. [https://github.com/woocommerce/woocommerce-ios/pull/18073]
 - [**] In-Person Payments: Fixed setup for stores without WooPayments or Stripe installed. [https://github.com/woocommerce/woocommerce-ios/pull/18047]

@@ -155,7 +155,8 @@ def main() -> int:
 
     if 'flows' not in locals() or not RUNNER.runs_only_on_pos_device(flows, family):
         try:
-            simulator = RUNNER.resolve_simulator(args.device, family, boot=False)
+            device = args.device or (args.pos_device if family == "ipad" else None)
+            simulator = RUNNER.resolve_simulator(device, family, boot=False)
             checks.append((True, f"simulator: {simulator['name']} ({simulator['udid']})"))
             checks.append(check_simulator_locale(simulator["udid"]))
         except (SystemExit, subprocess.SubprocessError) as error:
@@ -163,7 +164,10 @@ def main() -> int:
 
     if 'flows' in locals() and RUNNER.needs_pos_device(flows, family):
         try:
-            pos_simulator = RUNNER.resolve_simulator(args.pos_device, "ipad", boot=False, option="--pos-device")
+            pos_device = args.pos_device
+            if not pos_device and RUNNER.runs_only_on_pos_device(flows, family):
+                pos_device = args.device
+            pos_simulator = RUNNER.resolve_simulator(pos_device, "ipad", boot=False, option="--pos-device")
             checks.append((True, f"POS simulator: {pos_simulator['name']} ({pos_simulator['udid']})"))
             checks.append(check_simulator_locale(pos_simulator["udid"]))
         except (SystemExit, subprocess.SubprocessError) as error:

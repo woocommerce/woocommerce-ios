@@ -939,8 +939,16 @@ def main() -> int:
         validate_environment([], seed_values, seed=True, store=seed_store)
     manifest = output / "run-manifest.json"
     pos_only = runs_only_on_pos_device(flows, family)
+    # POS flows run on --pos-device, or on --device when only one is given.
     if pos_only:
-        simulator = resolve_simulator(args.pos_device, "ipad", option="--pos-device")
+        simulator = resolve_simulator(
+            args.pos_device or args.device, "ipad", option="--pos-device" if args.pos_device else "--device"
+        )
+        pos_simulator = None
+    elif family == "ipad":
+        simulator = resolve_simulator(
+            args.device or args.pos_device, family, option="--device" if args.device else "--pos-device"
+        )
         pos_simulator = None
     else:
         simulator = resolve_simulator(args.device, family)

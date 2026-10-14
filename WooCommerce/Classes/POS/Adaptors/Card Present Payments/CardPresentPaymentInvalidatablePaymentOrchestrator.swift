@@ -1,10 +1,17 @@
 import Foundation
 import Yosemite
 import WooFoundation
+import class PointOfSale.POSPaymentSuccessCelebration
 
 final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOrchestrating {
     private var invalidated: Bool = false
-    private let paymentOrchestrator = PaymentCaptureOrchestrator()
+    private let paymentOrchestrator: PaymentCaptureOrchestrator
+
+    /// POS celebrates through `POSPaymentSuccessCelebration`, which honors the payment success sound setting from POS settings.
+    init(stores: StoresManager = ServiceLocator.stores,
+         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration()) {
+        self.paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: celebration)
+    }
 
     func invalidatePayment() {
         invalidated = true

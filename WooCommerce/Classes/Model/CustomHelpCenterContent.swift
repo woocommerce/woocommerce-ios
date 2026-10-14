@@ -89,13 +89,13 @@ extension CustomHelpCenterContent {
             step = "jetpack_not_connected" // Matching Android `Step` value
             url = WooConstants.URLs.helpCenterForJetpackRequiredError.asURL()
         case .storePicker:
-            step = "site_list" // Matching Android `Step` value
+            step = AuthenticatorAnalyticsTracker.Step.siteList.rawValue
             url = WooConstants.URLs.helpCenterForStorePicker.asURL()
         case .wrongAccountError:
             step = AuthenticatorAnalyticsTracker.Step.wrongWordPressAccount.rawValue
             url = WooConstants.URLs.helpCenterForWrongAccountError.asURL()
         case .noWooError:
-            step = "not_woo_store" // Matching Android `Step` value
+            step = AuthenticatorAnalyticsTracker.Step.notWooStore.rawValue
             url = WooConstants.URLs.helpCenterForNoWooError.asURL()
         case .purchasePlanError:
             step = "purchase_plan_error"

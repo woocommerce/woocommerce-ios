@@ -31,7 +31,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
     }
 
     private func showSupportChat() {
-        var viewModelHolder: SupportChatViewModel?
+        weak var viewModelHolder: SupportChatViewModel?
         let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
             self?.navigationController?.popViewController(animated: true)
             self?.handleContactHumanSupport(chatID: chatID,
@@ -39,7 +39,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
                                             supportAreaInfo: supportAreaInfo,
                                             entryPoint: entryPoint,
                                             hasReceivedBotResponse: hasReceivedBotResponse,
-                                            onTicketCreated: { [weak viewModelHolder] in
+                                            onTicketCreated: {
                                                 viewModelHolder?.markChatTicketCreated()
                                             })
         }

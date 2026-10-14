@@ -1,6 +1,6 @@
 import Foundation
 
-public struct CardReaderInput: OptionSet {
+public struct CardReaderInput: OptionSet, Sendable {
     public let rawValue: Int
 
     public init(rawValue: Int) {

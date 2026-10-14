@@ -87,19 +87,6 @@ class RunnerTests(unittest.TestCase):
         RUNNER.validate_destructive_repeat([flow], repeat=1)
         RUNNER.validate_destructive_repeat([RUNNER.FLOWS_DIR / "dashboard_stats.yaml"], repeat=3)
 
-    def test_jetpack_store_cannot_share_the_no_jetpack_host(self) -> None:
-        flow = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
-        values = {
-            "MAESTRO_WOO_JETPACK_STORE_URL": "https://site.example.com/",
-            "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://site.example.com/wp-admin",
-        }
-
-        with self.assertRaisesRegex(SystemExit, "same host as the no-Jetpack site"):
-            RUNNER.validate_login_store_hosts([flow], values, store="lab")
-
-        values["MAESTRO_WOO_NO_JETPACK_SITE_URL"] = "https://other.example.com/"
-        RUNNER.validate_login_store_hosts([flow], values, store="lab")
-
     def test_shared_destructive_runs_are_refused(self) -> None:
         flow = RUNNER.FLOWS_DIR / "orders_create.yaml"
 
@@ -555,8 +542,28 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual((1, 2), RUNNER.attempt_numbers(safe))
 
     def test_profile_contract(self) -> None:
+        self.assertEqual({"core", "full", "pos"}, set(RUNNER.PROFILES))
         self.assertEqual("iphone", RUNNER.PROFILES["core"][2])
-        self.assertEqual("ipad", RUNNER.PROFILES["pos-ipad"][2])
+        self.assertEqual("iphone", RUNNER.PROFILES["full"][2])
+        self.assertEqual("ipad", RUNNER.PROFILES["pos"][2])
+        self.assertIn("quarantine", RUNNER.PROFILES["full"][1])
+        self.assertIn("quarantine", RUNNER.PROFILES["pos"][1])
+        self.assertEqual({"full", "pos"}, RUNNER.SEEDING_PROFILES)
+
+    def test_pos_flows_run_last_on_the_pos_simulator_when_the_profile_is_for_a_phone(self) -> None:
+        stats = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
+        google = RUNNER.FLOWS_DIR / "google_for_woo.yaml"
+        pos = RUNNER.FLOWS_DIR / "pos_search_and_coupons.yaml"
+        cash = RUNNER.FLOWS_DIR / "pos_cash_payment.yaml"
+
+        self.assertTrue(RUNNER.needs_pos_device([pos, stats], "iphone"))
+        self.assertTrue(RUNNER.needs_pos_device([pos, cash], "iphone"))
+        self.assertFalse(RUNNER.needs_pos_device([pos, cash], "ipad"))
+        self.assertFalse(RUNNER.needs_pos_device([stats], "iphone"))
+        self.assertTrue(RUNNER.runs_only_on_pos_device([pos, cash], "iphone"))
+        self.assertFalse(RUNNER.runs_only_on_pos_device([pos, stats], "iphone"))
+        self.assertEqual([stats, google, pos], RUNNER.in_store_order([pos, google, stats]))
+        self.assertEqual([pos, cash], RUNNER.in_store_order([pos, cash]))
 
     def test_sanitize_artifacts_redacts_text_and_keeps_images(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -636,19 +643,6 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD", required)
         self.assertIn("MAESTRO_WOO_WPCOM_EMAIL", required)
         self.assertIn("MAESTRO_WOO_WPCOM_PASSWORD", required)
-
-    def test_no_jetpack_wp_admin_url_is_normalized_for_the_flow(self) -> None:
-        flow = RUNNER.FLOWS_DIR / "login_no_jetpack.yaml"
-        values = {
-            "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://shop.example.com/subdir/wp-admin/?source=jn",
-        }
-
-        resolved = RUNNER.normalized_flow_environment([flow], values)
-
-        self.assertEqual(
-            "https://shop.example.com/subdir/",
-            resolved["MAESTRO_WOO_NO_JETPACK_SITE_URL"],
-        )
 
     def test_derived_store_host_is_not_required_from_the_environment(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

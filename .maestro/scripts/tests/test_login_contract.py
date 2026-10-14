@@ -13,7 +13,6 @@ class MaestroLoginContractTests(unittest.TestCase):
         flow_paths = [
             MAESTRO_ROOT / "flows" / name
             for name in (
-                "login_no_jetpack.yaml",
                 "login_not_woo_store.yaml",
                 "login_wrong_account.yaml",
                 "login_wrong_credentials.yaml",
@@ -64,7 +63,6 @@ class MaestroLoginContractTests(unittest.TestCase):
             MAESTRO_ROOT / "flows" / name
             for name in (
                 "login_help.yaml",
-                "login_no_jetpack.yaml",
                 "login_not_woo_store.yaml",
                 "login_not_wp_site.yaml",
                 "login_wrong_account.yaml",

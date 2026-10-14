@@ -173,7 +173,7 @@ public final class TwoFAScreen {
     }
 
     private func hasAdvancedPastTwoFA() -> Bool {
-        myStoreTab.exists || app.staticTexts["Your WooCommerce Store"].exists
+        myStoreTab.exists || app.staticTexts["my-store-title"].exists
     }
 
     private func tapContinueButton() {

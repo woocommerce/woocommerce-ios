@@ -51,8 +51,12 @@ protocol Authentication {
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
                              credentials: AuthenticatorCredentials?,
+                             reportsLoginStep: Bool,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController?
+
+    /// Records whether the store picker about to present site discovery belongs to the login epilogue.
+    func noteSiteDiscoveryOrigin(isFromLogin: Bool)
 }
 
 extension Authentication {

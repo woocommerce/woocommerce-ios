@@ -91,7 +91,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         instructionLabel?.textColor = WordPressAuthenticator.shared.style.instructionColor
     }
 
-    func configureViewLoading(_ loading: Bool) {
+    public func configureViewLoading(_ loading: Bool) {
         configureSubmitButton(animating: loading)
         navigationItem.hidesBackButton = loading
     }
@@ -304,7 +304,6 @@ extension LoginViewController {
         // This stat is part of a funnel that provides critical information. Please
         // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn, properties: properties)
-        tracker.track(step: .success)
     }
 
     /// Links the current WordPress Account to a Social Service (if possible!!).

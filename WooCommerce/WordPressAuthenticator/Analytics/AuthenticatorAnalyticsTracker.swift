@@ -207,6 +207,10 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case noWooStores = "no_woo_stores"
 
+        /// The store picker put the account's sites on screen for the merchant to choose from.
+        ///
+        case siteList = "site_list"
+
         /// Jetpack is installed on the site but not connected to the signed-in account.
         ///
         case jetpackNotConnected = "jetpack_not_connected"

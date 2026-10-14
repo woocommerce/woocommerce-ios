@@ -3,6 +3,7 @@ import Yosemite
 
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
+import protocol Experiments.FeatureFlagService
 
 /// Provides view data for Add Attributes, and handles init/UI/navigation actions needed.
 ///
@@ -115,6 +116,12 @@ final class AddAttributeOptionsViewModel {
     ///
     private let allowsEditing: Bool
 
+    /// True when the screen is part of the flow that creates variations
+    ///
+    private let isVariationsFlow: Bool
+
+    private let isNonVariationAttributesEnabled: Bool
+
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
     ///
@@ -166,13 +173,17 @@ final class AddAttributeOptionsViewModel {
     init(product: Product,
          attribute: Attribute,
          allowsEditing: Bool = false,
+         isVariationsFlow: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          viewStorage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.product = product
         self.attribute = attribute
         self.state.currentAttributeName = attribute.name
         self.allowsEditing = allowsEditing
+        self.isVariationsFlow = isVariationsFlow
+        self.isNonVariationAttributesEnabled = featureFlagService.isFeatureFlagEnabled(.nonVariationProductAttributes)
         self.stores = stores
         self.viewStorage = viewStorage
         self.analytics = analytics
@@ -325,6 +336,7 @@ extension AddAttributeOptionsViewModel {
 
     /// Returns a product with its name and options updated with the new attribute to create.
     /// An attribute the product already has keeps its `position`, `visible` and `variation` values.
+    /// In the variations flow, the attribute is always used for variations.
     ///
     private func createUpdatedProduct() -> Product {
         let newOptions = state.selectedOptions.map { $0.name }
@@ -342,7 +354,7 @@ extension AddAttributeOptionsViewModel {
                                             name: newName,
                                             position: existingAttribute?.position ?? nextPosition,
                                             visible: existingAttribute?.visible ?? true,
-                                            variation: existingAttribute?.variation ?? true,
+                                            variation: isVariationsFlow || (existingAttribute?.variation ?? isNewAttributeUsedForVariations),
                                             options: newOptions)
 
         if let existingIndex {
@@ -352,6 +364,12 @@ extension AddAttributeOptionsViewModel {
         }
 
         return product.copy(attributes: attributes)
+    }
+
+    /// A new attribute is used for variations on variable products. Without non-variation attributes, every attribute is.
+    ///
+    private var isNewAttributeUsedForVariations: Bool {
+        !isNonVariationAttributesEnabled || product.productType == .variable || product.productType == .variableSubscription
     }
 
     /// Returns a product with the current attribute removed.

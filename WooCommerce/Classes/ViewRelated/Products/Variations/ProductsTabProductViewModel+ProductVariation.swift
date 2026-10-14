@@ -5,6 +5,7 @@ import WooFoundation
 extension ProductsTabProductViewModel {
     init(productVariationModel: EditableProductVariationModel,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        stockStatusKey = productVariationModel.stockStatus.rawValue
         imageUrl = productVariationModel.productVariation.image?.src
         name = productVariationModel.name
         detailsAttributedString = productVariationModel.createDetailsAttributedString(currencySettings: currencySettings)

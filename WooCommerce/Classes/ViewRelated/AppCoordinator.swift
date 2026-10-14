@@ -359,9 +359,12 @@ private extension AppCoordinator {
         // Show error for the current site URL if exists.
         if let siteURL = loggedOutAppSettings.errorLoginSiteAddress {
             if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
+               // A relaunch onto a stored error site is not a login: no `signed_in` fires, so
+               // reporting a login step here would inflate the funnel on every cold start.
                let errorController = authenticationManager.errorViewController(for: siteURL,
                                                                                with: matcher,
                                                                                credentials: nil,
+                                                                               reportsLoginStep: false,
                                                                                navigationController: authenticationUI,
                                                                                onStorePickerDismiss: {}) {
                 window.rootViewController = authenticationUI

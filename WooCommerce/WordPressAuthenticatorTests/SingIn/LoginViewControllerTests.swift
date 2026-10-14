@@ -351,6 +351,30 @@ class LoginViewControllerTests: XCTestCase {
         )
     }
 
+    func test_site_credentials_controller_when_host_resets_loading_then_restores_editable_fields_and_preserves_credentials() throws {
+        // Given
+        let controller = try makeSiteCredentialsController(delegate: WordPressAuthenticatorDelegateSpy())
+        let cells = try renderedCells(in: controller)
+        let username = try XCTUnwrap(cells[1] as? TextFieldTableViewCell)
+        let password = try XCTUnwrap(cells[2] as? TextFieldTableViewCell)
+        edit(username, text: "merchant")
+        edit(password, text: "secret")
+        controller.configureViewLoading(true)
+        XCTAssertFalse(username.textField.isEnabled)
+        XCTAssertFalse(password.textField.isEnabled)
+
+        // When
+        (controller as LoginViewController).configureViewLoading(false)
+
+        // Then
+        XCTAssertTrue(username.textField.isEnabled)
+        XCTAssertTrue(password.textField.isEnabled)
+        XCTAssertEqual(username.textField.text, "merchant")
+        XCTAssertEqual(password.textField.text, "secret")
+        XCTAssertEqual(controller.submitButton?.isEnabled, true)
+        XCTAssertFalse(controller.navigationItem.hidesBackButton)
+    }
+
     func test_site_credentials_controller_when_recovery_is_loading_then_disables_all_actions_until_loading_finishes() throws {
         // Given
         let delegate = WordPressAuthenticatorDelegateSpy()

@@ -118,11 +118,10 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         XCTAssertFalse(logs.joined().contains("private-nonce-value"))
     }
 
-    func test_handle_login_when_nonce_status_has_plain_error_text_then_retains_and_logs_sanitized_excerpt() async throws {
-        for (status, body, excerpt) in [(429, "Too Many Requests", "Too Many Requests"),
-                                        (503, "Service Unavailable", "Service Unavailable"),
-                                        (503, "The host temporarily blocked this request", "The host temporarily blocked this request"),
-                                        (503, "Service Unavailable password=private-password", "Service Unavailable password=[redacted]")] {
+    func test_handle_login_when_nonce_status_is_client_error_then_retains_and_logs_sanitized_excerpt() async throws {
+        for (status, body, excerpt) in [(403, "Forbidden", "Forbidden"),
+                                        (429, "Too Many Requests", "Too Many Requests"),
+                                        (429, "Too Many Requests password=private-password", "Too Many Requests password=[redacted]")] {
             // Given
             var logs = [String]()
 
@@ -138,6 +137,26 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
             XCTAssertEqual(logs.count, 1)
             XCTAssertTrue(logs.first?.contains("excerpt=\(excerpt)") == true)
             XCTAssertFalse(logs.joined().contains("private-password"))
+        }
+    }
+
+    func test_handle_login_when_nonce_status_is_server_error_then_does_not_retain_plain_text() async throws {
+        for status in [500, 503] {
+            // Given
+            var logs = [String]()
+            let nonce = "private-nonce-value"
+
+            // When
+            let error = try await responseFailure(at: .nonce, data: Data(nonce.utf8), statusCode: status,
+                                                 headers: ["Content-Type": "text/plain"], logUnexpectedResponse: { logs.append($0) })
+
+            // Then
+            guard case .unexpectedResponse(let failure) = error else { return XCTFail("Expected unexpected response") }
+            XCTAssertEqual(failure.statusCode, status)
+            XCTAssertEqual(failure.kind, .unacceptableStatusCode)
+            XCTAssertNil(failure.diagnostics?.excerpt)
+            XCTAssertEqual(logs.count, 1)
+            XCTAssertFalse(logs.joined().contains(nonce))
         }
     }
 

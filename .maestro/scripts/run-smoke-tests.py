@@ -1174,6 +1174,8 @@ def main() -> int:
     print(f"Report: {output / 'report.html'}")
     print(f"JUnit:  {output / 'report.xml'}")
     print(f"Simulator: {simulator['name']} ({simulator['udid']})")
+    if pos_simulator:
+        print(f"POS simulator: {pos_simulator['name']} ({pos_simulator['udid']})")
     print(f"Bundle identifier: {app_id}")
     print(
         f"Result: {passed} passed ({flaky} flaky), {failed} failed, {timed_out} timed out "

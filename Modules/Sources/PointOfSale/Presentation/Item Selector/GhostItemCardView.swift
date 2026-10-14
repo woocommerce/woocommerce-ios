@@ -3,7 +3,7 @@ import Shimmer
 
 struct GhostItemCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
-    @State private var viewWidth: CGFloat = 0.0
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding private var showProductImage: Bool
     private let configuration: GhostItemCardViewConfiguration
     private let accessory: AnyView?
@@ -31,7 +31,7 @@ struct GhostItemCardView: View {
         HStack(alignment: .center, spacing: Constants.cardSpacing) {
             placeholders
                 .foregroundStyle(Color.posOnSurfaceVariantLowest)
-                .shimmering()
+                .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Localization.loadingItemAccessibilityLabel)
 
             Spacer()
@@ -41,42 +41,31 @@ struct GhostItemCardView: View {
                     .padding(Constants.accessoryButtonPadding)
             }
         }
-        .measureWidth { width in
-            viewWidth = width
-        }
-        .frame(maxWidth: .infinity, idealHeight: dimension)
+        .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(configuration.backgroundColor)
         .posItemCardBorderStyles()
         .geometryGroup()
     }
 
-    @ViewBuilder var placeholders: some View {
+    private var placeholders: some View {
         HStack(alignment: .center, spacing: Constants.cardSpacing) {
             Rectangle()
-                .frame(maxWidth: dimension)
-                .aspectRatio(1, contentMode: .fill)
+                .fill(Color.posOnSurfaceVariantLowest.opacity(POSLoadingPlaceholderStyle.imageBaseOpacity))
+                .frame(width: dimension, height: dimension)
+                .shimmering(gradient: POSLoadingPlaceholderStyle.shimmerGradient)
                 .renderedIf(showProductImage)
-            VStack(alignment: .leading) {
-                Rectangle()
-                    .frame(maxWidth: viewWidth * configuration.topPlaceholderWidthMultiplier,
-                           maxHeight: configuration.placeholderHeight * min(scale, 1.5))
-                    .cornerRadius(Layout.cornerRadius)
-                Rectangle()
-                    .frame(maxWidth: viewWidth * configuration.bottomPlaceholderWidthMultiplier,
-                           maxHeight: configuration.placeholderHeight * min(scale, 1.5))
-                    .cornerRadius(Layout.cornerRadius)
+            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+                POSPlaceholderText(.redactedPlaceholder(length: dynamicTypeSize.isAccessibilitySize ? 9 : 24), font: configuration.titleFont)
+                POSPlaceholderText(configuration.detailPlaceholder(dynamicTypeSize), font: configuration.detailFont)
             }
-            .foregroundColor(.posOnSurfaceVariantLowest)
-            .padding(.horizontal, Constants.horizontalTextPadding)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
+            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
         }
     }
 }
 
 fileprivate typealias Constants = PointOfSaleItemListCardConstants
-
-fileprivate enum Layout {
-    static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
-}
 
 fileprivate enum Localization {
     static let loadingItemAccessibilityLabel = NSLocalizedString(
@@ -86,19 +75,19 @@ fileprivate enum Localization {
 }
 
 struct GhostItemCardViewConfiguration {
-    let placeholderHeight: CGFloat
+    let titleFont: POSFontStyle
+    let detailFont: POSFontStyle
+    let detailPlaceholder: (DynamicTypeSize) -> String
     let cardSize: CGFloat
     let maximumCardSize: CGFloat
-    let topPlaceholderWidthMultiplier: CGFloat
-    let bottomPlaceholderWidthMultiplier: CGFloat
     let backgroundColor: Color
 
     static let itemList = GhostItemCardViewConfiguration(
-        placeholderHeight: 32,
+        titleFont: Constants.itemTitleFont,
+        detailFont: Constants.itemDetailFont,
+        detailPlaceholder: { .redactedPlaceholder(length: $0.isAccessibilitySize ? 4 : 5) },
         cardSize: Constants.productCardSize,
         maximumCardSize: Constants.maximumProductCardSize,
-        topPlaceholderWidthMultiplier: 0.5,
-        bottomPlaceholderWidthMultiplier: 0.1,
         backgroundColor: Color.posSurfaceBright
     )
 }

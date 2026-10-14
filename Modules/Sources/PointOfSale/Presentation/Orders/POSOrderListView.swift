@@ -294,82 +294,43 @@ private struct POSOrderRowView: View {
 
 private struct POSGhostOrderRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var minHeight: CGFloat {
+        min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
+    }
+
+    private var isAccessibilitySize: Bool {
+        dynamicTypeSize.isAccessibilitySize
+    }
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack(alignment: .leading, spacing: POSSpacing.none) {
-                ghostHeaderRow(geometry: geometry)
-                    .padding(.bottom, POSSpacing.xSmall)
-                ghostDetailsColumn(geometry: geometry)
-                    .padding(.bottom, POSSpacing.xSmall * 3)
-                ghostBadgeRow(geometry: geometry)
+        // Sample lengths keep the order number and amount 1x, the date 3x, and the status 2x.
+        // Accessibility sizes use a shorter unit, so the number and amount stay apart.
+        let unit = isAccessibilitySize ? 3 : 7
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            HStack {
+                POSPlaceholderText(.redactedPlaceholder(length: unit), font: .posBodySmallBold())
+                Spacer()
+                POSPlaceholderText(.redactedPlaceholder(length: unit), font: .posBodySmallRegular())
             }
+            POSPlaceholderText(.redactedPlaceholder(length: unit * 3), font: .posBodySmallRegular())
+            // Reserves the loaded row's email line, so loading and loaded rows have the same height.
+            POSPlaceholderText(.redactedPlaceholder(length: 1), font: .posBodySmallRegular())
+                .hidden()
+            Spacer().frame(height: POSSpacing.xSmall)
+            // Caption text is narrower, so the status needs a longer sample for 2x width.
+            POSPlaceholderText(.redactedPlaceholder(length: unit * 16 / 7), font: .posCaptionRegular)
+                .padding(.vertical, POSPadding.xSmall)
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))
-        .frame(height: cardHeight)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: isAccessibilitySize ? nil : minHeight, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .geometryGroup()
         .accessibilityHidden(true)
     }
-
-    @ViewBuilder
-    private func ghostHeaderRow(geometry: GeometryProxy) -> some View {
-        HStack(alignment: .center) {
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: geometry.size.width * 0.25, height: GhostConstants.textLineHeight * scale)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                .shimmering()
-
-            Spacer()
-
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: geometry.size.width * 0.25, height: GhostConstants.textLineHeight * scale)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                .shimmering()
-        }
-        .frame(maxHeight: .infinity)
-    }
-
-    @ViewBuilder
-    private func ghostDetailsColumn(geometry: GeometryProxy) -> some View {
-        Rectangle()
-            .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: geometry.size.width * 0.4, height: GhostConstants.textLineHeight * scale)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .shimmering()
-            .frame(maxHeight: .infinity, alignment: .leading)
-    }
-
-    @ViewBuilder
-    private func ghostBadgeRow(geometry: GeometryProxy) -> some View {
-        Rectangle()
-            .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: geometry.size.width * 0.28, height: GhostConstants.badgeHeight * scale)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .shimmering()
-            .frame(maxHeight: .infinity)
-    }
-
-    private var cardHeight: CGFloat {
-        let headerHeight = GhostConstants.rowHeight * scale
-        let detailsHeight = GhostConstants.rowHeight * scale
-        let badgeHeight = GhostConstants.badgeRowHeight * scale
-        let fixedSpacing = POSSpacing.xSmall + POSSpacing.xSmall * 3
-        let fixedPadding = POSPadding.medium * (1 / scale) * 2
-        return headerHeight + detailsHeight + badgeHeight + fixedSpacing + fixedPadding
-    }
-}
-
-private enum GhostConstants {
-    static let textLineHeight: CGFloat = 16
-    static let rowHeight: CGFloat = 24
-    static let badgeHeight: CGFloat = 20
-    static let badgeRowHeight: CGFloat = 28
 }
 
 // MARK: - Search

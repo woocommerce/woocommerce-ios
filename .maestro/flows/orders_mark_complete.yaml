@@ -119,7 +119,7 @@ tags:
               id: order-status-list
           commands:
             - tapOn:
-                id: summary-table-view-cell-update-status-button
+                id: "order-status-(?!list|section).+"
             - waitForAnimationToEnd:
                 timeout: 5000
 - extendedWaitUntil:

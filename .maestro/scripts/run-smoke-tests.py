@@ -951,8 +951,9 @@ def main() -> int:
         )
         pos_simulator = None
     else:
-        simulator = resolve_simulator(args.device, family)
+        # Find the iPad first, so a missing one fails before the iPhone boots.
         pos_simulator = resolve_simulator(args.pos_device, "ipad", option="--pos-device") if needs_pos_device(flows, family) else None
+        simulator = resolve_simulator(args.device, family)
     if pos_simulator and pos_simulator["udid"] == simulator["udid"]:
         raise SystemExit("--pos-device must be a different simulator than --device")
     run_simulators = [simulator] + ([pos_simulator] if pos_simulator else [])

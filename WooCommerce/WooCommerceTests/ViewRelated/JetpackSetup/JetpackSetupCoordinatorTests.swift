@@ -347,6 +347,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginViewController.topViewController is WPComPasswordLoginHostingController)
     }
 
+    @MainActor
     func test_password_login_failure_when_credentials_are_incorrect_then_shows_the_server_error_message() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))

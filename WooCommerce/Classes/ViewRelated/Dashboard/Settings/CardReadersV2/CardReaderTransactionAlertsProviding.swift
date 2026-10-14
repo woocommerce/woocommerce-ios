@@ -9,14 +9,17 @@ protocol CardReaderTransactionAlertsProviding<AlertDetails> {
     associatedtype AlertDetails
     /// A cancellable alert indicating that we are checking the order at the start of a payment flow
     ///
+    @MainActor
     func validatingOrder(onCancel: @escaping () -> Void) -> AlertDetails
 
     /// A cancellable alert indicating we are preparing a reader to collect card details
     ///
+    @MainActor
     func preparingReader(onCancel: @escaping () -> Void) -> AlertDetails
 
     /// A cancellable alert indicating the reader is ready to collect card details
     ///
+    @MainActor
     func tapOrInsertCard(title: String,
                          amount: String,
                          inputMethods: CardReaderInput,
@@ -24,24 +27,29 @@ protocol CardReaderTransactionAlertsProviding<AlertDetails> {
 
     /// A cancellable alert indicating the reader card was inserted
     ///
+    @MainActor
     func cardInserted(title: String,
                       amount: String,
                       onCancel: @escaping () -> Void) -> AlertDetails
 
     /// An alert to display a message from a reader
     ///
+    @MainActor
     func displayReaderMessage(message: String) -> AlertDetails
 
     /// An alert to show that the transaction is being processed
     ///
+    @MainActor
     func processingTransaction(title: String) -> AlertDetails
 
     /// An alert to display successful transaction and provide options related to receipts
     ///
+    @MainActor
     func success(receiptState: CardReaderTransactionAlertReceiptState) -> AlertDetails
 
     /// An alert to display a retriable and cancellable error
     ///
+    @MainActor
     func error(error: Error,
                receiptState: CardReaderTransactionFailureAlertReceiptState,
                tryAgain: @escaping () -> Void,
@@ -49,16 +57,19 @@ protocol CardReaderTransactionAlertsProviding<AlertDetails> {
 
     /// An alert to display a non-retriable and cancellable error
     ///
+    @MainActor
     func nonRetryableError(error: Error,
                            receiptState: CardReaderTransactionFailureAlertReceiptState,
                            dismissCompletion: @escaping () -> Void) -> AlertDetails
 
     /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
     ///
+    @MainActor
     func cancelledOnReader() -> AlertDetails?
 
     /// An alert confirming that an app-initiated cancellation completed after native Tap to Pay UI was shown.
     ///
+    @MainActor
     func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> AlertDetails?
 }
 

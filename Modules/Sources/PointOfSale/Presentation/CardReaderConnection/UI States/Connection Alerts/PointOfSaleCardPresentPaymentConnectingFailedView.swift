@@ -22,6 +22,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
                         .font(POSFontStyle.posHeadingBold)
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityFocused($isTitleFocused)
+                        .accessibilityIdentifier("pos-reader-connection-failed-title")
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     if let errorDetails = viewModel.errorDetails {

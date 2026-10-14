@@ -10,19 +10,23 @@ protocol CardReaderConnectionAlertsProviding<AlertDetails> {
     associatedtype AlertDetails
     /// Defines a cancellable alert indicating we are searching for a reader
     ///
+    @MainActor
     func scanningForReader(cancel: @escaping () -> Void) -> AlertDetails
 
     /// Defines a cancellable (closeable) alert indicating the search failed
     ///
+    @MainActor
     func scanningFailed(error: Error, close: @escaping () -> Void) -> AlertDetails
 
     /// Defines a non-interactive alert indicating a connection is in progress to a particular reader
     ///
+    @MainActor
     func connectingToReader() -> AlertDetails
 
     /// Defines an alert indicating connecting failed. The user may continue the search
     /// or cancel
     ///
+    @MainActor
     func connectingFailed(error: Error,
                           retrySearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void) -> AlertDetails
@@ -30,12 +34,14 @@ protocol CardReaderConnectionAlertsProviding<AlertDetails> {
     /// Defines an alert indicating connecting failed, in a way which must be resolved outside
     /// the connection flow. The user can close the alert.
     ///
+    @MainActor
     func connectingFailedNonRetryable(error: Error,
                                       close: @escaping () -> Void) -> AlertDetails
 
     /// Defines an alert indicating connecting failed because their address needs updating.
     /// The user may try again or cancel
     ///
+    @MainActor
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
                                            showsInAuthenticatedWebView: Bool,
                                            openWCSettings: (() -> Void)?,
@@ -45,28 +51,34 @@ protocol CardReaderConnectionAlertsProviding<AlertDetails> {
     /// Defines an alert indicating connecting failed because their postal code needs updating.
     /// The user may try again or cancel
     ///
+    @MainActor
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> AlertDetails
 
     /// Defines an alert indicating an update couldn't be installed.
     ///
+    @MainActor
     func updatingFailed(tryAgain: (() -> Void)?, close: @escaping () -> Void) -> AlertDetails
 
     /// Shows progress when a software update is being installed
     ///
+    @MainActor
     func updateProgress(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) -> AlertDetails
 
+    @MainActor
     func selectSearchType(tapToPay: @escaping () -> Void,
                           bluetooth: @escaping () -> Void,
                           cancel: @escaping () -> Void) -> AlertDetails
 
     /// Shows a modal explaining the proceeding native iOS location alert
     ///
+    @MainActor
     func locationRequestPreAlert(requestPermission: @escaping () -> Void) -> AlertDetails
 
     /// Shows a modal requiring location permissions to proceed
     /// Cancellation will cancel the connection and payment flow.
     ///
+    @MainActor
     func locationRequired(cancel: @escaping () -> Void) -> AlertDetails
 }
 
@@ -80,6 +92,7 @@ protocol MultipleCardReaderConnectionAlertsProviding<AlertDetails> {
     /// Defines an interactive alert indicating a reader has been found. The user must
     /// choose to connect to that reader or continue searching
     ///
+    @MainActor
     func foundReader(name: String,
                      connect: @escaping () -> Void,
                      continueSearch: @escaping () -> Void,
@@ -108,11 +121,13 @@ protocol BatteryPoweredCardReaderConnectionAlertsProviding<AlertDetails> {
     /// Defines an alert indicating connecting failed because the reader battery is critically low.
     /// The user may try searching again (i.e. for a different reader) or cancel
     ///
+    @MainActor
     func connectingFailedCriticallyLowBattery(retrySearch: @escaping () -> Void,
                                               cancelSearch: @escaping () -> Void) -> AlertDetails
 
     /// Defines an alert indicating an update couldn't be installed because the reader is low on battery.
     ///
+    @MainActor
     func updatingFailedLowBattery(batteryLevel: Double?,
                                   retrySearch: @escaping () -> Void,
                                   close: @escaping () -> Void) -> AlertDetails

@@ -1,4 +1,4 @@
-# p2: products.list, products.pagination, products.sort, products.search
+# p2: products.list, products.sort, products.search
 # Prerequisite: at least three products with distinct names are visible.
 appId: ${APP_ID}
 name: "Products - List, sort, filters, and search"
@@ -21,7 +21,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:
@@ -36,7 +36,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:
@@ -51,7 +51,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:
@@ -93,7 +93,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:
@@ -127,7 +127,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:

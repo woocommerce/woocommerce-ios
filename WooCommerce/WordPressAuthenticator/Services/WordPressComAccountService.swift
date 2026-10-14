@@ -100,18 +100,7 @@ public class WordPressComAccountService {
 //
 extension WordPressComAccountService {
 
-    enum ServiceError: LocalizedError {
+    enum ServiceError: Error {
         case unknown
-
-        var errorDescription: String? {
-            switch self {
-            case .unknown:
-                NSLocalizedString(
-                    "wordpressComAccountService.serviceError.unknown",
-                    value: "Something went wrong. Please try again.",
-                    comment: "Generic error shown when checking a WordPress.com account or requesting a magic login link fails"
-                )
-            }
-        }
     }
 }

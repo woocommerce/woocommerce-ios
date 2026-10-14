@@ -106,15 +106,16 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             } onCancel: {
                 // Invalidate and freeze the current event synchronously, so no payment can start after
                 // cancellation and the step cancelled below is the one shown when the task was cancelled.
-                // Cancelling that step needs the main actor.
                 invalidatablePaymentOrchestrator.invalidatePayment()
                 self.isCancelled.withLock { $0 = true }
-                Task { @MainActor in
-                    switch self.latestPaymentEvent {
-                        case .show(let eventDetails):
-                            self.onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
-                        case .idle, .showOnboarding:
-                            return
+                // CardPresentPaymentService cancels from the main actor, so the step is cancelled inline there.
+                if Thread.isMainThread {
+                    MainActor.assumeIsolated {
+                        self.cancelCurrentStep(paymentOrchestrator: invalidatablePaymentOrchestrator)
+                    }
+                } else {
+                    Task { @MainActor in
+                        self.cancelCurrentStep(paymentOrchestrator: invalidatablePaymentOrchestrator)
                     }
                 }
             }
@@ -128,6 +129,15 @@ enum CardPresentPaymentAdaptedCollectOrderPaymentResult {
 }
 
 private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
+    func cancelCurrentStep(paymentOrchestrator: PaymentCaptureOrchestrating) {
+        switch latestPaymentEvent {
+        case .show(let eventDetails):
+            onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: paymentOrchestrator)
+        case .idle, .showOnboarding:
+            return
+        }
+    }
+
     func onCancel(paymentEventDetails: CardPresentPaymentEventDetails, paymentOrchestrator: PaymentCaptureOrchestrating) {
         switch paymentEventDetails {
             /// Before reader connection

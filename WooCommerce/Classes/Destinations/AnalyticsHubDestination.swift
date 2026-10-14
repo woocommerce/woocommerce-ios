@@ -8,7 +8,7 @@ import Yosemite
 /// default state and is used when the deep link arrives without resolvable parameters.
 ///
 enum AnalyticsHubDestination: DeepLinkDestinationProtocol {
-    case focusedCard(card: AnalyticsCard.CardType,
+    case focusedCard(card: AnalyticsCardType,
                      range: AnalyticsHubTimeRangeSelection.SelectionType)
     case defaultHub
 }

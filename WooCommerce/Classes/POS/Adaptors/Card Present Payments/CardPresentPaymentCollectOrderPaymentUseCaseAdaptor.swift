@@ -28,10 +28,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     func collectPaymentTask(for order: Order,
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
-                            preflightController: CardPresentPaymentPreflightController<
-                            CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
-                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
-                            CardPresentPaymentsAlertPresenterAdaptor>,
+                            preflightController: CardPresentPaymentPreflightControllerProtocol,
                             configuration: CardPresentPaymentsConfiguration,
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>,
@@ -51,6 +48,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 formattedAmount: formattedAmount,
                 rootViewController: NullViewControllerPresenting(),
                 configuration: configuration,
+                stores: stores,
                 paymentOrchestrator: invalidatablePaymentOrchestrator,
                 alertsPresenter: alertsPresenter,
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(showsTapToPayCancellationConfirmation: true),
@@ -99,22 +97,16 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                     )
                 }
             } onCancel: {
-                invalidatablePaymentOrchestrator.invalidatePayment()
-                switch latestPaymentEvent {
+                // CardPresentPaymentService owns the task and cancels it only on the main actor.
+                // Keep cancellation synchronous so cleanup finishes before a replacement payment starts.
+                MainActor.assumeIsolated {
+                    invalidatablePaymentOrchestrator.invalidatePayment()
+                    switch latestPaymentEvent {
                     case .show(let eventDetails):
-                        // The event's actions are main actor, but this handler runs on the thread that cancels the task.
-                        // `CardPresentPaymentService` cancels it on the main actor, so the actions normally run immediately.
-                        if Thread.isMainThread {
-                            MainActor.assumeIsolated {
-                                onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
-                            }
-                        } else {
-                            Task { @MainActor in
-                                onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
-                            }
-                        }
+                        onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
                     case .idle, .showOnboarding:
                         return
+                    }
                 }
             }
         }

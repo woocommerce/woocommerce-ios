@@ -9,7 +9,7 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
     var lastDownloadURL: URL?
     var lastSessionIdentifier: String?
     var lastAllowCellular: Bool?
-    var backgroundCompletionHandler: (() -> Void)?
+    var backgroundCompletionHandler: (@Sendable () -> Void)?
     var cancelCallCount = 0
     var lastCancelledSessionIdentifier: String?
     var reconnectSessionCallCount = 0
@@ -42,13 +42,13 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
         }
     }
 
-    func setBackgroundCompletionHandler(_ completionHandler: @escaping () -> Void) {
+    func setBackgroundCompletionHandler(_ completionHandler: @escaping @Sendable () -> Void) {
         backgroundCompletionHandler = completionHandler
     }
 
     func reconnectToSession(identifier sessionIdentifier: String,
                            allowCellular: Bool,
-                           completionHandler: @escaping () -> Void) async -> URL? {
+                           completionHandler: @escaping @Sendable () -> Void) async -> URL? {
         reconnectSessionCallCount += 1
         lastReconnectSessionIdentifier = sessionIdentifier
         setBackgroundCompletionHandler(completionHandler)

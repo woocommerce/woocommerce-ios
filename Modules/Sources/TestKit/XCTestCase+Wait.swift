@@ -127,10 +127,42 @@ extension XCTestCase {
         // `awaiting` is executed in a task closure so that the function can return whenever the expectation
         // is fulfilled before `awaiting` completes.
         Task { @MainActor in
-            try await awaiting(promise)
+            do {
+                try await awaiting(promise)
+            } catch {
+                XCTFail("`awaiting` threw an error: \(error)", file: file, line: line)
+            }
         }
 
         await fulfillment(of: [exp], timeout: timeout)
         return receivedValue!
+    }
+
+    /// Calls `body` with a `@Sendable` completion and returns the value passed to it.
+    /// Fails the test if the completion is not called within `timeout`.
+    ///
+    /// Example usage:
+    ///
+    /// ```
+    /// let result: Result<Site, Error> = try await waitForCompletion { completion in
+    ///     store.onAction(WordPressSiteAction.fetchSiteInfo(siteURL: siteURL, completion: completion))
+    /// }
+    /// ```
+    ///
+    @MainActor
+    public func waitForCompletion<ValueType>(file: StaticString = #filePath,
+                                             line: UInt = #line,
+                                             timeout: TimeInterval = 5.0,
+                                             _ body: (_ completion: @escaping @Sendable (ValueType) -> Void) -> Void) async throws -> ValueType {
+        let exp = expectation(description: "Expect completion to be called.")
+
+        nonisolated(unsafe) var receivedValue: ValueType?
+        body { value in
+            receivedValue = value
+            exp.fulfill()
+        }
+
+        await fulfillment(of: [exp], timeout: timeout)
+        return try XCTUnwrap(receivedValue, file: file, line: line)
     }
 }

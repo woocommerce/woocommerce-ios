@@ -801,6 +801,7 @@ private extension ProductsSection {
             }
         })
         .frame(maxWidth: .infinity)
+        .accessibilityIdentifier(OrderForm.Accessibility.addProductViaSKUScannerButtonIdentifier)
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {
@@ -822,6 +823,7 @@ private extension ProductsSection {
             }
         })
         .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)
+        .accessibilityIdentifier(OrderForm.Accessibility.addProductViaSKUScannerButtonIdentifier)
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {

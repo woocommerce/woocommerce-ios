@@ -63,7 +63,6 @@ extension POSSettingsView {
                                                    accessibilityIdentifier: "pos-settings-close-button"))
                 .posHeaderBackButtonIcon(systemName: "xmark")
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
                 VStack(spacing: POSSpacing.small) {
                     POSSettingsCard(title: SidebarNavigation.store.title,

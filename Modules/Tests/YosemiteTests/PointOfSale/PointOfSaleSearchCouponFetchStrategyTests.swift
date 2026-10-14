@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 @testable import Yosemite
 import class WooFoundation.CurrencySettings
 
+@MainActor
 struct PointOfSaleSearchCouponFetchStrategyTests {
     private let sut: PointOfSaleSearchCouponFetchStrategy
     private let couponStoreMethods: MockCouponStoreMethods

@@ -18,7 +18,7 @@ public protocol ProductVariationsRemoteProtocol {
                                pageNumber: Int,
                                pageSize: Int,
                                currency: String?) async throws -> [ProductVariation]
-    func loadVariationsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
                                       pageNumber: Int) async throws -> PagedItems<POSProductVariation>
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
@@ -100,7 +100,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///   - parentProductID: Product for which we'll fetch remote product variations.
     ///   - pageNumber: Number of page that should be retrieved.
     /// - Returns: Variations for the provided parent product.
-    public func loadVariationsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
                                              pageNumber: Int = Default.pageNumber) async throws -> PagedItems<POSProductVariation> {
         let request = productVariationsRequest(for: siteID,

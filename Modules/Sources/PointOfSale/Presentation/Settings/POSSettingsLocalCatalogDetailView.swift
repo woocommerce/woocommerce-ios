@@ -17,7 +17,6 @@ struct POSSettingsLocalCatalogDetailView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(title: Localization.localCatalogTitle)
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
@@ -27,7 +26,7 @@ struct POSSettingsLocalCatalogDetailView: View {
                     }
                     manualCatalogUpdate
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, POSPadding.medium)
             }
         }
         .background(Style.backgroundColor)

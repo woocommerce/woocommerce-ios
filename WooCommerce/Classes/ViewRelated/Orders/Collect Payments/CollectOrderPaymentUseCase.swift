@@ -134,7 +134,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
          preflightController: CardPresentPaymentPreflightControllerProtocol,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil,
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol? = nil,
          notificationCenter: NotificationCenter = .default,
          applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.siteID = siteID
@@ -152,7 +152,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                                                  analytics: ServiceLocator.analytics,
                                                                                  configuration: configuration,
                                                                                  orderDurationRecorder: orderDurationRecorder)
-        self.receiptEligibilityUseCase = receiptEligibilityUseCase
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase ?? ReceiptEligibilityUseCase()
         self.notificationCenter = notificationCenter
         self.applicationStateProvider = applicationStateProvider
     }
@@ -718,7 +718,8 @@ private extension CollectOrderPaymentUseCase {
                 receiptState: receiptState,
                 tryAgain: { [weak self] in
                     guard let self else { return }
-                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
+                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
+                        guard let self else { return }
                         switch result {
                         case .failure(let error):
                             return self.checkThenHandlePaymentFailureAndRetryPayment(error,
@@ -1047,7 +1048,9 @@ private extension CollectOrderPaymentUseCase {
         noReceiptAction: @escaping () -> Void,
         paymentMethod: PaymentMethod?,
         completion: @escaping (CardReaderTransactionAlertReceiptState) -> Void) {
-        receiptEligibilityUseCase.isEligibleForSuccessfulPaymentEmailReceipts { isEligibleSendingReceiptAfterPayment in
+        // Capture `self` strongly on purpose: `onPaymentCompletion` is called before this callback runs, and POS releases the
+        // use case once the payment completes, so a weak capture would skip the success alert that ends the POS payment flow.
+        receiptEligibilityUseCase.isEligibleForSuccessfulPaymentEmailReceipts { [self] isEligibleSendingReceiptAfterPayment in
             let receiptState: CardReaderTransactionAlertReceiptState
 
             if let email = self.order.billingAddress?.email, email.isNotEmpty {

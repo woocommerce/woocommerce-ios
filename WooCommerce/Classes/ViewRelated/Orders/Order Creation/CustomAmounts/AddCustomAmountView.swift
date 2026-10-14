@@ -43,6 +43,7 @@ struct AddCustomAmountView: View {
                     TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
                         .secondaryTitleStyle()
                         .foregroundColor(Color(.textSubtle))
+                        .accessibilityIdentifier(AccessibilityIdentifiers.customAmountNameField)
                         .focused($focusedField, equals: .name)
                         .onChange(of: focusedField) { _, focusedField in
                             guard focusedField == .name else { return }
@@ -141,5 +142,6 @@ private extension AddCustomAmountView {
     enum AccessibilityIdentifiers {
         static let addCustomAmountButton = "order-add-custom-amount-view-add-custom-amount-button"
         static let deleteCustomAmountButton = "order-add-custom-amount-view-delete-custom-amount-button"
+        static let customAmountNameField = "order-add-custom-amount-name-field"
     }
 }

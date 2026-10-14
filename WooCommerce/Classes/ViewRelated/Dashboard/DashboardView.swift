@@ -137,6 +137,7 @@ struct DashboardView: View {
                             }
                         }
                 })
+                .accessibilityIdentifier("dashboard-edit-button")
                 .disabled(viewModel.isReloadingAllData)
             }
         }

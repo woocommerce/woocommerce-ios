@@ -3,6 +3,12 @@ import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 
 /// Analytics dimensions for an unexpected response during login.
 struct LoginUnexpectedResponseFailure: Equatable {
+    enum Action: String {
+        case retry
+        case contactSupport = "contact_support"
+        case dismiss
+    }
+
     enum LoginFlow: String {
         case siteCredentials = "site_credentials"
         case appPassword = "app_password"

@@ -7,6 +7,7 @@ import Yosemite
 import SwiftUI
 import WooFoundationCore
 
+@MainActor
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
 }
@@ -43,10 +44,10 @@ final class SettingsViewController: UIViewController {
 
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
-    init(viewModel: ViewModel = SettingsViewModel(),
+    init(viewModel: ViewModel? = nil,
          stores: StoresManager = ServiceLocator.stores,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
-        self.viewModel = viewModel
+        self.viewModel = viewModel ?? SettingsViewModel()
         self.stores = stores
         self.pushNotesManager = pushNotesManager
         super.init(nibName: nil, bundle: nil)

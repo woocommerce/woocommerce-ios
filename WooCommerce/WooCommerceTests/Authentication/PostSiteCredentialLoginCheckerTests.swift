@@ -146,6 +146,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
                 XCTAssertFalse(fixture.form.navigationItem.hidesBackButton)
                 XCTAssertTrue(fixture.navigation.viewControllers.first === fixture.form)
                 XCTAssertEqual(fixture.navigation.viewControllers.count, action == .dismiss ? 1 : 2)
+                XCTAssertEqual(fixture.navigation.lastPopToViewControllerAnimated, action == .dismiss)
                 if action == .contactSupport { XCTAssertTrue(fixture.navigation.topViewController is SupportChatHostingController) }
                 XCTAssertFalse(fixture.provider.receivedEvents.contains(WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue))
                 XCTAssertEqual(fixture.password.generationCallCount, 1)
@@ -620,9 +621,15 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
 private final class DeferredPostLoginPresenter: UINavigationController {
     var presentationCompletion: (() -> Void)?
     var alert: UIAlertController?
+    private(set) var lastPopToViewControllerAnimated: Bool?
 
     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
         presentationCompletion = completion
         alert = viewControllerToPresent as? UIAlertController
+    }
+
+    override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
+        lastPopToViewControllerAnimated = animated
+        return super.popToViewController(viewController, animated: false)
     }
 }

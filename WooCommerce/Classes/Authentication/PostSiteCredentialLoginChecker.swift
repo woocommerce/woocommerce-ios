@@ -253,11 +253,11 @@ private extension PostSiteCredentialLoginChecker {
                 unexpectedResponsePresenter.present(failure: failure, flow: loginFlow, from: navigationController, onRetry: onRetry,
                                                     onDismiss: { [weak self] in
                     self?.cancel()
-                    self?.restorePreviousViewController(in: navigationController)
+                    self?.restorePreviousViewController(in: navigationController, animated: true)
                 }, onContactSupport: { [weak self] in
                     self?.cancel()
                     // Logging out replaces the navigation stack, which would discard the support chat.
-                    self?.restorePreviousViewController(in: navigationController)
+                    self?.restorePreviousViewController(in: navigationController, animated: false)
                 })
                 return
             }
@@ -290,10 +290,10 @@ private extension PostSiteCredentialLoginChecker {
     }
 
     @MainActor
-    func restorePreviousViewController(in navigationController: UINavigationController) {
+    func restorePreviousViewController(in navigationController: UINavigationController, animated: Bool) {
         if let previousViewController, navigationController.viewControllers.contains(previousViewController) {
             (previousViewController as? LoginViewController)?.configureViewLoading(false)
-            navigationController.popToViewController(previousViewController, animated: false)
+            navigationController.popToViewController(previousViewController, animated: animated)
         }
     }
 

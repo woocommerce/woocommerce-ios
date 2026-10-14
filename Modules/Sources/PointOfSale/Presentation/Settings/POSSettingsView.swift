@@ -64,35 +64,14 @@ extension POSSettingsView {
                 .foregroundColor(.posSurface)
 
                 VStack(spacing: POSSpacing.small) {
-                    POSSettingsCard(title: SidebarNavigation.store.title,
-                                    subtitle: SidebarNavigation.store.subtitle,
-                                    isSelected: selection == .store,
-                                    action: {
-                        analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
-                        selection = .store
-                    })
-                    POSSettingsCard(title: SidebarNavigation.hardware.title,
-                                    subtitle: SidebarNavigation.hardware.subtitle,
-                                    isSelected: selection == .hardware,
-                                    action: {
-                        analytics.track(.pointOfSaleSettingsHardwareTapped)
-                        selection = .hardware
-                    })
+                    categoryCard(.store)
+                    categoryCard(.hardware)
+                    categoryCard(.payments)
                     if settingsController.isLocalCatalogEligible {
-                        POSSettingsCard(title: SidebarNavigation.localCatalog.title,
-                                        subtitle: SidebarNavigation.localCatalog.subtitle,
-                                        isSelected: selection == .localCatalog,
-                                        action: {
-                            selection = .localCatalog
-                        })
+                        categoryCard(.localCatalog)
                     }
                     if isStaffSectionVisible {
-                        POSSettingsCard(title: SidebarNavigation.staff.title,
-                                        subtitle: SidebarNavigation.staff.subtitle,
-                                        isSelected: selection == .staff,
-                                        action: {
-                            selection = .staff
-                        })
+                        categoryCard(.staff)
                     }
                     Spacer()
 
@@ -108,10 +87,20 @@ extension POSSettingsView {
             settingsController.staffSettingsService != nil
         }
 
+        private func categoryCard(_ category: SidebarNavigation) -> some View {
+            POSSettingsCard(title: category.title,
+                            subtitle: category.subtitle,
+                            isSelected: selection == category,
+                            action: {
+                category.trackSelection(with: analytics)
+                selection = category
+            })
+        }
+
         @ViewBuilder
         private var helpView: some View {
             Button {
-                analytics.track(.pointOfSaleSettingsHelpTapped)
+                SidebarNavigation.help.trackSelection(with: analytics)
                 selection = .help
             } label: {
                 HStack(spacing: POSSpacing.small) {
@@ -143,6 +132,9 @@ extension POSSettingsView {
                                        requestEditPermission: requestEditPermission)
         case .hardware:
             POSSettingsHardwareDetailView(settingsController: settingsController, navigationPath: navigationPath)
+        case .payments:
+            POSSettingsPaymentsDetailView(viewModel: settingsController.paymentsViewModel,
+                                          requestEditPermission: requestEditPermission)
         case .localCatalog:
             if let viewModel = settingsController.localCatalogViewModel {
                 POSSettingsLocalCatalogDetailView(viewModel: viewModel,
@@ -167,6 +159,7 @@ extension POSSettingsView {
     enum SidebarNavigation: String, CaseIterable, Identifiable {
         case store
         case hardware
+        case payments
         case localCatalog
         case staff
         case help
@@ -177,6 +170,7 @@ extension POSSettingsView {
             switch self {
             case .store: return Localization.sidebarNavigationStoreTitle
             case .hardware: return Localization.sidebarNavigationHardwareTitle
+            case .payments: return Localization.sidebarNavigationPaymentsTitle
             case .localCatalog: return Localization.sidebarNavigationLocalCatalogTitle
             case .staff: return Localization.sidebarNavigationStaffTitle
             case .help: return Localization.sidebarNavigationHelpTitle
@@ -187,6 +181,7 @@ extension POSSettingsView {
             switch self {
             case .store: return Localization.sidebarNavigationStoreSubtitle
             case .hardware: return Localization.sidebarNavigationHardwareSubtitle
+            case .payments: return Localization.sidebarNavigationPaymentsSubtitle
             case .localCatalog: return Localization.sidebarNavigationLocalCatalogSubtitle
             case .staff: return Localization.sidebarNavigationStaffSubtitle
             case .help: return Localization.sidebarNavigationHelpSubtitle
@@ -195,10 +190,20 @@ extension POSSettingsView {
 
         var icon: String? {
             switch self {
-            case .store, .hardware, .localCatalog, .staff:
+            case .store, .hardware, .payments, .localCatalog, .staff:
                 return nil
             case .help:
                 return "questionmark.circle"
+            }
+        }
+
+        func trackSelection(with analytics: POSAnalyticsProviding) {
+            switch self {
+            case .store: analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
+            case .hardware: analytics.track(.pointOfSaleSettingsHardwareTapped)
+            case .payments: analytics.track(.pointOfSaleSettingsPaymentsTapped)
+            case .help: analytics.track(.pointOfSaleSettingsHelpTapped)
+            case .localCatalog, .staff: break
             }
         }
     }
@@ -252,6 +257,18 @@ extension POSSettingsView {
             "pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle",
             value: "Manage hardware connections",
             comment: "Description of the settings to be found within the Hardware section."
+        )
+
+        static let sidebarNavigationPaymentsTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationPaymentsTitle",
+            value: "Payments",
+            comment: "Title of the Payments section within Point of Sale settings."
+        )
+
+        static let sidebarNavigationPaymentsSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle",
+            value: "Manage payment settings",
+            comment: "Description of the settings to be found within the Payments section."
         )
 
         static let sidebarNavigationLocalCatalogTitle = NSLocalizedString(

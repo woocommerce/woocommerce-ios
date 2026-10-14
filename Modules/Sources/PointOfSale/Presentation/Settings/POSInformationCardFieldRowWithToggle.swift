@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// A row with a label, a description and a trailing switch. Tapping anywhere on the row toggles the switch,
+/// and the row is presented to accessibility as a single switch.
 struct POSInformationCardFieldRowWithToggle: View {
     let label: String
     let value: String
@@ -18,20 +20,35 @@ struct POSInformationCardFieldRowWithToggle: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSPadding.small) {
-            HStack(alignment: .center, spacing: POSSpacing.medium) {
-                VStack(alignment: .leading, spacing: POSPadding.small) {
-                    Text(label)
-                        .font(.posBodyMediumBold)
-                    Text(value)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
+            Button {
+                isOn.toggle()
+            } label: {
+                HStack(alignment: .center, spacing: POSSpacing.medium) {
+                    VStack(alignment: .leading, spacing: POSPadding.small) {
+                        Text(label)
+                            .font(.posBodyMediumBold)
+                        Text(value)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Spacer()
+
+                    Toggle("", isOn: $isOn)
+                        .labelsHidden()
+                        .toggleStyle(SwitchToggleStyle())
+                        .tint(Color.posPrimaryContainer)
+                        // The row handles the tap, so the switch must not toggle a second time.
+                        .allowsHitTesting(false)
                 }
-
-                Spacer()
-
-                Toggle("", isOn: $isOn)
-                    .toggleStyle(SwitchToggleStyle())
-                    .tint(Color.posPrimaryContainer)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityRepresentation {
+                Toggle(isOn: $isOn) {
+                    Text(label)
+                    Text(value)
+                }
             }
 
             if showSeparator {

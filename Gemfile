@@ -11,7 +11,7 @@ end
 
 gem 'danger-dangermattic', '~> 1.4'
 gem 'dotenv'
-gem 'fastlane', '~> 2.240'
+gem 'fastlane', '~> 2.241'
 gem 'fastlane-plugin-firebase_app_distribution', '~> 1.0'
 gem 'fastlane-plugin-sentry', '~> 2.8'
 # gem 'fastlane-plugin-wpmreleasetoolkit', git: 'git@github.com:wordpress-mobile/release-toolkit', branch: ''
@@ -23,6 +23,6 @@ gem 'fastlane-plugin-wpmreleasetoolkit', '~> 15.1'
 # See https://github.com/ruby/openssl/issues/949
 gem 'openssl', '~> 4.0'
 gem 'rake', '~> 13.4'
-gem 'rubocop', '~> 1.91'
+gem 'rubocop', '~> 1.92'
 gem 'rubocop-rake', '~> 0.6'
 gem 'xcode-install'

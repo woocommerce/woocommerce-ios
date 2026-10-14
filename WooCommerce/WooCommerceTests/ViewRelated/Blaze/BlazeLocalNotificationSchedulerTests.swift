@@ -431,7 +431,10 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 private extension BlazeLocalNotificationSchedulerTests {
     /// Polls `condition` on the main actor, so main actor tests don't hand it to a nonisolated wait helper.
     @MainActor
-    func waitOnMainActor(timeout: Duration = .seconds(5), until condition: () -> Bool) async {
+    func waitOnMainActor(timeout: Duration = .seconds(5),
+                         file: StaticString = #filePath,
+                         line: UInt = #line,
+                         until condition: () -> Bool) async {
         let deadline = ContinuousClock.now + timeout
         while !condition() && ContinuousClock.now < deadline {
             do {
@@ -440,7 +443,7 @@ private extension BlazeLocalNotificationSchedulerTests {
                 break
             }
         }
-        XCTAssertTrue(condition())
+        XCTAssertTrue(condition(), file: file, line: line)
     }
 
     func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {

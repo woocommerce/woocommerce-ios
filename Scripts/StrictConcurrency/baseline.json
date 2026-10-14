@@ -201,7 +201,7 @@
     "WooCommerce/Classes/Authentication/Epilogue/AccountHeaderView.swift": 2,
     "WooCommerce/Classes/Authentication/Epilogue/EditStoreList/EditStoreListViewModel.swift": 2,
     "WooCommerce/Classes/Authentication/Epilogue/EmptyStoresTableViewCell.swift": 2,
-    "WooCommerce/Classes/Authentication/Epilogue/StorePickerCoordinator.swift": 10,
+    "WooCommerce/Classes/Authentication/Epilogue/StorePickerCoordinator.swift": 15,
     "WooCommerce/Classes/Authentication/Epilogue/StoreTableViewCell.swift": 4,
     "WooCommerce/Classes/Authentication/Epilogue/SwitchStoreUseCase.swift": 1,
     "WooCommerce/Classes/Authentication/Jetpack Setup/JetpackConnectionService.swift": 2,

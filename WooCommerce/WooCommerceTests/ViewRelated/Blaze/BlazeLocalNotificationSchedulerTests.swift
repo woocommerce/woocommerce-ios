@@ -355,6 +355,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 
     // MARK: User response
 
+    @MainActor
     func test_it_observes_abandoned_creation_notification_and_updates_user_defaults() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -378,6 +379,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_observes_no_campaign_notification_and_updates_user_defaults() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -401,6 +403,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_triggers_store_switching_when_handling_user_response_to_local_notifcations() throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)

@@ -62,12 +62,14 @@ final class StorePickerCoordinator: Coordinator {
 //
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
+    @MainActor
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         switchStore(with: storeID, onCompletion: onCompletion)
     }
 
     /// Shows a Role Error page using the provided error information.
     /// The error page is pushed to the navigation stack so the user is not locked out, and can go back to select another store.
+    @MainActor
     func showRoleErrorScreen(for siteID: Int64, errorInfo: StorageEligibilityErrorInfo, onCompletion: @escaping SelectStoreClosure) {
         let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: self.roleEligibilityUseCase)
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
@@ -90,6 +92,7 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
         topNavigationController.show(errorViewController, sender: self)
     }
 
+    @MainActor
     func restartAuthentication() {
         navigationController.dismiss(animated: false) { [weak self] in
             ServiceLocator.stores.deauthenticate()
@@ -122,6 +125,7 @@ private extension StorePickerCoordinator {
 
     /// Switches the current user's default store to the one having the provided `storeID`.
     /// After successfully switching, the store picker screen should be dismissed.
+    @MainActor
     func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
             guard let self else { return }

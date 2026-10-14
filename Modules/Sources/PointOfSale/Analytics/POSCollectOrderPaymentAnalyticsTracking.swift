@@ -8,19 +8,19 @@ public protocol POSCollectOrderPaymentAnalyticsTracking {
     func trackCardReaderReady()
     func trackCardReaderTapped()
     func trackCheckoutTapped()
-    func captureCashSuccess() -> @MainActor (POSPaymentAnalyticsOrder) -> Void
+    @MainActor func captureCashSuccess() -> @MainActor (POSPaymentAnalyticsOrder) -> Void
     func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder)
     func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder)
     func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder)
 }
 
 public extension POSCollectOrderPaymentAnalyticsTracking {
-    func captureCashSuccess() -> @MainActor (POSPaymentAnalyticsOrder) -> Void {
+    @MainActor func captureCashSuccess() -> @MainActor (POSPaymentAnalyticsOrder) -> Void {
         { order in self.trackSuccessfulCashPayment(order: order) }
     }
 }
 
-public enum POSCheckoutCatalogStrategy: String {
+public enum POSCheckoutCatalogStrategy: String, Sendable {
     case localCatalog = "local_catalog"
     case remote
     case unknown

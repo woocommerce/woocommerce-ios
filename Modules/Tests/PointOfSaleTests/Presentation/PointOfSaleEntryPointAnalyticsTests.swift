@@ -50,7 +50,7 @@ struct PointOfSaleEntryPointAnalyticsTests {
         #expect(tracker.catalogSyncStrategy == selection.expected)
     }
 
-    struct Selection {
+    struct Selection: Sendable {
         let eligible: Bool
         let hasDatabase: Bool
         let hasCoordinator: Bool

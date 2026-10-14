@@ -62,27 +62,6 @@ steps:
           context: Strict Concurrency Baseline Guard
 
   #################
-  # Create Prototype Build
-  #################
-  - group: ":rocket: Prototype Build"
-    # Prototype Builds are on-demand on `trunk`, but always built on PRs
-    steps:
-      - input: Create Prototype Build?
-        prompt: Share a Prototype Build via Firebase App Distribution?
-        key: prototype_build_triggered
-        if: build.branch == "trunk"
-      - label: ":firebase: Prototype Build"
-        # Buildkite considers this implicitly satisfied if the `depends_on` step is skipped due to `if:` condition. So this will run unconditionally on PRs
-        # https://buildkite.com/docs/pipelines/configure/dependencies#how-skipped-steps-affect-dependencies
-        depends_on: prototype_build_triggered
-        if: build.pull_request.id != null || build.branch == "trunk"
-        command: .buildkite/commands/prototype-build.sh
-        plugins: [$CI_TOOLKIT]
-        notify:
-          - github_commit_status:
-              context: Prototype Build
-
-  #################
   # Run Unit Tests
   #################
   - label: ":microscope: Unit Tests"
@@ -224,3 +203,24 @@ steps:
     command: .buildkite/commands/upload-claude-analysis.sh
     agents:
       queue: upload
+
+  #################
+  # Create Prototype Build
+  #################
+  # Keep optional work after the wait so failure analysis can finish without a prototype.
+  - group: ":rocket: Prototype Build"
+    steps:
+      - input: Create Prototype Build?
+        prompt: Share this commit via Firebase App Distribution?
+        key: prototype_build_triggered
+        if: build.pull_request.id != null || build.branch == "trunk"
+        # The overall Buildkite status is required for merging PRs.
+        blocked_state: passed
+      - label: ":firebase: Prototype Build"
+        depends_on: prototype_build_triggered
+        if: build.pull_request.id != null || build.branch == "trunk"
+        command: .buildkite/commands/prototype-build.sh
+        plugins: [$CI_TOOLKIT]
+        notify:
+          - github_commit_status:
+              context: Prototype Build

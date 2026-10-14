@@ -125,7 +125,7 @@ private extension StorePickerCoordinator {
     func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         // The switch store use case is main actor, but this coordinator is also driven from the
         // authenticator's nonisolated callbacks, which run on the main thread.
-        // TODO: WOOMOB-4179 - call switchStoreOnMainActor directly once the authentication entry points are isolated.
+        // TODO: WOOMOB-4327 - call switchStoreOnMainActor directly once its callers are main actor.
         if Thread.isMainThread {
             MainActor.assumeIsolated {
                 switchStoreOnMainActor(with: storeID, onCompletion: onCompletion)

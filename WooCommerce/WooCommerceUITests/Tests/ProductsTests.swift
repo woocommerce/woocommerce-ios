@@ -59,7 +59,7 @@ final class ProductsTests: XCTestCase {
 
         try TabNavComponent().goToProductsScreen()
             .tapFilterButton()
-            .setStockStatusFilterAs("Out of stock")
-            .verifyProductFilterResults(products: products, filter: "Out of stock" )
+            .setStockStatusFilterAs("outofstock")
+            .verifyProductFilterResults(products: products, filter: "outofstock" )
     }
 }

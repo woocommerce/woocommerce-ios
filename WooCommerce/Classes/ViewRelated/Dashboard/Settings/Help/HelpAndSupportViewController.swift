@@ -354,9 +354,9 @@ private extension HelpAndSupportViewController {
             comment: "Title for the support chat history row on the Help screen"
         )
         cell.detailTextLabel?.text = NSLocalizedString(
-            "helpAndSupport.chatHistory.subtitle",
-            value: "Revisit past support conversations",
-            comment: "Subtitle for the support chat history row on the Help screen"
+            "helpAndSupport.chatHistory.aiChatsSubtitle",
+            value: "Revisit past AI support chats",
+            comment: "Subtitle for the AI support chat history row on the Help screen"
         )
     }
 
@@ -490,7 +490,7 @@ private extension HelpAndSupportViewController {
         let initialContext: RequestParameterDictionary? = loginSiteURL.map {
             ["site_url": .string($0.absoluteString)]
         }
-        var viewModelHolder: SupportChatViewModel?
+        weak var viewModelHolder: SupportChatViewModel?
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
             initialContext: initialContext,
@@ -502,7 +502,7 @@ private extension HelpAndSupportViewController {
                                           entryPoint: entryPoint,
                                           siteAddress: loginSiteURL?.absoluteString,
                                           hasReceivedBotResponse: hasReceivedBotResponse,
-                                          onTicketCreated: { [weak viewModelHolder] in
+                                          onTicketCreated: {
                     viewModelHolder?.markChatTicketCreated()
                 })
             }
@@ -548,7 +548,7 @@ private extension HelpAndSupportViewController {
     /// Pushes the support chat UI seeded with a prior `chatID` so the conversation
     /// continues on the assistant's side when the merchant sends the next message.
     private func resumeChat(for summary: SupportChatSummary) {
-        var viewModelHolder: SupportChatViewModel?
+        weak var viewModelHolder: SupportChatViewModel?
         let chatViewModel = SupportChatViewModel(
             botSlug: summary.botSlug,
             entryPoint: .chatHistory,
@@ -563,7 +563,7 @@ private extension HelpAndSupportViewController {
                                           supportAreaInfo: supportAreaInfo,
                                           entryPoint: entryPoint,
                                           hasReceivedBotResponse: hasReceivedBotResponse,
-                                          onTicketCreated: { [weak viewModelHolder] in
+                                          onTicketCreated: {
                     viewModelHolder?.markChatTicketCreated()
                 })
             }

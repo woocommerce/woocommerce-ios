@@ -1,14 +1,15 @@
 import SwiftUI
 import StoreDesignSystem
 import struct Yosemite.BlazeBillingSummary
+import typealias Yosemite.BlazeBillingSummaryPaymentLink
 
 /// Notice about the outstanding Blaze balance, listing the unpaid orders with links to pay them.
 struct BlazeOutstandingBalanceView: View {
     private let summary: BlazeBillingSummary
-    private let onPay: (BlazeBillingSummary.PaymentLink) -> Void
+    private let onPay: (BlazeBillingSummaryPaymentLink) -> Void
 
     init(summary: BlazeBillingSummary,
-         onPay: @escaping (BlazeBillingSummary.PaymentLink) -> Void) {
+         onPay: @escaping (BlazeBillingSummaryPaymentLink) -> Void) {
         self.summary = summary
         self.onPay = onPay
     }
@@ -35,7 +36,7 @@ struct BlazeOutstandingBalanceView: View {
 }
 
 private extension BlazeOutstandingBalanceView {
-    func paymentLinkRow(_ paymentLink: BlazeBillingSummary.PaymentLink) -> some View {
+    func paymentLinkRow(_ paymentLink: BlazeBillingSummaryPaymentLink) -> some View {
         HStack(spacing: StoreSpacing.s4) {
             VStack(alignment: .leading, spacing: StoreSpacing.s1) {
                 if let date = paymentLink.date {

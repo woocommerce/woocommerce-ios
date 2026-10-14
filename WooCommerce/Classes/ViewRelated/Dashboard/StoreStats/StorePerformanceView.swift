@@ -133,6 +133,7 @@ private extension StorePerformanceView {
             AdaptiveStack(horizontalAlignment: .leading) {
                 Text(viewModel.timeRange.isCustomTimeRange ?
                      Localization.custom : viewModel.timeRange.tabTitle)
+                    .accessibilityIdentifier("performance-\(viewModel.timeRange.menuAccessibilityIdentifier)")
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
                 if viewModel.timeRange.isCustomTimeRange {

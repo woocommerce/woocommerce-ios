@@ -403,7 +403,11 @@ class AuthenticationManager: Authentication {
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")
-            return accountMismatchUI(for: siteURL, siteCredentials: credentials?.wporg, with: matcher, in: navigationController)
+            return accountMismatchUI(for: siteURL,
+                                     siteCredentials: credentials?.wporg,
+                                     with: matcher,
+                                     reportsLoginStep: reportsLoginStep,
+                                     in: navigationController)
         }
 
         /// No Woo found
@@ -710,6 +714,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         useCase.handleLogin(username: credentials.username, password: credentials.password)
     }
 
+    @MainActor
     func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
         presentAppPasswordTutorial(error: SiteCredentialLoginError.inaccessibleLoginPage, for: siteURL, in: viewController)
     }
@@ -745,11 +750,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     private func cancelSiteCredentialLoginAttempt() {
+        postSiteCredentialLoginChecker?.cancel()
         credentialAttemptID = UUID()
         siteCredentialLoginUseCase?.cancel()
         siteCredentialLoginUseCase = nil
     }
 
+    @MainActor
     func handleSiteCredentialLoginFailure(error: Error,
                                           for siteURL: String,
                                           in viewController: UIViewController) {
@@ -1185,10 +1192,12 @@ private extension AuthenticationManager {
     func accountMismatchUI(for siteURL: String,
                            siteCredentials: WordPressOrgCredentials?,
                            with matcher: ULAccountMatcher,
+                           reportsLoginStep: Bool = false,
                            in navigationController: UINavigationController) -> UIViewController {
         let viewModel = WrongAccountErrorViewModel(siteURL: siteURL,
                                                    showsConnectedStores: matcher.hasConnectedStores,
                                                    siteCredentials: siteCredentials,
+                                                   reportsLoginStep: reportsLoginStep,
                                                    onJetpackSetupCompletion: { email, xmlrpc in
             WordPressAuthenticator.showVerifyEmailForWPCom(
                 from: navigationController,
@@ -1229,10 +1238,12 @@ private extension AuthenticationManager {
 
     /// Web view to authorize application password for a given site.
     ///
+    @MainActor
     func applicationPasswordWebView(for siteURL: String, previousVC: UIViewController?) -> UIViewController {
         let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
         let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel,
                                                                            previousViewController: previousVC,
+                                                                           onCancel: { [weak self] in self?.postSiteCredentialLoginChecker?.cancel() },
                                                                            onSuccess: { [weak self] applicationPassword, navigationController in
             guard let navigationController else {
                 DDLogInfo("⚠️ No navigation controller found")
@@ -1241,20 +1252,22 @@ private extension AuthenticationManager {
             guard let self else {
                 return
             }
-            didAuthorizeApplicationPassword(applicationPassword, for: siteURL, in: navigationController)
+            didAuthorizeApplicationPassword(applicationPassword, for: siteURL, in: navigationController, previousViewController: previousVC)
         })
         return controller
     }
 
     func didAuthorizeApplicationPassword(_ applicationPassword: ApplicationPassword,
                                          for siteURL: String,
-                                         in navigationController: UINavigationController) {
+                                         in navigationController: UINavigationController,
+                                         previousViewController: UIViewController? = nil) {
         let credentials = Self.credentials(for: applicationPassword, siteURL: siteURL)
         let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword, siteAddress: siteURL)
         /// IMPORTANT: authenticate after creating the use case above to make sure that
         /// the application password is saved into keychain.
         stores.authenticate(credentials: credentials)
-        checkSiteCredentialLogin(to: siteURL, with: useCase, loginFlow: .appPassword, in: navigationController)
+        checkSiteCredentialLogin(to: siteURL, with: useCase, loginFlow: .appPassword, in: navigationController,
+                                 previousViewController: previousViewController)
     }
 
     /// The error screen to be displayed when Jetpack setup for a site is required.
@@ -1262,9 +1275,11 @@ private extension AuthenticationManager {
     ///
     func jetpackSetupUI(for siteURL: String,
                         connectionMissingOnly: Bool,
+                        reportsLoginStep: Bool = false,
                         in navigationController: UINavigationController) -> UIViewController {
         let viewModel = JetpackSetupRequiredViewModel(siteURL: siteURL,
-                                                      connectionOnly: connectionMissingOnly)
+                                                      connectionOnly: connectionMissingOnly,
+                                                      reportsLoginStep: reportsLoginStep)
         let jetpackSetupUI = ULErrorViewController(viewModel: viewModel)
         return jetpackSetupUI
     }
@@ -1282,12 +1297,17 @@ private extension AuthenticationManager {
 
         guard !site.isWPCom && !site.isCommerceGarden else {
             // The site doesn't belong to the current account since it was not included in the site picker.
-            return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
+            return accountMismatchUI(for: site.url,
+                                     siteCredentials: nil,
+                                     with: matcher,
+                                     reportsLoginStep: isSiteDiscoveryFromLogin,
+                                     in: navigationController)
         }
 
         // Shows the native Jetpack flow during the site discovery flow.
         return jetpackSetupUI(for: site.url,
                               connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
+                              reportsLoginStep: isSiteDiscoveryFromLogin,
                               in: navigationController)
     }
 }
@@ -1334,7 +1354,7 @@ extension AuthenticationManager {
             loginFlow: .siteCredentials,
             in: navigationController,
             authenticationEndpointPersistence: endpointPersistence,
-            previousViewController: nil
+            previousViewController: navigationController.topViewController
         )
     }
 }
@@ -1346,6 +1366,7 @@ private extension AuthenticationManager {
                                   in navigationController: UINavigationController,
                                   authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence? = nil,
                                   previousViewController: UIViewController? = nil) {
+        postSiteCredentialLoginChecker?.cancel()
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
                                                      loginFlow: loginFlow,
                                                      stores: stores,
@@ -1366,6 +1387,7 @@ private extension AuthenticationManager {
 
     /// Presents Application Passwords tutorial before redirecting user to the site login using a web view.
     ///
+    @MainActor
     private func presentAppPasswordTutorial(error: Error, for siteURL: String, in viewController: UIViewController) {
         let tutorialVC = ApplicationPasswordTutorialViewController(error: error)
         tutorialVC.continueButtonTapped = { [weak self] in
@@ -1387,6 +1409,7 @@ private extension AuthenticationManager {
 
     /// Presents login error alert before redirecting user to the site login using a web view.
     ///
+    @MainActor
     private func presentAppPasswordAlert(error: Error, for siteURL: String, in viewController: UIViewController) {
         let shouldEnableWebFlow: Bool = {
             /// Since our detection of invalid credentials error might be inaccurate,
@@ -1411,6 +1434,7 @@ private extension AuthenticationManager {
     /// Presents the site credential failure using the authenticator's centered, dimmed alert treatment.
     ///
     /// Without the custom presentation configuration, UIKit presents the alert as a page sheet on iOS 26.
+    @MainActor
     private func presentSiteCredentialLoginErrorAlert(message: String,
                                                       defaultAction: (() -> Void)?,
                                                       in viewController: UIViewController,
@@ -1428,6 +1452,7 @@ private extension AuthenticationManager {
 
     /// Presents app password site login using a web view.
     ///
+    @MainActor
     private func presentApplicationPasswordWebView(for siteURL: String, in viewController: UIViewController) {
         let webViewController = applicationPasswordWebView(for: siteURL, previousVC: viewController)
         viewController.navigationController?.pushViewController(webViewController, animated: true)

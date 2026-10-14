@@ -169,8 +169,13 @@ final class POSTabCoordinator {
 
             // If POS tab is not visible, mark as ineligible
             guard isPOSTabVisible else {
-                try await catalogEligibilityService.updatePOSEligibility(isEligible: false,
-                                                                         for: siteID)
+                do {
+                    try await catalogEligibilityService.updatePOSEligibility(isEligible: false,
+                                                                             for: siteID)
+                } catch {
+                    DDLogError("⛔️ Failed to mark POS as ineligible: \(error)")
+                    return
+                }
                 await posSyncDispatcher.stop()
                 return
             }
@@ -230,11 +235,16 @@ private extension POSTabCoordinator {
                 try? await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
 
                 // Retry transient failures before using the value
-                let state = try await service.catalogEligibility(for: siteID)
-                if case .ineligible(reason: .versionCheckFailed) = state {
-                    try await service.refreshEligibilityState(for: siteID)
+                do {
+                    let state = try await service.catalogEligibility(for: siteID)
+                    if case .ineligible(reason: .versionCheckFailed) = state {
+                        try await service.refreshEligibilityState(for: siteID)
+                    }
+                    isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible
+                } catch {
+                    DDLogError("⛔️ Failed to resolve local catalog eligibility: \(error)")
+                    return
                 }
-                isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible
             } else {
                 // Service not ready yet (rare race condition), assume ineligible
                 isLocalCatalogEligible = false

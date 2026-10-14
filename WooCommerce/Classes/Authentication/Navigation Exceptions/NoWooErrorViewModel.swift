@@ -108,7 +108,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
             return
         }
 
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores, isFromLogin: reportsLoginStep)
         storePickerCoordinator?.start()
     }
 

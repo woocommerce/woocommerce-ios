@@ -13,6 +13,10 @@ final class StorePickerCoordinator: Coordinator {
     ///
     var selectedConfiguration: StorePickerConfiguration
 
+    /// Whether this picker belongs to a login journey. `.listStores` is opened from the login
+    /// error screens, which are reachable outside a login too, so the caller says which it is.
+    private let isFromLogin: Bool
+
     /// Closure to be executed upon dismissal of the store picker
     ///
     var onDismiss: (() -> Void)?
@@ -28,16 +32,18 @@ final class StorePickerCoordinator: Coordinator {
     /// Site Picker VC
     ///
     private lazy var storePicker: StorePickerViewController = {
-        let pickerVC = StorePickerViewController(configuration: selectedConfiguration)
+        let pickerVC = StorePickerViewController(configuration: selectedConfiguration, isFromLogin: isFromLogin)
         pickerVC.delegate = self
         return pickerVC
     }()
 
     init(_ navigationController: UINavigationController,
          config: StorePickerConfiguration,
+         isFromLogin: Bool? = nil,
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
         self.navigationController = navigationController
         self.selectedConfiguration = config
+        self.isFromLogin = isFromLogin ?? (config == .login)
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: ServiceLocator.stores)
     }
 

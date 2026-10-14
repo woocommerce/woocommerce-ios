@@ -397,7 +397,50 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         // Then
         let expectedAttribute = sampleAttribute(name: "New Attribute Name", options: ["Option 1", "Option 2"])
-        XCTAssertEqual(updatedProduct.attributes, [initialNonVarAttribute, expectedAttribute])
+        XCTAssertEqual(updatedProduct.attributes, [expectedAttribute, initialNonVarAttribute])
+    }
+
+    func test_updating_existing_attribute_keeps_its_position_visible_and_variation_values() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let firstAttribute = sampleAttribute(attributeID: 1, name: "Color", options: ["Red"])
+        let initialAttribute = ProductAttribute(siteID: 123,
+                                                attributeID: 0,
+                                                name: "Material",
+                                                position: 2,
+                                                visible: false,
+                                                variation: false,
+                                                options: ["Cotton"])
+        let initialProduct = sampleProduct().copy(attributes: [firstAttribute, initialAttribute])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .existing(attribute: initialAttribute), stores: stores)
+
+        viewModel.setCurrentAttributeName("Fabric")
+        viewModel.addNewOption(name: "Wool")
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        let expectedAttribute = initialAttribute.copy(name: "Fabric", options: ["Cotton", "Wool"])
+        XCTAssertEqual(updatedProduct.attributes, [firstAttribute, expectedAttribute])
     }
 
     func test_removing_current_attribute_correctly_updates_product_attributes() throws {
@@ -468,7 +511,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedAttribute = sampleAttribute(attributeID: 0, name: "attr-2", options: ["Option 1", "Option 2"])
+        let expectedAttribute = sampleAttribute(attributeID: 0, name: "attr-2", position: 1, options: ["Option 1", "Option 2"])
         XCTAssertEqual(updatedProduct.attributes, [initialAttribute, initialNonVarAttribute, expectedAttribute])
     }
 
@@ -617,11 +660,11 @@ private extension AddAttributeOptionsViewModelTests {
         Product.fake().copy(siteID: 123, productID: 12345)
     }
 
-    func sampleAttribute(attributeID: Int64 = 1234, name: String? = nil, options: [String] = []) -> ProductAttribute {
+    func sampleAttribute(attributeID: Int64 = 1234, name: String? = nil, position: Int = 0, options: [String] = []) -> ProductAttribute {
         ProductAttribute(siteID: 123,
                          attributeID: attributeID,
                          name: name ?? sampleAttributeName,
-                         position: 0,
+                         position: position,
                          visible: true,
                          variation: true,
                          options: options)

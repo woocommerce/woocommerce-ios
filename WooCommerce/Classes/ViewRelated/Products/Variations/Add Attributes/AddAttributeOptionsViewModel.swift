@@ -324,29 +324,34 @@ extension AddAttributeOptionsViewModel {
 
 
     /// Returns a product with its name and options updated with the new attribute to create.
+    /// An attribute the product already has keeps its `position`, `visible` and `variation` values.
     ///
     private func createUpdatedProduct() -> Product {
         let newOptions = state.selectedOptions.map { $0.name }
         let newName = state.currentAttributeName
+
+        // Name has to be considered, because local attributes are zero-id based. We use `attribute` instead of `newAttribute` because
+        // the new Name may not match the old one, if the attribute was renamed.
+        var attributes = product.attributes
+        let existingIndex = attributes.firstIndex { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
+        let existingAttribute = existingIndex.map { attributes[$0] }
+        let nextPosition = (attributes.map { $0.position }.max() ?? -1) + 1
+
         let newAttribute = ProductAttribute(siteID: product.siteID,
                                             attributeID: attribute.attributeID,
                                             name: newName,
-                                            position: 0,
-                                            visible: true,
-                                            variation: true,
+                                            position: existingAttribute?.position ?? nextPosition,
+                                            visible: existingAttribute?.visible ?? true,
+                                            variation: existingAttribute?.variation ?? true,
                                             options: newOptions)
 
-        // Here we remove any possible existing attribute with the same ID and Name. For then re-adding the new updated attribute
-        // Name has to be considered, because local attributes are zero-id based. We use `attribute` instead of `newAttribute` because
-        // the new Name may not match the old one that needs to be removed, if the attribute was renamed.
-        let updatedAttributes: [ProductAttribute] = {
-            var attributes = product.attributes
-            attributes.removeAll { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
+        if let existingIndex {
+            attributes[existingIndex] = newAttribute
+        } else {
             attributes.append(newAttribute)
-            return attributes
-        }()
+        }
 
-        return product.copy(attributes: updatedAttributes)
+        return product.copy(attributes: attributes)
     }
 
     /// Returns a product with the current attribute removed.

@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] Products: Editing an attribute keeps its "Visible on product page" and "Used for variations" settings. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]
 - [*] POS: Tap the full refund row to view details or add and edit a refund reason. [https://github.com/woocommerce/woocommerce-ios/pull/18072]
 - [*] POS: Fixed a blank line above cart prices for variations without attributes. [https://github.com/woocommerce/woocommerce-ios/pull/18073]
 - [**] In-Person Payments: Fixed setup for stores without WooPayments or Stripe installed. [https://github.com/woocommerce/woocommerce-ios/pull/18047]

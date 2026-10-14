@@ -679,7 +679,7 @@ final class EditableOrderViewModel: ObservableObject {
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let variableProduct = allProducts.first(where: { $0.productID == item.productID })
-            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributesForVariations ?? [])
             let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
                                                            name: item.name,
                                                            quantityUpdatedCallback: { [weak self] _ in

@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] Settings: Jetpack setup now clearly explains when the WordPress.com username or password is incorrect. [https://github.com/woocommerce/woocommerce-ios/pull/18078]
 - [*] POS: Fixed a blank line above cart prices for variations without attributes. [https://github.com/woocommerce/woocommerce-ios/pull/18073]
 - [**] In-Person Payments: Fixed setup for stores without WooPayments or Stripe installed. [https://github.com/woocommerce/woocommerce-ios/pull/18047]
 - [*] Payments: In-person card payments are now hidden for orders sold as a subscription, including variable and plan-based subscriptions the previous check missed. [https://github.com/woocommerce/woocommerce-ios/pull/17986]

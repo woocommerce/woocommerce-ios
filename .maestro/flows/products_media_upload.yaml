@@ -1,4 +1,4 @@
-# p2: products.detail.media
+# p2: products.detail.media.device
 appId: ${APP_ID}
 name: Create a run-owned product with persisted device media
 tags:

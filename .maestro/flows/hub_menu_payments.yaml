@@ -1,5 +1,5 @@
-# p2: hub.payments
-# The phone-full store supports card readers, so missing card-reader rows fail the flow.
+# p2: hub.payments.pay-in-person, hub.payments.order-card-reader, hub.payments.manuals
+# The full profile store supports card readers, so missing card-reader rows fail the flow.
 appId: ${APP_ID}
 name: "Hub Menu - Payments"
 tags:
@@ -21,6 +21,44 @@ tags:
     timeout: 20000
 - assertVisible: "Pay In Person"
 - takeScreenshot: hub_payments_top
+# Switch Pay in Person to the other state and back, so the lab store keeps
+# its setting. The switch reports 0 when off and 1 when on.
+- runFlow:
+    when:
+      visible:
+        text: "0"
+        rightOf: "Pay In Person"
+    commands:
+      - runFlow:
+          file: ../subflows/toggle_pay_in_person.yaml
+          env:
+            FROM: "0"
+            TO: "1"
+            CONFIRM: "Enable"
+      - runFlow:
+          file: ../subflows/toggle_pay_in_person.yaml
+          env:
+            FROM: "1"
+            TO: "0"
+            CONFIRM: "Disable"
+- runFlow:
+    when:
+      visible:
+        text: "1"
+        rightOf: "Pay In Person"
+    commands:
+      - runFlow:
+          file: ../subflows/toggle_pay_in_person.yaml
+          env:
+            FROM: "1"
+            TO: "0"
+            CONFIRM: "Disable"
+      - runFlow:
+          file: ../subflows/toggle_pay_in_person.yaml
+          env:
+            FROM: "0"
+            TO: "1"
+            CONFIRM: "Enable"
 - scrollUntilVisible:
     element:
       id: "card-reader-manuals"

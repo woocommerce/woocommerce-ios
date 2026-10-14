@@ -4,6 +4,7 @@
 25.9
 -----
 - [*] Product description editor: The formatting toolbar stays inside the editor on iPad and iPhone Duo instead of spanning the whole window, and the system's own B / I / U controls no longer show next to the keyboard or in the text selection menu. [https://github.com/woocommerce/woocommerce-ios/pull/18044]
+- [*] Order creation: The totals sheet covers the bottom screen edge again on iOS 27, so form content no longer shows under the "Collect Payment" button. [https://github.com/woocommerce/woocommerce-ios/pull/18074]
 - [*] POS: Tap the full refund row to view details or add and edit a refund reason. [https://github.com/woocommerce/woocommerce-ios/pull/18072]
 - [*] POS: Fixed a blank line above cart prices for variations without attributes. [https://github.com/woocommerce/woocommerce-ios/pull/18073]
 - [**] In-Person Payments: Fixed setup for stores without WooPayments or Stripe installed. [https://github.com/woocommerce/woocommerce-ios/pull/18047]

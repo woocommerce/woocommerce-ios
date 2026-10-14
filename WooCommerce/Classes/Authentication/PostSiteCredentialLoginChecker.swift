@@ -42,6 +42,7 @@ final class PostSiteCredentialLoginChecker {
     private let applicationPasswordUseCase: ApplicationPasswordUseCase
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
+    private let tracker: AuthenticatorAnalyticsTracker
     private let previousViewController: UIViewController?
     private let authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence?
     private let authenticationEndpointPersistenceAction: AuthenticationEndpointPersistenceAction
@@ -54,6 +55,7 @@ final class PostSiteCredentialLoginChecker {
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         tracker: AuthenticatorAnalyticsTracker = .shared,
          authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence? = nil,
          authenticationEndpointPersistenceAction: AuthenticationEndpointPersistenceAction? = nil,
          previousViewController: UIViewController?) {
@@ -62,6 +64,7 @@ final class PostSiteCredentialLoginChecker {
         self.roleEligibilityUseCase = roleEligibilityUseCase ?? RoleEligibilityUseCase(stores: stores, detectUnexpectedResponses: true)
         self.stores = stores
         self.analytics = analytics
+        self.tracker = tracker
         self.authenticationEndpointPersistence = authenticationEndpointPersistence
         self.authenticationEndpointPersistenceAction = authenticationEndpointPersistenceAction ?? { persistence in
             switch persistence.behavior {
@@ -117,8 +120,8 @@ private extension PostSiteCredentialLoginChecker {
             onRetryResult?(true)
             return onSuccess()
         }
-        generationTask = Task { @MainActor in
-            guard checkID == id else { return }
+        generationTask = Task { @MainActor [weak self] in
+            guard let self, checkID == id else { return }
             do {
                 let _ = try await useCase.generateNewPassword()
                 guard checkID == id, !Task.isCancelled else { return }
@@ -222,6 +225,13 @@ private extension PostSiteCredentialLoginChecker {
                     onSuccess()
                 } else {
                     self.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: nil))
+                    // This route only runs during a site-credential login, so it is always a login
+                    // journey. `has_connected_stores` is omitted rather than sent as false: there is
+                    // no WP.com account here, so the question does not apply.
+                    self.tracker.track(
+                        step: .notWooStore,
+                        properties: [AuthenticatorAnalyticsTracker.Property.url.rawValue: siteURL.trimHTTPScheme()]
+                    )
                     self.showAlert(message: Localization.noWooError, siteURL: siteURL, in: navigationController)
                 }
             case .failure(let error):

@@ -14,6 +14,7 @@ final class BetaFeaturesConfigurationViewModelTests: XCTestCase {
         appSettings = nil
     }
 
+    @MainActor
     func test_availableFeatures_include_viewAddOns() {
         // Given
         let viewModel = BetaFeaturesConfigurationViewModel(appSettings: appSettings,
@@ -23,6 +24,7 @@ final class BetaFeaturesConfigurationViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.availableFeatures.contains(.viewAddOns))
     }
 
+    @MainActor
     func test_availableFeatures_include_posLocalCatalog_when_POSTab_is_visible() async {
         // Given
         let viewModel = BetaFeaturesConfigurationViewModel(appSettings: appSettings,
@@ -35,6 +37,7 @@ final class BetaFeaturesConfigurationViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.availableFeatures.contains(.posLocalCatalog))
     }
 
+    @MainActor
     func test_availableFeatures_do_not_include_posLocalCatalog_when_POSTab_is_not_visible() async {
         // Given
         let viewModel = BetaFeaturesConfigurationViewModel(appSettings: appSettings,

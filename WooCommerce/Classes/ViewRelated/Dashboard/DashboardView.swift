@@ -96,6 +96,7 @@ struct DashboardView: View {
                 VStack(spacing: Layout.padding) {
                     // Store title
                     Text(currentSite?.name ?? Localization.title)
+                        .accessibilityIdentifier("my-store-title")
                         .subheadlineStyle()
                         .padding(Layout.sectionHeadingPadding)
                         .frame(maxWidth: .infinity, alignment: .leading)

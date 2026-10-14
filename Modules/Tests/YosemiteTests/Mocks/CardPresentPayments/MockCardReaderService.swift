@@ -113,7 +113,7 @@ final class MockCardReaderService: CardReaderService {
         didHitCancel = true
 
         /// Delaying the effect of this method so that unit tests are actually async
-        return Future { promise in
+        return Future { [weak self] promise in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {[weak self] in
                 self?.discoveryStatusSubject.send(.idle)
                 promise(.success(()))
@@ -122,7 +122,7 @@ final class MockCardReaderService: CardReaderService {
     }
 
     func connect(_ reader: Hardware.CardReader, options: Hardware.CardReaderConnectionOptions?) -> AnyPublisher<CardReader, Error> {
-        Future() { promise in
+        Future() { [weak self] promise in
             /// Delaying the effect of this method so that unit tests are actually async
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {[weak self] in
                 let connectedReader = MockCardReader.bbposChipper2XBT()

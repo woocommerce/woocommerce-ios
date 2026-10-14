@@ -64,6 +64,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.accessibilityIdentifier = "customer-selector-screen"
 
         configureNavigation()
         displayGhostContent()
@@ -187,11 +188,11 @@ private extension CustomerSelectorViewController {
                                                             })
                                                         },
                                                         viewModel: addressFormViewModel)
-        let rootViewController = UIHostingController(rootView: editOrderAddressForm)
-        let navigationController = WooNavigationController(rootViewController: rootViewController)
-        navigationController.modalPresentationStyle = .fullScreen
+        // The form needs a `NavigationStack` to push the country and state selectors.
+        let hostingController = UIHostingController(rootView: NavigationStack { editOrderAddressForm })
+        hostingController.modalPresentationStyle = .fullScreen
 
-        present(navigationController, animated: true, completion: nil)
+        present(hostingController, animated: true, completion: nil)
     }
 
     func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool,
@@ -210,7 +211,7 @@ private extension CustomerSelectorViewController {
                                               selectedCustomerID: selectedCustomerID,
                                               onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                               onDidSelectSearchResult: onCustomerTapped,
-                                              onDidStartSyncingAllCustomersFirstPage: {
+                                              onDidStartSyncingAllCustomersFirstPage: { [weak self] in
                                                   Task { @MainActor [weak self] in
                                                       guard let searchTableView = self?.searchViewController?.tableView else {
                                                           return
@@ -218,7 +219,7 @@ private extension CustomerSelectorViewController {
                                                       self?.displayGhostContent(over: searchTableView)
                                                   }
                                               },
-                                              onDidFinishSyncingAllCustomersFirstPage: {
+                                              onDidFinishSyncingAllCustomersFirstPage: { [weak self] in
                                                   Task { @MainActor [weak self] in
                                                       self?.removeGhostContent()
                                                   }

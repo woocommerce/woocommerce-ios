@@ -1139,7 +1139,11 @@ struct PointOfSaleAggregateModelTests {
             await fireOnce { fire in
                 coordinator.onPerformIncrementalSyncCalled = { fire() }
                 Task { @MainActor in
-                    try await sut.collectCashPayment(changeDueAmount: "0.00")
+                    do {
+                        try await sut.collectCashPayment(changeDueAmount: "0.00")
+                    } catch {
+                        Issue.record(error)
+                    }
                 }
             }
 
@@ -1816,7 +1820,7 @@ private func makePointOfSaleAggregateModel(
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol? = nil,
-    barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = MockPointOfSaleBarcodeScanService(),
+    barcodeScanService: PointOfSaleBarcodeScanServiceProtocol? = nil,
     receiptSender: POSReceiptSending = MockPOSReceiptSender(),
     soundPlayer: PointOfSaleSoundPlayerProtocol = MockPointOfSaleSoundPlayer(),
     paymentState: PointOfSalePaymentState = .idle,
@@ -1840,7 +1844,7 @@ private func makePointOfSaleAggregateModel(
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         searchHistoryService: searchHistoryService,
         popularPurchasableItemsController: popularPurchasableItemsController ?? MockPointOfSaleItemsController(),
-        barcodeScanService: barcodeScanService,
+        barcodeScanService: barcodeScanService ?? MockPointOfSaleBarcodeScanService(),
         receiptSender: receiptSender,
         soundPlayer: soundPlayer,
         paymentState: paymentState,

@@ -3,6 +3,7 @@ import WooFoundation
 @testable import Networking
 @testable import Yosemite
 
+@MainActor
 struct PointOfSaleBarcodeScanServiceTests {
     private var currencySettings: CurrencySettings!
     private var network: MockNetwork!

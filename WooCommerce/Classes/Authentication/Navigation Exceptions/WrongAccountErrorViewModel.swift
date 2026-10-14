@@ -20,9 +20,16 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let jetpackSetupCompletionHandler: (_ email: String, _ xmlrpc: String) -> Void
     private let authentication: Authentication
     private let authenticatorType: Authenticator.Type
+    /// Whether this screen was reached inside a login journey; site discovery also reaches it
+    /// from an in-app store switch, where a login step would be wrong.
+    private let reportsLoginStep: Bool
     private let tracker: AuthenticatorAnalyticsTracker
 
     private var storePickerCoordinator: StorePickerCoordinator?
+
+    /// The Jetpack step is reported on the tap rather than on a screen, so it needs its own guard
+    /// against the merchant coming back and tapping again.
+    private var hasReportedJetpackStep = false
     private var jetpackSetupCoordinator: LoginJetpackSetupCoordinator?
 
     private var siteXMLRPC: String = ""
@@ -39,6 +46,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
          storesManager: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          authentication: Authentication = ServiceLocator.authenticationManager,
+         reportsLoginStep: Bool = false,
          tracker: AuthenticatorAnalyticsTracker = .shared,
          onJetpackSetupCompletion: @escaping (String, String) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
@@ -50,6 +58,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         self.authentication = authentication
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
         self.authenticatorType = authenticatorType
+        self.reportsLoginStep = reportsLoginStep
         self.tracker = tracker
 
         if let credentials = siteCredentials {
@@ -126,7 +135,9 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         if let rawSiteURL {
             properties[AuthenticatorAnalyticsTracker.Property.url.rawValue] = rawSiteURL.trimHTTPScheme()
         }
-        tracker.track(step: .wrongWordPressAccount, properties: properties)
+        if reportsLoginStep {
+            tracker.track(step: .wrongWordPressAccount, properties: properties)
+        }
         configureTermsText()
 
         // Fetches site info if we're not sure whether the site is self-hosted.
@@ -144,6 +155,22 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         }
 
         if isSelfHostedSite {
+            // Only this branch starts a Jetpack connection. The other one tells the merchant to
+            // ask the site owner for access, which is not a Jetpack state they can act on.
+            //
+            // Reported on the tap, not on a screen appearing, because this button opens store
+            // credentials rather than a Jetpack screen — there is no impression to hook. Android
+            // reports the same step from its Jetpack activation screen, which its mismatch screen
+            // navigates to; iOS would otherwise stay silent on this route (WOOMOB-4237).
+            if reportsLoginStep, !hasReportedJetpackStep {
+                hasReportedJetpackStep = true
+                var properties: [String: String] = [:]
+                // Same reason as viewDidLoad: `siteURL` falls back to a localized placeholder.
+                if let rawSiteURL {
+                    properties[AuthenticatorAnalyticsTracker.Property.url.rawValue] = rawSiteURL.trimHTTPScheme()
+                }
+                tracker.track(step: .jetpackNotConnected, properties: properties)
+            }
             return showSiteCredentialLoginAndJetpackConnection(from: viewController)
         }
         return presentConnectToWPComSiteAlert(from: viewController)
@@ -154,7 +181,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
             return
         }
 
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores, isFromLogin: reportsLoginStep)
         storePickerCoordinator?.start()
     }
 

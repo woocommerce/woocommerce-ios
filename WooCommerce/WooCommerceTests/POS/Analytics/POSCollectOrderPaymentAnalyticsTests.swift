@@ -22,6 +22,137 @@ struct POSCollectOrderPaymentAnalyticsTests {
         analytics = MockPOSAnalytics()
     }
 
+    @Test(arguments: [false, true], [false, true]) @MainActor
+    func test_cancel_completion_when_another_payment_starts_then_preserves_each_timing_context(newCheckout: Bool, oldPaymentConfirms: Bool) throws {
+        // Given
+        var now = 0
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+        let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration, monotonicMilliseconds: { now })
+        let paymentOrder = POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "")
+        tracker.setCatalogSyncStrategy(.localCatalog)
+        tracker.trackCheckoutTapped()
+        now = 100
+        tracker.trackOrderSyncSuccess()
+        tracker.prepareForCardPayment(order: paymentOrder)
+        now = 150
+        tracker.trackCardReaderReady()
+        let order = Order.fake().copy(orderID: 42, currency: "USD", total: "19.99")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case .retrieveOrderRemotely(_, _, let completion) = action {
+                completion(.success(order))
+            }
+        }
+        let preflight = MockCardPresentPaymentPreflightController()
+        let receipts = MockReceiptEligibilityUseCase()
+        receipts.isEligibleForBackendReceipts = false
+        let orchestrator = MockPaymentCaptureOrchestrator()
+        var completeCancellation: ((Result<Void, Error>) -> Void)?
+        orchestrator.mockCancelPaymentHandler = { completeCancellation = $0 }
+        let alerts = MockCardPresentPaymentAlertsPresenter()
+        orchestrator.mockCollectPaymentHandler = { onPreparingReader, _, _, _, _, _, _ in
+            alerts.onPresentCalled = { viewModel in
+                alerts.onPresentCalled = nil
+                viewModel.didTapSecondaryButton(in: nil)
+            }
+            onPreparingReader()
+        }
+        let useCase = CollectOrderPaymentUseCase<TapToPayCardReaderPaymentAlertsProvider,
+                                                BluetoothCardReaderPaymentAlertsProvider,
+                                                MockCardPresentPaymentAlertsPresenter>(
+            siteID: order.siteID, order: order, formattedAmount: "$19.99", rootViewController: MockViewControllerPresenting(),
+            configuration: configuration, stores: stores,
+            paymentOrchestrator: orchestrator, alertsPresenter: alerts,
+            tapToPayAlertsProvider: TapToPayCardReaderPaymentAlertsProvider(),
+            bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
+            preflightController: preflight, analyticsTracker: tracker, receiptEligibilityUseCase: receipts)
+        useCase.collectPayment(using: .bluetoothScan, channel: .pos, onFailure: { _ in }, onCancel: {},
+                               onPaymentCompletion: {}, onCompleted: {})
+        preflight.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: "stripe")
+        let heldCancellation = try #require(completeCancellation)
+
+        // When
+        now = 500
+        if newCheckout {
+            tracker.setCatalogSyncStrategy(.remote)
+            tracker.trackCheckoutTapped()
+            now = 600
+            tracker.trackOrderSyncSuccess()
+        }
+        tracker.prepareForCardPayment(order: paymentOrder)
+        now = 650
+        tracker.trackCardReaderReady()
+        if oldPaymentConfirms {
+            now = 675
+            let heldConfirmation = try #require(orchestrator.spyProcessingCompletion)
+            heldConfirmation(.fake())
+        }
+        now = 700
+        tracker.trackProcessingCompletion(intent: .fake())
+        now = 750
+        withExtendedLifetime(useCase) { heldCancellation(.success(())) }
+        let canceled = try #require(analytics.events.last { $0.eventName == "card_present_collect_payment_canceled" })
+        now = 800
+        tracker.trackSuccessfulCardPayment(capturedPaymentData: .init(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil))
+
+        // Then
+        #expect(canceled.properties["sync_strategy"] as? String == "local_catalog")
+        #expect(canceled.properties["pos_time_since_checkout_started_ms"] as? Int == 750)
+        #expect(canceled.properties["pos_time_since_order_sync_completed_ms"] as? Int == 650)
+        #expect(canceled.properties["pos_time_since_reader_ready_ms"] == nil)
+        #expect(canceled.properties["pos_time_since_payment_confirmed_ms"] as? Int == (oldPaymentConfirms ? 75 : nil))
+        let succeeded = try #require(analytics.events.last)
+        #expect(succeeded.properties["pos_time_since_checkout_started_ms"] as? Int == (newCheckout ? 300 : 800))
+        #expect(succeeded.properties["pos_time_since_order_sync_completed_ms"] as? Int == (newCheckout ? 200 : 700))
+        #expect(succeeded.properties["pos_time_since_reader_ready_ms"] == nil)
+        #expect(succeeded.properties["pos_time_since_payment_confirmed_ms"] as? Int == 100)
+    }
+
+    @Test @MainActor func test_card_success_when_all_stages_start_at_zero_then_emits_versioned_integer_timings() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, currentTimestamp: { 0 }, monotonicMilliseconds: { 0 })
+        sut.trackCheckoutTapped()
+        sut.trackOrderSyncSuccess()
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
+        sut.trackCardReaderReady()
+        sut.trackProcessingCompletion(intent: .fake())
+
+        // When
+        sut.trackSuccessfulCardPayment(capturedPaymentData: .init(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil))
+
+        // Then
+        let properties = analytics.events.last?.properties
+        #expect(properties?["pos_timing_version"] as? Int == 2)
+        #expect(properties?["sync_strategy"] as? String == "unknown")
+        #expect(properties?["pos_time_since_checkout_started_ms"] as? Int == 0)
+        #expect(properties?["pos_time_since_order_sync_completed_ms"] as? Int == 0)
+        #expect(properties?["pos_time_since_reader_ready_ms"] == nil)
+        #expect(properties?["pos_time_since_payment_confirmed_ms"] as? Int == 0)
+    }
+
+    @Test(arguments: [false, true]) @MainActor
+    func test_card_terminal_event_when_checkout_has_no_stages_then_omits_unset_timings(isCancellation: Bool) {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, currentTimestamp: { 0 }, monotonicMilliseconds: { 0 })
+        sut.trackCheckoutTapped()
+
+        // When
+        if isCancellation {
+            sut.trackPaymentCancelation(cancelationSource: .reader)
+        } else {
+            sut.trackPaymentFailure(with: TestError())
+        }
+
+        // Then
+        let properties = analytics.events.last?.properties
+        #expect(properties?["pos_timing_version"] as? Int == 2)
+        #expect(properties?["sync_strategy"] as? String == "unknown")
+        #expect(properties?["pos_time_since_checkout_started_ms"] as? Int == 0)
+        #expect(properties?["pos_time_since_order_sync_completed_ms"] == nil)
+        #expect(properties?["pos_time_since_reader_ready_ms"] == nil)
+        #expect(properties?["pos_time_since_payment_confirmed_ms"] == nil)
+    }
+
     @Test(arguments: [true, false]) @MainActor
     func test_card_collection_when_capture_completes_then_tracks_value_only_on_success(captureSucceeds: Bool) {
         // Given

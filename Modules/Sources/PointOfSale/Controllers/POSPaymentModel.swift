@@ -687,6 +687,7 @@ extension POSPaymentModel {
     }
 
     func collectCashPayment(changeDueAmount: String?) async throws {
+        let trackSuccess = collectOrderPaymentAnalyticsTracker.captureCashSuccess()
         let order: Order
         if let currentOrder {
             order = currentOrder
@@ -697,12 +698,12 @@ extension POSPaymentModel {
         }
         try await cashPaymentHandler.completeCashPayment(for: order, changeDueAmount: changeDueAmount)
         try? await postPaymentStep?()
-        cashPaymentSuccess(order: order)
+        cashPaymentSuccess(order: order, trackSuccess: trackSuccess)
     }
 
-    private func cashPaymentSuccess(order: Order) {
+    private func cashPaymentSuccess(order: Order, trackSuccess: @MainActor (POSPaymentAnalyticsOrder) -> Void) {
         paymentState.cash = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder(order: order))
+        trackSuccess(POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 }

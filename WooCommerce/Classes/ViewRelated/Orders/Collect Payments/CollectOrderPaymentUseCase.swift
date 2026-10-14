@@ -148,7 +148,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         self.stores = stores
         self.paymentOrchestrator = paymentOrchestrator
         self.preflightController = preflightController
-        self.analyticsTracker = analyticsTracker ?? CollectOrderPaymentAnalytics(siteID: siteID,
+        self.analyticsTracker = analyticsTracker?.scopedToPayment() ?? CollectOrderPaymentAnalytics(siteID: siteID,
                                                                                  analytics: ServiceLocator.analytics,
                                                                                  configuration: configuration,
                                                                                  orderDurationRecorder: orderDurationRecorder)

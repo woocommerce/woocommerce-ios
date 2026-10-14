@@ -128,14 +128,54 @@ struct LoginUnexpectedResponsePresenterTests {
         #expect(navigation.topViewController is SupportChatHostingController)
         #expect(navigation.viewControllers.count == 2)
     }
+
+    @Test func test_alert_when_confirmation_alert_is_presented_then_replaces_it_and_keeps_original_support_source() {
+        // Given
+        let fixture = Fixture()
+        let confirmationAlert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+        fixture.controller.stubbedPresentedViewController = confirmationAlert
+
+        // When
+        fixture.show()
+
+        // Then
+        #expect(fixture.dismissedAlert === confirmationAlert)
+        #expect(fixture.presentationCount == 0)
+
+        // When
+        fixture.alertDismissalCompletion?()
+        fixture.presenter.select(.contactSupport)
+
+        // Then
+        #expect(fixture.presentationController === fixture.controller)
+        #expect(fixture.supportController === fixture.controller)
+    }
+
+    @Test func test_cancellation_when_confirmation_alert_dismissal_is_pending_then_does_not_present_failure_alert() {
+        // Given
+        let fixture = Fixture()
+        fixture.controller.stubbedPresentedViewController = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+        fixture.show()
+
+        // When
+        fixture.presenter.invalidate()
+        fixture.alertDismissalCompletion?()
+
+        // Then
+        #expect(fixture.presentationCount == 0)
+    }
 }
 
 @MainActor
 private final class Fixture {
     let provider = MockAnalyticsProvider()
-    let controller = UIViewController()
+    let controller = PresentedViewController()
     var alert: UIAlertController?
+    var dismissedAlert: UIAlertController?
+    var presentationController: UIViewController?
+    var supportController: UIViewController?
     var presentationCompletion: (() -> Void)?
+    var alertDismissalCompletion: (() -> Void)?
     var retryCompletion: ((Bool) -> Void)?
     var presentationCount = 0
     var retryCount = 0
@@ -144,12 +184,20 @@ private final class Fixture {
     var supportCount = 0
     lazy var presenter = LoginUnexpectedResponsePresenter(
         analytics: WooAnalytics(analyticsProvider: provider),
-        presentation: { [weak self] _, alert, completion in
+        presentation: { [weak self] controller, alert, completion in
             self?.presentationCount += 1
             self?.alert = alert
+            self?.presentationController = controller
             self?.presentationCompletion = completion
         },
-        support: { [weak self] _ in self?.supportCount += 1 }
+        alertDismissal: { [weak self] alert, completion in
+            self?.dismissedAlert = alert
+            self?.alertDismissalCompletion = completion
+        },
+        support: { [weak self] controller in
+            self?.supportCount += 1
+            self?.supportController = controller
+        }
     )
 
     func show() {
@@ -159,5 +207,14 @@ private final class Fixture {
             self?.retryCompletion = result
         }, onDismiss: { [weak self] in self?.dismissCount += 1 },
                           onContactSupport: { [weak self] in self?.supportPreparationCount += 1 })
+    }
+}
+
+@MainActor
+private final class PresentedViewController: UIViewController {
+    var stubbedPresentedViewController: UIViewController?
+
+    override var presentedViewController: UIViewController? {
+        stubbedPresentedViewController ?? super.presentedViewController
     }
 }

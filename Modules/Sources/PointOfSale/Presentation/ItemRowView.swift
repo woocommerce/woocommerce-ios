@@ -170,7 +170,7 @@ private extension ItemRowView {
         static let cartConfiguration = GhostItemCardViewConfiguration(
             titleFont: Constants.itemTitleFont,
             detailFont: Constants.itemPriceFont,
-            detailPlaceholder: { .redactedPlaceholder(length: $0.isAccessibilitySize ? 4 : 25) },
+            detailPlaceholderLength: (regular: 25, accessibility: 4),
             cardSize: Constants.productCardSize,
             maximumCardSize: Constants.maximumProductCardSize,
             backgroundColor: Color.posSurfaceContainerLowest

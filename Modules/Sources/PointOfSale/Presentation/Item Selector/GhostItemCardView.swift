@@ -56,7 +56,10 @@ struct GhostItemCardView: View {
                 .renderedIf(showProductImage)
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 POSPlaceholderText(.redactedPlaceholder(length: dynamicTypeSize.isAccessibilitySize ? 9 : 24), font: configuration.titleFont)
-                POSPlaceholderText(configuration.detailPlaceholder(dynamicTypeSize), font: configuration.detailFont)
+                POSPlaceholderText(.redactedPlaceholder(length: dynamicTypeSize.isAccessibilitySize
+                                                       ? configuration.detailPlaceholderLength.accessibility
+                                                       : configuration.detailPlaceholderLength.regular),
+                                   font: configuration.detailFont)
             }
             .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
@@ -77,7 +80,7 @@ fileprivate enum Localization {
 struct GhostItemCardViewConfiguration {
     let titleFont: POSFontStyle
     let detailFont: POSFontStyle
-    let detailPlaceholder: (DynamicTypeSize) -> String
+    let detailPlaceholderLength: (regular: Int, accessibility: Int)
     let cardSize: CGFloat
     let maximumCardSize: CGFloat
     let backgroundColor: Color
@@ -85,7 +88,7 @@ struct GhostItemCardViewConfiguration {
     static let itemList = GhostItemCardViewConfiguration(
         titleFont: Constants.itemTitleFont,
         detailFont: Constants.itemDetailFont,
-        detailPlaceholder: { .redactedPlaceholder(length: $0.isAccessibilitySize ? 4 : 5) },
+        detailPlaceholderLength: (regular: 5, accessibility: 4),
         cardSize: Constants.productCardSize,
         maximumCardSize: Constants.maximumProductCardSize,
         backgroundColor: Color.posSurfaceBright

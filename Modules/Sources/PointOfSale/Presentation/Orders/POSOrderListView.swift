@@ -315,7 +315,7 @@ private struct POSGhostOrderRowView: View {
                 POSPlaceholderText(.redactedPlaceholder(length: unit), font: .posBodySmallRegular())
             }
             POSPlaceholderText(.redactedPlaceholder(length: unit * 3), font: .posBodySmallRegular())
-            // Reserves the loaded row's email line, so loading and loaded rows have the same height.
+            // Reserves an email line, so the ghost matches the typical loaded row. Rows without an email are one line shorter.
             POSPlaceholderText(.redactedPlaceholder(length: 1), font: .posBodySmallRegular())
                 .hidden()
             Spacer().frame(height: POSSpacing.xSmall)

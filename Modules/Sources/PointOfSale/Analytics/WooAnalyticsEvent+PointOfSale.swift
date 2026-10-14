@@ -34,6 +34,7 @@ extension WooAnalyticsEvent {
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
             static let totalItems = "total_items"
+            static let returnedItemsCount = "returned_items_count"
             static let amountNormalized = "amount_normalized"
             static let currency = "currency"
             static let transport = "transport"
@@ -500,12 +501,19 @@ extension WooAnalyticsEvent {
         }
 
         static func pointOfSaleItemsFetched(itemType: POSItemType,
-                                            totalItems: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleItemsFetched,
-                              properties: [
-                                Key.sourceView: SourceView(itemType: itemType).rawValue,
-                                Key.totalItems: "\(totalItems)"
-                              ])
+                                            totalItems: Int,
+                                            returnedItemsCount: Int,
+                                            millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.sourceView: SourceView(itemType: itemType).rawValue,
+                Key.totalItems: "\(totalItems)",
+                Key.returnedItemsCount: returnedItemsCount,
+                Key.syncStrategy: "remote"
+            ]
+            if millisecondsSinceRequestSent >= 0 {
+                properties[Key.millisecondsSinceRequestSent] = millisecondsSinceRequestSent
+            }
+            return WooAnalyticsEvent(statName: .pointOfSaleItemsFetched, properties: properties)
         }
 
         static func barcodeScanningSuccess(scanDurationMs: Int, barcodeLength: Int) -> WooAnalyticsEvent {

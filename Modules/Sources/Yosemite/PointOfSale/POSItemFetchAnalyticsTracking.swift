@@ -20,7 +20,9 @@ public protocol POSItemFetchAnalyticsTracking {
     /// Tracks when a remote items fetch completes
     /// - Parameters:
     ///   - totalItems: The total number of items in the store
-    func trackItemsFetchComplete(totalItems: Int)
+    ///   - returnedItemsCount: The number of products in this remote response
+    ///   - millisecondsSinceRequestSent: The elapsed remote-operation time in milliseconds
+    func trackItemsFetchComplete(totalItems: Int, returnedItemsCount: Int, millisecondsSinceRequestSent: Int)
 
     /// Tracks when a remote search results fetch completes. Always reports `POSSearchMethod.remote`.
     /// - Parameters:

@@ -22,12 +22,16 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
 
     /// Tracks when a remote fetch completes
     /// - Parameters:
-    ///   - totalItems: The total number of items found in the search
-    func trackItemsFetchComplete(totalItems: Int) {
+    ///   - totalItems: The total number of items in the store
+    ///   - returnedItemsCount: The number of products in this remote response
+    ///   - millisecondsSinceRequestSent: The elapsed remote-operation time in milliseconds
+    func trackItemsFetchComplete(totalItems: Int, returnedItemsCount: Int, millisecondsSinceRequestSent: Int) {
         analytics.track(
             event: .PointOfSale.pointOfSaleItemsFetched(
                 itemType: itemType,
-                totalItems: totalItems
+                totalItems: totalItems,
+                returnedItemsCount: returnedItemsCount,
+                millisecondsSinceRequestSent: millisecondsSinceRequestSent
             )
         )
     }

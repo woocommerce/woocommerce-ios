@@ -125,6 +125,7 @@ private extension AddAttributeOptionsViewController {
     func registerTableViewCells() {
         tableView.registerNib(for: BasicTableViewCell.self)
         tableView.registerNib(for: TextFieldTableViewCell.self)
+        tableView.registerNib(for: SwitchTableViewCell.self)
     }
 
     func observeViewModel() {
@@ -279,6 +280,14 @@ private extension AddAttributeOptionsViewController {
             configureOptionOffered(cell: cell, text: name, index: indexPath.row)
         case (let .existingOptions(name), let cell as BasicTableViewCell):
             configureOptionAdded(cell: cell, text: name)
+        case (let .visibleOnProductPage(isOn), let cell as SwitchTableViewCell):
+            configureSwitch(cell: cell, title: Localization.visibleOnProductPage, isOn: isOn) { [weak self] isOn in
+                self?.viewModel.setVisible(isOn)
+            }
+        case (let .usedForVariations(isOn), let cell as SwitchTableViewCell):
+            configureSwitch(cell: cell, title: Localization.usedForVariations, isOn: isOn) { [weak self] isOn in
+                self?.usedForVariationsChanged(isOn)
+            }
         default:
             fatalError("Unsupported Cell")
             break
@@ -318,6 +327,36 @@ private extension AddAttributeOptionsViewController {
         cell.textLabel?.text = text
         cell.imageView?.image = nil
         cell.imageView?.isUserInteractionEnabled = false
+    }
+
+    func configureSwitch(cell: SwitchTableViewCell, title: String, isOn: Bool, onChange: @escaping (Bool) -> Void) {
+        cell.title = title
+        cell.isOn = isOn
+        cell.onChange = onChange
+        // The table is always in editing mode, which shows `editingAccessoryView` instead of the switch in `accessoryView`.
+        cell.editingAccessoryView = cell.accessoryView
+    }
+
+    /// Asks for a confirmation before an attribute of a product with variations stops being used for variations.
+    /// Cancelling reloads the table, so the switch is on again.
+    ///
+    func usedForVariationsChanged(_ isOn: Bool) {
+        guard viewModel.needsConfirmation(toSetUsedForVariations: isOn) else {
+            viewModel.setUsedForVariations(isOn)
+            return
+        }
+
+        let alertController = UIAlertController(title: Localization.stopUsingForVariationsTitle,
+                                                message: Localization.stopUsingForVariationsMessage,
+                                                preferredStyle: .alert)
+        alertController.view.tintColor = .text
+        alertController.addCancelActionWithTitle(Localization.cancelAction) { [weak self] _ in
+            self?.tableView.reloadData()
+        }
+        alertController.addDestructiveActionWithTitle(Localization.stopUsingForVariationsAction) { [weak self] _ in
+            self?.viewModel.setUsedForVariations(false)
+        }
+        present(alertController, animated: true)
     }
 }
 
@@ -447,6 +486,8 @@ extension AddAttributeOptionsViewController {
         case optionTextField
         case selectedOptions(name: String)
         case existingOptions(name: String)
+        case visibleOnProductPage(isOn: Bool)
+        case usedForVariations(isOn: Bool)
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
@@ -454,6 +495,8 @@ extension AddAttributeOptionsViewController {
                 return TextFieldTableViewCell.self
             case .selectedOptions, .existingOptions:
                 return BasicTableViewCell.self
+            case .visibleOnProductPage, .usedForVariations:
+                return SwitchTableViewCell.self
             }
         }
 
@@ -485,5 +528,21 @@ private extension AddAttributeOptionsViewController {
                                                                comment: "Confirmation title before removing an attribute from a variation.")
         static let removeConfirmationInfo = NSLocalizedString("Are you sure you want to remove this attribute?",
                                                               comment: "Confirmation text before removing an attribute from a variation.")
+
+        static let visibleOnProductPage = NSLocalizedString("addAttributeOptionsViewController.visibleOnProductPage",
+                                                            value: "Visible on product page",
+                                                            comment: "Title of the switch that shows a product attribute on the product page.")
+        static let usedForVariations = NSLocalizedString("addAttributeOptionsViewController.usedForVariations",
+                                                         value: "Used for variations",
+                                                         comment: "Title of the switch that uses a product attribute for variations.")
+        static let stopUsingForVariationsTitle = NSLocalizedString("addAttributeOptionsViewController.stopUsingForVariationsTitle",
+                                                                   value: "Stop using for variations?",
+                                                                   comment: "Title of the alert shown before an attribute stops being used for variations.")
+        static let stopUsingForVariationsMessage = NSLocalizedString("addAttributeOptionsViewController.stopUsingForVariationsMessage",
+                                                                     value: "Existing variations will no longer match on this attribute.",
+                                                                     comment: "Message of the alert shown before an attribute stops being used for variations.")
+        static let stopUsingForVariationsAction = NSLocalizedString("addAttributeOptionsViewController.stopUsingForVariationsAction",
+                                                                    value: "Stop using",
+                                                                    comment: "Button that confirms an attribute stops being used for variations.")
     }
 }

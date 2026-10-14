@@ -10,7 +10,7 @@ struct POSSettingsViewTests {
         #expect(categories == [.store, .hardware, .payments, .localCatalog, .staff, .help])
     }
 
-    @Test func trackSelection_when_payments_is_selected_then_tracks_payments_tapped() throws {
+    @Test func trackSelection_when_payments_is_selected_then_tracks_settings_payments_tapped() throws {
         // Given
         let analytics = MockPOSAnalytics()
 
@@ -20,6 +20,6 @@ struct POSSettingsViewTests {
         // Then
         let event = try #require(analytics.events.first)
         #expect(analytics.events.count == 1)
-        #expect(event.eventName == "payments_tapped")
+        #expect(event.eventName == "settings_payments_tapped")
     }
 }

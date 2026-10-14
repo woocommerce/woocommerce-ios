@@ -1,5 +1,5 @@
 /// The possible events from a connected reader.
-public enum CardReaderEvent: Equatable {
+public enum CardReaderEvent: Equatable, Sendable {
     /// The reader begins waiting for input.
     /// The app should prompt the customer to present a payment method
     case waitingForInput(CardReaderInput)
@@ -35,7 +35,7 @@ public enum CardReaderEvent: Equatable {
 }
 
 /// A message that a connected reader requests the app to display.
-public enum CardReaderDisplayMessage: Equatable {
+public enum CardReaderDisplayMessage: Equatable, Sendable {
     /// A reader message that does not require specialized presentation behavior.
     case generic(String)
 

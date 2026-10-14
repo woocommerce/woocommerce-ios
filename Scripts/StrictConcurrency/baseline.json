@@ -1,11 +1,8 @@
 {
   "perFile": {
-    "Modules/Sources/Hardware/CardReader/CardReaderInputOptions.swift": 4,
-    "Modules/Sources/Hardware/CardReader/CardReaderServiceError.swift": 1,
     "Modules/Sources/Hardware/CardReader/StripeCardReader/Cancelable+Stripe.swift": 1,
     "Modules/Sources/Hardware/CardReader/StripeCardReader/StripeCardReaderService.swift": 43,
-    "Modules/Sources/Hardware/CardReader/UnderlyingError.swift": 2,
-    "Modules/Sources/Hardware/Internal/Logging.swift": 3,
+    "Modules/Sources/Hardware/Internal/Logging.swift": 1,
     "Modules/Sources/Networking/Model/Product/ProductAddOnEnvelope.swift": 1,
     "Modules/Sources/Networking/Model/Product/ProductMetadataExtractor.swift": 1,
     "Modules/Sources/Networking/ProductImageInBackground/ProductImageStatusStorage.swift": 1,

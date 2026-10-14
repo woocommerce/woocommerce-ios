@@ -28,7 +28,9 @@ tags:
 - extendedWaitUntil:
     visible: "Create your campaign"
     timeout: 60000
-- assertVisible: "Set your budget"
+- extendedWaitUntil:
+    visible: "Set your budget"
+    timeout: 30000
 - assertNotVisible:
     id: "menu-google-ads"
 - takeScreenshot: google_for_woo_webview

@@ -374,7 +374,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        await until {
+        await waitOnMainActor {
             self.defaults[.blazeAbandonedCampaignCreationReminderOpened] == true
         }
     }
@@ -398,7 +398,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        waitUntil {
+        await waitOnMainActor {
             self.defaults[.blazeNoCampaignReminderOpened] == true
         }
     }
@@ -429,6 +429,20 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 }
 
 private extension BlazeLocalNotificationSchedulerTests {
+    /// Polls `condition` on the main actor, so main actor tests don't hand it to a nonisolated wait helper.
+    @MainActor
+    func waitOnMainActor(timeout: Duration = .seconds(5), until condition: () -> Bool) async {
+        let deadline = ContinuousClock.now + timeout
+        while !condition() && ContinuousClock.now < deadline {
+            do {
+                try await Task.sleep(for: .milliseconds(10))
+            } catch {
+                break
+            }
+        }
+        XCTAssertTrue(condition())
+    }
+
     func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
         storageManager.performAndSave({ storage in
             readOnlyCampaigns.forEach { campaign in

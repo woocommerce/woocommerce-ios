@@ -1,4 +1,4 @@
-# p2: orders.list, orders.pagination, orders.search
+# p2: orders.list, orders.search
 # Prerequisite: the live store has enough orders to expose additional rows.
 appId: ${APP_ID}
 name: "Orders - List, pagination, and search"

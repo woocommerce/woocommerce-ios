@@ -264,7 +264,7 @@ Prologue → tap "Prologue Self Hosted Button"
   → type email → tap continue
   → type password → tap continue
   → type 2FA code (any 6 digits, e.g. "123456") in "Authentication code" → tap "Continue Button"
-  → tap "login-epilogue-continue-button"
+  → if the store-selection screen appears, tap "login-epilogue-continue-button"
   → Dashboard
 ```
 

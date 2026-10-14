@@ -41,6 +41,11 @@ class FakeClient:
                 {"id": 31, "name": "maestro-SUITE-20260805T120000Z-abc123"},
                 {"id": 32, "name": "merchant-tag"},
             ]
+        if path == "coupons":
+            return [
+                {"id": 41, "code": "suite-20260805t120000z-abc123-ui"},
+                {"id": 42, "code": "merchant-coupon"},
+            ]
         return [
             {
                 "id": 21,
@@ -236,11 +241,11 @@ class SeedFixtureTests(unittest.TestCase):
             with mock.patch.object(SEED, "WooClient", return_value=client):
                 SEED.cleanup(args)
 
-            # Tags are discovered last and the deletion loop is reversed, so ordering is
-            # tag → order → the product's uploaded media → product. The merchant's own
-            # product (and its image 102), order, and tag are left untouched.
+            # Coupons are discovered last and the deletion loop is reversed, so ordering is
+            # coupon → tag → order → the product's uploaded media → product. The merchant's
+            # own product (and its image 102), order, tag, and coupon are left untouched.
             self.assertEqual(
-                [("products/tags", 31), ("orders", 21), ("media", 101), ("products", 11)],
+                [("coupons", 41), ("products/tags", 31), ("orders", 21), ("media", 101), ("products", 11)],
                 client.deleted,
             )
             contents = json.loads(manifest.read_text(encoding="utf-8"))
@@ -291,8 +296,8 @@ class SeedFixtureTests(unittest.TestCase):
                 SEED.cleanup(args)
 
             self.assertIn("warning: could not delete uploaded image 101", stderr.getvalue())
-            self.assertIn("Cleaned 3 run-owned entities", stdout.getvalue())
-            self.assertEqual([("products/tags", 31), ("orders", 21), ("products", 11)], client.deleted)
+            self.assertIn("Cleaned 4 run-owned entities", stdout.getvalue())
+            self.assertEqual([("coupons", 41), ("products/tags", 31), ("orders", 21), ("products", 11)], client.deleted)
             contents = json.loads(manifest.read_text(encoding="utf-8"))
             self.assertEqual([{"type": "media", "id": 101}], contents["entities"])
 

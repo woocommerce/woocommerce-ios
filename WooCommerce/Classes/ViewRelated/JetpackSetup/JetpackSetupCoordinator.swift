@@ -232,7 +232,8 @@ private extension JetpackSetupCoordinator {
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
-        Task { @MainActor in
+        Task { @MainActor [weak self] in
+            guard let self else { return }
             guard let username = await loadWPComAccountUsername(authToken: authToken) else {
                 return showAlert(message: Localization.errorFetchingWPComAccount, onRetry: { [weak self] in
                     self?.startJetpackSetupFlow(authToken: authToken)

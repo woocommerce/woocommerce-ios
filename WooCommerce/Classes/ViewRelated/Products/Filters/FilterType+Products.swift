@@ -18,6 +18,15 @@ struct PromotableProductType: Equatable {
 }
 
 extension Optional: FilterType where Wrapped: FilterType {
+    var accessibilityIdentifier: String {
+        switch self {
+        case .some(let value):
+            return value.accessibilityIdentifier
+        case .none:
+            return Wrapped.self == ProductStockStatus.self ? "product-stock-status-all" : description
+        }
+    }
+
     var description: String {
         return self?.description ?? NSLocalizedString("Any", comment: "Title when there is no filter set.")
     }
@@ -28,6 +37,10 @@ extension Optional: FilterType where Wrapped: FilterType {
 }
 
 extension ProductStockStatus: FilterType {
+    var accessibilityIdentifier: String {
+        "product-stock-status-\(rawValue)"
+    }
+
     var isActive: Bool {
         return true
     }

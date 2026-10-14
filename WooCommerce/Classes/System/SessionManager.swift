@@ -322,8 +322,12 @@ final class SessionManager: SessionManagerProtocol {
 
         applicationPasswordUseCase = useCase
         Task { @MainActor in
-            try await useCase.deletePassword(locally: locally)
-            applicationPasswordUseCase = nil
+            do {
+                try await useCase.deletePassword(locally: locally)
+                applicationPasswordUseCase = nil
+            } catch {
+                DDLogError("⛔️ Failed to delete application password: \(error)")
+            }
         }
     }
 }

@@ -205,6 +205,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         prepareForBackgroundUploadsUponDismissal()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override var shouldShowOfflineBanner: Bool {
         return true
     }
@@ -1435,6 +1440,10 @@ private extension ProductFormViewController {
                                             target: self,
                                             action: #selector(publishProduct))
         publishButton.accessibilityIdentifier = "publish-product-button"
+        publishButton.menuRepresentation = overflowMenuAction(title: Localization.publishTitle,
+                                                              accessibilityIdentifier: "publish-product-button") { [weak self] in
+            self?.publishProduct()
+        }
         return publishButton
     }
 
@@ -1444,7 +1453,19 @@ private extension ProductFormViewController {
                                          target: self,
                                          action: #selector(saveProductAndLogEvent))
         saveButton.accessibilityIdentifier = "save-product-button"
+        saveButton.menuRepresentation = overflowMenuAction(title: Localization.saveTitle,
+                                                           accessibilityIdentifier: "save-product-button") { [weak self] in
+            self?.saveProductAndLogEvent()
+        }
         return saveButton
+    }
+
+    func overflowMenuAction(title: String, accessibilityIdentifier: String, handler: @escaping () -> Void) -> UIAction {
+        let action = UIAction(title: title) { _ in
+            handler()
+        }
+        action.accessibilityIdentifier = accessibilityIdentifier
+        return action
     }
 
     func createPreviewBarButtonItem() -> UIBarButtonItem {

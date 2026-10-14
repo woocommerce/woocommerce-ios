@@ -59,10 +59,10 @@ extension POSSettingsView {
                                                    action: {
                                                        analytics.track(.pointOfSaleSettingsCloseButtonTapped)
                                                        dismiss()
-                                                   }))
+                                                   },
+                                                   accessibilityIdentifier: "pos-settings-close-button"))
                 .posHeaderBackButtonIcon(systemName: "xmark")
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
                 VStack(spacing: POSSpacing.small) {
                     POSSettingsCard(title: SidebarNavigation.store.title,
@@ -102,6 +102,7 @@ extension POSSettingsView {
                 .padding(.horizontal, POSPadding.medium)
             }
             .background(Color.posSurfaceBright)
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("pos-settings-view")
         }
 

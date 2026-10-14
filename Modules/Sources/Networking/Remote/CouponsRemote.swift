@@ -5,7 +5,7 @@ import Foundation
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
 public protocol CouponsRemoteProtocol {
-    func loadAllCoupons(for siteID: Int64,
+    nonisolated(nonsending) func loadAllCoupons(for siteID: Int64,
                         pageNumber: Int,
                         pageSize: Int) async throws -> [Coupon]
 
@@ -15,7 +15,7 @@ public protocol CouponsRemoteProtocol {
                      pageSize: Int,
                      completion: @escaping (Result<[Coupon], Error>) -> ())
 
-    func searchCoupons(for siteID: Int64,
+    nonisolated(nonsending) func searchCoupons(for siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int) async throws -> [Coupon]
@@ -71,7 +71,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///     - pageSize: The maximum number of coupons to be fetched for the current page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllCoupons(for siteID: Int64,
+    nonisolated(nonsending) public func loadAllCoupons(for siteID: Int64,
                                pageNumber: Int = Default.pageNumber,
                                pageSize: Int = Default.pageSize) async throws -> [Coupon] {
         let parameters = [
@@ -133,7 +133,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    public func searchCoupons(for siteID: Int64,
+    nonisolated(nonsending) public func searchCoupons(for siteID: Int64,
                               keyword: String,
                               pageNumber: Int,
                               pageSize: Int) async throws -> [Coupon] {

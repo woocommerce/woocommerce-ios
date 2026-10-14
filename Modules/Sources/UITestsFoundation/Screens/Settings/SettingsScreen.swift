@@ -3,7 +3,7 @@ import XCTest
 
 public final class SettingsScreen: ScreenObject {
     private let settingsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
-        $0.navigationBars["Settings"]
+        $0.tables["settings-screen"]
     }
 
     private let betaFeaturesGetter: (XCUIApplication) -> XCUIElement = {

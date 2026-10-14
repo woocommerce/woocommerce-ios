@@ -34,6 +34,7 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
                 Button(viewModel.connectButton.title,
                        action: viewModel.connectButton.actionHandler)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .accessibilityIdentifier("pos-reader-connect-button")
 
                 Button(viewModel.continueSearchButton.title,
                        action: viewModel.continueSearchButton.actionHandler)

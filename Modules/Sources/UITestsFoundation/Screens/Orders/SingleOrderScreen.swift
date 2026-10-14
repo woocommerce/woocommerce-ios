@@ -3,8 +3,6 @@ import XCTest
 
 public final class SingleOrderScreen: ScreenObject {
 
-    let tabBar: TabNavComponent
-
     private let editOrderButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["order-details-edit-button"]
     }
@@ -18,7 +16,7 @@ public final class SingleOrderScreen: ScreenObject {
     }
 
     private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["order-details-collect-payment-button"]
+        $0.cells["order-details-collect-payment-button"]
     }
 
     private var editOrderButton: XCUIElement { editOrderButtonGetter(app) }
@@ -26,8 +24,6 @@ public final class SingleOrderScreen: ScreenObject {
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
-        tabBar = try TabNavComponent(app: app)
-
         try super.init(
             expectedElementGetters: [ summaryCellTitleGetter, summaryCellPaymentStatusGetter ],
             app: app
@@ -45,13 +41,20 @@ public final class SingleOrderScreen: ScreenObject {
         let orderTotalPredicate = NSPredicate(format: "label CONTAINS %@", order.total)
 
         // Check that navigation bar contains order number
-        let navigationBarTitles = app.navigationBars.map { $0.staticTexts.element.label }
-        let expectedTitle = "#\(order.number)"
-        XCTAssertTrue(navigationBarTitles.contains(where: { $0.contains(expectedTitle) }), "No navigation bar found with title \(expectedTitle)")
+        let orderNumber = order.number
+        let hasOrderNavigationBar = MainActor.assumeIsolated { [app] in
+            let predicate = NSPredicate(format: "identifier CONTAINS %@ OR label CONTAINS %@", orderNumber, orderNumber)
+            return app.navigationBars.matching(predicate).firstMatch.exists
+        }
+        XCTAssertTrue(hasOrderNavigationBar, "No navigation bar found for order \(order.number)")
 
         // Check order status and total
         let orderDetailTableView = app.tables["order-details-table-view"]
-        orderDetailTableView.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
+        let orderStatus = order.status
+        let hasOrderStatus = MainActor.assumeIsolated {
+            orderDetailTableView.buttons["order-status-\(orderStatus)"].exists
+        }
+        XCTAssertTrue(hasOrderStatus)
         XCTAssertTrue(app.otherElements.containing(orderTotalPredicate).element.exists)
 
         // Check name on order summary

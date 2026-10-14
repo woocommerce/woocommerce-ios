@@ -27,8 +27,6 @@ class NUXLinkAuthViewController: LoginViewController {
         let credentials = makeCredentials(authToken: authToken, isJetpackConnect: isJetpackConnect)
 
         syncWPComAndPresentEpilogue(credentials: credentials) {
-            self.tracker.track(step: .success)
-
             switch flow {
             case .signup:
                 // This stat is part of a funnel that provides critical information. Before

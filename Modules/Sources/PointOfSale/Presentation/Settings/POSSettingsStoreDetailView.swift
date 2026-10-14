@@ -29,7 +29,6 @@ struct POSSettingsStoreDetailView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(title: Localization.storeTitle)
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
@@ -38,7 +37,7 @@ struct POSSettingsStoreDetailView: View {
                     receiptInformationView
                         .renderedIf(viewModel.shouldShowReceiptInformation)
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, POSPadding.medium)
             }
         }
         .background(backgroundColor)

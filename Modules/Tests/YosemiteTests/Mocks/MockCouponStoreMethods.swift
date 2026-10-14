@@ -17,7 +17,7 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
 
     var onSynchronizeCalled: () -> Void = {}
 
-    func synchronizeCoupons(siteID: Int64,
+    nonisolated(nonsending) func synchronizeCoupons(siteID: Int64,
                             pageNumber: Int,
                             pageSize: Int) async throws -> Bool {
         synchronizeCalled = true
@@ -86,7 +86,7 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
         onCompletion(.success(()))
     }
 
-    func searchCoupons(siteID: Int64,
+    nonisolated(nonsending) func searchCoupons(siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int) async throws {

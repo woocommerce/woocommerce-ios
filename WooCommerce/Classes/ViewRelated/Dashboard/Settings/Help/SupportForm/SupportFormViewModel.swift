@@ -80,6 +80,9 @@ public final class SupportFormViewModel: ObservableObject {
     /// Immutable transcript context appended to the editable message when the request is submitted.
     private let transcript: String?
 
+    /// Odie chat to link to the ticket when escalating from AI support.
+    private let aiChatID: Int64?
+
     /// Whether the form should disclose that an AI chat transcript will be included.
     var shouldShowTranscriptDisclosure: Bool {
         transcript?.isNonBlank == true
@@ -128,6 +131,7 @@ public final class SupportFormViewModel: ObservableObject {
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
          attachments: [ZendeskAttachment] = [],
          transcript: String? = nil,
+         aiChatID: Int64? = nil,
          preselectedArea: Area? = nil,
          prefilledSubject: String? = nil,
          prefilledSiteAddress: String? = nil,
@@ -144,6 +148,7 @@ public final class SupportFormViewModel: ObservableObject {
         self.defaultSite = defaultSite
         self.attachments = attachments
         self.transcript = transcript
+        self.aiChatID = aiChatID
         self.area = preselectedArea
         self.onTicketCreated = onTicketCreated
         self.onTicketCreationFailed = onTicketCreationFailed
@@ -198,7 +203,7 @@ public final class SupportFormViewModel: ObservableObject {
         let mobileStatusReport = await mobileStatusReportProvider.generateReport(siteAddress: siteAddress)
         let (customFields, requestAttachments) = MobileStatusReportZendesk.embed(
             mobileStatusReport,
-            intoCustomFields: area.datasource.customFields(siteAddress: siteAddress),
+            intoCustomFields: area.datasource.customFields(siteAddress: siteAddress, aiChatID: aiChatID),
             attachments: attachmentProvider.attachments(including: attachments))
 
         let request = ZendeskSupportRequest(formID: area.datasource.formID,

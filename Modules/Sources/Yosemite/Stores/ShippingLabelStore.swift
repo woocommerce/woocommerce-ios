@@ -250,7 +250,7 @@ private extension ShippingLabelStore {
                                      originAddress: originAddress,
                                      destinationAddress: destinationAddress,
                                      packages: packages,
-                                     emailCustomerReceipt: emailCustomerReceipt) { result in
+                                     emailCustomerReceipt: emailCustomerReceipt) { [weak self] result in
             switch result {
             case .success(let labelPurchases):
                 // Save the IDs of label purchases in the response so we can poll the backend for their status.

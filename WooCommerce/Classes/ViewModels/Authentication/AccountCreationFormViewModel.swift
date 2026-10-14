@@ -93,7 +93,7 @@ final class AccountCreationFormViewModel: ObservableObject {
 
             await handleSuccess(data: data)
             completionHandler()
-        } catch let error as CreateAccountError {
+        } catch {
             /// Skip tracking if the password field is yet to be presented.
             let shouldSkipTrackingError: Bool = {
                 guard case .invalidPassword = error else {
@@ -105,8 +105,6 @@ final class AccountCreationFormViewModel: ObservableObject {
                 analytics.track(event: .StoreCreation.signupFailed(error: error))
             }
             await handleFailure(error: error)
-        } catch {
-            DDLogError("⛔️ Uncaught error when creating WPCom account: \(error)")
         }
 
         isPerformingTask = false

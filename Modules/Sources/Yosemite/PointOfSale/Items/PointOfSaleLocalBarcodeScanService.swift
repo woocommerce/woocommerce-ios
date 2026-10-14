@@ -4,6 +4,7 @@ import enum Networking.ProductStatus
 import class WooFoundation.CurrencySettings
 
 /// Service for handling barcode scanning using local GRDB catalog
+@MainActor
 public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
     private let grdbManager: GRDBManagerProtocol
     private let siteID: Int64
@@ -23,11 +24,11 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
     /// - Returns: A POSItem if found, or throws an error
     public func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         do {
-            if let product = try searchProductByGlobalUniqueID(barcode) {
+            if let product = try await Self.searchProductByGlobalUniqueID(barcode, siteID: siteID, grdbManager: grdbManager) {
                 return try convertProductToItem(product, scannedCode: barcode)
             }
 
-            if let variationAndParent = try searchVariationByGlobalUniqueID(barcode) {
+            if let variationAndParent = try await Self.searchVariationByGlobalUniqueID(barcode, siteID: siteID, grdbManager: grdbManager) {
                 return try convertVariationToItem(variationAndParent.variation, parentProduct: variationAndParent.parentProduct, scannedCode: barcode)
             }
 
@@ -41,16 +42,28 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
 
     // MARK: - Product Search
 
-    private func searchProductByGlobalUniqueID(_ globalUniqueID: String) throws -> PersistedProduct? {
-        try grdbManager.databaseConnection.read { db in
+    @concurrent
+    nonisolated private static func searchProductByGlobalUniqueID(_ globalUniqueID: String,
+                                                                 siteID: Int64,
+                                                                 grdbManager: GRDBManagerProtocol) async throws -> POSProduct? {
+        guard let product = try await grdbManager.databaseConnection.read({ db in
             try PersistedProduct.posProductByGlobalUniqueID(siteID: siteID, globalUniqueID: globalUniqueID).fetchOne(db)
+        }) else { return nil }
+        do {
+            return try product.toPOSProduct(db: grdbManager.databaseConnection)
+        } catch {
+            throw PointOfSaleBarcodeScanError.mappingError(scannedCode: globalUniqueID, underlyingError: error)
         }
     }
 
     // MARK: - Variation Search
 
-    private func searchVariationByGlobalUniqueID(_ globalUniqueID: String) throws -> (variation: PersistedProductVariation, parentProduct: PersistedProduct)? {
-        try grdbManager.databaseConnection.read { db in
+    @concurrent
+    nonisolated private static func searchVariationByGlobalUniqueID(_ globalUniqueID: String,
+                                                                   siteID: Int64,
+                                                                   grdbManager: GRDBManagerProtocol) async throws
+    -> (variation: POSProductVariation, parentProduct: POSProduct)? {
+        guard let result = try await grdbManager.databaseConnection.read({ db -> (variation: PersistedProductVariation, parentProduct: PersistedProduct)? in
             guard let variation = try PersistedProductVariation.posVariationByGlobalUniqueID(siteID: siteID, globalUniqueID: globalUniqueID).fetchOne(db) else {
                 return nil
             }
@@ -58,35 +71,39 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
             guard let parentProduct = try variation.request(for: PersistedProductVariation.parentProduct).fetchOne(db) else {
                 throw PointOfSaleBarcodeScanError.noParentProductForVariation(scannedCode: globalUniqueID)
             }
-            return (variation, parentProduct)
+            return (variation: variation, parentProduct: parentProduct)
+        }) else { return nil }
+        do {
+            return (try result.variation.toPOSProductVariation(db: grdbManager.databaseConnection),
+                    try result.parentProduct.toPOSProduct(db: grdbManager.databaseConnection))
+        } catch {
+            throw PointOfSaleBarcodeScanError.mappingError(scannedCode: globalUniqueID, underlyingError: error)
         }
     }
 
     // MARK: - Conversion to POSItem
 
-    private func convertProductToItem(_ persistedProduct: PersistedProduct, scannedCode: String) throws(PointOfSaleBarcodeScanError) -> POSItem {
+    private func convertProductToItem(_ product: POSProduct, scannedCode: String) throws(PointOfSaleBarcodeScanError) -> POSItem {
         do {
-            let posProduct = try persistedProduct.toPOSProduct(db: grdbManager.databaseConnection)
-
             // Validate that the product status is allowed for POS
-            try validateProductStatus(posProduct, scannedCode: scannedCode)
+            try validateProductStatus(product, scannedCode: scannedCode)
 
-            guard !posProduct.downloadable else {
-                throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: posProduct.name)
+            guard !product.downloadable else {
+                throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: product.name)
             }
 
             // Validate product type - only simple products can be scanned directly
             // Variable parent products cannot be added to cart (only their variations can)
-            guard posProduct.productType == .simple else {
+            guard product.productType == .simple else {
                 throw PointOfSaleBarcodeScanError.unsupportedProductType(
                     scannedCode: scannedCode,
-                    productName: posProduct.name,
-                    productType: posProduct.productType
+                    productName: product.name,
+                    productType: product.productType
                 )
             }
 
             // Convert to POSItem
-            let items = itemMapper.mapProductsToPOSItems(products: [posProduct])
+            let items = itemMapper.mapProductsToPOSItems(products: [product])
             guard let item = items.first else {
                 throw PointOfSaleBarcodeScanError.unknown(scannedCode: scannedCode)
             }
@@ -99,25 +116,21 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
         }
     }
 
-    private func convertVariationToItem(_ persistedVariation: PersistedProductVariation,
-                                        parentProduct: PersistedProduct,
+    private func convertVariationToItem(_ variation: POSProductVariation,
+                                        parentProduct: POSProduct,
                                         scannedCode: String) throws(PointOfSaleBarcodeScanError) -> POSItem {
         do {
-            // Convert both variation and parent to POS models
-            let posVariation = try persistedVariation.toPOSProductVariation(db: grdbManager.databaseConnection)
-            let parentPOSProduct = try parentProduct.toPOSProduct(db: grdbManager.databaseConnection)
-
             // Validate that the parent product status is allowed for POS
-            try validateProductStatus(parentPOSProduct, scannedCode: scannedCode)
+            try validateProductStatus(parentProduct, scannedCode: scannedCode)
 
             // Map to POSItem
-            guard let mappedParent = itemMapper.mapProductsToPOSItems(products: [parentPOSProduct]).first,
+            guard let mappedParent = itemMapper.mapProductsToPOSItems(products: [parentProduct]).first,
                   case .variableParentProduct(let variableParentProduct) = mappedParent,
-                  let item = itemMapper.mapVariationsToPOSItems(variations: [posVariation], parentProduct: variableParentProduct).first else {
+                  let item = itemMapper.mapVariationsToPOSItems(variations: [variation], parentProduct: variableParentProduct).first else {
                 throw PointOfSaleBarcodeScanError.variationCouldNotBeConverted(scannedCode: scannedCode)
             }
 
-            guard !persistedVariation.downloadable else {
+            guard !variation.downloadable else {
                 throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode,
                                                                       productName: variationName(for: item))
             }

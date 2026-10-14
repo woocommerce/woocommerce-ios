@@ -31,7 +31,6 @@ struct POSStaffSettingsView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(title: Localization.staffTitle)
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {

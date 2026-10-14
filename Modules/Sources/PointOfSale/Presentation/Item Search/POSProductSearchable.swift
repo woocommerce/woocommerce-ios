@@ -4,6 +4,7 @@ import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItem
 import enum Yosemite.SearchDebounceStrategy
 
+@MainActor
 final class POSProductSearchable: POSSearchable {
     private let itemListType: ItemListType
     private let itemsController: PointOfSaleSearchingItemsControllerProtocol

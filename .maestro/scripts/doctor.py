@@ -5,10 +5,12 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 import os
 import shutil
 import subprocess
 import sys
+import urllib.request
 from pathlib import Path
 
 
@@ -55,6 +57,17 @@ def check_simulator_locale(device: str) -> tuple[bool, str]:
     return False, f"simulator language: {reason}"
 
 
+def check_lab_store(url: str) -> tuple[bool, str]:
+    """An expired Jurassic Ninja store stops answering, and only the setup skill can replace it."""
+    try:
+        with urllib.request.urlopen(f"{url.rstrip('/')}/?rest_route=/", timeout=15) as response:
+            if "namespaces" in json.load(response):
+                return True, "the lab store responds"
+    except (OSError, ValueError):
+        pass
+    return False, "the lab store doesn't respond; run the /setup-test-stores skill"
+
+
 def missing_environment(flows: list[Path], environment: dict[str, str], args: argparse.Namespace) -> list[str]:
     store_values = {store: RUNNER.select_store_environment(environment, store) for store in RUNNER.STORES}
     missing = set()
@@ -75,18 +88,12 @@ def missing_environment(flows: list[Path], environment: dict[str, str], args: ar
     return sorted(missing)
 
 
-def selection_problems(flows: list[Path], environment: dict[str, str], args: argparse.Namespace) -> list[str]:
+def selection_problems(flows: list[Path], args: argparse.Namespace) -> list[str]:
     """Return the reasons the runner would refuse this selection before running any flow."""
     checks = [
         lambda: RUNNER.validate_destructive_cleanup(flows, seed=args.seed),
         lambda: RUNNER.validate_shared_destructive(flows, store=args.store),
     ]
-    for store in RUNNER.STORES:
-        store_flows = [flow for flow in flows if RUNNER.flow_store(flow, args.store) == store]
-        values = RUNNER.select_store_environment(environment, store)
-        checks.append(
-            lambda flows=store_flows, values=values, store=store: RUNNER.validate_login_store_hosts(flows, values, store=store)
-        )
     problems = []
     for check in checks:
         try:
@@ -101,11 +108,15 @@ def main() -> int:
     parser.add_argument("--app", required=True, type=Path)
     parser.add_argument("--profile", choices=sorted(RUNNER.PROFILES), default="core")
     parser.add_argument("--device")
+    parser.add_argument("--pos-device")
     parser.add_argument("--store", choices=RUNNER.STORES)
     parser.add_argument("--include-tags")
     parser.add_argument("--exclude-tags")
-    parser.add_argument("--seed", action="store_true")
+    parser.add_argument("--seed", action="store_true", default=None)
+    parser.add_argument("--no-seed", dest="seed", action="store_false")
     args = parser.parse_args()
+    if args.seed is None:
+        args.seed = args.profile in RUNNER.SEEDING_PROFILES
 
     checks: list[tuple[bool, str]] = []
     for command in ("bash", "python3", "maestro", "xcrun", "plutil"):
@@ -127,13 +138,6 @@ def main() -> int:
         checks.append((False, f"app bundle: {error}"))
 
     family = RUNNER.PROFILES[args.profile][2]
-    try:
-        simulator = RUNNER.resolve_simulator(args.device, family, boot=False)
-        checks.append((True, f"simulator: {simulator['name']} ({simulator['udid']})"))
-        checks.append(check_simulator_locale(simulator["udid"]))
-    except (SystemExit, subprocess.SubprocessError) as error:
-        checks.append((False, f"simulator: {error}"))
-
     include = RUNNER.csv(args.include_tags)
     if include is None:
         include = RUNNER.PROFILES[args.profile][0]
@@ -144,12 +148,37 @@ def main() -> int:
     try:
         flows = RUNNER.select_flows(namespace, include, exclude)
         checks.append((True, f"selected flows: {len(flows)}"))
+        if not any("destructive" in RUNNER.flow_tags(flow) for flow in flows):
+            args.seed = False
     except SystemExit as error:
         checks.append((False, f"flow selection: {error}"))
 
+    if 'flows' not in locals() or not RUNNER.runs_only_on_pos_device(flows, family):
+        try:
+            device = args.device or (args.pos_device if family == "ipad" else None)
+            simulator = RUNNER.resolve_simulator(device, family, boot=False)
+            checks.append((True, f"simulator: {simulator['name']} ({simulator['udid']})"))
+            checks.append(check_simulator_locale(simulator["udid"]))
+        except (SystemExit, subprocess.SubprocessError) as error:
+            checks.append((False, f"simulator: {error}"))
+
+    if 'flows' in locals() and RUNNER.needs_pos_device(flows, family):
+        try:
+            pos_device = args.pos_device
+            if not pos_device and RUNNER.runs_only_on_pos_device(flows, family):
+                pos_device = args.device
+            pos_simulator = RUNNER.resolve_simulator(pos_device, "ipad", boot=False, option="--pos-device")
+            checks.append((True, f"POS simulator: {pos_simulator['name']} ({pos_simulator['udid']})"))
+            checks.append(check_simulator_locale(pos_simulator["udid"]))
+        except (SystemExit, subprocess.SubprocessError) as error:
+            checks.append((False, f"POS simulator: {error}"))
+
     missing = missing_environment(flows if 'flows' in locals() else [], environment, args)
     checks.append((not missing, "required credentials are present" if not missing else "missing variables: " + ", ".join(missing)))
-    checks.extend((False, problem) for problem in selection_problems(flows if 'flows' in locals() else [], environment, args))
+    lab_url = RUNNER.select_store_environment(environment, "lab").get("MAESTRO_WOO_JETPACK_STORE_URL", "")
+    if lab_url and any(RUNNER.flow_store(flow, args.store) == "lab" for flow in (flows if 'flows' in locals() else [])):
+        checks.append(check_lab_store(lab_url))
+    checks.extend((False, problem) for problem in selection_problems(flows if 'flows' in locals() else [], args))
 
     print("WooCommerce iOS Maestro doctor")
     print(f"profile: {args.profile}")

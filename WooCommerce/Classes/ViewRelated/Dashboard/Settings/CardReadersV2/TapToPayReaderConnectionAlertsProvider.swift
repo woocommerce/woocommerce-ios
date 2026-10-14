@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 struct TapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProviding {
     func scanningForReader(cancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalTapToPayReaderCheckingDeviceSupport(cancel: cancel)

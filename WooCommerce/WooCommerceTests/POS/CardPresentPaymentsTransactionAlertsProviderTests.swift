@@ -4,7 +4,7 @@ import Testing
 
 @MainActor
 struct CardPresentPaymentsTransactionAlertsProviderTests {
-    @Test func test_paymentCancellationConfirmation_confirmationDisabled_returnsNil() {
+    @Test @MainActor func test_paymentCancellationConfirmation_confirmationDisabled_returnsNil() {
         // Given
         let provider = CardPresentPaymentsTransactionAlertsProvider()
 
@@ -15,7 +15,7 @@ struct CardPresentPaymentsTransactionAlertsProviderTests {
         #expect(confirmation == nil)
     }
 
-    @Test func test_paymentCancellationConfirmation_confirmationEnabled_returnsConfirmationWithDismissAction() {
+    @Test @MainActor func test_paymentCancellationConfirmation_confirmationEnabled_returnsConfirmationWithDismissAction() {
         // Given
         let provider = CardPresentPaymentsTransactionAlertsProvider(showsTapToPayCancellationConfirmation: true)
         var didDismiss = false

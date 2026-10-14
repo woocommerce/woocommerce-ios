@@ -33,6 +33,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             }
         }
         XCTAssertEqual(inventoryViewModel?.details, ProductStockStatus.onBackOrder.description)
+        XCTAssertEqual(inventoryViewModel?.detailsAccessibilityIdentifier, "product-stock-status-onbackorder")
     }
 
     func test_variable_product_inventory_row_has_no_details_when_stock_management_is_disabled_without_sku() {
@@ -63,6 +64,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             }
         }
         XCTAssertNil(inventoryViewModel?.details)
+        XCTAssertNotNil(inventoryViewModel)
+        XCTAssertNil(inventoryViewModel?.detailsAccessibilityIdentifier)
     }
 
     func test_variable_product_inventory_row_has_details_when_passing_global_unique_identifier() {
@@ -96,6 +99,38 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
         let expectedDetails = "GTIN, UPC, EAN, ISBN: \(globalUniqueID)"
         XCTAssertEqual(inventoryViewModel?.details, expectedDetails)
+        XCTAssertNil(inventoryViewModel?.detailsAccessibilityIdentifier)
+    }
+
+    func test_inventory_when_stock_is_managed_then_stock_status_identifier_is_absent() throws {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                                          sku: "managed-product",
+                                          manageStock: true,
+                                          stockQuantity: 5,
+                                          stockStatusKey: ProductStockStatus.inStock.rawValue)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        let inventoryViewModel = try XCTUnwrap(rows.compactMap { row -> ProductFormSection.SettingsRow.ViewModel? in
+            guard case let .inventory(viewModel, _) = row else {
+                return nil
+            }
+            return viewModel
+        }.first)
+        XCTAssertNotNil(inventoryViewModel.details)
+        XCTAssertNil(inventoryViewModel.detailsAccessibilityIdentifier)
     }
 
     func test_variation_view_model_image_row_has_isVariation_true() {

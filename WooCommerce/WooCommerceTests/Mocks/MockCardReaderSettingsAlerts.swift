@@ -30,6 +30,7 @@ final class MockCardReaderSettingsAlerts {
     }
 }
 
+@MainActor
 extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentsModalViewModel
 

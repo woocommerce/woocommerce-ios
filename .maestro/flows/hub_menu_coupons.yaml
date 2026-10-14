@@ -3,6 +3,7 @@ appId: ${APP_ID}
 name: "Hub Menu - Coupons"
 tags:
   - smoke_extended
+  - destructive
   - hub_menu
 ---
 - runFlow:
@@ -37,11 +38,40 @@ tags:
 - assertVisible: "Regenerate Coupon Code"
 - assertVisible: "Discount Type"
 - takeScreenshot: hub_coupon_creation_form
-- tapOn: "Cancel"
-- extendedWaitUntil:
-    visible:
-      id: "coupon-create-button"
+# rightOf compares only x positions, so each field is also boxed in by the
+# rows above and below it.
+- tapOn:
+    text: "0"
+    rightOf: "Amount \\(%\\)"
+    below: "Discount Type"
+    above: "Set the percentage of the discount you want to offer."
+- eraseText
+- inputText: "10"
+- tapOn:
+    text: ".+"
+    rightOf: "Coupon Code"
+    below: "Set the percentage of the discount you want to offer."
+    above: "Customers need to enter this code to use the coupon."
+- eraseText
+# The -UI suffix keeps this coupon apart from any other one carrying the run id.
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${SUITE_RUN_ID}-UI
+- scrollUntilVisible:
+    element: "Create"
+    direction: DOWN
     timeout: 10000
+- tapOn: "Create"
+- extendedWaitUntil:
+    visible: "Your new coupon was created!"
+    timeout: 30000
+- tapOn: "Close"
+# WooCommerce stores the code in lowercase, and text matching ignores case.
+- extendedWaitUntil:
+    visible: ".*${SUITE_RUN_ID}-UI.*"
+    timeout: 30000
+- takeScreenshot: hub_coupon_created
 - tapOn: "Back"
 - extendedWaitUntil:
     visible:

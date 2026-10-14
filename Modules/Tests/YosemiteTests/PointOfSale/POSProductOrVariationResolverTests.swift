@@ -4,6 +4,7 @@ import WooFoundation
 @testable import Yosemite
 @testable import Networking
 
+@MainActor
 struct POSProductOrVariationResolverTests {
     private var mockProductsRemote: MockProductsRemote!
     private var mockItemMapper: MockPointOfSaleItemMapper!
@@ -257,7 +258,7 @@ private extension POSProductOrVariationResolverTests {
 
 // MARK: - PointOfSaleBarcodeScanError equatable for testing
 
-extension PointOfSaleBarcodeScanError: @retroactive Equatable {
+extension PointOfSaleBarcodeScanError: Equatable {
     public static func == (lhs: PointOfSaleBarcodeScanError, rhs: PointOfSaleBarcodeScanError) -> Bool {
         switch (lhs, rhs) {
         case let (.unknown(lhsScannedCode), .unknown(rhsScannedCode)):

@@ -4,6 +4,7 @@ import MessageUI
 import enum Hardware.CardReaderServiceError
 import enum Hardware.UnderlyingError
 
+@MainActor
 final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsProviding {
     var name: String = ""
     var amount: String = ""

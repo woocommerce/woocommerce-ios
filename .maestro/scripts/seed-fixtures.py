@@ -249,6 +249,10 @@ def discover_entities(client: WooClient, manifest: dict[str, Any]) -> list[dict[
     for tag in client.list("products/tags", search=run_id):
         if run_id in str(tag.get("name", "")):
             entities.append({"type": "tag", "id": int(tag["id"])})
+    # WooCommerce stores coupon codes in lowercase.
+    for coupon in client.list("coupons", search=run_id):
+        if run_id.lower() in str(coupon.get("code", "")).lower():
+            entities.append({"type": "coupon", "id": int(coupon["id"])})
     return entities
 
 
@@ -262,8 +266,8 @@ def cleanup(args: argparse.Namespace) -> None:
         manifest["discovery_complete"] = True
         write_manifest(args.manifest, manifest)
 
-    paths = {"order": "orders", "product": "products", "tag": "products/tags", "media": "media"}
-    prefixes = {"order": API_PREFIX, "product": API_PREFIX, "tag": API_PREFIX, "media": MEDIA_PREFIX}
+    paths = {"order": "orders", "product": "products", "tag": "products/tags", "coupon": "coupons", "media": "media"}
+    prefixes = {"order": API_PREFIX, "product": API_PREFIX, "tag": API_PREFIX, "coupon": API_PREFIX, "media": MEDIA_PREFIX}
     errors: list[str] = []
     original_count = len(manifest["entities"])
     for entity in reversed(list(manifest["entities"])):

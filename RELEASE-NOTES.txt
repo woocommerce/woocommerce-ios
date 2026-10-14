@@ -3,6 +3,9 @@
 
 25.9
 -----
+- [*] POS: Fixed a blank line above cart prices for variations without attributes. [https://github.com/woocommerce/woocommerce-ios/pull/18073]
+- [**] In-Person Payments: Fixed setup for stores without WooPayments or Stripe installed. [https://github.com/woocommerce/woocommerce-ios/pull/18047]
+- [*] Payments: In-person card payments are now hidden for orders sold as a subscription, including variable and plan-based subscriptions the previous check missed. [https://github.com/woocommerce/woocommerce-ios/pull/17986]
 - [*] Products: When sorting by title, loading more products no longer inserts them in the middle of the list. [https://github.com/woocommerce/woocommerce-ios/pull/18035]
 - [*] POS: Fixed order creation times differing between the order list and details. [https://github.com/woocommerce/woocommerce-ios/pull/18051]
 - [*] Product details: Fixed row content touching the edge of the details pane on iPhone Duo. [https://github.com/woocommerce/woocommerce-ios/pull/18036]
@@ -18,7 +21,7 @@
 - [*] Layout: Fixed doubled side padding on the card reader manuals, plugins and booking details screens in landscape, and content insets of sheets on wide layouts. [https://github.com/woocommerce/woocommerce-ios/pull/17971]
 - [*] Order creation: Keep the form, product selector and bundle configuration content inside the safe area after rotating or resizing the app. [https://github.com/woocommerce/woocommerce-ios/pull/17951]
 - [*] Privacy: Respect your analytics preference throughout login, including after logging out. [https://github.com/woocommerce/woocommerce-ios/pull/17973]
-- [*] Login: Unexpected store responses now offer Try Again, Contact Support, and Dismiss actions. [https://github.com/woocommerce/woocommerce-ios/pull/18030]
+- [*] Login: Unexpected store responses now offer Try Again, Contact Support, and Dismiss actions. [https://github.com/woocommerce/woocommerce-ios/pull/18030, https://github.com/woocommerce/woocommerce-ios/pull/18031]
 
 
 25.8

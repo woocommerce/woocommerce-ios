@@ -29,6 +29,8 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     var onDidFinishSyncingAllCustomersFirstPage: (() -> Void)?
 
+    var onDidSyncCustomers: ((Result<Void, Error>) -> Void)?
+
     var onAddCustomerDetailsManually: (() -> Void)?
 
     private var filter: CustomerSearchFilter = .name
@@ -199,7 +201,10 @@ final class CustomerSearchUICommand: SearchUICommand {
                 action = synchronizeAllLightCustomersDataAction(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
             } else {
                 // As we don't have to show anything if the search query is empty, let's reset the customers database
-                action = .deleteAllCustomers(siteID: siteID, onCompletion: { onCompletion?(true) })
+                action = .deleteAllCustomers(siteID: siteID, onCompletion: { [weak self] in
+                    onCompletion?(true)
+                    self?.onDidSyncCustomers?(.success(()))
+                })
             }
         } else {
             action = searchCustomersAction(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
@@ -260,9 +265,12 @@ private extension CustomerSearchUICommand {
                                                      filterEmpty: .email) { [weak self] result in
             switch result {
             case .success:
-                onCompletion?(result.isSuccess)
+                onCompletion?(true)
+                self?.onDidSyncCustomers?(.success(()))
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")
+                onCompletion?(false)
+                self?.onDidSyncCustomers?(.failure(error))
             }
 
             if pageNumber == 1 {
@@ -281,13 +289,15 @@ private extension CustomerSearchUICommand {
                                               order: .asc,
                                               keyword: keyword,
                                               filter: searchFilter,
-                                              filterEmpty: .email) { result in
+                                              filterEmpty: .email) { [weak self] result in
             switch result {
             case .success(let hasNextPage):
                 onCompletion?(hasNextPage)
+                self?.onDidSyncCustomers?(.success(()))
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")
                 onCompletion?(false)
+                self?.onDidSyncCustomers?(.failure(error))
             }
         }
     }

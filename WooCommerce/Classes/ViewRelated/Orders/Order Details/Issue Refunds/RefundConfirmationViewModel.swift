@@ -82,7 +82,7 @@ final class RefundConfirmationViewModel {
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // Creates refund object.
         let shippingLines = details.refundsShipping ? details.shippingLines : []
-        let fees = details.refundsFees ? details.order.fees : []
+        let fees = details.refundsFees ? details.fees : []
         let useCase = RefundCreationUseCase(amount: details.amount,
                                             reason: reasonForRefundCellViewModel.value,
                                             automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
@@ -169,6 +169,7 @@ extension RefundConfirmationViewModel {
         /// Indicates if fees will be refunded
         ///
         let refundsFees: Bool
+        let fees: [OrderFeeLine]
 
         /// Order items and quantities to refund
         ///
@@ -190,13 +191,15 @@ extension RefundConfirmationViewModel {
              items: [RefundableOrderItem],
              paymentGateway: PaymentGateway?,
              paymentGatewayAccount: PaymentGatewayAccount?,
-             shippingLines: [ShippingLine]? = nil) {
+             shippingLines: [ShippingLine]? = nil,
+             fees: [OrderFeeLine]? = nil) {
             self.order = order
             self.charge = charge
             self.amount = amount
             self.refundsShipping = refundsShipping
             self.shippingLines = shippingLines ?? order.shippingLines
             self.refundsFees = refundsFees
+            self.fees = fees ?? order.fees
             self.items = items
             self.paymentGateway = paymentGateway
             self.paymentGatewayAccount = paymentGatewayAccount

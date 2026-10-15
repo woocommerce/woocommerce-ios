@@ -31,8 +31,7 @@ struct POSRefundSubmissionMapping {
     }
 
     func determineRefundableFees(from order: Order, with refunds: [Refund]) -> [OrderFeeLine] {
-        let refundedFeeIDs = Set(refunds.flatMap(\.feeLines).map { $0.refundedItemID ?? $0.feeID })
-        return order.fees.filter { !refundedFeeIDs.contains($0.feeID) }
+        OrderRefundsOptionsDeterminer.remainingFees(in: order, refunds: refunds)
     }
 
     func makeSelectableItems(refundableItems: [RefundableOrderItem],

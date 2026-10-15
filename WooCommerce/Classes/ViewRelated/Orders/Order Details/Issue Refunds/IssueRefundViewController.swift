@@ -83,6 +83,13 @@ private extension IssueRefundViewController {
             self?.updateWithViewModelContent()
         }
 
+        viewModel.showFetchRefundsErrorNotice = { [weak self] retry in
+            let presenter = DefaultNoticePresenter()
+            presenter.presentingViewController = self
+            presenter.enqueue(notice: Notice(title: Localization.fetchRefundsError,
+                                             feedbackType: .error, actionTitle: Localization.retryFetchChargeNoticeRetryActionTitle, actionHandler: retry))
+        }
+
         viewModel.showFetchChargeErrorNotice = { [weak self] retryAction in
             guard let self else { return }
 
@@ -283,6 +290,8 @@ extension IssueRefundViewController: IssueRefundInteractiveDismissDelegate {
 // MARK: Constants
 private extension IssueRefundViewController {
     enum Localization {
+        static let fetchRefundsError = NSLocalizedString("issueRefund.fetchRefunds.failed", value: "Could not load previous refunds.",
+                                                        comment: "Error when loading refund history before a new refund.")
         static let nextTitle = NSLocalizedString("Next", comment: "Title of the next button in the issue refund screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title in the issue refund screen")
         static let selectAllTitle = NSLocalizedString("Select All", comment: "Select all button title in the issue refund screen")

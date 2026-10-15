@@ -72,7 +72,6 @@ struct POSCheckoutTimingTests {
         // Then
         let actual = try timingProperties()
         var expected: [String: Any] = fixture.expectedTimings
-        expected["pos_timing_version"] = 2
         expected["sync_strategy"] = fixture.strategy.rawValue
         #expect(NSDictionary(dictionary: actual).isEqual(to: expected))
         for (key, value) in actual where key != "sync_strategy" {
@@ -159,7 +158,7 @@ struct POSCheckoutTimingTests {
 
         // Then
         let actual = try timingProperties()
-        #expect(Set(actual.keys) == ["pos_timing_version", "sync_strategy"])
+        #expect(Set(actual.keys) == ["sync_strategy"])
     }
 
     @Test(arguments: [false, true])
@@ -278,7 +277,7 @@ struct POSCheckoutTimingTests {
         sut.trackPaymentFailure(with: TestError())
 
         // Then
-        #expect(Set(try timingProperties().keys) == ["pos_timing_version", "sync_strategy"])
+        #expect(Set(try timingProperties().keys) == ["sync_strategy"])
     }
 
     @Test(arguments: [false, true])
@@ -300,7 +299,7 @@ struct POSCheckoutTimingTests {
         }
 
         // Then
-        #expect(Set(try timingProperties().keys) == ["pos_timing_version", "sync_strategy"])
+        #expect(Set(try timingProperties().keys) == ["sync_strategy"])
     }
 
     @Test func test_timing_when_wall_clock_changes_then_uses_only_continuous_clock() throws {
@@ -335,7 +334,8 @@ struct POSCheckoutTimingTests {
     @Test func test_event_snapshot_when_stage_is_missing_or_negative_then_removes_previous_value_and_preserves_zero() {
         // Given
         let original = WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
-            "legacy_property": 17,
+            "order_id": 42,
+            "milliseconds_since_card_tapped": "17.0",
             "pos_time_since_checkout_started_ms": 500,
             "pos_time_since_order_sync_completed_ms": 400,
             "pos_time_since_payment_confirmed_ms": 300
@@ -350,8 +350,11 @@ struct POSCheckoutTimingTests {
 
         // Then
         #expect(event.statName == original.statName)
-        #expect(event.properties["legacy_property"] as? Int == 17)
-        #expect(event.properties["pos_timing_version"] as? Int == 2)
+        #expect(event.properties["order_id"] as? Int == 42)
+        #expect(event.properties["milliseconds_since_card_tapped"] as? String == "17.0")
+        #expect(Set(event.properties.keys) == ["order_id", "milliseconds_since_card_tapped",
+                                               "sync_strategy", "pos_time_since_payment_confirmed_ms"])
+        #expect(event.properties["pos_timing_version"] == nil)
         #expect(event.properties["sync_strategy"] as? String == "remote")
         #expect(event.properties["pos_time_since_checkout_started_ms"] == nil)
         #expect(event.properties["pos_time_since_order_sync_completed_ms"] == nil)

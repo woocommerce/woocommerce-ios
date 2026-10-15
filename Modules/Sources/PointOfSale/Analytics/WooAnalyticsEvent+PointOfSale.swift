@@ -262,14 +262,13 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment, properties: [Key.waitingTime: "\(waitingTime)"])
         }
 
-        /// Adds a fresh versioned snapshot without changing legacy payment properties.
+        /// Adds a fresh timing snapshot without changing legacy payment properties.
         public static func withCheckoutTiming(_ event: WooAnalyticsEvent,
                                               syncStrategy: POSCheckoutCatalogStrategy,
                                               millisecondsSinceCheckoutStarted: Int?,
                                               millisecondsSinceOrderSyncCompleted: Int?,
                                               millisecondsSincePaymentConfirmed: Int?) -> WooAnalyticsEvent {
             var properties = event.properties
-            properties["pos_timing_version"] = 2
             properties[Key.syncStrategy] = syncStrategy.rawValue
             let timings = [
                 "pos_time_since_checkout_started_ms": millisecondsSinceCheckoutStarted,

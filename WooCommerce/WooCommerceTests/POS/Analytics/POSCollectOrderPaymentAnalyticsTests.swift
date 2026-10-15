@@ -108,7 +108,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(succeeded.properties["pos_time_since_payment_confirmed_ms"] as? Int == 100)
     }
 
-    @Test @MainActor func test_card_success_when_all_stages_start_at_zero_then_emits_versioned_integer_timings() {
+    @Test @MainActor func test_card_success_when_all_stages_start_at_zero_then_emits_integer_timings() {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, currentTimestamp: { 0 }, monotonicMilliseconds: { 0 })
         sut.trackCheckoutTapped()
@@ -122,7 +122,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         let properties = analytics.events.last?.properties
-        #expect(properties?["pos_timing_version"] as? Int == 2)
+        #expect(properties?["pos_timing_version"] == nil)
         #expect(properties?["sync_strategy"] as? String == "unknown")
         #expect(properties?["pos_time_since_checkout_started_ms"] as? Int == 0)
         #expect(properties?["pos_time_since_order_sync_completed_ms"] as? Int == 0)
@@ -145,7 +145,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         let properties = analytics.events.last?.properties
-        #expect(properties?["pos_timing_version"] as? Int == 2)
+        #expect(properties?["pos_timing_version"] == nil)
         #expect(properties?["sync_strategy"] as? String == "unknown")
         #expect(properties?["pos_time_since_checkout_started_ms"] as? Int == 0)
         #expect(properties?["pos_time_since_order_sync_completed_ms"] == nil)

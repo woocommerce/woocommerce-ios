@@ -210,7 +210,8 @@ private extension MobileStatusReportProvider {
                        entry("POS last opened", await posLastOpened(siteID: site.siteID))]
         entries += await localCatalog(siteID: site.siteID)
         entries += [entry("Catalog file blocked", await catalogFileBlocked(siteID: site.siteID)),
-                    entry("Full sync on cellular allowed", await fullSyncOnCellularAllowed(siteID: site.siteID))]
+                    entry("Full sync on cellular allowed", await fullSyncOnCellularAllowed(siteID: site.siteID)),
+                    entry("Payment success sound enabled", String(generalAppSettings.value(for: \.isPOSPaymentSuccessSoundEnabled)))]
 
         guard tabVisible == false || launchable == false else {
             return entries

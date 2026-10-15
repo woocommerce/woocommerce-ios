@@ -73,7 +73,7 @@ final class MockWooShippingRemote {
     private var loadConfig = [ResultKey: Result<WooShippingConfig, Error>]()
 
     /// The results to return based on the given arguments in `loadCustomsRequirements`
-    private var loadCustomsRequirements = [ResultKey: Result<WooShippingCustomsRequirements, Error>]()
+    private var loadCustomsRequirements = [ResultKey: Result<Bool, Error>]()
 
     /// The results to return based on the given arguments in `loadEUProductIdentifiers`
     private var loadEUProductIdentifiers = [ResultKey: Result<[WooShippingEUProductIdentifiers], Error>]()
@@ -204,7 +204,7 @@ final class MockWooShippingRemote {
 
     /// Set the value passed to the `completion` block if `loadCustomsRequirements` is called.
     func whenLoadingCustomsRequirements(siteID: Int64,
-                                        thenReturn result: Result<WooShippingCustomsRequirements, Error>) {
+                                        thenReturn result: Result<Bool, Error>) {
         let key = ResultKey(siteID: siteID)
         loadCustomsRequirements[key] = result
     }
@@ -505,7 +505,7 @@ extension MockWooShippingRemote: @MainActor WooShippingRemoteProtocol {
     func loadCustomsRequirements(siteID: Int64,
                                  orderID: Int64,
                                  originID: String?,
-                                 completion: @escaping (Result<WooShippingCustomsRequirements, Error>) -> Void) {
+                                 completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
 

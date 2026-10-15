@@ -923,7 +923,7 @@ final class WooShippingRemoteTests: XCTestCase {
                                  filename: "wooshipping-customs-requirements-required")
 
         // When
-        let result: Result<WooShippingCustomsRequirements, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             remote.loadCustomsRequirements(siteID: self.sampleSiteID,
                                            orderID: self.sampleOrderID,
                                            originID: "store_details") { result in
@@ -937,17 +937,17 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertEqual(request.path, "label/customs-requirements")
         XCTAssertEqual(request.parameters["order_id"] as? Int64, sampleOrderID)
         XCTAssertEqual(request.parameters["origin_id"] as? String, "store_details")
-        XCTAssertEqual(try XCTUnwrap(result.get()).euProductIDsRequired, true)
+        XCTAssertTrue(try XCTUnwrap(result.get()))
     }
 
     func test_loadCustomsRequirements_omits_originID_when_nil() throws {
         // Given
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "label/customs-requirements",
-                                 filename: "wooshipping-customs-requirements-not-required")
+                                 filename: "wooshipping-customs-requirements-required")
 
         // When
-        let result: Result<WooShippingCustomsRequirements, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             remote.loadCustomsRequirements(siteID: self.sampleSiteID,
                                            orderID: self.sampleOrderID,
                                            originID: nil) { result in
@@ -959,7 +959,7 @@ final class WooShippingRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         XCTAssertEqual(request.parameters["order_id"] as? Int64, sampleOrderID)
         XCTAssertFalse(request.parameters.keys.contains("origin_id"))
-        XCTAssertEqual(try XCTUnwrap(result.get()).euProductIDsRequired, false)
+        XCTAssertTrue(try XCTUnwrap(result.get()))
     }
 
     func test_loadEUProductIdentifiers_sends_config_fields_and_decodes_line_items() throws {

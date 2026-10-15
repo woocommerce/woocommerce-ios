@@ -450,21 +450,18 @@ private extension WooShippingStore {
         let remote = self.remote
         remote.loadCustomsRequirements(siteID: siteID, orderID: orderID, originID: originID) { [remote] result in
             switch result {
-            case .success(let requirements) where requirements.euProductIDsRequired:
+            case .success(true):
                 remote.loadEUProductIdentifiers(siteID: siteID, orderID: orderID) { result in
                     switch result {
                     case .success(let identifiers):
-                        let prefills = identifiers.reduce(into: [Int64: WooShippingEUProductIdentifiers]()) { prefills, identifier in
-                            guard prefills[identifier.productID] == nil else { return }
-                            prefills[identifier.productID] = identifier
-                        }
+                        let prefills = Dictionary(identifiers.map { ($0.productID, $0) }, uniquingKeysWith: { first, _ in first })
                         completion(.required(prefills: prefills))
                     case .failure(let error):
                         DDLogError("Error loading WooShipping EU product identifiers for order \(orderID): \(error)")
                         completion(.required(prefills: [:]))
                     }
                 }
-            case .success:
+            case .success(false):
                 completion(.notRequired)
             case .failure(let error):
                 if case .noRestRoute = error as? DotcomError {

@@ -204,19 +204,12 @@ extension ShippingLabelCustomsForm.Item {
         let hsTariffNumber = (try? container.decode(String.self, forKey: .hsTariffNumber)) ?? ""
         let originCountry = try container.decode(String.self, forKey: .originCountry)
         let productID = try container.decode(Int64.self, forKey: .productID)
-        let code = try container.decodeIfPresent(String.self, forKey: .code)
-        let manufacturerProductID = try container.decodeIfPresent(String.self, forKey: .manufacturerProductID)
-        let standardizedProductID = try container.decodeIfPresent(String.self, forKey: .standardizedProductID)
-
         self.init(description: description,
                   quantity: quantity,
                   value: value,
                   weight: weight,
                   hsTariffNumber: hsTariffNumber,
                   originCountry: originCountry,
-                  productID: productID,
-                  code: code,
-                  manufacturerProductID: manufacturerProductID,
-                  standardizedProductID: standardizedProductID)
+                  productID: productID)
     }
 }

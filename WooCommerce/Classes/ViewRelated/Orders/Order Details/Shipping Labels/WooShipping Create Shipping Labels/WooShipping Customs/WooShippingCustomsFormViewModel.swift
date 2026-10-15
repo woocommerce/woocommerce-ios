@@ -235,15 +235,7 @@ private extension WooShippingCustomsFormViewModel {
             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
             itn: ITNNumberValidator.isValid(internationalTransactionNumber) ? internationalTransactionNumber : "",
             items: itemsViewModels.map { item in
-                let asksForEUProductIdentifiers = item.areEUProductIdentifiersRequired
-                let standardizedProductID: String?
-                if !asksForEUProductIdentifiers {
-                    standardizedProductID = nil
-                } else if item.hasNoBarcode {
-                    standardizedProductID = WooShippingCustomsItemViewModel.noBarcodeProductIdentifier
-                } else {
-                    standardizedProductID = item.trimmedGTIN.isNotEmpty ? item.trimmedGTIN : nil
-                }
+                let euProductIdentifiers = item.euProductIdentifiersToSend
                 return ShippingLabelCustomsForm.Item(
                     description: item.description,
                     quantity: item.itemQuantity,
@@ -252,10 +244,9 @@ private extension WooShippingCustomsFormViewModel {
                     hsTariffNumber: item.isValidTariffNumber ? item.sanitizedHSTariffNumber : "",
                     originCountry: item.selectedCountry?.code ?? "",
                     productID: item.itemProductID,
-                    code: asksForEUProductIdentifiers && item.trimmedSKU.isNotEmpty ? item.trimmedSKU : nil,
-                    manufacturerProductID: asksForEUProductIdentifiers && item.trimmedManufacturerPartNumber.isNotEmpty ?
-                        item.trimmedManufacturerPartNumber : nil,
-                    standardizedProductID: standardizedProductID
+                    code: euProductIdentifiers.code,
+                    manufacturerProductID: euProductIdentifiers.manufacturerProductID,
+                    standardizedProductID: euProductIdentifiers.standardizedProductID
                 )
             }
         )

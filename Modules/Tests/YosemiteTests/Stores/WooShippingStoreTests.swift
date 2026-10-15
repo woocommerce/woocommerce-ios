@@ -102,7 +102,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                                   manufacturerProductID: "MPN-SECOND",
                                                                   standardizedProductID: "GTIN-SECOND")
         remote.whenLoadingCustomsRequirements(siteID: sampleSiteID,
-                                              thenReturn: .success(WooShippingCustomsRequirements(euProductIDsRequired: true)))
+                                              thenReturn: .success(true))
         remote.whenLoadingEUProductIdentifiers(siteID: sampleSiteID,
                                                thenReturn: .success([firstIdentifier, duplicateIdentifier]))
 
@@ -117,7 +117,7 @@ final class WooShippingStoreTests: XCTestCase {
         // Given
         let remote = MockWooShippingRemote()
         remote.whenLoadingCustomsRequirements(siteID: sampleSiteID,
-                                              thenReturn: .success(WooShippingCustomsRequirements(euProductIDsRequired: false)))
+                                              thenReturn: .success(false))
 
         // When
         let result = checkEUProductIdentifiersRequirement(using: remote)
@@ -152,18 +152,6 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(result, .pluginOutdated)
     }
 
-    func test_checkEUProductIdentifiersRequirement_when_requirements_request_times_out_then_returns_notRequired() {
-        // Given
-        let remote = MockWooShippingRemote()
-        remote.whenLoadingCustomsRequirements(siteID: sampleSiteID, thenReturn: .failure(NetworkError.timeout()))
-
-        // When
-        let result = checkEUProductIdentifiersRequirement(using: remote)
-
-        // Then
-        XCTAssertEqual(result, .notRequired)
-    }
-
     func test_checkEUProductIdentifiersRequirement_when_not_found_error_has_a_different_code_then_returns_notRequired() {
         // Given
         let remote = MockWooShippingRemote()
@@ -182,7 +170,7 @@ final class WooShippingStoreTests: XCTestCase {
         // Given
         let remote = MockWooShippingRemote()
         remote.whenLoadingCustomsRequirements(siteID: sampleSiteID,
-                                              thenReturn: .success(WooShippingCustomsRequirements(euProductIDsRequired: true)))
+                                              thenReturn: .success(true))
         remote.whenLoadingEUProductIdentifiers(siteID: sampleSiteID,
                                                thenReturn: .failure(NetworkError.timeout()))
 

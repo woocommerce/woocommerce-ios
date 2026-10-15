@@ -1,8 +1,7 @@
-import Codegen
 import Foundation
 
 /// Product identifiers returned from a WooShipping config line item.
-public struct WooShippingEUProductIdentifiers: Equatable, GeneratedFakeable {
+public struct WooShippingEUProductIdentifiers: Equatable {
     public let productID: Int64
     public let sku: String
     public let manufacturerProductID: String

@@ -173,7 +173,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_isCheckingEUProductIdentifiers_when_check_starts_and_finishes_then_mirrors_current_shipment_state() async throws {
+    func test_isCheckingEUProductIdentifiers_when_check_starts_and_finishes_then_mirrors_current_shipment_state() {
         // Given
         let originAddress = WooShippingOriginAddress.fake().copy(id: "origin-1",
                                                                  country: "US",
@@ -205,12 +205,12 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                          storageManager: storageManager)
 
         // When
-        await until { viewModel.isCheckingEUProductIdentifiers }
+        waitUntil { viewModel.isCheckingEUProductIdentifiers }
         XCTAssertNotNil(requirementCompletion)
         requirementCompletion?(.notRequired)
 
         // Then
-        await until { !viewModel.isCheckingEUProductIdentifiers }
+        waitUntil { !viewModel.isCheckingEUProductIdentifiers }
         XCTAssertFalse(viewModel.isCheckingEUProductIdentifiers)
     }
 

@@ -71,7 +71,7 @@ public protocol WooShippingRemoteProtocol {
     func loadCustomsRequirements(siteID: Int64,
                                 orderID: Int64,
                                 originID: String?,
-                                completion: @escaping (Result<WooShippingCustomsRequirements, Error>) -> Void)
+                                completion: @escaping (Result<Bool, Error>) -> Void)
     func loadEUProductIdentifiers(siteID: Int64,
                                   orderID: Int64,
                                   completion: @escaping (Result<[WooShippingEUProductIdentifiers], Error>) -> Void)
@@ -523,7 +523,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     public func loadCustomsRequirements(siteID: Int64,
                                         orderID: Int64,
                                         originID: String?,
-                                        completion: @escaping (Result<WooShippingCustomsRequirements, Error>) -> Void) {
+                                        completion: @escaping (Result<Bool, Error>) -> Void) {
         var parameters: RequestParameterConvertibleDictionary = [ParameterKey.orderID: orderID]
         if let originID {
             parameters[ParameterKey.originID] = originID

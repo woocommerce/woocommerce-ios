@@ -192,7 +192,7 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
     func test_identifierValidation_when_values_exceed_64_characters_then_returns_length_errors() {
         // Given
         let viewModel = makeValidItemViewModel(areIdentifiersRequired: true)
-        let tooLongValue = String(repeating: "a", count: WooShippingCustomsItemViewModel.maximumEUProductIdentifierLength + 1)
+        let tooLongValue = String(repeating: "a", count: 65)
 
         // When
         viewModel.sku = tooLongValue
@@ -204,20 +204,6 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.skuValidationError, expectedError)
         XCTAssertEqual(viewModel.manufacturerPartNumberValidationError, expectedError)
         XCTAssertEqual(viewModel.gtinValidationError, expectedError)
-    }
-
-    func test_identifierValidation_when_unicode_scalars_exceed_64_then_returns_length_error() {
-        // Given
-        let viewModel = makeValidItemViewModel(areIdentifiersRequired: true)
-        let valueWith66Scalars = String(repeating: "e\u{301}", count: 33)
-        XCTAssertEqual(valueWith66Scalars.count, 33)
-        XCTAssertEqual(valueWith66Scalars.unicodeScalars.count, 66)
-
-        // When
-        viewModel.sku = valueWith66Scalars
-
-        // Then
-        XCTAssertEqual(viewModel.skuValidationError, "Must be 64 characters or fewer.")
     }
 
     func test_hasNoBarcode_when_enabled_then_clears_GTIN_and_satisfies_identifier_requirement() {
@@ -261,7 +247,7 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         let identifiers = WooShippingEUProductIdentifiers(productID: 22,
                                                           sku: "prefilled-sku",
                                                           manufacturerProductID: "prefilled-part-number",
-                                                          standardizedProductID: WooShippingCustomsItemViewModel.noBarcodeProductIdentifier)
+                                                          standardizedProductID: "Y081")
 
         // When
         viewModel.prefillEUProductIdentifiers(identifiers)

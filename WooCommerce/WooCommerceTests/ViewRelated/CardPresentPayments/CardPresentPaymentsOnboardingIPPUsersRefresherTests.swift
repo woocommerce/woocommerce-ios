@@ -4,21 +4,24 @@ import Storage
 @testable import WooCommerce
 import XCTest
 
+@MainActor
 class CardPresentPaymentsOnboardingIPPUsersRefresherTests: XCTestCase {
     private var stores: MockStoresManager!
     private var sut: CardPresentPaymentsOnboardingIPPUsersRefresher!
     private var cardPresentPaymentsOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
 
-    override func setUp() {
+    override func setUp() async throws {
+        try await super.setUp()
         cardPresentPaymentsOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled)
         stores = MockStoresManager(sessionManager: .testingInstance)
         stores.sessionManager.setStoreId(123)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         stores = nil
         sut = nil
         cardPresentPaymentsOnboardingUseCase = nil
+        try await super.tearDown()
     }
 
     func test_refreshIPPUsersOnboardingState_when_there_are_IPP_transactions_then_it_calls_to_refresh() {

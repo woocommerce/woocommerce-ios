@@ -6,6 +6,7 @@ import XCTest
 /// Mock for `ProductsRemote`.
 ///
 final class MockProductsRemote {
+    var onLoadProductsForPointOfSale: (@MainActor () async -> Void)?
     private(set) var searchProductTriggered: Bool = false
     private(set) var searchProductWithStockStatus: ProductStockStatus?
     private(set) var searchProductWithProductStatus: ProductStatus?
@@ -482,6 +483,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     nonisolated(nonsending) func loadProductsForPointOfSale(for siteID: Int64,
                                     productTypes: [ProductType],
                                     pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        await onLoadProductsForPointOfSale?()
         guard let result = posProductsResultsBySiteID[siteID] else {
             throw NetworkError.notFound()
         }

@@ -36,20 +36,28 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
     private let productsRemote: ProductsRemoteProtocol
     private let variationsRemote: ProductVariationsRemoteProtocol
     private let analytics: POSItemFetchAnalyticsTracking
+    private let monotonicMilliseconds: () -> Int
 
     static var defaultProductTypes: [ProductType] { [.simple, .variable] }
 
     init(siteID: Int64,
          productsRemote: ProductsRemoteProtocol,
          variationsRemote: ProductVariationsRemoteProtocol,
-         analytics: POSItemFetchAnalyticsTracking) {
+         analytics: POSItemFetchAnalyticsTracking,
+         monotonicMilliseconds: (() -> Int)? = nil) {
         self.siteID = siteID
         self.productsRemote = productsRemote
         self.variationsRemote = variationsRemote
         self.analytics = analytics
+        let origin = ContinuousClock.now
+        self.monotonicMilliseconds = monotonicMilliseconds ?? {
+            let elapsed = origin.duration(to: .now).components
+            return Int(elapsed.seconds * 1000 + elapsed.attoseconds / 1_000_000_000_000_000)
+        }
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        let started = monotonicMilliseconds()
         let pagedProducts = try await productsRemote.loadProductsForPointOfSale(
             for: siteID,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
@@ -57,7 +65,9 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
         )
 
         if pageNumber == 1 {
-            analytics.trackItemsFetchComplete(totalItems: pagedProducts.totalItems ?? 0)
+            analytics.trackItemsFetchComplete(totalItems: pagedProducts.totalItems ?? 0,
+                                               returnedItemsCount: pagedProducts.items.count,
+                                               millisecondsSinceRequestSent: monotonicMilliseconds() - started)
         }
 
         return pagedProducts

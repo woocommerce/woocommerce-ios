@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] Orders: On iPad, opening an order from a notification or link now scrolls the order list to it. [https://github.com/woocommerce/woocommerce-ios/pull/18095]
 - [*] In-Person Payments: Fixed inconsistent text sizes in card reader payment screens. [https://github.com/woocommerce/woocommerce-ios/pull/18085]
 - [*] Login: Fixed the Log in button becoming unresponsive after switching accounts from the account-mismatch screen's connected stores list. [https://github.com/woocommerce/woocommerce-ios/pull/18068]
 - [*] Product description editor: The formatting toolbar stays inside the editor on iPad and iPhone Duo instead of spanning the whole window, and the system's own B / I / U controls no longer show next to the keyboard or in the text selection menu. [https://github.com/woocommerce/woocommerce-ios/pull/18044]

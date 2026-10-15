@@ -9,14 +9,14 @@ final class ProductsSplitViewWrapperController: UIViewController, UsesCompactLay
     private lazy var coordinator = ProductsSplitViewCoordinator(siteID: siteID,
                                                                                               splitViewController: productsSplitViewController)
     private lazy var productsSplitViewController = WooSplitViewController(
-        columnForCollapsingHandler: { [self] splitViewController in
-            handleCollapsingSplitView(splitViewController: splitViewController)
+        columnForCollapsingHandler: { [weak self] splitViewController in
+            self?.handleCollapsingSplitView(splitViewController: splitViewController) ?? .primary
         },
-        didCollapseHandler: { [self] splitViewController in
-            handleDidCollapse(splitViewController: splitViewController)
+        didCollapseHandler: { [weak self] splitViewController in
+            self?.handleDidCollapse(splitViewController: splitViewController)
         },
-        didExpandHandler: { [self] splitViewController in
-            handleDidExpand(splitViewController: splitViewController)
+        didExpandHandler: { [weak self] splitViewController in
+            self?.handleDidExpand(splitViewController: splitViewController)
         }
     )
 

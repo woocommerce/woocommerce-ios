@@ -8,23 +8,27 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
     private let siteID: Int64
 
     private lazy var ordersSplitViewController = WooSplitViewController(
-        columnForCollapsingHandler: { [self] splitViewController in
-            handleCollapsingSplitView(splitViewController: splitViewController)
+        columnForCollapsingHandler: { [weak self] splitViewController in
+            self?.handleCollapsingSplitView(splitViewController: splitViewController) ?? .primary
         },
-        didCollapseHandler: { [self] splitViewController in
-            handleDidCollapse(splitViewController: splitViewController)
+        didCollapseHandler: { [weak self] splitViewController in
+            self?.handleDidCollapse(splitViewController: splitViewController)
         },
-        didExpandHandler: { [self] splitViewController in
-            handleDidExpand(splitViewController: splitViewController)
+        didExpandHandler: { [weak self] splitViewController in
+            self?.handleDidExpand(splitViewController: splitViewController)
         }
     )
     private lazy var ordersViewController = OrdersRootViewController(
         siteID: siteID,
-        switchDetailsHandler: { [self] viewModels, currentIndex, isSelectedManually, onCompletion in
-            handleSwitchingDetails(viewModels: viewModels,
-                                   currentIndex: currentIndex,
-                                   isSelectedManually: isSelectedManually,
-                                   onCompletion: onCompletion)
+        switchDetailsHandler: { [weak self] viewModels, currentIndex, isSelectedManually, onCompletion in
+            guard let self else {
+                onCompletion?(false)
+                return
+            }
+            self.handleSwitchingDetails(viewModels: viewModels,
+                                        currentIndex: currentIndex,
+                                        isSelectedManually: isSelectedManually,
+                                        onCompletion: onCompletion)
         }
     )
     private let primaryNavigationController = WooTabNavigationController()

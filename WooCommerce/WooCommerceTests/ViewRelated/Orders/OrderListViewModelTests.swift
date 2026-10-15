@@ -466,9 +466,17 @@ final class OrderListViewModelTests: XCTestCase {
         // Then — the banner is hidden while the sync is in flight
         XCTAssert(viewModel.topBanner == .none)
 
+        let bannerShownAgain = expectation(description: "Currency unavailable banner is shown again")
+        viewModel.$topBanner
+            .filter { $0 == .currencyUnavailable }
+            .sink { _ in
+                bannerShownAgain.fulfill()
+            }
+            .store(in: &subscriptions)
+
         // When — the sync completes but the currency is still unavailable
         capturedCompletion?(nil)
-        await Task.yield()
+        await fulfillment(of: [bannerShownAgain], timeout: Constants.expectationTimeout)
 
         // Then — the banner is shown again
         XCTAssert(viewModel.topBanner == .currencyUnavailable)

@@ -30,6 +30,23 @@ struct UIViewControllerTopmostVisiblePresenterTests {
         #expect(root.topmostPresentedViewController === second)
     }
 
+    @Test func test_topmostVisiblePresenter_when_chain_is_full_screen_then_returns_the_leaf() async throws {
+        // Given a full-screen chain, where UIKit detaches each covered presenter's view
+        let window = makeWindow()
+        defer { window.isHidden = true }
+        let root = try #require(window.rootViewController)
+        let first = UIViewController()
+        first.modalPresentationStyle = .fullScreen
+        let second = UIViewController()
+        second.modalPresentationStyle = .fullScreen
+        await present(first, on: root)
+        await present(second, on: first)
+
+        // Then the detached intermediate presenter doesn't stop the walk
+        #expect(first.viewIfLoaded?.window == nil)
+        #expect(root.topmostVisiblePresenter === second)
+    }
+
     @Test func test_topmostVisiblePresenter_when_leaf_is_being_dismissed_then_returns_its_presenter() async throws {
         // Given
         let window = makeWindow()

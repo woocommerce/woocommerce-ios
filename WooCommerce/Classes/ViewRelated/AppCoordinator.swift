@@ -558,7 +558,12 @@ private extension AppCoordinator {
         guard significantChangeBlocker === blocker else { return }
         if let presenter = window.topmostVisiblePresenter {
             presenter.present(blocker, animated: true) { [weak self] in
-                guard let self, self.significantChangeBlocker === blocker else { return }
+                guard let self, self.significantChangeBlocker === blocker else {
+                    // Dismissed while the presentation was still queued: take the orphan down,
+                    // otherwise an unowned modal wall stays up for good.
+                    blocker.presentingViewController?.dismiss(animated: false)
+                    return
+                }
                 self.significantChangeBlockerPresentationCheck?.cancel()
                 self.significantChangeBlockerPresentationCheck = nil
                 self.analytics.track(event: .AgeVerification.dialogShown(for: blocker.context))
@@ -573,6 +578,11 @@ private extension AppCoordinator {
             guard blocker.presentingViewController == nil, blocker.viewIfLoaded?.window == nil else { return }
             guard attempt < Constants.maxBlockerPresentationAttempts else {
                 DDLogError("Significant change blocker could not be presented after \(attempt) attempts.")
+                ServiceLocator.crashLogging.logMessage(
+                    "Significant change consent blocker could not be presented",
+                    properties: ["attempts": attempt, "context": "\(blocker.context)"],
+                    level: .error
+                )
                 return
             }
             DDLogWarn("Significant change blocker is not on screen after attempt \(attempt); retrying.")

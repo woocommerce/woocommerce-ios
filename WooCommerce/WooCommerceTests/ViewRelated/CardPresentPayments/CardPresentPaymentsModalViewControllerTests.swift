@@ -2,12 +2,14 @@ import XCTest
 @testable import WooCommerce
 
 final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         // The NUX buttons require WordPressAuthenticator to be initialized
         AuthenticationManager().initialize()
     }
 
+    @MainActor
     func test_viewcontroller_presents_top_title_provided_by_viewmodel() throws {
         let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -17,6 +19,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertEqual(viewController.getTopTitleLabel().text, viewModel.topTitle)
     }
 
+    @MainActor
     func test_viewcontroller_presents_top_subtitle_provided_by_viewmodel() throws {
         let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -26,6 +29,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertEqual(viewController.getTopSubtitleLabel().text, viewModel.topSubtitle)
     }
 
+    @MainActor
     func test_viewcontroller_presents_image_provided_by_viewmodel() throws {
         let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -36,6 +40,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertEqual(image, viewModel.image)
     }
 
+    @MainActor
     func test_viewcontroller_presents_bottom_title_provided_by_viewmodel() throws {
         let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -45,6 +50,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertEqual(viewController.getBottomTitleLabel().text, viewModel.bottomTitle)
     }
 
+    @MainActor
     func test_viewcontroller_presents_bottom_subtitle_provided_by_viewmodel() throws {
         let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -54,6 +60,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertEqual(viewController.getBottomSubtitleLabel().text, viewModel.bottomSubtitle)
     }
 
+    @MainActor
     func test_viewcontroller_propagates_tap_in_primary_button_to_viewmodel() throws {
         let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .oneAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -66,6 +73,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertTrue(viewModel.primaryButtonTapped)
     }
 
+    @MainActor
     func test_viewcontroller_propagates_tap_in_primary_button_to_viewmodel_in_oneaction_mode() throws {
         let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .oneAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -78,6 +86,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertTrue(viewModel.primaryButtonTapped)
     }
 
+    @MainActor
     func test_viewcontroller_propagates_tap_in_primary_button_to_viewmodel_in_reducedInfo_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedTopInfo, actionsMode: .oneAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -90,6 +99,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertTrue(viewModel.primaryButtonTapped)
     }
 
+    @MainActor
     func test_viewcontroller_propagates_tap_in_secondary_button_to_viewmodel() throws {
         let viewModel = ModalViewModel(textMode: .reducedTopInfo, actionsMode: .twoAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -102,6 +112,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertTrue(viewModel.secondaryButtonTapped)
     }
 
+    @MainActor
     func test_viewcontroller_hides_bottom_subtitle_label_in_reduced_bottom_info_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -113,6 +124,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertTrue(bottomSubtitleLabel.isHidden)
     }
 
+    @MainActor
     func test_viewcontroller_shows_primary_action_button_in_one_action_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .oneAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -124,6 +136,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertFalse(primaryButton.isHidden)
     }
 
+    @MainActor
     func test_viewcontroller_hides_primary_action_button_in_secondary_only_action_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .secondaryOnlyAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -135,6 +148,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertTrue(primaryButton.isHidden)
     }
 
+    @MainActor
     func test_viewcontroller_shows_primary_action_button_in_two_action_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .twoAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -146,6 +160,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertFalse(primaryButton.isHidden)
     }
 
+    @MainActor
     func test_viewcontroller_shows_primary_action_button_in_two_action_and_auxiliary_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .twoActionAndAuxiliary)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -157,6 +172,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertFalse(primaryButton.isHidden)
     }
 
+    @MainActor
     func test_viewcontroller_hides_secondary_action_button_in_one_action_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .oneAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -168,6 +184,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertTrue(secondaryButton.isHidden)
     }
 
+    @MainActor
     func test_viewcontroller_shows_secondary_action_button_in_secondary_only_action_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .secondaryOnlyAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -179,6 +196,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertFalse(secondaryButton.isHidden)
     }
 
+    @MainActor
     func test_viewcontroller_shows_secondary_action_button_in_two_action_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .twoAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
@@ -190,6 +208,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertFalse(secondaryButton.isHidden)
     }
 
+    @MainActor
     func test_viewcontroller_shows_secondary_action_button_in_two_action_and_auxiliary_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .twoActionAndAuxiliary)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)

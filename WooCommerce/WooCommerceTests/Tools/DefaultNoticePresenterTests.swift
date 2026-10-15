@@ -195,4 +195,118 @@ struct DefaultNoticePresenterTests {
         #expect(bottomConstraints.count == 1)
         #expect(bottomConstraints.first?.secondItem === viewController.tabBar)
     }
+
+    @Test
+    func test_enqueue_when_presenting_view_is_above_a_bottom_button_then_button_keeps_its_height() {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let presentingViewController = UIViewController()
+        let bottomButton = UIButton(configuration: .filled())
+        bottomButton.setTitle("Show Orders", for: .normal)
+        let window = makeWindow(withChild: presentingViewController, above: bottomButton)
+        let buttonHeight = bottomButton.frame.height
+        presenter.presentingViewController = presentingViewController
+
+        // When
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        window.layoutIfNeeded()
+
+        // Then
+        #expect(buttonHeight > 0)
+        #expect(bottomButton.frame.height == buttonHeight)
+    }
+
+    @Test
+    func test_enqueue_when_presenting_view_is_a_child_then_notice_avoids_the_top_parent_keyboard_guide() throws {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let presentingViewController = UIViewController()
+        let window = makeWindow(withChild: presentingViewController, above: UIButton(configuration: .filled()))
+        let topView = try #require(window.rootViewController?.view)
+        presenter.presentingViewController = presentingViewController
+        let existingSubviews = presentingViewController.view.subviews
+
+        // When
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        let noticeContainer = try #require(presentingViewController.view.subviews.first { !existingSubviews.contains($0) })
+
+        // Then
+        let keyboardConstraint = try #require(keyboardConstraint(of: noticeContainer, in: topView))
+        #expect(keyboardConstraint.secondItem === topView.keyboardLayoutGuide)
+        #expect(!presentingViewController.view.layoutGuides.contains { $0 is UIKeyboardLayoutGuide })
+    }
+
+    @Test
+    func test_enqueue_when_presenting_view_is_outside_its_parent_view_then_notice_avoids_its_own_keyboard_guide() throws {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let presentingViewController = UIViewController()
+        let navigationController = UINavigationController(rootViewController: presentingViewController)
+        navigationController.pushViewController(UIViewController(), animated: false)
+        navigationController.loadViewIfNeeded()
+        presentingViewController.loadViewIfNeeded()
+        presenter.presentingViewController = presentingViewController
+        let existingSubviews = presentingViewController.view.subviews
+
+        // When
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        let noticeContainer = try #require(presentingViewController.view.subviews.first { !existingSubviews.contains($0) })
+
+        // Then
+        #expect(!presentingViewController.view.isDescendant(of: navigationController.view))
+        let keyboardConstraint = try #require(keyboardConstraint(of: noticeContainer, in: presentingViewController.view))
+        #expect(keyboardConstraint.secondItem === presentingViewController.view.keyboardLayoutGuide)
+    }
+
+    @Test
+    func test_enqueue_when_presenting_view_is_not_in_a_window_then_notice_still_avoids_the_keyboard() throws {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let parentViewController = UIViewController()
+        let presentingViewController = UIViewController()
+        parentViewController.addChild(presentingViewController)
+        parentViewController.view.addSubview(presentingViewController.view)
+        presentingViewController.didMove(toParent: parentViewController)
+        presenter.presentingViewController = presentingViewController
+        let existingSubviews = presentingViewController.view.subviews
+
+        // When
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        let noticeContainer = try #require(presentingViewController.view.subviews.first { !existingSubviews.contains($0) })
+
+        // Then
+        let keyboardConstraint = try #require(keyboardConstraint(of: noticeContainer, in: parentViewController.view))
+        #expect(keyboardConstraint.secondItem === parentViewController.view.keyboardLayoutGuide)
+    }
+}
+
+private extension DefaultNoticePresenterTests {
+    /// Lays out a child view controller above a bottom button that fills the rest of the window, like the filter list's CTA.
+    func makeWindow(withChild child: UIViewController, above bottomButton: UIButton) -> UIWindow {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 402, height: 874))
+        let rootViewController = UIViewController()
+        window.rootViewController = rootViewController
+        window.isHidden = false
+
+        let stackView = UIStackView(arrangedSubviews: [child.view, bottomButton])
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        rootViewController.addChild(child)
+        rootViewController.view.addSubview(stackView)
+        child.didMove(toParent: rootViewController)
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: rootViewController.view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        window.layoutIfNeeded()
+        return window
+    }
+
+    func keyboardConstraint(of noticeContainer: UIView, in view: UIView) -> NSLayoutConstraint? {
+        view.constraints.first {
+            $0.isActive && $0.firstItem === noticeContainer && $0.firstAttribute == .bottom && $0.relation == .lessThanOrEqual
+        }
+    }
 }

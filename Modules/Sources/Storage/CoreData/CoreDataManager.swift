@@ -6,7 +6,7 @@ import WooFoundation
 
 /// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.
 ///
-public final class CoreDataManager: StorageManagerType {
+public final class CoreDataManager: StorageManagerType, @unchecked Sendable {
 
     private let crashLogger: CrashLogger
 

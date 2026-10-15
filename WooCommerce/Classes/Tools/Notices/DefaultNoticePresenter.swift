@@ -130,7 +130,7 @@ private extension DefaultNoticePresenter {
 
         addNoticeContainerToPresentingViewController(noticeContainerView)
 
-        // Let UIKit track the docked keyboard as part of the root view's layout so the notice follows keyboard and window changes.
+        // Let UIKit track the docked keyboard as part of the presentation's layout so the notice follows keyboard and window changes.
         NSLayoutConstraint.activate([
             noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -257,12 +257,13 @@ private extension DefaultNoticePresenter {
         container.baselineConstraint = baselineConstraint
 
         // A view's keyboard guide pulls the view toward the window's bottom, squeezing anything laid out below a presenting
-        // view that ends above it, e.g. a bottom button. The window sets the root view's frame, so its guide can't stretch it.
-        // The window's own guide doesn't track the keyboard. Without a window, there is no keyboard to avoid.
-        guard let keyboardGuideOwner = view.window?.rootViewController?.view else {
-            return [baselineConstraint]
+        // view that ends above it, e.g. a bottom button. The top of this presentation (the modal's or the window's root) is
+        // laid out by its frame, so its guide can't stretch it. The window's own guide doesn't track the keyboard.
+        var keyboardGuideOwner = presentingViewController
+        while let parent = keyboardGuideOwner.parent {
+            keyboardGuideOwner = parent
         }
-        let keyboardConstraint = container.bottomAnchor.constraint(lessThanOrEqualTo: keyboardGuideOwner.keyboardLayoutGuide.topAnchor)
+        let keyboardConstraint = container.bottomAnchor.constraint(lessThanOrEqualTo: keyboardGuideOwner.view.keyboardLayoutGuide.topAnchor)
 
         return [baselineConstraint, keyboardConstraint]
     }

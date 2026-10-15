@@ -11,7 +11,7 @@
 items:
   - id: install.upgrade
     title: Upgrade from existing store version
-    manual: "Requires App Store build replacement and logged-in migration state outside the initial simulator suite."
+    manual: "The App Store release can't be installed on a simulator, and building the previous release needs the Xcode version it was pinned to."
   - id: install.fresh
     title: Fresh install smoke
     flow: .maestro/flows/login_successful.yaml

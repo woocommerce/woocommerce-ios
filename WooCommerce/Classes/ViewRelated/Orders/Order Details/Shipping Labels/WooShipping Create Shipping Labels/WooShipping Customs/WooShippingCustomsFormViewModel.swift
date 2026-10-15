@@ -126,6 +126,7 @@ private extension WooShippingCustomsFormViewModel {
                 }
                 return true
             }
+            .removeDuplicates()
             .assign(to: &$asksForEUProductIdentifiers)
     }
 

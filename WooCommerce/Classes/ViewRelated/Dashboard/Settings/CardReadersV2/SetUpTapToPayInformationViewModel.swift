@@ -36,6 +36,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
 
     private var subscriptions = Set<AnyCancellable>()
 
+    @MainActor
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
          didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
@@ -43,7 +44,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
          stores: StoresManager = ServiceLocator.stores,
-         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer()) {
+         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining? = nil) {
         self.siteID = siteID
         self.configuration = configuration
         self.didChangeShouldShow = didChangeShouldShow
@@ -53,7 +54,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
         self.onboardingStatePublisher = onboardingStatePublisher
         /// The `learnMoreURL` will be updated when the onboarding state is known
         self.learnMoreURL = CardPresentPaymentsPlugin.wcPay.setUpTapToPayLearnMoreURL
-        self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
+        self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer ?? TapToPayAwarenessMomentDeterminer()
 
         beginOnboardingStateObservation()
         beginConnectedReaderObservation()

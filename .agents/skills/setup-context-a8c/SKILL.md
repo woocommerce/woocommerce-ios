@@ -34,7 +34,7 @@ If npx is not found, tell the user to install Node.js (v18+) and stop.
 
 Run the setup script:
 ```bash
-bash .claude/skills/setup-context-a8c/setup-for-claude-code.sh
+bash .agents/skills/setup-context-a8c/setup-for-claude-code.sh
 ```
 
 ### Claude Desktop

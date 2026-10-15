@@ -476,29 +476,20 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(packageWeightForLabelRates, expectedWeight)
     }
 
-    func test_changing_customs_form_loads_new_label_rates_with_updated_customs_form() {
+    @MainActor
+    func test_changing_customs_form_when_rates_are_loaded_then_sends_new_form_once() async {
         // Given
-        let expectedItem = ShippingLabelCustomsForm.Item.fake().copy(
-            description: "Shirt",
-            quantity: 2,
-            value: 9.99,
-            weight: 0.5,
-            originCountry: "US",
-            productID: 1
-        )
-
-        let expectedCustomsForm = ShippingLabelCustomsForm.fake().copy(contentsType: .gift,
-                                                                       restrictionType: .quarantine,
-                                                                       nonDeliveryOption: .abandon,
-                                                                       items: [expectedItem])
-        var sentCustomsForm: ShippingLabelCustomsForm?
+        var sentCustomsForms: [ShippingLabelCustomsForm?] = []
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storageManager = MockStorageManager()
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .loadLabelRates(_, _, _, _, packages, _):
-                sentCustomsForm = packages.first?.customsForm
+            case let .checkEUProductIdentifiersRequirement(_, _, _, completion):
+                completion(.notRequired)
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                sentCustomsForms.append(packages.first?.customsForm)
+                completion(packages, .success([]))
             case .loadOriginAddresses(_, let completion):
                 completion(.success([]))
             case .loadConfig:
@@ -533,17 +524,86 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             debounceDuration: 0
         )
 
-        // When
         viewModel.selectPackage(samplePackageData())
+
+        // When
+        await until { !sentCustomsForms.isEmpty }
+        await until { viewModel.customsFormViewModel.requiredInformationIsEntered }
+        viewModel.customsFormViewModel.onDismiss()
+        await until { sentCustomsForms.contains { $0?.contentsType == .merchandise } }
+        let requestCountBeforeChange = sentCustomsForms.count
+
         viewModel.customsFormViewModel.contentType = .gift
-        viewModel.customsFormViewModel.restrictionType = .quarantine
         viewModel.customsFormViewModel.onDismiss()
 
         // Then
-        waitUntil {
-            sentCustomsForm != nil
+        await until {
+            sentCustomsForms.count > requestCountBeforeChange
         }
-        XCTAssertEqual(sentCustomsForm, expectedCustomsForm)
+        XCTAssertEqual(sentCustomsForms.last.flatMap { $0?.contentsType }, .gift)
+
+        // When
+        let requestCountAfterChange = sentCustomsForms.count
+        viewModel.customsFormViewModel.onDismiss()
+
+        // Then
+        XCTAssertEqual(sentCustomsForms.count, requestCountAfterChange)
+    }
+
+    @MainActor
+    func test_changing_destination_from_domestic_to_international_when_customs_form_exists_then_includes_form_in_label_rates() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "US", name: "United States", states: []),
+                                                                 Country(code: "VN", name: "Vietnam", states: [])])
+        var sentCustomsForms: [ShippingLabelCustomsForm?] = []
+        var requirementCompletion: ((WooShippingEUProductIdentifiersRequirement) -> Void)?
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                sentCustomsForms.append(packages.first?.customsForm)
+                completion(packages, .success([]))
+            case let .checkEUProductIdentifiersRequirement(_, _, _, completion):
+                requirementCompletion = completion
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([]))
+            case .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let destinationAddress = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: Just(sampleOriginAddress(country: "US", state: "NY")).eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddress.eraseToAnyPublisher(),
+                                                            stores: stores,
+                                                            storageManager: storageManager,
+                                                            debounceDuration: 0)
+        viewModel.selectPackage(samplePackageData())
+
+        // When
+        await until { !sentCustomsForms.isEmpty }
+        await until { viewModel.customsFormViewModel.requiredInformationIsEntered }
+        viewModel.customsFormViewModel.contentType = .documents
+        viewModel.customsFormViewModel.restrictionType = .quarantine
+        viewModel.customsFormViewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.customsFormViewModel.onDismiss()
+        await until { sentCustomsForms.count > 1 }
+        let requestCountAfterFormEmission = sentCustomsForms.count
+        viewModel.customsFormViewModel.onDismiss()
+        XCTAssertEqual(sentCustomsForms.count, requestCountAfterFormEmission)
+        destinationAddress.send(sampleDestinationAddress(country: "VN", state: ""))
+
+        // Then
+        await until {
+            sentCustomsForms.count > requestCountAfterFormEmission && sentCustomsForms.last.flatMap { $0 } != nil
+        }
+        XCTAssertEqual(sentCustomsForms.last.flatMap { $0?.contentsType }, .documents)
+        XCTAssertNotNil(requirementCompletion)
     }
 
     func test_changing_customs_form_loads_new_label_rates_without_customs_form_when_customs_form_is_not_required() {
@@ -859,9 +919,9 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                             shippingLabel: nil,
                                                             originAddress: originAddressSubject.eraseToAnyPublisher(),
                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
-        viewModel.customsFormViewModel.itemsViewModels.first?.requiredInformationIsEntered = true
         viewModel.customsFormViewModel.contentType = .documents
         viewModel.customsFormViewModel.restrictionType = .quarantine
+        viewModel.customsFormViewModel.itemsViewModels.first?.requiredInformationIsEntered = true
 
         // Then
         XCTAssertTrue(viewModel.customsInformationIsCompleted)
@@ -1036,11 +1096,334 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         // When
         viewModel.customsFormViewModel.returnToSenderIfNotDelivered = true
+        viewModel.customsFormViewModel.contentType = .documents
+        viewModel.customsFormViewModel.itemsViewModels.forEach { $0.requiredInformationIsEntered = true }
         viewModel.customsFormViewModel.onDismiss()
 
         // Then
         XCTAssertNil(viewModel.selectedRate)
         XCTAssertNil(viewModel.shippingService?.selectedRate)
+    }
+
+    func test_EU_product_identifier_requirement_check_when_route_is_international_then_sends_order_and_origin_ID() {
+        // Given
+        let order = Order.fake()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var receivedOrderID: Int64?
+        var receivedOriginID: String?
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            guard case let .checkEUProductIdentifiersRequirement(_, orderID, originID, completion) = action else { return }
+            receivedOrderID = orderID
+            receivedOriginID = originID
+            completion(.required(prefills: [:]))
+        }
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: order,
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: Just(sampleOriginAddress(country: "US", state: "NY")).eraseToAnyPublisher(),
+                                                            destinationAddress: Just(sampleDestinationAddress(country: "GB", state: "LD")).eraseToAnyPublisher(),
+                                                            originAddressID: Just("origin-123").eraseToAnyPublisher(),
+                                                            stores: stores)
+
+        // Then
+        XCTAssertEqual(receivedOrderID, order.orderID)
+        XCTAssertEqual(receivedOriginID, "origin-123")
+        XCTAssertFalse(viewModel.isCheckingEUProductIdentifiers)
+        XCTAssertTrue(viewModel.customsFormViewModel.asksForEUProductIdentifiers)
+    }
+
+    func test_EU_product_identifier_requirement_check_when_route_changes_before_result_then_discards_stale_result() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var requirementCompletions: [(WooShippingEUProductIdentifiersRequirement) -> Void] = []
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            guard case let .checkEUProductIdentifiersRequirement(_, _, _, completion) = action else { return }
+            requirementCompletions.append(completion)
+        }
+        let destinationAddress = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: Just(sampleOriginAddress(country: "US", state: "NY")).eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddress.eraseToAnyPublisher(),
+                                                            stores: stores)
+
+        // When
+        destinationAddress.send(sampleDestinationAddress(country: "DE", state: "BE"))
+        XCTAssertEqual(requirementCompletions.count, 2)
+        requirementCompletions[1](.required(prefills: [:]))
+        requirementCompletions[0](.notRequired)
+
+        // Then
+        XCTAssertEqual(viewModel.customsFormViewModel.euProductIdentifiersRequirement, .required(prefills: [:]))
+        XCTAssertTrue(viewModel.customsFormViewModel.asksForEUProductIdentifiers)
+    }
+
+    func test_EU_product_identifier_requirement_check_when_purchased_shipment_is_refunded_then_checks_again() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var requirementChecks = 0
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            guard case let .checkEUProductIdentifiersRequirement(_, _, _, completion) = action else { return }
+            requirementChecks += 1
+            completion(.notRequired)
+        }
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: .fake(),
+                                                            originAddress: Just(sampleOriginAddress(country: "US", state: "NY")).eraseToAnyPublisher(),
+                                                            destinationAddress: Just(sampleDestinationAddress(country: "GB", state: "LD")).eraseToAnyPublisher(),
+                                                            stores: stores)
+        XCTAssertEqual(requirementChecks, 0)
+
+        // When
+        viewModel.didRequestRefund(for: 123)
+
+        // Then
+        XCTAssertEqual(requirementChecks, 1)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_requirement_check_is_pending_then_blocks_purchase_but_keeps_loading_rates() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleCountries(readOnlyCountries: [
+            Country(code: "US", name: "United States", states: []),
+            Country(code: "GB", name: "United Kingdom", states: [])
+        ])
+        var ratesRequested = false
+        var purchaseRequested = false
+        var requirementCompletion: ((WooShippingEUProductIdentifiersRequirement) -> Void)?
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .checkEUProductIdentifiersRequirement(_, _, _, completion):
+                requirementCompletion = completion
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                ratesRequested = true
+                completion(packages, .success([]))
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
+                purchaseRequested = true
+                completion(.success(.fake()))
+            case .loadConfig, .loadOriginAddresses, .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                break
+            }
+        }
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: Just(sampleOriginAddress(country: "US", state: "NY")).eraseToAnyPublisher(),
+                                                            destinationAddress: Just(sampleDestinationAddress(country: "GB", state: "LD")).eraseToAnyPublisher(),
+                                                            stores: stores,
+                                                            storageManager: storageManager,
+                                                            debounceDuration: 0)
+        viewModel.selectPackage(samplePackageData())
+
+        // When
+        await until { ratesRequested }
+        await until { viewModel.customsInformationIsCompleted }
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+
+        // Then
+        XCTAssertTrue(viewModel.customsInformationIsCompleted)
+        XCTAssertNotNil(viewModel.selectedRate)
+
+        // When
+        try await viewModel.purchaseLabel()
+
+        // Then
+        XCTAssertTrue(viewModel.isCheckingEUProductIdentifiers)
+        XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
+        XCTAssertFalse(purchaseRequested)
+
+        // When
+        requirementCompletion?(.notRequired)
+        await until { !viewModel.isCheckingEUProductIdentifiers && viewModel.customsInformationIsCompleted }
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        try await viewModel.purchaseLabel()
+
+        // Then
+        XCTAssertTrue(purchaseRequested)
+    }
+
+    func test_EU_product_identifier_requirement_check_when_route_changes_then_checks_again() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var requirementChecks = 0
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            guard case let .checkEUProductIdentifiersRequirement(_, _, _, completion) = action else { return }
+            requirementChecks += 1
+            completion(.notRequired)
+        }
+        let destinationAddress = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: Just(sampleOriginAddress(country: "US", state: "NY")).eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddress.eraseToAnyPublisher(),
+                                                            stores: stores)
+
+        // When
+        destinationAddress.send(sampleDestinationAddress(country: "GB", state: "LD").copy(postcode: "W1A 1AA"))
+
+        // Then
+        XCTAssertEqual(requirementChecks, 2)
+        XCTAssertFalse(viewModel.isCheckingEUProductIdentifiers)
+    }
+
+    func test_EU_product_identifier_requirement_check_when_route_is_unchanged_then_does_not_check_again() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var requirementChecks = 0
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            guard case let .checkEUProductIdentifiersRequirement(_, _, _, completion) = action else { return }
+            requirementChecks += 1
+            completion(.notRequired)
+        }
+        let originAddress = sampleOriginAddress(country: "US", state: "NY")
+        let destinationAddress = sampleDestinationAddress(country: "GB", state: "LD")
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(originAddress)
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(destinationAddress)
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+                                                            originAddressID: Just("origin-123").eraseToAnyPublisher(),
+                                                            stores: stores)
+        XCTAssertEqual(requirementChecks, 1)
+
+        // When
+        originAddressSubject.send(originAddress)
+        destinationAddressSubject.send(destinationAddress)
+
+        // Then
+        XCTAssertEqual(requirementChecks, 1)
+    }
+
+    func test_EU_product_identifier_requirement_check_when_only_origin_ID_changes_then_checks_with_new_ID() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var receivedOriginIDs: [String?] = []
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            guard case let .checkEUProductIdentifiersRequirement(_, _, originID, completion) = action else { return }
+            receivedOriginIDs.append(originID)
+            completion(.notRequired)
+        }
+        let originID = CurrentValueSubject<String?, Never>("origin-123")
+        let originAddress = sampleOriginAddress(country: "US", state: "NY")
+        let destinationAddress = sampleDestinationAddress(country: "GB", state: "LD")
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: Just(originAddress).eraseToAnyPublisher(),
+                                                            destinationAddress: Just(destinationAddress).eraseToAnyPublisher(),
+                                                            originAddressID: originID.eraseToAnyPublisher(),
+                                                            stores: stores)
+
+        // When
+        originID.send("origin-456")
+
+        // Then
+        XCTAssertEqual(receivedOriginIDs, ["origin-123", "origin-456"])
+        _ = viewModel
+    }
+
+    func test_EU_product_identifier_requirement_check_when_route_is_domestic_or_label_is_purchased_then_does_not_dispatch() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var requirementChecks = 0
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case .checkEUProductIdentifiersRequirement = action {
+                requirementChecks += 1
+            }
+        }
+
+        // When
+        _ = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                shipment: sampleShipment,
+                                                shippingLabel: nil,
+                                                originAddress: Just(sampleOriginAddress(country: "US", state: "NY")).eraseToAnyPublisher(),
+                                                destinationAddress: Just(sampleDestinationAddress(country: "US", state: "CA")).eraseToAnyPublisher(),
+                                                stores: stores)
+        _ = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                shipment: sampleShipment,
+                                                shippingLabel: .fake(),
+                                                originAddress: Just(sampleOriginAddress(country: "US", state: "NY")).eraseToAnyPublisher(),
+                                                destinationAddress: Just(sampleDestinationAddress(country: "GB", state: "LD")).eraseToAnyPublisher(),
+                                                stores: stores)
+
+        // Then
+        XCTAssertEqual(requirementChecks, 0)
+    }
+
+    @MainActor
+    func test_EU_product_identifier_requirement_check_when_route_becomes_domestic_then_does_not_emit_customs_form() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "US", name: "United States", states: []),
+                                                                 Country(code: "GB", name: "United Kingdom", states: [])])
+        var requirementChecks = 0
+        var sentCustomsForms: [ShippingLabelCustomsForm?] = []
+        let prefills: [Int64: WooShippingEUProductIdentifiers] = [
+            1: WooShippingEUProductIdentifiers(productID: 1,
+                                               sku: "shirt-sku",
+                                               manufacturerProductID: "shirt-part",
+                                               standardizedProductID: "1234567890123")
+        ]
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .checkEUProductIdentifiersRequirement(_, _, _, completion):
+                requirementChecks += 1
+                completion(.required(prefills: prefills))
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                sentCustomsForms.append(packages.first?.customsForm)
+                completion(packages, .success([]))
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([]))
+            case .loadConfig:
+                break
+            default:
+                break
+            }
+        }
+        let destinationAddress = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: Just(sampleOriginAddress(country: "US", state: "NY")).eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddress.eraseToAnyPublisher(),
+                                                            stores: stores,
+                                                            storageManager: storageManager,
+                                                            debounceDuration: 0)
+        viewModel.selectPackage(samplePackageData())
+
+        // When
+        await until { sentCustomsForms.contains { $0 != nil } }
+        await until { viewModel.customsInformationIsCompleted }
+
+        // Then
+        XCTAssertTrue(viewModel.customsInformationIsCompleted)
+        XCTAssertTrue(viewModel.customsFormViewModel.asksForEUProductIdentifiers)
+        XCTAssertNotNil(sentCustomsForms.last.flatMap { $0 })
+        let labelRateRequestsBeforeRouteChange = sentCustomsForms.count
+
+        // When
+        destinationAddress.send(sampleDestinationAddress(country: "US", state: "CA"))
+
+        // Then
+        XCTAssertEqual(requirementChecks, 1, "The domestic route should not dispatch a requirement check")
+        await until {
+            sentCustomsForms.count > labelRateRequestsBeforeRouteChange && sentCustomsForms.last.flatMap { $0 } == nil
+        }
+        XCTAssertNil(sentCustomsForms.last.flatMap { $0 }, "Domestic routes should not send customs data with rates")
+        XCTAssertTrue(viewModel.customsFormViewModel.asksForEUProductIdentifiers,
+                      "A domestic route should not overwrite the existing customs form requirement")
     }
 
     // MARK: - Customs
@@ -1155,6 +1538,11 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         let destinationAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storageManager = MockStorageManager()
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .checkEUProductIdentifiersRequirement(_, _, _, completion) = action {
+                completion(.notRequired)
+            }
+        }
 
         // Given
         let originCountry = Country(code: "US", name: "United States", states: [])

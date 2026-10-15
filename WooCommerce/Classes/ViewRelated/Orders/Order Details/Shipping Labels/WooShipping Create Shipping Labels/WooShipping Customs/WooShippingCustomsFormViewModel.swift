@@ -18,6 +18,8 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
 
     @Published var requiredInformationIsEntered = false
     @Published private var itemsRequiredInformationIsEntered = false
+    @Published private(set) var euProductIdentifiersRequirement: WooShippingEUProductIdentifiersRequirement = .notRequired
+    @Published private(set) var asksForEUProductIdentifiers = false
 
     @Published var contentExplanation = ""
     @Published var restrictionDetails = ""
@@ -39,6 +41,13 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
 
     @Published private(set) var itemsViewModels: [WooShippingCustomsItemViewModel] = []
 
+    var showsPluginUpdateNotice: Bool {
+        if case .pluginOutdated = euProductIdentifiersRequirement {
+            return contentType != .documents
+        }
+        return false
+    }
+
     init(order: Order,
          shipment: Shipment,
          originCountryCode: AnyPublisher<String?, Never>? = nil,
@@ -58,15 +67,41 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             originCountryCode: originCountryCode,
                                             isHSTariffNumberRequired: isHSTariffNumberRequired,
                                             isDescriptionLengthLimitRequired: isDescriptionLengthLimitRequired,
+                                            areEUProductIdentifiersRequired: $asksForEUProductIdentifiers.eraseToAnyPublisher(),
                                             storageManager: storageManager)
         }
 
+        listenForEUProductIdentifiersRequirement()
         listenToItemsRequiredInformationValues()
         listenForRequiredInformation()
         listenForInternationalTransactionNumberIsRequired()
         listenForRequiredInformationCompletedUponPreFill()
     }
 
+    func onDismiss() {
+        if requiredInformationIsEntered {
+            emitForm()
+        }
+    }
+
+    func updateEUProductIdentifiersRequirement(_ requirement: WooShippingEUProductIdentifiersRequirement) {
+        euProductIdentifiersRequirement = requirement
+        if case .required(let prefills) = requirement {
+            itemsViewModels.forEach { itemViewModel in
+                itemViewModel.prefillEUProductIdentifiers(prefills[itemViewModel.itemProductID])
+            }
+        }
+        if requiredInformationIsEntered {
+            emitForm()
+        }
+    }
+
+    func updateDestinationCountry(code: String) {
+        destinationCountryCode = code
+    }
+}
+
+private extension WooShippingCustomsFormViewModel {
     /// WOOMOB-734
     /// Solves the issue where a pre-filled form becomes complete without a manual submission
     ///
@@ -83,16 +118,17 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func onDismiss() {
-        emitForm()
+    func listenForEUProductIdentifiersRequirement() {
+        $euProductIdentifiersRequirement.combineLatest($contentType)
+            .map { requirement, contentType in
+                guard contentType != .documents, case .required = requirement else {
+                    return false
+                }
+                return true
+            }
+            .assign(to: &$asksForEUProductIdentifiers)
     }
 
-    func updateDestinationCountry(code: String) {
-        destinationCountryCode = code
-    }
-}
-
-private extension WooShippingCustomsFormViewModel {
     func listenForRequiredInformation() {
         let firstBatch = Publishers.CombineLatest4($contentType, $contentExplanation, $restrictionType, $restrictionDetails)
         let secondBatch = Publishers.CombineLatest($itemsRequiredInformationIsEntered, $isMissingITN)
@@ -197,15 +233,28 @@ private extension WooShippingCustomsFormViewModel {
             restrictionComments: restrictionType == .other ? restrictionDetails : "",
             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
             itn: ITNNumberValidator.isValid(internationalTransactionNumber) ? internationalTransactionNumber : "",
-            items: itemsViewModels.map {
-                ShippingLabelCustomsForm.Item(
-                    description: $0.description,
-                    quantity: $0.itemQuantity,
-                    value: Double($0.valuePerUnit) ?? 0,
-                    weight: Double($0.weightPerUnit) ?? 0,
-                    hsTariffNumber: $0.isValidTariffNumber ? $0.sanitizedHSTariffNumber : "",
-                    originCountry: $0.selectedCountry?.code ?? "",
-                    productID: $0.itemProductID
+            items: itemsViewModels.map { item in
+                let asksForEUProductIdentifiers = item.areEUProductIdentifiersRequired
+                let standardizedProductID: String?
+                if !asksForEUProductIdentifiers {
+                    standardizedProductID = nil
+                } else if item.hasNoBarcode {
+                    standardizedProductID = WooShippingCustomsItemViewModel.noBarcodeProductIdentifier
+                } else {
+                    standardizedProductID = item.trimmedGTIN.isNotEmpty ? item.trimmedGTIN : nil
+                }
+                return ShippingLabelCustomsForm.Item(
+                    description: item.description,
+                    quantity: item.itemQuantity,
+                    value: Double(item.valuePerUnit) ?? 0,
+                    weight: Double(item.weightPerUnit) ?? 0,
+                    hsTariffNumber: item.isValidTariffNumber ? item.sanitizedHSTariffNumber : "",
+                    originCountry: item.selectedCountry?.code ?? "",
+                    productID: item.itemProductID,
+                    code: asksForEUProductIdentifiers && item.trimmedSKU.isNotEmpty ? item.trimmedSKU : nil,
+                    manufacturerProductID: asksForEUProductIdentifiers && item.trimmedManufacturerPartNumber.isNotEmpty ?
+                        item.trimmedManufacturerPartNumber : nil,
+                    standardizedProductID: standardizedProductID
                 )
             }
         )

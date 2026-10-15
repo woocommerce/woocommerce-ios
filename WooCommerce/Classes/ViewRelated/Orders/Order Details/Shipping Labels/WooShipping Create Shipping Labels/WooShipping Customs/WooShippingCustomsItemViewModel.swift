@@ -9,6 +9,16 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published var hsTariffNumber: String = ""
     @Published var valuePerUnit: String = ""
     @Published var weightPerUnit: String = ""
+    @Published var sku: String = ""
+    @Published var manufacturerPartNumber: String = ""
+    @Published var gtin: String = ""
+    @Published var hasNoBarcode = false {
+        didSet {
+            if hasNoBarcode {
+                gtin = ""
+            }
+        }
+    }
 
     @Published private var originCountryCode: String?
 
@@ -71,6 +81,40 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     /// if `true` then `hsTariffNumber` must be valid for `requiredInformationIsEntered` to be `true`
     @Published private(set) var isHSTariffNumberRequired: Bool = false
     @Published private(set) var isDescriptionLengthLimitRequired: Bool = false
+    @Published private(set) var areEUProductIdentifiersRequired = false
+
+    static let maximumEUProductIdentifierLength = 64
+    static let noBarcodeProductIdentifier = "Y081"
+
+    var trimmedSKU: String {
+        sku.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var trimmedManufacturerPartNumber: String {
+        manufacturerPartNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var trimmedGTIN: String {
+        gtin.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var skuValidationError: String? {
+        guard areEUProductIdentifiersRequired else { return nil }
+        return Self.identifierValidationError(for: sku)
+    }
+
+    var manufacturerPartNumberValidationError: String? {
+        guard areEUProductIdentifiersRequired else { return nil }
+        return Self.identifierValidationError(for: manufacturerPartNumber)
+    }
+
+    var gtinValidationError: String? {
+        guard areEUProductIdentifiersRequired, !hasNoBarcode else { return nil }
+        if trimmedGTIN.isEmpty {
+            return Localization.gtinRequired
+        }
+        return Self.identifierLengthError(for: gtin)
+    }
 
     init(itemName: String,
          itemProductID: Int64,
@@ -81,6 +125,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          originCountryCode: AnyPublisher<String?, Never>? = nil,
          isHSTariffNumberRequired: AnyPublisher<Bool, Never>? = nil,
          isDescriptionLengthLimitRequired: AnyPublisher<Bool, Never>? = nil,
+         areEUProductIdentifiersRequired: AnyPublisher<Bool, Never>? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.title = itemName
         self.description = itemName
@@ -105,11 +150,32 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         isDescriptionLengthLimitRequired?
             .assign(to: &$isDescriptionLengthLimitRequired)
 
+        areEUProductIdentifiersRequired?
+            .assign(to: &$areEUProductIdentifiersRequired)
+
         fetchCountries()
 
         combineToPreselectCountry()
         combineRequiredInformationIsEntered()
         combineTotalItemValue()
+    }
+
+    func prefillEUProductIdentifiers(_ identifiers: WooShippingEUProductIdentifiers?) {
+        guard let identifiers else { return }
+
+        if trimmedSKU.isEmpty {
+            sku = identifiers.sku
+        }
+        if trimmedManufacturerPartNumber.isEmpty {
+            manufacturerPartNumber = identifiers.manufacturerProductID
+        }
+        guard trimmedGTIN.isEmpty, !hasNoBarcode else { return }
+
+        if identifiers.standardizedProductID == Self.noBarcodeProductIdentifier {
+            hasNoBarcode = true
+        } else {
+            gtin = identifiers.standardizedProductID
+        }
     }
 }
 
@@ -150,18 +216,31 @@ private extension WooShippingCustomsItemViewModel {
             $selectedCountry
         )
         .combineLatest($hsTariffNumber, $isHSTariffNumberRequired, $isDescriptionLengthLimitRequired)
+        .combineLatest($sku)
+        .combineLatest($manufacturerPartNumber)
+        .combineLatest($gtin)
+        .combineLatest($hasNoBarcode)
+        .combineLatest($areEUProductIdentifiersRequired)
         .sink { [weak self] result in
             guard let self else { return }
 
-            let ((description, valuePerUnit, weightPerUnit, selectedCountry), hsTariffNumber, isHSTariffNumberRequired, isDescriptionLengthLimitRequired) = result
+            let (((((baseInformation, sku), manufacturerPartNumber), gtin), hasNoBarcode), areEUProductIdentifiersRequired) = result
+            let (itemInformation, hsTariffNumber, isHSTariffNumberRequired, isDescriptionLengthLimitRequired) = baseInformation
+            let (description, valuePerUnit, weightPerUnit, selectedCountry) = itemInformation
 
-            let hsTariffNumberRequirementMet = (hsTariffNumber.isEmpty && !isHSTariffNumberRequired) || (isValidTariffNumber && hsTariffNumber.isNotEmpty)
+            let hsTariffNumberRequirementMet = (hsTariffNumber.isEmpty && !isHSTariffNumberRequired) ||
+                (HSTariffNumberValidator.isNumberValid(hsTariffNumber) && hsTariffNumber.isNotEmpty)
+            let identifiersRequirementMet = !areEUProductIdentifiersRequired ||
+                (Self.identifierValidationError(for: sku) == nil &&
+                 Self.identifierValidationError(for: manufacturerPartNumber) == nil &&
+                 (hasNoBarcode || Self.identifierValidationError(for: gtin) == nil))
 
             requiredInformationIsEntered = Self.isDescriptionValid(description, isDescriptionLengthLimitRequired: isDescriptionLengthLimitRequired) &&
             valuePerUnit.isNotEmpty &&
             Self.isWeightValid(weightPerUnit) &&
             selectedCountry != nil &&
-            hsTariffNumberRequirementMet
+            hsTariffNumberRequirementMet &&
+            identifiersRequirementMet
         }
         .store(in: &cancellables)
     }
@@ -198,8 +277,41 @@ private extension WooShippingCustomsItemViewModel {
         return isDescriptionLengthLimitRequired && description.count > Constants.maximumUSPSDomesticMailDescriptionLength
     }
 
+    private static func identifierValidationError(for value: String) -> String? {
+        let trimmedValue = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedValue.isEmpty {
+            return Localization.identifierRequired
+        }
+        return identifierLengthError(for: value)
+    }
+
+    private static func identifierLengthError(for value: String) -> String? {
+        guard value.trimmingCharacters(in: .whitespacesAndNewlines).unicodeScalars.count > maximumEUProductIdentifierLength else {
+            return nil
+        }
+        return String.localizedStringWithFormat(Localization.identifierTooLong, maximumEUProductIdentifierLength)
+    }
+
     enum Constants {
         static let maximumUSPSDomesticMailDescriptionLength = 30
+    }
+
+    private enum Localization {
+        static let identifierRequired = NSLocalizedString(
+            "wooShipping.customsItems.euProductIdentifier.required",
+            value: "Required for shipments to the EU",
+            comment: "Error shown when a required EU product identifier is empty"
+        )
+        static let gtinRequired = NSLocalizedString(
+            "wooShipping.customsItems.gtin.required",
+            value: "Enter the GTIN/EAN, or select \"No barcode\"",
+            comment: "Error shown when a required GTIN is empty and the no barcode option is not selected"
+        )
+        static let identifierTooLong = NSLocalizedString(
+            "wooShipping.customsItems.euProductIdentifier.tooLong",
+            value: "Must be %1$d characters or fewer.",
+            comment: "Error shown when an EU product identifier exceeds the allowed character count"
+        )
     }
 }
 

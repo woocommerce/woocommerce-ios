@@ -3,7 +3,7 @@
 
 25.9
 -----
-- [*] In-Person Payments: The payment amount no longer shows in a smaller font when you try a card payment again after canceling. [https://github.com/woocommerce/woocommerce-ios/pull/18085]
+- [*] In-Person Payments: Fixed inconsistent text sizes in card reader payment screens. [https://github.com/woocommerce/woocommerce-ios/pull/18085]
 - [*] Login: Fixed the Log in button becoming unresponsive after switching accounts from the account-mismatch screen's connected stores list. [https://github.com/woocommerce/woocommerce-ios/pull/18068]
 - [*] Product description editor: The formatting toolbar stays inside the editor on iPad and iPhone Duo instead of spanning the whole window, and the system's own B / I / U controls no longer show next to the keyboard or in the text selection menu. [https://github.com/woocommerce/woocommerce-ios/pull/18044]
 - [*] Order creation: The totals sheet covers the bottom screen edge again on iOS 27, so form content no longer shows under the "Collect Payment" button. [https://github.com/woocommerce/woocommerce-ios/pull/18074]

@@ -1,4 +1,4 @@
-# p2: products.list, products.sort, products.search
+# p2: products.list, products.pagination, products.sort, products.search
 # Prerequisite: at least three products with distinct names are visible.
 appId: ${APP_ID}
 name: "Products - List, sort, filters, and search"
@@ -186,3 +186,14 @@ tags:
 - tapOn: "Dismiss"
 - assertVisible:
     id: "products-table-view"
+
+# The list is sorted A to Z here. One page holds 25 products, and the lab store has
+# 100, with numbered names, so "Maestro Product 040" only shows once the next page
+# has loaded.
+- scrollUntilVisible:
+    element:
+      text: "Maestro Product 040"
+    direction: DOWN
+    timeout: 120000
+    label: "A product from the next page loads"
+- takeScreenshot: products_next_page

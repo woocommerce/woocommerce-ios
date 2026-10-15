@@ -178,7 +178,7 @@ items:
     flow: .maestro/flows/products_list_and_sort.yaml
   - id: products.pagination
     title: Product pagination
-    manual: "The lab store has fewer products than one page holds."
+    flow: .maestro/flows/products_list_and_sort.yaml
   - id: products.sort
     title: Sort product list
     flow: .maestro/flows/products_list_and_sort.yaml

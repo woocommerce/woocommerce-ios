@@ -157,7 +157,7 @@ struct RefundCreationUseCase {
         }
         let target = max(Self.round(requested, scale: numberOfDecimals), .zero)
         var values = originals.map { Self.round($0 * target / total, scale: numberOfDecimals, mode: $0 < 0 ? .up : .down) }
-        let unit = pow(Decimal(10), -numberOfDecimals)
+        let unit = Decimal(sign: .plus, exponent: -numberOfDecimals, significand: 1)
         var remainder = target - values.reduce(.zero, +)
         // Rounding discounts toward zero can put the sum above the target. Reduce
         // positive components before distributing any positive rounding remainder.

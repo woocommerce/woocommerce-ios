@@ -45,13 +45,8 @@ extension ShippingLine {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let metadata = try? container.decode([MetaData].self, forKey: .metadata)
-        let originalID: Int64?
-        if let raw = metadata?.first(where: { $0.key == "_refunded_item_id" })?.value.stringValue {
-            originalID = Int64(raw)
-        } else {
-            originalID = nil
-        }
+        let metadata = [MetaData].decodeFlexibly(from: container, forKey: .metadata)
+        let originalID = metadata.first(where: { $0.key == "_refunded_item_id" }).flatMap { Int64($0.value.stringValue) }
         self.init(shippingID: try container.decode(Int64.self, forKey: .shippingID),
                   methodTitle: try container.decode(String.self, forKey: .methodTitle),
                   methodID: try container.decodeIfPresent(String.self, forKey: .methodID),

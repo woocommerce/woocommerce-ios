@@ -37,20 +37,23 @@ final class IssueRefundViewModelTests: XCTestCase {
 
 
     func test_sections_when_shipping_refund_has_new_id_then_original_shipping_is_not_offered() throws {
-        // Given
-        let original = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "5", totalTax: "0.25", taxes: [])
-        let refunded = try JSONDecoder().decode(ShippingLine.self, from: Data("""
-            {"id":99,"method_title":"Standard","method_id":"standard","total":"-5","total_tax":"-0.25","taxes":[],
-             "meta_data":[{"id":1,"key":"_refunded_item_id","value":1}]}
-            """.utf8))
-        let order = MockOrders().makeOrder(shippingLines: [original])
-        // When
-        let sut = IssueRefundViewModel(order: order, refunds: [MockRefunds.sampleRefund(shippingLines: [refunded])],
-                                       currencySettings: CurrencySettings())
-        // Then
-        XCTAssertFalse(sut.sections.flatMap(\.rows).contains { $0 is IssueRefundViewModel.ShippingSwitchViewModel })
-        XCTAssertEqual(refunded.refundedItemID, 1)
-        XCTAssertEqual(refunded.copy().refundedItemID, 1)
+        for metadata in [#"[{"id":1,"key":"_refunded_item_id","value":1}]"#,
+                         #"{"0":{"id":1,"key":"_refunded_item_id","value":1}}"#] {
+            // Given
+            let original = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "5", totalTax: "0.25", taxes: [])
+            let refunded = try JSONDecoder().decode(ShippingLine.self, from: Data("""
+                {"id":99,"method_title":"Standard","method_id":"standard","total":"-5","total_tax":"-0.25","taxes":[],
+                 "meta_data":\(metadata)}
+                """.utf8))
+            let order = MockOrders().makeOrder(shippingLines: [original])
+            // When
+            let sut = IssueRefundViewModel(order: order, refunds: [MockRefunds.sampleRefund(shippingLines: [refunded])],
+                                           currencySettings: CurrencySettings())
+            // Then
+            XCTAssertFalse(sut.sections.flatMap(\.rows).contains { $0 is IssueRefundViewModel.ShippingSwitchViewModel })
+            XCTAssertEqual(refunded.refundedItemID, 1)
+            XCTAssertEqual(refunded.copy().refundedItemID, 1)
+        }
     }
 
     func test_sections_when_fee_already_refunded_then_custom_amount_is_not_offered() {
@@ -95,6 +98,100 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(sut.quantityAvailableForRefundForItemAtIndex(0), 1)
     }
 
+
+    func test_fetch_when_refund_was_deleted_then_removes_stale_id_and_updates_confirmation() throws {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 1, taxes: [], total: "100", totalTax: "0")
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [], fees: []).copy(
+            total: "100", refunds: [.init(refundID: 1, reason: nil, total: "-40"), .init(refundID: 2, reason: nil, total: "-20")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var completions: [Int64: (Refund?, Error?) -> Void] = [:]
+        var requestedIDs: [Int64] = []
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, refundID, completion) = action {
+                requestedIDs.append(refundID)
+                completions[refundID] = completion
+            }
+        }
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .selectedPaymentGatewayAccount(completion) = action { completion(nil) }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        let valid = Refund.fake().copy(refundID: 2, amount: "20", items: [], shippingLines: [], feeLines: [])
+        var retry: (() -> Void)?
+        sut.showFetchRefundsErrorNotice = { retry = $0 }
+        sut.selectAllOrderItems()
+        // When
+        sut.fetch()
+        try XCTUnwrap(completions[1])(nil, NetworkRequestError.notFound())
+        XCTAssertFalse(sut.isNextButtonEnabled)
+        try XCTUnwrap(completions[2])(valid, nil)
+        // Then
+        XCTAssertTrue(sut.isNextButtonEnabled)
+        XCTAssertEqual(sut.title, "$80.00")
+        XCTAssertNil(retry)
+        var confirmation: RefundConfirmationViewModel?
+        sut.createRefundConfirmationViewModel { confirmation = $0 }
+        let row = try XCTUnwrap(confirmation?.sections.first?.rows.first as? RefundConfirmationViewModel.TwoColumnRow)
+        XCTAssertEqual(row.value, "$20.00")
+        sut.fetch()
+        XCTAssertEqual(requestedIDs, [1, 2, 2])
+        try XCTUnwrap(completions[2])(valid, nil)
+    }
+
+    func test_fetch_when_all_refunds_were_deleted_then_restores_money_and_quantity() {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 2, taxes: [], total: "100", totalTax: "0")
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [], fees: []).copy(
+            total: "100", refunds: [.init(refundID: 1, reason: nil, total: "-40")])
+        let cached = Refund.fake().copy(refundID: 1, amount: "40", items: [.init(itemID: 99, refundedItemID: "1", quantity: -1, taxes: [], total: "-40")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, _, completion) = action { completion(nil, NetworkRequestError.notFound()) }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [cached], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        XCTAssertEqual(sut.quantityAvailableForRefundForItemAtIndex(0), 1)
+        // When
+        sut.fetch()
+        sut.selectAllOrderItems()
+        // Then
+        XCTAssertTrue(sut.isNextButtonEnabled)
+        XCTAssertEqual(sut.quantityAvailableForRefundForItemAtIndex(0), 2)
+        XCTAssertEqual(sut.title, "$100.00")
+    }
+
+    func test_fetch_when_missing_refund_and_other_error_then_keeps_history_until_retry_succeeds() throws {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 1, taxes: [], total: "100", totalTax: "0")
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [], fees: []).copy(
+            total: "100", refunds: [.init(refundID: 1, reason: nil, total: "-40"), .init(refundID: 2, reason: nil, total: "-20")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var completions: [Int64: (Refund?, Error?) -> Void] = [:]
+        var requestedIDs: [Int64] = []
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, refundID, completion) = action {
+                requestedIDs.append(refundID)
+                completions[refundID] = completion
+            }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        var retry: (() -> Void)?
+        sut.showFetchRefundsErrorNotice = { retry = $0 }
+        sut.selectAllOrderItems()
+        // When
+        sut.fetch()
+        try XCTUnwrap(completions[1])(nil, NetworkRequestError.notFound())
+        try XCTUnwrap(completions[2])(nil, NSError(domain: "test", code: 1))
+        // Then
+        XCTAssertFalse(sut.isNextButtonEnabled)
+        XCTAssertEqual(sut.title, "$40.00")
+        try XCTUnwrap(retry)()
+        XCTAssertEqual(requestedIDs, [1, 2, 1, 2])
+        try XCTUnwrap(completions[1])(nil, NetworkRequestError.notFound())
+        try XCTUnwrap(completions[2])(Refund.fake().copy(refundID: 2, amount: "20", items: [], shippingLines: [], feeLines: []), nil)
+        XCTAssertTrue(sut.isNextButtonEnabled)
+        XCTAssertEqual(sut.title, "$80.00")
+    }
 
     func test_next_when_only_free_product_is_selected_then_allows_quantity_refund() {
         // Given

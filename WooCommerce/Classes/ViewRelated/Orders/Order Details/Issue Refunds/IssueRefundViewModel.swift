@@ -12,7 +12,7 @@ final class IssueRefundViewModel {
     private struct State {
         /// Order to be refunded
         ///
-        let order: Order
+        var order: Order
 
         /// Refunds previously made
         ///
@@ -259,15 +259,23 @@ extension IssueRefundViewModel {
         state.isLoadingRefunds = true
         state.refundFetchFailed = false
         var fetched: [Refund] = []
+        var missingRefundIDs: Set<Int64> = []
         var outstanding = state.order.refunds.count
         for refundID in state.order.refunds.map(\.refundID) {
             stores.dispatch(RefundAction.retrieveRefund(siteID: state.order.siteID, orderID: state.order.orderID, refundID: refundID) {
                 [weak self] refund, error in
                 guard let self else { return }
-                if let refund, error == nil { fetched.append(refund) } else { self.state.refundFetchFailed = true }
+                if let refund, error == nil {
+                    fetched.append(refund)
+                } else if case NetworkRequestError.notFound? = error {
+                    missingRefundIDs.insert(refundID)
+                } else {
+                    self.state.refundFetchFailed = true
+                }
                 outstanding -= 1
                 guard outstanding == 0 else { return }
                 if !self.state.refundFetchFailed {
+                    self.state.order = self.state.order.copy(refunds: self.state.order.refunds.filter { !missingRefundIDs.contains($0.refundID) })
                     self.state.refunds = fetched
                     self.state.itemsToRefund = self.refundableOrderItemsDeterminer.determineRefundableOrderItems(from: self.state.order, with: fetched)
                     var quantities = RefundQuantityStore()

@@ -170,11 +170,10 @@ private extension CardPresentPaymentsModalViewController {
         // still need their fonts for later states.
         styleTopTitle()
         styleTopSubtitle()
-        styleBottomTitle()
-        styleBottomSubtitle()
+        styleBottomLabels()
 
         if shouldShowBottomLabels() {
-            styleBottomLabels()
+            showBottomLabels()
         }
 
         if shouldShowActionButtons() {
@@ -192,10 +191,15 @@ private extension CardPresentPaymentsModalViewController {
         topSubtitleLabel.numberOfLines = 0
     }
 
-    func styleBottomLabels() {
+    func showBottomLabels() {
         actionButtonsView.isHidden = true
         bottomLabels.isHidden = false
         configureSpacer()
+    }
+
+    func styleBottomLabels() {
+        styleBottomTitle()
+        styleBottomSubtitle()
     }
 
     func styleBottomTitle() {

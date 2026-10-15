@@ -97,8 +97,17 @@ tags:
     visible:
       id: edit-product-more-options-button
     timeout: 60000
-# Publishing reloads the form with the saved product.
-- assertVisible: "Weight: 2[.,]5.* Dimensions: 10 x 8 x 4 .*"
+# Publishing reloads the form with the saved product. Scroll back up for the
+# title check below.
+- scrollUntilVisible:
+    element: "Weight: 2[.,]5.* Dimensions: 10 x 8 x 4 .*"
+    direction: DOWN
+    timeout: 15000
+- scrollUntilVisible:
+    element:
+      id: product-title
+    direction: UP
+    timeout: 15000
 - tapOn:
     id: edit-product-more-options-button
 - extendedWaitUntil:

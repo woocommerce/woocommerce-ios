@@ -217,12 +217,12 @@ struct DefaultNoticePresenterTests {
     }
 
     @Test
-    func test_enqueue_when_presenting_view_is_in_a_window_then_notice_avoids_the_root_view_keyboard_guide() throws {
+    func test_enqueue_when_presenting_view_is_a_child_then_notice_avoids_the_top_parent_keyboard_guide() throws {
         // Given
         var presenter: NoticePresenter = DefaultNoticePresenter()
         let presentingViewController = UIViewController()
         let window = makeWindow(withChild: presentingViewController, above: UIButton(configuration: .filled()))
-        let rootView = try #require(window.rootViewController?.view)
+        let topView = try #require(window.rootViewController?.view)
         presenter.presentingViewController = presentingViewController
         let existingSubviews = presentingViewController.view.subviews
 
@@ -231,12 +231,30 @@ struct DefaultNoticePresenterTests {
         let noticeContainer = try #require(presentingViewController.view.subviews.first { !existingSubviews.contains($0) })
 
         // Then
-        let keyboardConstraints = rootView.constraints.filter {
-            $0.isActive && $0.firstItem === noticeContainer && $0.firstAttribute == .bottom && $0.relation == .lessThanOrEqual
-        }
-        #expect(keyboardConstraints.count == 1)
-        #expect(keyboardConstraints.first?.secondItem === rootView.keyboardLayoutGuide)
+        let keyboardConstraint = try #require(keyboardConstraint(of: noticeContainer, in: topView))
+        #expect(keyboardConstraint.secondItem === topView.keyboardLayoutGuide)
         #expect(!presentingViewController.view.layoutGuides.contains { $0 is UIKeyboardLayoutGuide })
+    }
+
+    @Test
+    func test_enqueue_when_presenting_view_is_not_in_a_window_then_notice_still_avoids_the_keyboard() throws {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let parentViewController = UIViewController()
+        let presentingViewController = UIViewController()
+        parentViewController.addChild(presentingViewController)
+        parentViewController.view.addSubview(presentingViewController.view)
+        presentingViewController.didMove(toParent: parentViewController)
+        presenter.presentingViewController = presentingViewController
+        let existingSubviews = presentingViewController.view.subviews
+
+        // When
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        let noticeContainer = try #require(presentingViewController.view.subviews.first { !existingSubviews.contains($0) })
+
+        // Then
+        let keyboardConstraint = try #require(keyboardConstraint(of: noticeContainer, in: parentViewController.view))
+        #expect(keyboardConstraint.secondItem === parentViewController.view.keyboardLayoutGuide)
     }
 }
 
@@ -262,5 +280,11 @@ private extension DefaultNoticePresenterTests {
         ])
         window.layoutIfNeeded()
         return window
+    }
+
+    func keyboardConstraint(of noticeContainer: UIView, in view: UIView) -> NSLayoutConstraint? {
+        view.constraints.first {
+            $0.isActive && $0.firstItem === noticeContainer && $0.firstAttribute == .bottom && $0.relation == .lessThanOrEqual
+        }
     }
 }

@@ -425,6 +425,85 @@ final class AppCoordinatorTests: XCTestCase {
     }
 
     @MainActor
+    func test_consent_blocker_when_topmost_controller_is_being_dismissed_then_presents_on_the_visible_controller() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let analytics = MockAnalyticsProvider()
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(
+            decision: .restrictConsentRequired,
+            result: .eligible(significantAppChangeApprovalRequired: true, isMinor: true)
+        )
+        // Stands in for the Declared Age Range host sheet, still going away when the decision lands.
+        let systemSheet = UIViewController()
+        ageRangeVerificationCoordinator.beforeResult = { window in
+            window.topmostPresentedViewController?.present(systemSheet, animated: false)
+            systemSheet.dismiss(animated: true)
+        }
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: MockAuthentication(),
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator)
+
+        // When
+        appCoordinator.start()
+
+        // Then the wall is only reported as shown once it's actually on screen.
+        XCTAssertFalse(analytics.receivedEvents.contains(WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue))
+        waitUntil { self.window.rootViewController?.presentedViewController is SignificantChangeConsentBlockingHostingController }
+        let blocker = try XCTUnwrap(window.rootViewController?.presentedViewController as? SignificantChangeConsentBlockingHostingController)
+        waitUntil { blocker.isBeingPresented == false }
+        XCTAssertTrue(blocker.presentingViewController === window.rootViewController)
+        XCTAssertNil(systemSheet.presentingViewController)
+        waitUntil { analytics.receivedEvents.contains(WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue) }
+        XCTAssertEqual(analytics.receivedEvents.filter { $0 == WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue }.count, 1)
+    }
+
+    @MainActor
+    func test_consent_recheck_while_blocker_presentation_is_in_flight_then_updates_the_same_blocker() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let analytics = MockAnalyticsProvider()
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(
+            decision: .restrictConsentRequired,
+            result: .eligible(significantAppChangeApprovalRequired: true, isMinor: true)
+        )
+        let systemSheet = UIViewController()
+        ageRangeVerificationCoordinator.beforeResult = { window in
+            window.topmostPresentedViewController?.present(systemSheet, animated: false)
+            systemSheet.dismiss(animated: true)
+        }
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: MockAuthentication(),
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator)
+        appCoordinator.start()
+
+        // When a re-check lands before the wall made it on screen
+        ageRangeVerificationCoordinator.beforeResult = nil
+        ageRangeVerificationCoordinator.decision = .restrictPendingConsent
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then a single wall shows the latest context, reported once
+        waitUntil { self.window.rootViewController?.presentedViewController is SignificantChangeConsentBlockingHostingController }
+        let blocker = try XCTUnwrap(window.rootViewController?.presentedViewController as? SignificantChangeConsentBlockingHostingController)
+        waitUntil { blocker.isBeingPresented == false }
+        XCTAssertEqual(blocker.context, .pendingApproval)
+        XCTAssertNil(blocker.presentedViewController)
+        waitUntil { analytics.receivedEvents.contains(WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue) }
+        let dialogShownIndices = analytics.receivedEvents.indices.filter {
+            analytics.receivedEvents[$0] == WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue
+        }
+        XCTAssertEqual(dialogShownIndices.count, 1)
+        XCTAssertEqual(analytics.receivedProperties[try XCTUnwrap(dialogShownIndices.first)]["screen"] as? String, "consent_pending")
+    }
+
+    @MainActor
     func test_consent_blocker_dismissal_when_help_and_support_is_on_top_then_dismisses_the_whole_chain() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)

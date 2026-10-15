@@ -24,6 +24,8 @@ final class AppCoordinator {
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var significantChangeBlocker: SignificantChangeConsentBlockingHostingController?
+    /// Non-nil while the blocker's presentation is in flight: it re-checks that the blocker made it on screen.
+    private var significantChangeBlockerPresentationCheck: Task<Void, Never>?
     private var foregroundConsentRecheckObserver: NSObjectProtocol?
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
@@ -488,7 +490,7 @@ private extension AppCoordinator {
                 // The parent/guardian approved. If the wall is up, say so and let the user
                 // dismiss it with Continue — a wall that silently vanishes reads as a glitch.
                 // With no wall (a cached grant on a fresh launch) nothing was blocking.
-                if let blocker = significantChangeBlocker, blocker.presentingViewController != nil {
+                if isSignificantChangeBlockerUp {
                     self.presentSignificantChangeBlocker(context: .approvalGranted)
                 }
                 onAllowed()
@@ -518,12 +520,13 @@ private extension AppCoordinator {
         let detailMessage: String? = context == .approvalNeeded
             ? CurrentSignificantChange.activeDeclaration()?.blockerMessage
             : nil
-        // Reuse the blocker only while it's actually on screen (or mid-presentation). A stale
+        // Reuse the blocker only while it's on screen or its presentation is in flight. A stale
         // reference — the presentation was refused, or the root was swapped underneath it —
         // must be presented afresh, otherwise the user is silently let through.
-        if let blocker = significantChangeBlocker, blocker.presentingViewController != nil {
-            // A re-check that lands on the same screen isn't a new dialog.
-            if blocker.context != context {
+        if let blocker = significantChangeBlocker, isSignificantChangeBlockerUp {
+            // A re-check that lands on the same screen isn't a new dialog. An in-flight
+            // presentation reports whatever context is on screen once it completes.
+            if blocker.context != context, blocker.presentingViewController != nil, blocker.isBeingPresented == false {
                 analytics.track(event: .AgeVerification.dialogShown(for: context))
             }
             blocker.update(context: context, detailMessage: detailMessage, onAction: action, onContactSupport: contactSupport)
@@ -536,13 +539,55 @@ private extension AppCoordinator {
             onContactSupport: contactSupport
         )
         significantChangeBlocker = blocker
-        if let presenter = window.topmostPresentedViewController {
-            presenter.present(blocker, animated: true)
-            analytics.track(event: .AgeVerification.dialogShown(for: context))
+        startForegroundConsentRecheck()
+        presentSignificantChangeBlocker(blocker, attempt: 1)
+    }
+
+    /// The wall counts as up while it's on screen or its presentation is still in flight.
+    var isSignificantChangeBlockerUp: Bool {
+        guard let blocker = significantChangeBlocker else { return false }
+        return blocker.presentingViewController != nil || significantChangeBlockerPresentationCheck != nil
+    }
+
+    /// Presents on the deepest controller that is on screen and not going away. Right after the
+    /// Declared Age Range check, the topmost controller is Apple's host sheet mid-dismissal, and
+    /// a presentation on it is refused; anchored below it, UIKit queues the presentation behind
+    /// the dismissal instead. `dialog_shown` is tracked once the wall is actually on screen, and
+    /// a presentation that was still refused is retried a few times before giving up.
+    func presentSignificantChangeBlocker(_ blocker: SignificantChangeConsentBlockingHostingController, attempt: Int) {
+        guard significantChangeBlocker === blocker else { return }
+        if let presenter = window.topmostVisiblePresenter {
+            presenter.present(blocker, animated: true) { [weak self] in
+                guard let self, self.significantChangeBlocker === blocker else {
+                    // Dismissed while the presentation was still queued: take the orphan down,
+                    // otherwise an unowned modal wall stays up for good.
+                    blocker.presentingViewController?.dismiss(animated: false)
+                    return
+                }
+                self.significantChangeBlockerPresentationCheck?.cancel()
+                self.significantChangeBlockerPresentationCheck = nil
+                self.analytics.track(event: .AgeVerification.dialogShown(for: blocker.context))
+            }
         } else {
             DDLogWarn("Failed to obtain view controller to present the significant change blocker.")
         }
-        startForegroundConsentRecheck()
+        significantChangeBlockerPresentationCheck = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: Constants.blockerPresentationRetryDelay)
+            guard Task.isCancelled == false, let self, self.significantChangeBlocker === blocker else { return }
+            self.significantChangeBlockerPresentationCheck = nil
+            guard blocker.presentingViewController == nil, blocker.viewIfLoaded?.window == nil else { return }
+            guard attempt < Constants.maxBlockerPresentationAttempts else {
+                DDLogError("Significant change blocker could not be presented after \(attempt) attempts.")
+                ServiceLocator.crashLogging.logMessage(
+                    "Significant change consent blocker could not be presented",
+                    properties: ["attempts": attempt, "context": "\(blocker.context)"],
+                    level: .error
+                )
+                return
+            }
+            DDLogWarn("Significant change blocker is not on screen after attempt \(attempt); retrying.")
+            self.presentSignificantChangeBlocker(blocker, attempt: attempt + 1)
+        }
     }
 
     @MainActor
@@ -585,6 +630,8 @@ private extension AppCoordinator {
     func dismissSignificantChangeBlockerIfNeeded(animated: Bool = true) {
         guard let blocker = significantChangeBlocker else { return }
         significantChangeBlocker = nil
+        significantChangeBlockerPresentationCheck?.cancel()
+        significantChangeBlockerPresentationCheck = nil
         stopForegroundConsentRecheck()
         // Dismiss through the presenter so anything on top of the wall (e.g. Help & Support) goes with it.
         (blocker.presentingViewController ?? blocker).dismiss(animated: animated)
@@ -669,6 +716,8 @@ private extension AppCoordinator {
 private extension AppCoordinator {
     enum Constants {
         static let animationDuration = TimeInterval(0.3)
+        static let blockerPresentationRetryDelay: Duration = .seconds(1)
+        static let maxBlockerPresentationAttempts = 5
     }
 
     enum Localization {

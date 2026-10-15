@@ -166,8 +166,6 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleContent() {
-        // The modal is reused across payment states, so labels hidden in the first state
-        // still need their fonts for later states.
         styleTopTitle()
         styleTopSubtitle()
         styleBottomLabels()

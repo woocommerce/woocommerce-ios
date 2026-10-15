@@ -105,7 +105,7 @@ items:
     flow: .maestro/flows/orders_list_and_search.yaml
   - id: orders.pagination
     title: Orders pagination
-    manual: "The lab store has fewer orders than one page holds."
+    flow: .maestro/flows/orders_list_and_search.yaml
   - id: orders.search
     title: Search for an order
     flow: .maestro/flows/orders_list_and_search.yaml

@@ -1,0 +1,51 @@
+# p2: other.localization
+# Launches the app in German with launch arguments, which apply to that launch only,
+# so the flows after this one open in English again.
+appId: ${APP_ID}
+name: "Other - Localization"
+tags:
+  - smoke_extended
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- launchApp:
+    stopApp: true
+    arguments:
+      "-ui_testing": true
+      "-AppleLanguages": "(de)"
+      "-AppleLocale": "de_DE"
+- runFlow: ../subflows/wait_for_age_range_check.yaml
+- extendedWaitUntil:
+    visible: "Mein Shop"
+    timeout: 45000
+    label: "My store is in German"
+- assertNotVisible: "My store"
+- takeScreenshot: localization_my_store
+
+# The flow taps the German tab names, which also checks them.
+- tapOn: "Bestellungen"
+- extendedWaitUntil:
+    visible:
+      id: "orders-table-view"
+    timeout: 30000
+    label: "Orders opens from its German tab"
+- takeScreenshot: localization_orders
+
+- tapOn: "Produkte"
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 30000
+    label: "Products opens from its German tab"
+- takeScreenshot: localization_products
+
+- tapOn: "Menü"
+- extendedWaitUntil:
+    visible:
+      id: "menu-view-store"
+    timeout: 20000
+    label: "Menu opens from its German tab"
+- assertVisible:
+    text: "Einstellungen"
+    label: "Settings is in German"
+- takeScreenshot: localization_menu

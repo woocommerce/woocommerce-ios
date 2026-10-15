@@ -308,7 +308,7 @@ items:
 
   - id: other.localization
     title: Switch device to non-English language
-    manual: "Requires locale matrix run; selectors are prepared to avoid text-driven navigation."
+    flow: .maestro/flows/other_localization.yaml
   - id: other.home-widget
     title: Home screen widgets
     manual: "Outside Maestro app surface."

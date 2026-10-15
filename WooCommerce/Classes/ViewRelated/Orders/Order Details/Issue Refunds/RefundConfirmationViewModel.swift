@@ -20,6 +20,7 @@ final class RefundConfirmationViewModel {
     /// Amount currency formatter
     ///
     private let currencyFormatter: CurrencyFormatter
+    private let numberOfDecimals: Int
 
     /// StoresManager to dispatch the "Create Refund" action.
     ///
@@ -65,6 +66,7 @@ final class RefundConfirmationViewModel {
         self.details = details
         self.actionProcessor = actionProcessor
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.numberOfDecimals = currencySettings.fractionDigits
         self.analytics = analytics
     }
 
@@ -87,7 +89,8 @@ final class RefundConfirmationViewModel {
                                             items: details.items,
                                             shippingLines: shippingLines,
                                             fees: fees,
-                                            currencyFormatter: currencyFormatter)
+                                            currencyFormatter: currencyFormatter,
+                                            numberOfDecimals: numberOfDecimals)
         let refund = useCase.createRefund()
 
         // Submits refund.

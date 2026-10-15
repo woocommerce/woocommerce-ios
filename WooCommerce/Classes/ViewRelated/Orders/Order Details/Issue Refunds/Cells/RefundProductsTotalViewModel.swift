@@ -16,7 +16,8 @@ extension RefundProductsTotalViewModel {
     ///
     init(refundItems: [RefundableOrderItem], currency: String, currencySettings: CurrencySettings) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: currencyFormatter)
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: currencyFormatter,
+                                                           numberOfDecimals: currencySettings.fractionDigits)
         let values = useCase.calculateRefundValues()
 
         self.productsTax = currencyFormatter.formatAmount(values.tax, with: currency) ?? ""

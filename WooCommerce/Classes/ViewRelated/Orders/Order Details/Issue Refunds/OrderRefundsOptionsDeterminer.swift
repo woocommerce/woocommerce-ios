@@ -76,7 +76,9 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
             }
 
             // Return the item with the updated quantity to refund
-            return RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
+            var refundable = RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
+            refundable.refundedItems = allRefundedItems.filter { refundedItemMatches($0, item: item) }
+            return refundable
         }
     }
 

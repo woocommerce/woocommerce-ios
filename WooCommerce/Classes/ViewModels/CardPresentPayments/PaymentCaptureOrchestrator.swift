@@ -11,6 +11,7 @@ struct CardPresentCapturedPaymentData {
     let receiptParameters: CardPresentReceiptParameters?
 }
 
+@MainActor
 protocol PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
@@ -44,6 +45,7 @@ protocol PaymentCaptureOrchestrating {
 /// 3. Controls (prevents during payment) wallet presentation: we don't want to use the merchant's Apple Pay for their customer's purchase!
 /// 4. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
 /// 5. Submit the Payment Intent to WCPay to capture a payment
+@MainActor
 final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()

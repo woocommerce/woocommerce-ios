@@ -155,9 +155,17 @@ struct SupportChatMobileStatusReportTests {
         #expect(sendCount == 0)
     }
 
-    @Test func test_send_when_preparation_is_cancelled_then_does_not_dispatch_and_restores_message_for_retry() async {
+    @Test func test_send_when_report_generation_is_cancelled_then_does_not_dispatch_and_restores_message_for_retry() async {
         // Given
         let provider = MockMobileStatusReportProvider()
+        var reportGenerationStartedContinuation: CheckedContinuation<Void, Never>?
+        var finishReportGenerationContinuation: CheckedContinuation<Void, Never>?
+        provider.onGenerateReport = {
+            await withCheckedContinuation { continuation in
+                finishReportGenerationContinuation = continuation
+                reportGenerationStartedContinuation?.resume()
+            }
+        }
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         var sendCount = 0
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -168,7 +176,11 @@ struct SupportChatMobileStatusReportTests {
 
         // When
         let task = Task { await sut.startIfNeeded() }
+        await withCheckedContinuation { continuation in
+            reportGenerationStartedContinuation = continuation
+        }
         task.cancel()
+        finishReportGenerationContinuation?.resume()
         await task.value
 
         // Then
@@ -177,6 +189,7 @@ struct SupportChatMobileStatusReportTests {
         #expect(sut.messages.first?.failed == true)
         #expect(sut.inputText == "Login failed")
         #expect(sut.isContactHumanSupportButtonEnabled)
+        #expect(provider.generateReportSiteAddresses.count == 1)
 
         // When
         await sut.sendMessage()

@@ -41,7 +41,7 @@ Builds the app, launches on the simulator, and uses mobile-mcp to navigate the U
 /verify              # auto-detect scope from git diff
 ```
 
-**Environment selection**: `/verify` reuses a suitable session, otherwise defaults to WireMock unless a live store is requested or required. Follow `.claude/skills/auto-login/SKILL.md` with `mocks` for WireMock or its default live-store flow.
+**Environment selection**: `/verify` reuses a suitable session, otherwise defaults to WireMock unless a live store is requested or required. Follow `.agents/skills/auto-login/SKILL.md` with `mocks` for WireMock or its default live-store flow.
 
 **Feature map**: `.claude/references/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
 

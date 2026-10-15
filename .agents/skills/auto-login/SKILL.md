@@ -108,7 +108,7 @@ removing local cookies and credential files. Report any remote cleanup that coul
 Use the protected-file interface (requires Python 3). `WP_PASSWORD` selects `wporg`:
 
 ```bash
-bash .claude/skills/auto-login/Scripts/launch.sh --from-environment <UDID> <site-address> <absolute-credential-file>
+bash .agents/skills/auto-login/Scripts/launch.sh --from-environment <UDID> <site-address> <absolute-credential-file>
 ```
 
 The existing positional interface remains supported:

@@ -11,7 +11,7 @@ import unittest
 class LaunchTests(unittest.TestCase):
     def setUp(self):
         self.repository = Path(__file__).resolve().parents[4]
-        self.script = self.repository / ".claude/skills/auto-login/Scripts/launch.sh"
+        self.script = self.repository / ".agents/skills/auto-login/Scripts/launch.sh"
         self.temporary = tempfile.TemporaryDirectory(prefix="auto-login-tests-")
         self.addCleanup(self.temporary.cleanup)
         self.directory = Path(self.temporary.name)

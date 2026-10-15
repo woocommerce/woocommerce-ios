@@ -86,6 +86,11 @@ public final class WooShippingStore: Store {
             updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, isVerified: isVerified, completion: completion)
         case let .loadConfig(siteID, orderID, completion):
             loadConfig(siteID: siteID, orderID: orderID, completion: completion)
+        case let .checkEUProductIdentifiersRequirement(siteID, orderID, originID, completion):
+            checkEUProductIdentifiersRequirement(siteID: siteID,
+                                                 orderID: orderID,
+                                                 originID: originID,
+                                                 completion: completion)
         case let .syncShipments(siteID, orderID, completion):
             syncShipments(siteID: siteID, orderID: orderID, completion: completion)
         case let .updateShipment(siteID, orderID, shipmentToUpdate, completion):
@@ -436,6 +441,44 @@ private extension WooShippingStore {
                     orderID: Int64,
                     completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
         remote.loadConfig(siteID: siteID, orderID: orderID, completion: completion)
+    }
+
+    func checkEUProductIdentifiersRequirement(siteID: Int64,
+                                              orderID: Int64,
+                                              originID: String?,
+                                              completion: @escaping (WooShippingEUProductIdentifiersRequirement) -> Void) {
+        let remote = self.remote
+        remote.loadCustomsRequirements(siteID: siteID, orderID: orderID, originID: originID) { [remote] result in
+            switch result {
+            case .success(let requirements) where requirements.euProductIDsRequired:
+                remote.loadEUProductIdentifiers(siteID: siteID, orderID: orderID) { result in
+                    switch result {
+                    case .success(let identifiers):
+                        let prefills = identifiers.reduce(into: [Int64: WooShippingEUProductIdentifiers]()) { prefills, identifier in
+                            guard prefills[identifier.productID] == nil else { return }
+                            prefills[identifier.productID] = identifier
+                        }
+                        completion(.required(prefills: prefills))
+                    case .failure(let error):
+                        DDLogError("Error loading WooShipping EU product identifiers for order \(orderID): \(error)")
+                        completion(.required(prefills: [:]))
+                    }
+                }
+            case .success:
+                completion(.notRequired)
+            case .failure(let error):
+                if case .noRestRoute = error as? DotcomError {
+                    completion(.pluginOutdated)
+                } else if let networkError = error as? NetworkError,
+                          case .notFound = networkError,
+                          networkError.errorCode == "rest_no_route" {
+                    completion(.pluginOutdated)
+                } else {
+                    DDLogError("Error checking WooShipping EU product identifier requirements for order \(orderID): \(error)")
+                    completion(.notRequired)
+                }
+            }
+        }
     }
 
     func updateShipment(siteID: Int64,

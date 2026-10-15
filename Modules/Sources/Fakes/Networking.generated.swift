@@ -1609,7 +1609,10 @@ extension Networking.ShippingLabelCustomsForm.Item {
             weight: .fake(),
             hsTariffNumber: .fake(),
             originCountry: .fake(),
-            productID: .fake()
+            productID: .fake(),
+            code: .fake(),
+            manufacturerProductID: .fake(),
+            standardizedProductID: .fake()
         )
     }
 }
@@ -2326,6 +2329,15 @@ extension Networking.WooShippingCustomPackage {
         )
     }
 }
+extension Networking.WooShippingCustomsRequirements {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingCustomsRequirements {
+        .init(
+            euProductIDsRequired: .fake()
+        )
+    }
+}
 extension Networking.WooShippingDestinationAddress {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2343,6 +2355,18 @@ extension Networking.WooShippingDestinationAddress {
             firstName: .fake(),
             lastName: .fake(),
             email: .fake()
+        )
+    }
+}
+extension Networking.WooShippingEUProductIdentifiers {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingEUProductIdentifiers {
+        .init(
+            productID: .fake(),
+            sku: .fake(),
+            manufacturerProductID: .fake(),
+            standardizedProductID: .fake()
         )
     }
 }

@@ -14,6 +14,7 @@ struct BarcodeScannerItemFinder {
         self.analytics = analytics
     }
 
+    @MainActor
     func searchByIdentifier(from barcode: ScannedBarcode,
                             siteID: Int64, source: WooAnalyticsEvent.BarcodeScanning.Source) async throws -> ItemIdentifierSearchResult {
         do {
@@ -46,7 +47,9 @@ struct BarcodeScannerItemFinder {
         }
     }
 
-    private func search(by identifier: String, siteID: Int64) async throws -> (ItemIdentifierSearchResult, ItemIdentifierSearchResultSource) {
+    @MainActor
+    private func search(by identifier: String,
+                        siteID: Int64) async throws -> (ItemIdentifierSearchResult, ItemIdentifierSearchResultSource) {
         try await withCheckedThrowingContinuation { continuation in
             let action = ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID,
                                                                         identifier: identifier) { result in

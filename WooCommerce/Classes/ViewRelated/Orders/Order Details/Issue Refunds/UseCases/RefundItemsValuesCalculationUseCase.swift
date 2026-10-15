@@ -13,7 +13,7 @@ struct RefundItemsValuesCalculationUseCase {
     /// Formatter to convert string values to decimal values
     ///
     let currencyFormatter: CurrencyFormatter
-    var numberOfDecimals: Int = 2
+    let numberOfDecimals: Int
 
     /// Calculates the values(subtotal, total and tax) to be refunded.
     ///

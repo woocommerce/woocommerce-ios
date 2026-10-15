@@ -72,9 +72,9 @@ final class IssueRefundViewModel {
     /// This closure is executed when fetching the charge details failed.
     /// Implement the input parameter with a closure to be execured when the user wants to retry the fetch action.
     ///
-    var showFetchRefundsErrorNotice: ((@escaping () -> Void) -> Void)?
-
     var showFetchChargeErrorNotice: ((@escaping (() -> Void)) -> (Void))?
+
+    var showFetchRefundsErrorNotice: ((@escaping () -> Void) -> Void)?
 
     /// Title for the navigation bar
     ///
@@ -464,10 +464,12 @@ extension IssueRefundViewModel {
             return Section(rows: [switchRow])
         }
 
+        let allocatedLines = selectedRefundLines()
+        let isUncapped = calculateRefundTotal() == calculateUncappedRefundTotal()
         let detailsRows: [IssueRefundRow] = shippingLines.map { original in
-            let line = selectedRefundLines().first { $0.itemID == original.shippingID }
+            let line = allocatedLines.first { $0.itemID == original.shippingID }
             let shippingLine = line.map {
-                if $0.taxes.isEmpty && calculateRefundTotal() == calculateUncappedRefundTotal() { return original }
+                if $0.taxes.isEmpty && isUncapped { return original }
                 return original.copy(total: $0.total, totalTax: "\($0.taxes.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) })")
             } ?? original.copy(total: "0", totalTax: "0", taxes: [])
             return RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: state.order.currency, currencySettings: state.currencySettings)
@@ -485,11 +487,13 @@ extension IssueRefundViewModel {
             return Section(rows: [switchRow])
         }
 
+        let allocatedLines = selectedRefundLines()
+        let isUncapped = calculateRefundTotal() == calculateUncappedRefundTotal()
         let allocatedFees = refundableFees().map { original in
-            guard let line = selectedRefundLines().first(where: { $0.itemID == original.feeID }) else {
+            guard let line = allocatedLines.first(where: { $0.itemID == original.feeID }) else {
                 return original.copy(total: "0", totalTax: "0", taxes: [])
             }
-            if line.taxes.isEmpty && calculateRefundTotal() == calculateUncappedRefundTotal() { return original }
+            if line.taxes.isEmpty && isUncapped { return original }
             return original.copy(total: line.total, totalTax: "\(line.taxes.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) })",
                                  taxes: line.taxes.map { .init(taxID: $0.taxID, subtotal: "", total: $0.total) })
         }
@@ -535,7 +539,6 @@ extension IssueRefundViewModel {
         if state.shouldRefundCustomAmounts {
             refundsTotal += RefundFeesCalculationUseCase(fees: refundableFees(), currencyFormatter: formatter).calculateRefundValues().total
         }
-
 
         return refundsTotal
     }

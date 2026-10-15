@@ -2,48 +2,113 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-/// Builds the explicit line allocations used by the classic refund endpoint.
+/// Creates a `Refund` object ready to be used  on `RefundStore.createRefund` action
+///
 struct RefundCreationUseCase {
-    let amount: String
-    let reason: String?
-    let automaticallyRefundsPayment: Bool
-    let items: [RefundableOrderItem]
-    let shippingLines: [ShippingLine]
-    let fees: [OrderFeeLine]
-    let currencyFormatter: CurrencyFormatter
-    var numberOfDecimals: Int = 2
 
+    /// Total amount to be refunded.
+    ///
+    let amount: String
+
+    /// Reason of the refund.
+    ///
+    let reason: String?
+
+    /// Whether payment refund on the payment gateway should be attempted or not.
+    ///
+    let automaticallyRefundsPayment: Bool
+
+    /// Line items to be refunded, currently only order items are suported
+    ///
+    let items: [RefundableOrderItem]
+
+    /// Shipping lines to be refunded, `empty` if shipping will not be refunded.
+    ///
+    let shippingLines: [ShippingLine]
+
+    /// Fees to be refunded, `empty` if fees will not be refunded.
+    ///
+    let fees: [OrderFeeLine]
+
+    /// Currency formatted needed for decimal calculations
+    ///
+    let currencyFormatter: CurrencyFormatter
+    let numberOfDecimals: Int
+
+    /// Creates a `Refund` object ready to be used  on `RefundStore.createRefund` action
+    ///
     func createRefund() -> Refund {
-        Refund(refundID: .min,
-               orderID: .min,
-               siteID: .min,
-               dateCreated: .distantPast,
-               amount: amount,
-               reason: reason ?? "",
-               refundedByUserID: .min,
-               isAutomated: nil,
-               createAutomated: automaticallyRefundsPayment,
-               items: createRefundItems(),
-               shippingLines: [])
+        return Refund(refundID: .min,
+                      orderID: .min,
+                      siteID: .min,
+                      dateCreated: .distantPast,
+                      amount: amount,
+                      reason: reason ?? "",
+                      refundedByUserID: .min,
+                      isAutomated: nil,
+                      createAutomated: automaticallyRefundsPayment,
+                      items: createRefundItems(),
+                      shippingLines: [])
     }
 
+    /// Returns an array of `OrderItemRefund` based on the provided refundable items, shipping line and order fee lines
+    ///
     func createRefundItems() -> [OrderItemRefund] {
-        let products = items.filter { $0.quantity > 0 }.map {
+        var refundItems = items.filter { $0.quantity > 0 }.map {
             Self.productLine(for: $0, currencyFormatter: currencyFormatter, numberOfDecimals: numberOfDecimals)
         }
-        let shipping = shippingLines.map { line in
-            OrderItemRefund(itemID: line.shippingID, quantity: 0,
-                            taxes: line.taxes.map { .init(taxID: $0.taxID, subtotal: "", total: $0.total) }, total: line.total)
+
+        if shippingLines.isNotEmpty {
+            refundItems += createShippingItems(from: shippingLines)
         }
-        let feeItems = fees.map { line in
-            OrderItemRefund(itemID: line.feeID, quantity: 0,
-                            taxes: line.taxes.map { .init(taxID: $0.taxID, subtotal: "", total: $0.total) }, total: line.total)
+
+        if fees.isNotEmpty {
+            refundItems += createFeeItems(from: fees)
         }
-        return capped(products + shipping + feeItems).compactMap { line in
+
+        return capped(refundItems).compactMap { line in
             let gross = (Decimal(string: line.total) ?? .zero) + line.taxes.reduce(.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
             guard Self.round(gross, scale: numberOfDecimals) == 0 else { return line }
             guard line.quantity > 0 else { return nil }
             return line.copy(taxes: line.taxes.map { .init(taxID: $0.taxID, subtotal: "", total: "0") }, total: "0")
+        }
+    }
+
+    /// Returns an `[OrderItemRefund]` based on the provided `[ShippingLine]`
+    ///
+    private func createShippingItems(from shippingLines: [ShippingLine]) -> [OrderItemRefund] {
+        shippingLines.map { shippingLine -> OrderItemRefund in
+            OrderItemRefund(itemID: shippingLine.shippingID,
+                            quantity: .zero,
+                            taxes: createTaxes(from: shippingLine),
+                            total: shippingLine.total)
+        }
+    }
+
+    /// Returns an `[OrderItemRefund]` based on the provided `[OrderFeeLine]`
+    ///
+    private func createFeeItems(from feeLines: [OrderFeeLine]) -> [OrderItemRefund] {
+        feeLines.map { feeLine -> OrderItemRefund in
+            OrderItemRefund(itemID: feeLine.feeID,
+                            quantity: .zero,
+                            taxes: createTaxes(from: feeLine),
+                            total: feeLine.total)
+        }
+    }
+
+    /// Creates an array of `OrderItemTaxRefund` from the tax lines in the provided `ShippingLine`
+    ///
+    private func createTaxes(from shippingLine: ShippingLine) -> [OrderItemTaxRefund] {
+        shippingLine.taxes.map { taxLine -> OrderItemTaxRefund in
+            OrderItemTaxRefund(taxID: taxLine.taxID, subtotal: "", total: taxLine.total)
+        }
+    }
+
+    /// Creates an array of `OrderItemTaxRefund` from the tax lines in the provided `OrderFeeLine`
+    ///
+    private func createTaxes(from feeLine: OrderFeeLine) -> [OrderItemTaxRefund] {
+        feeLine.taxes.map { taxLine -> OrderItemTaxRefund in
+            OrderItemTaxRefund(taxID: taxLine.taxID, subtotal: "", total: taxLine.total)
         }
     }
 

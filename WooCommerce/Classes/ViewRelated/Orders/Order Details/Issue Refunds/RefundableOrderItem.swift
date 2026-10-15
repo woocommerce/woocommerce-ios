@@ -18,14 +18,12 @@ struct RefundableOrderItem: Equatable {
 
 // MARK: Computed Properties
 extension RefundableOrderItem {
-    /// Quantity expressed as decimal
-    ///
     func selecting(quantity: Int) -> RefundableOrderItem {
-        var selected = RefundableOrderItem(item: item, quantity: quantity)
-        selected.refundedItems = refundedItems
-        return selected
+        RefundableOrderItem(item: item, quantity: quantity, refundedItems: refundedItems)
     }
 
+    /// Quantity expressed as decimal
+    ///
     var decimalQuantity: Decimal {
         Decimal(quantity)
     }

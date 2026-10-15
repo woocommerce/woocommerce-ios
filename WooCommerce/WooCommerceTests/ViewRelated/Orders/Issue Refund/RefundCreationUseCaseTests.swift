@@ -9,7 +9,8 @@ final class RefundCreationUseCaseTests: XCTestCase {
 
     /// Default currency formatter
     ///
-    private let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+    private let currencySettings = CurrencySettings()
+    private lazy var formatter = CurrencyFormatter(currencySettings: currencySettings)
 
     func test_refund_top_properties_are_correcly_translated_to_the_refund_object() {
         // Given
@@ -19,7 +20,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             items: [],
                                             shippingLines: [],
                                             fees: [],
-                                            currencyFormatter: formatter)
+                                            currencyFormatter: formatter, numberOfDecimals: currencySettings.fractionDigits)
 
         // When
         let refund = useCase.createRefund()
@@ -42,7 +43,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             items: items,
                                             shippingLines: [],
                                             fees: [],
-                                            currencyFormatter: formatter)
+                                            currencyFormatter: formatter, numberOfDecimals: currencySettings.fractionDigits)
 
         // When
         let refund = useCase.createRefund()
@@ -77,7 +78,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             items: items,
                                             shippingLines: [],
                                             fees: [],
-                                            currencyFormatter: formatter)
+                                            currencyFormatter: formatter, numberOfDecimals: currencySettings.fractionDigits)
 
         // When
         let refund = useCase.createRefund()
@@ -103,7 +104,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             items: [],
                                             shippingLines: [shippingLine],
                                             fees: [],
-                                            currencyFormatter: formatter)
+                                            currencyFormatter: formatter, numberOfDecimals: currencySettings.fractionDigits)
 
         // When
         let refund = useCase.createRefund()
@@ -135,7 +136,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             items: [],
                                             shippingLines: shippingLines,
                                             fees: [],
-                                            currencyFormatter: formatter)
+                                            currencyFormatter: formatter, numberOfDecimals: currencySettings.fractionDigits)
 
         // When
         let refund = useCase.createRefund()
@@ -172,7 +173,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             items: items,
                                             shippingLines: [shippingLine],
                                             fees: [],
-                                            currencyFormatter: formatter)
+                                            currencyFormatter: formatter, numberOfDecimals: currencySettings.fractionDigits)
 
         // When
         let refund = useCase.createRefund()
@@ -215,7 +216,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             items: items,
                                             shippingLines: [],
                                             fees: [],
-                                            currencyFormatter: formatter)
+                                            currencyFormatter: formatter, numberOfDecimals: currencySettings.fractionDigits)
 
         // When
         let refund = useCase.createRefund()
@@ -245,7 +246,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             items: items,
                                             shippingLines: [],
                                             fees: fees,
-                                            currencyFormatter: formatter)
+                                            currencyFormatter: formatter, numberOfDecimals: currencySettings.fractionDigits)
 
         // When
         let refund = useCase.createRefund()
@@ -291,7 +292,8 @@ final class RefundCreationUseCaseTests: XCTestCase {
         }
         // When
         let refund = RefundCreationUseCase(amount: "3.49", reason: nil, automaticallyRefundsPayment: false,
-                                           items: [selected], shippingLines: [], fees: [], currencyFormatter: formatter).createRefund()
+                                           items: [selected], shippingLines: [], fees: [], currencyFormatter: formatter,
+                                           numberOfDecimals: currencySettings.fractionDigits).createRefund()
         // Then
         let line = try XCTUnwrap(refund.items.first)
         XCTAssertEqual(line.total, "3.33")
@@ -304,7 +306,8 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                            taxes: [.init(taxID: 1, subtotal: "", total: "5")], total: "100", totalTax: "5")
         // When
         let refund = RefundCreationUseCase(amount: "50", reason: nil, automaticallyRefundsPayment: false,
-                                           items: [.init(item: item, quantity: 1)], shippingLines: [], fees: [], currencyFormatter: formatter).createRefund()
+                                           items: [.init(item: item, quantity: 1)], shippingLines: [], fees: [], currencyFormatter: formatter,
+                                           numberOfDecimals: currencySettings.fractionDigits).createRefund()
         // Then
         XCTAssertEqual(refund.items.first?.total, "47.62")
         XCTAssertEqual(refund.items.first?.taxes.first?.total, "2.38")
@@ -316,7 +319,8 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                            taxes: [.init(taxID: 1, subtotal: "", total: "0.115044")], total: "0.884956", totalTax: "0.12")
         // When
         let refund = RefundCreationUseCase(amount: "1", reason: nil, automaticallyRefundsPayment: false,
-                                           items: [.init(item: item, quantity: 1)], shippingLines: [], fees: [], currencyFormatter: formatter).createRefund()
+                                           items: [.init(item: item, quantity: 1)], shippingLines: [], fees: [], currencyFormatter: formatter,
+                                           numberOfDecimals: currencySettings.fractionDigits).createRefund()
         // Then
         XCTAssertEqual(refund.items.first?.total, "0.884956")
         XCTAssertEqual(refund.items.first?.taxes.first?.total, "0.115044")
@@ -328,9 +332,11 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                 taxes: [.init(taxID: 1, subtotal: "", total: "0.004")], total: "0.10", totalTax: "0.004"), quantity: 1)
         }
         // When
-        let values = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: formatter).calculateRefundValues()
+        let values = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: formatter,
+        numberOfDecimals: currencySettings.fractionDigits).calculateRefundValues()
         let refund = RefundCreationUseCase(amount: "\(values.total)", reason: nil, automaticallyRefundsPayment: false,
-                                           items: items, shippingLines: [], fees: [], currencyFormatter: formatter).createRefund()
+                                           items: items, shippingLines: [], fees: [], currencyFormatter: formatter,
+                                           numberOfDecimals: currencySettings.fractionDigits).createRefund()
         // Then
         XCTAssertEqual(RefundCreationUseCase.round(values.total, scale: 2), Decimal(string: "0.21"))
         XCTAssertEqual(refund.items.map { $0.taxes.first?.total }, ["0.004", "0.004"])
@@ -344,7 +350,8 @@ final class RefundCreationUseCaseTests: XCTestCase {
         }
         // When
         let refund = RefundCreationUseCase(amount: "0.62", reason: nil, automaticallyRefundsPayment: false,
-                                           items: items, shippingLines: [], fees: [], currencyFormatter: formatter).createRefund()
+                                           items: items, shippingLines: [], fees: [], currencyFormatter: formatter,
+                                           numberOfDecimals: currencySettings.fractionDigits).createRefund()
         let gross = refund.items.map { (Decimal(string: $0.total) ?? .zero) + $0.taxes.reduce(.zero) { $0 + (Decimal(string: $1.total) ?? .zero) } }
         // Then
         XCTAssertEqual(gross.reduce(.zero, +), Decimal(string: "0.62"))
@@ -375,7 +382,8 @@ final class RefundCreationUseCaseTests: XCTestCase {
         // When
         let refund = RefundCreationUseCase(amount: "50", reason: nil, automaticallyRefundsPayment: false,
                                            items: [.init(item: paid, quantity: 1), .init(item: free, quantity: 1)],
-                                           shippingLines: [], fees: [], currencyFormatter: formatter).createRefund()
+                                           shippingLines: [], fees: [], currencyFormatter: formatter,
+                                           numberOfDecimals: currencySettings.fractionDigits).createRefund()
         // Then
         XCTAssertEqual(refund.items.map(\.itemID), [1, 2])
         XCTAssertEqual(refund.items.map(\.quantity), [1, 1])
@@ -390,7 +398,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
             // When
             let refund = RefundCreationUseCase(amount: amount, reason: nil, automaticallyRefundsPayment: false,
                                                items: [.init(item: item, quantity: 1)], shippingLines: [], fees: fees,
-                                               currencyFormatter: formatter).createRefund()
+                                               currencyFormatter: formatter, numberOfDecimals: currencySettings.fractionDigits).createRefund()
             // Then
             XCTAssertEqual(refund.items.map(\.total), [expectedNet] + Array(repeating: "-1", count: count))
             XCTAssertEqual(refund.items.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }, Decimal(string: amount))

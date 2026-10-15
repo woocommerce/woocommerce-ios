@@ -16,7 +16,7 @@ struct POSRefundSubmissionMapping {
     private let currencyFormatter: CurrencyFormatter
     private let numberOfDecimals: Int
 
-    init(currencyFormatter: CurrencyFormatter, numberOfDecimals: Int = 2) {
+    init(currencyFormatter: CurrencyFormatter, numberOfDecimals: Int) {
         self.numberOfDecimals = numberOfDecimals
         self.currencyFormatter = currencyFormatter
     }

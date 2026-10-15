@@ -191,7 +191,8 @@ final class OrdersRootViewController: UIViewController {
     func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
         ordersViewController.selectOrderFromListIfPossible(
             for: orderID,
-            isTriggeredByUserAction: true
+            isTriggeredByUserAction: true,
+            shouldScrollIfNeeded: true
         )
     }
 

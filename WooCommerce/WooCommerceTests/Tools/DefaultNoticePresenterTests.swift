@@ -195,4 +195,72 @@ struct DefaultNoticePresenterTests {
         #expect(bottomConstraints.count == 1)
         #expect(bottomConstraints.first?.secondItem === viewController.tabBar)
     }
+
+    @Test
+    func test_enqueue_when_presenting_view_is_above_a_bottom_button_then_button_keeps_its_height() {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let presentingViewController = UIViewController()
+        let bottomButton = UIButton(configuration: .filled())
+        bottomButton.setTitle("Show Orders", for: .normal)
+        let window = makeWindow(withChild: presentingViewController, above: bottomButton)
+        let buttonHeight = bottomButton.frame.height
+        presenter.presentingViewController = presentingViewController
+
+        // When
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        window.layoutIfNeeded()
+
+        // Then
+        #expect(buttonHeight > 0)
+        #expect(bottomButton.frame.height == buttonHeight)
+    }
+
+    @Test
+    func test_enqueue_when_presenting_view_is_in_a_window_then_notice_avoids_the_root_view_keyboard_guide() throws {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let presentingViewController = UIViewController()
+        let window = makeWindow(withChild: presentingViewController, above: UIButton(configuration: .filled()))
+        let rootView = try #require(window.rootViewController?.view)
+        presenter.presentingViewController = presentingViewController
+        let existingSubviews = presentingViewController.view.subviews
+
+        // When
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        let noticeContainer = try #require(presentingViewController.view.subviews.first { !existingSubviews.contains($0) })
+
+        // Then
+        let keyboardConstraints = rootView.constraints.filter {
+            $0.isActive && $0.firstItem === noticeContainer && $0.firstAttribute == .bottom && $0.relation == .lessThanOrEqual
+        }
+        #expect(keyboardConstraints.count == 1)
+        #expect(keyboardConstraints.first?.secondItem === rootView.keyboardLayoutGuide)
+        #expect(!presentingViewController.view.layoutGuides.contains { $0 is UIKeyboardLayoutGuide })
+    }
+}
+
+private extension DefaultNoticePresenterTests {
+    /// Lays out a child view controller above a bottom button that fills the rest of the window, like the filter list's CTA.
+    func makeWindow(withChild child: UIViewController, above bottomButton: UIButton) -> UIWindow {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 402, height: 874))
+        let rootViewController = UIViewController()
+        window.rootViewController = rootViewController
+        window.isHidden = false
+
+        let stackView = UIStackView(arrangedSubviews: [child.view, bottomButton])
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        rootViewController.addChild(child)
+        rootViewController.view.addSubview(stackView)
+        child.didMove(toParent: rootViewController)
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: rootViewController.view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        window.layoutIfNeeded()
+        return window
+    }
 }

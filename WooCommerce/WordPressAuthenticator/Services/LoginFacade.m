@@ -44,7 +44,6 @@
             // Apple is handled in AppleAuthenticator
             [self.delegate finishedLoginWithGoogleIDToken:token authToken:authToken];
         }
-        [self trackSuccess];
     } needsMultifactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo){
         if ([self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {
             [self.delegate needsMultifactorCodeForUserID:userID andNonceInfo:nonceInfo];
@@ -80,7 +79,6 @@
                                                                     if ([self.delegate respondsToSelector:@selector(finishedLoginWithNonceAuthToken:)]) {
                                                                         [self.delegate finishedLoginWithNonceAuthToken:authToken];
                                                                     }
-                                                                    [self trackSuccess];
                                                                 } failure:^(NSError *error) {
                                                                     [self track:WPAnalyticsStatLoginFailed error:error];
                                                                     if ([self.delegate respondsToSelector:@selector(displayRemoteError:)]) {
@@ -99,7 +97,6 @@
         if ([self.delegate respondsToSelector:@selector(finishedLoginWithAuthToken:requiredMultifactorCode:)]) {
             [self.delegate finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.requiredMultifactor];
         }
-        [self trackSuccess];
     } needsMultifactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo) {
         if (nonceInfo == nil && [self.delegate respondsToSelector:@selector(needsMultifactorCode)]) {
             [self.delegate needsMultifactorCode];
@@ -157,7 +154,6 @@
             }
             NSString *xmlrpc = [xmlRPCURL absoluteString];
             [self.delegate finishedLoginWithUsername:loginFields.username password:loginFields.password xmlrpc:xmlrpc options:options];
-            [self trackSuccess];
         }
     } failure:^(NSError *error) {
         [self track:WPAnalyticsStatLoginFailed error:error];

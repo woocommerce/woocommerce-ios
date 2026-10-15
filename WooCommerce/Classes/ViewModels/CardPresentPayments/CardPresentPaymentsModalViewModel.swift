@@ -5,6 +5,7 @@ typealias CardPresentPaymentsModalViewModel = CardPresentPaymentsModalViewModelC
 
 /// Abstracts configuration and contents of the modal screens presented
 /// during operations related to Card Present Payments
+@MainActor
 protocol CardPresentPaymentsModalViewModelContent {
     /// The number and distribution of text labels
     var textMode: PaymentsModalTextMode { get }
@@ -37,6 +38,7 @@ protocol CardPresentPaymentsModalViewModelContent {
     var accessibilityLabel: String? { get }
 }
 
+@MainActor
 protocol CardPresentPaymentsModalViewModelUIKitActions {
     /// The number and distribution of action buttons
     var actionsMode: PaymentsModalActionsMode { get }

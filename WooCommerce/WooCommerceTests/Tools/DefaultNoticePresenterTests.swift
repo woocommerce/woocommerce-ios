@@ -237,6 +237,28 @@ struct DefaultNoticePresenterTests {
     }
 
     @Test
+    func test_enqueue_when_presenting_view_is_outside_its_parent_view_then_notice_avoids_its_own_keyboard_guide() throws {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let presentingViewController = UIViewController()
+        let navigationController = UINavigationController(rootViewController: presentingViewController)
+        navigationController.pushViewController(UIViewController(), animated: false)
+        navigationController.loadViewIfNeeded()
+        presentingViewController.loadViewIfNeeded()
+        presenter.presentingViewController = presentingViewController
+        let existingSubviews = presentingViewController.view.subviews
+
+        // When
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        let noticeContainer = try #require(presentingViewController.view.subviews.first { !existingSubviews.contains($0) })
+
+        // Then
+        #expect(!presentingViewController.view.isDescendant(of: navigationController.view))
+        let keyboardConstraint = try #require(keyboardConstraint(of: noticeContainer, in: presentingViewController.view))
+        #expect(keyboardConstraint.secondItem === presentingViewController.view.keyboardLayoutGuide)
+    }
+
+    @Test
     func test_enqueue_when_presenting_view_is_not_in_a_window_then_notice_still_avoids_the_keyboard() throws {
         // Given
         var presenter: NoticePresenter = DefaultNoticePresenter()

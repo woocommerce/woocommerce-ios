@@ -259,11 +259,17 @@ private extension DefaultNoticePresenter {
         // A view's keyboard guide pulls the view toward the window's bottom, squeezing anything laid out below a presenting
         // view that ends above it, e.g. a bottom button. The top of this presentation (the modal's or the window's root) is
         // laid out by its frame, so its guide can't stretch it. The window's own guide doesn't track the keyboard.
-        var keyboardGuideOwner = presentingViewController
-        while let parent = keyboardGuideOwner.parent {
-            keyboardGuideOwner = parent
+        // A parent's view doesn't always contain the presenting view, e.g. one covered by a pushed screen or not yet
+        // added by its navigation controller. Constraining to a guide outside the notice's hierarchy throws.
+        var keyboardGuideView = view
+        var ancestor = presentingViewController.parent
+        while let parent = ancestor {
+            if let parentView = parent.viewIfLoaded, view.isDescendant(of: parentView) {
+                keyboardGuideView = parentView
+            }
+            ancestor = parent.parent
         }
-        let keyboardConstraint = container.bottomAnchor.constraint(lessThanOrEqualTo: keyboardGuideOwner.view.keyboardLayoutGuide.topAnchor)
+        let keyboardConstraint = container.bottomAnchor.constraint(lessThanOrEqualTo: keyboardGuideView.keyboardLayoutGuide.topAnchor)
 
         return [baselineConstraint, keyboardConstraint]
     }

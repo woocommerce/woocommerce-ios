@@ -50,4 +50,17 @@ extension UIViewController {
         }
         return controller
     }
+
+    /// Returns the deepest presented view controller that is on screen and not being dismissed.
+    /// Unlike `topmostPresentedViewController`, presenting on it is never refused for a controller
+    /// mid-dismissal (e.g. a system sheet going away): UIKit queues the presentation behind the dismissal.
+    @objc public var topmostVisiblePresenter: UIViewController {
+        var controller = self
+        while let presented = controller.presentedViewController,
+              presented.isBeingDismissed == false,
+              presented.viewIfLoaded?.window != nil {
+            controller = presented
+        }
+        return controller
+    }
 }

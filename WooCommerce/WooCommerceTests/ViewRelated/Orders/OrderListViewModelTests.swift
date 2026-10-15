@@ -139,6 +139,7 @@ final class OrderListViewModelTests: XCTestCase {
     }
 
     /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
+    @MainActor
     func test_it_groups_future_orders_in_upcoming_section() throws {
         // Arrange
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.failed],
@@ -180,6 +181,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - Order Statuses
 
+    @MainActor
     func test_statusesDidChange_emits_when_the_stored_order_statuses_change() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, filters: nil)
@@ -201,6 +203,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - App Activation
 
+    @MainActor
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
@@ -224,6 +227,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(resynchronizationReason, .viewWillAppear)
     }
 
+    @MainActor
     func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
@@ -248,6 +252,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - Foreground Notifications
 
+    @MainActor
     func test_given_a_new_order_notification_it_requests_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
@@ -270,6 +275,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(resynchronizationReason, .pushNotification)
     }
 
+    @MainActor
     func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
@@ -298,6 +304,7 @@ final class OrderListViewModelTests: XCTestCase {
         wait(for: [resynchronized], timeout: inverseExpectationTimeout)
     }
 
+    @MainActor
     func test_given_an_order_notification_for_another_site_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
@@ -318,6 +325,7 @@ final class OrderListViewModelTests: XCTestCase {
         wait(for: [resynchronized], timeout: inverseExpectationTimeout)
     }
 
+    @MainActor
     func test_given_a_burst_of_order_notifications_it_requests_a_single_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
@@ -344,6 +352,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - Banner visibility
 
+    @MainActor
     func test_banner_should_not_be_shown_when_there_is_no_error() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
@@ -367,6 +376,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .none)
     }
 
+    @MainActor
     func test_storing_error_shows_error_banner() {
         // Given
         let expectedError = MockError()
@@ -383,6 +393,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .error(expectedError))
     }
 
+    @MainActor
     func test_topBanner_when_store_currency_is_unresolved_and_no_loading_error_then_shows_currencyUnavailable() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
@@ -398,6 +409,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .currencyUnavailable)
     }
 
+    @MainActor
     func test_topBanner_when_store_currency_is_resolved_then_does_not_show_currencyUnavailable() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
@@ -413,6 +425,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .none)
     }
 
+    @MainActor
     func test_topBanner_when_loading_error_and_currency_is_unresolved_then_error_takes_precedence() {
         // Given
         let expectedError = MockError()
@@ -430,7 +443,8 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .error(expectedError))
     }
 
-    func test_retryStoreCurrencySync_hides_the_banner_while_refreshing_then_reshows_it_when_currency_is_still_unavailable() {
+    @MainActor
+    func test_retryStoreCurrencySync_hides_the_banner_while_refreshing_then_reshows_it_when_currency_is_still_unavailable() async {
         // Given — the store currency is unavailable, so the banner is showing
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
@@ -454,11 +468,13 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When — the sync completes but the currency is still unavailable
         capturedCompletion?(nil)
+        await Task.yield()
 
         // Then — the banner is shown again
         XCTAssert(viewModel.topBanner == .currencyUnavailable)
     }
 
+    @MainActor
     func test_currencyUnavailable_banner_shown_event_is_tracked_when_the_banner_appears() {
         // Given — the store currency is unavailable
         let viewModel = OrderListViewModel(siteID: siteID,
@@ -475,6 +491,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == "orders_list_currency_unavailable_banner_shown" }.count, 1)
     }
 
+    @MainActor
     func test_currencyUnavailable_banner_shown_event_is_not_tracked_when_currency_is_resolved() {
         // Given — the store currency is available, so no banner
         let viewModel = OrderListViewModel(siteID: siteID,
@@ -491,6 +508,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("orders_list_currency_unavailable_banner_shown"))
     }
 
+    @MainActor
     func test_retryStoreCurrencySync_tracks_the_retry_tapped_event() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
@@ -508,6 +526,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("orders_list_currency_unavailable_banner_retry_tapped"))
     }
 
+    @MainActor
     func test_topBanner_when_a_different_sync_error_occurs_then_the_error_banner_is_re_emitted() {
         // Given — currency resolved so only the loading error can drive the banner
         let viewModel = OrderListViewModel(siteID: siteID,
@@ -537,6 +556,7 @@ final class OrderListViewModelTests: XCTestCase {
         cancellable.cancel()
     }
 
+    @MainActor
     func test_topBanner_when_the_same_sync_error_repeats_then_the_error_banner_is_not_re_emitted() {
         // Given — currency resolved so only the loading error can drive the banner
         let viewModel = OrderListViewModel(siteID: siteID,
@@ -566,6 +586,7 @@ final class OrderListViewModelTests: XCTestCase {
     }
 
     // MARK: - Filters Applied
+    @MainActor
     func test_it_requests_a_resynchronization_when_the_new_filters_are_applied() {
         // Arrange
         let notificationCenter = NotificationCenter()
@@ -593,6 +614,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertTrue(resynchronizeRequested)
     }
 
+    @MainActor
     func test_given_identical_filters_it_does_not_request_a_resynchronization() {
         // Arrange
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending],
@@ -637,6 +659,7 @@ private extension OrderListViewModel {
 
 private extension OrderListViewModelTests {
     // MARK: - Country helpers
+    @MainActor
     func setupCountry(country: Country) {
         let setting = SiteSetting.fake()
             .copy(
@@ -669,6 +692,7 @@ private extension OrderListViewModelTests {
 
     /// Activate the viewModel to start fetching and then return the first
     /// valid `FetchResultSnapshot` triggered.
+    @MainActor
     func activateAndRetrieveSnapshot(of viewModel: OrderListViewModel) throws -> FetchResultSnapshot {
         return waitFor { promise in
             // The first snapshot is dropped because it's just the default empty one.
@@ -684,14 +708,13 @@ private extension OrderListViewModelTests {
         OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
     }
 
-    @discardableResult
-    func insertOrderStatus(status: OrderStatusEnum) -> StorageOrderStatus {
-        let storageOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
-        storageOrderStatus.siteID = siteID
-        storageOrderStatus.slug = status.rawValue
-        storageOrderStatus.name = status.rawValue
-        storage.saveIfNeeded()
-        return storageOrderStatus
+    func insertOrderStatus(status: OrderStatusEnum) {
+        storageManager.performAndSave({ storage in
+            let storageOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+            storageOrderStatus.siteID = self.siteID
+            storageOrderStatus.slug = status.rawValue
+            storageOrderStatus.name = status.rawValue
+        }, completion: nil, on: .main)
     }
 
     func insertOrder(id orderID: Int64,
@@ -727,6 +750,7 @@ private extension OrderListViewModelTests {
 private extension OrderListViewModelTests {
     /// Returns a view model wired to `pushNotificationsManager`, with a debounce short enough for tests.
     ///
+    @MainActor
     func makeViewModelObservingNotifications(from pushNotificationsManager: MockPushNotificationsManager) -> OrderListViewModel {
         OrderListViewModel(siteID: siteID,
                            stores: stores,

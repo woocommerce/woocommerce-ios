@@ -29,7 +29,7 @@ struct POSInformationCardFieldRowWithToggle: View {
 
                 Spacer()
 
-                Toggle("", isOn: $isOn)
+                Toggle(label, isOn: $isOn)
                     .labelsHidden()
                     .toggleStyle(SwitchToggleStyle())
                     .tint(Color.posPrimaryContainer)

@@ -105,8 +105,8 @@ public final class CoreDataManager: StorageManagerType {
     ///   - operation: A closure which uses the given `StorageType` to make data changes in background.
     ///   - completion: A closure which is called after the changed made by the `operation` is saved.
     ///   - queue: A queue on which to execute the completion closure.
-    public func performAndSave(_ operation: @escaping (StorageType) -> Void,
-                               completion: (() -> Void)?,
+    public func performAndSave(_ operation: @escaping @Sendable (StorageType) -> Void,
+                               completion: (@Sendable () -> Void)?,
                                on queue: DispatchQueue) {
         let derivedStorage = writerStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
@@ -129,8 +129,8 @@ public final class CoreDataManager: StorageManagerType {
     ///   - completion: A closure which is called with the `operation`'s execution result,
     ///   which is either an error thrown by the `operation` or the return value of the `operation`.
     ///   - queue: A queue on which to execute the completion closure.
-    public func performAndSave<T>(_ operation: @escaping (StorageType) throws -> T,
-                                  completion: @escaping (Result<T, Error>) -> Void,
+    public func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                                  completion: @escaping @Sendable (Result<T, Error>) -> Void,
                                   on queue: DispatchQueue) {
         assert((T.self is NSManagedObject.Type) == false, "Managed objects should not be sent between different contexts to avoid threading issues.")
         let derivedStorage = writerStorage
@@ -149,7 +149,7 @@ public final class CoreDataManager: StorageManagerType {
     /// This method effectively **deletes** all of the stored data from the persistent container,
     /// and generates a blank Persistent Store from scratch.
     ///
-    public func reset(onCompletion: (() -> Void)?) {
+    public func reset(onCompletion: (@Sendable () -> Void)?) {
         /// Delete all objects in the background context to avoid discrepancy with the view context
         /// The view context will get updated automatically once the changes are saved to the persistent container.
         performAndSave({ storage in
@@ -399,9 +399,9 @@ extension CoreDataManager {
     /// Helper type to handle async operations given a closure of code to be executed.
     final class AsyncBlockOperation: AsyncOperation, @unchecked Sendable {
 
-        private let block: (@escaping () -> Void) -> Void
+        private let block: (@escaping @Sendable () -> Void) -> Void
 
-        init(block: @escaping (@escaping () -> Void) -> Void) {
+        init(block: @escaping (@escaping @Sendable () -> Void) -> Void) {
             self.block = block
         }
 

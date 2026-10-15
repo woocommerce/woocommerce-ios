@@ -2,6 +2,7 @@ import EventHorizonSDK
 import Experiments
 import AutomatticTracks
 import XCTest
+@testable import PointOfSale
 @testable import WooCommerce
 @testable import Yosemite
 @testable import WordPressAuthenticator
@@ -330,6 +331,80 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(posProperties?["device_type"] as? String, provider.deviceTypeForAnalytics)
         let authProperties = events.first { tracksEventName($0) == "auth_event_with_properties" }?.customProperties
         XCTAssertEqual(authProperties?["step"] as? String, "start")
+    }
+
+    @MainActor
+    func test_ordersListLoaded_when_main_app_refresh_finishes_in_POS_then_keeps_main_app_event() throws {
+        // Given
+        TracksProvider.setPOSMode(false)
+        defer { TracksProvider.setPOSMode(false) }
+        let provider = makeTracksProvider()
+        let event = WooAnalyticsEvent.ordersListLoaded(totalDuration: 1.25,
+                                                       pageNumber: 2,
+                                                       filters: nil,
+                                                       totalCompletedOrders: nil)
+        var properties = event.properties
+        properties["test_run"] = userDefaultsSuiteName!
+
+        // When
+        TracksProvider.setPOSMode(true)
+        TracksProvider.setPOSEntryPoint(.posTab)
+        provider.track(event.statName.rawValue, withProperties: properties)
+
+        // Then
+        let events = receivedTracksEvents
+        XCTAssertEqual(events.count, 1)
+        let received = try XCTUnwrap(events.first)
+        XCTAssertEqual(received.eventName, "woocommerceios_orders_list_loaded")
+        XCTAssertEqual(received.customProperties["page_number"] as? Int, 2)
+        XCTAssertEqual(received.customProperties["total_duration"] as? Double, 1.25)
+        XCTAssertNil(received.customProperties["device_type"])
+        XCTAssertNil(received.customProperties["entry_point"])
+    }
+
+    @MainActor
+    func test_ordersListLoaded_when_POS_is_active_then_records_POS_event_and_properties() throws {
+        // Given
+        TracksProvider.setPOSMode(true)
+        TracksProvider.setPOSEntryPoint(.autoReopen)
+        defer { TracksProvider.setPOSMode(false) }
+        let provider = makeTracksProvider()
+        let event = WooAnalyticsEvent.PointOfSale.ordersListLoaded()
+        var properties = event.properties
+        properties["test_run"] = userDefaultsSuiteName!
+
+        // When
+        provider.track(event.statName.rawValue, withProperties: properties)
+
+        // Then
+        let events = receivedTracksEvents
+        XCTAssertEqual(events.count, 1)
+        let received = try XCTUnwrap(events.first)
+        XCTAssertEqual(received.eventName, "woocommerceios_pos_orders_list_loaded")
+        XCTAssertEqual(received.customProperties["device_type"] as? String, provider.deviceTypeForAnalytics)
+        XCTAssertEqual(received.customProperties["entry_point"] as? String, "auto_reopen")
+    }
+
+    @MainActor
+    func test_ordersListLoaded_when_POS_is_inactive_then_keeps_POS_event() throws {
+        // Given
+        TracksProvider.setPOSMode(false)
+        defer { TracksProvider.setPOSMode(false) }
+        let provider = makeTracksProvider()
+        let event = WooAnalyticsEvent.PointOfSale.ordersListLoaded()
+        var properties = event.properties
+        properties["test_run"] = userDefaultsSuiteName!
+
+        // When
+        provider.track(event.statName.rawValue, withProperties: properties)
+
+        // Then
+        let events = receivedTracksEvents
+        XCTAssertEqual(events.count, 1)
+        let received = try XCTUnwrap(events.first)
+        XCTAssertEqual(received.eventName, "woocommerceios_pos_orders_list_loaded")
+        XCTAssertEqual(received.customProperties["device_type"] as? String, provider.deviceTypeForAnalytics)
+        XCTAssertNil(received.customProperties["entry_point"])
     }
 
     private func makeTracksProvider() -> TracksProvider {

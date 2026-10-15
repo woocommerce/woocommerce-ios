@@ -342,7 +342,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,
 
             // Order
-            WooAnalyticsStat.ordersListLoaded,
             WooAnalyticsStat.orderCreationSuccess,
             WooAnalyticsStat.orderCreationFailed,
 

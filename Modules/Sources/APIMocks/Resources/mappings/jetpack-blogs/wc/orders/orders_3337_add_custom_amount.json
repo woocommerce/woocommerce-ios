@@ -5,7 +5,7 @@
         "bodyPatterns": [
             { "matches": ".*path=/wc/v3/orders/3337%26_method%3Dpost.*" },
             { "contains": "%22product_id%22%3A2130" },
-            { "contains": "%22name%22%3A%22Custom%20amount%22" },
+            { "contains": "%22fee_lines%22%3A%5B%7B" },
             { "contains": "%22method_title%22%3A%22Flat%20Rate%22" },
             { "contains": "%22first_name%22%3A%22Mira%22" }
         ]

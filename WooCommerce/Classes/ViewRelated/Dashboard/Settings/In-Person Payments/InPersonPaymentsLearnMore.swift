@@ -30,6 +30,7 @@ struct InPersonPaymentsLearnMore: View {
                                     onTapURL: { url in
                                         openLearnMore(url: url)
                                     })
+                .accessibilityIdentifier("in-person-payments-learn-more")
                 .accessibilityAction(named: Localization.learnMoreAccessibilityAction) {
                     openLearnMore(url: viewModel.url)
                 }

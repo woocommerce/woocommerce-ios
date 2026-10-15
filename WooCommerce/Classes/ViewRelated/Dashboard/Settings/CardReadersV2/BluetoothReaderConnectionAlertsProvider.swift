@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import UIKit
 
+@MainActor
 struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentsModalViewModel
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

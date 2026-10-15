@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 
 
@@ -25,6 +26,8 @@ final class StorePickerCoordinator: Coordinator {
     ///
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
+    private let tracker: AuthenticatorAnalyticsTracker
+
     /// The RoleEligibilityUseCase object initialized with the ServiceLocator stores
     ///
     private let roleEligibilityUseCase = RoleEligibilityUseCase(stores: ServiceLocator.stores)
@@ -40,11 +43,13 @@ final class StorePickerCoordinator: Coordinator {
     init(_ navigationController: UINavigationController,
          config: StorePickerConfiguration,
          isFromLogin: Bool? = nil,
-         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
+         tracker: AuthenticatorAnalyticsTracker = .shared) {
         self.navigationController = navigationController
         self.selectedConfiguration = config
         self.isFromLogin = isFromLogin ?? (config == .login)
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: ServiceLocator.stores)
+        self.tracker = tracker
     }
 
     func start() {
@@ -120,6 +125,17 @@ private extension StorePickerCoordinator {
     func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
             guard let self else { return }
+            if self.isFromLogin {
+                // The login ends here, where a store has been chosen and switched to — not when
+                // the credentials were accepted, which is a login that can still fail to reach a
+                // store. Android reports the step at this same point.
+                //
+                // Keyed on the journey rather than the configuration: a merchant who lands on a
+                // login error screen and recovers through "See connected stores" picks their store
+                // from a listStores picker, and that login reached a store like any other.
+                self.tracker.track(step: .success)
+            }
+
             if self.selectedConfiguration == .login {
                 MainTabBarController.switchToMyStoreTab(animated: true)
             }

@@ -26,7 +26,7 @@ Fill in the placeholders (in ALL CAPS) before dispatching:
 
 ```
 You are running the /woo-ai-smoke pipeline end-to-end. Follow the SKILL.md
-at .claude/skills/woo-ai-smoke/SKILL.md as your reference for the Swift
+at .agents/skills/woo-ai-smoke/SKILL.md as your reference for the Swift
 template, parse protocol, hard invariants, rubric, JSONL format, and
 reporting format. Everything below is your SCOPED task.
 
@@ -51,7 +51,7 @@ trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /t
    scaffold it with placeholders per the Credentials section of
    SKILL.md, `open` it for editing, and stop with a message instructing
    the engineer to fill it in and re-run.
-2. Load the scenario set from .claude/skills/woo-ai-smoke/baseline.json
+2. Load the scenario set from .agents/skills/woo-ai-smoke/baseline.json
    (or build ad-hoc from the SUITE arg).
 3. Run the Scenario fixture preflight from SKILL.md for exactly the scenarios
    being executed. Inspect each scenario's `fixtures` block first, then infer
@@ -80,7 +80,7 @@ trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /t
    dim, write a one-sentence rationale.
 9. Compute per-scenario means (over samples × turns) per dim.
 10. Write the run to
-   .claude/skills/woo-ai-smoke/runs/<ISO-timestamp>_SHA_LABEL.jsonl
+   .agents/skills/woo-ai-smoke/runs/<ISO-timestamp>_SHA_LABEL.jsonl
    (one JSON record per turn per sample per mode, exactly as defined in
    SKILL.md Storage format).
 11. Compare against BASELINE: classify each scenario PASS / REGRESSION /
@@ -95,7 +95,7 @@ Return ONLY this markdown (no tool logs, no chain-of-thought, no raw
 <the markdown table from SKILL.md Reporting section, one row per scenario>
 
 PASS: X | REGRESSION: Y | FAIL: Z | NEW: W | FLAKY: V
-Run stored: .claude/skills/woo-ai-smoke/runs/<filename>.jsonl
+Run stored: .agents/skills/woo-ai-smoke/runs/<filename>.jsonl
 
 <one or two lines per REGRESSION / FAIL with likely cause>
 
@@ -117,7 +117,7 @@ inside the subagent's context.
 6. **Parse each `[smoke|...]` line** into a turn record — prompt, tool names, tool arg snippets, tool results, assistant text, card kinds.
 7. **Claude judges each turn** against the scenario's `rubric_notes` and the global rubric (details below). Fill in scores per dim.
 8. **Apply hard invariants** (deterministic pass/fail).
-9. **Write run** to `.claude/skills/woo-ai-smoke/runs/<ISO-timestamp>_<sha>.jsonl`.
+9. **Write run** to `.agents/skills/woo-ai-smoke/runs/<ISO-timestamp>_<sha>.jsonl`.
 10. **Compare to baseline** — flag REGRESSION when hard invariants fail or rubric mean drops below `rubric_pass_threshold`.
 11. **Report** a markdown table + summary counts.
 12. **Delete** the temp Swift file, `/tmp/woo-ai-smoke.log`, and the `/tmp/woo-ai-smoke-store.env` mirror (via the `trap` armed at the start of the run).
@@ -455,14 +455,14 @@ Then a summary:
 
 ```
 PASS: 22  |  REGRESSION: 1  |  FAIL: 1  |  NEW: 0  |  FLAKY: 0
-Run stored: .claude/skills/woo-ai-smoke/runs/2026-04-23T14-02-11Z_ab0d83c.jsonl
+Run stored: .agents/skills/woo-ai-smoke/runs/2026-04-23T14-02-11Z_ab0d83c.jsonl
 ```
 
 Mention any REGRESSIONS / FAILs in 1-2 lines each with a pointer to what likely caused them.
 
 ## Storage format
 
-Append-only JSONL per run at `.claude/skills/woo-ai-smoke/runs/<ISO>_<sha>.jsonl`. One line per turn per sample. Directory must be gitignored.
+Append-only JSONL per run at `.agents/skills/woo-ai-smoke/runs/<ISO>_<sha>.jsonl`. One line per turn per sample. Directory must be gitignored.
 
 Each record:
 
@@ -520,7 +520,7 @@ Main Claude: do steps 1-2, then dispatch the subagent. The subagent does 3-17.
 10. (Subagent) Apply hard invariants.
 11. (Subagent) Judge each turn using the rubric + scenario's `rubric_notes`.
 12. (Subagent) Compute per-scenario means (over samples × turns) per dim.
-13. (Subagent) Write run JSONL to `.claude/skills/woo-ai-smoke/runs/<ISO>_<sha>_<label>.jsonl`.
+13. (Subagent) Write run JSONL to `.agents/skills/woo-ai-smoke/runs/<ISO>_<sha>_<label>.jsonl`.
 14. (Subagent) Compare to baseline, classify each scenario PASS/REGRESSION/FAIL/NEW/FLAKY.
 15. (Subagent) Return ONLY the markdown reporting table + summary + regression notes + JSONL path.
 16. (Subagent) Offer baseline refresh only as a line in the report if evidence supports tightening — main Claude will surface the question to the user.

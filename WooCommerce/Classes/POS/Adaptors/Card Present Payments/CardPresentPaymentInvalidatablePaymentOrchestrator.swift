@@ -1,10 +1,12 @@
 import Foundation
+import os
 import Yosemite
 import WooFoundation
 import class PointOfSale.POSPaymentSuccessCelebration
 
+@MainActor
 final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOrchestrating {
-    private var invalidated: Bool = false
+    private let invalidated = OSAllocatedUnfairLock(initialState: false)
     private let paymentOrchestrator: PaymentCaptureOrchestrator
 
     /// POS celebrates through `POSPaymentSuccessCelebration`, which honors the payment success sound setting from POS settings.
@@ -13,8 +15,9 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
         self.paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: celebration)
     }
 
-    func invalidatePayment() {
-        invalidated = true
+    /// Called from a task cancellation handler, which is nonisolated.
+    nonisolated func invalidatePayment() {
+        invalidated.withLock { $0 = true }
     }
 
     func collectPayment(for order: Order,
@@ -32,7 +35,7 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, any Error>) -> Void) {
-        guard invalidated == false else {
+        guard invalidated.withLock({ $0 }) == false else {
             return onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
         }
         paymentOrchestrator.collectPayment(for: order,
@@ -54,7 +57,7 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
 
     func retryPayment(for order: Order,
                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, any Error>) -> Void) {
-        guard invalidated == false else {
+        guard invalidated.withLock({ $0 }) == false else {
             return onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
         }
         paymentOrchestrator.retryPayment(for: order,

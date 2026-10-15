@@ -14,7 +14,7 @@ items:
     manual: "Requires App Store build replacement and logged-in migration state outside the initial simulator suite."
   - id: install.fresh
     title: Fresh install smoke
-    manual: "The runner installs over the existing app instead of uninstalling it first."
+    flow: .maestro/flows/login_successful.yaml
 
   - id: login.help
     title: Login help section

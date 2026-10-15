@@ -137,7 +137,9 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
         let newQuantity = partiallyRefundedItem.quantity + (refund.items.first?.quantity ?? 0)
 
         // When
-        let expectedResult = [RefundableOrderItem(item: partiallyRefundedItem, quantity: newQuantity)]
+        var expectedItem = RefundableOrderItem(item: partiallyRefundedItem, quantity: newQuantity)
+        expectedItem.refundedItems = refund.items
+        let expectedResult = [expectedItem]
         let result = sut.determineRefundableOrderItems(from: order, with: [refund])
 
         // Then

@@ -173,7 +173,7 @@ final class IssueRefundViewModel {
                                                               amount: "\(self.calculateRefundTotal())",
                                                               refundsShipping: self.state.shouldRefundShipping,
                                                               refundsFees: self.state.shouldRefundCustomAmounts,
-                                                              items: self.state.refundQuantityStore.refundableItems(),
+                                                              items: self.selectedItems(),
                                                               paymentGateway: self.paymentGateway,
                                                               paymentGatewayAccount: paymentGatewayAccount,
                                                               shippingLines: self.shippingLinesToRefund())
@@ -386,7 +386,7 @@ extension IssueRefundViewModel {
                                        currencySettings: state.currencySettings)
         }
 
-        let refundItems = state.refundQuantityStore.refundableItems()
+        let refundItems = selectedItems()
         let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
 
         return Section(rows: itemsRows + [summaryRow])
@@ -452,8 +452,9 @@ extension IssueRefundViewModel {
     ///
     private func calculateRefundTotal() -> Decimal {
         let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
-        let refundItems = state.refundQuantityStore.refundableItems()
-        let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let refundItems = selectedItems()
+        let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter,
+                                                                      numberOfDecimals: state.currencySettings.fractionDigits)
 
         var refundsTotal = productsTotalUseCase.calculateRefundValues().total
 
@@ -552,6 +553,10 @@ extension IssueRefundViewModel {
             return []
         }
         return refundableShippingLines() ?? []
+    }
+
+    private func selectedItems() -> [RefundableOrderItem] {
+        state.itemsToRefund.map { $0.selecting(quantity: state.refundQuantityStore.refundQuantity(for: $0.item)) }
     }
 
     private func isAnyCustomAmountAvailableForRefund() -> Bool {

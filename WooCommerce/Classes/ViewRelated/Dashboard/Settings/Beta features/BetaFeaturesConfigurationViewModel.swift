@@ -1,6 +1,7 @@
 import SwiftUI
 import struct Storage.GeneralAppSettingsStorage
 
+@MainActor
 final class BetaFeaturesConfigurationViewModel: ObservableObject {
     @Published private(set) var availableFeatures: [BetaFeature] = []
     private let appSettings: GeneralAppSettingsStorage
@@ -25,11 +26,7 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
     }
 
     func refreshAvailableFeatures() async {
-        let fetchedAvailableFeatures = await fetchFeaturesAvailability()
-
-        await MainActor.run {
-            availableFeatures = fetchedAvailableFeatures
-        }
+        availableFeatures = await fetchFeaturesAvailability()
     }
 }
 
@@ -83,6 +80,7 @@ private extension BetaFeaturesConfigurationViewModel {
 }
 
 extension BetaFeaturesConfigurationViewModel {
+    @MainActor
     static func defaultPOSTabVisibility() async -> Bool {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return false

@@ -46,7 +46,7 @@ struct POSIneligibleView: View {
                             .accessibilityIdentifier("pos-ineligible-title")
 
                         suggestionBodyText(suggestionText)
-                            .accessibilityIdentifier("pos-ineligible-suggestion")
+                            .accessibilityIdentifier(suggestionAccessibilityIdentifier)
                     }
                     .containerRelativeFrame(.horizontal) { length, _ in
                         max(length * frameWidthMultiplier, 300)
@@ -118,6 +118,13 @@ struct POSIneligibleView: View {
             .foregroundColor(Color.posOnSurface)
     }
 
+    private var suggestionAccessibilityIdentifier: String {
+        if case .unsupportedWooCommerceVersion = reason {
+            return "pos-ineligible-unsupported-woocommerce-version-suggestion"
+        }
+        return "pos-ineligible-suggestion"
+    }
+
     private var suggestionText: String {
         switch reason {
         case .noInternetConnection:
@@ -157,10 +164,6 @@ struct POSIneligibleView: View {
                                      value: "We were unable to load the site settings info. Please check your internet connection and try again. " +
                                      "If the issue persists, contact support for assistance.",
                                      comment: "Suggestion for site settings unavailable: check connection or contact support")
-        case .selfDeallocated:
-            return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
-                                     value: "Try relaunching the app to resolve this issue.",
-                                     comment: "Suggestion for self deallocated: relaunch")
         }
     }
 
@@ -204,8 +207,7 @@ private extension POSIneligibleReason {
                 .siteSettingsNotAvailable,
                 .unsupportedCountry,
                 .wooCommercePluginNotFound,
-                .unsupportedCurrency,
-                .selfDeallocated:
+                .unsupportedCurrency:
             return NSLocalizedString(
                 "pos.ineligible.refresh.button.title",
                 value: "Retry",

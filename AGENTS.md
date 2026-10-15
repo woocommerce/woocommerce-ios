@@ -2,6 +2,14 @@
 
 WooCommerce iOS is the official mobile client for WooCommerce stores, developed by Automattic. Large-scale Swift app using MVVM + Coordinators, SwiftUI and UIKit, Combine, and a Flux/Redux-inspired business logic layer (Yosemite).
 
+## AI dev and testing tools
+
+For simulator testing, task delegation, or AI tool setup, check [docs/ai-tools.md](docs/ai-tools.md) for helpers, MCP servers, and availability. Use relevant repository skills from `.agents/skills/`.
+
+After adding a testing helper, read `docs/ai-tools.md` and add a linked row to its table before reporting completion. Check that the link points to the new file.
+Update or remove rows in the same change when changing helpers, agents, MCP servers, AI CI workflows, or agent configuration.
+Keep skill descriptions in `SKILL.md`; update the index discovery guidance when skill locations or availability change.
+
 ## Repository Layout
 
 ```
@@ -300,9 +308,11 @@ See `Modules/Package.swift` for the definitive list of supported platforms, inte
 
 ## Agent Verification
 
+For simulator work that needs a logged-in store, read `.agents/skills/auto-login/SKILL.md` (`/auto-login`). It preserves live-store DEBUG login, supports explicit WireMock mocks, and covers optional Jurassic Ninja provisioning.
+
 Agents can verify their changes work from a user's perspective using two complementary loops:
 
-- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/references/feature-map.json`. Environment-aware — uses existing session during development, sets up WireMock mocked environment only when needed.
+- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/references/feature-map.json`. Follows `/auto-login` for session setup.
 - **`/snapshot`** — Fast UI iteration: uses `swift-snapshot-testing` to render SwiftUI views to PNG (~25s/cycle). Agent reads images, compares against design goals, iterates. Temporary — artifacts are never committed.
 
 **Prerequisites**: Node.js (see `.nvmrc`), Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json`.

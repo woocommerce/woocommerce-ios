@@ -351,6 +351,30 @@ class LoginViewControllerTests: XCTestCase {
         )
     }
 
+    func test_site_credentials_controller_when_host_resets_loading_then_restores_editable_fields_and_preserves_credentials() throws {
+        // Given
+        let controller = try makeSiteCredentialsController(delegate: WordPressAuthenticatorDelegateSpy())
+        let cells = try renderedCells(in: controller)
+        let username = try XCTUnwrap(cells[1] as? TextFieldTableViewCell)
+        let password = try XCTUnwrap(cells[2] as? TextFieldTableViewCell)
+        edit(username, text: "merchant")
+        edit(password, text: "secret")
+        controller.configureViewLoading(true)
+        XCTAssertFalse(username.textField.isEnabled)
+        XCTAssertFalse(password.textField.isEnabled)
+
+        // When
+        (controller as LoginViewController).configureViewLoading(false)
+
+        // Then
+        XCTAssertTrue(username.textField.isEnabled)
+        XCTAssertTrue(password.textField.isEnabled)
+        XCTAssertEqual(username.textField.text, "merchant")
+        XCTAssertEqual(password.textField.text, "secret")
+        XCTAssertEqual(controller.submitButton?.isEnabled, true)
+        XCTAssertFalse(controller.navigationItem.hidesBackButton)
+    }
+
     func test_site_credentials_controller_when_recovery_is_loading_then_disables_all_actions_until_loading_finishes() throws {
         // Given
         let delegate = WordPressAuthenticatorDelegateSpy()
@@ -380,6 +404,45 @@ class LoginViewControllerTests: XCTestCase {
         XCTAssertEqual(controller.submitButton?.isEnabled, true)
         XCTAssertTrue(browserButton.isEnabled)
         XCTAssertTrue(cancelButton.isEnabled)
+    }
+
+    func test_site_credentials_controller_when_alert_retry_is_selected_then_resubmits_current_values_with_original_failure() throws {
+        // Given
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        let error = NSError(domain: "UnexpectedResponse", code: 500)
+        delegate.siteCredentialFailure = (error, false, nil)
+        let controller = try makeSiteCredentialsController(delegate: delegate)
+        try tapContinue(in: controller)
+        controller.loginFields.username = "edited-user"
+        controller.loginFields.password = "edited-password"
+        delegate.defersSiteCredentialAuthentication = true
+
+        // When
+        delegate.presentedSiteCredentialRetry?({ _ in })
+
+        // Then
+        XCTAssertEqual(delegate.siteCredentialAuthenticationRequests.count, 2)
+        XCTAssertEqual(delegate.siteCredentialAuthenticationRequests.last?.credentials.username, "edited-user")
+        XCTAssertEqual(delegate.siteCredentialAuthenticationRequests.last?.credentials.password, "edited-password")
+        XCTAssertEqual(delegate.siteCredentialRetryFailure as NSError?, error)
+        XCTAssertNotNil(delegate.siteCredentialRetryResult)
+        XCTAssertEqual(controller.submitButton?.isEnabled, false)
+    }
+
+    func test_site_credentials_controller_when_popped_then_cancels_active_authentication() throws {
+        // Given
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        let controller = try makeSiteCredentialsController(delegate: delegate, pushedOntoPlaceholderRoot: true)
+        delegate.defersSiteCredentialAuthentication = true
+        try tapContinue(in: controller)
+
+        // When
+        let navigation = try XCTUnwrap(controller.navigationController)
+        navigation.popViewController(animated: false)
+        navigation.view.layoutIfNeeded()
+
+        // Then
+        XCTAssertEqual(delegate.credentialCancellationCount, 1)
     }
 
     func test_site_credentials_controller_when_ordinary_failure_occurs_then_preserves_manual_handling_configuration() throws {

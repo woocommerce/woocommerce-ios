@@ -14,9 +14,10 @@ enum CardReaderConnectionResult {
     case canceled(WooAnalyticsEvent.InPersonPayments.CancellationSource)
 }
 
+@MainActor
 protocol CardPresentPaymentPreflightControllerProtocol {
     func start(discoveryMethod: CardReaderDiscoveryMethod?) async
-    func cancelConnectionAttempt()
+    nonisolated func cancelConnectionAttempt()
 
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> { get }
 }
@@ -231,7 +232,12 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             switch self.discoveryMethod {
             case .bluetoothScan:
                 Task { [weak self] in
-                    try await self?.automaticallyDisconnectFromReader()
+                    do {
+                        try await self?.automaticallyDisconnectFromReader()
+                    } catch {
+                        DDLogError("⛔️ Failed to disconnect from card reader: \(error)")
+                        return
+                    }
                     await self?.startReaderConnection(using: paymentGatewayAccount, connectionAttemptID: connectionAttemptID)
                 }
             case .tapToPay, .none:

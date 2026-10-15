@@ -5,6 +5,8 @@ import Yosemite
 final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String?
 
+    nonisolated init() {}
+
     func preflightResultReceived(_ result: CardReaderPreflightResult?) {
         // no-op
     }

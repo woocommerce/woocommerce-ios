@@ -27,7 +27,7 @@ public enum UnderlyingError: Error, Equatable {
 
     /// A command can be cancelled on the reader, or in the app.
     /// Note that this is not produced by Stripe, we have to infer it from commandCancelled, so we start with `.unknown`.
-    public enum CancellationSource {
+    public enum CancellationSource: Sendable {
         case unknown
         case app
         case reader

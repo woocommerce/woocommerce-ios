@@ -27,7 +27,7 @@ struct POSCheckoutPaymentButtonsRow: View {
         }
         .if(horizontalSizeClass != .compact) {
             $0
-                .padding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, POSPadding.medium)
                 .padding(.bottom, POSPadding.small)
         }
     }

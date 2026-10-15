@@ -216,12 +216,12 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         fixedContentSize.height > 0 && chevronSize.height > 0
     }
 
+    /// Drawn below the sheet by offset only: `ignoresSafeArea` here expands the view first on iOS 27 and pushes it off screen.
     @ViewBuilder private var bottomSafeAreaBackground: some View {
         if safeAreaInsets.bottom > 0 {
             Color(.listForeground(modal: false))
                 .frame(height: safeAreaInsets.bottom)
                 .offset(y: safeAreaInsets.bottom)
-                .ignoresSafeArea(edges: .bottom)
                 .allowsHitTesting(false)
         }
     }

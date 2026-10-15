@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.Coupon
+import typealias Yosemite.CouponDiscountType
 
 /// Provide access to AddEditCouponView and ViewModel for POS without making it as an explicit type dependency
 /// AddEditCouponView cannot be easily moved and reused in a shared module due to multiple dependencies
@@ -13,7 +14,7 @@ struct POSCouponCreationViewAdaptor: View {
     private let dismissHandler: () -> Void
     private let onDisappear: () -> Void
 
-    init(discountType: Coupon.DiscountType,
+    init(discountType: CouponDiscountType,
          showTypeSelection: Binding<Bool>,
          onSuccess: @escaping (Coupon) -> Void,
          dismissHandler: @escaping () -> Void,
@@ -45,7 +46,7 @@ struct POSDiscountTypeSelectionSheetAdaptor: View {
     @Binding var isPresented: Bool
     let title: String
     let cancelButtonTitle: String
-    let onSelection: (Coupon.DiscountType) -> Void
+    let onSelection: (CouponDiscountType) -> Void
 
     var body: some View {
         let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { type in

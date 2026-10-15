@@ -1,10 +1,12 @@
 import XCTest
 import Fakes
+import TestKit
 import Yosemite
 import enum Alamofire.AFError
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     /// Mock Storage: InMemory
     ///
@@ -31,8 +33,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     private var skippedCodOnboardingStep = true
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() async throws {
+        try await super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         onboardingStateCache = CardPresentPaymentOnboardingStateCache()
@@ -59,7 +61,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         }
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() async throws {
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
         storageManager.reset()
         onboardingStateCache = nil
@@ -68,7 +70,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         analyticsProvider = nil
         analytics = nil
         preferredInPersonPaymentGatewayBySite.removeAll()
-        try super.tearDownWithError()
+        try await super.tearDown()
     }
 
     // MARK: - Country checks
@@ -1351,7 +1353,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.state, onboardingStateCache.value)
     }
 
-    func test_installCardPresentPlugin_when_failure_to_install_plugin_then_event_is_tracked_with_correct_properties() throws {
+    func test_installCardPresentPlugin_when_failure_to_install_plugin_then_event_is_tracked_with_correct_properties() async throws {
         // Given
         setupCountry(country: .us)
         let expectedEvent = "card_present_onboarding_cta_failed"
@@ -1373,6 +1375,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         useCase.installCardPresentPlugin()
 
         // Then
+        // The completion hops to the main actor, so the event is tracked asynchronously.
+        await until { self.analyticsProvider.receivedEvents.isNotEmpty }
         XCTAssertEqual(analyticsProvider.receivedEvents, [expectedEvent])
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent }))
@@ -1383,7 +1387,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["error_description"] as? String, expectedError.description)
     }
 
-    func test_activateCardPresentPlugin_when_failure_to_activate_plugin_then_event_is_tracked_with_correct_properties() throws {
+    func test_activateCardPresentPlugin_when_failure_to_activate_plugin_then_event_is_tracked_with_correct_properties() async throws {
         // Given
         setupCountry(country: .us)
         let expectedEvent = "card_present_onboarding_cta_failed"
@@ -1405,6 +1409,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         useCase.activateCardPresentPlugin()
 
         // Then
+        // The completion hops to the main actor, so the event is tracked asynchronously.
+        await until { self.analyticsProvider.receivedEvents.isNotEmpty }
         XCTAssertEqual(analyticsProvider.receivedEvents, [expectedEvent])
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent }))
@@ -1448,7 +1454,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
                                                            stores: stores,
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then - Should show no connection error
         XCTAssertEqual(useCase.state, .noConnectionError)
@@ -1475,10 +1481,173 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
                                                            stores: stores,
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then - Should show generic error
         XCTAssertEqual(useCase.state, .genericError)
+    }
+
+    func test_updateAccounts_when_no_plugins_installed_and_accounts_fail_to_load_then_returns_plugin_not_installed() {
+        // Given
+        setupCountry(country: .us)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 404, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginNotInstalled)
+    }
+
+    func test_updateAccounts_when_wcpay_not_activated_and_accounts_fail_to_load_then_returns_plugin_not_activated() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 404, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginNotActivated(plugin: .wcPay))
+    }
+
+    func test_updateAccounts_when_both_plugins_active_in_wcpay_only_country_with_unsupported_wcpay_and_accounts_fail_then_returns_unsupported_version() {
+        // Given
+        setupCountry(country: .ca)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.unsupportedVersionCanada)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginUnsupportedVersion(plugin: .wcPay))
+    }
+
+    func test_updateAccounts_when_both_plugins_active_with_wcpay_preferred_and_unsupported_and_accounts_fail_then_returns_unsupported_version() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.unsupportedVersionWithPatch)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPreferredPaymentGateway(.wcPay)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginUnsupportedVersion(plugin: .wcPay))
+    }
+
+    func test_updateAccounts_when_wcpay_active_with_stored_account_and_accounts_fail_to_load_then_returns_generic_error() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .genericError)
+    }
+
+    func test_updateAccounts_when_accounts_load_after_a_failure_then_returns_account_state() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        useCase.updateAccounts(storeDataSynced: true)
+        XCTAssertEqual(useCase.state, .genericError)
+
+        // When
+        whenLoadingAccounts(thenReturn: .success(()))
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .completed(plugin: .wcPayOnly))
+    }
+
+    func test_refresh_when_no_plugins_installed_and_accounts_fail_to_load_then_returns_plugin_not_installed() {
+        // Given
+        setupCountry(country: .us)
+        whenSynchronizingStoreData(systemInformationResult: .success(.fake()))
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 404, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            useCase.state == .pluginNotInstalled
+        }
+    }
+
+    func test_refresh_when_plugins_and_accounts_fail_to_sync_then_returns_generic_error() {
+        // Given
+        setupCountry(country: .us)
+        whenSynchronizingStoreData(systemInformationResult: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            useCase.state == .genericError
+        }
+    }
+}
+
+// MARK: - Store sync helpers
+private extension CardPresentPaymentsOnboardingUseCaseTests {
+    func whenSynchronizingStoreData(systemInformationResult: Result<SystemInformation, Error>) {
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .synchronizeGeneralSiteSettings(_, onCompletion) = action {
+                onCompletion(nil)
+            }
+        }
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            if case let .synchronizeSystemInformation(_, onCompletion) = action {
+                onCompletion(systemInformationResult)
+            }
+        }
+    }
+
+    func whenLoadingAccounts(thenReturn result: Result<Void, Error>) {
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .loadAccounts(_, onCompletion) = action {
+                onCompletion(result)
+            }
+        }
     }
 }
 

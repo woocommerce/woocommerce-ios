@@ -111,43 +111,46 @@ struct POSTotalsSectionView: View {
 
     @ViewBuilder
     private func refundRow(refund: POSOrderRefund, index: Int) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            HStack {
-                Text(Localization.refundTitle(index + 1))
-                    .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                Spacer()
-                Text(refund.formattedTotal)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posError)
-            }
-
-            if isLoadingRefundDetails {
-                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
-                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
-            } else {
-                if let dateCreated = refund.dateCreated {
-                    Text(refundDateFormatter.string(from: dateCreated))
+        Button {
+            selectedRefundForDetail = refund
+        } label: {
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                HStack {
+                    Text(Localization.refundTitle(index + 1))
+                        .font(.posBodyLargeBold)
+                        .foregroundStyle(Color.posOnSurface)
+                    Spacer()
+                    Text(refund.formattedTotal)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        .foregroundStyle(Color.posError)
                 }
 
-                if let reason = refund.reason, !reason.isEmpty {
-                    Text(reason)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                }
+                if isLoadingRefundDetails {
+                    ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
+                    ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+                } else {
+                    if let dateCreated = refund.dateCreated {
+                        Text(refundDateFormatter.string(from: dateCreated))
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    }
 
-                Button {
-                    selectedRefundForDetail = refund
-                } label: {
+                    if let reason = refund.reason, !reason.isEmpty {
+                        Text(reason)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    }
+
                     Text(Localization.viewDetailsLabel)
                         .font(.posBodyMediumRegular())
                         .foregroundStyle(Color.posLink)
                         .underline()
                 }
             }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+        .disabled(isLoadingRefundDetails)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Localization.refundAccessibilityLabel(
             index: index + 1,

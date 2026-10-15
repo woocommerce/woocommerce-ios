@@ -5,8 +5,9 @@ final class CardPresentModalErrorTests: XCTestCase {
     private var viewModel: CardPresentModalError!
     private var closures: Closures!
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         closures = Closures()
         viewModel = CardPresentModalError(errorDescription: Expectations.error.localizedDescription,
                                           transactionType: .collectPayment,
@@ -21,34 +22,42 @@ final class CardPresentModalErrorTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_viewmodel_provides_expected_image() {
         XCTAssertEqual(viewModel.image, Expectations.image)
     }
 
+    @MainActor
     func test_topTitle_is_not_nil() {
         XCTAssertNotNil(viewModel.topTitle)
     }
 
+    @MainActor
     func test_topSubtitle_is_nil() {
         XCTAssertNil(viewModel.topSubtitle)
     }
 
+    @MainActor
     func test_primary_button_title_is_not_nil() {
         XCTAssertNotNil(viewModel.primaryButtonTitle)
     }
 
+    @MainActor
     func test_secondary_button_title_is_not_nil() {
         XCTAssertNotNil(viewModel.secondaryButtonTitle)
     }
 
+    @MainActor
     func test_auxiliary_button_title_is_not_nil() {
         XCTAssertNotNil(viewModel.auxiliaryButtonTitle)
     }
 
+    @MainActor
     func test_bottom_title_is_not_nil() {
         XCTAssertNotNil(viewModel.bottomTitle)
     }
 
+    @MainActor
     func test_bottom_subTitle_is_nil() {
         XCTAssertNil(viewModel.bottomSubtitle)
     }

@@ -201,6 +201,29 @@ extension XCUIElement {
 }
 
 extension XCUIApplication {
+    public func tapNavigationBarButton(_ identifier: String) {
+        let button = buttons[identifier]
+        if !button.waitForExistence(timeout: 3) {
+            navigationBars.buttons["OverflowBarButtonItem"].tap()
+        }
+        button.waitAndTap()
+    }
+
+    public func navigationBarButtonExists(_ identifier: String, timeout: TimeInterval) -> Bool {
+        let button = buttons[identifier]
+        if button.waitForExistence(timeout: timeout) {
+            return true
+        }
+        let overflowButton = navigationBars.buttons["OverflowBarButtonItem"]
+        guard overflowButton.exists else {
+            return false
+        }
+        overflowButton.tap()
+        let existsInOverflowMenu = button.waitForExistence(timeout: 3)
+        overflowButton.tap()
+        return existsInOverflowMenu
+    }
+
     /// Dismisses the system prompt asking to allow notifications, which the app requests after login
     /// while the permission is still undetermined.
     @discardableResult

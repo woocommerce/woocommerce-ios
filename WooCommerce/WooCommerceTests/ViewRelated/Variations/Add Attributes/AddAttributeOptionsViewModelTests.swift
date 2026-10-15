@@ -819,19 +819,43 @@ extension AddAttributeOptionsViewModelTests {
         XCTAssertEqual(updatedProduct.attributes, [color.copy(visible: false, variation: false)])
     }
 
-    func test_turning_off_used_for_variations_needs_a_confirmation_only_when_the_product_has_variations() {
+    func test_turning_off_used_for_variations_needs_a_confirmation_when_the_product_has_variations_that_use_the_attribute() {
         // Given
-        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue)
-        let productWithVariations = product.copy(variations: [1, 2])
+        let color = sampleAttribute(attributeID: 0, name: "Color", options: ["Red"])
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue, attributes: [color], variations: [1, 2])
 
         // When
-        let viewModel = AddAttributeOptionsViewModel(product: product, attribute: .new(name: "Color"))
-        let viewModelWithVariations = AddAttributeOptionsViewModel(product: productWithVariations, attribute: .new(name: "Color"))
+        let viewModel = AddAttributeOptionsViewModel(product: product, attribute: .existing(attribute: color))
+
+        // Then
+        XCTAssertTrue(viewModel.needsConfirmation(toSetUsedForVariations: false))
+        XCTAssertFalse(viewModel.needsConfirmation(toSetUsedForVariations: true))
+    }
+
+    func test_turning_off_used_for_variations_needs_no_confirmation_when_the_product_has_no_variations() {
+        // Given
+        let color = sampleAttribute(attributeID: 0, name: "Color", options: ["Red"])
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue, attributes: [color], variations: [])
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: product, attribute: .existing(attribute: color))
 
         // Then
         XCTAssertFalse(viewModel.needsConfirmation(toSetUsedForVariations: false))
-        XCTAssertTrue(viewModelWithVariations.needsConfirmation(toSetUsedForVariations: false))
-        XCTAssertFalse(viewModelWithVariations.needsConfirmation(toSetUsedForVariations: true))
+    }
+
+    func test_turning_off_used_for_variations_needs_no_confirmation_when_the_attribute_is_not_saved_as_used_for_variations() {
+        // Given
+        let material = sampleNonVariationAttribute(attributeID: 0, name: "Material", options: ["Cotton"])
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue, attributes: [material], variations: [1, 2])
+
+        // When
+        let newAttributeViewModel = AddAttributeOptionsViewModel(product: product, attribute: .new(name: "Color"))
+        let nonVariationAttributeViewModel = AddAttributeOptionsViewModel(product: product, attribute: .existing(attribute: material))
+
+        // Then
+        XCTAssertFalse(newAttributeViewModel.needsConfirmation(toSetUsedForVariations: false))
+        XCTAssertFalse(nonVariationAttributeViewModel.needsConfirmation(toSetUsedForVariations: false))
     }
 }
 

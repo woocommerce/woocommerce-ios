@@ -133,10 +133,16 @@ final class AddAttributeOptionsViewModel {
 
     private let isNonVariationAttributesEnabled: Bool
 
+    private let isVariableProduct: Bool
+
     /// "Visible on product page" and "Used for variations" values when the screen opened
     ///
     private let initialIsVisible: Bool
     private let initialIsUsedForVariations: Bool
+
+    /// True when the product already has this attribute and uses it for variations
+    ///
+    private let isSavedAsUsedForVariations: Bool
 
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
@@ -208,9 +214,11 @@ final class AddAttributeOptionsViewModel {
         // An attribute the product already has keeps its values. In the variations flow, the attribute is always used for variations.
         let productAttribute = product.attributes.first { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
         let isVariableProduct = product.productType == .variable || product.productType == .variableSubscription
+        self.isVariableProduct = isVariableProduct
         let isNewAttributeUsedForVariations = !isNonVariationAttributesEnabled || isVariableProduct
         self.initialIsVisible = productAttribute?.visible ?? true
         self.initialIsUsedForVariations = isVariationsFlow || (productAttribute?.variation ?? isNewAttributeUsedForVariations)
+        self.isSavedAsUsedForVariations = productAttribute?.variation ?? false
         self.state.isVisible = initialIsVisible
         self.state.isUsedForVariations = initialIsUsedForVariations
 
@@ -299,10 +307,11 @@ extension AddAttributeOptionsViewModel {
         state.isUsedForVariations = isUsedForVariations
     }
 
-    /// True when turning off "Used for variations" needs a confirmation, because the product has variations
+    /// True when turning off "Used for variations" needs a confirmation:
+    /// the product has variations, and the attribute is saved as used for variations.
     ///
     func needsConfirmation(toSetUsedForVariations isUsedForVariations: Bool) -> Bool {
-        !isUsedForVariations && product.variations.isNotEmpty
+        !isUsedForVariations && isSavedAsUsedForVariations && product.variations.isNotEmpty
     }
 
     /// Gathers selected options and update the product's attributes.
@@ -446,7 +455,6 @@ private extension AddAttributeOptionsViewModel {
         guard isNonVariationAttributesEnabled else {
             return nil
         }
-        let isVariableProduct = product.productType == .variable || product.productType == .variableSubscription
         let rows: [Row] = [
             .visibleOnProductPage(isOn: state.isVisible),
             isVariableProduct && !isVariationsFlow ? .usedForVariations(isOn: state.isUsedForVariations) : nil

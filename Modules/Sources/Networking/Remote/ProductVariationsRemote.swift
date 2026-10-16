@@ -70,8 +70,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol, @
         let request = productVariationsRequest(for: siteID,
                                                productID: productID,
                                                variationIDs: variationIDs,
-                                               // Explicit: don't rely on the server default order.
-                                               orderBy: .date,
+                                               // ID is unique and matches the local tie-break, so pages never overlap.
+                                               orderBy: .id,
                                                order: .descending,
                                                context: context,
                                                pageNumber: pageNumber,
@@ -89,7 +89,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol, @
         let request = productVariationsRequest(for: siteID,
                                                productID: productID,
                                                variationIDs: variationIDs,
-                                               orderBy: .date,
+                                               orderBy: .id,
                                                order: .descending,
                                                context: nil,
                                                pageNumber: pageNumber,
@@ -392,6 +392,7 @@ public extension ProductVariationsRemote {
 
     enum OrderByField: String {
         case date
+        case id
         case menuOrder = "menu_order"
     }
 

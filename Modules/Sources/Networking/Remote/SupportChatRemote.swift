@@ -46,7 +46,7 @@ public protocol SupportChatRemoteProtocol {
 
 /// Remote for the support chat endpoint (`/wpcom/v2/odie/chat/{bot_slug}`).
 ///
-public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
+public final class SupportChatRemote: Remote, SupportChatRemoteProtocol, @unchecked Sendable {
 
     public func sendMessage(botSlug: String,
                             message: String,

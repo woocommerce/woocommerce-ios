@@ -3,7 +3,7 @@ import Foundation
 
 /// Devices: Remote Endpoints (Push Notifications Registration / Unregistration!)
 ///
-public class DevicesRemote: Remote {
+public class DevicesRemote: Remote, @unchecked Sendable {
 
     /// Registers a device for Push Notifications Delivery.
     ///

@@ -95,7 +95,7 @@ public protocol WooShippingRemoteProtocol {
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
 ///
-public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
+public final class WooShippingRemote: Remote, WooShippingRemoteProtocol, @unchecked Sendable {
 
     /// Checks eligibility for shipping label creation.
     /// - Parameters:

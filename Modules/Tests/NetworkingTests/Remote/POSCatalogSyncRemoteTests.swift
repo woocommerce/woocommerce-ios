@@ -9,11 +9,12 @@ struct POSCatalogSyncRemoteTests {
     private let mockFileManager = MockFileManager()
     private let sampleSiteID: Int64 = 1234
     private let sampleSnapshotDate = Date(timeIntervalSince1970: 1_700_000_000)
+    private let defaultsSuiteName = "POSCatalogSyncRemoteTests.\(UUID().uuidString)"
     private let backgroundDownloadStateStore: BackgroundDownloadStateStore
 
     init() {
         // Create isolated UserDefaults suite for this test
-        let testDefaults = UserDefaults(suiteName: "POSCatalogSyncRemoteTests.\(UUID().uuidString)")!
+        let testDefaults = UserDefaults(suiteName: defaultsSuiteName)!
         backgroundDownloadStateStore = BackgroundDownloadStateStore(userDefaults: testDefaults)
     }
 
@@ -1113,7 +1114,8 @@ extension POSCatalogSyncRemoteTests {
 
         // When - use continuation to capture state when download starts
         let savedState: BackgroundDownloadState? = await withCheckedContinuation { continuation in
-            mockBackgroundDownloader.onDownloadStarted = {
+            mockBackgroundDownloader.onDownloadStarted = { [mockBackgroundDownloader, defaultsSuiteName] in
+                let backgroundDownloadStateStore = BackgroundDownloadStateStore(userDefaults: UserDefaults(suiteName: defaultsSuiteName)!)
                 // Download has started, state should be saved now
                 if let sessionIdentifier = mockBackgroundDownloader.lastSessionIdentifier {
                     let state = backgroundDownloadStateStore.load(for: sessionIdentifier)

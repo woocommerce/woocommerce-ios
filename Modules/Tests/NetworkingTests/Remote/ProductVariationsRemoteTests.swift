@@ -673,11 +673,11 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertNil(queryParametersDictionary["status"] as? String)
         XCTAssertEqual(queryParametersDictionary["page"] as? String, "1")
         XCTAssertEqual(queryParametersDictionary["per_page"] as? String, "25")
-        XCTAssertEqual(queryParametersDictionary["orderby"] as? String, "date")
+        XCTAssertEqual(queryParametersDictionary["orderby"] as? String, "id")
         XCTAssertEqual(queryParametersDictionary["order"] as? String, "desc")
     }
 
-    func test_loadProductVariations_when_called_then_requests_date_descending_order() async throws {
+    func test_loadProductVariations_when_called_then_requests_id_descending_order() async throws {
         // Given
         let remote = ProductVariationsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
@@ -690,7 +690,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         // Then
         let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
-        XCTAssertEqual(queryParametersDictionary["orderby"] as? String, "date")
+        XCTAssertEqual(queryParametersDictionary["orderby"] as? String, "id")
         XCTAssertEqual(queryParametersDictionary["order"] as? String, "desc")
     }
 

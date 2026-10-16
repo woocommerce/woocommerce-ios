@@ -5,34 +5,23 @@ import CoreData
 
 /// MockStorageManager: InMemory CoreData Stack.
 ///
-open class MockStorageManager: StorageManagerType {
-
-    public init() {}
+public final class MockStorageManager: StorageManagerType, Sendable {
 
     /// DataModel Name
     ///
-    private let name = "WooCommerce"
-
-    /// Returns the Storage associated with the View Thread.
-    ///
-    public var viewStorage: StorageType {
-        return persistentContainer.viewContext
-    }
-
-    /// Returns a shared derived storage instance dedicated for write operations in the background.
-    ///
-    public lazy var writerDerivedStorage: StorageType = {
-        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        childManagedObjectContext.parent = persistentContainer.viewContext
-        childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        return childManagedObjectContext
-    }()
+    private static let name = "WooCommerce"
 
     /// Persistent Container: Holds the full CoreData Stack
     ///
-    public lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
-        container.persistentStoreDescriptions = [storeDescription]
+    public let persistentContainer: NSPersistentContainer
+
+    /// Returns a shared derived storage instance dedicated for write operations in the background.
+    ///
+    public let writerDerivedStorage: StorageType
+
+    public init() {
+        let container = NSPersistentContainer(name: Self.name, managedObjectModel: Self.managedModel)
+        container.persistentStoreDescriptions = [Self.storeDescription]
 
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
@@ -40,17 +29,29 @@ open class MockStorageManager: StorageManagerType {
             }
         }
 
-        return container
-    }()
+        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        childManagedObjectContext.parent = container.viewContext
+        childManagedObjectContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        self.persistentContainer = container
+        self.writerDerivedStorage = childManagedObjectContext
+    }
+
+    /// Returns the Storage associated with the View Thread.
+    ///
+    public var viewStorage: StorageType {
+        return persistentContainer.viewContext
+    }
 
     /// Persists the Derived Storage's Changes.
     ///
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
+        let viewStorage = self.viewStorage
         derivedStorage.perform {
-            derivedStorage.saveIfNeeded()
+            Self.saveChanges(in: derivedStorage)
 
-            self.viewStorage.perform {
-                self.viewStorage.saveIfNeeded()
+            viewStorage.perform {
+                Self.saveChanges(in: viewStorage)
                 closure()
             }
         }
@@ -60,7 +61,6 @@ open class MockStorageManager: StorageManagerType {
     ///
     public func reset(onCompletion: (@Sendable () -> Void)?) {
         let storeCoordinator = persistentContainer.persistentStoreCoordinator
-        let storeDescriptor = self.storeDescription
         let viewContext = persistentContainer.viewContext
 
         viewContext.performAndWait {
@@ -73,7 +73,7 @@ open class MockStorageManager: StorageManagerType {
                 fatalError("☠️ [CoreDataManager] Cannot Destroy persistentStore! \(error)")
             }
 
-            storeCoordinator.addPersistentStore(with: storeDescriptor) { _, error in
+            storeCoordinator.addPersistentStore(with: Self.storeDescription) { _, error in
                 guard let error else {
                     onCompletion?()
                     return
@@ -96,7 +96,7 @@ open class MockStorageManager: StorageManagerType {
         let context = persistentContainer.viewContext
         context.performAndWait {
             operation(context)
-            context.saveIfNeeded()
+            Self.saveChanges(in: context)
             queue.async {
                 completion?()
             }
@@ -113,7 +113,7 @@ open class MockStorageManager: StorageManagerType {
         context.performAndWait {
             let result = Result(catching: { try operation(context) })
             if case .success = result {
-                context.saveIfNeeded()
+                Self.saveChanges(in: context)
             }
             queue.async {
                 completion(result)
@@ -129,7 +129,7 @@ extension MockStorageManager {
 
     /// Returns the Application's ManagedObjectModel
     ///
-    var managedModel: NSManagedObjectModel {
+    static var managedModel: NSManagedObjectModel {
         guard let mom = NSManagedObjectModel(contentsOf: modelURL) else {
             fatalError("Could not load model")
         }
@@ -139,7 +139,7 @@ extension MockStorageManager {
 
     /// Returns the PersistentStore Descriptor
     ///
-    var storeDescription: NSPersistentStoreDescription {
+    static var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription()
         description.type = NSSQLiteStoreType
         description.url = URL(fileURLWithPath: "/dev/null")
@@ -154,13 +154,24 @@ extension MockStorageManager {
 
     /// Returns the ManagedObjectModel's URL: Pick this up from the Storage bundle. OKAY?
     ///
-    var modelURL: URL {
+    static var modelURL: URL {
         let bundle = Bundle.storage
         guard let url = bundle.url(forResource: name, withExtension: "momd") else {
             fatalError("Missing Model Resource")
         }
 
         return url
+    }
+}
+
+private extension MockStorageManager {
+    /// Saves the given storage's pending changes. Internal counterpart of the deprecated `saveIfNeeded()` below.
+    ///
+    static func saveChanges(in storage: StorageType) {
+        let context = storage as! NSManagedObjectContext
+        if context.hasChanges {
+            try? context.save()
+        }
     }
 }
 

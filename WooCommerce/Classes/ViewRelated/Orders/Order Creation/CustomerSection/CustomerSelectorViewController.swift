@@ -338,8 +338,17 @@ private extension CustomerSelectorViewController {
     }
 
     func errorStateConfiguration() -> EmptyStateViewController.Config {
-        EmptyStateViewController.Config.simple(message: .init(string: Localization.genericFetchCustomersError),
-                                               image: .errorImage)
+        EmptyStateViewController.Config.withButton(
+            message: .init(string: Localization.genericFetchCustomersError),
+            image: .errorImage,
+            details: "",
+            buttonTitle: Localization.retry
+        ) { [weak self] _ in
+            guard let self else { return }
+            removeEmptyStateViewController()
+            displayGhostContent()
+            loadCustomersContent()
+        }
     }
 
     func displayViewController(_ viewController: UIViewController) {
@@ -403,6 +412,10 @@ private extension CustomerSelectorViewController {
         static let genericFetchCustomersError = NSLocalizedString(
             "Failed to fetch the customers data. Please try again later.",
             comment: "Error message in the Add Customer to order screen when getting the customers information")
+        static let retry = NSLocalizedString(
+            "customerSelectorViewController.retry",
+            value: "Retry",
+            comment: "Button to load the customers again after they failed to load in the customer selector screen")
         static let guestSelectionDisallowedError = NSLocalizedString(
             "customerSelectorViewController.guestSelectionDisallowedError",
             value: "This user is a guest, and guests can’t be used for filtering orders.",

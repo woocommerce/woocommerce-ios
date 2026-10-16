@@ -174,13 +174,41 @@ struct CustomerListErrorViewModelTests {
 
         // When
         viewModel.retry()
+        let stateWhileReloading = viewModel.state
         viewModel.customersDidLoad()
 
         // Then
         #expect(reloadCount == 1)
+        #expect(stateWhileReloading == .checking)
         #expect(viewModel.state == .hidden)
         #expect(analyticsProvider.receivedEvents.last == "customer_list_analytics_unavailable_reload_success")
         #expect(analyticsProvider.receivedProperties.last?["type"] as? String == "retry")
+    }
+
+    @Test func retry_when_generic_error_is_shown_then_reload_success_is_not_tracked() async {
+        // Given
+        var reloadCount = 0
+        let (viewModel, stores, analyticsProvider) = makeViewModel {
+            reloadCount += 1
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .retrieveAnalyticsSetting(_, onCompletion) = action {
+                onCompletion(.success(false))
+            }
+        }
+        _ = await viewModel.customersDidFail(with: DotcomError.noRestRoute())
+        _ = await viewModel.customersDidFail(with: NSError(domain: "test", code: 2))
+
+        // When
+        viewModel.retry()
+        let stateWhileReloading = viewModel.state
+        viewModel.customersDidLoad()
+
+        // Then
+        #expect(reloadCount == 1)
+        #expect(stateWhileReloading == .checking)
+        #expect(viewModel.state == .hidden)
+        #expect(analyticsProvider.receivedEvents.contains("customer_list_analytics_unavailable_reload_success") == false)
     }
 
     @Test func retry_when_customers_reload_fails_then_clears_pending_recovery() async {
@@ -248,7 +276,6 @@ struct CustomerListErrorViewModelTests {
         // Then
         #expect(enableCount == 2)
         #expect(viewModel.state == .shown(.disabled))
-        #expect(viewModel.isBusy == false)
         #expect(viewModel.notice?.message == "WooCommerce Analytics couldn't be enabled. Please try again.")
     }
 

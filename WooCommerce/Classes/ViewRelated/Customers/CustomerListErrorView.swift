@@ -57,7 +57,6 @@ struct CustomerListErrorView: View {
                             isConfirmingAnalytics = true
                         }
                         .buttonStyle(PrimaryButtonStyle())
-                        .disabled(viewModel.isBusy)
                         .frame(maxWidth: Layout.buttonWidth)
                         .padding(.top, Layout.buttonTopSpacing)
 
@@ -65,22 +64,15 @@ struct CustomerListErrorView: View {
                             viewModel.retry()
                         }
                         .buttonStyle(SecondaryButtonStyle())
-                        .disabled(viewModel.isBusy)
                         .frame(maxWidth: Layout.buttonWidth)
                         .padding(.top, Layout.secondaryButtonSpacing)
-                    } else if message != nil {
+                    } else {
                         Button(Localization.retry) {
                             viewModel.retry()
                         }
                         .buttonStyle(PrimaryButtonStyle())
-                        .disabled(viewModel.isBusy)
                         .frame(maxWidth: Layout.buttonWidth)
                         .padding(.top, Layout.buttonTopSpacing)
-                    }
-
-                    if viewModel.isBusy {
-                        ProgressView()
-                            .padding(.top, Layout.buttonTopSpacing)
                     }
                 }
                 .multilineTextAlignment(.center)
@@ -167,6 +159,8 @@ private extension CustomerListErrorView {
     }
 }
 
+#if DEBUG
+
 #Preview("Analytics disabled") {
     CustomerListErrorView(viewModel: .preview(state: .shown(.disabled)))
 }
@@ -179,10 +173,8 @@ private extension CustomerListErrorView {
     CustomerListErrorView(viewModel: .preview(state: .shown(.unavailable)))
 }
 
-#Preview("Busy") {
-    CustomerListErrorView(viewModel: .preview(state: .shown(.disabled), isBusy: true))
-}
-
 #Preview("Generic error") {
     CustomerListErrorView(viewModel: .preview(state: .generic))
 }
+
+#endif

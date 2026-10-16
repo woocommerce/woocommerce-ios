@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -56,6 +57,113 @@ final class IssueRefundViewModelTests: XCTestCase {
         }
     }
 
+    func test_shipping_when_negative_line_is_partially_refunded_then_preserves_remaining_discount() {
+        // Given
+        let shipping = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "100", totalTax: "0", taxes: [])
+        let discount = shipping.copy(shippingID: 2, methodTitle: "Discount", total: "-20")
+        let refunded = discount.copy(shippingID: 99, total: "5", refundedItemID: .some(2))
+        let item = MockOrderItem.sampleItem(itemID: 3, quantity: 1, total: "100")
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [shipping, discount], fees: []).copy(
+            total: "180", refunds: [OrderRefundCondensed(refundID: 10, reason: "", total: "-10")])
+        let history = Refund.fake().copy(amount: "10", shippingLines: [refunded], feeLines: [])
+        let sut = IssueRefundViewModel(order: order, refunds: [history], currencySettings: CurrencySettings())
+
+        // When
+        sut.toggleRefundShipping()
+
+        // Then
+        XCTAssertEqual(sut.title, "$85.00")
+        XCTAssertTrue(sut.isNextButtonEnabled)
+        let shippingRows = sut.sections.flatMap(\.rows).compactMap { $0 as? RefundShippingDetailsViewModel }
+        XCTAssertEqual(shippingRows.map(\.carrierRate), ["Standard", "Discount"])
+    }
+
+    @MainActor
+    func test_next_when_paid_selection_rounds_to_zero_then_blocks_until_a_minor_unit_is_selected() {
+        for (scale, zero, positive) in [(0, "$0", "$1"), (2, "$0.00", "$0.01"), (3, "$0.000", "$0.001")] {
+            // Given
+            let settings = CurrencySettings()
+            settings.fractionDigits = scale
+            let unit = Decimal(sign: .plus, exponent: -scale, significand: 1)
+            let tax = "\(unit * Decimal(4) / 10)"
+            let items = [1, 2, 3].map { id in
+                MockOrderItem.sampleItem(itemID: Int64(id), quantity: 1,
+                                         taxes: [.init(taxID: 1, subtotal: "", total: tax)], total: "1", totalTax: "0")
+            }
+            let history = Refund.fake().copy(amount: "3", items: items.map { item in
+                .fake().copy(refundedItemID: .some("\(item.itemID)"), quantity: 0, taxes: [], total: "-1", totalTax: "0")
+            }, shippingLines: [], feeLines: [])
+            let order = MockOrders().makeOrder(items: items, shippingLines: [], fees: []).copy(
+                total: "\(3 + unit)", refunds: [.init(refundID: 1, reason: nil, total: "-3")])
+            let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+            stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .selectedPaymentGatewayAccount(completion) = action { completion(nil) }
+            }
+            var submitted: Refund?
+            stores.whenReceivingAction(ofType: RefundAction.self) { action in
+                if case let .createRefund(_, _, refund, _) = action { submitted = refund }
+            }
+            let sut = IssueRefundViewModel(order: order, refunds: [history], currencySettings: settings, stores: stores, storage: storageManager)
+
+            // When
+            sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+
+            // Then
+            XCTAssertEqual(sut.title, zero)
+            XCTAssertFalse(sut.isNextButtonEnabled)
+            sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 1)
+            XCTAssertEqual(sut.title, positive)
+            XCTAssertTrue(sut.isNextButtonEnabled)
+            var confirmation: RefundConfirmationViewModel?
+            sut.createRefundConfirmationViewModel { confirmation = $0 }
+            XCTAssertEqual(confirmation?.refundAmount, positive)
+            confirmation?.submit(rootViewController: UIViewController(), showInProgressUI: {}, onCompletion: { _ in })
+            XCTAssertEqual(Decimal(string: submitted?.amount ?? ""), unit)
+            XCTAssertEqual(submitted?.items.map(\.quantity), [1, 1])
+            XCTAssertEqual(submitted?.items.map(\.total), ["0", "0"])
+        }
+    }
+
+    func test_shipping_when_only_amount_rounding_is_needed_then_keeps_missing_rate_tax_display() throws {
+        // Given
+        let shipping = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "0.10", totalTax: "0.006", taxes: [])
+        let item = MockOrderItem.sampleItem(itemID: 2, quantity: 1, total: "100")
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [shipping], fees: []).copy(total: "100.11")
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings())
+
+        // When
+        sut.toggleRefundShipping()
+
+        // Then
+        XCTAssertEqual(sut.title, "$0.11")
+        let row = try XCTUnwrap(sut.sections.flatMap(\.rows).compactMap { $0 as? RefundShippingDetailsViewModel }.first)
+        XCTAssertEqual(row.shippingTax, "$0.01")
+        XCTAssertEqual(row.shippingTotal, "$0.11")
+    }
+
+    func test_selection_when_only_subcent_tax_rates_remain_then_summary_uses_zero_money_lines() {
+        // Given
+        let items = [1, 2, 3].map { id in
+            MockOrderItem.sampleItem(itemID: Int64(id), quantity: 1,
+                                     taxes: [.init(taxID: 1, subtotal: "", total: "0.004")], total: "0.08", totalTax: "0")
+        }
+        let history = Refund.fake().copy(amount: "0.24", items: items.map { item in
+            .fake().copy(refundedItemID: .some("\(item.itemID)"), quantity: 0, taxes: [], total: "-0.08", totalTax: "0")
+        }, shippingLines: [], feeLines: [])
+        let order = MockOrders().makeOrder(items: items, shippingLines: [], fees: []).copy(
+            total: "0.25", refunds: [OrderRefundCondensed(refundID: 10, reason: "", total: "-0.24")])
+        let sut = IssueRefundViewModel(order: order, refunds: [history], currencySettings: CurrencySettings())
+
+        // When
+        sut.selectAllOrderItems()
+
+        // Then
+        XCTAssertEqual(sut.title, "$0.01")
+        XCTAssertTrue(sut.isNextButtonEnabled)
+        let summary = sut.sections.flatMap(\.rows).compactMap { $0 as? RefundProductsTotalViewModel }.first
+        XCTAssertEqual(summary?.productsTotal, "$0.00")
+    }
+
     func test_sections_when_fee_already_refunded_then_custom_amount_is_not_offered() {
         // Given
         let fee = OrderFeeLine.fake().copy(feeID: 1, total: "2", totalTax: "0.10", taxes: [])
@@ -68,6 +176,73 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isNextButtonEnabled)
     }
 
+
+    func test_fetch_when_only_negative_shipping_remains_then_clears_hidden_shipping_selection() throws {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 3, quantity: 3, total: "30")
+        let shipping = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "10", totalTax: "0", taxes: [])
+        let discount = shipping.copy(shippingID: 2, methodTitle: "Discount", total: "-3")
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [shipping, discount], fees: []).copy(
+            total: "37", refunds: [.init(refundID: 1, reason: nil, total: "-9")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var complete: ((Refund?, Error?) -> Void)?
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, _, completion) = action { complete = completion }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+        sut.toggleRefundShipping()
+        sut.fetch()
+        let history = Refund.fake().copy(items: [], shippingLines: [
+            shipping.copy(shippingID: 98, total: "-10", refundedItemID: .some(1)),
+            discount.copy(shippingID: 99, total: "1", refundedItemID: .some(2))
+        ], feeLines: [])
+
+        // When
+        try XCTUnwrap(complete)(history, nil)
+
+        // Then
+        XCTAssertFalse(sut.sections.flatMap(\.rows).contains { $0 is IssueRefundViewModel.ShippingSwitchViewModel })
+        XCTAssertEqual(sut.title, "$10.00")
+        XCTAssertTrue(sut.isNextButtonEnabled)
+    }
+
+    func test_fetch_when_history_completes_then_publishes_one_consistent_state() throws {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 3, total: "30")
+        let shipping = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "5", totalTax: "0", taxes: [])
+        let fee = OrderFeeLine.fake().copy(feeID: 2, total: "2", totalTax: "0", taxes: [])
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [shipping], fees: [fee]).copy(
+            total: "37", refunds: [.init(refundID: 1, reason: nil, total: "-27")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var complete: ((Refund?, Error?) -> Void)?
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, _, completion) = action { complete = completion }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        sut.selectAllOrderItems()
+        sut.toggleRefundShipping()
+        sut.toggleRefundCustomAmounts()
+        sut.fetch()
+        var updates = 0
+        sut.onChange = { updates += 1 }
+        let refund = Refund.fake().copy(items: [.init(itemID: 99, refundedItemID: "1", quantity: -2, taxes: [], total: "-20")],
+                                       shippingLines: [shipping.copy(shippingID: 99, total: "-5", refundedItemID: .some(1))],
+                                       feeLines: [fee.copy(feeID: 99, total: "-2", refundedItemID: .some(2))])
+
+        // When
+        try XCTUnwrap(complete)(refund, nil)
+
+        // Then
+        XCTAssertEqual(updates, 1)
+        XCTAssertEqual(sut.currentQuantityForItemAtIndex(0), 1)
+        XCTAssertEqual(sut.quantityAvailableForRefundForItemAtIndex(0), 1)
+        XCTAssertEqual(sut.title, "$10.00")
+        XCTAssertTrue(sut.isNextButtonEnabled)
+        XCTAssertFalse(sut.isNextButtonAnimating)
+        XCTAssertFalse(sut.sections.flatMap(\.rows).contains { $0 is IssueRefundViewModel.ShippingSwitchViewModel })
+        XCTAssertFalse(sut.sections.flatMap(\.rows).contains { $0 is IssueRefundViewModel.CustomAmountsSwitchViewModel })
+    }
 
     func test_fetch_when_history_is_loading_or_failed_then_blocks_next_and_can_retry() throws {
         // Given

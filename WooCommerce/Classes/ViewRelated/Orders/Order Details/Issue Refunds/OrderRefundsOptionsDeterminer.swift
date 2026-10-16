@@ -62,12 +62,8 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
         return order.items.compactMap { item -> RefundableOrderItem? in
 
             // Calculate how many times an item has been refunded. This number is negative.
-            let timesRefunded = allRefundedItems.reduce(0) { timesRefunded, refundedItem -> Decimal in
-                guard refundedItemMatches(refundedItem, item: item) else {
-                    return timesRefunded
-                }
-                return timesRefunded + refundedItem.quantity
-            }
+            let history = allRefundedItems.filter { refundedItemMatches($0, item: item) }
+            let timesRefunded = history.reduce(Decimal.zero) { $0 + $1.quantity }
 
             // If there is no more items to refund, evict it from the resulting array
             let quantityLeftToRefund = item.quantity + timesRefunded
@@ -77,7 +73,7 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
 
             // Return the item with the updated quantity to refund
             var refundable = RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
-            refundable.refundedItems = allRefundedItems.filter { refundedItemMatches($0, item: item) }
+            refundable.refundedItems = history
             return refundable
         }
     }
@@ -120,7 +116,7 @@ extension OrderRefundsOptionsDeterminer {
             guard history.isNotEmpty else { return line }
             let total = remaining(line.total, refunds: history.map(\.total))
             let totalTax = remaining(line.totalTax, refunds: history.map(\.totalTax))
-            guard total + totalTax > 0 else { return nil }
+            guard total + totalTax != 0 else { return nil }
             return line.copy(total: "\(total)", totalTax: "\(totalTax)", taxes: line.taxes.map { tax in
                 let refundedTaxes = history.flatMap(\.taxes).filter { $0.taxID == tax.taxID }.map(\.total)
                 return ShippingLineTax(taxID: tax.taxID, subtotal: tax.subtotal, total: "\(remaining(tax.total, refunds: refundedTaxes))")

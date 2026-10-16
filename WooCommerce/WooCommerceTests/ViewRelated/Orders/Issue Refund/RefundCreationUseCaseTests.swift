@@ -325,6 +325,27 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items.first?.total, "0.884956")
         XCTAssertEqual(refund.items.first?.taxes.first?.total, "0.115044")
     }
+    func test_create_refund_when_line_gross_rounds_to_zero_then_preserves_quantity_without_money() {
+        // Given
+        let items = [1, 2, 3].map { id in
+            var item = RefundableOrderItem(item: MockOrderItem.sampleItem(itemID: Int64(id), quantity: 1,
+                taxes: [.init(taxID: 1, subtotal: "", total: "0.004")], total: "0.08", totalTax: "0"), quantity: 1)
+            item.refundedItems = [.fake().copy(quantity: 0, taxes: [], total: "-0.08", totalTax: "0")]
+            return item
+        }
+
+        // When
+        let refund = RefundCreationUseCase(amount: "0.01", reason: nil, automaticallyRefundsPayment: false,
+                                           items: items, shippingLines: [], fees: [], currencyFormatter: formatter,
+                                           numberOfDecimals: currencySettings.fractionDigits).createRefund()
+
+        // Then
+        XCTAssertEqual(refund.items.map(\.total), ["0", "0", "0"])
+        XCTAssertEqual(refund.items.map { $0.taxes.first?.total }, ["0", "0", "0"])
+        XCTAssertEqual(refund.items.map(\.quantity), [1, 1, 1])
+        XCTAssertEqual(refund.amount, "0.01")
+    }
+
     func test_create_refund_when_subtotal_tax_rounding_preserves_fractional_taxes_then_full_refund_keeps_them() {
         // Given
         let items = [1, 2].map { id in

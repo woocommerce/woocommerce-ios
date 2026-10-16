@@ -66,7 +66,8 @@ struct RefundCreationUseCase {
             refundItems += createFeeItems(from: fees)
         }
 
-        return capped(refundItems).compactMap { line in
+        return Self.capped(refundItems, to: currencyFormatter.convertToDecimal(amount) as Decimal?,
+                           currencyFormatter: currencyFormatter, numberOfDecimals: numberOfDecimals).compactMap { line in
             let gross = (Decimal(string: line.total) ?? .zero) + line.taxes.reduce(.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
             guard Self.round(gross, scale: numberOfDecimals) == 0 else { return line }
             guard line.quantity > 0 else { return nil }
@@ -140,9 +141,8 @@ struct RefundCreationUseCase {
         let refundedGross = history.reduce(Decimal.zero) { $0 + (currencyFormatter.convertToDecimal($1.total) as Decimal? ?? .zero)
             + (currencyFormatter.convertToDecimal($1.totalTax) as Decimal? ?? .zero) }
         let remainingGross = max(round((originalGross + refundedGross) * sign, scale: numberOfDecimals), .zero)
-        let builder = Self(amount: "\(remainingGross)", reason: nil, automaticallyRefundsPayment: false, items: [], shippingLines: [],
-                           fees: [], currencyFormatter: currencyFormatter, numberOfDecimals: numberOfDecimals)
-        let allocated = builder.capped([line]).first ?? line
+        let allocated = Self.capped([line], to: remainingGross, currencyFormatter: currencyFormatter,
+                                    numberOfDecimals: numberOfDecimals).first ?? line
         guard sign < 0 else { return allocated }
         return allocated.copy(taxes: allocated.taxes.map {
             .init(taxID: $0.taxID, subtotal: "", total: "\(-(currencyFormatter.convertToDecimal($0.total) as Decimal? ?? .zero))")
@@ -151,12 +151,13 @@ struct RefundCreationUseCase {
 
     /// Scale every component together when an amount-only refund reduced the order balance.
     /// Round toward zero first, then distribute the remaining minor units without exceeding a component.
-    private func capped(_ lines: [OrderItemRefund]) -> [OrderItemRefund] {
+    private static func capped(_ lines: [OrderItemRefund], to requested: Decimal?,
+                               currencyFormatter: CurrencyFormatter, numberOfDecimals: Int) -> [OrderItemRefund] {
         let originals = lines.flatMap { [$0.total] + $0.taxes.map(\.total) }.map {
             currencyFormatter.convertToDecimal($0) as Decimal? ?? .zero
         }
         let total = originals.reduce(.zero, +)
-        guard let requested = currencyFormatter.convertToDecimal(amount) as Decimal?,
+        guard let requested,
               Self.round(total, scale: numberOfDecimals) > Self.round(requested, scale: numberOfDecimals), total > 0 else {
             return lines
         }

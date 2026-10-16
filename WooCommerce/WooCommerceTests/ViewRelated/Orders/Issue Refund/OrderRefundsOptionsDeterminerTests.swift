@@ -220,19 +220,22 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
     }
 
     func test_remaining_shipping_when_partially_refunded_then_uses_original_id_and_remaining_rates() throws {
-        // Given
-        let line = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "5", totalTax: "0.25",
-                                taxes: [.init(taxID: 3, subtotal: "", total: "0.25")])
-        let refunded = line.copy(shippingID: 99, total: "-2", totalTax: "-0.10",
-                                 taxes: [.init(taxID: 3, subtotal: "", total: "-0.10")], refundedItemID: .some(1))
-        let order = Order.fake().copy(shippingLines: [line])
-        // When
-        let remaining = try XCTUnwrap(OrderRefundsOptionsDeterminer.remainingShipping(in: order,
-                                                      refunds: [Refund.fake().copy(shippingLines: [refunded])])?.first)
-        // Then
-        XCTAssertEqual(remaining.shippingID, 1)
-        XCTAssertEqual(remaining.total, "3")
-        XCTAssertEqual(remaining.totalTax, "0.15")
-        XCTAssertEqual(remaining.taxes.first?.total, "0.15")
+        for sign in ["", "-"] {
+            // Given
+            let line = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: sign + "5", totalTax: sign + "0.25",
+                                    taxes: [.init(taxID: 3, subtotal: "", total: sign + "0.25")])
+            let refundSign = sign.isEmpty ? "-" : ""
+            let refunded = line.copy(shippingID: 99, total: refundSign + "2", totalTax: refundSign + "0.10",
+                                     taxes: [.init(taxID: 3, subtotal: "", total: refundSign + "0.10")], refundedItemID: .some(1))
+            let order = Order.fake().copy(shippingLines: [line])
+            // When
+            let remaining = try XCTUnwrap(OrderRefundsOptionsDeterminer.remainingShipping(in: order,
+                                                          refunds: [Refund.fake().copy(shippingLines: [refunded])])?.first)
+            // Then
+            XCTAssertEqual(remaining.shippingID, 1)
+            XCTAssertEqual(remaining.total, sign + "3")
+            XCTAssertEqual(remaining.totalTax, sign + "0.15")
+            XCTAssertEqual(remaining.taxes.first?.total, sign + "0.15")
+        }
     }
 }

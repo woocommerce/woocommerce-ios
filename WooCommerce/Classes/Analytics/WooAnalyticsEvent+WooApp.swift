@@ -3361,6 +3361,9 @@ extension WooAnalyticsEvent {
             static let searchFilter = "filter"
             static let registered = "registered"
             static let hasEmail = "has_email_address"
+            static let source = "source"
+            static let cause = "cause"
+            static let type = "type"
         }
 
         /// Possible actions to take in customer details
@@ -3392,6 +3395,16 @@ extension WooAnalyticsEvent {
 
         static func customerListSearched(withFilter filter: CustomerSearchFilter) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .customersHubSearch, properties: [Keys.searchFilter: filter.rawValue])
+        }
+
+        static func customerListAnalyticsUnavailableErrorShown(source: String, cause: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customerListAnalyticsUnavailableErrorShown,
+                              properties: [Keys.source: source, Keys.cause: cause])
+        }
+
+        static func customerListAnalyticsUnavailableReloadSuccess(source: String, type: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customerListAnalyticsUnavailableReloadSuccess,
+                              properties: [Keys.source: source, Keys.type: type])
         }
 
         static func customerDetailOpened(registered: Bool, hasEmail: Bool) -> WooAnalyticsEvent {

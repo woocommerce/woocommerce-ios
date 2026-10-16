@@ -3,6 +3,7 @@
 
 26.0
 -----
+- [*] Customers: Customer lists now explain when WooCommerce Analytics is off and let you turn it on or retry. [https://github.com/woocommerce/woocommerce-ios/pull/18102]
 
 
 25.9

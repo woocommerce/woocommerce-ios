@@ -144,4 +144,118 @@ final class CustomerSearchUICommandTests: XCTestCase {
         // Then
         XCTAssertEqual(invocationCount, 1)
     }
+
+    func test_synchronizeModels_when_search_fails_then_reports_error_and_completes_with_false() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let command = CustomerSearchUICommand(siteID: sampleSiteID, stores: stores) { _ in }
+        let error = NSError(domain: "customer-search", code: 1)
+        var receivedError: Error?
+        var didComplete = false
+        var completionValue: Bool?
+        command.onDidSyncCustomers = { result in
+            if case let .failure(error) = result {
+                receivedError = error
+            }
+        }
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .searchCustomers(_, _, _, _, _, _, _, _, onCompletion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            onCompletion(.failure(error))
+        }
+
+        // When
+        command.synchronizeModels(siteID: sampleSiteID, keyword: "Pat", pageNumber: 1, pageSize: 10) { hasNextPage in
+            didComplete = true
+            completionValue = hasNextPage
+        }
+
+        // Then
+        XCTAssertTrue(didComplete)
+        XCTAssertEqual(completionValue, false)
+        XCTAssertEqual((receivedError as NSError?)?.code, error.code)
+    }
+
+    func test_synchronizeModels_when_light_list_sync_fails_then_reports_error_and_completes_with_false() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let command = CustomerSearchUICommand(siteID: sampleSiteID,
+                                              loadResultsWhenSearchTermIsEmpty: true,
+                                              stores: stores) { _ in }
+        let error = NSError(domain: "customer-list", code: 2)
+        var receivedError: Error?
+        var didComplete = false
+        var completionValue: Bool?
+        command.onDidSyncCustomers = { result in
+            if case let .failure(error) = result {
+                receivedError = error
+            }
+        }
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .synchronizeLightCustomersData(_, _, _, _, _, _, onCompletion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            onCompletion(.failure(error))
+        }
+
+        // When
+        command.synchronizeModels(siteID: sampleSiteID, keyword: "", pageNumber: 1, pageSize: 10) { hasNextPage in
+            didComplete = true
+            completionValue = hasNextPage
+        }
+
+        // Then
+        XCTAssertTrue(didComplete)
+        XCTAssertEqual(completionValue, false)
+        XCTAssertEqual((receivedError as NSError?)?.code, error.code)
+    }
+
+    func test_synchronizeModels_when_search_succeeds_then_reports_success() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let command = CustomerSearchUICommand(siteID: sampleSiteID, stores: stores) { _ in }
+        var didReportSuccess = false
+        command.onDidSyncCustomers = { result in
+            if case .success = result {
+                didReportSuccess = true
+            }
+        }
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .searchCustomers(_, _, _, _, _, _, _, _, onCompletion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            onCompletion(.success(false))
+        }
+
+        // When
+        command.synchronizeModels(siteID: sampleSiteID, keyword: "Pat", pageNumber: 1, pageSize: 10, onCompletion: nil)
+
+        // Then
+        XCTAssertTrue(didReportSuccess)
+    }
+
+    func test_synchronizeModels_when_search_only_query_is_cleared_then_reports_success() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let command = CustomerSearchUICommand(siteID: sampleSiteID, stores: stores) { _ in }
+        var didReportSuccess = false
+        command.onDidSyncCustomers = { result in
+            if case .success = result {
+                didReportSuccess = true
+            }
+        }
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .deleteAllCustomers(_, onCompletion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            onCompletion()
+        }
+
+        // When
+        command.synchronizeModels(siteID: sampleSiteID, keyword: "", pageNumber: 1, pageSize: 10, onCompletion: nil)
+
+        // Then
+        XCTAssertTrue(didReportSuccess)
+    }
 }

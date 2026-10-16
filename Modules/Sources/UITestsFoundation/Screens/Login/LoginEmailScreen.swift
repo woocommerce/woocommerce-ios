@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class LoginEmailScreen: ScreenObject {
 
     private let emailButtonGetter: (XCUIApplication) -> XCUIElement = {

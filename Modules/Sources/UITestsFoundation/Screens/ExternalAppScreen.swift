@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 public final class ExternalAppScreen {
 
     public init() {}

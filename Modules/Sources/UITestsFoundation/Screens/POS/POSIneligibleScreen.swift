@@ -2,6 +2,7 @@ import ScreenObject
 import XCTest
 
 // periphery: ignore - used for UI testing
+@MainActor
 public final class POSIneligibleScreen: ScreenObject {
     private let ineligibleViewGetter: (XCUIApplication) -> XCUIElement = {
         $0.descendants(matching: .any)["pos-ineligible-view"]

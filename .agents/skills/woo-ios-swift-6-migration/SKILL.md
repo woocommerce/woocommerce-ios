@@ -39,7 +39,7 @@ For a single package target, `swift build` compiles only that target and its dep
 PLATFORM=$(xcrun --sdk iphonesimulator --show-sdk-platform-path)
 swift build --package-path Modules --target UITestsFoundation \
   --scratch-path /tmp/<task>-spm --sdk "$(xcrun --sdk iphonesimulator --show-sdk-path)" \
-  --triple arm64-apple-ios17.0-simulator -Xswiftc -F -Xswiftc "$PLATFORM/Developer/Library/Frameworks" \
+  --triple arm64-apple-ios18.0-simulator -Xswiftc -F -Xswiftc "$PLATFORM/Developer/Library/Frameworks" \
   -Xswiftc -strict-concurrency=complete
 ```
 

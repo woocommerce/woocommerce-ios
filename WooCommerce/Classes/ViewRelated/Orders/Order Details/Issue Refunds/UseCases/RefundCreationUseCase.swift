@@ -117,12 +117,15 @@ struct RefundCreationUseCase {
                             numberOfDecimals: Int) -> OrderItemRefund {
         let item = refundable.item
         let history = refundable.refundedItems
+        let originalGross = (currencyFormatter.convertToDecimal(item.total) as Decimal? ?? .zero)
+            + (currencyFormatter.convertToDecimal(item.totalTax) as Decimal? ?? .zero)
+        let sign: Decimal = originalGross < 0 ? -1 : 1
         let remainingQuantity = item.quantity + history.reduce(Decimal.zero) { $0 + $1.quantity }
         let isLastQuantity = refundable.decimalQuantity >= remainingQuantity
         func allocation(original: String, refunded: [String]) -> String {
-            let originalAmount = currencyFormatter.convertToDecimal(original) as Decimal? ?? .zero
+            let originalAmount = (currencyFormatter.convertToDecimal(original) as Decimal? ?? .zero) * sign
             let remaining = max(originalAmount + refunded.reduce(Decimal.zero) {
-                $0 + (currencyFormatter.convertToDecimal($1) as Decimal? ?? .zero)
+                $0 + (currencyFormatter.convertToDecimal($1) as Decimal? ?? .zero) * sign
             }, .zero)
             let proportional = item.quantity > 0 ? originalAmount / item.quantity * refundable.decimalQuantity : .zero
             return "\(isLastQuantity ? remaining : min(round(proportional, scale: numberOfDecimals), remaining))"
@@ -134,14 +137,16 @@ struct RefundCreationUseCase {
                                                         .filter { $0.taxID == tax.taxID }.map(\.total)))
                                },
                                total: allocation(original: item.total, refunded: history.map(\.total)))
-        let originalGross = (currencyFormatter.convertToDecimal(item.total) as Decimal? ?? .zero)
-            + (currencyFormatter.convertToDecimal(item.totalTax) as Decimal? ?? .zero)
         let refundedGross = history.reduce(Decimal.zero) { $0 + (currencyFormatter.convertToDecimal($1.total) as Decimal? ?? .zero)
             + (currencyFormatter.convertToDecimal($1.totalTax) as Decimal? ?? .zero) }
-        let remainingGross = max(round(originalGross + refundedGross, scale: numberOfDecimals), .zero)
+        let remainingGross = max(round((originalGross + refundedGross) * sign, scale: numberOfDecimals), .zero)
         let builder = Self(amount: "\(remainingGross)", reason: nil, automaticallyRefundsPayment: false, items: [], shippingLines: [],
                            fees: [], currencyFormatter: currencyFormatter, numberOfDecimals: numberOfDecimals)
-        return builder.capped([line]).first ?? line
+        let allocated = builder.capped([line]).first ?? line
+        guard sign < 0 else { return allocated }
+        return allocated.copy(taxes: allocated.taxes.map {
+            .init(taxID: $0.taxID, subtotal: "", total: "\(-(currencyFormatter.convertToDecimal($0.total) as Decimal? ?? .zero))")
+        }, total: "\(-(currencyFormatter.convertToDecimal(allocated.total) as Decimal? ?? .zero))")
     }
 
     /// Scale every component together when an amount-only refund reduced the order balance.

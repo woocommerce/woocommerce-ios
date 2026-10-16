@@ -404,4 +404,79 @@ final class RefundCreationUseCaseTests: XCTestCase {
             XCTAssertEqual(refund.items.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }, Decimal(string: amount))
         }
     }
+
+    func test_create_refund_when_selection_contains_negative_product_then_preserves_signed_lines() {
+        // Given
+        let paid = MockOrderItem.sampleItem(itemID: 1, quantity: 1, total: "100")
+        let discount = MockOrderItem.sampleItem(itemID: 2, quantity: 1, total: "-20")
+
+        // When
+        let refund = RefundCreationUseCase(amount: "80", reason: nil, automaticallyRefundsPayment: false,
+                                           items: [.init(item: paid, quantity: 1), .init(item: discount, quantity: 1)],
+                                           shippingLines: [], fees: [], currencyFormatter: formatter, numberOfDecimals: 2).createRefund()
+
+        // Then
+        XCTAssertEqual(refund.items.map(\.total), ["100", "-20"])
+        XCTAssertEqual(refund.items.map(\.quantity), [1, 1])
+    }
+
+    func test_create_refund_when_negative_product_is_partially_selected_then_preserves_net_and_tax_signs() {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 3,
+                                           taxes: [.init(taxID: 1, subtotal: "-0.50", total: "-0.50")], total: "-9.99", totalTax: "-0.50")
+
+        // When
+        let line = RefundCreationUseCase.productLine(for: .init(item: item, quantity: 1), currencyFormatter: formatter, numberOfDecimals: 2)
+
+        // Then
+        XCTAssertEqual(line.total, "-3.33")
+        XCTAssertEqual(line.taxes.first?.total, "-0.17")
+    }
+
+    func test_create_refund_when_last_negative_taxed_unit_remains_then_uses_signed_saved_balances() {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 3,
+                                           taxes: [.init(taxID: 1, subtotal: "-0.50", total: "-0.50")], total: "-9.99", totalTax: "-0.50")
+        let history = MockRefunds.sampleRefundItem(itemID: 99, refundedItemID: "1", quantity: -2,
+                                                   taxes: [.init(taxID: 1, subtotal: "0.34", total: "0.34")], total: "6.66", totalTax: "0.34")
+        let refundable = RefundableOrderItem(item: item, quantity: 1, refundedItems: [history])
+
+        // When
+        let line = RefundCreationUseCase.productLine(for: refundable, currencyFormatter: formatter, numberOfDecimals: 2)
+
+        // Then
+        XCTAssertEqual(line.total, "-3.33")
+        XCTAssertEqual(line.taxes.first?.total, "-0.16")
+    }
+
+    func test_create_refund_when_mixed_sign_products_are_capped_then_preserves_signs_at_store_precision() {
+        for (scale, expected) in [(0, ["62", "-12"]), (2, ["62.5", "-12.5"]), (3, ["62.5", "-12.5"])] {
+            // Given
+            let paid = MockOrderItem.sampleItem(itemID: 1, quantity: 1, total: "100")
+            let discount = MockOrderItem.sampleItem(itemID: 2, quantity: 1, total: "-20")
+
+            // When
+            let refund = RefundCreationUseCase(amount: "50", reason: nil, automaticallyRefundsPayment: false,
+                                               items: [.init(item: paid, quantity: 1), .init(item: discount, quantity: 1)],
+                                               shippingLines: [], fees: [], currencyFormatter: formatter, numberOfDecimals: scale).createRefund()
+
+            // Then
+            XCTAssertEqual(refund.items.map(\.total), expected)
+            XCTAssertEqual(refund.items.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }, 50)
+        }
+    }
+
+    func test_create_refund_when_negative_product_has_fractional_precision_then_cap_keeps_its_balance() {
+        // Given
+        let paid = MockOrderItem.sampleItem(itemID: 1, quantity: 1, total: "100")
+        let discount = MockOrderItem.sampleItem(itemID: 2, quantity: 1, total: "-1.001")
+
+        // When
+        let refund = RefundCreationUseCase(amount: "98.99", reason: nil, automaticallyRefundsPayment: false,
+                                           items: [.init(item: paid, quantity: 1), .init(item: discount, quantity: 1)],
+                                           shippingLines: [], fees: [], currencyFormatter: formatter, numberOfDecimals: 2).createRefund()
+
+        // Then
+        XCTAssertEqual(refund.items.map(\.total), ["99.99", "-1"])
+    }
 }

@@ -193,6 +193,25 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(sut.title, "$80.00")
     }
 
+    func test_selection_when_product_has_negative_price_then_refund_amount_includes_discount() {
+        // Given
+        let paid = MockOrderItem.sampleItem(itemID: 1, quantity: 1, total: "100")
+        let discount = MockOrderItem.sampleItem(itemID: 2, quantity: 1, total: "-20")
+        let other = MockOrderItem.sampleItem(itemID: 3, quantity: 1, total: "100")
+        let order = MockOrders().makeOrder(items: [paid, discount, other], shippingLines: [], fees: []).copy(total: "180")
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings())
+
+        // When
+        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 1)
+
+        // Then
+        XCTAssertEqual(sut.title, "$80.00")
+        XCTAssertTrue(sut.isNextButtonEnabled)
+        let summary = sut.sections.flatMap(\.rows).compactMap { $0 as? RefundProductsTotalViewModel }.first
+        XCTAssertEqual(summary?.productsTotal, "$80.00")
+    }
+
     func test_next_when_only_free_product_is_selected_then_allows_quantity_refund() {
         // Given
         let item = MockOrderItem.sampleItem(itemID: 1, quantity: 1, total: "0")

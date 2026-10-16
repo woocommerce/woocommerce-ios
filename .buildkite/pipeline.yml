@@ -217,14 +217,13 @@ steps:
   # No `github_commit_status` here: it would post "pending" while the step waits for the input,
   # and leave that check pending on every build where nobody asks for a prototype.
   - group: ":rocket: Prototype Build"
+    if: build.pull_request.id != null || build.branch == "trunk"
     depends_on: ~
     steps:
       - input: Create Prototype Build?
         prompt: Share a Prototype Build via Firebase App Distribution?
         key: prototype_build_triggered
-        if: build.pull_request.id != null || build.branch == "trunk"
       - label: ":firebase: Prototype Build"
         depends_on: prototype_build_triggered
-        if: build.pull_request.id != null || build.branch == "trunk"
         command: .buildkite/commands/prototype-build.sh
         plugins: [$CI_TOOLKIT]

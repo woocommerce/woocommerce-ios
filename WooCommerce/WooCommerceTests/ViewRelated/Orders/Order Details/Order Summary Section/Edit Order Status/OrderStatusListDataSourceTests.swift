@@ -10,11 +10,11 @@ import YosemiteTestHelpers
 
 class OrderStatusListDataSourceTests: XCTestCase {
 
-    private var storageManager: MockOrderStatusesStoresManager!
+    private var storageManager: MockStorageManager!
 
     override func setUp() {
         super.setUp()
-        storageManager = MockOrderStatusesStoresManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {
@@ -27,12 +27,17 @@ class OrderStatusListDataSourceTests: XCTestCase {
         let expectedStatusesOrder: [OrderStatusEnum] = [.pending, .processing, .onHold, .completed, .cancelled, .failed, .custom("aCustomStatus")]
         // refunded status is not shown
         let storedStatuses: [OrderStatusEnum] = [.cancelled, .completed, .failed, .onHold, .pending, .processing, .refunded, .custom("aCustomStatus")]
-        storedStatuses.forEach { status in
-            storageManager.insertOrderStatus(name: status.rawValue)
-        }
-        storageManager.viewStorage.saveIfNeeded()
+        let siteID: Int64 = 1
+        storageManager.performAndSave({ storage in
+            for status in storedStatuses {
+                let orderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+                orderStatus.name = status.rawValue
+                orderStatus.slug = status.rawValue
+                orderStatus.siteID = siteID
+            }
+        }, completion: nil, on: .main)
 
-        let orderStatusListDataSource = OrderStatusListDataSource(siteID: MockOrderStatusesStoresManager.siteID, storageManager: storageManager)
+        let orderStatusListDataSource = OrderStatusListDataSource(siteID: siteID, storageManager: storageManager)
 
         // When
         try orderStatusListDataSource.performFetch()
@@ -41,22 +46,5 @@ class OrderStatusListDataSourceTests: XCTestCase {
         // Then
         let actualStatusesOrder = statuses.map({ $0.status })
         XCTAssertEqual(actualStatusesOrder, expectedStatusesOrder)
-    }
-}
-
-/// Mock Order Statuses Store Manager
-///
-private final class MockOrderStatusesStoresManager: MockStorageManager {
-    fileprivate static let siteID: Int64 = 1
-
-    /// Inserts an order status
-    ///
-    @discardableResult
-    func insertOrderStatus(name: String) -> StorageOrderStatus {
-        let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
-        orderStatus.name = name
-        orderStatus.slug = name
-        orderStatus.siteID = MockOrderStatusesStoresManager.siteID
-        return orderStatus
     }
 }

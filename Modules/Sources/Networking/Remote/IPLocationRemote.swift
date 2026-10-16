@@ -2,7 +2,7 @@ import Foundation
 
 /// Remote type to fetch the user's IP Location using the public `geo` API.
 ///
-public final class IPLocationRemote: Remote {
+public final class IPLocationRemote: Remote, @unchecked Sendable {
 
     /// Fetches the country code from the device ip.
     ///

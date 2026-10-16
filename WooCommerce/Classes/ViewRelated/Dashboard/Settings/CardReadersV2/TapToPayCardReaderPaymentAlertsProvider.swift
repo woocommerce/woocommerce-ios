@@ -9,12 +9,12 @@ final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlerts
     var name: String = ""
     var amount: String = ""
 
-    func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func validatingOrder(onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalPreparingForPayment(bottomTitle: Localization.validatingOrderBottomTitle,
                                             cancelAction: onCancel)
     }
 
-    func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func preparingReader(onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalPreparingForPayment(bottomTitle: Localization.preparingReaderBottomTitle,
                                             cancelAction: onCancel)
     }
@@ -22,7 +22,7 @@ final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlerts
     func tapOrInsertCard(title: String,
                          amount: String,
                          inputMethods: Yosemite.CardReaderInput,
-                         onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                         onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         name = title
         self.amount = amount
         return CardPresentModalTapToPayFollowReaderInstructions(name: name,
@@ -33,7 +33,7 @@ final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlerts
 
     func cardInserted(title: String,
                       amount: String,
-                      onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                      onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         name = title
         self.amount = amount
         return CardPresentModalCardInserted(name: name,
@@ -69,8 +69,8 @@ final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlerts
 
     func error(error: Error,
                receiptState: CardReaderTransactionFailureAlertReceiptState,
-               tryAgain: @escaping () -> Void,
-               dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+               tryAgain: @escaping @MainActor @Sendable () -> Void,
+               dismissCompletion: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         switch receiptState {
         case let .paymentSuccessEmailSent(email):
             return CardPresentModalErrorEmailSent(errorDescription: tapToPayReaderDescription(for: error),
@@ -100,7 +100,7 @@ final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlerts
 
     func nonRetryableError(error: Error,
                            receiptState: CardReaderTransactionFailureAlertReceiptState,
-                           dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                           dismissCompletion: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         switch receiptState {
         case let .paymentSuccessEmailSent(email):
             CardPresentModalNonRetryableErrorEmailSent(amount: amount,
@@ -129,7 +129,7 @@ final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlerts
         return nil
     }
 
-    func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> CardPresentPaymentsModalViewModel? {
+    func paymentCancellationConfirmation(onDismiss: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel? {
         CardPresentModalTapToPayPaymentCancelled(onDismiss: onDismiss)
     }
 }

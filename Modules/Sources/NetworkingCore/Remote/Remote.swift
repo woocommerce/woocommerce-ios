@@ -2,9 +2,12 @@ import Combine
 import Foundation
 import protocol Alamofire.URLRequestConvertible
 
+// `@unchecked` only because the class is `open`: Swift checks `Sendable` on final classes only. Its own stored
+// properties are `Sendable` `let`s. Subclasses inherit the conformance unchecked, so they must keep only `Sendable`
+// `let` state; the compiler does not verify it.
 /// Represents a collection of Remote Endpoints
 ///
-open class Remote: NSObject {
+open class Remote: NSObject, @unchecked Sendable {
 
     /// Networking Wrapper: Dependency Injection Mechanism, useful for Unit Testing purposes.
     ///
@@ -12,11 +15,11 @@ open class Remote: NSObject {
 
     /// Jetpack Tunnel raw-body diagnostics logger.
     ///
-    var jetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging = JetpackTunnelRawBodyErrorLogger()
+    let jetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging
 
     /// Records which store, if any, is rejecting our requests with `rest_invalid_signature`.
     ///
-    var storeConnectionErrorRecorder: StoreConnectionErrorRecording = StoreConnectionErrorMonitor.shared
+    let storeConnectionErrorRecorder: StoreConnectionErrorRecording
 
     /// The recorder for a response to `request`, or `nil` when the request did not go through the Jetpack
     /// tunnel.
@@ -37,6 +40,18 @@ open class Remote: NSObject {
     ///
     public init(network: Network) {
         self.network = network
+        self.jetpackTunnelRawBodyErrorLogger = JetpackTunnelRawBodyErrorLogger()
+        self.storeConnectionErrorRecorder = StoreConnectionErrorMonitor.shared
+    }
+
+    /// Initializer that replaces the diagnostics collaborators. Used by tests.
+    ///
+    init(network: Network,
+         jetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging = JetpackTunnelRawBodyErrorLogger(),
+         storeConnectionErrorRecorder: StoreConnectionErrorRecording = StoreConnectionErrorMonitor.shared) {
+        self.network = network
+        self.jetpackTunnelRawBodyErrorLogger = jetpackTunnelRawBodyErrorLogger
+        self.storeConnectionErrorRecorder = storeConnectionErrorRecorder
     }
 
     /// Enqueues the specified Network Request and return Void if successful.

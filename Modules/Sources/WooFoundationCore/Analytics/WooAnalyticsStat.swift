@@ -1374,6 +1374,8 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleSettingsStoreDetailsTapped = "settings_store_details_tapped"
     case pointOfSaleSettingsHardwareTapped = "settings_hardware_tapped"
     case pointOfSaleSettingsHelpTapped = "settings_help_tapped"
+    case pointOfSaleSettingsPaymentsTapped = "settings_payments_tapped"
+    case pointOfSalePaymentSuccessSoundToggled = "payment_success_sound_toggled"
     case pointOfSaleEmptyCartSetupScannerTapped = "empty_cart_set_up_scanner_tapped"
     case pointOfSaleOrdersMenuItemTapped = "orders_menu_item_tapped"
     case pointOfSaleOrdersListPullToRefresh = "orders_list_pull_to_refresh"

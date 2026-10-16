@@ -210,12 +210,12 @@ final class WordPressSiteRemoteTests: XCTestCase {
 
 private extension WordPressSiteRemoteTests {
     func makeRemote(cachedRoot: String?,
-                    discovery: @escaping (String) async -> String? = { _ in nil }) -> WordPressSiteRemote {
+                    discovery: @escaping @Sendable (String) async -> String? = { _ in nil }) -> WordPressSiteRemote {
         makeRemote(cache: MockRESTAPIRootCache(stubbedRoot: cachedRoot), discovery: discovery)
     }
 
     func makeRemote(cache: RESTAPIRootCaching,
-                    discovery: @escaping (String) async -> String? = { _ in nil }) -> WordPressSiteRemote {
+                    discovery: @escaping @Sendable (String) async -> String? = { _ in nil }) -> WordPressSiteRemote {
         WordPressSiteRemote(
             network: network,
             apiRootCache: cache,

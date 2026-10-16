@@ -255,6 +255,7 @@ about something other than payments.
 | `Local catalog` | Replaces the four catalog rows above when the POS database has not been opened this session. The report does not open it: spinning up a database to describe it would change what is being described. | `not evaluated (the POS catalog database has not been opened since launch)` |
 | `Catalog file blocked` | The store's host blocked the catalog file download. Recorded when a file sync fails with a blocked error, cleared when the file syncs successfully again. While `true`, syncs fall back to the slower paginated path — the merchant's fix is with their host. | `true`, `false` |
 | `Full sync on cellular allowed` | The merchant's per-store setting allowing catalog downloads over cellular data. `false` explains a catalog that only refreshes on WiFi. | `true`, `false` |
+| `Payment success sound enabled` | The per-device setting in POS Settings → Payments that plays a sound when a POS payment completes. `false` explains a merchant saying POS stopped playing a sound after payments: it was turned off there. | `true`, `false` |
 
 The timestamps and counts cover the POS local catalog only — not general order or product sync. A catalog that has
 synced but holds zero products is a different problem from one that has never synced.

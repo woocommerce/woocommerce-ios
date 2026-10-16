@@ -298,6 +298,7 @@ private enum POSRefundCardPresentPresentationError: LocalizedError {
 }
 
 extension CardPresentPaymentEventDetails {
+    @MainActor
     var posRefundCancelAction: (() -> Void)? {
         switch self {
         case .scanningForReaders(let endSearch),

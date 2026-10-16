@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 /// Used by backend to track AI-generation usage and measure costs
 public enum GenerativeContentRemoteFeature: String {
@@ -66,12 +67,18 @@ public protocol GenerativeContentRemoteProtocol {
 
 /// Product: Remote Endpoints
 ///
-public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProtocol {
+public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProtocol, @unchecked Sendable {
     private enum GenerativeContentRemoteError: Error {
         case tokenNotFound
     }
 
-    private var token: JWToken?
+    /// Cached between calls, which can run concurrently.
+    private let cachedToken = OSAllocatedUnfairLock<JWToken?>(initialState: nil)
+
+    private var token: JWToken? {
+        get { cachedToken.withLock { $0 } }
+        set { cachedToken.withLock { $0 = newValue } }
+    }
 
     public func generateText(siteID: Int64,
                              base: String,

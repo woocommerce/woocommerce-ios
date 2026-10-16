@@ -312,6 +312,8 @@ struct WooShippingCustomsItem: View {
                 .subheadlineStyle()
 
             TextField("", text: text)
+                .accessibilityLabel(title)
+                .accessibilityHint(error ?? "")
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .padding(Layout.extraPadding)

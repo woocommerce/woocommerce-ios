@@ -109,7 +109,9 @@ struct WooShippingCreateLabelsView: View {
                         .navigationBarTitleDisplayMode(.inline)
                 }
             }
-            .sheet(isPresented: $showingCustomsForm) {
+            .sheet(isPresented: $showingCustomsForm, onDismiss: {
+                viewModel.currentShipmentDetailsViewModel?.customsFormViewModel.onDismiss()
+            }) {
                 if let currentShipmentDetailsViewModel = viewModel.currentShipmentDetailsViewModel {
                     WooShippingCustomsForm(viewModel: currentShipmentDetailsViewModel.customsFormViewModel)
                 }

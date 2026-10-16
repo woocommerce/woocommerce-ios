@@ -80,3 +80,11 @@ When you replace test coordination, keep operations overlapping. Check duplicate
 ## Payloads at callback boundaries
 
 Inside the callback, extract the required `Sendable` IDs, values, or validated `Data`. Do this before you pass values to another actor or create child tasks. Keep non-`Sendable` notification models and type-erased containers in their original isolation context. Use the existing `RequestParameterValue` type for network parameters. Do not assume that `[String: Any]` is safe to send. See [notification loading](https://github.com/woocommerce/woocommerce-ios/pull/17954), [Watch payload snapshots](https://github.com/woocommerce/woocommerce-ios/pull/17950), and [typed request parameters](https://github.com/woocommerce/woocommerce-ios/pull/17370).
+
+## Open base classes and locks
+
+Swift checks a `Sendable` class conformance only on a `final` class whose superclass is `NSObject` or nothing. An `open` base class, such as `Remote`, can only be `@unchecked Sendable`. Its subclasses inherit the conformance, and the compiler does not check their stored properties. Before you add the conformance, list the stored properties of every subclass. Fix each `var` or non-`Sendable` value in the same change. A subclass of such a class cannot have a checked conformance either. In WOOMOB-4258, 6 of the 66 `Remote` subclasses had their own state, and 3 of them needed locks.
+
+Make the base class's own stored properties `Sendable` `let`s, so that the only reason for `@unchecked` is that the class is not `final`. Replace `var` test seams with an internal initializer that tests call.
+
+`NetworkingCore` and `WooFoundationCore` also build for the watch app (watchOS 9), so use `OSAllocatedUnfairLock` there. `Mutex` needs watchOS 11. For a lazy property, keep the optional value in the lock and create it inside `withLock`. For state that is not `Sendable`, such as `AnyCancellable`, use `OSAllocatedUnfairLock(uncheckedState:)` and `withLockUnchecked`. Create a Combine subscription outside the lock and store it afterwards, because a publisher can emit synchronously when you subscribe. A `Mutex` can hold non-`Sendable` closures, but each append and read then needs a `sending` value. Use an `NSLock` and a private `var` for that case, with an `@unchecked Sendable` conformance and a comment.

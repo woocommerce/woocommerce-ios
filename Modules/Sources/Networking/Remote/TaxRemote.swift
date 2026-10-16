@@ -2,7 +2,7 @@ import Foundation
 
 /// Tax Class: Remote Endpoints
 ///
-public class TaxRemote: Remote {
+public class TaxRemote: Remote, @unchecked Sendable {
 
     // MARK: - Tax Class
 

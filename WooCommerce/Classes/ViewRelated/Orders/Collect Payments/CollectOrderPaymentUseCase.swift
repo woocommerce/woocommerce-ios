@@ -127,7 +127,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          rootViewController: ViewControllerPresenting,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
-         paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
+         paymentOrchestrator: PaymentCaptureOrchestrating? = nil,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          alertsPresenter: any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>,
          tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
@@ -146,7 +146,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         self.bluetoothAlertsProvider = bluetoothAlertsProvider
         self.configuration = configuration
         self.stores = stores
-        self.paymentOrchestrator = paymentOrchestrator
+        self.paymentOrchestrator = paymentOrchestrator ?? PaymentCaptureOrchestrator()
         self.preflightController = preflightController
         self.analyticsTracker = analyticsTracker ?? CollectOrderPaymentAnalytics(siteID: siteID,
                                                                                  analytics: ServiceLocator.analytics,

@@ -12,7 +12,7 @@ public protocol SubscriptionsRemoteProtocol {
 
 /// Subscriptions: Remote Endpoints
 ///
-public final class SubscriptionsRemote: Remote, SubscriptionsRemoteProtocol {
+public final class SubscriptionsRemote: Remote, SubscriptionsRemoteProtocol, @unchecked Sendable {
 
     /// Retrieves a specific `Subscription`.
     ///

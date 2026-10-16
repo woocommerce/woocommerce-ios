@@ -4,7 +4,7 @@ import CocoaLumberjackSwift
 import enum NetworkingCore.POSCatalogFileError
 
 /// Protocol for POS Catalog Sync Remote operations.
-public protocol POSCatalogSyncRemoteProtocol {
+public protocol POSCatalogSyncRemoteProtocol: Sendable {
     /// Loads POS products modified after the specified date for incremental sync.
     ///
     /// - Parameters:
@@ -81,8 +81,10 @@ public protocol POSCatalogSyncRemoteProtocol {
 
 /// POS Catalog Sync: Remote Endpoints
 ///
-public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
-    private let dateFormatter = ISO8601DateFormatter()
+/// Restates Remote's inherited unchecked conformance. The downloader is Sendable and the state store uses thread-safe UserDefaults.
+/// Formatting uses per-call instances. The injected FileManager must support concurrent calls, as FileManager.default does;
+/// custom implementations must preserve this guarantee when the remote is shared.
+public final class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol, @unchecked Sendable {
     private let backgroundDownloader: BackgroundDownloadProtocol
     private let fileManager: FileManager
     private let backgroundDownloadStateStore: BackgroundDownloadStateStore
@@ -116,7 +118,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     async throws -> PagedItems<POSProduct> {
         let path = Path.products
         var parameters: [String: String] = [
-            ParameterKey.modifiedAfter: dateFormatter.string(from: modifiedAfter),
+            ParameterKey.modifiedAfter: ISO8601DateFormatter().string(from: modifiedAfter),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ","),
@@ -154,7 +156,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                                       pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         let path = Path.variations
         let parameters = [
-            ParameterKey.modifiedAfter: dateFormatter.string(from: modifiedAfter),
+            ParameterKey.modifiedAfter: ISO8601DateFormatter().string(from: modifiedAfter),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProductVariation.requestFields.joined(separator: ","),
@@ -430,7 +432,7 @@ private extension POSCatalogSyncRemote {
 // MARK: - Response Models
 
 /// Response from catalog generation request.
-public struct POSCatalogRequestResponse: Decodable {
+public struct POSCatalogRequestResponse: Decodable, Sendable {
     /// Current status of the catalog generation job.
     public let status: POSCatalogStatus
     /// Download URL when it is already available.
@@ -474,7 +476,7 @@ public struct POSCatalogRequestResponse: Decodable {
 }
 
 /// Catalog generation status.
-public enum POSCatalogStatus: String, Decodable {
+public enum POSCatalogStatus: String, Decodable, Sendable {
     case scheduled
     case inProgress = "in_progress"
     case completed
@@ -517,7 +519,7 @@ public enum POSCatalogItem: Decodable {
 }
 
 /// POS catalog from download.
-public struct POSCatalogResponse {
+public struct POSCatalogResponse: Sendable {
     public let products: [POSProduct]
     public let variations: [POSProductVariation]
 }

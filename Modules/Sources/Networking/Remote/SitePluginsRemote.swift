@@ -20,7 +20,7 @@ public protocol SitePluginsRemoteProtocol {
 
 /// SitePlugins: Remote Endpoints
 ///
-public class SitePluginsRemote: Remote, SitePluginsRemoteProtocol {
+public class SitePluginsRemote: Remote, SitePluginsRemoteProtocol, @unchecked Sendable {
     /// Retrieves all of the `SitePlugin`s for a given site from the site directly.
     ///
     /// - Parameters:

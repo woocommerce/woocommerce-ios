@@ -15,6 +15,7 @@ import class Yosemite.POSCatalogSettingsService
 protocol POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
+    var paymentsViewModel: POSSettingsPaymentsViewModel { get }
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel? { get }
     var isLocalCatalogEligible: Bool { get }
 
@@ -31,6 +32,7 @@ protocol POSSettingsControllerProtocol {
     private var cancellables: AnyCancellable?
 
     let storeViewModel: POSSettingsStoreViewModel
+    let paymentsViewModel: POSSettingsPaymentsViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     let isLocalCatalogEligible: Bool
     let printerConnectionController: POSPrinterConnectionController?
@@ -46,6 +48,7 @@ protocol POSSettingsControllerProtocol {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          receiptSettingsAdminURL: String,
+         analytics: POSAnalyticsProviding,
          printerConnectionController: POSPrinterConnectionController? = nil,
          staffSettingsService: POSStaffSettingsService? = nil) {
         self.staffSettingsService = staffSettingsService
@@ -55,6 +58,7 @@ protocol POSSettingsControllerProtocol {
                                                         defaultSiteName: defaultSiteName,
                                                         siteSettings: siteSettings,
                                                         receiptSettingsAdminURL: receiptSettingsAdminURL)
+        self.paymentsViewModel = POSSettingsPaymentsViewModel(analytics: analytics)
         self.isLocalCatalogEligible = isLocalCatalogEligible
 
         if let catalogSyncCoordinator, let grdbManager {
@@ -104,6 +108,9 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
                                                                               siteSettings: [],
                                                                               receiptSettingsAdminURL: "")
 
+    var paymentsViewModel = POSSettingsPaymentsViewModel(paymentSettings: POSPaymentSettingsPreviewService(),
+                                                         analytics: EmptyPOSAnalytics())
+
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
 
     var printerConnectionController: POSPrinterConnectionController?
@@ -124,6 +131,15 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
         return .empty
+    }
+}
+
+/// Keeps the setting in memory so previews don't write to the device's app settings.
+final class POSPaymentSettingsPreviewService: POSPaymentSettingsServiceProtocol {
+    private(set) var isPaymentSuccessSoundEnabled = true
+
+    func setPaymentSuccessSoundEnabled(_ isEnabled: Bool) {
+        isPaymentSuccessSoundEnabled = isEnabled
     }
 }
 

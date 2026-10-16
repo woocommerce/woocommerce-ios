@@ -90,3 +90,11 @@ Swift checks a `Sendable` class conformance only on a `final` class whose superc
 Make the base class's own stored properties `Sendable` `let`s, so that the only reason for `@unchecked` is that the class is not `final`. Replace `var` test seams with an internal initializer that tests call.
 
 `NetworkingCore` and `WooFoundationCore` also build for the watch app (watchOS 9), so use `OSAllocatedUnfairLock` there. `Mutex` needs watchOS 11. For a lazy property, keep the optional value in the lock and create it inside `withLock`. For state that is not `Sendable`, such as `AnyCancellable`, use `OSAllocatedUnfairLock(uncheckedState:)` and `withLockUnchecked`. Create a Combine subscription outside the lock and store it afterwards, because a publisher can emit synchronously when you subscribe. A `Mutex` can hold non-`Sendable` closures, but each append and read then needs a `sending` value. Use an `NSLock` and a private `var` for that case, with an `@unchecked Sendable` conformance and a comment.
+
+## Module flips and public constants
+
+A public struct or enum gets no implicit `Sendable` conformance, even when every stored value is `Sendable`. Each `static let` of such a type then warns with "non-'Sendable' type may have shared mutable state". Declare `Sendable` on the type. In `WooFoundationCore`, this covered 14 of the module's 20 warnings (`ColorStudio` and `CurrencySettings.CurrencyPosition`).
+
+The copied `Logging.swift` files read `CocoaLumberjackSwift.dynamicLogLevel`, a plain global `var` in CocoaLumberjack 3.8.5. A module in Swift 6 mode cannot reference it, and `@preconcurrency import` would only keep the warning. Make `defaultDebugLevel` a `let` set to `.all`, the library default, and remove `resetDefaultDebugLevel` when nothing calls it. Check the module's own `DDLog…` calls first: `WooFoundationCore` only logs errors, and the app sets `.verbose` at launch, so the threshold change is not observable. A module that logs at debug or verbose level needs a decision about its threshold before the flip.
+
+Before you protect a debug-only static such as `BuildConfiguration.testingOverride`, search for callers, including `@testable` imports. An internal test seam with no callers is removed, not locked.

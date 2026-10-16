@@ -509,8 +509,7 @@ private extension SiteCredentialLoginUseCase {
         let body = response.flatMap { result -> Data? in
             let statusCode = result.http.statusCode
             if stage == .nonce, (200..<300).contains(statusCode) || (500..<600).contains(statusCode) {
-                let text = String(data: result.data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-                guard text.hasPrefix("<") || text.hasPrefix("{") else { return nil }
+                return nil
             }
             return result.data
         }

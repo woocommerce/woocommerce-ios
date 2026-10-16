@@ -91,11 +91,12 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
             case .dashboard: "GET /wp-admin"
             case .nonce: "GET /wp-admin/admin-ajax.php"
             }
+            let expectedExcerpt = stage == .nonce ? nil : "Blocked | [email] [ip] password=[redacted] token=[redacted]"
             XCTAssertEqual(failure.diagnostics?.request, methodAndPath)
             XCTAssertEqual(failure.diagnostics?.contentType, "text/html")
-            XCTAssertEqual(failure.diagnostics?.excerpt, "Blocked | [email] [ip] password=[redacted] token=[redacted]")
+            XCTAssertEqual(failure.diagnostics?.excerpt, expectedExcerpt)
             XCTAssertEqual(logs, ["[Site credential login: \(failure.step.rawValue)] Unexpected store response: kind=unexpected_content, status=200, " +
-                                  "content_type=text/html, request=\(methodAndPath), excerpt=Blocked | [email] [ip] password=[redacted] token=[redacted]"])
+                                  "content_type=text/html, request=\(methodAndPath), excerpt=\(expectedExcerpt ?? "")"])
             XCTAssertEqual(error.errorCode, -1)
             XCTAssertFalse(String(reflecting: error).contains("Blocked"))
             XCTAssertFalse(String(describing: error.underlyingError.userInfo).contains("Blocked"))
@@ -116,6 +117,31 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         XCTAssertNil(failure.diagnostics?.excerpt)
         XCTAssertEqual(logs.count, 1)
         XCTAssertFalse(logs.joined().contains("private-nonce-value"))
+    }
+
+    func test_handle_login_when_nonce_follows_plugin_output_then_excerpt_omits_nonce() async throws {
+        // Given
+        var logs = [String]()
+        let nonce = "ab12cd34ef"
+        let body = """
+        <br />
+        <b>Warning</b>: Undefined variable $x in /wp-content/plugins/foo/foo.php on line 12<br />
+        \(nonce)
+        """
+
+        // When
+        let error = try await responseFailure(at: .nonce, data: Data(body.utf8),
+                                             headers: ["Content-Type": "text/html; charset=UTF-8"],
+                                             logUnexpectedResponse: { logs.append($0) })
+
+        // Then
+        guard case .unexpectedResponse(let failure) = error else { return XCTFail("Expected unexpected response") }
+        XCTAssertEqual(failure.statusCode, 200)
+        XCTAssertEqual(failure.diagnostics?.contentType, "text/html")
+        XCTAssertEqual(failure.diagnostics?.request, "GET /wp-admin/admin-ajax.php")
+        XCTAssertNil(failure.diagnostics?.excerpt)
+        XCTAssertEqual(logs.count, 1)
+        XCTAssertFalse(logs.joined().contains(nonce))
     }
 
     func test_handle_login_when_nonce_status_is_client_error_then_retains_and_logs_sanitized_excerpt() async throws {
@@ -140,23 +166,25 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         }
     }
 
-    func test_handle_login_when_nonce_status_is_server_error_then_does_not_retain_plain_text() async throws {
+    func test_handle_login_when_nonce_status_is_server_error_then_does_not_retain_body() async throws {
         for status in [500, 503] {
-            // Given
-            var logs = [String]()
-            let nonce = "private-nonce-value"
+            for (body, contentType) in [("private-nonce-value", "text/plain"),
+                                        ("<b>Warning</b><br />private-nonce-value", "text/html")] {
+                // Given
+                var logs = [String]()
 
-            // When
-            let error = try await responseFailure(at: .nonce, data: Data(nonce.utf8), statusCode: status,
-                                                 headers: ["Content-Type": "text/plain"], logUnexpectedResponse: { logs.append($0) })
+                // When
+                let error = try await responseFailure(at: .nonce, data: Data(body.utf8), statusCode: status,
+                                                     headers: ["Content-Type": contentType], logUnexpectedResponse: { logs.append($0) })
 
-            // Then
-            guard case .unexpectedResponse(let failure) = error else { return XCTFail("Expected unexpected response") }
-            XCTAssertEqual(failure.statusCode, status)
-            XCTAssertEqual(failure.kind, .unacceptableStatusCode)
-            XCTAssertNil(failure.diagnostics?.excerpt)
-            XCTAssertEqual(logs.count, 1)
-            XCTAssertFalse(logs.joined().contains(nonce))
+                // Then
+                guard case .unexpectedResponse(let failure) = error else { return XCTFail("Expected unexpected response") }
+                XCTAssertEqual(failure.statusCode, status)
+                XCTAssertEqual(failure.kind, .unacceptableStatusCode)
+                XCTAssertNil(failure.diagnostics?.excerpt)
+                XCTAssertEqual(logs.count, 1)
+                XCTAssertFalse(logs.joined().contains("private-nonce-value"))
+            }
         }
     }
 

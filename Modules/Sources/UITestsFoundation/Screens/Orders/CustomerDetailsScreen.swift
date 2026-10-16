@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class CustomerDetailsScreen: ScreenObject {
 
     private let addressToggleGetter: (XCUIApplication) -> XCUIElement = {

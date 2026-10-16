@@ -1,15 +1,20 @@
 import UITestsFoundation
 import XCTest
 
+@MainActor
 final class ProductsTests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
 
-        let app = XCUIApplication()
-        app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
-        app.launch()
-        try LoginFlow.login()
+        // XCTest runs synchronous setup on the main thread, where XCUI automation must stay.
+        try MainActor.assumeIsolated {
+
+            let app = XCUIApplication()
+            app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
+            app.launch()
+            try LoginFlow.login()
+        }
     }
 
     func test_load_products_screen() throws {

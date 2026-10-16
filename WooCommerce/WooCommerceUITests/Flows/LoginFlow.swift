@@ -1,6 +1,7 @@
 import UITestsFoundation
 import XCTest
 
+@MainActor
 class LoginFlow {
 
     /// Attempts to log in with WPCom if the CTA is available, otherwise try site address login.

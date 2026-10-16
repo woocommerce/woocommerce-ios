@@ -2,6 +2,7 @@ import Foundation
 import ScreenObject
 import XCTest
 // periphery: ignore - used for UI testing
+@MainActor
 public final class POSScreen: ScreenObject {
     private let firstProductCardGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["pos-product-card-1"]
@@ -93,7 +94,6 @@ public final class POSScreen: ScreenObject {
         return self
     }
 
-    @MainActor
     @discardableResult
     public func tapAddCustomAmount(amount: String, name: String? = nil) -> Self {
         let customAmountEntryRow = app.buttons["pos-custom-amount-entry-row"]

@@ -62,6 +62,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             observeSelectedPackage()
             observeSelectedRates()
             observeShippingRates()
+            observeEUProductIdentifiersCheck()
         }
     }
 
@@ -78,6 +79,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var state = ContentState.loading
 
     @Published private(set) var shouldShowNotices = false
+
+    /// Mirrors the selected shipment check state so the parent view updates purchase controls.
+    @Published private(set) var isCheckingEUProductIdentifiers = false
 
     /// View model for split shipments.
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
@@ -637,6 +641,15 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$selectedRate)
     }
 
+    func observeEUProductIdentifiersCheck() {
+        guard let currentShipmentDetailsViewModel else {
+            isCheckingEUProductIdentifiers = false
+            return
+        }
+        currentShipmentDetailsViewModel.$isCheckingEUProductIdentifiers
+            .assign(to: &$isCheckingEUProductIdentifiers)
+    }
+
     func observeShippingRates() {
         guard let currentShipmentDetailsViewModel else {
             shippingRates = []
@@ -657,6 +670,7 @@ private extension WooShippingCreateLabelsViewModel {
                 shippingLabel: shipment.purchasedLabel,
                 originAddress: originAddressPublisher,
                 destinationAddress: $destinationAddress.eraseToAnyPublisher(),
+                originAddressID: $selectedOriginAddress.map { $0?.id }.eraseToAnyPublisher(),
                 stores: stores,
                 onLabelPurchase: { [weak self] newLabel in
                     self?.handleLabelPurchaseSuccess(newLabel: newLabel, in: shipment)
@@ -668,6 +682,7 @@ private extension WooShippingCreateLabelsViewModel {
         observeSelectedPackage()
         observeSelectedRates()
         observeShippingRates()
+        observeEUProductIdentifiersCheck()
     }
 
     func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {

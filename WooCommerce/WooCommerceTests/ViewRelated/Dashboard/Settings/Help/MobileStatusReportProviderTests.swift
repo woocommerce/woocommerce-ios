@@ -165,6 +165,7 @@ struct MobileStatusReportProviderTests {
         Local catalog incremental sync: never
         Catalog file blocked: false
         Full sync on cellular allowed: true
+        Payment success sound enabled: true
         """))
     }
 
@@ -253,6 +254,22 @@ struct MobileStatusReportProviderTests {
         Local catalog full sync: unknown
         Local catalog incremental sync: unknown
         Catalog file blocked: false
+        """))
+    }
+
+    /// `false` explains a merchant saying POS stopped playing a sound after payments.
+    @Test func a_turned_off_payment_success_sound_is_reported() async throws {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        try appSettings.setValue(false, for: \.isPOSPaymentSuccessSoundEnabled)
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("""
+        Full sync on cellular allowed: false
+        Payment success sound enabled: false
         """))
     }
 

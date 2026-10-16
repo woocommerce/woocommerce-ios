@@ -23,7 +23,7 @@ extension WooShippingEUProductIdentifiers: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let productID = try container.decode(Int64.self, forKey: .productID)
         let sku = try container.decodeIfPresent(String.self, forKey: .sku) ?? ""
-        let meta = try container.decodeIfPresent(Meta.self, forKey: .meta)
+        let meta = try? container.decode(Meta.self, forKey: .meta)
         let customsInfo = meta?.customsInfo
 
         self.init(productID: productID,

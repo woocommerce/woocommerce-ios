@@ -58,7 +58,7 @@ open class MockStorageManager: StorageManagerType {
 
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
-    public func reset(onCompletion: (() -> Void)?) {
+    public func reset(onCompletion: (@Sendable () -> Void)?) {
         let storeCoordinator = persistentContainer.persistentStoreCoordinator
         let storeDescriptor = self.storeDescription
         let viewContext = persistentContainer.viewContext
@@ -90,8 +90,8 @@ open class MockStorageManager: StorageManagerType {
     /// Handles a write operation using the background context and saves changes when done.
     /// Using view storage to write for simplicity in tests
     ///
-    public func performAndSave(_ operation: @escaping (StorageType) -> Void,
-                               completion: (() -> Void)?,
+    public func performAndSave(_ operation: @escaping @Sendable (StorageType) -> Void,
+                               completion: (@Sendable () -> Void)?,
                                on queue: DispatchQueue) {
         let context = persistentContainer.viewContext
         context.performAndWait {
@@ -106,8 +106,8 @@ open class MockStorageManager: StorageManagerType {
     /// Handles a write operation using the background context and saves changes and returns result when done.
     /// Using view storage to write for simplicity in tests.
     ///
-    public func performAndSave<T>(_ operation: @escaping (StorageType) throws -> T,
-                                  completion: @escaping (Result<T, Error>) -> Void,
+    public func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                                  completion: @escaping @Sendable (Result<T, Error>) -> Void,
                                   on queue: DispatchQueue) {
         let context = persistentContainer.viewContext
         context.performAndWait {

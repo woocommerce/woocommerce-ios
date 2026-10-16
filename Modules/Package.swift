@@ -414,6 +414,7 @@ let package = Package(
                 .target(name: "PointOfSale"),
                 "Codegen",
                 "Fakes",
+                "Storage",
                 "TestKit",
                 "WooFoundation"
             ],

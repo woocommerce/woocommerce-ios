@@ -1,15 +1,29 @@
 import struct Yosemite.Order
 
 public protocol POSCollectOrderPaymentAnalyticsTracking {
+    func setCatalogSyncStrategy(_ strategy: POSCheckoutCatalogStrategy)
     func prepareForCardPayment(order: POSPaymentAnalyticsOrder)
     func trackCustomerInteractionStarted()
     func trackOrderSyncSuccess()
     func trackCardReaderReady()
     func trackCardReaderTapped()
     func trackCheckoutTapped()
+    @MainActor func captureCashSuccess() -> @MainActor (POSPaymentAnalyticsOrder) -> Void
     func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder)
     func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder)
     func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder)
+}
+
+public extension POSCollectOrderPaymentAnalyticsTracking {
+    @MainActor func captureCashSuccess() -> @MainActor (POSPaymentAnalyticsOrder) -> Void {
+        { order in self.trackSuccessfulCashPayment(order: order) }
+    }
+}
+
+public enum POSCheckoutCatalogStrategy: String, Sendable {
+    case localCatalog = "local_catalog"
+    case remote
+    case unknown
 }
 
 public struct POSPaymentAnalyticsOrder: Equatable {

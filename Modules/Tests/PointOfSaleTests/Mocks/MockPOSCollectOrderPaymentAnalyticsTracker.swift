@@ -2,6 +2,12 @@
 import struct Yosemite.PaymentIntent
 
 final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking {
+    private(set) var catalogSyncStrategy: POSCheckoutCatalogStrategy?
+
+    func setCatalogSyncStrategy(_ strategy: POSCheckoutCatalogStrategy) {
+        catalogSyncStrategy = strategy
+    }
+
     var didCallTrackCheckoutTapped = false
 
     var cardPaymentOrder: POSPaymentAnalyticsOrder?

@@ -107,6 +107,7 @@ public struct PointOfSaleEntryPointView: View {
         // Use observable controller with GRDB if local catalog is eligible,
         // otherwise fall back to standard controller.
         if isLocalCatalogEligible, let grdbManager, let catalogSyncCoordinator {
+            collectOrderPaymentAnalyticsTracker.setCatalogSyncStrategy(.localCatalog)
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
                 grdbManager: grdbManager,
@@ -114,6 +115,7 @@ public struct PointOfSaleEntryPointView: View {
                 catalogSyncCoordinator: catalogSyncCoordinator
             )
         } else {
+            collectOrderPaymentAnalyticsTracker.setCatalogSyncStrategy(.remote)
             self.itemsController = PointOfSaleItemsController(
                 itemProvider: selectedItemProvider,
                 itemFetchStrategyFactory: itemFetchStrategyFactory,

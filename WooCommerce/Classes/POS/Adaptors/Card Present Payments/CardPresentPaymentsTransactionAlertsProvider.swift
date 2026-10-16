@@ -11,25 +11,25 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
         self.showsTapToPayCancellationConfirmation = showsTapToPayCancellationConfirmation
     }
 
-    func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+    func validatingOrder(onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentEventDetails {
         .validatingOrder(cancelPayment: onCancel)
     }
 
-    func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+    func preparingReader(onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentEventDetails {
         .preparingForPayment(cancelPayment: onCancel)
     }
 
     func tapOrInsertCard(title: String,
                          amount: String,
                          inputMethods: CardReaderInput,
-                         onCancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+                         onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentEventDetails {
         .tapSwipeOrInsertCard(inputMethods: inputMethods,
                               cancelPayment: onCancel)
     }
 
     func cardInserted(title: String,
                       amount: String,
-                      onCancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+                      onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentEventDetails {
         .cardInserted(cancelPayment: onCancel)
     }
 
@@ -47,8 +47,8 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
 
     func error(error: any Error,
                receiptState: CardReaderTransactionFailureAlertReceiptState,
-               tryAgain: @escaping () -> Void,
-               dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+               tryAgain: @escaping @MainActor @Sendable () -> Void,
+               dismissCompletion: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentEventDetails {
         .paymentError(error: error,
                       retryApproach: CardPresentPaymentRetryApproach(error: error, retryAction: tryAgain),
                       cancelPayment: dismissCompletion)
@@ -56,7 +56,7 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
 
     func nonRetryableError(error: any Error,
                            receiptState: CardReaderTransactionFailureAlertReceiptState,
-                           dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+                           dismissCompletion: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentEventDetails {
         .paymentError(error: error,
                       retryApproach: .dontRetry,
                       cancelPayment: dismissCompletion)
@@ -66,7 +66,7 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
         .cancelledOnReader
     }
 
-    func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> CardPresentPaymentEventDetails? {
+    func paymentCancellationConfirmation(onDismiss: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentEventDetails? {
         guard showsTapToPayCancellationConfirmation else { return nil }
         return .paymentCancellationConfirmation(onDismiss: onDismiss)
     }

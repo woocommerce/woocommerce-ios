@@ -23,7 +23,7 @@ public protocol MediaRemoteProtocol {
 
 /// Media: Remote Endpoints
 ///
-public class MediaRemote: Remote, MediaRemoteProtocol {
+public class MediaRemote: Remote, MediaRemoteProtocol, @unchecked Sendable {
     /// Loads media from the site's WP Media library
     /// API reference - https://developer.wordpress.org/rest-api/reference/media/#retrieve-a-media-item
     ///

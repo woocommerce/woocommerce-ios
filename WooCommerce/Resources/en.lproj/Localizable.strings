@@ -1176,6 +1176,15 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Azerbaijan" = "Azerbaijan";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "Bold";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "Italic";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "Underline";
+
 /* Country option for a site address. */
 "Åland Islands" = "Åland Islands";
 
@@ -3169,14 +3178,29 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "Collect payments, setup Tap to Pay, order card readers and more.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Change due: %1$@";
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "Change due: %1$@";
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Order total has changed since the beginning of payment. Please go back and check the order is correct, then try the payment again.";
 
 /* Country option for a site address. */
 "Colombia" = "Colombia";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "Dismiss";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "Your store returned an unexpected response, so we couldn’t finish logging you in. Try again or contact support for help.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "Try Again";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "Contact Support";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "Unable to log in";
 
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "A security plugin may move the WordPress dashboard. Enter the address you use to open it.";
@@ -5799,8 +5823,8 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Help Center";
 
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "Revisit past support conversations";
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "Revisit past AI support chats";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Chat History";
@@ -8325,6 +8349,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment." = "Payment was declined for an unspecified reason. Try another means of payment.";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "Couldn’t check whether this order can be paid by card. Please try again.";
+
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "Card payments aren’t available for this order’s currency (%1$@).";
 
@@ -9542,6 +9569,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Product catalog";
 
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "Manage payment settings";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Payments";
+
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "View staff and PIN access";
 
@@ -9835,9 +9868,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "Point of Sale must be enabled to proceed. Please enable the POS feature below or from your WordPress admin under WooCommerce settings > Advanced > Features and try again.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Try relaunching the app to resolve this issue.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "We were unable to load the site settings info. Please check your internet connection and try again. If the issue persists, contact support for assistance.";
@@ -10781,6 +10811,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Update date unavailable";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "Play a sound when a payment completes";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "Payment success sound";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "Payments";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "POS locks when you tap Lock POS from the menu, or automatically after 5 minutes of inactivity.";
@@ -13560,8 +13599,8 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Untitled chat";
 
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "You haven't chatted with support yet.";
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "You haven't started an AI support chat yet.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Chat History";
@@ -16117,6 +16156,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "Phone number is required for the destination address.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@ requires a recipient phone number.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Add company";
 
@@ -16474,6 +16516,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "More info about ITN";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "Shipments into the EU now need product identifiers on each item. Update the WooCommerce Shipping plugin to add them.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Product Details";
 
@@ -16519,6 +16564,24 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "Description must be 30 characters or fewer.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "Required for shipments to the EU";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "Must be %1$d characters or fewer.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "EU product identifiers";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "Required for shipments into the EU. SKU and GTIN / EAN are prefilled from the product's Inventory settings.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN / EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "Enter the GTIN/EAN, or select \"No barcode\"";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS tariff number";
 
@@ -16528,8 +16591,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "Optional";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "Manufacturer part number";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "No barcode";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Origin Country";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "The tariff number must be between 6 and 12 digits long";

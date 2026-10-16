@@ -2641,7 +2641,10 @@ extension Networking.ShippingLabelCustomsForm.Item {
         weight: CopiableProp<Double> = .copy,
         hsTariffNumber: CopiableProp<String> = .copy,
         originCountry: CopiableProp<String> = .copy,
-        productID: CopiableProp<Int64> = .copy
+        productID: CopiableProp<Int64> = .copy,
+        code: NullableCopiableProp<String> = .copy,
+        manufacturerProductID: NullableCopiableProp<String> = .copy,
+        standardizedProductID: NullableCopiableProp<String> = .copy
     ) -> Networking.ShippingLabelCustomsForm.Item {
         let description = description ?? self.description
         let quantity = quantity ?? self.quantity
@@ -2650,6 +2653,9 @@ extension Networking.ShippingLabelCustomsForm.Item {
         let hsTariffNumber = hsTariffNumber ?? self.hsTariffNumber
         let originCountry = originCountry ?? self.originCountry
         let productID = productID ?? self.productID
+        let code = code ?? self.code
+        let manufacturerProductID = manufacturerProductID ?? self.manufacturerProductID
+        let standardizedProductID = standardizedProductID ?? self.standardizedProductID
 
         return Networking.ShippingLabelCustomsForm.Item(
             description: description,
@@ -2658,7 +2664,10 @@ extension Networking.ShippingLabelCustomsForm.Item {
             weight: weight,
             hsTariffNumber: hsTariffNumber,
             originCountry: originCountry,
-            productID: productID
+            productID: productID,
+            code: code,
+            manufacturerProductID: manufacturerProductID,
+            standardizedProductID: standardizedProductID
         )
     }
 }

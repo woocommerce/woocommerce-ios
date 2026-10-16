@@ -2,12 +2,12 @@ import Foundation
 import enum Yosemite.CardReaderServiceError
 import enum Yosemite.CardReaderServiceUnderlyingError
 
-public enum CardPresentPaymentRetryApproach {
+public enum CardPresentPaymentRetryApproach: Sendable {
     case dontRetry
-    case tryAgain(retryAction: () -> Void)
-    case tryAnotherPaymentMethod(retryAction: () -> Void)
+    case tryAgain(retryAction: @MainActor @Sendable () -> Void)
+    case tryAnotherPaymentMethod(retryAction: @MainActor @Sendable () -> Void)
 
-    public init(error: any Error, retryAction: @escaping () -> Void) {
+    public init(error: any Error, retryAction: @escaping @MainActor @Sendable () -> Void) {
         guard let serviceError = error as? CardReaderServiceError else {
             self = .tryAgain(retryAction: retryAction)
             return
@@ -17,7 +17,7 @@ public enum CardPresentPaymentRetryApproach {
 }
 
 private extension CardReaderServiceError {
-    func retryApproach(with retryAction: @escaping () -> Void) -> CardPresentPaymentRetryApproach {
+    func retryApproach(with retryAction: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentRetryApproach {
         switch self {
         case .discovery(underlyingError: let underlyingError),
                 .connection(underlyingError: let underlyingError),
@@ -51,7 +51,7 @@ private extension CardReaderServiceError {
 }
 
 private extension CardReaderServiceUnderlyingError {
-    func retryApproach(with retryAction: @escaping () -> Void) -> CardPresentPaymentRetryApproach {
+    func retryApproach(with retryAction: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentRetryApproach {
         switch self {
         case .notConnectedToReader,
                 .confirmInvalidPaymentIntent,

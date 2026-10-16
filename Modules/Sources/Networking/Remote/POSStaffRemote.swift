@@ -9,7 +9,7 @@ public protocol POSStaffRemoteProtocol {
 
 /// `POSStaff` remote endpoints.
 ///
-public final class POSStaffRemote: Remote, POSStaffRemoteProtocol {
+public final class POSStaffRemote: Remote, POSStaffRemoteProtocol, @unchecked Sendable {
 
     /// Fetches the POS staff list for the given site. Requires the device user to hold
     /// `manage_woocommerce` server-side (admin / shop_manager).

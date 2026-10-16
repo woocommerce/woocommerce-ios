@@ -33,10 +33,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     func collectPaymentTask(for order: Order,
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
-                            preflightController: CardPresentPaymentPreflightController<
-                            CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
-                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
-                            CardPresentPaymentsAlertPresenterAdaptor>,
+                            preflightController: CardPresentPaymentPreflightControllerProtocol,
                             configuration: CardPresentPaymentsConfiguration,
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>,
@@ -56,6 +53,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 formattedAmount: formattedAmount,
                 rootViewController: NullViewControllerPresenting(),
                 configuration: configuration,
+                stores: stores,
                 paymentOrchestrator: invalidatablePaymentOrchestrator,
                 alertsPresenter: alertsPresenter,
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(showsTapToPayCancellationConfirmation: true),
@@ -104,19 +102,13 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                     )
                 }
             } onCancel: {
-                // Invalidate and freeze the current event synchronously, so no payment can start after
-                // cancellation and the step cancelled below is the one shown when the task was cancelled.
-                invalidatablePaymentOrchestrator.invalidatePayment()
-                self.isCancelled.withLock { $0 = true }
-                // CardPresentPaymentService cancels from the main actor, so the step is cancelled inline there.
-                if Thread.isMainThread {
-                    MainActor.assumeIsolated {
-                        self.cancelCurrentStep(paymentOrchestrator: invalidatablePaymentOrchestrator)
-                    }
-                } else {
-                    Task { @MainActor in
-                        self.cancelCurrentStep(paymentOrchestrator: invalidatablePaymentOrchestrator)
-                    }
+                // CardPresentPaymentService owns the task and cancels it only on the main actor.
+                // Invalidate and freeze the current event synchronously before cancelling that step,
+                // so cleanup finishes before a replacement payment starts.
+                MainActor.assumeIsolated {
+                    invalidatablePaymentOrchestrator.invalidatePayment()
+                    self.isCancelled.withLock { $0 = true }
+                    self.cancelCurrentStep(paymentOrchestrator: invalidatablePaymentOrchestrator)
                 }
             }
         }

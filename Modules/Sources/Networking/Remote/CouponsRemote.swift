@@ -60,7 +60,7 @@ extension CouponsRemoteProtocol {
 
 /// Coupons: Remote endpoints
 ///
-public final class CouponsRemote: Remote, CouponsRemoteProtocol {
+public final class CouponsRemote: Remote, CouponsRemoteProtocol, @unchecked Sendable {
     // MARK: - Get Coupons
 
     /// Retrieves all of the `Coupon`s from the API.

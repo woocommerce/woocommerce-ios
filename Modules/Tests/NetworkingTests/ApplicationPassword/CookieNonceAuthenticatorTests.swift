@@ -712,9 +712,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
             loginEntryURL: siteURL.appendingPathComponent("custom-entry"),
             adminBaseURL: siteURL.appendingPathComponent("private-admin", isDirectory: true)
         )
-        // `WordPressOrgNetwork` is not `Sendable`; this test exercises its own request coalescing from two
-        // child tasks on purpose, so the local is marked rather than the class.
-        nonisolated(unsafe) let network = WordPressOrgNetwork(
+        let network = WordPressOrgNetwork(
             configuration: CookieNonceAuthenticatorConfiguration(
                 username: sampleUser,
                 password: samplePassword,

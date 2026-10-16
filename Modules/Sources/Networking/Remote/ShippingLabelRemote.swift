@@ -48,7 +48,7 @@ public protocol ShippingLabelRemoteProtocol {
 }
 
 /// Shipping Labels Remote Endpoints.
-public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
+public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol, @unchecked Sendable {
     /// Loads shipping labels and settings for an order.
     /// - Parameters:
     ///   - siteID: Remote ID of the site that owns the order.

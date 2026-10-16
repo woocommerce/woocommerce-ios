@@ -153,11 +153,7 @@ struct POSSettingsStoreDetailView: View {
     @ViewBuilder
     private func settingValueView(for value: String?) -> some View {
         if isLoading {
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: Constants.shimmeringTextWidth, height: Constants.shimmeringTextHeight)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                .shimmering()
+            POSPlaceholderText(.redactedPlaceholder(length: 5), font: .posBodyMediumRegular())
         } else {
             Text(value ?? Localization.notSet)
                 .font(.posBodyMediumRegular())
@@ -167,11 +163,6 @@ struct POSSettingsStoreDetailView: View {
 }
 
 private extension POSSettingsStoreDetailView {
-    enum Constants {
-        static let shimmeringTextWidth: CGFloat = 70
-        static let shimmeringTextHeight: CGFloat = 16
-    }
-
     enum Localization {
         static let storeTitle = NSLocalizedString(
             "pointOfSaleSettingsStoreDetailView.storeTitle",

@@ -168,11 +168,11 @@ private extension ItemRowView {
         static let titleSubtitleLineLimit: Int = 4
 
         static let cartConfiguration = GhostItemCardViewConfiguration(
-            placeholderHeight: 24,
+            titleFont: Constants.itemTitleFont,
+            detailFont: Constants.itemPriceFont,
+            detailPlaceholderLength: (regular: 25, accessibility: 4),
             cardSize: Constants.productCardSize,
             maximumCardSize: Constants.maximumProductCardSize,
-            topPlaceholderWidthMultiplier: 0.4,
-            bottomPlaceholderWidthMultiplier: 0.35,
             backgroundColor: Color.posSurfaceContainerLowest
         )
     }

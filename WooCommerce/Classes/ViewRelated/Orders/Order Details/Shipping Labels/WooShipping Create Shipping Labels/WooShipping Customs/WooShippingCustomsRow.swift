@@ -4,6 +4,7 @@ import Yosemite
 
 struct WooShippingCustomsRow: View {
     let informationIsCompleted: Bool
+    let isCheckingRequirements: Bool
     let customsFormViewModel: WooShippingCustomsFormViewModel
 
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -16,8 +17,12 @@ struct WooShippingCustomsRow: View {
             HStack {
                 customsRowTitleView
                 Spacer()
-                customsRowStatusBadgeView
-                customsRowEditButtonView
+                if isCheckingRequirements {
+                    ProgressView()
+                } else {
+                    customsRowStatusBadgeView
+                    customsRowEditButtonView
+                }
             }
 
             /// Layout option #2 that fits in given width
@@ -28,15 +33,23 @@ struct WooShippingCustomsRow: View {
                     spacing: Layout.customsRowVerticalLayoutSpacing
                 ) {
                     customsRowTitleView
-                    customsRowStatusBadgeView
+                    if isCheckingRequirements {
+                        ProgressView()
+                    } else {
+                        customsRowStatusBadgeView
+                    }
                 }
                 Spacer()
-                customsRowEditButtonView
+                if !isCheckingRequirements {
+                    customsRowEditButtonView
+                }
             }
         }
         .padding(Layout.borderPadding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
-        .sheet(isPresented: $showCustomsForm) {
+        .sheet(isPresented: $showCustomsForm, onDismiss: {
+            customsFormViewModel.onDismiss()
+        }) {
             WooShippingCustomsForm(viewModel: customsFormViewModel)
         }
     }

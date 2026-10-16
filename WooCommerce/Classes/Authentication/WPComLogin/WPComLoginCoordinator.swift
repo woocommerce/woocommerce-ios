@@ -102,7 +102,7 @@ private extension WPComLoginCoordinator {
             },
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
-                let message = error.localizedDescription
+                let message = (error as? WordPressComOAuthError)?.loginErrorMessage ?? error.localizedDescription
                 self.showAlert(message: message)
             },
             onLoginSuccess: { [weak self] authToken in

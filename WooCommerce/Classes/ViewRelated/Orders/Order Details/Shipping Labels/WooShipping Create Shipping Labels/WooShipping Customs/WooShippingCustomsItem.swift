@@ -224,6 +224,8 @@ struct WooShippingCustomsItem: View {
                     .foregroundColor(warningRedColor)
                     .footnoteStyle()
                     .renderedIf(viewModel.selectedCountry == nil)
+
+                euProductIdentifiersSection
             }
             .padding(.leading, Layout.extraPadding)
             .padding(.trailing, Layout.extraPadding)
@@ -268,6 +270,61 @@ struct WooShippingCustomsItem: View {
         let shade: ColorStudioShade = colorScheme == .dark ? .shade40 : .shade60
 
         return .withColorStudio(name: .red, shade: shade)
+    }
+
+    private var euProductIdentifiersSection: some View {
+        VStack(alignment: .leading, spacing: Layout.collapsibleViewVerticalSpacing) {
+            Text(Localization.euProductIdentifiers)
+                .headlineStyle()
+                .padding(.top, Layout.collapsibleViewVerticalSpacing)
+
+            Text(Localization.euProductIdentifiersDescription)
+                .footnoteStyle()
+                .foregroundColor(.secondary)
+
+            identifierField(title: Localization.sku,
+                            text: $viewModel.sku,
+                            error: viewModel.skuValidationError)
+
+            identifierField(title: Localization.manufacturerPartNumber,
+                            text: $viewModel.manufacturerPartNumber,
+                            error: viewModel.manufacturerPartNumberValidationError)
+
+            identifierField(title: Localization.gtin,
+                            text: $viewModel.gtin,
+                            error: viewModel.gtinValidationError)
+                .disabled(viewModel.hasNoBarcode)
+                .opacity(viewModel.hasNoBarcode ? 0.5 : 1)
+
+            Toggle(isOn: $viewModel.hasNoBarcode) {
+                Text(Localization.noBarcode)
+                    .font(.subheadline)
+            }
+            .tint(Color.accentColor)
+        }
+        .renderedIf(viewModel.areEUProductIdentifiersRequired)
+    }
+
+    private func identifierField(title: String, text: Binding<String>, error: String?) -> some View {
+        VStack(alignment: .leading, spacing: Layout.collapsibleViewVerticalSpacing / 2) {
+            Text(title)
+                .foregroundColor(.primary)
+                .subheadlineStyle()
+
+            TextField("", text: text)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .padding(Layout.extraPadding)
+                .roundedBorder(cornerRadius: Layout.borderCornerRadius,
+                               lineColor: error == nil ? Color(.separator) : warningRedColor,
+                               lineWidth: Layout.borderLineWidth)
+
+            if let error {
+                Text(error)
+                    .foregroundColor(warningRedColor)
+                    .footnoteStyle()
+            }
+        }
     }
 }
 
@@ -317,6 +374,26 @@ extension WooShippingCustomsItem {
         static let originCountryTitle = NSLocalizedString("wooShipping.customsItems.originCountry",
                                               value: "Origin Country",
                                               comment: "Title for the origin country text field")
+        static let euProductIdentifiers = NSLocalizedString("wooShipping.customsItems.euProductIdentifiers",
+                                                            value: "EU product identifiers",
+                                                            comment: "Section title for EU product identifiers in customs items")
+        static let euProductIdentifiersDescription = NSLocalizedString(
+            "wooShipping.customsItems.euProductIdentifiers.description",
+            value: "Required for shipments into the EU. SKU and GTIN / EAN are prefilled from the product's Inventory settings.",
+            comment: "Explanatory text for EU product identifiers in customs items"
+        )
+        static let sku = NSLocalizedString("wooShipping.customsItems.sku",
+                                           value: "SKU",
+                                           comment: "Label for the SKU field in customs items")
+        static let manufacturerPartNumber = NSLocalizedString("wooShipping.customsItems.manufacturerPartNumber",
+                                                              value: "Manufacturer part number",
+                                                              comment: "Label for the manufacturer part number field in customs items")
+        static let gtin = NSLocalizedString("wooShipping.customsItems.gtin",
+                                            value: "GTIN / EAN",
+                                            comment: "Label for the GTIN/EAN field in customs items")
+        static let noBarcode = NSLocalizedString("wooShipping.customsItems.noBarcode",
+                                                 value: "No barcode",
+                                                 comment: "Toggle label for items without a barcode")
         static let done = NSLocalizedString("wooShipping.customsItems.countries.done",
                                             value: "Done",
                                             comment: "Button to dismiss the countries menu")

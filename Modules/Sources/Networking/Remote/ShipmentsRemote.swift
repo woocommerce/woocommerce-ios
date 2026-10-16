@@ -3,7 +3,7 @@ import Foundation
 
 /// ShipmentsRemote: Remote Endpoints
 ///
-public final class ShipmentsRemote: Remote {
+public final class ShipmentsRemote: Remote, @unchecked Sendable {
 
     /// Retrieves all of the shipment tracking info for a given order.
     ///

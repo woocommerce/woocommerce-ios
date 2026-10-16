@@ -3,7 +3,7 @@ import Foundation
 
 /// Stripe (Extension): Remote Endpoints
 ///
-public class StripeRemote: Remote {
+public class StripeRemote: Remote, @unchecked Sendable {
     /// Loads a Stripe account for a given site ID and parses the response
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the Stripe account info.

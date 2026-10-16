@@ -69,7 +69,8 @@ extension Storage.GeneralAppSettings {
         isCustomFieldsTopBannerDismissed: CopiableProp<Bool> = .copy,
         isPOSSurveyPotentialMerchantNotificationScheduled: CopiableProp<Bool> = .copy,
         isPOSSurveyCurrentMerchantNotificationScheduled: CopiableProp<Bool> = .copy,
-        hasPOSBeenOpenedAtLeastOnce: CopiableProp<Bool> = .copy
+        hasPOSBeenOpenedAtLeastOnce: CopiableProp<Bool> = .copy,
+        isPOSPaymentSuccessSoundEnabled: CopiableProp<Bool> = .copy
     ) -> Storage.GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
@@ -86,6 +87,7 @@ extension Storage.GeneralAppSettings {
         let isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled ?? self.isPOSSurveyPotentialMerchantNotificationScheduled
         let isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled ?? self.isPOSSurveyCurrentMerchantNotificationScheduled
         let hasPOSBeenOpenedAtLeastOnce = hasPOSBeenOpenedAtLeastOnce ?? self.hasPOSBeenOpenedAtLeastOnce
+        let isPOSPaymentSuccessSoundEnabled = isPOSPaymentSuccessSoundEnabled ?? self.isPOSPaymentSuccessSoundEnabled
 
         return Storage.GeneralAppSettings(
             installationDate: installationDate,
@@ -102,7 +104,8 @@ extension Storage.GeneralAppSettings {
             isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
             isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
             isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
-            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce
+            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce,
+            isPOSPaymentSuccessSoundEnabled: isPOSPaymentSuccessSoundEnabled
         )
     }
 }

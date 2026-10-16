@@ -34,7 +34,7 @@ public protocol InboxNotesRemoteProtocol {
 
 /// Inbox Notes: Remote endpoints
 ///
-public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
+public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol, @unchecked Sendable {
 
     // MARK: - Get Inbox Notes
 

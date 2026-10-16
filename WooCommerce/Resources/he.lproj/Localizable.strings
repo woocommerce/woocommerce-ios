@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-09-22 09:58:38+0000 */
+/* Translation-Revision-Date: 2026-10-06 13:57:32+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -8502,6 +8502,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "הבנתי";
 
+/* Alert button that opens Help & Support, displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.contactSupportButton" = "פנייה לתמיכה";
+
 /* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
 "appCoordinator.ineligibleAgeRangeAlert.message" = "הגיל של חשבון Apple שלך נמוך מהמינימום הנדרש עבור אפליקציה זו (%1d+).";
 
@@ -9052,6 +9055,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "שבועית";
 
+/* Title of the web view to pay an unpaid Blaze order from the Blaze campaign list. */
+"blazeCampaignListView.paymentTitle" = "תשלום היתרה לתשלום";
+
 /* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
 "blazeCampaignObjectivePickerView.accessibilityHintSelected" = "נבחר";
 
@@ -9291,6 +9297,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "למידע נוסף על אופן הפעולה של %1$@";
+
+/* Message of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. %1$@ is the formatted outstanding amount, e.g. $25.05. */
+"blazeOutstandingBalanceView.message" = "בחשבונך קיימת כרגע יתרה לפירעון בסכום של %1$@. יש לשלם לפני יצירה של קמפיינים חדשים.";
+
+/* Button to open the payment page of an unpaid Blaze order. */
+"blazeOutstandingBalanceView.pay" = "תשלום";
+
+/* Title of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. */
+"blazeOutstandingBalanceView.title" = "יתרה לתשלום";
 
 /* Button title in the Blaze Payment Method screen if there is an existing payment method */
 "blazePaymentMethodsView.addAnotherCreditCardButton" = "להוסיף כרטיס אשראי אחר";
@@ -9718,6 +9733,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "המערכת סורקת כדי לאתר קורא";
+
+/* Shown when fetching store settings fails and the store country remains unknown. */
+"cardPresentPayment.countryRecovery.cardPaymentSettingsUnavailable" = "לא הצלחנו לטעון את ההגדרות של החנות שלך כדי לבדוק את זמינות התשלום בכרטיס.";
+
+/* Status while fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.checkingCardPaymentAvailability" = "בודק את זמינות התשלום בכרטיס…";
+
+/* Shown when fetched store settings have no recognizable country. Check the store country, then retry. */
+"cardPresentPayment.countryRecovery.countryUnavailable" = "לא הצלחנו לזהות את המדינה של החנות שלך. יש לבדוק את המדינה בהגדרות של החנות שלך ב-WooCommerce.";
+
+/* Retry fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.retry" = "לנסות שוב";
 
 /* A title for CTA to present native location permission alert */
 "cardPresentPayment.locationPreAlert.continueButton" = "המשך";
@@ -11382,8 +11409,8 @@ which should be translated separately and considered part of this sentence. */
 /* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
 "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "מוצרים יכולים להשתמש בסף משלהם או בסף הכללי של החנות. %1$@ כדי להציג את הערך הנוכחי.";
 
-/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
-"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "מוצרים יכולים להשתמש בסף משלהם או בסף הכללי של החנות של ⁦{00A0}⁩%1$@. %2$@";
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The character before %1$@ is a non-breaking space, keeping the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat.v2" = "מוצרים יכולים להשתמש בסף משלהם או בסף של %1$@ של כלל החנות. %2$@";
 
 /* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
 "newStockNotificationPreferencesDetailView.lowStock.title" = "מלאי מוגבל";
@@ -11862,6 +11889,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "להציג את התמונה";
+
+/* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
+"paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "תשלומים בכרטיסים אינם זמינים עבור המטבע של ההזמנה הזו (%1$@).";
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "לשלם באופן אישי";
@@ -12414,6 +12444,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "טוען";
+
+/* Note shown on a product row in the Point of Sale cart at checkout when the order response shows the line item received a discount, from a coupon or another source. */
+"pointOfSale.itemRow.discountApplied" = "ההנחה הוחלה";
 
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "סימון כ'שולמה'";
@@ -14159,6 +14192,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "פרטי";
 
+/* Error shown when creating a product category with a name that already exists. */
+"productCategoryActionError.duplicateName" = "כבר קיימת קטגוריה בשם זה. יש לבחור שם אחר.";
+
 /* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
 "productCreationAIPromptProgressBar.main.almostDone" = "כמעט סיימת.";
 
@@ -15089,6 +15125,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the significant-change blocking screen that re-checks the approval status. */
 "significantChangeConsent.blocking.checkAgain.button" = "בדיקה חוזרת";
+
+/* Secondary button on the significant-change blocking screen that opens Help & Support. */
+"significantChangeConsent.blocking.contactSupport.button" = "פנייה לתמיכה";
 
 /* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
 "significantChangeConsent.blocking.continue.button" = "המשך";

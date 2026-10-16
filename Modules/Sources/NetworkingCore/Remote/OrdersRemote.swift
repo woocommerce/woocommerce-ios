@@ -11,7 +11,7 @@ public protocol BookingOrdersRemoteProtocol {
 
 /// Order: Remote Endpoints
 ///
-public class OrdersRemote: Remote, BookingOrdersRemoteProtocol {
+public class OrdersRemote: Remote, BookingOrdersRemoteProtocol, @unchecked Sendable {
     /// The source of the order creation.
     public enum OrderCreationSource {
         case storeManagement

@@ -250,7 +250,8 @@ private extension PostSiteCredentialLoginChecker {
         // Retry actions run through UIKit on the main actor and re-enter these same paths.
         MainActor.assumeIsolated {
             if let failure, let onRetry {
-                unexpectedResponsePresenter.present(failure: failure, flow: loginFlow, from: navigationController, onRetry: onRetry,
+                unexpectedResponsePresenter.present(failure: failure, flow: loginFlow, from: navigationController,
+                                                    siteURL: siteURL, onRetry: onRetry,
                                                     onDismiss: { [weak self] in
                     self?.cancel()
                     self?.restorePreviousViewController(in: navigationController)

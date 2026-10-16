@@ -272,6 +272,7 @@ final class SupportChatViewModel {
     private let analytics: Analytics
     private var diagnosticsContext: RequestParameterDictionary?
     private let initialContext: RequestParameterDictionary?
+    private let initialMessage: String?
     private let onContactHumanSupport: ContactHumanSupportCallback
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
@@ -295,6 +296,7 @@ final class SupportChatViewModel {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          initialContext: RequestParameterDictionary? = nil,
+         initialMessage: String? = nil,
          diagnosticsService: SupportDiagnosticsServicing? = nil,
          chatID: Int64? = nil,
          sessionID: String? = nil,
@@ -310,6 +312,7 @@ final class SupportChatViewModel {
         self.stores = stores
         self.analytics = analytics
         self.initialContext = initialContext
+        self.initialMessage = initialMessage
         self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
         self.chatID = chatID
         self.sessionID = sessionID
@@ -646,6 +649,19 @@ final class SupportChatViewModel {
 
     // MARK: - Chat Actions
 
+    /// Starts an empty conversation, allowing failed transcript fetches to retry on subsequent appearances.
+    func startIfNeeded() {
+        guard messages.isEmpty, state != .sending else { return }
+
+        if isResumedChat {
+            resumeIfNeeded()
+        } else if let initialMessage, !initialMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            sendMessage(initialMessage)
+        } else {
+            showGreeting()
+        }
+    }
+
     func showGreeting() {
         guard messages.isEmpty else { return }
 
@@ -685,7 +701,11 @@ final class SupportChatViewModel {
     }
 
     func sendMessage() {
-        let trimmedText = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+        sendMessage(inputText)
+    }
+
+    private func sendMessage(_ text: String) {
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedText.isEmpty else { return }
         guard state != .sending else { return }
 

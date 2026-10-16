@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] Login: Contact Support now starts a chat with diagnostic details from the failed login attempt. [https://github.com/woocommerce/woocommerce-ios/pull/18040]
 - [*] POS: Fixed order creation times differing between the order list and details. [https://github.com/woocommerce/woocommerce-ios/pull/18051]
 - [*] Product details: Fixed row content touching the edge of the details pane on iPhone Duo. [https://github.com/woocommerce/woocommerce-ios/pull/18036]
 - [*] Menu tab: The first card keeps a gap above it on iPhone Duo when the status bar is on the side of the display. [https://github.com/woocommerce/woocommerce-ios/pull/18029]

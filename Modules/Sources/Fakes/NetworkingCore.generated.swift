@@ -649,7 +649,8 @@ extension NetworkingCore.ShippingLine {
             methodID: .fake(),
             total: .fake(),
             totalTax: .fake(),
-            taxes: .fake()
+            taxes: .fake(),
+            refundedItemID: .fake()
         )
     }
 }

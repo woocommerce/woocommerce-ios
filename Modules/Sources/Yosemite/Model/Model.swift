@@ -74,6 +74,7 @@ public typealias JetpackConnectionProvisionResponse = Networking.JetpackConnecti
 public typealias JustInTimeMessageHook = Networking.JustInTimeMessagesRemote.MessagePath.Hook
 public typealias Media = Networking.Media
 public typealias MetaContainer = Networking.MetaContainer
+public typealias NetworkRequestError = Networking.NetworkError
 public typealias Note = Networking.Note
 public typealias NoteBlock = Networking.NoteBlock
 public typealias NoteMedia = Networking.NoteMedia

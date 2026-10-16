@@ -3,7 +3,7 @@
 
 26.0
 -----
-- [*] Products: Variations now load in the correct order on products with more than 25 variations. [PR_URL]
+- [*] Products: Variations now load in the correct order on products with more than 25 variations. [https://github.com/woocommerce/woocommerce-ios/pull/18112]
 
 
 25.9

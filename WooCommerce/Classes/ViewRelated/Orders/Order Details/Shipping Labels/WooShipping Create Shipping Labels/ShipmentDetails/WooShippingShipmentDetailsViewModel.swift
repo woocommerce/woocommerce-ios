@@ -90,6 +90,9 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
     /// Whether the custom information is completed or not.
     @Published private(set) var customsInformationIsCompleted = false
 
+    /// Whether WooShipping is checking if EU product identifiers are required for this route.
+    @Published private(set) var isCheckingEUProductIdentifiers = false
+
     /// Check for the need of customs form
     ///
     @Published private var customsFormRequired = false
@@ -117,6 +120,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
         && destinationPhoneIssue == nil
         && selectedPackage != nil
         && selectedRate != nil
+        && !isCheckingEUProductIdentifiers
         && (!customsFormRequired || customsInformationIsCompleted)
     }
 
@@ -161,6 +165,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
          shippingLabel: ShippingLabel?,
          originAddress: AnyPublisher<WooShippingAddress?, Never>,
          destinationAddress: AnyPublisher<WooShippingAddress?, Never>,
+         originAddressID: AnyPublisher<String?, Never> = Just(nil).eraseToAnyPublisher(),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
@@ -192,6 +197,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
         observeHAZMATChanges()
         observeShippingRates()
         setupSelectedRateReset()
+        observeEUProductIdentifiersRequirement(originAddressIDPublisher: originAddressID)
     }
 
     /// Handles package selection for the shipping label.
@@ -278,6 +284,11 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel(markOrderComplete: Bool? = nil) async throws {
+        guard !isCheckingEUProductIdentifiers,
+              !customsFormRequired || customsInformationIsCompleted else {
+            return
+        }
+
         guard let originAddress, let destinationAddress,
               let package = currentPackage,
               let selectedRate,
@@ -403,16 +414,72 @@ private extension WooShippingShipmentDetailsViewModel {
             .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .combineLatest($selectedPackage, $shippingService)
-            .combineLatest($customsForm, $hazmatCategory)
+            .combineLatest($customsForm.removeDuplicates(), $hazmatCategory, $customsFormRequired)
             .sink { [weak self] input in
-                let ((weight, selectedPackage, shippingService), _, hazmatCategory) = input
+                let ((weight, selectedPackage, shippingService), emittedForm, hazmatCategory, customsFormRequired) = input
                 guard let self, let selectedPackage, let shippingService else { return }
                 let package = buildSelectedPackage(selectedPackage,
                                                    weight: Double(weight) ?? 0,
                                                    shipmentID: shipment.index.description,
                                                    hazmatCategory: hazmatCategory,
-                                                   customsForm: customsFormIfRequired)
+                                                   customsForm: customsFormRequired ? emittedForm : nil)
                 shippingService.loadLabelRates(for: package)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func observeEUProductIdentifiersRequirement(originAddressIDPublisher: AnyPublisher<String?, Never>) {
+        $originAddress
+            .combineLatest($destinationAddress, originAddressIDPublisher, $shippingLabel)
+            .map { originAddress, destinationAddress, originAddressID, shippingLabel -> WooShippingEUProductIdentifiersRoute? in
+                guard let originAddress, let destinationAddress, shippingLabel == nil,
+                      WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
+                                                                        originState: originAddress.state,
+                                                                        destinationCountry: destinationAddress.country,
+                                                                        destinationState: destinationAddress.state) else {
+                    return nil
+                }
+                return WooShippingEUProductIdentifiersRoute(originID: originAddressID,
+                                                            originCountry: originAddress.country,
+                                                            originState: originAddress.state,
+                                                            originPostcode: originAddress.postcode,
+                                                            originCity: originAddress.city,
+                                                            destinationCountry: destinationAddress.country,
+                                                            destinationState: destinationAddress.state,
+                                                            destinationPostcode: destinationAddress.postcode,
+                                                            destinationCity: destinationAddress.city)
+            }
+            .removeDuplicates()
+            .handleEvents(receiveOutput: { [weak self] route in
+                self?.isCheckingEUProductIdentifiers = route != nil
+            })
+            .map { [weak self] route -> AnyPublisher<WooShippingEUProductIdentifiersRequirement?, Never> in
+                guard let self, let route else {
+                    return Just(nil).eraseToAnyPublisher()
+                }
+                return Future { [weak self] promise in
+                    guard let self else {
+                        promise(.success(nil))
+                        return
+                    }
+                    let action = WooShippingAction.checkEUProductIdentifiersRequirement(siteID: self.order.siteID,
+                                                                                         orderID: self.order.orderID,
+                                                                                         originID: route.originID) { requirement in
+                        promise(.success(requirement))
+                    }
+                    self.stores.dispatch(action)
+                }
+                .eraseToAnyPublisher()
+            }
+            .switchToLatest()
+            .sink { [weak self] requirement in
+                guard let self else { return }
+                guard let requirement else {
+                    self.isCheckingEUProductIdentifiers = false
+                    return
+                }
+                self.customsFormViewModel.updateEUProductIdentifiersRequirement(requirement)
+                self.isCheckingEUProductIdentifiers = false
             }
             .store(in: &subscriptions)
     }
@@ -599,6 +666,18 @@ private extension WooShippingShipmentDetailsViewModel {
             }
             .eraseToAnyPublisher()
     }
+}
+
+private struct WooShippingEUProductIdentifiersRoute: Equatable {
+    let originID: String?
+    let originCountry: String
+    let originState: String
+    let originPostcode: String
+    let originCity: String
+    let destinationCountry: String
+    let destinationState: String
+    let destinationPostcode: String
+    let destinationCity: String
 }
 
 private extension WooShippingShipmentDetailsViewModel {

@@ -72,6 +72,12 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `loadConfig`
     private var loadConfig = [ResultKey: Result<WooShippingConfig, Error>]()
 
+    /// The results to return based on the given arguments in `loadCustomsRequirements`
+    private var loadCustomsRequirements = [ResultKey: Result<Bool, Error>]()
+
+    /// The results to return based on the given arguments in `loadEUProductIdentifiers`
+    private var loadEUProductIdentifiers = [ResultKey: Result<[WooShippingEUProductIdentifiers], Error>]()
+
     /// The results to return based on the given arguments in `updateShipment`
     private var updateShipment = [ResultKey: Result<WooShippingShipments, Error>]()
 
@@ -194,6 +200,20 @@ final class MockWooShippingRemote {
                            thenReturn result: Result<WooShippingConfig, Error>) {
         let key = ResultKey(siteID: siteID)
         loadConfig[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `loadCustomsRequirements` is called.
+    func whenLoadingCustomsRequirements(siteID: Int64,
+                                        thenReturn result: Result<Bool, Error>) {
+        let key = ResultKey(siteID: siteID)
+        loadCustomsRequirements[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `loadEUProductIdentifiers` is called.
+    func whenLoadingEUProductIdentifiers(siteID: Int64,
+                                         thenReturn result: Result<[WooShippingEUProductIdentifiers], Error>) {
+        let key = ResultKey(siteID: siteID)
+        loadEUProductIdentifiers[key] = result
     }
 
     /// Set the value passed to the `completion` block if `updateShipment` is called.
@@ -475,6 +495,37 @@ extension MockWooShippingRemote: @MainActor WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.loadConfig[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func loadCustomsRequirements(siteID: Int64,
+                                 orderID: Int64,
+                                 originID: String?,
+                                 completion: @escaping (Result<Bool, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.loadCustomsRequirements[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func loadEUProductIdentifiers(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: @escaping (Result<[WooShippingEUProductIdentifiers], Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.loadEUProductIdentifiers[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

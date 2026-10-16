@@ -3,7 +3,7 @@ import Foundation
 
 /// Reports: Remote Endpoints
 ///
-public class ReportRemote: Remote {
+public class ReportRemote: Remote, @unchecked Sendable {
 
     /// Retrieves an orders totals report (for all known order statuses)
     ///

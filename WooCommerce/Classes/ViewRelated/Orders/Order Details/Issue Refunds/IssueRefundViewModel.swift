@@ -573,7 +573,24 @@ extension IssueRefundViewModel {
     /// Calculates whether the next button should be enabled or not
     ///
     private func calculateNextButtonEnableState() -> Bool {
-        !state.isLoadingRefunds && !state.refundFetchFailed && calculatePendingChangesState() && calculateRefundTotal() >= 0
+        guard !state.isLoadingRefunds, !state.refundFetchFailed, calculatePendingChangesState() else {
+            return false
+        }
+        let total = calculateRefundTotal()
+        return total > 0 || (total == 0 && isRefundingOnlyFreeProducts())
+    }
+
+    private func isRefundingOnlyFreeProducts() -> Bool {
+        let items = selectedItems().filter { $0.quantity > 0 }
+        guard items.isNotEmpty, shippingLinesToRefund().isEmpty,
+              !state.shouldRefundCustomAmounts || refundableFees().isEmpty else {
+            return false
+        }
+        let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
+        return items.allSatisfy {
+            formatter.convertToDecimal($0.item.total)?.decimalValue == 0
+                && formatter.convertToDecimal($0.item.totalTax)?.decimalValue == 0
+        }
     }
 
     /// Calculates whether the next button should be animating or not

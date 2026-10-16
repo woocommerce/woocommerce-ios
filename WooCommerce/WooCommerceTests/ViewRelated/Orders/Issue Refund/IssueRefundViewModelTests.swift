@@ -205,6 +205,93 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(sut.title, "$0.00")
     }
 
+    func test_next_when_paid_line_is_fully_refunded_by_amount_then_blocks_zero_refund() {
+        // Given
+        let paid = MockOrderItem.sampleItem(itemID: 1, quantity: 2, total: "200")
+        let other = MockOrderItem.sampleItem(itemID: 2, quantity: 1, total: "10")
+        let free = MockOrderItem.sampleItem(itemID: 3, quantity: 1, total: "0")
+        let order = MockOrders().makeOrder(items: [paid, other, free], shippingLines: [], fees: []).copy(
+            total: "210", refunds: [.init(refundID: 1, reason: nil, total: "-200")])
+        let refund = Refund.fake().copy(amount: "200", items: [
+            .init(itemID: 99, refundedItemID: "1", quantity: 0, taxes: [], total: "-200")
+        ], shippingLines: [], feeLines: [])
+        let sut = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: CurrencySettings())
+
+        // When
+        sut.updateRefundQuantity(quantity: 2, forItemAtIndex: 0)
+
+        // Then
+        XCTAssertEqual(sut.title, "$0.00")
+        XCTAssertFalse(sut.isNextButtonEnabled)
+
+        // When
+        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 2)
+
+        // Then
+        XCTAssertEqual(sut.title, "$0.00")
+        XCTAssertFalse(sut.isNextButtonEnabled)
+
+        // When
+        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 1)
+
+        // Then
+        XCTAssertEqual(sut.title, "$10.00")
+        XCTAssertTrue(sut.isNextButtonEnabled)
+    }
+
+    func test_next_when_selected_product_is_free_after_discount_then_ignores_unselected_paid_product() {
+        // Given
+        let free = MockOrderItem.sampleItem(itemID: 1, quantity: 1, subtotal: "100", total: "0")
+        let paid = MockOrderItem.sampleItem(itemID: 2, quantity: 1, total: "10")
+        let order = MockOrders().makeOrder(items: [free, paid], shippingLines: [], fees: []).copy(total: "10")
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings())
+
+        // When
+        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+
+        // Then
+        XCTAssertEqual(sut.title, "$0.00")
+        XCTAssertTrue(sut.isNextButtonEnabled)
+    }
+
+    func test_next_when_product_had_only_tax_and_tax_was_refunded_then_blocks_zero_refund() {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 1, taxes: [.init(taxID: 1, subtotal: "10", total: "10")],
+                                            total: "0", totalTax: "10")
+        let paid = MockOrderItem.sampleItem(itemID: 2, quantity: 1, total: "10")
+        let order = MockOrders().makeOrder(items: [item, paid], shippingLines: [], fees: []).copy(
+            total: "20", refunds: [.init(refundID: 1, reason: nil, total: "-10")])
+        let refund = Refund.fake().copy(amount: "10", items: [
+            .init(itemID: 99, refundedItemID: "1", quantity: 0, taxes: [.init(taxID: 1, subtotal: "-10", total: "-10")], total: "0")
+        ], shippingLines: [], feeLines: [])
+        let sut = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: CurrencySettings())
+
+        // When
+        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+
+        // Then
+        XCTAssertEqual(sut.title, "$0.00")
+        XCTAssertFalse(sut.isNextButtonEnabled)
+    }
+
+    func test_next_when_free_product_has_offsetting_shipping_and_fee_then_blocks_zero_refund() {
+        // Given
+        let free = MockOrderItem.sampleItem(itemID: 1, quantity: 1, total: "0")
+        let shipping = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "10", totalTax: "0", taxes: [])
+        let fee = OrderFeeLine.fake().copy(feeID: 1, total: "-10", totalTax: "0", taxes: [])
+        let order = MockOrders().makeOrder(items: [free], shippingLines: [shipping], fees: [fee]).copy(total: "0")
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings())
+
+        // When
+        sut.selectAllOrderItems()
+        sut.toggleRefundShipping()
+        sut.toggleRefundCustomAmounts()
+
+        // Then
+        XCTAssertEqual(sut.title, "$0.00")
+        XCTAssertFalse(sut.isNextButtonEnabled)
+    }
+
     func test_viewModel_does_not_have_shipping_section_on_order_without_shipping() {
         // Given
         let currencySettings = CurrencySettings()

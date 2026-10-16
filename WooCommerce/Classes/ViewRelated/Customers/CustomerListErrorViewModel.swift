@@ -46,7 +46,6 @@ final class CustomerListErrorViewModel {
     private let analytics: Analytics
 
     private(set) var state: State = .hidden
-    private(set) var isBusy = false
     var notice: Notice?
 
     @ObservationIgnored private var recovery: Recovery?
@@ -75,24 +74,15 @@ final class CustomerListErrorViewModel {
         let version = resultVersion
 
         guard isAnalyticsRouteMissing(error) else {
-            isBusy = false
-            switch state {
-            case .shown, .generic:
-                state = .generic
-                return true
-            case .hidden, .checking:
-                state = .hidden
+            // Once the Analytics error has shown, cached customers stay hidden until a load succeeds.
+            guard isActive else {
                 return false
             }
+            state = .generic
+            return true
         }
 
-        if case .shown = state {
-            isBusy = true
-        } else {
-            state = .checking
-            isBusy = true
-        }
-
+        state = .checking
         let result = await retrieveAnalyticsSetting()
         if case let .failure(error) = result {
             DDLogError("⛔️ Error retrieving Analytics setting: \(error)")
@@ -101,7 +91,6 @@ final class CustomerListErrorViewModel {
             return true
         }
 
-        isBusy = false
         let message: Message
         let cause: Cause
         switch result {
@@ -130,20 +119,23 @@ final class CustomerListErrorViewModel {
             analytics.track(event: .CustomersHub.customerListAnalyticsUnavailableReloadSuccess(source: source.rawValue, type: recovery.rawValue))
         }
         recovery = nil
-        isBusy = false
         state = .hidden
         notice = nil
     }
 
     func retry() {
-        isBusy = true
+        // Retrying from the generic error isn't a recovery from the Analytics error.
+        if case .shown = state {
+            recovery = .retry
+        }
+        state = .checking
         notice = nil
-        recovery = .retry
         reloadCustomers()
     }
 
     func enableAnalytics() async {
-        isBusy = true
+        let previousState = state
+        state = .checking
         notice = nil
 
         do {
@@ -153,7 +145,7 @@ final class CustomerListErrorViewModel {
                 try await enableAnalyticsSetting()
             } catch {
                 DDLogError("⛔️ Error enabling analytics: \(error)")
-                isBusy = false
+                state = previousState
                 notice = Notice(message: Localization.enableAnalyticsFailure, feedbackType: .error)
                 return
             }
@@ -207,10 +199,9 @@ private extension CustomerListErrorViewModel {
 
 #if DEBUG
 extension CustomerListErrorViewModel {
-    static func preview(state: State, isBusy: Bool = false) -> CustomerListErrorViewModel {
+    static func preview(state: State) -> CustomerListErrorViewModel {
         let viewModel = CustomerListErrorViewModel(siteID: 0, source: .customers, reloadCustomers: {})
         viewModel.state = state
-        viewModel.isBusy = isBusy
         return viewModel
     }
 }

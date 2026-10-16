@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// The various card brands for a card.
-@frozen public enum CardBrand: String, CaseIterable, Codable, GeneratedFakeable {
+@frozen public enum CardBrand: String, CaseIterable, Codable, Sendable, GeneratedFakeable {
     /// Visa card
     case visa
 

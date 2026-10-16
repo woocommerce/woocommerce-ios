@@ -24,7 +24,6 @@ release archive into the workspace, verifies the SHA-256 in
 2. Build or locate a Debug or Alpha/prototype `.app`.
 3. Copy `env.example` to `.env.local` and fill it locally.
    WordPress.com-hosted not-Woo fixtures require the dedicated WP.com pair.
-   Jurassic Ninja `/wp-admin` or `/wp-admin/` URLs are normalized to the site root.
 
    The lab store can be provisioned instead of filled in by hand. See
    [Provisioning a lab store](#provisioning-a-lab-store) below.
@@ -107,10 +106,8 @@ password grant cannot answer a 2FA challenge non-interactively. Use test account
 
 It ships with the WooCommerce sample products, and the script adds 25 completed orders,
 one customer and a `maestro10` coupon, so the order and analytics flows run against it.
-Pass `--no-jetpack-site` with a second Jurassic Ninja site created
-without Jetpack to fill in `MAESTRO_WOO_NO_JETPACK_*` as well. The other negative-login
-fixtures (`MAESTRO_WOO_NOT_A_WOO_STORE_*`, `MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are
-filled in by hand.
+The negative-login fixtures (`MAESTRO_WOO_NOT_A_WOO_STORE_*`,
+`MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are filled in by hand.
 
 Jurassic Ninja sites expire after 7 days of inactivity. Re-run the script or the skill
 against a new site when that happens; the WordPress.com account already in `.env.local`
@@ -119,19 +116,27 @@ is reused.
 ## Profiles
 
 ```bash
-.maestro/scripts/run-smoke-tests.sh --plan --profile phone-full
+.maestro/scripts/run-smoke-tests.sh --plan --profile full
 .maestro/scripts/run-smoke-tests.sh --profile core
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile core
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile phone-full --seed
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile pos-ipad --seed
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile ios-system --seed
+.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile full --device "iPhone 17" --pos-device "iPad Pro 13-inch (M5)"
+.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile pos --device "iPad Pro 13-inch (M5)"
 ```
+
+- `core`: the `smoke_core` flows, quarantine excluded.
+- `full`: every flow except the quarantined ones, for release smoke testing. The phone flows run on `--device`, then
+  the POS flows run on the iPad passed with `--pos-device`, in the same run, so they never share the lab store at once.
+  Without `--pos-device`, the runner picks an available iPad simulator.
+- `pos`: the POS flows only, quarantine excluded, on an iPad.
+
+`full` and `pos` seed their fixtures without `--seed`, because they include destructive flows. A selection without
+destructive flows skips seeding. A selection of only POS flows under a phone profile runs on the iPad alone.
 
 Run one flow or rerun failures:
 
 ```bash
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app .maestro/flows/dashboard_stats.yaml
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile phone-full --seed --rerun-failed ~/woocommerce-maestro-output/SUITE-.../report.xml
+.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile full --rerun-failed ~/woocommerce-maestro-output/SUITE-.../report.xml
 ```
 
 A rerun needs the same profile and options as the run it repeats. The HTML
@@ -166,15 +171,14 @@ checks them before any flow runs. Seeding also creates a product named
 `Maestro POS <run id>`, which the POS cash payment flow sells so cleanup can
 find its order.
 
-POS runs require a real-eligible store/account and an iPad simulator. System
-surface flows are quarantined separately. Neither profile turns an ineligible
-device/store into a passing no-op.
+POS runs require a real-eligible store/account and an iPad simulator. No profile
+turns an ineligible device or store into a passing no-op.
 
-The lab store used by `phone-full` must be eligible for Inbox, Blaze and card
-readers, and the shared store for Google for WooCommerce. The P2 lists all of
-them as required hub coverage, so an absent `menu-inbox`, `menu-blaze`,
-`menu-google-ads` or `card-reader-manuals` fails the extended flow instead of
-being reported as a feature-gated skip.
+The lab store used by `full` must be eligible for Inbox and card readers, and
+the shared store for Google for WooCommerce. The P2 lists all of them as
+required hub coverage, so an absent `menu-inbox`, `menu-google-ads` or
+`card-reader-manuals` fails the extended flow instead of being reported as a
+feature-gated skip.
 
 Validate traceability and static files with:
 
@@ -183,7 +187,3 @@ python3 .maestro/scripts/check-smoke-coverage.py
 python3 -m unittest discover .maestro/scripts/tests
 for script in .maestro/scripts/*.sh; do bash -n "$script"; done
 ```
-
-The coverage checker reports full, partial, and manual item counts separately.
-A flow-backed partial item must document its exact gap in
-`smoke-coverage.yaml`; its existence is not treated as complete P2 coverage.

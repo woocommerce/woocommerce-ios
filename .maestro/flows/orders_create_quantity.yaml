@@ -5,7 +5,7 @@ appId: ${APP_ID}
 name: Change the quantity of a product in a new order
 tags:
   - smoke_extended
-  - flaky_quarantine
+  - quarantine
   - destructive
   - orders
 ---

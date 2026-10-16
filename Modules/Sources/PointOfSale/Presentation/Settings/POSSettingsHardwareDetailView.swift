@@ -64,7 +64,6 @@ struct POSSettingsHardwareDetailView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(title: Localization.hardwareTitle)
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
                 ForEach(hardwareDestinations) { destination in

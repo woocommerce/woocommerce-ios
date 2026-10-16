@@ -127,7 +127,11 @@ extension XCTestCase {
         // `awaiting` is executed in a task closure so that the function can return whenever the expectation
         // is fulfilled before `awaiting` completes.
         Task { @MainActor in
-            try await awaiting(promise)
+            do {
+                try await awaiting(promise)
+            } catch {
+                XCTFail("`awaiting` threw an error: \(error)", file: file, line: line)
+            }
         }
 
         await fulfillment(of: [exp], timeout: timeout)

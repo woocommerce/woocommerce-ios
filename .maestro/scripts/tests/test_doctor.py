@@ -61,11 +61,11 @@ class DoctorTests(unittest.TestCase):
         ]
         for args, expected in cases:
             with self.subTest(store=args.store, seed=args.seed):
-                problems = DOCTOR.selection_problems(flows, {}, args)
+                problems = DOCTOR.selection_problems(flows, args)
 
                 self.assertTrue(any(problem.startswith(expected) for problem in problems), problems)
 
-        self.assertEqual([], DOCTOR.selection_problems(flows, {}, DOCTOR.argparse.Namespace(seed=True, store="lab")))
+        self.assertEqual([], DOCTOR.selection_problems(flows, DOCTOR.argparse.Namespace(seed=True, store="lab")))
 
 
 if __name__ == "__main__":

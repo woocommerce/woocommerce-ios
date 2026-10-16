@@ -83,8 +83,8 @@ public final class MockStorageManager: StorageManagerType, Sendable {
             }
 
             NSLog("💣 [CoreDataManager] Stack Destroyed!")
+            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
         }
-        NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
     }
 
     /// Handles a write operation using the background context and saves changes when done.

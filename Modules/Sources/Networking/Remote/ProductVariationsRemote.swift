@@ -70,6 +70,9 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol, @
         let request = productVariationsRequest(for: siteID,
                                                productID: productID,
                                                variationIDs: variationIDs,
+                                               // Explicit: don't rely on the server default order.
+                                               orderBy: .date,
+                                               order: .descending,
                                                context: context,
                                                pageNumber: pageNumber,
                                                pageSize: pageSize)
@@ -86,6 +89,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol, @
         let request = productVariationsRequest(for: siteID,
                                                productID: productID,
                                                variationIDs: variationIDs,
+                                               orderBy: .date,
+                                               order: .descending,
                                                context: nil,
                                                pageNumber: pageNumber,
                                                pageSize: pageSize,

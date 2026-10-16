@@ -468,7 +468,7 @@ private extension POSRefundSubmissionAdaptorTests {
             switch action {
             case .selectedPaymentGatewayAccount(let onCompletion):
                 onCompletion(nil)
-            case .loadAccounts(_, let onCompletion):
+            case .loadAccounts(_, _, let onCompletion):
                 onCompletion(.success(()))
             default:
                 break

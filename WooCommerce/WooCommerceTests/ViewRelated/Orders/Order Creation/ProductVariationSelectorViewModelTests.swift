@@ -175,6 +175,28 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled after sync ends")
     }
 
+    func test_syncFirstPage_when_called_then_requests_100_variations_per_page() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
+        var requestedPageSize: Int?
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .synchronizeProductVariationsSubset(_, _, _, _, pageSize, onCompletion):
+                requestedPageSize = pageSize
+                onCompletion(.success(false))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.syncFirstPage()
+
+        // Then
+        XCTAssertEqual(requestedPageSize, 100)
+    }
+
     func test_sync_status_updates_as_expected_for_empty_product_variation_list() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

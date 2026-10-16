@@ -68,6 +68,13 @@ public protocol WooShippingRemoteProtocol {
     func loadConfig(siteID: Int64,
                     orderID: Int64,
                     completion: @escaping (Result<WooShippingConfig, Error>) -> Void)
+    func loadCustomsRequirements(siteID: Int64,
+                                orderID: Int64,
+                                originID: String?,
+                                completion: @escaping (Result<Bool, Error>) -> Void)
+    func loadEUProductIdentifiers(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: @escaping (Result<[WooShippingEUProductIdentifiers], Error>) -> Void)
     func updateShipment(siteID: Int64,
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
@@ -512,6 +519,41 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol, @unchec
         }
     }
 
+    /// Loads customs requirements for an order and selected origin.
+    public func loadCustomsRequirements(siteID: Int64,
+                                        orderID: Int64,
+                                        originID: String?,
+                                        completion: @escaping (Result<Bool, Error>) -> Void) {
+        var parameters: RequestParameterConvertibleDictionary = [ParameterKey.orderID: orderID]
+        if let originID {
+            parameters[ParameterKey.originID] = originID
+        }
+
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Path.customsRequirements,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        enqueue(request, mapper: WooShippingCustomsRequirementsMapper(), completion: completion)
+    }
+
+    /// Loads product identifiers from the config line items for an order.
+    public func loadEUProductIdentifiers(siteID: Int64,
+                                         orderID: Int64,
+                                         completion: @escaping (Result<[WooShippingEUProductIdentifiers], Error>) -> Void) {
+        let parameters: RequestParameterConvertibleDictionary = [
+            ParameterKey.fields: WooShippingEUProductIdentifiersMapper.fieldsToLoad
+        ]
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.config(orderID: orderID),
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        enqueue(request, mapper: WooShippingEUProductIdentifiersMapper(), completion: completion)
+    }
+
     /// Updates shipment for a given order
     /// - Parameters:
     ///   - siteID: Remote ID of the site.
@@ -614,6 +656,7 @@ private extension WooShippingRemote {
         static let packages = "packages"
         static let rates = "label/rate"
         static let accountSettings = "account/settings"
+        static let customsRequirements = "label/customs-requirements"
         static let purchase = "label/purchase"
         static let status = "label/status"
         static let print = "label/print"
@@ -656,6 +699,7 @@ private extension WooShippingRemote {
         static let address = "address"
         static let isVerified = "isVerified"
         static let fields = "_fields"
+        static let originID = "origin_id"
         static let selectedPaymentMethodID = "selected_payment_method_id"
         static let emailReceipts = "email_receipts"
         static let enabled = "enabled"

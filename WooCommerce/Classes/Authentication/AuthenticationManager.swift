@@ -129,6 +129,11 @@ class AuthenticationManager: Authentication {
     /// site-address flow. The standard prologue stays as the app's first screen.
     ///
     func authenticationUI() -> UIViewController {
+        // A fresh authenticator replaces the previous navigation stack. Recovery paths
+        // can log out before reaching `startStorePicker`, leaving its QR coordinator
+        // alive and swallowing login taps because the old stack still has QR screens.
+        qrLoginCoordinator = nil
+
         let loginUI = WordPressAuthenticator.loginUI(onPrimaryLoginCTA: { [weak self] in
             guard let self else { return false }
             // Resets Apple ID at the beginning of the authentication.

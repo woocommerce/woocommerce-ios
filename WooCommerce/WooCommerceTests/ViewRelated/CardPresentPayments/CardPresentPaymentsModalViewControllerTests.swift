@@ -219,6 +219,33 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
 
         XCTAssertFalse(secondaryButton.isHidden)
     }
+
+    @MainActor
+    func test_setViewModel_when_first_view_model_hides_top_subtitle_then_top_subtitle_uses_title_font() throws {
+        // Given
+        let viewController = CardPresentPaymentsModalViewController(viewModel: ModalViewModel(textMode: .reducedTopInfo, actionsMode: .none))
+        _ = try XCTUnwrap(viewController.view)
+
+        // When
+        viewController.setViewModel(ModalViewModel(textMode: .fullInfo, actionsMode: .none))
+
+        // Then
+        XCTAssertEqual(viewController.getTopSubtitleLabel().font, .title1)
+    }
+
+    @MainActor
+    func test_setViewModel_when_first_view_model_hides_bottom_labels_then_bottom_labels_use_their_fonts() throws {
+        // Given
+        let viewController = CardPresentPaymentsModalViewController(viewModel: ModalViewModel(textMode: .noBottomInfo, actionsMode: .oneAction))
+        _ = try XCTUnwrap(viewController.view)
+
+        // When
+        viewController.setViewModel(ModalViewModel(textMode: .fullInfo, actionsMode: .none))
+
+        // Then
+        XCTAssertEqual(viewController.getBottomTitleLabel().font, .subheadline)
+        XCTAssertEqual(viewController.getBottomSubtitleLabel().font, .footnote)
+    }
 }
 
 

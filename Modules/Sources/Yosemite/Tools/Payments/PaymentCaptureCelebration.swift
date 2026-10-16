@@ -4,7 +4,14 @@ import UIKit
 /// Allows mocking payment capture celebration UX so that the cha-ching sounds aren't played in unit testing.
 public protocol PaymentCaptureCelebrationProtocol {
     /// Called when a payment is captured successfully.
-    func celebrate()
+    /// - Parameter playsSound: `false` celebrates with haptic feedback only.
+    func celebrate(playsSound: Bool)
+}
+
+public extension PaymentCaptureCelebrationProtocol {
+    func celebrate() {
+        celebrate(playsSound: true)
+    }
 }
 
 /// Plays a sound and provides haptic feedback when a payment capture has been completed successfully
@@ -15,8 +22,10 @@ public final class PaymentCaptureCelebration: NSObject, PaymentCaptureCelebratio
         super.init()
     }
 
-    public func celebrate() {
-        playSound()
+    public func celebrate(playsSound: Bool) {
+        if playsSound {
+            playSound()
+        }
         shakeDevice()
     }
 }

@@ -10,7 +10,7 @@ public protocol AnnouncementsRemoteProtocol {
 
 /// `Announcement` remote endpoints.
 ///
-public final class AnnouncementsRemote: Remote, AnnouncementsRemoteProtocol {
+public final class AnnouncementsRemote: Remote, AnnouncementsRemoteProtocol, @unchecked Sendable {
 
     /// Retrieves all the `Announcement` available for a given `appVersion` and `locale`
     ///

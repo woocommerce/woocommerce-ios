@@ -26,6 +26,7 @@ struct WooShippingShipmentDetailsView: View {
                                  enabled: !viewModel.canViewLabel)
 
             WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
+                                  isCheckingRequirements: viewModel.isCheckingEUProductIdentifiers,
                                   customsFormViewModel: viewModel.customsFormViewModel)
                 .padding(.bottom, Layout.contentSpacing)
                 .renderedIf(viewModel.shouldShowCustomsForm)

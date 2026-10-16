@@ -193,7 +193,7 @@ items:
     flow: .maestro/flows/products_media_upload.yaml
   - id: products.detail.media.wp-library
     title: Upload product media from the WordPress Media Library
-    manual: "Cleanup deletes every image on a run-owned product, which could include a shared library image."
+    flow: .maestro/flows/products_media_upload.yaml
   - id: products.detail.media.camera
     title: Upload product media with the camera
     manual: "The simulator has no camera."

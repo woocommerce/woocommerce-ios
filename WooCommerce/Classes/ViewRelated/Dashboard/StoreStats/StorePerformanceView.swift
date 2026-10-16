@@ -38,10 +38,9 @@ struct StorePerformanceView: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if viewModel.loadingError != nil {
-                errorStateView
-                    .padding(.horizontal, Layout.padding)
-            } else if viewModel.analyticsEnabled {
+            if viewModel.analyticsEnabled {
+                // Keep the range picker visible during load errors so the merchant can switch
+                // to a shorter range without having to leave the error state.
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
@@ -49,33 +48,38 @@ struct StorePerformanceView: View {
 
                 Divider()
 
-                revenueTypeSelector
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
+                if viewModel.loadingError != nil {
+                    errorStateView
+                        .padding(.horizontal, Layout.padding)
+                } else {
+                    revenueTypeSelector
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
 
-                statsView
-                    .padding(.vertical, Layout.padding)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
+                    statsView
+                        .padding(.vertical, Layout.padding)
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
 
-                timestampView
-                    .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
+                    timestampView
+                        .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
 
-                chartView
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
+                    chartView
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
 
-                Divider()
-                    .padding(.leading, Layout.padding)
+                    Divider()
+                        .padding(.leading, Layout.padding)
 
-                viewAllAnalyticsButton
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    viewAllAnalyticsButton
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                        .shimmering(active: viewModel.syncingData)
+                }
             } else {
                 UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)

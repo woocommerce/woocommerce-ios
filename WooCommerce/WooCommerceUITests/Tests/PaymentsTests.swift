@@ -1,18 +1,23 @@
 import UITestsFoundation
 import XCTest
 
+@MainActor
 final class PaymentsTests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
 
-        let app = XCUIApplication()
-        app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
-        app.launch()
-        try LoginFlow.login()
+        // XCTest runs synchronous setup on the main thread, where XCUI automation must stay.
+        try MainActor.assumeIsolated {
 
-        try TabNavComponent().goToMenuScreen()
-            .goToPaymentsScreen()
+            let app = XCUIApplication()
+            app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
+            app.launch()
+            try LoginFlow.login()
+
+            try TabNavComponent().goToMenuScreen()
+                .goToPaymentsScreen()
+        }
     }
 
     func test_load_chipper_card_reader_manual() throws {

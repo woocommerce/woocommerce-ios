@@ -17,7 +17,7 @@ public enum SiteSettingsFeature: Sendable {
 
 /// SiteSettings: Remote Endpoints
 ///
-public class SiteSettingsRemote: Remote {
+public class SiteSettingsRemote: Remote, @unchecked Sendable {
 
     /// Retrieves all of the general `SiteSetting`s for a given site.
     ///

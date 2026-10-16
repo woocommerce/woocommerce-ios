@@ -1,39 +1,57 @@
 import Combine
 import Foundation
 import Alamofire
+import Synchronization
 
 
+// `@unchecked` only because the class is not `final`: `MockDeferredNetwork` subclasses it. All mutable state is in `state`.
 /// Network Mock: Allows us to simulate HTTP Responses.
 ///
-class MockNetwork: Network {
+class MockNetwork: Network, @unchecked Sendable {
+
+    private struct State {
+        /// Mapping between URL Suffix and JSON Mock responses (in a FIFO queue).
+        ///
+        var responseQueue = [String: Queue<String>]()
+
+        /// Mapping between URL Suffix and JSON Mock responses (in a simple array).
+        ///
+        var responseMap = [String: String]()
+
+        /// Mapping between URL Suffix and Error responses.
+        ///
+        var errorMap = [String: Error]()
+
+        var requestsForResponseData = [URLRequestConvertible]()
+        var responseHeaders: [String: String]?
+        var simulatesJetpackTunnel = true
+    }
 
     /// Should this instance use the responseQueue or responseMap
     ///
-    private var useResponseQueue: Bool = false
+    private let useResponseQueue: Bool
 
-    /// Mapping between URL Suffix and JSON Mock responses (in a FIFO queue).
-    ///
-    private var responseQueue = [String: Queue<String>]()
-
-    /// Mapping between URL Suffix and JSON Mock responses (in a simple array).
-    ///
-    private var responseMap = [String: String]()
-
-    /// Mapping between URL Suffix and Error responses.
-    ///
-    private var errorMap = [String: Error]()
+    private let state = Mutex(State())
 
     /// Keeps a collection of all of the `responseData` requests.
     ///
-    var requestsForResponseData = [URLRequestConvertible]()
+    var requestsForResponseData: [URLRequestConvertible] {
+        state.withLock { $0.requestsForResponseData }
+    }
 
     /// Response headers to be returned with the response data.
-    var responseHeaders: [String: String]?
+    var responseHeaders: [String: String]? {
+        get { state.withLock { $0.responseHeaders } }
+        set { state.withLock { $0.responseHeaders = newValue } }
+    }
 
     /// Whether Jetpack requests count as sent through the tunnel. Set to `false` to simulate a site the
     /// app reaches directly with an application password.
     ///
-    var simulatesJetpackTunnel = true
+    var simulatesJetpackTunnel: Bool {
+        get { state.withLock { $0.simulatesJetpackTunnel } }
+        set { state.withLock { $0.simulatesJetpackTunnel = newValue } }
+    }
 
     /// Number of notification objects in notifications-load-all.json file.
     ///
@@ -75,7 +93,7 @@ class MockNetwork: Network {
     /// specified response file, loaded as *Data*. Otherwise, an error will be relayed back (.notFound!).
     ///
     func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        requestsForResponseData.append(request)
+        recordRequest(request)
 
         if let error = error(for: request) {
             completion(.failure(error))
@@ -92,7 +110,7 @@ class MockNetwork: Network {
 
     func responseDataAndHeaders(for request: any URLRequestConvertible,
                                 isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
-        requestsForResponseData.append(request)
+        recordRequest(request)
 
         if let error = error(for: request) {
             throw error
@@ -106,7 +124,7 @@ class MockNetwork: Network {
     }
 
     func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
-        requestsForResponseData.append(request)
+        recordRequest(request)
 
         if let error = error(for: request) {
             return Just<Swift.Result<Data, Error>>(.failure(error)).eraseToAnyPublisher()
@@ -145,14 +163,16 @@ extension MockNetwork {
     /// We'll return the specified Error, whenever a request matches the specified Suffix Criteria!
     ///
     func simulateError(requestUrlSuffix: String, error: Error) {
-        errorMap[requestUrlSuffix] = error
+        state.withLock { $0.errorMap[requestUrlSuffix] = error }
     }
 
     /// Removes all of the stored Simulated Responses.
     ///
     func removeAllSimulatedResponses() {
-        responseMap.removeAll()
-        errorMap.removeAll()
+        state.withLock {
+            $0.responseMap.removeAll()
+            $0.errorMap.removeAll()
+        }
     }
 }
 
@@ -164,16 +184,22 @@ private extension MockNetwork {
     /// Adds the URL suffix and response JSON Filename to the response queue
     ///
     private func addResponseToQueue(requestUrlSuffix: String, filename: String) {
-        if responseQueue[requestUrlSuffix] == nil {
-            responseQueue[requestUrlSuffix] = Queue<String>()
+        state.withLock {
+            if $0.responseQueue[requestUrlSuffix] == nil {
+                $0.responseQueue[requestUrlSuffix] = Queue<String>()
+            }
+            $0.responseQueue[requestUrlSuffix]?.enqueue(filename)
         }
-        responseQueue[requestUrlSuffix]?.enqueue(filename)
     }
 
     /// Adds the URL suffix and response JSON Filename to the response map
     ///
     private func addResponseToMap(requestUrlSuffix: String, filename: String) {
-        responseMap[requestUrlSuffix] = filename
+        state.withLock { $0.responseMap[requestUrlSuffix] = filename }
+    }
+
+    private func recordRequest(_ request: URLRequestConvertible) {
+        state.withLock { $0.requestsForResponseData.append(request) }
     }
 
     /// Returns the Mock JSON Filename for a given URLRequestConvertible from either:
@@ -183,30 +209,34 @@ private extension MockNetwork {
     ///
     func filename(for request: URLRequestConvertible) -> String? {
         let searchPath = path(for: request)
-        if useResponseQueue {
-            if let keyAndQueue = responseQueue.first(where: { searchPath.hasSuffix($0.key) }) {
-                return responseQueue[keyAndQueue.key]?.dequeue()
+        return state.withLock { state -> String? in
+            if useResponseQueue {
+                if let keyAndQueue = state.responseQueue.first(where: { searchPath.hasSuffix($0.key) }) {
+                    return state.responseQueue[keyAndQueue.key]?.dequeue()
+                }
+            } else {
+                if let filename = state.responseMap.filter({ searchPath.hasSuffix($0.key) })
+                    // In cases where a suffix is a substring of another suffix, the longer suffix is preferred in matched results.
+                    .max(by: { $0.key.count < $1.key.count })?.value {
+                    return filename
+                }
             }
-        } else {
-            if let filename = responseMap.filter({ searchPath.hasSuffix($0.key) })
-                // In cases where a suffix is a substring of another suffix, the longer suffix is preferred in matched results.
-                .max(by: { $0.key.count < $1.key.count })?.value {
-                return filename
-            }
-        }
 
-        return nil
+            return nil
+        }
     }
 
     /// Returns the Mock Error for a given URLRequestConvertible.
     ///
     private func error(for request: URLRequestConvertible) -> Error? {
         let searchPath = path(for: request)
-        for (pattern, error) in errorMap where searchPath.hasSuffix(pattern) {
-            return error
-        }
+        return state.withLock { state -> Error? in
+            for (pattern, error) in state.errorMap where searchPath.hasSuffix(pattern) {
+                return error
+            }
 
-        return nil
+            return nil
+        }
     }
 
     /// Returns the "Request Path" for a given URLRequestConvertible instance.

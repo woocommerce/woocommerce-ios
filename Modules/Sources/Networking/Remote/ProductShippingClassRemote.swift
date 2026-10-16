@@ -2,7 +2,7 @@ import Foundation
 
 /// ProductShippingClass: Remote Endpoints
 ///
-public class ProductShippingClassRemote: Remote {
+public class ProductShippingClassRemote: Remote, @unchecked Sendable {
 
     /// Retrieves all of the `ProductShippingClass`s available.
     ///

@@ -1,9 +1,10 @@
 import Combine
 import Foundation
 import Alamofire
+import os
 
 /// Helper type to observe selected site info
-public struct JetpackSite: Equatable {
+public struct JetpackSite: Equatable, Sendable {
     let siteID: Int64
     let siteAddress: String
     let applicationPasswordAvailable: Bool
@@ -15,7 +16,7 @@ public struct JetpackSite: Equatable {
     }
 }
 
-public enum RequestAuthenticationMode: String {
+public enum RequestAuthenticationMode: String, Sendable {
     case appPasswords = "app_passwords"
     case appPasswordsWithJetpack = "app_passwords_with_jetpack" // switching to app password for Jetpack sites
     case jetpackTunnel = "jetpack_tunnel"
@@ -27,12 +28,37 @@ extension Alamofire.MultipartFormData: MultipartFormData {
     }
 }
 
+// `@unchecked` for three stored values that are not `Sendable` but are safe here: `selectedSite` (an `AnyPublisher`,
+// only subscribed from `init` and the app password subscription), `userDefaults` (documented thread-safe), and the
+// subscriptions, kept in `subscriptions`. The state requests read is in `routing`.
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
-public class AlamofireNetwork: Network {
+public final class AlamofireNetwork: Network, @unchecked Sendable {
+
+    /// What the site and app password subscriptions change while requests read it from any thread.
+    ///
+    private struct Routing: Sendable {
+        var authenticationMode: RequestAuthenticationMode?
+
+        /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
+        ///
+        var requestConverter: RequestConverter
+    }
+
+    private struct Subscriptions {
+        var site: AnyCancellable?
+        var appPasswordSupport: AnyCancellable?
+    }
+
+    /// `OSAllocatedUnfairLock` rather than `Mutex`, which needs watchOS 11.
+    private let routing: OSAllocatedUnfairLock<Routing>
+
+    private let subscriptions = OSAllocatedUnfairLock(uncheckedState: Subscriptions())
 
     /// authentication mode for requests
-    public private(set) var authenticationMode: RequestAuthenticationMode?
+    public var authenticationMode: RequestAuthenticationMode? {
+        routing.withLock { $0.authenticationMode }
+    }
 
     /// Session manager used for Alamofire requests.
     private let alamofireSession: Alamofire.Session
@@ -43,9 +69,9 @@ public class AlamofireNetwork: Network {
 
     private let userDefaults: UserDefaults
 
-    /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
-    ///
-    private var requestConverter: RequestConverter
+    private var requestConverter: RequestConverter {
+        routing.withLock { $0.requestConverter }
+    }
 
     /// Authenticator to update requests authorization header if possible.
     ///
@@ -53,12 +79,8 @@ public class AlamofireNetwork: Network {
 
     public var session: URLSession { Session.default.session }
 
-    private var siteSubscription: AnyCancellable?
-
     /// Thread-safe error handler for failure tracking and retry logic
     private let errorHandler: AlamofireNetworkErrorHandler
-
-    private var appPasswordSupportSubscription: AnyCancellable?
 
     /// Background task that discovers the REST API root URL eagerly on init, so REST requests
     /// made immediately after authentication use the correct base path.
@@ -86,7 +108,7 @@ public class AlamofireNetwork: Network {
         self.selectedSite = selectedSite
         self.userDefaults = userDefaults
         self.errorHandler = AlamofireNetworkErrorHandler(credentials: credentials, userDefaults: userDefaults)
-        self.requestConverter = {
+        let requestConverter: RequestConverter = {
             let siteAddress: String? = {
                 switch credentials {
                 case let .wporg(_, _, siteAddress):
@@ -99,6 +121,7 @@ public class AlamofireNetwork: Network {
             }()
             return RequestConverter(siteAddress: siteAddress)
         }()
+        self.routing = OSAllocatedUnfairLock(initialState: Routing(authenticationMode: nil, requestConverter: requestConverter))
         let requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(
             credentials: credentials,
             cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints
@@ -345,11 +368,12 @@ public class AlamofireNetwork: Network {
 private extension AlamofireNetwork {
 
     func observeAppPasswordSupportState(_ appPasswordSupportState: AnyPublisher<Bool, Never>) {
-        appPasswordSupportSubscription = appPasswordSupportState
+        let subscription = appPasswordSupportState
             .removeDuplicates()
             .sink { [weak self] enabled in
                 self?.updateAppPasswordSwitching(enabled: enabled)
             }
+        subscriptions.withLockUnchecked { $0.appPasswordSupport = subscription }
     }
 
     func updateAppPasswordSwitching(enabled: Bool) {
@@ -357,18 +381,18 @@ private extension AlamofireNetwork {
         if enabled, let selectedSite {
             observeSelectedSite(selectedSite)
         } else {
-            requestConverter = RequestConverter(siteAddress: nil)
+            setRequestConverter(RequestConverter(siteAddress: nil))
             requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
             requestAuthenticator.delegate = nil
             updateAuthenticationMode(.jetpackTunnel)
-            siteSubscription = nil
+            subscriptions.withLockUnchecked { $0.site = nil }
         }
     }
 
     /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
     ///
     func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
-        siteSubscription = selectedSite
+        let subscription = selectedSite
             .removeDuplicates()
             .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupportedList))
             .sink { [weak self] site, unsupportedList in
@@ -378,13 +402,13 @@ private extension AlamofireNetwork {
                         siteID: site.siteID,
                         unsupportedList: unsupportedList
                       ) == false else {
-                    requestConverter = RequestConverter(siteAddress: nil)
+                    setRequestConverter(RequestConverter(siteAddress: nil))
                     requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
                     requestAuthenticator.delegate = nil
                     updateAuthenticationMode(.jetpackTunnel)
                     return
                 }
-                requestConverter = RequestConverter(siteAddress: site.siteAddress)
+                setRequestConverter(RequestConverter(siteAddress: site.siteAddress))
                 requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
                     credentials: credentials,
                     selectedSite: site,
@@ -394,11 +418,16 @@ private extension AlamofireNetwork {
                 errorHandler.prepareAppPasswordSupport(for: site.siteID) // reset failure count
                 updateAuthenticationMode(.appPasswordsWithJetpack)
             }
+        subscriptions.withLockUnchecked { $0.site = subscription }
+    }
+
+    func setRequestConverter(_ requestConverter: RequestConverter) {
+        routing.withLock { $0.requestConverter = requestConverter }
     }
 
     func updateAuthenticationMode(_ mode: RequestAuthenticationMode?) {
         DispatchQueue.main.async { [weak self] in
-            self?.authenticationMode = mode
+            self?.routing.withLock { $0.authenticationMode = mode }
         }
     }
 }

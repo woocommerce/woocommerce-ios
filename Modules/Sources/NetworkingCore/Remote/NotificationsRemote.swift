@@ -10,7 +10,7 @@ public protocol NotificationsRemoteProtocol {
 
 /// Notifications: Remote Endpoints
 ///
-public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
+public final class NotificationsRemote: Remote, NotificationsRemoteProtocol, @unchecked Sendable {
 
     /// Retrieves latest Notifications (OR collection of specified Notifications, whenever the NoteIds is present).
     ///

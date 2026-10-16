@@ -1,6 +1,6 @@
 import Foundation
 
-public class WCAnalyticsCustomerRemote: Remote {
+public class WCAnalyticsCustomerRemote: Remote, @unchecked Sendable {
     /// Retrieves a `Customer` collection from `/wc-analytics/customers` based on the `?search=` parameter
     /// Or doesn't perform the request if the`?search=` parameter is empty
     ///

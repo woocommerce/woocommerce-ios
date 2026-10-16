@@ -1,5 +1,6 @@
 import Alamofire
 import Foundation
+import Synchronization
 import Testing
 
 @testable import Networking
@@ -297,12 +298,12 @@ struct JetpackTunnelRawBodyErrorLoggerTests {
         request: NetworkingCore.Request,
         transportStatus: Int = 500
     ) -> [String] {
-        var messages: [String] = []
-        let logger = JetpackTunnelRawBodyErrorLogger(warningSink: { messages.append($0) })
+        let messages = Mutex<[String]>([])
+        let logger = JetpackTunnelRawBodyErrorLogger(warningSink: { message in messages.withLock { $0.append(message) } })
 
         logger.logIfNeeded(responseData: responseData, request: request, transportStatus: transportStatus)
 
-        return messages
+        return messages.withLock { $0 }
     }
 
     private func responseData(rawBody: String) throws -> Data {

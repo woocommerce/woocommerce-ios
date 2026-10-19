@@ -3,6 +3,7 @@ import XCTest
 @testable import Yosemite
 
 final class FilterOrderListViewModelTests: XCTestCase {
+    @MainActor
     func test_criteria_with_default_filters() {
         // Given
         let filters = FilterOrderListViewModel.Filters()
@@ -20,6 +21,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
 
+    @MainActor
     func test_criteria_with_non_nil_filters() {
         // Given
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
@@ -37,6 +39,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
 
+    @MainActor
     func test_criteria_after_clearing_all_non_nil_filters() {
         // Given
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.completed],
@@ -62,6 +65,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
 
     // MARK: Filter based on product
 
+    @MainActor
     func test_product_filter_is_added_to_filterTypeViewModels() {
         // Given
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
@@ -133,6 +137,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_saveSelectedFilterToHistory_updates_filter_history_with_the_new_filter() {
         // Given
         let siteID: Int64 = 123
@@ -169,6 +174,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         XCTAssertEqual(savedSettings?.dateRangeFilter, filters.dateRange)
     }
 
+    @MainActor
     func test_removeFilterFromHistory_removes_the_correct_filter() {
         // Given
         let siteID: Int64 = 123

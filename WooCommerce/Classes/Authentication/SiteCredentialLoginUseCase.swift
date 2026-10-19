@@ -505,11 +505,11 @@ private extension SiteCredentialLoginUseCase {
     func unexpectedResponse(stage: CookieNonceAuthenticationResponseStage,
                             kind: LoginUnexpectedResponseFailure.Kind = .unexpectedContent,
                             response: LoginResponse? = nil, request: URLRequest? = nil) -> SiteCredentialLoginError {
-        // Successful nonce responses can contain a secret; non-2xx error bodies go through the shared sanitizer.
+        // Successful and 5xx nonce responses can contain a secret; 4xx error bodies go through the shared sanitizer.
         let body = response.flatMap { result -> Data? in
-            if stage == .nonce, (200..<300).contains(result.http.statusCode) {
-                let text = String(data: result.data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-                guard text.hasPrefix("<") || text.hasPrefix("{") else { return nil }
+            let statusCode = result.http.statusCode
+            if stage == .nonce, (200..<300).contains(statusCode) || (500..<600).contains(statusCode) {
+                return nil
             }
             return result.data
         }

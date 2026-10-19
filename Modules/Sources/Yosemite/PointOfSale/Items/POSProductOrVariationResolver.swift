@@ -2,6 +2,7 @@ import Foundation
 import protocol Networking.ProductsRemoteProtocol
 import class WooFoundation.CurrencySettings
 
+@MainActor
 struct POSProductOrVariationResolver {
     private let productsRemote: ProductsRemoteProtocol
     private let itemMapper: PointOfSaleItemMapperProtocol

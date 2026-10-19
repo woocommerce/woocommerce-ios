@@ -6,6 +6,7 @@ import Experiments
 
 /// The root tab controller for Orders, which contains the `OrderListViewController` .
 ///
+@MainActor
 final class OrdersRootViewController: UIViewController {
 
     // The stack view which will contain the top bar filters and the order list.
@@ -537,7 +538,7 @@ private extension OrdersRootViewController {
     }
 }
 
-extension OrdersRootViewController: OrderListViewControllerDelegate {
+extension OrdersRootViewController: @MainActor OrderListViewControllerDelegate {
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController) {
         // Do nothing here
     }

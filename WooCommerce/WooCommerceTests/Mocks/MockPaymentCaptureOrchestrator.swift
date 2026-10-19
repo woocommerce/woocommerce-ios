@@ -3,6 +3,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
+@MainActor
 final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     var mockCollectPaymentHandler: ((_ onPreparingReader: () -> Void,
                                      _ onWaitingForInput: (Yosemite.CardReaderInput) -> Void,

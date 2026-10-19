@@ -112,6 +112,7 @@ struct ApplicationPasswordAuthorizationViewModelTests {
         // Then
         #expect(fixture.navigation.viewControllers.first === fixture.form)
         #expect(fixture.navigation.viewControllers.count == (action == .dismiss ? 1 : 2))
+        #expect(fixture.navigation.lastPopToViewControllerAnimated == (action == .dismiss))
         if action == .contactSupport {
             let host = fixture.navigation.topViewController as? SupportChatHostingController
             #expect(host != nil)
@@ -147,7 +148,7 @@ private final class AuthorizationFixture {
     let stores = MockStoresManager(sessionManager: .makeForTesting())
     let provider = MockAnalyticsProvider()
     let form = UIViewController()
-    lazy var navigation = UINavigationController(rootViewController: form)
+    lazy var navigation = AuthorizationNavigationController(rootViewController: form)
     var requestedSites: [String] = []
     var completeFetch: ((Result<URL?, Error>) -> Void)?
     var fetchRequested: (() -> Void)?
@@ -193,5 +194,15 @@ private final class AuthorizationFixture {
 
     func waitForFetchHandling() async {
         await controller.authorizationTask?.value
+    }
+}
+
+@MainActor
+private final class AuthorizationNavigationController: UINavigationController {
+    private(set) var lastPopToViewControllerAnimated: Bool?
+
+    override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
+        lastPopToViewControllerAnimated = animated
+        return super.popToViewController(viewController, animated: false)
     }
 }

@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 
 /// Builds the Mobile Status Report. A protocol so the ticket-creation callers can be tested against a canned
 /// report instead of assembling the provider's dependencies.
+@MainActor
 protocol MobileStatusReportProviding {
     /// - Parameter siteAddress: the address the merchant typed into the support form, which can differ from the
     /// selected store when they are contacting us precisely because the app picked up the wrong one.
@@ -209,7 +210,8 @@ private extension MobileStatusReportProvider {
                        entry("POS last opened", await posLastOpened(siteID: site.siteID))]
         entries += await localCatalog(siteID: site.siteID)
         entries += [entry("Catalog file blocked", await catalogFileBlocked(siteID: site.siteID)),
-                    entry("Full sync on cellular allowed", await fullSyncOnCellularAllowed(siteID: site.siteID))]
+                    entry("Full sync on cellular allowed", await fullSyncOnCellularAllowed(siteID: site.siteID)),
+                    entry("Payment success sound enabled", String(generalAppSettings.value(for: \.isPOSPaymentSuccessSoundEnabled)))]
 
         guard tabVisible == false || launchable == false else {
             return entries

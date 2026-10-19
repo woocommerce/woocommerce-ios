@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 protocol CardPresentModalProgressDisplaying: CardPresentPaymentsModalViewModel {
     var progress: Float { get }
     var isComplete: Bool { get }

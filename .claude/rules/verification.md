@@ -8,6 +8,31 @@ Agents can verify their changes work from a user's perspective using two complem
 - **Booted iOS simulator** — `xcrun simctl boot <UDID>`
 - **mobile-mcp** — auto-configured via `.mcp.json` (project-scoped, no manual setup needed)
 
+### Clean Simulator Setup
+
+A timeout or connection error does not prove that the device helper is missing.
+Check daemon health and client/server versions through installed CLI help or exposed MCP schemas;
+report unavailable diagnostics. Then retry a read-only device query.
+Install the device helper only after a missing-helper response is confirmed.
+If the device helper is missing, check the installed mobilecli version and its `agent install --help`.
+If the CLI is absent, use `npx -y mobilecli@<matching-version> agent install --help` after verifying
+compatibility with the running daemon. If its version is unknown, report that gap before installation.
+Use the version compatible with the running daemon and the device option shown by that CLI.
+Preserve a daemon used by other tasks; report a version conflict instead of restarting it.
+
+Capture `xcrun simctl io <UDID> screenshot <task-image-path>` and compare it with the MCP
+screenshot. Confirm the device, app foreground, and screen before tapping. Refresh elements after typing.
+If the MCP result shows another device, stop interaction and report the mismatch.
+
+### Simulator app dependencies
+
+Use the app and runtime frameworks from the same successful build. If launch reports a
+missing framework, inspect that build's products and `PackageFrameworks` directory.
+Pass their paths as `SIMCTL_CHILD_DYLD_FRAMEWORK_PATH` on each launch when needed.
+An installed app bundle alone may be insufficient. If matching products are unavailable,
+build again instead of combining artifacts from different builds.
+Keep the framework environment on relaunch while removing login-only variables.
+
 ## `/verify` — E2E Simulator Verification
 
 Builds the app, launches on the simulator, and uses mobile-mcp to navigate the UI and verify features work. Auto-detects which features changed via `git diff` and the feature map.
@@ -16,7 +41,7 @@ Builds the app, launches on the simulator, and uses mobile-mcp to navigate the U
 /verify              # auto-detect scope from git diff
 ```
 
-**Environment-aware**: The agent first assesses the current state — if the simulator already has a built app with an active session (the common case during development), it just builds, re-launches, and verifies. It only sets up WireMock mocked environment when there's no existing session, deterministic mock data is needed, or the user explicitly requests it.
+**Environment selection**: `/verify` reuses a suitable session, otherwise defaults to WireMock unless a live store is requested or required. Follow `.agents/skills/auto-login/SKILL.md` with `mocks` for WireMock or its default live-store flow.
 
 **Feature map**: `.claude/references/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
 
@@ -35,11 +60,8 @@ Uses `swift-snapshot-testing` to render SwiftUI views to PNG images. The agent r
 ## mobile-mcp Tools
 
 Configured via `.mcp.json` at the project root. Provides:
-- `screenshot` — capture current simulator screen
-- `list_ui_elements` — get accessibility tree with element positions
-- `tap` / `swipe` / `type_text` — interact with UI elements
-- `launch_app` / `terminate_app` — manage app lifecycle
-- `list_devices` — discover available simulators
+Read the connected server's tool schemas for device discovery, UI elements, screenshots,
+interaction, and app lifecycle. Tool names vary by server version.
 
 ## Key References
 

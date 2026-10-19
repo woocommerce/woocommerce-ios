@@ -84,7 +84,7 @@ final class CoreDataManagerTests: XCTestCase {
         waitForExpectation { expectation in
             manager.performAndSave({ storage in
                 XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
-                self.insertAccount(to: storage)
+                Self.insertAccount(to: storage)
             }, completion: {
                 XCTAssertTrue(Thread.current.isMainThread, "Completion should be called in the main queue as defined in the function call.")
                 expectation.fulfill()
@@ -95,7 +95,8 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 1)
     }
 
-    func test_performAndSave_with_result_returns_correct_result_upon_success() throws {
+    @MainActor
+    func test_performAndSave_with_result_returns_correct_result_upon_success() async throws {
         // Arrange
         let modelsInventory = try makeModelsInventory()
         let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
@@ -104,13 +105,13 @@ final class CoreDataManagerTests: XCTestCase {
         let expectedUserID: Int64 = 135
 
         // Action
-        let result: Result<Int64, Error> = waitFor { promise in
+        let result: Result<Int64, Error> = await withCheckedContinuation { continuation in
             manager.performAndSave({ storage -> Int64 in
                 XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
-                let account = self.insertAccount(userID: expectedUserID, to: storage)
+                let account = Self.insertAccount(userID: expectedUserID, to: storage)
                 return account.userID
             }, completion: { result in
-                promise(result)
+                continuation.resume(returning: result)
             }, on: .main)
         }
 
@@ -120,7 +121,8 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 1)
     }
 
-    func test_performAndSave_with_result_returns_correct_result_upon_failure() throws {
+    @MainActor
+    func test_performAndSave_with_result_returns_correct_result_upon_failure() async throws {
         // Arrange
         let modelsInventory = try makeModelsInventory()
         let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
@@ -128,12 +130,12 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 0)
 
         // Action
-        let result: Result<Int64, Error> = waitFor { promise in
+        let result: Result<Int64, Error> = await withCheckedContinuation { continuation in
             manager.performAndSave({ _ -> Int64 in
                 XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
                 throw CoreDataManagerTestsError.unexpectedFailure
             }, completion: { result in
-                promise(result)
+                continuation.resume(returning: result)
             }, on: .main)
         }
 
@@ -151,11 +153,11 @@ final class CoreDataManagerTests: XCTestCase {
         let modelsInventory = try makeModelsInventory()
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
-        waitFor { promise in
+        waitForExpectation { expectation in
             manager.performAndSave({ storage in
-                self.insertAccount(to: storage)
+                Self.insertAccount(to: storage)
             }, completion: {
-                promise(())
+                expectation.fulfill()
             }, on: .main)
         }
 
@@ -166,11 +168,11 @@ final class CoreDataManagerTests: XCTestCase {
         manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
 
         // Then: a read waits for recovery to complete without adding new data to the recreated store.
-        waitFor { promise in
+        waitForExpectation { expectation in
             manager.performAndSave({ storage in
                 XCTAssertEqual(storage.countObjects(ofType: Account.self), 0)
             }, completion: {
-                promise(())
+                expectation.fulfill()
             }, on: .main)
         }
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
@@ -181,11 +183,11 @@ final class CoreDataManagerTests: XCTestCase {
         let modelsInventory = try makeModelsInventory()
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
-        waitFor { promise in
+        waitForExpectation { expectation in
             manager.performAndSave({ storage in
-                self.insertAccount(to: storage)
+                Self.insertAccount(to: storage)
             }, completion: {
-                promise(())
+                expectation.fulfill()
             }, on: .main)
         }
 
@@ -213,8 +215,8 @@ final class CoreDataManagerTests: XCTestCase {
         // The rows should have been deleted during the recovery.
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
         // We should still be able to use the storage
-        insertAccount(to: manager.viewStorage)
-        insertAccount(to: manager.viewStorage)
+        Self.insertAccount(to: manager.viewStorage)
+        Self.insertAccount(to: manager.viewStorage)
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 2)
 
         // The ProductCompositeComponent entity does not exist in Model 80, was introduced in Model 82
@@ -240,11 +242,11 @@ final class CoreDataManagerTests: XCTestCase {
 
         var manager = try makeManager(using: olderModelsInventory, deletingExistingStoreFiles: true)
 
-        waitFor { promise in
+        waitForExpectation { expectation in
             manager.performAndSave({ storage in
-                self.insertAccount(to: storage)
+                Self.insertAccount(to: storage)
             }, completion: {
-                promise(())
+                expectation.fulfill()
             }, on: .main)
         }
 
@@ -266,8 +268,8 @@ final class CoreDataManagerTests: XCTestCase {
         // The rows should have been kept.
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         // We should still be able to use the storage
-        insertAccount(to: manager.viewStorage)
-        insertAccount(to: manager.viewStorage)
+        Self.insertAccount(to: manager.viewStorage)
+        Self.insertAccount(to: manager.viewStorage)
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 3)
 
         // The ShippineLineTax entity should now be available. This proves that a migration happened.
@@ -281,11 +283,11 @@ final class CoreDataManagerTests: XCTestCase {
 
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
-        waitFor { promise in
+        waitForExpectation { expectation in
             manager.performAndSave({ storage in
-                self.insertAccount(to: storage)
+                Self.insertAccount(to: storage)
             }, completion: {
-                promise(())
+                expectation.fulfill()
             }, on: .main)
         }
 
@@ -304,8 +306,8 @@ final class CoreDataManagerTests: XCTestCase {
         // The rows should have been kept.
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         // We should still be able to use the storage
-        insertAccount(to: manager.viewStorage)
-        insertAccount(to: manager.viewStorage)
+        Self.insertAccount(to: manager.viewStorage)
+        Self.insertAccount(to: manager.viewStorage)
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 3)
     }
 }
@@ -314,7 +316,7 @@ final class CoreDataManagerTests: XCTestCase {
 
 private extension CoreDataManagerTests {
     @discardableResult
-    func insertAccount(userID: Int64 = 0,
+    static func insertAccount(userID: Int64 = 0,
                        username: String = "",
                        to storage: StorageType) -> Account {
         let account = storage.insertNewObject(ofType: Account.self)

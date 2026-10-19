@@ -13,10 +13,6 @@ final class POSTests: XCTestCase {
         "disable-animations",
         "mocked-wpcom-api",
         "-ui_testing",
-        "-AppleLanguages",
-        "(en)",
-        "-AppleLocale",
-        "en_US",
         // APIMocks does not stub mobile/feature-flags; override the remote POS flag to keep launch deterministic.
         "-com.woocommerce.featureflag.override.remote.pointOfSale",
         "YES",

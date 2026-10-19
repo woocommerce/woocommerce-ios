@@ -12,7 +12,7 @@ public protocol ProductReviewsRemoteProtocol {
 
 /// Product reviews: Remote Endpoints
 ///
-public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
+public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol, @unchecked Sendable {
 
     // MARK: - Product Reviews
 

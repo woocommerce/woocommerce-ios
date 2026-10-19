@@ -4,30 +4,37 @@ import protocol WooFoundation.Analytics
 /// Owns one alert or explicit retry at a time. Owners invalidate it when their login screen is abandoned.
 @MainActor
 final class LoginUnexpectedResponsePresenter {
-    typealias Retry = (@escaping (Bool) -> Void) -> Void
+    /// Retry callers deliver results on the main actor, including through Sendable action completions.
+    typealias RetryResult = @Sendable (Bool) -> Void
+    typealias Retry = (@escaping RetryResult) -> Void
     typealias Presentation = @MainActor (UIViewController, UIAlertController, @escaping () -> Void) -> Void
+    typealias AlertDismissal = @MainActor (UIAlertController, @escaping () -> Void) -> Void
     private let analytics: Analytics
     private let presentation: Presentation
     private let support: ((UIViewController, LoginSupportContext) -> Void)?
+    private let alertDismissal: AlertDismissal
     private var attemptID: UUID?
     private weak var alert: UIAlertController?
     private var actionHandler: ((LoginUnexpectedResponseFailure.Action) -> Void)?
 
     init(analytics: Analytics = ServiceLocator.analytics,
          presentation: @escaping Presentation = { $0.present($1, animated: true, completion: $2) },
+         alertDismissal: @escaping AlertDismissal = { $0.dismiss(animated: false, completion: $1) },
          support: ((UIViewController, LoginSupportContext) -> Void)? = nil) {
         self.analytics = analytics
         self.presentation = presentation
+        self.alertDismissal = alertDismissal
         self.support = support
     }
 
     func present(failure: LoginUnexpectedResponseFailure, flow: LoginUnexpectedResponseFailure.LoginFlow,
                  from controller: UIViewController, siteURL: String? = nil, onRetry: @escaping Retry, onDismiss: @escaping () -> Void = {},
                  onContactSupport: @escaping () -> Void = {}) {
-        guard attemptID == nil, controller.presentedViewController == nil else {
+        guard attemptID == nil else {
             return
         }
         let context = LoginSupportContext(failure: failure, flow: flow, siteURL: siteURL)
+        let presentationController = topmostPresentedController(from: controller)
         let id = UUID()
         attemptID = id
         let alert = UIAlertController(title: Localization.title, message: Localization.message, preferredStyle: .alert)
@@ -41,11 +48,14 @@ final class LoginUnexpectedResponsePresenter {
             self.alert = nil
             if action == .retry {
                 onRetry { [weak self] success in
-                    guard let self, attemptID == id else {
-                        return
+                    // Login tasks run on the main actor; role and site remotes deliver completions on the main queue.
+                    MainActor.assumeIsolated {
+                        guard let self, self.attemptID == id else {
+                            return
+                        }
+                        self.attemptID = nil
+                        self.analytics.track(event: .Login.unexpectedResponseRetryResult(failure: failure, loginFlow: flow, success: success))
                     }
-                    attemptID = nil
-                    analytics.track(event: .Login.unexpectedResponseRetryResult(failure: failure, loginFlow: flow, success: success))
                 }
             } else {
                 attemptID = nil
@@ -65,12 +75,25 @@ final class LoginUnexpectedResponsePresenter {
             })
         }
         var shown = false
-        presentation(controller, alert) { [weak self] in
-            guard let self, attemptID == id, !shown else {
+        let presentAlert = { [weak self] (controller: UIViewController) in
+            guard let self, attemptID == id else {
                 return
             }
-            shown = true
-            analytics.track(event: .Login.unexpectedResponseShown(failure: failure, loginFlow: flow))
+            presentation(controller, alert) { [weak self] in
+                guard let self, attemptID == id, !shown else {
+                    return
+                }
+                shown = true
+                analytics.track(event: .Login.unexpectedResponseShown(failure: failure, loginFlow: flow))
+            }
+        }
+        if let existingAlert = presentationController as? UIAlertController {
+            let replacementController = existingAlert.presentingViewController ?? controller
+            alertDismissal(existingAlert) {
+                presentAlert(replacementController)
+            }
+        } else {
+            presentAlert(presentationController)
         }
     }
 
@@ -106,6 +129,14 @@ final class LoginUnexpectedResponsePresenter {
         let chatController = SupportChatHostingController(viewModel: chat)
         host = chatController
         chatController.show(from: (controller as? UINavigationController)?.topViewController ?? controller)
+    }
+
+    private func topmostPresentedController(from controller: UIViewController) -> UIViewController {
+        var controller = controller
+        while let presentedController = controller.presentedViewController {
+            controller = presentedController
+        }
+        return controller
     }
 
     private enum Localization {

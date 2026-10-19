@@ -3,13 +3,22 @@ import Yosemite
 
 /// Controller to wrap the products split view
 ///
+@MainActor
 final class ProductsSplitViewWrapperController: UIViewController, UsesCompactLayoutInNarrowWindow {
     private let siteID: Int64
     private lazy var coordinator = ProductsSplitViewCoordinator(siteID: siteID,
                                                                                               splitViewController: productsSplitViewController)
-    private lazy var productsSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView,
-                                                                          didCollapseHandler: handleDidCollapse,
-                                                                          didExpandHandler: handleDidExpand)
+    private lazy var productsSplitViewController = WooSplitViewController(
+        columnForCollapsingHandler: { [weak self] splitViewController in
+            self?.handleCollapsingSplitView(splitViewController: splitViewController) ?? .primary
+        },
+        didCollapseHandler: { [weak self] splitViewController in
+            self?.handleDidCollapse(splitViewController: splitViewController)
+        },
+        didExpandHandler: { [weak self] splitViewController in
+            self?.handleDidExpand(splitViewController: splitViewController)
+        }
+    )
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -92,7 +101,7 @@ private extension ProductsSplitViewWrapperController {
     }
 }
 
-extension ProductsSplitViewWrapperController: TabReselectionHandling {
+extension ProductsSplitViewWrapperController: @MainActor TabReselectionHandling {
     /// Returns the products list (primary column) to its root on re-selection. Leaves an active search intact.
     func handleTabReselection() {
         guard let primaryNavigationController = productsSplitViewController.viewController(for: .primary) as? UINavigationController else {

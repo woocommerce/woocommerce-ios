@@ -164,7 +164,7 @@ final class DashboardViewModel: ObservableObject {
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
          aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol = AIAssistantEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
-         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
+         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining? = nil,
          clientSideBannerProvider: ClientSideBannerProvider? = nil,
          pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck()) {
         self.siteID = siteID
@@ -207,7 +207,7 @@ final class DashboardViewModel: ObservableObject {
                                                                                                                blazeEligibilityChecker: blazeEligibilityChecker)
         self.blazeLocalNotificationScheduler.observeNotificationUserResponse()
 
-        self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
+        self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer ?? TapToPayAwarenessMomentDeterminer()
 
         self.clientSideBannerProvider = clientSideBannerProvider ?? ClientSideBannerProvider(
             stores: stores,

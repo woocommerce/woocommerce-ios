@@ -77,6 +77,10 @@ final class StorePickerViewController: UIViewController {
     ///
     private let configuration: StorePickerConfiguration
 
+    /// Whether this picker is part of a login journey. `.listStores` is opened from the login
+    /// error screens, which are themselves reachable outside a login, so the caller decides.
+    private let isFromLogin: Bool
+
     /// View model for the controller
     ///
     private let viewModel: StorePickerViewModel
@@ -182,6 +186,7 @@ final class StorePickerViewController: UIViewController {
     private let featureFlagService: FeatureFlagService
 
     init(configuration: StorePickerConfiguration,
+         isFromLogin: Bool? = nil,
          appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -191,12 +196,15 @@ final class StorePickerViewController: UIViewController {
              source.present(modal, animated: true, completion: completion)
          }) {
         self.configuration = configuration
+        self.isFromLogin = isFromLogin ?? (configuration == .login)
         self.analytics = analytics
         self.errorPresenter = errorPresenter
         self.appleIDCredentialChecker = appleIDCredentialChecker
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.viewModel = viewModel ?? StorePickerViewModel(configuration: configuration, stores: stores)
+        self.viewModel = viewModel ?? StorePickerViewModel(configuration: configuration,
+                                                           isFromLogin: self.isFromLogin,
+                                                           stores: stores)
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -327,7 +335,9 @@ private extension StorePickerViewController {
     }
 
     func refreshResults() {
-        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID)
+        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID) { [weak self] syncSucceeded in
+            self?.viewModel.trackLoginOutcome(syncSucceeded: syncSucceeded)
+        }
         viewModel.trackScreenView()
     }
 
@@ -408,7 +418,10 @@ private extension StorePickerViewController {
     }
 
     func presentSiteDiscovery() {
-        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
+        // One predicate for both gates, so the address screen's step and the outcome steps
+        // that follow it cannot disagree about whether this is a login.
+        ServiceLocator.authenticationManager.noteSiteDiscoveryOrigin(isFromLogin: isFromLogin)
+        guard let viewController = WordPressAuthenticator.siteDiscoveryUI(tracksLoginSteps: isFromLogin) else {
             return
         }
         navigationController?.show(viewController, sender: nil)
@@ -846,6 +859,8 @@ private extension StorePickerViewController {
         let viewModel = NoWooErrorViewModel(
             site: site,
             showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
+            hasConnectedStores: self.viewModel.allFetchedSites.contains(where: \.isWooCommerceActive),
+            reportsLoginStep: isFromLogin,
             onSetupCompletion: { [weak self] siteID in
                 guard let self else { return }
                 self.navigationController?.popViewController(animated: true)

@@ -107,6 +107,12 @@ public enum WooShippingAction: Action {
                     orderID: Int64,
                     completion: (Result<WooShippingConfig, Error>) -> Void)
 
+    /// Checks whether EU product identifiers are required for the order and selected origin.
+    case checkEUProductIdentifiersRequirement(siteID: Int64,
+                                              orderID: Int64,
+                                              originID: String?,
+                                              completion: (WooShippingEUProductIdentifiersRequirement) -> Void)
+
     /// Sync shipments for a given order.
     /// This uses the same endpoint as `loadConfig` but also stores shipments and shipping labels to the storage
     /// and returns them in the completion closure.

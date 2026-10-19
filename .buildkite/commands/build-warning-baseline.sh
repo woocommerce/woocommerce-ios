@@ -143,7 +143,11 @@ if restore_toolkit_cache; then
   exit 0
 fi
 
-BASE_WORKTREE="$(mktemp -d "${TMPDIR:-/tmp}/woo-warning-base.XXXXXX")"
+# Keep the worktree out of TMPDIR: on macOS it is under /var, a symlink to /private/var.
+# Since Xcode 27, app warnings are logged with /var paths and Swift package warnings with
+# /private/var paths, so the counter can only match one of them. Build next to the
+# checkout instead, where the PR build already logs one consistent path.
+BASE_WORKTREE="$(mktemp -d "$(dirname "$REPO_ROOT")/woo-warning-base.XXXXXX")"
 rm -rf "$BASE_WORKTREE"
 
 cleanup() {

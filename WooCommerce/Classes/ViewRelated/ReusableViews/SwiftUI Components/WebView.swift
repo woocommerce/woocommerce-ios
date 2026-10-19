@@ -3,6 +3,7 @@ import SwiftUI
 import WebKit
 import Alamofire
 import class Networking.UserAgent
+import typealias Yosemite.Credentials
 
 /// Hosting controller for WebView
 ///

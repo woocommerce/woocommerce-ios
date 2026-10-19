@@ -7,13 +7,15 @@ import struct NetworkingCore.JetpackSite
 import protocol Storage.GRDBManagerProtocol
 import class WooFoundation.CurrencySettings
 
-public protocol PointOfSaleItemFetchStrategyFactoryProtocol {
+@MainActor
+public protocol PointOfSaleItemFetchStrategyFactoryProtocol: Sendable {
     func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
 
     func searchStrategy(searchTerm: String,
                         analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
 }
 
+@MainActor
 public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol {
     private let siteID: Int64
     private let productsRemote: ProductsRemote
@@ -74,6 +76,7 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     }
 }
 
+@MainActor
 public final class PointOfSaleFixedItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol {
     private let fixedStrategy: PointOfSalePurchasableItemFetchStrategy
 

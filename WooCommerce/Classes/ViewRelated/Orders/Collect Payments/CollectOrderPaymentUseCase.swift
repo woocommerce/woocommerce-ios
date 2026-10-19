@@ -127,7 +127,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          rootViewController: ViewControllerPresenting,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
-         paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
+         paymentOrchestrator: PaymentCaptureOrchestrating? = nil,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          alertsPresenter: any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>,
          tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
@@ -146,7 +146,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         self.bluetoothAlertsProvider = bluetoothAlertsProvider
         self.configuration = configuration
         self.stores = stores
-        self.paymentOrchestrator = paymentOrchestrator
+        self.paymentOrchestrator = paymentOrchestrator ?? PaymentCaptureOrchestrator()
         self.preflightController = preflightController
         self.analyticsTracker = analyticsTracker ?? CollectOrderPaymentAnalytics(siteID: siteID,
                                                                                  analytics: ServiceLocator.analytics,
@@ -285,7 +285,7 @@ private extension CollectOrderPaymentUseCase {
         DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
         alertsPresenter.present(viewModel: alertProvider.nonRetryableError(error: totalAmountInvalidError(),
                                                                            receiptState: .noEmailReceipt,
-                                                                           dismissCompletion: onCompleted))
+                                                                           dismissCompletion: { onCompleted() }))
     }
 
     func isOrderAwaitingPayment() -> Bool {
@@ -718,7 +718,8 @@ private extension CollectOrderPaymentUseCase {
                 receiptState: receiptState,
                 tryAgain: { [weak self] in
                     guard let self else { return }
-                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
+                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
+                        guard let self else { return }
                         switch result {
                         case .failure(let error):
                             return self.checkThenHandlePaymentFailureAndRetryPayment(error,
@@ -760,7 +761,7 @@ private extension CollectOrderPaymentUseCase {
                                           paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                           receiptState: CardReaderTransactionFailureAlertReceiptState,
                                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        let dismissCompletion: () -> Void = { [weak self] in
+        let dismissCompletion: @MainActor @Sendable () -> Void = { [weak self] in
             guard let self else {
                 return onCompletion(.failure(error))
             }
@@ -959,7 +960,7 @@ private extension CollectOrderPaymentUseCase {
                                     paymentMethod: PaymentMethod?,
                                     onCompleted: @escaping () -> ()) {
         // Handles receipt presentation for both print and native iOS client email actions
-        let presentBackendReceiptAction: () -> Void = { [weak self] in
+        let presentBackendReceiptAction: @MainActor @Sendable () -> Void = { [weak self] in
             guard let self else { return }
 
             alertsPresenter.dismiss()
@@ -976,7 +977,7 @@ private extension CollectOrderPaymentUseCase {
         }
 
         getReceiptStateForSuccessPayment(presentBackendReceiptAction: presentBackendReceiptAction,
-                                         noReceiptAction: onCompleted,
+                                         noReceiptAction: { onCompleted() },
                                          paymentMethod: paymentMethod,
                                          completion: { [weak self] receiptState in
             guard let self else { return }
@@ -1043,11 +1044,13 @@ private extension CollectOrderPaymentUseCase {
     }
 
     private func getReceiptStateForSuccessPayment(
-        presentBackendReceiptAction: @escaping () -> Void,
-        noReceiptAction: @escaping () -> Void,
+        presentBackendReceiptAction: @escaping @MainActor @Sendable () -> Void,
+        noReceiptAction: @escaping @MainActor @Sendable () -> Void,
         paymentMethod: PaymentMethod?,
         completion: @escaping (CardReaderTransactionAlertReceiptState) -> Void) {
-        receiptEligibilityUseCase.isEligibleForSuccessfulPaymentEmailReceipts { isEligibleSendingReceiptAfterPayment in
+        // Capture `self` strongly on purpose: `onPaymentCompletion` is called before this callback runs, and POS releases the
+        // use case once the payment completes, so a weak capture would skip the success alert that ends the POS payment flow.
+        receiptEligibilityUseCase.isEligibleForSuccessfulPaymentEmailReceipts { [self] isEligibleSendingReceiptAfterPayment in
             let receiptState: CardReaderTransactionAlertReceiptState
 
             if let email = self.order.billingAddress?.email, email.isNotEmpty {

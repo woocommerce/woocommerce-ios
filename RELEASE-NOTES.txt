@@ -4,6 +4,7 @@
 26.0
 -----
 - [*] Login: Contact Support now starts a chat with diagnostic details from the failed login attempt. [https://github.com/woocommerce/woocommerce-ios/pull/18040]
+- [*] Products: Variations now load in the correct order on products with up to 100 variations. [https://github.com/woocommerce/woocommerce-ios/pull/18112]
 
 
 25.9

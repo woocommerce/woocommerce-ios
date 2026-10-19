@@ -174,8 +174,8 @@ private extension TwoFAViewController {
         SVProgressHUD.showSuccess(withStatus: LocalizedText.smsSent)
         SVProgressHUD.dismiss(withDelay: TimeInterval(1))
 
-        if loginFields.nonceInfo != nil {
-            // social login
+        // Password logins have no SMS nonce; social logins have no password.
+        if loginFields.nonceInfo?.nonceSMS.isEmpty == false || loginFields.password.isEmpty {
             loginFacade.requestSocial2FACode(with: loginFields)
         } else {
             loginFacade.requestOneTimeCode(with: loginFields)

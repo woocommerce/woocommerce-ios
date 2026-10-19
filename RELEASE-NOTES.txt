@@ -3,6 +3,7 @@
 
 26.0
 -----
+- [*] Login: Contact Support now starts a chat with diagnostic details from the failed login attempt. [https://github.com/woocommerce/woocommerce-ios/pull/18040]
 
 
 25.9

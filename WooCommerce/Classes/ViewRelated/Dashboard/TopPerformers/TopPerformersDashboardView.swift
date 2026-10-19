@@ -30,15 +30,9 @@ struct TopPerformersDashboardView: View {
             if !viewModel.analyticsEnabled {
                 UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)
-            } else if viewModel.syncingError != nil {
-                DashboardCardErrorView(onRetry: {
-                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
-                    Task {
-                        await viewModel.reloadDataIfNeeded(forceRefresh: true)
-                    }
-                })
-                .padding(.horizontal, Layout.padding)
             } else {
+                // Keep the range picker visible during load errors so the merchant can switch
+                // to a shorter range without having to leave the error state.
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.periodViewModel.redacted.header ? [.placeholder] : [])
@@ -46,23 +40,33 @@ struct TopPerformersDashboardView: View {
 
                 Divider()
 
-                topPerformersList
-
-                Divider()
-                    .padding(.leading, Layout.padding)
-
-                timestampView
-                    .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
-                    .redacted(reason: viewModel.periodViewModel.redacted.rows ? [.placeholder] : [])
-                    .shimmering(active: viewModel.periodViewModel.redacted.rows)
-
-                Divider()
-                    .padding(.leading, Layout.padding)
-
-                viewAllAnalyticsButton
+                if viewModel.syncingError != nil {
+                    DashboardCardErrorView(onRetry: {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
+                        Task {
+                            await viewModel.reloadDataIfNeeded(forceRefresh: true)
+                        }
+                    })
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])
-                    .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
+                } else {
+                    topPerformersList
+
+                    Divider()
+                        .padding(.leading, Layout.padding)
+
+                    timestampView
+                        .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+                        .redacted(reason: viewModel.periodViewModel.redacted.rows ? [.placeholder] : [])
+                        .shimmering(active: viewModel.periodViewModel.redacted.rows)
+
+                    Divider()
+                        .padding(.leading, Layout.padding)
+
+                    viewAllAnalyticsButton
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])
+                        .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
+                }
             }
         }
         .padding(.vertical, Layout.padding)

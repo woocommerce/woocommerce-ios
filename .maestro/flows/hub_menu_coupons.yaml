@@ -15,6 +15,7 @@ tags:
       id: "menu-coupons"
     direction: DOWN
     timeout: 15000
+    centerElement: true
 - tapOn:
     id: "menu-coupons"
 - extendedWaitUntil:

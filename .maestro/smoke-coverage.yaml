@@ -202,10 +202,10 @@ items:
     flow: .maestro/flows/products_create.yaml
   - id: products.detail.inventory
     title: Product inventory settings
-    manual: "Products_create does not change and reopen this setting yet."
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.categories
     title: Product categories settings
-    manual: "Products_create does not change and reopen this setting yet."
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.type
     title: Product type settings
     flow: .maestro/flows/products_create.yaml
@@ -214,7 +214,7 @@ items:
     flow: .maestro/flows/products_create.yaml
   - id: products.detail.shipping
     title: Product shipping settings
-    manual: "Products_create does not change and reopen this setting yet."
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.short-description
     title: Product short description settings
     flow: .maestro/flows/products_create.yaml

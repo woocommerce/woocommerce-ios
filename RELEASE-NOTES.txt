@@ -3,12 +3,12 @@
 
 26.0
 -----
+- [*] Products: Editing a variation attribute keeps its "Visible on product page" setting. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]
 - [*] Login: Contact Support now starts a chat with diagnostic details from the failed login attempt. [https://github.com/woocommerce/woocommerce-ios/pull/18040]
 
 
 25.9
 -----
-- [*] Products: Editing an attribute keeps its "Visible on product page" and "Used for variations" settings. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]
 - [*] Settings: Jetpack setup now clearly explains when the WordPress.com username or password is incorrect. [https://github.com/woocommerce/woocommerce-ios/pull/18078]
 - [*] [Woo POS] Added a Payments section to POS settings with an option to turn off the payment success sound [https://github.com/woocommerce/woocommerce-ios/pull/18079]
 - [**] Shipping Labels: For shipments into the EU, the customs form now asks for each item's SKU, manufacturer part number and GTIN/EAN when WooCommerce Shipping requires them [https://github.com/woocommerce/woocommerce-ios/pull/18101]

@@ -246,6 +246,7 @@ public typealias WooShippingVerifyDestinationAddressSuccess = Networking.WooShip
 public typealias WooShippingDestinationAddress = Networking.WooShippingDestinationAddress
 public typealias WooShippingDestinationAddressUpdate = Networking.WooShippingDestinationAddressUpdate
 public typealias WooShippingConfig = Networking.WooShippingConfig
+public typealias WooShippingEUProductIdentifiers = Networking.WooShippingEUProductIdentifiers
 public typealias WooShippingUpdateShipment = Networking.WooShippingUpdateShipment
 public typealias WooShippingShipmentItem = Networking.WooShippingShipmentItem
 public typealias WooShippingShipment = Networking.WooShippingShipment

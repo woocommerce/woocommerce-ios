@@ -6,7 +6,7 @@ public protocol MetaDataRemoteProtocol {
     func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [RequestParameterDictionary]) async throws -> [MetaData]
 }
 
-public final class MetaDataRemote: Remote, MetaDataRemoteProtocol {
+public final class MetaDataRemote: Remote, MetaDataRemoteProtocol, @unchecked Sendable {
 
     // MARK: - MetaData
 

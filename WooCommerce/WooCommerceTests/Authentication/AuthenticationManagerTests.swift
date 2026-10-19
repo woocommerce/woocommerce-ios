@@ -1446,10 +1446,11 @@ final class AuthenticationManagerTests: XCTestCase {
                                                 onFailure: { _, _, _, _ in XCTFail("Unexpected alert") })
             await fulfillment(of: [initialRecovery], timeout: 2)
             loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": recoveredNonceURL])
-            let dashboard = stage == .dashboard ? "<html>Wrong address</html>" :
+            let unexpectedPage = "<html><body>Wrong address</body></html>"
+            let dashboard = stage == .dashboard ? unexpectedPage :
                 "<body class=\"wp-admin index-php\"><div id=\"dashboard-widgets-wrap\"></div></body>"
             session.simulateResponse(for: adminURL, data: Data(dashboard.utf8))
-            session.simulateResponse(for: recoveredNonceURL, data: Data("<html>Wrong address</html>".utf8))
+            session.simulateResponse(for: recoveredNonceURL, data: Data(unexpectedPage.utf8))
             manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: loginURL, adminURL: adminURL,
                                                 endpointUnderVerification: .admin, onLoading: { loading.append($0) },
                                                 onSuccess: { _ in XCTFail("Expected recovery") },
@@ -1474,7 +1475,12 @@ final class AuthenticationManagerTests: XCTestCase {
                     XCTFail("Expected nonce failure forwarded to alert")
                     continue
                 }
-                XCTAssertEqual(failure, .init(stage: .nonce))
+                XCTAssertEqual(failure.step, .nonceRetrieval)
+                XCTAssertEqual(failure.kind, .unexpectedContent)
+                XCTAssertEqual(failure.statusCode, 200)
+                XCTAssertEqual(failure.diagnostics?.request, "GET /private-admin/admin-ajax.php")
+                XCTAssertNil(failure.diagnostics?.excerpt)
+                XCTAssertNil(failure.diagnostics?.contentType)
             }
             XCTAssertEqual(loading, [true, false, true, false])
             XCTAssertEqual(session.receivedRequests.last?.url?.absoluteString, stage == .dashboard ? adminURL : recoveredNonceURL)

@@ -1,6 +1,6 @@
 import Foundation
 
-public class CustomerRemote: Remote {
+public class CustomerRemote: Remote, @unchecked Sendable {
     /// Retrieves a `Customer`
     ///
     /// - Parameters:

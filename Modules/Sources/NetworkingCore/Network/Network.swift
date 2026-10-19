@@ -17,7 +17,7 @@ public protocol MultipartFormData {
 /// Defines all of the Network Operations we'll be performing. This allows us to swap the actual Wrapper in our
 /// Unit Testing target, and inject mocked up responses.
 ///
-public protocol Network {
+public protocol Network: Sendable {
     typealias ResponseHeaders = [String: String]
 
     var session: URLSession { get }

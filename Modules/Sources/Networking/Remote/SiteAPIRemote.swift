@@ -3,7 +3,7 @@ import Foundation
 
 /// Site API: Remote Endpoints
 ///
-public class SiteAPIRemote: Remote {
+public class SiteAPIRemote: Remote, @unchecked Sendable {
 
     /// Calls the root wp-json endpoint (`/`) via the Jetpack tunnel for the provided siteID
     /// and parses the response for API information.

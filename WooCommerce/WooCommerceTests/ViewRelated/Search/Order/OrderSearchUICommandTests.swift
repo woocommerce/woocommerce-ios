@@ -9,7 +9,7 @@ import protocol WooFoundation.Analytics
 @MainActor
 final class OrderSearchUICommandTests: XCTestCase {
     let siteID: Int64 = 12345
-    private var storageManager: MockOrderStatusesStoresManager!
+    private var storageManager: MockStorageManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private var systemUnderTest: OrderSearchUICommand!
@@ -17,7 +17,7 @@ final class OrderSearchUICommandTests: XCTestCase {
 
     override func setUp() async throws {
         try await super.setUp()
-        storageManager = MockOrderStatusesStoresManager()
+        storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         systemUnderTest = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
@@ -70,8 +70,7 @@ final class OrderSearchUICommandTests: XCTestCase {
         // Given
         let mockOrder = MockOrders().makeOrder(status: .onHold)
         // Server name differs from the slug, so we can tell them apart.
-        storageManager.insertOrderStatus(name: "Server On Hold", slug: OrderStatusEnum.onHold.rawValue)
-        storageManager.viewStorage.saveIfNeeded()
+        insertOrderStatus(name: "Server On Hold", slug: OrderStatusEnum.onHold.rawValue)
 
         // When
         let cellViewModel = systemUnderTest.createCellViewModel(model: mockOrder)
@@ -93,8 +92,7 @@ final class OrderSearchUICommandTests: XCTestCase {
             .store(in: &cancellables)
 
         // When
-        storageManager.insertOrderStatus(name: "Server On Hold", slug: OrderStatusEnum.onHold.rawValue)
-        storageManager.viewStorage.saveIfNeeded()
+        insertOrderStatus(name: "Server On Hold", slug: OrderStatusEnum.onHold.rawValue)
 
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -166,33 +164,17 @@ final class OrderSearchUICommandTests: XCTestCase {
     private func insertOrderStatuses() {
         let statuses: [OrderStatusEnum] = [.pending, .processing, .onHold, .completed, .cancelled, .failed, .custom("aCustomStatus")]
         statuses.forEach { status in
-            storageManager.insertOrderStatus(name: status.rawValue)
+            insertOrderStatus(name: status.rawValue)
         }
-        storageManager.viewStorage.saveIfNeeded()
-    }
-}
-
-/// Mock Order Statuses Store Manager
-///
-private final class MockOrderStatusesStoresManager: MockStorageManager {
-    fileprivate static let siteID: Int64 = 12345
-
-    /// Inserts an order status whose name and slug are identical.
-    ///
-    @discardableResult
-    func insertOrderStatus(name: String) -> StorageOrderStatus {
-        insertOrderStatus(name: name, slug: name)
     }
 
-    /// Inserts an order status with independent name and slug so the two can be exercised separately.
-    ///
-    @discardableResult
-    func insertOrderStatus(name: String, slug: String) -> StorageOrderStatus {
-        let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
-        orderStatus.name = name
-        orderStatus.slug = slug
-        orderStatus.siteID = MockOrderStatusesStoresManager.siteID
-        viewStorage.saveIfNeeded()
-        return orderStatus
+    private func insertOrderStatus(name: String, slug: String? = nil) {
+        let siteID = siteID
+        storageManager.performAndSave({ storage in
+            let orderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+            orderStatus.name = name
+            orderStatus.slug = slug ?? name
+            orderStatus.siteID = siteID
+        }, completion: nil, on: .main)
     }
 }

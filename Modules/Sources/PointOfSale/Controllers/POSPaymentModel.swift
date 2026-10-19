@@ -7,7 +7,6 @@ import struct Yosemite.ReceiptStoreInformation
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import enum Yosemite.CardReaderSoftwareUpdateState
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
-import class Yosemite.PaymentCaptureCelebration
 
 /// Shared payment model that owns all payment state and logic.
 @MainActor
@@ -164,7 +163,7 @@ final class POSPaymentModel {
          configuration: POSPaymentFlowConfiguration,
          analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration(),
          scanToPayPollInterval: TimeInterval = 3,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,

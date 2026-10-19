@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 25.9
+Shipping into the EU is now easier—your customs forms ask for each item's SKU, manufacturer part number and GTIN/EAN when needed. In-person setup works smoothly for stores without WooPayments or Stripe. Shipping labels now make the recipient phone number optional for domestic orders.
+
 ## 25.8
 You now see friendly device names when signing in with a QR code, and can submit nine-digit codes from WordPress.com. Age verification alerts offer a Contact Support option. If a category name already exists, you’ll get a clear error. Notification delivery and Blaze balances are also easier to manage.
 

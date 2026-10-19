@@ -3,7 +3,6 @@ import Yosemite
 
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
-import protocol Experiments.FeatureFlagService
 
 /// Provides view data for Add Attributes, and handles init/UI/navigation actions needed.
 ///
@@ -131,8 +130,6 @@ final class AddAttributeOptionsViewModel {
     ///
     private let isVariationsFlow: Bool
 
-    private let isNonVariationAttributesEnabled: Bool
-
     private let isVariableProduct: Bool
 
     /// "Visible on product page" and "Used for variations" values when the screen opened
@@ -198,15 +195,12 @@ final class AddAttributeOptionsViewModel {
          isVariationsFlow: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          viewStorage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.product = product
         self.attribute = attribute
         self.state.currentAttributeName = attribute.name
         self.allowsEditing = allowsEditing
         self.isVariationsFlow = isVariationsFlow
-        let isNonVariationAttributesEnabled = featureFlagService.isFeatureFlagEnabled(.nonVariationProductAttributes)
-        self.isNonVariationAttributesEnabled = isNonVariationAttributesEnabled
         self.stores = stores
         self.viewStorage = viewStorage
         self.analytics = analytics
@@ -215,9 +209,8 @@ final class AddAttributeOptionsViewModel {
         let productAttribute = product.attributes.first { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
         let isVariableProduct = product.productType == .variable || product.productType == .variableSubscription
         self.isVariableProduct = isVariableProduct
-        let isNewAttributeUsedForVariations = !isNonVariationAttributesEnabled || isVariableProduct
         self.initialIsVisible = productAttribute?.visible ?? true
-        self.initialIsUsedForVariations = isVariationsFlow || (productAttribute?.variation ?? isNewAttributeUsedForVariations)
+        self.initialIsUsedForVariations = isVariationsFlow || (productAttribute?.variation ?? isVariableProduct)
         self.isSavedAsUsedForVariations = productAttribute?.variation ?? false
         self.state.isVisible = initialIsVisible
         self.state.isUsedForVariations = initialIsUsedForVariations
@@ -451,10 +444,7 @@ private extension AddAttributeOptionsViewModel {
 
     /// "Visible on product page" for every product type, and "Used for variations" for variable products outside the variations flow
     ///
-    func createSettingsSection() -> Section? {
-        guard isNonVariationAttributesEnabled else {
-            return nil
-        }
+    func createSettingsSection() -> Section {
         let rows: [Row] = [
             .visibleOnProductPage(isOn: state.isVisible),
             isVariableProduct && !isVariationsFlow ? .usedForVariations(isOn: state.isUsedForVariations) : nil

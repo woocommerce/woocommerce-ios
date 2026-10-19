@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import protocol Experiments.FeatureFlagService
 
 final class EditAttributesViewModel {
 
@@ -20,8 +19,6 @@ final class EditAttributesViewModel {
     ///
     private let stores: StoresManager
 
-    private let isNonVariationAttributesEnabled: Bool
-
     /// True when the screen was opened from the variations screen, where only the attributes used for variations are listed.
     /// The variations screen is the only one that allows variation creation.
     ///
@@ -32,7 +29,7 @@ final class EditAttributesViewModel {
     /// Attributes listed on the screen
     ///
     private var listedAttributes: [ProductAttribute] {
-        isNonVariationAttributesEnabled && !isVariationsFlow ? product.attributes : product.attributesForVariations
+        isVariationsFlow ? product.attributesForVariations : product.attributes
     }
 
     /// Datasource for the product attributes table view
@@ -47,12 +44,10 @@ final class EditAttributesViewModel {
 
     init(product: Product,
          allowVariationCreation: Bool,
-         stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.product = product
         self.allowVariationCreation = allowVariationCreation
         self.stores = stores
-        self.isNonVariationAttributesEnabled = featureFlagService.isFeatureFlagEnabled(.nonVariationProductAttributes)
         self.attributes = createAttributeViewModels()
     }
 }
@@ -109,7 +104,7 @@ private extension EditAttributesViewModel {
     /// Only variable products use attributes for variations.
     ///
     func labels(for attribute: ProductAttribute) -> String {
-        guard isNonVariationAttributesEnabled && !isVariationsFlow else {
+        guard !isVariationsFlow else {
             return ""
         }
         let isVariableProduct = product.productType == .variable || product.productType == .variableSubscription

@@ -1,5 +1,4 @@
 import XCTest
-import Experiments
 import Yosemite
 import WooFoundation
 
@@ -949,23 +948,20 @@ private extension DefaultProductFormTableViewModelTests {
                                                        comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
     }
 
-    func test_when_non_variation_attributes_are_on_then_attributes_row_lists_each_attribute_with_its_options() throws {
+    func test_attributes_row_lists_each_attribute_with_its_options() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.nonVariationProductAttributes] = true
         let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: [
             ProductAttribute.fake().copy(name: "Color", variation: true, options: ["Red", "Blue"]),
             ProductAttribute.fake().copy(name: "Material", variation: false, options: [])
         ])
         let model = EditableProductModel(product: product)
-        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
                                                               currency: "",
-                                                              isDescriptionAIEnabled: true,
-                                                              featureFlagService: featureFlagService)
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {

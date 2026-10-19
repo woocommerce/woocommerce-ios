@@ -524,25 +524,12 @@ private extension DefaultProductFormTableViewModel {
 
     func productVariationsAttributesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.customizeImage
-        if featureFlagService.isFeatureFlagEnabled(.nonVariationProductAttributes) {
-            let details = product.attributes
-                .map { $0.options.isEmpty ? $0.name : String.localizedStringWithFormat(Localization.attributeDetailFormat,
-                                                                                         $0.name,
-                                                                                         $0.options.joined(separator: ", ")) }
-                .joined(separator: "\n")
-            return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: Localization.attributesTitle, details: details, isActionable: isEditable)
-        }
-
-        let title = Localization.productVariationAttributesTitle
-
-        let details = product.attributesForVariations
-            .map {
-                let format = Localization.variationAttributesDetailFormat(optionCount: $0.options.count)
-                return String.localizedStringWithFormat(format, $0.name, $0.options.count)
-            }
+        let details = product.attributes
+            .map { $0.options.isEmpty ? $0.name : String.localizedStringWithFormat(Localization.attributeDetailFormat,
+                                                                                     $0.name,
+                                                                                     $0.options.joined(separator: ", ")) }
             .joined(separator: "\n")
-
-        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: isEditable)
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: Localization.attributesTitle, details: details, isActionable: isEditable)
     }
 
     func variationAttributesRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
@@ -907,9 +894,7 @@ private extension DefaultProductFormTableViewModel.Localization {
             NSLocalizedString("Enabled",
                               comment: "Title of the status row on Product Variation main screen to enable/disable a variation")
 
-        // Product Variations Attributes
-        static let productVariationAttributesTitle = NSLocalizedString("Variations Attributes",
-                                                                       comment: "Title of the variations attributes row on Product screen")
+        // Product Attributes
         static let attributesTitle = NSLocalizedString("defaultProductFormTableViewModel.attributesTitle",
                                                        value: "Attributes",
                                                        comment: "Title of the attributes row on the Product screen")
@@ -920,17 +905,6 @@ private extension DefaultProductFormTableViewModel.Localization {
 
         // Variation attributes
         static let variationAttributesTitle = NSLocalizedString("Attributes", comment: "Title of the attributes row on Product Variation main screen")
-
-        static func variationAttributesDetailFormat(optionCount: Int) -> String {
-            switch optionCount {
-            case 0:
-                return ""
-            case 1:
-                return NSLocalizedString("%1$@ (%2$ld option)", comment: "Format for each Product attribute in singular form")
-            default:
-                return NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute in plural form")
-            }
-        }
 
         // No price warning row
         static let noPriceWarningTitle =

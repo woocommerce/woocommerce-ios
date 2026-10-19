@@ -1,5 +1,4 @@
 import XCTest
-import Experiments
 import YosemiteTestHelpers
 @testable import Networking
 @testable import WooCommerce
@@ -9,19 +8,6 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
     private let sampleAttributeName = "attr"
     private let sampleOptionName = "new-option"
-    private var originalFeatureFlagService: FeatureFlagService!
-
-    override func setUp() {
-        super.setUp()
-        // Tests that don't pass a feature flag service run with non-variation attributes off, so the screen has no settings section.
-        originalFeatureFlagService = ServiceLocator.featureFlagService
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService())
-    }
-
-    override func tearDown() {
-        ServiceLocator.setFeatureFlagService(originalFeatureFlagService)
-        super.tearDown()
-    }
 
     func test_new_attribute_should_have_textfield_section() throws {
         // Given
@@ -30,13 +16,13 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(textFieldSection, [AddAttributeOptionsViewController.Row.optionTextField])
-        XCTAssertEqual(viewModel.sections.count, 1)
+        XCTAssertEqual(viewModel.sections.count, 2)
     }
 
     func test_when_adding_new_option_to_new_attribute_a_new_section_should_be_added() throws {
         // Given
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
-        XCTAssertEqual(viewModel.sections.count, 1) // Option Name Section
+        XCTAssertEqual(viewModel.sections.count, 2) // Settings and Option Name sections
 
         // When
         viewModel.addNewOption(name: sampleOptionName)
@@ -44,14 +30,14 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let offeredSection = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedOptions(name: sampleOptionName)])
-        XCTAssertEqual(viewModel.sections.count, 2)
+        XCTAssertEqual(viewModel.sections.count, 3)
     }
 
     func test_when_adding_multiple_options_one_section_with_multiple_rows_is_added() throws {
         // Given
         let newOptionName = "new-option-2"
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
-        XCTAssertEqual(viewModel.sections.count, 1) // Option Name Section
+        XCTAssertEqual(viewModel.sections.count, 2) // Settings and Option Name sections
 
         // When
         viewModel.addNewOption(name: sampleOptionName)
@@ -61,7 +47,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         let offeredSection = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedOptions(name: sampleOptionName),
                                         AddAttributeOptionsViewController.Row.selectedOptions(name: newOptionName)])
-        XCTAssertEqual(viewModel.sections.count, 2)
+        XCTAssertEqual(viewModel.sections.count, 3)
     }
 
     func test_next_button_gets_enabled_after_adding_one_option() {
@@ -115,7 +101,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(textFieldSection, [AddAttributeOptionsViewController.Row.optionTextField])
-        XCTAssertEqual(viewModel.sections.count, 1)
+        XCTAssertEqual(viewModel.sections.count, 2)
     }
 
     func test_reorder_option_reorders_the_option_within_sections() throws {
@@ -214,7 +200,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
                                                      viewStorage: storage)
 
         waitUntil {
-            return viewModel.sections.count == 2
+            return viewModel.sections.count == 3
         }
 
         // Then
@@ -295,12 +281,12 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         viewModel.selectExistingOption(atIndex: 1)
         viewModel.selectExistingOption(atIndex: 1)
         waitUntil {
-            viewModel.sections.count == 3
+            viewModel.sections.count == 4
         }
 
         // Then
-        let optionsOffered = try XCTUnwrap(viewModel.sections[1].rows)
-        let optionsAdded = try XCTUnwrap(viewModel.sections[2].rows)
+        let optionsOffered = try XCTUnwrap(viewModel.sections[2].rows)
+        let optionsAdded = try XCTUnwrap(viewModel.sections[3].rows)
 
         XCTAssertEqual(optionsOffered, [
             .selectedOptions(name: "Option 2"),
@@ -600,8 +586,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         let initialProduct = sampleProduct().copy(attributes: [initialAttribute, initialNonVarAttribute])
         let viewModel = AddAttributeOptionsViewModel(product: initialProduct,
                                                      attribute: .new(name: "attr-2"),
-                                                     stores: stores,
-                                                     featureFlagService: MockFeatureFlagService())
+                                                     stores: stores)
 
         viewModel.addNewOption(name: "Option 1")
         viewModel.addNewOption(name: "Option 2")
@@ -619,7 +604,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedAttribute = sampleAttribute(attributeID: 0, name: "attr-2", position: 1, options: ["Option 1", "Option 2"])
+        let expectedAttribute = sampleAttribute(attributeID: 0, name: "attr-2", position: 1, options: ["Option 1", "Option 2"]).copy(variation: false)
         XCTAssertEqual(updatedProduct.attributes, [initialAttribute, initialNonVarAttribute, expectedAttribute])
     }
 
@@ -763,7 +748,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
 // MARK: Non-variation attributes
 extension AddAttributeOptionsViewModelTests {
-    func test_when_feature_is_on_then_new_attribute_on_simple_product_is_visible_and_not_used_for_variations() throws {
+    func test_new_attribute_on_simple_product_is_visible_and_not_used_for_variations() throws {
         // Given
         let product = sampleProduct().copy(productTypeKey: ProductType.simple.rawValue)
 
@@ -775,7 +760,7 @@ extension AddAttributeOptionsViewModelTests {
         XCTAssertFalse(attribute.variation)
     }
 
-    func test_when_feature_is_on_then_new_attribute_on_variable_product_is_used_for_variations() throws {
+    func test_new_attribute_on_variable_product_is_used_for_variations() throws {
         // Given
         let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue)
 
@@ -787,7 +772,7 @@ extension AddAttributeOptionsViewModelTests {
         XCTAssertTrue(attribute.variation)
     }
 
-    func test_when_feature_is_on_then_new_attribute_in_variations_flow_is_used_for_variations() throws {
+    func test_new_attribute_in_variations_flow_is_used_for_variations() throws {
         // Given
         let product = sampleProduct().copy(productTypeKey: ProductType.simple.rawValue)
 
@@ -805,8 +790,7 @@ extension AddAttributeOptionsViewModelTests {
         let viewModel = AddAttributeOptionsViewModel(product: product,
                                                      attribute: .existing(attribute: material),
                                                      isVariationsFlow: true,
-                                                     stores: storesReturningUpdatedProduct(),
-                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                     stores: storesReturningUpdatedProduct())
         viewModel.addNewOption(name: "Wool")
 
         // When
@@ -816,55 +800,39 @@ extension AddAttributeOptionsViewModelTests {
         XCTAssertEqual(updatedProduct.attributes, [material.copy(variation: true, options: ["Cotton", "Wool"])])
     }
 
-    func test_when_feature_is_off_then_attribute_settings_are_not_shown() {
-        // Given
-        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue)
-
-        // When
-        let viewModel = AddAttributeOptionsViewModel(product: product,
-                                                     attribute: .new(name: "Material"),
-                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: false))
-
-        // Then
-        XCTAssertEqual(settingsRows(viewModel), [])
-    }
-
-    func test_when_feature_is_on_then_simple_product_shows_only_the_visible_switch() {
+    func test_simple_product_shows_only_the_visible_switch() {
         // Given
         let material = sampleNonVariationAttribute(attributeID: 0, name: "Material", options: ["Cotton"]).copy(visible: false)
         let product = sampleProduct().copy(productTypeKey: ProductType.simple.rawValue, attributes: [material])
 
         // When
         let viewModel = AddAttributeOptionsViewModel(product: product,
-                                                     attribute: .existing(attribute: material),
-                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                     attribute: .existing(attribute: material))
 
         // Then
         XCTAssertEqual(settingsRows(viewModel), [.visibleOnProductPage(isOn: false)])
     }
 
-    func test_when_feature_is_on_then_variable_product_shows_both_switches() {
+    func test_variable_product_shows_both_switches() {
         // Given
         let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue)
 
         // When
         let viewModel = AddAttributeOptionsViewModel(product: product,
-                                                     attribute: .new(name: "Material"),
-                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                     attribute: .new(name: "Material"))
 
         // Then
         XCTAssertEqual(settingsRows(viewModel), [.visibleOnProductPage(isOn: true), .usedForVariations(isOn: true)])
     }
 
-    func test_when_feature_is_on_then_variations_flow_shows_only_the_visible_switch() {
+    func test_variations_flow_shows_only_the_visible_switch() {
         // Given
         let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue)
 
         // When
         let viewModel = AddAttributeOptionsViewModel(product: product,
                                                      attribute: .new(name: "Material"),
-                                                     isVariationsFlow: true,
-                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                     isVariationsFlow: true)
 
         // Then
         XCTAssertEqual(settingsRows(viewModel), [.visibleOnProductPage(isOn: true)])
@@ -875,8 +843,7 @@ extension AddAttributeOptionsViewModelTests {
         let material = sampleNonVariationAttribute(attributeID: 0, name: "Material", options: ["Cotton"])
         let product = sampleProduct().copy(productTypeKey: ProductType.simple.rawValue, attributes: [material])
         let viewModel = AddAttributeOptionsViewModel(product: product,
-                                                     attribute: .existing(attribute: material),
-                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                     attribute: .existing(attribute: material))
         XCTAssertFalse(viewModel.isNextButtonEnabled)
 
         // When
@@ -898,8 +865,7 @@ extension AddAttributeOptionsViewModelTests {
         let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue, attributes: [color])
         let viewModel = AddAttributeOptionsViewModel(product: product,
                                                      attribute: .existing(attribute: color),
-                                                     stores: storesReturningUpdatedProduct(),
-                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                     stores: storesReturningUpdatedProduct())
 
         // When
         viewModel.setVisible(false)
@@ -953,12 +919,6 @@ extension AddAttributeOptionsViewModelTests {
 // MARK: Helpers
 private extension AddAttributeOptionsViewModelTests {
 
-    func featureFlagService(isNonVariationAttributesEnabled: Bool) -> MockFeatureFlagService {
-        let service = MockFeatureFlagService()
-        service.isFeatureFlagEnabledReturnValue[.nonVariationProductAttributes] = isNonVariationAttributesEnabled
-        return service
-    }
-
     /// Rows of the "Visible on product page" and "Used for variations" switches
     func settingsRows(_ viewModel: AddAttributeOptionsViewModel) -> [AddAttributeOptionsViewController.Row] {
         viewModel.sections.flatMap { $0.rows }.filter { row in
@@ -991,13 +951,12 @@ private extension AddAttributeOptionsViewModelTests {
         }
     }
 
-    /// Saves a new attribute "Material: Cotton" with the non-variation attributes feature on and returns it.
+    /// Saves a new attribute "Material: Cotton" and returns it.
     func savedNewAttribute(product: Product, isVariationsFlow: Bool) throws -> ProductAttribute {
         let viewModel = AddAttributeOptionsViewModel(product: product,
                                                      attribute: .new(name: "Material"),
                                                      isVariationsFlow: isVariationsFlow,
-                                                     stores: storesReturningUpdatedProduct(),
-                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                     stores: storesReturningUpdatedProduct())
         viewModel.addNewOption(name: "Cotton")
         return try XCTUnwrap(savedProduct(viewModel: viewModel).attributes.first { $0.name == "Material" })
     }

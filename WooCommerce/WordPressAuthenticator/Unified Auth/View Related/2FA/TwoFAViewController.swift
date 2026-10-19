@@ -235,7 +235,8 @@ private extension TwoFAViewController {
     @available(iOS 16, *)
     func signChallenge(_ challengeInfo: WebauthnChallengeInfo) {
 
-        loginFields.nonceInfo?.updateNonce(with: challengeInfo.twoStepNonce)
+        // Requesting a challenge uses up the nonce; keep its replacement for another attempt.
+        loginFields.nonceInfo?.nonceWebauthn = challengeInfo.twoStepNonce
         loginFields.webauthnChallengeInfo = challengeInfo
 
         let challenge = Data(base64URLEncoded: challengeInfo.challenge) ?? Data()

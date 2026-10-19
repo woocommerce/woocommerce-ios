@@ -183,12 +183,14 @@ public final class WordPressComOAuthClient: NSObject {
             "grant_type": "password",
             "client_id": clientID,
             "client_secret": secret,
-            "wpcom_supports_2fa": "true",
             "with_auth_types": "true"
         ]
 
         if let multifactorCode, !multifactorCode.isEmpty {
             form["wpcom_otp"] = multifactorCode
+        } else {
+            // Only the first request opts in to 2FA: with a code, the server would text or email a new code before checking the submitted one.
+            form["wpcom_supports_2fa"] = "true"
         }
 
         let builder = tokenRequestBuilder().body(form: form)

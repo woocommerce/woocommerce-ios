@@ -1,3 +1,4 @@
+import AuthenticationServices
 import Testing
 import UIKit
 @testable import WordPressAuthenticator
@@ -61,6 +62,54 @@ struct TwoFAViewControllerTests {
         #expect(facade.socialCodeRequestCount == 1)
     }
 
+    @Test
+    func test_security_key_prompt_when_cancelled_then_stays_on_screen() throws {
+        // Given
+        let (controller, _) = try makeScreen()
+        let tableView = try #require(firstSubview(of: UITableView.self, in: controller.view))
+        tableView.layoutIfNeeded()
+        let navigationController = AlertPresentingNavigationController()
+        navigationController.setViewControllers([controller], animated: false)
+        controller.configureViewLoading(true)
+
+        // When
+        controller.authorizationController(
+            controller: makeAuthorizationController(),
+            didCompleteWithError: ASAuthorizationError(.canceled)
+        )
+
+        // Then
+        let codeFields = tableView.visibleCells.compactMap { ($0 as? TextFieldTableViewCell)?.textField }
+        let codeField = try #require(codeFields.first)
+        #expect(navigationController.presentedController == nil)
+        #expect(controller.navigationItem.hidesBackButton == false)
+        #expect(codeField.isEnabled)
+    }
+
+    @Test
+    func test_security_key_prompt_when_other_error_occurs_then_presents_alert() throws {
+        // Given
+        let (controller, _) = try makeScreen()
+        let navigationController = AlertPresentingNavigationController()
+        navigationController.setViewControllers([controller], animated: false)
+        controller.configureViewLoading(true)
+
+        // When
+        controller.authorizationController(
+            controller: makeAuthorizationController(),
+            didCompleteWithError: NSError(domain: "test", code: 1)
+        )
+
+        // Then
+        #expect(navigationController.presentedController != nil)
+    }
+
+    private func makeAuthorizationController() -> ASAuthorizationController {
+        let request = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: "wordpress.com")
+            .createCredentialAssertionRequest(challenge: Data())
+        return ASAuthorizationController(authorizationRequests: [request])
+    }
+
     private func makeScreen(
         password: String = "",
         nonceInfo: SocialLogin2FANonceInfo? = nil
@@ -83,5 +132,14 @@ struct TwoFAViewControllerTests {
             return match
         }
         return view.subviews.lazy.compactMap { firstSubview(of: type, in: $0) }.first
+    }
+}
+
+@MainActor
+private final class AlertPresentingNavigationController: UINavigationController {
+    private(set) var presentedController: UIViewController?
+
+    override func present(_ viewControllerToPresent: UIViewController, animated: Bool, completion: (() -> Void)?) {
+        presentedController = viewControllerToPresent
     }
 }

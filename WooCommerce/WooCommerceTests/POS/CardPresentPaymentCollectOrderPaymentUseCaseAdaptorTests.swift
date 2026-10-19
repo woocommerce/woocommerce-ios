@@ -84,7 +84,7 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
         #expect(cancelPaymentCount == 1)
     }
 
-    @Test func test_cancellation_when_new_payment_event_arrives_after_cancel_then_only_cancelled_step_is_cancelled() async throws {
+    @Test func test_cancellation_when_new_payment_event_arrives_after_cancel_then_later_step_is_not_cancelled() async throws {
         // Given
         let events = PassthroughSubject<CardPresentPaymentEvent, Never>()
         let (paymentTask, preflightController) = await startPayment(events: events)
@@ -125,7 +125,11 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
         // Then
         #expect(cancelUpdateCount == 1)
         #expect(tryAgainCount == 0)
-        _ = try await finishWithCancellation(paymentTask, preflightController: preflightController)
+
+        let result = try await finishWithCancellation(paymentTask, preflightController: preflightController)
+        #expect(result == .cancellation)
+        #expect(cancelUpdateCount == 1)
+        #expect(tryAgainCount == 0)
     }
 
     @Test func test_cancellation_when_reader_update_in_progress_then_cancels_update() async throws {
@@ -142,7 +146,10 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
 
         // Then
         #expect(cancelUpdateCount == 1)
-        _ = try await finishWithCancellation(paymentTask, preflightController: preflightController)
+
+        let result = try await finishWithCancellation(paymentTask, preflightController: preflightController)
+        #expect(result == .cancellation)
+        #expect(cancelUpdateCount == 1)
     }
 
     @Test func test_cancellation_when_location_required_then_runs_cancel() async throws {
@@ -159,7 +166,10 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
 
         // Then
         #expect(cancelCount == 1)
-        _ = try await finishWithCancellation(paymentTask, preflightController: preflightController)
+
+        let result = try await finishWithCancellation(paymentTask, preflightController: preflightController)
+        #expect(result == .cancellation)
+        #expect(cancelCount == 1)
     }
 }
 

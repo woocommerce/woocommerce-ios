@@ -41,8 +41,7 @@ public final class WordPressSiteStore: DeauthenticatedStore {
 
 private extension WordPressSiteStore {
     func fetchSiteInfo(for siteURL: String, detectUnexpectedResponses: Bool, completion: @escaping @Sendable (Result<Site, Error>) -> Void) {
-        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
-        nonisolated(unsafe) let remote = remote
+        let remote = remote
         Task { @MainActor in
             do {
                 let wpSite = try await remote.fetchSiteInfo(for: siteURL, detectUnexpectedResponses: detectUnexpectedResponses)
@@ -57,8 +56,7 @@ private extension WordPressSiteStore {
     func fetchApplicationPasswordAuthorizationURL(for siteURL: String,
                                                   detectUnexpectedResponses: Bool,
                                                   completion: @escaping @Sendable (Result<URL?, Error>) -> Void) {
-        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
-        nonisolated(unsafe) let remote = remote
+        let remote = remote
         Task { @MainActor in
             do {
                 let wpSite = try await remote.fetchSiteInfo(for: siteURL, detectUnexpectedResponses: detectUnexpectedResponses)
@@ -75,8 +73,7 @@ private extension WordPressSiteStore {
     }
 
     func fetchPageList(siteURL: String, completion: @escaping @Sendable (Result<[WordPressPage], Error>) -> Void) {
-        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
-        nonisolated(unsafe) let remote = remote
+        let remote = remote
         Task { @MainActor in
             do {
                 let pageList = try await remote.fetchSitePages(for: siteURL)

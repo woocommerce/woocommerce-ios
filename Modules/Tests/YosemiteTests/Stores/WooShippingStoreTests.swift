@@ -88,6 +88,99 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(isEligibleForCreation, expectedEligibility)
     }
 
+    // MARK: - EU Product Identifiers Requirement
+
+    func test_checkEUProductIdentifiersRequirement_when_requirements_require_identifiers_then_returns_required_prefills_by_productID_and_keeps_first_duplicate() {
+        // Given
+        let remote = MockWooShippingRemote()
+        let firstIdentifier = WooShippingEUProductIdentifiers(productID: 55,
+                                                              sku: "FIRST",
+                                                              manufacturerProductID: "MPN-FIRST",
+                                                              standardizedProductID: "GTIN-FIRST")
+        let duplicateIdentifier = WooShippingEUProductIdentifiers(productID: 55,
+                                                                  sku: "SECOND",
+                                                                  manufacturerProductID: "MPN-SECOND",
+                                                                  standardizedProductID: "GTIN-SECOND")
+        remote.whenLoadingCustomsRequirements(siteID: sampleSiteID,
+                                              thenReturn: .success(true))
+        remote.whenLoadingEUProductIdentifiers(siteID: sampleSiteID,
+                                               thenReturn: .success([firstIdentifier, duplicateIdentifier]))
+
+        // When
+        let result = checkEUProductIdentifiersRequirement(using: remote)
+
+        // Then
+        XCTAssertEqual(result, .required(prefills: [55: firstIdentifier]))
+    }
+
+    func test_checkEUProductIdentifiersRequirement_when_server_says_identifiers_are_not_required_then_returns_notRequired() {
+        // Given
+        let remote = MockWooShippingRemote()
+        remote.whenLoadingCustomsRequirements(siteID: sampleSiteID,
+                                              thenReturn: .success(false))
+
+        // When
+        let result = checkEUProductIdentifiersRequirement(using: remote)
+
+        // Then
+        XCTAssertEqual(result, .notRequired)
+    }
+
+    func test_checkEUProductIdentifiersRequirement_when_Dotcom_returns_no_route_then_returns_pluginOutdated() {
+        // Given
+        let remote = MockWooShippingRemote()
+        remote.whenLoadingCustomsRequirements(siteID: sampleSiteID, thenReturn: .failure(DotcomError.noRestRoute()))
+
+        // When
+        let result = checkEUProductIdentifiersRequirement(using: remote)
+
+        // Then
+        XCTAssertEqual(result, .pluginOutdated)
+    }
+
+    func test_checkEUProductIdentifiersRequirement_when_rest_returns_no_route_then_returns_pluginOutdated() {
+        // Given
+        let remote = MockWooShippingRemote()
+        let response = Data(#"{"code":"rest_no_route","message":"No route found","data":{"status":404}}"#.utf8)
+        remote.whenLoadingCustomsRequirements(siteID: sampleSiteID,
+                                              thenReturn: .failure(NetworkError.notFound(response: response)))
+
+        // When
+        let result = checkEUProductIdentifiersRequirement(using: remote)
+
+        // Then
+        XCTAssertEqual(result, .pluginOutdated)
+    }
+
+    func test_checkEUProductIdentifiersRequirement_when_not_found_error_has_a_different_code_then_returns_notRequired() {
+        // Given
+        let remote = MockWooShippingRemote()
+        let response = Data(#"{"code":"different_error","message":"Not found","data":{"status":404}}"#.utf8)
+        remote.whenLoadingCustomsRequirements(siteID: sampleSiteID,
+                                              thenReturn: .failure(NetworkError.notFound(response: response)))
+
+        // When
+        let result = checkEUProductIdentifiersRequirement(using: remote)
+
+        // Then
+        XCTAssertEqual(result, .notRequired)
+    }
+
+    func test_checkEUProductIdentifiersRequirement_when_prefill_request_fails_then_returns_required_without_prefills() {
+        // Given
+        let remote = MockWooShippingRemote()
+        remote.whenLoadingCustomsRequirements(siteID: sampleSiteID,
+                                              thenReturn: .success(true))
+        remote.whenLoadingEUProductIdentifiers(siteID: sampleSiteID,
+                                               thenReturn: .failure(NetworkError.timeout()))
+
+        // When
+        let result = checkEUProductIdentifiersRequirement(using: remote)
+
+        // Then
+        XCTAssertEqual(result, .required(prefills: [:]))
+    }
+
     // MARK: `createPackage`
 
     func test_createPackage_returns_success_response() throws {
@@ -1499,6 +1592,21 @@ final class WooShippingStoreTests: XCTestCase {
 }
 
 private extension WooShippingStoreTests {
+    func checkEUProductIdentifiersRequirement(using remote: MockWooShippingRemote) -> WooShippingEUProductIdentifiersRequirement {
+        let store = WooShippingStore(dispatcher: dispatcher,
+                                     storageManager: storageManager,
+                                     network: network,
+                                     remote: remote)
+        return waitFor { promise in
+            let action = WooShippingAction.checkEUProductIdentifiersRequirement(siteID: self.sampleSiteID,
+                                                                                orderID: self.sampleOrderID,
+                                                                                originID: "store_details") { requirement in
+                promise(requirement)
+            }
+            store.onAction(action)
+        }
+    }
+
     func sampleLabelRates() -> [ShippingLabelCarriersAndRates] {
         return [ShippingLabelCarriersAndRates(packageID: "123",
                                               defaultRates: [sampleLabelRate()],

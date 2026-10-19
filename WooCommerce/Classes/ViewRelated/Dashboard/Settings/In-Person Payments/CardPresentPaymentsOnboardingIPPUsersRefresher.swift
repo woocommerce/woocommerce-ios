@@ -5,6 +5,7 @@ import Combine
 
 /// Refreshes the CPP onboarding state if there are IPP transactions stored
 ///
+@MainActor
 class CardPresentPaymentsOnboardingIPPUsersRefresher {
     private let stores: StoresManager
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
@@ -16,9 +17,9 @@ class CardPresentPaymentsOnboardingIPPUsersRefresher {
     private var onboardingStateObservations: Set<AnyCancellable> = []
 
     init(stores: StoresManager = ServiceLocator.stores,
-         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil) {
         self.stores = stores
-        self.cardPresentPaymentsOnboardingUseCase = cardPresentPaymentsOnboardingUseCase
+        self.cardPresentPaymentsOnboardingUseCase = cardPresentPaymentsOnboardingUseCase ?? CardPresentPaymentsOnboardingUseCase()
     }
 
     func refreshIPPUsersOnboardingState(completion: @escaping (() -> Void)) {

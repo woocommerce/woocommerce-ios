@@ -129,6 +129,11 @@ class AuthenticationManager: Authentication {
     /// site-address flow. The standard prologue stays as the app's first screen.
     ///
     func authenticationUI() -> UIViewController {
+        // A fresh authenticator replaces the previous navigation stack. Recovery paths
+        // can log out before reaching `startStorePicker`, leaving its QR coordinator
+        // alive and swallowing login taps because the old stack still has QR screens.
+        qrLoginCoordinator = nil
+
         let loginUI = WordPressAuthenticator.loginUI(onPrimaryLoginCTA: { [weak self] in
             guard let self else { return false }
             // Resets Apple ID at the beginning of the authentication.
@@ -724,7 +729,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                            in viewController: UIViewController,
                                            onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
         if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError {
-            unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, onRetry: onRetry)
+            unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, siteURL: siteURL, onRetry: onRetry)
             return
         }
         let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in

@@ -2,7 +2,7 @@ import Foundation
 
 /// User: Remote Endpoints
 ///
-public final class UserRemote: Remote {
+public final class UserRemote: Remote, @unchecked Sendable {
     /// Loads the User associated with the site ID.
     /// This should be able to fetch from both dotcom and Jetpack-connected sites.
     /// - Parameters:

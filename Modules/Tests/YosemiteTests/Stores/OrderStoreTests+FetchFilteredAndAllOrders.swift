@@ -253,21 +253,21 @@ private final class SaveCountingStorageManager: StorageManagerType {
         inner.viewStorage
     }
 
-    func performAndSave(_ operation: @escaping (StorageType) -> Void,
-                        completion: (() -> Void)?,
+    func performAndSave(_ operation: @escaping @Sendable (StorageType) -> Void,
+                        completion: (@Sendable () -> Void)?,
                         on queue: DispatchQueue) {
         performAndSaveCallCount += 1
         inner.performAndSave(operation, completion: completion, on: queue)
     }
 
-    func performAndSave<T>(_ operation: @escaping (StorageType) throws -> T,
-                           completion: @escaping (Result<T, Error>) -> Void,
+    func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                           completion: @escaping @Sendable (Result<T, Error>) -> Void,
                            on queue: DispatchQueue) {
         performAndSaveCallCount += 1
         inner.performAndSave(operation, completion: completion, on: queue)
     }
 
-    func reset(onCompletion: (() -> Void)?) {
+    func reset(onCompletion: (@Sendable () -> Void)?) {
         inner.reset(onCompletion: onCompletion)
     }
 }

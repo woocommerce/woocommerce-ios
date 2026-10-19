@@ -46,7 +46,7 @@ public protocol ProductVariationsRemoteProtocol {
 
 /// ProductVariation: Remote Endpoints
 ///
-public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
+public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol, @unchecked Sendable {
 
     /// Retrieves all of the `ProductVariation`s available.
     ///

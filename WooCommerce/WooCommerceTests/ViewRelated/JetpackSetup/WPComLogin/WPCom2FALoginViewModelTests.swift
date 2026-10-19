@@ -137,6 +137,34 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         XCTAssertEqual(errorCaught, .genericFailure(underlyingError: expectedError))
     }
 
+    func test_handleLogin_when_nonce_info_has_no_code_nonce_then_submits_code_with_password() {
+        // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        let loginFields = LoginFields()
+        let nonceInfo = SocialLogin2FANonceInfo()
+        nonceInfo.nonceWebauthn = "webauthn-nonce"
+        loginFields.nonceInfo = nonceInfo
+        let loginFacade = MockLoginFacade(dotcomClientID: "Fake", dotcomSecret: "Fake", userAgent: "Fake")
+        var failureWasCalled = false
+        let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
+                                               loginFacade: loginFacade,
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { _ in failureWasCalled = true },
+                                               onLoginSuccess: { _ in })
+        viewModel.verificationCode = " 123 456 "
+
+        // When
+        viewModel.handleLogin()
+
+        // Then
+        XCTAssertTrue(viewModel.isLoggingIn)
+        XCTAssertTrue(loginFacade.signedInLoginFields === loginFields)
+        XCTAssertEqual(loginFacade.signedInLoginFields?.multifactorCode, "123456")
+        XCTAssertEqual(loginFacade.signInCallCount, 1)
+        XCTAssertEqual(loginFacade.nonceAuthenticationCallCount, 0)
+        XCTAssertFalse(failureWasCalled)
+    }
+
     func test_isLoggingIn_is_updated_correctly_and_onLoginSuccess_is_triggered_when_login_succeeds() {
         // Given
         let window = UIWindow(frame: UIScreen.main.bounds)

@@ -41,13 +41,14 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     private let onLoginSuccess: (String) async -> Void
 
     init(loginFields: LoginFields,
+         loginFacade: LoginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
+                                                dotcomSecret: ApiCredentials.dotcomSecret,
+                                                userAgent: UserAgent.defaultUserAgent),
          onAuthWindowRequest: @escaping () -> UIWindow,
          onLoginFailure: @escaping (TwoFALoginError) -> Void,
          onLoginSuccess: @escaping (String) async -> Void) {
         self.loginFields = loginFields
-        self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
-                                       dotcomSecret: ApiCredentials.dotcomSecret,
-                                       userAgent: UserAgent.defaultUserAgent)
+        self.loginFacade = loginFacade
         self.onAuthWindowRequest = onAuthWindowRequest
         self.onLoginFailure = onLoginFailure
         self.onLoginSuccess = onLoginSuccess
@@ -75,16 +76,8 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
 
     func handleLogin() {
         isLoggingIn = true
-        if let nonceInfo = loginFields.nonceInfo {
-            let (authType, nonce) = nonceInfo.authTypeAndNonce(for: strippedCode)
-            guard nonce.isNotEmpty else {
-                return handleError(.bad2FACode)
-            }
-            loginFacade.loginToWordPressDotCom(withUser: loginFields.nonceUserID, authType: authType, twoStepCode: strippedCode, twoStepNonce: nonce)
-        } else {
-            loginFields.multifactorCode = strippedCode
-            loginFacade.signIn(with: loginFields)
-        }
+        loginFields.multifactorCode = strippedCode
+        loginFacade.signIn(with: loginFields)
     }
 
     func requestOneTimeCode() {

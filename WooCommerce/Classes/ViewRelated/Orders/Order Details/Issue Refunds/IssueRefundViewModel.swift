@@ -76,6 +76,8 @@ final class IssueRefundViewModel {
 
     var showFetchRefundsErrorNotice: ((@escaping () -> Void) -> Void)?
 
+    var hasRefundFetchError: Bool { state.refundFetchFailed }
+
     /// Title for the navigation bar
     ///
     private(set) var title: String = ""
@@ -228,13 +230,17 @@ extension IssueRefundViewModel {
         return state.refundQuantityStore.refundQuantity(for: refundable.item)
     }
 
-    /// Updates the quantity to be refunded for an item on the provided index.
+    func itemIDForItemAtIndex(_ itemIndex: Int) -> Int64? {
+        state.itemsToRefund[safe: itemIndex]?.item.itemID
+    }
+
+    /// Updates the original order line using its current refundable quantity.
     ///
-    func updateRefundQuantity(quantity: Int, forItemAtIndex itemIndex: Int) {
-        guard let refundable = state.itemsToRefund[safe: itemIndex] else {
+    func updateRefundQuantity(quantity: Int, forItemWithID itemID: Int64) {
+        guard let refundable = state.itemsToRefund.first(where: { $0.item.itemID == itemID }) else {
             return
         }
-        state.refundQuantityStore.update(quantity: quantity, for: refundable.item)
+        state.refundQuantityStore.update(quantity: max(0, min(quantity, refundable.quantity)), for: refundable.item)
     }
 
     /// Marks all items as to be refunded
@@ -254,8 +260,12 @@ extension IssueRefundViewModel {
         fetchRefunds()
     }
 
+    func retryFetchingRefunds() {
+        fetchRefunds()
+    }
+
     private func fetchRefunds() {
-        guard state.order.refunds.isNotEmpty else { return }
+        guard !state.isLoadingRefunds, state.order.refunds.isNotEmpty else { return }
         state.isLoadingRefunds = true
         state.refundFetchFailed = false
         var fetched: [Refund] = []

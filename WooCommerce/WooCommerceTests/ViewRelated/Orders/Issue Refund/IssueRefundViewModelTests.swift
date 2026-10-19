@@ -37,6 +37,161 @@ final class IssueRefundViewModelTests: XCTestCase {
     }
 
 
+    func test_quantity_completion_when_selected_item_was_fully_refunded_then_does_not_select_next_item() throws {
+        // Given
+        let first = MockOrderItem.sampleItem(itemID: 10, productID: 100, quantity: 1, taxes: [], total: "10", totalTax: "0")
+        let second = MockOrderItem.sampleItem(itemID: 20, productID: 100, quantity: 3, taxes: [], total: "30", totalTax: "0")
+        let order = MockOrders().makeOrder(items: [first, second], shippingLines: [], fees: []).copy(
+            total: "40", refunds: [.init(refundID: 1, reason: nil, total: "-10")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var complete: ((Refund?, Error?) -> Void)?
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, _, completion) = action { complete = completion }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        sut.fetch()
+        let command = RefundItemQuantityListSelectorCommand(
+            maxRefundQuantity: try XCTUnwrap(sut.quantityAvailableForRefundForItemAtIndex(0)),
+            currentQuantity: 0, itemID: try XCTUnwrap(sut.itemIDForItemAtIndex(0)))
+
+        // When: history finishes after the picker opened and before its completion.
+        try XCTUnwrap(complete)(Refund.fake().copy(items: [
+            .init(itemID: 99, refundedItemID: "10", quantity: -1, taxes: [], total: "-10")
+        ], shippingLines: [], feeLines: []), nil)
+        sut.updateRefundQuantity(quantity: 1, forItemWithID: command.itemID)
+
+        // Then: row zero is now the second order line and must remain unselected.
+        XCTAssertEqual(sut.quantityAvailableForRefundForItemAtIndex(0), 3)
+        XCTAssertEqual(sut.currentQuantityForItemAtIndex(0), 0)
+        XCTAssertFalse(sut.isNextButtonEnabled)
+    }
+
+    func test_quantity_completion_when_an_earlier_item_was_removed_then_selects_original_item() throws {
+        // Given
+        let first = MockOrderItem.sampleItem(itemID: 10, productID: 100, quantity: 1, taxes: [], total: "10", totalTax: "0")
+        let second = MockOrderItem.sampleItem(itemID: 20, productID: 100, quantity: 3, taxes: [], total: "30", totalTax: "0")
+        let third = MockOrderItem.sampleItem(itemID: 30, productID: 100, quantity: 5, taxes: [], total: "50", totalTax: "0")
+        let order = MockOrders().makeOrder(items: [first, second, third], shippingLines: [], fees: []).copy(
+            total: "90", refunds: [.init(refundID: 1, reason: nil, total: "-10")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var complete: ((Refund?, Error?) -> Void)?
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, _, completion) = action { complete = completion }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        sut.fetch()
+        let command = RefundItemQuantityListSelectorCommand(
+            maxRefundQuantity: try XCTUnwrap(sut.quantityAvailableForRefundForItemAtIndex(1)),
+            currentQuantity: 0, itemID: try XCTUnwrap(sut.itemIDForItemAtIndex(1)))
+
+        // When
+        try XCTUnwrap(complete)(Refund.fake().copy(items: [
+            .init(itemID: 99, refundedItemID: "10", quantity: -1, taxes: [], total: "-10")
+        ], shippingLines: [], feeLines: []), nil)
+        sut.updateRefundQuantity(quantity: 3, forItemWithID: command.itemID)
+
+        // Then: original line 20 moved to row zero; line 30 must remain unselected.
+        XCTAssertEqual(sut.currentQuantityForItemAtIndex(0), 3)
+        XCTAssertEqual(sut.currentQuantityForItemAtIndex(1), 0)
+        XCTAssertEqual(sut.title, "$30.00")
+    }
+
+    func test_quantity_completion_when_available_quantity_was_reduced_then_clamps_to_latest_quantity() throws {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 10, quantity: 3, taxes: [], total: "30", totalTax: "0")
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [], fees: []).copy(
+            total: "30", refunds: [.init(refundID: 1, reason: nil, total: "-20")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var complete: ((Refund?, Error?) -> Void)?
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, _, completion) = action { complete = completion }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        sut.fetch()
+        let command = RefundItemQuantityListSelectorCommand(
+            maxRefundQuantity: try XCTUnwrap(sut.quantityAvailableForRefundForItemAtIndex(0)),
+            currentQuantity: 0, itemID: try XCTUnwrap(sut.itemIDForItemAtIndex(0)))
+
+        // When
+        try XCTUnwrap(complete)(Refund.fake().copy(items: [
+            .init(itemID: 99, refundedItemID: "10", quantity: -2, taxes: [], total: "-20")
+        ], shippingLines: [], feeLines: []), nil)
+        sut.updateRefundQuantity(quantity: 3, forItemWithID: command.itemID)
+
+        // Then
+        XCTAssertEqual(sut.quantityAvailableForRefundForItemAtIndex(0), 1)
+        XCTAssertEqual(sut.currentQuantityForItemAtIndex(0), 1)
+    }
+
+    func test_fetch_when_retry_is_tapped_twice_then_starts_only_one_refund_batch() throws {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 3, total: "10")
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [], fees: []).copy(
+            total: "10", refunds: [.init(refundID: 2, reason: nil, total: "-1")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var completions: [(Refund?, Error?) -> Void] = []
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, _, completion) = action { completions.append(completion) }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        var retry: (() -> Void)?
+        sut.showFetchRefundsErrorNotice = { retry = $0 }
+        sut.selectAllOrderItems()
+        sut.fetch()
+        completions[0](nil, NSError(domain: "test", code: 1))
+        let retryAction = try XCTUnwrap(retry)
+
+        // When
+        retryAction()
+        retryAction()
+
+        // Then
+        XCTAssertEqual(completions.count, 2)
+        XCTAssertFalse(sut.isNextButtonEnabled)
+        XCTAssertTrue(sut.isNextButtonAnimating)
+    }
+
+
+    func test_fetch_when_retry_fails_then_keeps_error_until_later_retry_succeeds() {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 3, total: "10")
+        let order = MockOrders().makeOrder(items: [item], shippingLines: [], fees: []).copy(
+            total: "10", refunds: [.init(refundID: 2, reason: nil, total: "-1")])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var completions: [(Refund?, Error?) -> Void] = []
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .retrieveRefund(_, _, _, completion) = action { completions.append(completion) }
+        }
+        let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
+        var notices = 0
+        sut.showFetchRefundsErrorNotice = { _ in notices += 1 }
+        sut.selectAllOrderItems()
+        sut.fetch()
+        completions[0](nil, NSError(domain: "test", code: 1))
+        XCTAssertTrue(sut.hasRefundFetchError)
+
+        // When: the first retry also fails.
+        sut.retryFetchingRefunds()
+        completions[1](nil, NSError(domain: "test", code: 2))
+
+        // Then: Retry remains available and refund confirmation stays blocked.
+        XCTAssertEqual(notices, 2)
+        XCTAssertTrue(sut.hasRefundFetchError)
+        XCTAssertFalse(sut.isNextButtonEnabled)
+        XCTAssertFalse(sut.isNextButtonAnimating)
+
+        // When: the subsequent retry succeeds.
+        sut.retryFetchingRefunds()
+        completions[2](Refund.fake().copy(items: [.init(itemID: 99, refundedItemID: "1", quantity: -2, taxes: [], total: "-6.66")],
+                                         shippingLines: [], feeLines: []), nil)
+
+        // Then
+        XCTAssertFalse(sut.hasRefundFetchError)
+        XCTAssertTrue(sut.isNextButtonEnabled)
+        XCTAssertFalse(sut.isNextButtonAnimating)
+        XCTAssertEqual(sut.currentQuantityForItemAtIndex(0), 1)
+    }
+
     func test_sections_when_shipping_refund_has_new_id_then_original_shipping_is_not_offered() throws {
         for metadata in [#"[{"id":1,"key":"_refunded_item_id","value":1}]"#,
                          #"{"0":{"id":1,"key":"_refunded_item_id","value":1}}"#] {
@@ -106,12 +261,12 @@ final class IssueRefundViewModelTests: XCTestCase {
             let sut = IssueRefundViewModel(order: order, refunds: [history], currencySettings: settings, stores: stores, storage: storageManager)
 
             // When
-            sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+            sut.updateRefundQuantity(quantity: 1, forItemWithID: items[0].itemID)
 
             // Then
             XCTAssertEqual(sut.title, zero)
             XCTAssertFalse(sut.isNextButtonEnabled)
-            sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 1)
+            sut.updateRefundQuantity(quantity: 1, forItemWithID: items[1].itemID)
             XCTAssertEqual(sut.title, positive)
             XCTAssertTrue(sut.isNextButtonEnabled)
             var confirmation: RefundConfirmationViewModel?
@@ -190,7 +345,7 @@ final class IssueRefundViewModelTests: XCTestCase {
             if case let .retrieveRefund(_, _, _, completion) = action { complete = completion }
         }
         let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings(), stores: stores, storage: storageManager)
-        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+        sut.updateRefundQuantity(quantity: 1, forItemWithID: item.itemID)
         sut.toggleRefundShipping()
         sut.fetch()
         let history = Refund.fake().copy(items: [], shippingLines: [
@@ -377,8 +532,8 @@ final class IssueRefundViewModelTests: XCTestCase {
         let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings())
 
         // When
-        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
-        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 1)
+        sut.updateRefundQuantity(quantity: 1, forItemWithID: paid.itemID)
+        sut.updateRefundQuantity(quantity: 1, forItemWithID: discount.itemID)
 
         // Then
         XCTAssertEqual(sut.title, "$80.00")
@@ -412,21 +567,21 @@ final class IssueRefundViewModelTests: XCTestCase {
         let sut = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: CurrencySettings())
 
         // When
-        sut.updateRefundQuantity(quantity: 2, forItemAtIndex: 0)
+        sut.updateRefundQuantity(quantity: 2, forItemWithID: paid.itemID)
 
         // Then
         XCTAssertEqual(sut.title, "$0.00")
         XCTAssertFalse(sut.isNextButtonEnabled)
 
         // When
-        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 2)
+        sut.updateRefundQuantity(quantity: 1, forItemWithID: free.itemID)
 
         // Then
         XCTAssertEqual(sut.title, "$0.00")
         XCTAssertFalse(sut.isNextButtonEnabled)
 
         // When
-        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 1)
+        sut.updateRefundQuantity(quantity: 1, forItemWithID: other.itemID)
 
         // Then
         XCTAssertEqual(sut.title, "$10.00")
@@ -441,7 +596,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let sut = IssueRefundViewModel(order: order, refunds: [], currencySettings: CurrencySettings())
 
         // When
-        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+        sut.updateRefundQuantity(quantity: 1, forItemWithID: free.itemID)
 
         // Then
         XCTAssertEqual(sut.title, "$0.00")
@@ -461,7 +616,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let sut = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: CurrencySettings())
 
         // When
-        sut.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+        sut.updateRefundQuantity(quantity: 1, forItemWithID: item.itemID)
 
         // Then
         XCTAssertEqual(sut.title, "$0.00")
@@ -675,7 +830,7 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // When
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
-        viewModel.updateRefundQuantity(quantity: 2, forItemAtIndex: 1)
+        viewModel.updateRefundQuantity(quantity: 2, forItemWithID: items[1].itemID)
 
         // Then
         XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(0), 0)
@@ -750,8 +905,8 @@ final class IssueRefundViewModelTests: XCTestCase {
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
 
         // When
-        viewModel.updateRefundQuantity(quantity: 2, forItemAtIndex: 0)
-        viewModel.updateRefundQuantity(quantity: 1, forItemAtIndex: 1)
+        viewModel.updateRefundQuantity(quantity: 2, forItemWithID: items[0].itemID)
+        viewModel.updateRefundQuantity(quantity: 1, forItemWithID: items[1].itemID)
 
         // Then
         // 11.50(item 1) x 2 (quantity) = 23.00
@@ -782,7 +937,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
 
         // 11.50 (item 1) x 2 (quantity) = 23.0
-        viewModel.updateRefundQuantity(quantity: 2, forItemAtIndex: 0)
+        viewModel.updateRefundQuantity(quantity: 2, forItemWithID: items[0].itemID)
         XCTAssertEqual(viewModel.title, "$23.00")
 
         // When
@@ -807,7 +962,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
 
         // 11.50 (item 1) x 2 (quantity) = 23.0
-        viewModel.updateRefundQuantity(quantity: 2, forItemAtIndex: 0)
+        viewModel.updateRefundQuantity(quantity: 2, forItemWithID: items[0].itemID)
         XCTAssertEqual(viewModel.title, "$23.00")
 
         // When
@@ -848,7 +1003,7 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // When
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
-        viewModel.updateRefundQuantity(quantity: 1, forItemAtIndex: 2)
+        viewModel.updateRefundQuantity(quantity: 1, forItemWithID: items[2].itemID)
 
         // Then
         let selectedItemsTitle = NSLocalizedString("1 item selected", comment: "")
@@ -941,7 +1096,7 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // When
         let viewModel = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: currencySettings)
-        viewModel.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+        viewModel.updateRefundQuantity(quantity: 1, forItemWithID: items[0].itemID)
 
         // Then
         // Price is 11.50 and tax is 0.99 (2.97 / 3(quantity))
@@ -1013,7 +1168,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         viewModel.selectAllOrderItems()
 
         // When
-        viewModel.updateRefundQuantity(quantity: 0, forItemAtIndex: 0)
+        viewModel.updateRefundQuantity(quantity: 0, forItemWithID: items[0].itemID)
 
         // Then
         XCTAssertFalse(viewModel.isNextButtonEnabled)

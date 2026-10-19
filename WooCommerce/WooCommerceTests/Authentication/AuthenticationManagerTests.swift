@@ -1479,7 +1479,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 XCTAssertEqual(failure.kind, .unexpectedContent)
                 XCTAssertEqual(failure.statusCode, 200)
                 XCTAssertEqual(failure.diagnostics?.request, "GET /private-admin/admin-ajax.php")
-                XCTAssertEqual(failure.diagnostics?.excerpt, "Wrong address")
+                XCTAssertNil(failure.diagnostics?.excerpt)
                 XCTAssertNil(failure.diagnostics?.contentType)
             }
             XCTAssertEqual(loading, [true, false, true, false])

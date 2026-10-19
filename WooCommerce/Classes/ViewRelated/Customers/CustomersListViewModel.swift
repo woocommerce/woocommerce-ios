@@ -79,7 +79,6 @@ final class CustomersListViewModel: ObservableObject {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
-    @MainActor
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -244,7 +243,6 @@ private extension CustomersListViewModel {
     }
 
     /// Checks whether the store is eligible for searching all customer search filters at once.
-    @MainActor
     func configureSearchHeader() {
         let isEligible = isEligibleForAdvancedSearch()
         searchFilter = isEligible ? .all : .name
@@ -252,7 +250,6 @@ private extension CustomersListViewModel {
     }
 
     /// Checks whether the store is eligible for searching all customer search filters at once.
-    @MainActor
     func isEligibleForAdvancedSearch() -> Bool {
         // Fetches WC plugin.
         guard let wcPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true) else {

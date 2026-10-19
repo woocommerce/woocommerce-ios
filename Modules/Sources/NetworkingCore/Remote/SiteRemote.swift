@@ -52,7 +52,7 @@ public protocol SiteRemoteProtocol {
 
 /// Site: Remote Endpoints
 ///
-public class SiteRemote: Remote, SiteRemoteProtocol {
+public class SiteRemote: Remote, SiteRemoteProtocol, @unchecked Sendable {
     private let dotcomClientID: String
     private let dotcomClientSecret: String
 

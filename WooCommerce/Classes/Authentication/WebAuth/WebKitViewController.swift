@@ -65,10 +65,18 @@ class WebKitViewController: UIViewController {
     private var widthConstraint: NSLayoutConstraint?
     private var stackViewBottomAnchor: NSLayoutConstraint?
     private var onClose: (() -> Void)?
+    private var webViewObservations: [NSKeyValueObservation] = []
 
 
     private struct WebViewErrors {
         static let frameLoadInterrupted = 102
+    }
+
+    private enum ObservedWebViewProperty {
+        case title
+        case url
+        case estimatedProgress
+        case isLoading
     }
 
     @objc init(configuration: WebViewControllerConfiguration) {
@@ -105,18 +113,24 @@ class WebKitViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    deinit {
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.title))
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.url))
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.isLoading))
+    private func startObservingWebView() {
+        webViewObservations = [
+            observeWebView(\.title, options: [.new], as: .title),
+            observeWebView(\.url, options: [.new], as: .url),
+            observeWebView(\.estimatedProgress, options: [.new], as: .estimatedProgress),
+            observeWebView(\.isLoading, options: [], as: .isLoading)
+        ]
     }
 
-    private func startObservingWebView() {
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.title), options: [.new], context: nil)
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.url), options: [.new], context: nil)
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: [.new], context: nil)
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.isLoading), options: [], context: nil)
+    /// KVO change handlers are `@Sendable`, but `WKWebView` changes these properties on the main thread.
+    private func observeWebView<Value>(_ property: KeyPath<WKWebView, Value>,
+                                       options: NSKeyValueObservingOptions,
+                                       as observedProperty: ObservedWebViewProperty) -> NSKeyValueObservation {
+        webView.observe(property, options: options) { [weak self] _, _ in
+            MainActor.assumeIsolated {
+                self?.webViewDidChange(observedProperty)
+            }
+        }
     }
 
     override func viewDidLoad() {
@@ -354,17 +368,11 @@ class WebKitViewController: UIViewController {
         UIApplication.shared.open(url)
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        guard let object = object as? WKWebView,
-            object == webView,
-            let keyPath else {
-                return
-        }
-
-        switch keyPath {
-        case #keyPath(WKWebView.title):
+    private func webViewDidChange(_ property: ObservedWebViewProperty) {
+        switch property {
+        case .title:
             titleView.titleLabel.text = webView.title
-        case #keyPath(WKWebView.url):
+        case .url:
             // If the site has no title, use the url.
             if webView.title?.nonEmptyString() == nil {
                 titleView.titleLabel.text = webView.url?.host
@@ -374,14 +382,12 @@ class WebKitViewController: UIViewController {
             shareButton.isEnabled = haveUrl
             safariButton.isEnabled = haveUrl
             navigationItem.rightBarButtonItems?.forEach { $0.isEnabled = haveUrl }
-        case #keyPath(WKWebView.estimatedProgress):
+        case .estimatedProgress:
             progressView.progress = Float(webView.estimatedProgress)
             progressView.isHidden = webView.estimatedProgress == 1
-        case #keyPath(WKWebView.isLoading):
+        case .isLoading:
             backButton.isEnabled = webView.canGoBack
             forwardButton.isEnabled = webView.canGoForward
-        default:
-            assertionFailure("Observed change to web view that we are not handling")
         }
 
         // Set the title for the HUD which shows up on tap+hold w/ accessibile font sizes enabled

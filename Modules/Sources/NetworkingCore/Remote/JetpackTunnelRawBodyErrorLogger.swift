@@ -1,14 +1,14 @@
 import Foundation
 
-protocol JetpackTunnelRawBodyErrorLogging {
+protocol JetpackTunnelRawBodyErrorLogging: Sendable {
     func logIfNeeded(responseData: Data?, request: Request, transportStatus: Int?)
 }
 
 struct JetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging {
     private let maxSnippetLength: Int
-    private let warningSink: (String) -> Void
+    private let warningSink: @Sendable (String) -> Void
 
-    init(maxSnippetLength: Int = 2048, warningSink: @escaping (String) -> Void = { DDLogWarn($0) }) {
+    init(maxSnippetLength: Int = 2048, warningSink: @escaping @Sendable (String) -> Void = { DDLogWarn($0) }) {
         self.maxSnippetLength = maxSnippetLength
         self.warningSink = warningSink
     }

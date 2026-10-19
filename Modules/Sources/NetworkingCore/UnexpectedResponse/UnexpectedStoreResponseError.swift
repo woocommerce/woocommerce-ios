@@ -24,7 +24,8 @@ public struct UnexpectedStoreResponseError: Error, Equatable, Sendable, CustomNS
         self.diagnostics = nil
     }
 
-    init(kind: Kind, statusCode: Int?, data: Data? = nil, contentType: String?, request: URLRequest?) {
+    /// Builds support-only diagnostics, sanitizing metadata and limiting the response excerpt.
+    public init(kind: Kind, statusCode: Int?, data: Data? = nil, contentType: String?, request: URLRequest?) {
         self.kind = kind
         self.statusCode = statusCode
         self.diagnostics = Diagnostics(
@@ -40,7 +41,8 @@ public struct UnexpectedStoreResponseError: Error, Equatable, Sendable, CustomNS
     public var errorCode: Int { statusCode ?? 0 }
     public var errorUserInfo: [String: Any] { [NSLocalizedDescriptionKey: description] }
 
-    var logMessage: String {
+    /// Explicit diagnostic logging uses sanitized fields; generic error descriptions omit the excerpt.
+    public var logMessage: String {
         "Unexpected store response: kind=\(kind.rawValue), status=\(statusCode.map(String.init) ?? "unknown"), " +
         "content_type=\(diagnostics?.contentType ?? ""), request=\(diagnostics?.request ?? ""), excerpt=\(diagnostics?.excerpt ?? "")"
     }

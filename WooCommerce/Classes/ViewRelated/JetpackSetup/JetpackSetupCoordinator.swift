@@ -488,7 +488,7 @@ private extension JetpackSetupCoordinator {
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
                 self.analytics.track(event: .JetpackSetup.loginFlow(step: .password, failure: error))
-                let message = error.localizedDescription
+                let message = (error as? WordPressComOAuthError)?.loginErrorMessage ?? error.localizedDescription
                 self.showAlert(message: message)
             },
             onLoginSuccess: { @MainActor [weak self] authToken in

@@ -400,7 +400,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertEqual(updatedProduct.attributes, [expectedAttribute, initialNonVarAttribute])
     }
 
-    func test_updating_existing_attribute_keeps_its_position_visible_and_variation_values() throws {
+    func test_updating_existing_attribute_keeps_its_position_and_visible_values() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -418,7 +418,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
                                                 name: "Material",
                                                 position: 2,
                                                 visible: false,
-                                                variation: false,
+                                                variation: true,
                                                 options: ["Cotton"])
         let initialProduct = sampleProduct().copy(attributes: [firstAttribute, initialAttribute])
         let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .existing(attribute: initialAttribute), stores: stores)
@@ -440,6 +440,91 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         // Then
         let expectedAttribute = initialAttribute.copy(name: "Fabric", options: ["Cotton", "Wool"])
+        XCTAssertEqual(updatedProduct.attributes, [firstAttribute, expectedAttribute])
+    }
+
+    func test_adding_global_attribute_when_product_has_it_not_used_for_variations_then_it_is_used_for_variations() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let firstAttribute = sampleAttribute(attributeID: 1, name: "Color", options: ["Red"])
+        let productAttribute = ProductAttribute(siteID: 123,
+                                                attributeID: 5,
+                                                name: "Material",
+                                                position: 2,
+                                                visible: false,
+                                                variation: false,
+                                                options: ["Cotton"])
+        let siteAttribute = sampleAttribute(attributeID: 5, name: "Material")
+        let initialProduct = sampleProduct().copy(attributes: [firstAttribute, productAttribute])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .existing(attribute: siteAttribute), stores: stores)
+
+        viewModel.addNewOption(name: "Wool")
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        let expectedAttribute = productAttribute.copy(variation: true, options: ["Wool"])
+        XCTAssertEqual(updatedProduct.attributes, [firstAttribute, expectedAttribute])
+    }
+
+    func test_adding_new_attribute_when_name_matches_local_attribute_not_used_for_variations_then_it_is_used_for_variations() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let firstAttribute = sampleAttribute(attributeID: 1, name: "Color", options: ["Red"])
+        let productAttribute = ProductAttribute(siteID: 123,
+                                                attributeID: 0,
+                                                name: "Material",
+                                                position: 2,
+                                                visible: false,
+                                                variation: false,
+                                                options: ["Cotton"])
+        let initialProduct = sampleProduct().copy(attributes: [firstAttribute, productAttribute])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .new(name: "Material"), stores: stores)
+
+        viewModel.addNewOption(name: "Wool")
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        let expectedAttribute = productAttribute.copy(variation: true, options: ["Wool"])
         XCTAssertEqual(updatedProduct.attributes, [firstAttribute, expectedAttribute])
     }
 

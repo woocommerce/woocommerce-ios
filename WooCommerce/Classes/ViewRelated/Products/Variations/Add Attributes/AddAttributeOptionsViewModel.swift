@@ -324,7 +324,8 @@ extension AddAttributeOptionsViewModel {
 
 
     /// Returns a product with its name and options updated with the new attribute to create.
-    /// An attribute the product already has keeps its `position`, `visible` and `variation` values.
+    /// An attribute the product already has keeps its `position` and `visible` values.
+    /// The attribute is always used for variations.
     ///
     private func createUpdatedProduct() -> Product {
         let newOptions = state.selectedOptions.map { $0.name }
@@ -342,7 +343,7 @@ extension AddAttributeOptionsViewModel {
                                             name: newName,
                                             position: existingAttribute?.position ?? nextPosition,
                                             visible: existingAttribute?.visible ?? true,
-                                            variation: existingAttribute?.variation ?? true,
+                                            variation: true,
                                             options: newOptions)
 
         if let existingIndex {

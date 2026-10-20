@@ -63,6 +63,7 @@ final class HubMenuCoordinator {
 
     /// Used to reload the Hub menu screen when selected site changes
     ///
+    @MainActor
     func activate(siteID: Int64) {
         hubMenuController = HubMenuViewController(siteID: siteID,
                                                   stores: storesManager,
@@ -82,6 +83,7 @@ final class HubMenuCoordinator {
         }
     }
 
+    @MainActor
     private func handleNotification(_ notification: WooCommerce.PushNotification) {
         guard notification.kind == .comment else {
             return
@@ -96,6 +98,7 @@ final class HubMenuCoordinator {
         storesManager.dispatch(action)
     }
 
+    @MainActor
     private func attemptRetrieveProductReviewWithoutNoteID(notification: PushNotification) {
         guard let reviewID = notification.meta?.identifier(forKey: .comment) else {
             return
@@ -109,6 +112,7 @@ final class HubMenuCoordinator {
         storesManager.dispatch(action)
     }
 
+    @MainActor
     private func handleProductReviewResult(_ result: Result<ProductReviewFromNoteParcel, Error>) {
         switch result {
         case .failure:

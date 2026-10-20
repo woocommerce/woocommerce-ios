@@ -9,6 +9,9 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
+    /// Retries the search once when the merchant returns from updating the address in the browser.
+    private var foregroundRetrySubscription: AnyCancellable?
+
     let textMode: PaymentsModalTextMode = .reducedTopInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
 
@@ -41,11 +44,23 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
          wcSettingsAdminURL: URL?,
          openWCSettings: (() -> Void)?,
          retrySearch: @escaping () -> Void,
-         cancelSearch: @escaping () -> Void) {
+         cancelSearch: @escaping () -> Void,
+         notificationCenter: NotificationCenter = .default) {
         self.image = image
         self.openWCSettingsAction = openWCSettings
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
+
+        // The retry variant replaces the alert after the settings open in the browser.
+        // The subscription ends with this alert, so a manual retry or cancel can't trigger a second retry.
+        if openWCSettings == nil {
+            foregroundRetrySubscription = notificationCenter
+                .publisher(for: UIApplication.willEnterForegroundNotification)
+                .first()
+                .sink { _ in
+                    retrySearch()
+                }
+        }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {

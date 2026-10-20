@@ -17,9 +17,10 @@ struct CardPresentPaymentsOnboardingAdminActionsTests {
         #expect(url?.absoluteString == (isAdministrator ? "https://example.com/wp-admin/plugins.php" : nil))
     }
 
-    @Test(arguments: [CardPresentPaymentsPlugin.wcPay, .stripe])
-    func test_paymentSettingsURL_when_administrator_then_opens_selected_plugin_settings(_ plugin: CardPresentPaymentsPlugin) {
+    @Test(arguments: [true, false])
+    func test_paymentSettingsURL_when_administrator_then_opens_selected_plugin_settings(_ usesStripe: Bool) {
         // Given
+        let plugin: CardPresentPaymentsPlugin = usesStripe ? .stripe : .wcPay
         let model = makeViewModel(isAdministrator: true)
         let section = plugin == .wcPay ? "woocommerce_payments" : "stripe&panel=settings"
 
@@ -30,9 +31,10 @@ struct CardPresentPaymentsOnboardingAdminActionsTests {
         #expect(url?.absoluteString == "https://example.com/wp-admin/admin.php?page=wc-settings&tab=checkout&section=" + section)
     }
 
-    @Test(arguments: [CardPresentPaymentsPlugin.wcPay, .stripe])
-    func test_paymentSettingsURL_when_not_administrator_then_no_admin_action_is_available(_ plugin: CardPresentPaymentsPlugin) {
+    @Test(arguments: [true, false])
+    func test_paymentSettingsURL_when_not_administrator_then_no_admin_action_is_available(_ usesStripe: Bool) {
         // Given
+        let plugin: CardPresentPaymentsPlugin = usesStripe ? .stripe : .wcPay
         let model = makeViewModel(isAdministrator: false)
 
         // When

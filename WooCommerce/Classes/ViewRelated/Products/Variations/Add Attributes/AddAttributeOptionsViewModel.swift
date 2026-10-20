@@ -55,13 +55,24 @@ final class AddAttributeOptionsViewModel {
         /// Name of the attribute
         ///
         var currentAttributeName: String = ""
+
+        /// "Visible on product page" value of the attribute
+        ///
+        var isVisible: Bool = true
+
+        /// "Used for variations" value of the attribute
+        ///
+        var isUsedForVariations: Bool = true
     }
 
     /// Defines next button visibility
     ///
     var isNextButtonEnabled: Bool {
         let optionsToSubmit = state.selectedOptions.map { $0.name }
-        let attributeHasChanges = state.currentAttributeName != attribute.name || optionsToSubmit != attribute.previouslySelectedOptions
+        let attributeHasChanges = state.currentAttributeName != attribute.name
+            || optionsToSubmit != attribute.previouslySelectedOptions
+            || state.isVisible != initialIsVisible
+            || state.isUsedForVariations != initialIsUsedForVariations
         return attributeHasChanges && state.selectedOptions.isNotEmpty
     }
 
@@ -121,6 +132,17 @@ final class AddAttributeOptionsViewModel {
     private let isVariationsFlow: Bool
 
     private let isNonVariationAttributesEnabled: Bool
+
+    private let isVariableProduct: Bool
+
+    /// "Visible on product page" and "Used for variations" values when the screen opened
+    ///
+    private let initialIsVisible: Bool
+    private let initialIsUsedForVariations: Bool
+
+    /// True when the product already has this attribute and uses it for variations
+    ///
+    private let isSavedAsUsedForVariations: Bool
 
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
@@ -183,10 +205,23 @@ final class AddAttributeOptionsViewModel {
         self.state.currentAttributeName = attribute.name
         self.allowsEditing = allowsEditing
         self.isVariationsFlow = isVariationsFlow
-        self.isNonVariationAttributesEnabled = featureFlagService.isFeatureFlagEnabled(.nonVariationProductAttributes)
+        let isNonVariationAttributesEnabled = featureFlagService.isFeatureFlagEnabled(.nonVariationProductAttributes)
+        self.isNonVariationAttributesEnabled = isNonVariationAttributesEnabled
         self.stores = stores
         self.viewStorage = viewStorage
         self.analytics = analytics
+
+        // An attribute the product already has keeps its values.
+        // In the variations flow, or without non-variation attributes, the attribute is always used for variations.
+        let productAttribute = product.attributes.first { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
+        let isVariableProduct = product.productType.isVariable
+        self.isVariableProduct = isVariableProduct
+        let isAlwaysUsedForVariations = isVariationsFlow || !isNonVariationAttributesEnabled
+        self.initialIsVisible = productAttribute?.visible ?? true
+        self.initialIsUsedForVariations = isAlwaysUsedForVariations || (productAttribute?.variation ?? isVariableProduct)
+        self.isSavedAsUsedForVariations = productAttribute?.variation ?? false
+        self.state.isVisible = initialIsVisible
+        self.state.isUsedForVariations = initialIsUsedForVariations
 
         synchronizeOptions()
     }
@@ -259,6 +294,25 @@ extension AddAttributeOptionsViewModel {
     ///
     var getCurrentAttributeName: String {
         state.currentAttributeName
+    }
+
+    /// Sets the "Visible on product page" value
+    ///
+    func setVisible(_ isVisible: Bool) {
+        state.isVisible = isVisible
+    }
+
+    /// Sets the "Used for variations" value
+    ///
+    func setUsedForVariations(_ isUsedForVariations: Bool) {
+        state.isUsedForVariations = isUsedForVariations
+    }
+
+    /// True when turning off "Used for variations" needs a confirmation:
+    /// the product has variations, and the attribute is saved as used for variations.
+    ///
+    func needsConfirmation(toSetUsedForVariations isUsedForVariations: Bool) -> Bool {
+        !isUsedForVariations && isSavedAsUsedForVariations && product.variations.isNotEmpty
     }
 
     /// Gathers selected options and update the product's attributes.
@@ -335,8 +389,7 @@ extension AddAttributeOptionsViewModel {
 
 
     /// Returns a product with its name and options updated with the new attribute to create.
-    /// An attribute the product already has keeps its `position`, `visible` and `variation` values.
-    /// In the variations flow, or without non-variation attributes, the attribute is always used for variations.
+    /// An attribute the product already has keeps its `position`.
     ///
     private func createUpdatedProduct() -> Product {
         let newOptions = state.selectedOptions.map { $0.name }
@@ -353,8 +406,8 @@ extension AddAttributeOptionsViewModel {
                                             attributeID: attribute.attributeID,
                                             name: newName,
                                             position: existingAttribute?.position ?? nextPosition,
-                                            visible: existingAttribute?.visible ?? true,
-                                            variation: isAlwaysUsedForVariations || (existingAttribute?.variation ?? isNewAttributeUsedForVariations),
+                                            visible: state.isVisible,
+                                            variation: state.isUsedForVariations,
                                             options: newOptions)
 
         if let existingIndex {
@@ -364,18 +417,6 @@ extension AddAttributeOptionsViewModel {
         }
 
         return product.copy(attributes: attributes)
-    }
-
-    /// True when every saved attribute is used for variations: in the variations flow, or without non-variation attributes.
-    ///
-    private var isAlwaysUsedForVariations: Bool {
-        isVariationsFlow || !isNonVariationAttributesEnabled
-    }
-
-    /// A new attribute is used for variations on variable products.
-    ///
-    private var isNewAttributeUsedForVariations: Bool {
-        product.productType.isVariable
     }
 
     /// Returns a product with the current attribute removed.
@@ -406,7 +447,20 @@ private extension AddAttributeOptionsViewModel {
                                        allowsSelection: false)
         let offeredSection = createSelectedSection()
         let addedSection = createExistingSection()
-        sections = [textFieldSection, offeredSection, addedSection].compactMap { $0 }
+        sections = [createSettingsSection(), textFieldSection, offeredSection, addedSection].compactMap { $0 }
+    }
+
+    /// "Visible on product page" for every product type, and "Used for variations" for variable products outside the variations flow
+    ///
+    func createSettingsSection() -> Section? {
+        guard isNonVariationAttributesEnabled else {
+            return nil
+        }
+        let rows: [Row] = [
+            .visibleOnProductPage(isOn: state.isVisible),
+            isVariableProduct && !isVariationsFlow ? .usedForVariations(isOn: state.isUsedForVariations) : nil
+        ].compactMap { $0 }
+        return Section(header: nil, footer: nil, rows: rows, allowsReorder: false, allowsSelection: false)
     }
 
     func createSelectedSection() -> Section? {

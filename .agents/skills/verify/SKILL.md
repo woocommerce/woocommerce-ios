@@ -50,18 +50,23 @@ override below. Preserve servers started by other tasks.
 Use the `/simulator` skill approach to discover a booted simulator UDID.
 
 ```bash
+set -o pipefail
+mkdir -p .agent-artifacts
+TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/verify.XXXXXX")"
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -derivedDataPath "$PWD/DerivedData" \
   -destination "platform=iOS Simulator,id=<UDID>" \
-  build > <task-build-log> 2>&1
+  build 2>&1 | tee "$TASK_ARTIFACTS/build.log"
 ```
 
-Check the exit status and retain the full log outside the repository. If the build fails, report the first error. Verification of code changes requires a successful current build.
+Check the pipeline exit status and retain the full log. If the build fails, report the first error. Verification of code changes requires a successful current build.
 
 ## Step 5: Launch App
 
 Install the built app on the selected simulator with `xcrun simctl install <UDID> <path-to-.app>`.
 Locate that build's app using the WooCommerce target's `TARGET_BUILD_DIR` and `FULL_PRODUCT_NAME`
-from `xcodebuild -showBuildSettings` with the same workspace, scheme, and destination.
+from `xcodebuild -showBuildSettings` with the same workspace, scheme, destination, and
+`-derivedDataPath "$PWD/DerivedData"` (or the explicit path selected for that build).
 
 **For a new live session outside authentication tests**, follow `/auto-login` to launch and confirm
 loaded data.

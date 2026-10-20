@@ -10,9 +10,11 @@ Build the WooCommerce iOS project.
 Use `/simulator` to select an available device. Run the build with that device's name:
 ```bash
 set -o pipefail
-bundle exec fastlane build_for_testing device:"<simulator-name>" 2>&1 | tee <task-build-log>
+mkdir -p .agent-artifacts
+TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/build.XXXXXX")"
+bundle exec fastlane build_for_testing device:"<simulator-name>" 2>&1 | tee "$TASK_ARTIFACTS/build.log"
 ```
-Keep the full log outside the repository. Check the build exit status before reporting success.
+Check the pipeline exit status before reporting success. Keep the full log in the task artifact directory.
 Use the same destination and build products for installation. An installed app may require
 frameworks from that build; follow `.agents/rules/verification.md` if launch fails.
 

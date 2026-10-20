@@ -59,8 +59,8 @@ Select the test target that can import the view: for example, `PointOfSaleTests`
 
 Choose a task artifact directory. If the user provides design reference images, copy them there:
 ```bash
-mkdir -p "$HOME/Downloads/snapshot_experiment"
-TASK_ARTIFACTS="$(mktemp -d "$HOME/Downloads/snapshot_experiment/snapshot.XXXXXX")"
+mkdir -p .agent-artifacts
+TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/snapshot.XXXXXX")"
 cp /path/to/design.png "$TASK_ARTIFACTS/design.png"
 ```
 Use this directory's absolute path for `<task-artifacts>` below, including in later shell calls.
@@ -113,6 +113,7 @@ set -o pipefail
 xcodebuild test \
   -workspace WooCommerce.xcworkspace \
   -scheme '<scheme>' \
+  -derivedDataPath "$PWD/DerivedData" \
   -destination 'platform=iOS Simulator,id=<SIMULATOR_UDID>' \
   -only-testing:<TestTarget>/<SnapshotTestClass> \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tee '<task-artifacts>/snapshot.log'

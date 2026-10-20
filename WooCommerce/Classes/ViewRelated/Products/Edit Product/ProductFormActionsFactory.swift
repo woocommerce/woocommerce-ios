@@ -390,6 +390,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
+            .attributes(editable: editable),
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),

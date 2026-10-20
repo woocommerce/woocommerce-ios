@@ -915,6 +915,35 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertFalse(containsDescriptionAIRow)
         XCTAssertFalse(containsLearnMoreAboutAIRow)
     }
+
+    func test_attributes_row_lists_each_attribute_with_its_options() throws {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: [
+            ProductAttribute.fake().copy(name: "Color", variation: true, options: ["Red", "Blue"]),
+            ProductAttribute.fake().copy(name: "Material", variation: false, options: [])
+        ])
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            return XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+        }
+        let attributesRowViewModel = try XCTUnwrap(rows.compactMap { row -> ProductFormSection.SettingsRow.ViewModel? in
+            if case let .attributes(viewModel, _) = row {
+                return viewModel
+            }
+            return nil
+        }.first)
+        XCTAssertEqual(attributesRowViewModel.title, "Attributes")
+        XCTAssertEqual(attributesRowViewModel.details, "Color: Red, Blue\nMaterial")
+    }
 }
 
 private extension DefaultProductFormTableViewModelTests {
@@ -946,34 +975,5 @@ private extension DefaultProductFormTableViewModelTests {
                                                        comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
         static let groupOfFormat = NSLocalizedString("Group of: %@",
                                                        comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
-    }
-
-    func test_attributes_row_lists_each_attribute_with_its_options() throws {
-        // Given
-        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: [
-            ProductAttribute.fake().copy(name: "Color", variation: true, options: ["Red", "Blue"]),
-            ProductAttribute.fake().copy(name: "Material", variation: false, options: [])
-        ])
-        let model = EditableProductModel(product: product)
-        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
-
-        // When
-        let tableViewModel = DefaultProductFormTableViewModel(product: model,
-                                                              actionsFactory: actionsFactory,
-                                                              currency: "",
-                                                              isDescriptionAIEnabled: true)
-
-        // Then
-        guard case let .settings(rows) = tableViewModel.sections[1] else {
-            return XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
-        }
-        let attributesRowViewModel = try XCTUnwrap(rows.compactMap { row -> ProductFormSection.SettingsRow.ViewModel? in
-            if case let .attributes(viewModel, _) = row {
-                return viewModel
-            }
-            return nil
-        }.first)
-        XCTAssertEqual(attributesRowViewModel.title, "Attributes")
-        XCTAssertEqual(attributesRowViewModel.details, "Color: Red, Blue\nMaterial")
     }
 }

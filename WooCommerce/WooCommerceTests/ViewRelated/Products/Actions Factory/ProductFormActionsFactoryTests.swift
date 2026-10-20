@@ -574,7 +574,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
     func test_product_with_attributes_shows_attributes_row_for_each_type() {
         // Given
-        let productTypes: [ProductType] = [.simple, .affiliate, .grouped, .variable, .subscription, .variableSubscription, .bundle, .composite]
+        let productTypes: [ProductType] = [.simple, .affiliate, .grouped, .variable, .subscription, .variableSubscription, .bundle, .composite,
+                                           .booking, .custom("custom-type")]
         let attribute = ProductAttribute.fake().copy(name: "Material", variation: false, options: ["Cotton"])
 
         for productType in productTypes {
@@ -592,6 +593,18 @@ final class ProductFormActionsFactoryTests: XCTestCase {
     func test_product_without_attributes_shows_attributes_in_bottom_sheet() {
         // Given
         let model = EditableProductModel(product: Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: []))
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // Then
+        XCTAssertFalse(factory.settingsSectionActions().contains(.attributes(editable: true)))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editAttributes))
+    }
+
+    func test_custom_product_without_attributes_shows_attributes_in_bottom_sheet() {
+        // Given
+        let model = EditableProductModel(product: Product.fake().copy(productTypeKey: "custom-type", attributes: []))
 
         // When
         let factory = ProductFormActionsFactory(product: model, formType: .edit)

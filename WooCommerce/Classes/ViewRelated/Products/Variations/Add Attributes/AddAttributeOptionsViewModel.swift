@@ -375,7 +375,7 @@ extension AddAttributeOptionsViewModel {
     /// A new attribute is used for variations on variable products.
     ///
     private var isNewAttributeUsedForVariations: Bool {
-        product.productType == .variable || product.productType == .variableSubscription
+        product.productType.isVariable
     }
 
     /// Returns a product with the current attribute removed.

@@ -3,7 +3,10 @@ import Foundation
 import Yosemite
 
 protocol AIAssistantEligibilityCheckerProtocol {
+    @MainActor
     func isEligible(for site: Site?) -> Bool
+
+    @MainActor
     func isEligible(for site: Site?, useCache: Bool) async -> Bool
 }
 

@@ -126,7 +126,6 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         onDismiss?()
     }
 
-    @MainActor
     func reloadData() async {
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .reviews))
         syncingData = true
@@ -142,7 +141,6 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         syncingData = false
     }
 
-    @MainActor
     func filterReviews(by filter: ReviewsFilter) async {
         currentFilter = filter
         await reloadData()
@@ -256,7 +254,6 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
-    @MainActor
     func synchronizeReviews(filter: ReviewsFilter) async throws {
         let fetchedReviews = try await synchronizeProductReviews(filter: filter)
         updateDataWithReviews(fetchedReviews)
@@ -303,7 +300,6 @@ private extension ReviewsDashboardCardViewModel {
 
 // MARK: Remote
 private extension ReviewsDashboardCardViewModel {
-    @MainActor
     func synchronizeProductReviews (filter: ReviewsFilter? = nil) async throws -> [ProductReview] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
@@ -316,7 +312,6 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
-    @MainActor
     func retrieveProducts(for reviewProductIDs: [Int64]) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             stores.dispatch(ProductAction.retrieveProducts(siteID: siteID,
@@ -333,7 +328,6 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
-    @MainActor
     func synchronizeNotifications() async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             stores.dispatch(NotificationAction.synchronizeNotifications { error in

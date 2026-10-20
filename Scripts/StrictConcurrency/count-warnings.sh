@@ -18,7 +18,6 @@
 #                                    building (fast; used by tests).
 #   STRICT_CONCURRENCY_DERIVED_DATA  Derived data path (default: fresh temp dir,
 #                                    which forces the clean build the count needs).
-#   STRICT_CONCURRENCY_BUILD_LOG     Build log destination (default: fresh temp dir).
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 OUTPUT="${1:-$REPO_ROOT/Scripts/StrictConcurrency/current.json}"
@@ -26,8 +25,7 @@ LOG_FILE="${STRICT_CONCURRENCY_LOG:-}"
 
 if [[ -z "$LOG_FILE" ]]; then
   DERIVED_DATA="${STRICT_CONCURRENCY_DERIVED_DATA:-$(mktemp -d)/DerivedData}"
-  LOG_FILE="${STRICT_CONCURRENCY_BUILD_LOG:-$(mktemp -d)/strict-concurrency-build.log}"
-  mkdir -p "$(dirname "$LOG_FILE")"
+  LOG_FILE="$(mktemp -d)/strict-concurrency-build.log"
   echo "Building with SWIFT_STRICT_CONCURRENCY=complete (log: $LOG_FILE)..."
   set +e
   xcodebuild -workspace "$REPO_ROOT/WooCommerce.xcworkspace" \

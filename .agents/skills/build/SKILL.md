@@ -7,7 +7,7 @@ allowed-tools: "Bash, Read, Grep"
 
 Build the WooCommerce iOS project.
 
-Use `/simulator` to select an available device. Run the build with that device's name:
+Use `/simulator` to select an available device. When you need a saved console log, run the build with that device's name:
 ```bash
 set -o pipefail
 mkdir -p .agent-artifacts

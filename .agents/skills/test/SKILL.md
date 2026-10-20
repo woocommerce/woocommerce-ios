@@ -18,13 +18,12 @@ Use `/simulator` to select an available device. Determine scope from $ARGUMENTS:
   Use the module's scheme for module-only changes; use `WooCommerce` for app-target changes.
 - **Clean build requested or required to diagnose stale output**: add `clean:true`.
 
-Run preparation and the selected command in the same shell. For example:
+When you need a saved console log, run preparation and the selected command in the same shell:
 ```bash
 set -o pipefail
 mkdir -p .agent-artifacts
 TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/test.XXXXXX")"
-SCAN_BUILDLOG_PATH="$TASK_ARTIFACTS/scan" \
-  bundle exec fastlane test device:"<simulator-name>" \
+bundle exec fastlane test device:"<simulator-name>" \
   scheme:PointOfSale only_testing:PointOfSaleTests 2>&1 | tee "$TASK_ARTIFACTS/test.log"
 ```
 

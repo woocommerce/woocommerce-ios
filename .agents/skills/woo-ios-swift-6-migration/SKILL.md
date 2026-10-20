@@ -28,14 +28,8 @@ Do not set `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` on a whole target. On the
 Use the repository build, test, and simulator workflows. To measure workspace warnings, use the existing script with a new DerivedData directory:
 
 ```bash
-mkdir -p .agent-artifacts
-TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/strict-before.XXXXXX")"
-STRICT_CONCURRENCY_DERIVED_DATA="$PWD/DerivedData/$(basename "$TASK_ARTIFACTS")" \
-STRICT_CONCURRENCY_BUILD_LOG="$TASK_ARTIFACTS/build.log" \
-  Scripts/StrictConcurrency/count-warnings.sh "$TASK_ARTIFACTS/warnings.json"
+Scripts/StrictConcurrency/count-warnings.sh /tmp/<task>-before.json
 ```
-
-Use a new artifact directory and DerivedData child for the after measurement too.
 
 Read the script before you change its build settings. For a smaller scope, select the affected scheme and an available simulator. Use `build-for-testing` with `SWIFT_STRICT_CONCURRENCY=complete`. Use a separate DerivedData directory for each build configuration. Check disk space before large builds.
 

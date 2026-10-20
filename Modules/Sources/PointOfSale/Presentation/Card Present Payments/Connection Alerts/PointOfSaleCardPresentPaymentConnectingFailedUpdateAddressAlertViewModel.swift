@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import SwiftUI
 
@@ -18,8 +19,8 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     private let retrySearchAction: () -> Void
     private let openURL: (URL) -> Void
 
-    /// Set when the settings open in the browser, so the search retries once the merchant returns to the app.
-    private var retriesWhenReturningToApp: Bool = false
+    private let notificationCenter: NotificationCenter
+    private var foregroundRetrySubscription: AnyCancellable?
 
     private var openSettingsButtonViewModel: CardPresentPaymentsModalButtonViewModel {
         CardPresentPaymentsModalButtonViewModel(
@@ -29,8 +30,13 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
                 if showsInAuthenticatedWebView {
                     shouldShowSettingsWebView = true
                 } else {
+                    foregroundRetrySubscription = notificationCenter
+                        .publisher(for: UIApplication.willEnterForegroundNotification)
+                        .first()
+                        .sink { [weak self] _ in
+                            self?.retrySearchAction()
+                        }
                     openURL(settingsAdminUrl)
-                    retriesWhenReturningToApp = true
                 }
                 primaryButtonViewModel = retryButtonViewModel
             })
@@ -42,11 +48,13 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
          showsInAuthenticatedWebView: Bool,
          retrySearchAction: @escaping () -> Void,
          cancelSearchAction: @escaping () -> Void,
-         openURL: @escaping (URL) -> Void = { UIApplication.shared.open($0) }) {
+         openURL: @escaping (URL) -> Void = { UIApplication.shared.open($0) },
+         notificationCenter: NotificationCenter = .default) {
         self.settingsAdminUrl = settingsAdminUrl
         self.showsInAuthenticatedWebView = showsInAuthenticatedWebView
         self.retrySearchAction = retrySearchAction
         self.openURL = openURL
+        self.notificationCenter = notificationCenter
         self.retryButtonViewModel = CardPresentPaymentsModalButtonViewModel(
             title: Localization.retry,
             actionHandler: retrySearchAction)
@@ -57,14 +65,6 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     }
 
     func settingsWebViewWasDismissed() {
-        retrySearchAction()
-    }
-
-    func applicationWillEnterForeground() {
-        guard retriesWhenReturningToApp else {
-            return
-        }
-        retriesWhenReturningToApp = false
         retrySearchAction()
     }
 }
@@ -80,7 +80,6 @@ extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewMod
         lhs.cancelButtonViewModel == rhs.cancelButtonViewModel &&
         lhs.retryButtonViewModel == rhs.retryButtonViewModel &&
         lhs.showsInAuthenticatedWebView == rhs.showsInAuthenticatedWebView &&
-        lhs.retriesWhenReturningToApp == rhs.retriesWhenReturningToApp &&
         lhs.id == rhs.id
     }
 
@@ -93,7 +92,6 @@ extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewMod
         hasher.combine(cancelButtonViewModel)
         hasher.combine(retryButtonViewModel)
         hasher.combine(showsInAuthenticatedWebView)
-        hasher.combine(retriesWhenReturningToApp)
         hasher.combine(id)
     }
 }

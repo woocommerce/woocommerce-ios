@@ -11,6 +11,7 @@ import protocol WooFoundation.Analytics
 ///
 /// This is an incremental WIP. Eventually, we should move all the data loading in here.
 ///
+@MainActor
 final class OrderListViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -128,10 +129,6 @@ final class OrderListViewModel {
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
                                                                                                     filters: filters))
-    }
-
-    deinit {
-        stopObservingForegroundRemoteNotifications()
     }
 
     /// Start fetching DB results and forward new changes to the given `tableView`.
@@ -348,11 +345,13 @@ extension OrderListViewModel {
         topBanner = .none
 
         let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
-            guard let self else { return }
-            if let error {
-                DDLogError("⛔️ Retrying store currency sync failed for siteID \(self.siteID): \(error)")
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                if let error {
+                    DDLogError("⛔️ Retrying store currency sync failed for siteID \(self.siteID): \(error)")
+                }
+                self.selectedSiteSettings.refresh()
             }
-            self.selectedSiteSettings.refresh()
         }
         stores.dispatch(action)
     }

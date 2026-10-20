@@ -11,10 +11,10 @@
 items:
   - id: install.upgrade
     title: Upgrade from existing store version
-    manual: "Requires App Store build replacement and logged-in migration state outside the initial simulator suite."
+    manual: "The App Store release can't be installed on a simulator, and building the previous release needs the Xcode version it was pinned to."
   - id: install.fresh
     title: Fresh install smoke
-    manual: "The runner installs over the existing app instead of uninstalling it first."
+    flow: .maestro/flows/login_successful.yaml
 
   - id: login.help
     title: Login help section
@@ -105,7 +105,7 @@ items:
     flow: .maestro/flows/orders_list_and_search.yaml
   - id: orders.pagination
     title: Orders pagination
-    manual: "The lab store has fewer orders than one page holds."
+    flow: .maestro/flows/orders_list_and_search.yaml
   - id: orders.search
     title: Search for an order
     flow: .maestro/flows/orders_list_and_search.yaml
@@ -178,7 +178,7 @@ items:
     flow: .maestro/flows/products_list_and_sort.yaml
   - id: products.pagination
     title: Product pagination
-    manual: "The lab store has fewer products than one page holds."
+    flow: .maestro/flows/products_list_and_sort.yaml
   - id: products.sort
     title: Sort product list
     flow: .maestro/flows/products_list_and_sort.yaml
@@ -193,7 +193,7 @@ items:
     flow: .maestro/flows/products_media_upload.yaml
   - id: products.detail.media.wp-library
     title: Upload product media from the WordPress Media Library
-    manual: "Cleanup deletes every image on a run-owned product, which could include a shared library image."
+    flow: .maestro/flows/products_media_upload.yaml
   - id: products.detail.media.camera
     title: Upload product media with the camera
     manual: "The simulator has no camera."
@@ -202,10 +202,10 @@ items:
     flow: .maestro/flows/products_create.yaml
   - id: products.detail.inventory
     title: Product inventory settings
-    manual: "Products_create does not change and reopen this setting yet."
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.categories
     title: Product categories settings
-    manual: "Products_create does not change and reopen this setting yet."
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.type
     title: Product type settings
     flow: .maestro/flows/products_create.yaml
@@ -214,7 +214,7 @@ items:
     flow: .maestro/flows/products_create.yaml
   - id: products.detail.shipping
     title: Product shipping settings
-    manual: "Products_create does not change and reopen this setting yet."
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.short-description
     title: Product short description settings
     flow: .maestro/flows/products_create.yaml
@@ -308,7 +308,7 @@ items:
 
   - id: other.localization
     title: Switch device to non-English language
-    manual: "Requires locale matrix run; selectors are prepared to avoid text-driven navigation."
+    flow: .maestro/flows/other_localization.yaml
   - id: other.home-widget
     title: Home screen widgets
     manual: "Outside Maestro app surface."

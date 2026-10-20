@@ -2,15 +2,19 @@ import Foundation
 import PointOfSale
 import WooFoundation
 import Combine
+import os
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import protocol Yosemite.StoresManager
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
 
+@MainActor
 final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let currencyFormatter: CurrencyFormatter
     @Published private var latestPaymentEvent: CardPresentPaymentEvent = .idle
+    /// Set when this flow's task is cancelled, so `latestPaymentEvent` keeps the event the cancellation applies to.
+    private let isCancelled = OSAllocatedUnfairLock(initialState: false)
     private let stores: StoresManager
     private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
 
@@ -21,17 +25,15 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         self.currencyFormatter = currencyFormatter
         self.stores = stores
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
-        paymentEventPublisher.assign(to: &$latestPaymentEvent)
+        paymentEventPublisher
+            .filter { [isCancelled] _ in isCancelled.withLock { $0 } == false }
+            .assign(to: &$latestPaymentEvent)
     }
 
-    @MainActor
     func collectPaymentTask(for order: Order,
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
-                            preflightController: CardPresentPaymentPreflightController<
-                            CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
-                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
-                            CardPresentPaymentsAlertPresenterAdaptor>,
+                            preflightController: CardPresentPaymentPreflightControllerProtocol,
                             configuration: CardPresentPaymentsConfiguration,
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>,
@@ -51,6 +53,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 formattedAmount: formattedAmount,
                 rootViewController: NullViewControllerPresenting(),
                 configuration: configuration,
+                stores: stores,
                 paymentOrchestrator: invalidatablePaymentOrchestrator,
                 alertsPresenter: alertsPresenter,
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(showsTapToPayCancellationConfirmation: true),
@@ -99,12 +102,13 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                     )
                 }
             } onCancel: {
-                invalidatablePaymentOrchestrator.invalidatePayment()
-                switch latestPaymentEvent {
-                    case .show(let eventDetails):
-                        onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
-                    case .idle, .showOnboarding:
-                        return
+                // CardPresentPaymentService owns the task and cancels it only on the main actor.
+                // Invalidate and freeze the current event synchronously before cancelling that step,
+                // so cleanup finishes before a replacement payment starts.
+                MainActor.assumeIsolated {
+                    invalidatablePaymentOrchestrator.invalidatePayment()
+                    self.isCancelled.withLock { $0 = true }
+                    self.cancelCurrentStep(paymentOrchestrator: invalidatablePaymentOrchestrator)
                 }
             }
         }
@@ -117,6 +121,15 @@ enum CardPresentPaymentAdaptedCollectOrderPaymentResult {
 }
 
 private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
+    func cancelCurrentStep(paymentOrchestrator: PaymentCaptureOrchestrating) {
+        switch latestPaymentEvent {
+        case .show(let eventDetails):
+            onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: paymentOrchestrator)
+        case .idle, .showOnboarding:
+            return
+        }
+    }
+
     func onCancel(paymentEventDetails: CardPresentPaymentEventDetails, paymentOrchestrator: PaymentCaptureOrchestrating) {
         switch paymentEventDetails {
             /// Before reader connection

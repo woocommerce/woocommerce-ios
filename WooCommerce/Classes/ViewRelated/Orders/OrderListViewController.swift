@@ -9,6 +9,7 @@ import WooFoundation
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
+@MainActor
 protocol OrderListViewControllerDelegate: AnyObject {
     /// Called when `OrderListViewController` (or `OrdersViewController`) is about to fetch Orders from the API.
     ///
@@ -29,6 +30,7 @@ protocol OrderListViewControllerDelegate: AnyObject {
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
+@MainActor
 final class OrderListViewController: UIViewController {
     /// Callback closure when an order is selected either manually (by the user) or automatically in multi-column view.
     /// `allViewModels` is a list of order details view models that are available in a stack when the split view is collapsed
@@ -37,10 +39,10 @@ final class OrderListViewController: UIViewController {
     /// view has multiple columns but only if the empty view is shown.
     /// `onCompletion` is called after switching details completes, with a boolean that indicates if the order details has been selected.
     /// When multi-column split view is shown, auto-selection only works if the empty state isn't shown.
-    typealias SelectOrderDetails = (_ allViewModels: [OrderDetailsViewModel],
-                                    _ index: Int,
-                                    _ isSelectedManually: Bool,
-                                    _ onCompletion: ((_ hasBeenSelected: Bool) -> Void)?) -> Void
+    typealias SelectOrderDetails = @MainActor @Sendable (_ allViewModels: [OrderDetailsViewModel],
+                                                         _ index: Int,
+                                                         _ isSelectedManually: Bool,
+                                                         _ onCompletion: ((_ hasBeenSelected: Bool) -> Void)?) -> Void
 
     weak var delegate: OrderListViewControllerDelegate?
 
@@ -142,7 +144,7 @@ final class OrderListViewController: UIViewController {
          title: String,
          viewModel: OrderListViewModel,
          stores: StoresManager = ServiceLocator.stores,
-         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, ((Bool) -> Void)?) -> Void) {
+         switchDetailsHandler: @escaping SelectOrderDetails) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.stores = stores
@@ -155,12 +157,6 @@ final class OrderListViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("Not supported")
-    }
-
-    deinit {
-        cancellables.forEach {
-            $0.cancel()
-        }
     }
 
     override func viewDidLoad() {

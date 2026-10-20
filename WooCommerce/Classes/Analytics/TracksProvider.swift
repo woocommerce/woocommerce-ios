@@ -406,6 +406,8 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleSettingsStoreDetailsTapped,
             WooAnalyticsStat.pointOfSaleSettingsHardwareTapped,
             WooAnalyticsStat.pointOfSaleSettingsHelpTapped,
+            WooAnalyticsStat.pointOfSaleSettingsPaymentsTapped,
+            WooAnalyticsStat.pointOfSalePaymentSuccessSoundToggled,
             WooAnalyticsStat.pointOfSaleEmptyCartSetupScannerTapped,
 
             // Catalog

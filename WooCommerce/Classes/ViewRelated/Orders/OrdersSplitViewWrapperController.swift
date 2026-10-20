@@ -3,13 +3,34 @@ import Yosemite
 
 /// Controller to wrap the orders split view
 ///
+@MainActor
 final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayoutInNarrowWindow {
     private let siteID: Int64
 
-    private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView,
-                                                                        didCollapseHandler: handleDidCollapse,
-                                                                        didExpandHandler: handleDidExpand)
-    private lazy var ordersViewController = OrdersRootViewController(siteID: siteID, switchDetailsHandler: handleSwitchingDetails)
+    private lazy var ordersSplitViewController = WooSplitViewController(
+        columnForCollapsingHandler: { [weak self] splitViewController in
+            self?.handleCollapsingSplitView(splitViewController: splitViewController) ?? .primary
+        },
+        didCollapseHandler: { [weak self] splitViewController in
+            self?.handleDidCollapse(splitViewController: splitViewController)
+        },
+        didExpandHandler: { [weak self] splitViewController in
+            self?.handleDidExpand(splitViewController: splitViewController)
+        }
+    )
+    private lazy var ordersViewController = OrdersRootViewController(
+        siteID: siteID,
+        switchDetailsHandler: { [weak self] viewModels, currentIndex, isSelectedManually, onCompletion in
+            guard let self else {
+                onCompletion?(false)
+                return
+            }
+            self.handleSwitchingDetails(viewModels: viewModels,
+                                        currentIndex: currentIndex,
+                                        isSelectedManually: isSelectedManually,
+                                        onCompletion: onCompletion)
+        }
+    )
     private let primaryNavigationController = WooTabNavigationController()
     private let secondaryNavigationController = WooNavigationController()
     private lazy var navigationStack = SplitViewNavigationStack(splitViewController: ordersSplitViewController,
@@ -228,14 +249,14 @@ private extension OrdersSplitViewWrapperController {
     }
 }
 
-extension OrdersSplitViewWrapperController: TabReselectionHandling {
+extension OrdersSplitViewWrapperController: @MainActor TabReselectionHandling {
     /// Returns the orders list (primary column) to its root when the Orders tab is re-selected.
     func handleTabReselection() {
         primaryNavigationController.popToRootOrScrollToTop(animated: true)
     }
 }
 
-extension OrdersSplitViewWrapperController: DeepLinkNavigator {
+extension OrdersSplitViewWrapperController: @MainActor DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
         guard let ordersDestination = destination as? OrdersDestination else {
             return

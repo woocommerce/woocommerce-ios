@@ -1,1 +1,0 @@
-Anda kini melihat nama perangkat yang mudah dikenali saat login dengan kode QR, dan dapat memasukkan kode sembilan digit dari WordPress.com. Peringatan verifikasi usia menawarkan pilihan Hubungi Dukungan. Jika nama kategori sudah ada, Anda akan mendapatkan error yang jelas. Pengiriman pemberitahuan dan saldo Blaze juga lebih mudah dikelola.

@@ -59,6 +59,9 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
 
     func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {
         cardPaymentOrder = order
+        // A new collection starts here, before preflight, so an outcome reported before validation
+        // (for example a cancelled preflight) can't carry an earlier attempt's reader-ready timing.
+        resetCardReaderReadyForAttempt()
     }
 
     func preflightResultReceived(_ result: CardReaderPreflightResult?) {

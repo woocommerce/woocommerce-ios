@@ -575,6 +575,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         // Given
         let clock = TestClock()
         let sut = makeTimedAdaptor(clock: clock)
+        sut.prepareForCardPayment(order: Self.order)
         sut.trackCardReaderConnectionChanged(isConnected: false)
 
         // When
@@ -601,6 +602,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         // Given
         let clock = TestClock()
         let sut = makeTimedAdaptor(clock: clock)
+        sut.prepareForCardPayment(order: Self.order)
         sut.trackCardReaderConnectionChanged(isConnected: true)
 
         // When
@@ -780,10 +782,36 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("reader_ready_signal", in: "card_present_collect_payment_canceled") == nil)
         #expect(property("milliseconds_since_reader_ready_to_collect_payment", in: "card_present_collect_payment_canceled") == "0.0")
     }
+
+    @Test @MainActor func test_payment_cancelation_when_new_collection_is_cancelled_in_preflight_then_omits_previous_attempt_timing() {
+        // Given an attempt that asked for input and ended without an outcome event
+        let clock = TestClock()
+        let sut = makeTimedAdaptor(clock: clock)
+        clock.now = 1000
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1001
+        sut.trackOrderSyncSuccess()
+        sut.prepareForCardPayment(order: Self.order)
+        clock.now = 1002
+        sut.trackCardReaderReady()
+
+        // When a new collection starts and its preflight is cancelled before validation
+        clock.now = 1010
+        sut.prepareForCardPayment(order: Self.order)
+        sut.preflightResultReceived(.canceled(.other, PaymentGatewayAccount.fake()))
+        clock.now = 1011
+        sut.trackPaymentCancelation(cancelationSource: .other)
+
+        // Then
+        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_canceled") == nil)
+        #expect(property("reader_ready_signal", in: "card_present_collect_payment_canceled") == nil)
+    }
 }
 
 private extension POSCollectOrderPaymentAnalyticsTests {
     struct TestError: Error { }
+
+    static let order = POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "")
 
     @MainActor
     func makeTimedAdaptor(clock: TestClock) -> POSCollectOrderPaymentAnalyticsAdaptor {
@@ -796,7 +824,6 @@ private extension POSCollectOrderPaymentAnalyticsTests {
     func trackOutcome(_ eventName: String, on sut: POSCollectOrderPaymentAnalyticsAdaptor) {
         switch eventName {
         case "card_present_collect_payment_success":
-            sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
             sut.trackSuccessfulCardPayment(capturedPaymentData: .init(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil))
         case "card_present_collect_payment_failed":
             sut.trackPaymentFailure(with: TestError())

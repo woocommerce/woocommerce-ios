@@ -336,7 +336,7 @@ extension AddAttributeOptionsViewModel {
 
     /// Returns a product with its name and options updated with the new attribute to create.
     /// An attribute the product already has keeps its `position`, `visible` and `variation` values.
-    /// In the variations flow, the attribute is always used for variations.
+    /// In the variations flow, or without non-variation attributes, the attribute is always used for variations.
     ///
     private func createUpdatedProduct() -> Product {
         let newOptions = state.selectedOptions.map { $0.name }
@@ -354,7 +354,7 @@ extension AddAttributeOptionsViewModel {
                                             name: newName,
                                             position: existingAttribute?.position ?? nextPosition,
                                             visible: existingAttribute?.visible ?? true,
-                                            variation: isVariationsFlow || (existingAttribute?.variation ?? isNewAttributeUsedForVariations),
+                                            variation: isAlwaysUsedForVariations || (existingAttribute?.variation ?? isNewAttributeUsedForVariations),
                                             options: newOptions)
 
         if let existingIndex {
@@ -366,10 +366,16 @@ extension AddAttributeOptionsViewModel {
         return product.copy(attributes: attributes)
     }
 
-    /// A new attribute is used for variations on variable products. Without non-variation attributes, every attribute is.
+    /// True when every saved attribute is used for variations: in the variations flow, or without non-variation attributes.
+    ///
+    private var isAlwaysUsedForVariations: Bool {
+        isVariationsFlow || !isNonVariationAttributesEnabled
+    }
+
+    /// A new attribute is used for variations on variable products.
     ///
     private var isNewAttributeUsedForVariations: Bool {
-        !isNonVariationAttributesEnabled || product.productType == .variable || product.productType == .variableSubscription
+        product.productType == .variable || product.productType == .variableSubscription
     }
 
     /// Returns a product with the current attribute removed.

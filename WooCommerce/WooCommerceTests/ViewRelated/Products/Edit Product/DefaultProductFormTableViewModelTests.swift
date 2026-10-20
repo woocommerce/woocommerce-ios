@@ -916,38 +916,6 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertFalse(containsDescriptionAIRow)
         XCTAssertFalse(containsLearnMoreAboutAIRow)
     }
-}
-
-private extension DefaultProductFormTableViewModelTests {
-    /// Returns the `details` string of the price settings row, searching all settings sections.
-    func priceRowDetails(in tableViewModel: DefaultProductFormTableViewModel) -> String? {
-        for section in tableViewModel.sections {
-            guard case let .settings(rows) = section else {
-                continue
-            }
-            for row in rows {
-                if case let .price(viewModel, _) = row {
-                    return viewModel.details
-                }
-            }
-        }
-        return nil
-    }
-
-    enum Localization {
-        static let priceFormat = NSLocalizedString("Regular price: %1$@ every %2$@",
-                                                   comment: "Description of the subscription price for a product, with the price and billing frequency. " +
-                                                   "Reads like: 'Regular price: $60.00 every 2 months'.")
-        static let expiryFormat = NSLocalizedString("Expire after: %@",
-                                                    comment: "Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'.")
-        static let neverExpire = NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
-        static let minQuantityFormat = NSLocalizedString("Minimum quantity: %@",
-                                                          comment: "Format of the Minimum Quantity setting (with a numeric quantity) on the Quantity Rules row")
-        static let maxQuantityFormat = NSLocalizedString("Maximum quantity: %@",
-                                                       comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
-        static let groupOfFormat = NSLocalizedString("Group of: %@",
-                                                       comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
-    }
 
     func test_when_non_variation_attributes_are_on_then_attributes_row_lists_each_attribute_with_its_options() throws {
         // Given
@@ -979,5 +947,37 @@ private extension DefaultProductFormTableViewModelTests {
         }.first)
         XCTAssertEqual(attributesRowViewModel.title, "Attributes")
         XCTAssertEqual(attributesRowViewModel.details, "Color: Red, Blue\nMaterial")
+    }
+}
+
+private extension DefaultProductFormTableViewModelTests {
+    /// Returns the `details` string of the price settings row, searching all settings sections.
+    func priceRowDetails(in tableViewModel: DefaultProductFormTableViewModel) -> String? {
+        for section in tableViewModel.sections {
+            guard case let .settings(rows) = section else {
+                continue
+            }
+            for row in rows {
+                if case let .price(viewModel, _) = row {
+                    return viewModel.details
+                }
+            }
+        }
+        return nil
+    }
+
+    enum Localization {
+        static let priceFormat = NSLocalizedString("Regular price: %1$@ every %2$@",
+                                                   comment: "Description of the subscription price for a product, with the price and billing frequency. " +
+                                                   "Reads like: 'Regular price: $60.00 every 2 months'.")
+        static let expiryFormat = NSLocalizedString("Expire after: %@",
+                                                    comment: "Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'.")
+        static let neverExpire = NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
+        static let minQuantityFormat = NSLocalizedString("Minimum quantity: %@",
+                                                          comment: "Format of the Minimum Quantity setting (with a numeric quantity) on the Quantity Rules row")
+        static let maxQuantityFormat = NSLocalizedString("Maximum quantity: %@",
+                                                       comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
+        static let groupOfFormat = NSLocalizedString("Group of: %@",
+                                                       comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
     }
 }

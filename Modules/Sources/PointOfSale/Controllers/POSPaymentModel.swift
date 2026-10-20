@@ -1141,11 +1141,7 @@ private extension POSPaymentModel {
             .sink(receiveValue: { [weak self] connectionStatus in
                 guard let self else { return }
                 cardReaderConnectionStatus = connectionStatus
-                if case .connected = connectionStatus {
-                    collectOrderPaymentAnalyticsTracker.trackCardReaderConnectionChanged(isConnected: true)
-                } else {
-                    collectOrderPaymentAnalyticsTracker.trackCardReaderConnectionChanged(isConnected: false)
-                }
+                collectOrderPaymentAnalyticsTracker.trackCardReaderConnectionChanged(isConnected: connectionStatus.isConnected)
                 if connectionStatus == .disconnected {
                     // Clear the tracking flag so the next pre-connect can't
                     // mistakenly think a TTP reader is still attached and

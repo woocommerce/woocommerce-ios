@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Experiments.FeatureFlagService
 
 /// Provides view data for Add Attributes, and handles init/UI/navigation actions needed.
 ///
@@ -13,6 +14,13 @@ final class AddAttributeViewModel {
     private let storesManager: StoresManager
 
     let product: Product
+
+    /// True when the screen is part of the flow that creates variations
+    ///
+    let isVariationsFlow: Bool
+
+    private let isNonVariationAttributesEnabled: Bool
+
     private(set) var localAndGlobalAttributes: [ProductAttribute] = []
 
     private(set) var sections: [Section] = []
@@ -42,9 +50,14 @@ final class AddAttributeViewModel {
         }
     }
 
-    init(storesManager: StoresManager = ServiceLocator.stores, product: Product) {
+    init(storesManager: StoresManager = ServiceLocator.stores,
+         product: Product,
+         isVariationsFlow: Bool = false,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.storesManager = storesManager
         self.product = product
+        self.isVariationsFlow = isVariationsFlow
+        self.isNonVariationAttributesEnabled = featureFlagService.isFeatureFlagEnabled(.nonVariationProductAttributes)
     }
 
     /// Load existing product attributes from storage and fire the synchronize all product attributes action.
@@ -87,7 +100,8 @@ private extension AddAttributeViewModel {
     func updateSections(attributes: [ProductAttribute]) {
 
         /// Sum fetched attributes + attributes inside the product (global + local), and remove duplicated product attributes, then sort it
-        localAndGlobalAttributes = attributes + product.attributesForVariations.filter { element in
+        let productAttributes = isNonVariationAttributesEnabled && !isVariationsFlow ? product.attributes : product.attributesForVariations
+        localAndGlobalAttributes = attributes + productAttributes.filter { element in
             return !attributes.contains { $0.attributeID == element.attributeID }
         }.sorted(by: > )
 
@@ -97,7 +111,9 @@ private extension AddAttributeViewModel {
         }
         let attributesSection = !attributesRows.isEmpty ? Section(header: Localization.headerAttributes, footer: nil, rows: attributesRows) : nil
 
-        sections = [Section(header: nil, footer: Localization.footerTextField, rows: [.attributeTextField]), attributesSection].compactMap { $0 }
+        // The footer is about creating variations
+        let footer = isNonVariationAttributesEnabled && !isVariationsFlow ? nil : Localization.footerTextField
+        sections = [Section(header: nil, footer: footer, rows: [.attributeTextField]), attributesSection].compactMap { $0 }
     }
 }
 

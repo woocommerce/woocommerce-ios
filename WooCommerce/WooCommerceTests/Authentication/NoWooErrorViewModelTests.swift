@@ -1,4 +1,6 @@
 import XCTest
+@testable import WordPressAuthenticator
+import WordPressShared
 import Yosemite
 @testable import WooCommerce
 
@@ -137,21 +139,99 @@ final class NoWooErrorViewModelTests: XCTestCase {
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_woocommerce_setup_button_tapped" }))
     }
 
-    func test_woocommerce_error_screen_is_tracked_when_the_view_is_loaded() {
+    func test_viewDidLoad_still_tracks_the_legacy_woocommerce_error_event() {
         // Given
         let site = Site.fake().copy(url: "https://test.com")
         let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = NoWooErrorViewModel(site: site,
-                                            showsConnectedStores: false,
-                                            analytics: analytics,
+                                            showsConnectedStores: true,
+                                            analytics: WooAnalytics(analyticsProvider: analyticsProvider),
+                                            onSetupCompletion: { _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then the legacy event still covers routes the login step is gated out of
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("login_woocommerce_error_shown"))
+    }
+
+    func test_viewDidLoad_when_reporting_a_login_step_then_tracks_not_woo_store_with_url_and_connected_stores() {
+        // Given
+        let site = Site.fake().copy(url: "https://test.com")
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        tracker.set(flow: .epilogue)
+        let viewModel = NoWooErrorViewModel(site: site,
+                                            showsConnectedStores: true,
+                                            reportsLoginStep: true,
+                                            tracker: tracker,
                                             onSetupCompletion: { _ in })
 
         // When
         viewModel.viewDidLoad(nil)
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_woocommerce_error_shown" }))
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.properties["step"], "not_woo_store")
+        XCTAssertEqual(events.first?.properties["url"], "test.com")
+        XCTAssertEqual(events.first?.properties["has_connected_stores"], "true")
+        XCTAssertEqual(events.first?.properties["flow"], "epilogue")
+    }
+
+    func test_viewDidLoad_when_not_reporting_a_login_step_then_tracks_no_step() {
+        // Given the screen was reached outside a login journey
+        let site = Site.fake().copy(url: "https://test.com")
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = NoWooErrorViewModel(site: site,
+                                            showsConnectedStores: false,
+                                            reportsLoginStep: false,
+                                            tracker: tracker,
+                                            onSetupCompletion: { _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertTrue(events.isEmpty)
+    }
+
+    func test_viewDidLoad_when_the_account_owns_no_store_then_reports_has_connected_stores_false() {
+        // Given
+        let site = Site.fake().copy(url: "https://test.com")
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = NoWooErrorViewModel(site: site,
+                                            showsConnectedStores: false,
+                                            reportsLoginStep: true,
+                                            tracker: tracker,
+                                            onSetupCompletion: { _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertEqual(events.first?.properties["has_connected_stores"], "false")
+    }
+
+    func test_viewDidLoad_when_the_connected_stores_link_is_hidden_then_still_reports_the_account_fact() {
+        // Given the picker route hides the link to avoid a nav loop, while the account owns a store
+        let site = Site.fake().copy(url: "https://test.com")
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = NoWooErrorViewModel(site: site,
+                                            showsConnectedStores: false,
+                                            hasConnectedStores: true,
+                                            reportsLoginStep: true,
+                                            tracker: tracker,
+                                            onSetupCompletion: { _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertEqual(events.first?.properties["has_connected_stores"], "true")
+        XCTAssertTrue(viewModel.isAuxiliaryButtonHidden)
     }
 
     func test_viewmodel_provides_expected_title_for_right_bar_button_item() {

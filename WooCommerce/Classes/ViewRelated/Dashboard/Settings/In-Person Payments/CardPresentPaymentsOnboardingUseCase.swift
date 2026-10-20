@@ -13,6 +13,7 @@ private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 /// Protocol for `CardPresentPaymentsOnboardingUseCase`.
 /// Right now, only used for testing.
 ///
+@MainActor
 protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     /// Current store onboarding state.
     ///
@@ -63,6 +64,7 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     func activateCardPresentPlugin()
 }
 
+@MainActor
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
@@ -74,6 +76,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
     private var overdueRequirementsStepSkipped: Bool = false
+    /// Whether the last gateway account sync failed. Account-based states can't be trusted until a sync succeeds.
+    private var accountsSyncFailed: Bool = false
 
     @Published private(set) var state: CardPresentPaymentOnboardingState = .loading
 
@@ -131,6 +135,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     func refreshIfNecessary() {
         if let cachedValue = cardPresentPaymentOnboardingStateCache.value,
            cachedValue.isCompleted {
+            // A completed state is only cached after a successful account sync.
+            accountsSyncFailed = false
             if cachedValue != state {
                 state = cachedValue
             }
@@ -147,15 +153,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
 
         let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { [weak self] result in
-            guard let self else { return }
-            self.state = .loading
-            switch result {
-            case .success:
-                DDLogInfo("Success installing \(pluginSlug)")
-                self.refresh()
-            case .failure(let error):
-                self.trackCardPresentPluginActionFailed(error, trigger: .notInstalled)
-                self.state = .genericError
+            Task { @MainActor in
+                guard let self else { return }
+                self.state = .loading
+                switch result {
+                case .success:
+                    DDLogInfo("Success installing \(pluginSlug)")
+                    self.refresh()
+                case .failure(let error):
+                    self.trackCardPresentPluginActionFailed(error, trigger: .notInstalled)
+                    self.state = .genericError
+                }
             }
         })
         stores.dispatch(installPluginAction)
@@ -169,15 +177,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         let pluginName = CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension
 
         let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { [weak self] result in
-            guard let self else { return }
-            self.state = .loading
-            switch result {
-            case .success:
-                DDLogInfo("Success activating \(pluginName)")
-                self.refresh()
-            case .failure(let error):
-                self.trackCardPresentPluginActionFailed(error, trigger: .notActivated)
-                self.state = .genericError
+            Task { @MainActor in
+                guard let self else { return }
+                self.state = .loading
+                switch result {
+                case .success:
+                    DDLogInfo("Success activating \(pluginName)")
+                    self.refresh()
+                case .failure(let error):
+                    self.trackCardPresentPluginActionFailed(error, trigger: .notActivated)
+                    self.state = .genericError
+                }
             }
         })
         stores.dispatch(activatePluginAction)
@@ -185,14 +195,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     private func refreshOnboardingState() {
         synchronizeStoreCountryAndPlugins { [weak self] in
-            self?.updateAccounts()
+            self?.updateAccounts(storeDataSynced: true)
         }
     }
 
     /// We need to sync payment gateway accounts to see if the payment gateway is set up correctly.
     /// But first we also need to prompt the CardPresentPaymentStore to use the right backend based on the active plugin.
     ///
-    func updateAccounts() {
+    /// - Parameter storeDataSynced: Whether the store settings and plugins synced without errors before this call.
+    ///
+    func updateAccounts(storeDataSynced: Bool) {
         guard let siteID else {
             return
         }
@@ -204,11 +216,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
             switch result {
             case .success:
+                accountsSyncFailed = false
                 updateState()
                 CardPresentPaymentOnboardingStateCache.shared.update(state)
             case .failure(let error):
+                accountsSyncFailed = true
                 if isNetworkError(error) {
                     state = .noConnectionError
+                } else if storeDataSynced {
+                    // Account requests also fail when the payment plugins are missing or inactive,
+                    // so plugin steps such as installation are still shown. Account checks return an error.
+                    updateState()
                 } else {
                     state = .genericError
                 }
@@ -278,8 +296,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         let group = DispatchGroup()
-        // The system status completion is `@Sendable`, so it cannot mutate a captured `var`; the errors live behind a lock
-        // until the use case is isolated to the main actor (WOOMOB-4096).
+        // The system status completion is `@Sendable`, so it cannot mutate a captured `var`; the errors live behind a lock.
         let errors = OSAllocatedUnfairLock(initialState: [Error]())
 
         // We need to sync settings to check the store's country
@@ -311,7 +328,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
                errors.contains(where: self.isNetworkError(_:)) {
                 self.state = .noConnectionError
             } else {
-                self.updateAccounts()
+                self.updateAccounts(storeDataSynced: errors.isEmpty)
             }
         })
     }
@@ -369,7 +386,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         guard let preferredPlugin = preferredPluginLocal else {
-            return .selectPlugin(pluginSelectionWasCleared: false)
+            // Choosing between two active gateways needs their accounts.
+            return accountsSyncFailed ? .genericError : .selectPlugin(pluginSelectionWasCleared: false)
         }
 
         let state = onboardingStateForPlugin(preferredPlugin, wcPay: wcPay, stripe: stripe)
@@ -420,6 +438,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func accountChecks(plugin: CardPresentPaymentsPlugin) -> CardPresentPaymentOnboardingState {
+        guard !accountsSyncFailed else {
+            return .genericError
+        }
         guard let account = getPaymentGatewayAccount(plugin: plugin) else {
             /// Active plugin but unable to fetch an account? Prompt the merchant to finish setting it up.
             return .pluginSetupNotCompleted(plugin: plugin)

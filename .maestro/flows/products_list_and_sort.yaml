@@ -21,7 +21,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:
@@ -36,7 +36,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:
@@ -51,7 +51,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:
@@ -93,7 +93,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:
@@ -127,7 +127,7 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: ".+"
+      id: "(?!product-stock-status-).+"
       childOf:
         id: "products-table-view"
       below:
@@ -186,3 +186,14 @@ tags:
 - tapOn: "Dismiss"
 - assertVisible:
     id: "products-table-view"
+
+# The list is sorted A to Z here. One page holds 25 products, and the lab store has
+# 100, with numbered names, so "Maestro Product 040" only shows once the next page
+# has loaded.
+- scrollUntilVisible:
+    element:
+      text: "Maestro Product 040"
+    direction: DOWN
+    timeout: 120000
+    label: "A product from the next page loads"
+- takeScreenshot: products_next_page

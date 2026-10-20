@@ -31,9 +31,10 @@ final class BottomButtonContainerView: UIView {
 
     private let viewModel: ViewModel
 
-    init(viewModel: ViewModel) {
+    init(viewModel: ViewModel, buttonAccessibilityIdentifier: String? = nil) {
         self.viewModel = viewModel
         super.init(frame: .zero)
+        button.accessibilityIdentifier = buttonAccessibilityIdentifier
 
         translatesAutoresizingMaskIntoConstraints = false
         configureContainerView()

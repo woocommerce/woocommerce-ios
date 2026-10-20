@@ -6,11 +6,13 @@ import class Networking.AlamofireNetwork
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
-public protocol PointOfSaleCouponFetchStrategyFactoryProtocol {
+@MainActor
+public protocol PointOfSaleCouponFetchStrategyFactoryProtocol: Sendable {
     var defaultStrategy: PointOfSaleCouponFetchStrategy { get }
     func searchStrategy(searchTerm: String, analytics: POSItemFetchAnalyticsTracking) -> PointOfSaleCouponFetchStrategy
 }
 
+@MainActor
 public struct PointOfSaleCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol {
     private let siteID: Int64
     private let currencySettings: CurrencySettings

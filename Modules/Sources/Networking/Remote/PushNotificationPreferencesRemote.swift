@@ -27,7 +27,7 @@ public protocol PushNotificationPreferencesRemoteProtocol {
 /// (`wc-push-notifications/preferences`). Requests prefer the REST fallback when an
 /// application password is available and fall back to the Jetpack tunnel otherwise.
 ///
-public final class PushNotificationPreferencesRemote: Remote, PushNotificationPreferencesRemoteProtocol {
+public final class PushNotificationPreferencesRemote: Remote, PushNotificationPreferencesRemoteProtocol, @unchecked Sendable {
 
     public func loadPreferences(siteID: Int64) async throws -> PushNotificationPreferences {
         let request = JetpackRequest(wooApiVersion: .none,

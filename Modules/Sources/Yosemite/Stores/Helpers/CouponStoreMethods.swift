@@ -6,7 +6,7 @@ import Storage
 /// CouponStoreMethods is intentionally internal not to be exposed outside the module
 ///
 internal protocol CouponStoreMethodsProtocol {
-    func synchronizeCoupons(siteID: Int64,
+    nonisolated(nonsending) func synchronizeCoupons(siteID: Int64,
                             pageNumber: Int,
                             pageSize: Int) async throws -> Bool
     func synchronizeCoupons(siteID: Int64,
@@ -37,7 +37,7 @@ internal protocol CouponStoreMethodsProtocol {
                                siteTimezone: TimeZone,
                                onCompletion: @escaping (Result<[CouponReport], Error>) -> Void)
 
-    func searchCoupons(siteID: Int64,
+    nonisolated(nonsending) func searchCoupons(siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int) async throws
@@ -83,7 +83,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - pageSize: Number of coupons per page to fetch from the API
     ///   - result: `hasNextPage: Bool` or `error: Error`
     ///
-    func synchronizeCoupons(siteID: Int64,
+    nonisolated(nonsending) func synchronizeCoupons(siteID: Int64,
                             pageNumber: Int,
                             pageSize: Int) async throws -> Bool {
         let coupons = try await remote.loadAllCoupons(for: siteID,
@@ -236,7 +236,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - pageNumber: Page number of coupons to fetch from the API
     ///   - pageSize: Number of coupons per page to fetch from the API
     ///
-    func searchCoupons(siteID: Int64,
+    nonisolated(nonsending) func searchCoupons(siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int) async throws {

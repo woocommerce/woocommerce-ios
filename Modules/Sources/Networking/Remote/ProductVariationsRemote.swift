@@ -18,7 +18,7 @@ public protocol ProductVariationsRemoteProtocol {
                                pageNumber: Int,
                                pageSize: Int,
                                currency: String?) async throws -> [ProductVariation]
-    func loadVariationsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
                                       pageNumber: Int) async throws -> PagedItems<POSProductVariation>
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
@@ -46,7 +46,7 @@ public protocol ProductVariationsRemoteProtocol {
 
 /// ProductVariation: Remote Endpoints
 ///
-public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
+public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol, @unchecked Sendable {
 
     /// Retrieves all of the `ProductVariation`s available.
     ///
@@ -70,6 +70,9 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let request = productVariationsRequest(for: siteID,
                                                productID: productID,
                                                variationIDs: variationIDs,
+                                               // ID is unique and matches the local tie-break, so pages never overlap.
+                                               orderBy: .id,
+                                               order: .descending,
                                                context: context,
                                                pageNumber: pageNumber,
                                                pageSize: pageSize)
@@ -86,6 +89,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let request = productVariationsRequest(for: siteID,
                                                productID: productID,
                                                variationIDs: variationIDs,
+                                               orderBy: .id,
+                                               order: .descending,
                                                context: nil,
                                                pageNumber: pageNumber,
                                                pageSize: pageSize,
@@ -100,7 +105,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///   - parentProductID: Product for which we'll fetch remote product variations.
     ///   - pageNumber: Number of page that should be retrieved.
     /// - Returns: Variations for the provided parent product.
-    public func loadVariationsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
                                              pageNumber: Int = Default.pageNumber) async throws -> PagedItems<POSProductVariation> {
         let request = productVariationsRequest(for: siteID,
@@ -387,6 +392,7 @@ public extension ProductVariationsRemote {
 
     enum OrderByField: String {
         case date
+        case id
         case menuOrder = "menu_order"
     }
 

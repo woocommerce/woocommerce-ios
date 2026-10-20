@@ -5,28 +5,29 @@ import Yosemite
 /// alert viewModels such a provider is expected to provide over the course of performind
 /// a card present transaction (payment or refund.)
 ///
+@MainActor
 protocol CardReaderTransactionAlertsProviding<AlertDetails> {
     associatedtype AlertDetails
     /// A cancellable alert indicating that we are checking the order at the start of a payment flow
     ///
-    func validatingOrder(onCancel: @escaping () -> Void) -> AlertDetails
+    func validatingOrder(onCancel: @escaping @MainActor @Sendable () -> Void) -> AlertDetails
 
     /// A cancellable alert indicating we are preparing a reader to collect card details
     ///
-    func preparingReader(onCancel: @escaping () -> Void) -> AlertDetails
+    func preparingReader(onCancel: @escaping @MainActor @Sendable () -> Void) -> AlertDetails
 
     /// A cancellable alert indicating the reader is ready to collect card details
     ///
     func tapOrInsertCard(title: String,
                          amount: String,
                          inputMethods: CardReaderInput,
-                         onCancel: @escaping () -> Void) -> AlertDetails
+                         onCancel: @escaping @MainActor @Sendable () -> Void) -> AlertDetails
 
     /// A cancellable alert indicating the reader card was inserted
     ///
     func cardInserted(title: String,
                       amount: String,
-                      onCancel: @escaping () -> Void) -> AlertDetails
+                      onCancel: @escaping @MainActor @Sendable () -> Void) -> AlertDetails
 
     /// An alert to display a message from a reader
     ///
@@ -44,14 +45,14 @@ protocol CardReaderTransactionAlertsProviding<AlertDetails> {
     ///
     func error(error: Error,
                receiptState: CardReaderTransactionFailureAlertReceiptState,
-               tryAgain: @escaping () -> Void,
-               dismissCompletion: @escaping () -> Void) -> AlertDetails
+               tryAgain: @escaping @MainActor @Sendable () -> Void,
+               dismissCompletion: @escaping @MainActor @Sendable () -> Void) -> AlertDetails
 
     /// An alert to display a non-retriable and cancellable error
     ///
     func nonRetryableError(error: Error,
                            receiptState: CardReaderTransactionFailureAlertReceiptState,
-                           dismissCompletion: @escaping () -> Void) -> AlertDetails
+                           dismissCompletion: @escaping @MainActor @Sendable () -> Void) -> AlertDetails
 
     /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
     ///
@@ -59,11 +60,11 @@ protocol CardReaderTransactionAlertsProviding<AlertDetails> {
 
     /// An alert confirming that an app-initiated cancellation completed after native Tap to Pay UI was shown.
     ///
-    func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> AlertDetails?
+    func paymentCancellationConfirmation(onDismiss: @escaping @MainActor @Sendable () -> Void) -> AlertDetails?
 }
 
 extension CardReaderTransactionAlertsProviding {
-    func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> AlertDetails? {
+    func paymentCancellationConfirmation(onDismiss: @escaping @MainActor @Sendable () -> Void) -> AlertDetails? {
         nil
     }
 }

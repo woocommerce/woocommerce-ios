@@ -138,6 +138,7 @@ final class SupportEscalationCoordinator {
             mobileStatusReportProvider: mobileStatusReportProvider,
             attachments: attachments,
             transcript: transcript,
+            aiChatID: chatID,
             preselectedArea: supportAreaInfo?.area,
             prefilledSubject: prefilledSubject,
             prefilledSiteAddress: siteAddress,
@@ -209,7 +210,7 @@ final class SupportEscalationCoordinator {
             let mobileStatusReport = await mobileStatusReportProvider.generateReport(siteAddress: siteAddress)
             let (customFields, attachments) = MobileStatusReportZendesk.embed(
                 mobileStatusReport,
-                intoCustomFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
+                intoCustomFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress, aiChatID: chatID),
                 attachments: attachmentProvider.attachments(including: additionalAttachmentsProvider()))
 
             let request = ZendeskSupportRequest(

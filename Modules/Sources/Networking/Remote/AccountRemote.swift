@@ -41,7 +41,7 @@ public protocol AccountRemoteProtocol {
 
 /// Account: Remote Endpoints
 ///
-public class AccountRemote: Remote, AccountRemoteProtocol {
+public class AccountRemote: Remote, AccountRemoteProtocol, @unchecked Sendable {
 
     /// Loads the Account Details associated with the Credential's authToken.
     ///

@@ -209,6 +209,7 @@ final class SupportFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(zendesk.latestInvokedCustomFields.values.contains("site-address"))
+        XCTAssertNil(zendesk.latestInvokedCustomFields[ZendeskCustomFieldIDs.aiChatID])
     }
 
     func test_default_site_is_populated_when_available() {

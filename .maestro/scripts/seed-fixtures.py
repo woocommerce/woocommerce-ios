@@ -57,6 +57,19 @@ def rest_datetime(value: str) -> str:
     return text.split(".", 1)[0]
 
 
+def parse_wc_date(value: str | None) -> dt.datetime | None:
+    if not value:
+        return None
+    normalized = value.replace("Z", "+00:00")
+    try:
+        parsed = dt.datetime.fromisoformat(normalized)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=dt.timezone.utc)
+    return parsed.astimezone(dt.timezone.utc)
+
+
 def strict_run_id(value: str) -> str:
     if not RUN_ID_RE.fullmatch(value):
         raise SmokeSetupError(f"Invalid suite run ID: {value!r}")
@@ -189,15 +202,19 @@ def order_contains_run_id(order: dict[str, Any], run_id: str) -> bool:
 
 def discover_entities(client: WooClient, manifest: dict[str, Any]) -> list[dict[str, Any]]:
     run_id = strict_run_id(str(manifest.get("run_id", "")))
+    started = parse_wc_date(manifest.get("created_at"))
     entities: list[dict[str, Any]] = []
     for product in client.list("products", search=run_id, status="any"):
         if run_id in str(product.get("name", "")):
             entities.append({"type": "product", "id": int(product["id"])})
             # Deleting the product does not remove images it uploaded to the media
             # library, so journal them as run-owned media to avoid an orphaned-media leak.
+            # The media flow also attaches an image from the media library, which the
+            # run did not upload and must not delete.
             for image in product.get("images", []) or []:
                 image_id = image.get("id")
-                if image_id:
+                uploaded = parse_wc_date(image.get("date_created_gmt"))
+                if image_id and started and uploaded and uploaded >= started:
                     entities.append({"type": "media", "id": int(image_id)})
     seen_orders: set[int] = set()
     for order in client.list(
@@ -249,6 +266,10 @@ def discover_entities(client: WooClient, manifest: dict[str, Any]) -> list[dict[
     for tag in client.list("products/tags", search=run_id):
         if run_id in str(tag.get("name", "")):
             entities.append({"type": "tag", "id": int(tag["id"])})
+    # WooCommerce stores coupon codes in lowercase.
+    for coupon in client.list("coupons", search=run_id):
+        if run_id.lower() in str(coupon.get("code", "")).lower():
+            entities.append({"type": "coupon", "id": int(coupon["id"])})
     return entities
 
 
@@ -262,8 +283,8 @@ def cleanup(args: argparse.Namespace) -> None:
         manifest["discovery_complete"] = True
         write_manifest(args.manifest, manifest)
 
-    paths = {"order": "orders", "product": "products", "tag": "products/tags", "media": "media"}
-    prefixes = {"order": API_PREFIX, "product": API_PREFIX, "tag": API_PREFIX, "media": MEDIA_PREFIX}
+    paths = {"order": "orders", "product": "products", "tag": "products/tags", "coupon": "coupons", "media": "media"}
+    prefixes = {"order": API_PREFIX, "product": API_PREFIX, "tag": API_PREFIX, "coupon": API_PREFIX, "media": MEDIA_PREFIX}
     errors: list[str] = []
     original_count = len(manifest["entities"])
     for entity in reversed(list(manifest["entities"])):

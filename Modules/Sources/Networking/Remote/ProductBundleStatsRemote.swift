@@ -2,7 +2,7 @@ import Foundation
 
 /// Product Bundle Stats: Remote Endpoints for fetching product bundle stats.
 ///
-public final class ProductBundleStatsRemote: Remote {
+public final class ProductBundleStatsRemote: Remote, @unchecked Sendable {
 
     /// Fetch the product bundle stats for a given site, depending on the given granularity of the `unit` parameter.
     ///

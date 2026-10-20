@@ -232,7 +232,8 @@ private extension JetpackSetupCoordinator {
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
-        Task { @MainActor in
+        Task { @MainActor [weak self] in
+            guard let self else { return }
             guard let username = await loadWPComAccountUsername(authToken: authToken) else {
                 return showAlert(message: Localization.errorFetchingWPComAccount, onRetry: { [weak self] in
                     self?.startJetpackSetupFlow(authToken: authToken)
@@ -487,7 +488,7 @@ private extension JetpackSetupCoordinator {
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
                 self.analytics.track(event: .JetpackSetup.loginFlow(step: .password, failure: error))
-                let message = error.localizedDescription
+                let message = (error as? WordPressComOAuthError)?.loginErrorMessage ?? error.localizedDescription
                 self.showAlert(message: message)
             },
             onLoginSuccess: { @MainActor [weak self] authToken in

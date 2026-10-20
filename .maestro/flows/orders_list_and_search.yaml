@@ -101,3 +101,13 @@ tags:
     id: "order-search-screen-cancel-button"
 - assertVisible:
     id: "orders-table-view"
+
+# The lab store's 100 seeded orders are numbered oldest first, and one page of the
+# list holds 25 orders, so "Order 060" only shows once the next page has loaded.
+- scrollUntilVisible:
+    element:
+      text: ".*Order 060.*"
+    direction: DOWN
+    timeout: 120000
+    label: "An order from the next page loads"
+- takeScreenshot: orders_next_page

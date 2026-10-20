@@ -1,7 +1,7 @@
 import Foundation
 import Networking
 
-public enum ItemIdentifierSearchResult {
+public enum ItemIdentifierSearchResult: Sendable {
     case product(Product)
     case variation(ProductVariation)
 }

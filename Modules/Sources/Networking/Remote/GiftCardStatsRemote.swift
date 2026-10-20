@@ -2,7 +2,7 @@ import Foundation
 
 /// Gift Card Stats: Remote Endpoints for fetching gift card stats.
 ///
-public final class GiftCardStatsRemote: Remote {
+public final class GiftCardStatsRemote: Remote, @unchecked Sendable {
 
     /// Fetch the used gift card stats for a given site, depending on the given granularity of the `unit` parameter.
     ///

@@ -424,6 +424,28 @@ struct POSPaymentModelTests {
         #expect(celebration.celebrationWasCalled == true)
     }
 
+    @Test("collectCashPayment celebrates without sound when the payment success sound is off")
+    @MainActor
+    func collectCashPayment_when_payment_success_sound_is_off_then_celebrates_without_sound() async throws {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake()
+        let paymentSettings = MockPOSPaymentSettingsService()
+        paymentSettings.isPaymentSuccessSoundEnabled = false
+        let celebration = MockPaymentCaptureCelebration()
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            celebration: POSPaymentSuccessCelebration(paymentSettings: paymentSettings, celebration: celebration))
+
+        // When
+        try await sut.collectCashPayment(changeDueAmount: nil)
+
+        // Then
+        #expect(sut.paymentState.cash == .paymentSuccess)
+        #expect(celebration.celebrationWasCalled == true)
+        #expect(celebration.playedSound == false)
+    }
+
     @Test("collectCashPayment runs post-payment step")
     @MainActor
     func collectCashPayment_runsPostPaymentStep() async throws {

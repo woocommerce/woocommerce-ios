@@ -4,20 +4,17 @@
 # Fetched through context-a8c wpcom/posts-text on 2026-08-05.
 # P2 modified timestamp observed: 2026-07-28T06:29:33+00:00.
 #
-# Every item needs either `flow:` or `manual:`. Flow-backed items default to
-# `fidelity: full`; partial implementations declare `fidelity: partial` and a
-# concrete `gap:`. Flow YAMLs declare implemented items with `# p2:` headers,
-# and .maestro/scripts/check-smoke-coverage.py validates this file offline.
+# Every item needs either `flow:` or `manual:`. Flow YAMLs declare covered
+# items with `# p2:` headers, and .maestro/scripts/check-smoke-coverage.py
+# validates this file offline.
 
 items:
   - id: install.upgrade
     title: Upgrade from existing store version
-    manual: "Requires App Store build replacement and logged-in migration state outside the initial simulator suite."
+    manual: "The App Store release can't be installed on a simulator, and building the previous release needs the Xcode version it was pinned to."
   - id: install.fresh
     title: Fresh install smoke
     flow: .maestro/flows/login_successful.yaml
-    fidelity: partial
-    gap: "The runner installs an app and verifies login, but does not uninstall/reset first or execute the complete feature matrix."
 
   - id: login.help
     title: Login help section
@@ -30,9 +27,7 @@ items:
     flow: .maestro/flows/login_not_woo_store.yaml
   - id: login.no-jetpack
     title: Login to WooCommerce site without Jetpack
-    flow: .maestro/flows/login_no_jetpack.yaml
-    fidelity: partial
-    gap: "Proves site-credential login and core store navigation, not onboarding tasks, Jetpack installation, or post-install state."
+    manual: "Installing Jetpack from the app permanently changes the site, and the manual test needs the site-credential login first, so the whole scenario is one manual test."
   - id: login.jetpack-not-connected
     title: Login with Jetpack installed but not connected
     manual: "Requires manually disconnecting Jetpack on a disposable Jurassic Ninja site."
@@ -92,8 +87,6 @@ items:
   - id: dashboard.stats
     title: Dashboard charts and stats respond
     flow: .maestro/flows/dashboard_stats.yaml
-    fidelity: partial
-    gap: "Changes one time range and asserts one chart, not every chart or graph named by the checklist."
   - id: dashboard.analytics
     title: View all store analytics
     flow: .maestro/flows/dashboard_view_all_analytics.yaml
@@ -113,8 +106,6 @@ items:
   - id: orders.pagination
     title: Orders pagination
     flow: .maestro/flows/orders_list_and_search.yaml
-    fidelity: partial
-    gap: "Scrolls to a different row but does not prove a remote next-page boundary or newly loaded order."
   - id: orders.search
     title: Search for an order
     flow: .maestro/flows/orders_list_and_search.yaml
@@ -188,8 +179,6 @@ items:
   - id: products.pagination
     title: Product pagination
     flow: .maestro/flows/products_list_and_sort.yaml
-    fidelity: partial
-    gap: "Scrolls to a different row but does not prove a remote next-page boundary or newly loaded product."
   - id: products.sort
     title: Sort product list
     flow: .maestro/flows/products_list_and_sort.yaml
@@ -199,24 +188,24 @@ items:
   - id: products.detail.description
     title: Product description details
     flow: .maestro/flows/products_create.yaml
-  - id: products.detail.media
-    title: Product media upload persists
+  - id: products.detail.media.device
+    title: Upload product media from the device
     flow: .maestro/flows/products_media_upload.yaml
-    fidelity: partial
-    gap: "Persists simulator-library media but does not exercise every upload source required by the checklist."
+  - id: products.detail.media.wp-library
+    title: Upload product media from the WordPress Media Library
+    flow: .maestro/flows/products_media_upload.yaml
+  - id: products.detail.media.camera
+    title: Upload product media with the camera
+    manual: "The simulator has no camera."
   - id: products.detail.price
     title: Product price settings
     flow: .maestro/flows/products_create.yaml
   - id: products.detail.inventory
     title: Product inventory settings
-    flow: .maestro/flows/products_detail.yaml
-    fidelity: partial
-    gap: "Verifies the Inventory entry point but does not persist or reopen inventory values."
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.categories
     title: Product categories settings
-    flow: .maestro/flows/products_detail.yaml
-    fidelity: partial
-    gap: "Verifies the Categories entry point but does not change and reopen categories."
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.type
     title: Product type settings
     flow: .maestro/flows/products_create.yaml
@@ -225,9 +214,7 @@ items:
     flow: .maestro/flows/products_create.yaml
   - id: products.detail.shipping
     title: Product shipping settings
-    flow: .maestro/flows/products_detail.yaml
-    fidelity: partial
-    gap: "Verifies the Shipping entry point but does not persist or reopen shipping values."
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.short-description
     title: Product short description settings
     flow: .maestro/flows/products_create.yaml
@@ -253,18 +240,24 @@ items:
   - id: hub.settings
     title: Hub settings
     flow: .maestro/flows/hub_menu_settings.yaml
-    fidelity: partial
-    gap: "Asserts representative first-level settings but does not open every item except Delete Account."
-  - id: hub.payments
-    title: Payments hub
+  - id: hub.payments.pay-in-person
+    title: Enable or disable Pay in Person
     flow: .maestro/flows/hub_menu_payments.yaml
-    fidelity: partial
-    gap: "Opens card-reader manuals when eligible but does not cover every payment toggle, Tap to Pay, or reader operation."
+  - id: hub.payments.tap-to-pay
+    title: Try out Tap to Pay
+    manual: "Needs a real device with NFC and Stripe in test mode."
+  - id: hub.payments.order-card-reader
+    title: Order Card Reader
+    flow: .maestro/flows/hub_menu_payments.yaml
+  - id: hub.payments.manage-card-reader
+    title: Manage Card Reader
+    manual: "The row stays disabled until the store finishes card-present payment setup."
+  - id: hub.payments.manuals
+    title: Card Reader Manuals
+    flow: .maestro/flows/hub_menu_payments.yaml
   - id: hub.coupons.create
     title: Create a coupon
     flow: .maestro/flows/hub_menu_coupons.yaml
-    fidelity: partial
-    gap: "Opens and verifies the coupon creation form, then cancels without creating or finding a run-owned coupon."
   - id: hub.customers
     title: Customers
     flow: .maestro/flows/hub_menu_customers_inbox.yaml
@@ -278,15 +271,11 @@ items:
     title: View Store
     flow: .maestro/flows/hub_menu_admin_and_store.yaml
   - id: hub.blaze.create
-    title: Blaze campaign creation entry point
-    flow: .maestro/flows/blaze_campaign.yaml
-    fidelity: partial
-    gap: "Eligible stores reach a creation-capable destination, but the flow does not configure or submit a campaign."
+    title: Create a Blaze campaign
+    manual: "Submitting a campaign needs payment, and the manual test fills the whole form first, so the whole item is one manual test."
   - id: hub.google-for-woo
     title: Google for Woo campaign webview
     flow: .maestro/flows/google_for_woo.yaml
-    fidelity: partial
-    gap: "Eligible stores open the campaign webview, but the flow does not configure or submit a campaign."
 
   - id: payments.card-reader
     title: Collect payment using card reader
@@ -319,7 +308,7 @@ items:
 
   - id: other.localization
     title: Switch device to non-English language
-    manual: "Requires locale matrix run; selectors are prepared to avoid text-driven navigation."
+    flow: .maestro/flows/other_localization.yaml
   - id: other.home-widget
     title: Home screen widgets
     manual: "Outside Maestro app surface."

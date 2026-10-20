@@ -7,6 +7,7 @@ import WooFoundation
 /// 2. Launch the reader discovering and pairing UI if there is no reader connected
 /// 3. Refund payment in-person with a card reader.
 /// Steps 1 and 2 are the same as the payments flow in `PaymentCaptureOrchestrator`.
+@MainActor
 final class CardPresentRefundOrchestrator {
     private let stores: StoresManager
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?

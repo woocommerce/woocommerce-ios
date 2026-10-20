@@ -13,11 +13,6 @@
 # Usage:
 #   setup-jn-store.sh --site <domain> [--site-password <password>] [--wpcom-user <email>]
 #                     [--admin-user <name>] [--admin-id <id>] [--env-out <path>] [--app-creds <path>]
-#                     [--no-jetpack-site <domain>]
-#
-# --no-jetpack-site also writes the MAESTRO_WOO_NO_JETPACK_* values for
-# login_no_jetpack.yaml. Create that site with WooCommerce and without Jetpack,
-# and pass its admin password in JN_NO_JETPACK_SSH_PASS.
 #
 # Credentials are resolved in this order, so a second run needs no arguments
 # beyond --site:
@@ -32,7 +27,6 @@
 set -uo pipefail
 
 SITE="" SITE_PASS="" WPCOM_USER="" WPCOM_PASS=""
-NO_JETPACK_SITE="" NO_JETPACK_PASS="${JN_NO_JETPACK_SSH_PASS:-}"
 ADMIN_USER="demo"
 ADMIN_ID="1"
 ENV_OUT=""
@@ -52,18 +46,13 @@ while [ $# -gt 0 ]; do
     --admin-id) ADMIN_ID="$2"; shift 2 ;;
     --env-out) ENV_OUT="$2"; shift 2 ;;
     --app-creds) APP_CREDS="$2"; shift 2 ;;
-    --no-jetpack-site) NO_JETPACK_SITE="$2"; shift 2 ;;
-    -h|--help) sed -n '2,29p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) die "unknown argument: $1" ;;
   esac
 done
 
 [ -n "$SITE" ] || die "--site is required"
-if [ -n "$NO_JETPACK_SITE" ] && [ -z "$NO_JETPACK_PASS" ]; then
-  die "set JN_NO_JETPACK_SSH_PASS to the admin password of $NO_JETPACK_SITE"
-fi
 TOTAL_STEPS=7
-[ -z "$NO_JETPACK_SITE" ] || TOTAL_STEPS=8
 command -v expect >/dev/null || die "expect is required for password-based SSH"
 command -v python3 >/dev/null || die "python3 is required"
 [ -f "$APP_CREDS" ] || die "app credentials not found: $APP_CREDS (run 'rake dependencies')"
@@ -162,8 +151,7 @@ chmod +x "$WORK/ssh.exp"
 
 # The password goes through the environment rather than argv so it never
 # appears in `ps` output.
-remote() { remote_on "$SITE" "$SITE_PASS" "$1"; }
-remote_on() { JN_SSH_PASS="$2" "$WORK/ssh.exp" "$1" "$3" 2>/dev/null | tr -d '\r'; }
+remote() { JN_SSH_PASS="$SITE_PASS" "$WORK/ssh.exp" "$SITE" "$1" 2>/dev/null | tr -d '\r'; }
 
 # Run PHP on the site. The source is base64-encoded so quoting survives the
 # shell/ssh/wp-cli layers, and staged as a file because `wp eval-file -` does
@@ -275,70 +263,63 @@ echo "OWNER:" . ( ! empty( $d["hasConnectedOwner"] ) ? "yes" : "no" ) . "\n";')"
 printf '%s' "$CONN" | grep -q "USERCONNECTED:yes" || die "the Jetpack user connection did not complete"
 ok "isUserConnected=yes, hasConnectedOwner=yes"
 
-if [ -n "$NO_JETPACK_SITE" ]; then
-  step "Waiting for the no-Jetpack site $NO_JETPACK_SITE"
-  DEADLINE=$(( $(date +%s) + 900 ))
-  NJ_STATE=""
-  while :; do
-    NJ_STATE="$(remote_on "$NO_JETPACK_SITE" "$NO_JETPACK_PASS" 'wp plugin is-active woocommerce && echo WC:active; wp plugin is-installed jetpack && echo JP:installed; echo WPCLI:ok')"
-    if ! printf '%s' "$NJ_STATE" | grep -q "WPCLI:ok"; then
-      nj_ssh_failures=$(( ${nj_ssh_failures:-0} + 1 ))
-      [ "$nj_ssh_failures" -lt 3 ] || die "could not run wp-cli on $NO_JETPACK_SITE over SSH. Check JN_NO_JETPACK_SSH_PASS."
-    fi
-    if printf '%s' "$NJ_STATE" | grep -q "WC:active"; then
-      printf '%s' "$NJ_STATE" | grep -q "JP:installed" && die "$NO_JETPACK_SITE has Jetpack installed; create it without Jetpack"
-      break
-    fi
-    [ "$(date +%s)" -lt "$DEADLINE" ] || die "$NO_JETPACK_SITE did not finish provisioning within 15 minutes"
-    printf '  still provisioning, waiting...\n'
-    sleep 15
-  done
-  # While auto_login is set, JN's companion plugin sends the first login on the site
-  # to /wp-admin instead of the requested redirect, and the app rejects that.
-  remote_on "$NO_JETPACK_SITE" "$NO_JETPACK_PASS" 'wp option delete auto_login' >/dev/null
-  ok "WooCommerce active, Jetpack not installed"
-fi
-
 # The order list, analytics and order creation flows need orders and a customer,
-# and POS needs a coupon. A re-run against the same store keeps what is there.
+# and POS needs a coupon. The pagination checks need more orders and products than
+# one page of the app's lists holds, so the store is topped up to 100 of each, and a
+# re-run against the same store only adds what is missing. Numbered names, oldest
+# first, let a flow look for one that only a later page of the list shows.
 # The app reads customers and stats from the Analytics tables, which WooCommerce
 # fills in a scheduled batch, so import the new rows right away.
-step "Adding orders, a customer and a coupon"
+step "Adding orders, products, a customer and a coupon"
 SEED="$(remote_php '<?php
 wp_set_current_user( __ADMIN_ID__ );
-if ( wc_get_orders( array( "limit" => 1, "return" => "ids" ) ) ) { echo "SKIPPED\n"; return; }
+$target = 100;
+$product_ids = wc_get_products( array( "limit" => -1, "status" => "publish", "return" => "ids" ) );
+$added_products = 0;
+for ( $i = count( $product_ids ); $i < $target; $i++ ) {
+  $product = new WC_Product_Simple();
+  $product->set_name( sprintf( "Maestro Product %03d", $i + 1 ) );
+  $product->set_regular_price( (string) ( 5 + $i % 20 ) );
+  $product->set_status( "publish" );
+  $product->save();
+  $added_products++;
+}
 $products = wc_get_products( array( "limit" => 10, "status" => "publish", "type" => "simple" ) );
 if ( ! $products ) { echo "ERR:no published simple products\n"; return; }
 $email = "maestro.customer@example.com";
-$customer_id = wc_create_new_customer( $email, "", wp_generate_password(), array( "first_name" => "Maestro", "last_name" => "Customer" ) );
+$user = get_user_by( "email", $email );
+$customer_id = $user ? $user->ID : wc_create_new_customer( $email, "", wp_generate_password(), array( "first_name" => "Maestro", "last_name" => "Customer" ) );
 if ( is_wp_error( $customer_id ) ) { echo "ERR:" . $customer_id->get_error_message() . "\n"; return; }
 $billing = array( "first_name" => "Maestro", "last_name" => "Customer", "email" => $email );
-$customer = new WC_Customer( $customer_id );
-$customer->set_billing_first_name( $billing["first_name"] );
-$customer->set_billing_last_name( $billing["last_name"] );
-$customer->set_billing_email( $email );
-$customer->save();
-$coupon = new WC_Coupon();
-$coupon->set_code( "maestro10" );
-$coupon->set_discount_type( "percent" );
-$coupon->set_amount( 10 );
-$coupon->save();
-for ( $i = 0; $i < 25; $i++ ) {
+if ( ! $user ) {
+  $customer = new WC_Customer( $customer_id );
+  $customer->set_billing_first_name( $billing["first_name"] );
+  $customer->set_billing_last_name( $billing["last_name"] );
+  $customer->set_billing_email( $email );
+  $customer->save();
+  \Automattic\WooCommerce\Internal\Admin\Schedulers\CustomersScheduler::import( $customer_id );
+}
+if ( ! wc_get_coupon_id_by_code( "maestro10" ) ) {
+  $coupon = new WC_Coupon();
+  $coupon->set_code( "maestro10" );
+  $coupon->set_discount_type( "percent" );
+  $coupon->set_amount( 10 );
+  $coupon->save();
+}
+$order_ids = wc_get_orders( array( "limit" => -1, "status" => array_keys( wc_get_order_statuses() ), "return" => "ids" ) );
+$added_orders = 0;
+for ( $i = count( $order_ids ); $i < $target; $i++ ) {
   $order = wc_create_order( array( "customer_id" => $customer_id ) );
   $order->add_product( $products[ $i % count( $products ) ], 1 + $i % 3 );
-  $order->set_address( $billing, "billing" );
+  $order->set_address( array_merge( $billing, array( "last_name" => sprintf( "Order %03d", $i + 1 ) ) ), "billing" );
   $order->calculate_totals();
   $order->update_status( "completed" );
   \Automattic\WooCommerce\Internal\Admin\Schedulers\OrdersScheduler::import( $order->get_id() );
+  $added_orders++;
 }
-\Automattic\WooCommerce\Internal\Admin\Schedulers\CustomersScheduler::import( $customer_id );
-echo "SEEDED\n";')"
-if printf '%s' "$SEED" | grep -q "^SKIPPED"; then
-  ok "the store already has orders, left as is"
-else
-  printf '%s' "$SEED" | grep -q "^SEEDED" || die "could not add the store data: $(printf '%s' "$SEED" | head -3)"
-  ok "25 orders, 1 customer and the maestro10 coupon added"
-fi
+echo "SEEDED:" . $added_orders . " orders, " . $added_products . " products\n";')"
+printf '%s' "$SEED" | grep -q "^SEEDED:" || die "could not add the store data: $(printf '%s' "$SEED" | head -3)"
+ok "$(printf '%s' "$SEED" | sed -n 's/^SEEDED://p') added; the store has 100 of each, 1 customer and the maestro10 coupon"
 
 # WooCommerce exposes no REST endpoint for API keys, so insert the row the same
 # way its own admin-ajax handler does.
@@ -398,7 +379,6 @@ fi
 mkdir -p "$(dirname "$ENV_OUT")"
 SITE="$SITE" ADMIN_USER="$ADMIN_USER" WPCOM_USER="$WPCOM_USER" WPCOM_PASS="$WPCOM_PASS" \
 SITE_PASS="$SITE_PASS" CK="$CK" CS="$CS" APP_PASSWORD="$APP_PASSWORD" \
-NO_JETPACK_SITE="$NO_JETPACK_SITE" NO_JETPACK_PASS="$NO_JETPACK_PASS" \
 python3 - "$ENV_OUT" <<'PY' || die "could not write $ENV_OUT${BACKUP:+; the previous copy is $BACKUP}"
 import os, re, sys, pathlib
 
@@ -413,12 +393,6 @@ values = {
     "MAESTRO_WOO_LAB_CONSUMER_SECRET": os.environ["CS"],
     "MAESTRO_WOO_LAB_APPLICATION_PASSWORD": os.environ["APP_PASSWORD"],
 }
-if os.environ["NO_JETPACK_SITE"]:
-    values.update({
-        "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://" + os.environ["NO_JETPACK_SITE"],
-        "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME": os.environ["ADMIN_USER"],
-        "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD": os.environ["NO_JETPACK_PASS"],
-    })
 
 def quote(value):
     if re.search(r"[\s()\"'!$&|;<>`\\#]", value):
@@ -447,6 +421,5 @@ PY
 ok "wrote $ENV_OUT (mode 600)"
 
 printf '\n\033[32mDone.\033[0m Lab store ready: https://%s (blogID %s)\n' "$SITE" "$BLOG_ID"
-[ -z "$NO_JETPACK_SITE" ] || printf 'No-Jetpack site ready: https://%s\n' "$NO_JETPACK_SITE"
 printf 'Verify with:\n'
 printf '  .maestro/scripts/doctor.sh --app "$APP" --include-tags products --exclude-tags "" --seed --device "$UDID"\n'

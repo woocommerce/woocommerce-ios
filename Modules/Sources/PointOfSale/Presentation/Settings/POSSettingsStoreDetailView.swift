@@ -29,7 +29,6 @@ struct POSSettingsStoreDetailView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(title: Localization.storeTitle)
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {

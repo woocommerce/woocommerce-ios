@@ -1446,10 +1446,11 @@ final class AuthenticationManagerTests: XCTestCase {
                                                 onFailure: { _, _, _, _ in XCTFail("Unexpected alert") })
             await fulfillment(of: [initialRecovery], timeout: 2)
             loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": recoveredNonceURL])
-            let dashboard = stage == .dashboard ? "<html>Wrong address</html>" :
+            let unexpectedPage = "<html><body>Wrong address</body></html>"
+            let dashboard = stage == .dashboard ? unexpectedPage :
                 "<body class=\"wp-admin index-php\"><div id=\"dashboard-widgets-wrap\"></div></body>"
             session.simulateResponse(for: adminURL, data: Data(dashboard.utf8))
-            session.simulateResponse(for: recoveredNonceURL, data: Data("<html>Wrong address</html>".utf8))
+            session.simulateResponse(for: recoveredNonceURL, data: Data(unexpectedPage.utf8))
             manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: loginURL, adminURL: adminURL,
                                                 endpointUnderVerification: .admin, onLoading: { loading.append($0) },
                                                 onSuccess: { _ in XCTFail("Expected recovery") },
@@ -1474,7 +1475,12 @@ final class AuthenticationManagerTests: XCTestCase {
                     XCTFail("Expected nonce failure forwarded to alert")
                     continue
                 }
-                XCTAssertEqual(failure, .init(stage: .nonce))
+                XCTAssertEqual(failure.step, .nonceRetrieval)
+                XCTAssertEqual(failure.kind, .unexpectedContent)
+                XCTAssertEqual(failure.statusCode, 200)
+                XCTAssertEqual(failure.diagnostics?.request, "GET /private-admin/admin-ajax.php")
+                XCTAssertNil(failure.diagnostics?.excerpt)
+                XCTAssertNil(failure.diagnostics?.contentType)
             }
             XCTAssertEqual(loading, [true, false, true, false])
             XCTAssertEqual(session.receivedRequests.last?.url?.absoluteString, stage == .dashboard ? adminURL : recoveredNonceURL)
@@ -1696,6 +1702,7 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_present_site_credential_browser_alternative_presents_tutorial_without_tracking_detection() {
         // Given
         let presenter = UIViewController()
@@ -1711,6 +1718,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue))
     }
 
+    @MainActor
     func test_handle_site_credential_login_failure_when_login_page_is_inaccessible_then_presents_tutorial_without_tracking_detection() {
         // Given
         let presenter = UIViewController()
@@ -1730,6 +1738,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue))
     }
 
+    @MainActor
     func test_legacy_site_credential_login_failure_presents_centered_fancy_alert() throws {
         // Given
         let presenter = SiteCredentialAlertPresenter()

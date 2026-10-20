@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-05 15:54:20+0000 */
+/* Translation-Revision-Date: 2026-10-16 12:46:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -8628,6 +8628,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Ska du starta en ny butik?";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "Fet";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "Kursiv";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "Understreck";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Skicka Telegram-meddelande";
 
@@ -9890,8 +9899,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Det totala beställningsbeloppet har ändrats sedan betalningen inleddes. Gå tillbaka och kontrollera att beställningen är korrekt och försök sedan betala igen.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Växel: %1$@";
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "Avfärda";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "Försök igen";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "Kontakta support";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "Kan inte logga in";
 
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Ett säkerhetstillägg kan flytta WordPress-adminpanelen. Ange adressen du använder för att öppna den.";
@@ -10898,9 +10916,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Den läsare som returnerats från identifiering har ingen IP-adress och det går inte att ansluta till den.";
-
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "Gå tillbaka till tidigare supportkonversationer";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Chatthistorik";
@@ -12838,6 +12853,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Produktkatalog";
 
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "Hantera betalningsinställningar";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Betalningar";
+
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Visa personal och PIN-åtkomst";
 
@@ -13122,9 +13143,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "Försäljningsplats måste vara aktiverat för att fortsätta. Aktivera POS-funktionen nedan eller från din WordPress-adminpanel under WooCommerce-inställningar > Avancerat > Funktioner och försök igen.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Prova starta om appen för att lösa detta problem.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "Vi kunde inte ladda webbplatsinställningsinformationen. Kontrollera din internetanslutning och försök igen. Kontakta supporten för att få hjälp om problemet kvarstår.";
@@ -14068,6 +14086,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Uppdateringsdatum ej tillgängligt";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "Betalningar";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "POS låses när du trycker på Lås POS från menyn, eller automatiskt efter 5 minuters inaktivitet.";
@@ -15490,9 +15511,6 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Chatt utan rubrik";
 
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "Du har inte chattat med supporten än.";
-
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Chatthistorik";
 
@@ -16726,6 +16744,18 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "Beskrivningen måste vara 30 tecken eller färre.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "Krävs för leveranser till EU";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "Måste vara %1$d tecken eller färre.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN\/EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "Ange GTIN\/EAN eller välj ”Ingen streckkod”";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS-tariffnummer";
 
@@ -16735,8 +16765,14 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "Valfritt";
 
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "Ingen streckkod";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Ursprungsland";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "Artikelnummer";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "Tariffnumret måste vara mellan sex och tolv siffror långt";

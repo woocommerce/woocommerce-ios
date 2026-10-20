@@ -9887,9 +9887,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "從付款開始至今的訂單總數已變更。 請返回並檢查訂單是否正確，並嘗試重新付款。";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "找零金額：%1$@";
-
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "安全性外掛程式可能會移動 WordPress 儀表板。 輸入你用來開啟的位址。";
 
@@ -10895,9 +10892,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "探索程序所回傳的讀卡機沒有 IP 位址，故無法連結。";
-
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "重新檢視過去的支援對話";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "聊天記錄";
@@ -13119,9 +13113,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "必須啟用「銷售時點情報系統」才能繼續。 請於下方啟用 POS 功能，或依序前往「WooCommerce 設定」>「進階」>「功能」，然後從下方的 WordPress 管理員啟用功能，然後再試一次。";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "若要解決此問題，請嘗試重新啟動應用程式。";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "我們無法載入網站設定資訊。 請檢查你的網際網路連線並再試一次。 萬一問題持續發生，請聯絡支援團隊尋求協助。";
@@ -15492,9 +15483,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "未命名的聊天";
-
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "你尚未與支援人員交談。";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "聊天記錄";

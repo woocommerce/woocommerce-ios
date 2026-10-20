@@ -9890,9 +9890,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "결제를 시작한 이후로 주문 총액이 변경되었습니다. 돌아가서 주문이 정확한지 확인하고 다시 결제를 시도해 주세요.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "변경 기한: %1$@";
-
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "보안 플러그인이 워드프레스 알림판 위치를 변경할 수도 있습니다. 여는 데 사용하는 주소를 입력하세요.";
 
@@ -10898,9 +10895,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "검색에서 반환된 리더에 IP 주소가 없으며 연결할 수 없습니다.";
-
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "이전 지원 대화 다시 보기";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "채팅 기록";
@@ -13122,9 +13116,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "계속하려면 판매 지점을 활성화해야 합니다. 아래 또는 우커머스 설정 > 고급 > 기능의 워드프레스 관리자에서 POS 기능을 활성화하고 다시 시도하세요.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "앱을 다시 시작하여 이 문제를 해결해 보세요.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "사이트 설정 정보를 로드할 수 없었습니다. 인터넷 연결을 확인하고 다시 시도하세요. 문제가 계속 발생하는 경우 도움이 필요하면 지원을 문의하세요.";
@@ -15495,9 +15486,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "제목 없는 채팅";
-
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "아직 지원팀과 채팅하지 않으셨습니다.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "채팅 기록";

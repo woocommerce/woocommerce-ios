@@ -12,15 +12,18 @@ final class IssueRefundViewModel {
     private struct State {
         /// Order to be refunded
         ///
-        let order: Order
+        var order: Order
 
         /// Refunds previously made
         ///
-        let refunds: [Refund]
+        var refunds: [Refund]
 
         /// Items to refund. Order Items - Refunded items
         ///
-        let itemsToRefund: [RefundableOrderItem]
+        var itemsToRefund: [RefundableOrderItem]
+
+        var isLoadingRefunds = false
+        var refundFetchFailed = false
 
         /// Current currency settings
         ///
@@ -54,6 +57,7 @@ final class IssueRefundViewModel {
             sections = createSections()
             title = calculateTitle()
             selectedItemsTitle = createSelectedItemsCount()
+            isSelectAllButtonVisible = calculateSelectAllButtonVisibility()
             isNextButtonEnabled = calculateNextButtonEnableState()
             isNextButtonAnimating = calculateNextButtonAnimatingState()
             hasUnsavedChanges = calculatePendingChangesState()
@@ -69,6 +73,10 @@ final class IssueRefundViewModel {
     /// Implement the input parameter with a closure to be execured when the user wants to retry the fetch action.
     ///
     var showFetchChargeErrorNotice: ((@escaping (() -> Void)) -> (Void))?
+
+    var showFetchRefundsErrorNotice: ((@escaping () -> Void) -> Void)?
+
+    var hasRefundFetchError: Bool { state.refundFetchFailed }
 
     /// Title for the navigation bar
     ///
@@ -130,6 +138,8 @@ final class IssueRefundViewModel {
         return resultsController
     }()
 
+    private let refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol
+
     private let analytics: Analytics
 
     private let stores: StoresManager
@@ -143,6 +153,7 @@ final class IssueRefundViewModel {
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
+        self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
         self.analytics = analytics
         self.stores = stores
         self.storage = storage
@@ -173,12 +184,13 @@ final class IssueRefundViewModel {
                                                               amount: "\(self.calculateRefundTotal())",
                                                               refundsShipping: self.state.shouldRefundShipping,
                                                               refundsFees: self.state.shouldRefundCustomAmounts,
-                                                              items: self.state.refundQuantityStore.refundableItems(),
+                                                              items: self.selectedItems(),
                                                               paymentGateway: self.paymentGateway,
                                                               paymentGatewayAccount: paymentGatewayAccount,
-                                                              shippingLines: self.shippingLinesToRefund())
+                                                              shippingLines: self.shippingLinesToRefund(),
+                                                              fees: self.refundableFees())
 
-            onCompletion(RefundConfirmationViewModel(details: details, currencySettings: self.state.currencySettings))
+            onCompletion(RefundConfirmationViewModel(details: details, actionProcessor: self.stores, currencySettings: self.state.currencySettings))
         }
 
         stores.dispatch(action)
@@ -218,13 +230,17 @@ extension IssueRefundViewModel {
         return state.refundQuantityStore.refundQuantity(for: refundable.item)
     }
 
-    /// Updates the quantity to be refunded for an item on the provided index.
+    func itemIDForItemAtIndex(_ itemIndex: Int) -> Int64? {
+        state.itemsToRefund[safe: itemIndex]?.item.itemID
+    }
+
+    /// Updates the original order line using its current refundable quantity.
     ///
-    func updateRefundQuantity(quantity: Int, forItemAtIndex itemIndex: Int) {
-        guard let refundable = state.itemsToRefund[safe: itemIndex] else {
+    func updateRefundQuantity(quantity: Int, forItemWithID itemID: Int64) {
+        guard let refundable = state.itemsToRefund.first(where: { $0.item.itemID == itemID }) else {
             return
         }
-        state.refundQuantityStore.update(quantity: quantity, for: refundable.item)
+        state.refundQuantityStore.update(quantity: max(0, min(quantity, refundable.quantity)), for: refundable.item)
     }
 
     /// Marks all items as to be refunded
@@ -241,6 +257,58 @@ extension IssueRefundViewModel {
     ///
     func fetch() {
         fetchCharge()
+        fetchRefunds()
+    }
+
+    func retryFetchingRefunds() {
+        fetchRefunds()
+    }
+
+    private func fetchRefunds() {
+        guard !state.isLoadingRefunds, state.order.refunds.isNotEmpty else { return }
+        state.isLoadingRefunds = true
+        state.refundFetchFailed = false
+        var fetched: [Refund] = []
+        var missingRefundIDs: Set<Int64> = []
+        var outstanding = state.order.refunds.count
+        for refundID in state.order.refunds.map(\.refundID) {
+            stores.dispatch(RefundAction.retrieveRefund(siteID: state.order.siteID, orderID: state.order.orderID, refundID: refundID) {
+                [weak self] refund, error in
+                guard let self else { return }
+                if let refund, error == nil {
+                    fetched.append(refund)
+                } else if case NetworkRequestError.notFound? = error {
+                    missingRefundIDs.insert(refundID)
+                } else {
+                    self.state.refundFetchFailed = true
+                }
+                outstanding -= 1
+                guard outstanding == 0 else { return }
+                var updated = self.state
+                if !updated.refundFetchFailed {
+                    updated.order = updated.order.copy(refunds: updated.order.refunds.filter { !missingRefundIDs.contains($0.refundID) })
+                    updated.refunds = fetched
+                    updated.itemsToRefund = self.refundableOrderItemsDeterminer.determineRefundableOrderItems(from: updated.order, with: fetched)
+                    var quantities = RefundQuantityStore()
+                    for item in updated.itemsToRefund {
+                        quantities.update(quantity: min(updated.refundQuantityStore.refundQuantity(for: item.item), item.quantity), for: item.item)
+                    }
+                    updated.refundQuantityStore = quantities
+                    let shipping = OrderRefundsOptionsDeterminer.remainingShipping(in: updated.order, refunds: fetched) ?? []
+                    if self.shippingRefundValue(for: shipping) <= 0 {
+                        updated.shouldRefundShipping = false
+                    }
+                    if OrderRefundsOptionsDeterminer.remainingFees(in: updated.order, refunds: fetched).isEmpty {
+                        updated.shouldRefundCustomAmounts = false
+                    }
+                }
+                updated.isLoadingRefunds = false
+                self.state = updated
+                if self.state.refundFetchFailed {
+                    self.showFetchRefundsErrorNotice? { [weak self] in self?.fetchRefunds() }
+                }
+            })
+        }
     }
 }
 
@@ -386,8 +454,12 @@ extension IssueRefundViewModel {
                                        currencySettings: state.currencySettings)
         }
 
-        let refundItems = state.refundQuantityStore.refundableItems()
-        let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
+        let refundItems = selectedItems()
+        let productIDs = Set(refundItems.map { $0.item.itemID })
+        let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency,
+                                                    currencySettings: state.currencySettings,
+                                                    allocatedLines: selectedRefundLines().filter { productIDs.contains($0.itemID) },
+                                                    includesUnallocatedTax: !isRefundCapped())
 
         return Section(rows: itemsRows + [summaryRow])
     }
@@ -403,11 +475,7 @@ extension IssueRefundViewModel {
         }
 
         // If there is no amount to refund (EG: free shipping), hide the refund shipping section
-        let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
-        let shippingValue = shippingLines.reduce(Decimal.zero) { partialResult, shippingLine in
-            partialResult + RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter).calculateRefundValue()
-        }
-        guard shippingValue > 0 else {
+        guard shippingRefundValue(for: shippingLines) > 0 else {
             return nil
         }
 
@@ -417,8 +485,15 @@ extension IssueRefundViewModel {
             return Section(rows: [switchRow])
         }
 
-        let detailsRows: [IssueRefundRow] = shippingLines.map { shippingLine in
-            RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: state.order.currency, currencySettings: state.currencySettings)
+        let allocatedLines = selectedRefundLines()
+        let isUncapped = !isRefundCapped()
+        let detailsRows: [IssueRefundRow] = shippingLines.map { original in
+            let line = allocatedLines.first { $0.itemID == original.shippingID }
+            let shippingLine = line.map {
+                if $0.taxes.isEmpty && isUncapped { return original }
+                return original.copy(total: $0.total, totalTax: "\($0.taxes.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) })")
+            } ?? original.copy(total: "0", totalTax: "0", taxes: [])
+            return RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: state.order.currency, currencySettings: state.currencySettings)
         }
         return Section(rows: [switchRow as IssueRefundRow] + detailsRows)
     }
@@ -433,7 +508,17 @@ extension IssueRefundViewModel {
             return Section(rows: [switchRow])
         }
 
-        let detailsRow = RefundCustomAmountsDetailsViewModel(fees: state.order.fees,
+        let allocatedLines = selectedRefundLines()
+        let isUncapped = !isRefundCapped()
+        let allocatedFees = refundableFees().map { original in
+            guard let line = allocatedLines.first(where: { $0.itemID == original.feeID }) else {
+                return original.copy(total: "0", totalTax: "0", taxes: [])
+            }
+            if line.taxes.isEmpty && isUncapped { return original }
+            return original.copy(total: line.total, totalTax: "\(line.taxes.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) })",
+                                 taxes: line.taxes.map { .init(taxID: $0.taxID, subtotal: "", total: $0.total) })
+        }
+        let detailsRow = RefundCustomAmountsDetailsViewModel(fees: allocatedFees,
                                                              currency: state.order.currency,
                                                              currencySettings: state.currencySettings)
 
@@ -451,9 +536,21 @@ extension IssueRefundViewModel {
     /// Returns the total amount to refund. ProductsTotal + Shipping Total(If required)
     ///
     private func calculateRefundTotal() -> Decimal {
+        let total = calculateUncappedRefundTotal()
         let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
-        let refundItems = state.refundQuantityStore.refundableItems()
-        let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        return RefundCreationUseCase.round(min(total, calculateMaxRefundableAmount(with: formatter) ?? total),
+                                           scale: state.currencySettings.fractionDigits)
+    }
+
+    private func isRefundCapped() -> Bool {
+        RefundCreationUseCase.round(calculateUncappedRefundTotal(), scale: state.currencySettings.fractionDigits) > calculateRefundTotal()
+    }
+
+    private func calculateUncappedRefundTotal() -> Decimal {
+        let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
+        let refundItems = selectedItems()
+        let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter,
+                                                                      numberOfDecimals: state.currencySettings.fractionDigits)
 
         var refundsTotal = productsTotalUseCase.calculateRefundValues().total
 
@@ -466,14 +563,7 @@ extension IssueRefundViewModel {
 
         // If customAmounts are enabled, sum the refund value to the total
         if state.shouldRefundCustomAmounts {
-            refundsTotal += RefundFeesCalculationUseCase(fees: state.order.fees, currencyFormatter: formatter).calculateRefundValues().total
-        }
-
-        // The API rejects amounts above the remaining refundable total with "Invalid refund amount",
-        // and sub-cent precision drift between the locally summed lines and the server-side order total
-        // can otherwise push the sum past that limit.
-        if let maxRefundableAmount = calculateMaxRefundableAmount(with: formatter) {
-            refundsTotal = min(refundsTotal, maxRefundableAmount)
+            refundsTotal += RefundFeesCalculationUseCase(fees: refundableFees(), currencyFormatter: formatter).calculateRefundValues().total
         }
 
         return refundsTotal
@@ -501,14 +591,31 @@ extension IssueRefundViewModel {
     /// Calculates whether the next button should be enabled or not
     ///
     private func calculateNextButtonEnableState() -> Bool {
-        calculatePendingChangesState()
+        guard !state.isLoadingRefunds, !state.refundFetchFailed, calculatePendingChangesState() else {
+            return false
+        }
+        let total = calculateRefundTotal()
+        return total > 0 || (total == 0 && isRefundingOnlyFreeProducts())
+    }
+
+    private func isRefundingOnlyFreeProducts() -> Bool {
+        let items = selectedItems().filter { $0.quantity > 0 }
+        guard items.isNotEmpty, shippingLinesToRefund().isEmpty,
+              !state.shouldRefundCustomAmounts || refundableFees().isEmpty else {
+            return false
+        }
+        let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
+        return items.allSatisfy {
+            formatter.convertToDecimal($0.item.total)?.decimalValue == 0
+                && formatter.convertToDecimal($0.item.totalTax)?.decimalValue == 0
+        }
     }
 
     /// Calculates whether the next button should be animating or not
     ///
     private func calculateNextButtonAnimatingState() -> Bool {
         // When we have a chargeID, we need to wait until we fetch the charge unless there is an error fetching the charge.
-        state.charge == nil && !state.order.chargeID.isNilOrEmpty && state.fetchChargeError == nil
+        state.isLoadingRefunds || (state.charge == nil && !state.order.chargeID.isNilOrEmpty && state.fetchChargeError == nil)
     }
 
     /// Calculates whether there are pending changes to commit
@@ -518,7 +625,9 @@ extension IssueRefundViewModel {
             return false
         }
 
-        return state.refundQuantityStore.count() > 0 || state.shouldRefundShipping || state.shouldRefundCustomAmounts
+        return state.refundQuantityStore.count() > 0
+            || (state.shouldRefundShipping && shippingLinesToRefund().isNotEmpty)
+            || (state.shouldRefundCustomAmounts && refundableFees().isNotEmpty)
     }
 
     /// Calculates whether the "select all" button should be visible or not.
@@ -531,20 +640,14 @@ extension IssueRefundViewModel {
     /// Returns `nil` if we don't have shipping refund information.
     ///
     private func refundableShippingLines() -> [ShippingLine]? {
-        // Return all order shipping lines if there are no refunds.
-        guard state.refunds.isNotEmpty else {
-            return state.order.shippingLines
-        }
+        OrderRefundsOptionsDeterminer.remainingShipping(in: state.order, refunds: state.refunds)
+    }
 
-        // Return nil if we can't get shipping line refunds information
-        guard state.refunds.allSatisfy({ $0.shippingLines != nil }) else {
-            return nil
+    private func shippingRefundValue(for lines: [ShippingLine]) -> Decimal {
+        let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
+        return lines.reduce(Decimal.zero) {
+            $0 + RefundShippingCalculationUseCase(shippingLine: $1, currencyFormatter: formatter).calculateRefundValue()
         }
-
-        let refundedShippingLineIDs = Set(state.refunds.flatMap { refund in
-            refund.shippingLines?.map { $0.shippingID } ?? []
-        })
-        return state.order.shippingLines.filter { refundedShippingLineIDs.contains($0.shippingID) == false }
     }
 
     private func shippingLinesToRefund() -> [ShippingLine] {
@@ -554,9 +657,25 @@ extension IssueRefundViewModel {
         return refundableShippingLines() ?? []
     }
 
+    private func refundableFees() -> [OrderFeeLine] {
+        OrderRefundsOptionsDeterminer.remainingFees(in: state.order, refunds: state.refunds)
+    }
+
+    private func selectedItems() -> [RefundableOrderItem] {
+        state.itemsToRefund.map { $0.selecting(quantity: state.refundQuantityStore.refundQuantity(for: $0.item)) }
+    }
+
+    private func selectedRefundLines() -> [OrderItemRefund] {
+        RefundCreationUseCase(amount: "\(calculateRefundTotal())", reason: nil, automaticallyRefundsPayment: false,
+                              items: selectedItems(), shippingLines: shippingLinesToRefund(),
+                              fees: state.shouldRefundCustomAmounts ? refundableFees() : [],
+                              currencyFormatter: CurrencyFormatter(currencySettings: state.currencySettings),
+                              numberOfDecimals: state.currencySettings.fractionDigits).createRefundItems()
+    }
+
     private func isAnyCustomAmountAvailableForRefund() -> Bool {
         // Return false if there are no custom amounts left to be refunded.
-        return state.order.fees.isNotEmpty
+        return refundableFees().isNotEmpty
     }
 }
 
@@ -603,23 +722,11 @@ private extension IssueRefundViewModel {
             store[item] = quantity
         }
 
-        /// Returns an array containing the results of mapping the given closure over the sequence's elements.
-        ///
-        func map<T>(transform: (_ item: OrderItem, _ quantity: Quantity) -> (T)) -> [T] {
-            store.map(transform)
-        }
-
         /// Returns the number of items referenced for refund.
         /// Calculated by aggregating all stored quantities.
         ///
         func count() -> Int {
             store.values.reduce(0) { $0 + $1 }
-        }
-
-        /// Returns an array of `RefundableOrderItem` from the internal store
-        ///
-        func refundableItems() -> [RefundableOrderItem] {
-            map { RefundableOrderItem(item: $0, quantity: $1) }
         }
     }
 }

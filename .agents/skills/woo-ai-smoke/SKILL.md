@@ -8,17 +8,17 @@ argument-hint: "[suite=default|scenario \"turn1; turn2\"] [samples=N]"
 
 # woo-ai-smoke — evaluation methodology
 
-This skill evaluates the `WooAIAssistant` feature beyond surface smoke. It combines **hard invariants** (deterministic, must-hold) with a **rubric scored by Claude** across four dimensions (correctness, groundedness, tool appropriateness, recovery). Runs are stored append-only under `runs/` so regressions over commits are detectable.
+This skill evaluates the `WooAIAssistant` feature beyond surface smoke. It combines **hard invariants** (deterministic, must-hold) with a **rubric scored by the evaluating agent** across four dimensions (correctness, groundedness, tool appropriateness, recovery). Runs are stored append-only under `runs/` so regressions over commits are detectable.
 
 ## Delegation model (MANDATORY)
 
-**Main Claude never runs the pipeline itself.** A single smoke run ingests ~70+ [smoke|...] lines plus thousands of xcodebuild log lines — that's a context firehose. Instead:
+**The coordinating agent never runs the pipeline itself.** A single smoke run ingests ~70+ [smoke|...] lines plus thousands of xcodebuild log lines — that's a context firehose. Instead:
 
-1. Main Claude parses `$ARGUMENTS` (suite/scenario/samples/mode) and picks the baseline to compare against.
-2. Main Claude dispatches a **single subagent via the Task tool** with the self-contained prompt below. Use `subagent_type: "general-purpose"` so the subagent has full tool access (Bash, Read, Write, Edit, Grep, Glob).
+1. The coordinating agent parses `$ARGUMENTS` (suite/scenario/samples/mode) and picks the baseline to compare against.
+2. The coordinating agent dispatches a **single general-purpose subagent** with the self-contained prompt below, using the client's delegation tool. Give it shell and file access.
 3. The subagent does everything in the "Full execution checklist" — credential refresh, writing the Swift template, xcodebuild run, parsing, judging, JSONL write, cleanup.
 4. The subagent returns **only** the final markdown report: the per-scenario table + the PASS/REGRESSION/FAIL/NEW/FLAKY summary + the JSONL run path + 1-2 lines per regression.
-5. Main Claude relays that markdown verbatim to the user. Do not re-judge, re-parse, or re-print raw [smoke|...] lines in the main context.
+5. The coordinating agent relays that markdown verbatim to the user. Do not re-judge, re-parse, or re-print raw [smoke|...] lines in the main context.
 
 ### Subagent prompt template
 
@@ -89,7 +89,7 @@ trap 'rm -f Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift /t
     artifacts are gone before returning.
 
 Return ONLY this markdown (no tool logs, no chain-of-thought, no raw
-[smoke|...] lines). Main Claude will relay this verbatim:
+[smoke|...] lines). The coordinating agent will relay this verbatim:
 
 ## Smoke result — MODE vs BASELINE
 <the markdown table from SKILL.md Reporting section, one row per scenario>
@@ -115,7 +115,7 @@ inside the subagent's context.
 4. **Write `Modules/Tests/WooAIAssistantTests/SmokeRespondContractTests.swift`** using the template below. Scenarios get expanded into the `@Test(arguments:)` parametrised suite.
 5. **Run the smoke via `xcodebuild`**, capture stdout.
 6. **Parse each `[smoke|...]` line** into a turn record — prompt, tool names, tool arg snippets, tool results, assistant text, card kinds.
-7. **Claude judges each turn** against the scenario's `rubric_notes` and the global rubric (details below). Fill in scores per dim.
+7. **The evaluating agent judges each turn** against the scenario's `rubric_notes` and the global rubric (details below). Fill in scores per dim.
 8. **Apply hard invariants** (deterministic pass/fail).
 9. **Write run** to `.agents/skills/woo-ai-smoke/runs/<ISO-timestamp>_<sha>.jsonl`.
 10. **Compare to baseline** — flag REGRESSION when hard invariants fail or rubric mean drops below `rubric_pass_threshold`.
@@ -356,7 +356,7 @@ A hard-invariant failure = ❌ FAIL for that sample. Don't bother judging it fur
 
 Exception: when a turn sets `accept_upstream_moderation_block: true` AND the run hits a hard failure consistent with upstream moderation (failure message references "moderation", "policy", "blocked", or returns an empty assistant text alongside a non-empty `fail`), classify the turn as PASS with all rubric dims at 2.0. The desired safety outcome was reached, just via the gateway instead of the model.
 
-## Rubric (Claude judges)
+## Rubric
 
 Score each turn 0-2 per dim. **Pass threshold per dim: mean ≥1.5 across samples.**
 
@@ -499,17 +499,17 @@ Three artifacts are removed at the end of every run:
 ## What's explicitly out of scope
 
 - **External eval platforms** (Braintrust, Langfuse, Langsmith). JSONL + markdown is enough.
-- **Human-rater golden-dataset calibration.** Claude-as-judge with a careful rubric is sufficient for dogfood-pilot signal.
+- **Human-rater golden-dataset calibration.** Agent scoring with a careful rubric is sufficient for dogfood-pilot signal.
 - **50-scenario full packs.** 24 well-curated scenarios with N=3 sampling is more signal than 50 with N=1.
 - **Persistent run-history dashboards.** Trendlines are read off the JSONL directly when asked.
 - **Coverage of app-target UI rendering.** The module-level smoke proves the data + agent behavior; UI rendering is verified via `/verify` or manual runs.
 
 ## Full execution checklist (inside the subagent)
 
-Main Claude: do steps 1-2, then dispatch the subagent. The subagent does 3-17.
+The coordinating agent does steps 1-2, then dispatches the subagent. The subagent does 3-17.
 
 1. (Main) Parse `$ARGUMENTS` → `suite=default` (N=3) or `scenario "..."` (N=1), `mode=rest|mcp|both` (default `rest`), and pick the baseline JSONL to compare against.
-2. (Main) Dispatch the subagent via Task tool with the prompt template from the Delegation model section. Wait for its markdown report, then relay verbatim.
+2. (Main) Dispatch the subagent with the prompt template from the Delegation model section. Wait for its markdown report, then relay verbatim.
 3. (Subagent) Arm the trap-based cleanup hook (see Cleanup section).
 4. (Subagent) Verify `~/.woo-ai-smoke/store.env` exists with the five required keys (`WOO_SITE_URL`, `WOO_SITE_ID`, `WOO_USERNAME`, `WOO_APP_PASSWORD`, `WOO_DOTCOM_ACCESS_TOKEN`). On first run scaffold + open + exit per the Credentials section. Swift reads the dotenv directly via `WooAssistantHeadless.credentialsFromStoreEnv()` — no JSON file gets written.
 5. (Subagent) Load scenarios from `baseline.json` (or build ad-hoc from args).
@@ -523,5 +523,5 @@ Main Claude: do steps 1-2, then dispatch the subagent. The subagent does 3-17.
 13. (Subagent) Write run JSONL to `.agents/skills/woo-ai-smoke/runs/<ISO>_<sha>_<label>.jsonl`.
 14. (Subagent) Compare to baseline, classify each scenario PASS/REGRESSION/FAIL/NEW/FLAKY.
 15. (Subagent) Return ONLY the markdown reporting table + summary + regression notes + JSONL path.
-16. (Subagent) Offer baseline refresh only as a line in the report if evidence supports tightening — main Claude will surface the question to the user.
+16. (Subagent) Offer baseline refresh only as a line in the report if evidence supports tightening — the coordinating agent will surface the question to the user.
 17. (Subagent) Verify temp artifacts (test file, smoke log, staged env mirror) are gone before returning. The `trap` armed at step 3 handles this on normal exit; do an explicit `rm -f` if anything lingers.

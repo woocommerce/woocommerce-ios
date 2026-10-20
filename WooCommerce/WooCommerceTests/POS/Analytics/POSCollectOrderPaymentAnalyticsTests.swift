@@ -760,6 +760,53 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(properties("waiting_time", in: "reader_ready_for_card_payment") == ["1.0", "11.0"])
     }
 
+    @Test @MainActor func test_track_card_reader_ready_when_retrying_after_decline_then_preparation_starts_at_the_new_attempt() {
+        // Given
+        let clock = TestClock()
+        let sut = makeTimedAdaptor(clock: clock)
+        clock.now = 1000
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1001
+        sut.trackOrderSyncSuccess()
+        sut.trackCardPaymentAttemptStarted()
+        clock.now = 1002
+        sut.trackCardReaderReady()
+        clock.now = 1004
+        sut.trackPaymentFailure(with: TestError())
+
+        // When the merchant retries 26 seconds later
+        clock.now = 1030
+        sut.trackCardPaymentAttemptStarted() // validating the order
+        clock.now = 1031
+        sut.trackCardPaymentAttemptStarted() // preparing the reader, same attempt
+        clock.now = 1032
+        sut.trackCardReaderReady()
+
+        // Then
+        #expect(properties("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == ["1000.0", "2000.0"])
+        // The legacy property keeps measuring from order sync.
+        #expect(properties("waiting_time", in: "reader_ready_for_card_payment") == ["1.0", "31.0"])
+    }
+
+    @Test @MainActor func test_track_card_reader_ready_when_attempt_starts_after_order_sync_then_preparation_starts_at_the_attempt() {
+        // Given
+        let clock = TestClock()
+        let sut = makeTimedAdaptor(clock: clock)
+        clock.now = 1000
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1001
+        sut.trackOrderSyncSuccess()
+
+        // When
+        clock.now = 1005
+        sut.trackCardPaymentAttemptStarted()
+        clock.now = 1006
+        sut.trackCardReaderReady()
+
+        // Then
+        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == "1000.0")
+    }
+
     @Test @MainActor func test_payment_cancelation_when_preflight_is_canceled_then_does_not_stamp_reader_ready() {
         // Given
         let clock = TestClock()

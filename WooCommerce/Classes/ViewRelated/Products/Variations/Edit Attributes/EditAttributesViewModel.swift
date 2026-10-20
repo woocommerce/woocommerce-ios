@@ -107,9 +107,8 @@ private extension EditAttributesViewModel {
         guard !isVariationsFlow else {
             return ""
         }
-        let isVariableProduct = product.productType == .variable || product.productType == .variableSubscription
         let labels = [
-            isVariableProduct && attribute.variation ? Localization.usedForVariations : nil,
+            product.productType.isVariable && attribute.variation ? Localization.usedForVariations : nil,
             attribute.visible ? nil : Localization.hidden
         ]
         return labels.compactMap { $0 }.joined(separator: " · ")

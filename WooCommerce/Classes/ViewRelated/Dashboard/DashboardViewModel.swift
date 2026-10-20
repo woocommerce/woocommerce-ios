@@ -795,32 +795,14 @@ private extension DashboardViewModel {
     func observeStockEligibility() {
         stores.site
             .removeDuplicates()
-            .map { [weak self] in
-                guard
-                    let self,
-                    let site = $0
-                else {
-                    return false
-                }
-
-                return true
-            }
+            .map { $0 != nil }
             .assign(to: &$isEligibleForStock)
     }
 
     func observeStoreSetupEligibility() {
         stores.site
             .removeDuplicates()
-            .map { [weak self] in
-                guard
-                    let self,
-                    let site = $0
-                else {
-                    return false
-                }
-
-                return true
-            }
+            .map { $0 != nil }
             .assign(to: &$isEligibleForStoreSetup)
     }
 

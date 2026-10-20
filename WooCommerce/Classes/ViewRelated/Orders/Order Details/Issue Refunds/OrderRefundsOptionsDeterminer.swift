@@ -62,12 +62,8 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
         return order.items.compactMap { item -> RefundableOrderItem? in
 
             // Calculate how many times an item has been refunded. This number is negative.
-            let timesRefunded = allRefundedItems.reduce(0) { timesRefunded, refundedItem -> Decimal in
-                guard refundedItemMatches(refundedItem, item: item) else {
-                    return timesRefunded
-                }
-                return timesRefunded + refundedItem.quantity
-            }
+            let history = allRefundedItems.filter { refundedItemMatches($0, item: item) }
+            let timesRefunded = history.reduce(Decimal.zero) { $0 + $1.quantity }
 
             // If there is no more items to refund, evict it from the resulting array
             let quantityLeftToRefund = item.quantity + timesRefunded
@@ -76,7 +72,9 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
             }
 
             // Return the item with the updated quantity to refund
-            return RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
+            var refundable = RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
+            refundable.refundedItems = history
+            return refundable
         }
     }
 
@@ -92,5 +90,43 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
         }
 
         return originalOrderItemID == item.itemID
+    }
+}
+
+// Monetary balances are independent of quantity (for example after a partial amount refund).
+extension OrderRefundsOptionsDeterminer {
+    static func remainingFees(in order: Order, refunds: [Refund]) -> [OrderFeeLine] {
+        order.fees.compactMap { fee -> OrderFeeLine? in
+            let history = refunds.flatMap(\.feeLines).filter { ($0.refundedItemID ?? $0.feeID) == fee.feeID }
+            guard history.isNotEmpty else { return fee }
+            let total = remaining(fee.total, refunds: history.map(\.total))
+            let totalTax = remaining(fee.totalTax, refunds: history.map(\.totalTax))
+            guard total + totalTax != 0 else { return nil }
+            return fee.copy(total: "\(total)", totalTax: "\(totalTax)", taxes: fee.taxes.map { tax in
+                let refundedTaxes = history.flatMap(\.taxes).filter { $0.taxID == tax.taxID }.map(\.total)
+                return OrderItemTax(taxID: tax.taxID, subtotal: tax.subtotal, total: "\(remaining(tax.total, refunds: refundedTaxes))")
+            })
+        }
+    }
+
+    static func remainingShipping(in order: Order, refunds: [Refund]) -> [ShippingLine]? {
+        guard refunds.allSatisfy({ $0.shippingLines != nil }) else { return nil }
+        return order.shippingLines.compactMap { line -> ShippingLine? in
+            let history = refunds.flatMap { $0.shippingLines ?? [] }.filter { ($0.refundedItemID ?? $0.shippingID) == line.shippingID }
+            guard history.isNotEmpty else { return line }
+            let total = remaining(line.total, refunds: history.map(\.total))
+            let totalTax = remaining(line.totalTax, refunds: history.map(\.totalTax))
+            guard total + totalTax != 0 else { return nil }
+            return line.copy(total: "\(total)", totalTax: "\(totalTax)", taxes: line.taxes.map { tax in
+                let refundedTaxes = history.flatMap(\.taxes).filter { $0.taxID == tax.taxID }.map(\.total)
+                return ShippingLineTax(taxID: tax.taxID, subtotal: tax.subtotal, total: "\(remaining(tax.total, refunds: refundedTaxes))")
+            })
+        }
+    }
+
+    private static func remaining(_ original: String, refunds: [String]) -> Decimal {
+        let value = Decimal(string: original) ?? .zero
+        let refunded = refunds.reduce(Decimal.zero) { $0 + abs(Decimal(string: $1) ?? .zero) }
+        return (value < 0 ? -1 : 1) * max(abs(value) - refunded, .zero)
     }
 }

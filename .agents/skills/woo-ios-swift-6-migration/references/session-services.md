@@ -28,6 +28,8 @@ This parameter only moves warnings when an actor method calls a service that is 
 
 Add `@Sendable` to Yosemite Action completions one Action case at a time. The compiler checks explicit `@Sendable` closures even under `minimal` checking. Use plain `@Sendable`, not `@MainActor @Sendable`, because the main-actor form makes nonisolated mock stubs fail. A `@Sendable` closure cannot change a captured `var`. Use a lock or async code in those callers.
 
+Treat callback isolation and argument ownership as separate contracts. When an Action completion returns an immutable value model, prefer adding checked `Sendable` conformance to that model and its stored-value graph. Adding `@Sendable` to the callback does not make its arguments transferable, while changing the parameter to `sending` can introduce warnings in stores, mocks, and fixtures that produce actor-isolated values. Reserve `sending` for APIs that genuinely transfer ownership, and compile every producer and caller before adopting it.
+
 ## Transitional configuration
 
 Before you add a public eligibility case or error for a missing service, check two facts:

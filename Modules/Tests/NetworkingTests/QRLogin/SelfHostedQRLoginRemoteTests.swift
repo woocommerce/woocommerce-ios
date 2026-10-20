@@ -326,7 +326,7 @@ private extension SelfHostedQRLoginRemoteTests {
 
     func makeRemote(session: MockURLSession,
                     cachedRoot: String? = "https://shop.example/wp-json/",
-                    discoverRESTAPIRoot: @escaping (_ siteURL: String) async -> String? = { _ in nil }) -> SelfHostedQRLoginRemote {
+                    discoverRESTAPIRoot: @escaping @Sendable (_ siteURL: String) async -> String? = { _ in nil }) -> SelfHostedQRLoginRemote {
         SelfHostedQRLoginRemote(session: session,
                                 apiRootCache: MockRESTAPIRootCache(stubbedRoot: cachedRoot),
                                 discoverRESTAPIRoot: discoverRESTAPIRoot)

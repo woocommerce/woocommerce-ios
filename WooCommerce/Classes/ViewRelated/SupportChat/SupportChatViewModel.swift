@@ -273,6 +273,9 @@ final class SupportChatViewModel {
     private var diagnosticsContext: RequestParameterDictionary?
     private let initialContext: RequestParameterDictionary?
     private let initialMessage: String?
+    let supportSiteAddress: String?
+    private let mobileStatusReportProvider: MobileStatusReportProviding
+    private var preparedInitialContext: RequestParameterDictionary?
     private let onContactHumanSupport: ContactHumanSupportCallback
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
@@ -291,12 +294,14 @@ final class SupportChatViewModel {
 
     // MARK: - Initialization
 
-    init(botSlug: String = "woo-workflow-support_mobile_inapp_all_users",
+    init(mobileStatusReportProvider: MobileStatusReportProviding? = nil,
+         botSlug: String = "woo-workflow-support_mobile_inapp_all_users",
          entryPoint: EntryPoint,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          initialContext: RequestParameterDictionary? = nil,
          initialMessage: String? = nil,
+         supportSiteAddress: String? = nil,
          diagnosticsService: SupportDiagnosticsServicing? = nil,
          chatID: Int64? = nil,
          sessionID: String? = nil,
@@ -307,12 +312,14 @@ final class SupportChatViewModel {
          onStartJetpackSetup: @escaping () -> Void = {},
          onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() },
          onOpenPushNotificationPreferences: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }) {
+        self.mobileStatusReportProvider = mobileStatusReportProvider ?? MobileStatusReportProvider()
         self.botSlug = botSlug
         self.entryPoint = entryPoint
         self.stores = stores
         self.analytics = analytics
         self.initialContext = initialContext
         self.initialMessage = initialMessage
+        self.supportSiteAddress = supportSiteAddress
         self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
         self.chatID = chatID
         self.sessionID = sessionID
@@ -650,13 +657,13 @@ final class SupportChatViewModel {
     // MARK: - Chat Actions
 
     /// Starts an empty conversation, allowing failed transcript fetches to retry on subsequent appearances.
-    func startIfNeeded() {
+    func startIfNeeded() async {
         guard messages.isEmpty, state != .sending else { return }
 
         if isResumedChat {
             resumeIfNeeded()
         } else if let initialMessage, !initialMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            sendMessage(initialMessage)
+            await sendMessage(initialMessage)
         } else {
             showGreeting()
         }
@@ -700,11 +707,11 @@ final class SupportChatViewModel {
         stores.dispatch(action)
     }
 
-    func sendMessage() {
-        sendMessage(inputText)
+    func sendMessage() async {
+        await sendMessage(inputText)
     }
 
-    private func sendMessage(_ text: String) {
+    private func sendMessage(_ text: String) async {
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedText.isEmpty else { return }
         guard state != .sending else { return }
@@ -714,13 +721,15 @@ final class SupportChatViewModel {
         inputText = ""
         state = .sending
 
-        // Use diagnostics context on first message, then nil for subsequent messages
-        let context: RequestParameterDictionary? = {
-            if chatID == nil {
-                return diagnosticsContext ?? initialContext
-            }
-            return nil
-        }()
+        // Preparing context is local; the sending state prevents a second submission while it awaits system lookups.
+        let hasDiagnosticsContext = chatID == nil && (diagnosticsContext ?? initialContext) != nil
+        let context = chatID == nil ? await prepareInitialContext() : nil
+        guard !Task.isCancelled else {
+            markLastUserMessageAsFailed()
+            inputText = trimmedText
+            state = .idle
+            return
+        }
 
         let wasNewChat = chatID == nil
         let firstUserMessage = trimmedText
@@ -730,7 +739,7 @@ final class SupportChatViewModel {
         analytics.track(event: WooAnalyticsEvent.SupportChat.messageSent(
             entryPoint: entryPoint,
             isFirstMessage: isFirstMessage,
-            hasDiagnosticsContext: context != nil
+            hasDiagnosticsContext: hasDiagnosticsContext
         ))
 
         let action = SupportChatAction.sendMessage(
@@ -746,6 +755,20 @@ final class SupportChatViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    /// Reuses the first report if chat creation fails, without overwriting existing troubleshooting results.
+    private func prepareInitialContext() async -> RequestParameterDictionary {
+        if let preparedInitialContext { return preparedInitialContext }
+        var context = diagnosticsContext ?? initialContext ?? [:]
+        let contextSiteAddress: String? = if case .string(let address) = context["site_url"] { address } else { nil }
+        let report = await mobileStatusReportProvider.generateReport(siteAddress: supportSiteAddress ?? contextSiteAddress)
+        if !report.isEmpty {
+            let existing: String? = if case .string(let text) = context["troubleshootingResults"] { text } else { nil }
+            context["troubleshootingResults"] = .string([existing, report].compactMap { $0 }.joined(separator: "\n\n"))
+        }
+        preparedInitialContext = context
+        return context
     }
 
     func contactHumanSupport(source: WooAnalyticsEvent.SupportChat.EscalationSource = .toolbar) {

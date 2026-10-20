@@ -3,6 +3,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 
 protocol SwitchStoreUseCaseProtocol {
+    @MainActor
     func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void)
 }
 
@@ -47,6 +48,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     /// - Parameter storeID: target store ID.
     /// - Returns: a boolean that indicates whether the site was changed.
     ///
+    @MainActor
     func switchToStoreIfSiteIsStored(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {
         refreshStoredSites()
 
@@ -63,6 +65,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     /// When `onCompletion` is called, the selected site ID is updated while `Site` might still not be available if the site does not exist in storage yet
     /// (e.g. a newly connected site).
     ///
+    @MainActor
     func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {
         guard storeID != stores.sessionManager.defaultStoreID else {
             onCompletion(false)
@@ -79,6 +82,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
 
     /// Do all the operations to log out from the current selected store, maintaining the Authentication
     ///
+    @MainActor
     private func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
         guard stores.sessionManager.defaultStoreID != nil else {
             return onCompletion()
@@ -110,17 +114,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
         stores.dispatch(reviewAction)
 
-        // The reconnection controller is main actor, but this method is not.
-        // TODO: WOOMOB-4176 - call cancelReconnection() directly once this use case is isolated.
-        if Thread.isMainThread {
-            MainActor.assumeIsolated {
-                ServiceLocator.tapToPayReconnectionController.cancelReconnection()
-            }
-        } else {
-            Task { @MainActor in
-                ServiceLocator.tapToPayReconnectionController.cancelReconnection()
-            }
-        }
+        ServiceLocator.tapToPayReconnectionController.cancelReconnection()
 
         group.enter()
         let resetAction = CardPresentPaymentAction.reset {
@@ -137,6 +131,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
 
     /// Part of the switch store selection. This method will update the new default store selected.
     ///
+    @MainActor
     private func finalizeStoreSelection(_ storeID: Int64) {
         stores.updateDefaultStore(storeID: storeID)
 

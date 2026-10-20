@@ -1,4 +1,4 @@
-# p2: login.jetpack
+# p2: login.jetpack, install.fresh
 # The runner signs the app in again after every login flow, so later flows do not
 # reuse this session.
 appId: ${APP_ID}

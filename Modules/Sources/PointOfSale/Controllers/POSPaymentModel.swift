@@ -1342,22 +1342,17 @@ private extension POSPaymentModel {
                 let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
                                                                       using: presentationStyleDeterminerDependencies)
 
-                // Every attempt, including retries, validates the order before preparing the reader.
-                // Re-arming at both steps keeps a failed validation from reporting the previous attempt's timing.
-                if case .validatingOrder = newCardPaymentState {
+                switch newCardPaymentState {
+                case .validatingOrder, .preparingReader:
+                    // Every attempt, including retries, validates the order before preparing the reader.
+                    // Re-arming at both steps keeps a failed validation from reporting the previous attempt's timing.
                     collectOrderPaymentAnalyticsTracker.trackCardPaymentAttemptStarted()
-                }
-
-                if case .preparingReader = newCardPaymentState {
-                    collectOrderPaymentAnalyticsTracker.trackCardPaymentAttemptStarted()
-                }
-
-                if case .acceptingCard = newCardPaymentState {
+                case .acceptingCard:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
-                }
-
-                if case .processingPayment = newCardPaymentState {
+                case .processingPayment:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
+                default:
+                    break
                 }
 
                 return newCardPaymentState

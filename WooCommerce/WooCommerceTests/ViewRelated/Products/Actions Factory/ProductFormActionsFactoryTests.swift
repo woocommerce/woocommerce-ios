@@ -402,7 +402,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -429,7 +429,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 

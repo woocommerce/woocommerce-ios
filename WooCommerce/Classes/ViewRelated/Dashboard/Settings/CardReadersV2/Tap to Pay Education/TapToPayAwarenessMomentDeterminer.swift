@@ -26,6 +26,7 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
         self.userDefaults = userDefaults
     }
 
+    @MainActor
     func shouldPresent() async -> Bool {
         guard !wasPresented() else {
             return false

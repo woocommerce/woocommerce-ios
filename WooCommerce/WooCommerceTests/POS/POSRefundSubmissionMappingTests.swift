@@ -14,7 +14,8 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
                                                 thousandSeparator: ",",
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 2)
-        sut = POSRefundSubmissionMapping(currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
+        sut = POSRefundSubmissionMapping(currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+                                         numberOfDecimals: currencySettings.fractionDigits)
     }
 
     override func tearDown() {

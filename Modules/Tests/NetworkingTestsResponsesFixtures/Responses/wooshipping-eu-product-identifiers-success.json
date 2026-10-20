@@ -1,0 +1,43 @@
+{
+  "data": {
+    "config": {
+      "order": {
+        "line_items": [
+          {
+            "product_id": 101,
+            "sku": "TEE-101",
+            "meta": {
+              "customs_info": {
+                "manufacturer_product_id": "MPN-101",
+                "standardized_product_id": "4006381333931"
+              }
+            }
+          },
+          {
+            "product_id": 303,
+            "variation_id": 303,
+            "sku": "SHOE-303",
+            "meta": {
+              "customs_info": {
+                "manufacturer_product_id": "MPN-303",
+                "standardized_product_id": "Y081"
+              }
+            }
+          },
+          {
+            "product_id": 202,
+            "sku": "HAT-202",
+            "meta": {
+              "customs_info": "malformed legacy value"
+            }
+          },
+          {
+            "product_id": 404,
+            "sku": null,
+            "meta": {}
+          }
+        ]
+      }
+    }
+  }
+}

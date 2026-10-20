@@ -11,7 +11,7 @@ import NetworkingCore
 /// The OAuth `client_id` + `client_secret` are injected at construction so
 /// this type doesn't reach for the host app's `ApiCredentials` (which lives
 /// in the main app target).
-public protocol WPComQRLoginRemoteProtocol {
+public protocol WPComQRLoginRemoteProtocol: Sendable {
     func scan(token: String,
               encrypted: String,
               device: QRLoginScanDevice) async throws -> WPComQRLoginScanResponse
@@ -24,7 +24,7 @@ public protocol WPComQRLoginRemoteProtocol {
                   exchangeGrant: String) async throws -> WPComQRLoginExchangeResponse
 }
 
-public final class WPComQRLoginRemote: WPComQRLoginRemoteProtocol {
+public final class WPComQRLoginRemote: WPComQRLoginRemoteProtocol, Sendable {
 
     private let session: URLSessionProtocol
     private let clientID: String

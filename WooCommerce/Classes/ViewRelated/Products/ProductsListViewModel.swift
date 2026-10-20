@@ -178,6 +178,7 @@ final class ProductListViewModel {
         wooSubscriptionProductsEligibilityChecker.isSiteEligible()
     }
 
+    @MainActor
     func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> ItemIdentifierSearchResult {
         do {
             return try await barcodeScannerItemFinder.searchByIdentifier(from: scannedBarcode,

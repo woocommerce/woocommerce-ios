@@ -37,7 +37,9 @@ release archive into the workspace, verifies the SHA-256 in
 
 The runner derives `APP_ID` from the supplied app, prefers an already booted
 compatible simulator, installs the app, generates a unique `SUITE_RUN_ID`, and
-stores artifacts under `~/woocommerce-maestro-output/` by default.
+stores artifacts under `~/woocommerce-maestro-output/` by default. Before it
+installs the app, it removes it and clears the simulator keychain, so each run
+starts from a fresh install.
 When exactly one built `WooCommerce.app` exists in the repository or Xcode
 DerivedData, `--app` is optional; multiple candidates fail with an explicit list.
 
@@ -104,8 +106,9 @@ password grant cannot answer a 2FA challenge non-interactively. Use test account
 
 ### What a provisioned store covers
 
-It ships with the WooCommerce sample products, and the script adds 25 completed orders,
-one customer and a `maestro10` coupon, so the order and analytics flows run against it.
+It ships with the WooCommerce sample products. The script tops it up to 100 products and
+100 completed orders, and adds one customer and a `maestro10` coupon, so the order and
+analytics flows run against it.
 The negative-login fixtures (`MAESTRO_WOO_NOT_A_WOO_STORE_*`,
 `MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are filled in by hand.
 

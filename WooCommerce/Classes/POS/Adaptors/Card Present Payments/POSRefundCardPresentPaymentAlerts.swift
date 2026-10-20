@@ -21,15 +21,15 @@ final class POSRefundOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtoco
         // POS renders refund progress through POSRefundSubmissionModel instead of UIKit modal view models.
     }
 
-    func preparingReader(onCancel: @escaping () -> Void) {
+    func preparingReader(onCancel: @escaping @MainActor @Sendable () -> Void) {
         present(alertsProvider.preparingReader(onCancel: onCancel))
     }
 
-    func tapOrInsertCard(title: String, amount: String, inputMethods: CardReaderInput, onCancel: @escaping () -> Void) {
+    func tapOrInsertCard(title: String, amount: String, inputMethods: CardReaderInput, onCancel: @escaping @MainActor @Sendable () -> Void) {
         present(alertsProvider.tapOrInsertCard(title: title, amount: amount, inputMethods: inputMethods, onCancel: onCancel))
     }
 
-    func cardInserted(title: String, amount: String, onCancel: @escaping () -> Void) {
+    func cardInserted(title: String, amount: String, onCancel: @escaping @MainActor @Sendable () -> Void) {
         present(alertsProvider.cardInserted(title: title, amount: amount, onCancel: onCancel))
     }
 
@@ -41,14 +41,14 @@ final class POSRefundOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtoco
         present(alertsProvider.processingTransaction(title: title))
     }
 
-    func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
+    func error(error: Error, tryAgain: @escaping @MainActor @Sendable () -> Void, dismissCompletion: @escaping @MainActor @Sendable () -> Void) {
         present(alertsProvider.error(error: error,
                                      receiptState: .noEmailReceipt,
                                      tryAgain: tryAgain,
                                      dismissCompletion: dismissCompletion))
     }
 
-    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
+    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping @MainActor @Sendable () -> Void) {
         present(alertsProvider.nonRetryableError(error: error,
                                                  receiptState: .noEmailReceipt,
                                                  dismissCompletion: dismissCompletion))
@@ -69,7 +69,7 @@ final class POSRefundCardPresentPaymentAlertsPresenter: CardPresentPaymentAlerts
     private let stateModel: POSRefundSubmissionModel
     private let onCancelRequested: () -> Void
     private let isPresentationAllowed: () -> Bool
-    private var latestReaderConnectionHandler: ((String?) -> Void)?
+    private var latestReaderConnectionHandler: (@MainActor @Sendable (String?) -> Void)?
 
     init(stateModel: POSRefundSubmissionModel,
          onCancelRequested: @escaping () -> Void = {},
@@ -128,7 +128,7 @@ final class POSRefundCardPresentPaymentAlertsPresenter: CardPresentPaymentAlerts
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
-        let wrappedConnectionHandler = { [weak self] (readerID: String?) in
+        let wrappedConnectionHandler: @MainActor @Sendable (String?) -> Void = { [weak self] readerID in
             if let readerID {
                 connect(readerID)
             } else {
@@ -168,8 +168,9 @@ final class POSRefundCardPresentPaymentAlertsPresenter: CardPresentPaymentAlerts
 }
 
 private extension CardPresentPaymentEventDetails {
+    @MainActor
     func markingPOSCancellation(_ markCancelled: @escaping () -> Void) -> Self {
-        let markAndRun: (@escaping () -> Void) -> () -> Void = { action in
+        let markAndRun: (@escaping @MainActor @Sendable () -> Void) -> @MainActor @Sendable () -> Void = { action in
             {
                 markCancelled()
                 action()

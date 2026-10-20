@@ -3,6 +3,7 @@ import Combine
 import Yosemite
 import WooFoundation
 
+@MainActor
 final class CardPresentPaymentsReadinessUseCase {
     /// Represents the system's readiness to accept a card payment
     ///

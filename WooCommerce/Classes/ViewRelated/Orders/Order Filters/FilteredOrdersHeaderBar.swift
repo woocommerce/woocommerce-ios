@@ -3,6 +3,7 @@ import UIKit
 /// A view with a title on the left side, and tappable component on the right side showing how many filters are applied to the order list.
 /// Used on top of the Order List screen.
 ///
+@MainActor
 final class FilteredOrdersHeaderBar: UIView {
 
     @IBOutlet private weak var mainLabel: UILabel!
@@ -35,10 +36,13 @@ final class FilteredOrdersHeaderBar: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureLabels()
-        configureButtons()
-        configureBackground()
-        updateStackViewAxis(for: traitCollection)
+        // UIKit invokes awakeFromNib on the main thread, but the imported override is nonisolated.
+        MainActor.assumeIsolated {
+            configureLabels()
+            configureButtons()
+            configureBackground()
+            updateStackViewAxis(for: traitCollection)
+        }
     }
 
     override func willMove(toSuperview newSuperview: UIView?) {

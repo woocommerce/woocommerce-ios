@@ -1,1 +1,0 @@
-Leeftijdsverificatie is nu duidelijker: als ouderlijke toestemming in behandeling is of wordt geweigerd, zie je een scherm met uitleg over wat je nu moet doen, niet alleen een uitlogpagina. Als een verbindingsprobleem ervoor zorgt dat je winkel niet meer wordt geladen, vertelt de app je wat er gebeurt en biedt deze ondersteuning, zodat je niet meer hoeft te raden.

@@ -4,7 +4,7 @@ import Codegen
 /// Represents an Inbox Note entity.
 /// Doc: p91TBi-6o2
 ///
-public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable {
+public struct InboxNote: GeneratedCopiable, GeneratedFakeable, Equatable, Sendable {
 
     /// Site Identifier.
     ///

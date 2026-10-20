@@ -1,6 +1,6 @@
 import Foundation
 
-public final class ReceiptRemote: Remote {
+public final class ReceiptRemote: Remote, @unchecked Sendable {
     /// Retrieves a `Receipt`for a given `siteID`and `orderID`
     ///
     /// - Parameters:

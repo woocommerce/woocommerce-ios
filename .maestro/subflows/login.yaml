@@ -51,7 +51,8 @@ appId: ${APP_ID}
     file: paste_into_focused_field.yaml
     env:
       TEXT_TO_PASTE: ${MAESTRO_WOO_WPCOM_PASSWORD}
-- hideKeyboard
+# Continue sits above the keyboard. On iPhone SE, hideKeyboard taps a link at
+# the bottom of the screen.
 - extendedWaitUntil:
     visible: "Continue|Manage Privacy|Save Password.*|My store"
     timeout: 15000

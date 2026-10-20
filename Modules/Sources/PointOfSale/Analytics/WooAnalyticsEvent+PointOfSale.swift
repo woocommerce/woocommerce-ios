@@ -68,6 +68,7 @@ extension WooAnalyticsEvent {
             static let action = "action"
             static let mode = "mode"
             static let isTaxable = "is_taxable"
+            static let enabled = "enabled"
         }
 
         /// Source of the event where the event is triggered
@@ -723,6 +724,13 @@ extension WooAnalyticsEvent {
         static func refundSelectAllTapped(action: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleRefundSelectAllTapped, properties: [
                 Key.action: action
+            ])
+        }
+
+        /// `enabled` is sent as `"true"`/`"false"`, matching Android.
+        static func paymentSuccessSoundToggled(isEnabled: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSalePaymentSuccessSoundToggled, properties: [
+                Key.enabled: String(isEnabled)
             ])
         }
     }

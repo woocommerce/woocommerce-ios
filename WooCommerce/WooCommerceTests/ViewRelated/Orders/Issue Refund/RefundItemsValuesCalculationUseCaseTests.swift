@@ -7,6 +7,8 @@ import WooFoundation
 /// Test cases for `RefundItemsValuesCalculationUseCase`
 ///
 final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
+    private let currencySettings = CurrencySettings()
+
     func test_useCase_correctly_calculates_values_from_regular_items() {
         // Given
         let item1Price: Decimal = 10.50
@@ -19,7 +21,7 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
         let item3Quantity: Decimal  = 3
 
 
-        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let formatter = CurrencyFormatter(currencySettings: currencySettings)
 
         let refundItems: [RefundableOrderItem] = [
             .init(item: MockOrderItem.sampleItem(quantity: item1Quantity,
@@ -37,7 +39,8 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
         ]
 
         // When
-        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter,
+                                                             numberOfDecimals: currencySettings.fractionDigits)
         let values = useCase.calculateRefundValues()
 
         // Then
@@ -60,7 +63,7 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
         let item3Quantity: Decimal  = 3
 
 
-        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let formatter = CurrencyFormatter(currencySettings: currencySettings)
 
         let refundItems: [RefundableOrderItem] = [
             .init(item: MockOrderItem.sampleItem(quantity: item1Quantity,
@@ -79,7 +82,8 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
 
 
         // When
-        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter,
+                                                             numberOfDecimals: currencySettings.fractionDigits)
         let values = useCase.calculateRefundValues()
 
         // Then
@@ -90,11 +94,12 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
 
     func test_useCase_correctly_calculates_no_items() {
         // Given
-        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let formatter = CurrencyFormatter(currencySettings: currencySettings)
         let refundItems: [RefundableOrderItem] = []
 
         // When
-        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter,
+                                                             numberOfDecimals: currencySettings.fractionDigits)
         let values = useCase.calculateRefundValues()
 
         // Then
@@ -108,7 +113,7 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
         // Values from a $1.00 tax-inclusive item with a 13% rate and WooCommerce's default
         // "round tax per line" setting: `totalTax` is rounded to currency decimals while
         // `total` and `taxes[].total` keep the API's full precision.
-        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let formatter = CurrencyFormatter(currencySettings: currencySettings)
         let refundItems: [RefundableOrderItem] = [
             .init(item: MockOrderItem.sampleItem(quantity: 1,
                                                  taxes: [OrderItemTax(taxID: 1, subtotal: "", total: "0.115044")],
@@ -118,7 +123,8 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
         ]
 
         // When
-        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter,
+                                                             numberOfDecimals: currencySettings.fractionDigits)
         let values = useCase.calculateRefundValues()
 
         // Then
@@ -129,7 +135,7 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
 
     func test_calculateRefundValues_when_item_has_multiple_tax_lines_then_tax_lines_are_summed_for_partial_quantities() {
         // Given
-        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let formatter = CurrencyFormatter(currencySettings: currencySettings)
         let refundItems: [RefundableOrderItem] = [
             .init(item: MockOrderItem.sampleItem(quantity: 2,
                                                  taxes: [OrderItemTax(taxID: 1, subtotal: "", total: "0.30"),
@@ -140,7 +146,8 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
         ]
 
         // When
-        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter,
+                                                             numberOfDecimals: currencySettings.fractionDigits)
         let values = useCase.calculateRefundValues()
 
         // Then
@@ -151,7 +158,7 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
 
     func test_calculateRefundValues_when_item_has_no_tax_lines_then_totalTax_is_used() {
         // Given
-        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let formatter = CurrencyFormatter(currencySettings: currencySettings)
         let refundItems: [RefundableOrderItem] = [
             .init(item: MockOrderItem.sampleItem(quantity: 2,
                                                  total: "10.00",
@@ -160,7 +167,8 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
         ]
 
         // When
-        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter,
+                                                             numberOfDecimals: currencySettings.fractionDigits)
         let values = useCase.calculateRefundValues()
 
         // Then

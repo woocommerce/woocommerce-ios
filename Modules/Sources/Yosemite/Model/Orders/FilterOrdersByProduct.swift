@@ -2,7 +2,7 @@ import Foundation
 
 /// Used to filter orders by product
 ///
-public struct FilterOrdersByProduct: Codable, Hashable {
+public struct FilterOrdersByProduct: Codable, Hashable, Sendable {
     /// ID of the product
     ///
     public let id: Int64

@@ -8,7 +8,7 @@ public protocol FeatureFlagRemoteProtocol {
 
 /// Feature Flags: Remote Endpoints
 ///
-public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
+public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol, @unchecked Sendable {
     private let userDefaults: UserDefaults
 
     public init(network: Network, userDefaults: UserDefaults = .standard) {

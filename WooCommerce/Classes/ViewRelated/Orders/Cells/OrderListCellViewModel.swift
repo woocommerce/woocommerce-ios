@@ -5,6 +5,7 @@ import WooFoundationCore
 
 // MARK: - View Model for individual cells on the Order List screen
 //
+@MainActor
 struct OrderListCellViewModel {
     private let order: Order
     private let currencyFormatter: CurrencyFormatter

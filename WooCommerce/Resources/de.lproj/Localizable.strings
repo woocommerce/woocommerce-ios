@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-09-21 14:55:41+0000 */
+/* Translation-Revision-Date: 2026-10-06 09:56:39+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -8502,6 +8502,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "Verstanden";
 
+/* Alert button that opens Help & Support, displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.contactSupportButton" = "Support kontaktieren";
+
 /* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
 "appCoordinator.ineligibleAgeRangeAlert.message" = "Das Alter in deinem Apple-Konto liegt unter dem erforderlichen Minimum dieser App (%1d+).";
 
@@ -9052,6 +9055,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "Wöchentlich";
 
+/* Title of the web view to pay an unpaid Blaze order from the Blaze campaign list. */
+"blazeCampaignListView.paymentTitle" = "Ausstehenden Betrag bezahlen";
+
 /* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
 "blazeCampaignObjectivePickerView.accessibilityHintSelected" = "Ausgewählt";
 
@@ -9291,6 +9297,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "So funktioniert %1$@";
+
+/* Message of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. %1$@ is the formatted outstanding amount, e.g. $25.05. */
+"blazeOutstandingBalanceView.message" = "Dein Konto weist derzeit einen ausstehenden Betrag von %1$@ auf. Bitte bezahle ihn, bevor du neue Kampagnen erstellst.";
+
+/* Button to open the payment page of an unpaid Blaze order. */
+"blazeOutstandingBalanceView.pay" = "Bezahlen";
+
+/* Title of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. */
+"blazeOutstandingBalanceView.title" = "Ausstehender Betrag";
 
 /* Button title in the Blaze Payment Method screen if there is an existing payment method */
 "blazePaymentMethodsView.addAnotherCreditCardButton" = "Weitere Kreditkarte hinzufügen";
@@ -9719,6 +9734,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Suche nach Kartenlesegerät";
 
+/* Shown when fetching store settings fails and the store country remains unknown. */
+"cardPresentPayment.countryRecovery.cardPaymentSettingsUnavailable" = "Wir konnten deine Shop-Einstellungen nicht laden, um die Verfügbarkeit von Kartenzahlungen zu überprüfen.";
+
+/* Status while fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.checkingCardPaymentAvailability" = "Verfügbarkeit von Kartenzahlungen wird überprüft …";
+
+/* Shown when fetched store settings have no recognizable country. Check the store country, then retry. */
+"cardPresentPayment.countryRecovery.countryUnavailable" = "Wir konnten das Land deines Shops nicht ermitteln. Prüfe das Land in deinen WooCommerce-Shop-Einstellungen.";
+
+/* Retry fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.retry" = "Erneut versuchen";
+
 /* A title for CTA to present native location permission alert */
 "cardPresentPayment.locationPreAlert.continueButton" = "Weiter";
 
@@ -9862,9 +9889,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Die Gesamtbestellsumme hat sich seit Beginn deiner Zahlung geändert. Gehe zurück und überprüfe, ob deine Bestellung korrekt ist. Versuche dann erneut, die Zahlung vorzunehmen.";
-
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Fälliges Wechselgeld: %1$@";
 
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Ein Sicherheits-Plugin kann das WordPress-Dashboard verschieben. Gib die Adresse ein, mit der du es öffnest.";
@@ -10872,9 +10896,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Das von der Analyse zurückgegebene Lesegerät hat keine IP-Adresse und kann nicht verbunden werden.";
 
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "Vergangene Supportunterhaltungen erneut aufrufen";
-
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Chatverlauf";
 
@@ -11382,8 +11403,8 @@ which should be translated separately and considered part of this sentence. */
 /* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
 "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "Produkte können ihren eigenen Schwellenwert oder den Schwellenwert für den gesamten Shop verwenden. %1$@, um den aktuellen Wert zu sehen.";
 
-/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
-"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "Produkte können ihren eigenen Schwellenwert oder den Shop-weiten Schwellenwert von{00A0}%1$@ verwenden. %2$@";
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The character before %1$@ is a non-breaking space, keeping the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat.v2" = "Produkte können ihren eigenen Schwellenwert oder den Schwellenwert für den gesamten Shop (%1$@) verwenden. %2$@";
 
 /* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
 "newStockNotificationPreferencesDetailView.lowStock.title" = "Niedriger Lagerbestand";
@@ -11862,6 +11883,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "Foto ansehen";
+
+/* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
+"paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "Kartenzahlungen sind für die Währung dieser Bestellung (%1$@) nicht verfügbar.";
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Persönliche Zahlungen";
@@ -12414,6 +12438,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Wird geladen";
+
+/* Note shown on a product row in the Point of Sale cart at checkout when the order response shows the line item received a discount, from a coupon or another source. */
+"pointOfSale.itemRow.discountApplied" = "Angewendeter Rabatt";
 
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "Als bezahlt markieren";
@@ -13089,9 +13116,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "„Verkaufsort (POS)“ muss aktiviert sein, damit du fortfahren kannst. Bitte aktiviere die POS-Funktion unten oder über deinen WordPress-Admin unter „WooCommerce-Einstellungen > Erweitert > Funktionen“ und versuche es anschließend erneut.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Starte die App neu, um dieses Problem zu beheben.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "Die Informationen zu den Website-Einstellungen konnten nicht geladen werden. Bitte überprüfe deine Internetverbindung und versuche es erneut. Wenn das Problem weiterhin besteht, wende dich bitte an den Support.";
@@ -14159,6 +14183,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "privat";
 
+/* Error shown when creating a product category with a name that already exists. */
+"productCategoryActionError.duplicateName" = "Eine Kategorie mit diesem Namen ist bereits vorhanden. Bitte wähle einen anderen Namen.";
+
 /* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
 "productCreationAIPromptProgressBar.main.almostDone" = "Fast geschafft.";
 
@@ -15090,6 +15117,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the significant-change blocking screen that re-checks the approval status. */
 "significantChangeConsent.blocking.checkAgain.button" = "Erneut prüfen";
 
+/* Secondary button on the significant-change blocking screen that opens Help & Support. */
+"significantChangeConsent.blocking.contactSupport.button" = "Support kontaktieren";
+
 /* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
 "significantChangeConsent.blocking.continue.button" = "Weiter";
 
@@ -15444,9 +15474,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Unbenannter Chat";
-
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "Du hast noch nicht mit dem Support gesprochen.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Chatverlauf";

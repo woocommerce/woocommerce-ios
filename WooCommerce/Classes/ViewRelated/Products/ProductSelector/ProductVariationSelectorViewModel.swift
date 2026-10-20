@@ -81,7 +81,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     /// Keeps track of synchronized pages and whether the API reports another page.
     ///
-    private let paginationTracker = PaginationTracker()
+    private let paginationTracker = PaginationTracker(pageSize: Constants.pageSize)
 
     /// Tracks if the infinite scroll indicator should be displayed
     ///
@@ -455,5 +455,10 @@ private extension ProductVariationSelectorViewModel {
         static let errorMessage = NSLocalizedString("There was an error syncing product variations",
                                                     comment: "Notice displayed when syncing the list of product variations fails")
         static let errorActionTitle = NSLocalizedString("Retry", comment: "Retry action for an error notice")
+    }
+
+    enum Constants {
+        /// API maximum per page.
+        static let pageSize = 100
     }
 }

@@ -9,6 +9,17 @@ The same report is shown to merchants under **Settings → Help & Support → Mo
 share actions. That row is always visible, including when no store is selected: the report needs no store and no
 network, and on the login screen it is the only device information a ticket would carry.
 
+## AI support chat
+
+Every new AI support chat includes the Mobile Status Report in its first outgoing request, appended to
+`context.troubleshootingResults` with its own heading and a blank line separating it from existing diagnostics.
+Existing connectivity diagnostics and other context are preserved. The report
+is background context and is not displayed as a chat bubble. It is generated locally, including before login;
+login-failure chats supply the failed site's address independently of the selected store.
+
+The report is generated once per chat and reused if chat creation fails. Follow-up requests and chats resumed
+from history do not resend it. This is separate from the server-side System Status Report used in human escalation.
+
 ## Reading the report
 
 The report is split in two by a single band line. Everything **above** `# Selected store: <url>` covers the whole
@@ -255,6 +266,7 @@ about something other than payments.
 | `Local catalog` | Replaces the four catalog rows above when the POS database has not been opened this session. The report does not open it: spinning up a database to describe it would change what is being described. | `not evaluated (the POS catalog database has not been opened since launch)` |
 | `Catalog file blocked` | The store's host blocked the catalog file download. Recorded when a file sync fails with a blocked error, cleared when the file syncs successfully again. While `true`, syncs fall back to the slower paginated path — the merchant's fix is with their host. | `true`, `false` |
 | `Full sync on cellular allowed` | The merchant's per-store setting allowing catalog downloads over cellular data. `false` explains a catalog that only refreshes on WiFi. | `true`, `false` |
+| `Payment success sound enabled` | The per-device setting in POS Settings → Payments that plays a sound when a POS payment completes. `false` explains a merchant saying POS stopped playing a sound after payments: it was turned off there. | `true`, `false` |
 
 The timestamps and counts cover the POS local catalog only — not general order or product sync. A catalog that has
 synced but holds zero products is a different problem from one that has never synced.

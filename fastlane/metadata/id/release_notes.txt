@@ -1,1 +1,0 @@
-Verifikasi usia kini lebih jelas: jika persetujuan orang tua ditunda atau ditolak, akan muncul layar yang menjelaskan hal yang harus dilakukan selanjutnya, tidak hanya logout. Jika kendala koneksi menghentikan pemuatan toko, aplikasi akan memberi tahu apa yang terjadi dan menawarkan dukungan, sehingga Anda tidak bingung.

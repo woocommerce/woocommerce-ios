@@ -2,7 +2,7 @@
 import Foundation
 
 /// Protocol for handling background downloads with app suspension support.
-public protocol BackgroundDownloadProtocol {
+public protocol BackgroundDownloadProtocol: Sendable {
     /// Downloads a file from the specified URL in the background.
     /// - Parameters:
     ///   - url: The URL to download from.

@@ -3,7 +3,7 @@ import Foundation
 
 /// WP.com Site Posts API: Remote Endpoints
 ///
-public class SitePostsRemote: Remote {
+public class SitePostsRemote: Remote, @unchecked Sendable {
 
 
     /// Loads the Post by ID from WP.com

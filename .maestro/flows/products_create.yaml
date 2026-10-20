@@ -1,4 +1,4 @@
-# p2: products.create, products.detail.description, products.detail.price, products.detail.type, products.detail.tags, products.detail.short-description, products.detail.linked, products.detail.downloads
+# p2: products.create, products.detail.description, products.detail.price, products.detail.inventory, products.detail.categories, products.detail.shipping, products.detail.type, products.detail.tags, products.detail.short-description, products.detail.linked, products.detail.downloads
 appId: ${APP_ID}
 name: Create, publish, and verify a run-owned product lifecycle
 tags:
@@ -57,6 +57,38 @@ tags:
       visible: Close
     commands:
       - tapOn: Close
+
+# Shipping on this physical product. The main product gets a downloadable file
+# below, and the app hides shipping for downloadable products.
+- scrollUntilVisible:
+    element: Add more details
+    direction: DOWN
+    timeout: 15000
+- tapOn: Add more details
+- tapOn: Shipping
+- extendedWaitUntil:
+    visible: Shipping class
+    timeout: 15000
+- tapOn:
+    text: Weight
+    index: 0
+- inputText: "2.5"
+- tapOn:
+    text: Length
+    index: 0
+- inputText: "10"
+- tapOn:
+    text: Width
+    index: 0
+- inputText: "8"
+- tapOn:
+    text: Height
+    index: 0
+- inputText: "4"
+- tapOn: Done
+- extendedWaitUntil:
+    visible: "Weight: 2[.,]5.* Dimensions: 10 x 8 x 4 .*"
+    timeout: 15000
 - extendedWaitUntil:
     visible: Publish
     timeout: 30000
@@ -65,6 +97,17 @@ tags:
     visible:
       id: edit-product-more-options-button
     timeout: 60000
+# Publishing reloads the form with the saved product. Scroll back up for the
+# title check below.
+- scrollUntilVisible:
+    element: "Weight: 2[.,]5.* Dimensions: 10 x 8 x 4 .*"
+    direction: DOWN
+    timeout: 15000
+- scrollUntilVisible:
+    element:
+      id: product-title
+    direction: UP
+    timeout: 15000
 - tapOn:
     id: edit-product-more-options-button
 - extendedWaitUntil:
@@ -153,13 +196,71 @@ tags:
       text: "Regular price: .*19[.,]99.*"
     timeout: 15000
 
-# The creation choice is persisted as a simple, non-virtual physical product.
+# Inventory: a run-owned SKU and a managed stock quantity.
 - scrollUntilVisible:
-    element: Physical
+    element:
+      id: product-inventory-cell
     direction: DOWN
     timeout: 15000
-- assertVisible: Physical
-- tapOn: Product type
+- tapOn:
+    id: product-inventory-cell
+- extendedWaitUntil:
+    visible: Manage stock
+    timeout: 15000
+- tapOn:
+    text: Optional
+    index: 0
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: maestro-sku-${SUITE_RUN_ID}
+- tapOn:
+    text: Manage stock
+    index: 1
+- tapOn:
+    text: Quantity
+    index: 0
+- eraseText
+- inputText: "7"
+- tapOn: Done
+- extendedWaitUntil:
+    visible: "SKU: maestro-sku-${SUITE_RUN_ID} Quantity: 7"
+    timeout: 15000
+
+# Category: one of the sample data categories.
+- scrollUntilVisible:
+    element: Add more details
+    direction: DOWN
+    timeout: 15000
+- tapOn: Add more details
+- tapOn: Categories
+- extendedWaitUntil:
+    visible: Search Categories
+    timeout: 15000
+- tapOn: Music
+- tapOn: Done
+- extendedWaitUntil:
+    visible:
+      text: Music
+      below:
+        text: Categories
+    timeout: 15000
+
+# The creation choice is persisted as a simple, non-virtual physical product.
+# The rows above push the type row under the Add more details button, so
+# anchor it below the category and scroll it to the middle of the screen.
+- scrollUntilVisible:
+    element:
+      text: Physical
+      below:
+        text: Music
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
+- tapOn:
+    text: Product type
+    below:
+      text: Music
 - extendedWaitUntil:
     visible: Change product type
     timeout: 15000
@@ -416,6 +517,24 @@ tags:
 - assertVisible:
     text: "19[.,]99.*"
 - tapOn: Done
+
+# Persisted inventory and category.
+- scrollUntilVisible:
+    element:
+      text: "SKU: maestro-sku-${SUITE_RUN_ID} Quantity: 7"
+      below:
+        text: "Regular price: .*19[.,]99.*"
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
+- scrollUntilVisible:
+    element:
+      text: Music
+      below:
+        text: "SKU: maestro-sku-${SUITE_RUN_ID}.*"
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
 
 # Persisted unique tag.
 - scrollUntilVisible:

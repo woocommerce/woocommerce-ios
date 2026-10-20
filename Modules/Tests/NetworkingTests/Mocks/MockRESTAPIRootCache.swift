@@ -1,10 +1,16 @@
+import Synchronization
 @testable import NetworkingCore
 
 final class MockRESTAPIRootCache: RESTAPIRootCaching {
-    var stubbedRoot: String?
+    private let root: Mutex<String?>
+
+    var stubbedRoot: String? {
+        get { root.withLock { $0 } }
+        set { root.withLock { $0 = newValue } }
+    }
 
     init(stubbedRoot: String?) {
-        self.stubbedRoot = stubbedRoot
+        self.root = Mutex(stubbedRoot)
     }
 
     func root(for siteURL: String) -> String? {
@@ -12,7 +18,9 @@ final class MockRESTAPIRootCache: RESTAPIRootCaching {
     }
 
     func removeRoot(_ root: String, for siteURL: String) {
-        guard stubbedRoot == root else { return }
-        stubbedRoot = nil
+        self.root.withLock { stubbedRoot in
+            guard stubbedRoot == root else { return }
+            stubbedRoot = nil
+        }
     }
 }

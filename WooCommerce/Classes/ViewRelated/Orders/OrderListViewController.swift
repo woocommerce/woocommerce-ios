@@ -9,6 +9,7 @@ import WooFoundation
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
+@MainActor
 protocol OrderListViewControllerDelegate: AnyObject {
     /// Called when `OrderListViewController` (or `OrdersViewController`) is about to fetch Orders from the API.
     ///
@@ -29,6 +30,7 @@ protocol OrderListViewControllerDelegate: AnyObject {
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
+@MainActor
 final class OrderListViewController: UIViewController {
     /// Callback closure when an order is selected either manually (by the user) or automatically in multi-column view.
     /// `allViewModels` is a list of order details view models that are available in a stack when the split view is collapsed
@@ -37,10 +39,10 @@ final class OrderListViewController: UIViewController {
     /// view has multiple columns but only if the empty view is shown.
     /// `onCompletion` is called after switching details completes, with a boolean that indicates if the order details has been selected.
     /// When multi-column split view is shown, auto-selection only works if the empty state isn't shown.
-    typealias SelectOrderDetails = (_ allViewModels: [OrderDetailsViewModel],
-                                    _ index: Int,
-                                    _ isSelectedManually: Bool,
-                                    _ onCompletion: ((_ hasBeenSelected: Bool) -> Void)?) -> Void
+    typealias SelectOrderDetails = @MainActor @Sendable (_ allViewModels: [OrderDetailsViewModel],
+                                                         _ index: Int,
+                                                         _ isSelectedManually: Bool,
+                                                         _ onCompletion: ((_ hasBeenSelected: Bool) -> Void)?) -> Void
 
     weak var delegate: OrderListViewControllerDelegate?
 
@@ -142,7 +144,7 @@ final class OrderListViewController: UIViewController {
          title: String,
          viewModel: OrderListViewModel,
          stores: StoresManager = ServiceLocator.stores,
-         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, ((Bool) -> Void)?) -> Void) {
+         switchDetailsHandler: @escaping SelectOrderDetails) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.stores = stores
@@ -155,12 +157,6 @@ final class OrderListViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("Not supported")
-    }
-
-    deinit {
-        cancellables.forEach {
-            $0.cancel()
-        }
     }
 
     override func viewDidLoad() {
@@ -660,10 +656,12 @@ extension OrderListViewController {
     /// - Parameter isTriggeredByUserAction: Reflects if the order selection was triggered by a manual user action and not a view lifecycle update
     /// Practically if the `isTriggeredByUserAction` is true, then the order details will be force presented
     /// even if `selectedOrderID` is the same as the new `orderID`
+    /// - Parameter shouldScrollIfNeeded: Whether to scroll the list to the selected row if it is not visible.
     /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
     func selectOrderFromListIfPossible(
         for orderID: Int64,
         isTriggeredByUserAction: Bool = false,
+        shouldScrollIfNeeded: Bool = false,
     ) -> Bool {
         guard let dataSource else {
             return false
@@ -677,15 +675,24 @@ extension OrderListViewController {
                 let indexPathNotAlreadySelected = selectedIndexPath != indexPath
                 let shouldSwitchDetails = orderNotAlreadySelected || indexPathNotAlreadySelected || isTriggeredByUserAction
                 if shouldSwitchDetails {
-                    showOrderDetails(detailsViewModel.order)
+                    showOrderDetails(detailsViewModel.order, shouldScrollIfNeeded: shouldScrollIfNeeded)
                 }
                 else {
-                    onOrderSelected(id: orderID)
+                    onOrderSelected(id: orderID, shouldScrollIfNeeded: shouldScrollIfNeeded)
                 }
                 return true
             }
         }
         return false
+    }
+
+    /// Selects and scrolls to an order shown outside of the list, like a loaded notification order,
+    /// when the list contains it. Otherwise, the current selection is kept.
+    func selectShownOrderIfListed(id orderID: Int64) {
+        guard indexPath(for: orderID) != nil else {
+            return
+        }
+        onOrderSelected(id: orderID, shouldScrollIfNeeded: true)
     }
 
     func showOrderDetails(_ order: Order, shouldScrollIfNeeded: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {

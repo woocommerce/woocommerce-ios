@@ -69,6 +69,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
 
         // Then
         XCTAssertEqual(retryCount, 0)
+        withExtendedLifetime(sut) {}
     }
 
     func test_applicationWillEnterForeground_when_settings_opened_in_authenticated_web_view_then_does_not_retry_search() throws {
@@ -104,7 +105,8 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             openURL: { _ in },
             notificationCenter: notificationCenter)
         try XCTUnwrap(sut?.primaryButtonViewModel).actionHandler()
-        weak var releasedViewModel = sut
+        weak var releasedViewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel?
+        releasedViewModel = sut
 
         // When
         sut = nil

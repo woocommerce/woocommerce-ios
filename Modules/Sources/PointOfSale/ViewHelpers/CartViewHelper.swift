@@ -23,8 +23,7 @@ struct CartViewHelper {
         // re-edit an order that's already been paid.
         if paymentState.cash != .idle { return true }
         if paymentState.scanToPay != .idle { return true }
-        if paymentState.markAsPaid != .idle { return true }
-        return false
+        return paymentState.markAsPaid != .idle
     }
 
     func shouldShowClearCartButton(cart: Cart, orderStage: PointOfSaleOrderStage) -> Bool {

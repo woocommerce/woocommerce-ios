@@ -80,8 +80,8 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         #expect(mockOrderService.syncOrderCallCount == 2)
-        #expect(staleSyncResult.isSuperseded)
-        #expect(latestSyncResult?.isNewOrder == true)
+        #expect(throws: CancellationError.self) { try staleSyncResult.get() }
+        #expect(try latestSyncResult?.get() == .newOrder)
         #expect(sut.orderState.order?.orderID == latestOrder.orderID)
     }
 
@@ -109,8 +109,8 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         #expect(mockOrderService.syncOrderCallCount == 2)
-        #expect(editedSyncResult.isSuperseded)
-        #expect(restoredSyncResult?.isOrderNotChanged == true)
+        #expect(throws: CancellationError.self) { try editedSyncResult.get() }
+        #expect(try restoredSyncResult?.get() == .orderNotChanged)
         #expect(sut.orderState.order?.orderID == syncedOrder.orderID)
     }
 
@@ -136,8 +136,8 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         #expect(mockOrderService.syncOrderCallCount == 1)
-        #expect(firstSyncResult.isSuperseded)
-        #expect(repeatedSyncResult?.isNewOrder == true)
+        #expect(try firstSyncResult.get() == .newOrder)
+        #expect(try repeatedSyncResult?.get() == .newOrder)
         #expect(sut.orderState.order?.orderID == createdOrder.orderID)
     }
 
@@ -167,8 +167,8 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         #expect(mockOrderService.syncOrderCallCount == 2)
-        #expect(clearedSyncResult.isSuperseded)
-        #expect(syncAfterClearResult?.isNewOrder == true)
+        #expect(throws: CancellationError.self) { try clearedSyncResult.get() }
+        #expect(try syncAfterClearResult?.get() == .newOrder)
         #expect(sut.orderState.order?.orderID == newOrder.orderID)
     }
 
@@ -187,7 +187,7 @@ struct PointOfSaleOrderControllerTests {
         let result = await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
 
         // Then
-        #expect(result.isSuperseded)
+        #expect(throws: CancellationError.self) { try result.get() }
         #expect(sut.orderState == .idle)
     }
 
@@ -1256,29 +1256,6 @@ private func makeItem(name: String = "",
                  title: name,
                  subtitle: nil,
                  quantity: quantity)
-}
-
-private extension Result where Success == SyncOrderState, Failure == Error {
-    var isSuperseded: Bool {
-        guard case .failure(SyncOrderStateError.superseded) = self else {
-            return false
-        }
-        return true
-    }
-
-    var isNewOrder: Bool {
-        guard case .success(.newOrder) = self else {
-            return false
-        }
-        return true
-    }
-
-    var isOrderNotChanged: Bool {
-        guard case .success(.orderNotChanged) = self else {
-            return false
-        }
-        return true
-    }
 }
 
 // MARK: - Mock Currency Settings Provider

@@ -42,7 +42,8 @@ struct PointOfSaleCheckoutNavigationTests {
 
         // When
         await sut.checkOut()
-        await waitForCollectPayment {
+        await fireOnce { fire in
+            cardPresentPaymentService.onCollectPaymentCalled = { fire() }
             cardPresentPaymentService.connectedReader = reader
         }
 
@@ -69,7 +70,8 @@ struct PointOfSaleCheckoutNavigationTests {
         // When
         await sut.checkOut()
         await repeatedCheckout?.value
-        await waitForCollectPayment {
+        await fireOnce { fire in
+            cardPresentPaymentService.onCollectPaymentCalled = { fire() }
             cardPresentPaymentService.connectedReader = reader
         }
 
@@ -210,7 +212,8 @@ struct PointOfSaleCheckoutNavigationTests {
 
         // When
         await sut.checkOut()
-        await waitForCollectPayment {
+        await fireOnce { fire in
+            cardPresentPaymentService.onCollectPaymentCalled = { fire() }
             cardPresentPaymentService.connectedReader = reader
         }
 
@@ -268,16 +271,6 @@ private extension PointOfSaleCheckoutNavigationTests {
             soundPlayer: MockPointOfSaleSoundPlayer(),
             siteID: 123
         )
-    }
-
-    func waitForCollectPayment(after action: () -> Void) async {
-        await withCheckedContinuation { continuation in
-            cardPresentPaymentService.onCollectPaymentCalled = {
-                cardPresentPaymentService.onCollectPaymentCalled = nil
-                continuation.resume()
-            }
-            action()
-        }
     }
 }
 

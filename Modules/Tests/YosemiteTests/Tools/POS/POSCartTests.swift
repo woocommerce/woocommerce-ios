@@ -3,7 +3,7 @@ import Testing
 @testable import Yosemite
 
 struct POSCartTests {
-    @Test func test_equality_when_carts_create_the_same_order_then_returns_true() {
+    @Test func test_equality_when_carts_have_the_same_contents_then_returns_true() {
         // Given
         let customAmount = POSCustomAmount(name: "Tip", amount: "2.00", isTaxable: false)
         let coupon = POSCoupon(id: POSItemIdentifier(underlyingType: .coupon, itemID: 9), code: "SAVE")

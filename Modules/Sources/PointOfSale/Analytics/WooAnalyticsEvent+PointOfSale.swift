@@ -324,8 +324,8 @@ extension WooAnalyticsEvent {
                                                      millisecondsSinceCardTapped: Double,
                                                      checkoutTapCount: Int,
                                                      readerReadyTiming: ReaderReadyTiming = ReaderReadyTiming()) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: paymentProperties(for: order).merging(readerReadyTiming.properties,
-                                                                                                                  uniquingKeysWith: { _, new in new }).merging([
+            let baseProperties = paymentProperties(for: order).merging(readerReadyTiming.properties, uniquingKeysWith: { _, new in new })
+            return WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: baseProperties.merging([
                 Key.transport: transport,
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,

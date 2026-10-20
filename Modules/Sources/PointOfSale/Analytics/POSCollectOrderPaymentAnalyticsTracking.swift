@@ -6,6 +6,9 @@ public protocol POSCollectOrderPaymentAnalyticsTracking {
     func trackOrderSyncSuccess()
     func trackCardReaderReady()
     func trackCardReaderTapped()
+    /// Called on every reader connection status update, so the tracker knows whether a reader is connected
+    /// when a customer interaction starts, and when one connects afterwards.
+    func trackCardReaderConnectionChanged(isConnected: Bool)
     func trackCheckoutTapped()
     func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder)
     func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder)

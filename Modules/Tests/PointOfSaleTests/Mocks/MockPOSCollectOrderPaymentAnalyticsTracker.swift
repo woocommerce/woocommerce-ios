@@ -25,6 +25,11 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         // no-op
     }
 
+    var cardReaderConnectionChanges: [Bool] = []
+    func trackCardReaderConnectionChanged(isConnected: Bool) {
+        cardReaderConnectionChanges.append(isConnected)
+    }
+
     func trackCheckoutTapped() {
         didCallTrackCheckoutTapped = true
     }

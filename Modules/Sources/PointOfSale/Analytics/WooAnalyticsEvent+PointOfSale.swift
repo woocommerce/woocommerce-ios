@@ -28,6 +28,10 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceCardTapped = "milliseconds_since_card_tapped"
             static let checkoutTapCount = "checkout_tap_count"
             static let waitingTime = "waiting_time"
+            static let readerConnectedAtCheckout = "reader_connected_at_checkout"
+            static let millisecondsWaitingForReaderConnection = "milliseconds_waiting_for_reader_connection"
+            static let millisecondsFromOrderSyncToReaderReady = "milliseconds_from_order_sync_to_reader_ready"
+            static let readerReadySignal = "reader_ready_signal"
             static let type = "type"
             static let sourceView = "source"
             static let sourceViewType = "source_type"
@@ -256,11 +260,56 @@ extension WooAnalyticsEvent {
             )
         }
 
-        /// Tracks the time elapsed preparing reader for payment, after successful order creation
-        /// - Parameter waitingTime: Elapsed time from Order creation to card ready for payment
+        /// The signal that marked the reader as ready for a card. Android shares these values,
+        /// and also sends `collection_started` for Tap to Pay, which has no input request there.
         ///
-        public static func cardReaderReadyForCardPayment(waitingTime: Double) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment, properties: [Key.waitingTime: "\(waitingTime)"])
+        public enum ReaderReadySignal: String {
+            /// The reader asked for card input.
+            case inputRequested = "input_requested"
+        }
+
+        /// Reader-ready timing sent on `reader_ready_for_card_payment` and on the card payment outcomes.
+        /// Values that are `nil` are left out of the event.
+        ///
+        public struct ReaderReadyTiming: Equatable {
+            /// Whether a reader was connected when the customer interaction started.
+            public let readerConnectedAtCheckout: Bool?
+            /// From the customer interaction start to the reader connecting, when it was not connected at the start.
+            public let millisecondsWaitingForReaderConnection: Double?
+            /// From the later of order sync and reader connection, to the reader being ready for a card.
+            public let millisecondsFromOrderSyncToReaderReady: Double?
+            public let readerReadySignal: ReaderReadySignal?
+
+            public init(readerConnectedAtCheckout: Bool? = nil,
+                        millisecondsWaitingForReaderConnection: Double? = nil,
+                        millisecondsFromOrderSyncToReaderReady: Double? = nil,
+                        readerReadySignal: ReaderReadySignal? = nil) {
+                self.readerConnectedAtCheckout = readerConnectedAtCheckout
+                self.millisecondsWaitingForReaderConnection = millisecondsWaitingForReaderConnection
+                self.millisecondsFromOrderSyncToReaderReady = millisecondsFromOrderSyncToReaderReady
+                self.readerReadySignal = readerReadySignal
+            }
+
+            var properties: [String: WooAnalyticsEventPropertyType] {
+                let values: [String: String?] = [
+                    Key.readerConnectedAtCheckout: readerConnectedAtCheckout.map { String($0) },
+                    Key.millisecondsWaitingForReaderConnection: millisecondsWaitingForReaderConnection.map { "\($0)" },
+                    Key.millisecondsFromOrderSyncToReaderReady: millisecondsFromOrderSyncToReaderReady.map { "\($0)" },
+                    Key.readerReadySignal: readerReadySignal?.rawValue
+                ]
+                return values.compactMapValues { $0 }
+            }
+        }
+
+        /// Tracks the time elapsed preparing reader for payment, after successful order creation
+        /// - Parameter waitingTime: Elapsed time in seconds from Order creation to card ready for payment
+        /// - Parameter readerReadyTiming: Connection state at checkout and the split connection and preparation intervals
+        ///
+        public static func cardReaderReadyForCardPayment(waitingTime: Double,
+                                                         readerReadyTiming: ReaderReadyTiming = ReaderReadyTiming()) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment,
+                              properties: readerReadyTiming.properties.merging([Key.waitingTime: "\(waitingTime)"],
+                                                                               uniquingKeysWith: { _, new in new }))
         }
 
         public static func cardPresentCollectPaymentSuccess(forGatewayID: String?,
@@ -273,8 +322,10 @@ extension WooAnalyticsEvent {
                                                      millisecondsSinceOrderSyncSuccess: Double,
                                                      millisecondsSinceReaderReadyToCollect: Double,
                                                      millisecondsSinceCardTapped: Double,
-                                                     checkoutTapCount: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: paymentProperties(for: order).merging([
+                                                     checkoutTapCount: Int,
+                                                     readerReadyTiming: ReaderReadyTiming = ReaderReadyTiming()) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: paymentProperties(for: order).merging(readerReadyTiming.properties,
+                                                                                                                  uniquingKeysWith: { _, new in new }).merging([
                 Key.transport: transport,
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,
@@ -298,7 +349,8 @@ extension WooAnalyticsEvent {
                                                            millisecondsSinceOrderSyncSuccess: Double,
                                                            millisecondsSinceReaderReadyToCollect: Double,
                                                            millisecondsSinceCardTapped: Double,
-                                                           checkoutTapCount: Int) -> WooAnalyticsEvent {
+                                                           checkoutTapCount: Int,
+                                                           readerReadyTiming: ReaderReadyTiming = ReaderReadyTiming()) -> WooAnalyticsEvent {
             let paymentMethod: PaymentMethod? = {
                 guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(_, paymentMethod) = error else {
                     return nil
@@ -316,7 +368,9 @@ extension WooAnalyticsEvent {
                 Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
                 Key.checkoutTapCount: "\(checkoutTapCount)"
             ].compactMapValues { $0 }
-            return WooAnalyticsEvent(statName: .collectPaymentFailed, properties: properties, error: error)
+            return WooAnalyticsEvent(statName: .collectPaymentFailed,
+                                     properties: properties.merging(readerReadyTiming.properties, uniquingKeysWith: { current, _ in current }),
+                                     error: error)
         }
 
         /// Tracked when a card present payment is cancelled in POS.
@@ -329,8 +383,9 @@ extension WooAnalyticsEvent {
                                                              millisecondsSinceOrderSyncSuccess: Double,
                                                              millisecondsSinceReaderReadyToCollect: Double,
                                                              millisecondsSinceCardTapped: Double,
-                                                             checkoutTapCount: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentCanceled, properties: [
+                                                             checkoutTapCount: Int,
+                                                             readerReadyTiming: ReaderReadyTiming = ReaderReadyTiming()) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentCanceled, properties: readerReadyTiming.properties.merging([
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,
                 Key.gatewayID: safeGatewayID(for: forGatewayID),
@@ -340,7 +395,7 @@ extension WooAnalyticsEvent {
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
                 Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
                 Key.checkoutTapCount: "\(checkoutTapCount)"
-            ])
+            ], uniquingKeysWith: { _, new in new }))
         }
 
         /// Tracked when an Interac payment is processed in POS, alongside the regular card payment success event.

@@ -596,6 +596,8 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
     func trackCardReaderTapped() {}
 
+    func trackCardReaderConnectionChanged(isConnected: Bool) {}
+
     func trackCheckoutTapped() {}
 
     func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {}

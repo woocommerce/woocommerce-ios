@@ -14,6 +14,14 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     private var cardReaderTapped: Double = 0
     private var checkoutTapCount: Int = 0
     private var hasTrackedProcessingPayment = false
+    private var hasTrackedCardReaderReady = false
+
+    /// Latest reader connection status reported by POS.
+    private var isCardReaderConnected = false
+    /// Whether a reader was connected when the current customer interaction started. `nil` before the first interaction.
+    private var readerConnectedAtCheckout: Bool?
+    /// When a reader connected during the current customer interaction, if it was not connected at its start.
+    private var cardReaderConnected: Double = 0
 
     private let analytics: POSAnalyticsProviding
 
@@ -100,7 +108,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             millisecondsSinceOrderSyncSuccess: elapsedTimeSinceOrderSync,
             millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,
             millisecondsSinceCardTapped: elapsedTimeSinceCardTapped,
-            checkoutTapCount: checkoutTapCount
+            checkoutTapCount: checkoutTapCount,
+            readerReadyTiming: readerReadyTiming()
         ))
 
         resetCheckoutTapCountTracker()
@@ -150,7 +159,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             millisecondsSinceOrderSyncSuccess: calculateElapsedTimeInMilliseconds(since: orderSync),
             millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
             millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
-            checkoutTapCount: checkoutTapCount
+            checkoutTapCount: checkoutTapCount,
+            readerReadyTiming: readerReadyTiming()
         ))
 
         // The checkout tap count is deliberately not reset:
@@ -168,7 +178,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             millisecondsSinceOrderSyncSuccess: calculateElapsedTimeInMilliseconds(since: orderSync),
             millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
             millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
-            checkoutTapCount: checkoutTapCount
+            checkoutTapCount: checkoutTapCount,
+            readerReadyTiming: readerReadyTiming()
         ))
 
         resetProcessingPaymentTracking()
@@ -179,13 +190,32 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
         resetAllCountersOnInteractionStarted()
         analytics.track(.pointOfSaleInteractionWithCustomerStarted)
         customerInteractionStarted = currentTimestamp()
+        readerConnectedAtCheckout = isCardReaderConnected
+    }
+
+    func trackCardReaderConnectionChanged(isConnected: Bool) {
+        let isNewConnection = isConnected && !isCardReaderConnected
+        isCardReaderConnected = isConnected
+
+        // Only the first connection after an interaction that started without a reader counts as connection waiting.
+        guard isNewConnection, readerConnectedAtCheckout == false, cardReaderConnected == 0 else {
+            return
+        }
+        cardReaderConnected = currentTimestamp()
     }
 
     func trackOrderSyncSuccess() {
         orderSync = trackCurrentTime()
     }
 
+    // Only the first card input request of a payment attempt marks the reader as ready.
+    // The flag is reset when the attempt ends (success, failure or cancellation) or a new interaction starts,
+    // so a retry after a decline stamps again when the reader asks for a card again.
     func trackCardReaderReady() {
+        guard !hasTrackedCardReaderReady else {
+            return
+        }
+        hasTrackedCardReaderReady = true
         cardReaderReady = trackCurrentTime()
 
         // As a side effect of knowing when the reader is ready, we track the elapsed from order sync (created or updated)
@@ -211,7 +241,27 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
 
     private func trackElapsedTimeFromOrderSyncToCardReady() {
         let elapsedTime = calculateElapsedTimeInSeconds(from: orderSync, to: cardReaderReady)
-        analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime))
+        analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime,
+                                                                          readerReadyTiming: readerReadyTiming()))
+    }
+
+    private func readerReadyTiming() -> WooAnalyticsEvent.PointOfSale.ReaderReadyTiming {
+        // Preparation starts at order sync, or later if the reader only connected after it,
+        // so time spent waiting for a connection is not counted as preparation.
+        let preparationStart = max(orderSync, cardReaderConnected)
+        let millisecondsFromOrderSyncToReaderReady: Double? = orderSync > 0 && cardReaderReady > 0
+            ? floor((cardReaderReady - preparationStart) * 1000)
+            : nil
+        let millisecondsWaitingForReaderConnection: Double? = customerInteractionStarted > 0 && cardReaderConnected > 0
+            ? floor((cardReaderConnected - customerInteractionStarted) * 1000)
+            : nil
+
+        return WooAnalyticsEvent.PointOfSale.ReaderReadyTiming(
+            readerConnectedAtCheckout: readerConnectedAtCheckout,
+            millisecondsWaitingForReaderConnection: millisecondsWaitingForReaderConnection,
+            millisecondsFromOrderSyncToReaderReady: millisecondsFromOrderSyncToReaderReady,
+            readerReadySignal: cardReaderReady > 0 ? .inputRequested : nil
+        )
     }
 }
 
@@ -241,12 +291,14 @@ private extension POSCollectOrderPaymentAnalyticsAdaptor {
 
     private func resetProcessingPaymentTracking() {
         hasTrackedProcessingPayment = false
+        hasTrackedCardReaderReady = false
     }
 
     private func resetAllCountersOnInteractionStarted() {
         orderSync = 0
         cardReaderReady = 0
         cardReaderTapped = 0
+        cardReaderConnected = 0
         resetCheckoutTapCountTracker()
         resetProcessingPaymentTracking()
     }

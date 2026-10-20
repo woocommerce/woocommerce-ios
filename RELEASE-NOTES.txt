@@ -1,9 +1,24 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+26.0
+-----
+- [*] Products: Editing a variation attribute keeps its "Visible on product page" setting. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]
+- [*] Age verification: Fixed a crash after the app was launched in the background, such as by prewarming or a background refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18061]
+- [*] Orders: On iPad, opening an order from a notification or link now scrolls the order list to it. [https://github.com/woocommerce/woocommerce-ios/pull/18095]
+- [*] Login: Contact Support now starts a chat with diagnostic details from the failed login attempt. [https://github.com/woocommerce/woocommerce-ios/pull/18040]
+- [*] Products: Variations now load in the correct order on products with up to 100 variations. [https://github.com/woocommerce/woocommerce-ios/pull/18112]
+
+
 25.9
 -----
-- [*] Products: Editing an attribute keeps its "Visible on product page" and "Used for variations" settings. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]
+- [*] Settings: Jetpack setup now clearly explains when the WordPress.com username or password is incorrect. [https://github.com/woocommerce/woocommerce-ios/pull/18078]
+- [*] [Woo POS] Added a Payments section to POS settings with an option to turn off the payment success sound [https://github.com/woocommerce/woocommerce-ios/pull/18079]
+- [**] Shipping Labels: For shipments into the EU, the customs form now asks for each item's SKU, manufacturer part number and GTIN/EAN when WooCommerce Shipping requires them [https://github.com/woocommerce/woocommerce-ios/pull/18101]
+- [*] In-Person Payments: Fixed inconsistent text sizes in card reader payment screens. [https://github.com/woocommerce/woocommerce-ios/pull/18085]
+- [*] Login: Fixed the Log in button becoming unresponsive after switching accounts from the account-mismatch screen's connected stores list. [https://github.com/woocommerce/woocommerce-ios/pull/18068]
+- [*] Product description editor: The formatting toolbar stays inside the editor on iPad and iPhone Duo instead of spanning the whole window, and the system's own B / I / U controls no longer show next to the keyboard or in the text selection menu. [https://github.com/woocommerce/woocommerce-ios/pull/18044]
+- [*] Order creation: The totals sheet covers the bottom screen edge again on iOS 27, so form content no longer shows under the "Collect Payment" button. [https://github.com/woocommerce/woocommerce-ios/pull/18074]
 - [*] POS: Tap the full refund row to view details or add and edit a refund reason. [https://github.com/woocommerce/woocommerce-ios/pull/18072]
 - [*] POS: Fixed a blank line above cart prices for variations without attributes. [https://github.com/woocommerce/woocommerce-ios/pull/18073]
 - [**] In-Person Payments: Fixed setup for stores without WooPayments or Stripe installed. [https://github.com/woocommerce/woocommerce-ios/pull/18047]

@@ -966,7 +966,8 @@ extension NetworkingCore.ShippingLine {
         methodID: NullableCopiableProp<String> = .copy,
         total: CopiableProp<String> = .copy,
         totalTax: CopiableProp<String> = .copy,
-        taxes: CopiableProp<[ShippingLineTax]> = .copy
+        taxes: CopiableProp<[ShippingLineTax]> = .copy,
+        refundedItemID: NullableCopiableProp<Int64> = .copy
     ) -> NetworkingCore.ShippingLine {
         let shippingID = shippingID ?? self.shippingID
         let methodTitle = methodTitle ?? self.methodTitle
@@ -974,6 +975,7 @@ extension NetworkingCore.ShippingLine {
         let total = total ?? self.total
         let totalTax = totalTax ?? self.totalTax
         let taxes = taxes ?? self.taxes
+        let refundedItemID = refundedItemID ?? self.refundedItemID
 
         return NetworkingCore.ShippingLine(
             shippingID: shippingID,
@@ -981,7 +983,8 @@ extension NetworkingCore.ShippingLine {
             methodID: methodID,
             total: total,
             totalTax: totalTax,
-            taxes: taxes
+            taxes: taxes,
+            refundedItemID: refundedItemID
         )
     }
 }

@@ -411,7 +411,7 @@ private extension DashboardViewHostingController {
 }
 
 // MARK: - SearchableActivity Conformance
-extension DashboardViewHostingController: SearchableActivityConvertible {
+extension DashboardViewHostingController: @MainActor SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.dashboard.rawValue
     }

@@ -3,7 +3,7 @@ import Foundation
 
 /// Site API: Remote Endpoints
 ///
-public class TelemetryRemote: Remote {
+public class TelemetryRemote: Remote, @unchecked Sendable {
 
     /// Sends data to the telemetry endpoint via the Jetpack tunnel for the provided siteID.
     /// Response is expected to be null.

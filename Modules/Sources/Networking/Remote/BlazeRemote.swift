@@ -97,7 +97,7 @@ public protocol BlazeRemoteProtocol {
 
 /// Blaze: Remote Endpoints
 ///
-public final class BlazeRemote: Remote, BlazeRemoteProtocol {
+public final class BlazeRemote: Remote, BlazeRemoteProtocol, @unchecked Sendable {
 
     public func createCampaign(_ campaign: CreateBlazeCampaign,
                                siteID: Int64) async throws {

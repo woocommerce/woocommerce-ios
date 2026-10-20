@@ -1,0 +1,63 @@
+# p2: other.localization
+# Launches the app in German with launch arguments, which apply to that launch only,
+# so the flows after this one open in English again.
+appId: ${APP_ID}
+name: "Other - Localization"
+tags:
+  - smoke_extended
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- launchApp:
+    stopApp: true
+    arguments:
+      "-ui_testing": true
+      "-AppleLanguages": "(de)"
+      "-AppleLocale": "de_DE"
+- runFlow: ../subflows/wait_for_age_range_check.yaml
+- extendedWaitUntil:
+    visible: "Mein Shop"
+    timeout: 45000
+    label: "My store is in German"
+- assertNotVisible: "My store"
+- takeScreenshot: localization_my_store
+
+# The dashboard can show "Bestellungen" too, so each tab is matched by its id and text.
+- assertVisible:
+    id: "tab-bar-orders-item"
+    text: "Bestellungen"
+    label: "Orders tab is in German"
+- tapOn:
+    id: "tab-bar-orders-item"
+- extendedWaitUntil:
+    visible:
+      id: "orders-table-view"
+    timeout: 30000
+- takeScreenshot: localization_orders
+
+- assertVisible:
+    id: "tab-bar-products-item"
+    text: "Produkte"
+    label: "Products tab is in German"
+- tapOn:
+    id: "tab-bar-products-item"
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 30000
+- takeScreenshot: localization_products
+
+- assertVisible:
+    id: "tab-bar-menu-item"
+    text: "Menü"
+    label: "Menu tab is in German"
+- tapOn:
+    id: "tab-bar-menu-item"
+- extendedWaitUntil:
+    visible:
+      id: "menu-view-store"
+    timeout: 20000
+- assertVisible:
+    text: "Einstellungen"
+    label: "Settings is in German"
+- takeScreenshot: localization_menu

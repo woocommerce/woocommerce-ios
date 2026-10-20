@@ -2,7 +2,7 @@ import Foundation
 
 /// Product Attribute Term: Remote Endpoints
 ///
-public final class ProductAttributeTermRemote: Remote {
+public final class ProductAttributeTermRemote: Remote, @unchecked Sendable {
 
     /// Retrieves all of the `ProductAttributeTerm` available for a given attribute.
     ///

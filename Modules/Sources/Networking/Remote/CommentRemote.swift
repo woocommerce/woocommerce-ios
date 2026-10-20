@@ -36,7 +36,7 @@ public enum CommentStatus: String {
 
 /// Comment: Remote Endpoints
 ///
-public class CommentRemote: Remote {
+public class CommentRemote: Remote, @unchecked Sendable {
 
     /// Moderate a comment
     ///

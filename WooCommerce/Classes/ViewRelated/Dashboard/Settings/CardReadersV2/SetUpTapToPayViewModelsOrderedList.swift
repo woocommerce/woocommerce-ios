@@ -23,6 +23,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
 
     private var cancellables = Set<AnyCancellable>()
 
+    @MainActor
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
          onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol) {

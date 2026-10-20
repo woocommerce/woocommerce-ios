@@ -1609,7 +1609,10 @@ extension Networking.ShippingLabelCustomsForm.Item {
             weight: .fake(),
             hsTariffNumber: .fake(),
             originCountry: .fake(),
-            productID: .fake()
+            productID: .fake(),
+            code: .fake(),
+            manufacturerProductID: .fake(),
+            standardizedProductID: .fake()
         )
     }
 }

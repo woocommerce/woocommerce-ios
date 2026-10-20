@@ -4,9 +4,15 @@ import CoreLocation
 
 protocol CardReaderSupportDetermining {
     func connectedReader() async -> CardReader?
+
+    @MainActor
     func hasPreviousTapToPayUsage() async -> Bool
+
     func siteSupportsTapToPayReader() -> Bool
+
+    @MainActor
     func deviceSupportsTapToPayReader() async -> Bool
+
     func firstTapToPayTransactionDate() async -> Date?
     var locationIsAuthorized: Bool { get }
 }

@@ -13,7 +13,7 @@ Keep one build writer per output folder and separate output folders between work
 Save agent-created console logs, screenshots, traces, and test results in a unique directory
 under `.agent-artifacts/`, which is gitignored. Keep evidence until the task's retention requirements
 are met. Existing tool-owned paths, including `fastlane/logs`, `fastlane/test_output`, and package
-`.build` folders, remain valid. For Maestro agent runs, pass `--output-dir "$PWD/.agent-artifacts/maestro"`.
+`.build` folders, remain valid.
 For Fastlane's local `test` lane, set `SCAN_BUILDLOG_PATH` for that invocation to keep its raw log local.
 For SnapshotTesting comparisons, prefix `xcodebuild` with
 `TEST_RUNNER_SNAPSHOT_ARTIFACTS="$TASK_ARTIFACTS/mismatch"` to keep failure images local too;

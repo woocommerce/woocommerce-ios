@@ -1,5 +1,4 @@
 import Testing
-import Foundation
 @testable import PointOfSale
 import enum Yosemite.POSItem
 import struct Yosemite.POSItemIdentifier
@@ -7,8 +6,6 @@ import struct Yosemite.POSItemIdentifier
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 
-/// Drives the real order controller and payment model through fast back-to-cart and checkout sequences,
-/// so stale order syncs and payment flows cannot leak into the next checkout.
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct PointOfSaleCheckoutNavigationTests {
@@ -23,6 +20,7 @@ struct PointOfSaleCheckoutNavigationTests {
                                                      receiptSender: MockPOSReceiptSender(),
                                                      currencySettingsProvider: MockCurrencySettingsProvider(),
                                                      analytics: MockPOSAnalytics())
+        cardPresentPaymentService.collectPaymentOverride = { .cancellation }
     }
 
     @Test func test_checkOut_when_cart_is_edited_while_previous_order_syncs_then_collects_payment_for_new_order() async throws {
@@ -36,7 +34,6 @@ struct PointOfSaleCheckoutNavigationTests {
                 orderService.orderToReturn = currentOrder
                 return
             }
-            // The merchant goes back and checks out an edited cart before the first order is created.
             sut.addMoreToCart()
             sut.addToCart(makeItem(productID: 2))
             await sut.checkOut()
@@ -52,7 +49,34 @@ struct PointOfSaleCheckoutNavigationTests {
         // Then
         #expect(orderService.syncOrderCallCount == 2)
         #expect(cardPresentPaymentService.spyCollectPaymentOrders.map(\.orderID) == [currentOrder.orderID])
-        #expect(orderController.orderState.loadedOrderID == currentOrder.orderID)
+        #expect(orderController.orderState.order?.orderID == currentOrder.orderID)
+    }
+
+    @Test func test_checkOut_when_same_cart_is_checked_out_again_while_order_syncs_then_creates_one_order_and_collects_it() async throws {
+        // Given
+        let order = makeOrder(orderID: 1)
+        let sut = makeSUT()
+        sut.addToCart(makeItem(productID: 1))
+        orderService.orderToReturn = order
+        var repeatedCheckout: Task<Void, Never>?
+        orderService.onSyncOrderCalled = { [orderService] in
+            orderService.onSyncOrderCalled = nil
+            sut.addMoreToCart()
+            repeatedCheckout = Task { await sut.checkOut() }
+            await Task.yield()
+        }
+
+        // When
+        await sut.checkOut()
+        await repeatedCheckout?.value
+        await waitForCollectPayment {
+            cardPresentPaymentService.connectedReader = reader
+        }
+
+        // Then
+        #expect(orderService.syncOrderCallCount == 1)
+        #expect(cardPresentPaymentService.spyCollectPaymentOrders.map(\.orderID) == [order.orderID])
+        #expect(sut.orderStage == .finalizing)
     }
 
     @Test func test_addMoreToCart_when_order_is_syncing_then_does_not_start_payment_after_sync() async throws {
@@ -100,7 +124,6 @@ struct PointOfSaleCheckoutNavigationTests {
         orderService.orderToReturn = makeOrder(orderID: 1)
         cardPresentPaymentService.connectedReader = reader
         cardPresentPaymentService.onCancelPaymentCalled = { [cardPresentPaymentService] in
-            // Checkout cancels any stale reader payment before it collects; the merchant goes back meanwhile.
             cardPresentPaymentService.onCancelPaymentCalled = nil
             sut.addMoreToCart()
         }
@@ -125,7 +148,7 @@ struct PointOfSaleCheckoutNavigationTests {
         await sut.checkOut()
         cardPresentPaymentService.paymentEvent = .show(eventDetails: step.event)
         try #require(sut.paymentState.card == step.cardPaymentState)
-        let cancelCountBeforeBack = cardPresentPaymentService.cancelPaymentTaskCallCount
+        let cancelCountBeforeBack = cardPresentPaymentService.cancelPaymentCallCount
 
         // When
         sut.addMoreToCart()
@@ -135,7 +158,7 @@ struct PointOfSaleCheckoutNavigationTests {
                                                                                     cancelPayment: {}))
 
         // Then
-        #expect(cardPresentPaymentService.cancelPaymentTaskCallCount > cancelCountBeforeBack)
+        #expect(cardPresentPaymentService.cancelPaymentCallCount > cancelCountBeforeBack)
         #expect(sut.orderStage == .building)
         #expect(sut.paymentState.card == .idle)
         #expect(sut.cardPresentPaymentInlineMessage == nil)
@@ -162,10 +185,9 @@ struct PointOfSaleCheckoutNavigationTests {
 
         // Then
         #expect(cardPresentPaymentService.spyCollectPaymentOrders.count == iterations + 1)
-        #expect(cardPresentPaymentService.cancelPaymentTaskCallCount >= iterations)
+        #expect(cardPresentPaymentService.cancelPaymentCallCount >= iterations)
         #expect(sut.orderStage == .finalizing)
         #expect(sut.paymentState.card == .acceptingCard)
-        // One event tracked once means only the last checkout is subscribed to payment events.
         #expect(analyticsTracker.trackCardReaderReadyCallCount == 1)
     }
 
@@ -180,7 +202,6 @@ struct PointOfSaleCheckoutNavigationTests {
             guard syncNumber <= iterations else {
                 return
             }
-            // Each sync is interrupted by a back-to-cart edit and a new checkout before it completes.
             sut.addMoreToCart()
             sut.addToCart(makeItem(productID: Int64(syncNumber + 1)))
             await sut.checkOut()
@@ -197,7 +218,7 @@ struct PointOfSaleCheckoutNavigationTests {
         let latestOrderID = Int64(iterations + 1)
         #expect(orderService.syncOrderCallCount == iterations + 1)
         #expect(cardPresentPaymentService.spyCollectPaymentOrders.map(\.orderID) == [latestOrderID])
-        #expect(orderController.orderState.loadedOrderID == latestOrderID)
+        #expect(orderController.orderState.order?.orderID == latestOrderID)
         #expect(sut.cart.purchasableItems.count == iterations + 1)
     }
 }
@@ -229,8 +250,7 @@ private extension PointOfSaleCheckoutNavigationTests {
     struct TestError: Error {}
 
     func makeSUT() -> PointOfSaleAggregateModel {
-        cardPresentPaymentService.collectPaymentResult = { .cancellation }
-        return PointOfSaleAggregateModel(
+        PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
             itemsController: MockPointOfSaleItemsController(),
             purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
@@ -258,15 +278,6 @@ private extension PointOfSaleCheckoutNavigationTests {
             }
             action()
         }
-    }
-}
-
-private extension PointOfSaleInternalOrderState {
-    var loadedOrderID: Int64? {
-        guard case .loaded(_, let order) = self else {
-            return nil
-        }
-        return order.orderID
     }
 }
 

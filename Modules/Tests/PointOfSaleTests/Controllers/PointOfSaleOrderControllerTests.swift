@@ -69,7 +69,6 @@ struct PointOfSaleOrderControllerTests {
         let latestOrder = Order.fake().copy(orderID: 2)
         var latestSyncResult: Result<SyncOrderState, Error>?
         mockOrderService.onSyncOrderCalled = { [weak sut, mockOrderService] in
-            // Re-enter once, so the nested sync does not recurse.
             mockOrderService.onSyncOrderCalled = nil
             mockOrderService.orderToReturn = latestOrder
             latestSyncResult = await sut?.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 2)]), retryHandler: {})
@@ -101,7 +100,6 @@ struct PointOfSaleOrderControllerTests {
         var restoredSyncResult: Result<SyncOrderState, Error>?
         mockOrderService.onSyncOrderCalled = { [weak sut, mockOrderService] in
             mockOrderService.onSyncOrderCalled = nil
-            // The merchant goes back and restores the synced cart before the edited cart's order is created.
             restoredSyncResult = await sut?.syncOrder(for: syncedCart, retryHandler: {})
             mockOrderService.orderToReturn = Order.fake().copy(orderID: 2)
         }
@@ -114,6 +112,64 @@ struct PointOfSaleOrderControllerTests {
         #expect(editedSyncResult.isSuperseded)
         #expect(restoredSyncResult?.isOrderNotChanged == true)
         #expect(sut.orderState.order?.orderID == syncedOrder.orderID)
+    }
+
+    @Test func syncOrder_when_same_cart_is_synced_while_syncing_then_joins_order_creation() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let createdOrder = Order.fake().copy(orderID: 1)
+        let cart = Cart(purchasableItems: [makeItem(quantity: 1)])
+        mockOrderService.orderToReturn = createdOrder
+        var repeatedSync: Task<Result<SyncOrderState, Error>, Never>?
+        mockOrderService.onSyncOrderCalled = { [mockOrderService] in
+            mockOrderService.onSyncOrderCalled = nil
+            repeatedSync = Task { await sut.syncOrder(for: cart, retryHandler: {}) }
+            await Task.yield()
+        }
+
+        // When
+        let firstSyncResult = await sut.syncOrder(for: cart, retryHandler: {})
+        let repeatedSyncResult = await repeatedSync?.value
+
+        // Then
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(firstSyncResult.isSuperseded)
+        #expect(repeatedSyncResult?.isNewOrder == true)
+        #expect(sut.orderState.order?.orderID == createdOrder.orderID)
+    }
+
+    @Test func syncOrder_when_same_cart_is_synced_after_order_is_cleared_while_syncing_then_creates_new_order() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let newOrder = Order.fake().copy(orderID: 2)
+        let cart = Cart(purchasableItems: [makeItem(quantity: 1)])
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 1)
+        var syncAfterClear: Task<Result<SyncOrderState, Error>, Never>?
+        mockOrderService.onSyncOrderCalled = { [weak sut, mockOrderService] in
+            guard mockOrderService.syncOrderCallCount == 1 else {
+                mockOrderService.orderToReturn = newOrder
+                return
+            }
+            sut?.clearOrder()
+            syncAfterClear = Task { await sut?.syncOrder(for: cart, retryHandler: {}) ?? .failure(SyncOrderStateError.syncFailure) }
+            await Task.yield()
+        }
+
+        // When
+        let clearedSyncResult = await sut.syncOrder(for: cart, retryHandler: {})
+        let syncAfterClearResult = await syncAfterClear?.value
+
+        // Then
+        #expect(mockOrderService.syncOrderCallCount == 2)
+        #expect(clearedSyncResult.isSuperseded)
+        #expect(syncAfterClearResult?.isNewOrder == true)
+        #expect(sut.orderState.order?.orderID == newOrder.orderID)
     }
 
     @Test func syncOrder_when_order_is_cleared_while_syncing_then_ignores_result() async throws {
@@ -1203,6 +1259,13 @@ private func makeItem(name: String = "",
 }
 
 private extension Result where Success == SyncOrderState, Failure == Error {
+    var isSuperseded: Bool {
+        guard case .failure(SyncOrderStateError.superseded) = self else {
+            return false
+        }
+        return true
+    }
+
     var isNewOrder: Bool {
         guard case .success(.newOrder) = self else {
             return false
@@ -1215,15 +1278,6 @@ private extension Result where Success == SyncOrderState, Failure == Error {
             return false
         }
         return true
-    }
-}
-
-private extension PointOfSaleInternalOrderState {
-    var order: Order? {
-        guard case .loaded(_, let order) = self else {
-            return nil
-        }
-        return order
     }
 }
 

@@ -11,8 +11,6 @@ struct CartViewHelper {
                                 plural: "%1$d items")
     }
 
-    /// Going back is allowed while the order syncs, the order is validated, or the reader prepares:
-    /// going back cancels that work, and the next checkout creates a new order.
     func shouldPreventCartEditing(paymentState: PointOfSalePaymentState) -> Bool {
         guard paymentState.card.allowsCartEditing else {
             return true

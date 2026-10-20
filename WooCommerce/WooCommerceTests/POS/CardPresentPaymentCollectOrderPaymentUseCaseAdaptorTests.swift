@@ -134,20 +134,19 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
         preflightController.completeConnection(reader: MockCardReader.bbposChipper2XBT(), gatewayID: WCPayAccount.gatewayID)
         try #require(retrieveOrderCompletion != nil)
 
-        // When: the merchant goes back to the cart while the order is validated, then the validation finishes.
+        // When
         paymentTask.cancel()
         retrieveOrderCompletion?(.success(order))
 
         // Then
-        let paymentErrorDismissals = presentedEvents.compactMap { event -> (@MainActor @Sendable () -> Void)? in
+        let leakedPaymentErrorDismissals = presentedEvents.compactMap { event -> (@MainActor @Sendable () -> Void)? in
             guard case .show(.paymentError(_, _, let dismiss)) = event else { return nil }
             return dismiss
         }
-        #expect(paymentErrorDismissals.isEmpty)
+        #expect(leakedPaymentErrorDismissals.isEmpty)
 
-        // Dismiss any leaked error so a failing run still finishes the payment task.
-        paymentErrorDismissals.forEach { $0() }
-        let result = try? await paymentTask.value
+        leakedPaymentErrorDismissals.forEach { $0() }
+        let result = try await paymentTask.value
         #expect(result == .cancellation)
     }
 }

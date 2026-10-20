@@ -575,9 +575,7 @@ extension PointOfSaleAggregateModel {
             await self?.checkOut()
         })
 
-        // A newer sync or a cleared order (POS closed) supersedes this checkout.
-        guard checkoutGeneration == currentCheckoutGeneration,
-              !syncOrderResult.isSuperseded else {
+        guard checkoutGeneration == currentCheckoutGeneration else {
             return
         }
 
@@ -690,7 +688,6 @@ extension PointOfSaleAggregateModel {
     func pointOfSaleClosed() {
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
-        // Bumping the checkout generation stops an in-flight checkout from starting a payment after POS closes.
         checkoutGeneration += 1
         orderController.clearOrder()
 

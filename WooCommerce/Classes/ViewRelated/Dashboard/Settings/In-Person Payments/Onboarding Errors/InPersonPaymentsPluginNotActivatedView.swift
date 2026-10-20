@@ -6,6 +6,7 @@ struct InPersonPaymentsPluginNotActivated: View {
     let analyticReason: String
     let userIsAdministrator: Bool
     let onActivate: () -> Void
+    let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -30,21 +31,23 @@ extension InPersonPaymentsPluginNotActivated {
         return String(format: format, plugin.pluginName)
     }
 
-    var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? {
-        guard userIsAdministrator else {
-            return nil
-        }
-
+    var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel {
         return InPersonPaymentsOnboardingErrorButtonViewModel(
-            text: Localization.primaryButton,
+            text: userIsAdministrator ? Localization.primaryButton : Localization.refreshButton,
             analyticReason: analyticReason,
             plugin: plugin,
-            action: onActivate
+            action: userIsAdministrator ? onActivate : onRefresh
         )
     }
 }
 
 private enum Localization {
+    static let refreshButton = NSLocalizedString(
+        "cardPresentPayments.onboarding.pluginNotActivated.refreshButton",
+        value: "Refresh",
+        comment: "Button to recheck payment setup after a store administrator installs or activates the payment plugin."
+    )
+
     static let title = NSLocalizedString(
         "Activate %1$@",
         comment: "Title for the error screen when a Card Present Payments extension is installed but not activated"
@@ -79,10 +82,10 @@ private enum Localization {
 
 struct InPersonPaymentsPluginNotActivated_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", userIsAdministrator: true, onActivate: {})
+        InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", userIsAdministrator: true, onActivate: {}, onRefresh: {})
             .previewDisplayName("Administrator")
 
-        InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", userIsAdministrator: false, onActivate: {})
+        InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", userIsAdministrator: false, onActivate: {}, onRefresh: {})
             .previewDisplayName("Non-administrator")
     }
 }

@@ -241,7 +241,7 @@ let package = Package(
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ],
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "WordPressShared",

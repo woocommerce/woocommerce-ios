@@ -9890,9 +9890,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "开始付款后，订单总额已发生变化。 请返回检查订单正确与否，然后再次尝试付款。";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "找零：%1$@";
-
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "安全插件可能会移动 WordPress 仪表盘的位置。 请输入您用于打开该仪表盘的地址。";
 
@@ -10898,9 +10895,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "在发现过程中找到的读卡器没有 IP 地址，无法连接。";
-
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "查看以往的支持人员对话";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "聊天记录";
@@ -13122,9 +13116,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "必须启用销售点才能继续。 请在下方或通过您的 WordPress 管理员在“WooCommerce 设置 > 高级 > 功能”下启用 POS 功能，然后再试一次。";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "请尝试重新启动应用程序以解决此问题。";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "我们无法加载站点设置信息。 请检查您的互联网连接，然后重试。 如果问题仍然存在，请联系支持人员寻求帮助。";
@@ -15495,9 +15486,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "无标题聊天";
-
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "您尚未与支持人员联系。";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "聊天记录";

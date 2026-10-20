@@ -9890,9 +9890,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "El total del pedido ha cambiado desde el inicio del pago. Vuelve y comprueba que el pedido sea correcto; después, vuelve a intentar el pago.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Cambio a devolver: %1$@";
-
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Un plugin de seguridad puede mover el escritorio de WordPress. Introduce la dirección que utilizas para abrirlo.";
 
@@ -10898,9 +10895,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "El lector devuelto por la detección no tiene dirección IP y no es posible conectarse a él.";
-
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "Revisa las conversaciones con el soporte técnico anteriores";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Historial de chats";
@@ -13122,9 +13116,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "Point of Sale debe estar habilitado para continuar. Habilita la función POS más abajo o desde tu administrador de WordPress en Ajustes de WooCommerce > Ajustes avanzados > Funciones, e inténtalo de nuevo.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Prueba a reiniciar la aplicación para resolver este problema.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "No hemos podido cargar la información de los ajustes del sitio. Revisa tu conexión a Internet e inténtalo de nuevo. Si el problema continúa, ponte en contacto con el servicio de soporte para obtener ayuda.";
@@ -15495,9 +15486,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Chat sin título";
-
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "Todavía no has chateado con el soporte técnico.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Historial de chats";

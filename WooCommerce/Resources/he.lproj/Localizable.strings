@@ -9890,9 +9890,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "סך כל ההזמנה שונה מתחילת תהליך התשלום. יש לחזור אחורה ולוודא שפרטי ההזמנה נכונים ולנסות לשלם שוב.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "העודף הנדרש: %1$@";
-
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "תוסף אבטחה עשוי להעביר את לוח הבקרה של WordPress. יש להזין את הכתובת המשמשת אותך לפתיחתו.";
 
@@ -10898,9 +10895,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "לקורא הכרטיסים שחזר מהאיתור אין כתובת IP ולא ניתן להתחבר אליו.";
-
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "חזרה לשיחות תמיכה קודמות";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "היסטוריית צ'אטים";
@@ -13122,9 +13116,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "כדי להמשיך, יש להפעיל את 'נקודת מכירה'. יש להפעיל את האפשרות של POS מתחת או ממנהל המערכת של WordPress במקטע 'הגדרות WooCommerce' > 'מתקדם' > 'אפשרויות' ולנסות שוב.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "כדאי להפעיל מחדש את האפליקציה כדי לפתור בעיה זו.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "לא הצלחנו לטעון את פרטי ההגדרות של האתר. יש לבדוק את החיבור לאינטרנט ולנסות שוב. אם הבעיה ממשיכה, יש ליצור קשר עם צוות התמיכה לקבלת עזרה.";
@@ -15495,9 +15486,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "צ'אט ללא כותרת";
-
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "עדיין לא התחלת שיחת צ'אט עם התמיכה.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "היסטוריית צ'אטים";

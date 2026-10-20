@@ -16,6 +16,10 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
 
     private let showsInAuthenticatedWebView: Bool
     private let retrySearchAction: () -> Void
+    private let openURL: (URL) -> Void
+
+    /// Set when the settings open in the browser, so the search retries once the merchant returns to the app.
+    private var retriesWhenReturningToApp: Bool = false
 
     private var openSettingsButtonViewModel: CardPresentPaymentsModalButtonViewModel {
         CardPresentPaymentsModalButtonViewModel(
@@ -25,7 +29,8 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
                 if showsInAuthenticatedWebView {
                     shouldShowSettingsWebView = true
                 } else {
-                    UIApplication.shared.open(settingsAdminUrl)
+                    openURL(settingsAdminUrl)
+                    retriesWhenReturningToApp = true
                 }
                 primaryButtonViewModel = retryButtonViewModel
             })
@@ -36,10 +41,12 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     init(settingsAdminUrl: URL,
          showsInAuthenticatedWebView: Bool,
          retrySearchAction: @escaping () -> Void,
-         cancelSearchAction: @escaping () -> Void) {
+         cancelSearchAction: @escaping () -> Void,
+         openURL: @escaping (URL) -> Void = { UIApplication.shared.open($0) }) {
         self.settingsAdminUrl = settingsAdminUrl
         self.showsInAuthenticatedWebView = showsInAuthenticatedWebView
         self.retrySearchAction = retrySearchAction
+        self.openURL = openURL
         self.retryButtonViewModel = CardPresentPaymentsModalButtonViewModel(
             title: Localization.retry,
             actionHandler: retrySearchAction)
@@ -50,6 +57,14 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     }
 
     func settingsWebViewWasDismissed() {
+        retrySearchAction()
+    }
+
+    func applicationWillEnterForeground() {
+        guard retriesWhenReturningToApp else {
+            return
+        }
+        retriesWhenReturningToApp = false
         retrySearchAction()
     }
 }
@@ -65,6 +80,7 @@ extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewMod
         lhs.cancelButtonViewModel == rhs.cancelButtonViewModel &&
         lhs.retryButtonViewModel == rhs.retryButtonViewModel &&
         lhs.showsInAuthenticatedWebView == rhs.showsInAuthenticatedWebView &&
+        lhs.retriesWhenReturningToApp == rhs.retriesWhenReturningToApp &&
         lhs.id == rhs.id
     }
 
@@ -77,6 +93,7 @@ extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewMod
         hasher.combine(cancelButtonViewModel)
         hasher.combine(retryButtonViewModel)
         hasher.combine(showsInAuthenticatedWebView)
+        hasher.combine(retriesWhenReturningToApp)
         hasher.combine(id)
     }
 }

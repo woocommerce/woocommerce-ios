@@ -37,6 +37,9 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
         .onAppear {
             isTitleFocused = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            viewModel.applicationWillEnterForeground()
+        }
         .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
             externalViews.createAuthenticatedWebView(url: viewModel.settingsAdminUrl,
                                                     title: Localization.settingsWebViewTitle,

@@ -656,10 +656,12 @@ extension OrderListViewController {
     /// - Parameter isTriggeredByUserAction: Reflects if the order selection was triggered by a manual user action and not a view lifecycle update
     /// Practically if the `isTriggeredByUserAction` is true, then the order details will be force presented
     /// even if `selectedOrderID` is the same as the new `orderID`
+    /// - Parameter shouldScrollIfNeeded: Whether to scroll the list to the selected row if it is not visible.
     /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
     func selectOrderFromListIfPossible(
         for orderID: Int64,
         isTriggeredByUserAction: Bool = false,
+        shouldScrollIfNeeded: Bool = false,
     ) -> Bool {
         guard let dataSource else {
             return false
@@ -673,15 +675,24 @@ extension OrderListViewController {
                 let indexPathNotAlreadySelected = selectedIndexPath != indexPath
                 let shouldSwitchDetails = orderNotAlreadySelected || indexPathNotAlreadySelected || isTriggeredByUserAction
                 if shouldSwitchDetails {
-                    showOrderDetails(detailsViewModel.order)
+                    showOrderDetails(detailsViewModel.order, shouldScrollIfNeeded: shouldScrollIfNeeded)
                 }
                 else {
-                    onOrderSelected(id: orderID)
+                    onOrderSelected(id: orderID, shouldScrollIfNeeded: shouldScrollIfNeeded)
                 }
                 return true
             }
         }
         return false
+    }
+
+    /// Selects and scrolls to an order shown outside of the list, like a loaded notification order,
+    /// when the list contains it. Otherwise, the current selection is kept.
+    func selectShownOrderIfListed(id orderID: Int64) {
+        guard indexPath(for: orderID) != nil else {
+            return
+        }
+        onOrderSelected(id: orderID, shouldScrollIfNeeded: true)
     }
 
     func showOrderDetails(_ order: Order, shouldScrollIfNeeded: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {

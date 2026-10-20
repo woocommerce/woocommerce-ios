@@ -3,6 +3,7 @@
 
 26.0
 -----
+- [*] Orders: On iPad, opening an order from a notification or link now scrolls the order list to it. [https://github.com/woocommerce/woocommerce-ios/pull/18095]
 - [*] Login: Contact Support now starts a chat with diagnostic details from the failed login attempt. [https://github.com/woocommerce/woocommerce-ios/pull/18040]
 - [*] Products: Variations now load in the correct order on products with up to 100 variations. [https://github.com/woocommerce/woocommerce-ios/pull/18112]
 

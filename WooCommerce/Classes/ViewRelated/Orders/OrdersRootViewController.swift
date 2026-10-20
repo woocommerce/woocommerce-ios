@@ -192,7 +192,8 @@ final class OrdersRootViewController: UIViewController {
     func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
         ordersViewController.selectOrderFromListIfPossible(
             for: orderID,
-            isTriggeredByUserAction: true
+            isTriggeredByUserAction: true,
+            shouldScrollIfNeeded: true
         )
     }
 
@@ -201,6 +202,12 @@ final class OrdersRootViewController: UIViewController {
     /// - Parameter orderID: ID of the order to be selected in the order list.
     func onOrderSelected(id orderID: Int64) {
         ordersViewController.onOrderSelected(id: orderID)
+    }
+
+    /// Selects and scrolls to an order shown outside of the order list when the list contains it.
+    /// - Parameter orderID: ID of the shown order.
+    func selectShownOrderIfListed(id orderID: Int64) {
+        ordersViewController.selectShownOrderIfListed(id: orderID)
     }
 
     /// Restores the selected detail after compact navigation removed it from the stack.

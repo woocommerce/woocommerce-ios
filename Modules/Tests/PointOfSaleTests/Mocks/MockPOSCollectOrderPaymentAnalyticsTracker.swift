@@ -30,6 +30,11 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         cardReaderConnectionChanges.append(isConnected)
     }
 
+    var cardPaymentAttemptStartedCount = 0
+    func trackCardPaymentAttemptStarted() {
+        cardPaymentAttemptStartedCount += 1
+    }
+
     func trackCheckoutTapped() {
         didCallTrackCheckoutTapped = true
     }

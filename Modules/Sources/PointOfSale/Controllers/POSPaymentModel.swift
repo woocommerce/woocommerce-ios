@@ -1346,6 +1346,10 @@ private extension POSPaymentModel {
                 let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
                                                                       using: presentationStyleDeterminerDependencies)
 
+                if case .preparingReader = newCardPaymentState {
+                    collectOrderPaymentAnalyticsTracker.trackCardPaymentAttemptStarted()
+                }
+
                 if case .acceptingCard = newCardPaymentState {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
                 }

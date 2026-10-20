@@ -15,9 +15,13 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     private var checkoutTapCount: Int = 0
     private var hasTrackedProcessingPayment = false
     private var hasTrackedCardReaderReady = false
+    /// Reader-ready stamp of the current payment attempt only. Cleared when an attempt starts or ends,
+    /// so a retry never reports the previous attempt's preparation. `cardReaderReady` keeps its legacy lifetime.
+    private var attemptCardReaderReady: Double = 0
 
-    /// Latest reader connection status reported by POS.
-    private var isCardReaderConnected = false
+    /// Latest reader connection status reported by POS. `nil` until the first status arrives, so an unknown state
+    /// is never reported as disconnected.
+    private var isCardReaderConnected: Bool?
     /// Whether a reader was connected when the current customer interaction started. `nil` before the first interaction.
     private var readerConnectedAtCheckout: Bool?
     /// When a reader connected during the current customer interaction, if it was not connected at its start.
@@ -194,14 +198,19 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     }
 
     func trackCardReaderConnectionChanged(isConnected: Bool) {
-        let isNewConnection = isConnected && !isCardReaderConnected
+        let wasConnected = isCardReaderConnected
         isCardReaderConnected = isConnected
 
         // Only the first connection after an interaction that started without a reader counts as connection waiting.
-        guard isNewConnection, readerConnectedAtCheckout == false, cardReaderConnected == 0 else {
+        // The first status ever received is not a connection: it only tells us the current state.
+        guard isConnected, wasConnected == false, readerConnectedAtCheckout == false, cardReaderConnected == 0 else {
             return
         }
         cardReaderConnected = currentTimestamp()
+    }
+
+    func trackCardPaymentAttemptStarted() {
+        resetCardReaderReadyForAttempt()
     }
 
     func trackOrderSyncSuccess() {
@@ -209,7 +218,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     }
 
     // Only the first card input request of a payment attempt marks the reader as ready.
-    // The flag is reset when the attempt ends (success, failure or cancellation) or a new interaction starts,
+    // The flag is reset when an attempt starts or ends (success, failure or cancellation) and when a new interaction starts,
     // so a retry after a decline stamps again when the reader asks for a card again.
     func trackCardReaderReady() {
         guard !hasTrackedCardReaderReady else {
@@ -217,6 +226,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
         }
         hasTrackedCardReaderReady = true
         cardReaderReady = trackCurrentTime()
+        attemptCardReaderReady = cardReaderReady
 
         // As a side effect of knowing when the reader is ready, we track the elapsed from order sync (created or updated)
         trackElapsedTimeFromOrderSyncToCardReady()
@@ -249,8 +259,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
         // Preparation starts at order sync, or later if the reader only connected after it,
         // so time spent waiting for a connection is not counted as preparation.
         let preparationStart = max(orderSync, cardReaderConnected)
-        let millisecondsFromOrderSyncToReaderReady: Double? = orderSync > 0 && cardReaderReady > 0
-            ? floor((cardReaderReady - preparationStart) * 1000)
+        let millisecondsFromOrderSyncToReaderReady: Double? = orderSync > 0 && attemptCardReaderReady >= preparationStart
+            ? floor((attemptCardReaderReady - preparationStart) * 1000)
             : nil
         let millisecondsWaitingForReaderConnection: Double? = customerInteractionStarted > 0 && cardReaderConnected > 0
             ? floor((cardReaderConnected - customerInteractionStarted) * 1000)
@@ -260,7 +270,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             readerConnectedAtCheckout: readerConnectedAtCheckout,
             millisecondsWaitingForReaderConnection: millisecondsWaitingForReaderConnection,
             millisecondsFromOrderSyncToReaderReady: millisecondsFromOrderSyncToReaderReady,
-            readerReadySignal: cardReaderReady > 0 ? .inputRequested : nil
+            readerReadySignal: attemptCardReaderReady > 0 ? .inputRequested : nil
         )
     }
 }
@@ -291,7 +301,12 @@ private extension POSCollectOrderPaymentAnalyticsAdaptor {
 
     private func resetProcessingPaymentTracking() {
         hasTrackedProcessingPayment = false
+        resetCardReaderReadyForAttempt()
+    }
+
+    private func resetCardReaderReadyForAttempt() {
         hasTrackedCardReaderReady = false
+        attemptCardReaderReady = 0
     }
 
     private func resetAllCountersOnInteractionStarted() {

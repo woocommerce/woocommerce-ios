@@ -17,8 +17,9 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         // no-op
     }
 
+    var trackCardReaderReadyCallCount = 0
     func trackCardReaderReady() {
-        // no-op
+        trackCardReaderReadyCallCount += 1
     }
 
     func trackCardReaderTapped() {

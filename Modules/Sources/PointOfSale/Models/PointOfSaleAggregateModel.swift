@@ -575,7 +575,9 @@ extension PointOfSaleAggregateModel {
             await self?.checkOut()
         })
 
-        guard checkoutGeneration == currentCheckoutGeneration else {
+        // A newer sync or a cleared order (POS closed) supersedes this checkout.
+        guard checkoutGeneration == currentCheckoutGeneration,
+              !syncOrderResult.isSuperseded else {
             return
         }
 

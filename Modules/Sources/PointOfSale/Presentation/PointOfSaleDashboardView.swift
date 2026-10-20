@@ -361,10 +361,7 @@ struct PointOfSaleDashboardView: View {
     }
 
     private var canExitFinalizingOnPhone: Bool {
-        !CartViewHelper().shouldPreventCartEditing(
-            orderState: posModel.orderState,
-            paymentState: posModel.paymentState
-        )
+        !CartViewHelper().shouldPreventCartEditing(paymentState: posModel.paymentState)
     }
 
     /// Wraps `TotalsView` with an in-screen `POSPageHeaderView` back button so the phone totals

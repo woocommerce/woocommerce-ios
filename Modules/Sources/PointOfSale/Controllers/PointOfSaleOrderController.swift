@@ -33,6 +33,17 @@ enum SyncOrderState {
 
 enum SyncOrderStateError: Error {
     case syncFailure
+    /// A newer sync started, or the order was cleared, while this sync was in flight.
+    case superseded
+}
+
+extension Result where Success == SyncOrderState, Failure == Error {
+    var isSuperseded: Bool {
+        guard case .failure(SyncOrderStateError.superseded) = self else {
+            return false
+        }
+        return true
+    }
 }
 
 @MainActor
@@ -93,6 +104,11 @@ protocol PointOfSaleOrderControllerProtocol {
     /// returned tax status — so a legitimate server/cart tax divergence won't cause a resync loop.
     private var lastSyncedCustomAmounts: [POSCustomAmount] = []
 
+    /// Incremented by every sync and by `clearOrder()`. A sync applies its result only while it is
+    /// still the latest, so a merchant who goes back to the cart mid-sync and checks out again
+    /// cannot be shown or charged the order created for the previous cart.
+    private var syncGeneration = 0
+
     private var currencyFormatter: CurrencyFormatter {
         CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
     }
@@ -111,8 +127,14 @@ protocol PointOfSaleOrderControllerProtocol {
         // taxable intent diverges from what we last synced.
         let taxableIntentChanged = !posCart.customAmounts.taxableIntentMatches(lastSyncedCustomAmounts)
 
-        guard !orderState.isSyncing,
-              !posCart.matches(order: order) || taxableIntentChanged else {
+        syncGeneration += 1
+        let generation = syncGeneration
+
+        guard !posCart.matches(order: order) || taxableIntentChanged else {
+            // A superseded sync for another cart may still be in flight; show the matching order again.
+            if orderState.isSyncing {
+                orderState = order.map { .loaded(totals(for: $0, cart: cart), $0) } ?? .idle
+            }
             return .success(.orderNotChanged)
         }
 
@@ -121,12 +143,18 @@ protocol PointOfSaleOrderControllerProtocol {
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCart,
                                                                currency: storeCurrency)
+            guard generation == syncGeneration else {
+                return .failure(SyncOrderStateError.superseded)
+            }
             self.order = syncedOrder
             self.lastSyncedCustomAmounts = posCart.customAmounts
             orderState = .loaded(totals(for: syncedOrder, cart: cart), syncedOrder)
             analytics.track(.orderCreationSuccess)
             return .success(.newOrder)
         } catch {
+            guard generation == syncGeneration else {
+                return .failure(SyncOrderStateError.superseded)
+            }
             self.order = nil
             self.lastSyncedCustomAmounts = []
             trackOrderCreationFailed(error: error)
@@ -153,6 +181,7 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func clearOrder() {
+        syncGeneration += 1
         order = nil
         lastSyncedCustomAmounts = []
         orderState = .idle

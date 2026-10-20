@@ -43,7 +43,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
-            let invalidatablePaymentOrchestrator = CardPresentPaymentInvalidatablePaymentOrchestrator()
+            let invalidatablePaymentOrchestrator = CardPresentPaymentInvalidatablePaymentOrchestrator(stores: stores)
 
             let orderPaymentUseCase = CollectOrderPaymentUseCase<CardPresentPaymentsTransactionAlertsProvider,
                                                                  CardPresentPaymentsTransactionAlertsProvider,
@@ -157,10 +157,11 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             // We can't cancel an in-progress connection, but we've invalidated the payment orchestrator
             return
             /// Connection already completed, before attempting payment
-        case .validatingOrder, .connectionSuccess:
+        case .connectionSuccess:
             // No need to cancel at this stage – having invalidated the payment orchestrator is enough
             return
-        case .preparingForPayment(cancelPayment: let cancelPayment),
+        case .validatingOrder(cancelPayment: let cancelPayment),
+                .preparingForPayment(cancelPayment: let cancelPayment),
                 .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment),
                 .cardInserted(cancelPayment: let cancelPayment),
                 .paymentError(_, _, cancelPayment: let cancelPayment),

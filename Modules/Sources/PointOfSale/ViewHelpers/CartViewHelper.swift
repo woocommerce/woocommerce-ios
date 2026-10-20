@@ -11,8 +11,9 @@ struct CartViewHelper {
                                 plural: "%1$d items")
     }
 
-    func shouldPreventCartEditing(orderState: PointOfSaleOrderState,
-                                  paymentState: PointOfSalePaymentState) -> Bool {
+    /// Going back is allowed while the order syncs, the order is validated, or the reader prepares:
+    /// going back cancels that work, and the next checkout creates a new order.
+    func shouldPreventCartEditing(paymentState: PointOfSalePaymentState) -> Bool {
         guard paymentState.card.allowsCartEditing else {
             return true
         }
@@ -25,7 +26,7 @@ struct CartViewHelper {
         if paymentState.cash != .idle { return true }
         if paymentState.scanToPay != .idle { return true }
         if paymentState.markAsPaid != .idle { return true }
-        return orderState.isSyncing
+        return false
     }
 
     func shouldShowClearCartButton(cart: Cart, orderStage: PointOfSaleOrderStage) -> Bool {
@@ -56,13 +57,13 @@ private extension PointOfSaleCardPaymentState {
         case .processingPayment,
                 .paymentError,
                 .cardPaymentSuccessful,
-                .validatingOrder,
-                .preparingReader,
                 .cardInserted:
             return false
         case .idle,
+                .validatingOrder,
                 .validatingOrderError,
                 .paymentIntentCreationError,
+                .preparingReader,
                 .acceptingCard:
             return true
         }

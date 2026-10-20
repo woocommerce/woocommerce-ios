@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 
 /// Presents a screen to confirm the refund with the user.
 ///
@@ -201,7 +202,7 @@ private extension RefundConfirmationViewController {
     /// Displays a refund error notice.
     ///
     func displayNotice(with error: Error) {
-        contextNoticePresenter.enqueue(notice: .init(title: Localization.refundError))
+        contextNoticePresenter.enqueue(notice: .init(title: (error as? RefundAPIError)?.errorDescription ?? Localization.refundError))
     }
 }
 

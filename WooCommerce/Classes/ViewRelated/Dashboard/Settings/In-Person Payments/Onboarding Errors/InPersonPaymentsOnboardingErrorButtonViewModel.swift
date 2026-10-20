@@ -4,6 +4,7 @@ import protocol WooFoundation.Analytics
 
 struct InPersonPaymentsOnboardingErrorButtonViewModel {
     let text: String
+    let isExternalLink: Bool
 
     private let analyticReason: String
 
@@ -15,10 +16,12 @@ struct InPersonPaymentsOnboardingErrorButtonViewModel {
          analyticReason: String,
          cardPresentConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          plugin: CardPresentPaymentsPlugin?,
+         isExternalLink: Bool = false,
          trackTap: Bool = true,
          analytics: Analytics = ServiceLocator.analytics,
          action: @escaping () -> Void) {
         self.text = text
+        self.isExternalLink = isExternalLink
         self.analyticReason = analyticReason
         self.cardPresentConfiguration = cardPresentConfiguration
         self.action = {

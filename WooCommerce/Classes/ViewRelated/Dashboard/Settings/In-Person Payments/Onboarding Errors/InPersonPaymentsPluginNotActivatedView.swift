@@ -36,6 +36,7 @@ extension InPersonPaymentsPluginNotActivated {
             text: userIsAdministrator ? Localization.primaryButton : Localization.refreshButton,
             analyticReason: analyticReason,
             plugin: plugin,
+            trackTap: userIsAdministrator,
             action: userIsAdministrator ? onActivate : onRefresh
         )
     }

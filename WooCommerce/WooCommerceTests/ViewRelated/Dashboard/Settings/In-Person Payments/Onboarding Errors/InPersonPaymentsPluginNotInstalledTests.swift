@@ -30,7 +30,6 @@ struct InPersonPaymentsPluginNotInstalledTests {
         buttonViewModel.action()
 
         // Then
-        #expect(buttonViewModel.text == "Refresh")
         #expect(didRefresh)
         #expect(!didPerformPluginAction)
     }

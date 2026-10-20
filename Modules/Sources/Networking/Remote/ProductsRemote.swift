@@ -117,7 +117,7 @@ extension ProductsRemoteProtocol {
 
 /// Product: Remote Endpoints
 ///
-public final class ProductsRemote: Remote, ProductsRemoteProtocol {
+public final class ProductsRemote: Remote, ProductsRemoteProtocol, @unchecked Sendable {
 
     // MARK: - Products
 

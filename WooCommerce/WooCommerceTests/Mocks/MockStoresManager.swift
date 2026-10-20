@@ -81,6 +81,13 @@ final class MockStoresManager: DefaultStoresManager {
                 // Mirror `FeatureFlagStore` before any fetch has succeeded.
                 completion(nil)
             }
+        case let action as WooShippingAction:
+            switch action {
+            case let .checkEUProductIdentifiersRequirement(_, _, _, completion):
+                completion(.notRequired)
+            default:
+                break
+            }
         default:
             break
         }

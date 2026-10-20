@@ -63,7 +63,7 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
-    private let syncingCoordinator = SyncingCoordinator()
+    private let syncingCoordinator = SyncingCoordinator(pageSize: Settings.pageSize)
 
 
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
@@ -803,6 +803,8 @@ private extension ProductVariationsViewController {
     enum Settings {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
+        /// API maximum per page.
+        static let pageSize = 100
     }
 
     enum Localization {

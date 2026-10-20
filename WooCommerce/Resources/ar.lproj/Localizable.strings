@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-09-23 09:55:58+0000 */
+/* Translation-Revision-Date: 2026-10-06 13:56:08+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -8502,6 +8502,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "فهمت";
 
+/* Alert button that opens Help & Support, displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.contactSupportButton" = "الاتصال بالدعم";
+
 /* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
 "appCoordinator.ineligibleAgeRangeAlert.message" = "يقل عمر حسابك على Apple عن الحد الأدنى المطلوب لهذا التطبيق (%1d+).";
 
@@ -9052,6 +9055,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "أسبوعيًا";
 
+/* Title of the web view to pay an unpaid Blaze order from the Blaze campaign list. */
+"blazeCampaignListView.paymentTitle" = "دفع الرصيد المستحق";
+
 /* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
 "blazeCampaignObjectivePickerView.accessibilityHintSelected" = "محدد";
 
@@ -9291,6 +9297,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "التعرّف على كيفية عمل %1$@";
+
+/* Button to open the payment page of an unpaid Blaze order. */
+"blazeOutstandingBalanceView.pay" = "الدفع";
+
+/* Title of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. */
+"blazeOutstandingBalanceView.title" = "رصيد مستحق";
 
 /* Button title in the Blaze Payment Method screen if there is an existing payment method */
 "blazePaymentMethodsView.addAnotherCreditCardButton" = "إضافة بطاقة ائتمان أخرى";
@@ -9719,6 +9731,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "الفحص بحثًا عن قارئ";
 
+/* Shown when fetching store settings fails and the store country remains unknown. */
+"cardPresentPayment.countryRecovery.cardPaymentSettingsUnavailable" = "تعذّر علينا تحميل إعدادات متجرك للتحقق من توافر الدفع بالبطاقة.";
+
+/* Status while fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.checkingCardPaymentAvailability" = "جارٍ التحقق من توفّر الدفع بالبطاقة…";
+
+/* Shown when fetched store settings have no recognizable country. Check the store country, then retry. */
+"cardPresentPayment.countryRecovery.countryUnavailable" = "تعذّر علينا تحديد بلد متجرك. تحقق من البلد في إعدادات متجر WooCommerce الخاص بك.";
+
+/* Retry fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.retry" = "إعادة المحاولة";
+
 /* A title for CTA to present native location permission alert */
 "cardPresentPayment.locationPreAlert.continueButton" = "متابعة";
 
@@ -9862,9 +9886,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "شهد إجمالي الطلبات تغييرًا منذ بداية الدفع. يرجى الرجوع والتحقق من أن الطلب صحيح، ثم محاولة الدفع مجددًا.";
-
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "التغيير المستحق: %1$@";
 
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "قد تقوم إحدى إضافات الأمان بنقل لوحة تحكم ووردبريس. أدخل العنوان الذي تستخدمه لفتحه.";
@@ -10872,9 +10893,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "لا يحتوي القارئ الذي تم إرجاعه من الاكتشاف على عنوان IP ولا يمكن ربطه به.";
 
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "راجع المحادثات السابقة مع فريق الدعم";
-
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "سجل الدردشة";
 
@@ -11382,8 +11400,8 @@ which should be translated separately and considered part of this sentence. */
 /* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
 "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "يمكن للمنتجات استخدام الحد الخاص بها أو الحد المعتمد على مستوى المتجر. %1$@ لعرض القيمة الحالية.";
 
-/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
-"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "يمكن للمنتجات استخدام الحد الخاص بها أو الحد المعتمد على مستوى المتجر والبالغu{00A0}%1$@. %2$@";
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The character before %1$@ is a non-breaking space, keeping the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat.v2" = "يمكن للمنتجات استخدام الحدّ الخاص بها أو الحدّ المطبّق على مستوى المتجر والبالغ %1$@. %2$@";
 
 /* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
 "newStockNotificationPreferencesDetailView.lowStock.title" = "مخزون منخفض";
@@ -12415,6 +12433,9 @@ which should be translated separately and considered part of this sentence. */
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "جارٍ التحميل";
 
+/* Note shown on a product row in the Point of Sale cart at checkout when the order response shows the line item received a discount, from a coupon or another source. */
+"pointOfSale.itemRow.discountApplied" = "الخصومات المُطبَّقة";
+
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "وسم كمدفوع";
 
@@ -13089,9 +13110,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "يجب تمكين نقطة البيع للمتابعة. يُرجى تمكين ميزة نقطة البيع من مشرفك في WordPress ضمن إعدادات WooCommerce > الإعدادات المتقدمة > الميزات وإعادة المحاولة.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "حاول إعادة تشغيل التطبيق لحل هذه المشكلة.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "تعذر تحميل معلومات إعدادات الموقع. يُرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى. إذا استمرت المشكلة، تواصل مع الدعم للحصول على المساعدة.";
@@ -14159,6 +14177,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "خاص";
 
+/* Error shown when creating a product category with a name that already exists. */
+"productCategoryActionError.duplicateName" = "يوجد تصنيف بهذا الاسم بالفعل. يُرجى اختيار اسم مختلف.";
+
 /* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
 "productCreationAIPromptProgressBar.main.almostDone" = "تقريبًا هناك.";
 
@@ -15090,6 +15111,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the significant-change blocking screen that re-checks the approval status. */
 "significantChangeConsent.blocking.checkAgain.button" = "التحقق مجددًا";
 
+/* Secondary button on the significant-change blocking screen that opens Help & Support. */
+"significantChangeConsent.blocking.contactSupport.button" = "الاتصال بالدعم";
+
 /* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
 "significantChangeConsent.blocking.continue.button" = "متابعة";
 
@@ -15456,9 +15480,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "دردشة من دون عنوان";
-
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "لم تبدأ أي دردشة مع فريق الدعم حتى الآن.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "سجل الدردشة";

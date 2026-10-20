@@ -8,10 +8,10 @@ public enum SitePluginAction: Action {
     case synchronizeSitePlugins(siteID: Int64, onCompletion: @Sendable (Result<Void, Error>) -> Void)
 
     /// Install the plugin with the specified slug for a site given its ID
-    case installSitePlugin(siteID: Int64, slug: String, onCompletion: (Result<Void, Error>) -> Void)
+    case installSitePlugin(siteID: Int64, slug: String, onCompletion: @Sendable (Result<Void, Error>) -> Void)
 
     /// Activate the plugin with the specified name for a site given its ID
-    case activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: (Result<Void, Error>) -> Void)
+    case activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: @Sendable (Result<Void, Error>) -> Void)
 
     /// Get details for the plugin with the specified name for a site given its ID
     case getPluginDetails(siteID: Int64, pluginName: String, onCompletion: @Sendable (Result<SitePlugin, Error>) -> Void)

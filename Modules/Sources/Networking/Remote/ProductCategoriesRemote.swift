@@ -27,7 +27,7 @@ public protocol ProductCategoriesRemoteProtocol {
 
 /// Product Categories: Remote Endpoints
 ///
-public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProtocol {
+public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProtocol, @unchecked Sendable {
 
     // MARK: - Product Categories
 

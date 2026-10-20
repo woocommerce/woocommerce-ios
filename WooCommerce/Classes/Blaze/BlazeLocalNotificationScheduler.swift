@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 import Combine
 
 protocol BlazeLocalNotificationScheduler {
+    @MainActor
     func observeNotificationUserResponse()
 
     @MainActor
@@ -60,6 +61,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 
     /// Observes user responses to local notification and updates user defaults
     ///
+    @MainActor
     func observeNotificationUserResponse() {
         pushNotesManager.localNotificationUserResponses
             .sink { [weak self] response in
@@ -131,6 +133,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 }
 
 private extension DefaultBlazeLocalNotificationScheduler {
+    @MainActor
     func navigateToCampaignCreation(from response: UNNotificationResponse) {
         guard let siteID = response.notification.request.content.userInfo[Constants.siteIDKey] as? Int64 else {
             DDLogDebug("Blaze: no site ID found in location notification user info to navigate to campaign creation")

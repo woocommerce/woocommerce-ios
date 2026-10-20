@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-09-22 13:54:28+0000 */
+/* Translation-Revision-Date: 2026-10-16 12:46:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -8502,6 +8502,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "Uppfattat";
 
+/* Alert button that opens Help & Support, displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.contactSupportButton" = "Kontakta supporten";
+
 /* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
 "appCoordinator.ineligibleAgeRangeAlert.message" = "Åldern på ditt Apple-konto är lägre än den obligatoriska minimiåldern för den här appen (%1d+).";
 
@@ -8624,6 +8627,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Ska du starta en ny butik?";
+
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "Fet";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "Kursiv";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "Understreck";
 
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Skicka Telegram-meddelande";
@@ -9052,6 +9064,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "Veckovis";
 
+/* Title of the web view to pay an unpaid Blaze order from the Blaze campaign list. */
+"blazeCampaignListView.paymentTitle" = "Betala utestående saldo";
+
 /* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
 "blazeCampaignObjectivePickerView.accessibilityHintSelected" = "Har valts";
 
@@ -9291,6 +9306,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Lär dig hur %1$@ fungerar";
+
+/* Message of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. %1$@ is the formatted outstanding amount, e.g. $25.05. */
+"blazeOutstandingBalanceView.message" = "Ditt konto har för närvarande ett utestående saldo på %1$@. Betala det innan du skapar nya kampanjer.";
+
+/* Button to open the payment page of an unpaid Blaze order. */
+"blazeOutstandingBalanceView.pay" = "Betala";
+
+/* Title of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. */
+"blazeOutstandingBalanceView.title" = "Utestående saldo";
 
 /* Button title in the Blaze Payment Method screen if there is an existing payment method */
 "blazePaymentMethodsView.addAnotherCreditCardButton" = "Lägg till ett annat kreditkort";
@@ -9719,6 +9743,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Skannar efter läsare";
 
+/* Shown when fetching store settings fails and the store country remains unknown. */
+"cardPresentPayment.countryRecovery.cardPaymentSettingsUnavailable" = "Vi kunde inte ladda in dina butiksinställningar för att kontrollera kortbetalningstillgänglighet.";
+
+/* Status while fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.checkingCardPaymentAvailability" = "Kontrollerar kortbetalningstillgänglighet …";
+
+/* Shown when fetched store settings have no recognizable country. Check the store country, then retry. */
+"cardPresentPayment.countryRecovery.countryUnavailable" = "Vi kunde inte identifiera din butiks land. Kontrollera landet i dina WooCommerce-butiksinställningar.";
+
+/* Retry fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.retry" = "Försök igen";
+
 /* A title for CTA to present native location permission alert */
 "cardPresentPayment.locationPreAlert.continueButton" = "Fortsätt";
 
@@ -9863,8 +9899,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Det totala beställningsbeloppet har ändrats sedan betalningen inleddes. Gå tillbaka och kontrollera att beställningen är korrekt och försök sedan betala igen.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Växel: %1$@";
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "Avfärda";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "Försök igen";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "Kontakta support";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "Kan inte logga in";
 
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Ett säkerhetstillägg kan flytta WordPress-adminpanelen. Ange adressen du använder för att öppna den.";
@@ -10872,9 +10917,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Den läsare som returnerats från identifiering har ingen IP-adress och det går inte att ansluta till den.";
 
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "Gå tillbaka till tidigare supportkonversationer";
-
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Chatthistorik";
 
@@ -11382,8 +11424,8 @@ which should be translated separately and considered part of this sentence. */
 /* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
 "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "Produkter kan använda sitt eget tröskelvärde eller tröskelvärdet för hela butiken. %1$@ för att se det aktuella värdet.";
 
-/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
-"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "Produkter kan använda sitt eget tröskelvärde eller tröskelvärdet för hela butiken för{00A0}u%1$@. %2$@";
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The character before %1$@ is a non-breaking space, keeping the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat.v2" = "Produkter kan använda sitt eget tröskelvärde eller det butiksövergripande tröskelvärdet på %1$@. %2$@";
 
 /* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
 "newStockNotificationPreferencesDetailView.lowStock.title" = "Lågt lager";
@@ -11862,6 +11904,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "Visa foto";
+
+/* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
+"paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "Kortbetalningar är inte tillgängliga för den här beställningens valuta (%1$@).";
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Betala personligen";
@@ -12415,6 +12460,9 @@ which should be translated separately and considered part of this sentence. */
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Laddar in";
 
+/* Note shown on a product row in the Point of Sale cart at checkout when the order response shows the line item received a discount, from a coupon or another source. */
+"pointOfSale.itemRow.discountApplied" = "Rabatt tillämpad";
+
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "Markera som betald";
 
@@ -12805,6 +12853,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Produktkatalog";
 
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "Hantera betalningsinställningar";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Betalningar";
+
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Visa personal och PIN-åtkomst";
 
@@ -13089,9 +13143,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "Försäljningsplats måste vara aktiverat för att fortsätta. Aktivera POS-funktionen nedan eller från din WordPress-adminpanel under WooCommerce-inställningar > Avancerat > Funktioner och försök igen.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Prova starta om appen för att lösa detta problem.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "Vi kunde inte ladda webbplatsinställningsinformationen. Kontrollera din internetanslutning och försök igen. Kontakta supporten för att få hjälp om problemet kvarstår.";
@@ -14036,6 +14087,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Uppdateringsdatum ej tillgängligt";
 
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "Betalningar";
+
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "POS låses när du trycker på Lås POS från menyn, eller automatiskt efter 5 minuters inaktivitet.";
 
@@ -14158,6 +14212,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "privat";
+
+/* Error shown when creating a product category with a name that already exists. */
+"productCategoryActionError.duplicateName" = "En kategori med detta namn finns redan. Välj ett annat namn.";
 
 /* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
 "productCreationAIPromptProgressBar.main.almostDone" = "Nästan där.";
@@ -15090,6 +15147,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the significant-change blocking screen that re-checks the approval status. */
 "significantChangeConsent.blocking.checkAgain.button" = "Kontrollera igen";
 
+/* Secondary button on the significant-change blocking screen that opens Help & Support. */
+"significantChangeConsent.blocking.contactSupport.button" = "Kontakta supporten";
+
 /* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
 "significantChangeConsent.blocking.continue.button" = "Fortsätt";
 
@@ -15450,9 +15510,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Chatt utan rubrik";
-
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "Du har inte chattat med supporten än.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Chatthistorik";
@@ -16687,6 +16744,18 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "Beskrivningen måste vara 30 tecken eller färre.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "Krävs för leveranser till EU";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "Måste vara %1$d tecken eller färre.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN\/EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "Ange GTIN\/EAN eller välj ”Ingen streckkod”";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS-tariffnummer";
 
@@ -16696,8 +16765,14 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "Valfritt";
 
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "Ingen streckkod";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Ursprungsland";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "Artikelnummer";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "Tariffnumret måste vara mellan sex och tolv siffror långt";

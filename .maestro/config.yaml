@@ -24,6 +24,7 @@ executionOrder:
     - flows/hub_menu_payments.yaml
     - flows/hub_menu_coupons.yaml
     - flows/hub_menu_customers_inbox.yaml
+    - flows/other_localization.yaml
     - flows/hub_menu_admin_and_store.yaml
     - flows/google_for_woo.yaml
     - flows/orders_create.yaml

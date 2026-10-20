@@ -28,7 +28,7 @@ public protocol PaymentRemoteProtocol {
 /// WPCOM Payment Endpoints
 ///
 // periphery:ignore
-public class PaymentRemote: Remote, PaymentRemoteProtocol {
+public class PaymentRemote: Remote, PaymentRemoteProtocol, @unchecked Sendable {
     public func loadPlan(thatMatchesID productID: Int64) async throws -> WPComPlan {
         let path = Path.products
         let request = DotcomRequest(wordpressApiVersion: .mark1_5, method: .get, path: path)

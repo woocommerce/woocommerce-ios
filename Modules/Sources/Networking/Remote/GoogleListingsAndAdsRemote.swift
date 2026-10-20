@@ -34,7 +34,7 @@ public protocol GoogleListingsAndAdsRemoteProtocol {
 
 /// Google Listings & Ads: Endpoints
 ///
-public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemoteProtocol {
+public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemoteProtocol, @unchecked Sendable {
 
     public func checkConnection(for siteID: Int64) async throws -> GoogleAdsConnection {
         let path = Paths.connection

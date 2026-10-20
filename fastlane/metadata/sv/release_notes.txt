@@ -1,1 +1,0 @@
-Åldersverifieringen är nu tydligare: Om föräldrarnas samtycke inväntar granskning eller nekas kommer du att se en skärm som förklarar vad du ska göra härnäst, inte bara en utloggning. Om ett anslutningsproblem stoppar laddningen av din butik berättar appen vad som händer och erbjuder support, så att du inte behöver gissa.

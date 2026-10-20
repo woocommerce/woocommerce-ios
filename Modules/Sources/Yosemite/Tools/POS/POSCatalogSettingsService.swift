@@ -9,7 +9,7 @@ public protocol POSCatalogSettingsServiceProtocol {
     func loadCatalogInfo(for siteID: Int64) async throws -> POSCatalogInfo
 }
 
-public struct POSCatalogInfo {
+public struct POSCatalogInfo: Sendable {
     public let productCount: Int
     public let variationCount: Int
     public let lastFullSyncDate: Date?

@@ -21,7 +21,7 @@ public protocol RefundsRemoteProtocol {
 
 /// Refunds: Remote Endpoints
 ///
-public final class RefundsRemote: Remote, RefundsRemoteProtocol {
+public final class RefundsRemote: Remote, RefundsRemoteProtocol, @unchecked Sendable {
 
     /// Retrieves all `Refunds` available for a specific `orderID`.
     ///

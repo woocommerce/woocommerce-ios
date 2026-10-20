@@ -1,1 +1,1 @@
-Age verification is now clearer: if parental consent is pending or denied, you'll see a screen explaining what to do next, not just a log out. If a connection issue stops your store loading, the app tells you what's happening and offers support, so you're not left guessing.
+Shipping into the EU is now easier—your customs forms ask for each item's SKU, manufacturer part number and GTIN/EAN when needed. In-person setup works smoothly for stores without WooPayments or Stripe. Shipping labels now make the recipient phone number optional for domestic orders.

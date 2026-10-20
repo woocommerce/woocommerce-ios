@@ -1,6 +1,7 @@
 import Alamofire
 import Combine
 import Foundation
+import os
 
 /// Configuration for handling cookie nonce authentication.
 ///
@@ -24,9 +25,20 @@ public final class WordPressOrgNetwork: Network {
     private let userAgent: String?
     private let requestConverter: RequestConverter
 
-    private lazy var alamofireSession: Alamofire.Session = {
-        makeSession(configuration: .default)
-    }()
+    /// Created on first use, like the `lazy var` it replaces; the lock makes the first use safe from any thread.
+    /// `OSAllocatedUnfairLock` rather than `Mutex`, which needs watchOS 11.
+    private let lazySession = OSAllocatedUnfairLock<Alamofire.Session?>(initialState: nil)
+
+    private var alamofireSession: Alamofire.Session {
+        lazySession.withLock { session in
+            if let session {
+                return session
+            }
+            let newSession = makeSession(configuration: .default)
+            session = newSession
+            return newSession
+        }
+    }
 
     public var session: URLSession { alamofireSession.session }
 

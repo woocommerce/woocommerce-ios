@@ -440,8 +440,7 @@ final class RemoteTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
         network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_error")
 
         // When
@@ -460,8 +459,7 @@ final class RemoteTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
         network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
 
         // When
@@ -482,8 +480,7 @@ final class RemoteTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
 
         let responseBody = try XCTUnwrap(#"{"code":"rest_invalid_signature","message":"The request is not signed correctly."}"#.data(using: .utf8))
         network.simulateError(requestUrlSuffix: "something",
@@ -503,8 +500,7 @@ final class RemoteTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
         network.simulateResponse(requestUrlSuffix: "something", filename: "unknown_blog_error")
 
         // When
@@ -522,8 +518,7 @@ final class RemoteTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
         network.simulateResponse(requestUrlSuffix: "something", filename: "generic_success_data")
 
         let expectationForRequest = expectation(description: "Request")
@@ -547,8 +542,7 @@ final class RemoteTests: XCTestCase {
         let network = MockNetwork()
         network.simulatesJetpackTunnel = false
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
         network.simulateResponse(requestUrlSuffix: "something", filename: "generic_success_data")
 
         let expectationForRequest = expectation(description: "Request")
@@ -576,8 +570,7 @@ final class RemoteTests: XCTestCase {
         let network = BodyAndErrorNetwork(data: responseBody,
                                           error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
 
         let expectationForRequest = expectation(description: "Request")
 
@@ -602,8 +595,7 @@ final class RemoteTests: XCTestCase {
         let network = BodyAndErrorNetwork(data: responseBody,
                                           error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
 
         let expectationForRequest = expectation(description: "Request")
 
@@ -625,8 +617,7 @@ final class RemoteTests: XCTestCase {
         let responseBody = try XCTUnwrap("{}".data(using: .utf8))
         let network = SuccessfulNetwork(data: responseBody, headers: ["x-wp-total": "7"])
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
 
         // When
         _ = try await remote.enqueueWithResponseHeaders(request)
@@ -644,8 +635,7 @@ final class RemoteTests: XCTestCase {
         let responseBody = try XCTUnwrap(#"{"code":"rest_invalid_signature","message":"The request is not signed correctly."}"#.data(using: .utf8))
         let network = SuccessfulNetwork(data: responseBody)
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
 
         // When
         _ = try await remote.enqueueWithResponseHeaders(request)
@@ -662,8 +652,7 @@ final class RemoteTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
         network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
 
         let expectationForRequest = expectation(description: "Request")
@@ -683,8 +672,7 @@ final class RemoteTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let recorder = MockStoreConnectionErrorRecorder()
-        let remote = Remote(network: network)
-        remote.storeConnectionErrorRecorder = recorder
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
         network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
 
         let expectationForRequest = expectation(description: "Request")
@@ -1180,9 +1168,8 @@ final class RemoteTests: XCTestCase {
     func test_enqueue_async_when_jetpack_network_error_response_contains_raw_body_then_logs_and_preserves_mapped_error() async throws {
         // Given
         let network = MockNetwork()
-        let remote = Remote(network: network)
         let logger = SpyJetpackTunnelRawBodyErrorLogger()
-        remote.jetpackTunnelRawBodyErrorLogger = logger
+        let remote = Remote(network: network, jetpackTunnelRawBodyErrorLogger: logger)
         let responseData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-error"))
         network.simulateError(
             requestUrlSuffix: "something",
@@ -1210,9 +1197,8 @@ final class RemoteTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let mapper = DummyMapper()
-        let remote = Remote(network: network)
         let logger = SpyJetpackTunnelRawBodyErrorLogger()
-        remote.jetpackTunnelRawBodyErrorLogger = logger
+        let remote = Remote(network: network, jetpackTunnelRawBodyErrorLogger: logger)
         let responseData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-error"))
         network.simulateResponse(requestUrlSuffix: "something", filename: "jetpack-tunnel-raw-body-error")
 
@@ -1238,9 +1224,8 @@ final class RemoteTests: XCTestCase {
     func test_enqueue_async_when_jetpack_network_error_response_contains_envelope_raw_body_then_logs_and_preserves_network_error() async throws {
         // Given
         let network = MockNetwork()
-        let remote = Remote(network: network)
         let logger = SpyJetpackTunnelRawBodyErrorLogger()
-        remote.jetpackTunnelRawBodyErrorLogger = logger
+        let remote = Remote(network: network, jetpackTunnelRawBodyErrorLogger: logger)
         let responseData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-envelope-error"))
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500, response: responseData)
         network.simulateError(requestUrlSuffix: "something", error: expectedError)
@@ -1265,9 +1250,8 @@ final class RemoteTests: XCTestCase {
     func test_enqueue_async_when_non_jetpack_network_error_response_contains_raw_body_then_does_not_log() async throws {
         // Given
         let network = MockNetwork()
-        let remote = Remote(network: network)
         let logger = SpyJetpackTunnelRawBodyErrorLogger()
-        remote.jetpackTunnelRawBodyErrorLogger = logger
+        let remote = Remote(network: network, jetpackTunnelRawBodyErrorLogger: logger)
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: "something")
         let responseData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-error"))
         network.simulateError(
@@ -1895,15 +1879,22 @@ private struct IsolationCapturingNetwork: Network {
 }
 
 private final class MockStoreConnectionErrorRecorder: StoreConnectionErrorRecording {
-    private(set) var invalidSignatureSiteIDs: [Int64] = []
-    private(set) var successfulConnectionSiteIDs: [Int64] = []
+    private struct Recorded {
+        var invalidSignatureSiteIDs: [Int64] = []
+        var successfulConnectionSiteIDs: [Int64] = []
+    }
+
+    private let recorded = Mutex(Recorded())
+
+    var invalidSignatureSiteIDs: [Int64] { recorded.withLock { $0.invalidSignatureSiteIDs } }
+    var successfulConnectionSiteIDs: [Int64] { recorded.withLock { $0.successfulConnectionSiteIDs } }
 
     func recordInvalidSignature(siteID: Int64) {
-        invalidSignatureSiteIDs.append(siteID)
+        recorded.withLock { $0.invalidSignatureSiteIDs.append(siteID) }
     }
 
     func recordSuccessfulConnection(siteID: Int64) {
-        successfulConnectionSiteIDs.append(siteID)
+        recorded.withLock { $0.successfulConnectionSiteIDs.append(siteID) }
     }
 }
 
@@ -1915,16 +1906,19 @@ private final class SpyJetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErro
         let transportStatus: Int?
     }
 
-    private(set) var calls: [Call] = []
+    private let recordedCalls = Mutex<[Call]>([])
+
+    var calls: [Call] { recordedCalls.withLock { $0 } }
 
     func logIfNeeded(responseData: Data?, request: Request, transportStatus: Int?) {
         let jetpackRequest = request as? JetpackRequest
-        calls.append(Call(
+        let call = Call(
             responseData: responseData,
             requestMethod: jetpackRequest?.method.rawValue.uppercased(),
             requestPath: jetpackRequest?.path,
             transportStatus: transportStatus
-        ))
+        )
+        recordedCalls.withLock { $0.append(call) }
     }
 }
 

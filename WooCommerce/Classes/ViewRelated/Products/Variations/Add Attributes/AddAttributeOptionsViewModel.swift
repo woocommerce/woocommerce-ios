@@ -211,13 +211,14 @@ final class AddAttributeOptionsViewModel {
         self.viewStorage = viewStorage
         self.analytics = analytics
 
-        // An attribute the product already has keeps its values. In the variations flow, the attribute is always used for variations.
+        // An attribute the product already has keeps its values.
+        // In the variations flow, or without non-variation attributes, the attribute is always used for variations.
         let productAttribute = product.attributes.first { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
         let isVariableProduct = product.productType == .variable || product.productType == .variableSubscription
         self.isVariableProduct = isVariableProduct
-        let isNewAttributeUsedForVariations = !isNonVariationAttributesEnabled || isVariableProduct
+        let isAlwaysUsedForVariations = isVariationsFlow || !isNonVariationAttributesEnabled
         self.initialIsVisible = productAttribute?.visible ?? true
-        self.initialIsUsedForVariations = isVariationsFlow || (productAttribute?.variation ?? isNewAttributeUsedForVariations)
+        self.initialIsUsedForVariations = isAlwaysUsedForVariations || (productAttribute?.variation ?? isVariableProduct)
         self.isSavedAsUsedForVariations = productAttribute?.variation ?? false
         self.state.isVisible = initialIsVisible
         self.state.isUsedForVariations = initialIsUsedForVariations

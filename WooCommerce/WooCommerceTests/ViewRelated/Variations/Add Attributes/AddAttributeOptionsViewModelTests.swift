@@ -435,7 +435,10 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
                                                 variation: false,
                                                 options: ["Cotton"])
         let initialProduct = sampleProduct().copy(attributes: [firstAttribute, initialAttribute])
-        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .existing(attribute: initialAttribute), stores: stores)
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct,
+                                                     attribute: .existing(attribute: initialAttribute),
+                                                     stores: stores,
+                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
 
         viewModel.setCurrentAttributeName("Fabric")
         viewModel.addNewOption(name: "Wool")
@@ -483,6 +486,53 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
                                                      attribute: .existing(attribute: siteAttribute),
                                                      isVariationsFlow: true,
                                                      stores: stores)
+
+        viewModel.addNewOption(name: "Wool")
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        let expectedAttribute = productAttribute.copy(variation: true, options: ["Wool"])
+        XCTAssertEqual(updatedProduct.attributes, [firstAttribute, expectedAttribute])
+    }
+
+    func test_when_feature_is_off_then_adding_global_attribute_not_used_for_variations_outside_variations_flow_uses_it_for_variations() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let firstAttribute = sampleAttribute(attributeID: 1, name: "Color", options: ["Red"])
+        let productAttribute = ProductAttribute(siteID: 123,
+                                                attributeID: 5,
+                                                name: "Material",
+                                                position: 2,
+                                                visible: false,
+                                                variation: false,
+                                                options: ["Cotton"])
+        let siteAttribute = sampleAttribute(attributeID: 5, name: "Material")
+        let initialProduct = sampleProduct().copy(attributes: [firstAttribute, productAttribute])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct,
+                                                     attribute: .existing(attribute: siteAttribute),
+                                                     isVariationsFlow: false,
+                                                     stores: stores,
+                                                     featureFlagService: featureFlagService(isNonVariationAttributesEnabled: false))
 
         viewModel.addNewOption(name: "Wool")
 

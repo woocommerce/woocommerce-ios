@@ -57,13 +57,14 @@ Select the test target that can import the view: for example, `PointOfSaleTests`
 
 ## Goal: Collect References
 
-Choose a task artifact directory. If the user provides design reference images, copy them there:
+Choose a task artifact directory:
 ```bash
 mkdir -p .agent-artifacts
 TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/snapshot.XXXXXX")"
-cp /path/to/design.png "$TASK_ARTIFACTS/design.png"
+printf 'Task artifacts: %s\n' "$TASK_ARTIFACTS"
 ```
 Use this directory's absolute path for `<task-artifacts>` below, including in later shell calls.
+If the user provides design reference images, copy them into this directory.
 Read each reference image to understand the target state before writing code.
 
 If no reference image, the goal is inferred from the user's description of desired UI behavior.
@@ -110,12 +111,13 @@ Run only the snapshot tests for fast feedback. Select the module scheme when it 
 use `WooCommerce` for app-target views:
 ```bash
 set -o pipefail
+TEST_RUNNER_SNAPSHOT_ARTIFACTS='<task-artifacts>/mismatch' \
 xcodebuild test \
   -workspace WooCommerce.xcworkspace \
   -scheme '<scheme>' \
   -derivedDataPath "$PWD/DerivedData" \
   -destination 'platform=iOS Simulator,id=<SIMULATOR_UDID>' \
-  -only-testing:<TestTarget>/<SnapshotTestClass> \
+  -only-testing:'<TestTarget>/<SnapshotTestClass>' \
   CODE_SIGNING_ALLOWED=NO 2>&1 | tee '<task-artifacts>/snapshot.log'
 ```
 
@@ -125,6 +127,10 @@ Check the pipeline exit status and full log. Record mode can fail after writing 
 confirm that the expected new image exists and inspect it. Other failures require diagnosis.
 Use the new iteration directory and image paths reported by the library. An older PNG is not evidence
 of the current render. Keep one log per iteration and report unrelated build or test failures.
+
+For a regression comparison, keep the recorded `snapshotDirectory` and change `record: .all`
+to `record: .never`. Run the unchanged view first, then any intentional mismatch. Use a separate
+log filename for each run; comparison failures must retain their images under the task directory.
 
 ## Compare: Read and Assess
 

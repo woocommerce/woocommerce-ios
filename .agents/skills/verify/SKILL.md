@@ -53,6 +53,7 @@ Use the `/simulator` skill approach to discover a booted simulator UDID.
 set -o pipefail
 mkdir -p .agent-artifacts
 TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/verify.XXXXXX")"
+printf 'Task artifacts: %s\n' "$TASK_ARTIFACTS"
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -derivedDataPath "$PWD/DerivedData" \
   -destination "platform=iOS Simulator,id=<UDID>" \

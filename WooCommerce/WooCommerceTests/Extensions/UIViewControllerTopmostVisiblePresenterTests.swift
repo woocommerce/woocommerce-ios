@@ -3,6 +3,7 @@ import UIKit
 import WordPressUI
 
 @MainActor
+@Suite(.timeLimit(.minutes(5)))
 struct UIViewControllerTopmostVisiblePresenterTests {
     @Test func test_topmostVisiblePresenter_when_nothing_is_presented_then_returns_self() throws {
         // Given
@@ -64,6 +65,26 @@ struct UIViewControllerTopmostVisiblePresenterTests {
         #expect(second.isBeingDismissed)
         #expect(root.topmostVisiblePresenter === first)
         #expect(root.topmostPresentedViewController === second)
+    }
+
+    @Test func test_topmostVisiblePresenter_when_leaf_is_being_dismissed_over_full_screen_presenter_then_returns_that_presenter() async throws {
+        // Given a full-screen presenter, whose view may still be detached while its leaf goes away
+        let window = makeWindow()
+        defer { window.isHidden = true }
+        let root = try #require(window.rootViewController)
+        let first = UIViewController()
+        first.modalPresentationStyle = .fullScreen
+        let second = UIViewController()
+        second.modalPresentationStyle = .fullScreen
+        await present(first, on: root)
+        await present(second, on: first)
+
+        // When
+        second.dismiss(animated: true)
+
+        // Then the walk stops at the presenter that is not being dismissed, whatever its view's state
+        #expect(second.isBeingDismissed)
+        #expect(root.topmostVisiblePresenter === first)
     }
 }
 

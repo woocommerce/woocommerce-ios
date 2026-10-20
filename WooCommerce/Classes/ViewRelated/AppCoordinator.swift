@@ -571,6 +571,13 @@ private extension AppCoordinator {
     func presentSignificantChangeBlocker(_ blocker: SignificantChangeConsentBlockingHostingController, attempt: Int) {
         guard significantChangeBlocker === blocker else { return }
         if let presenter = window.topmostVisiblePresenter {
+            // On a retry, a presenter that still presents something is still mid-dismissal, so the
+            // earlier request is queued behind it. Presenting again would present an active controller.
+            if attempt > 1, presenter.presentedViewController != nil {
+                DDLogInfo("Significant change blocker presentation is still queued after attempt \(attempt - 1); waiting.")
+                scheduleSignificantChangeBlockerPresentationCheck(for: blocker, attempt: attempt)
+                return
+            }
             presenter.present(blocker, animated: true) { [weak self] in
                 guard let self, self.significantChangeBlocker === blocker else {
                     // Dismissed while the presentation was still queued: take the orphan down,
@@ -585,6 +592,11 @@ private extension AppCoordinator {
         } else {
             DDLogWarn("Failed to obtain view controller to present the significant change blocker.")
         }
+        scheduleSignificantChangeBlockerPresentationCheck(for: blocker, attempt: attempt)
+    }
+
+    /// Re-checks after a delay that the blocker reached the screen, and retries the presentation if not.
+    func scheduleSignificantChangeBlockerPresentationCheck(for blocker: SignificantChangeConsentBlockingHostingController, attempt: Int) {
         significantChangeBlockerPresentationCheck = Task { @MainActor [weak self] in
             try? await Task.sleep(for: Constants.blockerPresentationRetryDelay)
             guard Task.isCancelled == false, let self, self.significantChangeBlocker === blocker else { return }

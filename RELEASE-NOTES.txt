@@ -3,6 +3,7 @@
 
 26.0
 -----
+- [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]
 - [*] Age verification: Fixed a crash after the app was launched in the background, such as by prewarming or a background refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18061]
 - [*] Orders: On iPad, opening an order from a notification or link now scrolls the order list to it. [https://github.com/woocommerce/woocommerce-ios/pull/18095]
 - [*] Login: Contact Support now starts a chat with diagnostic details from the failed login attempt. [https://github.com/woocommerce/woocommerce-ios/pull/18040]
@@ -11,7 +12,6 @@
 
 25.9
 -----
-- [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]
 - [*] Settings: Jetpack setup now clearly explains when the WordPress.com username or password is incorrect. [https://github.com/woocommerce/woocommerce-ios/pull/18078]
 - [*] [Woo POS] Added a Payments section to POS settings with an option to turn off the payment success sound [https://github.com/woocommerce/woocommerce-ios/pull/18079]
 - [**] Shipping Labels: For shipments into the EU, the customs form now asks for each item's SKU, manufacturer part number and GTIN/EAN when WooCommerce Shipping requires them [https://github.com/woocommerce/woocommerce-ios/pull/18101]

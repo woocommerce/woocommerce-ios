@@ -204,6 +204,12 @@ final class OrdersRootViewController: UIViewController {
         ordersViewController.onOrderSelected(id: orderID)
     }
 
+    /// Selects and scrolls to an order shown outside of the order list when the list contains it.
+    /// - Parameter orderID: ID of the shown order.
+    func selectShownOrderIfListed(id orderID: Int64) {
+        ordersViewController.selectShownOrderIfListed(id: orderID)
+    }
+
     /// Restores the selected detail after compact navigation removed it from the stack.
     func restoreSelectedOrderDetails() {
         ordersViewController.restoreSelectedOrderDetails()

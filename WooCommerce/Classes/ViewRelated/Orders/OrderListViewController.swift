@@ -686,6 +686,15 @@ extension OrderListViewController {
         return false
     }
 
+    /// Selects and scrolls to an order shown outside of the list, like a loaded notification order,
+    /// when the list contains it. Otherwise, the current selection is kept.
+    func selectShownOrderIfListed(id orderID: Int64) {
+        guard indexPath(for: orderID) != nil else {
+            return
+        }
+        onOrderSelected(id: orderID, shouldScrollIfNeeded: true)
+    }
+
     func showOrderDetails(_ order: Order, shouldScrollIfNeeded: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {
         let viewModel = OrderDetailsViewModel(order: order)
         switchDetailsHandler([viewModel], 0, true) { [weak self] hasBeenSelected in

@@ -2,6 +2,7 @@ import Testing
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 struct InPersonPaymentsPluginNotActivatedTests {
 
     @Test func test_buttonViewModel_when_userIsAdministrator_then_activate_action_is_called() {

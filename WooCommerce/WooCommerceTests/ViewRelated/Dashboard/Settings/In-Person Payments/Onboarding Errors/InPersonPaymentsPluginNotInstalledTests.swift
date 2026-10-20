@@ -1,6 +1,7 @@
 import Testing
 @testable import WooCommerce
 
+@MainActor
 struct InPersonPaymentsPluginNotInstalledTests {
 
     @Test func test_buttonViewModel_when_userIsAdministrator_then_install_action_is_called() {

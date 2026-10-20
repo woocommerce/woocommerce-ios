@@ -3,7 +3,9 @@ import Yosemite
 import Experiments
 
 protocol TapToPayAwarenessMomentDetermining {
+    @MainActor
     func shouldPresent() async -> Bool
+
     func setPresented()
 }
 
@@ -24,6 +26,7 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
         self.userDefaults = userDefaults
     }
 
+    @MainActor
     func shouldPresent() async -> Bool {
         guard !wasPresented() else {
             return false
@@ -36,7 +39,7 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
             return false
         }
 
-        switch await cardPresentPaymentsOnboarding.state {
+        switch cardPresentPaymentsOnboarding.state {
         case .completed, .codPaymentGatewayNotSetUp:
             break
         default:

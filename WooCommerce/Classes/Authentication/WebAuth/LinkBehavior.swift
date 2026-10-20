@@ -6,6 +6,7 @@ enum LinkBehavior {
     case hostOnly(URL)
     case urlOnly(URL)
 
+    @MainActor
     func handle(navigationAction: WKNavigationAction, for webView: WKWebView) -> WKNavigationActionPolicy {
 
         // We only want to apply this policy for links, not for all resource loads

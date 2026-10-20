@@ -46,7 +46,7 @@ public protocol ProductVariationsRemoteProtocol {
 
 /// ProductVariation: Remote Endpoints
 ///
-public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
+public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol, @unchecked Sendable {
 
     /// Retrieves all of the `ProductVariation`s available.
     ///
@@ -70,6 +70,9 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let request = productVariationsRequest(for: siteID,
                                                productID: productID,
                                                variationIDs: variationIDs,
+                                               // ID is unique and matches the local tie-break, so pages never overlap.
+                                               orderBy: .id,
+                                               order: .descending,
                                                context: context,
                                                pageNumber: pageNumber,
                                                pageSize: pageSize)
@@ -86,6 +89,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let request = productVariationsRequest(for: siteID,
                                                productID: productID,
                                                variationIDs: variationIDs,
+                                               orderBy: .id,
+                                               order: .descending,
                                                context: nil,
                                                pageNumber: pageNumber,
                                                pageSize: pageSize,
@@ -387,6 +392,7 @@ public extension ProductVariationsRemote {
 
     enum OrderByField: String {
         case date
+        case id
         case menuOrder = "menu_order"
     }
 

@@ -2,7 +2,7 @@ import Foundation
 
 /// Product Tags: Remote Endpoints
 ///
-public final class ProductTagsRemote: Remote {
+public final class ProductTagsRemote: Remote, @unchecked Sendable {
 
     // MARK: - Product Tags
 

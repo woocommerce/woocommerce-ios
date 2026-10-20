@@ -111,7 +111,7 @@ public struct BookingFilters {
 
 /// Booking: Remote Endpoints
 ///
-public final class BookingsRemote: Remote, BookingsRemoteProtocol {
+public final class BookingsRemote: Remote, BookingsRemoteProtocol, @unchecked Sendable {
 
     // MARK: - Bookings
 

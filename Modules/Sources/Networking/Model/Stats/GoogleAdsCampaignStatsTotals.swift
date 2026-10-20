@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// Represents the data associated with Google Listings & Ads paid campaign stats over a specific period.
-public struct GoogleAdsCampaignStatsTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsTotals {
+public struct GoogleAdsCampaignStatsTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsTotals, Sendable {
     /// Amount in sales attributed to ads campaign
     public let sales: Decimal?
 

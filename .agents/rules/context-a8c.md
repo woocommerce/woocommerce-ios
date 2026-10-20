@@ -1,6 +1,6 @@
 # ContextA8C (Automattic Internal Resources)
 
-ContextA8C is an Automattic MCP server (`@automattic/mcp-context-a8c`) that gives AI tools access to internal resources. It works with any MCP-compatible client (Claude Code, Cursor, VS Code, etc.). It is configured per-user and requires a one-time browser-based account connection.
+ContextA8C is an Automattic MCP server (`@automattic/mcp-context-a8c`) that gives AI tools access to internal resources. It works with any MCP-compatible client. It is configured per-user and requires a one-time browser-based account connection.
 
 ## Setup
 
@@ -53,15 +53,11 @@ ContextA8C uses a two-step progressive disclosure pattern:
 
 Load a provider once per session. The response describes available tools and parameters, so there is no need to hardcode tool names.
 
-### Claude Code tool names
+### Tool discovery
 
-In Claude Code, tools are prefixed with `mcp__context-a8c__`:
-```
-mcp__context-a8c__context-a8c-load-provider(provider: "slack")
-mcp__context-a8c__context-a8c-execute-tool(provider: "slack", tool: "search", params: {"query": "..."})
-```
-
-If these tools are not available in a Claude Code session, ContextA8C is not configured. Suggest running `/setup-context-a8c` once, then continue without it.
+Read the connected server's tool schemas for provider loading and execution. Tool prefixes depend
+on the client. If the server is unavailable, follow `/setup-context-a8c` for the selected client,
+then continue without internal context if setup is unavailable.
 
 ## When to Use
 
@@ -81,7 +77,7 @@ When a ContextA8C call fails, do NOT silently give up. Follow this sequence:
    - **Permission denied / Access forbidden**: The MCP may be disabled or misconfigured. Ask the user to check that ContextA8C is enabled (not disabled) in their MCP client settings and that accounts are connected on the ContextA8C setup page on MC
    - **Invalid provider name**: Try `mgs` as a fallback for search tasks. List known valid providers for the user
    - **Auth errors**: Ask the user to re-visit the ContextA8C setup page on MC and re-authorize the affected provider
-   - **Tool not found / MCP not recognized**: The MCP is not configured. Offer to run the setup (the agent should execute `/setup-context-a8c` itself, not ask the user to type it). For non-Claude Code clients, point the user to the JSON config in the Setup section above
+   - **Tool not found / MCP not recognized**: The MCP is not configured. Offer to run the setup (the agent should execute `/setup-context-a8c` itself, not ask the user to type it). Use the selected client's setup instructions or the JSON config above
    - **Other errors**: Show the error details and suggest restarting the AI tool session
 3. **Ask the user**: Offer to help troubleshoot further or to proceed without ContextA8C
 4. **Fall back gracefully**: If the user chooses to skip, continue with codebase, git history, or ask the user to paste the needed information directly
@@ -89,6 +85,6 @@ When a ContextA8C call fails, do NOT silently give up. Follow this sequence:
 Do NOT:
 - Silently skip ContextA8C without telling the user what went wrong
 - Tell the user to run agent skills or slash commands — those are for the agent to execute, not the user
-- Assume which client the user is running — ask them. The `claude` CLI binary may exist on the system even when the user is running Claude Desktop. Setup steps differ per client (`claude mcp add` only works for Claude Code CLI, not Claude Desktop)
+- Infer the active client from an installed CLI binary. Confirm the client before setup; registrations can be client-specific
 - Retry the same failing call more than once in a session
 - Block on ContextA8C — always offer to proceed without it

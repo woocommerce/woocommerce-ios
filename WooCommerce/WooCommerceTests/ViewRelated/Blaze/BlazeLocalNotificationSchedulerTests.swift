@@ -355,6 +355,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 
     // MARK: User response
 
+    @MainActor
     func test_it_observes_abandoned_creation_notification_and_updates_user_defaults() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -373,11 +374,12 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        await until {
+        await waitOnMainActor {
             self.defaults[.blazeAbandonedCampaignCreationReminderOpened] == true
         }
     }
 
+    @MainActor
     func test_it_observes_no_campaign_notification_and_updates_user_defaults() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -396,11 +398,12 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
-        waitUntil {
+        await waitOnMainActor {
             self.defaults[.blazeNoCampaignReminderOpened] == true
         }
     }
 
+    @MainActor
     func test_it_triggers_store_switching_when_handling_user_response_to_local_notifcations() throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -426,6 +429,23 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 }
 
 private extension BlazeLocalNotificationSchedulerTests {
+    /// Polls `condition` on the main actor, so main actor tests don't hand it to a nonisolated wait helper.
+    @MainActor
+    func waitOnMainActor(timeout: Duration = .seconds(5),
+                         file: StaticString = #filePath,
+                         line: UInt = #line,
+                         until condition: () -> Bool) async {
+        let deadline = ContinuousClock.now + timeout
+        while !condition() && ContinuousClock.now < deadline {
+            do {
+                try await Task.sleep(for: .milliseconds(10))
+            } catch {
+                break
+            }
+        }
+        XCTAssertTrue(condition(), file: file, line: line)
+    }
+
     func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
         storageManager.performAndSave({ storage in
             readOnlyCampaigns.forEach { campaign in

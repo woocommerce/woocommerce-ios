@@ -6,7 +6,7 @@ import Foundation
 /// The user-facing variant lives one layer up (`QRLoginErrorMapper`); this
 /// type is intentionally protocol-agnostic so the same value works for both
 /// self-hosted and wp.com responses.
-public enum QRLoginNetworkError: Error, Equatable {
+public enum QRLoginNetworkError: Error, Equatable, Sendable {
     /// HTTP 401 or 403 with no special body code.
     case unauthorized
     /// HTTP 404 — the merchant's WC plugin doesn't expose QR-login endpoints

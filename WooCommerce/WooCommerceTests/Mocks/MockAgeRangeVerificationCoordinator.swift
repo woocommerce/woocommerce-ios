@@ -6,6 +6,7 @@ final class MockAgeRangeVerificationCoordinator: AgeRangeVerificationCoordinator
     var decision: AppAccessDecision
     var result: AgeRangeVerificationResult
     private(set) var triggers: [AgeVerificationTrigger] = []
+    private(set) var isObservingConsentResponses = false
     /// Runs on the hosting window before the decision is reported, to leave the window the way
     /// the system sheet does (e.g. with a controller mid-dismissal on top).
     var beforeResult: ((UIWindow) -> Void)?
@@ -26,7 +27,7 @@ final class MockAgeRangeVerificationCoordinator: AgeRangeVerificationCoordinator
     }
 
     func startObservingConsentResponses(onResolution: @escaping @MainActor () -> Void) {
-        // no-op
+        isObservingConsentResponses = true
     }
 
     func requestSignificantChangeConsent(hostingWindow: UIWindow) async -> SignificantChangeConsentState {

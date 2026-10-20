@@ -79,7 +79,7 @@ public struct CartOrderComparison {
     }
 
     /// Represents an item that was expected in the cart but is missing from the order
-    public struct MissingCartItem {
+    public struct MissingCartItem: Sendable {
         /// The product ID (for simple products) or parent product ID (for variations)
         public let productID: Int64
         /// The variation ID (0 for simple products)

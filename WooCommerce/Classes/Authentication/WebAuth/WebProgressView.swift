@@ -9,6 +9,8 @@ import WordPressShared
 /// web view finishes loading.
 ///
 class WebProgressView: UIProgressView {
+    private var progressObservation: NSKeyValueObservation?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
@@ -34,22 +36,14 @@ class WebProgressView: UIProgressView {
         })
     }
 
+    /// KVO change handlers are `@Sendable`, but `WKWebView` changes `estimatedProgress` on the main thread.
     func observeProgress(webView: WKWebView) {
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: [.new], context: nil)
-    }
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        guard let webView = object as? WKWebView,
-            let keyPath else {
-                return
-        }
-
-        switch keyPath {
-        case #keyPath(WKWebView.estimatedProgress):
-            progress = Float(webView.estimatedProgress)
-            isHidden = webView.estimatedProgress == 1
-        default:
-            assertionFailure("Observed change to web view that we are not handling")
+        progressObservation = webView.observe(\.estimatedProgress, options: [.new]) { [weak self] _, change in
+            let estimatedProgress = change.newValue ?? 0
+            MainActor.assumeIsolated {
+                self?.progress = Float(estimatedProgress)
+                self?.isHidden = estimatedProgress == 1
+            }
         }
     }
 

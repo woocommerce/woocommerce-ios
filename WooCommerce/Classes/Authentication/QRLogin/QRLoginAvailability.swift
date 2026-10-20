@@ -65,6 +65,7 @@ private extension QRLoginAvailability {
     }
 
     /// Reads the `qrCodeLogin` remote flag from the feature-flag store.
+    @MainActor
     func isRemoteFlagEnabled() async -> Bool {
         await remoteFeatureFlagService.isEnabled(.qrCodeLogin, defaultValue: false)
     }

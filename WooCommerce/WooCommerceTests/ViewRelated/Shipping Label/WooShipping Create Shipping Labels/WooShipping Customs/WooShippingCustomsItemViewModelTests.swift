@@ -166,4 +166,108 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         XCTAssertEqual(HSTariffNumberValidator.sanitize("123456"), "123456")
         XCTAssertEqual(HSTariffNumberValidator.sanitize(""), "")
     }
+
+    func test_requiredInformationIsEntered_when_EU_identifiers_are_not_required_then_identifiers_may_be_empty() {
+        // Given
+        let viewModel = makeValidItemViewModel(areIdentifiersRequired: false)
+
+        // Then
+        XCTAssertTrue(viewModel.requiredInformationIsEntered)
+        XCTAssertNil(viewModel.skuValidationError)
+        XCTAssertNil(viewModel.manufacturerPartNumberValidationError)
+        XCTAssertNil(viewModel.gtinValidationError)
+    }
+
+    func test_identifierValidation_when_EU_identifiers_are_required_and_empty_then_returns_required_errors() {
+        // Given
+        let viewModel = makeValidItemViewModel(areIdentifiersRequired: true)
+
+        // Then
+        XCTAssertFalse(viewModel.requiredInformationIsEntered)
+        XCTAssertEqual(viewModel.skuValidationError, "Required for shipments to the EU")
+        XCTAssertEqual(viewModel.manufacturerPartNumberValidationError, "Required for shipments to the EU")
+        XCTAssertEqual(viewModel.gtinValidationError, "Enter the GTIN/EAN, or select \"No barcode\"")
+    }
+
+    func test_identifierValidation_when_values_exceed_64_characters_then_returns_length_errors() {
+        // Given
+        let viewModel = makeValidItemViewModel(areIdentifiersRequired: true)
+        let tooLongValue = String(repeating: "a", count: 65)
+
+        // When
+        viewModel.sku = tooLongValue
+        viewModel.manufacturerPartNumber = tooLongValue
+        viewModel.gtin = tooLongValue
+
+        // Then
+        let expectedError = "Must be 64 characters or fewer."
+        XCTAssertEqual(viewModel.skuValidationError, expectedError)
+        XCTAssertEqual(viewModel.manufacturerPartNumberValidationError, expectedError)
+        XCTAssertEqual(viewModel.gtinValidationError, expectedError)
+    }
+
+    func test_hasNoBarcode_when_enabled_then_clears_GTIN_and_satisfies_identifier_requirement() {
+        // Given
+        let viewModel = makeValidItemViewModel(areIdentifiersRequired: true)
+        viewModel.sku = "item-sku"
+        viewModel.manufacturerPartNumber = "part-number"
+        viewModel.gtin = "0123456789012"
+
+        // When
+        viewModel.hasNoBarcode = true
+
+        // Then
+        XCTAssertTrue(viewModel.gtin.isEmpty)
+        XCTAssertNil(viewModel.gtinValidationError)
+        XCTAssertTrue(viewModel.requiredInformationIsEntered)
+    }
+
+    func test_prefillEUProductIdentifiers_when_fields_are_blank_then_fills_only_blank_fields() {
+        // Given
+        let viewModel = makeValidItemViewModel(areIdentifiersRequired: true)
+        viewModel.sku = "  existing-sku  "
+        viewModel.gtin = "  existing-gtin  "
+        let identifiers = WooShippingEUProductIdentifiers(productID: 22,
+                                                          sku: "prefilled-sku",
+                                                          manufacturerProductID: "prefilled-part-number",
+                                                          standardizedProductID: "prefilled-gtin")
+
+        // When
+        viewModel.prefillEUProductIdentifiers(identifiers)
+
+        // Then
+        XCTAssertEqual(viewModel.sku, "  existing-sku  ")
+        XCTAssertEqual(viewModel.manufacturerPartNumber, "prefilled-part-number")
+        XCTAssertEqual(viewModel.gtin, "  existing-gtin  ")
+    }
+
+    func test_prefillEUProductIdentifiers_when_standardized_ID_is_Y081_then_selects_no_barcode() {
+        // Given
+        let viewModel = makeValidItemViewModel(areIdentifiersRequired: true)
+        let identifiers = WooShippingEUProductIdentifiers(productID: 22,
+                                                          sku: "prefilled-sku",
+                                                          manufacturerProductID: "prefilled-part-number",
+                                                          standardizedProductID: "Y081")
+
+        // When
+        viewModel.prefillEUProductIdentifiers(identifiers)
+
+        // Then
+        XCTAssertTrue(viewModel.hasNoBarcode)
+        XCTAssertTrue(viewModel.gtin.isEmpty)
+    }
+
+    private func makeValidItemViewModel(areIdentifiersRequired: Bool) -> WooShippingCustomsItemViewModel {
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "US", name: "United States", states: [])])
+        return WooShippingCustomsItemViewModel(itemName: "Test",
+                                               itemProductID: 22,
+                                               itemQuantity: 1,
+                                               itemValue: 10,
+                                               itemWeight: 1,
+                                               currencySymbol: "$",
+                                               originCountryCode: Just("US").eraseToAnyPublisher(),
+                                               areEUProductIdentifiersRequired: Just(areIdentifiersRequired).eraseToAnyPublisher(),
+                                               storageManager: storageManager)
+    }
 }

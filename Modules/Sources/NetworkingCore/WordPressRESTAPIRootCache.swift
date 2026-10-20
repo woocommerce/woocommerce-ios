@@ -3,7 +3,7 @@ import os
 
 /// Protocol for accessing the discovered WordPress REST API root URL for a given site.
 ///
-public protocol RESTAPIRootCaching {
+public protocol RESTAPIRootCaching: Sendable {
     func root(for siteURL: String) -> String?
     func removeRoot(_ root: String, for siteURL: String)
 }

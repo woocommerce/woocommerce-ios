@@ -5,10 +5,12 @@ import Yosemite
 /// Produces the `device.*` metadata sent on every QR-login `/scan`. Injectable
 /// so tests can pin the values without touching `UIDevice` / `Bundle`.
 protocol QRLoginDeviceInfoProvider {
+    @MainActor
     var device: QRLoginScanDevice { get }
 }
 
 struct DefaultQRLoginDeviceInfoProvider: QRLoginDeviceInfoProvider {
+    @MainActor
     var device: QRLoginScanDevice {
         QRLoginScanDevice(
             os: "iOS",

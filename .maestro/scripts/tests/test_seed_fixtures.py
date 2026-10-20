@@ -32,7 +32,10 @@ class FakeClient:
                 {
                     "id": 11,
                     "name": "Media SUITE-20260805T120000Z-abc123",
-                    "images": [{"id": 101}],
+                    "images": [
+                        {"id": 101, "date_created_gmt": "2999-01-01T00:00:00"},
+                        {"id": 103, "date_created_gmt": "2020-01-01T00:00:00"},
+                    ],
                 },
                 {"id": 12, "name": "Merchant product", "images": [{"id": 102}]},
             ]
@@ -243,7 +246,8 @@ class SeedFixtureTests(unittest.TestCase):
 
             # Coupons are discovered last and the deletion loop is reversed, so ordering is
             # coupon → tag → order → the product's uploaded media → product. The merchant's
-            # own product (and its image 102), order, tag, and coupon are left untouched.
+            # own product (and its image 102), order, tag, and coupon are left untouched, and
+            # so is image 103, which was in the media library before the run started.
             self.assertEqual(
                 [("coupons", 41), ("products/tags", 31), ("orders", 21), ("media", 101), ("products", 11)],
                 client.deleted,

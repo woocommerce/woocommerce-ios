@@ -2,7 +2,7 @@ import Foundation
 
 /// System Status: Remote Endpoint
 ///
-public class SystemStatusRemote: Remote {
+public class SystemStatusRemote: Remote, @unchecked Sendable {
     /// Fields that can be requested in the app from the system status endpoint.
     /// Reference of all supported fields: https://woocommerce.github.io/woocommerce-rest-api-docs/#system-status-properties
     public enum Field {

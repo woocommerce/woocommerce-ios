@@ -172,6 +172,48 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel2.isOrderCompleted)
     }
 
+    @MainActor
+    func test_isCheckingEUProductIdentifiers_when_check_starts_and_finishes_then_mirrors_current_shipment_state() {
+        // Given
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "origin-1",
+                                                                 country: "US",
+                                                                 defaultAddress: true)
+        let destinationAddress = WooShippingNormalizedAddress.fake().copy(country: "GB", state: "LD")
+        let order = Order.fake().copy(shippingAddress: Address.fake().copy(state: "LD", country: "GB"))
+        var requirementCompletion: ((WooShippingEUProductIdentifiersRequirement) -> Void)?
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .checkEUProductIdentifiersRequirement(_, _, _, let completion):
+                requirementCompletion = completion
+            case .verifyDestinationAddress(_, _, let completion):
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: destinationAddress,
+                                                                               isTrivialNormalization: nil,
+                                                                               isVerified: true)))
+            case .loadPackages, .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+
+        // When
+        waitUntil { viewModel.isCheckingEUProductIdentifiers }
+        XCTAssertNotNil(requirementCompletion)
+        requirementCompletion?(.notRequired)
+
+        // Then
+        waitUntil { !viewModel.isCheckingEUProductIdentifiers }
+        XCTAssertFalse(viewModel.isCheckingEUProductIdentifiers)
+    }
+
     /// Builds a view model whose store returns a single origin address with the given phone/email/verification state.
     private func makeViewModelLoadingOriginAddress(phone: String,
                                                    email: String,

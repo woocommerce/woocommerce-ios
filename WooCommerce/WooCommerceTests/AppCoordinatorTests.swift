@@ -317,6 +317,154 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
     }
 
+    // MARK: - Age verification timing
+
+    func test_age_verification_when_app_is_active_then_runs_on_session_start() {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(decision: .allow, result: .featureUnavailable)
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator,
+                                             applicationStateProvider: { .active })
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
+        XCTAssertEqual(ageRangeVerificationCoordinator.triggers, [.sessionStart])
+    }
+
+    func test_age_verification_when_app_is_not_active_then_waits_until_the_app_becomes_active() {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let notificationCenter = NotificationCenter()
+        var applicationState = UIApplication.State.background
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(decision: .allow, result: .featureUnavailable)
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator,
+                                             notificationCenter: notificationCenter,
+                                             applicationStateProvider: { applicationState })
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
+        XCTAssertTrue(ageRangeVerificationCoordinator.triggers.isEmpty)
+
+        // When
+        applicationState = .active
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        waitUntil { ageRangeVerificationCoordinator.triggers == [.sessionStart] }
+    }
+
+    func test_deferred_age_verification_when_logged_out_before_the_app_becomes_active_then_is_skipped() {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let notificationCenter = NotificationCenter()
+        var applicationState = UIApplication.State.background
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(decision: .allow, result: .featureUnavailable)
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true),
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator,
+                                             notificationCenter: notificationCenter,
+                                             applicationStateProvider: { applicationState })
+
+        // When
+        appCoordinator.start()
+        stores.deauthenticate()
+        applicationState = .active
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+        XCTAssertTrue(ageRangeVerificationCoordinator.triggers.isEmpty)
+    }
+
+    func test_age_verification_when_deferred_twice_before_the_app_becomes_active_then_runs_once() {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let notificationCenter = NotificationCenter()
+        var applicationState = UIApplication.State.background
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(decision: .allow, result: .featureUnavailable)
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator,
+                                             notificationCenter: notificationCenter,
+                                             applicationStateProvider: { applicationState })
+
+        // When: a store switch while backgrounded starts a second session.
+        appCoordinator.start()
+        sessionManager.defaultStoreID = nil
+        sessionManager.defaultStoreID = 135
+        XCTAssertTrue(ageRangeVerificationCoordinator.triggers.isEmpty)
+        applicationState = .active
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(ageRangeVerificationCoordinator.triggers, [.sessionStart])
+    }
+
+    func test_consent_response_listener_when_app_is_active_then_starts_on_launch() {
+        // Given
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(decision: .allow, result: .featureUnavailable)
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator,
+                                             applicationStateProvider: { .active })
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        XCTAssertTrue(ageRangeVerificationCoordinator.isObservingConsentResponses)
+    }
+
+    func test_consent_response_listener_when_app_is_not_active_then_starts_once_the_app_becomes_active() {
+        // Given
+        let notificationCenter = NotificationCenter()
+        var applicationState = UIApplication.State.background
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(decision: .allow, result: .featureUnavailable)
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator,
+                                             notificationCenter: notificationCenter,
+                                             applicationStateProvider: { applicationState })
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        XCTAssertFalse(ageRangeVerificationCoordinator.isObservingConsentResponses)
+
+        // When
+        applicationState = .active
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        XCTAssertTrue(ageRangeVerificationCoordinator.isObservingConsentResponses)
+    }
+
     // MARK: - Age verification walls
 
     @MainActor
@@ -764,7 +912,9 @@ private extension AppCoordinatorTests {
                          ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = MockAgeRangeVerificationCoordinator(
                             decision: .allow,
                             result: .featureUnavailable
-                         )
+                         ),
+                         notificationCenter: NotificationCenter = .default,
+                         applicationStateProvider: @escaping () -> UIApplication.State = { .active }
     ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
@@ -777,7 +927,9 @@ private extension AppCoordinatorTests {
                               featureFlagService: featureFlagService,
                               switchStoreUseCase: switchStoreUseCase,
                               themeInstaller: themeInstaller,
-                              ageRangeVerificationCoordinator: ageRangeVerificationCoordinator)
+                              ageRangeVerificationCoordinator: ageRangeVerificationCoordinator,
+                              notificationCenter: notificationCenter,
+                              applicationStateProvider: applicationStateProvider)
     }
 
     /// Makes the previous role check pass so the logged-in UI is shown right away.

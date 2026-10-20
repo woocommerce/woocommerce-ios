@@ -38,8 +38,10 @@ struct InPersonPaymentsPluginNotActivatedTests {
 
     @Test func test_message_when_user_is_not_administrator_then_it_differs_from_the_administrator_message() {
         // Given
-        let administratorView = InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", userIsAdministrator: true, onActivate: {}, onRefresh: {})
-        let nonAdministratorView = InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", userIsAdministrator: false, onActivate: {}, onRefresh: {})
+        let administratorView = InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", userIsAdministrator: true,
+                                                                  onActivate: {}, onRefresh: {})
+        let nonAdministratorView = InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", userIsAdministrator: false,
+                                                                     onActivate: {}, onRefresh: {})
 
         // When
         let administratorMessage = administratorView.message

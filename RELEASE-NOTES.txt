@@ -39,6 +39,7 @@
 - [*] Privacy: Respect your analytics preference throughout login, including after logging out. [https://github.com/woocommerce/woocommerce-ios/pull/17973]
 - [*] Login: Unexpected store responses now offer Try Again, Contact Support, and Dismiss actions. [https://github.com/woocommerce/woocommerce-ios/pull/18030, https://github.com/woocommerce/woocommerce-ios/pull/18031]
 
+- [*] Payments: Recheck payment setup from onboarding error screens without leaving the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18128]
 
 25.8
 -----

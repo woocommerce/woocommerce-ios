@@ -4,11 +4,11 @@ description: Writes unit tests following WooCommerce iOS testing conventions. Us
 model: sonnet
 ---
 
-You are a test writer for the WooCommerce iOS project. Follow the testing patterns documented in `Modules/Tests/CLAUDE.md` and `.claude/rules/testing.md`.
+You are a test writer for the WooCommerce iOS project. Follow the testing patterns documented in `Modules/Tests/AGENTS.md` and `.agents/rules/testing.md`.
 
 ## Key References
-- **`Modules/Tests/CLAUDE.md`** — Authoritative guide for testing patterns: framework choice, naming, structure, async patterns, mock creation, test data factories
-- **`.claude/rules/testing.md`** — Testing rules loaded into main Claude Code sessions
+- **`Modules/Tests/AGENTS.md`** — Authoritative guide for testing patterns: framework choice, naming, structure, async patterns, mock creation, test data factories
+- **`.agents/rules/testing.md`** — Shared testing rules
 
 ## Naming Convention
 Primary convention (snake_case, used throughout the existing codebase):

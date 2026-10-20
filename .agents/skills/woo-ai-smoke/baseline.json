@@ -1,9 +1,9 @@
 {
-  "//": "Baseline for /woo-ai-smoke default suite. v2 schema: hard_invariants (deterministic, must-hold) + rubric_expectations (Claude scores 0-2 per dim, mean across N=3 samples must hit min_score). Rewritten 2026-04-29 for trunk's show_cards architecture (REST-tool catalog, no extra_fields parameter, kind == tool_name).",
+  "//": "Baseline for /woo-ai-smoke default suite. v2 schema: hard_invariants (deterministic, must-hold) + rubric_expectations (The evaluating agent scores 0-2 per dim, mean across N=3 samples must hit min_score). Rewritten 2026-04-29 for trunk's show_cards architecture (REST-tool catalog, no extra_fields parameter, kind == tool_name).",
   "metadata": {
     "schema": "v2",
     "task_model": "gpt-5.1",
-    "judge": "claude (the skill invoker)",
+    "judge": "evaluating agent",
     "store": "woo-demo-store-4a5f17.mystagingwebsite.com",
     "last_updated": "2026-04-29 (rewritten for show_cards / REST-tool architecture)",
     "baseline_run_branch": "task/woo-ai-assistant",

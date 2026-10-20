@@ -77,7 +77,10 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
             guard !orderLoaderAlreadyShownInSecondaryView(for: orderID) else {
                 return
             }
-            let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
+            // Loading stores the order before this callback, so the order list can select and scroll to it.
+            let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note) { [weak self] order in
+                self?.ordersViewController.selectShownOrderIfListed(id: order.orderID)
+            }
             return showSecondaryView(loaderViewController)
         }
     }

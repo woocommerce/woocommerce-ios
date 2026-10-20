@@ -40,7 +40,7 @@ private extension ProductVariationDetailsFactory {
         let vc: UIViewController
         let productVariationModel = EditableProductVariationModel(productVariation: productVariation,
                                                                   parentProductType: parentProduct.productType,
-                                                                  allAttributes: parentProduct.attributes,
+                                                                  allAttributes: parentProduct.attributesForVariations,
                                                                   parentProductSKU: parentProduct.sku,
                                                                   parentProductDisablesQuantityRules: parentProduct.combineVariationQuantities)
         let productImageActionHandler = productImageUploader
@@ -50,7 +50,7 @@ private extension ProductVariationDetailsFactory {
                            originalStatuses: productVariationModel.imageStatuses)
         let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
         let viewModel = ProductVariationFormViewModel(productVariation: productVariationModel,
-                                                      allAttributes: parentProduct.attributes,
+                                                      allAttributes: parentProduct.attributesForVariations,
                                                       parentProductSKU: parentProduct.sku,
                                                       parentProductDisablesQuantityRules: parentProduct.combineVariationQuantities,
                                                       formType: formType,

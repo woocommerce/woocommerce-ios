@@ -51,7 +51,6 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
         trackEntryPointDisplayedIfNeeded()
     }
 
-    @MainActor
     func checkAvailability() async {
         canShowOnDashboard = await eligibilityChecker.isSiteEligible(siteID: siteID)
     }
@@ -61,7 +60,6 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
         onDismiss?()
     }
 
-    @MainActor
     func reloadCard() async {
         syncingError = nil
         syncingData = true
@@ -114,7 +112,6 @@ private extension GoogleAdsDashboardCardViewModel {
             .store(in: &subscriptions)
     }
 
-    @MainActor
     func fetchAdsCampaigns() async throws -> [GoogleAdsCampaign] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(GoogleAdsAction.fetchAdsCampaigns(siteID: siteID) { result in
@@ -123,7 +120,6 @@ private extension GoogleAdsDashboardCardViewModel {
         }
     }
 
-    @MainActor
     func retrieveCampaignStats() async throws -> GoogleAdsCampaignStats {
         // Use midnight in the store timezone so negative offsets do not serialize the lower bound as 1969-12-31.
         var calendar = Calendar(identifier: .gregorian)

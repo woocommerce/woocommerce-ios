@@ -67,6 +67,7 @@ public enum RefundAPIError: Error, Equatable {
         "woocommerce_rest_order_not_refundable": .orderNotRefundable,
         "woocommerce_rest_preview_exceeds_max_refundable": .refundExceedsRemaining,
         "woocommerce_rest_refund_exceeds_remaining": .refundExceedsRemaining,
+        "woocommerce_rest_refund_total_exceeds_remaining": .refundTotalExceedsLine,
         "woocommerce_rest_refund_total_exceeds_line": .refundTotalExceedsLine,
         "woocommerce_rest_invalid_refund_amount": .invalidRefundAmount
     ]

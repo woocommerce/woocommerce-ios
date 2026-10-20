@@ -14,8 +14,10 @@ struct POSRefundSubmissionMapping {
     }
 
     private let currencyFormatter: CurrencyFormatter
+    private let numberOfDecimals: Int
 
-    init(currencyFormatter: CurrencyFormatter) {
+    init(currencyFormatter: CurrencyFormatter, numberOfDecimals: Int) {
+        self.numberOfDecimals = numberOfDecimals
         self.currencyFormatter = currencyFormatter
     }
 
@@ -29,8 +31,7 @@ struct POSRefundSubmissionMapping {
     }
 
     func determineRefundableFees(from order: Order, with refunds: [Refund]) -> [OrderFeeLine] {
-        let refundedFeeIDs = Set(refunds.flatMap(\.feeLines).map { $0.refundedItemID ?? $0.feeID })
-        return order.fees.filter { !refundedFeeIDs.contains($0.feeID) }
+        OrderRefundsOptionsDeterminer.remainingFees(in: order, refunds: refunds)
     }
 
     func makeSelectableItems(refundableItems: [RefundableOrderItem],
@@ -94,7 +95,7 @@ struct POSRefundSubmissionMapping {
             guard let quantity = selectedProductQuantities[refundableItem.item.itemID], quantity > 0 else {
                 return nil
             }
-            return RefundableOrderItem(item: refundableItem.item, quantity: quantity)
+            return refundableItem.selecting(quantity: quantity)
         }
 
         let selectedFeeIDs = Set(selectedItems.filter(\.isLumpSum).map(\.itemID))
@@ -148,7 +149,8 @@ struct POSRefundSubmissionMapping {
     func refundValues(items: [RefundableOrderItem],
                       fees: [OrderFeeLine],
                       order: Order) -> (subtotal: Decimal, tax: Decimal, total: Decimal) {
-        let itemValues = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: currencyFormatter).calculateRefundValues()
+        let itemValues = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: currencyFormatter,
+                                                            numberOfDecimals: numberOfDecimals).calculateRefundValues()
         let feeValues = RefundFeesCalculationUseCase(fees: fees, currencyFormatter: currencyFormatter).calculateRefundValues()
         let subtotal = itemValues.subtotal + feeValues.subtotal
         let tax = itemValues.tax + feeValues.tax
@@ -158,6 +160,14 @@ struct POSRefundSubmissionMapping {
             total = min(total, maxRefundableAmount)
         }
 
+        if total < subtotal + tax {
+            let lines = RefundCreationUseCase(amount: apiAmountString(for: total), reason: nil, automaticallyRefundsPayment: false,
+                                              items: items, shippingLines: [], fees: fees, currencyFormatter: currencyFormatter,
+                                              numberOfDecimals: numberOfDecimals).createRefundItems()
+            let allocatedSubtotal = lines.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
+            let allocatedTax = lines.flatMap(\.taxes).reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
+            return (allocatedSubtotal, allocatedTax, total)
+        }
         return (subtotal, tax, total)
     }
 

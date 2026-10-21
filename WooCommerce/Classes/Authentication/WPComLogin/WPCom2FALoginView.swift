@@ -114,7 +114,7 @@ struct WPCom2FALoginView: View {
                     .disabled(viewModel.isLoggingIn)
                 }
 
-                if #available(iOS 16, *), viewModel.shouldShowSecurityKeyOption {
+                if viewModel.shouldShowSecurityKeyOption {
                     // Security key button
                     Button {
                         viewModel.loginWithSecurityKey()

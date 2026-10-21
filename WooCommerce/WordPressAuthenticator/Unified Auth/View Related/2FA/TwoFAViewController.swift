@@ -533,8 +533,7 @@ private extension TwoFAViewController {
         if methods.canUseBackupCode && !isBackupCodeRequested {
             options.append(.useBackupCode)
         }
-        if !isSecurityKeyMode, #available(iOS 16, *), WordPressAuthenticator.shared.configuration.enablePasskeys,
-           loginFields.nonceInfo?.nonceWebauthn.isEmpty == false {
+        if !isSecurityKeyMode, WordPressAuthenticator.shared.configuration.enablePasskeys, loginFields.nonceInfo?.nonceWebauthn.isEmpty == false {
             options.append(.enterSecurityKey)
         }
 

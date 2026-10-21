@@ -113,7 +113,10 @@ struct ApplicationPasswordAuthorizationViewModelTests {
         #expect(fixture.navigation.viewControllers.first === fixture.form)
         #expect(fixture.navigation.viewControllers.count == (action == .dismiss ? 1 : 2))
         #expect(fixture.navigation.lastPopToViewControllerAnimated == (action == .dismiss))
-        if action == .contactSupport { #expect(fixture.navigation.topViewController is SupportChatHostingController) }
+        if action == .contactSupport {
+            let host = fixture.navigation.topViewController as? SupportChatHostingController
+            #expect(host != nil)
+        }
         #expect(!fixture.provider.receivedEvents.contains(WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue))
     }
 

@@ -10,11 +10,7 @@ Debug a build failure or test failure in the WooCommerce iOS project.
 
 ## For Build Failures
 
-1. Run the build and capture errors:
-```bash
-bundle exec fastlane build_for_testing 2>&1 \
-  | grep -E "error:|fatal|cannot find|undefined|ambiguous" | head -30
-```
+1. Use `/build` to capture the full log and build exit status. Inspect error excerpts after the command finishes.
 
 2. Identify the failing file and error type
 3. Read the failing file and surrounding context
@@ -28,13 +24,7 @@ bundle exec fastlane build_for_testing 2>&1 \
 
 ## For Test Failures
 
-1. Run the specific failing test (targeted tests require `xcodebuild` directly):
-```bash
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
-  test \
-  -only-testing:"<target>/<class>/<method>" 2>&1 | tail -50
-```
+1. Use `/test` with `<target>/<class>/<method>` to rerun the failing test and retain its full log.
 
 2. Read the test file and understand what it expects
 3. Read the implementation file being tested

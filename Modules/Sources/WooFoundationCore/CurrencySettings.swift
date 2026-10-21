@@ -8,7 +8,7 @@ public class CurrencySettings: Codable, Equatable {
 
     /// Designates where the currency symbol is located on a formatted price
     ///
-    public enum CurrencyPosition: String, Codable {
+    public enum CurrencyPosition: String, Codable, Sendable {
         case left = "left"
         case right = "right"
         case leftSpace = "left_space"

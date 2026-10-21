@@ -16,7 +16,7 @@ import Foundation
 /// All fields are required; a missing or blank value makes the whole response
 /// malformed. The self-hosted scan carries no user identity — unlike wp.com,
 /// the merchant's own server has no wp.com email to return.
-public struct SelfHostedQRLoginScanResponse: Equatable {
+public struct SelfHostedQRLoginScanResponse: Equatable, Sendable {
     public let sessionID: String
     public let realNumber: String
     public let expiresInSeconds: Int
@@ -29,10 +29,10 @@ public struct SelfHostedQRLoginScanResponse: Equatable {
 }
 
 /// Response of `GET {siteURL}/wp-json/wc-admin/mobile-app/qr-login-session-status`.
-public struct SelfHostedQRLoginSessionStatus: Equatable {
+public struct SelfHostedQRLoginSessionStatus: Equatable, Sendable {
     /// The states the self-hosted endpoint can report. It has no `consumed`
     /// state — that "already signed in elsewhere" terminal is wp.com-only.
-    public enum State: String, Equatable {
+    public enum State: String, Equatable, Sendable {
         case scanned
         case approved
         case rejected
@@ -56,7 +56,7 @@ public struct SelfHostedQRLoginSessionStatus: Equatable {
 /// Response of `POST {siteURL}/wp-json/wc-admin/mobile-app/qr-login-exchange`.
 ///
 /// Carries the freshly minted Application Password. All fields are required.
-public struct SelfHostedQRLoginExchangeResponse: Equatable {
+public struct SelfHostedQRLoginExchangeResponse: Equatable, Sendable {
     public let userLogin: String
     public let siteURL: String
     public let applicationPassword: String
@@ -74,7 +74,7 @@ public struct SelfHostedQRLoginExchangeResponse: Equatable {
 ///
 /// Unlike the self-hosted scan, the wp.com endpoint also returns the signed-in
 /// user's wp.com email for the number-match screen. All fields are required.
-public struct WPComQRLoginScanResponse: Equatable {
+public struct WPComQRLoginScanResponse: Equatable, Sendable {
     public let sessionID: String
     public let realNumber: String
     public let expiresInSeconds: Int
@@ -89,10 +89,10 @@ public struct WPComQRLoginScanResponse: Equatable {
 }
 
 /// Response of `GET /wpcom/v2/auth/qr-code-app/session-status`.
-public struct WPComQRLoginSessionStatus: Equatable {
+public struct WPComQRLoginSessionStatus: Equatable, Sendable {
     /// The states the wp.com endpoint can report. `consumed` ("already signed
     /// in elsewhere") is wp.com-only.
-    public enum State: String, Equatable {
+    public enum State: String, Equatable, Sendable {
         case scanned
         case approved
         case rejected
@@ -117,7 +117,7 @@ public struct WPComQRLoginSessionStatus: Equatable {
 /// Response of `POST /wpcom/v2/auth/qr-code-app/exchange`.
 ///
 /// Carries a magic-link URL the app opens to finish wp.com sign-in.
-public struct WPComQRLoginExchangeResponse: Equatable {
+public struct WPComQRLoginExchangeResponse: Equatable, Sendable {
     public let magicLinkURL: URL
 
     public init(magicLinkURL: URL) {

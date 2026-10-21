@@ -15,6 +15,7 @@ tags:
       id: "menu-coupons"
     direction: DOWN
     timeout: 15000
+    centerElement: true
 - tapOn:
     id: "menu-coupons"
 - extendedWaitUntil:
@@ -66,7 +67,13 @@ tags:
 - extendedWaitUntil:
     visible: "Your new coupon was created!"
     timeout: 30000
+# A tap while the sheet is still sliding in does not close it.
+- waitForAnimationToEnd:
+    timeout: 5000
 - tapOn: "Close"
+- extendedWaitUntil:
+    notVisible: "Your new coupon was created!"
+    timeout: 10000
 # WooCommerce stores the code in lowercase, and text matching ignores case.
 - extendedWaitUntil:
     visible: ".*${SUITE_RUN_ID}-UI.*"

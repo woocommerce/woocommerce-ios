@@ -1,1 +1,0 @@
-Yaş doğrulama artık daha net: Ebeveyn onayı beklemedetse veya reddedilirse sadece oturumu kapatmak için değil, sonrasında ne yapılacağını açıklayan bir ekran görürsünüz. Bir bağlantı sorunu mağazanızın yüklenmesini durdurursa uygulama size ne olduğunu söyler ve destek sunar, böylece tahmin yürütmezsiniz.

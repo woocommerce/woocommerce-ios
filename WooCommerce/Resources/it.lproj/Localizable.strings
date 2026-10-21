@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-09-22 17:56:21+0000 */
+/* Translation-Revision-Date: 2026-10-19 14:58:51+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -8502,6 +8502,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "Ho capito";
 
+/* Alert button that opens Help & Support, displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.contactSupportButton" = "Contatta il supporto";
+
 /* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
 "appCoordinator.ineligibleAgeRangeAlert.message" = "L'età del tuo account Apple è inferiore al minimo richiesto per questa app (%1d+).";
 
@@ -8624,6 +8627,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Creare un altro negozio?";
+
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "Grassetto";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "Corsivo";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "Sottolineato";
 
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Invia messaggio Telegram";
@@ -9052,6 +9064,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "Settimanale";
 
+/* Title of the web view to pay an unpaid Blaze order from the Blaze campaign list. */
+"blazeCampaignListView.paymentTitle" = "Paga il saldo in sospeso";
+
 /* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
 "blazeCampaignObjectivePickerView.accessibilityHintSelected" = "Selezionato";
 
@@ -9291,6 +9306,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Scopri come funziona %1$@";
+
+/* Message of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. %1$@ is the formatted outstanding amount, e.g. $25.05. */
+"blazeOutstandingBalanceView.message" = "Il tuo account ha attualmente un saldo in sospeso di %1$@. Pagalo prima di creare nuove campagne.";
+
+/* Button to open the payment page of an unpaid Blaze order. */
+"blazeOutstandingBalanceView.pay" = "Paga";
+
+/* Title of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. */
+"blazeOutstandingBalanceView.title" = "Saldo in sospeso";
 
 /* Button title in the Blaze Payment Method screen if there is an existing payment method */
 "blazePaymentMethodsView.addAnotherCreditCardButton" = "Aggiungi un'altra carta di credito";
@@ -9719,6 +9743,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Ricerca del lettore";
 
+/* Shown when fetching store settings fails and the store country remains unknown. */
+"cardPresentPayment.countryRecovery.cardPaymentSettingsUnavailable" = "Impossibile caricare le impostazioni del negozio per verificare la disponibilità del pagamento con carta.";
+
+/* Status while fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.checkingCardPaymentAvailability" = "Controllo della disponibilità del pagamento con carta...";
+
+/* Shown when fetched store settings have no recognizable country. Check the store country, then retry. */
+"cardPresentPayment.countryRecovery.countryUnavailable" = "Non siamo riusciti a identificare il Paese del tuo negozio. Controlla il Paese nelle impostazioni del negozio WooCommerce.";
+
+/* Retry fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.retry" = "Riprova";
+
 /* A title for CTA to present native location permission alert */
 "cardPresentPayment.locationPreAlert.continueButton" = "Continua";
 
@@ -9863,8 +9899,23 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Il totale dell'ordine è cambiato dall'inizio del pagamento. Torna indietro e controlla che l'ordine sia corretto, quindi riprova il pagamento.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Resto dovuto: %1$@";
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "Resto dovuto: %1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "Ignora";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "Il tuo negozio ha restituito una risposta inaspettata, quindi non siamo riusciti a completare l'accesso. Riprova o contatta il supporto.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "Riprova";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "Contatta il supporto";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "Impossibile accedere";
 
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Un plugin di sicurezza può spostare la bacheca di WordPress. Inserisci l'indirizzo che usi per aprirlo.";
@@ -10872,8 +10923,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Il reader individuato non ha un indirizzo IP e non è possibile effettuare una connessione.";
 
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "Rivedi le precedenti conversazioni di supporto";
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "Rivedi le chat di supporto IA";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Cronologia della chat";
@@ -11382,8 +11433,8 @@ which should be translated separately and considered part of this sentence. */
 /* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
 "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "I prodotti possono utilizzare una propria soglia o la soglia dell'intero magazzino. %1$@ per visualizzare il valore attuale.";
 
-/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
-"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "I prodotti possono utilizzare una propria soglia o la soglia dell'intero magazzino pari a {00A0}%1$@. %2$@.";
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The character before %1$@ is a non-breaking space, keeping the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat.v2" = "I prodotti possono utilizzare la propria soglia o la soglia per l'intero negozio di %1$@. %2$@";
 
 /* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
 "newStockNotificationPreferencesDetailView.lowStock.title" = "In esaurimento";
@@ -11862,6 +11913,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "Visualizza foto";
+
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "Impossibile verificare se questo ordine può essere pagato con carta. Riprova.";
+
+/* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
+"paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "I pagamenti con carta non sono disponibili per la valuta di questo ordine (%1$@).";
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Paga di persona";
@@ -12415,6 +12472,9 @@ which should be translated separately and considered part of this sentence. */
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Caricamento";
 
+/* Note shown on a product row in the Point of Sale cart at checkout when the order response shows the line item received a discount, from a coupon or another source. */
+"pointOfSale.itemRow.discountApplied" = "Sconto applicato";
+
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "Contrassegna come Pagato";
 
@@ -12805,6 +12865,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Catalogo dei prodotti";
 
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "Gestisci le impostazioni di pagamento";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Pagamenti";
+
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Visualizza l'accesso al personale e al PIN";
 
@@ -13089,9 +13155,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "Per procedere, il punto vendita deve essere abilitato. Abilita la funzionalità POS qui sotto o dalla pagina di amministrazione di WordPress in Impostazioni WooCommerce > Avanzate > Funzionalità e riprova.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Prova a riavviare l'app per risolvere questo problema.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "Impossibile caricare le informazioni sulle impostazioni del sito. Controlla la connessione a Internet e riprova. Se il problema persiste, contatta il supporto per ricevere assistenza.";
@@ -14036,6 +14099,15 @@ which should be translated separately and considered part of this sentence. */
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Aggiornamento data non disponibile";
 
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "Riproduci un suono al completamento del pagamento";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "Suono di pagamento riuscito";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "Pagamenti";
+
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "Il POS si blocca quando tocchi Blocca POS dal menu o automaticamente dopo 5 minuti di inattività.";
 
@@ -14158,6 +14230,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "privato";
+
+/* Error shown when creating a product category with a name that already exists. */
+"productCategoryActionError.duplicateName" = "Una categoria con lo stesso nome esiste già. Scegli un nome diverso.";
 
 /* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
 "productCreationAIPromptProgressBar.main.almostDone" = "Ci siamo quasi.";
@@ -15090,6 +15165,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the significant-change blocking screen that re-checks the approval status. */
 "significantChangeConsent.blocking.checkAgain.button" = "Verifica di nuovo";
 
+/* Secondary button on the significant-change blocking screen that opens Help & Support. */
+"significantChangeConsent.blocking.contactSupport.button" = "Contatta il supporto";
+
 /* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
 "significantChangeConsent.blocking.continue.button" = "Continua";
 
@@ -15457,8 +15535,8 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Chat senza titolo";
 
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "Non hai ancora chattato con il supporto.";
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "Non hai ancora avviato una chat di supporto IA.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Cronologia della chat";
@@ -16291,6 +16369,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "È necessario un numero di telefono per l'indirizzo di destinazione.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@ richiede un numero di telefono del destinatario.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Aggiungi società";
 
@@ -16648,6 +16729,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Maggiori informazioni sul numero di transazione interno";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "Le spedizioni verso l'UE ora richiedono identificatori di prodotto per ciascun articolo. Aggiorna il plugin WooCommerce Shipping per aggiungerli.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Dettagli del prodotto";
 
@@ -16693,6 +16777,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "La descrizione deve contenere al massimo 30 caratteri.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "Obbligatorio per le spedizioni verso l'UE";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "Deve contenere al massimo %1$d caratteri.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "Identificatori di prodotto UE";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "Obbligatorio per le spedizioni verso l'UE. SKU e GTIN \/ EAN vengono precompilati dalle impostazioni Magazzino del prodotto.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN\/EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "Inserisci il GTIN\/EAN o seleziona \"Nessun codice a barre\"";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "Numero di tariffa doganale";
 
@@ -16702,8 +16804,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "Opzionale";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "Codice articolo del produttore";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "Nessun codice a barre";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Paese di origine";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "Il numero di tariffa deve contenere tra 6 e 12 cifre";

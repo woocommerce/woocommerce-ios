@@ -17,7 +17,7 @@ public protocol StoreConnectionErrorMonitoring {
 
 /// Write-only counterpart used by the networking layer to report the outcome of a request.
 ///
-protocol StoreConnectionErrorRecording {
+protocol StoreConnectionErrorRecording: Sendable {
     /// Records that a request for the given store was rejected with `rest_invalid_signature`.
     ///
     func recordInvalidSignature(siteID: Int64)

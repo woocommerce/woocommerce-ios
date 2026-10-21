@@ -15,31 +15,31 @@ If no diff against trunk, fall back to staged changes: `git diff --cached`
 
 2. Check each modified file against these criteria:
 
-**Architecture** (see `.claude/rules/architecture.md`):
+**Architecture** (see `.agents/rules/architecture.md`):
 - UI code does not import Networking or Storage directly
 - New actions follow the Yosemite dispatch pattern
 - Dependencies injected via constructor with protocol types
 - Coordinators for navigation, ViewModels for state
 
-**Swift Style** (see `.claude/rules/swift-style.md`):
+**Swift Style** (see `.agents/rules/swift-style.md`):
 - No force unwraps or force casts
 - Error handling uses do-catch, not try?
 - Line length under 163 characters
 - No parentheses around conditionals
 
-**Localization** (see `.claude/rules/localization.md`):
+**Localization** (see `.agents/rules/localization.md`):
 - NSLocalizedString uses reverse-DNS keys with value: and comment:
 - No LocalizedStringKey
 - No string interpolation in localized strings
 - Positional placeholders (%1$@)
 - Strings grouped in enum Localization { }
 
-**Analytics** (see `.claude/rules/analytics.md`):
+**Analytics** (see `.agents/rules/analytics.md`):
 - New events added to WooAnalyticsStat
 - Properties use WooAnalyticsEvent factory pattern
 - Analytics dependency injected
 
-**Testing** (see `.claude/rules/testing.md`):
+**Testing** (see `.agents/rules/testing.md`):
 - New code has corresponding tests
 - Tests use snake_case naming
 - Given/When/Then structure

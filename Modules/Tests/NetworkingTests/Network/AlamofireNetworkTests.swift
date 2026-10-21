@@ -290,12 +290,11 @@ final class AlamofireNetworkTests: XCTestCase {
 
     // MARK: - Session Initialization Tests
 
-    // `AlamofireNetwork` is not `Sendable`; the child tasks below only exercise Alamofire's own thread-safe session.
     func test_concurrent_requests_do_not_fail_with_sessionDeinitialized_error() async throws {
         // Given
         let url = try XCTUnwrap(URL(string: "http://localhost:991929281"))
         let request = URLRequest(url: url, timeoutInterval: 0.001)
-        nonisolated(unsafe) let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
 
         // When
         async let request1 = network.responseDataAndHeaders(for: request)
@@ -976,18 +975,17 @@ final class AlamofireNetworkTests: XCTestCase {
     // MARK: - Authentication Mode Tests
     //
     // `authenticationMode` is written on the main queue by `updateAuthenticationMode`, so each test reads it
-    // from a main-queue block. `AlamofireNetwork` is not `Sendable`; the `nonisolated(unsafe)` locals record
-    // that the read happens after the write on the same queue.
+    // from a main-queue block to ensure the update has been delivered before asserting.
 
     func test_authenticationMode_is_appPasswords_for_wporg_credentials() {
         // Given
         let wporgCredentials = Credentials.wporg(username: "user", password: "pass", siteAddress: "https://example.com")
 
         // When
-        nonisolated(unsafe) let network = AlamofireNetwork(credentials: wporgCredentials,
-                                                           selectedSite: nil,
-                                                           appPasswordSupportState: nil,
-                                                           sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: wporgCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should be set")
@@ -1003,10 +1001,10 @@ final class AlamofireNetworkTests: XCTestCase {
         let appPasswordCredentials = Credentials.applicationPassword(username: "user", password: "pass", siteAddress: "https://example.com")
 
         // When
-        nonisolated(unsafe) let network = AlamofireNetwork(credentials: appPasswordCredentials,
-                                                           selectedSite: nil,
-                                                           appPasswordSupportState: nil,
-                                                           sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: appPasswordCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should be set")
@@ -1022,10 +1020,10 @@ final class AlamofireNetworkTests: XCTestCase {
         let wpcomCredentials = createWPComCredentials()
 
         // When
-        nonisolated(unsafe) let network = AlamofireNetwork(credentials: wpcomCredentials,
-                                                           selectedSite: nil,
-                                                           appPasswordSupportState: nil,
-                                                           sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: wpcomCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should be set")
@@ -1038,10 +1036,10 @@ final class AlamofireNetworkTests: XCTestCase {
 
     func test_authenticationMode_is_nil_for_no_credentials() {
         // When
-        nonisolated(unsafe) let network = AlamofireNetwork(credentials: nil,
-                                                           selectedSite: nil,
-                                                           appPasswordSupportState: nil,
-                                                           sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should be set")
@@ -1057,7 +1055,7 @@ final class AlamofireNetworkTests: XCTestCase {
         let siteID: Int64 = 123
         let wpcomCredentials = createWPComCredentials()
         let appPasswordSupportStream = CurrentValueSubject<Bool, Never>(false)
-        nonisolated(unsafe) let network = createNetworkWithSelectedSite(
+        let network = createNetworkWithSelectedSite(
             siteID: siteID,
             credentials: wpcomCredentials,
             userDefaults: userDefaults,
@@ -1081,7 +1079,7 @@ final class AlamofireNetworkTests: XCTestCase {
         let siteID: Int64 = 456
         let wpcomCredentials = createWPComCredentials()
         let appPasswordSupportStream = CurrentValueSubject<Bool, Never>(false)
-        nonisolated(unsafe) let network = createNetworkWithSelectedSite(
+        let network = createNetworkWithSelectedSite(
             siteID: siteID,
             credentials: wpcomCredentials,
             userDefaults: userDefaults,
@@ -1107,7 +1105,7 @@ final class AlamofireNetworkTests: XCTestCase {
         let wpcomCredentials = createWPComCredentials()
         let appPasswordSupportStream = CurrentValueSubject<Bool, Never>(false)
         userDefaults.applicationPasswordUnsupportedList = [String(siteID): Date()]
-        nonisolated(unsafe) let network = createNetworkWithSelectedSite(
+        let network = createNetworkWithSelectedSite(
             siteID: siteID,
             credentials: wpcomCredentials,
             userDefaults: userDefaults,
@@ -1129,10 +1127,10 @@ final class AlamofireNetworkTests: XCTestCase {
     func test_authenticationMode_does_not_change_for_non_wpcom_credentials() {
         // Given
         let wporgCredentials = Credentials.wporg(username: "user", password: "pass", siteAddress: "https://example.com")
-        nonisolated(unsafe) let network = AlamofireNetwork(credentials: wporgCredentials,
-                                                           selectedSite: nil,
-                                                           appPasswordSupportState: nil,
-                                                           sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: wporgCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should remain unchanged")

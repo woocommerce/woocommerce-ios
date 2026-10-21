@@ -3,11 +3,12 @@ import Yosemite
 import WooFoundation
 
 /// `FilterListViewModel` for filtering a list of orders.
-final class FilterOrderListViewModel: FilterListViewModel {
+@MainActor
+final class FilterOrderListViewModel: @MainActor FilterListViewModel {
     typealias Criteria = Filters
 
     /// Aggregates the filter values that can be updated in the Filter Order UI.
-    struct Filters: Equatable, HumanReadable {
+    struct Filters: Equatable, HumanReadable, Sendable {
         let orderStatus: [OrderStatusEnum]?
         let dateRange: OrderDateRangeFilter?
         let product: FilterOrdersByProduct?

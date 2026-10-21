@@ -7,11 +7,13 @@ import SwiftUI
 /// - Note: The field owns no search logic. The host binds `text`, debounces and fetches, and
 ///   renders the results and empty states beneath it; a `.onSubmit` on the host catches the Search
 ///   key, and `.focused(_:)` / `.autocorrectionDisabled()` apply from outside as on any text
-///   field. The design's Resting and Active states are driven by the text alone: the clear control
-///   appears with the first character and only empties the query. Text and glyphs scale together
+///   field. A tap anywhere on the field focuses it, as a `UISearchBar` does. The design's Resting
+///   and Active states are driven by the text alone: the clear control appears with the first
+///   character and only empties the query. Text and glyphs scale together
 ///   under Dynamic Type up to ``StoreSearchFieldScaling/maximumDynamicTypeSize``, and the field grows with them.
 public struct StoreSearchField: View {
     @Environment(\.isEnabled) private var isEnabled
+    @FocusState private var isFieldFocused: Bool
 
     @Binding private var text: String
     private let placeholder: String
@@ -48,7 +50,8 @@ public struct StoreSearchField: View {
 
     // MARK: - Parts
 
-    /// The rounded field. Its height is the design's 40 pt until larger text needs more.
+    /// The rounded field. Its height is the design's 40 pt until larger text needs more. The whole
+    /// pill is tappable: the text field alone would only focus from its own line box.
     private var field: some View {
         HStack(spacing: StoreSpacing.s4) {
             StoreIcon.MagnifyingGlass.regular.scaledImage(size: Constants.glassSize)
@@ -59,6 +62,7 @@ public struct StoreSearchField: View {
             }
             .storeTextStyle(Constants.textStyle)
             .foregroundStyle(appearance.content)
+            .focused($isFieldFocused)
             .submitLabel(.search)
             .accessibilityAddTraits(.isSearchField)
             if !text.isEmpty {
@@ -68,6 +72,10 @@ public struct StoreSearchField: View {
         .padding(.horizontal, StorePadding.p5)
         .frame(minHeight: StoreSize.searchFieldHeight)
         .background(appearance.field, in: RoundedRectangle(cornerRadius: StoreRadius.large))
+        .contentShape(Rectangle())
+        .onTapGesture {
+            isFieldFocused = true
+        }
     }
 
     private var prompt: Text {
@@ -75,17 +83,19 @@ public struct StoreSearchField: View {
             .foregroundStyle(appearance.placeholder)
     }
 
-    /// Matches the field's design height, as the design's `cancel` layer does, so the row stays 64 pt.
+    /// Matches the field's design height, as the design's `cancel` layer does, so the row stays 64 pt;
+    /// the tap target overflows that frame to the HIG minimum, like the clear control's.
     private func actionButton(_ action: StoreSearchFieldAction) -> some View {
         Button(action: action.action) {
             Text(action.title)
                 .storeTextStyle(Constants.actionTextStyle)
                 .lineLimit(1)
                 .foregroundStyle(actionColor(for: action))
-                .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.searchFieldHeight)
+                .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
                 .contentShape(Rectangle())
         }
         .buttonStyle(StorePressFeedbackButtonStyle())
+        .frame(height: StoreSize.searchFieldHeight)
         .disabled(!action.isEnabled)
     }
 

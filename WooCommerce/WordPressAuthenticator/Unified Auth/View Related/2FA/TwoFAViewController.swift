@@ -19,6 +19,15 @@ final class TwoFAViewController: LoginViewController {
     private var errorMessage: String?
     private var pasteboardChangeCountBeforeBackground: Int?
     private var shouldChangeVoiceOverFocus: Bool = false
+    private var hasRequestedTextCode = false
+    private var isBackupCodeRequested = false
+    private var isLoading = false
+    private var methods: TwoFactorMethods {
+        TwoFactorMethods(supportedAuthTypes: loginFields.supportedAuthTypes)
+    }
+    private var isSecurityKeyMode: Bool {
+        methods.startsWithSecurityKey && !isBackupCodeRequested
+    }
 
     /// Tracks when the initial challenge request was made.
     private var initialChallengeRequestTime: Date?
@@ -65,7 +74,12 @@ final class TwoFAViewController: LoginViewController {
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
 
         configureSubmitButton(animating: false)
-        configureViewForEditingIfNeeded()
+        if isSecurityKeyMode {
+            // There's no code field to type in, so don't leave room for a keyboard.
+            adjustViewForKeyboard(false)
+        } else {
+            configureViewForEditingIfNeeded()
+        }
 
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
@@ -108,15 +122,29 @@ final class TwoFAViewController: LoginViewController {
 
         submitButton?.isEnabled = (
             !animating &&
-            isNumeric &&
-            isValidLength
+            (isSecurityKeyMode || (isNumeric && isValidLength))
         )
     }
 
     override func configureViewLoading(_ loading: Bool) {
+        isLoading = loading
         super.configureViewLoading(loading)
         codeField?.isEnabled = !loading
+        tableView?.visibleCells
+            .compactMap { $0 as? TextLinkButtonTableViewCell }
+            .forEach { $0.enableButton(!loading) }
         initialChallengeRequestTime = nil
+    }
+
+    override func localizePrimaryButton() {
+        super.localizePrimaryButton()
+        guard isSecurityKeyMode else {
+            return
+        }
+
+        let title = WordPressAuthenticator.shared.displayStrings.securityKeyButtonTitle
+        submitButton?.setTitle(title, for: .normal)
+        submitButton?.setTitle(title, for: .highlighted)
     }
 
     override func displayRemoteError(_ error: Error) {
@@ -166,6 +194,11 @@ private extension TwoFAViewController {
     // MARK: - Button Actions
 
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        if isSecurityKeyMode {
+            tracker.track(click: .enterSecurityKey)
+            return loginWithSecurityKeys()
+        }
+
         tracker.track(click: .submitTwoFactorCode)
         validateForm()
     }
@@ -180,6 +213,10 @@ private extension TwoFAViewController {
         } else {
             loginFacade.requestOneTimeCode(with: loginFields)
         }
+
+        hasRequestedTextCode = true
+        // Reloading only the instructions keeps the code the user may have typed.
+        tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
     }
 
     // MARK: - Login
@@ -479,21 +516,37 @@ private extension TwoFAViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions, .code]
+        rows = [.instructions]
+
+        if !isSecurityKeyMode {
+            rows.append(.code)
+        }
 
         if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
 
-        rows.append(.spacer(20))
-        rows.append(.alternateInstructions)
+        var options = [Row]()
+        if isSecurityKeyMode {
+            if methods.canUseBackupCode {
+                options.append(.useBackupCode)
+            }
+        } else {
+            if methods.canTextCode {
+                options.append(.sendCode)
+            }
+            if #available(iOS 16, *), WordPressAuthenticator.shared.configuration.enablePasskeys, loginFields.nonceInfo?.nonceWebauthn.isEmpty == false {
+                options.append(.enterSecurityKey)
+            }
+        }
 
-        rows.append(.spacer(4))
-        rows.append(.sendCode)
-
-        if #available(iOS 16, *), WordPressAuthenticator.shared.configuration.enablePasskeys, loginFields.nonceInfo?.nonceWebauthn.isEmpty == false {
-            rows.append(.spacer(4))
-            rows.append(.enterSecurityKey)
+        if options.isEmpty == false {
+            rows.append(.spacer(20))
+            rows.append(.alternateInstructions)
+            for option in options {
+                rows.append(.spacer(4))
+                rows.append(option)
+            }
         }
     }
 
@@ -511,6 +564,8 @@ private extension TwoFAViewController {
             configureTextLinkButton(cell)
         case let cell as TextLinkButtonTableViewCell where row == .enterSecurityKey:
             configureEnterSecurityKeyLinkButton(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .useBackupCode:
+            configureUseBackupCodeButton(cell)
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         case let cell as SpacerTableViewCell:
@@ -525,7 +580,8 @@ private extension TwoFAViewController {
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.twoFactorInstructions)
+        let instructions = methods.instructions(hasRequestedTextCode: hasRequestedTextCode, isBackupCodeRequested: isBackupCodeRequested)
+        cell.configureLabel(text: instructions ?? WordPressAuthenticator.shared.displayStrings.twoFactorInstructions)
     }
 
     /// Configure the alternate instruction cell.
@@ -555,9 +611,10 @@ private extension TwoFAViewController {
     ///
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle, icon: .authenticatorPhoneIcon)
+        cell.enableButton(!isLoading)
 
         cell.actionHandler = { [weak self] in
-            guard let self else { return }
+            guard let self, !self.isLoading else { return }
 
             self.tracker.track(click: .sendCodeWithText)
             self.requestCode()
@@ -570,14 +627,38 @@ private extension TwoFAViewController {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.securityKeyButtonTitle,
                              icon: .authenticatorKeyIcon,
                              accessibilityIdentifier: TextLinkButtonTableViewCell.Constants.passkeysID)
+        cell.enableButton(!isLoading)
 
         cell.actionHandler = { [weak self] in
-            guard let self else { return }
+            guard let self, !self.isLoading else { return }
 
             self.tracker.track(click: .enterSecurityKey)
             if #available(iOS 16, *) {
                 self.loginWithSecurityKeys()
             }
+        }
+    }
+
+    /// Configure the backup-code link cell.
+    func configureUseBackupCodeButton(_ cell: TextLinkButtonTableViewCell) {
+        cell.configureButton(text: LocalizedText.useBackupCodeButton)
+        cell.enableButton(!isLoading)
+
+        cell.actionHandler = { [weak self] in
+            guard let self, !self.isLoading else { return }
+
+            self.isBackupCodeRequested = true
+            self.localizePrimaryButton()
+            self.loadRows()
+            self.tableView.reloadData()
+            self.tableView.layoutIfNeeded()
+            self.configureSubmitButton(animating: false)
+            guard let codeField = self.codeField else {
+                return
+            }
+            codeField.becomeFirstResponder()
+            self.view.accessibilityElements = [codeField, self.tableView as Any, self.submitButton as Any]
+            UIAccessibility.post(notification: .layoutChanged, argument: codeField)
         }
     }
 
@@ -627,6 +708,7 @@ private extension TwoFAViewController {
         case alternateInstructions
         case sendCode
         case enterSecurityKey
+        case useBackupCode
         case errorMessage
         case spacer(CGFloat)
 
@@ -641,6 +723,8 @@ private extension TwoFAViewController {
             case .sendCode:
                 return TextLinkButtonTableViewCell.reuseIdentifier
             case .enterSecurityKey:
+                return TextLinkButtonTableViewCell.reuseIdentifier
+            case .useBackupCode:
                 return TextLinkButtonTableViewCell.reuseIdentifier
             case .errorMessage:
                 return TextLabelTableViewCell.reuseIdentifier
@@ -660,6 +744,11 @@ private extension TwoFAViewController {
         static let timeoutError = NSLocalizedString("Time's up, but don't worry, your security is our priority. Please try again!",
                                                     comment: "Error when the uses takes more than 1 minute to submit a security key.")
         static let unknownError = NSLocalizedString("Whoops, something went wrong. Please try again!", comment: "Generic error on the 2FA screen")
+        static let useBackupCodeButton = NSLocalizedString(
+            "twoFAViewController.useBackupCodeButton",
+            value: "Use a backup code instead",
+            comment: "Button to enter a backup code on the 2FA screen"
+        )
     }
 }
 

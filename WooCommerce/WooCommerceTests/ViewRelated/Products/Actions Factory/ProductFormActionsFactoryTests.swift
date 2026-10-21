@@ -32,7 +32,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editDownloadableFiles, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -61,7 +61,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editDownloadableFiles, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -89,7 +89,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editDownloadableFiles, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -116,7 +116,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editLinkedProducts, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editDownloadableFiles, .editLinkedProducts, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -145,7 +145,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editDownloadableFiles, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -173,7 +173,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editDownloadableFiles, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -202,7 +202,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -231,7 +231,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -259,7 +259,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editDownloadableFiles, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -286,6 +286,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [
             .editSimplifiedInventory,
+            .editAttributes,
             .editCategories,
             .editTags,
             .editShortDescription,
@@ -315,6 +316,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [
             .editSimplifiedInventory,
+            .editAttributes,
             .editCategories,
             .editTags,
             .editShortDescription,
@@ -347,7 +349,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -376,7 +378,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -400,7 +402,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -427,7 +429,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -447,7 +449,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             let model = EditableProductModel(product: product)
 
             // When
-            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: true, featureFlagService: MockFeatureFlagService())
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: true)
 
             // Then
             let containsAddOnAction = factory.settingsSectionActions().contains(ProductFormEditAction.addOns(editable: true))
@@ -471,7 +473,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             let model = EditableProductModel(product: product)
 
             // When
-            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false, featureFlagService: MockFeatureFlagService())
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false)
 
             // Then
             let containsAddOnAction = factory.settingsSectionActions().contains(ProductFormEditAction.addOns(editable: true))
@@ -495,7 +497,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             let model = EditableProductModel(product: product)
 
             // When
-            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false, featureFlagService: MockFeatureFlagService())
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false)
 
             // Then
             let containsAddOnAction = factory.settingsSectionActions().contains(ProductFormEditAction.addOns(editable: true))
@@ -509,7 +511,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .notSet, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .notSet)
 
         // Then
         let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
@@ -522,7 +524,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
 
         // Then
         let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
@@ -535,7 +537,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
 
         // Then
         let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
@@ -548,7 +550,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
 
         // Then
         let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
@@ -563,14 +565,14 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
 
         // Then
         let containsAttributeAction = factory.settingsSectionActions().contains(ProductFormEditAction.attributes(editable: true))
         XCTAssertTrue(containsAttributeAction)
     }
 
-    func test_when_non_variation_attributes_are_on_then_product_with_attributes_shows_attributes_row_for_each_type() {
+    func test_product_with_attributes_shows_attributes_row_for_each_type() {
         // Given
         let productTypes: [ProductType] = [.simple, .affiliate, .grouped, .variable, .subscription, .variableSubscription, .bundle, .composite,
                                            .booking, .custom("custom-type")]
@@ -580,9 +582,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             let model = EditableProductModel(product: Product.fake().copy(productTypeKey: productType.rawValue, attributes: [attribute]))
 
             // When
-            let factory = ProductFormActionsFactory(product: model,
-                                                    formType: .edit,
-                                                    featureFlagService: Fixtures.featureFlagService(isNonVariationAttributesEnabled: true))
+            let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
             // Then
             XCTAssertTrue(factory.settingsSectionActions().contains(.attributes(editable: true)), "\(productType)")
@@ -590,47 +590,28 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         }
     }
 
-    func test_when_non_variation_attributes_are_on_then_product_without_attributes_shows_attributes_in_bottom_sheet() {
+    func test_product_without_attributes_shows_attributes_in_bottom_sheet() {
         // Given
         let model = EditableProductModel(product: Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: []))
 
         // When
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                featureFlagService: Fixtures.featureFlagService(isNonVariationAttributesEnabled: true))
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Then
         XCTAssertFalse(factory.settingsSectionActions().contains(.attributes(editable: true)))
         XCTAssertTrue(factory.bottomSheetActions().contains(.editAttributes))
     }
 
-    func test_when_non_variation_attributes_are_on_then_custom_product_without_attributes_shows_attributes_in_bottom_sheet() {
+    func test_custom_product_without_attributes_shows_attributes_in_bottom_sheet() {
         // Given
         let model = EditableProductModel(product: Product.fake().copy(productTypeKey: "custom-type", attributes: []))
 
         // When
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                featureFlagService: Fixtures.featureFlagService(isNonVariationAttributesEnabled: true))
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Then
         XCTAssertFalse(factory.settingsSectionActions().contains(.attributes(editable: true)))
         XCTAssertTrue(factory.bottomSheetActions().contains(.editAttributes))
-    }
-
-    func test_when_non_variation_attributes_are_off_then_simple_product_has_no_attributes_action() {
-        // Given
-        let attribute = ProductAttribute.fake().copy(name: "Material", variation: false, options: ["Cotton"])
-        let model = EditableProductModel(product: Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: [attribute]))
-
-        // When
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                featureFlagService: Fixtures.featureFlagService(isNonVariationAttributesEnabled: false))
-
-        // Then
-        XCTAssertFalse(factory.settingsSectionActions().contains(.attributes(editable: true)))
-        XCTAssertFalse(factory.bottomSheetActions().contains(.editAttributes))
     }
 
     func test_view_model_for_bundle_product_without_price_or_bundled_items() {
@@ -654,7 +635,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: false)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
@@ -680,7 +661,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: false)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
@@ -706,7 +687,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: false)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
@@ -737,6 +718,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [
+            .editAttributes,
             .editCategories,
             .editTags,
             .editDownloadableFiles,
@@ -770,7 +752,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -799,7 +781,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -828,6 +810,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [
+            .editAttributes,
             .editCategories,
             .editTags,
             .editDownloadableFiles,
@@ -861,7 +844,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editCategories, .editTags, .editShortDescription, .editCustomFields]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
@@ -890,6 +873,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [
+            .editAttributes,
             .editCategories,
             .editTags,
             .editShortDescription,
@@ -921,6 +905,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [
+            .editAttributes,
             .editCategories,
             .editTags,
             .editDownloadableFiles,
@@ -936,7 +921,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
@@ -949,7 +934,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
@@ -962,7 +947,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
@@ -975,7 +960,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
@@ -1012,7 +997,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editCustomFields]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editAttributes, .editDownloadableFiles, .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 }
@@ -1088,11 +1073,6 @@ private extension ProductFormActionsFactoryTests {
         static let nonCoreProductWithPrice = nonCoreProductWithoutPrice.copy(regularPrice: "2")
 
         // Factory with default feature settings
-        static func featureFlagService(isNonVariationAttributesEnabled: Bool) -> MockFeatureFlagService {
-            let service = MockFeatureFlagService()
-            service.isFeatureFlagEnabledReturnValue[.nonVariationProductAttributes] = isNonVariationAttributesEnabled
-            return service
-        }
 
         static func actionsFactory(product: EditableProductModel,
                                    formType: ProductFormType,
@@ -1104,8 +1084,7 @@ private extension ProductFormActionsFactoryTests {
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      variationsPrice: variationsPrice,
-                                      featureFlagService: MockFeatureFlagService())
+                                      variationsPrice: variationsPrice)
         }
     }
 }

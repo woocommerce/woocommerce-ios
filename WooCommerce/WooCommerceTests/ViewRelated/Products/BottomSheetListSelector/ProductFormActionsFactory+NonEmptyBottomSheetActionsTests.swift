@@ -9,7 +9,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: MockFeatureFlagService())
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -34,7 +34,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: MockFeatureFlagService())
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -58,7 +58,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: MockFeatureFlagService())
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),

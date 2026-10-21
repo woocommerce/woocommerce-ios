@@ -16,6 +16,7 @@ tags:
       id: "menu-google-ads"
     direction: DOWN
     timeout: 15000
+    centerElement: true
     label: "Require a Google for WooCommerce-eligible extended-smoke store"
 - tapOn:
     id: "menu-google-ads"

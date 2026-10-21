@@ -153,7 +153,7 @@ extension EditAttributesViewController {
     /// Navigates to `AddAttributeViewController` and upon completion, update the product and clean the navigation stack
     ///
     private func navigateToAddAttributeViewController() {
-        let addAttributeVM = AddAttributeViewModel(product: viewModel.product)
+        let addAttributeVM = AddAttributeViewModel(product: viewModel.product, isVariationsFlow: viewModel.isVariationsFlow)
         let addAttributeViewController = AddAttributeViewController(viewModel: addAttributeVM) { [weak self] updatedProduct in
             guard let self else { return }
             self.viewModel.updateProduct(updatedProduct)
@@ -167,7 +167,10 @@ extension EditAttributesViewController {
     /// Upon completion, update the product and notify invoker
     ///
     private func navigateToEditAttribute(_ attribute: ProductAttribute) {
-        let editViewModel = AddAttributeOptionsViewModel(product: viewModel.product, attribute: .existing(attribute: attribute), allowsEditing: true)
+        let editViewModel = AddAttributeOptionsViewModel(product: viewModel.product,
+                                                         attribute: .existing(attribute: attribute),
+                                                         allowsEditing: true,
+                                                         isVariationsFlow: viewModel.isVariationsFlow)
         let editViewController = AddAttributeOptionsViewController(viewModel: editViewModel) { [weak self] updatedProduct in
             guard let self else { return }
             self.viewModel.updateProduct(updatedProduct)

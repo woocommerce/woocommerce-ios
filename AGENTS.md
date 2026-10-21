@@ -67,7 +67,7 @@ Use the `bootstrap` skill to set up the environment from a clean checkout. It wi
 ContextA8C is an Automattic MCP server that gives AI tools access to Slack, P2s, Linear, Field Guide, GitHub Enterprise, and other internal resources. It is optional — the agent works without it but provides richer context when available.
 
 - **Setup and usage**: See `.agents/rules/context-a8c.md`
-- **Claude Code setup skill**: `/setup-context-a8c`
+- **MCP setup skill**: `/setup-context-a8c`
 
 ## Build Commands
 
@@ -176,11 +176,11 @@ ServiceLocator.stores.dispatch(action)
 - For existing `ObservableObject` view models, expose state via `@Published` properties or Combine publishers
 - Dispatch Yosemite actions and handle results
 - Should be testable without UI dependencies
-- See `Modules/Tests/CLAUDE.md` for `@Observable` testing patterns using `withObservationTracking`
+- See `Modules/Tests/AGENTS.md` for `@Observable` testing patterns using `withObservationTracking`
 
 ## Point of Sale (POS) Module
 
-The POS module (`Modules/Sources/PointOfSale/`) is a **self-contained SwiftUI module** with its own architecture, distinct from the main app. It is reachable as a dedicated tab via `POSTabCoordinator`. See `Modules/Sources/PointOfSale/README.md` for full architectural documentation and `.claude/rules/architecture.md` for POS-specific rules.
+The POS module (`Modules/Sources/PointOfSale/`) is a **self-contained SwiftUI module** with its own architecture, distinct from the main app. It is reachable as a dedicated tab via `POSTabCoordinator`. See `Modules/Sources/PointOfSale/README.md` for full architectural documentation and `.agents/rules/architecture.md` for POS-specific rules.
 
 **Key differences from the main app:**
 
@@ -196,17 +196,17 @@ The POS module (`Modules/Sources/PointOfSale/`) is a **self-contained SwiftUI mo
 When working on POS, you can build and test the module in isolation for faster feedback:
 ```bash
 # Build PointOfSale module only
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+xcodebuild -workspace WooCommerce.xcworkspace -scheme PointOfSale \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
   build-for-testing -only-testing:"PointOfSaleTests"
 
 # Run POS tests only
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+xcodebuild -workspace WooCommerce.xcworkspace -scheme PointOfSale \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"PointOfSaleTests"
 
 # Run a specific POS test class
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+xcodebuild -workspace WooCommerce.xcworkspace -scheme PointOfSale \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"PointOfSaleTests/SomeTestClass"
 ```
@@ -272,7 +272,7 @@ Stars indicate priority. `[Internal]` for changes not visible to users.
 - **Mocks**: Hand-written, named `Mock<ServiceName>`, in `Mocks/` subdirectories
 - **Test data**: Use `.fake()` from Fakes module and `.copy()` from Copiable
 - **Test plan**: `WooCommerce/WooCommerceTests/UnitTests.xctestplan`
-- See `Modules/Tests/CLAUDE.md` for detailed async testing patterns
+- See `Modules/Tests/AGENTS.md` for detailed async testing patterns
 - UI tests require a local mock server: run `rake mocks` and use the `WooCommerceUITests` scheme
 
 ## Localization
@@ -312,9 +312,9 @@ For simulator work that needs a logged-in store, read `.agents/skills/auto-login
 
 Agents can verify their changes work from a user's perspective using two complementary loops:
 
-- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/references/feature-map.json`. Follows `/auto-login` for session setup.
-- **`/snapshot`** — Fast UI iteration: uses `swift-snapshot-testing` to render SwiftUI views to PNG (~25s/cycle). Agent reads images, compares against design goals, iterates. Temporary — artifacts are never committed.
+- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.agents/references/feature-map.json`. Follows `/auto-login` for session setup.
+- **`/snapshot`** — Fast UI iteration: uses `swift-snapshot-testing` to render SwiftUI views to PNG. Reuse existing tests or temporary fixtures, compare images against design goals, and keep task captures out of commits.
 
 **Prerequisites**: Node.js (see `.nvmrc`), Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json`.
 
-See `.claude/rules/verification.md` for full details on tools, mock server setup, and launch arguments.
+See `.agents/rules/verification.md` for full details on tools, mock server setup, and launch arguments.

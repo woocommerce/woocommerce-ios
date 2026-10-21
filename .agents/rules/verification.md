@@ -43,19 +43,20 @@ Builds the app, launches on the simulator, and uses mobile-mcp to navigate the U
 
 **Environment selection**: `/verify` reuses a suitable session, otherwise defaults to WireMock unless a live store is requested or required. Follow `.agents/skills/auto-login/SKILL.md` with `mocks` for WireMock or its default live-store flow.
 
-**Feature map**: `.claude/references/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
+**Feature map**: `.agents/references/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
 
 ## `/snapshot` — Snapshot-Driven UI Iteration
 
-Uses `swift-snapshot-testing` to render SwiftUI views to PNG images. The agent reads the PNG, compares against design goals, makes changes, and repeats. ~25s per iteration cycle when scoped to a module.
+Uses `swift-snapshot-testing` to render SwiftUI views to PNG images. The agent reads the PNG, compares against design goals, makes changes, and repeats.
 
 ```bash
 /snapshot            # start snapshot iteration for current view work
 ```
 
-**How it works**: Temporarily add `swift-snapshot-testing` to `Modules/Package.swift` -> create a snapshot test -> iterate (edit code -> run test -> read PNG -> compare -> fix) -> revert all temporary artifacts.
+**How it works**: Reuse existing coverage or add temporary setup -> render each requested state -> inspect new images against the design -> fix and repeat. Follow `/snapshot` for capture diagnostics and selective cleanup.
 
-**Important**: The snapshot dependency, test files, and `__Snapshots__/` directories are always temporary and must never be committed.
+Remove only temporary setup introduced by the snapshot task. Preserve existing dependencies, tests,
+and baselines; keep reviewed captures in the task artifact directory for its required retention period.
 
 ## mobile-mcp Tools
 
@@ -65,8 +66,8 @@ interaction, and app lifecycle. Tool names vary by server version.
 
 ## Key References
 
-- **Screen identifiers and navigation flows**: `.claude/references/screen-identifiers.md`
-- **Feature-to-path scope mapping**: `.claude/references/feature-map.json`
+- **Screen identifiers and navigation flows**: `.agents/references/screen-identifiers.md`
+- **Feature-to-path scope mapping**: `.agents/references/feature-map.json`
 - **Mock server management**: `/mocks` skill
 - **Simulator discovery**: `/simulator` skill
 - **Launch arguments**: `WooCommerce/Classes/System/ProcessConfiguration.swift`

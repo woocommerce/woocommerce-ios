@@ -17,8 +17,9 @@ final class AppCoordinatorTests: XCTestCase {
 
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
 
         window.makeKeyAndVisible()
 
@@ -845,6 +846,7 @@ final class AppCoordinatorTests: XCTestCase {
 
 private extension AppCoordinatorTests {
     /// Convenience method to make AppCoordinator instances.
+    @MainActor
     func makeCoordinator(window: UIWindow? = nil,
                          stores: StoresManager? = nil,
                          authenticationManager: Authentication? = nil,

@@ -98,6 +98,7 @@ final class NoWooErrorViewModel: @MainActor ULErrorViewModel {
         viewController.navigationController?.show(setupViewController, sender: nil)
     }
 
+    @MainActor
     func didTapSecondaryButton(in viewController: UIViewController?) {
         // Log out and pop
         stores.deauthenticate()

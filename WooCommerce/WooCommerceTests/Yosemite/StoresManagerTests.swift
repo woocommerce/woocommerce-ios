@@ -1226,7 +1226,10 @@ final class MockAuthenticationManager: AuthenticationManager {
 
     override func authenticationUI() -> UIViewController {
         authenticationUIInvoked = true
-        return UIViewController()
+        // AppCoordinator only requests authentication UI from its main-actor presentation paths.
+        return MainActor.assumeIsolated {
+            UIViewController()
+        }
     }
 }
 

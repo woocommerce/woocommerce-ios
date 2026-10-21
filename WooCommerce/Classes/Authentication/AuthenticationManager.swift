@@ -117,6 +117,7 @@ class AuthenticationManager: Authentication {
 
     /// Initializes the WordPress Authenticator.
     ///
+    @MainActor
     func initialize() {
         WordPressAuthenticator.initializeWithCustomConfigs()
         WordPressAuthenticator.shared.delegate = self

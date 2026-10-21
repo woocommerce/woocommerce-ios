@@ -5,6 +5,7 @@ import struct Yosemite.Site
 import struct Yosemite.StoreOnboardingTask
 
 /// Coordinates navigation for store onboarding.
+@MainActor
 final class StoreOnboardingCoordinator {
     typealias TaskType = StoreOnboardingTask.TaskType
 
@@ -32,24 +33,21 @@ final class StoreOnboardingCoordinator {
 
     /// Navigates to the fullscreen store onboarding view.
     func start(tasks: [StoreOnboardingTaskViewModel]) {
-        Task { @MainActor in
-            let viewModel = StoreOnboardingViewModel(
-                siteID: site.siteID,
-                isExpanded: true,
-                taskViewModels: tasks
-            )
-            let onboardingNavigationController = UINavigationController()
-            let onboardingViewController = StoreOnboardingViewHostingController(viewModel: viewModel,
-                                                                                navigationController: onboardingNavigationController,
-                                                                                site: site)
-            onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
-            navigationController.present(onboardingNavigationController, animated: true)
-        }
+        let viewModel = StoreOnboardingViewModel(
+            siteID: site.siteID,
+            isExpanded: true,
+            taskViewModels: tasks
+        )
+        let onboardingNavigationController = UINavigationController()
+        let onboardingViewController = StoreOnboardingViewHostingController(viewModel: viewModel,
+                                                                            navigationController: onboardingNavigationController,
+                                                                            site: site)
+        onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
+        navigationController.present(onboardingNavigationController, animated: true)
     }
 
     /// Navigates to complete an onboarding task.
     /// - Parameter task: the task to complete.
-    @MainActor
     func start(task: StoreOnboardingTask) {
         switch task.type {
         case .storeDetails:
@@ -68,7 +66,6 @@ final class StoreOnboardingCoordinator {
     }
 }
 
-@MainActor
 private extension StoreOnboardingCoordinator {
     func showStoreDetails() {
         let coordinator = StoreOnboardingStoreDetailsCoordinator(site: site,
@@ -149,7 +146,6 @@ private extension StoreOnboardingCoordinator {
 
 // MARK: Bottom sheet helpers
 //
-@MainActor
 private extension StoreOnboardingCoordinator {
     func buildBottomSheetPresenter() -> BottomSheetPresenter {
         BottomSheetPresenter(configure: { bottomSheet in

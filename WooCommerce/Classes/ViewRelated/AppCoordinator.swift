@@ -41,6 +41,7 @@ final class AppCoordinator {
     /// Handles the age range verification process and corresponding app/UI state behaviour.
     private let ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol
 
+    @MainActor
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -266,6 +267,7 @@ private extension AppCoordinator {
     }
 
     /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
+    @MainActor
     func configureAuthenticator() {
         if isRunningTests {
             /// This is needed to fix crashes in unit tests.

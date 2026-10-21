@@ -187,6 +187,7 @@ final class WrongAccountErrorViewModel: @MainActor ULAccountMismatchViewModel {
         storePickerCoordinator?.start()
     }
 
+    @MainActor
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController(screen: .wrongAccountError)
         fancyAlert.modalPresentationStyle = .custom
@@ -194,6 +195,7 @@ final class WrongAccountErrorViewModel: @MainActor ULAccountMismatchViewModel {
         viewController?.present(fancyAlert, animated: true)
     }
 
+    @MainActor
     func didTapLogOutButton(in viewController: UIViewController?) {
         // Log out and pop
         storesManager.deauthenticate()

@@ -39,6 +39,7 @@ protocol Authentication {
 
     /// Initializes the WordPress Authenticator.
     ///
+    @MainActor
     func initialize()
 
     /// Injects `loggedOutAppSettings`

@@ -30,7 +30,7 @@ items:
     manual: "Installing Jetpack from the app permanently changes the site, and the manual test needs the site-credential login first, so the whole scenario is one manual test."
   - id: login.jetpack-not-connected
     title: Login with Jetpack installed but not connected
-    manual: "Requires manually disconnecting Jetpack on a disposable Jurassic Ninja site."
+    manual: "Jurassic Ninja sites always come connected to WordPress.com, so the runner cannot create a store with Jetpack installed but not connected."
   - id: login.jetpack
     title: Login to Jetpack-connected WooCommerce store
     flow: .maestro/flows/login_successful.yaml
@@ -64,25 +64,25 @@ items:
 
   - id: push-no-jetpack.login
     title: Login to a no-Jetpack store for push setup
-    manual: "Requires a disposable no-Jetpack store and isolated notification account state."
+    manual: "Jurassic Ninja sites always come connected to WordPress.com, so the runner cannot create the not-connected store this setup starts from."
   - id: push-no-jetpack.card-visible
     title: Never miss a new order card is visible
-    manual: "Part of the guided no-Jetpack push setup until the store fixture is deterministic."
+    manual: "Jurassic Ninja sites always come connected to WordPress.com, so the runner cannot create the not-connected store this setup starts from."
   - id: push-no-jetpack.unlock
     title: Open and continue through Unlock push notifications
-    manual: "Requires deterministic notification permissions and backend setup state."
+    manual: "Jurassic Ninja sites always come connected to WordPress.com, so the runner cannot create the not-connected store this setup starts from."
   - id: push-no-jetpack.setup-completes
     title: No-Jetpack push setup completes
-    manual: "Requires deterministic notification permissions and backend setup state."
+    manual: "Jurassic Ninja sites always come connected to WordPress.com, so the runner cannot create the not-connected store this setup starts from."
   - id: push-no-jetpack.card-hidden
     title: Never miss a new order card is hidden after setup
-    manual: "Blocked with deterministic no-Jetpack push setup."
+    manual: "Jurassic Ninja sites always come connected to WordPress.com, so the runner cannot create the not-connected store this setup starts from."
   - id: push-no-jetpack.notification-arrives
     title: Web order triggers a push without Jetpack
-    manual: "Needs an API-created order and deterministic push-delivery fixture."
+    manual: "Jurassic Ninja sites always come connected to WordPress.com, so the runner cannot create the not-connected store this setup starts from."
   - id: push-no-jetpack.notification-deep-link
     title: No-Jetpack push opens the correct order
-    manual: "Blocked with deterministic no-Jetpack push delivery."
+    manual: "Jurassic Ninja sites always come connected to WordPress.com, so the runner cannot create the not-connected store this setup starts from."
 
   - id: dashboard.stats
     title: Dashboard charts and stats respond

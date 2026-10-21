@@ -12,7 +12,6 @@ import SwiftUI
 ///   under Dynamic Type up to ``StoreSearchFieldScaling/maximumDynamicTypeSize``, and the field grows with them.
 public struct StoreSearchField: View {
     @Environment(\.isEnabled) private var isEnabled
-    @ScaledMetric private var clearSide: CGFloat = Constants.clearSize.value
 
     @Binding private var text: String
     private let placeholder: String
@@ -63,7 +62,7 @@ public struct StoreSearchField: View {
             .submitLabel(.search)
             .accessibilityAddTraits(.isSearchField)
             if !text.isEmpty {
-                clearButton
+                StoreSearchFieldClearButton(text: $text, color: appearance.content)
             }
         }
         .padding(.horizontal, StorePadding.p5)
@@ -74,23 +73,6 @@ public struct StoreSearchField: View {
     private var prompt: Text {
         Text(placeholder)
             .foregroundStyle(appearance.placeholder)
-    }
-
-    /// The 16 pt glyph in layout, with a tap target extended to at least the HIG minimum around it:
-    /// the larger label overflows the glyph's frame without clipping, so it stays hittable while
-    /// the field keeps the design's inner padding.
-    private var clearButton: some View {
-        Button {
-            text = ""
-        } label: {
-            StoreIcon.CircleFull.solid.scaledImage(size: Constants.clearSize)
-                .foregroundStyle(appearance.content)
-                .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(StorePressFeedbackButtonStyle())
-        .frame(width: clearSide, height: clearSide)
-        .accessibilityLabel(Localization.clear)
     }
 
     /// Matches the field's design height, as the design's `cancel` layer does, so the row stays 64 pt.
@@ -117,10 +99,37 @@ private extension StoreSearchField {
         static let textStyle: StoreTextStyle = .bodyLarge
         static let actionTextStyle: StoreTextStyle = .labelLarge.emphasized
         static let glassSize: StoreIconSize = .medium
-        static let clearSize: StoreIconSize = .small
+    }
+}
+
+/// The 16 pt glyph in layout, with a tap target extended to at least the HIG minimum around it:
+/// the larger label overflows the glyph's frame without clipping, so it stays hittable while
+/// the field keeps the design's inner padding. A view of its own so its scaled side is read
+/// under the field's Dynamic Type cap and stops growing with the glyph.
+private struct StoreSearchFieldClearButton: View {
+    @Binding var text: String
+    let color: Color
+    @ScaledMetric private var side: CGFloat = Constants.size.value
+
+    var body: some View {
+        Button {
+            text = ""
+        } label: {
+            StoreIcon.CircleFull.solid.scaledImage(size: Constants.size)
+                .foregroundStyle(color)
+                .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(StorePressFeedbackButtonStyle())
+        .frame(width: side, height: side)
+        .accessibilityLabel(Localization.clear)
     }
 
-    enum Localization {
+    private enum Constants {
+        static let size: StoreIconSize = .small
+    }
+
+    private enum Localization {
         static let clear = NSLocalizedString(
             "storeSearchField.clear",
             value: "Clear",

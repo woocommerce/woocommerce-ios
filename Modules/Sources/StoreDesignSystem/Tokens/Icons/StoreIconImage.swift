@@ -28,6 +28,7 @@ public struct StoreIconImage: Sendable {
 
     /// Like ``image(size:)``, but the size follows Dynamic Type on the same curve as
     /// ``StoreTextStyle``, for glyphs that sit inline with text (a search field's glass, a clear control).
+    @MainActor
     public func scaledImage(size: StoreIconSize) -> some View {
         StoreScaledIconImage(assetName: assetName, size: size)
     }

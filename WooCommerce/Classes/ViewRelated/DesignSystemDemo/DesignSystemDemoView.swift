@@ -41,6 +41,7 @@ private struct ComponentsView: View {
             NavigationLink("RadioButton") { RadioButtonComponentView() }
             NavigationLink("Segmented Control") { SegmentedControlComponentView() }
             NavigationLink("Sheet") { SheetComponentView() }
+            NavigationLink("Tabs") { TabsComponentView() }
             NavigationLink("Tooltip") { TooltipComponentView() }
             NavigationLink("Top App Bar") { TopAppBarComponentView() }
         }

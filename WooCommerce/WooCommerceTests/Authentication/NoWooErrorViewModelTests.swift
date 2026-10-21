@@ -122,6 +122,7 @@ final class NoWooErrorViewModelTests: XCTestCase {
         XCTAssertFalse(stores.isAuthenticated)
     }
 
+    @MainActor
     func test_woocommerce_setup_button_tapped_is_tracked_when_tapping_primary_button() {
         // Given
         let site = Site.fake().copy(url: "https://test.com")

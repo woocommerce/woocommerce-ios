@@ -84,6 +84,7 @@ final class AppCoordinator {
         schedulePOSSurveyNotificationIfNeeded()
     }
 
+    @MainActor
     func start() {
         // A parent/guardian can answer a significant-change consent question at any time,
         // including long after it was sent — re-evaluate the age gate when an answer arrives.
@@ -339,6 +340,7 @@ private extension AppCoordinator {
     /// If the app is authenticated but there is no default store ID on launch,
     /// check for errors and display store picker if none exists.
     ///
+    @MainActor
     func displayLoggedInStateWithoutDefaultStore() {
         // The store picker is displayed by `AppCoordinator` on launch (window root uninitialized) and when an
         // in-session store reset occurs (window root is the logged-in tab UI, e.g. after an `unknown_blog`

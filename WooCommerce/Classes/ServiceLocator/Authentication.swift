@@ -48,6 +48,7 @@ protocol Authentication {
     /// Checks the given site address and see if it's valid
     /// and returns an error view controller if not.
     ///
+    @MainActor
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
                              credentials: AuthenticatorCredentials?,

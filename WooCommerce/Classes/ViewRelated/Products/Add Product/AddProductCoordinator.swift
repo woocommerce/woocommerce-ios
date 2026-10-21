@@ -115,16 +115,12 @@ final class AddProductCoordinator: Coordinator {
 
         analytics.track(event: .ProductCreation.addProductStarted(source: source, storeHasProducts: storeHasProducts))
 
-        // `Coordinator.start()` is a nonisolated requirement, but every coordinator is started from UI code.
-        // Check that assumption at runtime until the `Coordinator` protocol is `@MainActor`. Depends on WOOMOB-4085.
-        MainActor.assumeIsolated {
-            if shouldSkipBottomSheet {
-                presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
-            } else if shouldShowAIActionSheet {
-                presentActionSheetWithAI()
-            } else {
-                presentProductTypeBottomSheet()
-            }
+        if shouldSkipBottomSheet {
+            presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
+        } else if shouldShowAIActionSheet {
+            presentActionSheetWithAI()
+        } else {
+            presentProductTypeBottomSheet()
         }
     }
 }

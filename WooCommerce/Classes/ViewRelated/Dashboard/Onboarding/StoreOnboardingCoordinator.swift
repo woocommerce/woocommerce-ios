@@ -49,6 +49,7 @@ final class StoreOnboardingCoordinator {
 
     /// Navigates to complete an onboarding task.
     /// - Parameter task: the task to complete.
+    @MainActor
     func start(task: StoreOnboardingTask) {
         switch task.type {
         case .storeDetails:
@@ -67,6 +68,7 @@ final class StoreOnboardingCoordinator {
     }
 }
 
+@MainActor
 private extension StoreOnboardingCoordinator {
     func showStoreDetails() {
         let coordinator = StoreOnboardingStoreDetailsCoordinator(site: site,
@@ -147,6 +149,7 @@ private extension StoreOnboardingCoordinator {
 
 // MARK: Bottom sheet helpers
 //
+@MainActor
 private extension StoreOnboardingCoordinator {
     func buildBottomSheetPresenter() -> BottomSheetPresenter {
         BottomSheetPresenter(configure: { bottomSheet in

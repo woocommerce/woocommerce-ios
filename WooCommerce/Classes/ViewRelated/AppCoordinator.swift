@@ -7,6 +7,7 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
+import protocol WooFoundationCore.CrashLogger
 
 final class AppCoordinator {
     let tabBarController: MainTabBarController
@@ -17,6 +18,7 @@ final class AppCoordinator {
     private var authenticationManager: Authentication
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
+    private let crashLogging: CrashLogger
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
@@ -26,6 +28,7 @@ final class AppCoordinator {
     private var significantChangeBlocker: SignificantChangeConsentBlockingHostingController?
     /// Non-nil while the blocker's presentation is in flight: it re-checks that the blocker made it on screen.
     private var significantChangeBlockerPresentationCheck: Task<Void, Never>?
+    private let blockerPresentationRetryDelay: Duration
     private var foregroundConsentRecheckObserver: NSObjectProtocol?
     private var deferredAgeVerificationObserver: NSObjectProtocol?
     private var deferredConsentResponsesObserver: NSObjectProtocol?
@@ -49,6 +52,7 @@ final class AppCoordinator {
          authenticationManager: Authentication = ServiceLocator.authenticationManager,
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
          analytics: Analytics = ServiceLocator.analytics,
+         crashLogging: CrashLogger = ServiceLocator.crashLogging,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -56,7 +60,8 @@ final class AppCoordinator {
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
          ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator(),
          notificationCenter: NotificationCenter = .default,
-         applicationStateProvider: @escaping () -> UIApplication.State = { UIApplication.shared.applicationState }) {
+         applicationStateProvider: @escaping () -> UIApplication.State = { UIApplication.shared.applicationState },
+         blockerPresentationRetryDelay: Duration = Constants.blockerPresentationRetryDelay) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -70,6 +75,7 @@ final class AppCoordinator {
         self.authenticationManager = authenticationManager
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.analytics = analytics
+        self.crashLogging = crashLogging
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
@@ -79,6 +85,7 @@ final class AppCoordinator {
         self.ageRangeVerificationCoordinator = ageRangeVerificationCoordinator
         self.notificationCenter = notificationCenter
         self.applicationStateProvider = applicationStateProvider
+        self.blockerPresentationRetryDelay = blockerPresentationRetryDelay
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
@@ -568,51 +575,54 @@ private extension AppCoordinator {
     /// a presentation on it is refused; anchored below it, UIKit queues the presentation behind
     /// the dismissal instead. `dialog_shown` is tracked once the wall is actually on screen, and
     /// a presentation that was still refused is retried a few times before giving up.
+    /// `attempt` counts `present` calls only: waiting for a busy presenter is not an attempt.
     func presentSignificantChangeBlocker(_ blocker: SignificantChangeConsentBlockingHostingController, attempt: Int) {
         guard significantChangeBlocker === blocker else { return }
-        if let presenter = window.topmostVisiblePresenter {
-            // On a retry, a presenter that still presents something is still mid-dismissal, so the
-            // earlier request is queued behind it. Presenting again would present an active controller.
-            if attempt > 1, presenter.presentedViewController != nil {
-                DDLogInfo("Significant change blocker presentation is still queued after attempt \(attempt - 1); waiting.")
-                scheduleSignificantChangeBlockerPresentationCheck(for: blocker, attempt: attempt)
+        guard let presenter = window.topmostVisiblePresenter else {
+            DDLogWarn("Failed to obtain view controller to present the significant change blocker.")
+            scheduleSignificantChangeBlockerPresentationCheck(for: blocker, nextAttempt: attempt)
+            return
+        }
+        // On a retry, a presenter still mid-transition has the earlier request queued behind it, and
+        // presenting again would present an active controller. Wait for the transition to end instead.
+        if attempt > 1, presenter.presentedViewController?.transitionCoordinator != nil {
+            DDLogInfo("Significant change blocker presentation is still queued behind a transition; waiting.")
+            scheduleSignificantChangeBlockerPresentationCheck(for: blocker, nextAttempt: attempt)
+            return
+        }
+        presenter.present(blocker, animated: true) { [weak self] in
+            guard let self, self.significantChangeBlocker === blocker else {
+                // Dismissed while the presentation was still queued: take the orphan down,
+                // otherwise an unowned modal wall stays up for good.
+                blocker.presentingViewController?.dismiss(animated: false)
                 return
             }
-            presenter.present(blocker, animated: true) { [weak self] in
-                guard let self, self.significantChangeBlocker === blocker else {
-                    // Dismissed while the presentation was still queued: take the orphan down,
-                    // otherwise an unowned modal wall stays up for good.
-                    blocker.presentingViewController?.dismiss(animated: false)
-                    return
-                }
-                self.significantChangeBlockerPresentationCheck?.cancel()
-                self.significantChangeBlockerPresentationCheck = nil
-                self.analytics.track(event: .AgeVerification.dialogShown(for: blocker.context))
-            }
-        } else {
-            DDLogWarn("Failed to obtain view controller to present the significant change blocker.")
+            self.significantChangeBlockerPresentationCheck?.cancel()
+            self.significantChangeBlockerPresentationCheck = nil
+            self.analytics.track(event: .AgeVerification.dialogShown(for: blocker.context))
         }
-        scheduleSignificantChangeBlockerPresentationCheck(for: blocker, attempt: attempt)
+        scheduleSignificantChangeBlockerPresentationCheck(for: blocker, nextAttempt: attempt + 1)
     }
 
-    /// Re-checks after a delay that the blocker reached the screen, and retries the presentation if not.
-    func scheduleSignificantChangeBlockerPresentationCheck(for blocker: SignificantChangeConsentBlockingHostingController, attempt: Int) {
+    /// Re-checks after a delay that the blocker reached the screen; if not, presents it again as `nextAttempt`.
+    func scheduleSignificantChangeBlockerPresentationCheck(for blocker: SignificantChangeConsentBlockingHostingController, nextAttempt: Int) {
+        let delay = blockerPresentationRetryDelay
         significantChangeBlockerPresentationCheck = Task { @MainActor [weak self] in
-            try? await Task.sleep(for: Constants.blockerPresentationRetryDelay)
+            try? await Task.sleep(for: delay)
             guard Task.isCancelled == false, let self, self.significantChangeBlocker === blocker else { return }
             self.significantChangeBlockerPresentationCheck = nil
             guard blocker.presentingViewController == nil, blocker.viewIfLoaded?.window == nil else { return }
-            guard attempt < Constants.maxBlockerPresentationAttempts else {
-                DDLogError("Significant change blocker could not be presented after \(attempt) attempts.")
-                ServiceLocator.crashLogging.logMessage(
+            guard nextAttempt <= Constants.maxBlockerPresentationAttempts else {
+                DDLogError("Significant change blocker could not be presented after \(nextAttempt - 1) attempts.")
+                self.crashLogging.logMessage(
                     "Significant change consent blocker could not be presented",
-                    properties: ["attempts": attempt, "context": "\(blocker.context)"],
+                    properties: ["attempts": nextAttempt - 1, "context": "\(blocker.context)"],
                     level: .error
                 )
                 return
             }
-            DDLogWarn("Significant change blocker is not on screen after attempt \(attempt); retrying.")
-            self.presentSignificantChangeBlocker(blocker, attempt: attempt + 1)
+            DDLogWarn("Significant change blocker is not on screen; presenting again (attempt \(nextAttempt)).")
+            self.presentSignificantChangeBlocker(blocker, attempt: nextAttempt)
         }
     }
 

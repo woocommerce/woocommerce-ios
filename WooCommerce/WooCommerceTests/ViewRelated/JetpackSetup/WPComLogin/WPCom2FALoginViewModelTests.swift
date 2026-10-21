@@ -217,4 +217,86 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.shouldEnableSecurityKeyOption)
     }
+
+    func test_security_key_mode_when_backup_is_available_then_switches_to_backup_code_instructions() {
+        // Given
+        let loginFields = LoginFields()
+        loginFields.supportedAuthTypes = ["webauthn", "backup"]
+        let nonceInfo = SocialLogin2FANonceInfo()
+        nonceInfo.nonceWebauthn = "webauthn-nonce"
+        loginFields.nonceInfo = nonceInfo
+        let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
+                                               onAuthWindowRequest: { UIWindow(frame: UIScreen.main.bounds) },
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
+        XCTAssertTrue(viewModel.shouldShowBackupCodeOption)
+        XCTAssertFalse(viewModel.shouldShowSecurityKeyOption)
+
+        // When
+        viewModel.useBackupCode()
+
+        // Then
+        XCTAssertFalse(viewModel.isSecurityKeyMode)
+        XCTAssertFalse(viewModel.shouldShowBackupCodeOption)
+        XCTAssertTrue(viewModel.shouldShowSecurityKeyOption)
+        XCTAssertEqual(viewModel.instructions, "Enter a backup code to continue.")
+    }
+
+    func test_shouldShowOtherOptionsText_when_no_other_method_is_available_then_returns_false() {
+        // Given
+        let loginFields = LoginFields()
+        loginFields.supportedAuthTypes = ["backup", "authenticator"]
+
+        // When
+        let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
+                                               onAuthWindowRequest: { UIWindow(frame: UIScreen.main.bounds) },
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowTextCodeOption)
+        XCTAssertFalse(viewModel.shouldShowOtherOptionsText)
+    }
+
+    func test_use_backup_code_when_login_is_in_progress_then_keeps_security_key_mode() {
+        // Given
+        let loginFields = LoginFields()
+        loginFields.supportedAuthTypes = ["webauthn", "backup"]
+        let loginFacade = MockLoginFacade(dotcomClientID: "Fake", dotcomSecret: "Fake", userAgent: "Fake")
+        let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
+                                               loginFacade: loginFacade,
+                                               onAuthWindowRequest: { UIWindow(frame: UIScreen.main.bounds) },
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
+        viewModel.handleLogin()
+
+        // When
+        viewModel.useBackupCode()
+
+        // Then
+        XCTAssertTrue(viewModel.isLoggingIn)
+        XCTAssertTrue(viewModel.isSecurityKeyMode)
+        XCTAssertTrue(viewModel.shouldShowBackupCodeOption)
+    }
+
+    func test_request_one_time_code_when_sms_is_available_then_switches_to_text_message_instructions() {
+        // Given
+        let loginFields = LoginFields()
+        loginFields.supportedAuthTypes = ["authenticator", "sms"]
+        let loginFacade = MockLoginFacade(dotcomClientID: "Fake", dotcomSecret: "Fake", userAgent: "Fake")
+        let oauthFacade = MockWordPressComOAuthClientFacade(client: "Fake", secret: "Fake")
+        loginFacade.wordpressComOAuthClientFacade = oauthFacade
+        let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
+                                               loginFacade: loginFacade,
+                                               onAuthWindowRequest: { UIWindow(frame: UIScreen.main.bounds) },
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
+
+        // When
+        viewModel.requestOneTimeCode()
+
+        // Then
+        XCTAssertEqual(oauthFacade.oneTimeCodeRequestCount, 1)
+        XCTAssertEqual(viewModel.instructions, "We sent a text message. Enter the verification code from the message.")
+    }
 }

@@ -59,6 +59,8 @@ If a `@Sendable` closure captures a generic SwiftUI view, capture only the requi
 
 Check each UIKit lifecycle or Objective-C callback separately. Use `MainActor.assumeIsolated` only if the framework guarantees main-actor delivery and the body accesses UI state. Test the callback path. A documented main-queue notification callback can meet these conditions. For app-owned protocols, declare isolation that the compiler checks. An `assumeIsolated` wrapper reached from a nonisolated requirement can add a `sending` warning for each captured value. In one uploader, the count went from 7 to 14.
 
+When a remote strengthens a completion to `@MainActor @Sendable`, propagate `@Sendable` through action cases and forwarding helpers. A declaration-level `@preconcurrency` annotation does not suppress the complete-checking warning when a Swift 5 caller forwards a non-`Sendable` closure. Keep the main-actor annotation at the delivery boundary; upstream layers that only forward the closure do not need to become main-actor isolated.
+
 ## Test fixtures and mocks
 
 Put `@MainActor` on XCTest methods, not on the `XCTestCase` subclass. The class-level annotation conflicts with the nonisolated `setUp()` and `tearDown()` overrides. Use `override func setUp() async throws` if setup must run on the main actor. The same conflict occurs with other nonisolated superclasses, such as `ScreenObject`. When the type under test is an actor, do not make the suite `@MainActor`. Make its mocks actors instead. See [catalog test isolation](https://github.com/woocommerce/woocommerce-ios/pull/18006).

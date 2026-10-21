@@ -255,7 +255,7 @@ extension AddAttributeViewController {
     /// Presents `AddAttributeOptionsViewController` and passes the same `onCompletion` closure, for our presenterVC  to handle.
     ///
     private func presentAddAttributeOptions(for attribute: AddAttributeOptionsViewModel.Attribute) {
-        let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: attribute)
+        let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: attribute, isVariationsFlow: self.viewModel.isVariationsFlow)
         let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel, onCompletion: onCompletion)
         show(addAttributeOptionsVC, sender: nil)
     }

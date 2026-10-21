@@ -524,6 +524,15 @@ private extension DefaultProductFormTableViewModel {
 
     func productVariationsAttributesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.customizeImage
+        if featureFlagService.isFeatureFlagEnabled(.nonVariationProductAttributes) {
+            let details = product.attributes
+                .map { $0.options.isEmpty ? $0.name : String.localizedStringWithFormat(Localization.attributeDetailFormat,
+                                                                                         $0.name,
+                                                                                         $0.options.joined(separator: ", ")) }
+                .joined(separator: "\n")
+            return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: Localization.attributesTitle, details: details, isActionable: isEditable)
+        }
+
         let title = Localization.productVariationAttributesTitle
 
         let details = product.attributesForVariations
@@ -901,6 +910,13 @@ private extension DefaultProductFormTableViewModel.Localization {
         // Product Variations Attributes
         static let productVariationAttributesTitle = NSLocalizedString("Variations Attributes",
                                                                        comment: "Title of the variations attributes row on Product screen")
+        static let attributesTitle = NSLocalizedString("defaultProductFormTableViewModel.attributesTitle",
+                                                       value: "Attributes",
+                                                       comment: "Title of the attributes row on the Product screen")
+        static let attributeDetailFormat = NSLocalizedString("defaultProductFormTableViewModel.attributeDetailFormat",
+                                                             value: "%1$@: %2$@",
+                                                             comment: "Format of each attribute on the Product screen attributes row. " +
+                                                             "%1$@ is the attribute name, %2$@ its options, e.g. Color: Red, Blue")
 
         // Variation attributes
         static let variationAttributesTitle = NSLocalizedString("Attributes", comment: "Title of the attributes row on Product Variation main screen")

@@ -1,4 +1,5 @@
 import XCTest
+import Experiments
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -24,7 +25,7 @@ final class AddAttributeViewModelTests: XCTestCase {
     func test_it_transitions_to_synced_state_after_synchronizing_attributes() throws {
         // Given
         let product = Product.fake()
-        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product)
+        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product, featureFlagService: MockFeatureFlagService())
         storesManager.productAttributeResponse = .success([])
 
         // When
@@ -45,7 +46,7 @@ final class AddAttributeViewModelTests: XCTestCase {
     func test_it_transitions_to_failed_state_after_synchronizing_attributes_errors() throws {
         // Given
         let product = Product.fake()
-        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product)
+        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product, featureFlagService: MockFeatureFlagService())
         storesManager.productAttributeResponse = .success([])
 
         let rawError = NSError(domain: "Attribute Error", code: 1, userInfo: nil)
@@ -69,7 +70,7 @@ final class AddAttributeViewModelTests: XCTestCase {
     func test_handle_valid_new_attribute_name() {
         // Given
         let product = Product.fake()
-        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product)
+        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product, featureFlagService: MockFeatureFlagService())
 
 
         // When
@@ -83,7 +84,7 @@ final class AddAttributeViewModelTests: XCTestCase {
     func test_handle_invalid_new_attribute_name() {
         // Given
         let product = Product.fake()
-        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product)
+        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product, featureFlagService: MockFeatureFlagService())
 
 
         // When
@@ -95,6 +96,47 @@ final class AddAttributeViewModelTests: XCTestCase {
         viewModel.handleNewAttributeNameChange("")
             // Then
             XCTAssertNil(viewModel.newAttributeName)
+    }
+}
+
+extension AddAttributeViewModelTests {
+    func test_when_feature_is_on_outside_variations_flow_then_product_attributes_not_used_for_variations_are_listed() {
+        // Given
+        let material = ProductAttribute.fake().copy(attributeID: 0, name: "Material", variation: false, options: ["Cotton"])
+        let viewModel = AddAttributeViewModel(storesManager: storesManager,
+                                              product: Product.fake().copy(attributes: [material]),
+                                              featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+        storesManager.productAttributeResponse = .success([])
+
+        // When
+        viewModel.performFetch()
+
+        // Then
+        XCTAssertEqual(viewModel.localAndGlobalAttributes, [material])
+        XCTAssertNil(viewModel.sections.first?.footer)
+    }
+
+    func test_when_feature_is_on_in_variations_flow_then_product_attributes_not_used_for_variations_are_not_listed() {
+        // Given
+        let material = ProductAttribute.fake().copy(attributeID: 0, name: "Material", variation: false, options: ["Cotton"])
+        let viewModel = AddAttributeViewModel(storesManager: storesManager,
+                                              product: Product.fake().copy(attributes: [material]),
+                                              isVariationsFlow: true,
+                                              featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+        storesManager.productAttributeResponse = .success([])
+
+        // When
+        viewModel.performFetch()
+
+        // Then
+        XCTAssertEqual(viewModel.localAndGlobalAttributes, [])
+        XCTAssertNotNil(viewModel.sections.first?.footer)
+    }
+
+    private func featureFlagService(isNonVariationAttributesEnabled: Bool) -> MockFeatureFlagService {
+        let service = MockFeatureFlagService()
+        service.isFeatureFlagEnabledReturnValue[.nonVariationProductAttributes] = isNonVariationAttributesEnabled
+        return service
     }
 }
 

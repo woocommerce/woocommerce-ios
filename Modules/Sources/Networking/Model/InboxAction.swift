@@ -4,7 +4,7 @@ import Codegen
 /// Represents an Inbox Action entity.
 /// Doc: p91TBi-6o2
 ///
-public struct InboxAction: GeneratedCopiable, GeneratedFakeable, Equatable {
+public struct InboxAction: GeneratedCopiable, GeneratedFakeable, Equatable, Sendable {
 
     /// Action ID in WP database.
     ///

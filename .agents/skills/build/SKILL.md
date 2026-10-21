@@ -14,7 +14,7 @@ bundle exec fastlane build_for_testing device:"<simulator-name>" 2>&1 | tee <tas
 ```
 Keep the full log outside the repository. Check the build exit status before reporting success.
 Use the same destination and build products for installation. An installed app may require
-frameworks from that build; follow `.claude/rules/verification.md` if launch fails.
+frameworks from that build; follow `.agents/rules/verification.md` if launch fails.
 
 If the build fails:
 1. Analyze the error output — look for compilation errors, identify file and line

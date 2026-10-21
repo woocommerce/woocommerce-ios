@@ -663,6 +663,70 @@ struct GRDBObservableDataSourceTests {
         #expect(variation2.name.contains("Large"), "Variation name should include 'Large' from attributes loaded via .including()")
     }
 
+    @Test("Variation names use only the parent attributes used for variations")
+    func test_variation_names_skip_parent_attributes_not_used_for_variations() async throws {
+        // Given: A variable product with a variation attribute and a display-only attribute
+        let parent = createPersistedProduct(id: 100, name: "Variable Hoodie", type: "variable")
+        try await insertProducts([parent])
+
+        try await grdbManager.databaseConnection.write { db in
+            let variation = PersistedProductVariation(
+                id: 1001,
+                siteID: siteID,
+                productID: 100,
+                sku: "VAR-RED",
+                globalUniqueID: nil,
+                price: "29.99",
+                downloadable: false,
+                fullDescription: nil,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            try variation.insert(db)
+        }
+
+        try await insertProductAttribute(
+            productID: 100,
+            remoteAttributeID: 1,
+            name: "Color",
+            position: 0,
+            variation: true,
+            options: ["Red", "Blue"]
+        )
+        try await insertProductAttribute(
+            productID: 100,
+            remoteAttributeID: 0,
+            name: "Material",
+            position: 1,
+            variation: false,
+            options: ["Cotton"]
+        )
+        try await insertVariationAttribute(variationID: 1001, remoteAttributeID: 1, name: "Color", option: "Red")
+
+        await waitForProductLoad(expectedCount: 1) {
+            sut.loadProducts()
+        }
+
+        guard case .variableParentProduct(let loadedParent) = sut.productItems.first else {
+            Issue.record("Expected variable parent product")
+            return
+        }
+
+        // When: Load variations
+        await waitForVariationLoad {
+            sut.loadVariations(for: loadedParent)
+        }
+
+        // Then: The name has the variation attribute only
+        guard case .variation(let variation) = sut.variationItems.first else {
+            Issue.record("Expected a variation")
+            return
+        }
+        #expect(variation.name.contains("Red"))
+        #expect(!variation.name.contains("Material"))
+    }
+
     // MARK: - Helper Methods
 
     private func waitForProductLoad(expectedCount: Int? = nil, action: () -> Void) async {

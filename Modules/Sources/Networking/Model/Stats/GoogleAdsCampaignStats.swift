@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// Represents Google Listings & Ads paid campaign stats over a specific period.
-public struct GoogleAdsCampaignStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct GoogleAdsCampaignStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     public let siteID: Int64
     public let totals: GoogleAdsCampaignStatsTotals
     public let campaigns: [GoogleAdsCampaignStatsItem]

@@ -15,7 +15,7 @@ Shared task definitions live in `.agents/agents/`. Read the relevant definition 
 | Name | What it does | When to use | Example | Owner | Availability |
 |---|---|---|---|---|---|
 | [`code-reviewer`](../.agents/agents/code-reviewer/code-reviewer.md) | Reviews changes against iOS conventions | Reviewing a diff or PR | "Use the code-reviewer agent on this diff" | Woo Mobile | Repo |
-| [`debugger`](../.agents/agents/debugger/debugger.md) | Diagnoses build and test failures | A failure has an unclear cause | "Use the debugger agent on this test failure" | Woo Mobile | Repo |
+| [`debugger`](../.agents/agents/debugger/debugger.md) | Diagnoses build and test failures | A failure has an unclear cause | "Use the debugger agent on this test failure" | Woo Mobile | Repo. Uses `/build` and `/test` for execution and diagnostic logs |
 | [`test-writer`](../.agents/agents/test-writer/test-writer.md) | Writes tests using the repository conventions | Adding unit test coverage | "Use the test-writer agent for this ViewModel" | Woo Mobile | Repo |
 
 ## Testing helpers

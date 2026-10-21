@@ -18,11 +18,23 @@ Use `/simulator` to select an available device. Determine scope from $ARGUMENTS:
   Use the module's scheme for module-only changes; use `WooCommerce` for app-target changes.
 - **Clean build requested or required to diagnose stale output**: add `clean:true`.
 
-For example:
+For example, run the POS module tests:
 ```bash
-bundle exec fastlane test device:"<simulator-name>" \
-  scheme:PointOfSale only_testing:PointOfSaleTests 2>&1 | tail -100
+bundle exec fastlane test device:"<simulator-name>" scheme:PointOfSale only_testing:PointOfSaleTests
 ```
+
+When you need a saved console log, use this variant instead. Run preparation and the selected command in the same shell:
+```bash
+set -o pipefail
+mkdir -p .agent-artifacts
+TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/test.XXXXXX")"
+printf 'Task artifacts: %s\n' "$TASK_ARTIFACTS"
+bundle exec fastlane test device:"<simulator-name>" \
+  scheme:PointOfSale only_testing:PointOfSaleTests 2>&1 | tee "$TASK_ARTIFACTS/test.log"
+```
+
+Check the pipeline exit status before reading excerpts. Retain the full log; a successful `tee`
+does not establish that the tests passed.
 
 ## After running
 

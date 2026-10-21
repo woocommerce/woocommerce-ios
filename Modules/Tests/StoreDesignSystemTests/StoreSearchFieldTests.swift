@@ -65,3 +65,15 @@ import Testing
         #expect(sut + StorePadding.p4 * 2 == 64)
     }
 }
+
+@Suite struct StoreSearchFieldScalingTests {
+
+    @Test func test_maximumDynamicTypeSize_when_read_then_matches_the_top_app_bar_cap() {
+        // Given / When the field's Dynamic Type cap is read
+        let sut = StoreSearchFieldScaling.maximumDynamicTypeSize
+
+        // Then it stops where the top app bar stops, so both components grow in step
+        #expect(sut == .accessibility2)
+        #expect(sut == StoreTopAppBarScaling.maximumDynamicTypeSize)
+    }
+}

@@ -8,10 +8,11 @@ import SwiftUI
 ///   renders the results and empty states beneath it; a `.onSubmit` on the host catches the Search
 ///   key, and `.focused(_:)` / `.autocorrectionDisabled()` apply from outside as on any text
 ///   field. The design's Resting and Active states are driven by the text alone: the clear control
-///   appears with the first character and only empties the query. Icons keep their size under
-///   Dynamic Type while the text scales and the field grows with it.
+///   appears with the first character and only empties the query. Text and glyphs scale together
+///   under Dynamic Type up to ``StoreSearchFieldScaling/maximumDynamicTypeSize``, and the field grows with them.
 public struct StoreSearchField: View {
     @Environment(\.isEnabled) private var isEnabled
+    @ScaledMetric private var clearSide: CGFloat = Constants.clearSize.value
 
     @Binding private var text: String
     private let placeholder: String
@@ -39,6 +40,7 @@ public struct StoreSearchField: View {
         .padding(.horizontal, StorePadding.p7)
         .padding(.vertical, StorePadding.p4)
         .background(appearance.container)
+        .dynamicTypeSize(...StoreSearchFieldScaling.maximumDynamicTypeSize)
     }
 
     private var appearance: StoreSearchFieldAppearance {
@@ -50,7 +52,7 @@ public struct StoreSearchField: View {
     /// The rounded field. Its height is the design's 40 pt until larger text needs more.
     private var field: some View {
         HStack(spacing: StoreSpacing.s4) {
-            StoreIcon.MagnifyingGlass.regular.image(size: Constants.glassSize)
+            StoreIcon.MagnifyingGlass.regular.scaledImage(size: Constants.glassSize)
                 .foregroundStyle(appearance.content)
                 .accessibilityHidden(true)
             TextField(text: $text, prompt: prompt) {
@@ -74,20 +76,20 @@ public struct StoreSearchField: View {
             .foregroundStyle(appearance.placeholder)
     }
 
-    /// The 16 pt glyph in layout, with a tap target extended to the HIG minimum around it: the
-    /// larger label overflows the glyph's frame without clipping, so it stays hittable while the
-    /// field keeps the design's inner padding.
+    /// The 16 pt glyph in layout, with a tap target extended to at least the HIG minimum around it:
+    /// the larger label overflows the glyph's frame without clipping, so it stays hittable while
+    /// the field keeps the design's inner padding.
     private var clearButton: some View {
         Button {
             text = ""
         } label: {
-            StoreIcon.CircleFull.solid.image(size: Constants.clearSize)
+            StoreIcon.CircleFull.solid.scaledImage(size: Constants.clearSize)
                 .foregroundStyle(appearance.content)
-                .frame(width: StoreSize.minimumTapTarget, height: StoreSize.minimumTapTarget)
+                .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
                 .contentShape(Rectangle())
         }
         .buttonStyle(StorePressFeedbackButtonStyle())
-        .frame(width: Constants.clearSize.value, height: Constants.clearSize.value)
+        .frame(width: clearSide, height: clearSide)
         .accessibilityLabel(Localization.clear)
     }
 

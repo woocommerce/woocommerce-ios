@@ -6,6 +6,7 @@ import Yosemite
 @testable import WooCommerce
 
 @MainActor
+@Suite(.timeLimit(.minutes(5)))
 struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
     @Test func test_cancellation_when_cancelled_on_main_actor_then_event_action_runs_synchronously() async throws {
         // Given
@@ -184,7 +185,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
             currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
             paymentEventPublisher: events.merge(with: alertsPresenter.paymentEventPublisher).eraseToAnyPublisher(),
             stores: stores,
-            collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker()
+            collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
+            applicationStateProvider: { .active }
         )
         let preflightController = MockCardPresentPaymentPreflightController()
         let paymentTask = await withCheckedContinuation { continuation in

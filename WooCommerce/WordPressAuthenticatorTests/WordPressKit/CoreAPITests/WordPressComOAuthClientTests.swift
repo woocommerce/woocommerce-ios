@@ -26,6 +26,7 @@ class WordPressComOAuthClientTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_authenticate_when_code_is_given_then_omits_wpcom_supports_2fa() throws {
         // Given
         let stubPath = try XCTUnwrap(OHPathForFileInBundle("WordPressComOAuthSuccess.json", Bundle.coreAPITestsBundle))
@@ -55,6 +56,7 @@ class WordPressComOAuthClientTests: XCTestCase {
         XCTAssertFalse(body.contains("wpcom_supports_2fa"))
     }
 
+    @MainActor
     func test_authenticate_when_no_code_is_given_then_sends_wpcom_supports_2fa() throws {
         // Given
         let stubPath = try XCTUnwrap(OHPathForFileInBundle("WordPressComOAuthNeedsWebauthnMFA.json", Bundle.coreAPITestsBundle))

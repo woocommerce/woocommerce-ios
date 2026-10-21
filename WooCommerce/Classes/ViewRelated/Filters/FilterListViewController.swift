@@ -488,8 +488,6 @@ private extension FilterListViewController {
                                                             buttonAccessibilityIdentifier: "filter-apply-button")
         filterActionContainerView.addSubview(buttonContainerView)
         filterActionContainerView.pinSubviewToAllEdges(buttonContainerView)
-        filterActionContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
-        filterActionContainerView.setContentHuggingPriority(.required, for: .vertical)
     }
 }
 

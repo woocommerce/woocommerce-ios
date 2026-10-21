@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 import WooFoundation
-import protocol Experiments.FeatureFlagService
 
 /// The Product form contains 2 sections: primary fields, and details.
 struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
@@ -23,7 +22,6 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let siteTimezone = TimeZone.siteTimezone
 
     private let isDescriptionAIEnabled: Bool
-    private let featureFlagService: FeatureFlagService
 
 
     init(product: ProductFormDataModel,
@@ -33,15 +31,13 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
-         isDescriptionAIEnabled: Bool,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         isDescriptionAIEnabled: Bool) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
         self.shippingValueLocalizer = shippingValueLocalizer
         self.weightUnit = weightUnit
         self.dimensionUnit = dimensionUnit
         self.isDescriptionAIEnabled = isDescriptionAIEnabled
-        self.featureFlagService = featureFlagService
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }

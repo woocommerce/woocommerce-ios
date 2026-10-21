@@ -3,6 +3,7 @@ import XCTest
 
 /// This screen is used in both Order Create and Edit flows to reflect that these are unified in the app codebase
 ///
+@MainActor
 public final class UnifiedOrderScreen: ScreenObject {
 
     private let createButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -293,12 +294,9 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// - Returns: Unified Order screen object.
     @discardableResult
     public func checkForExistingOrderTitle(byOrderNumber orderNumber: String) throws -> UnifiedOrderScreen {
-        let (hasOrderForm, hasOrderNavigationBar) = MainActor.assumeIsolated { [app] in
-            let predicate = NSPredicate(format: "identifier CONTAINS %@ OR label CONTAINS %@", orderNumber, orderNumber)
-            return (app.otherElements["order-form-screen"].exists, app.navigationBars.matching(predicate).firstMatch.exists)
-        }
-        XCTAssertTrue(hasOrderForm)
-        XCTAssertTrue(hasOrderNavigationBar)
+        let predicate = NSPredicate(format: "identifier CONTAINS %@ OR label CONTAINS %@", orderNumber, orderNumber)
+        XCTAssertTrue(app.otherElements["order-form-screen"].exists)
+        XCTAssertTrue(app.navigationBars.matching(predicate).firstMatch.exists)
 
         return self
     }

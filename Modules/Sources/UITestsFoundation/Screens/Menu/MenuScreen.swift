@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class MenuScreen: ScreenObject {
     static var isVisible: Bool {
         (try? MenuScreen().isLoaded) ?? false
@@ -51,23 +52,20 @@ public final class MenuScreen: ScreenObject {
     }
 
     private func scrollToRow(_ row: XCUIElement) {
-        // Synchronous UI tests drive XCUIElement from the main thread.
-        MainActor.assumeIsolated { [app] in
-            let window = app.windows.firstMatch
-            for _ in 0..<10 {
-                let tabBar = app.tabBars.firstMatch
-                let visibleFrame = window.frame
-                if row.exists && row.isHittable && visibleFrame.contains(row.frame)
-                    && !(tabBar.exists && row.frame.intersects(tabBar.frame)) {
-                    return
-                }
-                let scrollUp = !row.exists || row.frame.midY > visibleFrame.midY
-                let start = window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: scrollUp ? 0.7 : 0.3))
-                let end = window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: scrollUp ? 0.3 : 0.7))
-                start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.1)
+        let window = app.windows.firstMatch
+        for _ in 0..<10 {
+            let tabBar = app.tabBars.firstMatch
+            let visibleFrame = window.frame
+            if row.exists && row.isHittable && visibleFrame.contains(row.frame)
+                && !(tabBar.exists && row.frame.intersects(tabBar.frame)) {
+                return
             }
-            XCTFail("Menu row is not visible: \(row.identifier)")
+            let scrollUp = !row.exists || row.frame.midY > visibleFrame.midY
+            let start = window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: scrollUp ? 0.7 : 0.3))
+            let end = window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: scrollUp ? 0.3 : 0.7))
+            start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.1)
         }
+        XCTFail("Menu row is not visible: \(row.identifier)")
     }
 
     @discardableResult

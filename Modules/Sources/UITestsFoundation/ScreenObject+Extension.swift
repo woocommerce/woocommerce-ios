@@ -5,6 +5,7 @@ import XCTest
 // finish the transition of the screens from `BaseScreen` to `ScreenObject` and from the different
 // test targets to the share UI tests foundation one. Once that's done, we'll likely want to move
 // these in the package itself.
+@MainActor
 public extension ScreenObject {
 
     // Pops the navigation stack, returning to the item above the current one

@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class OrderStatusScreen: ScreenObject {
 
     private let orderStatusTableGetter: (XCUIApplication) -> XCUIElement = {

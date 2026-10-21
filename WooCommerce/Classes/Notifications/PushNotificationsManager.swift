@@ -16,39 +16,13 @@ import protocol Storage.StorageManagerType
 ///
 final class PushNotificationsManager: PushNotesManager {
 
-    @MainActor private var recentlyPaidOrders: [PaidOrderKey: Date] = [:]
-
-    private struct PaidOrderKey: Hashable {
-        let siteID: Int64
-        let orderID: Int64
-        // Site-credential sessions share a placeholder site ID, so also scope them to their URL.
-        let storeURL: String?
-    }
+    @MainActor private lazy var paidOrderNoticeSuppressor = PaidOrderNoticeSuppressor(stores: stores,
+                                                                                   currentDate: currentDate,
+                                                                                   siteForID: { [weak self] in self?.loadTargetSite(siteID: $0) })
 
     @MainActor
     func suppressNewOrderNotice(for order: Order) {
-        let now = currentDate()
-        recentlyPaidOrders = recentlyPaidOrders.filter { $0.value > now }
-        recentlyPaidOrders[paidOrderKey(siteID: order.siteID, orderID: order.orderID)] = now.addingTimeInterval(5 * 60)
-    }
-
-    @MainActor
-    private func paidOrderKey(siteID: Int64, orderID: Int64) -> PaidOrderKey {
-        PaidOrderKey(siteID: siteID,
-                     orderID: orderID,
-                     storeURL: siteID == WooConstants.placeholderStoreID ? stores.sessionManager.defaultSite?.url : nil)
-    }
-
-    @MainActor
-    private func shouldSuppressPaidOrderNotice(_ notification: PushNotification) -> Bool {
-        let now = currentDate()
-        recentlyPaidOrders = recentlyPaidOrders.filter { $0.value > now }
-        guard notification.kind == .storeOrder,
-              let orderID = notification.meta?.identifier(forKey: .order) else {
-            return false
-        }
-        let key = paidOrderKey(siteID: notification.resolvedSiteID(stores: stores), orderID: Int64(orderID))
-        return recentlyPaidOrders[key] != nil
+        paidOrderNoticeSuppressor.recordPayment(for: order)
     }
 
     private var inAppNotices: Bool = true
@@ -628,7 +602,7 @@ extension PushNotificationsManager {
                 // Ignore WPCom PNs if site is registered for Woo PNs
                 return []
             }
-            if !shouldSuppressPaidOrderNotice(foregroundNotification) {
+            if !paidOrderNoticeSuppressor.shouldSuppress(foregroundNotification) {
                 configuration.application
                     .presentInAppNotification(title: foregroundNotification.title,
                                               subtitle: foregroundNotification.subtitle,

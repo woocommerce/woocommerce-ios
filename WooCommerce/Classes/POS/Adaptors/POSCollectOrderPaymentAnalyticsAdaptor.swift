@@ -15,7 +15,10 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     private var checkoutTapCount: Int = 0
     private var hasTrackedProcessingPayment = false
     private var catalogSyncStrategy: POSCheckoutCatalogStrategy = .unknown
-    private var paymentTiming = PaymentTiming(checkout: nil, strategy: .unknown)
+    private var checkoutSyncStrategy: POSCheckoutCatalogStrategy = .unknown
+    private var checkoutStarted: Int?
+    private var orderSyncCompleted: Int?
+    private var paymentConfirmed: Int?
 
     private let analytics: POSAnalyticsProviding
 
@@ -56,18 +59,14 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
 
     func setCatalogSyncStrategy(_ strategy: POSCheckoutCatalogStrategy) {
         catalogSyncStrategy = strategy
-        if paymentTiming.checkout == nil {
-            paymentTiming = PaymentTiming(checkout: nil, strategy: strategy, order: cardPaymentOrder)
-        }
     }
 
     func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {
         cardPaymentOrder = order
-        paymentTiming = PaymentTiming(checkout: paymentTiming.isClosed ? nil : paymentTiming.checkout, strategy: catalogSyncStrategy, order: order)
     }
 
-    func scopedToPayment() -> CollectOrderPaymentAnalyticsTracking {
-        ScopedPaymentAnalytics(owner: self, timing: paymentTiming)
+    func clearPaymentConfirmation() {
+        paymentConfirmed = nil
     }
 
     func preflightResultReceived(_ result: CardReaderPreflightResult?) {
@@ -84,13 +83,12 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     }
 
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) {
-        trackProcessingCompletion(intent: intent, timing: paymentTiming)
+        trackProcessingCompletion(intent: intent, recordPaymentConfirmation: true)
     }
 
-    private func trackProcessingCompletion(intent: Yosemite.PaymentIntent, timing: PaymentTiming) {
-        if timing.checkout != nil, !timing.isClosed, timing.confirmed == nil {
-            // This callback also covers reuse of an already confirmed intent, before backend capture.
-            timing.confirmed = monotonicMilliseconds()
+    func trackProcessingCompletion(intent: Yosemite.PaymentIntent, recordPaymentConfirmation: Bool) {
+        if recordPaymentConfirmation, checkoutStarted != nil, paymentConfirmed == nil {
+            paymentConfirmed = monotonicMilliseconds()
         }
         guard let paymentMethod = intent.paymentMethod(),
               case .interacPresent = paymentMethod else {
@@ -105,11 +103,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     }
 
     func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
-        trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData, timing: paymentTiming)
-    }
-
-    private func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData, timing: PaymentTiming) {
-        guard let order = timing.order else { return }
+        guard let order = cardPaymentOrder else { return }
         // Property: milliseconds_since_customer_interaction_started
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
@@ -134,33 +128,22 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,
             millisecondsSinceCardTapped: elapsedTimeSinceCardTapped,
             checkoutTapCount: checkoutTapCount
-        ), timing: timing)
+        ))
 
+        clearPaymentConfirmation()
         resetCheckoutTapCountTracker()
         resetProcessingPaymentTracking()
-        timing.isClosed = true
-    }
-
-    func captureCashSuccess() -> @MainActor (POSPaymentAnalyticsOrder) -> Void {
-        let timing = PaymentTiming(checkout: paymentTiming.isClosed ? nil : paymentTiming.checkout, strategy: catalogSyncStrategy)
-        paymentTiming = timing
-        return { [self] order in trackSuccessfulCashPayment(order: order, timing: timing) }
     }
 
     func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {
-        trackSuccessfulCashPayment(order: order, timing: paymentTiming)
-    }
-
-    private func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder, timing: PaymentTiming) {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         trackPaymentEvent(.PointOfSale.cashCollectPaymentSuccess(
             order: order,
             countryCode: configuration.countryCode,
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
-        ), timing: timing, includeCardStages: false)
+        ), includeCardStages: false)
         resetCheckoutTapCountTracker()
-        timing.isClosed = true
     }
 
     func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder) {
@@ -188,10 +171,6 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     }
 
     func trackPaymentFailure(with error: any Error) {
-        trackPaymentFailure(with: error, timing: paymentTiming)
-    }
-
-    private func trackPaymentFailure(with error: any Error, timing: PaymentTiming) {
         trackPaymentEvent(.PointOfSale.cardPresentCollectPaymentFailed(
             forGatewayID: paymentGatewayAccount?.gatewayID,
             error: error,
@@ -202,7 +181,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
             millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
             checkoutTapCount: checkoutTapCount
-        ), timing: timing)
+        ))
+        clearPaymentConfirmation()
 
         // The checkout tap count is deliberately not reset:
         // the merchant can retry after a failure, and we want the count to reflect every attempt made for the same customer interaction.
@@ -210,11 +190,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     }
 
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
-        trackPaymentCancelation(cancelationSource: cancelationSource, timing: paymentTiming)
-    }
-
-    private func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource, timing: PaymentTiming) {
-        trackPaymentEvent(.PointOfSale.cardPresentCollectPaymentCanceled(
+        analytics.track(event: .PointOfSale.cardPresentCollectPaymentCanceled(
             forGatewayID: paymentGatewayAccount?.gatewayID,
             countryCode: configuration.countryCode,
             cardReaderModel: connectedReaderModel,
@@ -224,7 +200,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
             millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
             checkoutTapCount: checkoutTapCount
-        ), timing: timing)
+        ))
 
         resetProcessingPaymentTracking()
     }
@@ -239,8 +215,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
 
     func trackOrderSyncSuccess() {
         orderSync = trackCurrentTime()
-        if !paymentTiming.isClosed {
-            paymentTiming.checkout?.synced = monotonicMilliseconds()
+        if checkoutStarted != nil, orderSyncCompleted == nil {
+            orderSyncCompleted = monotonicMilliseconds()
         }
     }
 
@@ -262,8 +238,17 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
 
     func trackCheckoutTapped() {
         checkoutTapCount += 1
-        let checkout = CheckoutTiming(started: monotonicMilliseconds(), strategy: catalogSyncStrategy)
-        paymentTiming = PaymentTiming(checkout: checkout, strategy: catalogSyncStrategy, order: cardPaymentOrder)
+        checkoutSyncStrategy = catalogSyncStrategy
+        checkoutStarted = monotonicMilliseconds()
+        orderSyncCompleted = nil
+        clearPaymentConfirmation()
+    }
+
+    func resetCheckoutTiming() {
+        checkoutSyncStrategy = .unknown
+        checkoutStarted = nil
+        orderSyncCompleted = nil
+        clearPaymentConfirmation()
     }
 
     func resetCheckoutTapCountTracker() {
@@ -278,24 +263,19 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
 
 // Helpers
 private extension POSCollectOrderPaymentAnalyticsAdaptor {
-    func trackPaymentEvent(_ event: WooAnalyticsEvent, timing: PaymentTiming, includeCardStages: Bool = true) {
+    func trackPaymentEvent(_ event: WooAnalyticsEvent, includeCardStages: Bool = true) {
         let end = monotonicMilliseconds()
         func elapsed(since start: Int?) -> Int? {
-            guard !timing.isClosed, let start, end >= start else { return nil }
+            guard let start, end >= start else { return nil }
             return end - start
         }
         analytics.track(event: .PointOfSale.withCheckoutTiming(
             event,
-            syncStrategy: timing.strategy,
-            millisecondsSinceCheckoutStarted: elapsed(since: timing.checkout?.started),
-            millisecondsSinceOrderSyncCompleted: elapsed(since: timing.checkout?.synced),
-            millisecondsSincePaymentConfirmed: includeCardStages ? elapsed(since: timing.confirmed) : nil
+            syncStrategy: checkoutSyncStrategy,
+            millisecondsSinceCheckoutStarted: elapsed(since: checkoutStarted),
+            millisecondsSinceOrderSyncCompleted: elapsed(since: orderSyncCompleted),
+            millisecondsSincePaymentConfirmed: includeCardStages ? elapsed(since: paymentConfirmed) : nil
         ))
-        timing.confirmed = nil
-    }
-
-    func resetCheckoutTiming() {
-        paymentTiming = PaymentTiming(checkout: nil, strategy: catalogSyncStrategy, order: cardPaymentOrder)
     }
 
     func trackCurrentTime() -> Double {
@@ -330,59 +310,5 @@ private extension POSCollectOrderPaymentAnalyticsAdaptor {
         cardReaderTapped = 0
         resetCheckoutTapCountTracker()
         resetProcessingPaymentTracking()
-    }
-}
-
-private extension POSCollectOrderPaymentAnalyticsAdaptor {
-    final class CheckoutTiming {
-        let started: Int
-        let strategy: POSCheckoutCatalogStrategy
-        var synced: Int?
-
-        init(started: Int, strategy: POSCheckoutCatalogStrategy) {
-            self.started = started
-            self.strategy = strategy
-        }
-    }
-
-    final class PaymentTiming {
-        let checkout: CheckoutTiming?
-        let strategy: POSCheckoutCatalogStrategy
-        let order: POSPaymentAnalyticsOrder?
-        var confirmed: Int?
-        var isClosed = false
-
-        init(checkout: CheckoutTiming?, strategy: POSCheckoutCatalogStrategy, order: POSPaymentAnalyticsOrder? = nil) {
-            self.checkout = checkout
-            self.strategy = checkout?.strategy ?? strategy
-            self.order = order
-        }
-    }
-
-    /// Binds callbacks to one payment collection. Internal retries reuse this scope.
-    struct ScopedPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
-        let owner: POSCollectOrderPaymentAnalyticsAdaptor
-        let timing: PaymentTiming
-        var connectedReaderModel: String? { owner.connectedReaderModel }
-
-        func preflightResultReceived(_ result: CardReaderPreflightResult?) {
-            owner.preflightResultReceived(result)
-        }
-
-        func trackProcessingCompletion(intent: Yosemite.PaymentIntent) {
-            owner.trackProcessingCompletion(intent: intent, timing: timing)
-        }
-
-        func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
-            owner.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData, timing: timing)
-        }
-
-        func trackPaymentFailure(with error: Error) {
-            owner.trackPaymentFailure(with: error, timing: timing)
-        }
-
-        func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
-            owner.trackPaymentCancelation(cancelationSource: cancelationSource, timing: timing)
-        }
     }
 }

@@ -23,7 +23,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
     }
 
     @Test(arguments: [false, true], [false, true]) @MainActor
-    func test_cancel_completion_when_another_payment_starts_then_preserves_each_timing_context(newCheckout: Bool, oldPaymentConfirms: Bool) throws {
+    func test_cancel_completion_when_another_payment_starts_then_preserves_active_confirmation(newCheckout: Bool, oldPaymentConfirms: Bool) throws {
         // Given
         var now = 0
         let configuration = CardPresentPaymentsConfiguration(country: .US)
@@ -96,11 +96,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
         tracker.trackSuccessfulCardPayment(capturedPaymentData: .init(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil))
 
         // Then
-        #expect(canceled.properties["sync_strategy"] as? String == "local_catalog")
-        #expect(canceled.properties["pos_time_since_checkout_started_ms"] as? Int == 750)
-        #expect(canceled.properties["pos_time_since_order_sync_completed_ms"] as? Int == 650)
-        #expect(canceled.properties["pos_time_since_reader_ready_ms"] == nil)
-        #expect(canceled.properties["pos_time_since_payment_confirmed_ms"] as? Int == (oldPaymentConfirms ? 75 : nil))
+        #expect(canceled.properties["sync_strategy"] == nil)
+        #expect(!canceled.properties.keys.contains { ($0 as? String)?.hasPrefix("pos_time_since_") == true })
         let succeeded = try #require(analytics.events.last)
         #expect(succeeded.properties["pos_time_since_checkout_started_ms"] as? Int == (newCheckout ? 300 : 800))
         #expect(succeeded.properties["pos_time_since_order_sync_completed_ms"] as? Int == (newCheckout ? 200 : 700))
@@ -146,8 +143,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
         // Then
         let properties = analytics.events.last?.properties
         #expect(properties?["pos_timing_version"] == nil)
-        #expect(properties?["sync_strategy"] as? String == "unknown")
-        #expect(properties?["pos_time_since_checkout_started_ms"] as? Int == 0)
+        #expect(properties?["sync_strategy"] as? String == (isCancellation ? nil : "unknown"))
+        #expect(properties?["pos_time_since_checkout_started_ms"] as? Int == (isCancellation ? nil : 0))
         #expect(properties?["pos_time_since_order_sync_completed_ms"] == nil)
         #expect(properties?["pos_time_since_reader_ready_ms"] == nil)
         #expect(properties?["pos_time_since_payment_confirmed_ms"] == nil)

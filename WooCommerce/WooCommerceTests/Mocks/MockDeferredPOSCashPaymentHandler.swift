@@ -3,13 +3,9 @@ import struct Yosemite.Order
 
 @MainActor
 final class MockDeferredPOSCashPaymentHandler: POSCashPaymentHandling {
-    var onStarted: (() -> Void)?
-    var completion: CheckedContinuation<Void, Never>?
+    var onComplete: (@MainActor () async -> Void)?
 
     func completeCashPayment(for order: Order, changeDueAmount: String?) async throws {
-        await withCheckedContinuation { continuation in
-            completion = continuation
-            onStarted?()
-        }
+        await onComplete?()
     }
 }

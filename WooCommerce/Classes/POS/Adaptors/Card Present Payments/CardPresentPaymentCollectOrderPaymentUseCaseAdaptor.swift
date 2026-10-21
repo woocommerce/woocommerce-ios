@@ -36,7 +36,6 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>,
                             channel: PaymentChannel) -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error> {
-        let analyticsTracker = collectOrderPaymentAnalyticsTracker.scopedToPayment()
         return Task {
             guard let formattedAmount = currencyFormatter.formatAmount(order.total, with: order.currency) else {
                 throw CardPresentPaymentServiceError.invalidAmount
@@ -57,7 +56,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(showsTapToPayCancellationConfirmation: true),
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 preflightController: preflightController,
-                analyticsTracker: analyticsTracker)
+                analyticsTracker: collectOrderPaymentAnalyticsTracker)
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in

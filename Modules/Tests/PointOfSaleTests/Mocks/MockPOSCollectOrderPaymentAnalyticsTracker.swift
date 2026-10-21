@@ -19,8 +19,9 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         // no-op
     }
 
+    private(set) var orderSyncSuccessCount = 0
     func trackOrderSyncSuccess() {
-        // no-op
+        orderSyncSuccessCount += 1
     }
 
     func trackCardReaderReady() {
@@ -29,6 +30,11 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
 
     func trackCardReaderTapped() {
         // no-op
+    }
+
+    private(set) var didResetCheckoutTiming = false
+    func resetCheckoutTiming() {
+        didResetCheckoutTiming = true
     }
 
     func trackCheckoutTapped() {

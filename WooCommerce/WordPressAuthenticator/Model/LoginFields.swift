@@ -58,6 +58,9 @@ public class LoginFields: NSObject {
     /// User ID for use with the nonce for social login
     @objc public var nonceUserID: Int = 0
 
+    /// 2FA methods WordPress.com listed for the last password login that needed a code.
+    @objc public var supportedAuthTypes = [String]()
+
     /// Used to restrict login to WordPress.com
     public var restrictToWPCom = false
 

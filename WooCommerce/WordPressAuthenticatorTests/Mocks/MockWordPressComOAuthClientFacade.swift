@@ -2,9 +2,16 @@ import Foundation
 @testable import WordPressAuthenticator
 
 final class MockWordPressComOAuthClientFacade: NSObject, WordPressComOAuthClientFacadeProtocol {
+    struct AuthenticationResult {
+        var userID: Int
+        var nonceInfo: SocialLogin2FANonceInfo?
+        var supportedAuthTypes: [String]
+    }
+
     private(set) var oneTimeCodeRequestCount = 0
     private(set) var socialCodeRequestCount = 0
     private(set) var socialCodeRequestNonce: String?
+    var authenticationResult: AuthenticationResult?
 
     required init(client: String, secret: String) {
         super.init()
@@ -15,9 +22,16 @@ final class MockWordPressComOAuthClientFacade: NSObject, WordPressComOAuthClient
         password: String,
         multifactorCode: String?,
         success: @escaping (String?) -> Void,
-        needsMultifactor: @escaping (Int, SocialLogin2FANonceInfo?) -> Void,
+        needsMultifactor: @escaping (Int, SocialLogin2FANonceInfo?, [String]) -> Void,
         failure: ((Error) -> Void)?
-    ) {}
+    ) {
+        guard let authenticationResult else {
+            return
+        }
+        needsMultifactor(authenticationResult.userID,
+                         authenticationResult.nonceInfo,
+                         authenticationResult.supportedAuthTypes)
+    }
 
     func requestOneTimeCode(
         username: String,

@@ -31,7 +31,8 @@ struct POSItemActionHandlerFactoryTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleAddItemToCart.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "item_added_to_cart")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "list")
         #expect(event.properties[AnalyticsKeys.itemType] as? String == "product")
@@ -55,7 +56,8 @@ struct POSItemActionHandlerFactoryTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleAddItemToCart.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "item_added_to_cart")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "list")
         #expect(event.properties[AnalyticsKeys.itemType] as? String == "coupon")
@@ -79,7 +81,8 @@ struct POSItemActionHandlerFactoryTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleAddItemToCart.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "item_added_to_cart")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "search")
         #expect(event.properties[AnalyticsKeys.itemType] as? String == "product")
@@ -103,7 +106,8 @@ struct POSItemActionHandlerFactoryTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleAddItemToCart.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "item_added_to_cart")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "search")
         #expect(event.properties[AnalyticsKeys.itemType] as? String == "coupon")
@@ -127,7 +131,8 @@ struct POSItemActionHandlerFactoryTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleAddItemToCart.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "item_added_to_cart")
         #expect(event.properties[AnalyticsKeys.source] as? String == "variation")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "list")
         #expect(event.properties[AnalyticsKeys.itemType] as? String == "product")
@@ -151,7 +156,8 @@ struct POSItemActionHandlerFactoryTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleAddItemToCart.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "item_added_to_cart")
         #expect(event.properties[AnalyticsKeys.source] as? String == "variation")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "search")
         #expect(event.properties[AnalyticsKeys.itemType] as? String == "product")

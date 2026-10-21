@@ -2,10 +2,15 @@ import XCTest
 @testable import PointOfSale
 
 final class PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests: XCTestCase {
-    func test_manual_equatable_conformance_number_of_properties_unchanged() {
+    func test_onAppear_when_capture_status_is_unknown_then_shows_information_sheet() {
+        // Given
         let sut = PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(tryAgainButtonAction: {}, newOrderButtonAction: {})
-        XCTAssertPropertyCount(sut,
-                               expectedCount: 6,
-                               messageHint: "Please check that the manual equatable conformance includes new properties.")
+        XCTAssertFalse(sut.showsInfoSheet)
+
+        // When
+        sut.onAppear()
+
+        // Then
+        XCTAssertTrue(sut.showsInfoSheet)
     }
 }

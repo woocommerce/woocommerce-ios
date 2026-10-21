@@ -5,6 +5,7 @@ import struct Yosemite.POSOrder
 import enum NetworkingCore.OrderStatusEnum
 
 @MainActor
+@Suite(.timeLimit(.minutes(5)))
 final class POSOrderListModelTests {
     private let mockOrdersController = MockPOSOrderListController()
     private let mockRefundController = MockPOSRefundController()

@@ -1,6 +1,5 @@
 import Testing
 import Foundation
-import enum WooFoundationCore.WooAnalyticsStat
 @testable import PointOfSale
 
 private enum AnalyticsKeys {
@@ -20,7 +19,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsHeaderTapped.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_header_tapped")
         #expect(event.properties[AnalyticsKeys.type] as? String == "product")
     }
 
@@ -34,7 +34,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsHeaderTapped.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_header_tapped")
         #expect(event.properties[AnalyticsKeys.type] as? String == "product")
     }
 
@@ -48,7 +49,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsHeaderTapped.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_header_tapped")
         #expect(event.properties[AnalyticsKeys.type] as? String == "coupon")
     }
 
@@ -62,7 +64,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsHeaderTapped.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_header_tapped")
         #expect(event.properties[AnalyticsKeys.type] as? String == "coupon")
     }
 
@@ -76,7 +79,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsNextPageLoaded.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_next_page_loaded")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "list")
     }
@@ -92,7 +96,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsNextPageLoaded.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_next_page_loaded")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "pre_search")
     }
@@ -107,7 +112,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsNextPageLoaded.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_next_page_loaded")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "search")
     }
@@ -122,7 +128,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsNextPageLoaded.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_next_page_loaded")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "list")
     }
@@ -137,7 +144,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsNextPageLoaded.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_next_page_loaded")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "pre_search")
     }
@@ -152,7 +160,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsNextPageLoaded.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_next_page_loaded")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "search")
     }
@@ -167,7 +176,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsPullToRefresh.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_pull_to_refresh")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "list")
     }
@@ -182,7 +192,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsPullToRefresh.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_pull_to_refresh")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "pre_search")
     }
@@ -197,7 +208,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsPullToRefresh.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_pull_to_refresh")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "search")
     }
@@ -212,7 +224,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsPullToRefresh.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_pull_to_refresh")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "list")
     }
@@ -227,7 +240,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsPullToRefresh.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_pull_to_refresh")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "pre_search")
     }
@@ -242,7 +256,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleItemsPullToRefresh.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "items_pull_to_refresh")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
         #expect(event.properties[AnalyticsKeys.sourceType] as? String == "search")
     }
@@ -257,7 +272,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleSearchButtonTapped.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "search_button_tapped")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
     }
 
@@ -271,7 +287,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleSearchButtonTapped.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "search_button_tapped")
         #expect(event.properties[AnalyticsKeys.source] as? String == "product")
     }
 
@@ -285,7 +302,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleSearchButtonTapped.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "search_button_tapped")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
     }
 
@@ -299,7 +317,8 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
 
         // Then
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleSearchButtonTapped.rawValue)
+        #expect(mockAnalytics.events.count == 1)
+        #expect(event.eventName == "search_button_tapped")
         #expect(event.properties[AnalyticsKeys.source] as? String == "coupon")
     }
 }

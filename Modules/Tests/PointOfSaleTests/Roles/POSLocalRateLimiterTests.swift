@@ -78,7 +78,7 @@ struct POSLocalRateLimiterTests {
         }
 
         // When
-        nowValue = nowValue.addingTimeInterval(31)
+        nowValue = Date(timeIntervalSinceReferenceDate: 1030)
 
         // Then
         try sut.limiter.checkAllowed()
@@ -112,6 +112,12 @@ struct POSLocalRateLimiterTests {
         sut.limiter.reset()
 
         // Then
+        try sut.limiter.checkAllowed()
+
+        // Four fresh failures must stay below the first limit after the attempt count resets.
+        for _ in 0..<4 {
+            sut.limiter.recordFailure()
+        }
         try sut.limiter.checkAllowed()
     }
 
@@ -168,7 +174,7 @@ struct POSLocalRateLimiterTests {
         let secondLimiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: { Date(timeIntervalSinceReferenceDate: 1000) })
 
         // Then
-        #expect(throws: POSAuthError.self) {
+        #expect(throws: POSAuthError.rateLimited(until: Date(timeIntervalSinceReferenceDate: 1030))) {
             try secondLimiter.checkAllowed()
         }
     }
@@ -185,7 +191,7 @@ struct POSLocalRateLimiterTests {
         }
 
         // Then
-        #expect(throws: POSAuthError.self) {
+        #expect(throws: POSAuthError.rateLimited(until: Date(timeIntervalSinceReferenceDate: 1030))) {
             try siteA.checkAllowed()
         }
         try siteB.checkAllowed()

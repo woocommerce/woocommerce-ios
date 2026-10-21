@@ -106,10 +106,10 @@ struct PointOfSaleDashboardViewHelperTests {
 
     // MARK: - Priority Tests
 
-    @Test func determineViewState_nil_eligibilityState_takes_priority_over_containerState() async throws {
+    @Test(arguments: [ItemsContainerState.loading(), .error(.errorOnLoadingProducts())])
+    func determineViewState_nil_eligibilityState_takes_priority_over_containerState(itemsContainerState: ItemsContainerState) async throws {
         // Given - nil eligibility should return loading regardless of container state
         let eligibilityState: POSEligibilityState? = nil
-        let itemsContainerState: ItemsContainerState = .content
 
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
@@ -121,10 +121,10 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == .loading())
     }
 
-    @Test func determineViewState_ineligible_state_takes_priority_over_containerState() async throws {
+    @Test(arguments: [ItemsContainerState.loading(), .error(.errorOnLoadingProducts())])
+    func determineViewState_ineligible_state_takes_priority_over_containerState(itemsContainerState: ItemsContainerState) async throws {
         // Given - ineligible state should return ineligible regardless of container state
         let eligibilityState: POSEligibilityState = .ineligible(reason: .featureSwitchDisabled)
-        let itemsContainerState: ItemsContainerState = .content
 
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(

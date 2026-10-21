@@ -19,7 +19,7 @@ struct PointOfSaleBarcodeScannerSetupScanTesterTests {
             barcodeDefinition: expectedBarcode)
 
         // When the barcode is scanned
-        sut.handleScan(.success(expectedBarcode.expectedValue))
+        sut.handleScan(.success("1234567890128"))
 
         // Then it calls the pass closure
         #expect(onTestPassCalled == true)

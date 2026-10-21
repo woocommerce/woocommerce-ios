@@ -15,7 +15,7 @@ struct POSAutoLockActivityControllerTests {
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 0)
+        #expect(session.isLocked == false)
     }
 
     @Test func test_handleTimerFire_when_no_currentStaff_then_does_not_lock() {
@@ -28,7 +28,7 @@ struct POSAutoLockActivityControllerTests {
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 0)
+        #expect(session.isLocked == false)
     }
 
     @Test func test_handleTimerFire_when_payment_is_in_flight_then_does_not_lock() {
@@ -45,7 +45,7 @@ struct POSAutoLockActivityControllerTests {
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 0)
+        #expect(session.isLocked == false)
     }
 
     @Test func test_handleTimerFire_when_activity_landed_within_timeout_then_does_not_lock() {
@@ -58,7 +58,7 @@ struct POSAutoLockActivityControllerTests {
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 0)
+        #expect(session.isLocked == false)
     }
 
     @Test func test_handleTimerFire_when_idle_past_timeout_then_locks() {
@@ -71,7 +71,7 @@ struct POSAutoLockActivityControllerTests {
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 1)
+        #expect(session.isLocked == true)
     }
 
     @Test func test_handleTimerFire_when_payment_succeeds_and_then_idle_past_timeout_then_locks() {
@@ -94,7 +94,7 @@ struct POSAutoLockActivityControllerTests {
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 1)
+        #expect(session.isLocked == true)
     }
 
     @Test func test_noteActivity_then_resets_the_idle_window() {
@@ -116,7 +116,7 @@ struct POSAutoLockActivityControllerTests {
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 0)
+        #expect(session.isLocked == false)
     }
 
     @Test func test_noteActivityThrottled_when_called_within_throttle_window_then_does_not_reset() {
@@ -135,11 +135,12 @@ struct POSAutoLockActivityControllerTests {
         // When
         clock.advance(by: 0.5)
         sut.noteActivityThrottled()
-        clock.advance(by: 300)
+        // Reach the original deadline, but not a deadline incorrectly reset by the throttled event.
+        clock.advance(by: 299.5)
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 1)
+        #expect(session.isLocked == true)
     }
 
     @Test func test_noteActivityThrottled_when_called_past_throttle_window_then_resets() {
@@ -158,11 +159,12 @@ struct POSAutoLockActivityControllerTests {
         // When
         clock.advance(by: 2)
         sut.noteActivityThrottled()
-        clock.advance(by: 290)
+        // Pass the original deadline while remaining before the deadline reset by accepted activity.
+        clock.advance(by: 299)
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 0)
+        #expect(session.isLocked == false)
     }
 
     @Test func test_handleTimerFire_when_session_unlocked_then_relocked_via_noteActivity_then_relocks_after_timeout() {
@@ -184,7 +186,7 @@ struct POSAutoLockActivityControllerTests {
         sut.handleTimerFire()
 
         // Then
-        #expect(session.lockCallCount == 1)
+        #expect(session.isLocked == true)
     }
 }
 

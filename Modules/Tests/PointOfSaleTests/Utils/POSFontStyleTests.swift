@@ -9,16 +9,6 @@ import UIKit
 /// `View.font(_:POSFontStyle)` modifier (which requires a live view hierarchy).
 struct POSFontStyleTests {
 
-    // MARK: - POSLayoutScale sanity
-
-    @Test func test_POSLayoutScale_regular_and_compact_are_distinct_cases() {
-        // Verify the two layout scale values exist and are different.
-        let regular = POSLayoutScale.regular
-        let compact = POSLayoutScale.compact
-
-        #expect(regular != compact)
-    }
-
     // MARK: - baseSize: regular returns original iPad design sizes
 
     @Test func test_baseSize_when_regular_then_posHeadingBold_returns_36() {
@@ -211,20 +201,19 @@ struct POSFontStyleTests {
     /// At the default (.large) Dynamic Type category the floor should never be the binding
     /// constraint — the unscaled base size is already above the floor.
     @Test(arguments: [
-        POSFontStyle.posHeadingBold,
-        POSFontStyle.posBodyMediumBold,
-        POSFontStyle.posBodySmallBold(),
-        POSFontStyle.posCaptionRegular,
-        POSFontStyle.posButtonSymbolXSmall,
+        (POSFontStyle.posHeadingBold, CGFloat(24)),
+        (.posBodyMediumBold, 16),
+        (.posBodySmallBold(), 14),
+        (.posCaptionRegular, 12),
+        (.posButtonSymbolXSmall, 14),
     ])
-    func test_effectiveFontSize_when_compact_and_large_DynamicType_then_exceeds_floor(style: POSFontStyle) {
-        // Given - at the default size the metrics do not shrink the value below the base
-        let compactBase = style.baseSize(for: .compact)
+    func test_effectiveFontSize_when_compact_and_large_DynamicType_then_preserves_design_size(style: POSFontStyle, expectedSize: CGFloat) {
+        // Given: the default Dynamic Type size uses the compact design sizes.
 
         // When
         let effectiveSize = style.effectiveFontSize(for: .compact, contentSizeCategory: .large)
 
-        // Then - at default Dynamic Type the effective size is at least the compact base
-        #expect(effectiveSize >= compactBase)
+        // Then
+        #expect(effectiveSize == expectedSize)
     }
 }

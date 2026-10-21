@@ -1,6 +1,5 @@
 import Testing
 import Foundation
-import enum WooFoundationCore.WooAnalyticsStat
 import enum Yosemite.POSItemType
 import enum Yosemite.POSSearchMethod
 import enum Yosemite.POSSearchSource
@@ -22,9 +21,10 @@ struct POSItemFetchAnalyticsTests {
         sut.trackSearchRemoteResultsFetchComplete(millisecondsSinceRequestSent: 250, totalItems: 7)
 
         // Then
+        #expect(mockAnalytics.events.count == 1)
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleSearchRemoteResultsFetched.rawValue)
-        #expect(event.properties[AnalyticsKeys.searchMethod] as? String == POSSearchMethod.remote.rawValue)
+        #expect(event.eventName == "search_remote_results_fetched")
+        #expect(event.properties[AnalyticsKeys.searchMethod] as? String == "remote")
         #expect(event.properties[AnalyticsKeys.resultsCount] as? String == "7")
         #expect(event.properties[AnalyticsKeys.millisecondsSinceRequestSent] as? String == "250")
     }
@@ -41,8 +41,12 @@ struct POSItemFetchAnalyticsTests {
                                                  source: .purchasableItems)
 
         // Then
+        #expect(mockAnalytics.events.count == 1)
         let event = try #require(mockAnalytics.events.first)
-        #expect(event.eventName == WooAnalyticsStat.pointOfSaleSearchResultsFetched.rawValue)
-        #expect(event.properties[AnalyticsKeys.searchMethod] as? String == POSSearchMethod.fts.rawValue)
+        #expect(event.eventName == "search_results_fetched")
+        #expect(event.properties[AnalyticsKeys.searchMethod] as? String == "fts")
+        #expect(event.properties["source"] as? String == "purchasable_items")
+        #expect(event.properties[AnalyticsKeys.resultsCount] as? String == "3")
+        #expect(event.properties[AnalyticsKeys.millisecondsSinceRequestSent] as? String == "12")
     }
 }

@@ -8,29 +8,30 @@ import struct Yosemite.POSVariation
 import struct Yosemite.POSVariableParentProduct
 
 struct CartTests {
-    @Test(arguments: ["", "Size: Large, Color: Blue"], [false, true])
-    func test_add_when_variation_has_name_then_subtitle_omits_only_empty_name(name: String, isSearchResult: Bool) {
+    @Test(arguments: [("", nil), ("Size: Large, Color: Blue", "Size: Large, Color: Blue")] as [(String, String?)], [false, true])
+    func test_add_when_variation_has_name_then_subtitle_omits_only_empty_name(variation: (name: String, subtitle: String?), isSearchResult: Bool) {
         // Given
         var cart = Cart()
-        let item = makeVariation(name: name, isSearchResult: isSearchResult)
+        let item = makeVariation(name: variation.name, isSearchResult: isSearchResult)
 
         // When
         cart.add(item)
 
         // Then
         #expect(cart.purchasableItems.count == 1)
-        #expect(cart.purchasableItems.first?.subtitle == (name.isEmpty ? nil : name))
+        #expect(cart.purchasableItems.first?.subtitle == variation.subtitle)
         #expect(cart.purchasableItems.first?.title == "Parent Product")
         #expect(cart.purchasableItems.first?.formattedPrice == "$2.00")
         #expect(cart.purchasableItems.first?.posItemIdentifier == item.id)
     }
 
-    @Test(arguments: ["", "Size: Large, Color: Blue"], [false, true])
-    func test_updateLoadingItem_when_variation_has_name_then_subtitle_omits_only_empty_name(name: String, isSearchResult: Bool) {
+    @Test(arguments: [("", nil), ("Size: Large, Color: Blue", "Size: Large, Color: Blue")] as [(String, String?)], [false, true])
+    func test_updateLoadingItem_when_variation_has_name_then_subtitle_omits_only_empty_name(variation: (name: String, subtitle: String?),
+                                                                                       isSearchResult: Bool) {
         // Given
         var cart = Cart()
         let loadingItem = cart.addLoadingItem()
-        let item = makeVariation(name: name, isSearchResult: isSearchResult)
+        let item = makeVariation(name: variation.name, isSearchResult: isSearchResult)
 
         // When
         let updatedItem = cart.updateLoadingItem(id: loadingItem.id, with: item)
@@ -38,8 +39,8 @@ struct CartTests {
         // Then
         #expect(cart.purchasableItems.count == 1)
         #expect(updatedItem?.id == loadingItem.id)
-        #expect(updatedItem?.subtitle == (name.isEmpty ? nil : name))
-        #expect(cart.purchasableItems.first?.subtitle == (name.isEmpty ? nil : name))
+        #expect(updatedItem?.subtitle == variation.subtitle)
+        #expect(cart.purchasableItems.first?.subtitle == variation.subtitle)
         #expect(updatedItem?.posItemIdentifier == item.id)
     }
 

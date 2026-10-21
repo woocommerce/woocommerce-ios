@@ -285,7 +285,8 @@ struct UIKitBarcodeObserverTests {
             analytics: MockPOSAnalytics(),
             onScan: {
                 results.append($0)
-            }
+            },
+            timeProvider: MockTimeProvider()
         )
 
         // When - Scan barcode with special characters "A-1.B"

@@ -133,7 +133,7 @@ struct POSPINEntryViewHelperTests {
     @Test func test_remainingLockoutSeconds_when_future_then_returns_positive() {
         // Given
         let now = Date(timeIntervalSinceReferenceDate: 0)
-        let until = now.addingTimeInterval(30)
+        let until = now.addingTimeInterval(29.1)
 
         // When
         let seconds = helper.remainingLockoutSeconds(until: until, now: now)
@@ -162,6 +162,6 @@ struct POSPINEntryViewHelperTests {
         let message = helper.lockoutMessage(remainingSeconds: seconds)
 
         // Then
-        #expect(message.contains("30"))
+        #expect(message == "Too many attempts. Try again in 30s.")
     }
 }

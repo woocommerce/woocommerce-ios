@@ -135,19 +135,13 @@ struct PointOfSaleAggregateModelTests {
         @Test func addItem_puts_new_items_first_in_the_cart() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
-            let items = [makePurchasableItem(), makePurchasableItem(), makePurchasableItem()]
+            let items = [makePurchasableItem(name: "Coffee"), makePurchasableItem(name: "Tea"), makePurchasableItem(name: "Cake")]
 
             // When
             items.forEach(sut.addToCart(_:))
 
             // Then
-            let cartItemIDs = try sut.cart.purchasableItems.map { purchasableItem in
-                guard case let .loaded(item) = purchasableItem.state else {
-                    throw CartTestError.unexpectedItemStateInCart
-                }
-                return item.id
-            }
-            #expect(cartItemIDs == items.reversed().map(\.id))
+            #expect(sut.cart.purchasableItems.map(\.title) == ["Cake", "Tea", "Coffee"])
         }
 
         @Test func removeItem_after_adding_two_items_removes_item_correctly() async throws {
@@ -267,24 +261,6 @@ struct PointOfSaleAggregateModelTests {
         @Test func editingCustomAmount_starts_nil() async throws {
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
 
-            #expect(sut.editingCustomAmount == nil)
-        }
-
-        @Test func editingCustomAmount_set_to_value_then_nil_drives_modal_lifecycle() async throws {
-            // Given
-            let sut = makePointOfSaleAggregateModel(analytics: analytics)
-            let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
-
-            // When set to a value
-            sut.editingCustomAmount = customAmount
-
-            // Then
-            #expect(sut.editingCustomAmount == customAmount)
-
-            // When cleared
-            sut.editingCustomAmount = nil
-
-            // Then
             #expect(sut.editingCustomAmount == nil)
         }
 
@@ -435,8 +411,6 @@ struct PointOfSaleAggregateModelTests {
             let cardPresentPaymentService = MockCardPresentPaymentService()
             let orderController = MockPointOfSaleOrderController()
             let itemsController = MockPointOfSaleItemsController()
-            var releaseSyncOrder: (() -> Void)?
-            var checkoutTask: Task<Void, Never>?
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
             let sut = makePointOfSaleAggregateModel(
@@ -446,23 +420,10 @@ struct PointOfSaleAggregateModelTests {
             sut.addToCart(makePurchasableItem())
 
             // When
-            await fireOnce { fire in
-                orderController.onSyncOrderCalled = {
-                    await withCheckedContinuation { continuation in
-                        releaseSyncOrder = {
-                            continuation.resume()
-                        }
-                        fire()
-                    }
-                }
-                checkoutTask = Task { @MainActor in
-                    await sut.checkOut()
-                }
+            orderController.onSyncOrderCalled = {
+                sut.cancelInFlightCheckout()
             }
-
-            sut.cancelInFlightCheckout()
-            releaseSyncOrder?()
-            await checkoutTask?.value
+            await sut.checkOut()
 
             // Then
             #expect(sut.orderStage == .building)
@@ -1563,24 +1524,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(catalogSyncCoordinator.performIncrementalSyncSiteID == siteID)
         }
 
-        @Test func checkOut_when_no_price_change_then_does_not_trigger_incremental_sync() async throws {
-            // Given: cart price $10 matches order subtotal $10 (no change)
-            let catalogSyncCoordinator = MockPOSCatalogSyncCoordinator()
-            let orderItem = OrderItem.fake().copy(productID: 1, quantity: 1, subtotal: "10.00", subtotalTax: "0.00")
-            orderController.orderStateToReturn = makeLoadedOrderState(order: Order.fake().copy(items: [orderItem]))
-            let sut = makePointOfSaleAggregateModel(
-                orderController: orderController,
-                catalogSyncCoordinator: catalogSyncCoordinator
-            )
-            sut.addToCart(makePurchasableItem(price: "10.00"))
-
-            // When
-            await sut.checkOut()
-
-            // Then: give any hypothetical async work a chance to run, then verify no sync occurred
-            await Task.yield()
-            #expect(catalogSyncCoordinator.performIncrementalSyncInvocationCount == 0)
-        }
     }
 
     @MainActor struct StaleSyncWarningTests {
@@ -1700,27 +1643,6 @@ struct PointOfSaleAggregateModelTests {
                 $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
             }
             #expect(shownEvents.isEmpty)
-        }
-    }
-
-    @MainActor struct ReceiptPrinterTests {
-        @Test func receiptPrinter_is_nil_by_default() async {
-            // Given, When
-            let sut = makePointOfSaleAggregateModel()
-
-            // Then
-            #expect(sut.receiptPrinter == nil)
-        }
-
-        @Test func receiptPrinter_exposes_the_injected_backend() async {
-            // Given
-            let printer = MockReceiptPrinterService()
-
-            // When
-            let sut = makePointOfSaleAggregateModel(receiptPrinter: printer)
-
-            // Then
-            #expect(sut.receiptPrinter === printer)
         }
     }
 

@@ -11,7 +11,9 @@ struct DefaultPOSAccessSessionTests {
         // Given
         let staff = makeStaff(capabilities: Set(POSCapability.allCases.map(\.rawValue)))
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
-        sut.limiter.recordFailure()
+        for _ in 0..<4 {
+            sut.limiter.recordFailure()
+        }
 
         // When
         try await sut.session.signIn(withPIN: "1234")
@@ -19,20 +21,25 @@ struct DefaultPOSAccessSessionTests {
         // Then
         #expect(sut.session.currentStaff == staff)
         #expect(sut.session.isLocked == false)
+        for _ in 0..<4 {
+            sut.limiter.recordFailure()
+        }
         try sut.limiter.checkAllowed()
     }
 
-    @Test func test_signIn_when_pin_is_invalid_then_throws_invalidPIN_and_records_failure() async {
+    @Test func test_signIn_when_five_pins_are_invalid_then_rate_limits_further_attempts() async {
         // Given
-        let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))
-        let sut = makeSUT(authenticator: authenticator)
+        let sut = makeSUT(now: { Date(timeIntervalSinceReferenceDate: 1000) })
 
         // When / Then
-        await #expect(throws: POSAuthError.invalidPIN) {
+        for _ in 0..<4 {
+            await #expect(throws: POSAuthError.invalidPIN) {
+                try await sut.session.signIn(withPIN: "0000")
+            }
+        }
+        await #expect(throws: POSAuthError.rateLimited(until: Date(timeIntervalSinceReferenceDate: 1030))) {
             try await sut.session.signIn(withPIN: "0000")
         }
-        // A miss triggers one cache refresh and a single retry before giving up.
-        #expect(authenticator.authenticatedPINs == ["0000", "0000"])
         #expect(sut.session.currentStaff == nil)
     }
 
@@ -114,6 +121,9 @@ struct DefaultPOSAccessSessionTests {
         // Given
         let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.unknown))
         let sut = makeSUT(authenticator: authenticator)
+        for _ in 0..<4 {
+            sut.limiter.recordFailure()
+        }
 
         // When / Then
         await #expect(throws: POSAuthError.unknown) {
@@ -242,21 +252,19 @@ struct DefaultPOSAccessSessionTests {
     // MARK: - Refresh-on-miss retry
 
     @Test func test_signIn_when_pin_misses_stale_cache_then_refreshes_once_and_succeeds() async throws {
-        // Given an authenticator that misses on the first try (stale cache) but matches after a refresh
-        let staff = makeStaff()
-        let authenticator = MockPOSPINAuthenticator()
-        authenticator.authenticateResultSequence = [.failure(.invalidPIN), .success(staff)]
-        let fetcher = MockPOSStaffFetcher(result: .success([]))
-        let sut = makeSUT(authenticator: authenticator, fetcher: fetcher)
+        // Given an empty cache and independently hashed PIN data returned by the staff endpoint
+        let fetcher = MockPOSStaffFetcher(result: .success([makeAuthenticatableManager()]))
+        let sut = makeSUT(fetcher: fetcher)
 
         // When
         try await sut.session.signIn(withPIN: "1234")
 
         // Then — the session refreshed the cache exactly once, then signed the staff in
         #expect(fetcher.callCount == 1)
-        #expect(authenticator.authenticatedPINs == ["1234", "1234"])
-        #expect(sut.session.currentStaff == staff)
+        #expect(sut.session.currentStaff?.userID == 7)
+        #expect(sut.session.currentStaff?.displayName == "Morgan")
         #expect(sut.session.isLocked == false)
+        #expect(sut.session.allows(.issueRefunds))
     }
 
     @Test func test_signIn_when_pin_misses_and_refresh_fetch_fails_then_throws_staffFetchFailed() async {
@@ -274,18 +282,20 @@ struct DefaultPOSAccessSessionTests {
     }
 
     @Test func test_requestManagerApproval_when_pin_misses_stale_cache_then_refreshes_once_and_succeeds() async throws {
-        // Given a verify that misses on the first try but matches after a refresh
-        let authenticator = MockPOSPINAuthenticator()
-        authenticator.verifyResultSequence = [.failure(.invalidPIN), .success(())]
-        let fetcher = MockPOSStaffFetcher(result: .success([]))
-        let sut = makeSUT(authenticator: authenticator, fetcher: fetcher)
+        // Given an empty cache and manager PIN data returned by the staff endpoint
+        let fetcher = MockPOSStaffFetcher(result: .success([makeAuthenticatableManager()]))
+        let sut = makeSUT(fetcher: fetcher)
 
         // When
-        try await sut.session.requestManagerApproval(withPIN: "9999", for: .issueRefunds)
+        try await sut.session.requestManagerApproval(withPIN: "1234", for: .issueRefunds)
 
         // Then
         #expect(fetcher.callCount == 1)
-        #expect(authenticator.verifyCallCount == 2)
+        // Approval is for this action only; it must not sign the manager into the cashier session.
+        #expect(sut.session.currentStaff == nil)
+        await #expect(throws: POSAuthError.invalidPIN) {
+            try await sut.session.requestManagerApproval(withPIN: "1234", for: .managePOSStaff)
+        }
     }
 
     // MARK: - Cache-driven gating
@@ -443,7 +453,7 @@ private extension DefaultPOSAccessSessionTests {
         let cache: POSStaffCache
     }
 
-    func makeSUT(authenticator: POSPINAuthenticating,
+    func makeSUT(authenticator: POSPINAuthenticating? = nil,
                  fetcher: POSStaffFetching = MockPOSStaffFetcher(),
                  cache: POSStaffCache = POSStaffCache(storage: InMemoryStaffStorage()),
                  now: @escaping () -> Date = { Date() }) -> SUT {
@@ -451,7 +461,7 @@ private extension DefaultPOSAccessSessionTests {
         let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
         let session = DefaultPOSAccessSession(
             siteID: 123,
-            authenticator: authenticator,
+            authenticator: authenticator ?? DefaultPOSPINAuthenticator(cache: cache, siteID: 123),
             rateLimiter: limiter,
             cache: cache,
             fetcher: fetcher,
@@ -467,6 +477,17 @@ private extension DefaultPOSAccessSessionTests {
                        capabilities: ["woocommerce_pos_issue_refunds": true],
                        pin: hasPIN ? .init(algorithm: "pbkdf2-sha256", iterations: 1,
                                            salt: "c2FsdA==", hash: "aGFzaA==") : nil)
+    }
+
+    func makeAuthenticatableManager() -> POSStaffMember {
+        // Python hashlib PBKDF2-HMAC-SHA256 vector for PIN "1234", salt b"salt-for-tests".
+        POSStaffMember(userID: 7,
+                       displayName: "Morgan",
+                       preset: .manager,
+                       capabilities: ["woocommerce_pos_issue_refunds": true],
+                       pin: .init(algorithm: "pbkdf2-sha256", iterations: 1_000,
+                                  salt: "c2FsdC1mb3ItdGVzdHM=",
+                                  hash: "AsXBWrCDP2vAJcMBR8FNk62YU2oTmP92K5x0dxDejmM="))
     }
 
     func makeStaff(userID: Int64 = 1,

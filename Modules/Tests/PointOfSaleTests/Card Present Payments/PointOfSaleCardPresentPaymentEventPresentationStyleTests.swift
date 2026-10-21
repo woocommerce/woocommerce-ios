@@ -126,9 +126,13 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         }
 
         viewModel.tryAgainButtonViewModel.actionHandler()
-        viewModel.newOrderButtonViewModel.actionHandler()
         XCTAssertTrue(spyPaymentCaptureErrorTryAgainCalled)
+        XCTAssertFalse(spyPaymentCaptureErrorNewOrderCalled)
+
+        spyPaymentCaptureErrorTryAgainCalled = false
+        viewModel.newOrderButtonViewModel.actionHandler()
         XCTAssertTrue(spyPaymentCaptureErrorNewOrderCalled)
+        XCTAssertFalse(spyPaymentCaptureErrorTryAgainCalled)
     }
 
     @MainActor
@@ -160,7 +164,8 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
     @MainActor
     func test_presentationStyle_for_scanningForReader_is_alert_scanningForReader_with_correctActions() {
         // Given
-        let eventDetails = CardPresentPaymentEventDetails.scanningForReaders(endSearch: {})
+        var spyEndSearchCalled = false
+        let eventDetails = CardPresentPaymentEventDetails.scanningForReaders(endSearch: { spyEndSearchCalled = true })
         var spyDismissReaderConnectionModalActionCalled = false
         let dependencies = createPresentationStyleDependencies(
             dismissReaderConnectionModalAction: {
@@ -180,6 +185,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
 
         viewModel.buttonViewModel.actionHandler()
         XCTAssertTrue(spyDismissReaderConnectionModalActionCalled)
+        XCTAssertTrue(spyEndSearchCalled)
     }
 
     func createPresentationStyleDependencies(

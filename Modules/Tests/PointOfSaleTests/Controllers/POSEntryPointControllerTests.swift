@@ -1,6 +1,8 @@
 import Testing
+import Observation
 @testable import PointOfSale
 
+@Suite(.timeLimit(.minutes(5)))
 @MainActor
 struct POSEntryPointControllerTests {
     @Test func eligibilityState_is_set_to_ineligible_when_checker_returns_ineligible() async throws {
@@ -13,9 +15,7 @@ struct POSEntryPointControllerTests {
         let controller = POSEntryPointController(
             eligibilityChecker: mockEligibilityChecker
         )
-        while controller.eligibilityState == nil {
-            await Task.yield()
-        }
+        await waitForEligibility(on: controller)
 
         // Then
         #expect(controller.eligibilityState == expectedState)
@@ -30,11 +30,23 @@ struct POSEntryPointControllerTests {
         let controller = POSEntryPointController(
             eligibilityChecker: mockEligibilityChecker
         )
-        while controller.eligibilityState == nil {
-            await Task.yield()
-        }
+        await waitForEligibility(on: controller)
 
         // Then
         #expect(controller.eligibilityState == .eligible)
+    }
+}
+
+private extension POSEntryPointControllerTests {
+    func waitForEligibility(on controller: POSEntryPointController) async {
+        while controller.eligibilityState == nil {
+            await withCheckedContinuation { continuation in
+                withObservationTracking {
+                    _ = controller.eligibilityState
+                } onChange: {
+                    continuation.resume()
+                }
+            }
+        }
     }
 }

@@ -108,10 +108,14 @@ struct PointOfSaleOrderControllerTests {
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics())
-        let cartItem = makeItem(quantity: 1)
         let orderItem = OrderItem.fake().copy(quantity: 1)
+        let cartItem = makeItem(quantity: 1, orderItemsToMatch: [orderItem])
         let fakeOrder = Order.fake().copy(items: [orderItem])
         mockOrderService.orderToReturn = fakeOrder
+
+        await sut.syncOrder(for: Cart(purchasableItems: [cartItem]), retryHandler: {})
+        try #require(mockOrderService.syncOrderCallCount == 1)
+        mockOrderService.syncOrderWasCalled = false
 
         let futureOrderItem = OrderItem.fake().copy(quantity: 5)
 
@@ -121,7 +125,7 @@ struct PointOfSaleOrderControllerTests {
                             retryHandler: {})
 
         // Then
-        #expect(mockOrderService.syncOrderWasCalled)
+        #expect(mockOrderService.syncOrderCallCount == 2)
     }
 
     @Test func syncOrder_with_no_previous_order_sets_orderState_syncing_then_loaded() async throws {
@@ -195,14 +199,11 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         let email = "test@example.com"
 
-        // When
-        do {
+        // When / Then
+        await #expect(throws: PointOfSaleOrderController.PointOfSaleOrderControllerError.noOrder) {
             try await sut.sendReceipt(recipientEmail: email)
-        } catch {
-            // Then
-            #expect(error as? PointOfSaleOrderController.PointOfSaleOrderControllerError == .noOrder)
-            #expect(!mockReceiptSender.sendReceiptWasCalled)
         }
+        #expect(!mockReceiptSender.sendReceiptWasCalled)
     }
 
     @Test func sendReceipt_with_order_delegates_to_receiptSender() async throws {
@@ -228,16 +229,15 @@ struct PointOfSaleOrderControllerTests {
     }
 
     @Test func collectCashPayment_when_no_order_then_fails_with_noOrder_error() async throws {
-        do {
-            // Given/When
-            let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                                 receiptSender: mockReceiptSender,
-                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
-                                                 analytics: MockPOSAnalytics())
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        // When / Then
+        await #expect(throws: PointOfSaleOrderController.PointOfSaleOrderControllerError.noOrder) {
             try await sut.collectCashPayment(changeDueAmount: nil)
-        } catch let error as PointOfSaleOrderController.PointOfSaleOrderControllerError {
-            // Then
-            #expect(error == .noOrder)
         }
     }
 

@@ -83,7 +83,7 @@ struct POSEdgeSwipePolicyTests {
         let distance = policy.completionDistance(totalWidth: 0)
 
         // Then
-        #expect(distance == POSEdgeSwipePolicy.fallbackCompletionDistance)
+        #expect(distance == 60)
     }
 
     @Test func test_shouldComplete_when_width_is_unknown_then_a_long_swipe_still_completes() {
@@ -104,8 +104,8 @@ struct POSEdgeSwipePolicyTests {
 
         // When / Then
         #expect(policy.startsAtLeadingEdge(0, totalWidth: 400))
-        #expect(policy.startsAtLeadingEdge(POSEdgeSwipePolicy.activationWidth, totalWidth: 400))
-        #expect(!policy.startsAtLeadingEdge(POSEdgeSwipePolicy.activationWidth + 1, totalWidth: 400))
+        #expect(policy.startsAtLeadingEdge(44, totalWidth: 400))
+        #expect(!policy.startsAtLeadingEdge(45, totalWidth: 400))
         #expect(!policy.startsAtLeadingEdge(400, totalWidth: 400))
     }
 
@@ -115,8 +115,8 @@ struct POSEdgeSwipePolicyTests {
 
         // When / Then
         #expect(policy.startsAtLeadingEdge(400, totalWidth: 400))
-        #expect(policy.startsAtLeadingEdge(400 - POSEdgeSwipePolicy.activationWidth, totalWidth: 400))
-        #expect(!policy.startsAtLeadingEdge(400 - POSEdgeSwipePolicy.activationWidth - 1, totalWidth: 400))
+        #expect(policy.startsAtLeadingEdge(356, totalWidth: 400))
+        #expect(!policy.startsAtLeadingEdge(355, totalWidth: 400))
         #expect(!policy.startsAtLeadingEdge(0, totalWidth: 400))
     }
 
@@ -174,7 +174,7 @@ struct POSEdgeSwipePolicyTests {
             + policy.outgoingParallaxOffset(progress: 1, totalWidth: totalWidth)
 
         // Then
-        #expect(netTravel == -totalWidth * POSEdgeSwipePolicy.outgoingParallaxFraction)
+        #expect(netTravel == -120)
     }
 
     @Test func test_isPredominantlyHorizontal_when_drag_is_mostly_vertical_then_returns_false() {

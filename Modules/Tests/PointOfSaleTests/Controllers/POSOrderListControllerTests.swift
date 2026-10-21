@@ -65,7 +65,7 @@ final class POSOrderListControllerTests {
             Issue.record("Expected loaded OrderList state, but got \(sut.ordersViewState)")
             return
         }
-        #expect(orders.count == expectedOrders.count)
+        #expect(orders == expectedOrders)
     }
 
     @Test func container_state_starts_as_loading() {
@@ -83,7 +83,7 @@ final class POSOrderListControllerTests {
         #expect(sut.ordersViewState == .empty)
     }
 
-    @Test func loadOrders_when_initial_orders_has_orders_but_no_more_pages_then_state_is_loaded_with_initial_orders() async throws {
+    @Test func loadNextOrders_when_initial_orders_has_orders_but_no_more_pages_then_state_is_loaded_with_initial_orders() async throws {
         let initialOrders = MockPOSOrderListService.makeInitialOrders()
         orderListService.orderPages = [initialOrders]
 
@@ -104,7 +104,7 @@ final class POSOrderListControllerTests {
             Issue.record("Expected loaded OrderList state, but got \(sut.ordersViewState)")
             return
         }
-        #expect(orders.count == 4)
+        #expect(orders == MockPOSOrderListService.makeInitialOrders() + MockPOSOrderListService.makeSecondPageOrders())
     }
 
     @Test func loadNextOrders_requests_second_page() async throws {
@@ -128,7 +128,7 @@ final class POSOrderListControllerTests {
             Issue.record("Expected loaded OrderList state, but got \(sut.ordersViewState)")
             return
         }
-        #expect(orders.count == 4)
+        #expect(orders == MockPOSOrderListService.makeInitialOrders() + MockPOSOrderListService.makeSecondPageOrders())
         #expect(hasMoreItems == true)
     }
 
@@ -196,15 +196,17 @@ final class POSOrderListControllerTests {
         }
         #expect(firstLoadOrders == initialOrders)
 
-        // Second load - should show cached data immediately with loading state
+        // When: refresh the cached list.
+        var observedLoading = false
+        orderListService.onProvideOrders = { [weak sut] in
+            observedLoading = true
+            #expect(sut?.ordersViewState == .loading(initialOrders))
+        }
         await sut.loadOrders()
 
-        // Should show cached data in loading state, then switch to loaded
-        guard case .loaded(let cachedOrders, _) = sut.ordersViewState else {
-            Issue.record("Expected loaded state with cached data, but got \(sut.ordersViewState)")
-            return
-        }
-        #expect(cachedOrders == initialOrders)
+        // Then
+        #expect(observedLoading)
+        #expect(sut.ordersViewState == .loaded(initialOrders, hasMoreItems: false))
     }
 
     @Test func loadOrders_when_no_cached_data_then_starts_with_empty_loading_state() async throws {

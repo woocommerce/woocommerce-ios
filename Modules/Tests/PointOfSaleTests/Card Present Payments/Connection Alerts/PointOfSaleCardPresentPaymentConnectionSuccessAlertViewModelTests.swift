@@ -4,22 +4,6 @@ import XCTest
 
 final class PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests: XCTestCase {
 
-    func test_manual_equatable_conformance_number_of_properties_unchanged() {
-        let sut = PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(doneAction: {})
-
-        XCTAssertPropertyCount(sut,
-                               expectedCount: 5,
-                               messageHint: "Please check that the manual equatable conformance includes new properties.")
-    }
-
-    func test_manual_hashable_conformance_number_of_properties_unchanged() {
-        let sut = PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(doneAction: {})
-
-        XCTAssertPropertyCount(sut,
-                               expectedCount: 5,
-                               messageHint: "Please check that the manual hashable conformance includes new properties.")
-    }
-
     func test_when_scheduler_fires_the_modal_is_dismissed() {
         // Given
         let testScheduler = MockScheduler()
@@ -62,9 +46,10 @@ final class PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests: X
     func test_when_the_button_is_tapped_the_autodismiss_work_item_is_cancelled() {
         // Given
         let testScheduler = MockScheduler()
+        var dismissalCount = 0
 
         let sut = PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(
-            doneAction: { },
+            doneAction: { dismissalCount += 1 },
             scheduler: testScheduler
         )
 
@@ -79,5 +64,6 @@ final class PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests: X
 
         // Then
         XCTAssertTrue(autoDismissWorkItem.isCancelled)
+        XCTAssertEqual(dismissalCount, 1)
     }
 }

@@ -17,7 +17,6 @@ struct POSContentPaddingTests {
         // Then: 16 points of requested padding need no addition to the existing 20-point clearance.
         #expect(clearance.leading == 20)
         #expect(clearance.trailing == 0)
-        #expect(max(0, 16 - clearance.leading) == 0)
     }
 
     @Test func test_context_when_input_spans_both_pages_then_keeps_full_width_padding() {
@@ -47,8 +46,8 @@ struct POSContentPaddingTests {
         #expect(clearance.trailing == 0)
     }
 
-    @Test(arguments: [CGFloat(0), CGFloat(8), CGFloat(20), CGFloat(40)])
-    func test_clearance_when_content_follows_region_then_credits_only_remaining_margin(distance: CGFloat) {
+    @Test(arguments: [(CGFloat(0), CGFloat(20)), (8, 12), (20, 0), (40, 0)])
+    func test_clearance_when_content_follows_region_then_credits_only_remaining_margin(distance: CGFloat, expectedClearance: CGFloat) {
         // Given
         let margins = EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
 
@@ -58,12 +57,12 @@ struct POSContentPaddingTests {
                                                    margins: margins)
 
         // Then
-        #expect(clearance.leading == max(0, 20 - distance))
+        #expect(clearance.leading == expectedClearance)
         #expect(clearance.trailing == 0)
     }
 
-    @Test(arguments: [CGFloat(0), CGFloat(8), CGFloat(20), CGFloat(40)])
-    func test_clearance_when_content_precedes_region_then_credits_only_remaining_margin(distance: CGFloat) {
+    @Test(arguments: [(CGFloat(0), CGFloat(20)), (8, 12), (20, 0), (40, 0)])
+    func test_clearance_when_content_precedes_region_then_credits_only_remaining_margin(distance: CGFloat, expectedClearance: CGFloat) {
         // Given
         let margins = EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
 
@@ -74,7 +73,7 @@ struct POSContentPaddingTests {
 
         // Then
         #expect(clearance.leading == 0)
-        #expect(clearance.trailing == max(0, 20 - distance))
+        #expect(clearance.trailing == expectedClearance)
     }
 
     @Test func test_clearance_when_content_spans_region_then_preserves_edge_padding() {

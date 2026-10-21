@@ -1,5 +1,7 @@
 # Testing Guidelines
 
+When adding, changing, or reviewing module tests, apply the [behavior checks](../../.agents/rules/testing.md#behavior-checks).
+
 ## Framework
 - **Prefer SwiftTesting over XCTest** for new tests, use `@Test` attribute and `#expect()` assertions
 - When adding tests to an existing test class, follow that class's framework, naming, and testing approach

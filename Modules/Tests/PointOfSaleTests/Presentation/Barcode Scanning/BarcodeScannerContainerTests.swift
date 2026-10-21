@@ -36,6 +36,11 @@ struct BarcodeScannerContainerTests {
         }
         #expect(results.count == 1)
         #expect(analytics.events.count == 1)
+        if case .success(let barcode) = results.first {
+            #expect(barcode == "123456")
+        } else {
+            Issue.record("Expected the accepted barcode to be delivered")
+        }
     }
 
     @Test("Container uses GameController observer when VoiceOver is disabled")
@@ -121,7 +126,8 @@ struct BarcodeScannerContainerTests {
         show(container)
 
         // When - Switch between observers multiple times
-        #expect(container.gameControllerObserver != nil && container.uiKitObserver == nil)
+        weak var oldGameControllerObserver = container.gameControllerObserver
+        #expect(oldGameControllerObserver != nil)
 
         mockProvider.isRunning = true
         NotificationCenter.default.post(
@@ -129,6 +135,8 @@ struct BarcodeScannerContainerTests {
             object: nil
         )
         #expect(container.gameControllerObserver == nil && container.uiKitObserver != nil)
+        #expect(oldGameControllerObserver == nil)
+        weak var oldUIKitObserver = container.uiKitObserver
 
         mockProvider.isRunning = false
         NotificationCenter.default.post(
@@ -136,6 +144,7 @@ struct BarcodeScannerContainerTests {
             object: nil
         )
         #expect(container.gameControllerObserver != nil && container.uiKitObserver == nil)
+        #expect(oldUIKitObserver == nil)
 
         mockProvider.isRunning = true
         NotificationCenter.default.post(

@@ -3,6 +3,7 @@ import Foundation
 @testable import PointOfSale
 @testable import Yosemite
 
+@Suite(.timeLimit(.minutes(5)))
 struct POSSettingsLocalCatalogViewModelTests {
     private let sampleSiteID: Int64 = 12345
     private let sut: POSSettingsLocalCatalogViewModel
@@ -161,6 +162,13 @@ struct POSSettingsLocalCatalogViewModelTests {
     @Test func refreshCatalog_does_not_update_catalog_size_when_sync_fails() async throws {
         // Given
         catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 10,
+            variationCount: 5,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
+        await sut.loadCatalogData()
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
             productCount: 50,
             variationCount: 25,
             lastFullSyncDate: nil,
@@ -171,9 +179,8 @@ struct POSSettingsLocalCatalogViewModelTests {
         // When
         await sut.refreshCatalog()
 
-        // Then
-        #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)
-        #expect(sut.catalogSize != "50 products, 25 variations") // `loadCatalogInfo` should not be invoked
+        // Then the last loaded catalog remains visible after the failed refresh.
+        #expect(sut.catalogSize == "10 products and 5 variations")
         #expect(sut.isRefreshingCatalog == false)
     }
 
@@ -229,35 +236,6 @@ struct POSSettingsLocalCatalogViewModelTests {
         #expect(sut.isRefreshingCatalog == false)
     }
 
-    // MARK: - Test Concurrent Operations
-
-    @Test func concurrent_loadCatalogData_and_refreshCatalog_operations_work_correctly() async throws {
-        // Given
-        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
-            productCount: 100,
-            variationCount: 50,
-            lastFullSyncDate: Date(),
-            lastIncrementalSyncDate: Date()
-        ))
-
-        // When
-        let loadTask = Task {
-            await sut.loadCatalogData()
-        }
-        let refreshTask = Task {
-            await sut.refreshCatalog()
-        }
-
-        await loadTask.value
-        await refreshTask.value
-
-        // Then
-        #expect(sut.catalogSize == "100 products and 50 variations")
-        #expect(sut.isLoading == false)
-        #expect(sut.isRefreshingCatalog == false)
-        #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)
-    }
-
     // MARK: - allowFullSyncOnCellular Tests
 
     @Test func allowFullSyncOnCellular_returns_default_value_from_site_settings() async throws {
@@ -269,7 +247,6 @@ struct POSSettingsLocalCatalogViewModelTests {
 
         // Then
         #expect(isAllowed == false)
-        #expect(siteSettings.getPOSLocalCatalogCellularDataAllowedCalled == true)
     }
 
     @Test func allowFullSyncOnCellular_setter_updates_site_settings() async throws {
@@ -277,7 +254,6 @@ struct POSSettingsLocalCatalogViewModelTests {
         sut.allowFullSyncOnCellular = true
 
         // Then
-        #expect(siteSettings.setPOSLocalCatalogCellularDataAllowedCalled == true)
         #expect(siteSettings.mockPOSLocalCatalogCellularDataAllowed == true)
     }
 

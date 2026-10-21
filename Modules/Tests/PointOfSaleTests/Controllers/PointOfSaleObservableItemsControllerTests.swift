@@ -194,7 +194,7 @@ final class PointOfSaleObservableItemsControllerTests {
         await sut.loadItems(base: .root)
 
         // Then: Products loaded, no variations
-        #expect(sut.itemsViewState.itemsStack.root.items.count == 2)
+        #expect(sut.itemsViewState.itemsStack.root.items == mockProducts)
         #expect(sut.itemsViewState.itemsStack.itemStates.isEmpty)
 
         // When: Load variations
@@ -203,28 +203,31 @@ final class PointOfSaleObservableItemsControllerTests {
         await sut.loadItems(base: .parent(parentItem))
 
         // Then: Both products and variations present
-        #expect(sut.itemsViewState.itemsStack.root.items.count == 2)
-        #expect(sut.itemsViewState.itemsStack.itemStates[parentItem]?.items.count == 1)
+        #expect(sut.itemsViewState.itemsStack.root.items == mockProducts)
+        #expect(sut.itemsViewState.itemsStack.itemStates[parentItem]?.items == mockVariations)
     }
 
-    @Test func test_load_next_items_delegates_to_data_source() async {
+    @Test func test_loadNextItems_when_more_products_exist_then_displays_next_page() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
         let coordinator = MockPOSCatalogSyncCoordinator()
         let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
-
-        // Simulate initial load
-        dataSource.productItems = [makeSimpleProduct()]
-        dataSource.isLoadingProducts = false
+        let firstProduct = makeSimpleProduct(productID: 1)
+        let secondProduct = makeSimpleProduct(productID: 2)
+        dataSource.productItems = [firstProduct]
         dataSource.hasMoreProducts = true
         await sut.loadItems(base: .root)
+        dataSource.onLoadMoreProducts = {
+            dataSource.productItems = [firstProduct, secondProduct]
+            dataSource.hasMoreProducts = false
+        }
+        defer { dataSource.onLoadMoreProducts = nil }
 
         // When
         await sut.loadNextItems(base: .root)
 
-        // Then: loadMoreProducts should be called (verified by state change in mock)
-        // Note: Mock doesn't actually track calls, but we can verify the state
-        #expect(sut.itemsViewState.containerState == .content)
+        // Then
+        #expect(sut.itemsViewState.itemsStack.root == .loaded([firstProduct, secondProduct], hasMoreItems: false))
     }
 
     @Test func test_refresh_triggers_incremental_sync() async {
@@ -345,7 +348,7 @@ final class PointOfSaleObservableItemsControllerTests {
             Issue.record("Expected inlineError state when items exist")
             return
         }
-        #expect(items.count == 2)
+        #expect(items == mockItems)
         #expect(error.errorType == .productsLoadError)
         #expect(context == .refresh)
 
@@ -426,7 +429,7 @@ final class PointOfSaleObservableItemsControllerTests {
             Issue.record("Expected inlineError state when items exist")
             return
         }
-        #expect(items.count == 2)
+        #expect(items == mockVariations)
         #expect(error.errorType == .variationsLoadError)
         #expect(context == .refresh)
 
@@ -450,7 +453,6 @@ final class PointOfSaleObservableItemsControllerTests {
         await sut.refreshItems(base: .parent(parentItem))
 
         #expect(sut.itemsViewState.itemsStack.itemStates[parentItem] == .loaded(mockVariations, hasMoreItems: false))
-        #expect(coordinator.performIncrementalSyncInvocationCount == 5)
     }
 
     @Test func test_container_state_includes_catalog_sync_state_when_initial_sync_in_progress() async {

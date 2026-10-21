@@ -3,7 +3,6 @@ import Foundation
 import WooFoundation
 
 class MockPOSOrderService: POSOrderServiceProtocol {
-    var simulateSyncing = false
     var orderToReturn: Order?
     var errorToReturn: Error?
     // This does not replace the previous `errorToReturn`/`orderToReturn` only to keep the changes small.
@@ -24,10 +23,6 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         spySyncOrderCurrency = currency
 
         await onSyncOrderCalled?()
-
-        if simulateSyncing {
-            try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
-        }
 
         if let error = errorToReturn {
             throw error

@@ -17,19 +17,4 @@ struct POSRefundRecoveryTests {
             #expect(rejection.recovery == recovery, "recovery for \(rejection)")
         }
     }
-
-    @Test func no_refund_rejection_offers_a_retry() {
-        // Every mapped code is a deterministic validation rejection: the same request always gets
-        // the same answer, so a retry cannot be the way out.
-        let rejections: [RefundAPIError] = [
-            .quantityExceedsRefundable,
-            .lineItemAlreadyRefunded,
-            .orderNotRefundable,
-            .refundExceedsRemaining,
-            .refundTotalExceedsLine,
-            .invalidRefundAmount
-        ]
-
-        #expect(rejections.allSatisfy { $0.recovery != .retry })
-    }
 }

@@ -6,6 +6,8 @@ import enum NetworkingCore.OrderStatusEnum
 import WooFoundation
 
 final class MockPOSOrderListService: POSOrderListServiceProtocol {
+    var onProvideOrders: (@MainActor () -> Void)?
+
     var orderPages: [[POSOrder]] = []
     var searchOrderPages: [[POSOrder]] = []
     var errorToThrow: Error?
@@ -25,6 +27,7 @@ final class MockPOSOrderListService: POSOrderListServiceProtocol {
     var lastLoadOrderID: Int64?
 
     func providePointOfSaleOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
+        await onProvideOrders?()
         spyLastRequestedPageNumber = pageNumber
         spyCallCount += 1
 

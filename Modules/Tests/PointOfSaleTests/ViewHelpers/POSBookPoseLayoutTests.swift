@@ -16,7 +16,7 @@ struct POSBookPoseLayoutTests {
         #expect(layout.hasDivisionRegion)
         #expect(layout.trailingWidth == 480)
         #expect(layout.spacing == 40)
-        #expect(layout.backgroundLeadingWidth == division.midX)
+        #expect(layout.backgroundLeadingWidth == 500)
     }
 
     @Test func test_layout_when_local_insets_are_asymmetric_then_keeps_distinct_page_widths() {
@@ -31,7 +31,7 @@ struct POSBookPoseLayoutTests {
         #expect(layout.leadingWidth == 420)
         #expect(layout.trailingWidth == 480)
         #expect(layout.spacing == 40)
-        #expect(layout.backgroundLeadingWidth == division.midX)
+        #expect(layout.backgroundLeadingWidth == 440)
         #expect(layout.leadingWidth + layout.spacing + layout.trailingWidth == size.width)
     }
 
@@ -46,12 +46,12 @@ struct POSBookPoseLayoutTests {
         // Then
         #expect(layout.leadingWidth == 480)
         #expect(layout.trailingWidth == 420)
-        #expect(layout.backgroundLeadingWidth == mirroredDivision.midX)
+        #expect(layout.backgroundLeadingWidth == 500)
         #expect(layout.spacing == 40)
     }
 
-    @Test(arguments: [CGFloat(0.35), CGFloat(0.65)])
-    func test_layout_when_no_division_then_preserves_callers_default_fraction(fraction: CGFloat) {
+    @Test(arguments: [(CGFloat(0.35), CGFloat(350), CGFloat(650)), (0.65, 650, 350)])
+    func test_layout_when_no_division_then_preserves_callers_default_fraction(fraction: CGFloat, expectedLeading: CGFloat, expectedTrailing: CGFloat) {
         // Given
         let size = CGSize(width: 1000, height: 700)
 
@@ -59,11 +59,11 @@ struct POSBookPoseLayoutTests {
         let layout = POSBookPoseLayout(size: size, defaultLeadingFraction: fraction)
 
         // Then
-        #expect(layout.leadingWidth == 1000 * fraction)
+        #expect(layout.leadingWidth == expectedLeading)
         #expect(!layout.hasDivisionRegion)
-        #expect(layout.trailingWidth == 1000 - layout.leadingWidth)
+        #expect(layout.trailingWidth == expectedTrailing)
         #expect(layout.spacing == 0)
-        #expect(layout.backgroundLeadingWidth == layout.leadingWidth)
+        #expect(layout.backgroundLeadingWidth == expectedLeading)
     }
 
     @Test func test_layout_when_inactive_division_reported_then_preserves_default_split() {
@@ -102,6 +102,6 @@ struct POSBookPoseLayoutTests {
         #expect(layout.leadingWidth == 650)
         #expect(layout.trailingWidth == 350)
         #expect(layout.spacing == 0)
-        #expect(layout.backgroundLeadingWidth == layout.leadingWidth)
+        #expect(layout.backgroundLeadingWidth == 650)
     }
 }

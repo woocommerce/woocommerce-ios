@@ -14,14 +14,17 @@ final class MockPOSObservableDataSource: POSObservableDataSourceProtocol {
     var productError: Error? = nil
     var variationError: Error? = nil
 
+    var onLoadMoreProducts: (@MainActor () -> Void)?
+
     init() {}
 
     func loadProducts() {
         // Tests set properties directly - no async behavior needed
     }
 
+    @MainActor
     func loadMoreProducts() {
-        // Tests set properties directly - no async behavior needed
+        onLoadMoreProducts?()
     }
 
     func loadVariations(for parentProduct: POSVariableParentProduct) {

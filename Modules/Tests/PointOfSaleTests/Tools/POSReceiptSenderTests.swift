@@ -11,7 +11,7 @@ import enum Networking.DotcomError
 struct POSReceiptSenderTests {
     private let mockOrderService = MockPOSOrderService()
     private let mockReceiptService = MockReceiptService()
-    private let mockFeatureFlagService = MockFeatureFlagService()
+    private let analytics = MockPOSAnalytics()
     private let mockPluginsService = MockPluginsService()
     private let sut: POSReceiptSender
 
@@ -19,11 +19,11 @@ struct POSReceiptSenderTests {
         self.sut = POSReceiptSender(siteID: 123,
                                     orderService: mockOrderService,
                                     receiptService: mockReceiptService,
-                                    analytics: MockPOSAnalytics(),
+                                    analytics: analytics,
                                     pluginsService: mockPluginsService)
     }
 
-    @Test func sendReceipt_tracks_success_with_eligible_for_pos_receipt() async throws {
+    @Test func test_sendReceipt_when_eligible_then_tracks_success() async throws {
         // Given
         mockPluginsService.setMockPlugin(.wooCommerce,
                                          systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
@@ -36,23 +36,30 @@ struct POSReceiptSenderTests {
 
         // Then
         #expect(mockReceiptService.sendReceiptWasCalled == true)
+        #expect(analytics.events.map(\.eventName) == ["receipt_email_success"])
+        #expect(analytics.events.first?.properties["eligible_for_pos_receipt"] as? Bool == true)
     }
 
-    @Test func sendReceipt_tracks_failure_with_eligible_for_pos_receipt() async throws {
+    @Test func test_sendReceipt_when_eligible_request_fails_then_tracks_and_rethrows_error() async throws {
         // Given
         mockPluginsService.setMockPlugin(.wooCommerce,
                                          systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                 version: "10.0.0-dev",
                                                                                 active: true))
-        mockReceiptService.sendReceiptResult = .failure(DotcomError.unknown(code: "test_error", message: "Test error", data: nil))
+        let expectedError = DotcomError.unknown(code: "test_error", message: "Test error", data: nil)
+        mockReceiptService.sendReceiptResult = .failure(expectedError)
         let order = Order.fake()
 
         // When
         do {
             try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com")
-            #expect(Bool(false), "Expected error to be thrown")
+            Issue.record("Expected the receipt request error")
         } catch {
-            // Then - error was thrown as expected
+            // Then
+            #expect(error as? DotcomError == expectedError)
+            #expect(analytics.events.map(\.eventName) == ["receipt_email_failed"])
+            #expect(analytics.events.first?.properties["eligible_for_pos_receipt"] as? Bool == true)
+            #expect(analytics.events.first?.error as? DotcomError == expectedError)
             #expect(!mockOrderService.updateOrderWasCalled) // Should not update order for POS receipts even on failure
         }
     }
@@ -61,8 +68,8 @@ struct POSReceiptSenderTests {
     struct PluginEligibilityTests {
         private let mockOrderService = MockPOSOrderService()
 
-        @Test("Eligible core plugin versions with feature flag enabled", arguments: Constants.eligibleWCPluginVersions)
-        func sendReceipt_when_feature_flag_enabled_and_eligible_plugin_version_sets_isEligibleForPOSReceipt_true(wcPluginVersion: String) async throws {
+        @Test("Eligible core plugin versions with active plugin", arguments: Constants.eligibleWCPluginVersions)
+        func sendReceipt_when_eligible_plugin_version_sets_isEligibleForPOSReceipt_true(wcPluginVersion: String) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
             let mockPluginsService = MockPluginsService()
@@ -85,8 +92,8 @@ struct POSReceiptSenderTests {
             #expect(mockReceiptService.spyIsEligibleForPOSReceipt == true)
         }
 
-        @Test("Ineligible core plugin versions with feature flag enabled", arguments: Constants.ineligibleWCPluginVersions)
-        func sendReceipt_when_feature_flag_enabled_and_ineligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
+        @Test("Ineligible core plugin versions with active plugin", arguments: Constants.ineligibleWCPluginVersions)
+        func sendReceipt_when_ineligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
             let mockPluginsService = MockPluginsService()
@@ -109,12 +116,12 @@ struct POSReceiptSenderTests {
             #expect(mockReceiptService.spyIsEligibleForPOSReceipt == false)
         }
 
-        @Test("Unavailable core plugin with feature flag enabled",
+        @Test("Unavailable core plugin with active plugin",
               arguments: [
                 SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", active: false),
                 nil
               ])
-        func sendReceipt_when_feature_flag_enabled_and_plugin_unavailable_sets_isEligibleForPOSReceipt_false(plugin: SystemPlugin?) async throws {
+        func sendReceipt_when_plugin_unavailable_sets_isEligibleForPOSReceipt_false(plugin: SystemPlugin?) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
             let mockPluginsService = MockPluginsService()
@@ -190,13 +197,13 @@ struct POSReceiptSenderTests {
         }
     }
 
-    @Test func sendReceipt_calls_sendReceipt_but_not_updateOrder_for_POS_receipts() async throws {
+    @Test func test_sendReceipt_when_pos_receipts_supported_then_sends_to_requested_order_and_recipient() async throws {
         // Given
         mockPluginsService.setMockPlugin(.wooCommerce,
                                          systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                 version: "10.0.0",
                                                                                 active: true))
-        let order = Order.fake()
+        let order = Order.fake().copy(orderID: 42)
         let recipientEmail = "test@fake.com"
 
         // When
@@ -205,11 +212,13 @@ struct POSReceiptSenderTests {
         // Then
         #expect(!mockOrderService.updateOrderWasCalled) // Should not update order for POS receipts
         #expect(mockReceiptService.sendReceiptWasCalled == true)
+        #expect(mockReceiptService.spyOrderID == 42)
+        #expect(mockReceiptService.spyRecipientEmail == "test@fake.com")
     }
 
-    @Test func sendReceipt_calls_both_updateOrder_and_sendReceipt_for_legacy_POS_receipts() async throws {
-        // Given - feature flag disabled or plugin not eligible
-        let order = Order.fake()
+    @Test func test_sendReceipt_when_legacy_receipts_required_then_updates_order_and_sends_to_requested_recipient() async throws {
+        // Given - plugin is unavailable
+        let order = Order.fake().copy(orderID: 42)
         let recipientEmail = "test@fake.com"
 
         // When
@@ -218,5 +227,7 @@ struct POSReceiptSenderTests {
         // Then
         #expect(mockOrderService.updateOrderWasCalled) // Should update order for traditional receipts
         #expect(mockReceiptService.sendReceiptWasCalled == true)
+        #expect(mockReceiptService.spyOrderID == 42)
+        #expect(mockReceiptService.spyRecipientEmail == "test@fake.com")
     }
 }

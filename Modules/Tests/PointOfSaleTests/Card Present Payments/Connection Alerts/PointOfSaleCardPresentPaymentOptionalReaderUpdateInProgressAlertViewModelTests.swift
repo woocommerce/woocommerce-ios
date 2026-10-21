@@ -2,24 +2,23 @@ import XCTest
 @testable import PointOfSale
 
 final class PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModelTests: XCTestCase {
+    func test_progress_when_half_complete_then_shows_percentage_and_remains_incomplete() {
+        // Given / When
+        let sut = PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(progress: 0.5, cancel: nil)
 
-    func test_manual_equatable_conformance_number_of_properties_unchanged() {
-            let sut = PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(
-                progress: 0.5,
-                cancel: {})
+        // Then
+        XCTAssertEqual(sut.progressTitle, "50% complete")
+        XCTAssertFalse(sut.isComplete)
+    }
 
-            XCTAssertPropertyCount(sut,
-                                   expectedCount: 7,
-                                   messageHint: "Please check that the manual equatable conformance includes new properties.")
+    func test_progress_when_complete_or_above_then_reports_complete() {
+        // Given
+        for progress: Float in [1.0, 1.1] {
+            // When
+            let sut = PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(progress: progress, cancel: nil)
+
+            // Then
+            XCTAssertTrue(sut.isComplete)
         }
-
-    func test_manual_hashable_conformance_number_of_properties_unchanged() {
-            let sut = PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(
-                progress: 0.5,
-                cancel: {})
-
-            XCTAssertPropertyCount(sut,
-                                   expectedCount: 7,
-                                   messageHint: "Please check that the manual hashable conformance includes new properties.")
-        }
+    }
 }

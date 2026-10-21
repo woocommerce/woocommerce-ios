@@ -1,7 +1,6 @@
 import Testing
 import Foundation
 import GameController
-import enum WooFoundationCore.WooAnalyticsStat
 @testable import PointOfSale
 
 @MainActor
@@ -20,8 +19,8 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
 
         // Then it tracks the scanner selected event
         let event = mockAnalytics.events.first
-        #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerSelected.rawValue)
-        #expect(event?.properties["scanner"] as? String == PointOfSaleBarcodeScannerType.starBSH20B.analyticsName)
+        #expect(event?.eventName == "barcode_scanner_setup_scanner_selected")
+        #expect(event?.properties["scanner"] as? String == "star_bsh_20b")
     }
 
     @Test func test_flowManager_tracks_dismissal_when_onDisappear_called_on_non_completion_step() {
@@ -41,8 +40,8 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
 
         // Then it tracks the dismissal event
         let event = mockAnalytics.events.first
-        #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupDismissed.rawValue)
-        #expect(event?.properties["scanner"] as? String == PointOfSaleBarcodeScannerType.starBSH20B.analyticsName)
+        #expect(event?.eventName == "barcode_scanner_setup_dismissed")
+        #expect(event?.properties["scanner"] as? String == "star_bsh_20b")
         #expect(event?.properties["step"] as? String == "setup_barcode_hid")
     }
 
@@ -59,7 +58,7 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
 
         // Then it tracks the dismissal event without scanner info
         let event = mockAnalytics.events.first
-        #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupDismissed.rawValue)
+        #expect(event?.eventName == "barcode_scanner_setup_dismissed")
         #expect(event?.properties["scanner"] == nil)
         #expect(event?.properties["step"] == nil)
     }
@@ -81,16 +80,21 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
 
         // Then it tracks the scanner connected event
         let event = mockAnalytics.events.first
-        #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerConnected.rawValue)
-        #expect(event?.properties["scanner"] as? String == PointOfSaleBarcodeScannerType.netum1228BC.analyticsName)
+        #expect(event?.eventName == "barcode_scanner_setup_scanner_connected")
+        #expect(event?.properties["scanner"] as? String == "netum_1228bc")
     }
 
     @Test func test_flowManager_does_not_track_keyboard_connected_when_on_scanner_selection() {
         // Given a flow manager on scanner selection
         let mockAnalytics = MockPOSAnalytics()
 
+        let sut = PointOfSaleBarcodeScannerSetupFlowManager(
+            isPresented: .constant(true), analytics: mockAnalytics)
+
         // When keyboard connected notification is posted
-        NotificationCenter.default.post(name: .GCKeyboardDidConnect, object: nil)
+        withExtendedLifetime(sut) {
+            NotificationCenter.default.post(name: .GCKeyboardDidConnect, object: nil)
+        }
 
         // Then it does not track any scanner connected event
         #expect(mockAnalytics.events.isEmpty)

@@ -2,6 +2,16 @@
 
 See `Modules/Tests/AGENTS.md` for detailed async testing patterns and mock examples.
 
+## Behavior checks
+
+When adding, changing, or reviewing a test:
+
+1. Name the behavior and the regression that must make the test fail. Exercise the real implementation through its public interface.
+2. Use expected values from a requirement, a worked example, or an independent fixture. Do not repeat the production calculation to derive the expectation.
+3. Keep domain logic in production code. Use doubles at API, hardware, clock, or persistence boundaries. Verify visible outcomes and boundary request data.
+4. Make assertions run. Require expected errors and callbacks, establish a nonempty starting state for filtering tests, and wait for observable async completion.
+5. Check that a no-op or broken behavior would fail. Replace or remove assignment-only, property-count, duplicate, and mock-calculation tests. Check existing real coverage before removal and record any remaining gap.
+
 ## Framework
 - **Prefer Swift Testing** (`@Test`, `#expect()`) for new test files
 - When adding tests to an existing XCTest class, follow that class's framework and patterns

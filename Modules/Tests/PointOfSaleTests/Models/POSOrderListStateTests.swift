@@ -73,11 +73,7 @@ struct POSOrderListStateTests {
         let newState = state.updatingOrders(with: updatedOrders)
 
         // Then
-        if case .empty = newState {
-            // Expected - state should remain empty
-        } else {
-            #expect(Bool(false), "Expected empty state to remain unchanged")
-        }
+        #expect(newState == .empty)
     }
 
     @Test
@@ -102,14 +98,14 @@ struct POSOrderListStateTests {
     func orders_when_various_states_then_returns_correct_orders() {
         // Given & When & Then
         let loadedState = POSOrderListState.loaded(sampleOrders, hasMoreItems: false)
-        #expect(loadedState.orders.count == 2)
+        #expect(loadedState.orders.map(\.id) == [1, 2])
 
         let loadingState = POSOrderListState.loading(sampleOrders)
-        #expect(loadingState.orders.count == 2)
+        #expect(loadingState.orders.map(\.id) == [1, 2])
 
         let errorState = PointOfSaleErrorState.errorOnLoadingOrders(error: NSError(domain: "test", code: 0))
         let inlineErrorState = POSOrderListState.inlineError(sampleOrders, error: errorState, context: .refresh)
-        #expect(inlineErrorState.orders.count == 2)
+        #expect(inlineErrorState.orders.map(\.id) == [1, 2])
 
         let emptyState = POSOrderListState.empty
         #expect(emptyState.orders.isEmpty)

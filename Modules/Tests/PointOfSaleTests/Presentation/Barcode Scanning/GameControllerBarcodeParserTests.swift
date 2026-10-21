@@ -18,26 +18,6 @@ struct GameControllerBarcodeParserTests {
             #expect(configuration.minimumBarcodeLength == 6)
             #expect(configuration.maximumInterCharacterTime == 0.2)
         }
-
-        @Test("custom configuration accepts specified values")
-        func custom_configuration_when_created_accepts_specified_values() {
-            // Given
-            let customTerminators: Set<String> = ["\t", " ", "\r"]
-            let customMinLength = 4
-            let customMaxTime: TimeInterval = 0.1
-
-            // When
-            let configuration = HIDBarcodeParserConfiguration(
-                terminatingStrings: customTerminators,
-                minimumBarcodeLength: customMinLength,
-                maximumInterCharacterTime: customMaxTime
-            )
-
-            // Then
-            #expect(configuration.terminatingStrings == customTerminators)
-            #expect(configuration.minimumBarcodeLength == customMinLength)
-            #expect(configuration.maximumInterCharacterTime == customMaxTime)
-        }
     }
 
     // MARK: - Basic Scanning Tests
@@ -49,7 +29,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When
@@ -71,12 +52,13 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("multiple consecutive scans work correctly")
-        func multiple_barcodes_when_scanned_consecutively_work_correctly() {
+        func multiple_barcodes_when_scanned_consecutively_work_correctly() throws {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - First scan
@@ -92,7 +74,7 @@ struct GameControllerBarcodeParserTests {
             parser.processKeyPress(GCKeyCode.returnOrEnter)
 
             // Then
-            #expect(results.count == 2)
+            try #require(results.count == 2)
             if case .success(let barcode1, _) = results[0] {
                 #expect(barcode1 == "123")
             } else {
@@ -111,7 +93,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Start a scan
@@ -154,7 +137,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: .default, // min length 6
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Scan only 5 characters
@@ -170,7 +154,7 @@ struct GameControllerBarcodeParserTests {
             if case .failure(let error, let duration) = results.first {
                 if case .scanTooShort(let barcode) = error {
                     #expect(barcode == "12345")
-                    #expect(duration >= 0)
+                    #expect(duration == 0)
                 } else {
                     Issue.record("Expected scanTooShort error")
                 }
@@ -190,7 +174,8 @@ struct GameControllerBarcodeParserTests {
             )
             let parser = GameControllerBarcodeParser(
                 configuration: configuration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Scan only 7 characters
@@ -208,7 +193,7 @@ struct GameControllerBarcodeParserTests {
             if case .failure(let error, let duration) = results.first {
                 if case .scanTooShort(let barcode) = error {
                     #expect(barcode == "1234567")
-                    #expect(duration >= 0)
+                    #expect(duration == 0)
                 } else {
                     Issue.record("Expected scanTooShort error")
                 }
@@ -218,7 +203,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("slow typing triggers timeout error")
-        func slow_typing_when_exceeds_timeout_triggers_error() {
+        func slow_typing_when_exceeds_timeout_triggers_error() throws {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -244,11 +229,11 @@ struct GameControllerBarcodeParserTests {
             parser.processKeyPress(GCKeyCode.returnOrEnter)
 
             // Then - Should get timeout error and successful scan
-            #expect(results.count == 2)
+            try #require(results.count == 2)
             if case .failure(let error, let duration) = results.first {
                 if case .timedOut(let barcode) = error {
                     #expect(barcode == "123")
-                    #expect(duration >= 0)
+                    #expect(duration == 201)
                 } else {
                     Issue.record("Expected timedOut error")
                 }
@@ -258,7 +243,7 @@ struct GameControllerBarcodeParserTests {
 
             if case .success(let barcode, let duration) = results[1] {
                 #expect(barcode == "456")
-                #expect(duration >= 0)
+                #expect(duration == 0)
             } else {
                 Issue.record("Expected successful scan after timeout reset")
             }
@@ -329,7 +314,7 @@ struct GameControllerBarcodeParserTests {
             if case .failure(let error, let duration) = results.first {
                 if case .timedOut(let barcode) = error {
                     #expect(barcode == "123")
-                    #expect(duration >= 0)
+                    #expect(duration == 250)
                 } else {
                     Issue.record("Expected timedOut error")
                 }
@@ -515,7 +500,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Send only terminator
@@ -542,7 +528,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Mix valid scan keys with excluded modifier keys
@@ -570,7 +557,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Mix valid scan keys with excluded arrow keys
@@ -597,7 +585,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Mix valid scan keys with excluded system keys
@@ -625,7 +614,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Mix valid scan keys with excluded navigation keys
@@ -808,7 +798,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When
@@ -827,7 +818,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("multiple terminating strings work correctly")
-        func multiple_terminators_when_configured_work_correctly() {
+        func multiple_terminators_when_configured_work_correctly() throws {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -837,7 +828,8 @@ struct GameControllerBarcodeParserTests {
             )
             let parser = GameControllerBarcodeParser(
                 configuration: configuration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Test different terminators
@@ -860,7 +852,7 @@ struct GameControllerBarcodeParserTests {
             parser.processKeyPress(GCKeyCode.spacebar) // space
 
             // Then
-            #expect(results.count == 3)
+            try #require(results.count == 3)
             if case .success(let barcode1, _) = results[0] {
                 #expect(barcode1 == "123")
             } else {
@@ -884,7 +876,8 @@ struct GameControllerBarcodeParserTests {
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
                 configuration: Self.testConfiguration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Send multiple terminators without data
@@ -896,33 +889,38 @@ struct GameControllerBarcodeParserTests {
             #expect(results.isEmpty)
         }
 
-        @Test("terminator in middle of scan is included in barcode")
+        @Test("unconfigured carriage return is preserved in the completed barcode")
         func non_terminator_character_when_pressed_is_included_in_barcode() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
-                terminatingStrings: ["\n"], // Only newline terminates
+                terminatingStrings: ["\t"], // Only Tab terminates
                 minimumBarcodeLength: 3,
                 maximumInterCharacterTime: 0.05
             )
             let parser = GameControllerBarcodeParser(
                 configuration: configuration,
-                onScan: { results.append($0) }
+                onScan: { results.append($0) },
+                timeProvider: MockTimeProvider()
             )
 
             // When - Include carriage return in middle (not a terminator)
             parser.processKeyPress(GCKeyCode.one)
             parser.processKeyPress(GCKeyCode.returnOrEnter) // \r (not terminator)
             parser.processKeyPress(GCKeyCode.two)
-            // Note: We can't easily test \n vs \r distinction with GameController
-            // as .returnOrEnter maps to \r. This test demonstrates the concept.
+            parser.processKeyPress(GCKeyCode.tab)
 
-            // Then - The scan should continue (no results yet)
-            #expect(results.isEmpty)
+            // Then
+            #expect(results.count == 1)
+            if case .success(let barcode, _) = results.first {
+                #expect(barcode == "1\r2")
+            } else {
+                Issue.record("Expected the carriage return inside the completed barcode")
+            }
         }
 
         @Test("parser does not start a timeout for an ignored character")
-        func empty_buffer_when_ignored_character_pressed_does_not_start_timeout() {
+        func empty_buffer_when_ignored_character_pressed_does_not_start_timeout() throws {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let mockTimeProvider = MockTimeProvider()
@@ -950,7 +948,7 @@ struct GameControllerBarcodeParserTests {
             parser.processKeyPress(GCKeyCode.leftShift) // This should also be ignored
 
             // Then
-            #expect(results.count == 2)
+            try #require(results.count == 2)
             if case .success(let barcode1, _) = results[0] {
                 #expect(barcode1 == "123")
             } else {

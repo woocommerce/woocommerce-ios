@@ -10,9 +10,13 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var shouldSimulateTwoPages = false
     var shouldSimulateMorePages = false
 
+    var onProvideItems: (@MainActor () -> Void)?
+    var onProvideVariationItems: (@MainActor () -> Void)?
+
     var spyLastRequestedPageNumber: Int?
     var spyItemsFetchStrategy: PointOfSalePurchasableItemFetchStrategy?
     func providePointOfSaleItems(pageNumber: Int, fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
+        await onProvideItems?()
         spyLastRequestedPageNumber = pageNumber
         spyItemsFetchStrategy = fetchStrategy
         if let errorToThrow {
@@ -35,6 +39,7 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
                                           pageNumber: Int,
                                           fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
+        await onProvideVariationItems?()
         spyVariationsFetchStrategy = fetchStrategy
         if let errorToThrow {
             throw errorToThrow

@@ -1,10 +1,10 @@
-import CommonCrypto
 import Foundation
 import Testing
 import struct Yosemite.POSStaffMember
 import enum Yosemite.POSStaffPreset
 @testable import PointOfSale
 
+@Suite(.timeLimit(.minutes(5)))
 struct DefaultPOSPINAuthenticatorTests {
     private let siteID: Int64 = 123
 
@@ -70,9 +70,9 @@ struct DefaultPOSPINAuthenticatorTests {
 
     @MainActor
     @Test func test_authenticate_rejects_members_whose_hash_exceeds_the_maximum_length() async throws {
-        // Given a cached member whose PIN hash is far larger than a real PBKDF2-SHA256 digest,
-        // simulating a corrupted or tampered cache entry
-        let oversizedHash = Data(repeating: 0, count: 1_024).base64EncodedString()
+        // Given an independently generated 65-byte PBKDF2-SHA256 hash for PIN "1234".
+        // It would authenticate if the 64-byte safety limit were removed.
+        let oversizedHash = "AsXBWrCDP2vAJcMBR8FNk62YU2oTmP92K5x0dxDejmPThNcfPXgK341+LETyo0QGDDSAQdFMgItGZ/5ecGXxONk="
         let details = POSStaffMember.PINDetails(algorithm: "pbkdf2-sha256", iterations: 1_000,
                                                 salt: "c2FsdC1mb3ItdGVzdHM=", hash: oversizedHash)
         let member = makeMember(userID: 1, pin: details)
@@ -165,35 +165,21 @@ private extension DefaultPOSPINAuthenticatorTests {
                        capabilities: capabilities, pin: pin)
     }
 
-    /// Builds `PINDetails` whose hash is a genuine PBKDF2-HMAC-SHA256 derivation of `pin`, so the
-    /// authenticator's real verification path is exercised end to end.
-    func pinDetails(forPIN pin: String,
-                    saltBase64: String = "c2FsdC1mb3ItdGVzdHM=",
-                    iterations: Int = 1_000) -> POSStaffMember.PINDetails {
-        let salt = Data(base64Encoded: saltBase64)!
-        let pinData = pin.data(using: .utf8)!
-        var derived = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-        let status = salt.withUnsafeBytes { saltBytes -> Int32 in
-            pinData.withUnsafeBytes { pinBytes -> Int32 in
-                CCKeyDerivationPBKDF(
-                    CCPBKDFAlgorithm(kCCPBKDF2),
-                    pinBytes.baseAddress?.assumingMemoryBound(to: Int8.self),
-                    pinData.count,
-                    saltBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
-                    salt.count,
-                    CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA256),
-                    UInt32(iterations),
-                    &derived,
-                    derived.count
-                )
-            }
+    /// Fixed vectors generated independently with Python hashlib.pbkdf2_hmac("sha256", ..., 1000, 32),
+    /// salt b"salt-for-tests". Do not derive fixtures with the authenticator's CommonCrypto implementation.
+    func pinDetails(forPIN pin: String) -> POSStaffMember.PINDetails {
+        let hashes = [
+            "1234": "AsXBWrCDP2vAJcMBR8FNk62YU2oTmP92K5x0dxDejmM=",
+            "0000": "O9i8z9tei0Mk3Z8njczJOabhcNtQo1wpUx64SrrtMII=",
+            "9999": "hr3SQ7Kf8r9X1SHVCJ5WWRGQxGNmM5t4QJw51VqrlXg="
+        ]
+        guard let hash = hashes[pin] else {
+            // Only the fixed PINs above are valid test fixtures; an unknown PIN is a test setup error.
+            preconditionFailure("Add an independent PIN hash vector for this fixture")
         }
-        // Fail fast if key derivation fails — otherwise the helper would hand back an all-zero hash
-        // and the test would silently assert against meaningless data.
-        precondition(status == kCCSuccess, "PBKDF2 derivation failed in test helper (status: \(status))")
         return POSStaffMember.PINDetails(algorithm: "pbkdf2-sha256",
-                                         iterations: iterations,
-                                         salt: saltBase64,
-                                         hash: Data(derived).base64EncodedString())
+                                         iterations: 1_000,
+                                         salt: "c2FsdC1mb3ItdGVzdHM=",
+                                         hash: hash)
     }
 }

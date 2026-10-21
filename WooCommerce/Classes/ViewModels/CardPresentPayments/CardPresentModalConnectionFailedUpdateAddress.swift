@@ -9,7 +9,6 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
-    /// Retries the search once when the merchant returns to the app, for the alert without an Enter Address button.
     private var foregroundRetrySubscription: AnyCancellable?
 
     let textMode: PaymentsModalTextMode = .reducedTopInfo
@@ -51,9 +50,6 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
 
-        // Without an Enter Address button, the merchant fixes the address outside the app: in the browser opened by
-        // Enter Address, or elsewhere when the error has no admin URL. Retry once when they return.
-        // The subscription ends with this alert, so a manual retry or cancel can't trigger a second retry.
         if openWCSettings == nil {
             foregroundRetrySubscription = notificationCenter
                 .publisher(for: UIApplication.willEnterForegroundNotification)

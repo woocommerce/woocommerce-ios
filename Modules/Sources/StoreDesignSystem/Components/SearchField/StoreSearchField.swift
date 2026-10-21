@@ -9,8 +9,8 @@ import SwiftUI
 ///   key, and `.focused(_:)` / `.autocorrectionDisabled()` apply from outside as on any text
 ///   field. A tap anywhere on the field focuses it, as a `UISearchBar` does. The design's Resting
 ///   and Active states are driven by the text alone: the clear control appears with the first
-///   character and only empties the query. Text and glyphs scale together
-///   under Dynamic Type up to ``StoreSearchFieldScaling/maximumDynamicTypeSize``, and the field grows with them.
+///   character and only empties the query. Text and glyphs scale together under Dynamic Type up
+///   to ``StoreDynamicTypeScaling/chromeMaximum``, the cap the top app bar uses, and the field grows with them.
 public struct StoreSearchField: View {
     @Environment(\.isEnabled) private var isEnabled
     @FocusState private var isFieldFocused: Bool
@@ -41,7 +41,7 @@ public struct StoreSearchField: View {
         .padding(.horizontal, StorePadding.p7)
         .padding(.vertical, StorePadding.p4)
         .background(appearance.container)
-        .dynamicTypeSize(...StoreSearchFieldScaling.maximumDynamicTypeSize)
+        .dynamicTypeSize(...StoreDynamicTypeScaling.chromeMaximum)
     }
 
     private var appearance: StoreSearchFieldAppearance {
@@ -115,7 +115,8 @@ private extension StoreSearchField {
 /// The 16 pt glyph in layout, with a tap target extended to at least the HIG minimum around it:
 /// the larger label overflows the glyph's frame without clipping, so it stays hittable while
 /// the field keeps the design's inner padding. A view of its own so its scaled side is read
-/// under the field's Dynamic Type cap and stops growing with the glyph.
+/// under the field's Dynamic Type cap and stops growing with the glyph. `CircleFull.solid` is
+/// the icon set's x-in-a-filled-circle glyph (Figma "Solid/Circle Full"), despite its name.
 private struct StoreSearchFieldClearButton: View {
     @Binding var text: String
     let color: Color

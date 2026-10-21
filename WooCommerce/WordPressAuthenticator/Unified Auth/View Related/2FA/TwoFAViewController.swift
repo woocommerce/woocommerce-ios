@@ -215,8 +215,8 @@ private extension TwoFAViewController {
         }
 
         hasRequestedTextCode = true
-        // Reloading only the instructions keeps the code the user may have typed.
-        tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+        isBackupCodeRequested = false
+        updateRows()
     }
 
     // MARK: - Login
@@ -527,17 +527,15 @@ private extension TwoFAViewController {
         }
 
         var options = [Row]()
-        if isSecurityKeyMode {
-            if methods.canUseBackupCode {
-                options.append(.useBackupCode)
-            }
-        } else {
-            if methods.canTextCode {
-                options.append(.sendCode)
-            }
-            if #available(iOS 16, *), WordPressAuthenticator.shared.configuration.enablePasskeys, loginFields.nonceInfo?.nonceWebauthn.isEmpty == false {
-                options.append(.enterSecurityKey)
-            }
+        if methods.canTextCode {
+            options.append(.sendCode)
+        }
+        if methods.canUseBackupCode && !isBackupCodeRequested {
+            options.append(.useBackupCode)
+        }
+        if !isSecurityKeyMode, #available(iOS 16, *), WordPressAuthenticator.shared.configuration.enablePasskeys,
+           loginFields.nonceInfo?.nonceWebauthn.isEmpty == false {
+            options.append(.enterSecurityKey)
         }
 
         if options.isEmpty == false {
@@ -547,6 +545,23 @@ private extension TwoFAViewController {
                 rows.append(.spacer(4))
                 rows.append(option)
             }
+        }
+    }
+
+    func updateRows() {
+        // Reloading the code row would clear the typed code and hide the keyboard, so only the changed rows are updated.
+        tableView.performBatchUpdates {
+            let oldRows = rows
+            loadRows()
+            for change in rows.difference(from: oldRows) {
+                switch change {
+                case let .remove(offset, _, _):
+                    tableView.deleteRows(at: [IndexPath(row: offset, section: 0)], with: .fade)
+                case let .insert(offset, _, _):
+                    tableView.insertRows(at: [IndexPath(row: offset, section: 0)], with: .fade)
+                }
+            }
+            tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
         }
     }
 
@@ -641,7 +656,7 @@ private extension TwoFAViewController {
 
     /// Configure the backup-code link cell.
     func configureUseBackupCodeButton(_ cell: TextLinkButtonTableViewCell) {
-        cell.configureButton(text: LocalizedText.useBackupCodeButton)
+        cell.configureButton(text: LocalizedText.useBackupCodeButton, icon: UIImage(systemName: "number"))
         cell.enableButton(!isLoading)
 
         cell.actionHandler = { [weak self] in
@@ -649,15 +664,13 @@ private extension TwoFAViewController {
 
             self.isBackupCodeRequested = true
             self.localizePrimaryButton()
-            self.loadRows()
-            self.tableView.reloadData()
+            self.updateRows()
             self.tableView.layoutIfNeeded()
             self.configureSubmitButton(animating: false)
             guard let codeField = self.codeField else {
                 return
             }
             codeField.becomeFirstResponder()
-            self.view.accessibilityElements = [codeField, self.tableView as Any, self.submitButton as Any]
             UIAccessibility.post(notification: .layoutChanged, argument: codeField)
         }
     }

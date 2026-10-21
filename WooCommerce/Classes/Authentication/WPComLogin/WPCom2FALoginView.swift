@@ -100,26 +100,26 @@ struct WPCom2FALoginView: View {
                 .disabled(viewModel.isLoggingIn)
                 .renderedIf(viewModel.shouldShowTextCodeOption)
 
+                if viewModel.shouldShowBackupCodeOption {
+                    Button {
+                        viewModel.useBackupCode()
+                        // In security key mode the code field only appears with this update, so focus it on the next run loop.
+                        DispatchQueue.main.async {
+                            isFieldFocused = true
+                        }
+                    } label: {
+                        Label(Localization.useBackupCode, systemImage: "number")
+                            .linkStyle()
+                    }
+                    .disabled(viewModel.isLoggingIn)
+                }
+
                 if #available(iOS 16, *), viewModel.shouldShowSecurityKeyOption {
                     // Security key button
                     Button {
                         viewModel.loginWithSecurityKey()
                     } label: {
                         Label(Localization.securityKey, systemImage: "key.horizontal")
-                            .linkStyle()
-                    }
-                    .disabled(viewModel.isLoggingIn)
-                }
-
-                if viewModel.shouldShowBackupCodeOption {
-                    Button {
-                        viewModel.useBackupCode()
-                        // The code field only appears with this update, so focus it on the next run loop.
-                        DispatchQueue.main.async {
-                            isFieldFocused = true
-                        }
-                    } label: {
-                        Label(Localization.useBackupCode, systemImage: "number")
                             .linkStyle()
                     }
                     .disabled(viewModel.isLoggingIn)

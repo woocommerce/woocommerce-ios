@@ -66,6 +66,16 @@ struct TwoFactorMethodsTests {
     }
 
     @Test
+    func test_instructions_when_backup_code_is_requested_after_a_text_code_then_shows_backup_copy() {
+        // Given
+        let methods = TwoFactorMethods(supportedAuthTypes: ["backup", "authenticator", "sms"])
+
+        // When / Then
+        #expect(methods.instructions(hasRequestedTextCode: true, isBackupCodeRequested: true) ==
+                "Enter a backup code to continue.")
+    }
+
+    @Test
     func test_methods_when_security_key_is_the_only_method_then_offers_no_backup_code() {
         // Given
         let methods = TwoFactorMethods(supportedAuthTypes: ["webauthn"])

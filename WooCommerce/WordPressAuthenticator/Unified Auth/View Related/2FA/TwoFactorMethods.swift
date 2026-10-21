@@ -31,11 +31,11 @@ public struct TwoFactorMethods {
 
     /// `nil` keeps the screen's own authenticator app instructions.
     public func instructions(hasRequestedTextCode: Bool, isBackupCodeRequested: Bool) -> String? {
-        if hasRequestedTextCode {
-            return Localization.textMessage
-        }
         if isBackupCodeRequested {
             return Localization.backupCode
+        }
+        if hasRequestedTextCode {
+            return Localization.textMessage
         }
         if startsWithSecurityKey {
             return Localization.securityKey

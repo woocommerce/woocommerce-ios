@@ -107,7 +107,7 @@ struct TwoFAViewControllerTests {
     @Test
     func test_two_factor_options_when_sms_is_not_supported_then_hides_text_link_and_alternate_copy() throws {
         // Given
-        let (_, cells) = try makeScreen(supportedAuthTypes: ["backup", "authenticator"])
+        let (_, cells) = try makeScreen(supportedAuthTypes: ["authenticator"])
         let labelTexts = cells.compactMap { firstSubview(of: UILabel.self, in: $0)?.text }
 
         // When / Then
@@ -138,24 +138,29 @@ struct TwoFAViewControllerTests {
         // Given
         let nonceInfo = SocialLogin2FANonceInfo()
         nonceInfo.nonceWebauthn = "webauthn-nonce"
-        let (controller, cells) = try makeScreen(nonceInfo: nonceInfo, supportedAuthTypes: ["webauthn", "backup"])
-        let links = cells.compactMap { $0 as? TextLinkButtonTableViewCell }
-        let backupLink = try #require(links.first)
+        let (controller, _) = try makeScreen(nonceInfo: nonceInfo, supportedAuthTypes: ["webauthn", "backup"])
+        let tableView = try #require(firstSubview(of: UITableView.self, in: controller.view))
+        tableView.layoutIfNeeded()
+        let links = tableView.visibleCells.compactMap { $0 as? TextLinkButtonTableViewCell }
+        let backupLink = try #require(links.first {
+            firstSubview(of: UIButton.self, in: $0)?.title(for: .normal) == "Use a backup code instead"
+        })
 
         // When
         backupLink.actionHandler?()
-        let tableView: UITableView = try #require(firstSubview(of: UITableView.self, in: controller.view))
-        let updatedCells = (0..<controller.tableView(tableView, numberOfRowsInSection: 0)).map {
-            controller.tableView(tableView, cellForRowAt: IndexPath(row: $0, section: 0))
-        }
-        let codeFields = updatedCells.compactMap { ($0 as? TextFieldTableViewCell)?.textField }
-        let codeField = try #require(codeFields.first)
-        let instructionLabels = updatedCells.compactMap { firstSubview(of: UILabel.self, in: $0) }
+        tableView.layoutIfNeeded()
 
         // Then
-        #expect(instructionLabels.first?.text == "Enter a backup code to continue.")
-        #expect(codeField.isEnabled)
-        #expect(updatedCells.compactMap { $0 as? TextLinkButtonTableViewCell }.count == 1)
+        let instructionCell = try #require(tableView.cellForRow(at: IndexPath(row: 0, section: 0)))
+        let codeCell = try #require(tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? TextFieldTableViewCell)
+        let instructionLabel = try #require(firstSubview(of: UILabel.self, in: instructionCell))
+        let displayedLinks = tableView.indexPathsForVisibleRows?.sorted { $0.row < $1.row }.compactMap {
+            tableView.cellForRow(at: $0) as? TextLinkButtonTableViewCell
+        } ?? []
+        let linkTitles = displayedLinks.compactMap { firstSubview(of: UIButton.self, in: $0)?.title(for: .normal) }
+        #expect(instructionLabel.text == "Enter a backup code to continue.")
+        #expect(codeCell.textField.isEnabled)
+        #expect(linkTitles == [WordPressAuthenticator.shared.displayStrings.securityKeyButtonTitle])
         #expect(controller.submitButton?.title(for: .normal) == WordPressAuthenticator.shared.displayStrings.continueButtonTitle)
     }
 
@@ -247,6 +252,76 @@ struct TwoFAViewControllerTests {
         // Then
         let updatedCodeFields = tableView.visibleCells.compactMap { ($0 as? TextFieldTableViewCell)?.textField }
         #expect(updatedCodeFields.first?.text == "123456")
+    }
+
+    @Test
+    func test_use_backup_code_when_tapped_in_code_mode_then_shows_backup_instructions_hides_link_and_keeps_typed_code() throws {
+        // Given
+        let (controller, _) = try makeScreen(supportedAuthTypes: ["backup", "authenticator"])
+        let tableView = try #require(firstSubview(of: UITableView.self, in: controller.view))
+        tableView.layoutIfNeeded()
+        let codeCell = try #require(tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? TextFieldTableViewCell)
+        let codeField = try #require(codeCell.textField)
+        codeField.text = "12345678"
+        let backupLinks = tableView.visibleCells.compactMap { $0 as? TextLinkButtonTableViewCell }
+        let backupLink = try #require(backupLinks.first)
+
+        // When
+        backupLink.actionHandler?()
+        tableView.layoutIfNeeded()
+
+        // Then
+        let instructionCell = try #require(tableView.cellForRow(at: IndexPath(row: 0, section: 0)))
+        let updatedCodeCell = try #require(tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? TextFieldTableViewCell)
+        let instructionLabel = try #require(firstSubview(of: UILabel.self, in: instructionCell))
+        #expect(instructionLabel.text == "Enter a backup code to continue.")
+        #expect(tableView.visibleCells.compactMap { $0 as? TextLinkButtonTableViewCell }.isEmpty)
+        #expect(updatedCodeCell.textField === codeField)
+        #expect(updatedCodeCell.textField.text == "12345678")
+    }
+
+    @Test
+    func test_text_code_when_backup_code_was_requested_then_shows_text_message_instructions_and_all_options_in_order() throws {
+        // Given
+        let nonceInfo = SocialLogin2FANonceInfo()
+        nonceInfo.nonceWebauthn = "webauthn-nonce"
+        let (controller, _) = try makeScreen(password: "password",
+                                             nonceInfo: nonceInfo,
+                                             supportedAuthTypes: ["backup", "authenticator", "sms"])
+        controller.loginFacade.wordpressComOAuthClientFacade = MockWordPressComOAuthClientFacade(client: "Fake", secret: "Fake")
+        let tableView = try #require(firstSubview(of: UITableView.self, in: controller.view))
+        tableView.layoutIfNeeded()
+        let codeCell = try #require(tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? TextFieldTableViewCell)
+        let codeField = try #require(codeCell.textField)
+        codeField.text = "12345678"
+        let links = tableView.visibleCells.compactMap { $0 as? TextLinkButtonTableViewCell }
+        let displayStrings = WordPressAuthenticator.shared.displayStrings
+        let smsLink = try #require(links.first {
+            firstSubview(of: UIButton.self, in: $0)?.title(for: .normal) == displayStrings.textCodeButtonTitle
+        })
+        let backupLink = try #require(links.first {
+            firstSubview(of: UIButton.self, in: $0)?.title(for: .normal) == "Use a backup code instead"
+        })
+        backupLink.actionHandler?()
+
+        // When
+        smsLink.actionHandler?()
+        tableView.layoutIfNeeded()
+
+        // Then
+        let instructionCell = try #require(tableView.cellForRow(at: IndexPath(row: 0, section: 0)))
+        let updatedCodeCell = try #require(tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? TextFieldTableViewCell)
+        let instructionLabel = try #require(firstSubview(of: UILabel.self, in: instructionCell))
+        let displayedLinks = (tableView.indexPathsForVisibleRows ?? []).sorted { $0.row < $1.row }.compactMap {
+            tableView.cellForRow(at: $0) as? TextLinkButtonTableViewCell
+        }
+        let linkTitles = displayedLinks.compactMap {
+            firstSubview(of: UIButton.self, in: $0)?.title(for: .normal)
+        }
+        #expect(instructionLabel.text == "We sent a text message. Enter the verification code from the message.")
+        #expect(linkTitles == [displayStrings.textCodeButtonTitle, "Use a backup code instead", displayStrings.securityKeyButtonTitle])
+        #expect(updatedCodeCell.textField === codeField)
+        #expect(updatedCodeCell.textField.text == "12345678")
     }
 
     private func makeAuthorizationController() -> ASAuthorizationController {

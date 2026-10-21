@@ -32,7 +32,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     }
 
     var shouldShowBackupCodeOption: Bool {
-        isSecurityKeyMode && methods.canUseBackupCode
+        methods.canUseBackupCode && !isBackupCodeRequested
     }
 
     var shouldShowOtherOptionsText: Bool {
@@ -111,6 +111,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     func requestOneTimeCode() {
         isRequestingOTP = true
         hasRequestedOTP = true
+        isBackupCodeRequested = false
         loginFacade.wordpressComOAuthClientFacade.requestOneTimeCode(
             username: loginFields.username,
             password: loginFields.password,

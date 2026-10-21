@@ -245,7 +245,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
     func test_shouldShowOtherOptionsText_when_no_other_method_is_available_then_returns_false() {
         // Given
         let loginFields = LoginFields()
-        loginFields.supportedAuthTypes = ["backup", "authenticator"]
+        loginFields.supportedAuthTypes = ["authenticator"]
 
         // When
         let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
@@ -298,5 +298,45 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(oauthFacade.oneTimeCodeRequestCount, 1)
         XCTAssertEqual(viewModel.instructions, "We sent a text message. Enter the verification code from the message.")
+    }
+
+    func test_useBackupCode_when_code_entry_is_the_first_method_then_shows_backup_instructions_and_hides_backup_option() {
+        // Given
+        let loginFields = LoginFields()
+        loginFields.supportedAuthTypes = ["backup", "authenticator"]
+        let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
+                                               onAuthWindowRequest: { UIWindow(frame: UIScreen.main.bounds) },
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
+        XCTAssertTrue(viewModel.shouldShowBackupCodeOption)
+
+        // When
+        viewModel.useBackupCode()
+
+        // Then
+        XCTAssertEqual(viewModel.instructions, "Enter a backup code to continue.")
+        XCTAssertFalse(viewModel.shouldShowBackupCodeOption)
+        XCTAssertFalse(viewModel.shouldShowOtherOptionsText)
+    }
+
+    func test_requestOneTimeCode_when_backup_code_was_requested_then_shows_text_message_instructions_and_backup_option() {
+        // Given
+        let loginFields = LoginFields()
+        loginFields.supportedAuthTypes = ["backup", "authenticator", "sms"]
+        let loginFacade = MockLoginFacade(dotcomClientID: "Fake", dotcomSecret: "Fake", userAgent: "Fake")
+        loginFacade.wordpressComOAuthClientFacade = MockWordPressComOAuthClientFacade(client: "Fake", secret: "Fake")
+        let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
+                                               loginFacade: loginFacade,
+                                               onAuthWindowRequest: { UIWindow(frame: UIScreen.main.bounds) },
+                                               onLoginFailure: { _ in },
+                                               onLoginSuccess: { _ in })
+        viewModel.useBackupCode()
+
+        // When
+        viewModel.requestOneTimeCode()
+
+        // Then
+        XCTAssertEqual(viewModel.instructions, "We sent a text message. Enter the verification code from the message.")
+        XCTAssertTrue(viewModel.shouldShowBackupCodeOption)
     }
 }

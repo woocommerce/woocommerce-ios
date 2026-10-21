@@ -1,13 +1,11 @@
 import Foundation
 import Yosemite
 
-/// Matches foreground order notices to payments recently processed on this device.
 @MainActor
 struct PaidOrderNoticeSuppressor {
     private struct PaidOrderKey: Hashable {
         let siteID: Int64
         let orderID: Int64
-        // Site-credential sessions share a placeholder site ID, so also scope them to their URL.
         let storeURL: String?
     }
 
@@ -44,8 +42,6 @@ struct PaidOrderNoticeSuppressor {
     }
 
     private func belongsToSelectedStore(_ notification: PushNotification) -> Bool {
-        // A placeholder ID describes the session, not the incoming push's store.
-        // Leave the notice visible unless local site data proves the store identity.
         guard notification.siteID > 0,
               let site = siteForID(notification.siteID),
               site.siteID == notification.siteID,

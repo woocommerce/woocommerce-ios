@@ -5,8 +5,9 @@ import XCTest
 final class StoreOnboardingCoordinatorTests: XCTestCase {
     private var navigationController: UINavigationController!
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         navigationController = UINavigationController()
 
         let window = UIWindow(frame: UIScreen.main.bounds)
@@ -27,9 +28,6 @@ final class StoreOnboardingCoordinatorTests: XCTestCase {
 
         // When
         coordinator.start(task: .init(isComplete: true, type: .storeDetails))
-        waitUntil {
-            coordinator.navigationController.presentedViewController != nil
-        }
 
         // Then
         let presentedNavigationController = try XCTUnwrap(coordinator.navigationController.presentedViewController as? WooNavigationController)

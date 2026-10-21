@@ -315,25 +315,21 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     var ghostRefundedProductRow: some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
-            ghostLine(width: Constants.productImageSize, height: Constants.productImageSize)
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest.opacity(POSLoadingPlaceholderStyle.imageBaseOpacity))
+                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering(gradient: POSLoadingPlaceholderStyle.shimmerGradient)
 
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
-                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+                POSPlaceholderText(.redactedPlaceholder(length: 8), font: .posBodyLargeBold)
+                POSPlaceholderText(.redactedPlaceholder(length: 6), font: .posBodyMediumRegular())
             }
 
             Spacer()
 
-            ghostLine(width: Constants.extraShortWidth, height: Constants.rowHeight)
+            POSPlaceholderText(.redactedPlaceholder(length: 4), font: .posBodyMediumRegular())
         }
-    }
-
-    func ghostLine(width: CGFloat, height: CGFloat) -> some View {
-        Rectangle()
-            .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: width, height: height)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .shimmering()
     }
 
     @ViewBuilder
@@ -741,10 +737,6 @@ private extension POSOrderDetailsView {
 
 private enum Constants {
     static let productImageSize: CGFloat = 56
-    static let longWidth: CGFloat = 120
-    static let shortWidth: CGFloat = 80
-    static let extraShortWidth: CGFloat = 60
-    static let rowHeight: CGFloat = 16
 }
 
 // MARK: - Localization

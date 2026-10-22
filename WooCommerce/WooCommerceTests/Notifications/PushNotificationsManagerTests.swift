@@ -440,7 +440,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         let orchestrator = PaymentCaptureOrchestrator(stores: storesManager,
                                                      paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
                                                      celebration: MockPaymentCaptureCelebration(),
-                                                     pushNotesManager: manager)
+                                                     pushNotesManager: manager,
+                                                     walletPresentationSuppression: MockWalletPresentationSuppression())
         var paymentCompleted = false
         var refreshCount = 0
         manager.foregroundNotifications.sink { _ in refreshCount += 1 }.store(in: &subscriptions)
@@ -449,6 +450,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         orchestrator.collectPayment(for: order,
                                     orderTotal: 2,
                                     paymentGatewayAccount: .fake(),
+                                    readerType: .stripeM2,
                                     paymentMethodTypes: [.cardPresent],
                                     stripeSmallestCurrencyUnitMultiplier: 100,
                                     countryCode: .US,

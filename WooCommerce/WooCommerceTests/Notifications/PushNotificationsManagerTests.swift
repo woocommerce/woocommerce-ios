@@ -507,36 +507,36 @@ final class PushNotificationsManagerTests: XCTestCase {
                                          with: ["push_notification_source": "woo_driven", "push_notification_type": "store_order"])
     }
 
-    func test_foreground_order_push_when_placeholder_store_identity_is_known_then_only_matching_store_notice_is_suppressed() async throws {
+    func test_foreground_order_push_when_clean_site_credentials_match_paid_order_then_hides_only_matching_notice() async throws {
         // Given
         application.applicationState = .active
         sessionManager.setStoreId(WooConstants.placeholderStoreID)
         sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
-        await insertSitesIntoStorageWithCapabilities([
-            (siteID: 132, url: "https://first.example", isWPCom: false, isJetpackInstalled: true, isJetpackConnected: true),
-            (siteID: 133, url: "https://second.example", isWPCom: false, isJetpackInstalled: true, isJetpackConnected: true)
-        ])
+        XCTAssertNil(storageManager.viewStorage.loadSite(siteID: 132))
         manager.suppressNewOrderNotice(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
+        var refreshCount = 0
+        manager.foregroundNotifications.sink { _ in refreshCount += 1 }.store(in: &subscriptions)
 
         // When
         let matchingPayload = try wooDrivenNotificationPayload(siteID: 132, orderID: 306, title: Sample.defaultTitle)
         _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: matchingPayload)))
         let matchingNoticeCount = application.presentInAppMessages.count
-        let otherStorePayload = try wooDrivenNotificationPayload(siteID: 133, orderID: 306, title: Sample.defaultTitle)
-        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: otherStorePayload)))
+        let otherOrderPayload = try wooDrivenNotificationPayload(siteID: 132, orderID: 307, title: Sample.defaultTitle)
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: otherOrderPayload)))
 
         // Then
         XCTAssertEqual(matchingNoticeCount, 0)
         XCTAssertEqual(application.presentInAppMessages.count, 1)
+        XCTAssertEqual(refreshCount, 2)
+        XCTAssertFalse(storesManager.receivedActions.contains { $0 is JetpackConnectionAction || $0 is SiteAction })
     }
 
-    func test_foreground_order_push_when_placeholder_store_identity_is_unknown_then_shows_notice() async throws {
+    func test_foreground_order_push_when_wpcom_store_differs_then_shows_notice_for_same_order_id() async throws {
         // Given
         application.applicationState = .active
-        sessionManager.setStoreId(WooConstants.placeholderStoreID)
-        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
-        manager.suppressNewOrderNotice(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
-        let payload = try wooDrivenNotificationPayload(siteID: 132, orderID: 306, title: Sample.defaultTitle)
+        sessionManager.setStoreId(132)
+        manager.suppressNewOrderNotice(for: .fake().copy(siteID: 132, orderID: 306))
+        let payload = try wooDrivenNotificationPayload(siteID: 133, orderID: 306, title: Sample.defaultTitle)
 
         // When
         _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: payload)))

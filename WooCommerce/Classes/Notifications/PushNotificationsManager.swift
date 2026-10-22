@@ -17,8 +17,7 @@ import protocol Storage.StorageManagerType
 final class PushNotificationsManager: PushNotesManager {
 
     @MainActor private lazy var paidOrderNoticeSuppressor = PaidOrderNoticeSuppressor(stores: stores,
-                                                                                   currentDate: currentDate,
-                                                                                   siteForID: { [weak self] in self?.loadTargetSite(siteID: $0) })
+                                                                                   currentDate: currentDate)
 
     @MainActor
     func suppressNewOrderNotice(for order: Order) {

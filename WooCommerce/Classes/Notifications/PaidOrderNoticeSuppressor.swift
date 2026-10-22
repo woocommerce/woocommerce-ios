@@ -11,20 +11,21 @@ struct PaidOrderNoticeSuppressor {
 
     private let stores: StoresManager
     private let currentDate: () -> Date
-    private let siteForID: (Int64) -> Site?
     private let suppressionInterval: TimeInterval = 5 * 60
     private var recentlyPaidOrders: [PaidOrderKey: Date] = [:]
 
-    init(stores: StoresManager, currentDate: @escaping () -> Date, siteForID: @escaping (Int64) -> Site? = { _ in nil }) {
+    init(stores: StoresManager, currentDate: @escaping () -> Date) {
         self.stores = stores
         self.currentDate = currentDate
-        self.siteForID = siteForID
     }
 
     mutating func recordPayment(for order: Order) {
         let now = currentDate()
         removeExpiredRecords(at: now)
-        recentlyPaidOrders[key(siteID: order.siteID, orderID: order.orderID)] = now.addingTimeInterval(suppressionInterval)
+        guard let key = key(siteID: order.siteID, orderID: order.orderID) else {
+            return
+        }
+        recentlyPaidOrders[key] = now.addingTimeInterval(suppressionInterval)
     }
 
     mutating func shouldSuppress(_ notification: PushNotification) -> Bool {
@@ -34,28 +35,20 @@ struct PaidOrderNoticeSuppressor {
             return false
         }
         let siteID = notification.resolvedSiteID(stores: stores)
-        if siteID == WooConstants.placeholderStoreID, !belongsToSelectedStore(notification) {
+        guard let key = key(siteID: siteID, orderID: Int64(orderID)) else {
             return false
         }
-        let key = key(siteID: siteID, orderID: Int64(orderID))
         return recentlyPaidOrders[key] != nil
     }
 
-    private func belongsToSelectedStore(_ notification: PushNotification) -> Bool {
-        guard notification.siteID > 0,
-              let site = siteForID(notification.siteID),
-              site.siteID == notification.siteID,
-              let storeURL = stores.sessionManager.defaultSite?.url,
-              !storeURL.isEmpty else {
-            return false
+    private func key(siteID: Int64, orderID: Int64) -> PaidOrderKey? {
+        if siteID == WooConstants.placeholderStoreID {
+            guard let storeURL = stores.sessionManager.defaultSite?.url, !storeURL.isEmpty else {
+                return nil
+            }
+            return PaidOrderKey(siteID: siteID, orderID: orderID, storeURL: storeURL)
         }
-        return site.url == storeURL
-    }
-
-    private func key(siteID: Int64, orderID: Int64) -> PaidOrderKey {
-        PaidOrderKey(siteID: siteID,
-                     orderID: orderID,
-                     storeURL: siteID == WooConstants.placeholderStoreID ? stores.sessionManager.defaultSite?.url : nil)
+        return PaidOrderKey(siteID: siteID, orderID: orderID, storeURL: nil)
     }
 
     private mutating func removeExpiredRecords(at now: Date) {

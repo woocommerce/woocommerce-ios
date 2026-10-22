@@ -9,9 +9,16 @@ import struct NetworkingCore.Note
 @MainActor
 @Suite(.serialized)
 struct PaidOrderNoticeSuppressorTests {
-    private let sessionManager: SessionManager = .testingInstance
+    private let sessionManager: SessionManager
     private var stores: MockStoresManager { MockStoresManager(sessionManager: sessionManager) }
     private let now = Date(timeIntervalSince1970: 1_750_000_000)
+
+    init() throws {
+        let sessionID = "PaidOrderNoticeSuppressorTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: sessionID))
+        sessionManager = SessionManager(defaults: defaults, keychainServiceName: sessionID)
+        sessionManager.defaultStoreID = 132
+    }
 
     @Test func test_shouldSuppress_when_payment_was_not_recorded_then_returns_false() {
         // Given
@@ -88,100 +95,61 @@ struct PaidOrderNoticeSuppressorTests {
         #expect(!suppressed)
     }
 
-    @Test func test_shouldSuppress_when_site_credentials_session_changes_then_matches_store_url() {
+    @Test(arguments: [Int64(132), Int64(133)])
+    func test_shouldSuppress_when_site_credentials_match_order_then_uses_current_store(siteID: Int64) {
         // Given
-        sessionManager.setStoreId(WooConstants.placeholderStoreID)
-        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
-        var suppressor = PaidOrderNoticeSuppressor(stores: stores, currentDate: { now }, siteForID: { siteID in
-            .fake().copy(siteID: siteID, url: "https://first.example")
-        })
-        suppressor.recordPayment(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
-
-        // When
-        let firstStoreSuppressed = suppressor.shouldSuppress(notification())
-        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://second.example")
-        let secondStoreSuppressed = suppressor.shouldSuppress(notification())
-
-        // Then
-        #expect(firstStoreSuppressed)
-        #expect(!secondStoreSuppressed)
-    }
-
-    @Test func test_shouldSuppress_when_placeholder_session_receives_another_blog_then_returns_false() {
-        // Given
-        sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        sessionManager.defaultStoreID = WooConstants.placeholderStoreID
         sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
         var suppressor = PaidOrderNoticeSuppressor(stores: stores, currentDate: { now })
         suppressor.recordPayment(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
 
         // When
-        let suppressed = suppressor.shouldSuppress(notification(siteID: 133))
-
-        // Then
-        #expect(!suppressed)
-    }
-
-    @Test(arguments: ["https://second.example", "https://first.example/other-store", ""])
-    func test_shouldSuppress_when_stored_site_url_differs_then_returns_false(siteURL: String) {
-        // Given
-        sessionManager.setStoreId(WooConstants.placeholderStoreID)
-        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
-        var suppressor = PaidOrderNoticeSuppressor(stores: stores, currentDate: { now }, siteForID: { siteID in
-            .fake().copy(siteID: siteID, url: siteURL)
-        })
-        suppressor.recordPayment(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
-
-        // When
-        let suppressed = suppressor.shouldSuppress(notification())
-
-        // Then
-        #expect(!suppressed)
-    }
-
-    @Test func test_shouldSuppress_when_lookup_returns_another_blog_then_returns_false() {
-        // Given
-        sessionManager.setStoreId(WooConstants.placeholderStoreID)
-        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
-        var suppressor = PaidOrderNoticeSuppressor(stores: stores, currentDate: { now }, siteForID: { _ in
-            .fake().copy(siteID: 133, url: "https://first.example")
-        })
-        suppressor.recordPayment(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
-
-        // When
-        let suppressed = suppressor.shouldSuppress(notification())
-
-        // Then
-        #expect(!suppressed)
-    }
-
-    @Test func test_shouldSuppress_when_both_store_urls_empty_then_returns_false() {
-        // Given
-        sessionManager.setStoreId(WooConstants.placeholderStoreID)
-        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "")
-        var suppressor = PaidOrderNoticeSuppressor(stores: stores, currentDate: { now }, siteForID: { siteID in
-            .fake().copy(siteID: siteID, url: "")
-        })
-        suppressor.recordPayment(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
-
-        // When
-        let suppressed = suppressor.shouldSuppress(notification())
-
-        // Then
-        #expect(!suppressed)
-    }
-
-    @Test(arguments: [Int64(0), WooConstants.placeholderStoreID])
-    func test_shouldSuppress_when_incoming_blog_id_is_not_real_then_returns_false(siteID: Int64) {
-        // Given
-        sessionManager.setStoreId(WooConstants.placeholderStoreID)
-        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
-        var suppressor = PaidOrderNoticeSuppressor(stores: stores, currentDate: { now }, siteForID: { siteID in
-            .fake().copy(siteID: siteID, url: "https://first.example")
-        })
-        suppressor.recordPayment(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
-
-        // When
         let suppressed = suppressor.shouldSuppress(notification(siteID: siteID))
+
+        // Then
+        #expect(suppressed)
+    }
+
+    @Test func test_shouldSuppress_when_site_credentials_order_differs_then_returns_false() {
+        // Given
+        sessionManager.defaultStoreID = WooConstants.placeholderStoreID
+        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
+        var suppressor = PaidOrderNoticeSuppressor(stores: stores, currentDate: { now })
+        suppressor.recordPayment(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
+
+        // When
+        let suppressed = suppressor.shouldSuppress(notification(orderID: 307))
+
+        // Then
+        #expect(!suppressed)
+    }
+
+    @Test(arguments: ["https://second.example", "https://first.example/other-store"])
+    func test_shouldSuppress_when_site_credentials_store_changes_then_returns_false(storeURL: String) {
+        // Given
+        sessionManager.defaultStoreID = WooConstants.placeholderStoreID
+        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
+        var suppressor = PaidOrderNoticeSuppressor(stores: stores, currentDate: { now })
+        suppressor.recordPayment(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
+
+        // When
+        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: storeURL)
+        let suppressed = suppressor.shouldSuppress(notification())
+
+        // Then
+        #expect(!suppressed)
+    }
+
+    @Test(arguments: [String?.none, ""])
+    func test_shouldSuppress_when_site_credentials_store_url_missing_then_returns_false(storeURL: String?) {
+        // Given
+        sessionManager.defaultStoreID = WooConstants.placeholderStoreID
+        sessionManager.defaultSite = storeURL.map { .fake().copy(siteID: WooConstants.placeholderStoreID, url: $0) }
+        var suppressor = PaidOrderNoticeSuppressor(stores: stores, currentDate: { now })
+        suppressor.recordPayment(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
+
+        // When
+        let suppressed = suppressor.shouldSuppress(notification())
 
         // Then
         #expect(!suppressed)

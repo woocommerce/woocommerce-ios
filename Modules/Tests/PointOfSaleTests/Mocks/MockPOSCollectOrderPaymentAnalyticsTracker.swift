@@ -58,7 +58,7 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
 
     var connectedReaderModel: String?
 
-    func trackProcessingCompletion(intent: Yosemite.PaymentIntent) {
+    func trackProcessingCompletion(intent: Yosemite.PaymentIntent, recordPaymentConfirmation: Bool) {
         // no-op
     }
 

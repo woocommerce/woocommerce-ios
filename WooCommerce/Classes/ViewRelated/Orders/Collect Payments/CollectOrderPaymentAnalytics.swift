@@ -10,8 +10,6 @@ protocol CollectOrderPaymentAnalyticsTracking {
 
     func preflightResultReceived(_ result: CardReaderPreflightResult?)
 
-    func trackProcessingCompletion(intent: PaymentIntent)
-
     func trackProcessingCompletion(intent: PaymentIntent, recordPaymentConfirmation: Bool)
 
     func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData)
@@ -23,10 +21,6 @@ protocol CollectOrderPaymentAnalyticsTracking {
 
 extension CollectOrderPaymentAnalyticsTracking {
     func clearPaymentConfirmation() {}
-
-    func trackProcessingCompletion(intent: PaymentIntent, recordPaymentConfirmation: Bool) {
-        trackProcessingCompletion(intent: intent)
-    }
 }
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
@@ -69,7 +63,7 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
         }
     }
 
-    func trackProcessingCompletion(intent: PaymentIntent) {
+    func trackProcessingCompletion(intent: PaymentIntent, recordPaymentConfirmation: Bool) {
         guard let paymentMethod = intent.paymentMethod() else {
             return
         }

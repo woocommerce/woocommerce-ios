@@ -41,7 +41,7 @@ struct CardPresentPaymentServiceTests {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let service = await CardPresentPaymentService(siteID: 123, stores: stores, collectOrderPaymentAnalyticsTracker: tracker)
         tracker.trackCheckoutTapped()
-        tracker.trackProcessingCompletion(intent: .fake())
+        tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         let cancel: () -> Void = service.cancelPayment
         // When
         cancel()
@@ -58,7 +58,7 @@ struct CardPresentPaymentServiceTests {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let service = await CardPresentPaymentService(siteID: 123, stores: stores, collectOrderPaymentAnalyticsTracker: tracker)
         tracker.trackCheckoutTapped()
-        tracker.trackProcessingCompletion(intent: .fake())
+        tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         var receivedCancellation = false
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             guard case .cancelPayment(let complete) = action else { return }

@@ -87,7 +87,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
             heldConfirmation(.fake())
         }
         now = 700
-        tracker.trackProcessingCompletion(intent: .fake())
+        tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         now = 750
         withExtendedLifetime(useCase) { heldCancellation(.success(())) }
         let canceled = try #require(analytics.events.last { $0.eventName == "card_present_collect_payment_canceled" })
@@ -112,7 +112,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         sut.trackOrderSyncSuccess()
         sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         sut.trackCardReaderReady()
-        sut.trackProcessingCompletion(intent: .fake())
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
 
         // When
         sut.trackSuccessfulCardPayment(capturedPaymentData: .init(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil))
@@ -542,7 +542,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
             sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
             sut.trackCardReaderReady()
             sut.trackCardReaderTapped()
-            sut.trackProcessingCompletion(intent: .fake())
+            sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
             clock.now = 1005
         }
 
@@ -585,14 +585,15 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_failed") == "2000.0")
     }
 
-    @Test @MainActor func test_track_processing_completion_when_payment_method_is_interac_then_tracks_interac_success() {
+    @Test(arguments: [false, true]) @MainActor
+    func test_track_processing_completion_when_payment_method_is_interac_then_tracks_interac_success(recordPaymentConfirmation: Bool) {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .CA))
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))])
 
         // When
-        sut.trackProcessingCompletion(intent: intent)
+        sut.trackProcessingCompletion(intent: intent, recordPaymentConfirmation: recordPaymentConfirmation)
 
         // Then
         #expect(property("country", in: "card_interac_collect_payment_success") == "CA")
@@ -605,7 +606,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
 
         // When
-        sut.trackProcessingCompletion(intent: intent)
+        sut.trackProcessingCompletion(intent: intent, recordPaymentConfirmation: true)
 
         // Then
         #expect(analytics.events.isEmpty)

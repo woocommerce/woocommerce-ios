@@ -80,10 +80,6 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
         }
     }
 
-    func trackProcessingCompletion(intent: Yosemite.PaymentIntent) {
-        trackProcessingCompletion(intent: intent, recordPaymentConfirmation: true)
-    }
-
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent, recordPaymentConfirmation: Bool) {
         if recordPaymentConfirmation, checkoutStarted != nil, paymentConfirmed == nil {
             paymentConfirmed = monotonicMilliseconds()

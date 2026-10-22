@@ -27,10 +27,10 @@ struct POSCheckoutTimingTests {
             clock.milliseconds = 150
             sut.trackCardReaderReady()
             clock.milliseconds = 200
-            sut.trackProcessingCompletion(intent: .fake())
+            sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         case .immediateZero:
             sut.trackCardReaderReady()
-            sut.trackProcessingCompletion(intent: .fake())
+            sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         case .unchangedOrderNewCheckout:
             clock.milliseconds = 500
             sut.trackCheckoutTapped()
@@ -38,17 +38,17 @@ struct POSCheckoutTimingTests {
             clock.milliseconds = 510
             sut.trackCardReaderReady()
             clock.milliseconds = 520
-            sut.trackProcessingCompletion(intent: .fake())
+            sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         case .directRetryBeforeReader, .alreadyConfirmedIntentReused:
             clock.milliseconds = 150
             sut.trackCardReaderReady()
             clock.milliseconds = 200
-            sut.trackProcessingCompletion(intent: .fake())
+            sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
             clock.milliseconds = 250
             sut.trackPaymentFailure(with: TestError())
             if fixture == .alreadyConfirmedIntentReused {
                 clock.milliseconds = 400
-                sut.trackProcessingCompletion(intent: .fake())
+                sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
             }
         case .cancelAfterReaderReady:
             clock.milliseconds = 150
@@ -93,12 +93,12 @@ struct POSCheckoutTimingTests {
         clock.milliseconds = 150
         sut.trackCardReaderReady()
         clock.milliseconds = 200
-        sut.trackProcessingCompletion(intent: .fake())
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
 
         // When
         clock.milliseconds = 225
         sut.trackCardReaderReady()
-        sut.trackProcessingCompletion(intent: .fake())
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         clock.milliseconds = 250
         succeed(sut)
 
@@ -117,7 +117,7 @@ struct POSCheckoutTimingTests {
         sut.trackOrderSyncSuccess()
         sut.prepareForCardPayment(order: order)
         clock.milliseconds = 150
-        sut.trackProcessingCompletion(intent: .fake())
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         // When
         clock.milliseconds = 200
         if success {
@@ -145,7 +145,7 @@ struct POSCheckoutTimingTests {
         clock.milliseconds = 100
         sut.trackOrderSyncSuccess()
         clock.milliseconds = 150
-        sut.trackProcessingCompletion(intent: .fake())
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         // When
         clock.milliseconds = 200
         sut.trackSuccessfulCashPayment(order: order)
@@ -181,7 +181,7 @@ struct POSCheckoutTimingTests {
             sut.trackOrderSyncSuccess()
             sut.prepareForCardPayment(order: order)
             clock.milliseconds = 650
-            sut.trackProcessingCompletion(intent: .fake())
+            sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
             clock.milliseconds = 700
         }
         // When
@@ -204,7 +204,7 @@ struct POSCheckoutTimingTests {
         let sut = makeTracker()
         sut.trackCheckoutTapped()
         sut.trackOrderSyncSuccess()
-        sut.trackProcessingCompletion(intent: .fake())
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         // When
         clock.milliseconds = 100
         sut.trackCheckoutTapped()
@@ -223,7 +223,7 @@ struct POSCheckoutTimingTests {
         let sut = makeTracker(strategy: .localCatalog)
         sut.trackCheckoutTapped()
         sut.trackOrderSyncSuccess()
-        sut.trackProcessingCompletion(intent: .fake())
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         // When
         if newCustomer {
             sut.trackCustomerInteractionStarted()
@@ -247,7 +247,7 @@ struct POSCheckoutTimingTests {
         clock.milliseconds = 150
         sut.trackOrderSyncSuccess()
         clock.milliseconds = 175
-        sut.trackProcessingCompletion(intent: .fake())
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         clock.milliseconds = 200
         sut.preflightResultReceived(.completed(MockCardReader.tapToPay(), .fake().copy(gatewayID: "woocommerce-payments")))
         clock.milliseconds = 250
@@ -288,7 +288,7 @@ struct POSCheckoutTimingTests {
         let sut = makeTracker()
 
         // When
-        sut.trackProcessingCompletion(intent: .fake())
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         clock.milliseconds = 50
         sut.trackPaymentFailure(with: TestError())
 

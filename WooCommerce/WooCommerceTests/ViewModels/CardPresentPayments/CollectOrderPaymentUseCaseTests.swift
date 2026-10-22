@@ -169,7 +169,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // When
         mockPaymentOrchestrator.spyProcessingCompletion?(.fake())
         milliseconds = 225
-        tracker.trackProcessingCompletion(intent: .fake())
+        tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         milliseconds = 250
         complete(.success(()))
         // Then
@@ -221,7 +221,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         useCase.collectPayment(using: .bluetoothScan, channel: .pos,
                                onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {}, onCompleted: {})
         tracker.trackCheckoutTapped()
-        tracker.trackProcessingCompletion(intent: .fake())
+        tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         // When
         mockPreflightController.cancelConnection(readerModel: nil, gatewayID: nil, source: .foundReader)
         milliseconds = 100
@@ -1135,7 +1135,7 @@ private extension CollectOrderPaymentUseCaseTests {
         let pending = try beginCancellationWithHeldCallback(analyticsTracker: tracker, channel: .pos)
         if newerPOSConfirmation {
             milliseconds = 200
-            tracker.trackProcessingCompletion(intent: .fake())
+            tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         }
         // When
         milliseconds = 250

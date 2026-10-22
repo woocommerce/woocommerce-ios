@@ -3,6 +3,7 @@
 
 26.0
 -----
+- [*] Point of Sale: Prevent items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
 - [*] Products: Editing a variation attribute keeps its "Visible on product page" setting. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]
 - [*] Age verification: Fixed a crash after the app was launched in the background, such as by prewarming or a background refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18061]
 - [*] Orders: On iPad, opening an order from a notification or link now scrolls the order list to it. [https://github.com/woocommerce/woocommerce-ios/pull/18095]

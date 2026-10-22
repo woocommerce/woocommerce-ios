@@ -156,7 +156,6 @@ private extension AddProductCoordinator {
 
     /// Presents a bottom sheet for users to choose if what kind of product they want to create.
     ///
-    @MainActor
     func presentProductTypeBottomSheet() {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
@@ -189,7 +188,6 @@ private extension AddProductCoordinator {
 
     /// Presents a new product based on the provided bottom sheet type.
     ///
-    @MainActor
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
@@ -202,7 +200,6 @@ private extension AddProductCoordinator {
 
     /// Presents an action sheet with the option to start product creation with AI
     ///
-    @MainActor
     func presentActionSheetWithAI() {
         let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
         let productTypes: [BottomSheetProductType] = [
@@ -237,7 +234,6 @@ private extension AddProductCoordinator {
         analytics.track(event: .ProductCreationAI.entryPointDisplayed())
     }
 
-    @MainActor
     func startProductCreationWithAI() {
         let viewController = AddProductWithAIContainerHostingController(viewModel: .init(siteID: siteID,
                                                                                          source: source,
@@ -255,7 +251,6 @@ private extension AddProductCoordinator {
 
     /// Presents a product onto the current navigation stack.
     ///
-    @MainActor
     func presentProduct(_ product: Product, formType: ProductFormType = .add, isAIContent: Bool = false) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode

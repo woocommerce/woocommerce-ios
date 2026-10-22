@@ -436,7 +436,9 @@ private extension CollectOrderPaymentUseCase {
                 self.alertsPresenter.present(viewModel: paymentAlerts.displayReaderMessage(message: message))
             }, onProcessingCompletion: { [weak self] intent in
                 paymentIntentForRecovery = intent
-                self?.analyticsTracker.trackProcessingCompletion(intent: intent)
+                if let self {
+                    analyticsTracker.trackProcessingCompletion(intent: intent, recordPaymentConfirmation: !isPaymentFlowCanceled)
+                }
                 self?.markOrderAsPaidIfNeeded(intent: intent)
             }, onCompletion: { [weak self] result in
                 switch result {
@@ -531,6 +533,9 @@ private extension CollectOrderPaymentUseCase {
     }
 
     func handlePaymentCancellationFromReader(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>) {
+        if !isPaymentFlowCanceled {
+            analyticsTracker.clearPaymentConfirmation()
+        }
         analyticsTracker.trackPaymentCancelation(cancelationSource: .reader)
         guard let dismissedOnReaderAlert = paymentAlerts.cancelledOnReader() else {
             return alertsPresenter.dismiss()
@@ -781,6 +786,7 @@ private extension CollectOrderPaymentUseCase {
         paymentFlowLock.lock()
         defer { paymentFlowLock.unlock() }
         paymentFlowCanceled = true
+        analyticsTracker.clearPaymentConfirmation()
         observeApplicationInactivityDuringCancellation()
         paymentOrchestrator.cancelPayment { [weak self] result in
             switch result {

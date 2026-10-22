@@ -55,6 +55,9 @@ extension WooAnalyticsEvent {
             static let pageNumber = "page_number"
             static let reason = "reason"
             static let syncStrategy = "sync_strategy"
+            static let posTimeSinceCheckoutStarted = "pos_time_since_checkout_started_ms"
+            static let posTimeSinceOrderSyncCompleted = "pos_time_since_order_sync_completed_ms"
+            static let posTimeSincePaymentConfirmed = "pos_time_since_payment_confirmed_ms"
             static let searchMethod = "search_method"
             static let resultPosition = "result_position"
             static let deltaFromToday = "delta_from_today"
@@ -263,6 +266,29 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment, properties: [Key.waitingTime: "\(waitingTime)"])
         }
 
+        /// Adds a fresh timing snapshot without changing legacy payment properties.
+        public static func withCheckoutTiming(_ event: WooAnalyticsEvent,
+                                              syncStrategy: POSCheckoutCatalogStrategy,
+                                              millisecondsSinceCheckoutStarted: Int?,
+                                              millisecondsSinceOrderSyncCompleted: Int?,
+                                              millisecondsSincePaymentConfirmed: Int?) -> WooAnalyticsEvent {
+            var properties = event.properties
+            properties[Key.syncStrategy] = syncStrategy.rawValue
+            let timings = [
+                Key.posTimeSinceCheckoutStarted: millisecondsSinceCheckoutStarted,
+                Key.posTimeSinceOrderSyncCompleted: millisecondsSinceOrderSyncCompleted,
+                Key.posTimeSincePaymentConfirmed: millisecondsSincePaymentConfirmed
+            ]
+            for (key, value) in timings {
+                if let value, value >= 0 {
+                    properties[key] = value
+                } else {
+                    properties.removeValue(forKey: key)
+                }
+            }
+            return WooAnalyticsEvent(statName: event.statName, properties: properties, error: event.error)
+        }
+
         public static func cardPresentCollectPaymentSuccess(forGatewayID: String?,
                                                      countryCode: CountryCode,
                                                      paymentMethod: PaymentMethod,
@@ -325,20 +351,12 @@ extension WooAnalyticsEvent {
                                                              countryCode: CountryCode,
                                                              cardReaderModel: String?,
                                                              cancellationSource: String,
-                                                             millisecondsSinceCustomerIteractionStarted: Double,
-                                                             millisecondsSinceOrderSyncSuccess: Double,
-                                                             millisecondsSinceReaderReadyToCollect: Double,
-                                                             millisecondsSinceCardTapped: Double,
                                                              checkoutTapCount: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled, properties: [
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,
                 Key.gatewayID: safeGatewayID(for: forGatewayID),
                 Key.cancellationSource: cancellationSource,
-                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
-                Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
-                Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
-                Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
                 Key.checkoutTapCount: "\(checkoutTapCount)"
             ])
         }

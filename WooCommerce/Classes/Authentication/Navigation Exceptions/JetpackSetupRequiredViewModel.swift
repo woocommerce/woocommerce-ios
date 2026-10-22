@@ -7,7 +7,7 @@ import protocol WooFoundation.Analytics
 /// modeling an error when Jetpack is not installed or is not connected
 /// Displayed as an entry point to the native Jetpack setup flow.
 ///
-final class JetpackSetupRequiredViewModel: ULErrorViewModel {
+final class JetpackSetupRequiredViewModel: @MainActor ULErrorViewModel {
 
     let siteURL: String
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
@@ -114,6 +114,7 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
         loadSiteFavicon()
     }
 
+    @MainActor
     func didTapPrimaryButton(in viewController: UIViewController?) {
         if connectionOnly {
             analytics.track(.loginJetpackConnectButtonTapped)

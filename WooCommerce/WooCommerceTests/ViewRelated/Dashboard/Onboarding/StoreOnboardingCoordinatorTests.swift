@@ -20,6 +20,7 @@ final class StoreOnboardingCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_starting_with_storeDetails_task_presents_AuthenticatedWebViewController() throws {
         // Given
         let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: .fake(), onTaskCompleted: { _ in }, reloadTasks: {})

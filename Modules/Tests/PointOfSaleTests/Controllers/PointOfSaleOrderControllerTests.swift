@@ -24,6 +24,44 @@ struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()
     let mockReceiptSender = MockPOSReceiptSender()
 
+    @Test(arguments: [false, true])
+    func test_order_response_when_order_replaced_then_preserves_current_order(promote: Bool) async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let original = Order.fake().copy(orderID: 1)
+        let replacement = Order.fake().copy(orderID: 2)
+        mockOrderService.orderToReturn = original
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        let replaceOrder: @MainActor () async -> Void = {
+            sut.clearOrder()
+            mockOrderService.orderToReturn = replacement
+            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        }
+        mockOrderService.onLoadOrderCalled = replaceOrder
+        mockOrderService.onPromoteOrderCalled = replaceOrder
+
+        // When
+        await #expect(throws: CancellationError.self) {
+            if promote {
+                _ = try await sut.promoteCurrentOrderToPending()
+            } else {
+                _ = try await sut.reloadCurrentOrder()
+            }
+        }
+
+        // Then
+        guard case let .loaded(_, order) = sut.orderState else {
+            Issue.record("Expected the replacement order to remain loaded")
+            return
+        }
+        #expect(order.orderID == replacement.orderID)
+        mockOrderService.onLoadOrderCalled = nil
+        #expect(try await sut.reloadCurrentOrder().orderID == replacement.orderID)
+    }
+
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,

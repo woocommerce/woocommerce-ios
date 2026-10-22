@@ -86,6 +86,7 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
+    private var orderGeneration = UUID()
 
     /// The custom amounts as they were on the last successful sync. Used to detect a "Charge
     /// taxes" toggle on an otherwise-unchanged amount, which `POSCart.matches(order:)` cannot
@@ -116,6 +117,7 @@ protocol PointOfSaleOrderControllerProtocol {
             return .success(.orderNotChanged)
         }
 
+        orderGeneration = UUID()
         orderState = .syncing
 
         do {
@@ -153,6 +155,7 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func clearOrder() {
+        orderGeneration = UUID()
         order = nil
         lastSyncedCustomAmounts = []
         orderState = .idle
@@ -233,7 +236,11 @@ protocol PointOfSaleOrderControllerProtocol {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
+        let generation = orderGeneration
         let refreshed = try await orderService.loadOrder(orderID: order.orderID)
+        guard generation == orderGeneration, self.order?.orderID == order.orderID else {
+            throw CancellationError()
+        }
         self.order = refreshed
         return refreshed
     }
@@ -242,7 +249,11 @@ protocol PointOfSaleOrderControllerProtocol {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
+        let generation = orderGeneration
         let promoted = try await orderService.promoteOrderToPending(order: order)
+        guard generation == orderGeneration, self.order?.orderID == order.orderID else {
+            throw CancellationError()
+        }
         self.order = promoted
         // Keep the loaded totals in sync; the order is the same, only its status changed.
         if case let .loaded(totals, _) = orderState {

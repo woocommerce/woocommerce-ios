@@ -166,7 +166,6 @@ class StoreOnboardingViewModel: ObservableObject {
 }
 
 private extension StoreOnboardingViewModel {
-    @MainActor
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
         try await fetchTasks()
             .sorted()
@@ -216,7 +215,6 @@ private extension StoreOnboardingViewModel {
         defaults[.completedAllStoreOnboardingTasks] = completedTasks
     }
 
-    @MainActor
     func fetchTasks() async throws -> [StoreOnboardingTask] {
         try await withCheckedThrowingContinuation({ continuation in
             stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { [weak self] result in

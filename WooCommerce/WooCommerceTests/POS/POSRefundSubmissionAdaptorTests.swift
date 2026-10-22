@@ -19,6 +19,47 @@ struct POSRefundSubmissionAdaptorTests {
     private let orderID: Int64 = 560
 
     @Test(arguments: [false, true])
+    func prepareRefund_when_an_older_same_order_request_finishes_then_keeps_the_newer_context(staleFails: Bool) async throws {
+        // Given two snapshots of the same order and a first load that ignores cancellation
+        let sut = makeSUT(previewResult: nil, serverFlowEligible: false)
+        let oldOrder = order().copy(total: "11.00")
+        let latestOrder = oldOrder.copy(total: "22.00", items: [oldOrder.items[0].copy(price: NSDecimalNumber(string: "20"),
+                                                                                     subtotal: "20.00", total: "20.00", totalTax: "2.00")])
+        var pendingLoad: CheckedContinuation<Order, Error>?
+        var loads = 0
+        sut.orderService.onLoadOrder = { _ in
+            loads += 1
+            if loads == 1 {
+                return try await withCheckedThrowingContinuation { pendingLoad = $0 }
+            }
+            return latestOrder
+        }
+        let oldTask = Task { try await sut.adaptor.prepareRefund(for: posOrder()) }
+        while pendingLoad == nil { await Task.yield() }
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        sut.adaptor.stateModel.state = .submitting
+
+        // When the older response finishes after the current snapshot has been prepared
+        if staleFails {
+            pendingLoad?.resume(throwing: MockPOSOrderServiceError.missingStub)
+        } else {
+            pendingLoad?.resume(returning: oldOrder)
+        }
+        await #expect(throws: (any Error).self) { _ = try await oldTask.value }
+
+        // Then it cannot reset the active flow or replace its refund calculation context
+        guard case .submitting = sut.adaptor.stateModel.state else {
+            Issue.record("A stale preparation must not reset the active refund state")
+            return
+        }
+        let review = try await sut.adaptor.prepareReviewData(for: posOrder(), preparation: preparation,
+                                                            selectedItems: preparation.selectableItems, reason: nil)
+        #expect(review.formattedItemsSubtotal == "$20.00")
+        #expect(review.formattedTax == "$2.00")
+        #expect(review.formattedRefundTotal == "$22.00")
+    }
+
+    @Test(arguments: [false, true])
     func refund_when_preparation_belongs_to_another_order_then_rejects_before_preview_or_submission(submit: Bool) async throws {
         // Given valid preparation for a different order
         let sut = makeSUT(previewResult: .success(preview()))
@@ -480,6 +521,7 @@ private extension POSRefundSubmissionAdaptorTests {
 
     struct SUT {
         let adaptor: POSRefundSubmissionAdaptor
+        let orderService: MockPOSOrderService
         let service: MockManualRefundService
         let spy: RefundActionSpy
         let analyticsProvider: MockAnalyticsProvider
@@ -551,6 +593,7 @@ private extension POSRefundSubmissionAdaptorTests {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider),
                                                  serverRefundPreviewUseCase: previewUseCase)
         return SUT(adaptor: adaptor,
+                   orderService: orderService,
                    service: service,
                    spy: spy,
                    analyticsProvider: analyticsProvider,

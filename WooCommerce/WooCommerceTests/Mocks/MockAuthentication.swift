@@ -32,6 +32,7 @@ final class MockAuthentication: Authentication {
         false
     }
 
+    @MainActor
     func authenticationUI() -> UIViewController {
         UIViewController()
     }

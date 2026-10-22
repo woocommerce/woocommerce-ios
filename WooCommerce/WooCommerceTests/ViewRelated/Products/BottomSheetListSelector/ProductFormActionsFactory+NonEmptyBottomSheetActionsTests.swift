@@ -20,6 +20,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings,
                                                                           .editInventorySettings,
+                                                                          .editAttributes,
                                                                           .editCategories,
                                                                           .editTags,
                                                                           .editDownloadableFiles,
@@ -44,6 +45,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings,
+                                                                          .editAttributes,
                                                                           .editCategories,
                                                                           .editTags,
                                                                           .editDownloadableFiles,
@@ -69,6 +71,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings,
+                                                                          .editAttributes,
                                                                           .editCategories,
                                                                           .editTags,
                                                                           .editShortDescription,

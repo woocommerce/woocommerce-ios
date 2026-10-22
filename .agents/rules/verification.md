@@ -2,6 +2,27 @@
 
 Agents can verify their changes work from a user's perspective using two complementary loops: **snapshot-driven iteration** (fast inner loop) and **simulator-based E2E verification** (slower outer loop).
 
+## Local output paths
+
+Run agent commands from the task's checkout root. For direct `xcodebuild` commands, pass
+`-derivedDataPath "$PWD/DerivedData"` to builds, tests, and matching `-showBuildSettings` queries.
+Fastlane already selects this checkout-local build folder. Reuse compatible output; use a fresh
+child of `DerivedData/` only when a diagnostic requires a clean configuration.
+Keep one build writer per output folder and separate output folders between worktrees.
+
+When an agent needs to save console logs, screenshots, traces, or test results, use a unique directory
+under `.agent-artifacts/`, which is gitignored. Keep evidence until the task's retention requirements
+are met. Existing tool-owned paths, including `fastlane/logs`, `fastlane/test_output`, and package
+`.build` folders, remain valid.
+For agent-created SnapshotTesting fixtures, use the `/snapshot` command's artifact setting
+to keep failure images in the task artifact directory; `snapshotDirectory` selects reference
+images, not comparison failure artifacts.
+
+Explicit task/CI output paths and specialized helper contracts take precedence over these defaults.
+Credential staging follows `/auto-login` and stays outside the repository. Shared package/compiler
+caches and simulator devices remain system-managed. These defaults require no personal skill,
+Xcode preference change, cleanup service, or fixed simulator provider.
+
 ## Prerequisites
 - **Node.js** (see `.nvmrc` for version) — required by mobile-mcp for simulator interaction
 - **Java** — required by WireMock mock server (`brew install openjdk` if missing)

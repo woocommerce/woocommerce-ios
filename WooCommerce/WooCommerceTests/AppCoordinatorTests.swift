@@ -19,8 +19,9 @@ final class AppCoordinatorTests: XCTestCase {
 
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
 
         window.makeKeyAndVisible()
 
@@ -45,6 +46,7 @@ final class AppCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_starting_app_logged_out_presents_authentication() throws {
         // Given
         let appCoordinator = makeCoordinator(window: window,
@@ -59,6 +61,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_without_selected_site_presents_store_picker_if_there_are_connected_stores() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
@@ -77,6 +80,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_without_selected_site_presents_store_picker_if_there_are_no_connected_stores() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
@@ -95,6 +99,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_wporg_credentials_but_no_selected_site_shows_prologue_screen() {
         // Given
         // Authenticates the app without selecting a site, so that the prologue screen is shown.
@@ -113,6 +118,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_applicationPassword_credentials_but_no_selected_site_shows_prologue_screen() {
         // Given
         // Authenticates the app without selecting a site, so that the prologue screen is shown.
@@ -131,6 +137,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_without_selected_site_presents_account_mismatched_if_there_is_no_store_matching_the_error_site_address() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
@@ -159,6 +166,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginNavigationController.topViewController is ULAccountMismatchViewController)
     }
 
+    @MainActor
     func test_starting_app_logged_in_without_selected_site_presents_error_if_the_error_site_address_does_not_have_woo() throws {
         // Given
         // Authenticates the app without selecting a site, so that the store picker is shown.
@@ -188,6 +196,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginNavigationController.topViewController is ULErrorViewController)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_selected_site_stays_on_tabbar() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -208,6 +217,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    @MainActor
     func test_resetting_selected_site_while_on_tabbar_presents_store_picker() throws {
         // Given
         // App is logged in with a selected site, so the root is the main tab bar.
@@ -236,6 +246,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_wporg_credentials_and_selected_site_stays_on_tabbar() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wporgCredentials)
@@ -256,6 +267,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_application_password_credentials_and_selected_site_stays_on_tabbar() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
@@ -276,6 +288,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_selected_site_and_ineligible_status_presents_role_error() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -302,6 +315,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(navigationController.visibleViewController, isAnInstanceOf: RoleErrorViewController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_then_logging_out_presents_authentication() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -321,6 +335,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     // MARK: - Age verification timing
 
+    @MainActor
     func test_age_verification_when_app_is_active_then_runs_on_session_start() {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -341,6 +356,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(ageRangeVerificationCoordinator.triggers, [.sessionStart])
     }
 
+    @MainActor
     func test_age_verification_when_app_is_not_active_then_waits_until_the_app_becomes_active() {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -371,6 +387,7 @@ final class AppCoordinatorTests: XCTestCase {
         waitUntil { ageRangeVerificationCoordinator.triggers == [.sessionStart] }
     }
 
+    @MainActor
     func test_deferred_age_verification_when_logged_out_before_the_app_becomes_active_then_is_skipped() {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -398,6 +415,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertTrue(ageRangeVerificationCoordinator.triggers.isEmpty)
     }
 
+    @MainActor
     func test_age_verification_when_deferred_twice_before_the_app_becomes_active_then_runs_once() {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -425,6 +443,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(ageRangeVerificationCoordinator.triggers, [.sessionStart])
     }
 
+    @MainActor
     func test_consent_response_listener_when_app_is_active_then_starts_on_launch() {
         // Given
         let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(decision: .allow, result: .featureUnavailable)
@@ -441,6 +460,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertTrue(ageRangeVerificationCoordinator.isObservingConsentResponses)
     }
 
+    @MainActor
     func test_consent_response_listener_when_app_is_not_active_then_starts_once_the_app_becomes_active() {
         // Given
         let notificationCenter = NotificationCenter()
@@ -734,6 +754,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     // MARK: - Login onboarding
 
+    @MainActor
     func test_starting_app_logged_out_without_interacting_with_onboarding_presents_onboarding_over_authentication() throws {
         // Given
         stores.deauthenticate()
@@ -752,6 +773,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController?.presentedViewController, isAnInstanceOf: LoginOnboardingViewController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_out_after_interacting_with_onboarding_does_not_present_onboarding() throws {
         // Given
         stores.deauthenticate()
@@ -772,6 +794,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     // MARK: - Login onboarding analytics
 
+    @MainActor
     func test_loginOnboardingShown_is_tracked_after_presenting_onboarding() throws {
         // Given
         stores.deauthenticate()
@@ -878,6 +901,7 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_appCoordinator_start_resets_default_store_and_proceeds_to_login_when_isAuthenticated_and_needsDefaultStore_are_false() {
         // Given
         stores.updateDefaultStore(storeID: 123)
@@ -897,6 +921,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertTrue(stores.needsDefaultStore)
     }
 
+    @MainActor
     func test_local_notification_dismissal_is_tracked() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
@@ -919,6 +944,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertEqual(LocalNotification.Scenario.blazeNoCampaignReminder.identifier, eventProperties["type"] as? String)
     }
 
+    @MainActor
     func test_local_notification_tap_is_tracked() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
@@ -945,6 +971,7 @@ final class AppCoordinatorTests: XCTestCase {
 
 private extension AppCoordinatorTests {
     /// Convenience method to make AppCoordinator instances.
+    @MainActor
     func makeCoordinator(window: UIWindow? = nil,
                          stores: StoresManager? = nil,
                          authenticationManager: Authentication? = nil,

@@ -7,9 +7,20 @@ public protocol POSCollectOrderPaymentAnalyticsTracking {
     func trackCardReaderReady()
     func trackCardReaderTapped()
     func trackCheckoutTapped()
+    func resetCheckoutTiming()
     func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder)
     func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder)
     func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder)
+}
+
+public enum POSCheckoutCatalogStrategy: String, Sendable {
+    case localCatalog = "local_catalog"
+    case remote
+    case unknown
+
+    public init(isLocalCatalogEligible: Bool, hasDatabase: Bool, hasSyncCoordinator: Bool) {
+        self = isLocalCatalogEligible && hasDatabase && hasSyncCoordinator ? .localCatalog : .remote
+    }
 }
 
 public struct POSPaymentAnalyticsOrder: Equatable {

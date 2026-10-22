@@ -9,6 +9,7 @@ import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 import protocol WooFoundationCore.CrashLogger
 
+@MainActor
 final class AppCoordinator {
     let tabBarController: MainTabBarController
 
@@ -626,7 +627,6 @@ private extension AppCoordinator {
         }
     }
 
-    @MainActor
     func handleSignificantChangeBlockerAction(for context: SignificantChangeBlockingContext) {
         analytics.track(event: .AgeVerification.action(for: context))
         switch context {
@@ -656,7 +656,6 @@ private extension AppCoordinator {
     /// Opens Help & Support on top of the wall. The wall is never dismissed for this, so closing
     /// support lands back on it with the same context. Ignored while the wall already presents
     /// something (the system consent sheet, or support itself).
-    @MainActor
     func presentSupportFromSignificantChangeBlocker() {
         guard let blocker = significantChangeBlocker, blocker.presentedViewController == nil else { return }
         analytics.track(event: .AgeVerification.contactSupportTapped(for: blocker.context))

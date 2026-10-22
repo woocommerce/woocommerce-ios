@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class LoginSiteAddressScreen: ScreenObject {
 
     private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {

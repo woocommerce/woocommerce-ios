@@ -27,7 +27,7 @@ final class EditAttributesViewModelTests: XCTestCase {
         let product = Product.fake().copy(attributes: [attribute, attribute2])
 
         // When
-        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
+        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: true)
 
         // Then
         let expectedVM = ImageAndTitleAndTextTableViewCell.ViewModel(title: "attr",
@@ -46,7 +46,7 @@ final class EditAttributesViewModelTests: XCTestCase {
         let product2 = Product.fake().copy(attributes: [attribute, attribute2, attribute3])
 
         // When
-        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
+        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: true)
         viewModel.updateProduct(product2)
 
         // Then
@@ -69,13 +69,59 @@ final class EditAttributesViewModelTests: XCTestCase {
         let product = Product.fake().copy(attributes: [attribute, attribute2, attribute3])
 
         // When
-        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
+        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: true)
 
         // Then
         XCTAssertEqual(viewModel.attributes.count, 2)
         viewModel.attributes.enumerated().forEach { index, vm in
             XCTAssertEqual(vm.title, viewModel.productAttributeAtIndex(index).name)
         }
+    }
+}
+
+extension EditAttributesViewModelTests {
+    func test_when_outside_variations_flow_then_all_attributes_are_listed_with_labels() {
+        // Given
+        let attribute = sampleAttribute(name: "Color", options: ["Red", "Blue"])
+        let attribute2 = sampleNonVariationAttribute(name: "Material", options: ["Cotton"]).copy(visible: false)
+        let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue, attributes: [attribute, attribute2])
+
+        // When
+        let viewModel = EditAttributesViewModel(product: product,
+                                                allowVariationCreation: false)
+
+        // Then
+        XCTAssertEqual(viewModel.attributes.map { $0.text }, ["Red, Blue\nUsed for variations", "Cotton\nHidden"])
+        XCTAssertEqual(viewModel.productAttributeAtIndex(1), attribute2)
+    }
+
+    func test_when_product_is_simple_then_no_used_for_variations_label_is_shown() {
+        // Given
+        let attribute = sampleAttribute(name: "Color", options: ["Red"])
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: [attribute])
+
+        // When
+        let viewModel = EditAttributesViewModel(product: product,
+                                                allowVariationCreation: false)
+
+        // Then
+        XCTAssertEqual(viewModel.attributes.map { $0.text }, ["Red"])
+    }
+
+    func test_when_in_variations_flow_then_only_variation_attributes_are_listed_without_labels() {
+        // Given
+        let attribute = sampleAttribute(name: "Color", options: ["Red", "Blue"])
+        let attribute2 = sampleNonVariationAttribute(name: "Material", options: ["Cotton"])
+        let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue, attributes: [attribute, attribute2])
+
+        // When
+        let viewModel = EditAttributesViewModel(product: product,
+                                                allowVariationCreation: true)
+
+        // Then
+        XCTAssertEqual(viewModel.attributes.map { $0.title }, ["Color"])
+        XCTAssertEqual(viewModel.attributes.map { $0.text }, ["Red, Blue"])
+        XCTAssertTrue(viewModel.isVariationsFlow)
     }
 }
 

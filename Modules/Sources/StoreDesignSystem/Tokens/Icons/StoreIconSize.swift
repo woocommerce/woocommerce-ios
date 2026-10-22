@@ -2,9 +2,9 @@ import CoreGraphics
 
 /// Unlike the other scalar ramps (StoreSpacing, StorePadding, StoreRadius,
 /// StoreStrokeWidth), which stay plain CGFloat constants because they feed Apple's
-/// CGFloat parameters, icon size is a closed type: its only consumer is our own
-/// `StoreIconImage.image(size:)`, so typing it blocks arbitrary sizes and enables
-/// dot-shorthand (`.image(size: .medium)`).
+/// CGFloat parameters, icon size is a closed type: its only consumers are our own
+/// `StoreIconImage.image(size:)` and `scaledImage(size:)`, so typing it blocks arbitrary
+/// sizes and enables dot-shorthand (`.image(size: .medium)`).
 public struct StoreIconSize: Sendable {
     let value: CGFloat
 

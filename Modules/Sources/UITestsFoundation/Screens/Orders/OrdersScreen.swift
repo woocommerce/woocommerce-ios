@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class OrdersScreen: ScreenObject {
 
     private let searchButtonGetter: (XCUIApplication) -> XCUIElement = {

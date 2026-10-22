@@ -4,6 +4,7 @@ struct InPersonPaymentsPluginNotInstalled: View {
     let analyticReason: String
     let userIsAdministrator: Bool
     let onInstall: () -> Void
+    let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -27,21 +28,24 @@ extension InPersonPaymentsPluginNotInstalled {
         userIsAdministrator ? Localization.message : Localization.messageForNonAdministrator
     }
 
-    var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? {
-        guard userIsAdministrator else {
-            return nil
-        }
-
+    var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel {
         return InPersonPaymentsOnboardingErrorButtonViewModel(
-            text: Localization.title,
+            text: userIsAdministrator ? Localization.title : Localization.refreshButton,
             analyticReason: analyticReason,
             plugin: nil,
-            action: onInstall
+            trackTap: userIsAdministrator,
+            action: userIsAdministrator ? onInstall : onRefresh
         )
     }
 }
 
 private enum Localization {
+    static let refreshButton = NSLocalizedString(
+        "cardPresentPayments.onboarding.pluginNotInstalled.refreshButton",
+        value: "Refresh",
+        comment: "Button to recheck payment setup after a store administrator installs or activates the payment plugin."
+    )
+
     static let title = NSLocalizedString(
         "inPersonPaymentsPluginNotInstalled.title",
         value: "Install WooPayments",
@@ -72,10 +76,10 @@ private enum Localization {
 
 struct InPersonPaymentsPluginNotInstalled_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotInstalled(analyticReason: "", userIsAdministrator: true, onInstall: {})
+        InPersonPaymentsPluginNotInstalled(analyticReason: "", userIsAdministrator: true, onInstall: {}, onRefresh: {})
             .previewDisplayName("Administrator")
 
-        InPersonPaymentsPluginNotInstalled(analyticReason: "", userIsAdministrator: false, onInstall: {})
+        InPersonPaymentsPluginNotInstalled(analyticReason: "", userIsAdministrator: false, onInstall: {}, onRefresh: {})
             .previewDisplayName("Non-administrator")
     }
 }

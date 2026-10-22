@@ -116,6 +116,19 @@ struct TwoFAViewControllerTests {
     }
 
     @Test
+    func test_two_factor_options_when_social_challenge_does_not_list_sms_then_hides_text_link() throws {
+        // Given
+        let nonceInfo = SocialLogin2FANonceInfo()
+        nonceInfo.supportedAuthTypes = ["authenticator", "backup"]
+
+        // When
+        let (_, cells) = try makeScreen(nonceInfo: nonceInfo)
+
+        // Then
+        #expect(cells.compactMap { $0 as? TextLinkButtonTableViewCell }.isEmpty)
+    }
+
+    @Test
     func test_security_key_mode_when_backup_is_available_then_hides_code_and_enables_security_key_primary_action() throws {
         // Given
         let nonceInfo = SocialLogin2FANonceInfo()

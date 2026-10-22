@@ -95,4 +95,18 @@ struct TwoFactorMethodsTests {
         #expect(methods.instructions(hasRequestedTextCode: false, isBackupCodeRequested: false) ==
                 "Check your email for a verification code from WordPress.com, then enter it to continue.")
     }
+
+    @Test
+    func test_canTextCode_when_the_account_list_is_empty_then_follows_the_challenge_list() {
+        // Given
+        let smsChallenge = TwoFactorMethods(supportedAuthTypes: [], challengeAuthTypes: ["authenticator", "sms"])
+        let otherChallenge = TwoFactorMethods(supportedAuthTypes: [], challengeAuthTypes: ["authenticator", "backup"])
+        let accountList = TwoFactorMethods(supportedAuthTypes: ["authenticator"], challengeAuthTypes: ["sms"])
+
+        // When / Then
+        #expect(smsChallenge.canTextCode)
+        #expect(!otherChallenge.canTextCode)
+        #expect(!accountList.canTextCode)
+        #expect(smsChallenge.instructions(hasRequestedTextCode: false, isBackupCodeRequested: false) == nil)
+    }
 }

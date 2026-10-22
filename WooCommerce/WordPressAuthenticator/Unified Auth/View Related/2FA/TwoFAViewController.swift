@@ -23,7 +23,7 @@ final class TwoFAViewController: LoginViewController {
     private var isBackupCodeRequested = false
     private var isLoading = false
     private var methods: TwoFactorMethods {
-        TwoFactorMethods(supportedAuthTypes: loginFields.supportedAuthTypes)
+        TwoFactorMethods(supportedAuthTypes: loginFields.supportedAuthTypes, challengeAuthTypes: loginFields.nonceInfo?.supportedAuthTypes ?? [])
     }
     private var isSecurityKeyMode: Bool {
         methods.startsWithSecurityKey && !isBackupCodeRequested

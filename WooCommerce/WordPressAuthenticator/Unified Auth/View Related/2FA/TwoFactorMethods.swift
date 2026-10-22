@@ -10,14 +10,18 @@ public struct TwoFactorMethods {
     }
 
     private let methods: Set<Method>
+    private let challengeMethods: Set<Method>
 
-    public init(supportedAuthTypes: [String]) {
+    public init(supportedAuthTypes: [String], challengeAuthTypes: [String] = []) {
         methods = Set(supportedAuthTypes.compactMap(Method.init(rawValue:)))
+        challengeMethods = Set(challengeAuthTypes.compactMap(Method.init(rawValue:)))
     }
 
-    /// Without a method list, texting a code stays available as it was before the server listed methods.
+    /// Google and Apple logins clear the account's list, so texting a code follows their challenge's list.
+    /// Without any list, texting a code stays available as it was before the server listed methods.
     public var canTextCode: Bool {
-        methods.isEmpty || methods.contains(.sms)
+        let textCodeMethods = methods.isEmpty ? challengeMethods : methods
+        return textCodeMethods.isEmpty || textCodeMethods.contains(.sms)
     }
 
     /// A security key is the first option when no code method is available.

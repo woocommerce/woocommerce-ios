@@ -6,7 +6,11 @@ import Yosemite
 
 final class MockPushNotificationsManager: PushNotesManager {
 
+    @MainActor private(set) var suppressedOrders: [Order] = []
+
+    @MainActor
     func suppressNewOrderNotice(for order: Order) {
+        suppressedOrders.append(order)
     }
 
     func disableInAppNotifications() {

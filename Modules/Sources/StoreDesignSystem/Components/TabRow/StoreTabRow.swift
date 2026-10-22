@@ -65,6 +65,7 @@ public struct StoreTabRow<Value: Hashable>: View {
             }
             .foregroundStyle(appearance.foreground)
             .padding(.horizontal, StorePadding.p5)
+            .padding(.top, layout.topInset)
             .padding(.bottom, layout.bottomInset)
             .frame(maxWidth: .infinity,
                    minHeight: StoreSize.tabRowHeight,

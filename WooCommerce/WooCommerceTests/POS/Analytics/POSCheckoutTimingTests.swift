@@ -13,6 +13,7 @@ struct POSCheckoutTimingTests {
 
     @Test(arguments: Fixture.allCases)
     func test_terminal_event_when_shared_scenario_runs_then_matches_cross_platform_contract(fixture: Fixture) throws {
+        // Given
         let sut = makeTracker()
         sut.setCatalogSyncStrategy(fixture.strategy)
         sut.trackCheckoutTapped()
@@ -56,6 +57,7 @@ struct POSCheckoutTimingTests {
         case .failureBeforeSync:
             break
         }
+        // When
         clock.milliseconds = fixture.terminalMilliseconds
         switch fixture {
         case .failureBeforeSync, .failureAfterConfirmation, .directRetryBeforeReader:
@@ -68,6 +70,7 @@ struct POSCheckoutTimingTests {
             succeed(sut)
         }
 
+        // Then
         let actual = try timingProperties()
         var expected: [String: Any] = fixture.expectedTimings
         if fixture != .cancelAfterReaderReady {
@@ -84,6 +87,7 @@ struct POSCheckoutTimingTests {
     }
 
     @Test func test_callbacks_when_repeated_then_preserve_first_confirmation_and_omit_reader_ready() throws {
+        // Given
         let sut = makeTracker()
         sut.trackCheckoutTapped()
         sut.prepareForCardPayment(order: order)
@@ -92,12 +96,14 @@ struct POSCheckoutTimingTests {
         clock.milliseconds = 200
         sut.trackProcessingCompletion(intent: .fake())
 
+        // When
         clock.milliseconds = 225
         sut.trackCardReaderReady()
         sut.trackProcessingCompletion(intent: .fake())
         clock.milliseconds = 250
         succeed(sut)
 
+        // Then
         let actual = try timingProperties()
         #expect(actual["pos_time_since_reader_ready_ms"] == nil)
         #expect(actual["pos_time_since_payment_confirmed_ms"] as? Int == 50)
@@ -105,6 +111,7 @@ struct POSCheckoutTimingTests {
 
     @Test(arguments: [false, true])
     func test_card_outcome_when_confirmation_is_recorded_then_consumes_only_confirmation(success: Bool) throws {
+        // Given
         let sut = makeTracker()
         sut.trackCheckoutTapped()
         clock.milliseconds = 100
@@ -112,15 +119,19 @@ struct POSCheckoutTimingTests {
         sut.prepareForCardPayment(order: order)
         clock.milliseconds = 150
         sut.trackProcessingCompletion(intent: .fake())
+        // When
         clock.milliseconds = 200
         if success {
             succeed(sut)
         } else {
             sut.trackPaymentFailure(with: TestError())
         }
+        // Then
         #expect(try timingProperties()["pos_time_since_payment_confirmed_ms"] as? Int == 50)
+        // When
         clock.milliseconds = 350
         sut.trackPaymentFailure(with: TestError())
+        // Then
         let actual = try timingProperties()
         #expect(actual["pos_time_since_checkout_started_ms"] as? Int == 350)
         #expect(actual["pos_time_since_order_sync_completed_ms"] as? Int == 250)
@@ -128,6 +139,7 @@ struct POSCheckoutTimingTests {
     }
 
     @Test func test_cash_outcome_when_card_is_confirmed_then_preserves_confirmation_for_card_outcome() throws {
+        // Given
         let sut = makeTracker()
         sut.trackCheckoutTapped()
         sut.prepareForCardPayment(order: order)
@@ -135,15 +147,20 @@ struct POSCheckoutTimingTests {
         sut.trackOrderSyncSuccess()
         clock.milliseconds = 150
         sut.trackProcessingCompletion(intent: .fake())
+        // When
         clock.milliseconds = 200
         sut.trackSuccessfulCashPayment(order: order)
+        // Then
         #expect(try timingProperties()["pos_time_since_payment_confirmed_ms"] == nil)
+        // When
         clock.milliseconds = 250
         succeed(sut)
+        // Then
         #expect(try timingProperties()["pos_time_since_payment_confirmed_ms"] as? Int == 100)
     }
 
     @Test func test_cash_completion_when_checkout_changes_during_async_payment_then_reads_fresh_snapshot() async throws {
+        // Given
         let sut = makeTracker()
         sut.trackCheckoutTapped()
         let handler = MockDeferredPOSCashPaymentHandler()
@@ -169,26 +186,33 @@ struct POSCheckoutTimingTests {
             sut.trackProcessingCompletion(intent: .fake())
             clock.milliseconds = 700
         }
+        // When
         try await model.collectCashPayment(changeDueAmount: nil)
+        // Then
         let cash = try timingProperties()
         #expect(cash["sync_strategy"] as? String == "remote")
         #expect(cash["pos_time_since_checkout_started_ms"] as? Int == 200)
         #expect(cash["pos_time_since_order_sync_completed_ms"] as? Int == 100)
         #expect(cash["pos_time_since_payment_confirmed_ms"] == nil)
+        // When
         clock.milliseconds = 800
         succeed(sut)
+        // Then
         #expect(try timingProperties()["pos_time_since_payment_confirmed_ms"] as? Int == 150)
     }
 
     @Test func test_new_checkout_when_previous_stages_exist_then_clears_sync_and_confirmation() throws {
+        // Given
         let sut = makeTracker()
         sut.trackCheckoutTapped()
         sut.trackOrderSyncSuccess()
         sut.trackProcessingCompletion(intent: .fake())
+        // When
         clock.milliseconds = 100
         sut.trackCheckoutTapped()
         clock.milliseconds = 150
         sut.trackPaymentFailure(with: TestError())
+        // Then
         let actual = try timingProperties()
         #expect(actual["pos_time_since_checkout_started_ms"] as? Int == 50)
         #expect(actual["pos_time_since_order_sync_completed_ms"] == nil)
@@ -197,11 +221,13 @@ struct POSCheckoutTimingTests {
 
     @Test(arguments: [false, true])
     func test_reset_when_previous_stages_exist_then_omits_all_elapsed_fields(newCustomer: Bool) throws {
+        // Given
         let sut = makeTracker()
         sut.setCatalogSyncStrategy(.localCatalog)
         sut.trackCheckoutTapped()
         sut.trackOrderSyncSuccess()
         sut.trackProcessingCompletion(intent: .fake())
+        // When
         if newCustomer {
             sut.trackCustomerInteractionStarted()
         } else {
@@ -209,14 +235,17 @@ struct POSCheckoutTimingTests {
         }
         clock.milliseconds = 150
         sut.trackPaymentFailure(with: TestError())
+        // Then
         #expect(Set(try timingProperties().keys) == ["sync_strategy"])
     }
 
     @Test func test_outcome_when_state_changes_after_preparation_then_reads_fresh_shared_snapshot() throws {
+        // Given
         let sut = makeTracker()
         sut.setCatalogSyncStrategy(.localCatalog)
         sut.trackCheckoutTapped()
         sut.prepareForCardPayment(order: order)
+        // When
         clock.milliseconds = 100
         sut.setCatalogSyncStrategy(.remote)
         sut.trackCheckoutTapped()
@@ -228,6 +257,7 @@ struct POSCheckoutTimingTests {
         sut.preflightResultReceived(.completed(MockCardReader.tapToPay(), .fake().copy(gatewayID: "woocommerce-payments")))
         clock.milliseconds = 250
         succeed(sut)
+        // Then
         let actual = try timingProperties()
         #expect(actual["sync_strategy"] as? String == "remote")
         #expect(actual["pos_time_since_checkout_started_ms"] as? Int == 150)
@@ -238,51 +268,66 @@ struct POSCheckoutTimingTests {
     }
 
     @Test func test_strategy_when_selected_source_changes_then_keeps_checkout_source_until_next_checkout() throws {
+        // Given
         let sut = makeTracker()
         sut.setCatalogSyncStrategy(.localCatalog)
         sut.trackCheckoutTapped()
+        // When
         sut.setCatalogSyncStrategy(.remote)
         sut.trackPaymentFailure(with: TestError())
+        // Then
         #expect(try timingProperties()["sync_strategy"] as? String == "local_catalog")
+        // When
         sut.trackCheckoutTapped()
         sut.trackPaymentFailure(with: TestError())
+        // Then
         #expect(try timingProperties()["sync_strategy"] as? String == "remote")
     }
 
     @Test func test_confirmation_when_no_checkout_started_then_omits_elapsed_fields() throws {
+        // Given
         let sut = makeTracker()
 
+        // When
         sut.trackProcessingCompletion(intent: .fake())
         clock.milliseconds = 50
         sut.trackPaymentFailure(with: TestError())
 
+        // Then
         #expect(Set(try timingProperties().keys) == ["sync_strategy"])
     }
 
     @Test func test_timing_when_wall_clock_changes_then_uses_only_continuous_clock() throws {
+        // Given
         let sut = makeTracker()
         clock.wallTime = 1000
         sut.trackCheckoutTapped()
 
+        // When
         clock.wallTime = -10_000
         clock.milliseconds = 123
         sut.trackPaymentFailure(with: TestError())
 
+        // Then
         #expect(try timingProperties()["pos_time_since_checkout_started_ms"] as? Int == 123)
     }
 
     @Test func test_timing_when_injected_clock_moves_backwards_then_omits_negative_duration() throws {
+        // Given
         let sut = makeTracker()
         clock.milliseconds = 100
         sut.trackCheckoutTapped()
 
+        // When
         clock.milliseconds = 50
         sut.trackPaymentFailure(with: TestError())
 
+        // Then
         #expect(try timingProperties()["pos_time_since_checkout_started_ms"] == nil)
     }
 
     @Test func test_event_snapshot_when_stage_is_missing_or_negative_then_removes_previous_value_and_preserves_zero() {
+        // Given
         let original = WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
             "order_id": 42,
             "milliseconds_since_card_tapped": "17.0",
@@ -291,12 +336,14 @@ struct POSCheckoutTimingTests {
             "pos_time_since_payment_confirmed_ms": 300
         ])
 
+        // When
         let event = WooAnalyticsEvent.PointOfSale.withCheckoutTiming(
             original, syncStrategy: .remote,
             millisecondsSinceCheckoutStarted: -1,
             millisecondsSinceOrderSyncCompleted: nil,
             millisecondsSincePaymentConfirmed: 0)
 
+        // Then
         #expect(event.statName == original.statName)
         #expect(event.properties["order_id"] as? Int == 42)
         #expect(event.properties["milliseconds_since_card_tapped"] as? String == "17.0")

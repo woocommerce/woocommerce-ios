@@ -132,6 +132,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     }
 
     func test_cancel_when_sdk_completion_is_delayed_then_clears_confirmation_before_next_collection() throws {
+        // Given
         let analytics = MockPOSAnalytics()
         var milliseconds = 0
         let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, monotonicMilliseconds: { milliseconds })
@@ -156,24 +157,30 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         XCTAssertTrue(mockPaymentOrchestrator.spyDidCallCollectPayment)
         let waitingAlert = try XCTUnwrap(alertsPresenter.spyPresentedAlertViewModels.last)
+        // When
         milliseconds = 150
         waitingAlert.didTapSecondaryButton(in: ImmediateDismissViewController())
         wait(for: [cancellationRequested], timeout: Constants.expectationTimeout)
         let complete = try XCTUnwrap(finishCancellation)
+        // Then
         milliseconds = 200
         tracker.trackPaymentFailure(with: TestError.cancellationFailed)
         XCTAssertNil(analytics.events.last?.properties["pos_time_since_payment_confirmed_ms"])
+        // When
         mockPaymentOrchestrator.spyProcessingCompletion?(.fake())
         milliseconds = 225
         tracker.trackProcessingCompletion(intent: .fake())
         milliseconds = 250
         complete(.success(()))
+        // Then
         let cancellation = try XCTUnwrap(analytics.events.last)
         XCTAssertEqual(cancellation.eventName, "card_present_collect_payment_canceled")
         XCTAssertNil(cancellation.properties["sync_strategy"])
         XCTAssertFalse(cancellation.properties.keys.contains { ($0 as? String)?.hasPrefix("pos_time_since_") == true })
+        // When
         milliseconds = 300
         tracker.trackPaymentFailure(with: TestError.cancellationFailed)
+        // Then
         XCTAssertEqual(analytics.events.last?.properties["pos_time_since_payment_confirmed_ms"] as? Int, 75)
     }
 
@@ -186,13 +193,16 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     }
 
     func test_interac_confirmation_during_cancellation_when_non_pos_then_preserves_legacy_event() throws {
+        // Given
         let provider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: provider, consent: MockAnalyticsConsent())
         let tracker = CollectOrderPaymentAnalytics(siteID: defaultSiteID, analytics: analytics,
                                                   configuration: CardPresentPaymentsConfiguration(country: .CA))
         let pending = try beginCancellationWithHeldCallback(analyticsTracker: tracker, channel: .storeManagement)
+        // When
         pending.confirm(PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))]))
         pending.finishCancellation(.failure(TestError.cancellationFailed))
+        // Then
         XCTAssertEqual(provider.receivedEvents, ["card_interac_collect_payment_success"])
         let properties = try XCTUnwrap(provider.receivedProperties.last)
         XCTAssertEqual(properties["country"] as? String, "CA")
@@ -202,6 +212,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     }
 
     func test_preflight_cancellation_when_another_collection_has_confirmed_then_preserves_confirmation() {
+        // Given
         let analytics = MockPOSAnalytics()
         var milliseconds = 0
         let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, monotonicMilliseconds: { milliseconds })
@@ -211,9 +222,11 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {}, onCompleted: {})
         tracker.trackCheckoutTapped()
         tracker.trackProcessingCompletion(intent: .fake())
+        // When
         mockPreflightController.cancelConnection(readerModel: nil, gatewayID: nil, source: .foundReader)
         milliseconds = 100
         tracker.trackPaymentFailure(with: TestError.cancellationFailed)
+        // Then
         XCTAssertEqual(analytics.events.last?.properties["pos_time_since_payment_confirmed_ms"] as? Int, 100)
     }
 
@@ -1114,6 +1127,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
 private extension CollectOrderPaymentUseCaseTests {
     func assertInteracConfirmationDuringCancellation(newerPOSConfirmation: Bool) throws {
+        // Given
         let analytics = MockPOSAnalytics()
         var milliseconds = 0
         let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, monotonicMilliseconds: { milliseconds })
@@ -1123,12 +1137,16 @@ private extension CollectOrderPaymentUseCaseTests {
             milliseconds = 200
             tracker.trackProcessingCompletion(intent: .fake())
         }
+        // When
         milliseconds = 250
         pending.confirm(PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))]))
+        // Then
         XCTAssertEqual(analytics.events.filter { $0.eventName == "card_interac_collect_payment_success" }.count, 1)
+        // When
         pending.finishCancellation(.failure(TestError.cancellationFailed))
         milliseconds = 300
         tracker.trackPaymentFailure(with: TestError.cancellationFailed)
+        // Then
         XCTAssertEqual(analytics.events.last?.properties["pos_time_since_payment_confirmed_ms"] as? Int,
                        newerPOSConfirmation ? 100 : nil)
     }

@@ -110,10 +110,13 @@ struct POSPaymentAnalyticsEventTests {
         #expect(event.properties["currency"] == nil)
     }
     @Test func test_card_cancellation_then_preserves_metadata_without_timing_properties() {
+        // Given a card-reader cancellation after three checkout taps
+        // When
         let event = WooAnalyticsEvent.PointOfSale.cardPresentCollectPaymentCanceled(
             forGatewayID: "stripe", countryCode: .CA, cardReaderModel: "WISEPAD_3",
             cancellationSource: "card_reader", checkoutTapCount: 3)
 
+        // Then
         #expect(event.statName == .collectPaymentCanceled)
         #expect(NSDictionary(dictionary: event.properties).isEqual(to: [
             "plugin_slug": "stripe",

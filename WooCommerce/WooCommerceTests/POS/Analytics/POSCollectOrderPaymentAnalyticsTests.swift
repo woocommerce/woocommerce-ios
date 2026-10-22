@@ -530,6 +530,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
     @Test(arguments: [false, true]) @MainActor
     func test_track_payment_cancelation_when_timing_stages_vary_then_preserves_metadata_without_timings(stagesReached: Bool) throws {
+        // Given
         let clock = TestClock()
         let configuration = CardPresentPaymentsConfiguration(country: .US)
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration, currentTimestamp: { clock.now })
@@ -545,8 +546,10 @@ struct POSCollectOrderPaymentAnalyticsTests {
             clock.now = 1005
         }
 
+        // When
         sut.trackPaymentCancelation(cancelationSource: .paymentWaitingForInput)
 
+        // Then
         let event = try #require(analytics.events.last)
         #expect(event.eventName == "card_present_collect_payment_canceled")
         #expect(event.properties["cancellation_source"] as? String == "payment_waiting_for_input")

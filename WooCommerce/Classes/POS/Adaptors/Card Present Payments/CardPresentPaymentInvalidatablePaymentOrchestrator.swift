@@ -11,11 +11,8 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
 
     /// POS celebrates through `POSPaymentSuccessCelebration`, which honors the payment success sound setting from POS settings.
     init(stores: StoresManager = ServiceLocator.stores,
-         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration(),
-         walletPresentationSuppression: WalletPresentationSuppressing? = nil) {
-        self.paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores,
-                                                              celebration: celebration,
-                                                              walletPresentationSuppression: walletPresentationSuppression)
+         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration()) {
+        self.paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: celebration)
     }
 
     /// Called from a task cancellation handler, which is nonisolated.

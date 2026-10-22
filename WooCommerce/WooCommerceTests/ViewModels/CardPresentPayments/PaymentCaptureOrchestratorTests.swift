@@ -22,8 +22,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         sut = PaymentCaptureOrchestrator(stores: stores,
                                          paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
                                          celebration: MockPaymentCaptureCelebration(),
-                                         pushNotesManager: pushNotesManager,
-                                         walletPresentationSuppression: MockWalletPresentationSuppression())
+                                         pushNotesManager: pushNotesManager)
     }
 
     override func tearDown() {

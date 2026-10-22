@@ -440,8 +440,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let orchestrator = PaymentCaptureOrchestrator(stores: storesManager,
                                                      paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
                                                      celebration: MockPaymentCaptureCelebration(),
-                                                     pushNotesManager: manager,
-                                                     walletPresentationSuppression: MockWalletPresentationSuppression())
+                                                     pushNotesManager: manager)
         var paymentCompleted = false
         var refreshCount = 0
         manager.foregroundNotifications.sink { _ in refreshCount += 1 }.store(in: &subscriptions)

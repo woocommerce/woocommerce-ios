@@ -91,8 +91,7 @@ private extension CardPresentPaymentInvalidatablePaymentOrchestratorTests {
     func collectPayment() async -> Result<CardPresentCapturedPaymentData, Error> {
         let sut = CardPresentPaymentInvalidatablePaymentOrchestrator(
             stores: stores,
-            celebration: POSPaymentSuccessCelebration(paymentSettings: paymentSettings, celebration: celebration),
-            walletPresentationSuppression: MockWalletPresentationSuppression())
+            celebration: POSPaymentSuccessCelebration(paymentSettings: paymentSettings, celebration: celebration))
 
         return await withCheckedContinuation { continuation in
             sut.collectPayment(for: .fake(),

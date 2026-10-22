@@ -1,5 +1,5 @@
-import Foundation
 import Yosemite
+import PassKit
 import WooFoundation
 
 /// Contains data associated with a payment that has been collected, processed, and captured.
@@ -43,7 +43,7 @@ protocol PaymentCaptureOrchestrating {
 /// Orchestrates the sequence of actions required to capture a payment:
 /// 1. Triggers the `preparingReader` alert
 /// 2. Creates the payment intent parameters
-/// 3. Prevents Wallet presentation for external readers so the merchant does not pay for the customer's purchase.
+/// 3. Controls (prevents during payment) wallet presentation: we don't want to use the merchant's Apple Pay for their customer's purchase!
 /// 4. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
 /// 5. Submit the Payment Intent to WCPay to capture a payment
 @MainActor
@@ -54,7 +54,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
 
     private let celebration: PaymentCaptureCelebrationProtocol
 
-    private let walletPresentationSuppression: WalletPresentationSuppressing
+    private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     private let stores: StoresManager
     private let pushNotesManager: PushNotesManager
@@ -62,13 +62,11 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     init(stores: StoresManager = ServiceLocator.stores,
          paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer(),
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         walletPresentationSuppression: WalletPresentationSuppressing? = nil) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.stores = stores
         self.paymentReceiptEmailParameterDeterminer = paymentReceiptEmailParameterDeterminer
         self.celebration = celebration
         self.pushNotesManager = pushNotesManager
-        self.walletPresentationSuppression = walletPresentationSuppression ?? WalletPresentationSuppression()
     }
 
     private var handlersForActivePayment: PaymentHandlers? = nil
@@ -109,10 +107,11 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                            stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
                                            channel: channel)
 
-        // External readers can trigger the merchant's Wallet. Tap to Pay uses this iPhone as the reader
-        // and does not need Wallet suppression, which can show an unnecessary system warning.
+        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+        /// reader begins to collect payment.
+        ///
         if readerType != .tapToPay {
-            walletPresentationSuppression.suppressPresentation()
+            suppressPassPresentation()
         }
 
         let paymentAction = CardPresentPaymentAction.collectPayment(
@@ -145,7 +144,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             },
             onCompletion: { [weak self] result in
                 readerEventFilter.reset()
-                self?.walletPresentationSuppression.restorePresentation()
+                self?.allowPassPresentation()
                 self?.completePaymentIntentCapture(
                     order: order,
                     captureResult: result,
@@ -194,7 +193,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             },
             onCompletion: { [weak self] result in
                 handlers.readerEventFilter.reset()
-                self?.walletPresentationSuppression.restorePresentation()
+                self?.allowPassPresentation()
                 self?.completePaymentIntentCapture(
                     order: order,
                     captureResult: result,
@@ -208,7 +207,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         handlersForActivePayment?.readerEventFilter.reset()
         let action = CardPresentPaymentAction.cancelPayment() { [weak self] result in
-            self?.walletPresentationSuppression.restorePresentation()
+            self?.allowPassPresentation()
             onCompletion(result)
         }
         stores.dispatch(action)
@@ -224,6 +223,54 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             }
         }
         stores.dispatch(action)
+    }
+}
+
+private extension PaymentCaptureOrchestrator {
+    /// Suppress wallet presentation. This requires a special entitlement from Apple:
+    /// `com.apple.developer.passkit.pass-presentation-suppression`
+    /// See Woo-*.entitlements in WooCommerce/Resources
+    ///
+    func suppressPassPresentation() {
+        /// iPads don't support NFC passes. Attempting to call `requestAutomaticPassPresentationSuppression` on them will
+        /// return 0 `notSupported`
+        ///
+        guard !UIDevice.isPad() else {
+            return
+        }
+
+        guard !PKPassLibrary.isSuppressingAutomaticPassPresentation() else {
+            return
+        }
+
+        walletSuppressionRequestToken = PKPassLibrary.requestAutomaticPassPresentationSuppression() { result in
+            guard result == .success else {
+                DDLogWarn("Automatic pass presentation suppression request failed. Reason: \(result.rawValue)")
+
+                let logProperties: [String: Any] = ["PKAutomaticPassPresentationSuppressionResult": result.rawValue]
+                ServiceLocator.crashLogging.logMessage(
+                    "Automatic pass presentation suppression request failed",
+                    properties: logProperties,
+                    level: .warning
+                )
+                return
+            }
+        }
+    }
+
+    /// Restore wallet presentation.
+    func allowPassPresentation() {
+        /// iPads don't have passes (wallets) to present
+        ///
+        guard !UIDevice.isPad() else {
+            return
+        }
+
+        guard let walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
+            return
+        }
+
+        PKPassLibrary.endAutomaticPassPresentationSuppression(withRequestToken: walletSuppressionRequestToken)
     }
 }
 

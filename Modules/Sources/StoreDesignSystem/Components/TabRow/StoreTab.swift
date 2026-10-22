@@ -19,3 +19,5 @@ public struct StoreTab<Value: Hashable> {
         self.icon = icon
     }
 }
+
+extension StoreTab: Sendable where Value: Sendable {}

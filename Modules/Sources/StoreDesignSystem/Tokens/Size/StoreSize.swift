@@ -22,6 +22,6 @@ public enum StoreSize {
     /// also sets the bar's row height. Larger than `minimumTapTarget` by design, not by accident.
     public static let topAppBarControlSize: CGFloat = 48
 
-    /// The height of a `StoreTabRow` (60 pt): the design's tab block, which also sets the row height.
+    /// The minimum height of a `StoreTabRow` (60 pt): the design's tab block at the default text size. The row grows with Dynamic Type.
     public static let tabRowHeight: CGFloat = 60
 }

@@ -50,17 +50,28 @@ public struct StoreTabRow<Value: Hashable>: View {
         tabs.firstIndex { $0.value == selection }
     }
 
+    /// Resolved once for the row: in a mixed row, text-only tabs keep the icon layout and reserve
+    /// the icon's space so every label sits at the same height.
+    private var rowHasIcons: Bool {
+        tabs.contains { $0.icon != nil }
+    }
+
     /// A full-height, full-width tab. The icon is decorative: the title alone is the VoiceOver label.
     private func tabButton(_ tab: StoreTab<Value>, isSelected: Bool, position: Int) -> some View {
-        let layout = StoreTabRowLayout(hasIcon: tab.icon != nil)
+        let layout = StoreTabRowLayout(hasIcon: rowHasIcons)
         return Button {
             selection = tab.value
         } label: {
             // s3 rather than the design's s4: the label's line box adds ~4 pt above the cap height
             // that the cap-trimmed design doesn't have, so s3 lands the cap 12 pt under the icon.
             VStack(spacing: StoreSpacing.s3) {
-                tab.icon?.image(size: Constants.iconSize)
-                    .accessibilityHidden(true)
+                if let icon = tab.icon {
+                    icon.image(size: Constants.iconSize)
+                        .accessibilityHidden(true)
+                } else if rowHasIcons {
+                    Color.clear
+                        .frame(width: Constants.iconSize.value, height: Constants.iconSize.value)
+                }
                 Text(tab.title)
                     .storeTextStyle(Constants.textStyle)
                     .lineLimit(1)

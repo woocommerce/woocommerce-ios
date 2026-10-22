@@ -11,8 +11,8 @@ public struct StoreTab<Value: Hashable> {
     /// - Parameters:
     ///   - value: The tab's identity, matched against the row's `selection`.
     ///   - title: The tab's label, kept to a single line.
-    ///   - icon: An optional icon shown above the label. Give every tab in a row an icon or none,
-    ///     so the labels line up.
+    ///   - icon: An optional icon shown above the label. Prefer giving every tab in a row an icon or
+    ///     none; in a mixed row, text-only tabs reserve the icon's space so the labels still line up.
     public init(_ value: Value, title: String, icon: StoreIconImage? = nil) {
         self.value = value
         self.title = title

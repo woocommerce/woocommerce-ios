@@ -12,15 +12,14 @@ struct POSCartScanToPayVerifier: POSScanToPayVerifying {
     }
 
     /// Splits the classification logic so it's unit-testable without a network round trip.
-    /// `.processing` and `.completed` cover the standard "paid" terminal states; `.onHold`
-    /// is included because some gateways (Klarna for instance) park orders there post-payment
-    /// pending fulfillment authorization.
+    /// `.processing` and `.completed` indicate payment received. An on-hold order can still
+    /// be awaiting an offline payment, so it requires a paid date before reporting success.
     static func classify(order: Order) -> POSScanToPayVerificationResult {
         if order.datePaid != nil {
             return .paid(order)
         }
         switch order.status {
-        case .processing, .completed, .onHold:
+        case .processing, .completed:
             return .paid(order)
         default:
             return .pending

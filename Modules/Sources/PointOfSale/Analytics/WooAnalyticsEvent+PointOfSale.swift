@@ -347,20 +347,12 @@ extension WooAnalyticsEvent {
                                                              countryCode: CountryCode,
                                                              cardReaderModel: String?,
                                                              cancellationSource: String,
-                                                             millisecondsSinceCustomerIteractionStarted: Double,
-                                                             millisecondsSinceOrderSyncSuccess: Double,
-                                                             millisecondsSinceReaderReadyToCollect: Double,
-                                                             millisecondsSinceCardTapped: Double,
                                                              checkoutTapCount: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled, properties: [
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,
                 Key.gatewayID: safeGatewayID(for: forGatewayID),
                 Key.cancellationSource: cancellationSource,
-                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
-                Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
-                Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
-                Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
                 Key.checkoutTapCount: "\(checkoutTapCount)"
             ])
         }

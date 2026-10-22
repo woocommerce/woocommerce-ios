@@ -528,17 +528,35 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("payment_method_type", in: "card_present_collect_payment_failed") == nil)
     }
 
-    @Test @MainActor func test_track_payment_cancelation_then_tracks_event_with_cancellation_source() {
-        // Given
+    @Test(arguments: [false, true]) @MainActor
+    func test_track_payment_cancelation_when_timing_stages_vary_then_preserves_metadata_without_timings(stagesReached: Bool) throws {
+        let clock = TestClock()
         let configuration = CardPresentPaymentsConfiguration(country: .US)
-        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration, currentTimestamp: { clock.now })
+        if stagesReached {
+            clock.now = 1000
+            sut.trackCustomerInteractionStarted()
+            sut.trackCheckoutTapped()
+            sut.trackOrderSyncSuccess()
+            sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
+            sut.trackCardReaderReady()
+            sut.trackCardReaderTapped()
+            sut.trackProcessingCompletion(intent: .fake())
+            clock.now = 1005
+        }
 
-        // When
         sut.trackPaymentCancelation(cancelationSource: .paymentWaitingForInput)
 
-        // Then
-        #expect(property("cancellation_source", in: "card_present_collect_payment_canceled") == "payment_waiting_for_input")
-        #expect(property("country", in: "card_present_collect_payment_canceled") == "US")
+        let event = try #require(analytics.events.last)
+        #expect(event.eventName == "card_present_collect_payment_canceled")
+        #expect(event.properties["cancellation_source"] as? String == "payment_waiting_for_input")
+        #expect(event.properties["country"] as? String == "US")
+        #expect(event.properties["checkout_tap_count"] as? String == (stagesReached ? "1" : "0"))
+        #expect(event.properties["sync_strategy"] == nil)
+        #expect(!event.properties.keys.contains {
+            guard let key = $0 as? String else { return false }
+            return key.hasPrefix("milliseconds_since_") || key.hasPrefix("pos_time_since_")
+        })
     }
 
     @Test @MainActor func test_track_payment_failure_when_timing_markers_are_set_then_reports_correct_elapsed_milliseconds() {

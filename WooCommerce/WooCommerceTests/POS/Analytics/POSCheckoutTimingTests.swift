@@ -74,6 +74,10 @@ struct POSCheckoutTimingTests {
             expected["sync_strategy"] = fixture.strategy.rawValue
         }
         #expect(NSDictionary(dictionary: actual).isEqual(to: expected))
+        if fixture == .cancelAfterReaderReady {
+            let cancellation = try #require(analytics.events.last)
+            #expect(!cancellation.properties.keys.contains { ($0 as? String)?.hasPrefix("milliseconds_since_") == true })
+        }
         for (key, value) in actual where key != "sync_strategy" {
             #expect(value is Int, "\(key) must be an integer")
         }

@@ -195,10 +195,6 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             countryCode: configuration.countryCode,
             cardReaderModel: connectedReaderModel,
             cancellationSource: cancelationSource.rawValue,
-            millisecondsSinceCustomerIteractionStarted: calculateElapsedTimeInMilliseconds(since: customerInteractionStarted),
-            millisecondsSinceOrderSyncSuccess: calculateElapsedTimeInMilliseconds(since: orderSync),
-            millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
-            millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
             checkoutTapCount: checkoutTapCount
         ))
 

@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 import Fakes
 import Yosemite
@@ -107,5 +108,19 @@ struct POSPaymentAnalyticsEventTests {
         // Then
         #expect(event.properties["amount_normalized"] == nil)
         #expect(event.properties["currency"] == nil)
+    }
+    @Test func test_card_cancellation_then_preserves_metadata_without_timing_properties() {
+        let event = WooAnalyticsEvent.PointOfSale.cardPresentCollectPaymentCanceled(
+            forGatewayID: "stripe", countryCode: .CA, cardReaderModel: "WISEPAD_3",
+            cancellationSource: "card_reader", checkoutTapCount: 3)
+
+        #expect(event.statName == .collectPaymentCanceled)
+        #expect(NSDictionary(dictionary: event.properties).isEqual(to: [
+            "plugin_slug": "stripe",
+            "country": "CA",
+            "card_reader_model": "WISEPAD_3",
+            "cancellation_source": "card_reader",
+            "checkout_tap_count": "3"
+        ]))
     }
 }

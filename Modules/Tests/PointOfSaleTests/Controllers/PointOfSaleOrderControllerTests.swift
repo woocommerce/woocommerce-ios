@@ -89,8 +89,10 @@ struct PointOfSaleOrderControllerTests {
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics())
-        let oldOrder = Order.fake().copy(orderID: 1, total: "10.00")
-        let newOrder = Order.fake().copy(orderID: 2, total: "20.00")
+        let oldOrder = Order.fake().copy(orderID: 1, currency: "USD", total: "10.00",
+                                             items: [.fake().copy(subtotal: "10.00", total: "10.00")])
+        let newOrder = Order.fake().copy(orderID: 2, currency: "USD", total: "20.00",
+                                             items: [.fake().copy(subtotal: "20.00", total: "20.00")])
         mockOrderService.onSyncOrderCalled = {
             mockOrderService.onSyncOrderCalled = nil
             // When: return to editing and check out the changed cart before A finishes.
@@ -123,7 +125,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics())
-        let newOrder = Order.fake().copy(orderID: 2, total: "20.00")
+        let newOrder = Order.fake().copy(orderID: 2, currency: "USD", total: "20.00",
+                                             items: [.fake().copy(subtotal: "20.00", total: "20.00")])
         mockOrderService.onSyncOrderCalled = {
             mockOrderService.onSyncOrderCalled = nil
             // When
@@ -160,6 +163,33 @@ struct PointOfSaleOrderControllerTests {
         #expect(sut.orderState == .idle)
         await #expect(throws: PointOfSaleOrderController.PointOfSaleOrderControllerError.noOrder) {
             try await sut.reloadCurrentOrder()
+        }
+    }
+
+    @Test func test_cancelSync_when_previous_order_loaded_then_restores_unchanged_cart_deduplication() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let item = OrderItem.fake().copy(quantity: 1)
+        let cart = Cart(purchasableItems: [makeItem(orderItemsToMatch: [item])])
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 1, items: [item])
+        await sut.syncOrder(for: cart, retryHandler: {})
+        let previousState = sut.orderState
+        mockOrderService.onSyncOrderCalled = { sut.cancelSync() }
+
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 2)]), retryHandler: {})
+        mockOrderService.onSyncOrderCalled = nil
+        let result = await sut.syncOrder(for: cart, retryHandler: {})
+
+        // Then
+        #expect(sut.orderState == previousState)
+        #expect(mockOrderService.syncOrderCallCount == 2)
+        guard case .success(.orderNotChanged) = result else {
+            Issue.record("The unchanged cart must still use its loaded order")
+            return
         }
     }
 

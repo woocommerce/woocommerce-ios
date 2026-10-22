@@ -3,7 +3,7 @@
 
 26.0
 -----
-- [*] In-Person Payments: Prevented a duplicate new-order notice after collecting payment in the app. [https://github.com/woocommerce/woocommerce-ios/pull/18130]
+- [*] In-Person Payments: Prevented a duplicate new-order notice after collecting a card payment in the app. [https://github.com/woocommerce/woocommerce-ios/pull/18130]
 - [*] In-Person Payments: After entering a missing store address in Safari, the card reader connection retries when you return to the app. [https://github.com/woocommerce/woocommerce-ios/pull/18126]
 - [**] Products: Add and edit attributes on all product types. Each attribute has "Visible on product page" and "Used for variations" settings, so you can add attributes that only show on the product page. [https://github.com/woocommerce/woocommerce-ios/pull/18116]
 - [*] Products: Editing a variation attribute keeps its "Visible on product page" setting. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]

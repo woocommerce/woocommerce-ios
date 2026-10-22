@@ -55,6 +55,9 @@ extension WooAnalyticsEvent {
             static let pageNumber = "page_number"
             static let reason = "reason"
             static let syncStrategy = "sync_strategy"
+            static let posTimeSinceCheckoutStarted = "pos_time_since_checkout_started_ms"
+            static let posTimeSinceOrderSyncCompleted = "pos_time_since_order_sync_completed_ms"
+            static let posTimeSincePaymentConfirmed = "pos_time_since_payment_confirmed_ms"
             static let searchMethod = "search_method"
             static let resultPosition = "result_position"
             static let deltaFromToday = "delta_from_today"
@@ -271,9 +274,9 @@ extension WooAnalyticsEvent {
             var properties = event.properties
             properties[Key.syncStrategy] = syncStrategy.rawValue
             let timings = [
-                "pos_time_since_checkout_started_ms": millisecondsSinceCheckoutStarted,
-                "pos_time_since_order_sync_completed_ms": millisecondsSinceOrderSyncCompleted,
-                "pos_time_since_payment_confirmed_ms": millisecondsSincePaymentConfirmed
+                Key.posTimeSinceCheckoutStarted: millisecondsSinceCheckoutStarted,
+                Key.posTimeSinceOrderSyncCompleted: millisecondsSinceOrderSyncCompleted,
+                Key.posTimeSincePaymentConfirmed: millisecondsSincePaymentConfirmed
             ]
             for (key, value) in timings {
                 if let value, value >= 0 {

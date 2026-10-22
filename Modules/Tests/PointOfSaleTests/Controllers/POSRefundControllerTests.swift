@@ -84,11 +84,15 @@ final class POSRefundControllerTests {
             refundSubmissionProcessor.onPrepareRefundCalled = { order in
                 guard order.lineItems.first?.itemID == 1 else { return }
                 await withCheckedContinuation { continuation = $0; fire() }
-                if fails { throw TestError.prepareRefundFailed }
+                if fails {
+                    throw TestError.prepareRefundFailed
+                }
             }
             firstTask = Task { await sut.startRefundFlow(for: firstOrder) }
         }
-        if !sameOrder { sut.reset() }
+        if !sameOrder {
+            sut.reset()
+        }
         _ = await sut.startRefundFlow(for: secondOrder)
 
         // When the older request returns, even if its service ignores cancellation
@@ -119,7 +123,11 @@ final class POSRefundControllerTests {
         }
 
         // When the flow is dismissed or the selected order is reset before its response arrives
-        if resetFlow { sut.reset() } else { sut.clearSelection() }
+        if resetFlow {
+            sut.reset()
+        } else {
+            sut.clearSelection()
+        }
         continuation?.resume()
         _ = await preparationTask?.value
 

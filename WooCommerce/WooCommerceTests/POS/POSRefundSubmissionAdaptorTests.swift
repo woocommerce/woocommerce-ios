@@ -27,15 +27,21 @@ struct POSRefundSubmissionAdaptorTests {
                                                                                      subtotal: "20.00", total: "20.00", totalTax: "2.00")])
         var pendingLoad: CheckedContinuation<Order, Error>?
         var loads = 0
-        sut.orderService.onLoadOrder = { _ in
-            loads += 1
-            if loads == 1 {
-                return try await withCheckedThrowingContinuation { pendingLoad = $0 }
+        var firstTask: Task<POSRefundPreparation, Error>?
+        await withCheckedContinuation { (started: CheckedContinuation<Void, Never>) in
+            sut.orderService.onLoadOrder = { _ in
+                loads += 1
+                if loads == 1 {
+                    return try await withCheckedThrowingContinuation {
+                        pendingLoad = $0
+                        started.resume()
+                    }
+                }
+                return latestOrder
             }
-            return latestOrder
+            firstTask = Task { try await sut.adaptor.prepareRefund(for: posOrder()) }
         }
-        let oldTask = Task { try await sut.adaptor.prepareRefund(for: posOrder()) }
-        while pendingLoad == nil { await Task.yield() }
+        let oldTask = try #require(firstTask)
         let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
         sut.adaptor.stateModel.state = .submitting
 

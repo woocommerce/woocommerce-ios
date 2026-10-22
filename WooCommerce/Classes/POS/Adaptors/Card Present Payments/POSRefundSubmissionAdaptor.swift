@@ -310,14 +310,18 @@ private extension POSRefundSubmissionAdaptor {
         // Prepared contexts hold the full order, charge, and refundable items, so they are dropped
         // alongside the rest of the refund's state instead of accumulating for the whole session.
         preparedContexts[orderID] = nil
-        if preparationRequest?.orderID == orderID { preparationRequest = nil }
+        if preparationRequest?.orderID == orderID {
+            preparationRequest = nil
+        }
     }
 
     func removePreloadedRefunds(except orderID: Int64) {
         preloadedRefundSnapshots = preloadedRefundSnapshots.filter { $0.key == orderID }
         serverPreviewTotals = serverPreviewTotals.filter { $0.key.orderID == orderID }
         preparedContexts = preparedContexts.filter { $0.key == orderID }
-        if preparationRequest?.orderID != orderID { preparationRequest = nil }
+        if preparationRequest?.orderID != orderID {
+            preparationRequest = nil
+        }
         for preloadedOrderID in Array(preloadTasks.keys) where preloadedOrderID != orderID {
             removePreloadedRefund(for: preloadedOrderID)
         }

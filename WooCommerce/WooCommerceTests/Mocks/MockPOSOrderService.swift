@@ -11,7 +11,9 @@ final class MockPOSOrderService: POSOrderServiceProtocol {
 
     func loadOrder(orderID: Int64) async throws -> Order {
         spyLoadOrderID = orderID
-        if let onLoadOrder { return try await onLoadOrder(orderID) }
+        if let onLoadOrder {
+            return try await onLoadOrder(orderID)
+        }
         guard let order = orderToReturn else {
             throw MockPOSOrderServiceError.missingStub
         }

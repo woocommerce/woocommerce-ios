@@ -1,7 +1,7 @@
 import Codegen
 
 /// Represents product bundle stats for a specific period.
-public struct ProductBundleStatsInterval: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsInterval {
+public struct ProductBundleStatsInterval: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsInterval, Sendable {
     public let interval: String
     /// Interval start date string in the site time zone.
     public let dateStart: String

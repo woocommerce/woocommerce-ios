@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// Represents product bundle stats over a specific period.
-public struct ProductBundleStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStats {
+public struct ProductBundleStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStats, Sendable {
     public let siteID: Int64
     public let granularity: StatsGranularityV4
     public let totals: ProductBundleStatsTotals

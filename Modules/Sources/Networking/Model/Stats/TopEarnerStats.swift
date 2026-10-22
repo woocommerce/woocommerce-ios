@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents Top Earner (aka top performer) stats over a specific period.
 ///
-public struct TopEarnerStats: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct TopEarnerStats: Decodable, GeneratedFakeable, GeneratedCopiable, Sendable {
     public let siteID: Int64
     public let date: String
     public let granularity: StatGranularity

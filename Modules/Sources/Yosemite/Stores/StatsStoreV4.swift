@@ -13,7 +13,10 @@ public final class StatsStoreV4: Store {
     private let productBundleStatsRemote: ProductBundleStatsRemote
     private let giftCardStatsRemote: GiftCardStatsRemote
 
-    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    private let statsStorage: StatsStorage
+
+    public init(dispatcher: Dispatcher, storageManager: any StorageManagerType & Sendable, network: Network) {
+        self.statsStorage = StatsStorage(storageManager: storageManager)
         self.siteStatsRemote = SiteStatsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
@@ -149,7 +152,7 @@ public final class StatsStoreV4: Store {
 private extension StatsStoreV4 {
     /// Deletes all of the Stats data.
     ///
-    func resetStoredStats(onCompletion: @escaping () -> Void) {
+    func resetStoredStats(onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ storage in
             storage.deleteAllObjects(ofType: Storage.OrderStatsV4.self)
             storage.deleteAllObjects(ofType: Storage.OrderStatsV4Totals.self)
@@ -169,7 +172,7 @@ private extension StatsStoreV4 {
                        latestDateToInclude: Date,
                        quantity: Int,
                        forceRefresh: Bool,
-                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                       onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
         orderStatsRemote.loadOrderStats(for: siteID,
                                         unit: timeRange.intervalGranularity,
                                         timeZone: timeZone,
@@ -214,7 +217,7 @@ private extension StatsStoreV4 {
                                 siteTimezone: TimeZone,
                                 timeRange: StatsTimeRangeV4,
                                 latestDateToInclude: Date,
-                                onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                                onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
 
         let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: siteTimezone)
 
@@ -243,7 +246,7 @@ private extension StatsStoreV4 {
                                   quantity: Int,
                                   latestDateToInclude: Date,
                                   saveInStorage: Bool,
-                                  onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
+                                  onCompletion: @escaping @Sendable (Result<SiteSummaryStats, Error>) -> Void) {
         if quantity == 1 {
             siteStatsRemote.loadSiteSummaryStats(for: siteID,
                                                  siteTimezone: siteTimezone,
@@ -300,18 +303,21 @@ private extension StatsStoreV4 {
                                 quantity: Int,
                                 forceRefresh: Bool,
                                 saveInStorage: Bool,
-                                onCompletion: @escaping (Result<TopEarnerStats, Error>) -> Void) {
-        Task { @MainActor in
+                                onCompletion: @escaping @Sendable (Result<TopEarnerStats, Error>) -> Void) {
+        Task { @MainActor [productsReportsRemote, statsStorage] in
             do {
-                let topEarnersStats = try await loadTopEarnerStats(siteID: siteID,
-                                                                   timeRange: timeRange,
-                                                                   timeZone: timeZone,
-                                                                   earliestDateToInclude: earliestDateToInclude,
-                                                                   latestDateToInclude: latestDateToInclude,
-                                                                   quantity: quantity,
-                                                                   forceRefresh: forceRefresh)
+                let productsReport = try await productsReportsRemote.loadTopProductsReport(for: siteID,
+                                                                                           timeZone: timeZone,
+                                                                                           earliestDateToInclude: earliestDateToInclude,
+                                                                                           latestDateToInclude: latestDateToInclude,
+                                                                                           quantity: quantity)
+                let topEarnersStats = Self.convertProductsReportIntoTopEarners(siteID: siteID,
+                                                                              timeRange: timeRange,
+                                                                              date: latestDateToInclude,
+                                                                              productsReport: productsReport,
+                                                                              quantity: quantity)
                 if saveInStorage {
-                    upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats) {
+                    statsStorage.upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats) {
                         onCompletion(.success(topEarnersStats))
                     }
                 } else {
@@ -323,26 +329,6 @@ private extension StatsStoreV4 {
         }
     }
 
-    @MainActor
-    func loadTopEarnerStats(siteID: Int64,
-                            timeRange: StatsTimeRangeV4,
-                            timeZone: TimeZone,
-                            earliestDateToInclude: Date,
-                            latestDateToInclude: Date,
-                            quantity: Int,
-                            forceRefresh: Bool) async throws -> TopEarnerStats {
-        let productsReport = try await productsReportsRemote.loadTopProductsReport(for: siteID,
-                                                                                   timeZone: timeZone,
-                                                                                   earliestDateToInclude: earliestDateToInclude,
-                                                                                   latestDateToInclude: latestDateToInclude,
-                                                                                   quantity: quantity)
-        return convertProductsReportIntoTopEarners(siteID: siteID,
-                                                   timeRange: timeRange,
-                                                   date: latestDateToInclude,
-                                                   productsReport: productsReport,
-                                                   quantity: quantity)
-    }
-
     /// Retrieves the product bundle stats for the provided siteID, and time range, without saving them to the Storage layer.
     ///
     func retrieveProductBundleStats(siteID: Int64,
@@ -352,8 +338,8 @@ private extension StatsStoreV4 {
                                     latestDateToInclude: Date,
                                     quantity: Int,
                                     forceRefresh: Bool,
-                                    onCompletion: @escaping (Result<ProductBundleStats, Error>) -> Void) {
-        Task { @MainActor in
+                                    onCompletion: @escaping @Sendable (Result<ProductBundleStats, Error>) -> Void) {
+        Task { @MainActor [productBundleStatsRemote] in
             do {
                 let bundleStats = try await productBundleStatsRemote.loadProductBundleStats(for: siteID,
                                                                                             unit: unit,
@@ -376,8 +362,8 @@ private extension StatsStoreV4 {
                                    earliestDateToInclude: Date,
                                    latestDateToInclude: Date,
                                    quantity: Int,
-                                   onCompletion: @escaping (Result<[ProductsReportItem], Error>) -> Void) {
-        Task { @MainActor in
+                                   onCompletion: @escaping @Sendable (Result<[ProductsReportItem], Error>) -> Void) {
+        Task { @MainActor [productBundleStatsRemote] in
             do {
                 let topBundles = try await productBundleStatsRemote.loadTopProductBundlesReport(for: siteID,
                                                                                                 timeZone: timeZone,
@@ -400,8 +386,8 @@ private extension StatsStoreV4 {
                                    latestDateToInclude: Date,
                                    quantity: Int,
                                    forceRefresh: Bool,
-                                   onCompletion: @escaping (Result<GiftCardStats, Error>) -> Void) {
-        Task { @MainActor in
+                                   onCompletion: @escaping @Sendable (Result<GiftCardStats, Error>) -> Void) {
+        Task { @MainActor [giftCardStatsRemote] in
             do {
                 let giftCardStats = try await giftCardStatsRemote.loadUsedGiftCardStats(for: siteID,
                                                                                         unit: unit,
@@ -419,12 +405,45 @@ private extension StatsStoreV4 {
 }
 
 
+// The persistence owner can cross into tasks; the dispatcher-owned store cannot.
+private extension StatsStoreV4 {
+    final class StatsStorage: Sendable {
+        let storageManager: any StorageManagerType & Sendable
+
+        init(storageManager: any StorageManagerType & Sendable) {
+            self.storageManager = storageManager
+        }
+    }
+}
+
+// MARK: - Storage entry points
+
+extension StatsStoreV4 {
+    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: (@Sendable () -> Void)?) {
+        statsStorage.upsertStoredOrderStats(readOnlyStats: readOnlyStats, timeRange: timeRange, onCompletion: onCompletion)
+    }
+
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats,
+                                    timeRange: StatsTimeRangeV4,
+                                    onCompletion: (@Sendable () -> Void)? = nil) {
+        statsStorage.upsertStoredSiteVisitStats(readOnlyStats: readOnlyStats, timeRange: timeRange, onCompletion: onCompletion)
+    }
+
+    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (@Sendable () -> Void)? = nil) {
+        statsStorage.upsertStoredTopEarnerStats(readOnlyStats: readOnlyStats, onCompletion: onCompletion)
+    }
+
+    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: (@Sendable () -> Void)? = nil) {
+        statsStorage.upsertStoredSiteSummaryStats(readOnlyStats: readOnlyStats, onCompletion: onCompletion)
+    }
+}
+
 // MARK: - Persistence
 //
-extension StatsStoreV4 {
+private extension StatsStoreV4.StatsStorage {
     /// Updates (OR Inserts) the specified ReadOnly OrderStatsV4 Entity into the Storage Layer.
     ///
-    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: (() -> Void)?) {
+    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: (@Sendable () -> Void)?) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             let storageOrderStats = storage.loadOrderStatsV4(siteID: readOnlyStats.siteID, timeRange: timeRange.rawValue) ??
@@ -477,10 +496,10 @@ extension StatsStoreV4 {
 
 // MARK: Site visit stats
 //
-extension StatsStoreV4 {
+private extension StatsStoreV4.StatsStorage {
     /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: (() -> Void)? = nil) {
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: (@Sendable () -> Void)? = nil) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             let storageSiteVisitStats = storage.loadSiteVisitStats(
@@ -512,10 +531,10 @@ extension StatsStoreV4 {
     }
 }
 
-extension StatsStoreV4 {
+private extension StatsStoreV4.StatsStorage {
     /// Updates (OR Inserts) the specified ReadOnly TopEarnerStats Entity into the Storage Layer.
     ///
-    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (() -> Void)? = nil) {
+    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (@Sendable () -> Void)? = nil) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
@@ -548,10 +567,10 @@ extension StatsStoreV4 {
 }
 
 // MARK: Site summary stats
-extension StatsStoreV4 {
+private extension StatsStoreV4.StatsStorage {
     /// Updates (OR Inserts) the specified ReadOnly SiteSummaryStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: (() -> Void)? = nil) {
+    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: (@Sendable () -> Void)? = nil) {
         storageManager.performAndSave({ storage in
             let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue)
                 ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
@@ -566,11 +585,11 @@ private extension StatsStoreV4 {
 
     /// Converts the `[ProductsReportItem]` list in a Products analytics report into `TopEarnerStats`
     ///
-    func convertProductsReportIntoTopEarners(siteID: Int64,
-                                             timeRange: StatsTimeRangeV4,
-                                             date: Date,
-                                             productsReport: [ProductsReportItem],
-                                             quantity: Int) -> TopEarnerStats {
+    static func convertProductsReportIntoTopEarners(siteID: Int64,
+                                                    timeRange: StatsTimeRangeV4,
+                                                    date: Date,
+                                                    productsReport: [ProductsReportItem],
+                                                    quantity: Int) -> TopEarnerStats {
         let statsDate = Self.buildDateString(from: date, timeRange: timeRange)
         let statsItems = productsReport.map { product in
             TopEarnerStatsItem(productID: product.productID,

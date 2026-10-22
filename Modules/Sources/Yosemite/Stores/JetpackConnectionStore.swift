@@ -104,7 +104,7 @@ private extension JetpackConnectionStore {
     }
 
     func fetchJetpackConnectionURL(authenticatedWithWPCom: Bool,
-                                   completion: @escaping (Result<URL, Error>) -> Void) {
+                                   completion: @escaping @Sendable (Result<URL, Error>) -> Void) {
         guard let jetpackConnectionRemote else {
             completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
             return

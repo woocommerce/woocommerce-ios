@@ -2,6 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsUnavailable: View {
     let analyticReason: String
+    let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -14,12 +15,24 @@ struct InPersonPaymentsUnavailable: View {
             supportLink: false,
             learnMore: true,
             analyticReason: analyticReason,
-            plugin: nil
+            plugin: nil,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
+                text: Localization.primaryButton,
+                analyticReason: analyticReason,
+                plugin: nil,
+                action: onRefresh
+            )
         )
     }
 }
 
 private enum Localization {
+    static let primaryButton = NSLocalizedString(
+        "cardPresentPayments.onboarding.unavailable.retryButton",
+        value: "Retry",
+        comment: "Button to recheck In-Person Payments requirements when checking payment eligibility failed."
+    )
+
     static let unavailable = NSLocalizedString(
         "Unable to verify In‑Person Payments for this store",
         comment: """
@@ -41,6 +54,6 @@ private enum Localization {
 
 struct InPersonPaymentsUnavailable_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsUnavailable(analyticReason: "")
+        InPersonPaymentsUnavailable(analyticReason: "", onRefresh: {})
     }
 }

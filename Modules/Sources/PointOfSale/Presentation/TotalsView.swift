@@ -609,22 +609,8 @@ private struct ShimmeringLineView: View {
     let height: CGFloat
 
     var body: some View {
-        if let width {
-            Color.posOnSurfaceVariantLowest
-                .frame(width: width, height: height)
-                .fixedSize(horizontal: true, vertical: true)
-                .shimmering(active: true)
-                .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
-                .geometryGroup()
-        } else {
-            Color.posOnSurfaceVariantLowest
-                .frame(maxWidth: .infinity)
-                .frame(height: height)
-                .shimmering(active: true)
-                .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
-                .padding(.horizontal, POSPadding.medium)
-                .geometryGroup()
-        }
+        POSPlaceholderBar(width: width, height: height, cornerRadius: TotalsView.Constants.shimmeringCornerRadius)
+            .padding(.horizontal, width == nil ? POSPadding.medium : 0)
     }
 }
 

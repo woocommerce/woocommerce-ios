@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class ProductSearchScreen: ScreenObject {
 
     private let searchTextFieldGetter: (XCUIApplication) -> XCUIElement = {
@@ -39,11 +40,7 @@ public final class ProductSearchScreen: ScreenObject {
 
         let productsTableView = app.tables.matching(identifier: updatedSearchResultsID)
         productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.name), expectedCount: 1)
-        let productName = expectedProduct.name
-        let stockStatus = expectedProduct.stock_status
-        let hasStockStatus = MainActor.assumeIsolated {
-            productsTableView.cells[productName].staticTexts["product-stock-status-\(stockStatus)"].exists
-        }
-        XCTAssertTrue(hasStockStatus)
+        let stockStatusLabel = productsTableView.cells[expectedProduct.name].staticTexts["product-stock-status-\(expectedProduct.stock_status)"]
+        XCTAssertTrue(stockStatusLabel.exists)
     }
 }

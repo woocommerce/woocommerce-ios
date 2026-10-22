@@ -2,6 +2,7 @@ import ScreenObject
 import XCTest
 import XCUITestHelpers
 
+@MainActor
 public final class LoginPasswordScreen: ScreenObject {
 
     private let passwordFieldGetter: (XCUIApplication) -> XCUIElement = {

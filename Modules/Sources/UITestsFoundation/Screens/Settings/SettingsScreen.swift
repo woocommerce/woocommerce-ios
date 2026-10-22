@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class SettingsScreen: ScreenObject {
     private let settingsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
         $0.tables["settings-screen"]

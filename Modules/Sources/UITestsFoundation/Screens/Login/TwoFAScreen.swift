@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 public final class TwoFAScreen {
 
     private let twoFAFieldGetter: (XCUIApplication) -> XCUIElement = {

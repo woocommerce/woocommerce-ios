@@ -4,6 +4,7 @@ import WooFoundation
 struct InPersonPaymentsCountryNotSupported: View {
     let countryCode: CountryCode
     let analyticReason: String
+    let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -16,7 +17,13 @@ struct InPersonPaymentsCountryNotSupported: View {
             supportLink: true,
             learnMore: true,
             analyticReason: analyticReason,
-            plugin: nil
+            plugin: nil,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
+                text: Localization.primaryButton,
+                analyticReason: analyticReason,
+                plugin: nil,
+                action: onRefresh
+            )
         )
     }
 
@@ -30,6 +37,12 @@ struct InPersonPaymentsCountryNotSupported: View {
 }
 
 private enum Localization {
+    static let primaryButton = NSLocalizedString(
+        "cardPresentPayments.onboarding.countryNotSupported.refreshButton",
+        value: "Refresh",
+        comment: "Button to recheck In-Person Payments requirements when the store country is not supported."
+    )
+
     static let title = NSLocalizedString(
         "We don’t support In‑Person Payments in %1$@",
         comment: """
@@ -57,8 +70,8 @@ private enum Localization {
 struct InPersonPaymentsCountryNotSupported_Previews: PreviewProvider {
     static var previews: some View {
         // Valid country code
-        InPersonPaymentsCountryNotSupported(countryCode: .ES, analyticReason: "")
+        InPersonPaymentsCountryNotSupported(countryCode: .ES, analyticReason: "", onRefresh: {})
         // Invalid country code
-        InPersonPaymentsCountryNotSupported(countryCode: .unknown, analyticReason: "")
+        InPersonPaymentsCountryNotSupported(countryCode: .unknown, analyticReason: "", onRefresh: {})
     }
 }

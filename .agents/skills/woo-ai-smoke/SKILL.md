@@ -306,6 +306,7 @@ struct SmokeRun {
 
 ```bash
 xcodebuild -workspace WooCommerce.xcworkspace \
+  -derivedDataPath "$PWD/DerivedData" \
   -scheme WooAIAssistant \
   -destination 'platform=iOS Simulator,name=iPhone 17' \
   test -only-testing:"WooAIAssistantTests/SmokeRun" 2>&1 \

@@ -33,6 +33,18 @@ Scripts/StrictConcurrency/count-warnings.sh /tmp/<task>-before.json
 
 Read the script before you change its build settings. For a smaller scope, select the affected scheme and an available simulator. Use `build-for-testing` with `SWIFT_STRICT_CONCURRENCY=complete`. Use a separate DerivedData directory for each build configuration. Check disk space before large builds.
 
+For a single package target, `swift build` compiles only that target and its dependencies in seconds, including targets that import XCTest:
+
+```bash
+PLATFORM=$(xcrun --sdk iphonesimulator --show-sdk-platform-path)
+swift build --package-path Modules --target UITestsFoundation \
+  --scratch-path /tmp/<task>-spm --sdk "$(xcrun --sdk iphonesimulator --show-sdk-path)" \
+  --triple arm64-apple-ios18.0-simulator -Xswiftc -F -Xswiftc "$PLATFORM/Developer/Library/Frameworks" \
+  -Xswiftc -strict-concurrency=complete
+```
+
+Use it to iterate on a module. It does not compile the Xcode targets that consume the module, so finish with the scheme build above before you measure or report.
+
 Save the build log. Record warnings by target, file path relative to the repository, and diagnostic text. Use the same build scope and settings before and after the change. Remove repeated compiler output with the same method in both logs. Compare warnings without line and column numbers. Keep the file path and number of occurrences.
 
 Use a clean build for each measurement. If you use an incremental build, confirm that every measured file compiled. An incremental log can omit unchanged files. Use a partial build result only if every file in the measured scope compiled. Do not use a partial build to measure the workspace or update its baseline.

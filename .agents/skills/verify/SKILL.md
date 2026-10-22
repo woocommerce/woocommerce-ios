@@ -9,7 +9,7 @@ allowed-tools: "Bash, Read, Grep, Glob, mcp__mobile-mcp__*"
 
 Build the app, launch it on the iOS simulator, and verify the affected feature areas work correctly by navigating the UI and checking for expected elements.
 
-Read `.claude/references/screen-identifiers.md` to understand how to identify screens and navigate between them.
+Read `.agents/references/screen-identifiers.md` to understand how to identify screens and navigate between them.
 
 ## Step 1: Assess the Environment
 
@@ -33,7 +33,7 @@ Use the user's requested flow first. For changed features, collect paths from th
 diff against the requested base, staged changes, unstaged changes, and relevant untracked files.
 Use the parent branch as the base for stacked work; otherwise use `trunk`.
 
-Match these paths against `.claude/references/feature-map.json`. If no paths match,
+Match these paths against `.agents/references/feature-map.json`. If no paths match,
 verify the explicitly requested flow. If no flow is requested, report the unmatched paths
 and the verification gap instead of claiming success.
 
@@ -50,18 +50,24 @@ override below. Preserve servers started by other tasks.
 Use the `/simulator` skill approach to discover a booted simulator UDID.
 
 ```bash
+set -o pipefail
+mkdir -p .agent-artifacts
+TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/verify.XXXXXX")"
+printf 'Task artifacts: %s\n' "$TASK_ARTIFACTS"
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -derivedDataPath "$PWD/DerivedData" \
   -destination "platform=iOS Simulator,id=<UDID>" \
-  build > <task-build-log> 2>&1
+  build 2>&1 | tee "$TASK_ARTIFACTS/build.log"
 ```
 
-Check the exit status and retain the full log outside the repository. If the build fails, report the first error. Verification of code changes requires a successful current build.
+Check the pipeline exit status and retain the full log. If the build fails, report the first error. Verification of code changes requires a successful current build.
 
 ## Step 5: Launch App
 
 Install the built app on the selected simulator with `xcrun simctl install <UDID> <path-to-.app>`.
 Locate that build's app using the WooCommerce target's `TARGET_BUILD_DIR` and `FULL_PRODUCT_NAME`
-from `xcodebuild -showBuildSettings` with the same workspace, scheme, and destination.
+from `xcodebuild -showBuildSettings` with the same workspace, scheme, destination, and
+`-derivedDataPath "$PWD/DerivedData"` (or the explicit path selected for that build).
 
 **For a new live session outside authentication tests**, follow `/auto-login` to launch and confirm
 loaded data.
@@ -70,7 +76,7 @@ loaded data.
 - `logout-at-launch`, `disable-animations`, `mocked-wpcom-api`, `-ui_testing`, `-mocks-port`, `8282`
 - Append any feature-specific `launchArgs` from `feature-map.json`
 - **Mock credentials**: site `https://yourwoosite.com`, email `t@wp.com`, password `pw`.
-- Complete “Login (from prologue)” in `.claude/references/screen-identifiers.md`.
+- Complete “Login (from prologue)” in `.agents/references/screen-identifiers.md`.
 
 For a separate port, omit `mocked-wpcom-api` (it fixes the API port at 8282), set
 `SIMCTL_CHILD_wpcom-api-base-url=http://localhost:<port>/` for each launch, and set `-mocks-port <port>`.
@@ -92,9 +98,9 @@ Wait 5 seconds for the app to settle.
 
 ## Step 6: Navigate and Verify
 
-Read the available mobile-mcp tool schemas. Confirm the target device with a `simctl` screenshot before interaction; follow `.claude/rules/verification.md` for helper or device mismatches.
+Read the available mobile-mcp tool schemas. Confirm the target device with a `simctl` screenshot before interaction; follow `.agents/rules/verification.md` for helper or device mismatches.
 
-Consult `.claude/references/screen-identifiers.md` for screen identification, element lookup, and navigation flows (including login flow when using mocked environment).
+Consult `.agents/references/screen-identifiers.md` for screen identification, element lookup, and navigation flows (including login flow when using mocked environment).
 
 For each matched feature from the feature map:
 

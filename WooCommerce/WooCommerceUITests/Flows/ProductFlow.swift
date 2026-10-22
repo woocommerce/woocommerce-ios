@@ -1,6 +1,7 @@
 import UITestsFoundation
 import XCTest
 
+@MainActor
 class ProductFlow {
 
     static func addAndVerifyNewProduct(productType: String) throws {

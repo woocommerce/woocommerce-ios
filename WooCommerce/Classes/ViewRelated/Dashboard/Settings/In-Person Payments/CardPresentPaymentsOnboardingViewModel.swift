@@ -63,6 +63,19 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, @MainActor
         useCase.refresh()
     }
 
+    var pluginManagementURL: URL? {
+        guard userIsAdministrator, let site = stores.sessionManager.defaultSite,
+              URL(string: site.adminURL)?.host != nil else { return nil }
+        return URL(string: site.pluginsURL)
+    }
+
+    func paymentSettingsURL(for plugin: CardPresentPaymentsPlugin) -> URL? {
+        guard userIsAdministrator, let site = stores.sessionManager.defaultSite,
+              URL(string: site.adminURL)?.host != nil else { return nil }
+        let url = site.pluginSettingsSectionURL(from: plugin)
+        return URL(string: plugin == .stripe ? url + "&panel=settings" : url)
+    }
+
     /// Sends the action to install the Card Present plugin
     ///
     func installPlugin() {

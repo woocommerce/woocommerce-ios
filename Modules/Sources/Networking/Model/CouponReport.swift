@@ -1,7 +1,7 @@
 import Codegen
 import Foundation
 
-public struct CouponReport {
+public struct CouponReport: Sendable {
     /// ID of the coupon
     public let couponID: Int64
 

@@ -6,6 +6,7 @@ final class MockAgeRangeVerificationCoordinator: AgeRangeVerificationCoordinator
     var decision: AppAccessDecision
     var result: AgeRangeVerificationResult
     private(set) var triggers: [AgeVerificationTrigger] = []
+    private(set) var isObservingConsentResponses = false
 
     init(decision: AppAccessDecision, result: AgeRangeVerificationResult) {
         self.decision = decision
@@ -22,7 +23,7 @@ final class MockAgeRangeVerificationCoordinator: AgeRangeVerificationCoordinator
     }
 
     func startObservingConsentResponses(onResolution: @escaping @MainActor () -> Void) {
-        // no-op
+        isObservingConsentResponses = true
     }
 
     func requestSignificantChangeConsent(hostingWindow: UIWindow) async -> SignificantChangeConsentState {

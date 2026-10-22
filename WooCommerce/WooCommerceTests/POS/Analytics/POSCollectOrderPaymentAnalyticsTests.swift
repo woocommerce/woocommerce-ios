@@ -22,6 +22,134 @@ struct POSCollectOrderPaymentAnalyticsTests {
         analytics = MockPOSAnalytics()
     }
 
+    @Test(arguments: [false, true], [false, true]) @MainActor
+    func test_cancel_completion_when_another_payment_starts_then_preserves_active_confirmation(newCheckout: Bool, oldPaymentConfirms: Bool) throws {
+        // Given
+        var now = 0
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+        let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, catalogSyncStrategy: .localCatalog,
+                                                             configuration: configuration, monotonicMilliseconds: { now })
+        let paymentOrder = POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "")
+        tracker.trackCheckoutTapped()
+        now = 100
+        tracker.trackOrderSyncSuccess()
+        tracker.prepareForCardPayment(order: paymentOrder)
+        now = 150
+        tracker.trackCardReaderReady()
+        let order = Order.fake().copy(orderID: 42, currency: "USD", total: "19.99")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case .retrieveOrderRemotely(_, _, let completion) = action {
+                completion(.success(order))
+            }
+        }
+        let preflight = MockCardPresentPaymentPreflightController()
+        let receipts = MockReceiptEligibilityUseCase()
+        receipts.isEligibleForBackendReceipts = false
+        let orchestrator = MockPaymentCaptureOrchestrator()
+        var completeCancellation: ((Result<Void, Error>) -> Void)?
+        orchestrator.mockCancelPaymentHandler = { completeCancellation = $0 }
+        let alerts = MockCardPresentPaymentAlertsPresenter()
+        orchestrator.mockCollectPaymentHandler = { onPreparingReader, _, _, _, _, _, _ in
+            alerts.onPresentCalled = { viewModel in
+                alerts.onPresentCalled = nil
+                viewModel.didTapSecondaryButton(in: nil)
+            }
+            onPreparingReader()
+        }
+        let useCase = CollectOrderPaymentUseCase<TapToPayCardReaderPaymentAlertsProvider,
+                                                BluetoothCardReaderPaymentAlertsProvider,
+                                                MockCardPresentPaymentAlertsPresenter>(
+            siteID: order.siteID, order: order, formattedAmount: "$19.99", rootViewController: MockViewControllerPresenting(),
+            configuration: configuration, stores: stores,
+            paymentOrchestrator: orchestrator, alertsPresenter: alerts,
+            tapToPayAlertsProvider: TapToPayCardReaderPaymentAlertsProvider(),
+            bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
+            preflightController: preflight, analyticsTracker: tracker, receiptEligibilityUseCase: receipts)
+        useCase.collectPayment(using: .bluetoothScan, channel: .pos, onFailure: { _ in }, onCancel: {},
+                               onPaymentCompletion: {}, onCompleted: {})
+        preflight.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: "stripe")
+        let heldCancellation = try #require(completeCancellation)
+
+        // When
+        now = 500
+        if newCheckout {
+            tracker.trackCheckoutTapped()
+            now = 600
+            tracker.trackOrderSyncSuccess()
+        }
+        tracker.prepareForCardPayment(order: paymentOrder)
+        now = 650
+        tracker.trackCardReaderReady()
+        if oldPaymentConfirms {
+            now = 675
+            let heldConfirmation = try #require(orchestrator.spyProcessingCompletion)
+            heldConfirmation(.fake())
+        }
+        now = 700
+        tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
+        now = 750
+        withExtendedLifetime(useCase) { heldCancellation(.success(())) }
+        let canceled = try #require(analytics.events.last { $0.eventName == "card_present_collect_payment_canceled" })
+        now = 800
+        tracker.trackSuccessfulCardPayment(capturedPaymentData: .init(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil))
+
+        // Then
+        #expect(canceled.properties["sync_strategy"] == nil)
+        #expect(!canceled.properties.keys.contains { ($0 as? String)?.hasPrefix("pos_time_since_") == true })
+        let succeeded = try #require(analytics.events.last)
+        #expect(succeeded.properties["sync_strategy"] as? String == "local_catalog")
+        #expect(succeeded.properties["pos_time_since_checkout_started_ms"] as? Int == (newCheckout ? 300 : 800))
+        #expect(succeeded.properties["pos_time_since_order_sync_completed_ms"] as? Int == (newCheckout ? 200 : 700))
+        #expect(succeeded.properties["pos_time_since_reader_ready_ms"] == nil)
+        #expect(succeeded.properties["pos_time_since_payment_confirmed_ms"] as? Int == 100)
+    }
+
+    @Test @MainActor func test_card_success_when_all_stages_start_at_zero_then_emits_integer_timings() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, currentTimestamp: { 0 }, monotonicMilliseconds: { 0 })
+        sut.trackCheckoutTapped()
+        sut.trackOrderSyncSuccess()
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
+        sut.trackCardReaderReady()
+        sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
+
+        // When
+        sut.trackSuccessfulCardPayment(capturedPaymentData: .init(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil))
+
+        // Then
+        let properties = analytics.events.last?.properties
+        #expect(properties?["pos_timing_version"] == nil)
+        #expect(properties?["sync_strategy"] as? String == "unknown")
+        #expect(properties?["pos_time_since_checkout_started_ms"] as? Int == 0)
+        #expect(properties?["pos_time_since_order_sync_completed_ms"] as? Int == 0)
+        #expect(properties?["pos_time_since_reader_ready_ms"] == nil)
+        #expect(properties?["pos_time_since_payment_confirmed_ms"] as? Int == 0)
+    }
+
+    @Test(arguments: [false, true]) @MainActor
+    func test_card_terminal_event_when_checkout_has_no_stages_then_omits_unset_timings(isCancellation: Bool) {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, currentTimestamp: { 0 }, monotonicMilliseconds: { 0 })
+        sut.trackCheckoutTapped()
+
+        // When
+        if isCancellation {
+            sut.trackPaymentCancelation(cancelationSource: .reader)
+        } else {
+            sut.trackPaymentFailure(with: TestError())
+        }
+
+        // Then
+        let properties = analytics.events.last?.properties
+        #expect(properties?["pos_timing_version"] == nil)
+        #expect(properties?["sync_strategy"] as? String == (isCancellation ? nil : "unknown"))
+        #expect(properties?["pos_time_since_checkout_started_ms"] as? Int == (isCancellation ? nil : 0))
+        #expect(properties?["pos_time_since_order_sync_completed_ms"] == nil)
+        #expect(properties?["pos_time_since_reader_ready_ms"] == nil)
+        #expect(properties?["pos_time_since_payment_confirmed_ms"] == nil)
+    }
+
     @Test(arguments: [true, false]) @MainActor
     func test_card_collection_when_capture_completes_then_tracks_value_only_on_success(captureSucceeds: Bool) {
         // Given
@@ -400,17 +528,38 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("payment_method_type", in: "card_present_collect_payment_failed") == nil)
     }
 
-    @Test @MainActor func test_track_payment_cancelation_then_tracks_event_with_cancellation_source() {
+    @Test(arguments: [false, true]) @MainActor
+    func test_track_payment_cancelation_when_timing_stages_vary_then_preserves_metadata_without_timings(stagesReached: Bool) throws {
         // Given
+        let clock = TestClock()
         let configuration = CardPresentPaymentsConfiguration(country: .US)
-        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration, currentTimestamp: { clock.now })
+        if stagesReached {
+            clock.now = 1000
+            sut.trackCustomerInteractionStarted()
+            sut.trackCheckoutTapped()
+            sut.trackOrderSyncSuccess()
+            sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
+            sut.trackCardReaderReady()
+            sut.trackCardReaderTapped()
+            sut.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
+            clock.now = 1005
+        }
 
         // When
         sut.trackPaymentCancelation(cancelationSource: .paymentWaitingForInput)
 
         // Then
-        #expect(property("cancellation_source", in: "card_present_collect_payment_canceled") == "payment_waiting_for_input")
-        #expect(property("country", in: "card_present_collect_payment_canceled") == "US")
+        let event = try #require(analytics.events.last)
+        #expect(event.eventName == "card_present_collect_payment_canceled")
+        #expect(event.properties["cancellation_source"] as? String == "payment_waiting_for_input")
+        #expect(event.properties["country"] as? String == "US")
+        #expect(event.properties["checkout_tap_count"] as? String == (stagesReached ? "1" : "0"))
+        #expect(event.properties["sync_strategy"] == nil)
+        #expect(!event.properties.keys.contains {
+            guard let key = $0 as? String else { return false }
+            return key.hasPrefix("milliseconds_since_") || key.hasPrefix("pos_time_since_")
+        })
     }
 
     @Test @MainActor func test_track_payment_failure_when_timing_markers_are_set_then_reports_correct_elapsed_milliseconds() {
@@ -436,14 +585,15 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_failed") == "2000.0")
     }
 
-    @Test @MainActor func test_track_processing_completion_when_payment_method_is_interac_then_tracks_interac_success() {
+    @Test(arguments: [false, true]) @MainActor
+    func test_track_processing_completion_when_payment_method_is_interac_then_tracks_interac_success(recordPaymentConfirmation: Bool) {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .CA))
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))])
 
         // When
-        sut.trackProcessingCompletion(intent: intent)
+        sut.trackProcessingCompletion(intent: intent, recordPaymentConfirmation: recordPaymentConfirmation)
 
         // Then
         #expect(property("country", in: "card_interac_collect_payment_success") == "CA")
@@ -456,7 +606,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
 
         // When
-        sut.trackProcessingCompletion(intent: intent)
+        sut.trackProcessingCompletion(intent: intent, recordPaymentConfirmation: true)
 
         // Then
         #expect(analytics.events.isEmpty)
@@ -496,8 +646,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(property("reader_connected_at_checkout", in: "reader_ready_for_card_payment") == "true")
-        #expect(property("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == nil)
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == "1500.0")
+        #expect(milliseconds("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == nil)
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == 1500)
         #expect(property("reader_ready_signal", in: "reader_ready_for_card_payment") == "input_requested")
         #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "1.5")
     }
@@ -520,8 +670,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(property("reader_connected_at_checkout", in: "reader_ready_for_card_payment") == "false")
-        #expect(property("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == "4000.0")
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == "3000.0")
+        #expect(milliseconds("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == 4000)
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == 3000)
         // The legacy property keeps measuring from order sync.
         #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "5.0")
     }
@@ -544,8 +694,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(property("reader_connected_at_checkout", in: "reader_ready_for_card_payment") == "false")
-        #expect(property("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == "1000.0")
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == "2000.0")
+        #expect(milliseconds("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == 1000)
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == 2000)
     }
 
     @Test @MainActor func test_track_customer_interaction_started_when_no_connection_status_received_yet_then_omits_connection_properties() {
@@ -566,11 +716,11 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(property("reader_connected_at_checkout", in: "reader_ready_for_card_payment") == nil)
-        #expect(property("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == nil)
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == "1000.0")
+        #expect(milliseconds("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == nil)
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == 1000)
     }
 
-    @Test(arguments: ["card_present_collect_payment_success", "card_present_collect_payment_failed", "card_present_collect_payment_canceled"])
+    @Test(arguments: ["card_present_collect_payment_success", "card_present_collect_payment_failed"])
     @MainActor func test_payment_outcome_when_reader_connected_during_interaction_then_reports_both_intervals(eventName: String) {
         // Given
         let clock = TestClock()
@@ -592,12 +742,12 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(property("reader_connected_at_checkout", in: eventName) == "false")
-        #expect(property("milliseconds_waiting_for_reader_connection", in: eventName) == "1000.0")
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: eventName) == "1000.0")
+        #expect(milliseconds("milliseconds_waiting_for_reader_connection", in: eventName) == 1000)
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: eventName) == 1000)
         #expect(property("reader_ready_signal", in: eventName) == "input_requested")
     }
 
-    @Test(arguments: ["card_present_collect_payment_success", "card_present_collect_payment_failed", "card_present_collect_payment_canceled"])
+    @Test(arguments: ["card_present_collect_payment_success", "card_present_collect_payment_failed"])
     @MainActor func test_payment_outcome_when_reader_never_asked_for_input_then_omits_preparation_and_signal(eventName: String) {
         // Given
         let clock = TestClock()
@@ -615,7 +765,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(property("reader_connected_at_checkout", in: eventName) == "true")
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: eventName) == nil)
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: eventName) == nil)
         #expect(property("reader_ready_signal", in: eventName) == nil)
     }
 
@@ -641,8 +791,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(property("reader_connected_at_checkout", in: "card_present_collect_payment_failed") == "true")
-        #expect(property("milliseconds_waiting_for_reader_connection", in: "card_present_collect_payment_failed") == nil)
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_failed") == nil)
+        #expect(milliseconds("milliseconds_waiting_for_reader_connection", in: "card_present_collect_payment_failed") == nil)
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_failed") == nil)
         #expect(property("reader_ready_signal", in: "card_present_collect_payment_failed") == nil)
         #expect(property("milliseconds_since_reader_ready_to_collect_payment", in: "card_present_collect_payment_failed") == "0.0")
     }
@@ -666,7 +816,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         sut.trackCardReaderReady()
 
         // Then
-        #expect(property("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == "2000.0")
+        #expect(milliseconds("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == 2000)
     }
 
     @Test @MainActor func test_track_card_reader_ready_when_reader_reconnects_after_order_sync_then_preparation_starts_at_the_reconnect() {
@@ -689,8 +839,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(property("reader_connected_at_checkout", in: "reader_ready_for_card_payment") == "true")
-        #expect(property("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == nil)
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == "2000.0")
+        #expect(milliseconds("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == nil)
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == 2000)
     }
 
     @Test @MainActor func test_payment_outcome_when_reader_reconnects_after_reader_ready_then_keeps_the_attempt_preparation() {
@@ -714,7 +864,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         sut.trackPaymentFailure(with: TestError())
 
         // Then
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_failed") == "2000.0")
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_failed") == 2000)
     }
 
     @Test @MainActor func test_track_card_reader_ready_when_reader_asks_for_input_twice_in_one_attempt_then_keeps_first_stamp() {
@@ -758,7 +908,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(properties("waiting_time", in: "reader_ready_for_card_payment") == ["1.0", "7.0"])
-        #expect(properties("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == ["1000.0", "7000.0"])
+        #expect(millisecondsList("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == [1000, 7000])
     }
 
     @Test @MainActor func test_payment_outcome_when_retry_ends_before_a_new_input_request_then_omits_the_previous_attempt_preparation() {
@@ -778,13 +928,13 @@ struct POSCollectOrderPaymentAnalyticsTests {
         clock.now = 1006
         sut.trackCardPaymentAttemptStarted()
         clock.now = 1007
-        sut.trackPaymentCancelation(cancelationSource: .other)
+        sut.trackPaymentFailure(with: TestError())
 
         // Then
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_canceled") == nil)
-        #expect(property("reader_ready_signal", in: "card_present_collect_payment_canceled") == nil)
+        #expect(millisecondsList("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_failed") == [1000])
+        #expect(properties("reader_ready_signal", in: "card_present_collect_payment_failed") == ["input_requested"])
         // The legacy property keeps its previous lifetime.
-        #expect(property("milliseconds_since_reader_ready_to_collect_payment", in: "card_present_collect_payment_canceled") == "5000.0")
+        #expect(properties("milliseconds_since_reader_ready_to_collect_payment", in: "card_present_collect_payment_failed") == ["2000.0", "5000.0"])
     }
 
     @Test @MainActor func test_track_card_payment_attempt_started_when_previous_attempt_ended_without_an_outcome_then_stamps_the_next_input_request() {
@@ -831,7 +981,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         sut.trackCardReaderReady()
 
         // Then
-        #expect(properties("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == ["1000.0", "2000.0"])
+        #expect(millisecondsList("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == [1000, 2000])
         // The legacy property keeps measuring from order sync.
         #expect(properties("waiting_time", in: "reader_ready_for_card_payment") == ["1.0", "31.0"])
     }
@@ -852,33 +1002,38 @@ struct POSCollectOrderPaymentAnalyticsTests {
         sut.trackCardReaderReady()
 
         // Then
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == "1000.0")
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == 1000)
     }
 
-    @Test @MainActor func test_payment_cancelation_when_preflight_is_canceled_then_does_not_stamp_reader_ready() {
+    @Test @MainActor func test_payment_cancelation_when_reader_was_ready_then_omits_reader_ready_timing() {
         // Given
         let clock = TestClock()
         let sut = makeTimedAdaptor(clock: clock)
         sut.trackCardReaderConnectionChanged(isConnected: false)
-
-        // When
         clock.now = 1000
         sut.trackCustomerInteractionStarted()
         clock.now = 1001
+        sut.trackCardReaderConnectionChanged(isConnected: true)
+        clock.now = 1002
         sut.trackOrderSyncSuccess()
-        sut.preflightResultReceived(.canceled(.other, PaymentGatewayAccount.fake()))
         clock.now = 1003
+        sut.trackCardReaderReady()
+
+        // When
+        clock.now = 1005
         sut.trackPaymentCancelation(cancelationSource: .other)
 
         // Then
-        #expect(!analytics.events.contains { $0.eventName == "reader_ready_for_card_payment" })
-        #expect(property("reader_connected_at_checkout", in: "card_present_collect_payment_canceled") == "false")
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_canceled") == nil)
-        #expect(property("reader_ready_signal", in: "card_present_collect_payment_canceled") == nil)
-        #expect(property("milliseconds_since_reader_ready_to_collect_payment", in: "card_present_collect_payment_canceled") == "0.0")
+        let event = analytics.events.first { $0.eventName == "card_present_collect_payment_canceled" }
+        for key in ["reader_connected_at_checkout",
+                    "milliseconds_waiting_for_reader_connection",
+                    "milliseconds_from_order_sync_to_reader_ready",
+                    "reader_ready_signal"] {
+            #expect(event?.properties[key] == nil)
+        }
     }
 
-    @Test @MainActor func test_payment_cancelation_when_new_collection_is_cancelled_in_preflight_then_omits_previous_attempt_timing() {
+    @Test @MainActor func test_payment_failure_when_new_collection_fails_before_validation_then_omits_previous_attempt_timing() {
         // Given an attempt that asked for input and ended without an outcome event
         let clock = TestClock()
         let sut = makeTimedAdaptor(clock: clock)
@@ -890,16 +1045,15 @@ struct POSCollectOrderPaymentAnalyticsTests {
         clock.now = 1002
         sut.trackCardReaderReady()
 
-        // When a new collection starts and its preflight is cancelled before validation
+        // When a new collection starts and fails before validation
         clock.now = 1010
         sut.prepareForCardPayment(order: Self.order)
-        sut.preflightResultReceived(.canceled(.other, PaymentGatewayAccount.fake()))
         clock.now = 1011
-        sut.trackPaymentCancelation(cancelationSource: .other)
+        sut.trackPaymentFailure(with: TestError())
 
         // Then
-        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_canceled") == nil)
-        #expect(property("reader_ready_signal", in: "card_present_collect_payment_canceled") == nil)
+        #expect(milliseconds("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_failed") == nil)
+        #expect(property("reader_ready_signal", in: "card_present_collect_payment_failed") == nil)
     }
 }
 
@@ -912,7 +1066,8 @@ private extension POSCollectOrderPaymentAnalyticsTests {
     func makeTimedAdaptor(clock: TestClock) -> POSCollectOrderPaymentAnalyticsAdaptor {
         POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                configuration: CardPresentPaymentsConfiguration(country: .US),
-                                               currentTimestamp: { clock.now })
+                                               currentTimestamp: { clock.now },
+                                               monotonicMilliseconds: { Int(clock.now * 1000) })
     }
 
     @MainActor
@@ -920,15 +1075,26 @@ private extension POSCollectOrderPaymentAnalyticsTests {
         switch eventName {
         case "card_present_collect_payment_success":
             sut.trackSuccessfulCardPayment(capturedPaymentData: .init(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil))
-        case "card_present_collect_payment_failed":
-            sut.trackPaymentFailure(with: TestError())
         default:
-            sut.trackPaymentCancelation(cancelationSource: .other)
+            sut.trackPaymentFailure(with: TestError())
         }
     }
 
     func property(_ key: String, in eventName: String) -> String? {
         analytics.events.first(where: { $0.eventName == eventName })?.properties[key] as? String
+    }
+
+    func milliseconds(_ key: String, in eventName: String) -> Int? {
+        analytics.events.first(where: { $0.eventName == eventName })?.properties[key] as? Int
+    }
+
+    func millisecondsList(_ key: String, in eventName: String) -> [Int] {
+        analytics.events.compactMap { event in
+            guard event.eventName == eventName else {
+                return nil
+            }
+            return event.properties[key] as? Int
+        }
     }
 
     func properties(_ key: String, in eventName: String) -> [String] {

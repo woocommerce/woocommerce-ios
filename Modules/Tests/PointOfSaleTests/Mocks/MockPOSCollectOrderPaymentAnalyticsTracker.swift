@@ -13,8 +13,9 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         // no-op
     }
 
+    private(set) var orderSyncSuccessCount = 0
     func trackOrderSyncSuccess() {
-        // no-op
+        orderSyncSuccessCount += 1
     }
 
     func trackCardReaderReady() {
@@ -33,6 +34,11 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
     var cardPaymentAttemptStartedCount = 0
     func trackCardPaymentAttemptStarted() {
         cardPaymentAttemptStartedCount += 1
+    }
+
+    private(set) var didResetCheckoutTiming = false
+    func resetCheckoutTiming() {
+        didResetCheckoutTiming = true
     }
 
     func trackCheckoutTapped() {
@@ -62,7 +68,7 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
 
     var connectedReaderModel: String?
 
-    func trackProcessingCompletion(intent: Yosemite.PaymentIntent) {
+    func trackProcessingCompletion(intent: Yosemite.PaymentIntent, recordPaymentConfirmation: Bool) {
         // no-op
     }
 

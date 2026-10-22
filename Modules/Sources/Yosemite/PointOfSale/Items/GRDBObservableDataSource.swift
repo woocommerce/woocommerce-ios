@@ -188,9 +188,9 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 // Create updated parent product with fresh attributes
                 let updatedParentProduct: POSVariableParentProduct
                 if let parentWithAttributes {
-                    let attributes = (parentWithAttributes.attributes).map {
-                        $0.toProductAttribute(siteID: parentWithAttributes.product.siteID)
-                    }
+                    let attributes = parentWithAttributes.attributes
+                        .filter { $0.variation }
+                        .map { $0.toProductAttribute(siteID: parentWithAttributes.product.siteID) }
                     let product = parentWithAttributes.product
                     updatedParentProduct = POSVariableParentProduct(
                         id: parentProduct.id,

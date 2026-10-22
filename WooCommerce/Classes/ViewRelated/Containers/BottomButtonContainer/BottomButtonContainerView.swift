@@ -63,6 +63,7 @@ private extension BottomButtonContainerView {
         addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         pinSubviewToAllEdges(button, insets: Constants.buttonMarginInsets)
+        button.setContentCompressionResistancePriority(.required, for: .vertical)
 
         button.setTitle(viewModel.title, for: .normal)
         button.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)

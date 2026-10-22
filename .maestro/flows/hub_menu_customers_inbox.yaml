@@ -15,6 +15,15 @@ tags:
       id: "menu-customers"
     direction: DOWN
     timeout: 15000
+# Centering keeps the row clear of the tab bar. A row at the end of the menu
+# can't be centered, but the end of the list already sits above the tab bar.
+- scrollUntilVisible:
+    element:
+      id: "menu-customers"
+    direction: DOWN
+    timeout: 2000
+    centerElement: true
+    optional: true
 - tapOn:
     id: "menu-customers"
 - extendedWaitUntil:
@@ -34,6 +43,13 @@ tags:
     direction: DOWN
     timeout: 15000
     label: "Require an Inbox-eligible extended-smoke store"
+- scrollUntilVisible:
+    element:
+      id: "menu-inbox"
+    direction: DOWN
+    timeout: 2000
+    centerElement: true
+    optional: true
 - tapOn:
     id: "menu-inbox"
 - extendedWaitUntil:

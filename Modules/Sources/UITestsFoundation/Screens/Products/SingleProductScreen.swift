@@ -2,6 +2,7 @@ import ScreenObject
 import XCTest
 import XCUITestHelpers
 
+@MainActor
 public final class SingleProductScreen: ScreenObject {
 
     static var isVisible: Bool {

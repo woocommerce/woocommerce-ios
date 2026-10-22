@@ -1066,6 +1066,9 @@ private extension ProductFormViewController {
                                                                             self?.showDownloadableFiles()
                                                                         case .editCustomFields:
                                                                             self?.showCustomFields()
+                                                                        case .editAttributes:
+                                                                            self?.trackAddProductAttributeTapped()
+                                                                            self?.addProductAttribute()
                                                                         }
                                                                     }
         }
@@ -1382,6 +1385,10 @@ private extension ProductFormViewController {
 
     func trackEditProductAttributeRowTapped() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
+    }
+
+    func trackAddProductAttributeTapped() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.addAttributeButtonTapped(productID: product.productID))
     }
 }
 
@@ -2094,6 +2101,21 @@ private extension ProductFormViewController {
             self?.onAttributeUpdated(attributesViewController: attributesViewController, updatedProduct: updatedProduct)
         }
         show(attributesViewController, sender: self)
+    }
+
+    /// Navigate to add the first attribute of a product
+    ///
+    func addProductAttribute() {
+        guard let productModel = product as? EditableProductModel else {
+            return
+        }
+        let addAttributeViewModel = AddAttributeViewModel(product: productModel.product, isVariationsFlow: false)
+        let addAttributeViewController = AddAttributeViewController(viewModel: addAttributeViewModel) { [weak self] updatedProduct in
+            guard let self else { return }
+            self.viewModel.updateProductVariations(from: updatedProduct)
+            self.navigationController?.popToViewController(self, animated: true)
+        }
+        show(addAttributeViewController, sender: self)
     }
 
     func editVariationAttributes() {

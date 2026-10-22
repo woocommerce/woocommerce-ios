@@ -1,7 +1,10 @@
 import SwiftUI
+import enum Yosemite.CardPresentPaymentsPlugin
 
 struct InPersonPaymentsStripeAccountReview: View {
     let analyticReason: String
+    let plugin: CardPresentPaymentsPlugin
+    let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -14,12 +17,24 @@ struct InPersonPaymentsStripeAccountReview: View {
             supportLink: true,
             learnMore: true,
             analyticReason: analyticReason,
-            plugin: .stripe
+            plugin: plugin,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
+                text: Localization.primaryButton,
+                analyticReason: analyticReason,
+                plugin: plugin,
+                action: onRefresh
+            )
         )
     }
 }
 
 private enum Localization {
+    static let primaryButton = NSLocalizedString(
+        "cardPresentPayments.onboarding.accountUnderReview.refreshButton",
+        value: "Refresh",
+        comment: "Button to recheck In-Person Payments requirements while the payment account is under review."
+    )
+
     static let title = NSLocalizedString(
         "In‑Person Payments is currently unavailable",
         comment: """
@@ -41,6 +56,6 @@ private enum Localization {
 
 struct InPersonPaymentsStripeAccountReview_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountReview(analyticReason: "")
+        InPersonPaymentsStripeAccountReview(analyticReason: "", plugin: .stripe, onRefresh: {})
     }
 }

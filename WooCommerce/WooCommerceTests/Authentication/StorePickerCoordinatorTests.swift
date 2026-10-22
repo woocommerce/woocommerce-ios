@@ -28,6 +28,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_standard_configuration_presents_storePicker() throws {
         // Given
         let coordinator = StorePickerCoordinator(navigationController, config: .standard)
@@ -45,6 +46,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
+    @MainActor
     func test_switchingStores_configuration_presents_storePicker() throws {
         // Given
         let coordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
@@ -62,6 +64,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
+    @MainActor
     func test_login_configuration_shows_storePicker() throws {
         // Given
         let coordinator = StorePickerCoordinator(navigationController, config: .login)
@@ -75,6 +78,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_listStores_configuration_shows_storePicker() throws {
         // Given
         let coordinator = StorePickerCoordinator(navigationController, config: .listStores)
@@ -147,6 +151,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_didSelectStore_when_logging_in_then_reports_success() {
         // Given a login that has reached the point of choosing a store
         var events: [AnalyticsEvent] = []
@@ -167,6 +172,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
         XCTAssertEqual(events.first(where: { $0.properties["step"] == "success" })?.properties["flow"], "epilogue")
     }
 
+    @MainActor
     func test_didSelectStore_when_switching_stores_then_does_not_report_success() {
         // Given a merchant already signed in, changing store
         var events: [AnalyticsEvent] = []
@@ -410,6 +416,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
         return fixture
     }
 
+    @MainActor
     func test_didSelectStore_when_recovering_from_a_login_error_screen_then_reports_success() {
         // Given a login that hit "Wrong account?" and recovered through "See connected stores",
         // which opens a listStores picker while still mid-login
@@ -431,6 +438,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_didSelectStore_when_listing_stores_outside_a_login_then_does_not_report_success() {
         // Given the same picker opened from an error screen reached outside a login
         var events: [AnalyticsEvent] = []

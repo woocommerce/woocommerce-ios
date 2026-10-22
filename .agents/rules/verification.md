@@ -2,6 +2,27 @@
 
 Agents can verify their changes work from a user's perspective using two complementary loops: **snapshot-driven iteration** (fast inner loop) and **simulator-based E2E verification** (slower outer loop).
 
+## Local output paths
+
+Run agent commands from the task's checkout root. For direct `xcodebuild` commands, pass
+`-derivedDataPath "$PWD/DerivedData"` to builds, tests, and matching `-showBuildSettings` queries.
+Fastlane already selects this checkout-local build folder. Reuse compatible output; use a fresh
+child of `DerivedData/` only when a diagnostic requires a clean configuration.
+Keep one build writer per output folder and separate output folders between worktrees.
+
+When an agent needs to save console logs, screenshots, traces, or test results, use a unique directory
+under `.agent-artifacts/`, which is gitignored. Keep evidence until the task's retention requirements
+are met. Existing tool-owned paths, including `fastlane/logs`, `fastlane/test_output`, and package
+`.build` folders, remain valid.
+For agent-created SnapshotTesting fixtures, use the `/snapshot` command's artifact setting
+to keep failure images in the task artifact directory; `snapshotDirectory` selects reference
+images, not comparison failure artifacts.
+
+Explicit task/CI output paths and specialized helper contracts take precedence over these defaults.
+Credential staging follows `/auto-login` and stays outside the repository. Shared package/compiler
+caches and simulator devices remain system-managed. These defaults require no personal skill,
+Xcode preference change, cleanup service, or fixed simulator provider.
+
 ## Prerequisites
 - **Node.js** (see `.nvmrc` for version) — required by mobile-mcp for simulator interaction
 - **Java** — required by WireMock mock server (`brew install openjdk` if missing)
@@ -43,19 +64,20 @@ Builds the app, launches on the simulator, and uses mobile-mcp to navigate the U
 
 **Environment selection**: `/verify` reuses a suitable session, otherwise defaults to WireMock unless a live store is requested or required. Follow `.agents/skills/auto-login/SKILL.md` with `mocks` for WireMock or its default live-store flow.
 
-**Feature map**: `.claude/references/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
+**Feature map**: `.agents/references/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
 
 ## `/snapshot` — Snapshot-Driven UI Iteration
 
-Uses `swift-snapshot-testing` to render SwiftUI views to PNG images. The agent reads the PNG, compares against design goals, makes changes, and repeats. ~25s per iteration cycle when scoped to a module.
+Uses `swift-snapshot-testing` to render SwiftUI views to PNG images. The agent reads the PNG, compares against design goals, makes changes, and repeats.
 
 ```bash
 /snapshot            # start snapshot iteration for current view work
 ```
 
-**How it works**: Temporarily add `swift-snapshot-testing` to `Modules/Package.swift` -> create a snapshot test -> iterate (edit code -> run test -> read PNG -> compare -> fix) -> revert all temporary artifacts.
+**How it works**: Reuse existing coverage or add temporary setup -> render each requested state -> inspect new images against the design -> fix and repeat. Follow `/snapshot` for capture diagnostics and selective cleanup.
 
-**Important**: The snapshot dependency, test files, and `__Snapshots__/` directories are always temporary and must never be committed.
+Remove only temporary setup introduced by the snapshot task. Preserve existing dependencies, tests,
+and baselines; keep reviewed captures in the task artifact directory for its required retention period.
 
 ## mobile-mcp Tools
 
@@ -65,8 +87,8 @@ interaction, and app lifecycle. Tool names vary by server version.
 
 ## Key References
 
-- **Screen identifiers and navigation flows**: `.claude/references/screen-identifiers.md`
-- **Feature-to-path scope mapping**: `.claude/references/feature-map.json`
+- **Screen identifiers and navigation flows**: `.agents/references/screen-identifiers.md`
+- **Feature-to-path scope mapping**: `.agents/references/feature-map.json`
 - **Mock server management**: `/mocks` skill
 - **Simulator discovery**: `/simulator` skill
 - **Launch arguments**: `WooCommerce/Classes/System/ProcessConfiguration.swift`

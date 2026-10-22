@@ -420,6 +420,131 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     // MARK: - Foreground Notification Observable
 
+    func test_foreground_order_push_when_payment_was_collected_then_skips_notice_and_keeps_refresh_event() async throws {
+        // Given
+        let siteID: Int64 = 132
+        let orderID: Int64 = 306
+        application.applicationState = .active
+        storesManager.sessionManager.setStoreId(siteID)
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, currency: "USD")
+        let intent = PaymentIntent.fake().copy(status: .succeeded,
+                                               charges: [],
+                                               collectedPaymentMethod: .cardPresent(details: .fake()))
+        var completeCapture: ((Result<PaymentIntent, Error>) -> Void)?
+        storesManager.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .collectPayment(_, _, _, _, _, _, onProcessingCompletion, onCompletion) = action {
+                onProcessingCompletion(intent)
+                completeCapture = onCompletion
+            }
+        }
+        let orchestrator = PaymentCaptureOrchestrator(stores: storesManager,
+                                                     paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
+                                                     celebration: MockPaymentCaptureCelebration(),
+                                                     pushNotesManager: manager)
+        var paymentCompleted = false
+        var refreshCount = 0
+        manager.foregroundNotifications.sink { _ in refreshCount += 1 }.store(in: &subscriptions)
+
+        // When
+        orchestrator.collectPayment(for: order,
+                                    orderTotal: 2,
+                                    paymentGatewayAccount: .fake(),
+                                    paymentMethodTypes: [.cardPresent],
+                                    stripeSmallestCurrencyUnitMultiplier: 100,
+                                    countryCode: .US,
+                                    terminalPaymentPreparationEnabled: false,
+                                    channel: .storeManagement,
+                                    onPreparingReader: {},
+                                    onWaitingForInput: { _ in },
+                                    onCardInserted: {},
+                                    onProcessingMessage: {},
+                                    onDisplayMessage: { _ in },
+                                    onProcessingCompletion: { _ in },
+                                    onCompletion: { result in
+            if case .success = result {
+                paymentCompleted = true
+            }
+        })
+        let payload = try wooDrivenNotificationPayload(siteID: siteID, orderID: Int(orderID), title: "You have a new order!")
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        XCTAssertFalse(paymentCompleted)
+        _ = await manager.handleNotificationInTheForeground(notification)
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+        completeCapture?(.success(intent))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        XCTAssertTrue(paymentCompleted)
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+        XCTAssertEqual(refreshCount, 2)
+    }
+
+    func test_foreground_order_push_when_paid_locally_then_keeps_badge_and_analytics() async throws {
+        // Given
+        storesManager.sessionManager.setStoreId(132)
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(_, _, _, onCompletion):
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        application.applicationState = .active
+        manager.suppressNewOrderNotice(for: .fake().copy(siteID: 132, orderID: 306))
+        let payload = try wooDrivenNotificationPayload(siteID: 132, orderID: 306, title: Sample.defaultTitle)
+
+        // When
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: payload)))
+
+        // Then
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        analyticsProvider.assertReceived(event: "push_notification_received",
+                                         with: ["push_notification_source": "woo_driven", "push_notification_type": "store_order"])
+    }
+
+    func test_foreground_order_push_when_clean_site_credentials_match_paid_order_then_hides_only_matching_notice() async throws {
+        // Given
+        application.applicationState = .active
+        sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
+        XCTAssertNil(storageManager.viewStorage.loadSite(siteID: 132))
+        manager.suppressNewOrderNotice(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
+        var refreshCount = 0
+        manager.foregroundNotifications.sink { _ in refreshCount += 1 }.store(in: &subscriptions)
+
+        // When
+        let matchingPayload = try wooDrivenNotificationPayload(siteID: 132, orderID: 306, title: Sample.defaultTitle)
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: matchingPayload)))
+        let matchingNoticeCount = application.presentInAppMessages.count
+        let otherOrderPayload = try wooDrivenNotificationPayload(siteID: 132, orderID: 307, title: Sample.defaultTitle)
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: otherOrderPayload)))
+
+        // Then
+        XCTAssertEqual(matchingNoticeCount, 0)
+        XCTAssertEqual(application.presentInAppMessages.count, 1)
+        XCTAssertEqual(refreshCount, 2)
+        XCTAssertFalse(storesManager.receivedActions.contains { $0 is JetpackConnectionAction || $0 is SiteAction })
+    }
+
+    func test_foreground_order_push_when_wpcom_store_differs_then_shows_notice_for_same_order_id() async throws {
+        // Given
+        application.applicationState = .active
+        sessionManager.setStoreId(132)
+        manager.suppressNewOrderNotice(for: .fake().copy(siteID: 132, orderID: 306))
+        let payload = try wooDrivenNotificationPayload(siteID: 133, orderID: 306, title: Sample.defaultTitle)
+
+        // When
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: payload)))
+
+        // Then
+        XCTAssertEqual(application.presentInAppMessages.count, 1)
+    }
+
     func test_it_emits_foreground_notifications_when_it_receives_a_notification_while_app_is_active() async throws {
         // Given
         application.applicationState = .active

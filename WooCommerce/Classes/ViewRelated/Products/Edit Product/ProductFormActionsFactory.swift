@@ -179,6 +179,7 @@ private extension ProductFormActionsFactory {
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
+            .attributes(editable: editable),
             .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
@@ -204,6 +205,7 @@ private extension ProductFormActionsFactory {
             shouldShowExternalURLRow ? .externalURL(editable: editable): nil,
             shouldShowInventoryRow ? .simplifiedInventory(editable: editable): nil,
             shouldShowQuantityRulesRow ? .quantityRules : nil,
+            .attributes(editable: editable),
             .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
@@ -226,6 +228,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowInventoryRow ? .simplifiedInventory(editable: editable): nil,
             shouldShowQuantityRulesRow ? .quantityRules : nil,
+            .attributes(editable: editable),
             .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
@@ -241,7 +244,6 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let canEditProductType = editable
         let canEditInventorySettingsRow = editable
-        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowNoPriceWarningRow: Bool = {
             let variationsHaveNoPriceSet = variationsPrice == .notSet
             let productHasNoPriceSet = variationsPrice == .unknown && product.product.variations.isNotEmpty && product.product.price.isEmpty
@@ -252,7 +254,7 @@ private extension ProductFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             .variations(hideSeparator: shouldShowNoPriceWarningRow),
             shouldShowNoPriceWarningRow ? .noPriceWarning : nil,
-            shouldShowAttributesRow ? .attributes(editable: editable) : nil,
+            .attributes(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
             .shippingSettings(editable: editable),
             .inventorySettings(editable: canEditInventorySettingsRow),
@@ -280,6 +282,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
+            .attributes(editable: editable),
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
@@ -303,6 +306,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
+            .attributes(editable: editable),
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
@@ -329,6 +333,7 @@ private extension ProductFormActionsFactory {
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
+            .attributes(editable: editable),
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
@@ -343,7 +348,6 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForVariableSubscriptionProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
-        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowQuantityRulesRow = product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = {
@@ -358,7 +362,7 @@ private extension ProductFormActionsFactory {
             return [
                 .variations(hideSeparator: shouldShowNoPriceWarningRow),
                 shouldShowNoPriceWarningRow ? .noPriceWarning : nil,
-                shouldShowAttributesRow ? .attributes(editable: editable) : nil,
+                .attributes(editable: editable),
                 shouldShowReviewsRow ? .reviews: nil,
                 .shippingSettings(editable: editable),
                 .inventorySettings(editable: canEditInventorySettingsRow),
@@ -386,6 +390,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
+            .attributes(editable: editable),
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
@@ -471,8 +476,8 @@ private extension ProductFormActionsFactory {
             // Always visible when available
             return true
         case .attributes:
-            // Always visible when available
-            return true
+            // The row shows when the product has attributes. Otherwise it is in the bottom sheet.
+            return product.product.attributes.isNotEmpty
         case .bundledProducts:
             // The bundled products row is always visible in the settings section for a bundle product.
             return true

@@ -14,7 +14,7 @@ public enum JetpackConnectionAction: Action {
     case activateJetpackPlugin(siteID: Int64, completion: (Result<Void, Error>) -> Void)
     /// Fetches the URL used for setting up Jetpack connection.
     case fetchJetpackConnectionURL(authenticatedWithWPCom: Bool,
-                                   completion: (Result<URL, Error>) -> Void)
+                                   completion: @Sendable (Result<URL, Error>) -> Void)
     /// Fetches connection state with the given site's Jetpack.
     case fetchJetpackConnectionData(siteID: Int64, completion: (Result<JetpackConnectionData, Error>) -> Void)
     /// Fetches the given site's Jetpack connection status, including Offline Mode.

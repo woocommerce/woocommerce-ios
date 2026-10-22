@@ -8,6 +8,7 @@ import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class AppCoordinator {
     let tabBarController: MainTabBarController
 
@@ -25,10 +26,14 @@ final class AppCoordinator {
     private var storePickerCoordinator: StorePickerCoordinator?
     private var significantChangeBlocker: SignificantChangeConsentBlockingHostingController?
     private var foregroundConsentRecheckObserver: NSObjectProtocol?
+    private var deferredAgeVerificationObserver: NSObjectProtocol?
+    private var deferredConsentResponsesObserver: NSObjectProtocol?
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
     private let themeInstaller: ThemeInstaller
+    private let notificationCenter: NotificationCenter
+    private let applicationStateProvider: () -> UIApplication.State
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -48,7 +53,9 @@ final class AppCoordinator {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
-         ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator()) {
+         ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator(),
+         notificationCenter: NotificationCenter = .default,
+         applicationStateProvider: @escaping () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -69,6 +76,8 @@ final class AppCoordinator {
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.themeInstaller = themeInstaller
         self.ageRangeVerificationCoordinator = ageRangeVerificationCoordinator
+        self.notificationCenter = notificationCenter
+        self.applicationStateProvider = applicationStateProvider
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
@@ -81,11 +90,7 @@ final class AppCoordinator {
         // including long after it was sent — re-evaluate the age gate when an answer arrives.
         // The listener is armed asynchronously; that's fine, the first verification pass is
         // read-only and never depends on it.
-        ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
-            // When logged out the outcome is already persisted; the next login's check picks it up.
-            guard let self, self.isLoggedIn else { return }
-            self.triggerAgeVerification(trigger: .consentResolution)
-        }
+        startObservingConsentResponsesWhenActive()
 
         authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
@@ -96,6 +101,7 @@ final class AppCoordinator {
                 case (false, true):
                     // The session can end underneath the consent blocker (e.g. token invalidation);
                     // the login UI replaces the whole hierarchy, so drop the blocker with it.
+                    self.cancelDeferredAgeVerification()
                     self.dismissSignificantChangeBlockerIfNeeded(animated: false)
                     self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (false, false):
@@ -104,6 +110,7 @@ final class AppCoordinator {
                     // To get into the expected logged-out state, we can fully deauthenticate before starting the auth flow.
                     DDLogWarn("⚠️ Unexpected authentication state: Unauthenticated user has a default store set.")
                     stores.deauthenticate()
+                    self.cancelDeferredAgeVerification()
                     self.dismissSignificantChangeBlockerIfNeeded(animated: false)
                     self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (true, true):
@@ -466,6 +473,14 @@ private extension AppCoordinator {
 
 private extension AppCoordinator {
     func triggerAgeVerification(trigger: AgeVerificationTrigger, onAllowed: @escaping () -> Void = { }) {
+        // The Declared Age Range calls go through a system XPC connection, and the FamilyCircleUI
+        // crash (WOOMOB-3608) is observed on launches the user never sees (prewarm, background
+        // refresh, push wake). Only verify while active.
+        guard applicationStateProvider() == .active else {
+            deferAgeVerificationUntilActive(trigger: trigger, onAllowed: onAllowed)
+            return
+        }
+
         ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
             hostingWindow: window,
             trigger: trigger
@@ -545,7 +560,6 @@ private extension AppCoordinator {
         startForegroundConsentRecheck()
     }
 
-    @MainActor
     func handleSignificantChangeBlockerAction(for context: SignificantChangeBlockingContext) {
         analytics.track(event: .AgeVerification.action(for: context))
         switch context {
@@ -575,7 +589,6 @@ private extension AppCoordinator {
     /// Opens Help & Support on top of the wall. The wall is never dismissed for this, so closing
     /// support lands back on it with the same context. Ignored while the wall already presents
     /// something (the system consent sheet, or support itself).
-    @MainActor
     func presentSupportFromSignificantChangeBlocker() {
         guard let blocker = significantChangeBlocker, blocker.presentedViewController == nil else { return }
         analytics.track(event: .AgeVerification.contactSupportTapped(for: blocker.context))
@@ -590,11 +603,63 @@ private extension AppCoordinator {
         (blocker.presentingViewController ?? blocker).dismiss(animated: animated)
     }
 
+    /// Runs the verification on the next `didBecomeActive`. Only the latest trigger is kept:
+    /// one pass after activation covers every trigger that arrived while not active.
+    func deferAgeVerificationUntilActive(trigger: AgeVerificationTrigger, onAllowed: @escaping () -> Void) {
+        cancelDeferredAgeVerification()
+        deferredAgeVerificationObserver = notificationCenter.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            self.cancelDeferredAgeVerification()
+            guard self.isLoggedIn else { return }
+            self.triggerAgeVerification(trigger: trigger, onAllowed: onAllowed)
+        }
+    }
+
+    func cancelDeferredAgeVerification() {
+        if let observer = deferredAgeVerificationObserver {
+            notificationCenter.removeObserver(observer)
+            deferredAgeVerificationObserver = nil
+        }
+    }
+
+    /// The response listener also talks to the system over XPC, so it is armed on the same
+    /// terms as the verification: now if the app is active, otherwise on the next `didBecomeActive`.
+    func startObservingConsentResponsesWhenActive() {
+        guard applicationStateProvider() == .active else {
+            deferredConsentResponsesObserver = notificationCenter.addObserver(
+                forName: UIApplication.didBecomeActiveNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self else { return }
+                if let observer = self.deferredConsentResponsesObserver {
+                    self.notificationCenter.removeObserver(observer)
+                    self.deferredConsentResponsesObserver = nil
+                }
+                self.startObservingConsentResponses()
+            }
+            return
+        }
+        startObservingConsentResponses()
+    }
+
+    func startObservingConsentResponses() {
+        ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
+            // When logged out the outcome is already persisted; the next login's check picks it up.
+            guard let self, self.isLoggedIn else { return }
+            self.triggerAgeVerification(trigger: .consentResolution)
+        }
+    }
+
     /// While the blocker is up, re-check on every foreground: the parent may have
     /// answered the request (e.g. via Messages) while the app was in the background.
     func startForegroundConsentRecheck() {
         guard foregroundConsentRecheckObserver == nil else { return }
-        foregroundConsentRecheckObserver = NotificationCenter.default.addObserver(
+        foregroundConsentRecheckObserver = notificationCenter.addObserver(
             forName: UIApplication.willEnterForegroundNotification,
             object: nil,
             queue: .main
@@ -605,7 +670,7 @@ private extension AppCoordinator {
 
     func stopForegroundConsentRecheck() {
         if let observer = foregroundConsentRecheckObserver {
-            NotificationCenter.default.removeObserver(observer)
+            notificationCenter.removeObserver(observer)
             foregroundConsentRecheckObserver = nil
         }
     }

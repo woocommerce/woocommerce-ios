@@ -13,6 +13,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                      _ onProcessingCompletion: (Yosemite.PaymentIntent) -> Void,
                                      _ onCompletion: (Result<CardPresentCapturedPaymentData, Error>) -> Void) -> Void)? = nil
 
+    var spyProcessingCompletion: ((PaymentIntent) -> Void)?
     var spyDidCallCollectPayment = false
     var spyCollectPaymentOrder: Order? = nil
     var spyCollectPaymentGatewayAccount: PaymentGatewayAccount? = nil
@@ -36,6 +37,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        spyProcessingCompletion = onProcessingCompletion
         spyDidCallCollectPayment = true
         spyCollectPaymentOrder = order
         spyCollectPaymentGatewayAccount = paymentGatewayAccount

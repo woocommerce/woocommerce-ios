@@ -1,6 +1,6 @@
 # Testing Rules
 
-See `Modules/Tests/CLAUDE.md` for detailed async testing patterns and mock examples.
+See `Modules/Tests/AGENTS.md` for detailed async testing patterns and mock examples.
 
 ## Framework
 - **Prefer Swift Testing** (`@Test`, `#expect()`) for new test files

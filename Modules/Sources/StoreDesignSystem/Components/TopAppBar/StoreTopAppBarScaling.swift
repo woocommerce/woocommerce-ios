@@ -5,5 +5,5 @@ import SwiftUI
 /// and offer the Large Content Viewer instead.
 enum StoreTopAppBarScaling {
     /// Text stops growing here; the title stays one line and truncates.
-    static let maximumDynamicTypeSize: DynamicTypeSize = .accessibility2
+    static let maximumDynamicTypeSize = StoreDynamicTypeScaling.chromeMaximum
 }

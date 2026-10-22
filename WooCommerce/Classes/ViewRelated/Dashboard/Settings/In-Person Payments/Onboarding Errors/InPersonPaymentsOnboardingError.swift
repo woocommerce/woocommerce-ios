@@ -29,12 +29,16 @@ struct InPersonPaymentsOnboardingError: View {
                 Spacer()
 
                 if let buttonViewModel {
-                    Button(buttonViewModel.text, action: buttonViewModel.action)
+                    Button(action: buttonViewModel.action) {
+                        buttonLabel(for: buttonViewModel)
+                    }
                         .buttonStyle(PrimaryButtonStyle())
                         .padding(.bottom, secondaryButtonViewModel == nil ? 24.0 : 0)
                 }
                 if let secondaryButtonViewModel {
-                    Button(secondaryButtonViewModel.text, action: secondaryButtonViewModel.action)
+                    Button(action: secondaryButtonViewModel.action) {
+                        buttonLabel(for: secondaryButtonViewModel)
+                    }
                         .buttonStyle(SecondaryButtonStyle())
                 }
                 if learnMore {
@@ -43,6 +47,15 @@ struct InPersonPaymentsOnboardingError: View {
                     .padding(.vertical, 8)
                 }
             }.padding()
+        }
+    }
+
+    private func buttonLabel(for viewModel: InPersonPaymentsOnboardingErrorButtonViewModel) -> some View {
+        HStack {
+            Text(viewModel.text)
+            if viewModel.isExternalLink {
+                Image(uiImage: .externalImage).accessibilityHidden(true)
+            }
         }
     }
 }

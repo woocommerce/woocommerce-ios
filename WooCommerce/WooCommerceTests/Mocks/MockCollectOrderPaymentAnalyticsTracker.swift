@@ -11,7 +11,7 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
         // no-op
     }
 
-    func trackProcessingCompletion(intent: PaymentIntent) {
+    func trackProcessingCompletion(intent: PaymentIntent, recordPaymentConfirmation: Bool) {
         // no-op
     }
 

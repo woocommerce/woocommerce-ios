@@ -109,7 +109,8 @@ struct POSPaymentAnalyticsEventTests {
         #expect(event.properties["amount_normalized"] == nil)
         #expect(event.properties["currency"] == nil)
     }
-    @Test func test_card_cancellation_then_preserves_metadata_without_timing_properties() {
+
+    @Test func test_card_cancellation_when_created_then_preserves_metadata_without_timing_properties() {
         // Given a card-reader cancellation after three checkout taps
         // When
         let event = WooAnalyticsEvent.PointOfSale.cardPresentCollectPaymentCanceled(

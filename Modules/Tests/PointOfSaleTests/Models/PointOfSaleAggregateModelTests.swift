@@ -48,10 +48,16 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.isEmpty)
         }
 
-        @Test func test_start_new_cart_when_timing_exists_then_resets_checkout_timing() {
+        @Test func test_start_new_cart_when_called_then_requests_checkout_timing_reset() throws {
+            // Given
             let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
             let sut = makePointOfSaleAggregateModel(collectOrderPaymentAnalyticsTracker: tracker)
+            try #require(!tracker.didResetCheckoutTiming)
+
+            // When
             sut.startNewCart()
+
+            // Then
             #expect(tracker.didResetCheckoutTiming)
         }
 

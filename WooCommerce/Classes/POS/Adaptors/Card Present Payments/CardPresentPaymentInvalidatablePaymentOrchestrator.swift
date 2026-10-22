@@ -11,8 +11,11 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
 
     /// POS celebrates through `POSPaymentSuccessCelebration`, which honors the payment success sound setting from POS settings.
     init(stores: StoresManager = ServiceLocator.stores,
-         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration()) {
-        self.paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: celebration)
+         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration(),
+         walletPresentationSuppression: WalletPresentationSuppressing? = nil) {
+        self.paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores,
+                                                              celebration: celebration,
+                                                              walletPresentationSuppression: walletPresentationSuppression)
     }
 
     /// Called from a task cancellation handler, which is nonisolated.
@@ -23,6 +26,7 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
+                        readerType: CardReaderType,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         countryCode: CountryCode,
@@ -41,6 +45,7 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
         paymentOrchestrator.collectPayment(for: order,
                                            orderTotal: orderTotal,
                                            paymentGatewayAccount: paymentGatewayAccount,
+                                           readerType: readerType,
                                            paymentMethodTypes: paymentMethodTypes,
                                            stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
                                            countryCode: countryCode,

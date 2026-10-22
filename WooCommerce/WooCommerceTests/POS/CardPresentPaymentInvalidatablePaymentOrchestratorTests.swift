@@ -53,6 +53,7 @@ struct CardPresentPaymentInvalidatablePaymentOrchestratorTests {
         sut.collectPayment(for: .fake(),
                            orderTotal: 1,
                            paymentGatewayAccount: .fake(),
+                           readerType: .stripeM2,
                            paymentMethodTypes: [.cardPresent],
                            stripeSmallestCurrencyUnitMultiplier: 100,
                            countryCode: .US,
@@ -90,12 +91,14 @@ private extension CardPresentPaymentInvalidatablePaymentOrchestratorTests {
     func collectPayment() async -> Result<CardPresentCapturedPaymentData, Error> {
         let sut = CardPresentPaymentInvalidatablePaymentOrchestrator(
             stores: stores,
-            celebration: POSPaymentSuccessCelebration(paymentSettings: paymentSettings, celebration: celebration))
+            celebration: POSPaymentSuccessCelebration(paymentSettings: paymentSettings, celebration: celebration),
+            walletPresentationSuppression: MockWalletPresentationSuppression())
 
         return await withCheckedContinuation { continuation in
             sut.collectPayment(for: .fake(),
                                orderTotal: 1,
                                paymentGatewayAccount: .fake(),
+                               readerType: .stripeM2,
                                paymentMethodTypes: [.cardPresent],
                                stripeSmallestCurrencyUnitMultiplier: 100,
                                countryCode: .US,

@@ -6,12 +6,8 @@ public protocol POSCollectOrderPaymentAnalyticsTracking {
     func trackOrderSyncSuccess()
     func trackCardReaderReady()
     func trackCardReaderTapped()
-    /// Called on every reader connection status update, so the tracker knows whether a reader is connected
-    /// when a customer interaction starts, and when one connects afterwards.
     func trackCardReaderConnectionChanged(isConnected: Bool)
-    /// Called when a card payment attempt starts validating the order or preparing the reader, including retries.
-    /// Re-arms the reader-ready stamp even if the previous attempt ended without an outcome event,
-    /// and marks where this attempt's preparation starts.
+    /// Called for every attempt, including retries, even if the previous attempt ended without an outcome event.
     func trackCardPaymentAttemptStarted()
     func trackCheckoutTapped()
     func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder)

@@ -260,23 +260,20 @@ extension WooAnalyticsEvent {
             )
         }
 
-        /// The signal that marked the reader as ready for a card. Android shares these values,
-        /// and also sends `collection_started` for Tap to Pay, which has no input request there.
+        /// Android also sends `collection_started` for Tap to Pay, which has no input request there.
         ///
         public enum ReaderReadySignal: String {
-            /// The reader asked for card input.
             case inputRequested = "input_requested"
         }
 
-        /// Reader-ready timing sent on `reader_ready_for_card_payment` and on the card payment outcomes.
         /// Values that are `nil` are left out of the event.
         ///
         public struct ReaderReadyTiming: Equatable {
             /// Whether a reader was connected when the customer interaction started.
             public let readerConnectedAtCheckout: Bool?
-            /// From the customer interaction start to the reader connecting, when it was not connected at the start.
+            /// From the customer interaction start to the first reader connection, when it was not connected at the start.
             public let millisecondsWaitingForReaderConnection: Double?
-            /// From the later of order sync and reader connection, to the reader being ready for a card.
+            /// From the latest of order sync, reader connection and the attempt start, to the reader being ready for a card.
             public let millisecondsFromOrderSyncToReaderReady: Double?
             public let readerReadySignal: ReaderReadySignal?
 

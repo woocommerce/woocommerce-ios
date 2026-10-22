@@ -669,6 +669,54 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == "2000.0")
     }
 
+    @Test @MainActor func test_track_card_reader_ready_when_reader_reconnects_after_order_sync_then_preparation_starts_at_the_reconnect() {
+        // Given
+        let clock = TestClock()
+        let sut = makeTimedAdaptor(clock: clock)
+        sut.trackCardReaderConnectionChanged(isConnected: true)
+        clock.now = 1000
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1001
+        sut.trackOrderSyncSuccess()
+
+        // When
+        clock.now = 1002
+        sut.trackCardReaderConnectionChanged(isConnected: false)
+        clock.now = 1005
+        sut.trackCardReaderConnectionChanged(isConnected: true)
+        clock.now = 1007
+        sut.trackCardReaderReady()
+
+        // Then
+        #expect(property("reader_connected_at_checkout", in: "reader_ready_for_card_payment") == "true")
+        #expect(property("milliseconds_waiting_for_reader_connection", in: "reader_ready_for_card_payment") == nil)
+        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "reader_ready_for_card_payment") == "2000.0")
+    }
+
+    @Test @MainActor func test_payment_outcome_when_reader_reconnects_after_reader_ready_then_keeps_the_attempt_preparation() {
+        // Given
+        let clock = TestClock()
+        let sut = makeTimedAdaptor(clock: clock)
+        sut.trackCardReaderConnectionChanged(isConnected: true)
+        clock.now = 1000
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1001
+        sut.trackOrderSyncSuccess()
+        clock.now = 1003
+        sut.trackCardReaderReady()
+
+        // When
+        clock.now = 1004
+        sut.trackCardReaderConnectionChanged(isConnected: false)
+        clock.now = 1006
+        sut.trackCardReaderConnectionChanged(isConnected: true)
+        clock.now = 1008
+        sut.trackPaymentFailure(with: TestError())
+
+        // Then
+        #expect(property("milliseconds_from_order_sync_to_reader_ready", in: "card_present_collect_payment_failed") == "2000.0")
+    }
+
     @Test @MainActor func test_track_card_reader_ready_when_reader_asks_for_input_twice_in_one_attempt_then_keeps_first_stamp() {
         // Given
         let clock = TestClock()

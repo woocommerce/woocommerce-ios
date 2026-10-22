@@ -1344,7 +1344,6 @@ private extension POSPaymentModel {
 
                 switch newCardPaymentState {
                 case .validatingOrder, .preparingReader:
-                    // Every attempt, including retries, validates the order before preparing the reader.
                     // Re-arming at both steps keeps a failed validation from reporting the previous attempt's timing.
                     collectOrderPaymentAnalyticsTracker.trackCardPaymentAttemptStarted()
                 case .acceptingCard:

@@ -8,6 +8,7 @@ import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class AppCoordinator {
     let tabBarController: MainTabBarController
 
@@ -41,7 +42,6 @@ final class AppCoordinator {
     /// Handles the age range verification process and corresponding app/UI state behaviour.
     private let ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol
 
-    @MainActor
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -85,7 +85,6 @@ final class AppCoordinator {
         schedulePOSSurveyNotificationIfNeeded()
     }
 
-    @MainActor
     func start() {
         // A parent/guardian can answer a significant-change consent question at any time,
         // including long after it was sent — re-evaluate the age gate when an answer arrives.
@@ -267,7 +266,6 @@ private extension AppCoordinator {
     }
 
     /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
-    @MainActor
     func configureAuthenticator() {
         if isRunningTests {
             /// This is needed to fix crashes in unit tests.
@@ -342,7 +340,6 @@ private extension AppCoordinator {
     /// If the app is authenticated but there is no default store ID on launch,
     /// check for errors and display store picker if none exists.
     ///
-    @MainActor
     func displayLoggedInStateWithoutDefaultStore() {
         // The store picker is displayed by `AppCoordinator` on launch (window root uninitialized) and when an
         // in-session store reset occurs (window root is the logged-in tab UI, e.g. after an `unknown_blog`
@@ -563,7 +560,6 @@ private extension AppCoordinator {
         startForegroundConsentRecheck()
     }
 
-    @MainActor
     func handleSignificantChangeBlockerAction(for context: SignificantChangeBlockingContext) {
         analytics.track(event: .AgeVerification.action(for: context))
         switch context {
@@ -593,7 +589,6 @@ private extension AppCoordinator {
     /// Opens Help & Support on top of the wall. The wall is never dismissed for this, so closing
     /// support lands back on it with the same context. Ignored while the wall already presents
     /// something (the system consent sheet, or support itself).
-    @MainActor
     func presentSupportFromSignificantChangeBlocker() {
         guard let blocker = significantChangeBlocker, blocker.presentedViewController == nil else { return }
         analytics.track(event: .AgeVerification.contactSupportTapped(for: blocker.context))

@@ -129,6 +129,7 @@ class AuthenticationManager: Authentication {
     /// the QR-login prologue — pushed onto the same navigation stack — rather than the standard
     /// site-address flow. The standard prologue stays as the app's first screen.
     ///
+    @MainActor
     func authenticationUI() -> UIViewController {
         // A fresh authenticator replaces the previous navigation stack. Recovery paths
         // can log out before reaching `startStorePicker`, leaving its QR coordinator

@@ -1224,12 +1224,10 @@ extension DefaultStoresManager {
 final class MockAuthenticationManager: AuthenticationManager {
     private(set) var authenticationUIInvoked: Bool = false
 
+    @MainActor
     override func authenticationUI() -> UIViewController {
         authenticationUIInvoked = true
-        // AppCoordinator only requests authentication UI from its main-actor presentation paths.
-        return MainActor.assumeIsolated {
-            UIViewController()
-        }
+        return UIViewController()
     }
 }
 

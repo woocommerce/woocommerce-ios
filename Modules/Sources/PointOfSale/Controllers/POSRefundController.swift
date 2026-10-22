@@ -30,6 +30,7 @@ protocol POSRefundControllerProtocol {
 
     private var order: POSOrder?
     private var preparation: POSRefundPreparation?
+    private var preparationRequestID: UUID?
 
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
     private var reviewPreparationTask: Task<POSRefundReviewPreparationResult, Never>?
@@ -53,25 +54,35 @@ protocol POSRefundControllerProtocol {
     }
 
     func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult {
+        let requestID = UUID()
+        preparationRequestID = requestID
         self.order = order
-
-        let preparation: POSRefundPreparation
-        do {
-            preparation = try await refundSubmissionProcessor.prepareRefund(for: order)
-            self.preparation = preparation
-        } catch let eligibilityFailure as OrderRefundEligibilityFailure {
-            self.preparation = nil
-            return .ineligible(eligibilityFailure)
-        } catch {
-            self.preparation = nil
-            return .failed
-        }
-
-        selectableItems = preparation.selectableItems
-        hasModifiedSelection = false
+        preparation = nil
         resetReviewPreparation()
 
-        return selectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
+        let result: Result<POSRefundPreparation, Error>
+        do {
+            result = .success(try await refundSubmissionProcessor.prepareRefund(for: order))
+        } catch {
+            result = .failure(error)
+        }
+
+        // Service callbacks may still finish after the flow is dismissed or replaced.
+        // Check ownership for failures as well as successes before changing shared state.
+        guard preparationRequestID == requestID, !Task.isCancelled else { return .failed }
+
+        switch result {
+        case .success(let preparation):
+            guard preparation.orderID == order.id else { return .failed }
+            self.preparation = preparation
+            selectableItems = preparation.selectableItems
+            hasModifiedSelection = false
+            return selectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
+        case .failure(let eligibilityFailure as OrderRefundEligibilityFailure):
+            return .ineligible(eligibilityFailure)
+        case .failure:
+            return .failed
+        }
     }
 
     var hasLoadedSelectableItems: Bool {
@@ -111,6 +122,7 @@ protocol POSRefundControllerProtocol {
     }
 
     func clearSelection() {
+        preparationRequestID = nil
         selectableItems = []
         hasModifiedSelection = false
         resetReviewPreparation()

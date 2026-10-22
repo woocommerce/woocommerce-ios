@@ -18,6 +18,31 @@ struct POSRefundSubmissionAdaptorTests {
     private let siteID: Int64 = 123
     private let orderID: Int64 = 560
 
+    @Test(arguments: [false, true])
+    func refund_when_preparation_belongs_to_another_order_then_rejects_before_preview_or_submission(submit: Bool) async throws {
+        // Given valid preparation for a different order
+        let sut = makeSUT(previewResult: .success(preview()))
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        let otherOrder = posOrder().copy(id: orderID + 1)
+
+        // When / Then neither review nor submission can use that order's context
+        await #expect(throws: (any Error).self) {
+            if submit {
+                try await sut.adaptor.submitRefund(for: otherOrder,
+                                                   preparation: preparation,
+                                                   selectedItems: preparation.selectableItems,
+                                                   reason: nil)
+            } else {
+                _ = try await sut.adaptor.prepareReviewData(for: otherOrder,
+                                                            preparation: preparation,
+                                                            selectedItems: preparation.selectableItems,
+                                                            reason: nil)
+            }
+        }
+        #expect(sut.service.createRefundLineItems == nil)
+        #expect(sut.spy.dispatchedClassicCreate == false)
+    }
+
     @Test func prepareRefund_when_order_was_paid_with_gift_card_then_throws_eligibility_failure() async throws {
         // Given
         let giftCard = OrderGiftCard(giftCardID: 1, code: "GIFT-CARD", amount: 10)

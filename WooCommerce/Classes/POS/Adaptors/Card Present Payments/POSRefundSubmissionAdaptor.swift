@@ -124,7 +124,9 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                            preparation: POSRefundPreparation,
                            selectedItems: [POSRefundSelectableItem],
                            reason: String?) async throws -> POSRefundReviewData {
-        guard let context = preparedContexts[preparation.orderID] else {
+        guard preparation.orderID == order.id,
+              let context = preparedContexts[preparation.orderID],
+              context.order.orderID == order.id else {
             throw POSRefundSubmissionAdaptorError.missingPreparedRefund
         }
 
@@ -200,7 +202,9 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
             throw POSRefundSubmissionAdaptorError.refundAlreadyInProgress
         }
 
-        guard let context = preparedContexts[preparation.orderID] else {
+        guard preparation.orderID == order.id,
+              let context = preparedContexts[preparation.orderID],
+              context.order.orderID == order.id else {
             throw POSRefundSubmissionAdaptorError.missingPreparedRefund
         }
 

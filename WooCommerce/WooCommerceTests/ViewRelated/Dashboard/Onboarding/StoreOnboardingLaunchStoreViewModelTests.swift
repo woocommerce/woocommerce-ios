@@ -23,6 +23,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
 
     // MARK: - `siteURL`
 
+    @MainActor
     func test_siteURL_is_set_from_init_value() throws {
         // Given
         let viewModel = StoreOnboardingLaunchStoreViewModel(siteURL: exampleURL, siteID: 1, onLaunch: {}, onLearnMoreTapped: {})
@@ -33,7 +34,8 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
 
     // MARK: - `launchStore`
 
-    func test_launchStore_triggers_onLaunch_on_success() throws {
+    @MainActor
+    func test_launchStore_triggers_onLaunch_on_success() async throws {
         // Given
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
             guard case let .launchSite(siteIDValue, completion) = action else {
@@ -45,22 +47,23 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
             completion(.success(()))
         }
 
+        var didLaunch = false
+        let viewModel = StoreOnboardingLaunchStoreViewModel(siteURL: exampleURL,
+                                                            siteID: siteID,
+                                                            stores: stores,
+                                                            onLaunch: {
+            didLaunch = true
+        },
+                                                            onLearnMoreTapped: {})
+
         // When
-        waitFor { promise in
-            Task {
-                let viewModel = StoreOnboardingLaunchStoreViewModel(siteURL: self.exampleURL,
-                                                                    siteID: self.siteID,
-                                                                    stores: self.stores,
-                                                                    onLaunch: {
-                    // Then
-                    promise(())
-                },
-                                                                    onLearnMoreTapped: {})
-                await viewModel.launchStore()
-            }
-        }
+        await viewModel.launchStore()
+
+        // Then
+        XCTAssertTrue(didLaunch)
     }
 
+    @MainActor
     func test_launchStore_sets_alreadyLaunched_error_on_failure() async throws {
         // Given
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
@@ -82,6 +85,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.error, .alreadyLaunched)
     }
 
+    @MainActor
     func test_launchStore_updates_state_to_launchingStore_when_there_is_no_error() async throws {
         // Given
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
@@ -103,6 +107,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .launchingStore)
     }
 
+    @MainActor
     func test_launchStore_updates_state_to_readyToPublish_when_there_is_error() async throws {
         // Given
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
@@ -126,6 +131,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
 
     // MARK: - `state`
 
+    @MainActor
     func test_state_is_checkingSitePlan_by_default() async throws {
         // Given
         let sut = StoreOnboardingLaunchStoreViewModel(siteURL: exampleURL,
@@ -138,6 +144,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .checkingSitePlan)
     }
 
+    @MainActor
     func test_state_is_needsPlanUpgrade_for_WPCOM_site_under_free_trail() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
@@ -160,6 +167,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .needsPlanUpgrade)
     }
 
+    @MainActor
     func test_state_is_readyToPublish_for_WPCOM_site_not_under_free_trial() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
@@ -180,6 +188,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .readyToPublish)
     }
 
+    @MainActor
     func test_state_is_readyToPublish_for_WPCOM_site_when_checking_site_plan_fails() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)

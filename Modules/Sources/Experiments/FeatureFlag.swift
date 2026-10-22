@@ -128,8 +128,4 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Off by default until the stack is ready to enable for internal builds.
     ///
     case starReceiptPrinterSupport
-
-    /// Shows and edits product attributes that are not used for variations, on every product type.
-    ///
-    case nonVariationProductAttributes
 }

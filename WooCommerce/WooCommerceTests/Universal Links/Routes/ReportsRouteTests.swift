@@ -3,6 +3,7 @@ import Foundation
 import protocol WooFoundation.Analytics
 import protocol WooFoundation.AnalyticsProvider
 import Yosemite
+import os
 
 @testable import WooCommerce
 
@@ -211,20 +212,35 @@ private final class SpyAnalytics: Analytics {
         let properties: [AnyHashable: Any]?
     }
 
-    private(set) var trackedEvents: [TrackedEvent] = []
-    var userHasOptedIn: Bool = true
+    private struct State {
+        var trackedEvents: [TrackedEvent] = []
+        var userHasOptedIn = true
+    }
+
+    private let state = OSAllocatedUnfairLock(uncheckedState: State())
+
+    var trackedEvents: [TrackedEvent] {
+        state.withLockUnchecked { $0.trackedEvents }
+    }
+
+    var userHasOptedIn: Bool {
+        get { state.withLockUnchecked { $0.userHasOptedIn } }
+        set { state.withLockUnchecked { $0.userHasOptedIn = newValue } }
+    }
     let analyticsProvider: AnalyticsProvider = SpyAnalyticsProvider()
 
     func initialize() {}
     func track(_ eventName: String, properties: [AnyHashable: Any]?, error: Error?) {
-        trackedEvents.append(TrackedEvent(name: eventName, properties: properties))
+        state.withLockUnchecked {
+            $0.trackedEvents.append(TrackedEvent(name: eventName, properties: properties))
+        }
     }
     func refreshUserData() {}
     func setUserHasOptedOut(_ optedOut: Bool) { userHasOptedIn = !optedOut }
 }
 
 private final class SpyAnalyticsProvider: AnalyticsProvider {
-    func refreshUserData(completion: @escaping () -> Void) { completion() }
+    func refreshUserData(completion: @escaping @Sendable () -> Void) { completion() }
     func track(_ eventName: String) {}
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {}
     func clearEvents() {}

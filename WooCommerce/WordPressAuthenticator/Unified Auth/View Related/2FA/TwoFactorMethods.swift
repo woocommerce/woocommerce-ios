@@ -18,10 +18,8 @@ public struct TwoFactorMethods {
     }
 
     /// Google and Apple logins clear the account's list, so texting a code follows their challenge's list.
-    /// Without any list, texting a code stays available as it was before the server listed methods.
     public var canTextCode: Bool {
-        let textCodeMethods = methods.isEmpty ? challengeMethods : methods
-        return textCodeMethods.isEmpty || textCodeMethods.contains(.sms)
+        (methods.isEmpty ? challengeMethods : methods).contains(.sms)
     }
 
     /// A security key is the first option when no code method is available.

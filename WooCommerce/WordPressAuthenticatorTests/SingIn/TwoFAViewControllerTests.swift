@@ -10,7 +10,7 @@ struct TwoFAViewControllerTests {
     func test_text_code_when_nonce_info_has_no_sms_nonce_then_requests_code_with_password() throws {
         // Given
         let nonceInfo = SocialLogin2FANonceInfo()
-        let (controller, cells) = try makeScreen(password: "password", nonceInfo: nonceInfo)
+        let (controller, cells) = try makeScreen(password: "password", nonceInfo: nonceInfo, supportedAuthTypes: ["sms"])
         let smsCells = cells.compactMap { $0 as? TextLinkButtonTableViewCell }
         let smsCell = try #require(smsCells.first)
         let facade = MockWordPressComOAuthClientFacade(client: "Fake", secret: "Fake")
@@ -29,7 +29,7 @@ struct TwoFAViewControllerTests {
         // Given
         let nonceInfo = SocialLogin2FANonceInfo()
         nonceInfo.nonceSMS = "sms-nonce"
-        let (controller, cells) = try makeScreen(password: "password", nonceInfo: nonceInfo)
+        let (controller, cells) = try makeScreen(password: "password", nonceInfo: nonceInfo, supportedAuthTypes: ["sms"])
         let smsCells = cells.compactMap { $0 as? TextLinkButtonTableViewCell }
         let smsCell = try #require(smsCells.first)
         let facade = MockWordPressComOAuthClientFacade(client: "Fake", secret: "Fake")
@@ -48,6 +48,7 @@ struct TwoFAViewControllerTests {
     func test_text_code_when_nonce_info_has_no_sms_nonce_and_no_password_then_requests_social_code() throws {
         // Given
         let nonceInfo = SocialLogin2FANonceInfo()
+        nonceInfo.supportedAuthTypes = ["sms"]
         let (controller, cells) = try makeScreen(password: "", nonceInfo: nonceInfo)
         let smsCells = cells.compactMap { $0 as? TextLinkButtonTableViewCell }
         let smsCell = try #require(smsCells.first)
@@ -116,16 +117,19 @@ struct TwoFAViewControllerTests {
     }
 
     @Test
-    func test_two_factor_options_when_social_challenge_does_not_list_sms_then_hides_text_link() throws {
+    func test_two_factor_options_when_social_challenge_lists_sms_then_shows_text_link() throws {
         // Given
         let nonceInfo = SocialLogin2FANonceInfo()
-        nonceInfo.supportedAuthTypes = ["authenticator", "backup"]
+        nonceInfo.supportedAuthTypes = ["authenticator", "sms"]
 
         // When
         let (_, cells) = try makeScreen(nonceInfo: nonceInfo)
 
         // Then
-        #expect(cells.compactMap { $0 as? TextLinkButtonTableViewCell }.isEmpty)
+        let linkTitles = cells.compactMap { $0 as? TextLinkButtonTableViewCell }.compactMap {
+            firstSubview(of: UIButton.self, in: $0)?.title(for: .normal)
+        }
+        #expect(linkTitles == [WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle])
     }
 
     @Test
@@ -226,9 +230,9 @@ struct TwoFAViewControllerTests {
     }
 
     @Test
-    func test_text_code_when_requested_without_method_list_then_shows_text_message_instructions() throws {
+    func test_text_code_when_requested_then_shows_text_message_instructions() throws {
         // Given
-        let (controller, cells) = try makeScreen(password: "password")
+        let (controller, cells) = try makeScreen(password: "password", supportedAuthTypes: ["authenticator", "sms"])
         let links = cells.compactMap { $0 as? TextLinkButtonTableViewCell }
         let smsLink = try #require(links.first)
         let facade = MockWordPressComOAuthClientFacade(client: "Fake", secret: "Fake")
@@ -248,7 +252,7 @@ struct TwoFAViewControllerTests {
     @Test
     func test_text_code_when_code_was_typed_then_keeps_the_typed_code() throws {
         // Given
-        let (controller, _) = try makeScreen(password: "password")
+        let (controller, _) = try makeScreen(password: "password", supportedAuthTypes: ["sms"])
         controller.loginFacade.wordpressComOAuthClientFacade = MockWordPressComOAuthClientFacade(client: "Fake", secret: "Fake")
         let tableView = try #require(firstSubview(of: UITableView.self, in: controller.view))
         tableView.layoutIfNeeded()

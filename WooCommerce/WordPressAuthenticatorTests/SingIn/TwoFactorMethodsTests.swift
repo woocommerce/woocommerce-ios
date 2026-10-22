@@ -4,14 +4,14 @@ import Testing
 struct TwoFactorMethodsTests {
 
     @Test
-    func test_methods_when_list_is_empty_or_unknown_then_keeps_legacy_text_option() {
+    func test_methods_when_list_is_empty_or_unknown_then_hides_text_option() {
         // Given
         let noList = TwoFactorMethods(supportedAuthTypes: [])
         let unknownList = TwoFactorMethods(supportedAuthTypes: ["push"])
 
         // When / Then
-        #expect(noList.canTextCode)
-        #expect(unknownList.canTextCode)
+        #expect(!noList.canTextCode)
+        #expect(!unknownList.canTextCode)
         #expect(!noList.startsWithSecurityKey)
         #expect(noList.instructions(hasRequestedTextCode: false, isBackupCodeRequested: false) == nil)
     }

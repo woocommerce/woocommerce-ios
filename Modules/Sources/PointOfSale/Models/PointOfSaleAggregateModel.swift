@@ -282,6 +282,7 @@ extension PointOfSaleAggregateModel {
 
     private func setStateForEditing() {
         checkoutGeneration += 1
+        orderController.cancelSync()
         orderStage = .building
         paymentModel.reset()
     }

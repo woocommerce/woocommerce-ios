@@ -466,6 +466,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.orderStage == .building)
+            #expect(orderController.cancelSyncWasCalled)
             #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
         }
 

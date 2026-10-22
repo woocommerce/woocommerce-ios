@@ -83,6 +83,86 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderCallCount == 1)
     }
 
+    @Test func test_syncOrder_when_canceled_checkout_restarts_then_new_order_survives_old_response() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let oldOrder = Order.fake().copy(orderID: 1, total: "10.00")
+        let newOrder = Order.fake().copy(orderID: 2, total: "20.00")
+        mockOrderService.onSyncOrderCalled = {
+            mockOrderService.onSyncOrderCalled = nil
+            // When: return to editing and check out the changed cart before A finishes.
+            sut.cancelSync()
+            mockOrderService.orderToReturn = newOrder
+            await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 2)]), retryHandler: {})
+            mockOrderService.orderToReturn = oldOrder
+        }
+
+        let result = await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        // Then
+        #expect(mockOrderService.syncOrderCallCount == 2)
+        guard case let .loaded(totals, order) = sut.orderState else {
+            Issue.record("The new checkout must remain loaded")
+            return
+        }
+        #expect(order.orderID == 2)
+        #expect(totals.orderTotalDecimal == 20)
+        guard case .failure(let error) = result else {
+            Issue.record("The canceled sync must not report success")
+            return
+        }
+        #expect(error is CancellationError)
+    }
+
+    @Test func test_syncOrder_when_old_request_fails_after_restart_then_new_order_survives() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let newOrder = Order.fake().copy(orderID: 2, total: "20.00")
+        mockOrderService.onSyncOrderCalled = {
+            mockOrderService.onSyncOrderCalled = nil
+            // When
+            sut.cancelSync()
+            mockOrderService.orderToReturn = newOrder
+            await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 2)]), retryHandler: {})
+            mockOrderService.errorToReturn = MockPOSOrderServiceError.noOrderToReturn
+        }
+
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        // Then
+        #expect(mockOrderService.syncOrderCallCount == 2)
+        guard case let .loaded(_, order) = sut.orderState else {
+            Issue.record("A stale error must not replace the new order")
+            return
+        }
+        #expect(order.orderID == 2)
+    }
+
+    @Test func test_syncOrder_when_order_cleared_during_sync_then_old_response_does_not_restore_it() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 1)
+        mockOrderService.onSyncOrderCalled = { sut.clearOrder() }
+
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        // Then
+        #expect(sut.orderState == .idle)
+        await #expect(throws: PointOfSaleOrderController.PointOfSaleOrderControllerError.noOrder) {
+            try await sut.reloadCurrentOrder()
+        }
+    }
+
     @Test func syncOrder_with_no_previous_order_calls_orderService() async throws {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .AUD,

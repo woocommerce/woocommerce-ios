@@ -43,6 +43,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
+    func cancelSync()
     func collectCashPayment(changeDueAmount: String?) async throws
     /// Marks the order as paid manually.
     ///
@@ -86,6 +87,8 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
+    private var syncRequestID = UUID()
+    private var orderStateBeforeSync: PointOfSaleInternalOrderState = .idle
 
     /// The custom amounts as they were on the last successful sync. Used to detect a "Charge
     /// taxes" toggle on an otherwise-unchanged amount, which `POSCart.matches(order:)` cannot
@@ -116,17 +119,22 @@ protocol PointOfSaleOrderControllerProtocol {
             return .success(.orderNotChanged)
         }
 
+        let requestID = UUID()
+        syncRequestID = requestID
+        orderStateBeforeSync = orderState
         orderState = .syncing
 
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCart,
                                                                currency: storeCurrency)
+            guard syncRequestID == requestID else { return .failure(CancellationError()) }
             self.order = syncedOrder
             self.lastSyncedCustomAmounts = posCart.customAmounts
             orderState = .loaded(totals(for: syncedOrder, cart: cart), syncedOrder)
             analytics.track(.orderCreationSuccess)
             return .success(.newOrder)
         } catch {
+            guard syncRequestID == requestID else { return .failure(CancellationError()) }
             self.order = nil
             self.lastSyncedCustomAmounts = []
             trackOrderCreationFailed(error: error)
@@ -153,9 +161,17 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func clearOrder() {
+        syncRequestID = UUID()
         order = nil
         lastSyncedCustomAmounts = []
         orderState = .idle
+    }
+
+    /// Invalidates a checkout that returned to cart editing without discarding a previously loaded order.
+    func cancelSync() {
+        guard orderState.isSyncing else { return }
+        syncRequestID = UUID()
+        orderState = orderStateBeforeSync
     }
 
     func collectCashPayment(changeDueAmount: String?) async throws {

@@ -34,6 +34,11 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         return syncOrderResultToReturn
     }
 
+    var cancelSyncWasCalled = false
+    func cancelSync() {
+        cancelSyncWasCalled = true
+    }
+
     var clearOrderWasCalled: Bool = false
     func clearOrder() {
         clearOrderWasCalled = true

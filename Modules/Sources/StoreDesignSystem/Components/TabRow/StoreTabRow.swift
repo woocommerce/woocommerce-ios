@@ -30,6 +30,8 @@ public struct StoreTabRow<Value: Hashable>: View {
                 tabButton(tab, isSelected: index == selectedIndex, position: index + 1)
             }
         }
+        // Tabs stretch to the tallest one, so the row must size to its content, not to the space offered.
+        .fixedSize(horizontal: false, vertical: true)
         .background(alignment: .bottom) {
             StoreDivider()
         }

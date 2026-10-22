@@ -59,7 +59,11 @@ The POS `card_present_collect_payment_canceled` event omits all `milliseconds_si
 
 The app clears confirmation when it abandons collection, before asynchronous SDK cancellation completes. A delayed cancellation event does not clear a newer collection's confirmation. A new POS collection also clears confirmation before it starts.
 
-This change removes the four legacy POS cancellation timing fields. All other legacy fields keep their definitions, types and units. Event names, checkout counter rules and payment behavior stay the same.
+If cancellation fails and the payment succeeds without another processing-completion callback, the success event omits `pos_time_since_payment_confirmed_ms`. After cancellation fails, a later processing-completion callback can set the timestamp again.
+
+Removing the four legacy durations matches the current Android POS cancellation event. The cash flow also cancels card collection when the merchant selects cash. A cancellation event can therefore record automatic cleanup, rather than a merchant ending checkout. The legacy durations do not distinguish these cases and can mislead a cancellation latency comparison. The event still records that card collection was canceled.
+
+All other legacy fields keep their definitions, types and units. Event names, checkout counter rules and payment behavior stay the same.
 
 ## Timing coverage
 

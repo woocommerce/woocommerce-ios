@@ -1,7 +1,10 @@
 import SwiftUI
+import enum Yosemite.CardPresentPaymentsPlugin
 
 struct InPersonPaymentsStripeRejected: View {
     let analyticReason: String
+    let plugin: CardPresentPaymentsPlugin
+    let onRefresh: () -> Void
     var body: some View {
         InPersonPaymentsOnboardingError(
             title: Localization.title,
@@ -13,12 +16,24 @@ struct InPersonPaymentsStripeRejected: View {
             supportLink: true,
             learnMore: true,
             analyticReason: analyticReason,
-            plugin: .stripe
+            plugin: plugin,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
+                text: Localization.primaryButton,
+                analyticReason: analyticReason,
+                plugin: plugin,
+                action: onRefresh
+            )
         )
     }
 }
 
 private enum Localization {
+    static let primaryButton = NSLocalizedString(
+        "cardPresentPayments.onboarding.accountRejected.refreshButton",
+        value: "Refresh",
+        comment: "Button to recheck In-Person Payments requirements when the payment account was rejected."
+    )
+
     static let title = NSLocalizedString(
         "In‑Person Payments isn't available for this store",
         comment: """
@@ -40,6 +55,6 @@ private enum Localization {
 
 struct InPersonPaymentsStripeRejected_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeRejected(analyticReason: "")
+        InPersonPaymentsStripeRejected(analyticReason: "", plugin: .stripe, onRefresh: {})
     }
 }

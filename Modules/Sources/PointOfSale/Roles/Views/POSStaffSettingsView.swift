@@ -37,6 +37,7 @@ struct POSStaffSettingsView: View {
                     switch state {
                     case .idle, .loading:
                         ProgressView()
+                            .progressViewStyle(POSProgressViewStyle(size: 20, lineWidth: 4))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, POSPadding.xLarge)
                     case .failed(let error):

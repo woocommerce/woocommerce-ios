@@ -2,6 +2,7 @@ import ScreenObject
 import XCTest
 import XCUITestHelpers
 
+@MainActor
 public final class TabNavComponent: ScreenObject {
     private let myStoreTabButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.tabBars.firstMatch.buttons["tab-bar-my-store-item"]
@@ -77,15 +78,11 @@ private extension TabNavComponent {
     func selectOrdersTab(maxAttempts: Int = 3) throws {
         for _ in 0..<maxAttempts {
             let ordersTabButton = ordersTabButtonGetter(app)
-            // XCUIElement is main-actor isolated and UI tests drive it from the main thread.
-            let selected = MainActor.assumeIsolated {
-                guard ordersTabButton.waitForIsHittable(timeout: 5) else {
-                    return false
-                }
-                ordersTabButton.tap()
-                return ordersTabButton.waitFor(predicateString: "isSelected == true", timeout: 2) == .completed
+            guard ordersTabButton.waitForIsHittable(timeout: 5) else {
+                continue
             }
-            if selected {
+            ordersTabButton.tap()
+            if ordersTabButton.waitFor(predicateString: "isSelected == true", timeout: 2) == .completed {
                 return
             }
         }

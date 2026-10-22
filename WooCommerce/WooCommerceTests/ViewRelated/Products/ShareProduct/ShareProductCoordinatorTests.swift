@@ -34,6 +34,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_default_share_sheet_is_displayed_when_AI_is_not_available() throws {
         // Given
         let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: false)
@@ -86,6 +87,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
         XCTAssertIdentical(popoverController.sourceItem as? UIView, anchorView)
     }
 
+    @MainActor
     func test_AI_sheet_is_displayed_when_AI_is_available() throws {
         // Given
         let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: true)
@@ -106,6 +108,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_analytics_is_tracked_when_AI_sheet_is_displayed() throws {
         // Given
         let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: true)

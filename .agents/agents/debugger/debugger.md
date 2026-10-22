@@ -49,15 +49,11 @@ You are a debugging specialist for the WooCommerce iOS project. Your job is to d
 
 ## Key Diagnostic Commands
 
+Use `/build` for build diagnostics and `/test <Target>/<Class>/<method>` for a targeted test.
+Follow those skills for simulator selection, build output, and full-log capture. Keep the full
+log when diagnosing a failure, check the command's exit status, then inspect error excerpts.
+
 ```bash
-# Build with error summary (via Fastlane for centralized config)
-bundle exec fastlane build_for_testing 2>&1 | grep "error:" | head -20
-
-# Run a single failing test (targeted tests require xcodebuild directly)
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
-  test -only-testing:"<Target>/<Class>/<method>" 2>&1 | tail -40
-
 # Check for stale generated code
 git diff -- '*.generated.swift'
 

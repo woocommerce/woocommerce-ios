@@ -54,7 +54,8 @@ private extension CustomerSelectorViewController.Configuration {
         disallowCreatingCustomer: false,
         showGuestLabel: false,
         shouldTrackCustomerAdded: true,
-        isModal: true
+        isModal: true,
+        analyticsSource: .orderForm
     )
 
     enum OrderCustomerLocalization {

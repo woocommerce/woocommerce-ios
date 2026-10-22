@@ -237,6 +237,7 @@ final class StoresManagerTests: XCTestCase {
 
     /// Verifies that `deauthenticate` effectively switches the Manager to a Deauthenticated State.
     ///
+    @MainActor
     func testDeauthenticateEffectivelyTogglesStoreManagerToDeauthenticatedState() {
         // Arrange
         let mockAuthenticationManager = MockAuthenticationManager()
@@ -1223,6 +1224,7 @@ extension DefaultStoresManager {
 final class MockAuthenticationManager: AuthenticationManager {
     private(set) var authenticationUIInvoked: Bool = false
 
+    @MainActor
     override func authenticationUI() -> UIViewController {
         authenticationUIInvoked = true
         return UIViewController()

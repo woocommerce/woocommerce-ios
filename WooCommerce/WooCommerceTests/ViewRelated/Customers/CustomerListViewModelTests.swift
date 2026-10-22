@@ -4,6 +4,8 @@ import YosemiteTestHelpers
 @testable import Storage
 @testable import WooCommerce
 import Combine
+import Observation
+import enum NetworkingCore.DotcomError
 
 @MainActor
 final class CustomerListViewModelTests: XCTestCase {
@@ -387,9 +389,132 @@ final class CustomerListViewModelTests: XCTestCase {
         assertEqual(.results, viewModel.syncState)
         assertEqual(1, viewModel.customers.count)
     }
+
+    func test_rest_no_route_failure_when_cached_customers_exist_then_shows_error_over_cache() {
+        // Given
+        let customer = WCAnalyticsCustomer.fake().copy(siteID: sampleSiteID)
+        insertCustomers([customer])
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .synchronizeAllCustomers(_, _, _, onCompletion) = action else { return }
+            onCompletion(.failure(DotcomError.noRestRoute()))
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            guard case let .retrieveAnalyticsSetting(_, onCompletion) = action else { return }
+            onCompletion(.success(false))
+        }
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        let didComplete: Bool = waitFor { promise in
+            viewModel.onRefreshAction { promise(true) }
+        }
+
+        // Then
+        XCTAssertTrue(didComplete)
+        XCTAssertEqual(viewModel.customerListErrorViewModel.state, .shown(.disabled))
+        XCTAssertEqual(viewModel.customers.count, 1)
+        XCTAssertFalse(viewModel.showSearchHeader)
+    }
+
+    func test_other_error_before_analytics_error_then_keeps_cached_customers_visible() {
+        // Given
+        let customer = WCAnalyticsCustomer.fake().copy(siteID: sampleSiteID)
+        insertCustomers([customer])
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .synchronizeAllCustomers(_, _, _, onCompletion) = action else { return }
+            onCompletion(.failure(NSError(domain: "customers", code: 1)))
+        }
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        let didComplete: Bool = waitFor { promise in
+            viewModel.onRefreshAction { promise(true) }
+        }
+
+        // Then
+        XCTAssertTrue(didComplete)
+        XCTAssertEqual(viewModel.customerListErrorViewModel.state, .hidden)
+        XCTAssertEqual(viewModel.customers.count, 1)
+    }
+
+    func test_other_error_after_analytics_error_then_hides_cached_customers_until_success() async {
+        // Given
+        let customer = WCAnalyticsCustomer.fake().copy(siteID: sampleSiteID)
+        insertCustomers([customer])
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var requestCount = 0
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .synchronizeAllCustomers(_, _, _, onCompletion) = action else { return }
+            requestCount += 1
+            switch requestCount {
+            case 1:
+                onCompletion(.failure(DotcomError.noRestRoute()))
+            case 2:
+                onCompletion(.failure(NSError(domain: "customers", code: 2)))
+            default:
+                onCompletion(.success(false))
+            }
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            guard case let .retrieveAnalyticsSetting(_, onCompletion) = action else { return }
+            onCompletion(.success(false))
+        }
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        _ = await waitForAsync { promise in viewModel.onRefreshAction { promise(true) } }
+        _ = await waitForAsync { promise in viewModel.onRefreshAction { promise(true) } }
+        let didComplete: Bool = await waitForAsync { promise in viewModel.onRefreshAction { promise(true) } }
+        await waitForCustomerListErrorState(.hidden, in: viewModel)
+
+        // Then
+        XCTAssertTrue(didComplete)
+        XCTAssertEqual(requestCount, 3)
+        XCTAssertEqual(viewModel.customerListErrorViewModel.state, .hidden)
+        XCTAssertEqual(viewModel.customers.count, 1)
+    }
+
+    func test_rest_no_route_search_failure_then_shows_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .searchWCAnalyticsCustomers(_, _, _, _, _, onCompletion) = action else { return }
+            onCompletion(.failure(DotcomError.noRestRoute()))
+        }
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            guard case let .retrieveAnalyticsSetting(_, onCompletion) = action else { return }
+            onCompletion(.success(false))
+        }
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        let stateTask = Task { await waitForCustomerListErrorState(.shown(.disabled), in: viewModel) }
+        viewModel.searchTerm = "Pat"
+        await stateTask.value
+
+        // Then
+        XCTAssertEqual(viewModel.customerListErrorViewModel.state, .shown(.disabled))
+        XCTAssertTrue(viewModel.showSearchHeader)
+    }
 }
 
 private extension CustomerListViewModelTests {
+    func waitForCustomerListErrorState(_ state: CustomerListErrorViewModel.State, in viewModel: CustomersListViewModel) async {
+        while viewModel.customerListErrorViewModel.state != state {
+            await withCheckedContinuation { continuation in
+                withObservationTracking {
+                    _ = viewModel.customerListErrorViewModel.state
+                } onChange: {
+                    Task { @MainActor in
+                        continuation.resume()
+                    }
+                }
+            }
+        }
+    }
+
     func insertCustomers(_ readOnlyCustomers: [Yosemite.WCAnalyticsCustomer]) {
         readOnlyCustomers.forEach { customer in
             let newCustomer = storage.insertNewObject(ofType: StorageWCAnalyticsCustomer.self)

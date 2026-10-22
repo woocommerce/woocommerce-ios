@@ -126,8 +126,8 @@ struct POSTotalsSectionView: View {
                 }
 
                 if isLoadingRefundDetails {
-                    ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
-                    ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+                    POSPlaceholderText(.redactedPlaceholder(length: 9), font: .posBodyMediumRegular())
+                    POSPlaceholderText(.redactedPlaceholder(length: 6), font: .posBodyMediumRegular())
                 } else {
                     if let dateCreated = refund.dateCreated {
                         Text(refundDateFormatter.string(from: dateCreated))
@@ -157,14 +157,6 @@ struct POSTotalsSectionView: View {
             amount: refund.formattedTotal,
             reason: refund.reason
         ))
-    }
-
-    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
-        Rectangle()
-            .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: width, height: height)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .shimmering()
     }
 
     // MARK: - Generic Row
@@ -302,10 +294,4 @@ private enum Localization {
         )
         return String(format: format, amount)
     }
-}
-
-private enum Constants {
-    static let longWidth: CGFloat = 120
-    static let shortWidth: CGFloat = 80
-    static let rowHeight: CGFloat = 16
 }

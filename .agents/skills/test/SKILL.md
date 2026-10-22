@@ -10,27 +10,31 @@ Run unit tests for the WooCommerce iOS project using the Fastlane `test` lane.
 
 ## Run tests
 
-Determine scope from $ARGUMENTS:
+Use `/simulator` to select an available device. Determine scope from $ARGUMENTS:
 
-- **No arguments**: Run the full unit test suite:
+- **No arguments**: omit `scheme` and `only_testing` to run the lane's full unit test suite.
+- **Module**: select its scheme and test target, e.g. `scheme:PointOfSale only_testing:PointOfSaleTests`.
+- **Class/method**: add its identifier to `only_testing`, e.g. `WooCommerceTests/MyClass/test_method`.
+  Use the module's scheme for module-only changes; use `WooCommerce` for app-target changes.
+- **Clean build requested or required to diagnose stale output**: add `clean:true`.
+
+For example, run the POS module tests:
 ```bash
-bundle exec fastlane test 2>&1 | tail -100
+bundle exec fastlane test device:"<simulator-name>" scheme:PointOfSale only_testing:PointOfSaleTests
 ```
 
-- **Module name** (e.g., `Yosemite`, `Networking`, `Storage`) or **test class/method**: Use the `only_testing` option:
+When you need a saved console log, use this variant instead. Run preparation and the selected command in the same shell:
 ```bash
-bundle exec fastlane test only_testing:"<Module>Tests[/<ClassName>[/<method>]]" 2>&1 | tail -100
+set -o pipefail
+mkdir -p .agent-artifacts
+TASK_ARTIFACTS="$(mktemp -d "$PWD/.agent-artifacts/test.XXXXXX")"
+printf 'Task artifacts: %s\n' "$TASK_ARTIFACTS"
+bundle exec fastlane test device:"<simulator-name>" \
+  scheme:PointOfSale only_testing:PointOfSaleTests 2>&1 | tee "$TASK_ARTIFACTS/test.log"
 ```
 
-- **Clean build requested** (or after dependency/scheme changes): Add `clean:true`:
-```bash
-bundle exec fastlane test clean:true 2>&1 | tail -100
-```
-
-Options can be combined:
-```bash
-bundle exec fastlane test only_testing:WooCommerceTests/MyClass clean:true 2>&1 | tail -100
-```
+Check the pipeline exit status before reading excerpts. Retain the full log; a successful `tee`
+does not establish that the tests passed.
 
 ## After running
 

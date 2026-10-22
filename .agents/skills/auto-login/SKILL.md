@@ -24,7 +24,7 @@ when one is unavailable. Keep its app and runtime frameworks together.
 Install it with `xcrun simctl install <UDID> <path-to-.app>` before launch.
 Use Xcode's standard signed simulator build. Simulator Keychain entitlements can be embedded in
 the executable; empty `codesign` entitlement output alone does not justify re-signing the app.
-For helper errors, timeouts, device identity, and runtime frameworks, follow `.claude/rules/verification.md`.
+For helper errors, timeouts, device identity, and runtime frameworks, follow `.agents/rules/verification.md`.
 
 ## WireMock UI Login
 
@@ -33,7 +33,7 @@ This flow uses mocked authentication, simulated 2FA, and fixture data.
 1. Start this checkout's fixtures with `/mocks`. Confirm that the server serves this checkout.
    If another server owns port 8282, leave it unchanged and use a separate port.
 2. Launch with the mocked arguments in `/verify`. For a separate API port, follow its override guidance.
-3. Use mobile-mcp to complete “Login (from prologue)” in `.claude/references/screen-identifiers.md`,
+3. Use mobile-mcp to complete “Login (from prologue)” in `.agents/references/screen-identifiers.md`,
    including the mocked 2FA step. Refresh UI elements after typing before selecting Continue.
 4. Confirm the tab bar and expected fixture data. Relaunch without `logout-at-launch` to check persistence.
 

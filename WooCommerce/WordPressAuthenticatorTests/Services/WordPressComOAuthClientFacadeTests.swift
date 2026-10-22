@@ -4,6 +4,7 @@ import OHHTTPStubsSwift
 import XCTest
 @testable import WordPressAuthenticator
 
+// Stays on XCTest: OHHTTPStubs stubs are process-wide, so they would leak into Swift Testing tests running in parallel.
 final class WordPressComOAuthClientFacadeTests: XCTestCase {
 
     override func setUp() {

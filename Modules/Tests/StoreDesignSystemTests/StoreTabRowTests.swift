@@ -31,19 +31,19 @@ import Testing
         // Given / When a tab without an icon resolves its layout
         let sut = StoreTabRowLayout(hasIcon: false)
 
-        // Then the label is bottom-aligned above the design's p6 inset, with no top inset
+        // Then the label is bottom-aligned above a p5 inset (the design's p6 less the line box's descent), with no top inset
         #expect(sut.contentAlignment == .bottom)
         #expect(sut.topInset == StorePadding.p0)
-        #expect(sut.bottomInset == StorePadding.p6)
+        #expect(sut.bottomInset == StorePadding.p5)
     }
 
-    @Test func test_init_when_icon_then_content_is_centered_between_equal_insets() {
+    @Test func test_init_when_icon_then_content_sits_at_the_top_between_its_insets() {
         // Given / When a tab with an icon resolves its layout
         let sut = StoreTabRowLayout(hasIcon: true)
 
-        // Then the icon and label are centered with a p2 inset on both sides
-        #expect(sut.contentAlignment == .center)
-        #expect(sut.topInset == StorePadding.p2)
-        #expect(sut.bottomInset == StorePadding.p2)
+        // Then the icon and label are top-aligned with a p1 inset above and a p3 inset below
+        #expect(sut.contentAlignment == .top)
+        #expect(sut.topInset == StorePadding.p1)
+        #expect(sut.bottomInset == StorePadding.p3)
     }
 }

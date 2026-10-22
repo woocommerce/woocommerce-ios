@@ -56,7 +56,9 @@ public struct StoreTabRow<Value: Hashable>: View {
         return Button {
             selection = tab.value
         } label: {
-            VStack(spacing: StoreSpacing.s4) {
+            // s3 rather than the design's s4: the label's line box adds ~4 pt above the cap height
+            // that the cap-trimmed design doesn't have, so s3 lands the cap 12 pt under the icon.
+            VStack(spacing: StoreSpacing.s3) {
                 tab.icon?.image(size: Constants.iconSize)
                     .accessibilityHidden(true)
                 Text(tab.title)

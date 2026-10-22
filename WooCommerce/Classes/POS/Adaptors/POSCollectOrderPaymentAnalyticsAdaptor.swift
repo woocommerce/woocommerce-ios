@@ -14,7 +14,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     private var cardReaderTapped: Double = 0
     private var checkoutTapCount: Int = 0
     private var hasTrackedProcessingPayment = false
-    private var catalogSyncStrategy: POSCheckoutCatalogStrategy = .unknown
+    private let catalogSyncStrategy: POSCheckoutCatalogStrategy
     private var checkoutSyncStrategy: POSCheckoutCatalogStrategy = .unknown
     private var checkoutStarted: Int?
     private var orderSyncCompleted: Int?
@@ -44,10 +44,12 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     }
 
     init(analytics: POSAnalyticsProviding,
+         catalogSyncStrategy: POSCheckoutCatalogStrategy = .unknown,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          currentTimestamp: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 },
          monotonicMilliseconds: (() -> Int)? = nil) {
         self.analytics = analytics
+        self.catalogSyncStrategy = catalogSyncStrategy
         self.configuration = configuration
         self.currentTimestamp = currentTimestamp
         let origin = ContinuousClock.now
@@ -55,10 +57,6 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             let elapsed = origin.duration(to: .now).components
             return Int(elapsed.seconds * 1000 + elapsed.attoseconds / 1_000_000_000_000_000)
         }
-    }
-
-    func setCatalogSyncStrategy(_ strategy: POSCheckoutCatalogStrategy) {
-        catalogSyncStrategy = strategy
     }
 
     func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {

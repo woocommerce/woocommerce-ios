@@ -19,7 +19,7 @@ The table shows the `WooAnalyticsStat` names without prefixes. In POS mode, [Tra
 | `card_present_collect_payment_failed` | The card payment failed. |
 | `cash_collect_payment_success` | The cash payment succeeded. |
 
-`sync_strategy` records the products source selected when checkout starts. Its value is `local_catalog`, `remote`, or `unknown`. A source change does not change this value until the next checkout.
+`sync_strategy` records the product source selected for the POS session. Its value is `local_catalog`, `remote`, or `unknown`. The coordinator selects the source and passes it to the payment analytics adaptor when the session starts. The value stays fixed for that session. A new POS session can select a different source.
 
 | Optional elapsed field | When measurement starts |
 | --- | --- |

@@ -1,7 +1,6 @@
 import struct Yosemite.Order
 
 public protocol POSCollectOrderPaymentAnalyticsTracking {
-    func setCatalogSyncStrategy(_ strategy: POSCheckoutCatalogStrategy)
     func prepareForCardPayment(order: POSPaymentAnalyticsOrder)
     func trackCustomerInteractionStarted()
     func trackOrderSyncSuccess()
@@ -18,6 +17,10 @@ public enum POSCheckoutCatalogStrategy: String, Sendable {
     case localCatalog = "local_catalog"
     case remote
     case unknown
+
+    public init(isLocalCatalogEligible: Bool, hasDatabase: Bool, hasSyncCoordinator: Bool) {
+        self = isLocalCatalogEligible && hasDatabase && hasSyncCoordinator ? .localCatalog : .remote
+    }
 }
 
 public struct POSPaymentAnalyticsOrder: Equatable {

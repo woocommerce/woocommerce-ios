@@ -14,8 +14,7 @@ struct POSCheckoutTimingTests {
     @Test(arguments: Fixture.allCases)
     func test_terminal_event_when_shared_scenario_runs_then_matches_cross_platform_contract(fixture: Fixture) throws {
         // Given
-        let sut = makeTracker()
-        sut.setCatalogSyncStrategy(fixture.strategy)
+        let sut = makeTracker(strategy: fixture.strategy)
         sut.trackCheckoutTapped()
         if fixture != .failureBeforeSync {
             clock.milliseconds = fixture == .immediateZero ? 0 : 100
@@ -161,7 +160,7 @@ struct POSCheckoutTimingTests {
 
     @Test func test_cash_completion_when_checkout_changes_during_async_payment_then_reads_fresh_snapshot() async throws {
         // Given
-        let sut = makeTracker()
+        let sut = makeTracker(strategy: .remote)
         sut.trackCheckoutTapped()
         let handler = MockDeferredPOSCashPaymentHandler()
         let orderController = PointOfSalePreviewOrderController(orderState: .loaded(
@@ -177,7 +176,6 @@ struct POSCheckoutTimingTests {
             analytics: analytics, collectOrderPaymentAnalyticsTracker: sut, celebration: MockPaymentCaptureCelebration())
         handler.onComplete = {
             clock.milliseconds = 500
-            sut.setCatalogSyncStrategy(.remote)
             sut.trackCheckoutTapped()
             clock.milliseconds = 600
             sut.trackOrderSyncSuccess()
@@ -222,8 +220,7 @@ struct POSCheckoutTimingTests {
     @Test(arguments: [false, true])
     func test_reset_when_previous_stages_exist_then_omits_all_elapsed_fields(newCustomer: Bool) throws {
         // Given
-        let sut = makeTracker()
-        sut.setCatalogSyncStrategy(.localCatalog)
+        let sut = makeTracker(strategy: .localCatalog)
         sut.trackCheckoutTapped()
         sut.trackOrderSyncSuccess()
         sut.trackProcessingCompletion(intent: .fake())
@@ -241,13 +238,11 @@ struct POSCheckoutTimingTests {
 
     @Test func test_outcome_when_state_changes_after_preparation_then_reads_fresh_shared_snapshot() throws {
         // Given
-        let sut = makeTracker()
-        sut.setCatalogSyncStrategy(.localCatalog)
+        let sut = makeTracker(strategy: .localCatalog)
         sut.trackCheckoutTapped()
         sut.prepareForCardPayment(order: order)
         // When
         clock.milliseconds = 100
-        sut.setCatalogSyncStrategy(.remote)
         sut.trackCheckoutTapped()
         clock.milliseconds = 150
         sut.trackOrderSyncSuccess()
@@ -259,7 +254,7 @@ struct POSCheckoutTimingTests {
         succeed(sut)
         // Then
         let actual = try timingProperties()
-        #expect(actual["sync_strategy"] as? String == "remote")
+        #expect(actual["sync_strategy"] as? String == "local_catalog")
         #expect(actual["pos_time_since_checkout_started_ms"] as? Int == 150)
         #expect(actual["pos_time_since_order_sync_completed_ms"] as? Int == 100)
         #expect(actual["pos_time_since_payment_confirmed_ms"] as? Int == 75)
@@ -267,21 +262,25 @@ struct POSCheckoutTimingTests {
         #expect(analytics.events.last?.properties["plugin_slug"] as? String == "woocommerce-payments")
     }
 
-    @Test func test_strategy_when_selected_source_changes_then_keeps_checkout_source_until_next_checkout() throws {
+    @Test(arguments: [POSCheckoutCatalogStrategy.localCatalog, .remote, .unknown])
+    func test_strategy_when_checkout_restarts_after_reset_then_preserves_session_source(strategy: POSCheckoutCatalogStrategy) throws {
         // Given
-        let sut = makeTracker()
-        sut.setCatalogSyncStrategy(.localCatalog)
-        sut.trackCheckoutTapped()
-        // When
-        sut.setCatalogSyncStrategy(.remote)
-        sut.trackPaymentFailure(with: TestError())
-        // Then
-        #expect(try timingProperties()["sync_strategy"] as? String == "local_catalog")
+        let sut = makeTracker(strategy: strategy)
+
         // When
         sut.trackCheckoutTapped()
         sut.trackPaymentFailure(with: TestError())
+
         // Then
-        #expect(try timingProperties()["sync_strategy"] as? String == "remote")
+        #expect(try timingProperties()["sync_strategy"] as? String == strategy.rawValue)
+
+        // When
+        sut.resetCheckoutTiming()
+        sut.trackCheckoutTapped()
+        sut.trackPaymentFailure(with: TestError())
+
+        // Then
+        #expect(try timingProperties()["sync_strategy"] as? String == strategy.rawValue)
     }
 
     @Test func test_confirmation_when_no_checkout_started_then_omits_elapsed_fields() throws {
@@ -359,8 +358,9 @@ struct POSCheckoutTimingTests {
         #expect(original.properties["pos_time_since_payment_confirmed_ms"] as? Int == 300)
     }
 
-    private func makeTracker() -> POSCollectOrderPaymentAnalyticsAdaptor {
+    private func makeTracker(strategy: POSCheckoutCatalogStrategy = .unknown) -> POSCollectOrderPaymentAnalyticsAdaptor {
         POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                              catalogSyncStrategy: strategy,
                                               currentTimestamp: { clock.wallTime },
                                               monotonicMilliseconds: { clock.milliseconds })
     }

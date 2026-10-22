@@ -1,53 +1,27 @@
 import Testing
 @testable import PointOfSale
-@testable import Storage
 
-@MainActor
 struct PointOfSaleEntryPointAnalyticsTests {
     @Test(arguments: [
+        Selection(eligible: false, hasDatabase: false, hasCoordinator: false, expected: .remote),
+        Selection(eligible: false, hasDatabase: false, hasCoordinator: true, expected: .remote),
+        Selection(eligible: false, hasDatabase: true, hasCoordinator: false, expected: .remote),
         Selection(eligible: false, hasDatabase: true, hasCoordinator: true, expected: .remote),
-        Selection(eligible: true, hasDatabase: true, hasCoordinator: true, expected: .localCatalog),
+        Selection(eligible: true, hasDatabase: false, hasCoordinator: false, expected: .remote),
         Selection(eligible: true, hasDatabase: false, hasCoordinator: true, expected: .remote),
-        Selection(eligible: true, hasDatabase: true, hasCoordinator: false, expected: .remote)
+        Selection(eligible: true, hasDatabase: true, hasCoordinator: false, expected: .remote),
+        Selection(eligible: true, hasDatabase: true, hasCoordinator: true, expected: .localCatalog)
     ])
-    func test_entry_point_when_catalog_controller_is_selected_then_tracks_actual_strategy(selection: Selection) throws {
-        // Given
-        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
-        let database = selection.hasDatabase ? try GRDBManager() : nil
-        let coordinator = selection.hasCoordinator ? MockPOSCatalogSyncCoordinator() : nil
+    func test_catalog_selection_when_eligibility_and_dependencies_vary_then_matches_actual_source(selection: Selection) {
+        // Given the eligibility and dependencies in the test case
 
         // When
-        _ = PointOfSaleEntryPointView(
-            siteID: 1,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryPreview(),
-            popularItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryPreview(),
-            couponProvider: PointOfSaleCouponServicePreview(),
-            couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryPreview(),
-            orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
-            orderService: POSOrderServicePreview(),
-            refundsService: POSRefundsServicePreview(),
-            refundSubmissionProcessor: POSNoOpRefundSubmissionProcessor(),
-            onPointOfSaleModeActiveStateChange: { _ in },
-            cardPresentPaymentService: CardPresentPaymentPreviewService(),
-            receiptService: POSReceiptServicePreview(),
-            pluginsService: PluginsServicePreview(),
-            settingsService: PointOfSaleSettingsServicePreview(),
-            collectOrderPaymentAnalyticsTracker: tracker,
-            searchHistoryService: PointOfSalePreviewHistoryService(),
-            barcodeScanService: PointOfSalePreviewBarcodeScanService(),
-            posEligibilityChecker: PointOfSalePreviewTabEligibilityChecker(),
-            defaultSiteName: "Test Store",
-            siteSettings: [],
-            grdbManager: database,
-            catalogSyncCoordinator: coordinator,
-            isLocalCatalogEligible: selection.eligible,
-            receiptSettingsAdminURL: "",
-            staffFetcher: MockPOSStaffFetcher(),
-            services: POSPreviewServices()
-        )
+        let strategy = POSCheckoutCatalogStrategy(isLocalCatalogEligible: selection.eligible,
+                                                 hasDatabase: selection.hasDatabase,
+                                                 hasSyncCoordinator: selection.hasCoordinator)
 
         // Then
-        #expect(tracker.catalogSyncStrategy == selection.expected)
+        #expect(strategy == selection.expected)
     }
 
     struct Selection: Sendable {

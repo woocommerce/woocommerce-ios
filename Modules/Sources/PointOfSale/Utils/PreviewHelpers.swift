@@ -586,8 +586,6 @@ final class POSReceiptSenderPreview: POSReceiptSending {
 }
 
 final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {
-    func setCatalogSyncStrategy(_ strategy: POSCheckoutCatalogStrategy) {}
-
     func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {}
 
     func trackCustomerInteractionStarted() {}

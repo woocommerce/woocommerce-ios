@@ -27,9 +27,9 @@ struct POSCollectOrderPaymentAnalyticsTests {
         // Given
         var now = 0
         let configuration = CardPresentPaymentsConfiguration(country: .US)
-        let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration, monotonicMilliseconds: { now })
+        let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, catalogSyncStrategy: .localCatalog,
+                                                             configuration: configuration, monotonicMilliseconds: { now })
         let paymentOrder = POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "")
-        tracker.setCatalogSyncStrategy(.localCatalog)
         tracker.trackCheckoutTapped()
         now = 100
         tracker.trackOrderSyncSuccess()
@@ -74,7 +74,6 @@ struct POSCollectOrderPaymentAnalyticsTests {
         // When
         now = 500
         if newCheckout {
-            tracker.setCatalogSyncStrategy(.remote)
             tracker.trackCheckoutTapped()
             now = 600
             tracker.trackOrderSyncSuccess()
@@ -99,6 +98,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(canceled.properties["sync_strategy"] == nil)
         #expect(!canceled.properties.keys.contains { ($0 as? String)?.hasPrefix("pos_time_since_") == true })
         let succeeded = try #require(analytics.events.last)
+        #expect(succeeded.properties["sync_strategy"] as? String == "local_catalog")
         #expect(succeeded.properties["pos_time_since_checkout_started_ms"] as? Int == (newCheckout ? 300 : 800))
         #expect(succeeded.properties["pos_time_since_order_sync_completed_ms"] as? Int == (newCheckout ? 200 : 700))
         #expect(succeeded.properties["pos_time_since_reader_ready_ms"] == nil)

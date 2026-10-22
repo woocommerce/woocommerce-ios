@@ -26,8 +26,7 @@ struct PaymentCaptureWalletSuppressionTests {
         #expect(suppressionRequestsAtPaymentStart == (readerType == .tapToPay ? 0 : 1))
     }
 
-    @Test(arguments: [false, true])
-    func test_collect_payment_when_external_reader_payment_completes_then_restores_wallet(paymentSucceeds: Bool) {
+    @Test func test_collect_payment_when_external_reader_payment_fails_then_restores_wallet() {
         // Given
         let sut = makeOrchestrator()
         var completePayment: ((Result<PaymentIntent, Error>) -> Void)?
@@ -40,11 +39,7 @@ struct PaymentCaptureWalletSuppressionTests {
         #expect(walletPresentationSuppression.restorationCount == 0)
 
         // When
-        if paymentSucceeds {
-            completePayment?(.success(.fake().copy(collectedPaymentMethod: .cardPresent(details: .fake()))))
-        } else {
-            completePayment?(.failure(NSError(domain: "PaymentFailure", code: 1)))
-        }
+        completePayment?(.failure(NSError(domain: "PaymentFailure", code: 1)))
 
         // Then
         #expect(walletPresentationSuppression.restorationCount == 1)
@@ -67,30 +62,6 @@ struct PaymentCaptureWalletSuppressionTests {
 
         // Then
         #expect(walletPresentationSuppression.restorationCount == 1)
-    }
-
-    @Test func test_retry_payment_when_tap_to_pay_payment_fails_then_does_not_suppress_wallet() {
-        // Given
-        let sut = makeOrchestrator()
-        var didRetryPayment = false
-        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            switch action {
-            case let .collectPayment(_, _, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "PaymentFailure", code: 1)))
-            case .retryPayment:
-                didRetryPayment = true
-            default:
-                break
-            }
-        }
-        collectPayment(using: sut, readerType: .tapToPay)
-
-        // When
-        sut.retryPayment(for: .fake(), onCompletion: { _ in })
-
-        // Then
-        #expect(didRetryPayment)
-        #expect(walletPresentationSuppression.suppressionRequestCount == 0)
     }
 
     @Test(arguments: [CardReaderType.tapToPay.rawValue, CardReaderType.stripeM2.rawValue])

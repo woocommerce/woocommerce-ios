@@ -43,6 +43,7 @@ struct PaidOrderNoticeSuppressor {
 
     private func key(siteID: Int64, orderID: Int64) -> PaidOrderKey? {
         if siteID == WooConstants.placeholderStoreID {
+            // Site-credential sessions use single-store routing, so the current store URL scopes the payment record.
             guard let storeURL = stores.sessionManager.defaultSite?.url, !storeURL.isEmpty else {
                 return nil
             }

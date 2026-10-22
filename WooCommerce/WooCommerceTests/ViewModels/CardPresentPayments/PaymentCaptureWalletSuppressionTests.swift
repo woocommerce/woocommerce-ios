@@ -8,9 +8,10 @@ struct PaymentCaptureWalletSuppressionTests {
     private let stores = MockStoresManager(sessionManager: .makeForTesting())
     private let walletPresentationSuppression = MockWalletPresentationSuppression()
 
-    @Test(arguments: CardReaderType.allCases)
-    func test_collect_payment_when_reader_type_is_known_then_only_external_readers_suppress_wallet(readerType: CardReaderType) {
+    @Test(arguments: CardReaderType.allCases.map(\.rawValue))
+    func test_collect_payment_when_reader_type_is_known_then_only_external_readers_suppress_wallet(readerTypeRawValue: String) throws {
         // Given
+        let readerType = try #require(CardReaderType(rawValue: readerTypeRawValue))
         let sut = makeOrchestrator()
         var suppressionRequestsAtPaymentStart: Int?
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
@@ -92,9 +93,10 @@ struct PaymentCaptureWalletSuppressionTests {
         #expect(walletPresentationSuppression.suppressionRequestCount == 0)
     }
 
-    @Test(arguments: [CardReaderType.tapToPay, .stripeM2])
-    func test_collect_payment_when_using_pos_orchestrator_then_preserves_reader_wallet_behavior(readerType: CardReaderType) {
+    @Test(arguments: [CardReaderType.tapToPay.rawValue, CardReaderType.stripeM2.rawValue])
+    func test_collect_payment_when_using_pos_orchestrator_then_preserves_reader_wallet_behavior(readerTypeRawValue: String) throws {
         // Given
+        let readerType = try #require(CardReaderType(rawValue: readerTypeRawValue))
         let sut = CardPresentPaymentInvalidatablePaymentOrchestrator(
             stores: stores,
             celebration: MockPaymentCaptureCelebration(),

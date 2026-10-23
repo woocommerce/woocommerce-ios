@@ -589,6 +589,7 @@
     "WooCommerce/WooCommerceTests/ViewRelated/Dashboard/InboxDashboardCardViewModelTests.swift": 1,
     "WooCommerce/WooCommerceTests/ViewRelated/Dashboard/Onboarding/StoreNameSetupViewModelTests.swift": 1,
     "WooCommerce/WooCommerceTests/ViewRelated/Dashboard/Orders/LastOrdersDashboardCardViewModelTests.swift": 1,
+    "WooCommerce/WooCommerceTests/ViewRelated/Dashboard/Settings/In-Person Payments/InPersonPaymentsMenuViewModelTests.swift": 2,
     "WooCommerce/WooCommerceTests/ViewRelated/Dashboard/Settings/ThemeSettingViewModelTests.swift": 2,
     "WooCommerce/WooCommerceTests/ViewRelated/Dashboard/Stats V4/StoreStatsPeriodViewModelTests.swift": 3,
     "WooCommerce/WooCommerceTests/ViewRelated/Dashboard/StoreStats/StorePerformanceViewModelTests.swift": 3,

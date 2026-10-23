@@ -46,6 +46,16 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether the address is the default address for shipping labels; this is only used for origin addresses.
     @Published var isDefaultAddress: Bool
 
+    /// Title for the address edit screen.
+    var title: String {
+        switch addressType {
+        case .origin:
+            return Localization.editOrigin
+        case .destination:
+            return Localization.editDestination
+        }
+    }
+
     /// Whether to show the "save as default" toggle, to save the address as the default origin address.
     var showSaveAsDefault: Bool {
         switch addressType {
@@ -747,6 +757,12 @@ extension WooShippingEditAddressViewModel {
 
 private extension WooShippingEditAddressViewModel {
     enum Localization {
+        static let editOrigin = NSLocalizedString("wooShipping.originAddresses.editOrigin",
+                                                  value: "Edit Origin",
+                                                  comment: "Title for the edit origin address screen in the shipping label creation flow")
+        static let editDestination = NSLocalizedString("wooShipping.createLabels.bottomSheet.editDestination",
+                                                       value: "Edit Destination",
+                                                       comment: "Title for the edit destination address screen in the shipping label creation flow")
         enum Validation {
             static let nameOrCompany = NSLocalizedString("wooShipping.createLabels.editAddress.validation.nameOrCompany",
                                                          value: "Please provide a valid name or company name.",

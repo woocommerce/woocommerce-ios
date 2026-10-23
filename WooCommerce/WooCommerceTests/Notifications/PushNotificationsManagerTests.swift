@@ -449,6 +449,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         orchestrator.collectPayment(for: order,
                                     orderTotal: 2,
                                     paymentGatewayAccount: .fake(),
+                                    readerType: .stripeM2,
                                     paymentMethodTypes: [.cardPresent],
                                     stripeSmallestCurrencyUnitMultiplier: 100,
                                     countryCode: .US,

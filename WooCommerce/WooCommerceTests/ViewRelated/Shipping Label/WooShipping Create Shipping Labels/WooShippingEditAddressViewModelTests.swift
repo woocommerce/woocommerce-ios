@@ -406,6 +406,34 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.countries.count, 1, "Should only include USPS-supported countries for origin addresses")
     }
 
+    func test_title_when_origin_address_then_returns_edit_origin() {
+        // Given
+        let viewModel = WooShippingEditAddressViewModel(address: WooShippingOriginAddress.fake(), storageManager: MockStorageManager())
+
+        // When
+        let title = viewModel.title
+
+        // Then
+        XCTAssertEqual(title, "Edit Origin")
+    }
+
+    func test_title_when_destination_address_then_returns_edit_destination() {
+        // Given
+        let viewModel = WooShippingEditAddressViewModel(address: nil,
+                                                        orderID: sampleOrderID,
+                                                        email: nil,
+                                                        isVerified: false,
+                                                        originCountryCode: nil,
+                                                        originStateCode: nil,
+                                                        storageManager: MockStorageManager())
+
+        // When
+        let title = viewModel.title
+
+        // Then
+        XCTAssertEqual(title, "Edit Destination")
+    }
+
     func test_countries_when_origin_then_includes_Palau() {
         // Given
         let storageManager = MockStorageManager()

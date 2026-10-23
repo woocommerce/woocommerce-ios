@@ -26,7 +26,7 @@ public struct StoreTabRow<Value: Hashable>: View {
 
     public var body: some View {
         HStack(spacing: StoreSpacing.s0) {
-            ForEach(Array(tabs.enumerated()), id: \.offset) { index, tab in
+            ForEach(Array(tabs.enumerated()), id: \.element.value) { index, tab in
                 tabButton(tab, isSelected: index == selectedIndex, position: index + 1)
             }
         }

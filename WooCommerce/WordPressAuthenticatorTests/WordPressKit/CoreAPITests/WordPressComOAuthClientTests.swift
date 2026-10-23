@@ -352,6 +352,7 @@ class WordPressComOAuthClientTests: XCTestCase {
                 expect.fulfill()
                 XCTAssertEqual(userID, 1234)
                 XCTAssertEqual(nonceInfo.nonceWebauthn, "two_step_nonce_webauthn")
+                XCTAssertEqual(nonceInfo.supportedAuthTypes, ["backup", "sms", "webauthn"])
             },
             success: { _ in
                 expect.fulfill()

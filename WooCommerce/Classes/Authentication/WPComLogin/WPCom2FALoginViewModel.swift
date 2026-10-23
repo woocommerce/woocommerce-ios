@@ -8,9 +8,39 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     @Published var verificationCode: String = ""
     @Published private(set) var isLoggingIn = false
     @Published private(set) var isRequestingOTP = false
+    @Published private(set) var isBackupCodeRequested = false
+    @Published private(set) var hasRequestedOTP = false
 
     var shouldEnableSecurityKeyOption: Bool {
         loginFields.nonceInfo?.nonceWebauthn != nil
+    }
+
+    var instructions: String? {
+        methods.instructions(hasRequestedTextCode: hasRequestedOTP, isBackupCodeRequested: isBackupCodeRequested)
+    }
+
+    func textCodeButtonTitle(defaultTitle: String) -> String {
+        methods.textCodeButtonTitle(defaultTitle: defaultTitle, hasRequestedTextCode: hasRequestedOTP, isBackupCodeRequested: isBackupCodeRequested)
+    }
+
+    var isSecurityKeyMode: Bool {
+        methods.startsWithSecurityKey && !isBackupCodeRequested
+    }
+
+    var shouldShowTextCodeOption: Bool {
+        methods.canTextCode
+    }
+
+    var shouldShowSecurityKeyOption: Bool {
+        shouldEnableSecurityKeyOption && !isSecurityKeyMode
+    }
+
+    var shouldShowBackupCodeOption: Bool {
+        methods.canUseBackupCode && !isBackupCodeRequested
+    }
+
+    var shouldShowOtherOptionsText: Bool {
+        shouldShowTextCodeOption || shouldShowSecurityKeyOption || shouldShowBackupCodeOption
     }
 
     /// In case the code is entered by pasting from the clipboard, we need to remove all white spaces.
@@ -35,6 +65,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     private var initialChallengeRequestTime: Date?
 
     private let loginFields: LoginFields
+    private let methods: TwoFactorMethods
     private let loginFacade: LoginFacade
     private let onAuthWindowRequest: () -> UIWindow
     private let onLoginFailure: (TwoFALoginError) -> Void
@@ -48,6 +79,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
          onLoginFailure: @escaping (TwoFALoginError) -> Void,
          onLoginSuccess: @escaping (String) async -> Void) {
         self.loginFields = loginFields
+        self.methods = TwoFactorMethods(supportedAuthTypes: loginFields.supportedAuthTypes)
         self.loginFacade = loginFacade
         self.onAuthWindowRequest = onAuthWindowRequest
         self.onLoginFailure = onLoginFailure
@@ -82,6 +114,8 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
 
     func requestOneTimeCode() {
         isRequestingOTP = true
+        hasRequestedOTP = true
+        isBackupCodeRequested = false
         loginFacade.wordpressComOAuthClientFacade.requestOneTimeCode(
             username: loginFields.username,
             password: loginFields.password,
@@ -91,6 +125,14 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
                 // Errors for this case doesn't need to be handled: pe5sF9-1er-p2
                 self?.isRequestingOTP = false
             }
+    }
+
+    func useBackupCode() {
+        guard !isLoggingIn else {
+            return
+        }
+
+        isBackupCodeRequested = true
     }
 }
 

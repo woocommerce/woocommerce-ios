@@ -56,6 +56,7 @@ public struct AuthenticationFailure: LocalizedError {
     public var kind: Kind
     public var localizedErrorMessage: String?
     public var newNonce: String?
+    public var supportedAuthTypes = [String]()
     public var originalErrorJSON: [String: AnyObject]
 
     init(response: HTTPURLResponse, body: Data) throws {
@@ -79,6 +80,7 @@ public struct AuthenticationFailure: LocalizedError {
         if let errorStr = responseDict["error"] as? String {
             kind = Self.errorsMap[errorStr] ?? .unknown
             localizedErrorMessage = responseDict["error_description"] as? String
+            supportedAuthTypes = responseDict["two_step_supported_auth_types"] as? [String] ?? []
         } else if let data = responseDict["data"] as? [String: AnyObject],
             let errors = data["errors"] as? NSArray,
             let err = errors.firstObject as? [String: AnyObject] {

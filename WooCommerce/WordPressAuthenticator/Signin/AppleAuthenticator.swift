@@ -40,6 +40,7 @@ class AppleAuthenticator: NSObject {
 
     func showFrom(viewController: UIViewController) {
         loginFields.meta.socialService = SocialServiceName.apple
+        loginFields.supportedAuthTypes = []
         showFromViewController = viewController
         requestAuthorization()
     }

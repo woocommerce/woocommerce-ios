@@ -1,5 +1,5 @@
 import XCTest
-import os
+import Synchronization
 import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
@@ -926,7 +926,7 @@ private extension StatsStoreV4Tests {
                                        timeout: TimeInterval = 5.0,
                                        awaiting: (_ promise: @escaping @Sendable (Value) -> Void) throws -> Void) throws -> Value {
         let completion = expectation(description: "Expect stats completion to be called.")
-        let receivedValue = OSAllocatedUnfairLock<Value?>(initialState: nil)
+        let receivedValue = Mutex<Value?>(nil)
 
         try awaiting { value in
             receivedValue.withLock { $0 = value }
@@ -1204,7 +1204,7 @@ private final class MockDeferredStatsStorageManager: StorageManagerType, Sendabl
     }
 
     private let inner = MockStorageManager()
-    private let pendingWrites = OSAllocatedUnfairLock(initialState: [PendingWrite]())
+    private let pendingWrites = Mutex([PendingWrite]())
 
     var viewStorage: StorageType {
         inner.viewStorage

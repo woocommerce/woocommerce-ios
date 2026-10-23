@@ -102,13 +102,21 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         assertEqual(.foundReader, mockAnalyticsTracker.spyPaymentCancelationSource)
     }
 
-    func test_collectPayment_canceledWhileValidatingOrder_doesNotStartPaymentAfterValidationCompletes() throws {
+    func test_collectPayment_canceledWhileValidatingOrder_doesNotStartPaymentAfterValidationCompletes() async throws {
         // Given
+        let useCase = try XCTUnwrap(self.useCase)
+        defer { withExtendedLifetime(useCase) {} }
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
         var orderRetrievalCompletion: ((Result<Order, Error>) -> Void)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             guard case let .retrieveOrderRemotely(_, _, completion) = action else { return }
             orderRetrievalCompletion = completion
+        }
+
+        let collected = expectation(description: "Payment must not start after cancellation")
+        collected.isInverted = true
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { _, _, _, _, _, _, _ in
+            collected.fulfill()
         }
 
         let canceled = expectation(description: "Payment flow canceled")
@@ -124,10 +132,12 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         validatingOrderAlert.didTapSecondaryButton(in: nil)
-        wait(for: [canceled], timeout: Constants.expectationTimeout)
-        orderRetrievalCompletion?(.success(order))
+        await fulfillment(of: [canceled], timeout: Constants.expectationTimeout)
+        let completeRetrieval = try XCTUnwrap(orderRetrievalCompletion)
+        completeRetrieval(.success(order))
 
         // Then
+        await fulfillment(of: [collected], timeout: Constants.expectationTimeout)
         XCTAssertFalse(mockPaymentOrchestrator.spyDidCallCollectPayment)
     }
 

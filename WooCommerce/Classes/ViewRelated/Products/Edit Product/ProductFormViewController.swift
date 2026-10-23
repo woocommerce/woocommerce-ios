@@ -1067,6 +1067,7 @@ private extension ProductFormViewController {
                                                                         case .editCustomFields:
                                                                             self?.showCustomFields()
                                                                         case .editAttributes:
+                                                                            self?.trackAddProductAttributeTapped()
                                                                             self?.addProductAttribute()
                                                                         }
                                                                     }
@@ -1384,6 +1385,10 @@ private extension ProductFormViewController {
 
     func trackEditProductAttributeRowTapped() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
+    }
+
+    func trackAddProductAttributeTapped() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.addAttributeButtonTapped(productID: product.productID))
     }
 }
 

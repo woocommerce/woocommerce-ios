@@ -203,7 +203,7 @@ private extension JetpackConnectionService {
         }
     }
 
-    func dispatch<T>(_ actionBuilder: @escaping (@escaping (Result<T, Error>) -> Void) -> Action) async throws -> T {
+    func dispatch<T>(_ actionBuilder: @escaping (@escaping @Sendable (Result<T, Error>) -> Void) -> Action) async throws -> T {
         let stores = self.stores
         return try await withCheckedThrowingContinuation { continuation in
             let action = actionBuilder { result in

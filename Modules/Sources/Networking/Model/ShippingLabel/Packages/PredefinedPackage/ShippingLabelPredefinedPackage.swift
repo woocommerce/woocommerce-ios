@@ -4,7 +4,7 @@ import WooFoundation
 
 /// Represents a predefined package in Shipping Labels.
 ///
-public struct ShippingLabelPredefinedPackage: Equatable, GeneratedFakeable, Identifiable {
+public struct ShippingLabelPredefinedPackage: Equatable, GeneratedFakeable, Identifiable, Sendable {
 
     /// The id of the predefined package
     public let id: String

@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class ProductFilterScreen: ScreenObject {
 
     private let stockStatusButtonGetter: (XCUIApplication) -> XCUIElement = {

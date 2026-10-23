@@ -5,6 +5,7 @@ struct InPersonPaymentsLiveSiteInTestMode: View {
     let plugin: CardPresentPaymentsPlugin
     let analyticReason: String
     let onRefresh: () -> Void
+    var adminButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -18,13 +19,13 @@ struct InPersonPaymentsLiveSiteInTestMode: View {
             learnMore: true,
             analyticReason: analyticReason,
             plugin: plugin,
-            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
-                text: Localization.primaryButton,
-                analyticReason: analyticReason,
-                plugin: plugin,
-                action: onRefresh
-            )
+            buttonViewModel: adminButtonViewModel ?? refreshButtonViewModel,
+            secondaryButtonViewModel: adminButtonViewModel.map { _ in refreshButtonViewModel }
         )
+    }
+
+    private var refreshButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel {
+        .init(text: Localization.primaryButton, analyticReason: analyticReason, plugin: plugin, action: onRefresh)
     }
 }
 

@@ -60,7 +60,7 @@ final class StorePickerCoordinator: Coordinator {
 
 // MARK: - StorePickerViewControllerDelegate Conformance
 //
-extension StorePickerCoordinator: StorePickerViewControllerDelegate {
+extension StorePickerCoordinator: @MainActor StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         switchStore(with: storeID, onCompletion: onCompletion)

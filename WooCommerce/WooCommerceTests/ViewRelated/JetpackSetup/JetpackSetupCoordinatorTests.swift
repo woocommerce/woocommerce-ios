@@ -18,7 +18,10 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         window.makeKeyAndVisible()
         window.rootViewController = navigationController
 
-        AuthenticationManager().initialize()
+        // This UIKit-based test suite is set up on the main thread.
+        MainActor.assumeIsolated {
+            AuthenticationManager().initialize()
+        }
 
         super.setUp()
     }

@@ -1,5 +1,4 @@
 import XCTest
-import Experiments
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -7,7 +6,7 @@ final class EditAttributesViewModelTests: XCTestCase {
 
     func test_done_button_is_visible_when_allowing_variation_creation() {
         // Given, Then
-        let viewModel = EditAttributesViewModel(product: .fake(), allowVariationCreation: true, featureFlagService: MockFeatureFlagService())
+        let viewModel = EditAttributesViewModel(product: .fake(), allowVariationCreation: true)
 
         // Then
         XCTAssertTrue(viewModel.showDoneButton)
@@ -15,7 +14,7 @@ final class EditAttributesViewModelTests: XCTestCase {
 
     func test_done_button_is_not_visible_when_not_allowing_variation_creation() {
         // Given, Then
-        let viewModel = EditAttributesViewModel(product: .fake(), allowVariationCreation: false, featureFlagService: MockFeatureFlagService())
+        let viewModel = EditAttributesViewModel(product: .fake(), allowVariationCreation: false)
 
         // Then
         XCTAssertFalse(viewModel.showDoneButton)
@@ -28,7 +27,7 @@ final class EditAttributesViewModelTests: XCTestCase {
         let product = Product.fake().copy(attributes: [attribute, attribute2])
 
         // When
-        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false, featureFlagService: MockFeatureFlagService())
+        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: true)
 
         // Then
         let expectedVM = ImageAndTitleAndTextTableViewCell.ViewModel(title: "attr",
@@ -47,7 +46,7 @@ final class EditAttributesViewModelTests: XCTestCase {
         let product2 = Product.fake().copy(attributes: [attribute, attribute2, attribute3])
 
         // When
-        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false, featureFlagService: MockFeatureFlagService())
+        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: true)
         viewModel.updateProduct(product2)
 
         // Then
@@ -70,7 +69,7 @@ final class EditAttributesViewModelTests: XCTestCase {
         let product = Product.fake().copy(attributes: [attribute, attribute2, attribute3])
 
         // When
-        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false, featureFlagService: MockFeatureFlagService())
+        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: true)
 
         // Then
         XCTAssertEqual(viewModel.attributes.count, 2)
@@ -81,7 +80,7 @@ final class EditAttributesViewModelTests: XCTestCase {
 }
 
 extension EditAttributesViewModelTests {
-    func test_when_feature_is_on_outside_variations_flow_then_all_attributes_are_listed_with_labels() {
+    func test_when_outside_variations_flow_then_all_attributes_are_listed_with_labels() {
         // Given
         let attribute = sampleAttribute(name: "Color", options: ["Red", "Blue"])
         let attribute2 = sampleNonVariationAttribute(name: "Material", options: ["Cotton"]).copy(visible: false)
@@ -89,29 +88,27 @@ extension EditAttributesViewModelTests {
 
         // When
         let viewModel = EditAttributesViewModel(product: product,
-                                                allowVariationCreation: false,
-                                                featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                allowVariationCreation: false)
 
         // Then
         XCTAssertEqual(viewModel.attributes.map { $0.text }, ["Red, Blue\nUsed for variations", "Cotton\nHidden"])
         XCTAssertEqual(viewModel.productAttributeAtIndex(1), attribute2)
     }
 
-    func test_when_feature_is_on_for_a_simple_product_then_no_used_for_variations_label_is_shown() {
+    func test_when_product_is_simple_then_no_used_for_variations_label_is_shown() {
         // Given
         let attribute = sampleAttribute(name: "Color", options: ["Red"])
         let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: [attribute])
 
         // When
         let viewModel = EditAttributesViewModel(product: product,
-                                                allowVariationCreation: false,
-                                                featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                allowVariationCreation: false)
 
         // Then
         XCTAssertEqual(viewModel.attributes.map { $0.text }, ["Red"])
     }
 
-    func test_when_feature_is_on_in_variations_flow_then_only_variation_attributes_are_listed_without_labels() {
+    func test_when_in_variations_flow_then_only_variation_attributes_are_listed_without_labels() {
         // Given
         let attribute = sampleAttribute(name: "Color", options: ["Red", "Blue"])
         let attribute2 = sampleNonVariationAttribute(name: "Material", options: ["Cotton"])
@@ -119,8 +116,7 @@ extension EditAttributesViewModelTests {
 
         // When
         let viewModel = EditAttributesViewModel(product: product,
-                                                allowVariationCreation: true,
-                                                featureFlagService: featureFlagService(isNonVariationAttributesEnabled: true))
+                                                allowVariationCreation: true)
 
         // Then
         XCTAssertEqual(viewModel.attributes.map { $0.title }, ["Color"])
@@ -130,12 +126,6 @@ extension EditAttributesViewModelTests {
 }
 
 private extension EditAttributesViewModelTests {
-    func featureFlagService(isNonVariationAttributesEnabled: Bool) -> MockFeatureFlagService {
-        let service = MockFeatureFlagService()
-        service.isFeatureFlagEnabledReturnValue[.nonVariationProductAttributes] = isNonVariationAttributesEnabled
-        return service
-    }
-
     func sampleAttribute(attributeID: Int64 = 1234, name: String, options: [String] = []) -> ProductAttribute {
         ProductAttribute(siteID: 123,
                          attributeID: attributeID,

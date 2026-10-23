@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a predefined option in Shipping Labels for the WooCommerce Shipping extension.
 ///
-public struct WooShippingPredefinedOption: Equatable, GeneratedFakeable {
+public struct WooShippingPredefinedOption: Equatable, GeneratedFakeable, Sendable {
 
     /// The title of the predefined option. It works like an ID, and it is unique.
     public let title: String
@@ -23,7 +23,7 @@ public struct WooShippingPredefinedOption: Equatable, GeneratedFakeable {
 
 /// Represents a predefined carrier option in Shipping Labels for the WooCommerce Shipping extension.
 ///
-public struct WooShippingCarrierPredefinedOptions: Equatable, GeneratedFakeable {
+public struct WooShippingCarrierPredefinedOptions: Equatable, GeneratedFakeable, Sendable {
     public let carrierID: String
     public let predefinedOptions: [WooShippingPredefinedOption]
 

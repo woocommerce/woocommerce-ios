@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class ReviewsScreen: ScreenObject {
 
     public let tabBar: TabNavComponent

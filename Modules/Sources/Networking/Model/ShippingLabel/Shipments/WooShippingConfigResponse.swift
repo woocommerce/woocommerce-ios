@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a list of available Shipping Label Config info for the WooCommerce Shipping extension.
 ///
-public struct WooShippingConfigResponse: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingConfigResponse: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     public let config: WooShippingConfig
 
     public init(config: WooShippingConfig) {
@@ -11,7 +11,7 @@ public struct WooShippingConfigResponse: Decodable, Equatable, GeneratedFakeable
     }
 }
 
-public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     /// The remote ID of the site that owns this shipping label config info.
     public let siteID: Int64
 
@@ -85,7 +85,7 @@ public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, Genera
     }
 }
 
-public struct WooShippingLabelData: Decodable, Equatable {
+public struct WooShippingLabelData: Decodable, Equatable, Sendable {
     /// Labels purchased for the current order
     public let currentOrderLabels: [ShippingLabel]
 
@@ -141,7 +141,7 @@ public extension WooShippingLabelData {
     typealias WooShippingLabelAddressMap = [String: WooShippingAddress]
     typealias WooShippingHazmatMap = [String: HazmatSelection]
 
-    struct StoredData: Decodable, Equatable {
+    struct StoredData: Decodable, Equatable, Sendable {
         let selectedDestinations: WooShippingLabelAddressMap?
         let selectedOrigins: WooShippingLabelAddressMap?
         let selectedHazmat: WooShippingHazmatMap?
@@ -174,6 +174,6 @@ enum WooShippingConfigDecodingError: Error {
     case missingOrderID
 }
 
-public struct HazmatSelection: Decodable, Equatable {
+public struct HazmatSelection: Decodable, Equatable, Sendable {
     public let category: String
 }

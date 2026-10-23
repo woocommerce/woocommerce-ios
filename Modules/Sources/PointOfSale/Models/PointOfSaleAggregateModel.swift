@@ -274,6 +274,7 @@ extension PointOfSaleAggregateModel {
     }
 
     func startNewCart() {
+        collectOrderPaymentAnalyticsTracker.resetCheckoutTiming()
         removeAllItemsFromCart()
         orderController.clearOrder()
         setStateForEditing()

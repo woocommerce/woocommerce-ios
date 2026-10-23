@@ -105,7 +105,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             // TODO: send error when we can handle failure state
             softwareUpdateSubject.send(.completed)
             softwareUpdateSubject.send(.none)
-        case .loadAccounts(let siteID, let onCompletion):
+        case .loadAccounts(let siteID, _, let onCompletion):
             insertSamplePaymentGateway(forSiteID: siteID)
             onCompletion(Result.success(()))
         case .loadActivePaymentGatewayExtension(let onCompletion):

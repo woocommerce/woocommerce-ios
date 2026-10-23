@@ -59,7 +59,10 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, featureFlagService: featureFlagService)
+        let viewModel = EditCustomerNoteViewModel(order: order,
+                                                 stores: stores,
+                                                 noticePresenter: DefaultNoticePresenter(),
+                                                 featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrder(_, order, _, _, _, onCompletion):
@@ -109,7 +112,10 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, featureFlagService: featureFlagService)
+        let viewModel = EditCustomerNoteViewModel(order: order,
+                                                 stores: stores,
+                                                 noticePresenter: DefaultNoticePresenter(),
+                                                 featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrder(_, order, _, _, _, onCompletion):
@@ -285,7 +291,10 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let viewModel = EditCustomerNoteViewModel(order: order,
+                                                 stores: stores,
+                                                 analytics: WooAnalytics(analyticsProvider: analyticsProvider),
+                                                 noticePresenter: DefaultNoticePresenter())
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrderOptimistically(_, _, _, onCompletion),

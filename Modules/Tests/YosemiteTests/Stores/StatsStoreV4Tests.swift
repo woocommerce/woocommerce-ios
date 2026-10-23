@@ -1,4 +1,5 @@
 import XCTest
+import Synchronization
 import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
@@ -43,14 +44,14 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` effectively persists any retrieved OrderStatsV4.
     ///
-    func test_retrieveStats_effectively_persists_retrieved_stats() {
+    func test_retrieveStats_effectively_persists_retrieved_stats() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "order-stats-v4-year")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisYear,
                                                      timeZone: .current,
@@ -73,13 +74,13 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveStats_returns_error_upon_reponse_error() {
+    func test_retrieveStats_returns_error_upon_reponse_error() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "generic_error")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisYear,
                                                      timeZone: .current,
@@ -98,12 +99,12 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` returns an error whenever there is no backend response.
     ///
-    func test_retrieveStats_returns_error_upon_empty_response() {
+    func test_retrieveStats_returns_error_upon_empty_response() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisYear,
                                                      timeZone: .current,
@@ -125,14 +126,14 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteVisitStats` effectively persists any retrieved SiteVisitStats.
     ///
-    func test_retrieveSiteVisitStats_effectively_persists_retrieved_stats() {
+    func test_retrieveSiteVisitStats_effectively_persists_retrieved_stats() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteVisitStats(siteID: self.sampleSiteID,
                                                               siteTimezone: .current,
                                                               timeRange: .thisWeek,
@@ -152,7 +153,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteVisitStats` effectively persists any updated SiteVisitStatsItems.
     ///
-    func test_retrieveSiteVisitStats_effectively_persists_updated_items() {
+    func test_retrieveSiteVisitStats_effectively_persists_updated_items() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 0)
@@ -162,7 +163,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-alt")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteVisitStats(siteID: self.sampleSiteID,
                                                               siteTimezone: .current,
                                                               timeRange: .thisYear,
@@ -182,13 +183,13 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteVisitStats` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveSiteVisitStats_returns_error_upon_reponse_error() {
+    func test_retrieveSiteVisitStats_returns_error_upon_reponse_error() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "generic_error")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteVisitStats(siteID: self.sampleSiteID,
                                                               siteTimezone: .current,
                                                               timeRange: .thisYear,
@@ -204,12 +205,12 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteVisitStats` returns an error whenever there is no backend response.
     ///
-    func test_retrieveSiteVisitStats_returns_error_upon_empty_response() {
+    func test_retrieveSiteVisitStats_returns_error_upon_empty_response() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteVisitStats(siteID: self.sampleSiteID,
                                                               siteTimezone: .current,
                                                               timeRange: .thisYear,
@@ -258,17 +259,16 @@ final class StatsStoreV4Tests: XCTestCase {
 
     // MARK: - StatsActionV4.retrieveTopEarnerStats
 
-
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any retrieved TopEarnerStats.
     ///
-    func test_retrieveTopEarnerStats_effectively_persists_retrieved_stats() {
+    func test_retrieveTopEarnerStats_effectively_persists_retrieved_stats() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/products", filename: "reports-products")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
 
         // When
-        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
+        let result: Result<Networking.TopEarnerStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
                                                               timeZone: .current,
@@ -293,13 +293,13 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` makes a network request with the given quantity parameter.
     ///
-    func test_retrieveTopEarnerStats_makes_network_request_with_given_quantity_parameter() {
+    func test_retrieveTopEarnerStats_makes_network_request_with_given_quantity_parameter() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let quantity = 6
-        let _: Void = waitFor { promise in
+        let _: Void = try waitForStats { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
                                                               timeZone: .current,
@@ -325,7 +325,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let _: Void = waitFor { promise in
+        let _: Void = try waitForStats { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisMonth,
                                                      timeZone: .current,
@@ -345,12 +345,12 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` makes a network request without the `force_cache_refresh` parameter if `forceRefresh` is false.
     ///
-    func test_retrieveStats_makes_network_request_without_force_cache_rerefresh_parameter_if_forceRefresh_is_false() {
+    func test_retrieveStats_makes_network_request_without_force_cache_rerefresh_parameter_if_forceRefresh_is_false() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let _: Void = waitFor { promise in
+        let _: Void = try waitForStats { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisMonth,
                                                      timeZone: .current,
@@ -370,14 +370,14 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.
     ///
-    func test_retrieveTopEarnerStats_effectively_persists_updated_items() {
+    func test_retrieveTopEarnerStats_effectively_persists_updated_items() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/products", filename: "reports-products-alt")
         store.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
 
         // When
-        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
+        let result: Result<Networking.TopEarnerStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
                                                               timeZone: .current,
@@ -402,13 +402,13 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveTopEarnerStats_returns_error_upon_response_error() {
+    func test_retrieveTopEarnerStats_returns_error_upon_response_error() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "generic_error")
 
         // When
-        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
+        let result: Result<Networking.TopEarnerStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisMonth,
                                                               timeZone: .current,
@@ -428,12 +428,12 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` returns an error whenever there is no backend response.
     ///
-    func test_retrieveTopEarnerStats_returns_error_upon_empty_response() {
+    func test_retrieveTopEarnerStats_returns_error_upon_empty_response() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
+        let result: Result<Networking.TopEarnerStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisMonth,
                                                               timeZone: .current,
@@ -492,7 +492,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "site-summary-stats")
 
         // When
-        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+        let result: Result<Networking.SiteSummaryStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 siteTimezone: .current,
                                                                 period: .day,
@@ -517,7 +517,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let _: Void = waitFor { promise in
+        let _: Void = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 siteTimezone: .init(identifier: "GMT") ?? .current,
                                                                 period: .month,
@@ -545,7 +545,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-quarter")
 
         // When
-        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+        let result: Result<Networking.SiteSummaryStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 siteTimezone: .current,
                                                                 period: .month,
@@ -565,13 +565,13 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveSiteSummaryStats_returns_error_upon_response_error() {
+    func test_retrieveSiteSummaryStats_returns_error_upon_response_error() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "generic_error")
 
         // When
-        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+        let result: Result<Networking.SiteSummaryStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 siteTimezone: .current,
                                                                 period: .day,
@@ -589,12 +589,12 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` returns an error whenever there is no backend response.
     ///
-    func test_retrieveSiteSummaryStats_returns_error_upon_empty_response() {
+    func test_retrieveSiteSummaryStats_returns_error_upon_empty_response() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+        let result: Result<Networking.SiteSummaryStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 siteTimezone: .current,
                                                                 period: .day,
@@ -612,14 +612,14 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` effectively persists any retrieved SiteSummaryStats.
     ///
-    func test_retrieveSiteSummaryStats_effectively_persists_retrieved_stats() {
+    func test_retrieveSiteSummaryStats_effectively_persists_retrieved_stats() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/summary/", filename: "site-summary-stats")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSummaryStats.self), 0)
 
         // When
-        let result: Result<Networking.SiteSummaryStats, Error> = waitFor { promise in
+        let result: Result<Networking.SiteSummaryStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveSiteSummaryStats(siteID: self.sampleSiteID,
                                                                 siteTimezone: .current,
                                                                 period: .day,
@@ -665,7 +665,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "reports/bundles/stats", filename: "product-bundle-stats")
 
         // When
-        let result: Result<ProductBundleStats, Error> = waitFor { promise in
+        let result: Result<ProductBundleStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveProductBundleStats(siteID: self.sampleSiteID,
                                                                   unit: .daily,
                                                                   timeZone: .current,
@@ -686,13 +686,13 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveProductBundleStats` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveProductBundleStats_returns_error_upon_reponse_error() {
+    func test_retrieveProductBundleStats_returns_error_upon_reponse_error() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/bundles/stats", filename: "generic_error")
 
         // When
-        let result: Result<ProductBundleStats, Error> = waitFor { promise in
+        let result: Result<ProductBundleStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveProductBundleStats(siteID: self.sampleSiteID,
                                                                   unit: .daily,
                                                                   timeZone: .current,
@@ -711,12 +711,12 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveProductBundleStats` returns an error whenever there is no backend response.
     ///
-    func test_retrieveProductBundleStats_returns_error_upon_empty_response() {
+    func test_retrieveProductBundleStats_returns_error_upon_empty_response() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<ProductBundleStats, Error> = waitFor { promise in
+        let result: Result<ProductBundleStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveProductBundleStats(siteID: self.sampleSiteID,
                                                                   unit: .daily,
                                                                   timeZone: .current,
@@ -743,7 +743,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "reports/bundles", filename: "product-bundle-top-bundles")
 
         // When
-        let result: Result<[ProductsReportItem], Error> = waitFor { promise in
+        let result: Result<[ProductsReportItem], Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveTopProductBundles(siteID: self.sampleSiteID,
                                                                  timeZone: .current,
                                                                  earliestDateToInclude: Date(),
@@ -763,13 +763,13 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveTopProductBundles_returns_error_upon_reponse_error() {
+    func test_retrieveTopProductBundles_returns_error_upon_reponse_error() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/bundles", filename: "generic_error")
 
         // When
-        let result: Result<[ProductsReportItem], Error> = waitFor { promise in
+        let result: Result<[ProductsReportItem], Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveTopProductBundles(siteID: self.sampleSiteID,
                                                                  timeZone: .current,
                                                                  earliestDateToInclude: Date(),
@@ -786,12 +786,12 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns an error whenever there is no backend response.
     ///
-    func test_retrieveTopProductBundles_returns_error_upon_empty_response() {
+    func test_retrieveTopProductBundles_returns_error_upon_empty_response() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<[ProductsReportItem], Error> = waitFor { promise in
+        let result: Result<[ProductsReportItem], Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveTopProductBundles(siteID: self.sampleSiteID,
                                                                  timeZone: .current,
                                                                  earliestDateToInclude: Date(),
@@ -816,7 +816,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "reports/giftcards/used/stats", filename: "gift-card-stats")
 
         // When
-        let result: Result<GiftCardStats, Error> = waitFor { promise in
+        let result: Result<GiftCardStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: self.sampleSiteID,
                                                                  unit: .daily,
                                                                  timeZone: .current,
@@ -837,13 +837,13 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveUsedGiftCardStats_returns_error_upon_reponse_error() {
+    func test_retrieveUsedGiftCardStats_returns_error_upon_reponse_error() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/giftcards/used/stats", filename: "generic_error")
 
         // When
-        let result: Result<GiftCardStats, Error> = waitFor { promise in
+        let result: Result<GiftCardStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: self.sampleSiteID,
                                                                  unit: .daily,
                                                                  timeZone: .current,
@@ -862,12 +862,12 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns an error whenever there is no backend response.
     ///
-    func test_retrieveUsedGiftCardStats_returns_error_upon_empty_response() {
+    func test_retrieveUsedGiftCardStats_returns_error_upon_empty_response() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<GiftCardStats, Error> = waitFor { promise in
+        let result: Result<GiftCardStats, Error> = try waitForStats { promise in
             let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: self.sampleSiteID,
                                                                  unit: .daily,
                                                                  timeZone: .current,
@@ -889,6 +889,26 @@ final class StatsStoreV4Tests: XCTestCase {
 // MARK: - Private Methods
 //
 private extension StatsStoreV4Tests {
+    /// Keeps the completion transferable without changing the synchronous test setup.
+    func waitForStats<Value: Sendable>(file: StaticString = #filePath,
+                                       line: UInt = #line,
+                                       timeout: TimeInterval = 5.0,
+                                       awaiting: (_ promise: @escaping @Sendable (Value) -> Void) throws -> Void) throws -> Value {
+        let completion = expectation(description: "Expect stats completion to be called.")
+        let receivedValue = Mutex<Value?>(nil)
+
+        try awaiting { value in
+            receivedValue.withLock { $0 = value }
+            completion.fulfill()
+        }
+
+        if XCTWaiter.wait(for: [completion], timeout: timeout) == .timedOut {
+            XCTFail("Timed out waiting for stats completion.", file: file, line: line)
+        }
+
+        return try receivedValue.withLock { try XCTUnwrap($0, file: file, line: line) }
+    }
+
     // MARK: - Order Stats V4 Sample
 
     func sampleStats() -> Networking.OrderStatsV4 {

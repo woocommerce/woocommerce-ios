@@ -15,19 +15,17 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
     private let sampleAdminURL = "https://example.com/wp-admin/"
 
     override func setUp() async throws {
-        await MainActor.run {
-            analyticsProvider = MockAnalyticsProvider()
-            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-            eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
-            stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: .fake().copy(adminURL: sampleAdminURL)))
-            ServiceLocator.setCurrencySettings(CurrencySettings()) // Default is US
-            stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
-                switch action {
-                case let .retrieveCampaignStats(_, _, _, _, _, onCompletion):
-                    onCompletion(.success(self.sampleCampaignStats()))
-                default:
-                    break
-                }
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
+        stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: .fake().copy(adminURL: sampleAdminURL)))
+        ServiceLocator.setCurrencySettings(CurrencySettings()) // Default is US
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .retrieveCampaignStats(_, _, _, _, _, onCompletion):
+                onCompletion(.success(self.sampleCampaignStats()))
+            default:
+                break
             }
         }
     }

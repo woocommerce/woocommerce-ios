@@ -18,14 +18,12 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     private let sampleAdminURL = "https://example.com/wp-admin/"
 
     override func setUp() async throws {
-        await MainActor.run {
-            stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(adminURL: sampleAdminURL)))
-            analyticsProvider = MockAnalyticsProvider()
-            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-            eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
-            ServiceLocator.setCurrencySettings(CurrencySettings()) // Default is US
-            vm = createViewModel()
-        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(adminURL: sampleAdminURL)))
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
+        ServiceLocator.setCurrencySettings(CurrencySettings()) // Default is US
+        vm = createViewModel()
     }
 
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {

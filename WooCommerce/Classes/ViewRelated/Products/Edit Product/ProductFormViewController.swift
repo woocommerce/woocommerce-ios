@@ -775,10 +775,7 @@ private extension ProductFormViewController {
 
         setContentScrollView(tableView, for: .bottom)
         stackViewBottomToSafeAreaConstraints = view.bottomConstraintsToSafeArea(of: stackView)
-        let bottomConstraint = stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        // Below required so the keyboard guide constraint on the hidden bar wins while the keyboard is up.
-        bottomConstraint.priority = .required - 1
-        stackViewBottomToViewConstraint = bottomConstraint
+        stackViewBottomToViewConstraint = stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         updateLiquidGlassTabBarUnderlap()
     }
 

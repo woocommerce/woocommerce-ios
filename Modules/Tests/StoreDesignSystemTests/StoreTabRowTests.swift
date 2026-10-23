@@ -27,14 +27,14 @@ import Testing
 
 @Suite struct StoreTabRowLayoutTests {
 
-    @Test func test_init_when_text_only_then_content_sits_at_the_bottom_above_the_inset() {
+    @Test func test_init_when_text_only_then_content_is_centred_between_equal_insets() {
         // Given / When a tab without an icon resolves its layout
         let sut = StoreTabRowLayout(hasIcon: false)
 
-        // Then the label is bottom-aligned above a p5 inset (the design's p6 less the line box's descent), with no top inset
-        #expect(sut.contentAlignment == .bottom)
-        #expect(sut.topInset == StorePadding.p0)
-        #expect(sut.bottomInset == StorePadding.p5)
+        // Then the label is centred with a p3 inset on both sides
+        #expect(sut.contentAlignment == .center)
+        #expect(sut.topInset == StorePadding.p3)
+        #expect(sut.bottomInset == StorePadding.p3)
     }
 
     @Test func test_init_when_icon_then_content_sits_at_the_top_between_its_insets() {

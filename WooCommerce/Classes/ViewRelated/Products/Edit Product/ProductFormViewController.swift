@@ -696,7 +696,7 @@ private extension ProductFormViewController {
         tableView.backgroundColor = .listForeground(modal: false)
         tableView.removeLastCellSeparator()
 
-        // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
+        // The stack view handles the safe area while the "Add more details" bar is shown; `updateLiquidGlassTabBarUnderlap()` switches this on iOS 26.
         tableView.contentInsetAdjustmentBehavior = .never
 
         configureLiquidGlassTabBarUnderlap()
@@ -775,7 +775,10 @@ private extension ProductFormViewController {
 
         setContentScrollView(tableView, for: .bottom)
         stackViewBottomToSafeAreaConstraints = view.bottomConstraintsToSafeArea(of: stackView)
-        stackViewBottomToViewConstraint = stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        let bottomConstraint = stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        // Below required so the keyboard guide constraint on the hidden bar wins while the keyboard is up.
+        bottomConstraint.priority = .required - 1
+        stackViewBottomToViewConstraint = bottomConstraint
         updateLiquidGlassTabBarUnderlap()
     }
 
@@ -786,6 +789,10 @@ private extension ProductFormViewController {
         }
 
         let underlapsTabBar = moreDetailsContainerView.isHidden
+        guard stackViewBottomToViewConstraint.isActive != underlapsTabBar else {
+            return
+        }
+
         view.keyboardLayoutGuide.usesBottomSafeArea = !underlapsTabBar
         tableView.contentInsetAdjustmentBehavior = underlapsTabBar ? .automatic : .never
         if underlapsTabBar {

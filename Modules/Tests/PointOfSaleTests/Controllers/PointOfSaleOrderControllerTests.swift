@@ -62,6 +62,56 @@ struct PointOfSaleOrderControllerTests {
         #expect(try await sut.reloadCurrentOrder().orderID == replacement.orderID)
     }
 
+    @Test(arguments: [false, true])
+    func test_order_response_when_replacement_sync_is_pending_then_rejects_response(promote: Bool) async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 1)
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        var responseContinuation: CheckedContinuation<Void, Never>?
+        var responseTask: Task<Order, Error>?
+        await withCheckedContinuation { started in
+            let delayResponse: @MainActor () async -> Void = {
+                await withCheckedContinuation { continuation in
+                    responseContinuation = continuation
+                    started.resume()
+                }
+            }
+            mockOrderService.onLoadOrderCalled = delayResponse
+            mockOrderService.onPromoteOrderCalled = delayResponse
+            responseTask = Task {
+                if promote {
+                    return try await sut.promoteCurrentOrderToPending()
+                }
+                return try await sut.reloadCurrentOrder()
+            }
+        }
+        let pendingResponse = try #require(responseTask)
+        let replacement = Order.fake().copy(orderID: 2)
+        mockOrderService.orderToReturn = replacement
+        mockOrderService.onSyncOrderCalled = {
+            // The original order ID is still cached until this sync finishes.
+            #expect(sut.orderState.isSyncing)
+            responseContinuation?.resume()
+            await #expect(throws: CancellationError.self) {
+                try await pendingResponse.value
+            }
+        }
+
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem(), makeItem()]), retryHandler: {})
+
+        // Then
+        guard case let .loaded(_, order) = sut.orderState else {
+            Issue.record("Expected the replacement order to be loaded")
+            return
+        }
+        #expect(order.orderID == replacement.orderID)
+    }
+
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,

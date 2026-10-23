@@ -1995,11 +1995,11 @@ struct POSPaymentModelTests {
 
     @Test(arguments: [false, true])
     @MainActor
-    func test_startScanToPayPayment_when_old_preparation_finishes_then_preserves_new_flow(fails: Bool) async {
+    func test_startScanToPayPayment_when_old_preparation_finishes_then_preserves_new_flow(fails: Bool) async throws {
         // Given
         let provider = MockPOSPaymentOrderProvider()
         let sut = makePaymentController(orderProvider: provider)
-        let replacementURL = URL(string: "https://example.com/pay/2")!
+        let replacementURL = try #require(URL(string: "https://example.com/pay/2"))
         var callCount = 0
         provider.onProvideScanToPayOrder = {
             callCount += 1

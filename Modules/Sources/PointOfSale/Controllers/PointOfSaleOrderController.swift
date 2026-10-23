@@ -109,7 +109,11 @@ protocol PointOfSaleOrderControllerProtocol {
         let posCart = POSCart(cart: cart)
 
         if let pendingOrderSync, pendingOrderSync.cart == posCart {
-            return await pendingOrderSync.task.value
+            let result = await pendingOrderSync.task.value
+            if case .success = result, case .loaded(_, let order) = orderState {
+                orderState = .loaded(totals(for: order, cart: cart), order)
+            }
+            return result
         }
         pendingOrderSync?.task.cancel()
         pendingOrderSync = nil
@@ -120,8 +124,10 @@ protocol PointOfSaleOrderControllerProtocol {
         let taxableIntentChanged = !posCart.customAmounts.taxableIntentMatches(lastSyncedCustomAmounts)
 
         guard !posCart.matches(order: order) || taxableIntentChanged else {
-            if orderState.isSyncing {
-                orderState = order.map { .loaded(totals(for: $0, cart: cart), $0) } ?? .idle
+            if let order {
+                orderState = .loaded(totals(for: order, cart: cart), order)
+            } else if orderState.isSyncing {
+                orderState = .idle
             }
             return .success(.orderNotChanged)
         }
@@ -135,6 +141,12 @@ protocol PointOfSaleOrderControllerProtocol {
             } catch {
                 result = .failure(error)
             }
+            switch result {
+            case .success:
+                analytics.track(.orderCreationSuccess)
+            case .failure(let error):
+                trackOrderCreationFailed(error: error)
+            }
             guard !Task.isCancelled else {
                 return .failure(CancellationError())
             }
@@ -145,12 +157,10 @@ protocol PointOfSaleOrderControllerProtocol {
                 self.order = syncedOrder
                 self.lastSyncedCustomAmounts = posCart.customAmounts
                 orderState = .loaded(totals(for: syncedOrder, cart: cart), syncedOrder)
-                analytics.track(.orderCreationSuccess)
                 return .success(.newOrder)
             case .failure(let error):
                 self.order = nil
                 self.lastSyncedCustomAmounts = []
-                trackOrderCreationFailed(error: error)
                 setOrderStateToError(error, retryHandler: retryHandler)
                 return .failure(SyncOrderStateError.syncFailure)
             }

@@ -17,6 +17,7 @@ import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
 import enum Networking.NetworkError
 import struct Yosemite.POSItemIdentifier
+import enum WooFoundationCore.WooAnalyticsStat
 
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
@@ -172,12 +173,13 @@ struct PointOfSaleOrderControllerTests {
         #expect(sut.orderState.order?.orderID == newOrder.orderID)
     }
 
-    @Test func syncOrder_when_order_is_cleared_while_syncing_then_ignores_result() async throws {
+    @Test func syncOrder_when_order_is_cleared_while_syncing_then_ignores_result_and_tracks_created_order() async throws {
         // Given
+        let analytics = MockPOSAnalytics()
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
-                                             analytics: MockPOSAnalytics())
+                                             analytics: analytics)
         mockOrderService.orderToReturn = Order.fake().copy(orderID: 1)
         mockOrderService.onSyncOrderCalled = { [weak sut] in
             sut?.clearOrder()
@@ -189,6 +191,82 @@ struct PointOfSaleOrderControllerTests {
         // Then
         #expect(throws: CancellationError.self) { try result.get() }
         #expect(sut.orderState == .idle)
+        #expect(analytics.events.map(\.eventName) == [WooAnalyticsStat.orderCreationSuccess.rawValue])
+    }
+
+    @Test func syncOrder_when_order_is_cleared_while_failing_sync_then_ignores_result_and_tracks_failure() async throws {
+        // Given
+        let analytics = MockPOSAnalytics()
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: analytics)
+        mockOrderService.orderToReturn = nil
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            sut?.clearOrder()
+        }
+
+        // When
+        let result = await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        // Then
+        #expect(throws: CancellationError.self) { try result.get() }
+        #expect(sut.orderState == .idle)
+        #expect(analytics.events.map(\.eventName) == [WooAnalyticsStat.orderCreationFailed.rawValue])
+    }
+
+    @Test func syncOrder_when_joined_cart_has_new_rows_then_marks_current_rows_as_discounted() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let discountedOrderItem = OrderItem.fake().copy(itemID: 1, quantity: 1, subtotal: "10.00", total: "8.00")
+        mockOrderService.orderToReturn = Order.fake().copy(currency: "USD", items: [discountedOrderItem])
+        let readdedRow = makeItem(orderItemsToMatch: [discountedOrderItem])
+        var joinedSync: Task<Result<SyncOrderState, Error>, Never>?
+        mockOrderService.onSyncOrderCalled = { [mockOrderService] in
+            mockOrderService.onSyncOrderCalled = nil
+            joinedSync = Task { await sut.syncOrder(for: Cart(purchasableItems: [readdedRow]), retryHandler: {}) }
+            await Task.yield()
+        }
+
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem(orderItemsToMatch: [discountedOrderItem])]), retryHandler: {})
+        let joinedSyncResult = await joinedSync?.value
+
+        // Then
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(try joinedSyncResult?.get() == .newOrder)
+        guard case .loaded(let totals, _) = sut.orderState else {
+            Issue.record("Expected loaded order state, got \(sut.orderState)")
+            return
+        }
+        #expect(totals.discountedCartItemIDs == [readdedRow.id])
+    }
+
+    @Test func syncOrder_when_cart_rows_are_replaced_after_sync_then_marks_current_rows_as_discounted() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let discountedOrderItem = OrderItem.fake().copy(itemID: 1, quantity: 1, subtotal: "10.00", total: "8.00")
+        mockOrderService.orderToReturn = Order.fake().copy(currency: "USD", items: [discountedOrderItem])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem(orderItemsToMatch: [discountedOrderItem])]), retryHandler: {})
+        let readdedRow = makeItem(orderItemsToMatch: [discountedOrderItem])
+
+        // When
+        let result = await sut.syncOrder(for: Cart(purchasableItems: [readdedRow]), retryHandler: {})
+
+        // Then
+        #expect(try result.get() == .orderNotChanged)
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        guard case .loaded(let totals, _) = sut.orderState else {
+            Issue.record("Expected loaded order state, got \(sut.orderState)")
+            return
+        }
+        #expect(totals.discountedCartItemIDs == [readdedRow.id])
     }
 
     @Test func syncOrder_with_no_previous_order_calls_orderService() async throws {

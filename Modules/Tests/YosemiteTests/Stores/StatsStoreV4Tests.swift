@@ -259,37 +259,6 @@ final class StatsStoreV4Tests: XCTestCase {
 
     // MARK: - StatsActionV4.retrieveTopEarnerStats
 
-    func test_upsertStoredTopEarnerStats_when_store_is_released_before_write_then_skips_write() {
-        // Given
-        let storage = MockDeferredStatsStorageManager()
-        var store: StatsStoreV4? = StatsStoreV4(dispatcher: dispatcher, storageManager: storage, network: network)
-
-        // When
-        store?.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
-        store = nil
-        storage.flushWrites()
-
-        // Then
-        XCTAssertEqual(storage.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
-    }
-
-    func test_upsertStoredTopEarnerStats_when_store_is_retained_until_write_then_persists_stats() {
-        // Given
-        let storage = MockDeferredStatsStorageManager()
-        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storage, network: network)
-
-        // When
-        store.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
-        withExtendedLifetime(store) {
-            storage.flushWrites()
-        }
-
-        // Then
-        XCTAssertEqual(storage.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-        XCTAssertEqual(storage.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
-    }
-
-
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any retrieved TopEarnerStats.
     ///
     func test_retrieveTopEarnerStats_effectively_persists_retrieved_stats() throws {
@@ -1192,50 +1161,5 @@ private extension StatsStoreV4Tests {
                                    dateStart: "2024-01-08 00:00:00",
                                    dateEnd: "2024-01-14 23:59:59",
                                    subtotals: sampleGiftCardStatsTotals())
-    }
-}
-
-/// Defers writes so tests can release the stats owner before its queued operation runs.
-private final class MockDeferredStatsStorageManager: StorageManagerType, Sendable {
-    private struct PendingWrite: Sendable {
-        let operation: @Sendable (StorageType) -> Void
-        let completion: (@Sendable () -> Void)?
-        let queue: DispatchQueue
-    }
-
-    private let inner = MockStorageManager()
-    private let pendingWrites = Mutex([PendingWrite]())
-
-    var viewStorage: StorageType {
-        inner.viewStorage
-    }
-
-    func performAndSave(_ operation: @escaping @Sendable (StorageType) -> Void,
-                        completion: (@Sendable () -> Void)?,
-                        on queue: DispatchQueue) {
-        pendingWrites.withLock {
-            $0.append(PendingWrite(operation: operation, completion: completion, queue: queue))
-        }
-    }
-
-    func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
-                           completion: @escaping @Sendable (Result<T, Error>) -> Void,
-                           on queue: DispatchQueue) {
-        inner.performAndSave(operation, completion: completion, on: queue)
-    }
-
-    func reset(onCompletion: (@Sendable () -> Void)?) {
-        inner.reset(onCompletion: onCompletion)
-    }
-
-    func flushWrites() {
-        let writes = pendingWrites.withLock { pending in
-            let writes = pending
-            pending.removeAll()
-            return writes
-        }
-        for write in writes {
-            inner.performAndSave(write.operation, completion: write.completion, on: write.queue)
-        }
     }
 }

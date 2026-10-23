@@ -432,10 +432,6 @@ extension StatsStoreV4 {
     func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (@Sendable () -> Void)? = nil) {
         statsStorage.upsertStoredTopEarnerStats(readOnlyStats: readOnlyStats, onCompletion: onCompletion)
     }
-
-    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: (@Sendable () -> Void)? = nil) {
-        statsStorage.upsertStoredSiteSummaryStats(readOnlyStats: readOnlyStats, onCompletion: onCompletion)
-    }
 }
 
 // MARK: - Persistence
@@ -567,7 +563,7 @@ private extension StatsStoreV4.StatsStorage {
 }
 
 // MARK: Site summary stats
-private extension StatsStoreV4.StatsStorage {
+extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteSummaryStats Entity into the Storage Layer.
     ///
     func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: (@Sendable () -> Void)? = nil) {

@@ -2,6 +2,7 @@ import EventHorizonSDK
 import Experiments
 import AutomatticTracks
 import XCTest
+import os
 @testable import WooCommerce
 @testable import Yosemite
 @testable import WordPressAuthenticator
@@ -471,17 +472,17 @@ class WooAnalyticsTests: XCTestCase {
         ServiceLocator.setStores(stores)
         let provider = MockAnalyticsProvider()
         provider.defersRefreshUserDataCompletion = true
-        var startedContexts: [ExperimentContext] = []
+        let startedContexts = OSAllocatedUnfairLock(initialState: [ExperimentContext]())
         analytics = WooAnalytics(analyticsProvider: provider,
                                  consent: consent,
                                  notificationCenter: notificationCenter,
                                  startABTest: { context in
-            startedContexts.append(context)
+            startedContexts.withLock { $0.append(context) }
         })
         analytics.initialize()
         provider.completeRefreshUserData()
         XCTAssertEqual(provider.refreshUserDataCallCount, 1, file: file, line: line)
-        XCTAssertEqual(startedContexts, [.loggedOut], file: file, line: line)
+        XCTAssertEqual(startedContexts.withLock { $0 }, [.loggedOut], file: file, line: line)
 
         // When: the login event is recorded immediately before the authentication state changes.
         analytics.track(.applicationPasswordAuthorizationApproved)
@@ -492,19 +493,19 @@ class WooAnalyticsTests: XCTestCase {
 
         // Then: preserve the login-time skip from #9485 while starting logged-in experiments.
         XCTAssertEqual(provider.refreshUserDataCallCount, 1, file: file, line: line)
-        XCTAssertEqual(startedContexts, [.loggedOut, .loggedIn], file: file, line: line)
+        XCTAssertEqual(startedContexts.withLock { $0 }, [.loggedOut, .loggedIn], file: file, line: line)
     }
 
     @MainActor
     func test_refreshUserData_when_opted_out_then_does_not_refresh_provider_or_start_AB_tests() {
         // Given
         let provider = MockAnalyticsProvider()
-        var startedContexts: [ExperimentContext] = []
+        let startedContexts = OSAllocatedUnfairLock(initialState: [ExperimentContext]())
         analytics = WooAnalytics(analyticsProvider: provider,
                                  consent: consent,
                                  notificationCenter: notificationCenter,
                                  startABTest: { context in
-            startedContexts.append(context)
+            startedContexts.withLock { $0.append(context) }
         })
         analytics.userHasOptedIn = false
 
@@ -513,19 +514,19 @@ class WooAnalyticsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(provider.refreshUserDataCallCount, 0)
-        XCTAssertTrue(startedContexts.isEmpty)
+        XCTAssertTrue(startedContexts.withLock { $0.isEmpty })
     }
 
     @MainActor
     func test_initialize_when_opted_out_then_does_not_refresh_provider_or_start_AB_tests() {
         // Given
         let provider = MockAnalyticsProvider()
-        var startedContexts: [ExperimentContext] = []
+        let startedContexts = OSAllocatedUnfairLock(initialState: [ExperimentContext]())
         analytics = WooAnalytics(analyticsProvider: provider,
                                  consent: consent,
                                  notificationCenter: notificationCenter,
                                  startABTest: { context in
-            startedContexts.append(context)
+            startedContexts.withLock { $0.append(context) }
         })
         analytics.userHasOptedIn = false
 
@@ -534,7 +535,7 @@ class WooAnalyticsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(provider.refreshUserDataCallCount, 0)
-        XCTAssertTrue(startedContexts.isEmpty)
+        XCTAssertTrue(startedContexts.withLock { $0.isEmpty })
     }
 
     @MainActor
@@ -550,12 +551,12 @@ class WooAnalyticsTests: XCTestCase {
         ServiceLocator.setStores(stores)
         let provider = MockAnalyticsProvider()
         provider.defersRefreshUserDataCompletion = true
-        var startedContexts: [ExperimentContext] = []
+        let startedContexts = OSAllocatedUnfairLock(initialState: [ExperimentContext]())
         analytics = WooAnalytics(analyticsProvider: provider,
                                  consent: consent,
                                  notificationCenter: notificationCenter,
                                  startABTest: { context in
-            startedContexts.append(context)
+            startedContexts.withLock { $0.append(context) }
         })
 
         // When
@@ -563,13 +564,13 @@ class WooAnalyticsTests: XCTestCase {
 
         // Then: experiments must wait until the test explicitly completes the refresh.
         XCTAssertEqual(provider.refreshUserDataCallCount, 1, file: file, line: line)
-        XCTAssertTrue(startedContexts.isEmpty, file: file, line: line)
+        XCTAssertTrue(startedContexts.withLock { $0.isEmpty }, file: file, line: line)
 
         // When
         provider.completeRefreshUserData()
 
         // Then
-        XCTAssertEqual(startedContexts, [expectedContext], file: file, line: line)
+        XCTAssertEqual(startedContexts.withLock { $0 }, [expectedContext], file: file, line: line)
     }
 
     @MainActor

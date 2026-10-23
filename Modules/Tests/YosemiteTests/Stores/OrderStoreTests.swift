@@ -66,7 +66,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that OrderAction.synchronizeOrders returns the expected Orders.
     ///
     func testRetrieveOrdersReturnsExpectedFields() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Retrieve order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -86,7 +86,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.synchronizeOrders` effectively persists any retrieved orders.
     ///
     func testRetrieveOrdersEffectivelyPersistsRetrievedOrders() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -110,7 +110,7 @@ final class OrderStoreTests: XCTestCase {
     /// correctly across all of the related Order objects (items, coupons, etc).
     ///
     func testRetrieveOrdersEffectivelyPersistsOrderFieldsAndRelatedObjects() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -141,7 +141,7 @@ final class OrderStoreTests: XCTestCase {
     /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
     ///
     func testRetrieveOrdersWithBreakingDocumentIsProperlyParsedAndInsertedIntoStorage() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -273,7 +273,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.searchOrder` effectively persists the retrieved orders.
     ///
     func testSearchOrdersEffectivelyPersistsRetrievedSearchOrders() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         let expectation = self.expectation(description: "Search Persists Orders")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -301,7 +301,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.searchOrders` effectively upserts the `OrderSearchResults` entity.
     ///
     func testSearchOrdersEffectivelyPersistsSearchResultsEntity() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let defaultSearchKeyword = self.defaultSearchKeyword
         let expectation = self.expectation(description: "Search Persists Results")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -383,7 +383,7 @@ final class OrderStoreTests: XCTestCase {
     /// correctly across all of the related `Order` objects (items, coupons, etc).
     ///
     func testRetrieveSingleOrderEffectivelyPersistsOrderFieldsAndRelatedObjects() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Persist order")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -411,7 +411,7 @@ final class OrderStoreTests: XCTestCase {
 
     @MainActor
     func test_retrieve_single_order_fetches_up_to_date_order_from_storage() async throws {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         let sampleOrderID = self.sampleOrderID
         // Given
@@ -675,9 +675,9 @@ final class OrderStoreTests: XCTestCase {
         XCTAssert(storageOrder?.exclusiveForSearch == false)
     }
 
-    /// Verifies that `upsertStoredOrder` keeps the "Search Results" flag whenever the same order is upserted more than once.
+    /// Verifies that `OrdersUpsertUseCase` keeps the "Search Results" flag whenever the same order is upserted more than once.
     ///
-    func testUpsertStoredOrderPreservesPreExistantSearchResults() {
+    func test_upsert_orders_use_case_preserves_existing_search_results() {
         let remoteOrder = sampleOrder()
 
         upsertAndSaveOrder(remoteOrder, insertingSearchResults: true)
@@ -688,9 +688,9 @@ final class OrderStoreTests: XCTestCase {
         XCTAssert(storageOrder?.exclusiveForSearch == true)
     }
 
-    /// Verifies that `upsertStoredOrder` unmarks "Search Results Cached Orders" whenever we're storing "regular scroll" Orders.
+    /// Verifies that `OrdersUpsertUseCase` unmarks "Search Results Cached Orders" whenever we're storing "regular scroll" Orders.
     ///
-    func testUpsertStoredOrderUnmarksSearchResultsWhenUpsertingRegularPagingResults() {
+    func test_upsert_orders_use_case_unmarks_search_results_when_upserting_regular_paging_results() {
         let remoteOrder = sampleOrder()
 
         upsertAndSaveOrder(remoteOrder, insertingSearchResults: true)
@@ -764,7 +764,7 @@ final class OrderStoreTests: XCTestCase {
     /// is obliterated from existence.
     ///
     func testRetrieveSingleOrderResultingInStatusCode404CausesTheStoredOrderToGetDeleted() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Retrieve single order empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -790,7 +790,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that an Order's .status field gets effectively updated during `updateOrder`'s response processing.
     ///
     func testUpdateOrderEffectivelyChangesAffectedOrderStatusField() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         let sampleOrderID = self.sampleOrderID
         let expectation = self.expectation(description: "Update Order Status")
@@ -818,7 +818,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that the Optimistic OrderStatus Update OP effectively reverts the (optimistic) change upon failure.
     ///
     func testUpdateOrderRevertsOptimisticUpdateUponFailure() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         let sampleOrderID = self.sampleOrderID
         let expectation = self.expectation(description: "Optimistic Update Recovery")
@@ -1014,7 +1014,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `resetStoredOrders` nukes the Orders Cache.
     ///
     func testResetStoredOrdersEffectivelyNukesTheOrdersCache() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = sampleOrder().copy(appliedGiftCards: [.fake()])
 
@@ -1047,7 +1047,7 @@ final class OrderStoreTests: XCTestCase {
     /// end up causing UI refresh OP's in the main thread.
     ///
     func testInnocuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         // Stack
         let viewContext = storageManager.persistentContainer.viewContext
         let order = sampleOrder()
@@ -1161,7 +1161,7 @@ final class OrderStoreTests: XCTestCase {
 
     @MainActor
     func test_create_pending_simple_payments_order_stores_orders_correctly() async throws {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         let sampleOrderID = self.sampleOrderID
         // Given
@@ -1187,7 +1187,7 @@ final class OrderStoreTests: XCTestCase {
 
     @MainActor
     func test_create_draft_simple_payments_order_does_not_get_stored() async throws {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         let sampleOrderID = self.sampleOrderID
         // Given
@@ -1213,7 +1213,7 @@ final class OrderStoreTests: XCTestCase {
 
     @MainActor
     func test_create_order_stores_orders_correctly() async throws {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         let sampleOrderID = self.sampleOrderID
         // Given
@@ -1439,7 +1439,7 @@ final class OrderStoreTests: XCTestCase {
 
     @MainActor
     func test_create_order_does_not_upsert_autodrafts() async throws {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1460,7 +1460,7 @@ final class OrderStoreTests: XCTestCase {
 
     @MainActor
     func test_update_order_does_not_upsert_autodrafts() async throws {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1624,7 +1624,7 @@ final class OrderStoreTests: XCTestCase {
 
     @MainActor
     func test_delete_order_removes_order_from_storage() async throws {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1647,7 +1647,7 @@ final class OrderStoreTests: XCTestCase {
 
     @MainActor
     func test_delete_order_keeps_order_in_storage_if_deletion_fails() async throws {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1670,7 +1670,7 @@ final class OrderStoreTests: XCTestCase {
 
     @MainActor
     func test_delete_order_does_not_keep_autodraft_order_in_storage_if_deletion_fails() async throws {
-        let storageManager = self.storageManager!
+        let storageManager: MockStorageManager = self.storageManager
         let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

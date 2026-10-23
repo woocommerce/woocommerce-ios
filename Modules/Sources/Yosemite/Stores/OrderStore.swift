@@ -760,9 +760,9 @@ private extension OrderStoreWorker {
     ///     - storage: Where we should save all the things!
     ///
     func upsertStoredOrders(readOnlyOrders: [Networking.Order],
-                                    insertingSearchResults: Bool = false,
-                                    includingMetadataDerivedFields: Bool = true,
-                                    in storage: StorageType) {
+                            insertingSearchResults: Bool = false,
+                            includingMetadataDerivedFields: Bool = true,
+                            in storage: StorageType) {
         let useCase = OrdersUpsertUseCase(storage: storage)
         useCase.upsert(readOnlyOrders,
                        insertingSearchResults: insertingSearchResults,

@@ -62,7 +62,7 @@ struct OrderStoreLifetimeTests {
     }
 }
 
-/// Holds storage operations until the test releases the Store, without retaining its worker.
+/// Holds non-generic storage operations until the test releases the Store, without retaining its worker.
 private final class MockQueuedOrderStorageManager: StorageManagerType, Sendable {
     private struct Write: Sendable {
         let operation: @Sendable (StorageType) -> Void

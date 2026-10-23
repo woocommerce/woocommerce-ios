@@ -49,7 +49,7 @@ private final class ReceiptStoreWorker: Sendable {
 private extension ReceiptStore {
     func retrieveReceipt(order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void) {
         worker.remote.retrieveReceipt(siteID: order.siteID,
-                               orderID: order.orderID) { result in
+                                      orderID: order.orderID) { result in
             switch result {
             case let .success(receipt):
                 onCompletion(.success(receipt))

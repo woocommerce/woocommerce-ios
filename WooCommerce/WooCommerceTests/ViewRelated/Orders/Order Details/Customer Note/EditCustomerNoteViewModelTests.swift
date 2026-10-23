@@ -4,6 +4,7 @@ import TestKit
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 class EditCustomerNoteViewModelTests: XCTestCase {
 
     private let order = Order.fake().copy(siteID: 123, orderID: 1234, customerNote: "Original")

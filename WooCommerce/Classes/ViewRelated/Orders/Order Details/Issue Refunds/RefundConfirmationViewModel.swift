@@ -132,12 +132,15 @@ final class RefundConfirmationViewModel {
 
     /// Updates the order associated with the refund to reflect the latest refund status.
     ///
+    @MainActor
     func updateOrder(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let finish: @MainActor @Sendable (Result<Void, Error>) -> Void = { result in
+            onCompletion(result)
+        }
         let action = OrderAction.retrieveOrder(siteID: details.order.siteID, orderID: details.order.orderID) { _, error  in
-            if let error {
-                return onCompletion(.failure(error))
+            Task { @MainActor in
+                finish(error.map { .failure($0) } ?? .success(()))
             }
-            onCompletion(.success(()))
         }
         actionProcessor.dispatch(action)
     }

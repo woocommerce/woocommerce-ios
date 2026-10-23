@@ -6,6 +6,7 @@ import SwiftUI
 
 /// Protocol to describe viewmodel of editable address
 ///
+@MainActor
 protocol AddressFormViewModelProtocol: AnyObject, Observable {
 
     /// Site ID
@@ -87,7 +88,7 @@ protocol AddressFormViewModelProtocol: AnyObject, Observable {
 
     /// Save the address and invoke a completion block when finished
     ///
-    func saveAddress(onFinish: @escaping (Bool) -> Void)
+    func saveAddress(onFinish: @escaping @MainActor @Sendable (Bool) -> Void)
 
     /// Track the flow cancel scenario.
     ///

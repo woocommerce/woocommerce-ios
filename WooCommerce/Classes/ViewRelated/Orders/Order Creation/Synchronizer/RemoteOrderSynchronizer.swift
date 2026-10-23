@@ -5,6 +5,7 @@ import WooFoundation
 
 /// Type that syncs the order with the remote server.
 ///
+@MainActor
 final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     // MARK: Outputs
@@ -469,23 +470,25 @@ private extension RemoteOrderSynchronizer {
         Future<Order, Error> { [weak self] promise in
             guard let self else { return }
 
+            let completion = OrderSyncCompletion(promise)
             let giftCard = includesGiftCard ? self.giftCardToApply: nil
 
             let apiOrderStatus = self.orderStatus(for: type)
             let draftOrder = order.copy(status: apiOrderStatus).sanitizingLocalItems()
             let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder, giftCard: giftCard) { [weak self] result in
                 guard let self else { return }
+                Task { @MainActor in
+                    switch result {
+                    case .success(let remoteOrder):
+                        if giftCard != nil {
+                            self.giftCardToApply = nil
+                        }
+                        let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
+                        completion.resolve(.success(newLocalOrder))
 
-                switch result {
-                case .success(let remoteOrder):
-                    if giftCard != nil {
-                        self.giftCardToApply = nil
+                    case .failure(let error):
+                        completion.resolve(.failure(error))
                     }
-                    let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
-                    promise(.success(newLocalOrder))
-
-                case .failure(let error):
-                    promise(.failure(error))
                 }
             }
             self.stores.dispatch(action)
@@ -500,6 +503,7 @@ private extension RemoteOrderSynchronizer {
         Future<Order, Error> { [weak self] promise in
             guard let self else { return }
 
+            let completion = OrderSyncCompletion(promise)
             let operationUpdateFields = self.orderUpdateFields(for: type)
             let orderToSubmit = order.sanitizingLocalItems()
             let giftCard = includesGiftCard ? self.giftCardToApply: nil
@@ -509,17 +513,18 @@ private extension RemoteOrderSynchronizer {
                                                  fields: operationUpdateFields,
                                                  requestCurrency: requestCurrency) { [weak self] result in
                 guard let self else { return }
+                Task { @MainActor in
+                    switch result {
+                    case .success(let remoteOrder):
+                        if giftCard != nil {
+                            self.giftCardToApply = nil
+                        }
+                        let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
+                        completion.resolve(.success(newLocalOrder))
 
-                switch result {
-                case .success(let remoteOrder):
-                    if giftCard != nil {
-                        self.giftCardToApply = nil
+                    case .failure(let error):
+                        completion.resolve(.failure(error))
                     }
-                    let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
-                    promise(.success(newLocalOrder))
-
-                case .failure(let error):
-                    promise(.failure(error))
                 }
             }
             self.stores.dispatch(action)
@@ -603,5 +608,15 @@ private extension Order {
     ///
     func containsBundleConfigurations() -> Bool {
         items.map { $0.bundleConfiguration.isNotEmpty }.contains(true)
+    }
+}
+
+/// Keeps the legacy Combine promise on the synchronizer's actor.
+@MainActor
+private final class OrderSyncCompletion {
+    let resolve: (Result<Order, Error>) -> Void
+
+    init(_ resolve: @escaping (Result<Order, Error>) -> Void) {
+        self.resolve = resolve
     }
 }

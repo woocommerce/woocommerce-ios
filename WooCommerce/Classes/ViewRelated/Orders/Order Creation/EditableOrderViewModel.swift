@@ -13,6 +13,7 @@ typealias OrderBaseItem = ItemIdentifierSearchResult
 
 /// View model used in Order Creation and Editing flows.
 ///
+@MainActor
 final class EditableOrderViewModel: ObservableObject {
     let siteID: Int64
     private let stores: StoresManager
@@ -1895,11 +1896,10 @@ private extension EditableOrderViewModel {
 
             switch result {
                 case .success(let setting):
-                self.taxBasedOnSetting = setting
-
-                let canApplyTaxRates = setting == .customerBillingAddress || setting == .customerShippingAddress
-                if canApplyTaxRates {
-                    Task { @MainActor in
+                Task { @MainActor in
+                    self.taxBasedOnSetting = setting
+                    let canApplyTaxRates = setting == .customerBillingAddress || setting == .customerShippingAddress
+                    if canApplyTaxRates {
                         if self.flow == .creation {
                             await self.applySelectedStoredTaxRateIfAny()
                         }
@@ -2494,6 +2494,7 @@ extension EditableOrderViewModel {
 
         /// Returns an order sync error notice.
         ///
+        @MainActor
         static func syncOrderErrorNotice(_ error: Error, flow: Flow, with orderSynchronizer: OrderSynchronizer) -> Notice {
             guard !isEmailError(error, order: orderSynchronizer.order) else {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)

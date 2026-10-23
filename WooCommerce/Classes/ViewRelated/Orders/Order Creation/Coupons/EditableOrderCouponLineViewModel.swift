@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 
+@MainActor
 final class EditableOrderCouponLineViewModel: ObservableObject {
     @Published private(set) var couponLineRows: [OrderCouponLine] = []
 

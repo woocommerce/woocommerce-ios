@@ -24,6 +24,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_fulfill_dispatches_an_Action_to_change_the_status_to_completed() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 1_900, orderID: 981, status: .processing)
@@ -39,6 +40,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         assertThat(statusUpdateAction: action, matches: order, status: .completed)
     }
 
+    @MainActor
     func test_undo_dispatches_an_Action_to_change_the_status_back() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 98, orderID: 12, status: .failed)
@@ -57,6 +59,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         assertThat(statusUpdateAction: action, matches: order, status: .failed)
     }
 
+    @MainActor
     func test_retry_dispatches_an_Action_to_change_the_status_to_completed() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 498, orderID: 29, status: .pending)
@@ -101,6 +104,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         assertThat(statusUpdateAction: action, matches: order, status: .completed)
     }
 
+    @MainActor
     func test_fulfill_returns_an_Error_if_the_Action_fails() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 500, orderID: 1, status: .pending)
@@ -128,6 +132,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         XCTAssertEqual(error.message, OrderFulfillmentUseCase.Localization.fulfillmentError(orderID: order.orderID))
     }
 
+    @MainActor
     func test_fulfill_finishes_with_no_Error_if_the_Action_succeeds() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 500, orderID: 1, status: .pending)

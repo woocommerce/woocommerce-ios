@@ -11,13 +11,20 @@ final class EditableOrderViewModelTests: XCTestCase {
     var viewModel: EditableOrderViewModel!
     var stores: MockStoresManager!
     var storageManager: MockStorageManager!
+    private var subscriptions = Set<AnyCancellable>()
 
     let sampleSiteID: Int64 = 123
     let sampleOrderID: Int64 = 1234
     let sampleProductID: Int64 = 5
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
+        await setUpFixtures()
+    }
+
+    @MainActor
+    private func setUpFixtures() {
+        subscriptions.removeAll()
 
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
@@ -2101,7 +2108,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTaxesInfoButton)
     }
 
-    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerBillingAddress_then_updates_only_addressFormViewModel_location_fields_with_new_data() {
+    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerBillingAddress_then_updates_only_addressFormViewModel_location_fields_with_new_data()
+    async throws {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -2122,6 +2130,13 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let featureFlagService = MockFeatureFlagService()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.$paymentDataViewModel
+                .first(where: { $0.taxBasedOnSetting != nil })
+                .sink { _ in completion(true) }
+                .store(in: &subscriptions)
+        }
+
         let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
         viewModel.addCustomerAddressToOrder(customer: customer)
         viewModel.onTaxRateSelected(taxRate)
@@ -2136,7 +2151,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
     }
 
-    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerShippingAddress_then_updates_only_addressFormViewModel_location_fields_with_new_data() {
+    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerShippingAddress_then_updates_only_addressFormViewModel_location_fields_with_new_data()
+    async throws {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -2157,6 +2173,13 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let featureFlagService = MockFeatureFlagService()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.$paymentDataViewModel
+                .first(where: { $0.taxBasedOnSetting != nil })
+                .sink { _ in completion(true) }
+                .store(in: &subscriptions)
+        }
+
         let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
 
         viewModel.addCustomerAddressToOrder(customer: customer)
@@ -2172,7 +2195,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.secondaryFields.city, taxRate.cities.first)
     }
 
-    func test_onTaxRateSelected_when_taxBasedOnSetting_is_shopBaseAddress_then_it_does_not_reset_addressFormViewModel_with_new_data() {
+    func test_onTaxRateSelected_when_taxBasedOnSetting_is_shopBaseAddress_then_it_does_not_reset_addressFormViewModel_with_new_data() async throws {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -2184,6 +2207,13 @@ final class EditableOrderViewModelTests: XCTestCase {
         })
 
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.$paymentDataViewModel
+                .first(where: { $0.taxBasedOnSetting != nil })
+                .sink { _ in completion(true) }
+                .store(in: &subscriptions)
+        }
+
         let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
 
         viewModel.onTaxRateSelected(taxRate)
@@ -2841,7 +2871,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentOrderItems.count, 0)
     }
 
-    func test_order_created_when_tax_based_on_is_customer_billing_address_then_property_is_updated() {
+    func test_order_created_when_tax_based_on_is_customer_billing_address_then_property_is_updated() async throws {
         // Given
         let expectedString = NSLocalizedString("Calculated on billing address.", comment: "")
 
@@ -2859,11 +2889,18 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                stores: stores,
                                                storageManager: storageManager)
 
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.$paymentDataViewModel
+                .first(where: { $0.taxBasedOnSetting != nil })
+                .sink { _ in completion(true) }
+                .store(in: &subscriptions)
+        }
+
         // Then
         XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, expectedString)
     }
 
-    func test_order_created_when_tax_based_on_is_shop_base_address_then_property_is_updated() {
+    func test_order_created_when_tax_based_on_is_shop_base_address_then_property_is_updated() async throws {
         // Given
         let expectedString = NSLocalizedString("Calculated on shop base address.", comment: "")
 
@@ -2881,11 +2918,18 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                stores: stores,
                                                storageManager: storageManager)
 
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.$paymentDataViewModel
+                .first(where: { $0.taxBasedOnSetting != nil })
+                .sink { _ in completion(true) }
+                .store(in: &subscriptions)
+        }
+
         // Then
         XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, expectedString)
     }
 
-    func test_order_created_when_tax_based_on_is_customer_shipping_address_then_property_is_updated() {
+    func test_order_created_when_tax_based_on_is_customer_shipping_address_then_property_is_updated() async throws {
         // Given
         let expectedString = NSLocalizedString("Calculated on shipping address.", comment: "")
 
@@ -2902,6 +2946,13 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
                                                storageManager: storageManager)
+
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.$paymentDataViewModel
+                .first(where: { $0.taxBasedOnSetting != nil })
+                .sink { _ in completion(true) }
+                .store(in: &subscriptions)
+        }
 
         // Then
         XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, expectedString)

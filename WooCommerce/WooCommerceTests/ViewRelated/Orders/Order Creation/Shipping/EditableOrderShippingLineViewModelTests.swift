@@ -18,8 +18,13 @@ final class EditableOrderShippingLineViewModelTests: XCTestCase {
     let sampleProductID: Int64 = 5
     let currencySettings = CurrencySettings()
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
+        await setUpFixtures()
+    }
+
+    @MainActor
+    private func setUpFixtures() {
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         analytics = MockAnalyticsProvider()

@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 ///
 /// The UI is mainly handled by `OrderFulfillmentNoticePresenter`.
 ///
+@MainActor
 final class OrderFulfillmentUseCase {
     /// Represents a failed fulfillment, undo, or retry.
     struct FulfillmentError: Error {
@@ -18,7 +19,7 @@ final class OrderFulfillmentUseCase {
         /// A function that can be called to retry the activity represented by this error.
         ///
         /// The retry is typically initiated by the user.
-        let retry: () -> FulfillmentProcess
+        let retry: @MainActor @Sendable () -> FulfillmentProcess
     }
 
     /// An ongoing or completed fulfillment, undo, or retry.
@@ -32,7 +33,7 @@ final class OrderFulfillmentUseCase {
         /// For example, if the activity is `.fulfill`, which changes the `Order`'s `status` to
         /// `completed`, then this function will dispatch a network call to revert the `status`
         /// to the previously known `status` (e.g. `processing`, `on-hold`, etc.).
-        let undo: () -> FulfillmentProcess
+        let undo: @MainActor @Sendable () -> FulfillmentProcess
     }
 
     /// Defines the type of activity that this class handles.
@@ -68,11 +69,12 @@ final class OrderFulfillmentUseCase {
         analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: flow, orderID: order.orderID, from: order.status, to: targetStatus))
 
         let result: Future<Void, FulfillmentError> = Future { promise in
-            let action = OrderAction.updateOrderStatus(siteID: order.siteID, orderID: order.orderID, status: targetStatus) { error in
+            let completion = OrderFulfillmentCompletion(resolve: promise)
+            let finish: @MainActor @Sendable (Error?) -> Void = { error in
                 guard let error else {
                     NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                     self.analytics.track(.orderStatusChangeSuccess)
-                    promise(.success(()))
+                    completion.resolve(.success(()))
                     return
                 }
 
@@ -86,7 +88,11 @@ final class OrderFulfillmentUseCase {
                         self.dispatchStatusUpdateAction(order: order, status: targetStatus, activity: activity)
                     }
                 )
-                promise(.failure(fulfillmentError))
+                completion.resolve(.failure(fulfillmentError))
+            }
+
+            let action = OrderAction.updateOrderStatus(siteID: order.siteID, orderID: order.orderID, status: targetStatus) { error in
+                Task { @MainActor in finish(error) }
             }
 
             self.stores.dispatch(action)
@@ -111,6 +117,11 @@ final class OrderFulfillmentUseCase {
             return Localization.undoError(orderID: order.orderID)
         }
     }
+}
+
+@MainActor
+private struct OrderFulfillmentCompletion {
+    let resolve: (Result<Void, OrderFulfillmentUseCase.FulfillmentError>) -> Void
 }
 
 extension OrderFulfillmentUseCase {

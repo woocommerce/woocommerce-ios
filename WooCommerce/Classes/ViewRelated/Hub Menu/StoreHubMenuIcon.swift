@@ -9,10 +9,11 @@ struct StoreHubMenuIcon: View {
         switch item.id {
         case HubMenuViewModel.Blaze.id, HubMenuViewModel.GoogleAds.id:
             Image(uiImage: item.icon)
-                .renderingMode(.original)
+                .renderingMode(item.id == HubMenuViewModel.Blaze.id ? .template : .original)
                 .resizable()
                 .scaledToFit()
-                .padding(StorePadding.p4)
+                .frame(width: StoreSpacing.s5, height: StoreSpacing.s5)
+                .foregroundStyle(Color.storePaletteSandstone60)
                 .frame(width: StoreSize.iconContainerSize, height: StoreSize.iconContainerSize)
                 .background(Color.storePaletteSandstone10)
                 .clipShape(RoundedRectangle(cornerRadius: StoreRadius.medium))
@@ -27,7 +28,7 @@ struct StoreHubMenuIcon: View {
         case HubMenuViewModel.Settings.id:
             StoreIcon.Gear.regular
         case HubMenuViewModel.Payments.id:
-            StoreIcon.Wallet.regular
+            StoreIcon.CreditCard.regular
         case HubMenuViewModel.Bookings.id:
             StoreIcon.Calendar.regular
         case HubMenuViewModel.WoocommerceAdmin.id:
@@ -35,7 +36,7 @@ struct StoreHubMenuIcon: View {
         case HubMenuViewModel.ViewStore.id:
             StoreIcon.Store.regular
         case HubMenuViewModel.Coupons.id:
-            StoreIcon.BadgePercent.regular
+            StoreIcon.Tag.regular
         case HubMenuViewModel.Reviews.id:
             StoreIcon.Star.regular
         case HubMenuViewModel.Inbox.id:

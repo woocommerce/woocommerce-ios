@@ -26,7 +26,7 @@ struct StoreHubMenuRow: View {
                     leading: StoreHubMenuIcon(item: item)
                 ) {
                     Circle()
-                        .fill(Color.storeSecondary)
+                        .fill(Color.storePrimary)
                         .frame(width: StoreSpacing.s3, height: StoreSpacing.s3)
                         .accessibilityHidden(true)
                 }

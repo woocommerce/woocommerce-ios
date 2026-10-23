@@ -80,13 +80,26 @@ public final class TracksProvider: NSObject, AnalyticsProvider {
         }
     }
 
-    let deviceTypeForAnalytics: String
+    /// Background construction starts with `.unspecified` and refreshes asynchronously to avoid blocking
+    /// the main actor while `ServiceLocator` holds its static-initialization lock.
+    private let deviceTypeForAnalyticsState: OSAllocatedUnfairLock<String>
+
+    var deviceTypeForAnalytics: String {
+        deviceTypeForAnalyticsState.withLock { $0 }
+    }
 
     init(consent: AnalyticsConsentProviding,
          deviceTypeForAnalytics: String? = nil) {
         self.consent = consent
-        self.deviceTypeForAnalytics = deviceTypeForAnalytics ?? Self.currentDeviceTypeForAnalytics()
+        deviceTypeForAnalyticsState = OSAllocatedUnfairLock(
+            initialState: deviceTypeForAnalytics ?? UIUserInterfaceIdiom.unspecified.deviceTypeForAnalytics
+        )
         super.init()
+
+        guard deviceTypeForAnalytics == nil else {
+            return
+        }
+        Self.refreshDeviceTypeForAnalytics(state: deviceTypeForAnalyticsState)
     }
 
     public static func setPOSMode(_ active: Bool) {
@@ -500,16 +513,18 @@ private extension TracksProvider {
         }
     }
 
-    static func currentDeviceTypeForAnalytics() -> String {
-        let readDeviceType: @MainActor @Sendable () -> String = {
-            UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics
+    static func refreshDeviceTypeForAnalytics(state: OSAllocatedUnfairLock<String>) {
+        let readAndStoreDeviceType: @MainActor @Sendable () -> Void = {
+            let deviceType = UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics
+            state.withLock { $0 = deviceType }
         }
         if Thread.isMainThread {
-            return MainActor.assumeIsolated {
-                readDeviceType()
+            MainActor.assumeIsolated {
+                readAndStoreDeviceType()
             }
+        } else {
+            DispatchQueue.main.async(execute: readAndStoreDeviceType)
         }
-        return DispatchQueue.main.sync(execute: readDeviceType)
     }
 }
 

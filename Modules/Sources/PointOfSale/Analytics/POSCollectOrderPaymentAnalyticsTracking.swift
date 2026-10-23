@@ -6,6 +6,9 @@ public protocol POSCollectOrderPaymentAnalyticsTracking {
     func trackOrderSyncSuccess()
     func trackCardReaderReady()
     func trackCardReaderTapped()
+    func trackCardReaderConnectionChanged(isConnected: Bool)
+    /// Called for every attempt, including retries, even if the previous attempt ended without an outcome event.
+    func trackCardPaymentAttemptStarted()
     func trackCheckoutTapped()
     func resetCheckoutTiming()
     func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder)

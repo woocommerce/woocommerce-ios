@@ -972,6 +972,74 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertNotNil(lastAlert)
     }
 
+    func test_collect_payment_when_preflight_connects_tap_to_pay_then_passes_connected_reader_type_to_orchestrator() async {
+        // Given
+        let reader = MockCardReader.tapToPay()
+
+        // When
+        useCase.collectPayment(using: .bluetoothScan,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: {},
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: reader, gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyCollectPaymentReaderType, .tapToPay)
+    }
+
+    func test_collect_payment_when_preflight_connects_external_reader_then_passes_connected_reader_type_to_orchestrator() async {
+        // Given
+        let reader = MockCardReader.wisePad3()
+
+        // When
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: {},
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: reader, gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyCollectPaymentReaderType, .wisepad3)
+    }
+
+    func test_collect_payment_when_tap_to_pay_payment_restarts_then_preserves_connected_reader_type() async throws {
+        // Given
+        var collectedReaderTypes: [CardReaderType] = []
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { [weak self] _, _, _, _, _, _, onCompletion in
+            guard let self, let readerType = self.mockPaymentOrchestrator.spyCollectPaymentReaderType else { return }
+            collectedReaderTypes.append(readerType)
+            if collectedReaderTypes.count == 1 {
+                onCompletion(.failure(CollectOrderPaymentUseCaseError.paymentGatewayNotFound))
+            }
+        }
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: {},
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+        let errorAlert = try XCTUnwrap(alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalErrorWithoutEmail)
+
+        // When
+        await waitForPaymentCollection {
+            errorAlert.didTapPrimaryButton(in: nil)
+        }
+
+        // Then
+        XCTAssertEqual(collectedReaderTypes, [.tapToPay, .tapToPay])
+    }
+
     func test_collectPayment_channel_is_passed_to_payment_capture_orchestrator() async throws {
         // When
         useCase.collectPayment(using: .bluetoothScan,
@@ -1141,6 +1209,7 @@ private extension CollectOrderPaymentUseCaseTests {
     func waitForPaymentCollection(_ connect: () -> Void) async {
         let collected = expectation(description: "Payment collection started after order validation")
         let handler = mockPaymentOrchestrator.mockCollectPaymentHandler
+        defer { mockPaymentOrchestrator.mockCollectPaymentHandler = handler }
         mockPaymentOrchestrator.mockCollectPaymentHandler = { preparing, waiting, processing, inserted, display, confirmed, completion in
             handler?(preparing, waiting, processing, inserted, display, confirmed, completion)
             collected.fulfill()

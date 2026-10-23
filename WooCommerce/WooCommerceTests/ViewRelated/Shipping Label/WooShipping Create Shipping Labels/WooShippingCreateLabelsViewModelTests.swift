@@ -362,6 +362,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressToEdit?.name.value, originAddress.fullName)
         XCTAssertEqual(viewModel.addressToEdit?.email.value, originAddress.email)
         XCTAssertEqual(viewModel.addressToEdit?.isDefaultAddress, originAddress.defaultAddress)
+        XCTAssertEqual(viewModel.addressToEdit?.title, "Edit Origin")
     }
 
     func test_origin_addresses_fetched_and_converted_to_originAddresses_view_model() {
@@ -571,6 +572,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.addressToEdit)
+        XCTAssertEqual(viewModel.addressToEdit?.title, "Edit Destination")
     }
 
     func test_shouldShowNotices_is_updated_correctly_for_unfulfilled_shipment() {

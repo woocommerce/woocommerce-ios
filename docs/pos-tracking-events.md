@@ -53,9 +53,30 @@ A new cart or customer interaction clears all three timestamps. Scan to Pay and 
 
 The app receives gateway and reader metadata before collection. The outcome callback runs after payment work and required success metadata checks finish. It creates the event and reads the timers without an asynchronous wait between these operations.
 
+## Reader-ready timing
+
+The adaptor adds these fields to `reader_ready_for_card_payment`, `card_present_collect_payment_success` and `card_present_collect_payment_failed`. Android sends the same names.
+
+| Optional field | Meaning |
+| --- | --- |
+| `reader_connected_at_checkout` | `true` or `false`: whether a reader was connected when the customer interaction started. Omitted until the app receives its first reader status. |
+| `milliseconds_waiting_for_reader_connection` | From the customer interaction start to the first reader connection. Only sent when no reader was connected at the start. |
+| `milliseconds_from_order_sync_to_reader_ready` | From the latest of order sync, the latest reader connection and the start of the current payment attempt, to reader-ready. |
+| `reader_ready_signal` | `input_requested`. Android also sends `collection_started` for Tap to Pay. |
+
+Reader-ready is the first card input request from the reader in a payment attempt. A repeated input request in the same attempt does not stamp again, so `reader_ready_for_card_payment` fires once per attempt. The legacy `waiting_time` on that event comes from the same request.
+
+An attempt starts when POS validates the order or prepares the reader, including a retry. The attempt start and reader-ready stamps clear when a collection starts, when an attempt starts and on every card outcome. A retry therefore never reports the previous attempt, and time on the previous attempt's error screen does not count as preparation.
+
+A reconnect before reader-ready can move the start of preparation later. A reconnect after reader-ready does not change that attempt's preparation. Connection waiting always ends at the first connection.
+
+The durations are integer milliseconds from the same `ContinuousClock` as checkout timing. The event omits negative durations. The legacy `waiting_time` and `milliseconds_since_*` fields keep their wall-clock definitions.
+
+Outcomes carry no attempt ID. A late outcome from an earlier attempt, which needs overlapping callbacks, can use and clear the current attempt's timing.
+
 ## Cancellation
 
-The POS `card_present_collect_payment_canceled` event omits all `milliseconds_since_*` and `pos_time_since_*` fields. It also omits `sync_strategy`. It keeps the event name, cancellation source, reader, gateway, country and checkout count.
+The POS `card_present_collect_payment_canceled` event omits all `milliseconds_since_*` and `pos_time_since_*` fields. It also omits `sync_strategy` and the reader-ready timing fields. It keeps the event name, cancellation source, reader, gateway, country and checkout count.
 
 The app clears confirmation when it abandons collection, before asynchronous SDK cancellation completes. A delayed cancellation event does not clear a newer collection's confirmation. A new POS collection also clears confirmation before it starts.
 

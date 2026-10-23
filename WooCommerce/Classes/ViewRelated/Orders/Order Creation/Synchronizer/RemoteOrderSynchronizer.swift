@@ -470,7 +470,9 @@ private extension RemoteOrderSynchronizer {
         Future<Order, Error> { [weak self] promise in
             guard let self else { return }
 
-            let completion = OrderSyncCompletion(promise)
+            let finish: @MainActor @Sendable (Result<Order, Error>) -> Void = { result in
+                promise(result)
+            }
             let giftCard = includesGiftCard ? self.giftCardToApply: nil
 
             let apiOrderStatus = self.orderStatus(for: type)
@@ -484,10 +486,10 @@ private extension RemoteOrderSynchronizer {
                             self.giftCardToApply = nil
                         }
                         let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
-                        completion.resolve(.success(newLocalOrder))
+                        finish(.success(newLocalOrder))
 
                     case .failure(let error):
-                        completion.resolve(.failure(error))
+                        finish(.failure(error))
                     }
                 }
             }
@@ -503,7 +505,9 @@ private extension RemoteOrderSynchronizer {
         Future<Order, Error> { [weak self] promise in
             guard let self else { return }
 
-            let completion = OrderSyncCompletion(promise)
+            let finish: @MainActor @Sendable (Result<Order, Error>) -> Void = { result in
+                promise(result)
+            }
             let operationUpdateFields = self.orderUpdateFields(for: type)
             let orderToSubmit = order.sanitizingLocalItems()
             let giftCard = includesGiftCard ? self.giftCardToApply: nil
@@ -520,10 +524,10 @@ private extension RemoteOrderSynchronizer {
                             self.giftCardToApply = nil
                         }
                         let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
-                        completion.resolve(.success(newLocalOrder))
+                        finish(.success(newLocalOrder))
 
                     case .failure(let error):
-                        completion.resolve(.failure(error))
+                        finish(.failure(error))
                     }
                 }
             }
@@ -608,15 +612,5 @@ private extension Order {
     ///
     func containsBundleConfigurations() -> Bool {
         items.map { $0.bundleConfiguration.isNotEmpty }.contains(true)
-    }
-}
-
-/// Keeps the legacy Combine promise on the synchronizer's actor.
-@MainActor
-private final class OrderSyncCompletion {
-    let resolve: (Result<Order, Error>) -> Void
-
-    init(_ resolve: @escaping (Result<Order, Error>) -> Void) {
-        self.resolve = resolve
     }
 }

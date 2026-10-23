@@ -13,10 +13,7 @@ public final class StatsStoreV4: Store {
     private let productBundleStatsRemote: ProductBundleStatsRemote
     private let giftCardStatsRemote: GiftCardStatsRemote
 
-    private let statsStorage: StatsStorage
-
     public init(dispatcher: Dispatcher, storageManager: any StorageManagerType & Sendable, network: Network) {
-        self.statsStorage = StatsStorage(storageManager: storageManager)
         self.siteStatsRemote = SiteStatsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
@@ -304,7 +301,10 @@ private extension StatsStoreV4 {
                                 forceRefresh: Bool,
                                 saveInStorage: Bool,
                                 onCompletion: @escaping @Sendable (Result<TopEarnerStats, Error>) -> Void) {
-        Task { @MainActor [productsReportsRemote, statsStorage] in
+        // Keep the legacy store alive through this request, as before. Only the main-actor task reads its immutable storage dependency.
+        // Remove this bridge when stores are isolated (WOOMOB-4186).
+        nonisolated(unsafe) let owner = self
+        Task { @MainActor [productsReportsRemote] in
             do {
                 let productsReport = try await productsReportsRemote.loadTopProductsReport(for: siteID,
                                                                                            timeZone: timeZone,
@@ -317,7 +317,7 @@ private extension StatsStoreV4 {
                                                                               productsReport: productsReport,
                                                                               quantity: quantity)
                 if saveInStorage {
-                    statsStorage.upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats) {
+                    owner.upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats) {
                         onCompletion(.success(topEarnersStats))
                     }
                 } else {
@@ -405,56 +405,33 @@ private extension StatsStoreV4 {
 }
 
 
-// The persistence owner can cross into tasks; the dispatcher-owned store cannot.
-private extension StatsStoreV4 {
-    final class StatsStorage: Sendable {
-        let storageManager: any StorageManagerType & Sendable
-
-        init(storageManager: any StorageManagerType & Sendable) {
-            self.storageManager = storageManager
-        }
-    }
-}
-
-// MARK: - Storage entry points
-
-extension StatsStoreV4 {
-    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: (@Sendable () -> Void)?) {
-        statsStorage.upsertStoredOrderStats(readOnlyStats: readOnlyStats, timeRange: timeRange, onCompletion: onCompletion)
-    }
-
-    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats,
-                                    timeRange: StatsTimeRangeV4,
-                                    onCompletion: (@Sendable () -> Void)? = nil) {
-        statsStorage.upsertStoredSiteVisitStats(readOnlyStats: readOnlyStats, timeRange: timeRange, onCompletion: onCompletion)
-    }
-
-    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (@Sendable () -> Void)? = nil) {
-        statsStorage.upsertStoredTopEarnerStats(readOnlyStats: readOnlyStats, onCompletion: onCompletion)
-    }
-}
-
 // MARK: - Persistence
 //
-private extension StatsStoreV4.StatsStorage {
+// Closure bodies use owners only for lifetime checks; static helpers use only their inputs.
+// Store deinit can still unregister from the writer queue, as before; dispatcher isolation remains a follow-up.
+// The initializer requires a Sendable storage manager.
+extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly OrderStatsV4 Entity into the Storage Layer.
     ///
     func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: (@Sendable () -> Void)?) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
+        // Lifetime-only reference; remove when stores are isolated (WOOMOB-4186).
+        nonisolated(unsafe) weak let owner = self
+        storageManager.performAndSave({ storage in
+            guard let owner else { return }
+            defer { withExtendedLifetime(owner) {} }
             let storageOrderStats = storage.loadOrderStatsV4(siteID: readOnlyStats.siteID, timeRange: timeRange.rawValue) ??
                 storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
 
             storageOrderStats.timeRange = timeRange.rawValue
             storageOrderStats.totals = storage.insertNewObject(ofType: Storage.OrderStatsV4Totals.self)
             storageOrderStats.update(with: readOnlyStats)
-            handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
+            Self.handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
         }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageOrderStats items using the provided read-only OrderStats items
     ///
-    private func handleOrderStatsIntervals(_ readOnlyStats: Networking.OrderStatsV4, _ storageStats: Storage.OrderStatsV4, _ storage: StorageType) {
+    private static func handleOrderStatsIntervals(_ readOnlyStats: Networking.OrderStatsV4, _ storageStats: Storage.OrderStatsV4, _ storage: StorageType) {
         let readOnlyIntervals = readOnlyStats.intervals
 
         if readOnlyIntervals.isEmpty {
@@ -492,25 +469,28 @@ private extension StatsStoreV4.StatsStorage {
 
 // MARK: Site visit stats
 //
-private extension StatsStoreV4.StatsStorage {
+extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
     ///
     func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: (@Sendable () -> Void)? = nil) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
+        // Lifetime-only reference; remove when stores are isolated (WOOMOB-4186).
+        nonisolated(unsafe) weak let owner = self
+        storageManager.performAndSave({ storage in
+            guard let owner else { return }
+            defer { withExtendedLifetime(owner) {} }
             let storageSiteVisitStats = storage.loadSiteVisitStats(
                 granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
             storageSiteVisitStats.update(with: readOnlyStats)
             storageSiteVisitStats.timeRange = timeRange.rawValue
-            handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
+            Self.handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
         }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageSiteVisitStats items using the provided read-only SiteVisitStats items
     ///
-    private func handleSiteVisitStatsItems(_ readOnlyStats: Networking.SiteVisitStats,
-                                           _ storageSiteVisitStats: Storage.SiteVisitStats,
-                                           _ storage: StorageType) {
+    private static func handleSiteVisitStatsItems(_ readOnlyStats: Networking.SiteVisitStats,
+                                                   _ storageSiteVisitStats: Storage.SiteVisitStats,
+                                                   _ storage: StorageType) {
 
         // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored SiteVisitStatsItems
         storageSiteVisitStats.items?.forEach {
@@ -527,25 +507,28 @@ private extension StatsStoreV4.StatsStorage {
     }
 }
 
-private extension StatsStoreV4.StatsStorage {
+extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly TopEarnerStats Entity into the Storage Layer.
     ///
     func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (@Sendable () -> Void)? = nil) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
+        // Lifetime-only reference; remove when stores are isolated (WOOMOB-4186).
+        nonisolated(unsafe) weak let owner = self
+        storageManager.performAndSave({ storage in
+            guard let owner else { return }
+            defer { withExtendedLifetime(owner) {} }
             let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
                                                                    granularity: readOnlyStats.granularity.rawValue)
                 ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
             storageTopEarnerStats.update(with: readOnlyStats)
-            handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
+            Self.handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
         }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageTopEarnerStats items using the provided read-only TopEarnerStats items
     ///
-    private func handleTopEarnerStatsItems(_ readOnlyStats: Networking.TopEarnerStats,
-                                           _ storageTopEarnerStats: Storage.TopEarnerStats,
-                                           _ storage: StorageType) {
+    private static func handleTopEarnerStatsItems(_ readOnlyStats: Networking.TopEarnerStats,
+                                                  _ storageTopEarnerStats: Storage.TopEarnerStats,
+                                                  _ storage: StorageType) {
 
         // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored TopEarnerStatsItems
         storageTopEarnerStats.items?.forEach {

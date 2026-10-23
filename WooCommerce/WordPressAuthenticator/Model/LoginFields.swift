@@ -115,6 +115,7 @@ public class LoginFields: NSObject {
                      multifactorCode: String,
                      nonceInfo: SocialLogin2FANonceInfo?,
                      nonceUserID: Int,
+                     supportedAuthTypes: [String] = [],
                      restrictToWPCom: Bool,
                      emailAddress: String,
                      meta: LoginFieldsMeta,
@@ -127,6 +128,7 @@ public class LoginFields: NSObject {
         self.multifactorCode = multifactorCode
         self.nonceInfo = nonceInfo
         self.nonceUserID = nonceUserID
+        self.supportedAuthTypes = supportedAuthTypes
         self.restrictToWPCom = restrictToWPCom
         self.emailAddress = emailAddress
         self.meta = meta
@@ -143,6 +145,7 @@ extension LoginFields {
               multifactorCode: multifactorCode,
               nonceInfo: nonceInfo,
               nonceUserID: nonceUserID,
+              supportedAuthTypes: supportedAuthTypes,
               restrictToWPCom: restrictToWPCom,
               emailAddress: emailAddress,
               meta: meta.copy(),

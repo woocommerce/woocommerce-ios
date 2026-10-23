@@ -315,7 +315,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(isViewDisabled)
     }
 
-    func test_create_button_is_enabled_after_the_network_operation_completes() {
+    func test_create_button_is_enabled_after_the_network_operation_completes() async {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
@@ -329,13 +329,18 @@ final class EditableOrderViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        viewModel.onCreateOrderTapped()
+        let _: EditableOrderViewModel.NavigationItem? = await waitForAsync { promise in
+            viewModel.$navigationTrailingItem.dropFirst().first(where: { $0 == .create })
+                .sink { promise($0) }
+                .store(in: &self.subscriptions)
+            viewModel.onCreateOrderTapped()
+        }
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
     }
 
-    func test_view_model_fires_error_notice_when_order_creation_fails() {
+    func test_view_model_fires_error_notice_when_order_creation_fails() async {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
         let error = NSError(domain: "Error", code: 0)
@@ -349,25 +354,32 @@ final class EditableOrderViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        viewModel.onCreateOrderTapped()
+        let _: Notice = await waitForAsync { promise in
+            viewModel.$fixedNotice.compactMap { $0 }.first()
+                .sink { promise($0) }
+                .store(in: &self.subscriptions)
+            viewModel.onCreateOrderTapped()
+        }
 
         // Then
         XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
     }
 
-    func test_view_model_fires_error_notice_when_order_sync_fails() {
+    func test_view_model_fires_error_notice_when_order_sync_fails() async {
         // Given
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         let error = NSError(domain: "Error", code: 0)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
-        waitForExpectation { expectation in
+        let _: Notice = await waitForAsync { promise in
+            viewModel.$fixedNotice.compactMap { $0 }.first()
+                .sink { promise($0) }
+                .store(in: &self.subscriptions)
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case let .createOrder(_, _, _, onCompletion):
                     onCompletion(.failure(error))
-                    expectation.fulfill()
                 default:
                     XCTFail("Received unsupported action: \(action)")
                 }
@@ -381,17 +393,19 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, flow: .creation, with: synchronizer))
     }
 
-    func test_view_model_fires_error_notice_when_order_sync_fails_because_of_coupons() {
+    func test_view_model_fires_error_notice_when_order_sync_fails_because_of_coupons() async {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
-        waitForExpectation { expectation in
+        let _: Notice = await waitForAsync { promise in
+            viewModel.$fixedNotice.compactMap { $0 }.first()
+                .sink { promise($0) }
+                .store(in: &self.subscriptions)
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case let .createOrder(_, _, _, onCompletion):
                     onCompletion(.failure(DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: "", data: nil)))
-                    expectation.fulfill()
                 default:
                     XCTFail("Received unsupported action: \(action)")
                 }
@@ -1342,13 +1356,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.couponLineViewModels.isEmpty)
     }
 
-    func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
+    func test_payment_section_loading_indicator_is_enabled_while_order_syncs() async {
         // When
-        let isLoadingDuringSync: Bool = waitFor { promise in
+        let isLoadingDuringSync: Bool = await waitForAsync { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case let .createOrder(_, _, _, onCompletion):
-                    promise(self.viewModel.paymentDataViewModel.isLoading)
+                    let isLoading = self.viewModel.paymentDataViewModel.isLoading
+                    self.viewModel.$paymentDataViewModel.first(where: { !$0.isLoading })
+                        .sink { _ in promise(isLoading) }
+                        .store(in: &self.subscriptions)
                     onCompletion(.success(.fake()))
                 default:
                     XCTFail("Received unsupported action: \(action)")
@@ -1386,9 +1403,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(isPaymentsLoadingVisible)
     }
 
-    func test_payment_section_is_updated_when_order_has_taxes() {
+    func test_payment_section_is_updated_when_order_has_taxes() async {
         // Given
-        let expectation = expectation(description: "Order with taxes is synced")
         let currencySettings = CurrencySettings()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, currencySettings: currencySettings)
 
@@ -1398,16 +1414,19 @@ final class EditableOrderViewModelTests: XCTestCase {
             case let .createOrder(_, _, _, onCompletion):
                 let order = Order.fake().copy(siteID: self.sampleSiteID, totalTax: "2.50")
                 onCompletion(.success(order))
-                expectation.fulfill()
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
         }
         // Trigger remote sync
-        viewModel.shippingLineViewModel.saveShippingLine(.fake())
+        let _: String = await waitForAsync { promise in
+            viewModel.$paymentDataViewModel.map(\.taxesTotal).first(where: { $0 == "$2.50" })
+                .sink { promise($0) }
+                .store(in: &self.subscriptions)
+            viewModel.shippingLineViewModel.saveShippingLine(.fake())
+        }
 
         // Then
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
     }
 
@@ -1743,7 +1762,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
     }
 
-    func test_sync_failure_tracked_when_sync_fails() throws {
+    func test_sync_failure_tracked_when_sync_fails() async throws {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(
@@ -1756,12 +1775,14 @@ final class EditableOrderViewModelTests: XCTestCase {
         )
 
         // When
-        waitForExpectation { expectation in
+        let _: Notice = await waitForAsync { promise in
+            viewModel.$fixedNotice.compactMap { $0 }.first()
+                .sink { promise($0) }
+                .store(in: &self.subscriptions)
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case let .createOrder(_, _, _, onCompletion):
                     onCompletion(.failure(NSError(domain: "Error", code: 0)))
-                    expectation.fulfill()
                 default:
                     XCTFail("Received unsupported action: \(action)")
                 }
@@ -1829,15 +1850,17 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNote, expectedCustomerNote)
     }
 
-    func test_discard_order_deletes_order_if_order_exists_remotely() {
+    func test_discard_order_deletes_order_if_order_exists_remotely() async {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
-        waitForExpectation { expectation in
+        let _: EditableOrderViewModel.NavigationItem? = await waitForAsync { promise in
+            viewModel.$navigationTrailingItem.dropFirst().first(where: { $0 == .create })
+                .sink { promise($0) }
+                .store(in: &self.subscriptions)
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .createOrder(_, let order, _, let completion):
                     completion(.success(order.copy(orderID: 12)))
-                    expectation.fulfill()
                 default:
                     XCTFail("Unexpected action: \(action)")
                 }
@@ -1847,7 +1870,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         // When
-        let orderDeleted: Bool = waitFor { promise in
+        let orderDeleted: Bool = await waitForAsync { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .deleteOrder:
@@ -2346,12 +2369,14 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.canBeDismissed)
     }
 
-    func test_onFinished_is_called_when_creating_order() {
+    func test_onFinished_is_called_when_creating_order() async {
         // Given
+        let finished = expectation(description: "Order creation finished")
         var isCallbackCalled = false
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .creation, stores: stores, storageManager: storageManager)
         viewModel.onFinished = { _ in
             isCallbackCalled = true
+            finished.fulfill()
         }
 
         // When
@@ -2366,6 +2391,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.onCreateOrderTapped()
 
         // Then
+        await fulfillment(of: [finished], timeout: Constants.expectationTimeout)
         XCTAssertTrue(isCallbackCalled)
     }
 

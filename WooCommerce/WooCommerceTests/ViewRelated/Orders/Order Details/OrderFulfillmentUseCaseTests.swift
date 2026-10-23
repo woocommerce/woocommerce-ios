@@ -60,7 +60,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     }
 
     @MainActor
-    func test_retry_dispatches_an_Action_to_change_the_status_to_completed() throws {
+    func test_retry_dispatches_an_Action_to_change_the_status_to_completed() async throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 498, orderID: 29, status: .pending)
         let useCase = OrderFulfillmentUseCase(order: order, stores: stores, flow: .editing)
@@ -80,7 +80,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         }
 
         let process = useCase.fulfill()
-        let retry: () -> OrderFulfillmentUseCase.FulfillmentProcess = waitFor { promise in
+        let retry: @MainActor @Sendable () -> OrderFulfillmentUseCase.FulfillmentProcess = try await waitForCompletion { promise in
             process.result.sink { completion in
                 guard case let .failure(error: fulfillmentError) = completion else {
                     XCTFail("Unexpected completion \(completion).")
@@ -105,7 +105,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     }
 
     @MainActor
-    func test_fulfill_returns_an_Error_if_the_Action_fails() throws {
+    func test_fulfill_returns_an_Error_if_the_Action_fails() async throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 500, orderID: 1, status: .pending)
         let useCase = OrderFulfillmentUseCase(order: order, stores: stores, flow: .editing)
@@ -114,7 +114,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
 
         // When
         let process = useCase.fulfill()
-        let error: OrderFulfillmentUseCase.FulfillmentError = waitFor { promise in
+        let error: OrderFulfillmentUseCase.FulfillmentError = try await waitForCompletion { promise in
             process.result.sink { completion in
                 guard case let .failure(error: fulfillmentError) = completion else {
                     XCTFail("Unexpected completion \(completion).")
@@ -133,7 +133,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     }
 
     @MainActor
-    func test_fulfill_finishes_with_no_Error_if_the_Action_succeeds() throws {
+    func test_fulfill_finishes_with_no_Error_if_the_Action_succeeds() async throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 500, orderID: 1, status: .pending)
         let useCase = OrderFulfillmentUseCase(order: order, stores: stores, flow: .editing)
@@ -144,10 +144,10 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         let process = useCase.fulfill()
 
         // Then
-        waitForExpectation { expectation in
+        let _: Bool = try await waitForCompletion { finish in
             process.result.sink { completion in
                 if case .finished = completion {
-                    expectation.fulfill()
+                    finish(true)
                 }
             } receiveValue: {
                 // noop

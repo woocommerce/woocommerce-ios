@@ -18,7 +18,7 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
 
     override func setUp() async throws {
         try await super.setUp()
-        await setUpFixtures()
+        setUpFixtures()
     }
 
     @MainActor

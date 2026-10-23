@@ -19,7 +19,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     override func setUp() async throws {
         try await super.setUp()
-        await setUpFixtures()
+        setUpFixtures()
     }
 
     @MainActor

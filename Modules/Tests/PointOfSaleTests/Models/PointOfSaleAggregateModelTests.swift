@@ -48,6 +48,19 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.isEmpty)
         }
 
+        @Test func test_start_new_cart_when_called_then_requests_checkout_timing_reset() throws {
+            // Given
+            let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+            let sut = makePointOfSaleAggregateModel(collectOrderPaymentAnalyticsTracker: tracker)
+            try #require(!tracker.didResetCheckoutTiming)
+
+            // When
+            sut.startNewCart()
+
+            // Then
+            #expect(tracker.didResetCheckoutTiming)
+        }
+
         @Test func checkOut_moves_to_finalizing_order_stage() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel()
@@ -435,6 +448,7 @@ struct PointOfSaleAggregateModelTests {
             let cardPresentPaymentService = MockCardPresentPaymentService()
             let orderController = MockPointOfSaleOrderController()
             let itemsController = MockPointOfSaleItemsController()
+            let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
             var releaseSyncOrder: (() -> Void)?
             var checkoutTask: Task<Void, Never>?
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
@@ -442,7 +456,8 @@ struct PointOfSaleAggregateModelTests {
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
-                orderController: orderController)
+                orderController: orderController,
+                collectOrderPaymentAnalyticsTracker: tracker)
             sut.addToCart(makePurchasableItem())
 
             // When
@@ -466,8 +481,8 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.orderStage == .building)
-            #expect(orderController.cancelSyncWasCalled)
             #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
+            #expect(tracker.orderSyncSuccessCount == 0)
         }
 
         @Test func sendReceipt_when_invoked_then_calls_receiptSender() async throws {

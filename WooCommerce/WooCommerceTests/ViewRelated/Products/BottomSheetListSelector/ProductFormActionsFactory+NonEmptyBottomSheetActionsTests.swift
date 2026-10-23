@@ -9,7 +9,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -20,6 +20,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings,
                                                                           .editInventorySettings,
+                                                                          .editAttributes,
                                                                           .editCategories,
                                                                           .editTags,
                                                                           .editDownloadableFiles,
@@ -34,7 +35,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -44,6 +45,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings,
+                                                                          .editAttributes,
                                                                           .editCategories,
                                                                           .editTags,
                                                                           .editDownloadableFiles,
@@ -58,7 +60,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: MockFeatureFlagService())
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -69,6 +71,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings,
+                                                                          .editAttributes,
                                                                           .editCategories,
                                                                           .editTags,
                                                                           .editShortDescription,

@@ -43,7 +43,6 @@ protocol PointOfSaleOrderControllerProtocol {
     func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
-    func cancelSync()
     func collectCashPayment(changeDueAmount: String?) async throws
     /// Marks the order as paid manually.
     ///
@@ -87,14 +86,14 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
-    private var syncRequestID = UUID()
-    private var orderStateBeforeSync: PointOfSaleInternalOrderState = .idle
 
     /// The custom amounts as they were on the last successful sync. Used to detect a "Charge
     /// taxes" toggle on an otherwise-unchanged amount, which `POSCart.matches(order:)` cannot
     /// see (it ignores `isTaxable`). Compared against the cart's intent — never the server's
     /// returned tax status — so a legitimate server/cart tax divergence won't cause a resync loop.
     private var lastSyncedCustomAmounts: [POSCustomAmount] = []
+
+    private var pendingOrderSync: (cart: POSCart, task: Task<Result<SyncOrderState, Error>, Never>)?
 
     private var currencyFormatter: CurrencyFormatter {
         CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
@@ -109,38 +108,65 @@ protocol PointOfSaleOrderControllerProtocol {
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         let posCart = POSCart(cart: cart)
 
+        if let pendingOrderSync, pendingOrderSync.cart == posCart {
+            let result = await pendingOrderSync.task.value
+            if case .success = result, case .loaded(_, let order) = orderState {
+                orderState = .loaded(totals(for: order, cart: cart), order)
+            }
+            return result
+        }
+        pendingOrderSync?.task.cancel()
+        pendingOrderSync = nil
+
         // `matches(order:)` ignores `isTaxable`, so a "Charge taxes" toggle on an otherwise-
         // unchanged amount would short-circuit and never re-sync. Force a sync when the cart's
         // taxable intent diverges from what we last synced.
         let taxableIntentChanged = !posCart.customAmounts.taxableIntentMatches(lastSyncedCustomAmounts)
 
-        guard !orderState.isSyncing,
-              !posCart.matches(order: order) || taxableIntentChanged else {
+        guard !posCart.matches(order: order) || taxableIntentChanged else {
+            if let order {
+                orderState = .loaded(totals(for: order, cart: cart), order)
+            } else if orderState.isSyncing {
+                orderState = .idle
+            }
             return .success(.orderNotChanged)
         }
 
-        let requestID = UUID()
-        syncRequestID = requestID
-        orderStateBeforeSync = orderState
         orderState = .syncing
 
-        do {
-            let syncedOrder = try await orderService.syncOrder(cart: posCart,
-                                                               currency: storeCurrency)
-            guard syncRequestID == requestID else { return .failure(CancellationError()) }
-            self.order = syncedOrder
-            self.lastSyncedCustomAmounts = posCart.customAmounts
-            orderState = .loaded(totals(for: syncedOrder, cart: cart), syncedOrder)
-            analytics.track(.orderCreationSuccess)
-            return .success(.newOrder)
-        } catch {
-            guard syncRequestID == requestID else { return .failure(CancellationError()) }
-            self.order = nil
-            self.lastSyncedCustomAmounts = []
-            trackOrderCreationFailed(error: error)
-            setOrderStateToError(error, retryHandler: retryHandler)
-            return .failure(SyncOrderStateError.syncFailure)
+        let task = Task<Result<SyncOrderState, Error>, Never> {
+            let result: Result<Order, Error>
+            do {
+                result = .success(try await orderService.syncOrder(cart: posCart, currency: storeCurrency))
+            } catch {
+                result = .failure(error)
+            }
+            switch result {
+            case .success:
+                analytics.track(.orderCreationSuccess)
+            case .failure(let error):
+                trackOrderCreationFailed(error: error)
+            }
+            guard !Task.isCancelled else {
+                return .failure(CancellationError())
+            }
+            pendingOrderSync = nil
+
+            switch result {
+            case .success(let syncedOrder):
+                self.order = syncedOrder
+                self.lastSyncedCustomAmounts = posCart.customAmounts
+                orderState = .loaded(totals(for: syncedOrder, cart: cart), syncedOrder)
+                return .success(.newOrder)
+            case .failure(let error):
+                self.order = nil
+                self.lastSyncedCustomAmounts = []
+                setOrderStateToError(error, retryHandler: retryHandler)
+                return .failure(SyncOrderStateError.syncFailure)
+            }
         }
+        pendingOrderSync = (posCart, task)
+        return await task.value
     }
 
     private func setOrderStateToError(_ error: Error,
@@ -161,17 +187,11 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func clearOrder() {
-        syncRequestID = UUID()
+        pendingOrderSync?.task.cancel()
+        pendingOrderSync = nil
         order = nil
         lastSyncedCustomAmounts = []
         orderState = .idle
-    }
-
-    /// Invalidates a checkout that returned to cart editing without discarding a previously loaded order.
-    func cancelSync() {
-        guard orderState.isSyncing else { return }
-        syncRequestID = UUID()
-        orderState = orderStateBeforeSync
     }
 
     func collectCashPayment(changeDueAmount: String?) async throws {

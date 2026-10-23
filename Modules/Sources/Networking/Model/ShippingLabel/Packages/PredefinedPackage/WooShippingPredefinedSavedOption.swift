@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a predefined saved option in Shipping Labels for the WooCommerce Shipping extension.
 ///
-public struct WooShippingPredefinedSavedOption: Equatable, GeneratedFakeable {
+public struct WooShippingPredefinedSavedOption: Equatable, GeneratedFakeable, Sendable {
 
     /// The ID of the shipping carrier for the predefined option, e.g. "usps".
     public let id: String

@@ -6,15 +6,21 @@ import protocol WooFoundation.Analytics
 protocol CollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String? { get }
 
+    func clearPaymentConfirmation()
+
     func preflightResultReceived(_ result: CardReaderPreflightResult?)
 
-    func trackProcessingCompletion(intent: PaymentIntent)
+    func trackProcessingCompletion(intent: PaymentIntent, recordPaymentConfirmation: Bool)
 
     func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData)
 
     func trackPaymentFailure(with error: Error)
 
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource)
+}
+
+extension CollectOrderPaymentAnalyticsTracking {
+    func clearPaymentConfirmation() {}
 }
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
@@ -57,7 +63,7 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
         }
     }
 
-    func trackProcessingCompletion(intent: PaymentIntent) {
+    func trackProcessingCompletion(intent: PaymentIntent, recordPaymentConfirmation: Bool) {
         guard let paymentMethod = intent.paymentMethod() else {
             return
         }

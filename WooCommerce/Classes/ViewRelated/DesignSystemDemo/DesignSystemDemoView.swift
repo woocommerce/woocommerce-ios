@@ -39,8 +39,10 @@ private struct ComponentsView: View {
             NavigationLink("Divider") { DividerComponentView() }
             NavigationLink("NoticeBanner") { NoticeBannerComponentView() }
             NavigationLink("RadioButton") { RadioButtonComponentView() }
+            NavigationLink("Search Field") { SearchFieldComponentView() }
             NavigationLink("Segmented Control") { SegmentedControlComponentView() }
             NavigationLink("Sheet") { SheetComponentView() }
+            NavigationLink("Tabs") { TabsComponentView() }
             NavigationLink("Tooltip") { TooltipComponentView() }
             NavigationLink("Top App Bar") { TopAppBarComponentView() }
         }

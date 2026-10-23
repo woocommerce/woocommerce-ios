@@ -326,6 +326,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(AnalyticEvents.paymentsHubCashOnDeliveryToggled))
     }
 
+    @MainActor
     func test_learnMoreTapped_tracks_paymentsHubCashOnDeliveryToggleLearnMoreTapped_event() throws {
         // Given
 

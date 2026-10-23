@@ -52,10 +52,11 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         let stores: StoresManager
         let siteSettings: SelectedSiteSettingsProtocol
 
+        @MainActor
         init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
              cardReaderSupportDeterminer: CardReaderSupportDetermining,
-             tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
+             tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker? = nil,
              wooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol?,
              systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
              analytics: Analytics = ServiceLocator.analytics,
@@ -66,7 +67,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
             self.onboardingUseCase = onboardingUseCase
             self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
-            self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
+            self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker ?? TapToPayBadgePromotionChecker()
             self.wooPaymentsPayoutService = wooPaymentsPayoutService
             self.systemStatusService = systemStatusService
             self.analytics = analytics
@@ -366,7 +367,7 @@ private extension InPersonPaymentsMenuViewModel {
 }
 
 // MARK: - Deeplink navigation
-extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
+extension InPersonPaymentsMenuViewModel: @MainActor DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
         guard let paymentsDestination = destination as? PaymentsMenuDestination else {
             return

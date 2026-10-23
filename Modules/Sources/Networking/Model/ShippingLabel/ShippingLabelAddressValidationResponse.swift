@@ -6,7 +6,7 @@ import Foundation
 /// For public consumption, we'll convert those to a `ShippingLabelAddressValidationError`, and expose
 /// a `ShippingLabelAddressValidationSuccess` instead if there were no errors.
 ///
-internal struct ShippingLabelAddressValidationResponse: Equatable {
+internal struct ShippingLabelAddressValidationResponse: Equatable, Sendable {
     let result: Result<ShippingLabelAddressValidationSuccess, ShippingLabelAddressValidationError>
 
     init(address: ShippingLabelAddress?, errors: ShippingLabelAddressValidationError?, isTrivialNormalization: Bool?) {

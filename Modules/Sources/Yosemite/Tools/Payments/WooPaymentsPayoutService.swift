@@ -9,7 +9,7 @@ public protocol WooPaymentsPayoutServiceProtocol {
     func fetchPayoutsOverview() async throws -> [WooPaymentsPayoutsOverviewByCurrency]
 }
 
-public final class WooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol {
+public final class WooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol, Sendable {
     // MARK: - Properties
 
     private let wooPaymentsRemote: WCPayRemote

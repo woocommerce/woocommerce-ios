@@ -93,7 +93,7 @@ struct WPCom2FALoginView: View {
                     if viewModel.isRequestingOTP {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
-                        Label(Localization.textMeACode, systemImage: "platter.filled.top.iphone")
+                        Label(viewModel.textCodeButtonTitle(defaultTitle: Localization.textMeACode), systemImage: "platter.filled.top.iphone")
                             .linkStyle()
                     }
                 })

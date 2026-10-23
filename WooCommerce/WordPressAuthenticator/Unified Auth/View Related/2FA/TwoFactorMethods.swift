@@ -31,6 +31,11 @@ public struct TwoFactorMethods {
         methods.contains(.backup)
     }
 
+    public func textCodeButtonTitle(defaultTitle: String, hasRequestedTextCode: Bool, isBackupCodeRequested: Bool) -> String {
+        let instructions = self.instructions(hasRequestedTextCode: hasRequestedTextCode, isBackupCodeRequested: isBackupCodeRequested)
+        return instructions == Localization.textMessage ? Localization.resendTextCode : defaultTitle
+    }
+
     /// `nil` keeps the screen's own authenticator app instructions.
     public func instructions(hasRequestedTextCode: Bool, isBackupCodeRequested: Bool) -> String? {
         if isBackupCodeRequested {
@@ -73,6 +78,11 @@ private extension TwoFactorMethods {
             "twoFactorMethods.backupCodeInstructions",
             value: "Enter a backup code to continue.",
             comment: "Instruction to enter a backup code"
+        )
+        static let resendTextCode = NSLocalizedString(
+            "twoFactorMethods.resendTextCodeButton",
+            value: "Resend code via SMS",
+            comment: "Button to text another verification code when one was already sent by text message"
         )
     }
 }

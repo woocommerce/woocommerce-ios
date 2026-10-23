@@ -76,6 +76,20 @@ struct TwoFactorMethodsTests {
     }
 
     @Test
+    func test_textCodeButtonTitle_when_text_message_instructions_show_then_offers_to_resend() {
+        // Given
+        let smsFirst = TwoFactorMethods(supportedAuthTypes: ["backup", "sms"])
+        let authenticatorFirst = TwoFactorMethods(supportedAuthTypes: ["backup", "authenticator", "sms"])
+        let title = "Text me a code"
+
+        // When / Then
+        #expect(smsFirst.textCodeButtonTitle(defaultTitle: title, hasRequestedTextCode: false, isBackupCodeRequested: false) == "Resend code via SMS")
+        #expect(authenticatorFirst.textCodeButtonTitle(defaultTitle: title, hasRequestedTextCode: false, isBackupCodeRequested: false) == title)
+        #expect(authenticatorFirst.textCodeButtonTitle(defaultTitle: title, hasRequestedTextCode: true, isBackupCodeRequested: false) == "Resend code via SMS")
+        #expect(smsFirst.textCodeButtonTitle(defaultTitle: title, hasRequestedTextCode: true, isBackupCodeRequested: true) == title)
+    }
+
+    @Test
     func test_methods_when_security_key_is_the_only_method_then_offers_no_backup_code() {
         // Given
         let methods = TwoFactorMethods(supportedAuthTypes: ["webauthn"])

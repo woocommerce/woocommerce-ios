@@ -19,6 +19,10 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
         methods.instructions(hasRequestedTextCode: hasRequestedOTP, isBackupCodeRequested: isBackupCodeRequested)
     }
 
+    func textCodeButtonTitle(defaultTitle: String) -> String {
+        methods.textCodeButtonTitle(defaultTitle: defaultTitle, hasRequestedTextCode: hasRequestedOTP, isBackupCodeRequested: isBackupCodeRequested)
+    }
+
     var isSecurityKeyMode: Bool {
         methods.startsWithSecurityKey && !isBackupCodeRequested
     }

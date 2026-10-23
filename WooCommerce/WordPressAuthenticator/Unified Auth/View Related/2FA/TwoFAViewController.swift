@@ -560,7 +560,9 @@ private extension TwoFAViewController {
                     tableView.insertRows(at: [IndexPath(row: offset, section: 0)], with: .fade)
                 }
             }
-            tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+            // The instructions and the text code title follow the requested method.
+            let reloadedRows = oldRows.indices.filter { $0 == 0 || oldRows[$0] == .sendCode }
+            tableView.reloadRows(at: reloadedRows.map { IndexPath(row: $0, section: 0) }, with: .none)
         }
     }
 
@@ -624,7 +626,10 @@ private extension TwoFAViewController {
     /// Configure the link cell.
     ///
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
-        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle, icon: .authenticatorPhoneIcon)
+        let title = methods.textCodeButtonTitle(defaultTitle: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle,
+                                                hasRequestedTextCode: hasRequestedTextCode,
+                                                isBackupCodeRequested: isBackupCodeRequested)
+        cell.configureButton(text: title, icon: .authenticatorPhoneIcon)
         cell.enableButton(!isLoading)
 
         cell.actionHandler = { [weak self] in

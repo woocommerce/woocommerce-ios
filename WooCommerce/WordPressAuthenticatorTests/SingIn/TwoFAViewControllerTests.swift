@@ -336,7 +336,7 @@ struct TwoFAViewControllerTests {
             firstSubview(of: UIButton.self, in: $0)?.title(for: .normal)
         }
         #expect(instructionLabel.text == "We sent a text message. Enter the verification code from the message.")
-        #expect(linkTitles == [displayStrings.textCodeButtonTitle, "Use a backup code instead", displayStrings.securityKeyButtonTitle])
+        #expect(linkTitles == ["Resend code via SMS", "Use a backup code instead", displayStrings.securityKeyButtonTitle])
         #expect(updatedCodeCell.textField === codeField)
         #expect(updatedCodeCell.textField.text == "12345678")
     }

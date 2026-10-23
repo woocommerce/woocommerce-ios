@@ -291,6 +291,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
                                                onAuthWindowRequest: { UIWindow(frame: UIScreen.main.bounds) },
                                                onLoginFailure: { _ in },
                                                onLoginSuccess: { _ in })
+        XCTAssertEqual(viewModel.textCodeButtonTitle(defaultTitle: "Text me a code"), "Text me a code")
 
         // When
         viewModel.requestOneTimeCode()
@@ -298,6 +299,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(oauthFacade.oneTimeCodeRequestCount, 1)
         XCTAssertEqual(viewModel.instructions, "We sent a text message. Enter the verification code from the message.")
+        XCTAssertEqual(viewModel.textCodeButtonTitle(defaultTitle: "Text me a code"), "Resend code via SMS")
     }
 
     func test_useBackupCode_when_code_entry_is_the_first_method_then_shows_backup_instructions_and_hides_backup_option() {

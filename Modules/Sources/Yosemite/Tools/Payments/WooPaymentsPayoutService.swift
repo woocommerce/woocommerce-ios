@@ -13,7 +13,7 @@ public final class WooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol {
     // MARK: - Properties
 
     private let wooPaymentsRemote: WCPayRemote
-    private var siteID: Int64
+    private let siteID: Int64
 
     // MARK: - Initialization
 
@@ -37,7 +37,7 @@ public final class WooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol {
 
     // MARK: - Public Methods
 
-    public func fetchPayoutsOverview() async throws -> [WooPaymentsPayoutsOverviewByCurrency] {
+    nonisolated public func fetchPayoutsOverview() async throws -> [WooPaymentsPayoutsOverviewByCurrency] {
         do {
             let overview = try await wooPaymentsRemote.loadPayoutsOverview(for: siteID)
             return payoutsOverviewForViews(overview)

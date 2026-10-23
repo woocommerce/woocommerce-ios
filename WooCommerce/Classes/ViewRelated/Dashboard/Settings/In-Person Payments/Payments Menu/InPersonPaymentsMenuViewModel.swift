@@ -367,7 +367,7 @@ private extension InPersonPaymentsMenuViewModel {
 }
 
 // MARK: - Deeplink navigation
-extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
+extension InPersonPaymentsMenuViewModel: @MainActor DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
         guard let paymentsDestination = destination as? PaymentsMenuDestination else {
             return

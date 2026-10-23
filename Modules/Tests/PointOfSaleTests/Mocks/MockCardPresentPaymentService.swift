@@ -70,18 +70,26 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     var onCollectPaymentCalled: (() -> Void)?
     var collectPaymentWasCalled = false
     var collectPaymentChannel: PaymentChannel?
+    var spyCollectPaymentOrders: [Yosemite.Order] = []
+    var collectPaymentOverride: (@MainActor () async throws -> CardPresentPaymentResult)?
     func collectPayment(for order: Yosemite.Order,
                         using connectionMethod: CardReaderConnectionMethod,
                         channel: PaymentChannel) async throws -> CardPresentPaymentResult {
         collectPaymentWasCalled = true
         collectPaymentChannel = channel
+        spyCollectPaymentOrders.append(order)
         onCollectPaymentCalled?()
+        if let collectPaymentOverride {
+            return try await collectPaymentOverride()
+        }
         paymentEvent = .show(eventDetails: CardPresentPaymentEventDetails.paymentSuccess(done: {}))
         return .success(CardPresentPaymentTransaction())
     }
 
+    var cancelPaymentCallCount = 0
     func cancelPayment() {
         cancelPaymentCalled = true
+        cancelPaymentCallCount += 1
     }
 
     var onCancelPaymentCalled: (() async throws -> Void)?

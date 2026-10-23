@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipping Label Creation Eligibility response for an order.
 ///
-public struct ShippingLabelCreationEligibilityResponse: Equatable, GeneratedFakeable {
+public struct ShippingLabelCreationEligibilityResponse: Equatable, GeneratedFakeable, Sendable {
     /// Whether the order is eligible for shipping label creation.
     public let isEligible: Bool
 

@@ -33,6 +33,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
          storageManager = nil
      }
 
+    @MainActor
     func test_intro_view_is_displayed_when_shouldShowIntro_is_true() {
         // Given
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
@@ -49,6 +50,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         XCTAssertTrue(sut.navigationController.presentedViewController is BlazeCreateCampaignIntroController)
     }
 
+    @MainActor
     func test_when_product_id_supplied_then_navigate_to_creation_form() {
         // Given
         insertProduct(.fake().copy(siteID: 1,
@@ -72,6 +74,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         XCTAssertTrue(sut.navigationController.viewControllers.first is BlazeCampaignCreationFormHostingController)
     }
 
+    @MainActor
     func test_when_no_product_id_supplied_and_there_is_one_eligible_product_then_navigate_to_creation_form() {
         // Given
         insertProduct(.fake().copy(siteID: 1,
@@ -94,6 +97,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         XCTAssertTrue(sut.navigationController.viewControllers.first is BlazeCampaignCreationFormHostingController)
     }
 
+    @MainActor
     func test_when_no_product_id_supplied_and_there_are_multiple_eligible_products_then_navigate_to_product_selector() throws {
         // Given
         insertProduct(.fake().copy(siteID: 1,
@@ -124,6 +128,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         XCTAssertTrue(viewController is ProductSelectorViewController)
     }
 
+    @MainActor
     func test_error_alert_is_displayed_if_no_published_product_is_found() throws {
         // Given
         insertProduct(.fake().copy(siteID: 1,

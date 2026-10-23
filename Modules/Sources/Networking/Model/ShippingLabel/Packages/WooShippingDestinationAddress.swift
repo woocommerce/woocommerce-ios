@@ -1,7 +1,7 @@
 import Foundation
 import Codegen
 
-public struct WooShippingDestinationAddress: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingDestinationAddress: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     public let company: String
     public let address1: String
     public let address2: String

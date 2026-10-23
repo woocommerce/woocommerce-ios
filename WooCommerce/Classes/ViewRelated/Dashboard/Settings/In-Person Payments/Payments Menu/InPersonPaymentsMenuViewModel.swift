@@ -52,6 +52,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         let stores: StoresManager
         let siteSettings: SelectedSiteSettingsProtocol
 
+        @MainActor
         init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
              cardReaderSupportDeterminer: CardReaderSupportDetermining,

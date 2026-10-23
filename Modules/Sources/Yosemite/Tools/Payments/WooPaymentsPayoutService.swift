@@ -5,6 +5,7 @@ import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
 public protocol WooPaymentsPayoutServiceProtocol {
+    @MainActor
     func fetchPayoutsOverview() async throws -> [WooPaymentsPayoutsOverviewByCurrency]
 }
 

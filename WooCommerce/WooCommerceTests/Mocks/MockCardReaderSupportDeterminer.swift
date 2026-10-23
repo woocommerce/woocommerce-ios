@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class MockCardReaderSupportDeterminer: CardReaderSupportDetermining {
     var shouldReturnLocationIsAuthorized = false
     var locationIsAuthorized: Bool {

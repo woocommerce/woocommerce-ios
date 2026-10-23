@@ -33,7 +33,19 @@ extension UIView {
     }
 
     func pinSubviewBottomToBottomAnchorReplacingSafeArea(_ subview: UIView) {
-        let constraintsToDeactivate = constraints.filter { constraint in
+        let constraintsToDeactivate = bottomConstraintsToSafeArea(of: subview)
+
+        guard !constraintsToDeactivate.isEmpty else {
+            return
+        }
+
+        NSLayoutConstraint.deactivate(constraintsToDeactivate)
+        subview.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+    }
+
+    /// Constraints on this view that pin the subview's bottom to the safe area's bottom, in either direction.
+    func bottomConstraintsToSafeArea(of subview: UIView) -> [NSLayoutConstraint] {
+        constraints.filter { constraint in
             guard constraint.firstAttribute == .bottom,
                   constraint.secondAttribute == .bottom else {
                 return false
@@ -46,12 +58,5 @@ extension UIView {
 
             return isSubviewConstrainedToSafeArea || isSafeAreaConstrainedToSubview
         }
-
-        guard !constraintsToDeactivate.isEmpty else {
-            return
-        }
-
-        NSLayoutConstraint.deactivate(constraintsToDeactivate)
-        subview.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
 }

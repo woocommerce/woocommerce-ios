@@ -69,12 +69,11 @@ final class OrderFulfillmentUseCase {
         analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: flow, orderID: order.orderID, from: order.status, to: targetStatus))
 
         let result: Future<Void, FulfillmentError> = Future { promise in
-            let completion = OrderFulfillmentCompletion(resolve: promise)
             let finish: @MainActor @Sendable (Error?) -> Void = { error in
                 guard let error else {
                     NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                     self.analytics.track(.orderStatusChangeSuccess)
-                    completion.resolve(.success(()))
+                    promise(.success(()))
                     return
                 }
 
@@ -88,7 +87,7 @@ final class OrderFulfillmentUseCase {
                         self.dispatchStatusUpdateAction(order: order, status: targetStatus, activity: activity)
                     }
                 )
-                completion.resolve(.failure(fulfillmentError))
+                promise(.failure(fulfillmentError))
             }
 
             let action = OrderAction.updateOrderStatus(siteID: order.siteID, orderID: order.orderID, status: targetStatus) { error in
@@ -117,11 +116,6 @@ final class OrderFulfillmentUseCase {
             return Localization.undoError(orderID: order.orderID)
         }
     }
-}
-
-@MainActor
-private struct OrderFulfillmentCompletion {
-    let resolve: (Result<Void, OrderFulfillmentUseCase.FulfillmentError>) -> Void
 }
 
 extension OrderFulfillmentUseCase {

@@ -139,7 +139,10 @@ final class RefundConfirmationViewModel {
         }
         let action = OrderAction.retrieveOrder(siteID: details.order.siteID, orderID: details.order.orderID) { _, error  in
             Task { @MainActor in
-                finish(error.map { .failure($0) } ?? .success(()))
+                if let error {
+                    return finish(.failure(error))
+                }
+                finish(.success(()))
             }
         }
         actionProcessor.dispatch(action)

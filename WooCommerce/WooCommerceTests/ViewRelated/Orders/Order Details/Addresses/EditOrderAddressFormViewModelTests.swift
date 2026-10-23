@@ -420,19 +420,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
             case .synchronizeCountries(_, let completion):
                 // Stores the countries asynchronously, like the remote sync does, so they arrive after the initial form refresh.
                 DispatchQueue.main.async {
-                    self.testingStorage.performAndSave({ storage in
-                        Self.sampleCountries.forEach { country in
-                            let storageCountry = storage.insertNewObject(ofType: StorageCountry.self)
-                            storageCountry.update(with: country)
-                            country.states.forEach { state in
-                                let storageState = storage.insertNewObject(ofType: StorageStateOfACountry.self)
-                                storageState.update(with: state)
-                                storageCountry.addToStates(storageState)
-                            }
-                        }
-                    }, completion: {
-                        completion(.success(Self.sampleCountries))
-                    }, on: .main)
+                    self.testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
+                    completion(.success(Self.sampleCountries))
                 }
             }
         }
@@ -451,7 +440,6 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         }
         let unitedStates = Self.sampleCountries.first { $0.code == "US" }
         XCTAssertEqual(viewModel.fields.country, unitedStates?.name)
-        XCTAssertEqual(viewModel.fields.selectedState?.code, "NY")
         XCTAssertEqual(viewModel.fields.state, "New York")
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }

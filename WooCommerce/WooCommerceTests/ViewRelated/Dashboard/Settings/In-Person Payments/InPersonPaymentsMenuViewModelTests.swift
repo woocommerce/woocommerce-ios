@@ -58,6 +58,8 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         systemStatusService.onFetchSystemPluginWithPath = { _ in
             return nil
         }
+        mockPayoutService = MockWooPaymentsPayoutService()
+        sut = makeSut()
 
         // When
         await sut.onAppear()

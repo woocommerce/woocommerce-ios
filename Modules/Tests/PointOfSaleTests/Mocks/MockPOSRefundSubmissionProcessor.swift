@@ -30,12 +30,14 @@ final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcessing {
 
     private(set) var preloadedOrderIDs: [Int64] = []
     var prepareRefundErrorToThrow: Error?
+    var onPrepareRefundCalled: (@MainActor (POSOrder) async throws -> Void)?
 
     func preloadRefund(for order: POSOrder) async {
         preloadedOrderIDs.append(order.id)
     }
 
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
+        try await onPrepareRefundCalled?(order)
         if let prepareRefundErrorToThrow {
             throw prepareRefundErrorToThrow
         }

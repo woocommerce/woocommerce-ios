@@ -69,6 +69,74 @@ final class POSRefundControllerTests {
         #expect(refundSubmissionProcessor.preloadedOrderIDs.isEmpty)
     }
 
+    @Test(arguments: [false, true], [false, true])
+    func startRefundFlow_when_an_older_request_finishes_then_keeps_newer_preparation(sameOrder: Bool, fails: Bool) async throws {
+        // Given a first preparation that remains suspended while a newer preparation completes
+        let firstOrder = POSOrderTestFactory.makeOrder(id: 1, lineItems: [
+            POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1)
+        ])
+        let secondOrder = POSOrderTestFactory.makeOrder(id: sameOrder ? 1 : 2, lineItems: [
+            POSOrderTestFactory.makePOSOrderItem(itemID: 2, quantity: 1)
+        ])
+        var continuation: CheckedContinuation<Void, Never>?
+        var firstTask: Task<StartRefundFlowResult, Never>?
+        await fireOnce { fire in
+            refundSubmissionProcessor.onPrepareRefundCalled = { order in
+                guard order.lineItems.first?.itemID == 1 else { return }
+                await withCheckedContinuation { continuation = $0; fire() }
+                if fails {
+                    throw TestError.prepareRefundFailed
+                }
+            }
+            firstTask = Task { await sut.startRefundFlow(for: firstOrder) }
+        }
+        if !sameOrder {
+            sut.reset()
+        }
+        _ = await sut.startRefundFlow(for: secondOrder)
+
+        // When the older request returns, even if its service ignores cancellation
+        continuation?.resume()
+        _ = await firstTask?.value
+
+        // Then the newer selection and its preparation remain usable
+        #expect(sut.selectableItems.map(\.itemID) == [2])
+        guard case .ready = await sut.prepareReview() else {
+            Issue.record("The newer preparation must remain available for review")
+            return
+        }
+        let result = try await sut.processRefund(reason: nil)
+        #expect(result.refundedOrderID == secondOrder.id)
+    }
+
+    @Test(arguments: [false, true])
+    func startRefundFlow_when_the_flow_is_closed_then_ignores_its_pending_response(resetFlow: Bool) async throws {
+        // Given a suspended preparation
+        let order = POSOrderTestFactory.makeOrder(lineItems: [POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1)])
+        var continuation: CheckedContinuation<Void, Never>?
+        var preparationTask: Task<StartRefundFlowResult, Never>?
+        await fireOnce { fire in
+            refundSubmissionProcessor.onPrepareRefundCalled = { _ in
+                await withCheckedContinuation { continuation = $0; fire() }
+            }
+            preparationTask = Task { await sut.startRefundFlow(for: order) }
+        }
+
+        // When the flow is dismissed or the selected order is reset before its response arrives
+        if resetFlow {
+            sut.reset()
+        } else {
+            sut.clearSelection()
+        }
+        continuation?.resume()
+        _ = await preparationTask?.value
+
+        // Then the closed flow stays empty
+        #expect(sut.selectableItems.isEmpty)
+        #expect(sut.hasLoadedSelectableItems == false)
+        #expect(sut.reviewPreparationState == .idle)
+    }
+
     @Test func startRefundFlow_when_product_has_multiple_quantities_then_creates_one_row_per_unit() async throws {
         // Given
         let order = POSOrderTestFactory.makeOrder(lineItems: [

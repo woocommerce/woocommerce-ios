@@ -24,8 +24,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     @MainActor
     private func setUpFixtures() {
-        subscriptions.removeAll()
-
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         storageManager.insertSampleSite(

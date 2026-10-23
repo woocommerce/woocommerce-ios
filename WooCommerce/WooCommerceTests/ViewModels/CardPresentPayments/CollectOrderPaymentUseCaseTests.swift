@@ -104,8 +104,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_collectPayment_canceledWhileValidatingOrder_doesNotStartPaymentAfterValidationCompletes() async throws {
         // Given
-        let useCase = try XCTUnwrap(self.useCase)
-        defer { withExtendedLifetime(useCase) {} }
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
         var orderRetrievalCompletion: ((Result<Order, Error>) -> Void)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in

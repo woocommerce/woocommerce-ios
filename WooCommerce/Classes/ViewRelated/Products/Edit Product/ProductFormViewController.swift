@@ -16,6 +16,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var moreDetailsContainerView: UIView!
 
+    private var stackViewBottomToSafeAreaConstraints: [NSLayoutConstraint] = []
+    private var stackViewBottomToViewConstraint: NSLayoutConstraint?
+
     private let viewModel: ViewModel
     private let eventLogger: ProductFormEventLoggerProtocol
 
@@ -693,7 +696,7 @@ private extension ProductFormViewController {
         tableView.backgroundColor = .listForeground(modal: false)
         tableView.removeLastCellSeparator()
 
-        // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
+        // The stack view handles the safe area while the "Add more details" bar is shown; `updateLiquidGlassTabBarUnderlap()` switches this on iOS 26.
         tableView.contentInsetAdjustmentBehavior = .never
 
         configureLiquidGlassTabBarUnderlap()
@@ -766,11 +769,36 @@ private extension ProductFormViewController {
     }
 
     func configureLiquidGlassTabBarUnderlap() {
-        guard #available(iOS 26.0, *) else {
+        guard #available(iOS 26.0, *), let stackView = tableView.superview else {
             return
         }
 
         setContentScrollView(tableView, for: .bottom)
+        stackViewBottomToSafeAreaConstraints = view.bottomConstraintsToSafeArea(of: stackView)
+        stackViewBottomToViewConstraint = stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        updateLiquidGlassTabBarUnderlap()
+    }
+
+    /// The table underlaps the tab bar only while the "Add more details" bar is hidden, so that bar stays above the tab bar.
+    func updateLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *), let stackViewBottomToViewConstraint else {
+            return
+        }
+
+        let underlapsTabBar = moreDetailsContainerView.isHidden
+        guard stackViewBottomToViewConstraint.isActive != underlapsTabBar else {
+            return
+        }
+
+        view.keyboardLayoutGuide.usesBottomSafeArea = !underlapsTabBar
+        tableView.contentInsetAdjustmentBehavior = underlapsTabBar ? .automatic : .never
+        if underlapsTabBar {
+            NSLayoutConstraint.deactivate(stackViewBottomToSafeAreaConstraints)
+            stackViewBottomToViewConstraint.isActive = true
+        } else {
+            stackViewBottomToViewConstraint.isActive = false
+            NSLayoutConstraint.activate(stackViewBottomToSafeAreaConstraints)
+        }
     }
 }
 
@@ -1079,6 +1107,7 @@ private extension ProductFormViewController {
     func updateMoreDetailsButtonVisibility() {
         let moreDetailsActions = viewModel.actionsFactory.bottomSheetActions()
         moreDetailsContainerView.isHidden = moreDetailsActions.isEmpty
+        updateLiquidGlassTabBarUnderlap()
     }
 }
 

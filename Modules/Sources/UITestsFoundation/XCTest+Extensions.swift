@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 public let navBackButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
 
 extension XCUIElement {
@@ -35,6 +36,7 @@ extension XCUIElement {
 
 extension XCTestCase {
 
+    @MainActor
     public func takeScreenshotOfFailedTest() {
         if let failureCount = testRun?.failureCount, failureCount > 0 {
             XCTContext.runActivity(named: "Take a screenshot at the end of a failed test") { _ in
@@ -43,6 +45,7 @@ extension XCTestCase {
         }
     }
 
+    @MainActor
     public func systemAlertHandler(alertTitle: String, alertButton: String) {
         addUIInterruptionMonitor(withDescription: alertTitle) { alert -> Bool in
             let alertButtonElement = alert.buttons[alertButton]
@@ -95,6 +98,7 @@ extension XCTestCase {
         static let tag = "tag"
     }
 
+    @MainActor
     public func elementIsFullyVisibleOnScreen(element: XCUIElement) -> Bool {
         guard element.exists && !element.frame.isEmpty && element.isHittable else { return false }
         return XCUIApplication().windows.element(boundBy: 0).frame.contains(element.frame)

@@ -3,23 +3,26 @@ import UIKit
 /// Custom split view controller with double column style with preferred tile split behavior and 2-column display mode.
 /// When collapsed, the split view falls back to display the primary column.
 ///
+@MainActor
 final class WooSplitViewController: UISplitViewController {
 
     /// Convenient type for the closure to handle collapsing a split view
     ///
-    typealias ColumnForCollapsingHandler = (UISplitViewController) -> UISplitViewController.Column
+    typealias ColumnForCollapsingHandler = @MainActor @Sendable (UISplitViewController) -> UISplitViewController.Column
+
+    typealias SplitViewStateChangeHandler = @MainActor @Sendable (UISplitViewController) -> Void
 
     private let columnForCollapsingHandler: ColumnForCollapsingHandler?
 
-    private let didCollapseHandler: ((UISplitViewController) -> Void)?
+    private let didCollapseHandler: SplitViewStateChangeHandler?
 
-    private let didExpandHandler: ((UISplitViewController) -> Void)?
+    private let didExpandHandler: SplitViewStateChangeHandler?
 
     /// Init a split view with an optional handler to decide which column to collapse the split view into.
     /// By default, always display the primary column when collapsed.
     init(columnForCollapsingHandler: ColumnForCollapsingHandler? = nil,
-         didCollapseHandler: ((UISplitViewController) -> Void)? = nil,
-         didExpandHandler: ((UISplitViewController) -> Void)? = nil) {
+         didCollapseHandler: SplitViewStateChangeHandler? = nil,
+         didExpandHandler: SplitViewStateChangeHandler? = nil) {
         self.columnForCollapsingHandler = columnForCollapsingHandler
         self.didCollapseHandler = didCollapseHandler
         self.didExpandHandler = didExpandHandler
@@ -41,6 +44,7 @@ final class WooSplitViewController: UISplitViewController {
 /// Moves secondary content between the split view's navigation controllers without ever nesting one
 /// navigation controller inside the other. A view controller is removed from its current stack before
 /// it is installed in the destination stack, keeping its `UINavigationItem` owned by only one bar.
+@MainActor
 final class SplitViewNavigationStack {
     private let splitViewController: UISplitViewController
     let primaryNavigationController: UINavigationController

@@ -69,10 +69,10 @@ final class IssueRefundViewController: UIViewController {
 
 // MARK: External Updates
 extension IssueRefundViewController {
-    /// Updates item at the given index path with the new refund quantity.
+    /// Updates the original order line with the new refund quantity.
     ///
-    func updateRefundQuantity(quantity: Int, forItemAtIndex index: Int) {
-        viewModel.updateRefundQuantity(quantity: quantity, forItemAtIndex: index)
+    func updateRefundQuantity(quantity: Int, forItemWithID itemID: Int64) {
+        viewModel.updateRefundQuantity(quantity: quantity, forItemWithID: itemID)
     }
 }
 
@@ -81,6 +81,13 @@ private extension IssueRefundViewController {
     func observeViewModel() {
         viewModel.onChange = { [weak self] in
             self?.updateWithViewModelContent()
+        }
+
+        viewModel.showFetchRefundsErrorNotice = { [weak self] retry in
+            let presenter = DefaultNoticePresenter()
+            presenter.presentingViewController = self
+            presenter.enqueue(notice: Notice(title: Localization.fetchRefundsError,
+                                             feedbackType: .error, actionTitle: Localization.retryFetchChargeNoticeRetryActionTitle, actionHandler: retry))
         }
 
         viewModel.showFetchChargeErrorNotice = { [weak self] retryAction in
@@ -99,7 +106,9 @@ private extension IssueRefundViewController {
     func updateWithViewModelContent() {
         title = viewModel.title
         itemsSelectedLabel.text = viewModel.selectedItemsTitle
-        updateButtonState(enabled: viewModel.isNextButtonEnabled, showActivityIndicator: viewModel.isNextButtonAnimating)
+        nextButton.setTitle(viewModel.hasRefundFetchError ? Localization.retryFetchChargeNoticeRetryActionTitle : Localization.nextTitle, for: .normal)
+        updateButtonState(enabled: viewModel.isNextButtonEnabled || viewModel.hasRefundFetchError,
+                          showActivityIndicator: viewModel.isNextButtonAnimating)
         selectAllButton.isHidden = !viewModel.isSelectAllButtonVisible
         tableView.reloadData()
     }
@@ -108,6 +117,11 @@ private extension IssueRefundViewController {
 // MARK: Actions
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
+        if viewModel.hasRefundFetchError {
+            viewModel.retryFetchingRefunds()
+            return
+        }
+
         viewModel.createRefundConfirmationViewModel() { [weak self] confirmationViewModel in
             DispatchQueue.main.async {
                 self?.onNextAction?(confirmationViewModel)
@@ -131,12 +145,13 @@ private extension IssueRefundViewController {
 
     func quantityButtonPressed(sender: UITableViewCell) {
         guard let indexPath = tableView.indexPath(for: sender),
+            let itemID = viewModel.itemIDForItemAtIndex(indexPath.row),
             let refundQuantity = viewModel.quantityAvailableForRefundForItemAtIndex(indexPath.row),
             let currentQuantity = viewModel.currentQuantityForItemAtIndex(indexPath.row) else {
                 return
         }
 
-        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity, itemIndex: indexPath.row)
+        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity, itemID: itemID)
         onSelectQuantityAction?(command)
 
         viewModel.trackQuantityButtonTapped()
@@ -283,6 +298,8 @@ extension IssueRefundViewController: IssueRefundInteractiveDismissDelegate {
 // MARK: Constants
 private extension IssueRefundViewController {
     enum Localization {
+        static let fetchRefundsError = NSLocalizedString("issueRefund.fetchRefunds.failed", value: "Could not load previous refunds.",
+                                                        comment: "Error when loading refund history before a new refund.")
         static let nextTitle = NSLocalizedString("Next", comment: "Title of the next button in the issue refund screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title in the issue refund screen")
         static let selectAllTitle = NSLocalizedString("Select All", comment: "Select all button title in the issue refund screen")

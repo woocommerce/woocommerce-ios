@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class AddCustomerDetailsScreen: ScreenObject {
     private let addCustomerDetailsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
         $0.otherElements["customer-selector-screen"]

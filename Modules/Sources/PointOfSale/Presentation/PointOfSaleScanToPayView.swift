@@ -142,8 +142,7 @@ struct PointOfSaleScanToPayView: View {
             // layout doesn't shift when the QR appears.
             VStack(spacing: POSSpacing.medium) {
                 ProgressView()
-                    .progressViewStyle(.circular)
-                    .scaleEffect(1.5)
+                    .progressViewStyle(POSProgressViewStyle())
                     .frame(width: Layout.qrCodeSize, height: Layout.qrCodeSize)
 
                 Text(Localization.preparing)
@@ -190,7 +189,7 @@ struct PointOfSaleScanToPayView: View {
         switch verificationStatus {
         case .waiting:
             ProgressView()
-                .progressViewStyle(.circular)
+                .progressViewStyle(POSProgressViewStyle(size: 16, lineWidth: 4))
         case .error:
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(.posError)

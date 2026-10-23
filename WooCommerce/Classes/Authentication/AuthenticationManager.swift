@@ -117,6 +117,7 @@ class AuthenticationManager: Authentication {
 
     /// Initializes the WordPress Authenticator.
     ///
+    @MainActor
     func initialize() {
         WordPressAuthenticator.initializeWithCustomConfigs()
         WordPressAuthenticator.shared.delegate = self
@@ -128,6 +129,7 @@ class AuthenticationManager: Authentication {
     /// the QR-login prologue — pushed onto the same navigation stack — rather than the standard
     /// site-address flow. The standard prologue stays as the app's first screen.
     ///
+    @MainActor
     func authenticationUI() -> UIViewController {
         // A fresh authenticator replaces the previous navigation stack. Recovery paths
         // can log out before reaching `startStorePicker`, leaving its QR coordinator
@@ -389,6 +391,7 @@ class AuthenticationManager: Authentication {
 
     /// Checks the given site address and see if it's valid
     /// and returns an error view controller if not.
+    @MainActor
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
                              credentials: AuthenticatorCredentials? = nil,
@@ -429,7 +432,7 @@ class AuthenticationManager: Authentication {
 
 // MARK: - WordPressAuthenticator Delegate
 //
-extension AuthenticationManager: WordPressAuthenticatorDelegate {
+extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
     func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
         self.appleUserID = appleUserID
     }
@@ -531,6 +534,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Displays appropriate error based on the input `siteInfo`.
     /// Data flow following ZwYqDGHdenvYZoPHXZ1SOf-fi
     ///
+    @MainActor
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
         analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
                                                          isWPCom: siteInfo?.isWPCom ?? false,
@@ -729,7 +733,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                            in viewController: UIViewController,
                                            onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
         if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError {
-            unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, onRetry: onRetry)
+            unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, siteURL: siteURL, onRetry: onRetry)
             return
         }
         let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in
@@ -783,6 +787,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
+    @MainActor
     func presentLoginEpilogue(in navigationController: UINavigationController,
                               for credentials: AuthenticatorCredentials,
                               source: SignInSource?,
@@ -821,6 +826,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
+    @MainActor
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, socialUser: SocialUser?) {
         // NO-OP: The current WC version does not support Signup. Let SIWA through.
         guard case .apple = socialUser?.service else {
@@ -1118,6 +1124,7 @@ private extension AuthenticationManager {
 
     /// Presents an error if the user tries to log in to a site without Jetpack.
     ///
+    @MainActor
     func presentJetpackError(for siteURL: String,
                              with credentials: AuthenticatorCredentials,
                              in navigationController: UINavigationController,
@@ -1146,6 +1153,7 @@ private extension AuthenticationManager {
         navigationController.show(installJetpackUI, sender: nil)
     }
 
+    @MainActor
     func startStorePicker(with siteID: Int64? = nil,
                           source: SignInSource? = nil,
                           in navigationController: UINavigationController,
@@ -1212,6 +1220,7 @@ private extension AuthenticationManager {
 
     /// The error screen to be displayed when the user tries to enter a site without WooCommerce.
     ///
+    @MainActor
     func noWooUI(for site: Site,
                  reportsLoginStep: Bool = false,
                  with matcher: ULAccountMatcher = .init(),
@@ -1257,6 +1266,7 @@ private extension AuthenticationManager {
         return controller
     }
 
+    @MainActor
     func didAuthorizeApplicationPassword(_ applicationPassword: ApplicationPassword,
                                          for siteURL: String,
                                          in navigationController: UINavigationController,
@@ -1322,6 +1332,7 @@ extension AuthenticationManager {
     /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.
     /// Internal so tests can verify that the authentication callback forwards its validated endpoint context.
     ///
+    @MainActor
     func didAuthenticateUser(to siteURL: String,
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController) {
@@ -1360,6 +1371,7 @@ extension AuthenticationManager {
 }
 
 private extension AuthenticationManager {
+    @MainActor
     func checkSiteCredentialLogin(to siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
                                   loginFlow: LoginUnexpectedResponseFailure.LoginFlow,

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents the store options returned in the packages details.
 ///
-public struct ShippingLabelStoreOptions: Equatable, GeneratedFakeable {
+public struct ShippingLabelStoreOptions: Equatable, GeneratedFakeable, Sendable {
 
     public let currencySymbol: String // eg. `$`
     public let dimensionUnit: String // eg. `in`

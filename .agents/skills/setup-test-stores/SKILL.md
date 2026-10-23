@@ -105,9 +105,9 @@ not provision, and reports them missing.
 
 ## What the provisioned store supports
 
-A fresh store has the WooCommerce sample products, and the script adds 25 completed
-orders, one customer and a `maestro10` coupon, so the product, order and dashboard flows
-run against it.
+A fresh store has the WooCommerce sample products. The script tops it up to 100 products
+and 100 completed orders, and adds one customer and a `maestro10` coupon, so the product,
+order and dashboard flows run against it.
 
 The negative-login fixtures (`MAESTRO_WOO_NOT_A_WOO_STORE_*`,
 `MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are shared read-only sites from the smoke testing

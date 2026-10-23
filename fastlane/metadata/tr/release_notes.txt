@@ -1,1 +1,0 @@
-Artık QR koduyla oturum açarken dost cihaz adlarını görürsünüz ve WordPress.com'dan dokuz basamaklı kodlar gönderebilirsiniz. Yaş doğrulama uyarıları, Destek Birimiyle İletişime Geçin seçeneği sunar. Bir kategori adı zaten varsa açık bir hata alırsınız. Bildirim teslimatı ve Blaze bakiyelerini yönetmek de daha kolaydır.

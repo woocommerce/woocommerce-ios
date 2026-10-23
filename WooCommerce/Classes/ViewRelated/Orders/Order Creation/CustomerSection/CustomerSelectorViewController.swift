@@ -10,11 +10,18 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private var searchViewController: SearchViewController<UnderlineableTitleAndSubtitleAndDetailTableViewCell, CustomerSearchUICommand>?
     private var customerSearchCommand: CustomerSearchUICommand?
     private var emptyStateViewController: UIViewController?
+    private var customerListErrorHostingController: UIHostingController<CustomerListErrorView>?
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
     private let addressFormViewModel: CreateOrderAddressFormViewModel?
     private let selectedCustomerID: Int64?
+
+    private lazy var customerListErrorViewModel = CustomerListErrorViewModel(siteID: siteID,
+                                                                             source: configuration.analyticsSource,
+                                                                             reloadCustomers: { [weak self] in
+                                                                                 self?.reloadCustomers()
+                                                                             })
 
     let configuration: CustomerSelectorViewController.Configuration
 
@@ -95,6 +102,9 @@ extension CustomerSelectorViewController {
         // Whether the selector is presented modally
         var isModal: Bool
 
+        // Analytics source for customer loading errors
+        let analyticsSource: CustomerListErrorViewModel.Source
+
         // Whether to hide the detail text (username or "Guest") in each customer row
         var hideDetailText: Bool = false
     }
@@ -104,31 +114,40 @@ private extension CustomerSelectorViewController {
     func loadCustomersContent() {
         if viewModel.isEligibleForAdvancedSearch() {
             viewModel.loadCustomersListData(onCompletion: { [weak self] result in
-                guard let self else {
-                    return
-                }
-
-                self.removeGhostContent()
-                switch result {
-                case .success(let thereAreResults):
-                    if thereAreResults {
-                        self.addSearchViewController(
-                            loadResultsWhenSearchTermIsEmpty: true,
-                            showSearchFilters: false,
-                            showGuestLabel: configuration.showGuestLabel,
-                            shouldTrackCustomerAdded: configuration.shouldTrackCustomerAdded,
-                            disallowCreatingCustomer: configuration.disallowCreatingCustomer
-                        )
-                        self.configureActivityIndicator()
-                    } else {
-                        if configuration.disallowCreatingCustomer {
-                            self.showEmptyState(with: self.emptyStateWithNoCreationConfiguration())
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    switch result {
+                    case .success(let thereAreResults):
+                        customerListErrorViewModel.customersDidLoad()
+                        removeCustomerListErrorView()
+                        removeEmptyStateViewController()
+                        removeGhostContent()
+                        if thereAreResults {
+                            addSearchViewController(
+                                loadResultsWhenSearchTermIsEmpty: true,
+                                showSearchFilters: false,
+                                showGuestLabel: configuration.showGuestLabel,
+                                shouldTrackCustomerAdded: configuration.shouldTrackCustomerAdded,
+                                disallowCreatingCustomer: configuration.disallowCreatingCustomer
+                            )
+                            configureActivityIndicator()
+                        } else if configuration.disallowCreatingCustomer {
+                            showEmptyState(with: emptyStateWithNoCreationConfiguration())
                         } else {
-                            self.showEmptyState(with: self.emptyStateConfiguration())
+                            showEmptyState(with: emptyStateConfiguration())
                         }
+                    case .failure(let error):
+                        let handled = await customerListErrorViewModel.customersDidFail(with: error)
+                        guard handled else {
+                            removeGhostContent()
+                            showEmptyState(with: errorStateConfiguration())
+                            return
+                        }
+                        guard customerListErrorViewModel.isActive else { return }
+                        removeGhostContent()
+                        removeEmptyStateViewController()
+                        showCustomerListErrorView(in: view)
                     }
-                case .failure:
-                    self.showEmptyState(with: self.errorStateConfiguration())
                 }
             })
         } else {
@@ -224,6 +243,24 @@ private extension CustomerSelectorViewController {
                                                       self?.removeGhostContent()
                                                   }
                                               })
+        command.onDidSyncCustomers = { [weak self] result in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                switch result {
+                case .success:
+                    customerListErrorViewModel.customersDidLoad()
+                    removeCustomerListErrorView()
+                case .failure(let error):
+                    guard await customerListErrorViewModel.customersDidFail(with: error),
+                          customerListErrorViewModel.isActive,
+                          let tableView = searchViewController?.tableView else {
+                        return
+                    }
+                    removeEmptyStateViewController()
+                    showCustomerListErrorView(in: tableView)
+                }
+            }
+        }
         self.customerSearchCommand = command
 
         let searchViewController = SearchViewController(
@@ -238,11 +275,48 @@ private extension CustomerSelectorViewController {
     }
 
     func showEmptyState(with configuration: EmptyStateViewController.Config) {
+        removeCustomerListErrorView()
+        removeEmptyStateViewController()
         let emptyStateViewController = EmptyStateViewController(style: .list)
         displayViewController(emptyStateViewController)
         self.emptyStateViewController = emptyStateViewController
 
         emptyStateViewController.configure(configuration)
+    }
+
+    func reloadCustomers() {
+        if let customerSearchCommand {
+            customerSearchCommand.resynchronizeModels()
+        } else {
+            loadCustomersContent()
+        }
+    }
+
+    func showCustomerListErrorView(in containerView: UIView) {
+        guard customerListErrorHostingController == nil else { return }
+        let hostingController = UIHostingController(rootView: CustomerListErrorView(viewModel: customerListErrorViewModel))
+        customerListErrorHostingController = hostingController
+        addChild(hostingController)
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hostingController.view)
+        containerView.pinSubviewToAllEdges(hostingController.view)
+        hostingController.didMove(toParent: self)
+    }
+
+    func removeCustomerListErrorView() {
+        guard let hostingController = customerListErrorHostingController else { return }
+        hostingController.willMove(toParent: nil)
+        hostingController.view.removeFromSuperview()
+        hostingController.removeFromParent()
+        customerListErrorHostingController = nil
+    }
+
+    func removeEmptyStateViewController() {
+        guard let emptyStateViewController else { return }
+        emptyStateViewController.willMove(toParent: nil)
+        emptyStateViewController.view.removeFromSuperview()
+        emptyStateViewController.removeFromParent()
+        self.emptyStateViewController = nil
     }
 
     func emptyStateConfiguration() -> EmptyStateViewController.Config {
@@ -264,8 +338,17 @@ private extension CustomerSelectorViewController {
     }
 
     func errorStateConfiguration() -> EmptyStateViewController.Config {
-        EmptyStateViewController.Config.simple(message: .init(string: Localization.genericFetchCustomersError),
-                                               image: .errorImage)
+        EmptyStateViewController.Config.withButton(
+            message: .init(string: Localization.genericFetchCustomersError),
+            image: .errorImage,
+            details: "",
+            buttonTitle: Localization.retry
+        ) { [weak self] _ in
+            guard let self else { return }
+            removeEmptyStateViewController()
+            displayGhostContent()
+            loadCustomersContent()
+        }
     }
 
     func displayViewController(_ viewController: UIViewController) {
@@ -329,6 +412,10 @@ private extension CustomerSelectorViewController {
         static let genericFetchCustomersError = NSLocalizedString(
             "Failed to fetch the customers data. Please try again later.",
             comment: "Error message in the Add Customer to order screen when getting the customers information")
+        static let retry = NSLocalizedString(
+            "customerSelectorViewController.retry",
+            value: "Retry",
+            comment: "Button to load the customers again after they failed to load in the customer selector screen")
         static let guestSelectionDisallowedError = NSLocalizedString(
             "customerSelectorViewController.guestSelectionDisallowedError",
             value: "This user is a guest, and guests can’t be used for filtering orders.",

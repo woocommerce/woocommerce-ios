@@ -69,13 +69,14 @@ private extension QRLoginStore {
     func selfHostedScan(siteURL: URL,
                         token: String,
                         device: QRLoginScanDevice,
-                        completion: @escaping (Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError>) -> Void) {
+                        completion: @escaping @Sendable (Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError>) -> Void) {
+        let remote = selfHostedRemote
         Task { @MainActor in
             do {
-                let response = try await selfHostedRemote.scan(siteURL: siteURL, token: token, device: device)
+                let response = try await remote.scan(siteURL: siteURL, token: token, device: device)
                 completion(.success(response))
             } catch {
-                completion(.failure(normalize(error)))
+                completion(.failure(QRLoginStore.normalize(error)))
             }
         }
     }
@@ -83,15 +84,16 @@ private extension QRLoginStore {
     func selfHostedPoll(siteURL: URL,
                         sessionID: String,
                         tokenHash: String,
-                        completion: @escaping (Result<SelfHostedQRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
+                        completion: @escaping @Sendable (Result<SelfHostedQRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
+        let remote = selfHostedRemote
         Task { @MainActor in
             do {
-                let status = try await selfHostedRemote.pollSessionStatus(siteURL: siteURL,
-                                                                          sessionID: sessionID,
-                                                                          tokenHash: tokenHash)
+                let status = try await remote.pollSessionStatus(siteURL: siteURL,
+                                                                sessionID: sessionID,
+                                                                tokenHash: tokenHash)
                 completion(.success(status))
             } catch {
-                completion(.failure(normalize(error)))
+                completion(.failure(QRLoginStore.normalize(error)))
             }
         }
     }
@@ -99,15 +101,16 @@ private extension QRLoginStore {
     func selfHostedExchange(siteURL: URL,
                             token: String,
                             exchangeGrant: String,
-                            completion: @escaping (Result<SelfHostedQRLoginExchangeResponse, QRLoginNetworkError>) -> Void) {
+                            completion: @escaping @Sendable (Result<SelfHostedQRLoginExchangeResponse, QRLoginNetworkError>) -> Void) {
+        let remote = selfHostedRemote
         Task { @MainActor in
             do {
-                let response = try await selfHostedRemote.exchange(siteURL: siteURL,
-                                                                   token: token,
-                                                                   exchangeGrant: exchangeGrant)
+                let response = try await remote.exchange(siteURL: siteURL,
+                                                         token: token,
+                                                         exchangeGrant: exchangeGrant)
                 completion(.success(response))
             } catch {
-                completion(.failure(normalize(error)))
+                completion(.failure(QRLoginStore.normalize(error)))
             }
         }
     }
@@ -120,26 +123,28 @@ private extension QRLoginStore {
     func wpComScan(token: String,
                    encrypted: String,
                    device: QRLoginScanDevice,
-                   completion: @escaping (Result<WPComQRLoginScanResponse, QRLoginNetworkError>) -> Void) {
+                   completion: @escaping @Sendable (Result<WPComQRLoginScanResponse, QRLoginNetworkError>) -> Void) {
+        let remote = wpComRemote
         Task { @MainActor in
             do {
-                let response = try await wpComRemote.scan(token: token, encrypted: encrypted, device: device)
+                let response = try await remote.scan(token: token, encrypted: encrypted, device: device)
                 completion(.success(response))
             } catch {
-                completion(.failure(normalize(error)))
+                completion(.failure(QRLoginStore.normalize(error)))
             }
         }
     }
 
     func wpComPoll(sessionID: String,
                    tokenHash: String,
-                   completion: @escaping (Result<WPComQRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
+                   completion: @escaping @Sendable (Result<WPComQRLoginSessionStatus, QRLoginNetworkError>) -> Void) {
+        let remote = wpComRemote
         Task { @MainActor in
             do {
-                let status = try await wpComRemote.pollSessionStatus(sessionID: sessionID, tokenHash: tokenHash)
+                let status = try await remote.pollSessionStatus(sessionID: sessionID, tokenHash: tokenHash)
                 completion(.success(status))
             } catch {
-                completion(.failure(normalize(error)))
+                completion(.failure(QRLoginStore.normalize(error)))
             }
         }
     }
@@ -147,15 +152,16 @@ private extension QRLoginStore {
     func wpComExchange(token: String,
                        encrypted: String,
                        exchangeGrant: String,
-                       completion: @escaping (Result<WPComQRLoginExchangeResponse, QRLoginNetworkError>) -> Void) {
+                       completion: @escaping @Sendable (Result<WPComQRLoginExchangeResponse, QRLoginNetworkError>) -> Void) {
+        let remote = wpComRemote
         Task { @MainActor in
             do {
-                let response = try await wpComRemote.exchange(token: token,
-                                                              encrypted: encrypted,
-                                                              exchangeGrant: exchangeGrant)
+                let response = try await remote.exchange(token: token,
+                                                         encrypted: encrypted,
+                                                         exchangeGrant: exchangeGrant)
                 completion(.success(response))
             } catch {
-                completion(.failure(normalize(error)))
+                completion(.failure(QRLoginStore.normalize(error)))
             }
         }
     }
@@ -168,7 +174,7 @@ private extension QRLoginStore {
     /// Coerces any thrown error into a `QRLoginNetworkError`. The Remotes
     /// only throw `QRLoginNetworkError`, but the `throws` signature is
     /// untyped — this keeps the contract explicit.
-    func normalize(_ error: Error) -> QRLoginNetworkError {
+    static func normalize(_ error: Error) -> QRLoginNetworkError {
         (error as? QRLoginNetworkError) ?? .network
     }
 }

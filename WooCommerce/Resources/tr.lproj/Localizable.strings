@@ -9887,9 +9887,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Ödemenin başlangıcından itibaren sipariş toplamı değişti. Lütfen geri gidin ve siparişin doğru olduğunu kontrol edin, ardından ödemeyi tekrar deneyin.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Ödenmesi gereken para üstü: %1$@";
-
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Bir güvenlik eklentisi WordPress panosunu taşıyabilir. Açmak için kullandığınız adresi girin.";
 
@@ -10895,9 +10892,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Keşiften döndürülen okuyucunun IP adresi yok ve bu okuyucuya bağlanılamıyor.";
-
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "Geçmiş destek konuşmalarını yeniden ziyaret edin";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Sohbet Geçmişi";
@@ -13119,9 +13113,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "Devam etmek için Satış Noktası'nın etkinleştirilmesi gerekir. Lütfen aşağıdan veya WooCommerce ayarları > Gelişmiş > Özellikler bölümündeki WordPress yöneticinizden POS özelliğini etkinleştirin ve yeniden deneyin.";
-
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Bu sorunu çözmek için uygulamayı yeniden başlatmayı deneyin.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "Site ayarları bilgileri yüklenemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin. Sorun devam ederse yardım için destek birimine başvurun.";
@@ -15492,9 +15483,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Adsız sohbet";
-
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "Henüz destekle sohbet etmediniz.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Sohbet Geçmişi";

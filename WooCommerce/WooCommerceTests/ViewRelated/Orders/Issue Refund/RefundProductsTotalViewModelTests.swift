@@ -6,6 +6,20 @@ import WooFoundation
 /// Test cases for `RefundProductsTotalViewModel`
 ///
 final class RefundProductsTotalViewModelTests: XCTestCase {
+    func test_summary_when_explicit_lines_omit_tax_rate_ids_then_keeps_uncapped_tax_fallback() {
+        // Given
+        let item = MockOrderItem.sampleItem(itemID: 1, quantity: 1, total: "10", totalTax: "1")
+        // When
+        let sut = RefundProductsTotalViewModel(refundItems: [.init(item: item, quantity: 1)], currency: "USD",
+                                               currencySettings: CurrencySettings(),
+                                               allocatedLines: [.init(itemID: 1, quantity: 1, taxes: [], total: "10")],
+                                               includesUnallocatedTax: true)
+        // Then
+        XCTAssertEqual(sut.productsTax, "$1.00")
+        XCTAssertEqual(sut.productsSubtotal, "$10.00")
+        XCTAssertEqual(sut.productsTotal, "$11.00")
+    }
+
     func test_viewModel_is_created_with_correct_initial_values() {
         // Given
         let item1Price: Decimal = 10.50

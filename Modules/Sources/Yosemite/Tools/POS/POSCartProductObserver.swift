@@ -142,7 +142,7 @@ public final class POSCartProductObserver: POSCartProductObserving {
                         name: parentProduct.name,
                         productImageSource: parentProduct.images.first?.src,
                         productID: parentProduct.productID,
-                        allAttributes: parentProduct.attributes
+                        allAttributes: parentProduct.attributesForVariations
                     )
 
                     let mapped = itemMapper.mapVariationsToPOSItems(

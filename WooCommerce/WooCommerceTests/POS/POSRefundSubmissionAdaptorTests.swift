@@ -363,6 +363,35 @@ struct POSRefundSubmissionAdaptorTests {
         // Then
         #expect(sut.spy.classicCreateAmount == "1")
     }
+
+    @Test func test_submit_refund_when_local_fallback_caps_amount_then_line_allocations_fit_that_amount() async throws {
+        // Given a supported store whose preview route was unavailable, with $1 left on an $11 order.
+        let previousRefund = OrderRefundCondensed(refundID: 1, reason: nil, total: "-10.00")
+        let sut = makeSUT(previewResult: nil, order: order().copy(total: "11.00", refunds: [previousRefund]))
+        sut.availabilityCache.markUnavailable(siteID: siteID)
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        let review = try await sut.adaptor.prepareReviewData(for: posOrder(),
+                                                            preparation: preparation,
+                                                            selectedItems: preparation.selectableItems,
+                                                            reason: nil)
+
+        // When the reviewed local fallback is submitted.
+        try await sut.adaptor.submitRefund(for: posOrder(),
+                                           preparation: preparation,
+                                           selectedItems: preparation.selectableItems,
+                                           reason: nil)
+
+        // Then the actual classic payload must obey the same amount limit shown to the cashier.
+        #expect(review.calculationFlow == .local)
+        #expect(sut.service.createRefundLineItems == nil)
+        let amount = try #require(sut.spy.classicCreateAmount.flatMap { Decimal(string: $0) })
+        let lines = try #require(sut.spy.classicCreateItems)
+        let allocated = lines.reduce(Decimal.zero) { total, line in
+            total + (Decimal(string: line.total) ?? .zero) + line.taxes.reduce(.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
+        }
+        #expect(amount == 1)
+        #expect(allocated <= amount)
+    }
 }
 
 private extension POSRefundSubmissionAdaptorTests {
@@ -371,6 +400,7 @@ private extension POSRefundSubmissionAdaptorTests {
         var dispatchedClassicCreate = false
         var classicCreateAmount: String?
         var classicCreateAutomated: Bool?
+        var classicCreateItems: [OrderItemRefund]?
     }
 
     /// `RefundServiceProtocol` mock pinned to the main actor so the manual-resolution list and the
@@ -457,6 +487,7 @@ private extension POSRefundSubmissionAdaptorTests {
                 spy.dispatchedClassicCreate = true
                 spy.classicCreateAmount = refund.amount
                 spy.classicCreateAutomated = refund.createAutomated
+                spy.classicCreateItems = refund.items
                 onCompletion(refund, nil)
             case .retrieveRefund(_, _, _, let onCompletion):
                 onCompletion(.fake(), nil)

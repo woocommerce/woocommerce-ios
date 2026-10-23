@@ -187,8 +187,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
                             if items[index].isLoading {
                                 ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .scaleEffect(0.7)
+                                    .progressViewStyle(POSProgressViewStyle(size: 16, lineWidth: 4))
                                     .transition(.opacity.combined(with: .scale))
                             }
                         }

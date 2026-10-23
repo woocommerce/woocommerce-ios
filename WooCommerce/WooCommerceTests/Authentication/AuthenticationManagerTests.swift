@@ -224,6 +224,7 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_did_authenticate_user_applies_custom_default_and_malformed_endpoint_context_through_real_checker() throws {
         let cases: [(options: [String: Any], expectedStoredEndpoint: String?)] = [
             (
@@ -526,6 +527,7 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_shows_account_mismatch_upon_login_epilogue_if_the_site_has_active_jetpack_but_not_connected() {
         // Given
         let manager = AuthenticationManager()
@@ -550,6 +552,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(rootController is ULAccountMismatchViewController)
     }
 
+    @MainActor
     func test_it_does_not_display_jetpack_error_for_org_site_credentials_sign_in_when_using_application_password_authentication() {
         // Given
         let mockABTestVariationProvider = MockABTestVariationProvider()
@@ -571,6 +574,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(rootController is ULErrorViewController)
     }
 
+    @MainActor
     func test_errorViewController_display_account_mismatch_screen_if_no_site_matches_the_given_self_hosted_site() {
         // Given
         let manager = AuthenticationManager()
@@ -589,6 +593,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(controller is ULAccountMismatchViewController)
     }
 
+    @MainActor
     func test_errorViewController_returns_account_mismatch_if_no_site_matches_the_given_url() {
         // Given
         let manager = AuthenticationManager()
@@ -605,6 +610,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(controller is ULAccountMismatchViewController)
     }
 
+    @MainActor
     func test_errorViewController_returns_error_if_the_given_site_does_not_have_woo() {
         // Given
         let manager = AuthenticationManager()
@@ -626,6 +632,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(controller is ULErrorViewController)
     }
 
+    @MainActor
     func test_errorViewController_returns_nil_if_the_given_site_has_woo() {
         // Given
         let manager = AuthenticationManager()
@@ -646,6 +653,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertNil(controller)
     }
 
+    @MainActor
     func test_site_address_is_saved_to_local_storage_if_there_is_error_with_the_site() {
         // Given
         let navigationController = UINavigationController()
@@ -669,6 +677,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(settings.errorLoginSiteAddress, testSiteURL)
     }
 
+    @MainActor
     func test_site_address_is_cleared_if_there_is_no_error_with_the_site() {
         // Given
         let navigationController = UINavigationController()
@@ -692,6 +701,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertNil(settings.errorLoginSiteAddress)
     }
 
+    @MainActor
     func test_troubleshootSite_displays_error_screen_if_site_does_not_have_wordPress() {
         // Given
         let navigationController = UINavigationController()
@@ -710,6 +720,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULErrorViewController)
     }
 
+    @MainActor
     func test_troubleshootSite_displays_account_mismatch_error_if_site_is_wpcom() {
         // Given
         let navigationController = UINavigationController()
@@ -729,6 +740,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController)
     }
 
+    @MainActor
     func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_without_jetpack() {
         // Given
         let navigationController = UINavigationController()
@@ -747,6 +759,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULErrorViewController)
     }
 
+    @MainActor
     func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_with_jetpack_not_connected() {
         // Given
         let navigationController = UINavigationController()
@@ -765,6 +778,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController || topController is ULErrorViewController)
     }
 
+    @MainActor
     func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_with_jetpack() {
         // Given
         let navigationController = UINavigationController()
@@ -783,6 +797,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController || topController is ULErrorViewController)
     }
 
+    @MainActor
     func test_troubleshootSite_displays_account_mismatch_error_if_site_is_commerce_garden() {
         // Given
         let navigationController = UINavigationController()
@@ -802,6 +817,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController)
     }
 
+    @MainActor
     func test_troubleshootSite_tracks_site_discovery_event() throws {
         // Given
         let navigationController = UINavigationController()
@@ -846,6 +862,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["url_after_redirects"] as? String, siteInfo.url)
     }
 
+    @MainActor
     func test_it_auto_switches_store_when_there_is_only_one_valid_store() throws {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -882,6 +899,7 @@ final class AuthenticationManagerTests: XCTestCase {
         })
     }
 
+    @MainActor
     func test_it_does_not_auto_select_store_when_there_are_more_than_one_only_one_valid_stores() throws {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -1080,6 +1098,7 @@ final class AuthenticationManagerTests: XCTestCase {
     /// so plainly returning would leave the merchant on a credential form whose fields, submit button and back button
     /// are all still disabled. Login has to restart instead.
     ///
+    @MainActor
     func test_didAuthenticateUser_when_the_application_password_use_case_cannot_be_created_then_login_restarts() throws {
         // Given
         let sessionManager = SessionManager(
@@ -1446,10 +1465,11 @@ final class AuthenticationManagerTests: XCTestCase {
                                                 onFailure: { _, _, _, _ in XCTFail("Unexpected alert") })
             await fulfillment(of: [initialRecovery], timeout: 2)
             loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": recoveredNonceURL])
-            let dashboard = stage == .dashboard ? "<html>Wrong address</html>" :
+            let unexpectedPage = "<html><body>Wrong address</body></html>"
+            let dashboard = stage == .dashboard ? unexpectedPage :
                 "<body class=\"wp-admin index-php\"><div id=\"dashboard-widgets-wrap\"></div></body>"
             session.simulateResponse(for: adminURL, data: Data(dashboard.utf8))
-            session.simulateResponse(for: recoveredNonceURL, data: Data("<html>Wrong address</html>".utf8))
+            session.simulateResponse(for: recoveredNonceURL, data: Data(unexpectedPage.utf8))
             manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: loginURL, adminURL: adminURL,
                                                 endpointUnderVerification: .admin, onLoading: { loading.append($0) },
                                                 onSuccess: { _ in XCTFail("Expected recovery") },
@@ -1474,7 +1494,12 @@ final class AuthenticationManagerTests: XCTestCase {
                     XCTFail("Expected nonce failure forwarded to alert")
                     continue
                 }
-                XCTAssertEqual(failure, .init(stage: .nonce))
+                XCTAssertEqual(failure.step, .nonceRetrieval)
+                XCTAssertEqual(failure.kind, .unexpectedContent)
+                XCTAssertEqual(failure.statusCode, 200)
+                XCTAssertEqual(failure.diagnostics?.request, "GET /private-admin/admin-ajax.php")
+                XCTAssertNil(failure.diagnostics?.excerpt)
+                XCTAssertNil(failure.diagnostics?.contentType)
             }
             XCTAssertEqual(loading, [true, false, true, false])
             XCTAssertEqual(session.receivedRequests.last?.url?.absoluteString, stage == .dashboard ? adminURL : recoveredNonceURL)

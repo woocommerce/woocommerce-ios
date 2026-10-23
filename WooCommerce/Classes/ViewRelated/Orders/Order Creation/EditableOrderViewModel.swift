@@ -679,7 +679,7 @@ final class EditableOrderViewModel: ObservableObject {
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let variableProduct = allProducts.first(where: { $0.productID == item.productID })
-            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributesForVariations ?? [])
             let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
                                                            name: item.name,
                                                            quantityUpdatedCallback: { [weak self] _ in
@@ -2406,6 +2406,7 @@ extension EditableOrderViewModel {
 
     /// Attempts to add a Product to the current Order by SKU search
     ///
+    @MainActor
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
         analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderCreation))
         mapScannedBarcodetoBaseItem(barcode: barcode) { [weak self] result in
@@ -2454,6 +2455,7 @@ extension EditableOrderViewModel {
 
     /// Attempts to map SKU to Product
     ///
+    @MainActor
     private func mapScannedBarcodetoBaseItem(barcode: ScannedBarcode, onCompletion: @escaping (Result<OrderBaseItem, Error>) -> Void) {
         Task {
             do {

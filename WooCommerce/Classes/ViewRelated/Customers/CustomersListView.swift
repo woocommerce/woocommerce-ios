@@ -21,55 +21,59 @@ struct CustomersListView: View {
             }
             .renderedIf(viewModel.showSearchHeader)
 
-            switch viewModel.syncState {
-            case .results:
-                RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
-                                              loadAction: viewModel.onLoadNextPageAction,
-                                              refreshAction: { completion in
-                    viewModel.onRefreshAction(completion: completion)
-                }) {
-                    ForEach(viewModel.customers, id: \.customerID) { customer in
-                        VStack(spacing: 0) {
-                            LazyNavigationLink(destination: CustomerDetailView(viewModel: .init(customer: customer)), label: {
-                                HStack {
-                                    TitleAndSubtitleAndDetailRow(title: viewModel.displayName(for: customer),
-                                                                 detail: viewModel.displayUsername(for: customer),
-                                                                 subtitle: viewModel.displayEmail(for: customer),
-                                                                 subtitlePlaceholder: Localization.emailPlaceholder)
-                                    DisclosureIndicator()
-                                }
-                                .padding()
-                                .background(Color(.listForeground(modal: false)))
-                            })
+            if viewModel.customerListErrorViewModel.isActive {
+                CustomerListErrorView(viewModel: viewModel.customerListErrorViewModel)
+            } else {
+                switch viewModel.syncState {
+                case .results:
+                    RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
+                                                  loadAction: viewModel.onLoadNextPageAction,
+                                                  refreshAction: { completion in
+                        viewModel.onRefreshAction(completion: completion)
+                    }) {
+                        ForEach(viewModel.customers, id: \.customerID) { customer in
+                            VStack(spacing: 0) {
+                                LazyNavigationLink(destination: CustomerDetailView(viewModel: .init(customer: customer)), label: {
+                                    HStack {
+                                        TitleAndSubtitleAndDetailRow(title: viewModel.displayName(for: customer),
+                                                                     detail: viewModel.displayUsername(for: customer),
+                                                                     subtitle: viewModel.displayEmail(for: customer),
+                                                                     subtitlePlaceholder: Localization.emailPlaceholder)
+                                        DisclosureIndicator()
+                                    }
+                                    .padding()
+                                    .background(Color(.listForeground(modal: false)))
+                                })
 
-                            Divider().padding(.leading)
+                                Divider().padding(.leading)
+                            }
+                            .simultaneousGesture(TapGesture().onEnded { _ in
+                                viewModel.trackCustomerSelected(customer)
+                            })
                         }
-                        .simultaneousGesture(TapGesture().onEnded { _ in
-                            viewModel.trackCustomerSelected(customer)
-                        })
                     }
-                }
-            case .syncingFirstPage:
-                List {
-                    ForEach(CustomersListViewModel.placeholderRows, id: \.customerID) { customer in
-                        TitleAndSubtitleAndDetailRow(title: customer.name ?? "",
-                                                     detail: customer.username,
-                                                     subtitle: customer.email,
-                                                     subtitlePlaceholder: Localization.emailPlaceholder)
-                        .redacted(reason: .placeholder)
-                        .shimmering()
+                case .syncingFirstPage:
+                    List {
+                        ForEach(CustomersListViewModel.placeholderRows, id: \.customerID) { customer in
+                            TitleAndSubtitleAndDetailRow(title: customer.name ?? "",
+                                                         detail: customer.username,
+                                                         subtitle: customer.email,
+                                                         subtitlePlaceholder: Localization.emailPlaceholder)
+                            .redacted(reason: .placeholder)
+                            .shimmering()
+                        }
                     }
-                }
-            case .empty:
-                if viewModel.searchTerm.isEmpty {
-                    EmptyState(title: Localization.emptyStateTitle,
-                               description: Localization.emptyStateMessage,
-                               image: .cashRegisterImage)
-                    .frame(maxHeight: .infinity)
-                } else {
-                    EmptyState(title: Localization.emptySearchTitle,
-                               image: .magnifyingGlassNotFound)
-                    .frame(maxHeight: .infinity)
+                case .empty:
+                    if viewModel.searchTerm.isEmpty {
+                        EmptyState(title: Localization.emptyStateTitle,
+                                   description: Localization.emptyStateMessage,
+                                   image: .cashRegisterImage)
+                        .frame(maxHeight: .infinity)
+                    } else {
+                        EmptyState(title: Localization.emptySearchTitle,
+                                   image: .magnifyingGlassNotFound)
+                        .frame(maxHeight: .infinity)
+                    }
                 }
             }
         }

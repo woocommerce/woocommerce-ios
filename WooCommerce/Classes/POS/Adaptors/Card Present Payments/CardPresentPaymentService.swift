@@ -176,6 +176,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     @MainActor
     func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
         paymentTask?.cancel()
+        collectOrderPaymentAnalyticsTracker.clearPaymentConfirmation()
 
         // What happens if `start` gets called while there's a connection ongoing but not finished?
         // Ideally, we'd adopt the connection attempt.
@@ -214,6 +215,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func cancelPayment() async throws {
+        collectOrderPaymentAnalyticsTracker.clearPaymentConfirmation()
         try await withCheckedThrowingContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation
             let action = CardPresentPaymentAction.cancelPayment { result in
@@ -225,8 +227,10 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     private func cancelPaymentTask() {
-        paymentTask?.cancel()
-        paymentTask = nil
+        guard let paymentTask else { return }
+        collectOrderPaymentAnalyticsTracker.clearPaymentConfirmation()
+        paymentTask.cancel()
+        self.paymentTask = nil
     }
 
     @MainActor

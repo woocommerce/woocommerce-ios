@@ -121,8 +121,8 @@ private extension SelfHostedQRLoginStrategy {
 
     /// Bridges an `Action` whose completion delivers
     /// `Result<T, QRLoginNetworkError>` into Swift Concurrency.
-    static func dispatch<T>(stores: StoresManager,
-                             _ build: (@escaping (Result<T, QRLoginNetworkError>) -> Void) -> Action) async throws -> T {
+    static func dispatch<T: Sendable>(stores: StoresManager,
+                                       _ build: (@escaping @Sendable (Result<T, QRLoginNetworkError>) -> Void) -> Action) async throws -> T {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<T, Error>) in
             let action = build { result in
                 continuation.resume(with: result)

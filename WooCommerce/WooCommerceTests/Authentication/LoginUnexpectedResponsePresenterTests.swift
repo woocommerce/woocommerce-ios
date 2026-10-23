@@ -79,6 +79,11 @@ struct LoginUnexpectedResponsePresenterTests {
         #expect(fixture.supportPreparationCount == (action == .contactSupport ? 1 : 0))
         #expect(fixture.supportCount == (action == .contactSupport ? 1 : 0))
         #expect(fixture.retryCount == 0)
+        if action == .contactSupport {
+            #expect(fixture.supportContext?.siteURL == "https://example.com")
+            #expect(fixture.supportContext?.failure.step == .loginPage)
+            #expect(fixture.supportContext?.flow == .siteCredentials)
+        }
         #expect(fixture.provider.receivedEvents == [WooAnalyticsStat.loginUnexpectedResponseActionTapped.rawValue])
         #expect(fixture.provider.receivedProperties.last?["action"] as? String == action.rawValue)
     }
@@ -182,6 +187,7 @@ private final class Fixture {
     var dismissCount = 0
     var supportPreparationCount = 0
     var supportCount = 0
+    var supportContext: LoginSupportContext?
     lazy var presenter = LoginUnexpectedResponsePresenter(
         analytics: WooAnalytics(analyticsProvider: provider),
         presentation: { [weak self] controller, alert, completion in
@@ -194,14 +200,15 @@ private final class Fixture {
             self?.dismissedAlert = alert
             self?.alertDismissalCompletion = completion
         },
-        support: { [weak self] controller in
+        support: { [weak self] controller, context in
             self?.supportCount += 1
             self?.supportController = controller
+            self?.supportContext = context
         }
     )
 
     func show() {
-        presenter.present(failure: .init(stage: .preflight), flow: .siteCredentials, from: controller,
+        presenter.present(failure: .init(stage: .preflight), flow: .siteCredentials, from: controller, siteURL: "https://example.com",
                           onRetry: { [weak self] result in
             self?.retryCount += 1
             self?.retryCompletion = result

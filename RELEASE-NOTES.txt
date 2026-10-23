@@ -3,6 +3,7 @@
 
 26.0
 -----
+- [*] Products: The product details list now scrolls under the tab bar when there is no "Add more details" bar. [https://github.com/woocommerce/woocommerce-ios/pull/18155]
 - [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]
 - [*] In-Person Payments: Prevented a duplicate new-order notice after collecting a card payment in the app. [https://github.com/woocommerce/woocommerce-ios/pull/18130]
 - [*] In-Person Payments: After entering a missing store address in Safari, the card reader connection retries when you return to the app. [https://github.com/woocommerce/woocommerce-ios/pull/18126]

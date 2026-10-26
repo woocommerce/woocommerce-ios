@@ -128,9 +128,7 @@ private struct CartHeaderView: View {
     let backgroundColor: Color
 
     private var shouldPreventCartEditing: Bool {
-        viewHelper.shouldPreventCartEditing(
-            orderState: posModel.orderState,
-            paymentState: posModel.paymentState)
+        viewHelper.shouldPreventCartEditing(paymentState: posModel.paymentState)
     }
 
     private var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {

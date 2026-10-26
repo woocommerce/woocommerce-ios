@@ -10,6 +10,8 @@
             "data" : {
                 "user_id" : 123,
                 "two_step_supported_auth_types" : [
+                    "backup",
+                    "authenticator",
                     "webauthn"
                 ],
                 "two_step_nonce_webauthn" : "aabbccdd"

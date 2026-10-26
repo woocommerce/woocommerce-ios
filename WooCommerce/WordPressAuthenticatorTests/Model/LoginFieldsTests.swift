@@ -73,6 +73,18 @@ class LoginFieldsTests: XCTestCase {
         XCTAssertEqual(copiedFields.effectiveSiteAddress, "https://example.com")
     }
 
+    func test_copy_when_two_factor_methods_are_present_then_preserves_them() {
+        // Given
+        let loginFields = LoginFields()
+        loginFields.supportedAuthTypes = ["backup", "sms"]
+
+        // When
+        let copiedFields: LoginFields = loginFields.copy()
+
+        // Then
+        XCTAssertEqual(copiedFields.supportedAuthTypes, ["backup", "sms"])
+    }
+
     // MARK: - restoreSiteAddressAfterWPComFallback
 
     func testRestoringAfterTheFallbackPutsTheStashedAddressBackAndClearsTheStash() {

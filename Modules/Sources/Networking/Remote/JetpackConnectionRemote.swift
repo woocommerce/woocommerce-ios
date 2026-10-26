@@ -62,7 +62,8 @@ public final class JetpackConnectionRemote: Remote, @unchecked Sendable {
     /// and returns the URL in the requested redirection.
     /// To simplify redirection manipulation, we'll use a `URLSession` here instead of `Network`.
     ///
-    public func registerJetpackSiteConnection(with url: URL, completion: @escaping (Result<URL, Error>) -> Void) {
+    public func registerJetpackSiteConnection(with url: URL,
+                                              completion: @escaping @MainActor @Sendable (Result<URL, Error>) -> Void) {
 
         let configuration = URLSessionConfiguration.default
         for cookie in network.session.configuration.httpCookieStorage?.cookies ?? [] {
@@ -73,23 +74,23 @@ public final class JetpackConnectionRemote: Remote, @unchecked Sendable {
         do {
             let request = try URLRequest(url: url, method: .get)
             let task = session.dataTask(with: request) { [weak self] _, _, error in
-                if let result = self?.accountConnectionURL.withLock({ $0 }) {
-                    DispatchQueue.main.async {
-                        completion(.success(result))
-                    }
-                    return
+                let result: Result<URL, Error>
+                if let accountConnectionURL = self?.accountConnectionURL.withLock({ $0 }) {
+                    result = .success(accountConnectionURL)
+                } else {
+                    // We don't expect any response here since we'll cancel the task as soon as a redirect request is received.
+                    // So always complete with a failure here.
+                    result = .failure(error ?? JetpackConnectionError.accountConnectionURLNotFound)
                 }
-                // We don't expect any response here since we'll cancel the task as soon as a redirect request is received.
-                // So always complete with a failure here.
-                let returnedError = error ?? JetpackConnectionError.accountConnectionURLNotFound
-                DispatchQueue.main.async {
-                    completion(.failure(returnedError))
+                Task { @MainActor in
+                    completion(result)
                 }
-                return
             }
             task.resume()
         } catch {
-            completion(.failure(error))
+            Task { @MainActor in
+                completion(.failure(error))
+            }
         }
     }
 

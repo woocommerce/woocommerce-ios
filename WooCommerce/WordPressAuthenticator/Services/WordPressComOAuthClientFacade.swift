@@ -18,12 +18,14 @@ import Foundation
         password: String,
         multifactorCode: String?,
         success: @escaping (_ authToken: String?) -> Void,
-        needsMultifactor: @escaping ((_ userID: Int, _ nonceInfo: SocialLogin2FANonceInfo?) -> Void),
+        needsMultifactor: @escaping ((_ userID: Int, _ nonceInfo: SocialLogin2FANonceInfo?, _ supportedAuthTypes: [String]) -> Void),
         failure: ((_ error: Error) -> Void)?
     ) {
-        self.client.authenticate(username: username, password: password, multifactorCode: multifactorCode, needsMultifactor: needsMultifactor, success: success, failure: { error in
+        self.client.authenticate(username: username, password: password, multifactorCode: multifactorCode, needsMultifactor: { userID, nonceInfo in
+            needsMultifactor(userID, nonceInfo, nonceInfo.supportedAuthTypes)
+        }, success: success, failure: { error in
             if case let .endpointError(authenticationFailure) = error, authenticationFailure.kind == .needsMultifactorCode {
-                needsMultifactor(0, nil)
+                needsMultifactor(0, nil, authenticationFailure.supportedAuthTypes)
             } else {
                 failure?(error)
             }

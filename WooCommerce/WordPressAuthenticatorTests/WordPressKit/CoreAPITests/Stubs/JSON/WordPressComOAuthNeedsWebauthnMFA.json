@@ -3,5 +3,6 @@
     "data": {
         "user_id": 1234,
         "two_step_nonce_webauthn": "two_step_nonce_webauthn",
+        "two_step_supported_auth_types": ["backup", "sms", "webauthn"]
     }
 }

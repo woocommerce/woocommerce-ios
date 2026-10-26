@@ -3,7 +3,7 @@ import Codegen
 
 /// The supported card types for Shipping Label Payment Methods.
 ///
-public enum ShippingLabelPaymentCardType: String, Decodable, GeneratedFakeable {
+public enum ShippingLabelPaymentCardType: String, Decodable, GeneratedFakeable, Sendable {
     case amex
     case discover
     case mastercard

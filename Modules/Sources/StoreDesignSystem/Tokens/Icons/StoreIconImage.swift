@@ -25,4 +25,29 @@ public struct StoreIconImage: Sendable {
             .scaledToFit()
             .frame(width: size.value, height: size.value)
     }
+
+    /// Like ``image(size:)``, but the size follows Dynamic Type on the same curve as
+    /// ``StoreTextStyle``, for glyphs that sit inline with text (a search field's glass, a clear control).
+    @MainActor
+    public func scaledImage(size: StoreIconSize) -> some View {
+        StoreScaledIconImage(assetName: assetName, size: size)
+    }
+}
+
+private struct StoreScaledIconImage: View {
+    private let assetName: String
+    @ScaledMetric private var side: CGFloat
+
+    init(assetName: String, size: StoreIconSize) {
+        self.assetName = assetName
+        _side = ScaledMetric(wrappedValue: size.value, relativeTo: .body)
+    }
+
+    var body: some View {
+        Image(assetName, bundle: .module)
+            .renderingMode(.template)
+            .resizable()
+            .scaledToFit()
+            .frame(width: side, height: side)
+    }
 }

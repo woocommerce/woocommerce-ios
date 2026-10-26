@@ -26,6 +26,66 @@ class WordPressComOAuthClientTests: XCTestCase {
         }
     }
 
+    @MainActor
+    func test_authenticate_when_code_is_given_then_omits_wpcom_supports_2fa() throws {
+        // Given
+        let stubPath = try XCTUnwrap(OHPathForFileInBundle("WordPressComOAuthSuccess.json", Bundle.coreAPITestsBundle))
+        var requestBody: String?
+        stub(condition: isOauthTokenRequest(url: .oAuthTokenUrl)) { request in
+            requestBody = request.httpBodyText
+            return fixture(filePath: stubPath, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
+        }
+        let requestCompleted = expectation(description: "The authentication request completes")
+        let client = WordPressComOAuthClient(clientID: "Fake", secret: "Fake")
+
+        // When
+        client.authenticate(
+            username: "fakeUser",
+            password: "fakePassword",
+            multifactorCode: "123456",
+            needsMultifactor: { _, _ in requestCompleted.fulfill() },
+            success: { _ in requestCompleted.fulfill() },
+            failure: { _ in requestCompleted.fulfill() }
+        )
+        waitForExpectations(timeout: 2, handler: nil)
+
+        // Then
+        let body = try XCTUnwrap(requestBody)
+        XCTAssertTrue(body.contains("wpcom_otp=123456"))
+        XCTAssertTrue(body.contains("with_auth_types=true"))
+        XCTAssertFalse(body.contains("wpcom_supports_2fa"))
+    }
+
+    @MainActor
+    func test_authenticate_when_no_code_is_given_then_sends_wpcom_supports_2fa() throws {
+        // Given
+        let stubPath = try XCTUnwrap(OHPathForFileInBundle("WordPressComOAuthNeedsWebauthnMFA.json", Bundle.coreAPITestsBundle))
+        var requestBody: String?
+        stub(condition: isOauthTokenRequest(url: .oAuthTokenUrl)) { request in
+            requestBody = request.httpBodyText
+            return fixture(filePath: stubPath, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
+        }
+        let requestCompleted = expectation(description: "The authentication request completes")
+        let client = WordPressComOAuthClient(clientID: "Fake", secret: "Fake")
+
+        // When
+        client.authenticate(
+            username: "fakeUser",
+            password: "fakePassword",
+            multifactorCode: nil,
+            needsMultifactor: { _, _ in requestCompleted.fulfill() },
+            success: { _ in requestCompleted.fulfill() },
+            failure: { _ in requestCompleted.fulfill() }
+        )
+        waitForExpectations(timeout: 2, handler: nil)
+
+        // Then
+        let body = try XCTUnwrap(requestBody)
+        XCTAssertTrue(body.contains("wpcom_supports_2fa=true"))
+        XCTAssertTrue(body.contains("with_auth_types=true"))
+        XCTAssertFalse(body.contains("wpcom_otp"))
+    }
+
     func testAuthenticateUsernameNo2FASuccessCase() throws {
         let stubPath = try XCTUnwrap(OHPathForFileInBundle("WordPressComOAuthSuccess.json", Bundle.coreAPITestsBundle))
         stub(condition: isOauthTokenRequest(url: .oAuthTokenUrl)) { _ in
@@ -292,6 +352,7 @@ class WordPressComOAuthClientTests: XCTestCase {
                 expect.fulfill()
                 XCTAssertEqual(userID, 1234)
                 XCTAssertEqual(nonceInfo.nonceWebauthn, "two_step_nonce_webauthn")
+                XCTAssertEqual(nonceInfo.supportedAuthTypes, ["backup", "sms", "webauthn"])
             },
             success: { _ in
                 expect.fulfill()

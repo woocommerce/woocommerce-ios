@@ -7,3 +7,12 @@ public enum CardPresentPaymentReaderConnectionStatus: Equatable, Sendable {
     case disconnecting
     case reconnecting(CardPresentPaymentCardReader)
 }
+
+extension CardPresentPaymentReaderConnectionStatus {
+    var isConnected: Bool {
+        if case .connected = self {
+            return true
+        }
+        return false
+    }
+}

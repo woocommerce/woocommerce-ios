@@ -32,6 +32,7 @@ final class ProductSettingsRowsTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_virtual_product_row_changed_when_updated() throws {
         let settings = try XCTUnwrap(originalSettings)
 
@@ -48,6 +49,7 @@ final class ProductSettingsRowsTests: XCTestCase {
         XCTAssertEqual(settings.virtual, true)
     }
 
+    @MainActor
     func test_reviewsAllowed_row_changed_when_updated() throws {
         let settings = try XCTUnwrap(originalSettings)
 
@@ -64,6 +66,7 @@ final class ProductSettingsRowsTests: XCTestCase {
         XCTAssertEqual(settings.reviewsAllowed, true)
     }
 
+    @MainActor
     func test_downloadable_product_row_changed_when_enabled() throws {
         let settings = try XCTUnwrap(originalSettings)
 
@@ -80,6 +83,7 @@ final class ProductSettingsRowsTests: XCTestCase {
         XCTAssertEqual(settings.downloadable, true)
     }
 
+    @MainActor
     func test_downloadable_product_row_alert_when_disabled() throws {
         let sourceViewController = UIViewController()
         let window = UIWindow(frame: UIScreen.main.bounds)
@@ -103,6 +107,7 @@ final class ProductSettingsRowsTests: XCTestCase {
         XCTAssertEqual(alertController.actions.count, 2)
     }
 
+    @MainActor
     func test_downloadable_product_row_changed_when_alert_confirmed() throws {
         let sourceViewController = UIViewController()
         let window = UIWindow(frame: UIScreen.main.bounds)

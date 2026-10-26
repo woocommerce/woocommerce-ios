@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a predefined option in Shipping Labels.
 ///
-public struct ShippingLabelPredefinedOption: Equatable, GeneratedFakeable {
+public struct ShippingLabelPredefinedOption: Equatable, GeneratedFakeable, Sendable {
 
     /// The title of the predefined option. It works like an ID, and it is unique.
     public let title: String

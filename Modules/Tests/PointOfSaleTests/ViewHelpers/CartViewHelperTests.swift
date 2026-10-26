@@ -7,90 +7,25 @@ import struct Yosemite.POSItemIdentifier
 struct CartViewHelperTests {
     let sut = CartViewHelper()
 
-    @Test func shouldPreventCartEditing_when_card_paymentState_idle_and_order_is_syncing() async throws {
-        // Given
-
+    @Test(arguments: [PointOfSaleCardPaymentState.cardInserted, .processingPayment, .paymentError, .cardPaymentSuccessful])
+    func shouldPreventCartEditing_when_card_was_presented_or_payment_finished_then_returns_true(
+        cardState: PointOfSaleCardPaymentState
+    ) async throws {
         // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: .syncing,
-                                             paymentState: PointOfSalePaymentState(card: .idle, cash: .idle)) == true)
+        #expect(sut.shouldPreventCartEditing(paymentState: PointOfSalePaymentState(card: cardState, cash: .idle)) == true)
     }
 
-    @Test func shouldPreventCartEditing_when_card_paymentState_cardPaymentSuccessful() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
+    @Test(arguments: [PointOfSaleCardPaymentState.idle,
+                      .validatingOrder,
+                      .validatingOrderError,
+                      .preparingReader,
+                      .paymentIntentCreationError,
+                      .acceptingCard])
+    func shouldPreventCartEditing_when_no_card_was_presented_then_returns_false(
+        cardState: PointOfSaleCardPaymentState
+    ) async throws {
         // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle)) == true)
-    }
-
-    @Test func shouldPreventCartEditing_when_card_paymentState_processingPayment() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .processingPayment, cash: .idle)) == true)
-    }
-
-    @Test func shouldPreventCartEditing_false_when_card_paymentState_acceptingCard() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle)) == false)
-    }
-
-    @Test func shouldPreventCartEditing_false_when_card_paymentState_validatingOrderError() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .validatingOrderError, cash: .idle)) == false)
-    }
-
-    @Test func shouldPreventCartEditing_when_card_paymentState_cardInserted() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .cardInserted, cash: .idle)) == true)
-    }
-
-    @Test func shouldPreventCartEditing_false_when_card_paymentState_paymentIntentCreationError() async throws {
-        // When
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .paymentIntentCreationError, cash: .idle)) == false)
+        #expect(sut.shouldPreventCartEditing(paymentState: PointOfSalePaymentState(card: cardState, cash: .idle)) == false)
     }
 
     @Test(arguments: zip([0, 1, 2, 3], [nil, "1 item", "2 items", "3 items"]))

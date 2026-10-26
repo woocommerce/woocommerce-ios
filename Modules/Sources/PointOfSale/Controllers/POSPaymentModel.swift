@@ -1141,6 +1141,7 @@ private extension POSPaymentModel {
             .sink(receiveValue: { [weak self] connectionStatus in
                 guard let self else { return }
                 cardReaderConnectionStatus = connectionStatus
+                collectOrderPaymentAnalyticsTracker.trackCardReaderConnectionChanged(isConnected: connectionStatus.isConnected)
                 if connectionStatus == .disconnected {
                     // Clear the tracking flag so the next pre-connect can't
                     // mistakenly think a TTP reader is still attached and
@@ -1341,12 +1342,16 @@ private extension POSPaymentModel {
                 let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
                                                                       using: presentationStyleDeterminerDependencies)
 
-                if case .acceptingCard = newCardPaymentState {
+                switch newCardPaymentState {
+                case .validatingOrder, .preparingReader:
+                    // Re-arming at both steps keeps a failed validation from reporting the previous attempt's timing.
+                    collectOrderPaymentAnalyticsTracker.trackCardPaymentAttemptStarted()
+                case .acceptingCard:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
-                }
-
-                if case .processingPayment = newCardPaymentState {
+                case .processingPayment:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
+                default:
+                    break
                 }
 
                 return newCardPaymentState

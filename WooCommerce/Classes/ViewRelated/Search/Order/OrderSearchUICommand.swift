@@ -103,12 +103,17 @@ final class OrderSearchUICommand: SearchUICommand {
     /// Synchronizes the Orders matching a given Keyword
     ///
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        let finish: @MainActor @Sendable (Bool) -> Void = { success in
+            onCompletion?(success)
+        }
         let action = OrderAction.searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { error in
             if let error {
                 DDLogError("☠️ Order Search Failure! \(error)")
             }
 
-            onCompletion?(error == nil)
+            Task { @MainActor in
+                finish(error == nil)
+            }
         }
 
         stores.dispatch(action)

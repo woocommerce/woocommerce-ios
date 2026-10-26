@@ -250,8 +250,15 @@ private extension POSTabCoordinator {
                 isLocalCatalogEligible = false
             }
 
+            let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil
+            let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = isLocalCatalogEligible ? ServiceLocator.posCatalogSyncCoordinator : nil
+
+            let catalogSyncStrategy = POSCheckoutCatalogStrategy(isLocalCatalogEligible: isLocalCatalogEligible,
+                                                                hasDatabase: grdbManager != nil,
+                                                                hasSyncCoordinator: catalogSyncCoordinator != nil)
             let serviceAdaptor = POSServiceLocatorAdaptor()
-            let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
+            let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics,
+                                                                                      catalogSyncStrategy: catalogSyncStrategy)
 
             let cardPresentPaymentService: CardPresentPaymentFacade
             if ProcessConfiguration.shouldUseMockCardPresentPayment {
@@ -276,10 +283,6 @@ private extension POSTabCoordinator {
                                                              storage: storageManager)
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
-
-            // Only initialize local catalog infrastructure if eligible
-            let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil
-            let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = isLocalCatalogEligible ? ServiceLocator.posCatalogSyncCoordinator : nil
 
             // Create appropriate barcode scan service based on local catalog eligibility
             // Will use local GRDB-based scanning if eligible and infrastructure is available,

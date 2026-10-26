@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Order's Note Entity.
 ///
-public struct OrderNote: Decodable, Equatable, GeneratedFakeable {
+public struct OrderNote: Decodable, Equatable, Sendable, GeneratedFakeable {
     public let noteID: Int64
     public let dateCreated: Date
     public let note: String

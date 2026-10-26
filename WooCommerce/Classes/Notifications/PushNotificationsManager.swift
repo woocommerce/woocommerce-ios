@@ -16,6 +16,14 @@ import protocol Storage.StorageManagerType
 ///
 final class PushNotificationsManager: PushNotesManager {
 
+    @MainActor private lazy var paidOrderNoticeSuppressor = PaidOrderNoticeSuppressor(stores: stores,
+                                                                                   currentDate: currentDate)
+
+    @MainActor
+    func suppressNewOrderNotice(for order: Order) {
+        paidOrderNoticeSuppressor.recordPayment(for: order)
+    }
+
     private var inAppNotices: Bool = true
 
     func disableInAppNotifications() {
@@ -593,17 +601,19 @@ extension PushNotificationsManager {
                 // Ignore WPCom PNs if site is registered for Woo PNs
                 return []
             }
-            configuration.application
-                .presentInAppNotification(title: foregroundNotification.title,
-                                          subtitle: foregroundNotification.subtitle,
-                                          message: foregroundNotification.message,
-                                          actionTitle: Localization.viewInAppNotification) { [weak self] in
-                    guard let self else { return }
-                    self.presentDetails(for: foregroundNotification)
-                    self.foregroundNotificationsToViewSubject.send(foregroundNotification)
-                    self.analytics.track(.viewInAppPushNotificationPressed,
-                                                   withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
-                }
+            if !paidOrderNoticeSuppressor.shouldSuppress(foregroundNotification) {
+                configuration.application
+                    .presentInAppNotification(title: foregroundNotification.title,
+                                              subtitle: foregroundNotification.subtitle,
+                                              message: foregroundNotification.message,
+                                              actionTitle: Localization.viewInAppNotification) { [weak self] in
+                        guard let self else { return }
+                        self.presentDetails(for: foregroundNotification)
+                        self.foregroundNotificationsToViewSubject.send(foregroundNotification)
+                        self.analytics.track(.viewInAppPushNotificationPressed,
+                                                       withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
+                    }
+            }
 
             foregroundNotificationsSubject.send(foregroundNotification)
 

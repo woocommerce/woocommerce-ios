@@ -5,7 +5,8 @@ import Combine
 /// Aggregates an ordered list of viewmodels, conforming to the viewmodel provider protocol. Priority is given to
 /// the first viewmodel in the list to return true for shouldShow
 ///
-final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedViewModelsProvider {
+@MainActor
+final class SetUpTapToPayViewModelsOrderedList: @MainActor PaymentSettingsFlowPrioritizedViewModelsProvider {
 
     private var viewModelsAndViews = [PaymentSettingsFlowViewModelAndView]()
 

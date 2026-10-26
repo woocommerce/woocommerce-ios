@@ -170,7 +170,7 @@ private extension BlazeCampaignCreationCoordinator {
                                                            productID: productID,
                                                            storage: storageManager,
                                                            onCompletion: { [weak self] in
-            Task { @MainActor [weak self] in
+            Task { [weak self] in
                 await self?.restoreBlazeOnDashboardIfNeeded()
                 self?.cancelAbandonedCampaignCreationNotification()
                 self?.dismissCampaignCreation()
@@ -316,7 +316,6 @@ private extension BlazeCampaignCreationCoordinator {
         })
     }
 
-    @MainActor
     func restoreBlazeOnDashboardIfNeeded() async {
         guard var cards = await loadDashboardCards(),
               let cardIndex = cards.firstIndex(where: { $0.type == .blaze && !$0.enabled }) else {
@@ -326,7 +325,6 @@ private extension BlazeCampaignCreationCoordinator {
         stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
     }
 
-    @MainActor
     func loadDashboardCards() async -> [DashboardCard]? {
         await withCheckedContinuation { continuation in
             stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
@@ -340,14 +338,14 @@ private extension BlazeCampaignCreationCoordinator {
 //
 private extension BlazeCampaignCreationCoordinator {
     func scheduleAbandonedCampaignCreationNotification() {
-        Task { @MainActor in
+        Task {
             let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.siteID)
             await scheduler.scheduleAbandonedCreationReminder()
         }
     }
 
     func cancelAbandonedCampaignCreationNotification() {
-        Task { @MainActor in
+        Task {
             let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.siteID)
             await scheduler.cancelAbandonedCreationReminder()
         }

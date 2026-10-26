@@ -121,6 +121,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case smarterNotifications
 
+    /// Enables Store Design System implementations of migrated app screens.
+    case storeDesignSystem
+
     /// Enables Star Micronics receipt printer support in Point of Sale.
     /// Gates the feature's runtime behavior (printer setup and printing from the
     /// order-complete screen) while it lands across stacked PRs. The StarIO10 SDK is

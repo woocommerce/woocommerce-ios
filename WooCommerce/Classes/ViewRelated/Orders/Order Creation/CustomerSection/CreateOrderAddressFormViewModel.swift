@@ -82,7 +82,7 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
         stores.sessionManager.defaultStoreID ?? Int64.min
     }
 
-    func saveAddress(onFinish: @escaping (Bool) -> Void) {
+    func saveAddress(onFinish: @escaping @MainActor @Sendable (Bool) -> Void) {
         guard validateEmail() else {
             notice = AddressFormViewModel.NoticeFactory.createInvalidEmailNotice()
             return onFinish(false)

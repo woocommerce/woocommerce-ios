@@ -25,16 +25,19 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
     private var systemStatusService: MockSystemStatusService!
 
     override func setUp() {
-        analyticsProvider = MockAnalyticsProvider()
-        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        mockPayoutService = MockWooPaymentsPayoutService()
-        mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
-        mockPayInPersonToggleViewModel = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel()
-        systemStatusService = MockSystemStatusService()
-        systemStatusService.onFetchSystemPluginWithPath = { _ in
-            return .fake()
+        // XCTest runs synchronous setup on the main thread.
+        MainActor.assumeIsolated {
+            analyticsProvider = MockAnalyticsProvider()
+            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            mockPayoutService = MockWooPaymentsPayoutService()
+            mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
+            mockPayInPersonToggleViewModel = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel()
+            systemStatusService = MockSystemStatusService()
+            systemStatusService.onFetchSystemPluginWithPath = { _ in
+                return .fake()
+            }
+            sut = makeSut()
         }
-        sut = makeSut()
     }
 
     func makeSut() -> InPersonPaymentsMenuViewModel {
@@ -55,6 +58,8 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         systemStatusService.onFetchSystemPluginWithPath = { _ in
             return nil
         }
+        mockPayoutService = MockWooPaymentsPayoutService()
+        sut = makeSut()
 
         // When
         await sut.onAppear()

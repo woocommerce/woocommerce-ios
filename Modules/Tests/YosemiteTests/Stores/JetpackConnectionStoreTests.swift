@@ -156,7 +156,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_fetchJetpackConnectionURL_returns_correct_url() throws {
+    @MainActor
+    func test_fetchJetpackConnectionURL_returns_correct_url() async throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection/url"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-url")
@@ -166,10 +167,9 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<URL, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.fetchJetpackConnectionURL(authenticatedWithWPCom: true) { result in
-                promise(result)
-            }
+        let result: Result<URL, Error> = try await waitForCompletion { completion in
+            let action = JetpackConnectionAction.fetchJetpackConnectionURL(authenticatedWithWPCom: true,
+                                                                            completion: completion)
             store.onAction(action)
         }
 
@@ -180,7 +180,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         assertEqual(url.absoluteString, expectedURL)
     }
 
-    func test_fetchJetpackConnectionURL_properly_relays_errors() {
+    @MainActor
+    func test_fetchJetpackConnectionURL_properly_relays_errors() async throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection/url"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
@@ -191,10 +192,9 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<URL, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.fetchJetpackConnectionURL(authenticatedWithWPCom: false) { result in
-                promise(result)
-            }
+        let result: Result<URL, Error> = try await waitForCompletion { completion in
+            let action = JetpackConnectionAction.fetchJetpackConnectionURL(authenticatedWithWPCom: false,
+                                                                            completion: completion)
             store.onAction(action)
         }
 

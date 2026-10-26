@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents the rate for a specific shipping carrier
 ///
-public struct ShippingLabelCarrierRate: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct ShippingLabelCarrierRate: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     public let title: String
     public let insurance: String

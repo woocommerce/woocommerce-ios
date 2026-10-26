@@ -37,7 +37,9 @@ extension UINavigationController {
     private func topContentOffset(of scrollView: UIScrollView) -> CGPoint {
         // The top sits above `.zero` when bars or headers inset the content.
         let currentTop = { CGPoint(x: -scrollView.adjustedContentInset.left, y: -scrollView.adjustedContentInset.top) }
-        guard navigationBar.prefersLargeTitles else {
+        // Earlier versions drive the large title from a hidden scroll view (`configureForLargeTitleWorkaround`),
+        // so the list's inset never includes it and measuring would only add layout passes and scroll events.
+        guard #available(iOS 26.0, *), navigationBar.prefersLargeTitles else {
             return currentTop()
         }
 

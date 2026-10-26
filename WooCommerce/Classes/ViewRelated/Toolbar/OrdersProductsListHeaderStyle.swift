@@ -1,3 +1,5 @@
+import StoreDesignSystem
+import SwiftUI
 import UIKit
 
 /// Shared background and scroll behavior for list headers that extend below the navigation bar.
@@ -22,10 +24,15 @@ enum OrdersProductsListHeaderStyle {
 
     static func configureNavigationAppearance(navigationItem: UINavigationItem,
                                              scrollView: UIScrollView,
-                                             isHeaderVisible: Bool = true) {
+                                             isHeaderVisible: Bool = true,
+                                             usesStoreDesignSystem: Bool = ServiceLocator.featureFlagService.usesStoreDesignSystem) {
         // A single blur spans the navigation bar and header. Restore UIKit's background when the header is hidden.
         let appearance: UINavigationBarAppearance? = isHeaderVisible ? UINavigationBarAppearance() : nil
         appearance?.configureWithTransparentBackground()
+        if usesStoreDesignSystem {
+            appearance?.titleTextAttributes = [.foregroundColor: UIColor(Color.storeOnSurface)]
+            appearance?.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.storeOnSurface)]
+        }
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
         navigationItem.compactAppearance = appearance

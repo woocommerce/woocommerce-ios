@@ -359,6 +359,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(timesSynced, 1)
     }
 
+    @MainActor
     func test_entering_search_term_performs_remote_product_search() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -388,6 +389,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
     }
 
+    @MainActor
     func test_entering_search_term_when_search_filter_is_sku_then_requests_and_shows_right_products() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -425,6 +427,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[0].name, skuFilterProduct.name)
     }
 
+    @MainActor
     func test_entering_search_term_when_search_filter_is_sku_and_returns_variations_as_products_then_shows_the_variations() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -457,6 +460,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[0].name, skuFilterVariation.name)
     }
 
+    @MainActor
     func test_entering_search_term_when_there_are_no_filters_then_performs_local_product_search() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -486,6 +490,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
     }
 
+    @MainActor
     func test_entering_search_term_when_there_are_no_cached_items_then_it_does_not_reload_products() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -515,6 +520,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
+    @MainActor
     func test_searching_products_filters_product_list_as_expected() {
         // Given
         let hoodie = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Hoodie", purchasable: true)
@@ -1556,6 +1562,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(Set(displayingPopularIds).intersection(Set(displayingLastSoldIds)).isEmpty)
     }
 
+    @MainActor
     func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_with_a_search_term_it_ignores_them() {
         // Given
         let mostPopularProductIds: [Int64] = Array(1...6)
@@ -2363,8 +2370,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  stores: stores,
                                                  favoriteProductsUseCase: favoriteProductsUseCase)
         // Then
-        waitUntil {
-            favoriteProductsUseCase.favoriteProductIDsCalled == true
+        withExtendedLifetime(viewModel) {
+            waitUntil {
+                favoriteProductsUseCase.favoriteProductIDsCalled == true
+            }
         }
     }
 
@@ -2762,10 +2771,11 @@ private extension ProductSelectorViewModelTests {
     }
 
     func insert(_ readOnlyProductBundleItem: Yosemite.ProductBundleItem, for product: StorageProduct) {
+        let productObjectID = product.objectID
         storageManager.performAndSave({ storage in
             let bundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
             bundleItem.update(with: readOnlyProductBundleItem)
-            bundleItem.product = product
+            bundleItem.product = storage.loadObject(ofType: StorageProduct.self, with: productObjectID)
         }, completion: {}, on: .main)
     }
 

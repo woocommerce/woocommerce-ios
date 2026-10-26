@@ -1654,7 +1654,7 @@ private extension RemoteOrderSynchronizerTests {
     }
 }
 
-extension OrderSyncState: Equatable {
+extension OrderSyncState: @retroactive Equatable {
     public static func == (lhs: OrderSyncState, rhs: OrderSyncState) -> Bool {
         switch (lhs, rhs) {
         case (.syncing(let lhsBlocking), .syncing(let rhsBlocking)):

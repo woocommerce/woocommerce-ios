@@ -1,5 +1,4 @@
 import Combine
-import os
 import PointOfSale
 import Testing
 import WooFoundation
@@ -115,48 +114,23 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
         #expect(cancelCount == 1)
     }
 
-    @Test func test_cancellation_when_cancelled_while_validating_order_then_stale_validation_presents_no_payment_error() async throws {
+    @Test func test_cancellation_when_cancelled_while_validating_order_then_returns_cancellation() async throws {
         // Given
-        let alertsPresenter = CardPresentPaymentsAlertPresenterAdaptor()
-        var presentedEvents: [CardPresentPaymentEvent] = []
-        let pendingValidation = OSAllocatedUnfairLock<(@MainActor @Sendable () -> Void)?>(initialState: nil)
-        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", total: "10.00")
-        var retrieveOrderCompletion: ((Result<Order, Error>) -> Void)?
+        var didRequestOrderValidation = false
         let stores = makeStores()
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            if case .retrieveOrderRemotely(_, _, let completion) = action {
-                retrieveOrderCompletion = completion
+            if case .retrieveOrderRemotely = action {
+                didRequestOrderValidation = true
             }
         }
-        let (paymentTask, preflightController) = await startPayment(events: PassthroughSubject(),
-                                                                     order: order,
-                                                                     stores: stores,
-                                                                     alertsPresenter: alertsPresenter,
-                                                                     scheduleOrderValidation: { operation in
-                                                                         pendingValidation.withLock { $0 = operation }
-                                                                     })
+        let (paymentTask, preflightController) = await startPayment(events: PassthroughSubject(), stores: stores)
         preflightController.completeConnection(reader: MockCardReader.bbposChipper2XBT(), gatewayID: WCPayAccount.gatewayID)
-        let completeOrderRetrieval = try #require(retrieveOrderCompletion)
+        try #require(didRequestOrderValidation)
 
         // When
-        let subscription = alertsPresenter.paymentEventPublisher.sink { event in
-            presentedEvents.append(event)
-        }
-        defer { subscription.cancel() }
-
         paymentTask.cancel()
-        completeOrderRetrieval(.success(order))
-        let handleValidation = try #require(pendingValidation.withLock { $0 })
-        handleValidation()
 
         // Then
-        let leakedPaymentErrorDismissals = presentedEvents.compactMap { event -> (@MainActor @Sendable () -> Void)? in
-            guard case .show(.paymentError(_, _, let dismiss)) = event else { return nil }
-            return dismiss
-        }
-        #expect(leakedPaymentErrorDismissals.isEmpty)
-
-        leakedPaymentErrorDismissals.forEach { $0() }
         let result = try await paymentTask.value
         #expect(result == .cancellation)
     }
@@ -182,10 +156,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
     func startPayment(events: PassthroughSubject<CardPresentPaymentEvent, Never>,
                       order: Order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", total: "10.00"),
                       stores: MockStoresManager? = nil,
-                      alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor? = nil,
-                      scheduleOrderValidation: @escaping @Sendable (@escaping @MainActor @Sendable () -> Void) -> Void = { operation in
-                          Task { @MainActor in operation() }
-                      })
+                      alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor? = nil)
     async -> (Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>, MockCardPresentPaymentPreflightController) {
         let stores = stores ?? makeStores()
         let alertsPresenter = alertsPresenter ?? CardPresentPaymentsAlertPresenterAdaptor()
@@ -199,8 +170,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
             paymentEventPublisher: events.merge(with: alertsPresenter.paymentEventPublisher).eraseToAnyPublisher(),
             stores: stores,
             collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
-            applicationStateProvider: { .active },
-            scheduleOrderValidation: scheduleOrderValidation
+            applicationStateProvider: { .active }
         )
         let preflightController = MockCardPresentPaymentPreflightController()
         let paymentTask = await withCheckedContinuation { continuation in

@@ -19,19 +19,14 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let stores: StoresManager
     private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
     private let applicationStateProvider: @MainActor () -> UIApplication.State
-    private let scheduleOrderValidation: @Sendable (@escaping @MainActor @Sendable () -> Void) -> Void
 
     init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings),
          paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>,
          stores: StoresManager = ServiceLocator.stores,
          collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
-         applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState },
-         scheduleOrderValidation: @escaping @Sendable (@escaping @MainActor @Sendable () -> Void) -> Void = { operation in
-             Task { @MainActor in operation() }
-         }) {
+         applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.currencyFormatter = currencyFormatter
         self.applicationStateProvider = applicationStateProvider
-        self.scheduleOrderValidation = scheduleOrderValidation
         self.stores = stores
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         paymentEventPublisher
@@ -69,8 +64,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 preflightController: preflightController,
                 analyticsTracker: collectOrderPaymentAnalyticsTracker,
-                applicationStateProvider: applicationStateProvider,
-                scheduleOrderValidation: scheduleOrderValidation)
+                applicationStateProvider: applicationStateProvider)
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in

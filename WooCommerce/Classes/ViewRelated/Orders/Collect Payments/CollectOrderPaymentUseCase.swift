@@ -98,7 +98,6 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private let notificationCenter: NotificationCenter
     private let applicationStateProvider: @MainActor () -> UIApplication.State
-    private let scheduleOrderValidation: @Sendable (@escaping @MainActor @Sendable () -> Void) -> Void
     private var applicationInactivationCancellable: AnyCancellable?
     private var applicationReactivationCancellable: AnyCancellable?
     private var didObserveApplicationInactiveDuringCancellation = false
@@ -137,10 +136,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil,
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol? = nil,
          notificationCenter: NotificationCenter = .default,
-         applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState },
-         scheduleOrderValidation: @escaping @Sendable (@escaping @MainActor @Sendable () -> Void) -> Void = { operation in
-             Task { @MainActor in operation() }
-         }) {
+         applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
@@ -159,7 +155,6 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         self.receiptEligibilityUseCase = receiptEligibilityUseCase ?? ReceiptEligibilityUseCase()
         self.notificationCenter = notificationCenter
         self.applicationStateProvider = applicationStateProvider
-        self.scheduleOrderValidation = scheduleOrderValidation
     }
 
     /// Starts the collect payment flow.
@@ -335,8 +330,8 @@ private extension CollectOrderPaymentUseCase {
             onCheckCompletion(.success(()))
         }
 
-        let action = OrderAction.retrieveOrderRemotely(siteID: order.siteID, orderID: order.orderID) { [scheduleOrderValidation] result in
-            scheduleOrderValidation {
+        let action = OrderAction.retrieveOrderRemotely(siteID: order.siteID, orderID: order.orderID) { result in
+            Task { @MainActor in
                 handleOrder(result)
             }
         }

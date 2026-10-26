@@ -18,8 +18,10 @@ struct StoreHubMenuHeader: View {
                     content
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("switch-store-button")
             } else {
                 content
+                    .accessibilityElement(children: .combine)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -50,7 +52,6 @@ struct StoreHubMenuHeader: View {
         }
         .padding(StorePadding.p7)
         .contentShape(Rectangle())
-        .accessibilityIdentifier("switch-store-button")
     }
 
     private var storeNameAndPlan: some View {

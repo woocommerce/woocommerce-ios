@@ -35,6 +35,8 @@ final class CodeScannerViewController: UIViewController {
     // >
     // > – https://developer.apple.com/documentation/avfoundation/capture_setup/avcam_building_a_camera_app
     private let sessionQueue = DispatchQueue(label: "qrlogincamerasession.queue.serial")
+    // Keep Vision results in frame order and avoid performing the same request concurrently.
+    private let detectionQueue = DispatchQueue(label: "codescanner.detection.queue.serial")
     private let session = AVCaptureSession()
     private var requests = [VNRequest]()
     private var rotationCoordinator: AVCaptureDevice.RotationCoordinator?
@@ -117,7 +119,7 @@ extension CodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegat
                     return
                 }
 
-                DispatchQueue.global().async { [weak self] in
+                self.detectionQueue.async { [weak self] in
                     guard let self else { return }
 
                     // Configures options for `VNImageRequestHandler`.
@@ -131,6 +133,9 @@ extension CodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegat
                         try imageRequestHandler.perform(self.requests)
                     } catch {
                         DDLogError("Error performing barcode detection request: \(error)")
+                        if case let .barcode(completion) = self.format {
+                            self.deliverBarcodeDetectionResult(.failure(error), completion: completion)
+                        }
                     }
                 }
             }
@@ -234,9 +239,11 @@ private extension CodeScannerViewController {
     }
 
     func handleBarcodeDetectionResults(request: VNRequest, error: Error?, completion: @escaping (Result<[ScannedBarcode], Error>) -> Void) {
-        guard let barcodeObservations = request.results?.compactMap({ $0 as? VNBarcodeObservation }) else {
+        if let error {
+            deliverBarcodeDetectionResult(.failure(error), completion: completion)
             return
         }
+        let barcodeObservations = request.results?.compactMap { $0 as? VNBarcodeObservation } ?? []
 
         let barcodes: [ScannedBarcode] = barcodeObservations.compactMap {
             guard let payloadStringValue = $0.payloadStringValue else {
@@ -246,12 +253,15 @@ private extension CodeScannerViewController {
             return ScannedBarcode(payloadStringValue: payloadStringValue, symbology: $0.symbology)
         }.uniqued()
 
+        deliverBarcodeDetectionResult(.success(barcodes), completion: completion)
+    }
+
+    func deliverBarcodeDetectionResult(_ result: Result<[ScannedBarcode], Error>,
+                                       completion: @escaping (Result<[ScannedBarcode], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            guard self.session.isRunning, barcodes.isNotEmpty else {
-                return
-            }
-            completion(.success(barcodes))
+            guard let self, self.session.isRunning else { return }
+            // Empty frames and errors must reach consumers to interrupt consecutive detection streaks.
+            completion(result)
         }
     }
 

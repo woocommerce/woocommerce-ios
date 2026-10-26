@@ -36,7 +36,6 @@ public class ReceiptStore: Store {
     }
 }
 
-
 private final class ReceiptStoreRequestHandler: Sendable {
     let remote: ReceiptRemote
 
@@ -44,7 +43,6 @@ private final class ReceiptStoreRequestHandler: Sendable {
         self.remote = remote
     }
 }
-
 
 private extension ReceiptStore {
     func retrieveReceipt(order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void) {

@@ -30,9 +30,30 @@ extension UINavigationController {
             return
         }
 
+        scrollView.setContentOffset(topContentOffset(of: scrollView), animated: animated)
+    }
+
+    /// The offset showing the top of the content, with a large title expanded as a status bar tap shows it.
+    private func topContentOffset(of scrollView: UIScrollView) -> CGPoint {
         // The top sits above `.zero` when bars or headers inset the content.
-        let topOffset = CGPoint(x: -scrollView.adjustedContentInset.left, y: -scrollView.adjustedContentInset.top)
-        scrollView.setContentOffset(topOffset, animated: animated)
+        let currentTop = { CGPoint(x: -scrollView.adjustedContentInset.left, y: -scrollView.adjustedContentInset.top) }
+        guard navigationBar.prefersLargeTitles else {
+            return currentTop()
+        }
+
+        // A collapsed large title isn't part of the inset, and it stays collapsed when the list is scrolled to the top in code.
+        // Expand it at the top to measure the inset it adds, then restore the position before anything is drawn,
+        // so the scroll animates through rendered rows and ends with the title expanded.
+        let originalOffset = scrollView.contentOffset
+        // Stops any deceleration, which would otherwise keep the bar collapsed.
+        scrollView.setContentOffset(originalOffset, animated: false)
+        scrollView.contentOffset = currentTop()
+        navigationBar.sizeToFit()
+        view.layoutIfNeeded()
+        let expandedTop = currentTop()
+        scrollView.contentOffset = originalOffset
+        view.layoutIfNeeded()
+        return expandedTop
     }
 
     /// Two-stage tab re-selection: pop to root, or scroll to top when already at root.

@@ -24,13 +24,18 @@ protocol POSRefundControllerProtocol {
 
 @MainActor
 @Observable final class POSRefundController: POSRefundControllerProtocol {
+    private enum PreparationState {
+        case idle
+        case loading(UUID)
+        case ready(POSRefundPreparation)
+    }
+
     private(set) var selectableItems: [POSRefundSelectableItem] = []
     private(set) var hasModifiedSelection = false
     private(set) var reviewPreparationState: POSRefundReviewPreparationState = .idle
 
     private var order: POSOrder?
-    private var preparation: POSRefundPreparation?
-    private var preparationRequestID: UUID?
+    private var preparationState: PreparationState = .idle
 
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
     private var reviewPreparationTask: Task<POSRefundReviewPreparationResult, Never>?
@@ -38,6 +43,11 @@ protocol POSRefundControllerProtocol {
 
     init(refundSubmissionProcessor: POSRefundSubmissionProcessing) {
         self.refundSubmissionProcessor = refundSubmissionProcessor
+    }
+
+    private var preparation: POSRefundPreparation? {
+        guard case .ready(let preparation) = preparationState else { return nil }
+        return preparation
     }
 
     var requiresCardPresentRefund: Bool {
@@ -55,9 +65,8 @@ protocol POSRefundControllerProtocol {
 
     func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult {
         let requestID = UUID()
-        preparationRequestID = requestID
+        preparationState = .loading(requestID)
         self.order = order
-        preparation = nil
         resetReviewPreparation()
 
         let result: Result<POSRefundPreparation, Error>
@@ -69,12 +78,15 @@ protocol POSRefundControllerProtocol {
 
         // Service callbacks may still finish after the flow is dismissed or replaced.
         // Check ownership for failures as well as successes before changing shared state.
-        guard preparationRequestID == requestID, !Task.isCancelled else { return .failed }
+        guard case .loading(let activeRequestID) = preparationState,
+              activeRequestID == requestID else { return .failed }
+        preparationState = .idle
+        guard !Task.isCancelled else { return .failed }
 
         switch result {
         case .success(let preparation):
             guard preparation.orderID == order.id else { return .failed }
-            self.preparation = preparation
+            preparationState = .ready(preparation)
             selectableItems = preparation.selectableItems
             hasModifiedSelection = false
             return selectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
@@ -122,7 +134,10 @@ protocol POSRefundControllerProtocol {
     }
 
     func clearSelection() {
-        preparationRequestID = nil
+        // Completion screens still need a finished preparation; only invalidate pending work here.
+        if case .loading = preparationState {
+            preparationState = .idle
+        }
         selectableItems = []
         hasModifiedSelection = false
         resetReviewPreparation()
@@ -130,7 +145,7 @@ protocol POSRefundControllerProtocol {
 
     func reset() {
         order = nil
-        preparation = nil
+        preparationState = .idle
         clearSelection()
     }
 

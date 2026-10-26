@@ -481,12 +481,14 @@ final class POSRefundControllerTests {
 
     @Test func reset_then_clears_the_selection() async throws {
         // Given
+        refundSubmissionProcessor.requiresCardPresentRefund = true
         let order = POSOrderTestFactory.makeOrder(lineItems: [
             POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00", formattedTotal: "$10.00")
         ])
 
         _ = await sut.startRefundFlow(for: order)
         sut.toggleItemSelection(at: 0)
+        try #require(sut.requiresCardPresentRefund)
         try #require(sut.hasModifiedSelection == true)
         try #require(sut.selectableItems.isNotEmpty)
 
@@ -496,6 +498,7 @@ final class POSRefundControllerTests {
         // Then
         #expect(sut.selectableItems.isEmpty)
         #expect(sut.hasModifiedSelection == false)
+        #expect(sut.requiresCardPresentRefund == false)
 
         // The pinned order is dropped: submitting after a reset fails instead of
         // refunding the previously selected order.
@@ -973,8 +976,9 @@ final class POSRefundControllerTests {
         #expect(sut.reviewPreparationState == .idle)
     }
 
-    @Test func clearSelection_after_a_completed_preparation_returns_state_to_idle() async throws {
+    @Test func clearSelection_after_completed_preparation_then_resets_review_and_keeps_card_present_requirement() async throws {
         // Given a completed preparation
+        refundSubmissionProcessor.requiresCardPresentRefund = true
         let order = POSOrderTestFactory.makeOrder(lineItems: [
             POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
         ])
@@ -986,6 +990,7 @@ final class POSRefundControllerTests {
 
         // Then
         #expect(sut.reviewPreparationState == .idle)
+        #expect(sut.requiresCardPresentRefund)
     }
 
     // MARK: - Process Refund Tests

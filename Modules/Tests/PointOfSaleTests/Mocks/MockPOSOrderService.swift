@@ -1,61 +1,94 @@
 import Foundation
+import Synchronization
 @testable import Yosemite
 import WooFoundation
 
-class MockPOSOrderService: POSOrderServiceProtocol {
-    var simulateSyncing = false
-    var orderToReturn: Order?
-    var errorToReturn: Error?
-    // This does not replace the previous `errorToReturn`/`orderToReturn` only to keep the changes small.
-    var resultToReturn: Result<Void, Error> = .success(())
+@dynamicMemberLookup
+final class MockPOSOrderService: POSOrderServiceProtocol {
+    struct State {
+        var simulateSyncing = false
+        var orderToReturn: Order?
+        var errorToReturn: Error?
+        // This does not replace the previous `errorToReturn`/`orderToReturn` only to keep the changes small.
+        var resultToReturn: Result<Void, Error> = .success(())
 
-    var syncOrderWasCalled = false
-    var syncOrderCallCount = 0
-    var updateOrderWasCalled = false
-    var spySyncOrderCurrency: CurrencyCode?
-    var spyCashPaymentChangeDueAmount: String?
+        var syncOrderWasCalled = false
+        var syncOrderCallCount = 0
+        var updateOrderWasCalled = false
+        var spySyncOrderCurrency: CurrencyCode?
+        var spyCashPaymentChangeDueAmount: String?
 
-    var onSyncOrderCalled: (@MainActor () async -> Void)?
+        var onSyncOrderCalled: (@MainActor @Sendable () async -> Void)?
+
+        var loadOrderWasCalled = false
+
+        var markOrderAsCompletedManuallyWasCalled = false
+        var spyMarkOrderAsCompletedManuallyOrder: Order?
+
+        var promoteOrderToPendingWasCalled = false
+        var spyPromoteOrderToPendingOrder: Order?
+        var promoteOrderToPendingOverride: Order?
+
+        var addOrderNoteWasCalled = false
+        var spyAddOrderNoteOrderID: Int64?
+        var spyAddOrderNoteIsCustomerNote: Bool?
+        var spyAddOrderNoteText: String?
+        /// When non-nil, overrides `resultToReturn` for `addOrderNote` calls only.
+        var addOrderNoteResult: Result<Void, Error>?
+
+        var recordScanToPayPaymentMethodWasCalled = false
+        var spyRecordScanToPayPaymentMethodOrder: Order?
+        var recordScanToPayPaymentMethodResult: Result<Void, Error>?
+    }
+
+    private let state = Mutex(State())
+
+    subscript<T: Sendable>(dynamicMember keyPath: WritableKeyPath<State, T>) -> T {
+        get { state.withLock { $0[keyPath: keyPath] } }
+        set { state.withLock { $0[keyPath: keyPath] = newValue } }
+    }
 
     func syncOrder(cart: Yosemite.POSCart,
                    currency: CurrencyCode) async throws -> Yosemite.Order {
-        syncOrderWasCalled = true
-        syncOrderCallCount += 1
-        spySyncOrderCurrency = currency
+        let onSyncOrderCalled = state.withLock {
+            $0.syncOrderWasCalled = true
+            $0.syncOrderCallCount += 1
+            $0.spySyncOrderCurrency = currency
+            return $0.onSyncOrderCalled
+        }
 
         await onSyncOrderCalled?()
 
-        if simulateSyncing {
+        if self.simulateSyncing {
             try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
         }
 
-        if let error = errorToReturn {
+        if let error = self.errorToReturn {
             throw error
         }
 
-        guard let order = orderToReturn else {
+        guard let order = self.orderToReturn else {
             throw MockPOSOrderServiceError.noOrderToReturn
         }
         return order
     }
 
-    var loadOrderWasCalled = false
     func loadOrder(orderID: Int64) async throws -> Order {
-        loadOrderWasCalled = true
+        try state.withLock {
+            $0.loadOrderWasCalled = true
 
-        if let error = errorToReturn {
-            throw error
-        }
+            if let error = $0.errorToReturn {
+                throw error
+            }
 
-        guard let order = orderToReturn else {
-            throw MockPOSOrderServiceError.noOrderToReturn
+            guard let order = $0.orderToReturn else {
+                throw MockPOSOrderServiceError.noOrderToReturn
+            }
+            return order
         }
-        return order
     }
 
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
-        updateOrderWasCalled = true
-
         let orderWithUpdatedEmail = MockOrders().sampleOrder().copy(billingAddress: .init(firstName: "",
                                                                                  lastName: "",
                                                                                  company: nil,
@@ -67,78 +100,57 @@ class MockPOSOrderService: POSOrderServiceProtocol {
                                                                                  country: "",
                                                                                  phone: nil,
                                                                                  email: recipientEmail))
-        orderToReturn = orderWithUpdatedEmail
+        state.withLock {
+            $0.updateOrderWasCalled = true
+            $0.orderToReturn = orderWithUpdatedEmail
+        }
     }
 
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {
-        spyCashPaymentChangeDueAmount = changeDueAmount
-
-        switch resultToReturn {
-        case .success:
-            return
-        case .failure(let error):
-            throw error
+        let result = state.withLock {
+            $0.spyCashPaymentChangeDueAmount = changeDueAmount
+            return $0.resultToReturn
         }
+        try result.get()
     }
 
-    var markOrderAsCompletedManuallyWasCalled = false
-    var spyMarkOrderAsCompletedManuallyOrder: Order?
     func markOrderAsCompletedManually(order: Order) async throws {
-        markOrderAsCompletedManuallyWasCalled = true
-        spyMarkOrderAsCompletedManuallyOrder = order
-        switch resultToReturn {
-        case .success:
-            return
-        case .failure(let error):
-            throw error
+        let result = state.withLock {
+            $0.markOrderAsCompletedManuallyWasCalled = true
+            $0.spyMarkOrderAsCompletedManuallyOrder = order
+            return $0.resultToReturn
         }
+        try result.get()
     }
 
-    var promoteOrderToPendingWasCalled = false
-    var spyPromoteOrderToPendingOrder: Order?
-    var promoteOrderToPendingOverride: Order?
     func promoteOrderToPending(order: Order) async throws -> Order {
-        promoteOrderToPendingWasCalled = true
-        spyPromoteOrderToPendingOrder = order
-        switch resultToReturn {
-        case .success:
-            return promoteOrderToPendingOverride ?? order
-        case .failure(let error):
-            throw error
+        let (result, override) = state.withLock {
+            $0.promoteOrderToPendingWasCalled = true
+            $0.spyPromoteOrderToPendingOrder = order
+            return ($0.resultToReturn, $0.promoteOrderToPendingOverride)
         }
+        try result.get()
+        return override ?? order
     }
 
-    var addOrderNoteWasCalled = false
-    var spyAddOrderNoteOrderID: Int64?
-    var spyAddOrderNoteIsCustomerNote: Bool?
-    var spyAddOrderNoteText: String?
-    /// When non-nil, overrides `resultToReturn` for `addOrderNote` calls only.
-    var addOrderNoteResult: Result<Void, Error>?
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {
-        addOrderNoteWasCalled = true
-        spyAddOrderNoteOrderID = orderID
-        spyAddOrderNoteIsCustomerNote = isCustomerNote
-        spyAddOrderNoteText = note
-        switch addOrderNoteResult ?? resultToReturn {
-        case .success:
-            return
-        case .failure(let error):
-            throw error
+        let result = state.withLock {
+            $0.addOrderNoteWasCalled = true
+            $0.spyAddOrderNoteOrderID = orderID
+            $0.spyAddOrderNoteIsCustomerNote = isCustomerNote
+            $0.spyAddOrderNoteText = note
+            return $0.addOrderNoteResult ?? $0.resultToReturn
         }
+        try result.get()
     }
 
-    var recordScanToPayPaymentMethodWasCalled = false
-    var spyRecordScanToPayPaymentMethodOrder: Order?
-    var recordScanToPayPaymentMethodResult: Result<Void, Error>?
     func recordScanToPayPaymentMethod(order: Order) async throws {
-        recordScanToPayPaymentMethodWasCalled = true
-        spyRecordScanToPayPaymentMethodOrder = order
-        switch recordScanToPayPaymentMethodResult ?? resultToReturn {
-        case .success:
-            return
-        case .failure(let error):
-            throw error
+        let result = state.withLock {
+            $0.recordScanToPayPaymentMethodWasCalled = true
+            $0.spyRecordScanToPayPaymentMethodOrder = order
+            return $0.recordScanToPayPaymentMethodResult ?? $0.resultToReturn
         }
+        try result.get()
     }
 }
 

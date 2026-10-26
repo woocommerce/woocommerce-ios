@@ -27,6 +27,14 @@ public struct POSCartItem {
     }
 }
 
+extension POSCart: Equatable {}
+
+extension POSCartItem: Equatable {
+    public static func == (lhs: POSCartItem, rhs: POSCartItem) -> Bool {
+        lhs.item.isEqual(to: rhs.item) && lhs.quantity == rhs.quantity
+    }
+}
+
 public extension POSCart {
     func matches(order: Order?) -> Bool {
         return items.matches(order: order)
@@ -79,7 +87,7 @@ public struct CartOrderComparison {
     }
 
     /// Represents an item that was expected in the cart but is missing from the order
-    public struct MissingCartItem {
+    public struct MissingCartItem: Sendable {
         /// The product ID (for simple products) or parent product ID (for variations)
         public let productID: Int64
         /// The variation ID (0 for simple products)

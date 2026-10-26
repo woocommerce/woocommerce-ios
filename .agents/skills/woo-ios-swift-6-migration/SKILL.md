@@ -33,6 +33,18 @@ Scripts/StrictConcurrency/count-warnings.sh /tmp/<task>-before.json
 
 Read the script before you change its build settings. For a smaller scope, select the affected scheme and an available simulator. Use `build-for-testing` with `SWIFT_STRICT_CONCURRENCY=complete`. Use a separate DerivedData directory for each build configuration. Check disk space before large builds.
 
+For a single package target, `swift build` compiles only that target and its dependencies in seconds, including targets that import XCTest:
+
+```bash
+PLATFORM=$(xcrun --sdk iphonesimulator --show-sdk-platform-path)
+swift build --package-path Modules --target UITestsFoundation \
+  --scratch-path /tmp/<task>-spm --sdk "$(xcrun --sdk iphonesimulator --show-sdk-path)" \
+  --triple arm64-apple-ios18.0-simulator -Xswiftc -F -Xswiftc "$PLATFORM/Developer/Library/Frameworks" \
+  -Xswiftc -strict-concurrency=complete
+```
+
+Use it to iterate on a module. It does not compile the Xcode targets that consume the module, so finish with the scheme build above before you measure or report.
+
 Save the build log. Record warnings by target, file path relative to the repository, and diagnostic text. Use the same build scope and settings before and after the change. Remove repeated compiler output with the same method in both logs. Compare warnings without line and column numbers. Keep the file path and number of occurrences.
 
 Use a clean build for each measurement. If you use an incremental build, confirm that every measured file compiled. An incremental log can omit unchanged files. Use a partial build result only if every file in the measured scope compiled. Do not use a partial build to measure the workspace or update its baseline.
@@ -93,7 +105,7 @@ The target result is zero warnings in the requested scope. There must be no new 
 
 Report failed checks as failed. Report blocked checks as inconclusive. A passing test with a smaller scope does not change these results.
 
-If a baseline update is requested, use `Scripts/StrictConcurrency/update-baseline.sh` with the guard's CI artifact only. Local measurements use a different toolchain. The script treats missing files as zero warnings. Input from a smaller scope would remove unrelated baseline entries. Use `compare-baseline.sh` to check the result. Do not use partial measurements with that script to claim workspace improvements.
+When you create the PR, a local measurement is enough to update the baseline. Run `Scripts/StrictConcurrency/count-warnings.sh` on a clean build, then change only the entries for files the PR touches: lower or remove them, and raise them only with a stated reason. Do not apply the whole local result, because the local toolchain can differ from CI and would change unrelated entries. Correct the entries when the CI guard reports back, with `update-baseline.sh` and the guard's artifact. The script treats missing files as zero warnings, and input from a smaller scope would remove unrelated baseline entries. Use `compare-baseline.sh` to check the result. Do not use partial measurements with that script to claim workspace improvements.
 
 - After a rebase conflict in `baseline.json`, take one side of the file. Then run `update-baseline.sh` with a new artifact. Do not merge the counts by hand.
 - `update-baseline.sh` only lowers counts. To reset a baseline that has inherited increases from trunk, copy the trunk artifact over `baseline.json`. Then run `compare-baseline.sh` and expect equal totals. Use an artifact from trunk or from the reset PR's own run, never from another PR. See [the first reset](https://github.com/woocommerce/woocommerce-ios/pull/17902).

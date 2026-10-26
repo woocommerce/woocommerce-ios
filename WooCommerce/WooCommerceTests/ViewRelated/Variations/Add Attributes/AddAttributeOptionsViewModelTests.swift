@@ -16,13 +16,13 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(textFieldSection, [AddAttributeOptionsViewController.Row.optionTextField])
-        XCTAssertEqual(viewModel.sections.count, 1)
+        XCTAssertEqual(viewModel.sections.count, 2)
     }
 
     func test_when_adding_new_option_to_new_attribute_a_new_section_should_be_added() throws {
         // Given
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
-        XCTAssertEqual(viewModel.sections.count, 1) // Option Name Section
+        XCTAssertEqual(viewModel.sections.count, 2) // Settings and Option Name sections
 
         // When
         viewModel.addNewOption(name: sampleOptionName)
@@ -30,14 +30,14 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let offeredSection = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedOptions(name: sampleOptionName)])
-        XCTAssertEqual(viewModel.sections.count, 2)
+        XCTAssertEqual(viewModel.sections.count, 3)
     }
 
     func test_when_adding_multiple_options_one_section_with_multiple_rows_is_added() throws {
         // Given
         let newOptionName = "new-option-2"
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
-        XCTAssertEqual(viewModel.sections.count, 1) // Option Name Section
+        XCTAssertEqual(viewModel.sections.count, 2) // Settings and Option Name sections
 
         // When
         viewModel.addNewOption(name: sampleOptionName)
@@ -47,7 +47,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         let offeredSection = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedOptions(name: sampleOptionName),
                                         AddAttributeOptionsViewController.Row.selectedOptions(name: newOptionName)])
-        XCTAssertEqual(viewModel.sections.count, 2)
+        XCTAssertEqual(viewModel.sections.count, 3)
     }
 
     func test_next_button_gets_enabled_after_adding_one_option() {
@@ -101,7 +101,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(textFieldSection, [AddAttributeOptionsViewController.Row.optionTextField])
-        XCTAssertEqual(viewModel.sections.count, 1)
+        XCTAssertEqual(viewModel.sections.count, 2)
     }
 
     func test_reorder_option_reorders_the_option_within_sections() throws {
@@ -200,7 +200,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
                                                      viewStorage: storage)
 
         waitUntil {
-            return viewModel.sections.count == 2
+            return viewModel.sections.count == 3
         }
 
         // Then
@@ -281,12 +281,12 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         viewModel.selectExistingOption(atIndex: 1)
         viewModel.selectExistingOption(atIndex: 1)
         waitUntil {
-            viewModel.sections.count == 3
+            viewModel.sections.count == 4
         }
 
         // Then
-        let optionsOffered = try XCTUnwrap(viewModel.sections[1].rows)
-        let optionsAdded = try XCTUnwrap(viewModel.sections[2].rows)
+        let optionsOffered = try XCTUnwrap(viewModel.sections[2].rows)
+        let optionsAdded = try XCTUnwrap(viewModel.sections[3].rows)
 
         XCTAssertEqual(optionsOffered, [
             .selectedOptions(name: "Option 2"),
@@ -397,7 +397,141 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         // Then
         let expectedAttribute = sampleAttribute(name: "New Attribute Name", options: ["Option 1", "Option 2"])
-        XCTAssertEqual(updatedProduct.attributes, [initialNonVarAttribute, expectedAttribute])
+        XCTAssertEqual(updatedProduct.attributes, [expectedAttribute, initialNonVarAttribute])
+    }
+
+    func test_updating_existing_attribute_keeps_its_position_visible_and_variation_values() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let firstAttribute = sampleAttribute(attributeID: 1, name: "Color", options: ["Red"])
+        let initialAttribute = ProductAttribute(siteID: 123,
+                                                attributeID: 0,
+                                                name: "Material",
+                                                position: 2,
+                                                visible: false,
+                                                variation: false,
+                                                options: ["Cotton"])
+        let initialProduct = sampleProduct().copy(attributes: [firstAttribute, initialAttribute])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .existing(attribute: initialAttribute), stores: stores)
+
+        viewModel.setCurrentAttributeName("Fabric")
+        viewModel.addNewOption(name: "Wool")
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        let expectedAttribute = initialAttribute.copy(name: "Fabric", options: ["Cotton", "Wool"])
+        XCTAssertEqual(updatedProduct.attributes, [firstAttribute, expectedAttribute])
+    }
+
+    func test_adding_global_attribute_when_product_has_it_not_used_for_variations_then_it_is_used_for_variations() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let firstAttribute = sampleAttribute(attributeID: 1, name: "Color", options: ["Red"])
+        let productAttribute = ProductAttribute(siteID: 123,
+                                                attributeID: 5,
+                                                name: "Material",
+                                                position: 2,
+                                                visible: false,
+                                                variation: false,
+                                                options: ["Cotton"])
+        let siteAttribute = sampleAttribute(attributeID: 5, name: "Material")
+        let initialProduct = sampleProduct().copy(attributes: [firstAttribute, productAttribute])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct,
+                                                     attribute: .existing(attribute: siteAttribute),
+                                                     isVariationsFlow: true,
+                                                     stores: stores)
+
+        viewModel.addNewOption(name: "Wool")
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        let expectedAttribute = productAttribute.copy(variation: true, options: ["Wool"])
+        XCTAssertEqual(updatedProduct.attributes, [firstAttribute, expectedAttribute])
+    }
+
+    func test_adding_new_attribute_when_name_matches_local_attribute_not_used_for_variations_then_it_is_used_for_variations() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let firstAttribute = sampleAttribute(attributeID: 1, name: "Color", options: ["Red"])
+        let productAttribute = ProductAttribute(siteID: 123,
+                                                attributeID: 0,
+                                                name: "Material",
+                                                position: 2,
+                                                visible: false,
+                                                variation: false,
+                                                options: ["Cotton"])
+        let initialProduct = sampleProduct().copy(attributes: [firstAttribute, productAttribute])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct,
+                                                     attribute: .new(name: "Material"),
+                                                     isVariationsFlow: true,
+                                                     stores: stores)
+
+        viewModel.addNewOption(name: "Wool")
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        let expectedAttribute = productAttribute.copy(variation: true, options: ["Wool"])
+        XCTAssertEqual(updatedProduct.attributes, [firstAttribute, expectedAttribute])
     }
 
     func test_removing_current_attribute_correctly_updates_product_attributes() throws {
@@ -450,7 +584,9 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         let initialAttribute = sampleAttribute(attributeID: 0, name: "attr-1")
         let initialNonVarAttribute = sampleNonVariationAttribute()
         let initialProduct = sampleProduct().copy(attributes: [initialAttribute, initialNonVarAttribute])
-        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .new(name: "attr-2"), stores: stores)
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct,
+                                                     attribute: .new(name: "attr-2"),
+                                                     stores: stores)
 
         viewModel.addNewOption(name: "Option 1")
         viewModel.addNewOption(name: "Option 2")
@@ -468,7 +604,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedAttribute = sampleAttribute(attributeID: 0, name: "attr-2", options: ["Option 1", "Option 2"])
+        let expectedAttribute = sampleAttribute(attributeID: 0, name: "attr-2", position: 1, options: ["Option 1", "Option 2"]).copy(variation: false)
         XCTAssertEqual(updatedProduct.attributes, [initialAttribute, initialNonVarAttribute, expectedAttribute])
     }
 
@@ -610,18 +746,230 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
     }
 }
 
+// MARK: Non-variation attributes
+extension AddAttributeOptionsViewModelTests {
+    func test_new_attribute_on_simple_product_is_visible_and_not_used_for_variations() throws {
+        // Given
+        let product = sampleProduct().copy(productTypeKey: ProductType.simple.rawValue)
+
+        // When
+        let attribute = try savedNewAttribute(product: product, isVariationsFlow: false)
+
+        // Then
+        XCTAssertTrue(attribute.visible)
+        XCTAssertFalse(attribute.variation)
+    }
+
+    func test_new_attribute_on_variable_product_is_used_for_variations() throws {
+        // Given
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue)
+
+        // When
+        let attribute = try savedNewAttribute(product: product, isVariationsFlow: false)
+
+        // Then
+        XCTAssertTrue(attribute.visible)
+        XCTAssertTrue(attribute.variation)
+    }
+
+    func test_new_attribute_in_variations_flow_is_used_for_variations() throws {
+        // Given
+        let product = sampleProduct().copy(productTypeKey: ProductType.simple.rawValue)
+
+        // When
+        let attribute = try savedNewAttribute(product: product, isVariationsFlow: true)
+
+        // Then
+        XCTAssertTrue(attribute.variation)
+    }
+
+    func test_when_existing_attribute_not_used_for_variations_is_saved_in_variations_flow_then_it_is_used_for_variations() {
+        // Given
+        let material = sampleNonVariationAttribute(attributeID: 0, name: "Material", options: ["Cotton"])
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue, attributes: [material])
+        let viewModel = AddAttributeOptionsViewModel(product: product,
+                                                     attribute: .existing(attribute: material),
+                                                     isVariationsFlow: true,
+                                                     stores: storesReturningUpdatedProduct())
+        viewModel.addNewOption(name: "Wool")
+
+        // When
+        let updatedProduct = savedProduct(viewModel: viewModel)
+
+        // Then
+        XCTAssertEqual(updatedProduct.attributes, [material.copy(variation: true, options: ["Cotton", "Wool"])])
+    }
+
+    func test_simple_product_shows_only_the_visible_switch() {
+        // Given
+        let material = sampleNonVariationAttribute(attributeID: 0, name: "Material", options: ["Cotton"]).copy(visible: false)
+        let product = sampleProduct().copy(productTypeKey: ProductType.simple.rawValue, attributes: [material])
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: product,
+                                                     attribute: .existing(attribute: material))
+
+        // Then
+        XCTAssertEqual(settingsRows(viewModel), [.visibleOnProductPage(isOn: false)])
+    }
+
+    func test_variable_product_shows_both_switches() {
+        // Given
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue)
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: product,
+                                                     attribute: .new(name: "Material"))
+
+        // Then
+        XCTAssertEqual(settingsRows(viewModel), [.visibleOnProductPage(isOn: true), .usedForVariations(isOn: true)])
+    }
+
+    func test_variations_flow_shows_only_the_visible_switch() {
+        // Given
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue)
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: product,
+                                                     attribute: .new(name: "Material"),
+                                                     isVariationsFlow: true)
+
+        // Then
+        XCTAssertEqual(settingsRows(viewModel), [.visibleOnProductPage(isOn: true)])
+    }
+
+    func test_changing_a_switch_enables_next_and_changing_it_back_disables_next() {
+        // Given
+        let material = sampleNonVariationAttribute(attributeID: 0, name: "Material", options: ["Cotton"])
+        let product = sampleProduct().copy(productTypeKey: ProductType.simple.rawValue, attributes: [material])
+        let viewModel = AddAttributeOptionsViewModel(product: product,
+                                                     attribute: .existing(attribute: material))
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+
+        // When
+        viewModel.setVisible(false)
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonEnabled)
+
+        // When
+        viewModel.setVisible(true)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+    }
+
+    func test_saving_an_attribute_uses_the_switch_values() {
+        // Given
+        let color = sampleAttribute(attributeID: 0, name: "Color", options: ["Red"])
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue, attributes: [color])
+        let viewModel = AddAttributeOptionsViewModel(product: product,
+                                                     attribute: .existing(attribute: color),
+                                                     stores: storesReturningUpdatedProduct())
+
+        // When
+        viewModel.setVisible(false)
+        viewModel.setUsedForVariations(false)
+        let updatedProduct = savedProduct(viewModel: viewModel)
+
+        // Then
+        XCTAssertEqual(updatedProduct.attributes, [color.copy(visible: false, variation: false)])
+    }
+
+    func test_turning_off_used_for_variations_needs_a_confirmation_when_the_product_has_variations_that_use_the_attribute() {
+        // Given
+        let color = sampleAttribute(attributeID: 0, name: "Color", options: ["Red"])
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue, attributes: [color], variations: [1, 2])
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: product, attribute: .existing(attribute: color))
+
+        // Then
+        XCTAssertTrue(viewModel.needsConfirmation(toSetUsedForVariations: false))
+        XCTAssertFalse(viewModel.needsConfirmation(toSetUsedForVariations: true))
+    }
+
+    func test_turning_off_used_for_variations_needs_no_confirmation_when_the_product_has_no_variations() {
+        // Given
+        let color = sampleAttribute(attributeID: 0, name: "Color", options: ["Red"])
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue, attributes: [color], variations: [])
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: product, attribute: .existing(attribute: color))
+
+        // Then
+        XCTAssertFalse(viewModel.needsConfirmation(toSetUsedForVariations: false))
+    }
+
+    func test_turning_off_used_for_variations_needs_no_confirmation_when_the_attribute_is_not_saved_as_used_for_variations() {
+        // Given
+        let material = sampleNonVariationAttribute(attributeID: 0, name: "Material", options: ["Cotton"])
+        let product = sampleProduct().copy(productTypeKey: ProductType.variable.rawValue, attributes: [material], variations: [1, 2])
+
+        // When
+        let newAttributeViewModel = AddAttributeOptionsViewModel(product: product, attribute: .new(name: "Color"))
+        let nonVariationAttributeViewModel = AddAttributeOptionsViewModel(product: product, attribute: .existing(attribute: material))
+
+        // Then
+        XCTAssertFalse(newAttributeViewModel.needsConfirmation(toSetUsedForVariations: false))
+        XCTAssertFalse(nonVariationAttributeViewModel.needsConfirmation(toSetUsedForVariations: false))
+    }
+}
+
 // MARK: Helpers
 private extension AddAttributeOptionsViewModelTests {
+
+    /// Rows of the "Visible on product page" and "Used for variations" switches
+    func settingsRows(_ viewModel: AddAttributeOptionsViewModel) -> [AddAttributeOptionsViewController.Row] {
+        viewModel.sections.flatMap { $0.rows }.filter { row in
+            switch row {
+            case .visibleOnProductPage, .usedForVariations:
+                return true
+            default:
+                return false
+            }
+        }
+    }
+
+    func storesReturningUpdatedProduct() -> MockStoresManager {
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .updateProduct(product, onCompletion) = action {
+                onCompletion(.success(product))
+            }
+        }
+        return stores
+    }
+
+    func savedProduct(viewModel: AddAttributeOptionsViewModel) -> Product {
+        waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                if case .success(let product) = result {
+                    promise(product)
+                }
+            }
+        }
+    }
+
+    /// Saves a new attribute "Material: Cotton" and returns it.
+    func savedNewAttribute(product: Product, isVariationsFlow: Bool) throws -> ProductAttribute {
+        let viewModel = AddAttributeOptionsViewModel(product: product,
+                                                     attribute: .new(name: "Material"),
+                                                     isVariationsFlow: isVariationsFlow,
+                                                     stores: storesReturningUpdatedProduct())
+        viewModel.addNewOption(name: "Cotton")
+        return try XCTUnwrap(savedProduct(viewModel: viewModel).attributes.first { $0.name == "Material" })
+    }
 
     func sampleProduct() -> Product {
         Product.fake().copy(siteID: 123, productID: 12345)
     }
 
-    func sampleAttribute(attributeID: Int64 = 1234, name: String? = nil, options: [String] = []) -> ProductAttribute {
+    func sampleAttribute(attributeID: Int64 = 1234, name: String? = nil, position: Int = 0, options: [String] = []) -> ProductAttribute {
         ProductAttribute(siteID: 123,
                          attributeID: attributeID,
                          name: name ?? sampleAttributeName,
-                         position: 0,
+                         position: position,
                          visible: true,
                          variation: true,
                          options: options)

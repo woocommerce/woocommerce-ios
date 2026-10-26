@@ -1,8 +1,28 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+26.0
+-----
+- [*] POS: Merchants can go back to the cart while checkout prepares the order and the card reader. [https://github.com/woocommerce/woocommerce-ios/pull/18127]
+- [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]
+- [*] In-Person Payments: Prevented a duplicate new-order notice after collecting a card payment in the app. [https://github.com/woocommerce/woocommerce-ios/pull/18130]
+- [*] In-Person Payments: After entering a missing store address in Safari, the card reader connection retries when you return to the app. [https://github.com/woocommerce/woocommerce-ios/pull/18126]
+- [**] Products: Add and edit attributes on all product types. Each attribute has "Visible on product page" and "Used for variations" settings, so you can add attributes that only show on the product page. [https://github.com/woocommerce/woocommerce-ios/pull/18116]
+- [*] Products: Editing a variation attribute keeps its "Visible on product page" setting. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]
+- [*] Age verification: Fixed a crash after the app was launched in the background, such as by prewarming or a background refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18061]
+- [*] Orders: On iPad, opening an order from a notification or link now scrolls the order list to it. [https://github.com/woocommerce/woocommerce-ios/pull/18095]
+- [*] Login: Contact Support now starts a chat with diagnostic details from the failed login attempt. [https://github.com/woocommerce/woocommerce-ios/pull/18040]
+- [*] Customers: Customer lists now explain when WooCommerce Analytics is off and let you turn it on or retry. [https://github.com/woocommerce/woocommerce-ios/pull/18102]
+- [*] Products: Variations now load in the correct order on products with up to 100 variations. [https://github.com/woocommerce/woocommerce-ios/pull/18112]
+- [*] Orders: The "Show Orders" button in order filters no longer gets cut off after trying to filter by a guest customer. [https://github.com/woocommerce/woocommerce-ios/pull/18094]
+- [*] Shipping Labels: The origin address editor opened from the missing phone number notice is now titled "Edit Origin" instead of "Edit Destination". [https://github.com/woocommerce/woocommerce-ios/pull/18149]
+
+
 25.9
 -----
+- [*] Settings: Jetpack setup now clearly explains when the WordPress.com username or password is incorrect. [https://github.com/woocommerce/woocommerce-ios/pull/18078]
+- [*] [Woo POS] Added a Payments section to POS settings with an option to turn off the payment success sound [https://github.com/woocommerce/woocommerce-ios/pull/18079]
+- [**] Shipping Labels: For shipments into the EU, the customs form now asks for each item's SKU, manufacturer part number and GTIN/EAN when WooCommerce Shipping requires them [https://github.com/woocommerce/woocommerce-ios/pull/18101]
 - [*] In-Person Payments: Fixed inconsistent text sizes in card reader payment screens. [https://github.com/woocommerce/woocommerce-ios/pull/18085]
 - [*] Login: Fixed the Log in button becoming unresponsive after switching accounts from the account-mismatch screen's connected stores list. [https://github.com/woocommerce/woocommerce-ios/pull/18068]
 - [*] Product description editor: The formatting toolbar stays inside the editor on iPad and iPhone Duo instead of spanning the whole window, and the system's own B / I / U controls no longer show next to the keyboard or in the text selection menu. [https://github.com/woocommerce/woocommerce-ios/pull/18044]

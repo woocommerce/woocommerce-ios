@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents the complete package details that will be sent to the Woo Shipping Purchase endpoint.
 ///
-public struct WooShippingPackagePurchase: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingPackagePurchase: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     /// ID for the shipment being sent in this package, e.g. `shipment_0`
     public let shipmentID: String

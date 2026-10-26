@@ -1,37 +1,43 @@
 import Foundation
+import UIKit
 import PointOfSale
 import WooFoundation
 import Combine
+import os
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import protocol Yosemite.StoresManager
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
 
+@MainActor
 final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let currencyFormatter: CurrencyFormatter
     @Published private var latestPaymentEvent: CardPresentPaymentEvent = .idle
+    /// Set when this flow's task is cancelled, so `latestPaymentEvent` keeps the event the cancellation applies to.
+    private let isCancelled = OSAllocatedUnfairLock(initialState: false)
     private let stores: StoresManager
     private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
+    private let applicationStateProvider: @MainActor () -> UIApplication.State
 
     init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings),
          paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>,
          stores: StoresManager = ServiceLocator.stores,
-         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) {
+         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
+         applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.currencyFormatter = currencyFormatter
+        self.applicationStateProvider = applicationStateProvider
         self.stores = stores
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
-        paymentEventPublisher.assign(to: &$latestPaymentEvent)
+        paymentEventPublisher
+            .filter { [isCancelled] _ in isCancelled.withLock { $0 } == false }
+            .assign(to: &$latestPaymentEvent)
     }
 
-    @MainActor
     func collectPaymentTask(for order: Order,
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
-                            preflightController: CardPresentPaymentPreflightController<
-                            CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
-                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
-                            CardPresentPaymentsAlertPresenterAdaptor>,
+                            preflightController: CardPresentPaymentPreflightControllerProtocol,
                             configuration: CardPresentPaymentsConfiguration,
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>,
@@ -41,7 +47,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
-            let invalidatablePaymentOrchestrator = CardPresentPaymentInvalidatablePaymentOrchestrator()
+            let invalidatablePaymentOrchestrator = CardPresentPaymentInvalidatablePaymentOrchestrator(stores: stores)
 
             let orderPaymentUseCase = CollectOrderPaymentUseCase<CardPresentPaymentsTransactionAlertsProvider,
                                                                  CardPresentPaymentsTransactionAlertsProvider,
@@ -51,12 +57,14 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 formattedAmount: formattedAmount,
                 rootViewController: NullViewControllerPresenting(),
                 configuration: configuration,
+                stores: stores,
                 paymentOrchestrator: invalidatablePaymentOrchestrator,
                 alertsPresenter: alertsPresenter,
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(showsTapToPayCancellationConfirmation: true),
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 preflightController: preflightController,
-                analyticsTracker: collectOrderPaymentAnalyticsTracker)
+                analyticsTracker: collectOrderPaymentAnalyticsTracker,
+                applicationStateProvider: applicationStateProvider)
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in
@@ -99,12 +107,13 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                     )
                 }
             } onCancel: {
-                invalidatablePaymentOrchestrator.invalidatePayment()
-                switch latestPaymentEvent {
-                    case .show(let eventDetails):
-                        onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
-                    case .idle, .showOnboarding:
-                        return
+                // CardPresentPaymentService owns the task and cancels it only on the main actor.
+                // Invalidate and freeze the current event synchronously before cancelling that step,
+                // so cleanup finishes before a replacement payment starts.
+                MainActor.assumeIsolated {
+                    invalidatablePaymentOrchestrator.invalidatePayment()
+                    self.isCancelled.withLock { $0 = true }
+                    self.cancelCurrentStep(paymentOrchestrator: invalidatablePaymentOrchestrator)
                 }
             }
         }
@@ -117,6 +126,15 @@ enum CardPresentPaymentAdaptedCollectOrderPaymentResult {
 }
 
 private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
+    func cancelCurrentStep(paymentOrchestrator: PaymentCaptureOrchestrating) {
+        switch latestPaymentEvent {
+        case .show(let eventDetails):
+            onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: paymentOrchestrator)
+        case .idle, .showOnboarding:
+            return
+        }
+    }
+
     func onCancel(paymentEventDetails: CardPresentPaymentEventDetails, paymentOrchestrator: PaymentCaptureOrchestrating) {
         switch paymentEventDetails {
             /// Before reader connection
@@ -144,10 +162,11 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             // We can't cancel an in-progress connection, but we've invalidated the payment orchestrator
             return
             /// Connection already completed, before attempting payment
-        case .validatingOrder, .connectionSuccess:
+        case .connectionSuccess:
             // No need to cancel at this stage – having invalidated the payment orchestrator is enough
             return
-        case .preparingForPayment(cancelPayment: let cancelPayment),
+        case .validatingOrder(cancelPayment: let cancelPayment),
+                .preparingForPayment(cancelPayment: let cancelPayment),
                 .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment),
                 .cardInserted(cancelPayment: let cancelPayment),
                 .paymentError(_, _, cancelPayment: let cancelPayment),

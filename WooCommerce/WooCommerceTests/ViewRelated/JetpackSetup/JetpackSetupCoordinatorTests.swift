@@ -3,7 +3,7 @@ import XCTest
 @testable import Yosemite
 import protocol Networking.ApplicationPasswordUseCase
 import enum Networking.NetworkError
-import WordPressAuthenticator
+@testable import WordPressAuthenticator
 
 final class JetpackSetupCoordinatorTests: XCTestCase {
 
@@ -18,7 +18,10 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         window.makeKeyAndVisible()
         window.rootViewController = navigationController
 
-        AuthenticationManager().initialize()
+        // This UIKit-based test suite is set up on the main thread.
+        MainActor.assumeIsolated {
+            AuthenticationManager().initialize()
+        }
 
         super.setUp()
     }
@@ -345,6 +348,40 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
 
         let loginViewController = navigationController.topmostPresentedViewController as! LoginNavigationController
         XCTAssertTrue(loginViewController.topViewController is WPComPasswordLoginHostingController)
+    }
+
+    @MainActor
+    func test_password_login_failure_when_credentials_are_incorrect_then_shows_the_server_error_message() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let mockAccountService = MockWordPressComAccountService()
+        mockAccountService.shouldReturnPasswordlessAccount = false
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  accountService: mockAccountService,
+                                                  stores: stores)
+        let expectedMessage = "Incorrect username or password."
+        let error = WordPressComOAuthError.endpointError(AuthenticationFailure(apiJSONResponse: [
+            "error": "invalid_request" as AnyObject,
+            "error_description": expectedMessage as AnyObject
+        ]))
+        coordinator.startAuthentication(with: "email@test.com")
+        waitUntil {
+            self.navigationController.topmostPresentedViewController is LoginNavigationController
+        }
+        let loginNavigationController = try XCTUnwrap(navigationController.topmostPresentedViewController as? LoginNavigationController)
+        let passwordController = try XCTUnwrap(loginNavigationController.topViewController as? WPComPasswordLoginHostingController)
+
+        // When
+        passwordController.viewModel.displayRemoteError(error)
+
+        // Then
+        waitUntil {
+            self.navigationController.topmostPresentedViewController is UIAlertController
+        }
+        let alert = try XCTUnwrap(navigationController.topmostPresentedViewController as? UIAlertController)
+        XCTAssertEqual(alert.title, expectedMessage)
     }
 
     func test_startAuthentication_proceeds_to_display_magic_link_screen_when_email_is_passwordless() {

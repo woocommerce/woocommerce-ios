@@ -60,7 +60,7 @@ final class StorePickerCoordinator: Coordinator {
 
 // MARK: - StorePickerViewControllerDelegate Conformance
 //
-extension StorePickerCoordinator: StorePickerViewControllerDelegate {
+extension StorePickerCoordinator: @MainActor StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         switchStore(with: storeID, onCompletion: onCompletion)
@@ -123,6 +123,22 @@ private extension StorePickerCoordinator {
     /// Switches the current user's default store to the one having the provided `storeID`.
     /// After successfully switching, the store picker screen should be dismissed.
     func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
+        // The switch store use case is main actor, but this coordinator is also driven from the
+        // authenticator's nonisolated callbacks, which run on the main thread.
+        // TODO: WOOMOB-4327 - call switchStoreOnMainActor directly once its callers are main actor.
+        if Thread.isMainThread {
+            MainActor.assumeIsolated {
+                switchStoreOnMainActor(with: storeID, onCompletion: onCompletion)
+            }
+        } else {
+            Task { @MainActor in
+                self.switchStoreOnMainActor(with: storeID, onCompletion: onCompletion)
+            }
+        }
+    }
+
+    @MainActor
+    func switchStoreOnMainActor(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
             guard let self else { return }
             if self.isFromLogin {

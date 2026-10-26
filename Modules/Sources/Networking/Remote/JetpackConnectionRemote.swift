@@ -1,12 +1,14 @@
 import Foundation
+import os
 import struct NetworkingCore.JetpackConnectionProvisionMapper
 
 /// Handle API requests to the Jetpack REST API.
 ///
-public final class JetpackConnectionRemote: Remote {
+public final class JetpackConnectionRemote: Remote, @unchecked Sendable {
     private let siteURL: String
     private let network: Network
-    private var accountConnectionURL: URL?
+    /// Written by the redirect delegate and read by the data task completion, on the session's delegate queue.
+    private let accountConnectionURL = OSAllocatedUnfairLock<URL?>(initialState: nil)
 
     public init(siteURL: String, network: Network) {
         self.siteURL = siteURL
@@ -60,7 +62,8 @@ public final class JetpackConnectionRemote: Remote {
     /// and returns the URL in the requested redirection.
     /// To simplify redirection manipulation, we'll use a `URLSession` here instead of `Network`.
     ///
-    public func registerJetpackSiteConnection(with url: URL, completion: @escaping (Result<URL, Error>) -> Void) {
+    public func registerJetpackSiteConnection(with url: URL,
+                                              completion: @escaping @MainActor @Sendable (Result<URL, Error>) -> Void) {
 
         let configuration = URLSessionConfiguration.default
         for cookie in network.session.configuration.httpCookieStorage?.cookies ?? [] {
@@ -71,23 +74,23 @@ public final class JetpackConnectionRemote: Remote {
         do {
             let request = try URLRequest(url: url, method: .get)
             let task = session.dataTask(with: request) { [weak self] _, _, error in
-                if let result = self?.accountConnectionURL {
-                    DispatchQueue.main.async {
-                        completion(.success(result))
-                    }
-                    return
+                let result: Result<URL, Error>
+                if let accountConnectionURL = self?.accountConnectionURL.withLock({ $0 }) {
+                    result = .success(accountConnectionURL)
+                } else {
+                    // We don't expect any response here since we'll cancel the task as soon as a redirect request is received.
+                    // So always complete with a failure here.
+                    result = .failure(error ?? JetpackConnectionError.accountConnectionURLNotFound)
                 }
-                // We don't expect any response here since we'll cancel the task as soon as a redirect request is received.
-                // So always complete with a failure here.
-                let returnedError = error ?? JetpackConnectionError.accountConnectionURLNotFound
-                DispatchQueue.main.async {
-                    completion(.failure(returnedError))
+                Task { @MainActor in
+                    completion(result)
                 }
-                return
             }
             task.resume()
         } catch {
-            completion(.failure(error))
+            Task { @MainActor in
+                completion(.failure(error))
+            }
         }
     }
 
@@ -146,7 +149,7 @@ extension JetpackConnectionRemote: URLSessionDataDelegate {
         // Disables redirection if the request is to load the Jetpack account connection URL
         if let url = request.url,
             url.absoluteString.hasPrefix(Constants.jetpackAccountConnectionURL) {
-            accountConnectionURL = url
+            accountConnectionURL.withLock { $0 = url }
             task.cancel()
             return nil
         }

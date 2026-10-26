@@ -9,7 +9,7 @@ import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
-final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
+final class WrongAccountErrorViewModel: @MainActor ULAccountMismatchViewModel {
 
     private let siteURL: String
     private let rawSiteURL: String?
@@ -148,6 +148,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         }
     }
 
+    @MainActor
     func didTapPrimaryButton(in viewController: UIViewController?) {
         analytics.track(.loginJetpackConnectButtonTapped)
         guard let viewController else {
@@ -176,6 +177,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         return presentConnectToWPComSiteAlert(from: viewController)
     }
 
+    @MainActor
     func didTapSecondaryButton(in viewController: UIViewController?) {
         guard let navigationController = viewController?.navigationController else {
             return
@@ -185,6 +187,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         storePickerCoordinator?.start()
     }
 
+    @MainActor
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController(screen: .wrongAccountError)
         fancyAlert.modalPresentationStyle = .custom
@@ -192,6 +195,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         viewController?.present(fancyAlert, animated: true)
     }
 
+    @MainActor
     func didTapLogOutButton(in viewController: UIViewController?) {
         // Log out and pop
         storesManager.deauthenticate()
@@ -256,6 +260,7 @@ private extension WrongAccountErrorViewModel {
         }
     }
 
+    @MainActor
     func showSiteCredentialLoginAndJetpackConnection(from viewController: UIViewController) {
         guard let navigationController = viewController.navigationController else {
             return

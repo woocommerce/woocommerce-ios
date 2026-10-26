@@ -42,6 +42,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         viewModel.itemsViewModels.first?.valuePerUnit = "10"
         viewModel.itemsViewModels.first?.weightPerUnit = "5"
         viewModel.itemsViewModels.first?.hsTariffNumber = "123456"
+        markItemsAsComplete()
 
         // When
         viewModel.onDismiss()
@@ -73,6 +74,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         })
 
         viewModel.itemsViewModels.first?.hsTariffNumber = "12"
+        markItemsAsComplete()
 
         // When
         viewModel.onDismiss()
@@ -95,6 +97,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         viewModel.restrictionType = .quarantine
         viewModel.restrictionDetails = "restriction details"
+        markItemsAsComplete()
 
         // When
         viewModel.onDismiss()
@@ -116,6 +119,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         })
 
         viewModel.internationalTransactionNumber = "1234"
+        markItemsAsComplete()
 
         // When
         viewModel.onDismiss()
@@ -267,13 +271,12 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
                                                     onFormReady: { _ in })
 
         // When
-        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
-        viewModel.itemsViewModels[1].requiredInformationIsEntered = true
         viewModel.restrictionType = .other
         viewModel.restrictionDetails = "test"
         viewModel.contentType = .other
         viewModel.contentExplanation = "test"
         viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
+        viewModel.itemsViewModels.forEach { $0.requiredInformationIsEntered = true }
 
         // Then
         XCTAssertTrue(viewModel.requiredInformationIsEntered)
@@ -294,6 +297,126 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         XCTAssertEqual(firstItemViewModel?.description, firstItem?.name)
         XCTAssertEqual(firstItemViewModel?.valuePerUnit, String(firstItem?.value ?? 0))
         XCTAssertEqual(firstItemViewModel?.weightPerUnit, String(firstItem?.weight ?? 0))
+    }
+
+    func test_onDismiss_when_required_information_is_incomplete_then_does_not_emit_form() {
+        // Given
+        var didEmitForm = false
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
+                                                    shipment: sampleShipment,
+                                                    onFormReady: { _ in didEmitForm = true })
+
+        // When
+        viewModel.onDismiss()
+
+        // Then
+        XCTAssertFalse(didEmitForm)
+    }
+
+    func test_updateEUProductIdentifiersRequirement_when_prefills_complete_form_then_emits_trimmed_identifiers() {
+        // Given
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "US", name: "United States", states: [])])
+        var passedForm: ShippingLabelCustomsForm?
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(currency: "USD"),
+                                                    shipment: sampleShipment,
+                                                    originCountryCode: Just<String?>("US").eraseToAnyPublisher(),
+                                                    storageManager: storageManager,
+                                                    onFormReady: { form in passedForm = form })
+        let prefills: [Int64: WooShippingEUProductIdentifiers] = [
+            1: WooShippingEUProductIdentifiers(productID: 1,
+                                               sku: " sku-one ",
+                                               manufacturerProductID: " part-one ",
+                                               standardizedProductID: " gtin-one "),
+            2: WooShippingEUProductIdentifiers(productID: 2,
+                                               sku: " sku-two ",
+                                               manufacturerProductID: " part-two ",
+                                               standardizedProductID: " gtin-two ")
+        ]
+
+        // When
+        viewModel.updateEUProductIdentifiersRequirement(.required(prefills: prefills))
+
+        // Then
+        XCTAssertTrue(viewModel.asksForEUProductIdentifiers)
+        XCTAssertTrue(viewModel.requiredInformationIsEntered)
+        XCTAssertEqual(passedForm?.items[0].code, "sku-one")
+        XCTAssertEqual(passedForm?.items[0].manufacturerProductID, "part-one")
+        XCTAssertEqual(passedForm?.items[0].standardizedProductID, "gtin-one")
+        XCTAssertEqual(passedForm?.items[1].code, "sku-two")
+    }
+
+    func test_emitForm_when_no_barcode_is_selected_then_sends_Y081() {
+        // Given
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "US", name: "United States", states: [])])
+        var passedForm: ShippingLabelCustomsForm?
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(currency: "USD"),
+                                                    shipment: sampleShipment,
+                                                    originCountryCode: Just<String?>("US").eraseToAnyPublisher(),
+                                                    storageManager: storageManager,
+                                                    onFormReady: { form in passedForm = form })
+
+        // When
+        viewModel.updateEUProductIdentifiersRequirement(.required(prefills: [:]))
+        viewModel.itemsViewModels[0].sku = "shirt-sku"
+        viewModel.itemsViewModels[0].manufacturerPartNumber = "shirt-part"
+        viewModel.itemsViewModels[0].hasNoBarcode = true
+        viewModel.itemsViewModels[1].sku = "pants-sku"
+        viewModel.itemsViewModels[1].manufacturerPartNumber = "pants-part"
+        viewModel.itemsViewModels[1].gtin = "1234567890123"
+        viewModel.onDismiss()
+
+        // Then
+        XCTAssertEqual(passedForm?.items[0].standardizedProductID, "Y081")
+    }
+
+    func test_emitForm_when_content_is_documents_then_sends_nil_identifiers() {
+        // Given
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "US", name: "United States", states: [])])
+        var passedForm: ShippingLabelCustomsForm?
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(currency: "USD"),
+                                                    shipment: sampleShipment,
+                                                    originCountryCode: Just<String?>("US").eraseToAnyPublisher(),
+                                                    storageManager: storageManager,
+                                                    onFormReady: { form in passedForm = form })
+        viewModel.contentType = .documents
+        viewModel.itemsViewModels.forEach {
+            $0.sku = "item-sku"
+            $0.manufacturerPartNumber = "item-part"
+            $0.gtin = "1234567890123"
+        }
+
+        // When
+        viewModel.updateEUProductIdentifiersRequirement(.required(prefills: [:]))
+        viewModel.onDismiss()
+
+        // Then
+        XCTAssertTrue(viewModel.requiredInformationIsEntered)
+        XCTAssertEqual(passedForm?.items.count, 2)
+        passedForm?.items.forEach { item in
+            XCTAssertNil(item.code)
+            XCTAssertNil(item.manufacturerProductID)
+            XCTAssertNil(item.standardizedProductID)
+        }
+    }
+
+    func test_showsPluginUpdateNotice_when_plugin_is_outdated_and_content_is_not_documents() {
+        // Given
+        let requirement: WooShippingEUProductIdentifiersRequirement = .pluginOutdated
+
+        // When
+        viewModel.updateEUProductIdentifiersRequirement(requirement)
+
+        // Then
+        XCTAssertTrue(viewModel.showsPluginUpdateNotice)
+
+        // When
+        viewModel.contentType = .documents
+
+        // Then
+        XCTAssertFalse(viewModel.showsPluginUpdateNotice)
     }
 
     func test_requiredInformationIsEntered_when_weight_is_zero_then_returns_false() {
@@ -438,6 +561,10 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Then
         // The shipment total value is 2600, which is > $2500, so an ITN should be required.
         XCTAssertEqual(viewModel.itnValidationError, .missingForTotalShipmentValue)
+    }
+
+    private func markItemsAsComplete() {
+        viewModel.itemsViewModels.forEach { $0.requiredInformationIsEntered = true }
     }
 }
 

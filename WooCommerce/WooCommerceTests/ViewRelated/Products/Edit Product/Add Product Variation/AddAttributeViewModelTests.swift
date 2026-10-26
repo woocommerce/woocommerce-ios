@@ -98,6 +98,39 @@ final class AddAttributeViewModelTests: XCTestCase {
     }
 }
 
+extension AddAttributeViewModelTests {
+    func test_when_outside_variations_flow_then_product_attributes_not_used_for_variations_are_listed() {
+        // Given
+        let material = ProductAttribute.fake().copy(attributeID: 0, name: "Material", variation: false, options: ["Cotton"])
+        let viewModel = AddAttributeViewModel(storesManager: storesManager,
+                                              product: Product.fake().copy(attributes: [material]))
+        storesManager.productAttributeResponse = .success([])
+
+        // When
+        viewModel.performFetch()
+
+        // Then
+        XCTAssertEqual(viewModel.localAndGlobalAttributes, [material])
+        XCTAssertNil(viewModel.sections.first?.footer)
+    }
+
+    func test_when_in_variations_flow_then_product_attributes_not_used_for_variations_are_not_listed() {
+        // Given
+        let material = ProductAttribute.fake().copy(attributeID: 0, name: "Material", variation: false, options: ["Cotton"])
+        let viewModel = AddAttributeViewModel(storesManager: storesManager,
+                                              product: Product.fake().copy(attributes: [material]),
+                                              isVariationsFlow: true)
+        storesManager.productAttributeResponse = .success([])
+
+        // When
+        viewModel.performFetch()
+
+        // Then
+        XCTAssertEqual(viewModel.localAndGlobalAttributes, [])
+        XCTAssertNotNil(viewModel.sections.first?.footer)
+    }
+}
+
 /// Mock Product Attribute Store Manager
 ///
 private final class MockProductAttributeStoresManager: DefaultStoresManager {

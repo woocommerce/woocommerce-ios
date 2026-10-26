@@ -32,6 +32,7 @@ final class CardPresentPaymentsOnboardingViewController: UIHostingController<Car
 
 struct CardPresentPaymentsOnboardingView: View {
     @StateObject var viewModel: CardPresentPaymentsOnboardingViewModel
+    @State private var presentedAdminURL: URL?
 
     var body: some View {
         Group {
@@ -45,31 +46,43 @@ struct CardPresentPaymentsOnboardingView: View {
                     ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
                 }
             case .countryNotSupported(let countryCode):
-                InPersonPaymentsCountryNotSupported(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
+                InPersonPaymentsCountryNotSupported(countryCode: countryCode,
+                                                     analyticReason: viewModel.state.reasonForAnalytics,
+                                                     onRefresh: viewModel.refresh)
             case .countryNotSupportedStripe(_, let countryCode):
-                InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
+                InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode,
+                                                           analyticReason: viewModel.state.reasonForAnalytics,
+                                                           onRefresh: viewModel.refresh)
             case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics,
                                                    userIsAdministrator: viewModel.userIsAdministrator,
-                                                   onInstall: viewModel.installPlugin)
+                                                   onInstall: viewModel.installPlugin,
+                                                   onRefresh: viewModel.refresh)
             case .pluginUnsupportedVersion(let plugin):
-                InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
+                InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics,
+                                                         onRefresh: viewModel.refresh,
+                                                         adminButtonViewModel: adminButton(text: Localization.updatePlugin,
+                                                                                          url: viewModel.pluginManagementURL, plugin: plugin))
             case .pluginNotActivated(let plugin):
                 switch plugin {
                 case .wcPay:
                     InPersonPaymentsPluginNotActivated(plugin: plugin,
                                                        analyticReason: viewModel.state.reasonForAnalytics,
                                                        userIsAdministrator: viewModel.userIsAdministrator,
-                                                       onActivate: viewModel.activatePlugin)
+                                                       onActivate: viewModel.activatePlugin,
+                                                       onRefresh: viewModel.refresh)
                 case .stripe:
                     // Show WCPay install flow when only Stripe is installed, but not active
                     InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics,
                                                        userIsAdministrator: viewModel.userIsAdministrator,
-                                                       onInstall: viewModel.installPlugin)
+                                                       onInstall: viewModel.installPlugin,
+                                                       onRefresh: viewModel.refresh)
                 }
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
-                InPersonPaymentsLiveSiteInTestMode(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh:
-                    viewModel.refresh)
+                InPersonPaymentsLiveSiteInTestMode(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics,
+                                                  onRefresh: viewModel.refresh,
+                                                  adminButtonViewModel: adminButton(text: Localization.paymentSettings,
+                                                                                   url: viewModel.paymentSettingsURL(for: plugin), plugin: plugin))
             case .pluginSetupNotCompleted(let plugin):
                 InPersonPaymentsPluginNotSetup(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             case .stripeAccountOverdueRequirement(let plugin):
@@ -83,10 +96,10 @@ struct CardPresentPaymentsOnboardingView: View {
                     analyticReason: viewModel.state.reasonForAnalytics,
                     plugin: plugin,
                     onSkip: viewModel.skipPendingRequirements)
-            case .stripeAccountUnderReview:
-                InPersonPaymentsStripeAccountReview(analyticReason: viewModel.state.reasonForAnalytics)
-            case .stripeAccountRejected:
-                InPersonPaymentsStripeRejected(analyticReason: viewModel.state.reasonForAnalytics)
+            case .stripeAccountUnderReview(let plugin):
+                InPersonPaymentsStripeAccountReview(analyticReason: viewModel.state.reasonForAnalytics, plugin: plugin, onRefresh: viewModel.refresh)
+            case .stripeAccountRejected(let plugin):
+                InPersonPaymentsStripeRejected(analyticReason: viewModel.state.reasonForAnalytics, plugin: plugin, onRefresh: viewModel.refresh)
             case .codPaymentGatewayNotSetUp(let plugin):
                 InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(
                     viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
@@ -97,8 +110,8 @@ struct CardPresentPaymentsOnboardingView: View {
                 InPersonPaymentsCompleted()
             case .noConnectionError:
                 InPersonPaymentsNoConnection(analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
-            default:
-                InPersonPaymentsUnavailable(analyticReason: viewModel.state.reasonForAnalytics)
+            case .genericError:
+                InPersonPaymentsUnavailable(analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             }
         }
         .customOpenURL(action: { url in
@@ -109,10 +122,35 @@ struct CardPresentPaymentsOnboardingView: View {
                 viewModel.showURL?(url)
             }
         })
+        .sheet(item: $presentedAdminURL, onDismiss: viewModel.refresh) { url in
+            AuthenticatableWebView(url: url, title: Localization.storeAdmin)
+        }
         .navigationTitle(Localization.title)
     }
 
+    private func adminButton(text: String, url: URL?, plugin: CardPresentPaymentsPlugin) -> InPersonPaymentsOnboardingErrorButtonViewModel? {
+        guard let url else { return nil }
+        return .init(text: text, analyticReason: viewModel.state.reasonForAnalytics, plugin: plugin, isExternalLink: true, trackTap: false) {
+            presentedAdminURL = url
+        }
+    }
+
     enum Localization {
+        static let updatePlugin = NSLocalizedString(
+            "cardPresentPayments.onboarding.updatePlugin.button",
+            value: "Update Plugin in Store Admin",
+            comment: "Button to open store admin to update a payment plugin."
+        )
+        static let paymentSettings = NSLocalizedString(
+            "cardPresentPayments.onboarding.paymentSettings.button",
+            value: "Open Payment Settings",
+            comment: "Button to open the selected payment plugin's settings."
+        )
+        static let storeAdmin = NSLocalizedString(
+            "cardPresentPayments.onboarding.storeAdmin.title",
+            value: "Store Admin",
+            comment: "Title of the store admin web view opened from payment onboarding."
+        )
         static let title = NSLocalizedString(
             "Payments",
             comment: "Title for the Payments settings screen"

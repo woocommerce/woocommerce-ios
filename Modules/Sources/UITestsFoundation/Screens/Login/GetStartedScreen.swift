@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class GetStartedScreen: ScreenObject {
 
     private let emailFieldGetter: (XCUIApplication) -> XCUIElement = {

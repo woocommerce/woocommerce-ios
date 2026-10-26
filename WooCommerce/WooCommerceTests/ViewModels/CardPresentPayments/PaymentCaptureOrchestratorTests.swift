@@ -8,25 +8,31 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
     private var stores: MockStoresManager!
     private var sessionManager: SessionManager!
     private var sut: PaymentCaptureOrchestrator!
+    private var pushNotesManager: MockPushNotificationsManager!
     private let sampleSiteID: Int64 = 1234
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         sessionManager = SessionManager.makeForTesting(defaultSite: .fake().copy(
             siteID: sampleSiteID,
             name: "AwesomeStore"))
         stores = MockStoresManager(sessionManager: sessionManager)
+        pushNotesManager = MockPushNotificationsManager()
         sut = PaymentCaptureOrchestrator(stores: stores,
                                          paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
-                                         celebration: MockPaymentCaptureCelebration())
+                                         celebration: MockPaymentCaptureCelebration(),
+                                         pushNotesManager: pushNotesManager)
     }
 
     override func tearDown() {
         super.tearDown()
         stores = nil
         sut = nil
+        pushNotesManager = nil
     }
 
+    @MainActor
     func test_collect_payment_starts_payment_for_correct_site() {
         // Given
         let order = Order.fake().copy(siteID: 12391)
@@ -44,6 +50,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .US,
@@ -62,6 +69,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         assertEqual(12391, paymentSiteID)
     }
 
+    @MainActor
     func test_collect_payment_starts_payment_for_correct_order() {
         // Given
         let order = Order.fake().copy(orderID: 9283)
@@ -79,6 +87,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .US,
@@ -97,6 +106,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         assertEqual(9283, paymentOrderID)
     }
 
+    @MainActor
     func test_collect_payment_passes_configured_country_to_payment_action() {
         // Given
         let order = Order.fake()
@@ -114,6 +124,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .AU,
@@ -132,6 +143,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         assertEqual(.AU, countryCode)
     }
 
+    @MainActor
     func test_collect_payment_passes_terminal_payment_preparation_setting_to_payment_action() {
         // Given
         let order = Order.fake()
@@ -149,6 +161,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .AU,
@@ -167,6 +180,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         XCTAssertTrue(terminalPaymentPreparationEnabled)
     }
 
+    @MainActor
     func test_collect_payment_for_AU_sets_manual_preferred_card_present_capture_method() {
         // Given
         let order = Order.fake()
@@ -184,6 +198,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .AU,
@@ -202,6 +217,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         XCTAssertEqual(paymentParameters.cardPresentCaptureMethod, .manualPreferred)
     }
 
+    @MainActor
     func test_collect_payment_for_CA_sets_manual_preferred_card_present_capture_method() {
         // Given
         let order = Order.fake()
@@ -219,6 +235,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent, .interacPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .CA,
@@ -237,6 +254,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         XCTAssertEqual(paymentParameters.cardPresentCaptureMethod, .manualPreferred)
     }
 
+    @MainActor
     func test_collect_payment_starts_payment_with_valid_parameters() {
         // Given
         let order = Order.fake().copy(siteID: sampleSiteID,
@@ -262,6 +280,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: PaymentGatewayAccount.fake(),
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .US,
@@ -297,6 +316,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         assertEqual(expectedParameters, paymentParameters)
     }
 
+    @MainActor
     func test_collectPayment_for_US_configuration_does_not_include_applicationFee_in_the_payment_intent() throws {
         // Given
         let account = PaymentGatewayAccount.fake().copy(siteID: sampleSiteID,
@@ -319,6 +339,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: account,
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .US,
@@ -337,6 +358,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         XCTAssertNil(parameters.applicationFee)
     }
 
+    @MainActor
     func test_collectPayment_for_CA_configuration_includes_15cents_applicationFee_in_the_payment_intent() throws {
         // Given
         let account = PaymentGatewayAccount.fake().copy(siteID: sampleSiteID,
@@ -359,6 +381,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: account,
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .CA,
@@ -378,6 +401,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         assertEqual(expectedFee, parameters.applicationFee)
     }
 
+    @MainActor
     func test_collectPayment_for_a_payment_to_an_AU_gateway_account_includes_applicationFee_in_the_payment_intent() throws {
         // Given
         let account = PaymentGatewayAccount.fake().copy(siteID: sampleSiteID,
@@ -400,6 +424,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
                 for: order,
                 orderTotal: orderTotal,
                 paymentGatewayAccount: account,
+                readerType: .stripeM2,
                 paymentMethodTypes: [.cardPresent],
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 countryCode: .AU,
@@ -419,6 +444,93 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         assertEqual(expectedFee, parameters.applicationFee)
     }
 
+    @MainActor
+    func test_collect_payment_when_processing_completes_then_records_order_before_notifying_client() throws {
+        // Given
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 9283)
+        var processingCompletion: ((PaymentIntent) -> Void)?
+        var recordedOrdersAtProcessing: [Order] = []
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .collectPayment(_, _, _, _, _, _, onProcessingCompletion, _) = action {
+                processingCompletion = onProcessingCompletion
+            }
+        }
+        sut.collectPayment(
+            for: order,
+            orderTotal: 1,
+            paymentGatewayAccount: .fake(),
+            readerType: .stripeM2,
+            paymentMethodTypes: [.cardPresent],
+            stripeSmallestCurrencyUnitMultiplier: 100,
+            countryCode: .US,
+            terminalPaymentPreparationEnabled: false,
+            channel: .storeManagement,
+            onPreparingReader: {},
+            onWaitingForInput: { _ in },
+            onCardInserted: {},
+            onProcessingMessage: {},
+            onDisplayMessage: { _ in },
+            onProcessingCompletion: { _ in recordedOrdersAtProcessing = self.pushNotesManager.suppressedOrders },
+            onCompletion: { _ in }
+        )
+        let recordedOrdersBeforeProcessing = pushNotesManager.suppressedOrders
+
+        // When
+        try XCTUnwrap(processingCompletion)(.fake())
+
+        // Then
+        XCTAssertTrue(recordedOrdersBeforeProcessing.isEmpty)
+        XCTAssertEqual(pushNotesManager.suppressedOrders, [order])
+        XCTAssertEqual(recordedOrdersAtProcessing, [order])
+    }
+
+    @MainActor
+    func test_retry_payment_when_processing_completes_then_records_order_before_notifying_client() throws {
+        // Given
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 9283)
+        var retryProcessingCompletion: ((PaymentIntent) -> Void)?
+        var recordedOrdersAtProcessing: [Order] = []
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case let .collectPayment(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "test", code: 1)))
+            case let .retryPayment(_, _, _, _, _, onProcessingCompletion, _):
+                retryProcessingCompletion = onProcessingCompletion
+            default:
+                break
+            }
+        }
+        sut.collectPayment(
+            for: order,
+            orderTotal: 1,
+            paymentGatewayAccount: .fake(),
+            readerType: .stripeM2,
+            paymentMethodTypes: [.cardPresent],
+            stripeSmallestCurrencyUnitMultiplier: 100,
+            countryCode: .US,
+            terminalPaymentPreparationEnabled: false,
+            channel: .storeManagement,
+            onPreparingReader: {},
+            onWaitingForInput: { _ in },
+            onCardInserted: {},
+            onProcessingMessage: {},
+            onDisplayMessage: { _ in },
+            onProcessingCompletion: { _ in recordedOrdersAtProcessing = self.pushNotesManager.suppressedOrders },
+            onCompletion: { _ in }
+        )
+        sut.retryPayment(for: order, onCompletion: { _ in })
+        let recordedOrdersBeforeProcessing = pushNotesManager.suppressedOrders
+
+        // When
+        try XCTUnwrap(retryProcessingCompletion)(.fake())
+
+        // Then
+        XCTAssertTrue(recordedOrdersBeforeProcessing.isEmpty)
+        XCTAssertEqual(pushNotesManager.suppressedOrders, [order])
+        XCTAssertEqual(recordedOrdersAtProcessing, [order])
+    }
+
+    @MainActor
     func test_collect_payment_when_reader_rearms_after_multiple_cards_then_keeps_message_visible_until_payment_advances() {
         // Given
         var onCardReaderMessage: ((CardReaderEvent) -> Void)?
@@ -433,6 +545,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
             for: .fake(),
             orderTotal: 1,
             paymentGatewayAccount: .fake(),
+            readerType: .stripeM2,
             paymentMethodTypes: [.cardPresent],
             stripeSmallestCurrencyUnitMultiplier: 100,
             countryCode: .US,
@@ -458,6 +571,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         XCTAssertEqual(processingMessageCount, 1)
     }
 
+    @MainActor
     func test_retry_payment_after_multiple_cards_then_forwards_waiting_for_input_for_new_attempt() {
         // Given
         var initialReaderMessage: ((CardReaderEvent) -> Void)?
@@ -478,6 +592,7 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
             for: order,
             orderTotal: 1,
             paymentGatewayAccount: .fake(),
+            readerType: .stripeM2,
             paymentMethodTypes: [.cardPresent],
             stripeSmallestCurrencyUnitMultiplier: 100,
             countryCode: .US,

@@ -35,10 +35,12 @@ protocol Authentication {
 
     /// Returns authentication UI for display by the caller.
     ///
+    @MainActor
     func authenticationUI() -> UIViewController
 
     /// Initializes the WordPress Authenticator.
     ///
+    @MainActor
     func initialize()
 
     /// Injects `loggedOutAppSettings`
@@ -48,6 +50,7 @@ protocol Authentication {
     /// Checks the given site address and see if it's valid
     /// and returns an error view controller if not.
     ///
+    @MainActor
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
                              credentials: AuthenticatorCredentials?,

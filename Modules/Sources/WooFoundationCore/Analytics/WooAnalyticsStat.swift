@@ -1159,6 +1159,8 @@ public enum WooAnalyticsStat: String {
     case customersHubDetailPhoneActionTapped = "customers_hub_customer_detail_phone_action_tapped"
     case customersHubDetailAddressCopied = "customers_hub_customer_detail_address_copied"
     case customersHubDetailNewOrderTapped = "customers_hub_customer_detail_new_order_tapped"
+    case customerListAnalyticsUnavailableErrorShown = "customer_list_analytics_unavailable_error_shown"
+    case customerListAnalyticsUnavailableReloadSuccess = "customer_list_analytics_unavailable_reload_success"
 
     // MARK: Close Account
     case closeAccountTapped = "close_account_tapped"
@@ -1372,6 +1374,8 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleSettingsStoreDetailsTapped = "settings_store_details_tapped"
     case pointOfSaleSettingsHardwareTapped = "settings_hardware_tapped"
     case pointOfSaleSettingsHelpTapped = "settings_help_tapped"
+    case pointOfSaleSettingsPaymentsTapped = "settings_payments_tapped"
+    case pointOfSalePaymentSuccessSoundToggled = "payment_success_sound_toggled"
     case pointOfSaleEmptyCartSetupScannerTapped = "empty_cart_set_up_scanner_tapped"
     case pointOfSaleOrdersMenuItemTapped = "orders_menu_item_tapped"
     case pointOfSaleOrdersListLoaded = "pos_orders_list_loaded"

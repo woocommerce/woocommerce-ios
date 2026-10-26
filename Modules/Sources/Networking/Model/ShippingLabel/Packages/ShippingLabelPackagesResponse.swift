@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a list of Shipping Label Packages (custom and predefined).
 ///
-public struct ShippingLabelPackagesResponse: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct ShippingLabelPackagesResponse: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     /// The options of the store, like currency symbol and origin country.
     public let storeOptions: ShippingLabelStoreOptions

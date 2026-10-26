@@ -73,7 +73,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         self.currencySettings = currencySettings
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.currencyFormatter = currencyFormatter
-        self.refundMapping = POSRefundSubmissionMapping(currencyFormatter: currencyFormatter)
+        self.refundMapping = POSRefundSubmissionMapping(currencyFormatter: currencyFormatter, numberOfDecimals: currencySettings.fractionDigits)
         self.analytics = analytics
         self.refundOptionsDeterminer = refundOptionsDeterminer
         self.serverRefundPreviewUseCase = serverRefundPreviewUseCase
@@ -218,7 +218,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                                            items: components.items,
                                            shippingLines: [],
                                            fees: components.fees,
-                                           currencyFormatter: currencyFormatter)
+                                           currencyFormatter: currencyFormatter,
+                                           numberOfDecimals: currencySettings.fractionDigits)
             .createRefund()
 
         let requiresCardPresentRefund = refundMapping.requiresCardPresentRefund(context: context)

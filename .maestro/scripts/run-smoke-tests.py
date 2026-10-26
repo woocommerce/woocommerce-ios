@@ -966,6 +966,10 @@ def main() -> int:
         if locale.returncode:
             return locale.returncode
         turn_off_password_autofill(device["udid"])
+        # Remove the app and its keychain items first, so the run starts from a fresh install.
+        run(["xcrun", "simctl", "uninstall", device["udid"], app_id], check=False)
+        run(["xcrun", "simctl", "keychain", device["udid"], "reset"])
+        forget_store(device["udid"])
         installed = run(["xcrun", "simctl", "install", device["udid"], str(app)], check=False)
         if installed.returncode:
             raise SystemExit(redact(f"Installing the app failed: {(installed.stderr or installed.stdout).strip()}", values))

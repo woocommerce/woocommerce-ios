@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents customs info for a shipping label package
 ///
-public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     /// ID of the associated package.
     ///
     /// This is for identifying the package when inputing customs form only,
@@ -97,7 +97,7 @@ extension ShippingLabelCustomsForm.Item {
 public extension ShippingLabelCustomsForm {
     /// Types of contents to declare with customs.
     ///
-    enum ContentsType: String, CaseIterable, Codable, GeneratedFakeable {
+    enum ContentsType: String, CaseIterable, Codable, GeneratedFakeable, Sendable {
         case merchandise
         case documents
         case gift
@@ -107,7 +107,7 @@ public extension ShippingLabelCustomsForm {
 
     /// Types of restriction of contents to declare with customs.
     ///
-    enum RestrictionType: String, CaseIterable, Codable, GeneratedFakeable {
+    enum RestrictionType: String, CaseIterable, Codable, GeneratedFakeable, Sendable {
         case none
         case quarantine
         case sanitaryOrPhytosanitaryInspection = "sanitary_phytosanitary_inspection"
@@ -116,14 +116,14 @@ public extension ShippingLabelCustomsForm {
 
     /// Options if delivery fails.
     ///
-    enum NonDeliveryOption: String, Codable, GeneratedFakeable {
+    enum NonDeliveryOption: String, Codable, GeneratedFakeable, Sendable {
         case `return`
         case abandon
     }
 
     /// Information about a item to declare with customs.
     ///
-    struct Item: Codable, Hashable, Equatable, GeneratedFakeable, GeneratedCopiable {
+    struct Item: Codable, Hashable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
         /// Description of item.
         public let description: String
 
@@ -145,7 +145,25 @@ public extension ShippingLabelCustomsForm {
         /// Product ID of item.
         public let productID: Int64
 
-        public init(description: String, quantity: Decimal, value: Double, weight: Double, hsTariffNumber: String, originCountry: String, productID: Int64) {
+        /// SKU of item, when EU product identifiers are required.
+        public let code: String?
+
+        /// Manufacturer part number of item, when EU product identifiers are required.
+        public let manufacturerProductID: String?
+
+        /// Standardized product identifier of item, when EU product identifiers are required.
+        public let standardizedProductID: String?
+
+        public init(description: String,
+                    quantity: Decimal,
+                    value: Double,
+                    weight: Double,
+                    hsTariffNumber: String,
+                    originCountry: String,
+                    productID: Int64,
+                    code: String? = nil,
+                    manufacturerProductID: String? = nil,
+                    standardizedProductID: String? = nil) {
             self.description = description
             self.quantity = quantity
             self.value = value
@@ -153,6 +171,9 @@ public extension ShippingLabelCustomsForm {
             self.hsTariffNumber = hsTariffNumber
             self.originCountry = originCountry
             self.productID = productID
+            self.code = code
+            self.manufacturerProductID = manufacturerProductID
+            self.standardizedProductID = standardizedProductID
         }
     }
 }
@@ -168,6 +189,9 @@ extension ShippingLabelCustomsForm.Item {
         case hsTariffNumber = "hs_tariff_number"
         case originCountry = "origin_country"
         case productID = "product_id"
+        case code
+        case manufacturerProductID = "manufacturer_product_id"
+        case standardizedProductID = "standardized_product_id"
     }
 
     public init(from decoder: Decoder) throws {
@@ -180,7 +204,6 @@ extension ShippingLabelCustomsForm.Item {
         let hsTariffNumber = (try? container.decode(String.self, forKey: .hsTariffNumber)) ?? ""
         let originCountry = try container.decode(String.self, forKey: .originCountry)
         let productID = try container.decode(Int64.self, forKey: .productID)
-
         self.init(description: description,
                   quantity: quantity,
                   value: value,

@@ -3,6 +3,28 @@ import Testing
 @testable import NetworkingCore
 
 struct UnexpectedStoreResponseTests {
+    @Test func test_response_initializer_when_request_contains_secrets_then_retains_only_sanitized_metadata() throws {
+        // Given
+        var request = URLRequest(url: try #require(URL(string: "https://user:secret@example.com/custom-login?token=private#fragment")))
+        request.httpMethod = "POST"
+        request.httpBody = Data("pwd=private-password".utf8)
+        request.setValue("Bearer private-authorization", forHTTPHeaderField: "Authorization")
+
+        // When
+        let error = UnexpectedStoreResponseError(kind: .unexpectedContent, statusCode: 200,
+                                                data: Data("<html>Blocked token=private-token</html>".utf8),
+                                                contentType: "text/html; charset=UTF-8", request: request)
+
+        // Then
+        #expect(error.kind == .unexpectedContent)
+        #expect(error.statusCode == 200)
+        #expect(error.diagnostics?.request == "POST /custom-login")
+        #expect(error.diagnostics?.contentType == "text/html")
+        #expect(error.diagnostics?.excerpt == "Blocked token=[redacted]")
+        #expect(!String(reflecting: error).contains("Blocked"))
+        #expect(!String(describing: error.errorUserInfo).contains("Blocked"))
+    }
+
     @Test func test_metadata_when_direct_response_falls_back_to_tunnel_then_discards_outer_metadata() {
         // Given
         let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "wp/v2/users/me")

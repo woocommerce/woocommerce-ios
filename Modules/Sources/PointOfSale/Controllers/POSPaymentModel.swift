@@ -7,7 +7,6 @@ import struct Yosemite.ReceiptStoreInformation
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import enum Yosemite.CardReaderSoftwareUpdateState
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
-import class Yosemite.PaymentCaptureCelebration
 
 /// Shared payment model that owns all payment state and logic.
 @MainActor
@@ -164,7 +163,7 @@ final class POSPaymentModel {
          configuration: POSPaymentFlowConfiguration,
          analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration(),
          scanToPayPollInterval: TimeInterval = 3,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
@@ -1142,6 +1141,7 @@ private extension POSPaymentModel {
             .sink(receiveValue: { [weak self] connectionStatus in
                 guard let self else { return }
                 cardReaderConnectionStatus = connectionStatus
+                collectOrderPaymentAnalyticsTracker.trackCardReaderConnectionChanged(isConnected: connectionStatus.isConnected)
                 if connectionStatus == .disconnected {
                     // Clear the tracking flag so the next pre-connect can't
                     // mistakenly think a TTP reader is still attached and
@@ -1342,12 +1342,16 @@ private extension POSPaymentModel {
                 let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
                                                                       using: presentationStyleDeterminerDependencies)
 
-                if case .acceptingCard = newCardPaymentState {
+                switch newCardPaymentState {
+                case .validatingOrder, .preparingReader:
+                    // Re-arming at both steps keeps a failed validation from reporting the previous attempt's timing.
+                    collectOrderPaymentAnalyticsTracker.trackCardPaymentAttemptStarted()
+                case .acceptingCard:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
-                }
-
-                if case .processingPayment = newCardPaymentState {
+                case .processingPayment:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
+                default:
+                    break
                 }
 
                 return newCardPaymentState

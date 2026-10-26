@@ -311,7 +311,7 @@ private extension POSRefundSubmissionAdaptor {
         // alongside the rest of the refund's state instead of accumulating for the whole session.
         preparedContexts[orderID] = nil
         if preparationRequest?.orderID == orderID {
-            preparationRequest = nil
+            invalidatePreparationRequest()
         }
     }
 
@@ -320,10 +320,17 @@ private extension POSRefundSubmissionAdaptor {
         serverPreviewTotals = serverPreviewTotals.filter { $0.key.orderID == orderID }
         preparedContexts = preparedContexts.filter { $0.key == orderID }
         if preparationRequest?.orderID != orderID {
-            preparationRequest = nil
+            invalidatePreparationRequest()
         }
         for preloadedOrderID in Array(preloadTasks.keys) where preloadedOrderID != orderID {
             removePreloadedRefund(for: preloadedOrderID)
+        }
+    }
+
+    func invalidatePreparationRequest() {
+        preparationRequest = nil
+        if case .loading = stateModel.state {
+            stateModel.reset()
         }
     }
 

@@ -118,8 +118,6 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
         // Given
         let alertsPresenter = CardPresentPaymentsAlertPresenterAdaptor()
         var presentedEvents: [CardPresentPaymentEvent] = []
-        let subscription = alertsPresenter.paymentEventPublisher.sink { presentedEvents.append($0) }
-        defer { subscription.cancel() }
         let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", total: "10.00")
         var retrieveOrderCompletion: ((Result<Order, Error>) -> Void)?
         let stores = makeStores()
@@ -133,11 +131,27 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
                                                                      stores: stores,
                                                                      alertsPresenter: alertsPresenter)
         preflightController.completeConnection(reader: MockCardReader.bbposChipper2XBT(), gatewayID: WCPayAccount.gatewayID)
-        try #require(retrieveOrderCompletion != nil)
+        let completeOrderRetrieval = try #require(retrieveOrderCompletion)
 
         // When
-        paymentTask.cancel()
-        retrieveOrderCompletion?(.success(order))
+        await confirmation("No payment error after canceled validation", expectedCount: 0) { paymentErrorPresented in
+            let subscription = alertsPresenter.paymentEventPublisher.sink { event in
+                presentedEvents.append(event)
+                if case .show(.paymentError) = event {
+                    paymentErrorPresented()
+                }
+            }
+            defer { subscription.cancel() }
+
+            paymentTask.cancel()
+            completeOrderRetrieval(.success(order))
+
+            do {
+                try await Task.sleep(for: .seconds(10))
+            } catch {
+                Issue.record("Payment error observation was interrupted: \(error)")
+            }
+        }
 
         // Then
         let leakedPaymentErrorDismissals = presentedEvents.compactMap { event -> (@MainActor @Sendable () -> Void)? in

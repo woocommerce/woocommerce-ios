@@ -5,13 +5,13 @@ import Storage
 /// Handles `ShippingMethodAction` actions
 ///
 public final class ShippingMethodStore: Store {
-    private let worker: ShippingMethodStoreWorker
+    private let requestHandler: ShippingMethodStoreRequestHandler
 
     public init(remote: ShippingMethodsRemote,
                 dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
                 network: Network) {
-        self.worker = ShippingMethodStoreWorker(remote: remote, storageManager: storageManager)
+        self.requestHandler = ShippingMethodStoreRequestHandler(remote: remote, storageManager: storageManager)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -41,12 +41,12 @@ public final class ShippingMethodStore: Store {
 
         switch action {
         case let .synchronizeShippingMethods(siteID, completion):
-            worker.synchronizeShippingMethods(siteID: siteID, completion: completion)
+            requestHandler.synchronizeShippingMethods(siteID: siteID, completion: completion)
         }
     }
 }
 
-private final class ShippingMethodStoreWorker: Sendable {
+private final class ShippingMethodStoreRequestHandler: Sendable {
     let remote: ShippingMethodsRemote
     let storageManager: StorageManagerType
 
@@ -58,7 +58,7 @@ private final class ShippingMethodStoreWorker: Sendable {
 
 // MARK: - Network request
 //
-private extension ShippingMethodStoreWorker {
+private extension ShippingMethodStoreRequestHandler {
     /// Fetches all the shipping methods associated with the provided `siteID` and saves them in the Storage layer.
     ///
     func synchronizeShippingMethods(siteID: Int64, completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
@@ -77,7 +77,7 @@ private extension ShippingMethodStoreWorker {
 
 // MARK: - Storage
 //
-private extension ShippingMethodStoreWorker {
+private extension ShippingMethodStoreRequestHandler {
 
     /// Updates or inserts Readonly `ShippingMethod` entities in background.
     /// Triggers `completion` on main thread.

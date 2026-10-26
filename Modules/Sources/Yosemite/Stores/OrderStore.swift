@@ -7,10 +7,10 @@ import Storage
 // MARK: - OrderStore
 //
 public class OrderStore: Store {
-    private let worker: OrderStoreWorker
+    private let requestHandler: OrderStoreRequestHandler
 
     override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.worker = OrderStoreWorker(storageManager: storageManager, network: network)
+        self.requestHandler = OrderStoreRequestHandler(storageManager: storageManager, network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -21,15 +21,14 @@ public class OrderStore: Store {
     }
 
     override public func onAction(_ action: Action) {
-        worker.onAction(action)
+        requestHandler.onAction(action)
     }
 }
 
 
-// The session owns the worker through the store. In-flight tasks retain the worker, while
-// queued storage writes retain it weakly, preserving the request/write lifetime independently
-// of the dispatcher's non-Sendable registration object.
-private final class OrderStoreWorker: Sendable {
+// Keeps request handling separate from the non-Sendable dispatcher.
+// Pending database writes do not keep the handler alive.
+private final class OrderStoreRequestHandler: Sendable {
     let remote: OrdersRemote
     let storageManager: StorageManagerType
 
@@ -125,7 +124,7 @@ private final class OrderStoreWorker: Sendable {
 
 // MARK: - Services!
 //
-private extension OrderStoreWorker {
+private extension OrderStoreRequestHandler {
 
     /// Nukes all of the Stored Orders.
     ///
@@ -588,7 +587,7 @@ private extension OrderStoreWorker {
 
 // MARK: - Storage
 //
-private extension OrderStoreWorker {
+private extension OrderStoreRequestHandler {
 
     /// Deletes any Storage.Order with the specified OrderID
     ///
@@ -633,20 +632,20 @@ extension OrderStore {
     /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
     ///
     func upsertStoredOrder(readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false, in storage: StorageType) {
-        worker.upsertStoredOrders(readOnlyOrders: [readOnlyOrder], insertingSearchResults: insertingSearchResults, in: storage)
+        requestHandler.upsertStoredOrders(readOnlyOrders: [readOnlyOrder], insertingSearchResults: insertingSearchResults, in: storage)
     }
 
     /// Unit Testing Helper: Updates or Inserts a given Search Results page
     ///
     func upsertStoredResults(for siteID: Int64, keyword: String, readOnlyOrder: Networking.Order, in storage: StorageType) {
-        worker.upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: [readOnlyOrder], in: storage)
+        requestHandler.upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: [readOnlyOrder], in: storage)
     }
 }
 
 
 // MARK: - Storage: Search Results
 //
-private extension OrderStoreWorker {
+private extension OrderStoreRequestHandler {
     /// Updates or inserts the specified ReadOnly Order Entity.
     ///
     /// - Returns: The updated order, prior to performing the update operation or the given order when
@@ -700,7 +699,7 @@ private extension OrderStoreWorker {
 
 // MARK: - Storage: Orders
 //
-private extension OrderStoreWorker {
+private extension OrderStoreRequestHandler {
     func handleCreateOrUpdateOrderResult(_ result: Result<Order, Error>, giftCard: String?, onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
         switch result {
             case .success(let order):

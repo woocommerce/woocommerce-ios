@@ -137,6 +137,74 @@ struct UINavigationControllerWooTests {
         #expect(!atRoot)
         #expect(navigationController.viewControllers.count == 2)
     }
+
+    @Test
+    func scrollContentToTop_when_root_provides_nested_scroll_view_then_scrolls_it_to_top_of_inset_content() {
+        // Given a root screen whose list sits in a stack view rather than being its view's first subview.
+        let root = NestedListViewController()
+        let navigationController = UINavigationController(rootViewController: root)
+        root.list.contentInset.top = 40
+        root.list.contentOffset = CGPoint(x: 0, y: 500)
+
+        // When re-selecting the tab asks the root to scroll to top.
+        navigationController.scrollContentToTop(animated: false)
+
+        // Then the nested list scrolls to the top of its content, above `.zero` by its inset.
+        #expect(root.list.contentOffset == CGPoint(x: 0, y: -40))
+    }
+
+    @Test
+    func scrollContentToTop_when_first_subview_is_scroll_view_then_scrolls_it_to_top() {
+        // Given a root screen whose view's first subview is its scroll view.
+        let root = UIViewController()
+        let scrollView = makeScrollView()
+        root.view.addSubview(scrollView)
+        let navigationController = UINavigationController(rootViewController: root)
+        scrollView.contentOffset = CGPoint(x: 0, y: 500)
+
+        // When re-selecting the tab asks the root to scroll to top.
+        navigationController.scrollContentToTop(animated: false)
+
+        // Then the scroll view is back at the top.
+        #expect(scrollView.contentOffset == .zero)
+    }
+
+    @Test
+    func scrollContentToTop_when_stack_has_multiple_view_controllers_then_does_not_scroll() {
+        // Given a root list scrolled down with another screen pushed on top.
+        let root = NestedListViewController()
+        let navigationController = UINavigationController(rootViewController: root)
+        navigationController.pushViewController(UIViewController(), animated: false)
+        root.list.contentOffset = CGPoint(x: 0, y: 500)
+
+        // When asked to scroll to top.
+        navigationController.scrollContentToTop(animated: false)
+
+        // Then the hidden root list keeps its position.
+        #expect(root.list.contentOffset == CGPoint(x: 0, y: 500))
+    }
+}
+
+private func makeScrollView() -> UIScrollView {
+    let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
+    scrollView.contentInsetAdjustmentBehavior = .never
+    scrollView.contentSize = CGSize(width: 320, height: 5000)
+    return scrollView
+}
+
+/// Mirrors the Orders and Products screens: the list is nested in a stack view, behind a hidden scroll view.
+private final class NestedListViewController: UIViewController, ScrollToTopProviding {
+    let list = makeScrollView()
+
+    var scrollToTopScrollView: UIScrollView? {
+        list
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(UIScrollView())
+        view.addSubview(UIStackView(arrangedSubviews: [list]))
+    }
 }
 
 /// Refuses to pop, mimicking a screen with unsaved changes.

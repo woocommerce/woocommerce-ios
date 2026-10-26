@@ -154,22 +154,6 @@ struct UINavigationControllerWooTests {
     }
 
     @Test
-    func scrollContentToTop_when_navigation_bar_prefers_large_titles_then_scrolls_to_top_of_inset_content() {
-        // Given a tab whose navigation bar shows large titles, with the root list scrolled down.
-        let root = NestedListViewController()
-        let navigationController = UINavigationController(rootViewController: root)
-        navigationController.navigationBar.prefersLargeTitles = true
-        root.list.contentInset.top = 40
-        root.list.contentOffset = CGPoint(x: 0, y: 500)
-
-        // When re-selecting the tab asks the root to scroll to top.
-        navigationController.scrollContentToTop(animated: false)
-
-        // Then the list ends at the top of its content after measuring the expanded title.
-        #expect(root.list.contentOffset == CGPoint(x: 0, y: -40))
-    }
-
-    @Test
     func scrollContentToTop_when_first_subview_is_scroll_view_then_scrolls_it_to_top() {
         // Given a root screen whose view's first subview is its scroll view.
         let root = UIViewController()

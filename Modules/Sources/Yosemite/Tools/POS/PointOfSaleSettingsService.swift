@@ -4,7 +4,7 @@ import Storage
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
-public protocol PointOfSaleSettingsServiceProtocol {
+public protocol PointOfSaleSettingsServiceProtocol: Sendable {
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation
 }
 
@@ -22,7 +22,7 @@ public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtoco
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
                             appPasswordSupportState: AnyPublisher<Bool, Never>,
-                            storage: StorageManagerType) {
+                            storage: any StorageManagerType & Sendable) {
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)

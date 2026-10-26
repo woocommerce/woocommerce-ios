@@ -40,7 +40,7 @@ final class POSTabCoordinator {
     private let viewControllerToPresent: UIViewController
     private let storesManager: StoresManager
     private let credentials: Credentials?
-    private let storageManager: StorageManagerType
+    private let storageManager: any StorageManagerType & Sendable
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
@@ -120,7 +120,7 @@ final class POSTabCoordinator {
          tabContainerController: TabContainerController,
          viewControllerToPresent: UIViewController,
          storesManager: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         storageManager: any StorageManagerType & Sendable = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,

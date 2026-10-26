@@ -10,7 +10,7 @@ public class SettingStore: Store {
     private let siteAPIRemote: SiteAPIRemote
     private let methods: SettingStoreMethods
 
-    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    public init(dispatcher: Dispatcher, storageManager: any StorageManagerType & Sendable, network: Network) {
         self.siteSettingsRemote = SiteSettingsRemote(network: network)
         self.siteAPIRemote = SiteAPIRemote(network: network)
         self.methods = SettingStoreMethods(storageManager: storageManager, network: network)
@@ -31,8 +31,8 @@ public class SettingStore: Store {
             return
         }
 
-        // SettingStoreMethods only holds immutable dependencies set in init; only the handlers read it. Remove once stores are isolated (WOOMOB-4186).
-        nonisolated(unsafe) let methods = methods
+        // Capture the Sendable methods, not the store, in the handler tasks.
+        let methods = methods
         switch action {
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):
             methods.synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)

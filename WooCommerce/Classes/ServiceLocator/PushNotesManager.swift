@@ -5,6 +5,9 @@ import Yosemite
 
 protocol PushNotesManager {
 
+    /// Temporarily suppresses the foreground new-order notice for a payment collected in this app.
+    @MainActor func suppressNewOrderNotice(for order: Order)
+
     /// An observable that emits values when the Remote Notifications are received while the app is
     /// in the foreground.
     ///

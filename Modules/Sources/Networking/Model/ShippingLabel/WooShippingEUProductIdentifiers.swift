@@ -1,7 +1,7 @@
 import Foundation
 
 /// Product identifiers returned from a WooShipping config line item.
-public struct WooShippingEUProductIdentifiers: Equatable {
+public struct WooShippingEUProductIdentifiers: Equatable, Sendable {
     public let productID: Int64
     public let sku: String
     public let manufacturerProductID: String
@@ -38,7 +38,7 @@ extension WooShippingEUProductIdentifiers: Decodable {
         case meta
     }
 
-    private struct Meta: Decodable {
+    private struct Meta: Decodable, Sendable {
         let customsInfo: CustomsInfo?
 
         init(from decoder: Decoder) throws {
@@ -52,7 +52,7 @@ extension WooShippingEUProductIdentifiers: Decodable {
         }
     }
 
-    private struct CustomsInfo: Decodable {
+    private struct CustomsInfo: Decodable, Sendable {
         let manufacturerProductID: String?
         let standardizedProductID: String?
 

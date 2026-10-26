@@ -3,6 +3,9 @@
 
 26.0
 -----
+- [*] POS: Merchants can go back to the cart while checkout prepares the order and the card reader. [https://github.com/woocommerce/woocommerce-ios/pull/18127]
+- [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]
+- [*] In-Person Payments: Prevented a duplicate new-order notice after collecting a card payment in the app. [https://github.com/woocommerce/woocommerce-ios/pull/18130]
 - [*] In-Person Payments: After entering a missing store address in Safari, the card reader connection retries when you return to the app. [https://github.com/woocommerce/woocommerce-ios/pull/18126]
 - [**] Products: Add and edit attributes on all product types. Each attribute has "Visible on product page" and "Used for variations" settings, so you can add attributes that only show on the product page. [https://github.com/woocommerce/woocommerce-ios/pull/18116]
 - [*] Products: Editing a variation attribute keeps its "Visible on product page" setting. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]
@@ -13,6 +16,7 @@
 - [*] Products: Variations now load in the correct order on products with up to 100 variations. [https://github.com/woocommerce/woocommerce-ios/pull/18112]
 - [*] Orders: The "Show Orders" button in order filters no longer gets cut off after trying to filter by a guest customer. [https://github.com/woocommerce/woocommerce-ios/pull/18094]
 - [*] Orders: The address form shows the order's country and state the first time it opens, and keeps free-text states such as UK counties. [https://github.com/woocommerce/woocommerce-ios/pull/18146]
+- [*] Shipping Labels: The origin address editor opened from the missing phone number notice is now titled "Edit Origin" instead of "Edit Destination". [https://github.com/woocommerce/woocommerce-ios/pull/18149]
 
 
 25.9

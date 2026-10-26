@@ -57,7 +57,6 @@ final class TwoFAViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
-        configureForAccessibility()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -80,6 +79,7 @@ final class TwoFAViewController: LoginViewController {
         } else {
             configureViewForEditingIfNeeded()
         }
+        configureForAccessibility()
 
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
@@ -709,12 +709,13 @@ private extension TwoFAViewController {
     ///
     func configureForAccessibility() {
         view.accessibilityElements = [
-            codeField as Any,
             tableView as Any,
             submitButton as Any
         ]
 
-        UIAccessibility.post(notification: .screenChanged, argument: codeField)
+        // The table already exposes the code field. Security key mode has none, so VoiceOver starts on the instructions.
+        let firstElement: UIView? = codeField ?? tableView.cellForRow(at: IndexPath(row: 0, section: 0))
+        UIAccessibility.post(notification: .screenChanged, argument: firstElement)
     }
 
     /// Rows listed in the order they were created.

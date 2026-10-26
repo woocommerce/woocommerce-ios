@@ -133,8 +133,12 @@ extension CodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegat
                         try imageRequestHandler.perform(self.requests)
                     } catch {
                         DDLogError("Error performing barcode detection request: \(error)")
-                        if case let .barcode(completion) = self.format {
-                            self.deliverBarcodeDetectionResult(.failure(error), completion: completion)
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self, self.session.isRunning else { return }
+                            if case let .barcode(completion) = self.format {
+                                // Deliver here so errors and successful frames each take one main-queue hop.
+                                completion(.failure(error))
+                            }
                         }
                     }
                 }

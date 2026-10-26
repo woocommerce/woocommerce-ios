@@ -174,8 +174,8 @@ private extension TwoFAViewController {
         SVProgressHUD.showSuccess(withStatus: LocalizedText.smsSent)
         SVProgressHUD.dismiss(withDelay: TimeInterval(1))
 
-        if loginFields.nonceInfo != nil {
-            // social login
+        // Password logins have no SMS nonce; social logins have no password.
+        if loginFields.nonceInfo?.nonceSMS.isEmpty == false || loginFields.password.isEmpty {
             loginFacade.requestSocial2FACode(with: loginFields)
         } else {
             loginFacade.requestOneTimeCode(with: loginFields)
@@ -235,7 +235,8 @@ private extension TwoFAViewController {
     @available(iOS 16, *)
     func signChallenge(_ challengeInfo: WebauthnChallengeInfo) {
 
-        loginFields.nonceInfo?.updateNonce(with: challengeInfo.twoStepNonce)
+        // Requesting a challenge uses up the nonce; keep its replacement for another attempt.
+        loginFields.nonceInfo?.nonceWebauthn = challengeInfo.twoStepNonce
         loginFields.webauthnChallengeInfo = challengeInfo
 
         let challenge = Data(base64URLEncoded: challengeInfo.challenge) ?? Data()
@@ -331,6 +332,9 @@ extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         WPAuthenticatorLogError("Error signing challenge: \(error.localizedDescription)")
+        guard (error as? ASAuthorizationError)?.code != .canceled else {
+            return configureViewLoading(false)
+        }
         displaySecurityKeyErrorMessageAndExitFlow()
     }
 

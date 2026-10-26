@@ -40,6 +40,59 @@ final class StatsStoreV4Tests: XCTestCase {
         network = MockNetwork()
     }
 
+    // MARK: - Queued persistence lifetime
+
+    func test_upsertStoredOrderStats_when_store_is_released_before_write_then_skips_write() {
+        // Given
+        let deferredStorage = MockDeferredStatsStorageManager(storageManager: storageManager)
+        var store: StatsStoreV4? = StatsStoreV4(dispatcher: dispatcher, storageManager: deferredStorage, network: network)
+        weak let releasedStore = store
+        let completion = expectation(description: "Queued write completes even when the store is released")
+        store?.upsertStoredOrderStats(readOnlyStats: sampleStats(), timeRange: .thisYear) {
+            completion.fulfill()
+        }
+        XCTAssertTrue(deferredStorage.hasPendingWrite)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 0)
+
+        // When
+        store = nil
+        XCTAssertNil(releasedStore)
+        deferredStorage.performPendingWrite()
+
+        // Then
+        XCTAssertFalse(deferredStorage.hasPendingWrite)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4Totals.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4Interval.self), 0)
+        wait(for: [completion], timeout: 5)
+    }
+
+    func test_upsertStoredOrderStats_when_store_is_alive_during_write_then_persists_stats() {
+        // Given
+        let deferredStorage = MockDeferredStatsStorageManager(storageManager: storageManager)
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: deferredStorage, network: network)
+        let stats = sampleStats()
+        let completion = expectation(description: "Queued write completes while the store is alive")
+        store.upsertStoredOrderStats(readOnlyStats: stats, timeRange: .thisYear) {
+            completion.fulfill()
+        }
+        XCTAssertTrue(deferredStorage.hasPendingWrite)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 0)
+
+        // When
+        withExtendedLifetime(store) {
+            deferredStorage.performPendingWrite()
+        }
+
+        // Then
+        XCTAssertFalse(deferredStorage.hasPendingWrite)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4Totals.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4Interval.self), 1)
+        assertEqual(stats, viewStorage.firstObject(ofType: Storage.OrderStatsV4.self)?.toReadOnly())
+        wait(for: [completion], timeout: 5)
+    }
+
     // MARK: - StatsActionV4.retrieveStats
 
     /// Verifies that `StatsActionV4.retrieveStats` effectively persists any retrieved OrderStatsV4.

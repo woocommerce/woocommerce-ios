@@ -407,7 +407,9 @@ private extension HubMenu {
             sizeCategory.isAccessibilityCategory ? .zero : 4
         }
     }
+}
 
+extension HubMenu {
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
         static let general = NSLocalizedString("General", comment: "General section title in the hub menu")

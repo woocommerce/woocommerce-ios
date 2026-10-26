@@ -29,13 +29,13 @@ struct StoreHubMenuList: View {
                 )
 
                 StoreHubMenuSection(
-                    title: Localization.settings,
+                    title: HubMenuViewModel.Localization.settings,
                     items: viewModel.settingsElements,
                     onMenuItemTap: onMenuItemTap
                 )
 
                 StoreHubMenuSection(
-                    title: Localization.general,
+                    title: HubMenu.Localization.general,
                     items: viewModel.generalElements,
                     onMenuItemTap: onMenuItemTap
                 )
@@ -44,21 +44,5 @@ struct StoreHubMenuList: View {
             .padding(.vertical, StorePadding.p7)
         }
         .background(Color.storeSurface)
-    }
-}
-
-private extension StoreHubMenuList {
-    enum Localization {
-        static let settings = NSLocalizedString(
-            "hubMenu.storeDesignSystem.settingsSection.title",
-            value: "Settings",
-            comment: "Settings section title in the hub menu"
-        )
-
-        static let general = NSLocalizedString(
-            "hubMenu.storeDesignSystem.generalSection.title",
-            value: "General",
-            comment: "General section title in the hub menu"
-        )
     }
 }

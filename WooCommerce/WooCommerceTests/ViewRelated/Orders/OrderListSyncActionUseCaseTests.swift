@@ -7,6 +7,7 @@ private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 private typealias Defaults = OrderListSyncActionUseCase.Defaults
 
 /// Tests for `OrderListSyncActionUseCase`.
+@MainActor
 final class OrderListSyncActionUseCaseTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000

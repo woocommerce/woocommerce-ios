@@ -110,13 +110,15 @@ private extension OrderLoaderViewController {
                 return
             }
 
-            guard let order else {
-                DDLogError("## Error loading Order \(self.siteID).\(self.orderID): \(error.debugDescription)")
-                self.state = .failure
-                return
-            }
+            Task { @MainActor in
+                guard let order else {
+                    DDLogError("## Error loading Order \(self.siteID).\(self.orderID): \(error.debugDescription)")
+                    self.state = .failure
+                    return
+                }
 
-            self.state = .success(order: order)
+                self.state = .success(order: order)
+            }
         }
 
         state = .loading

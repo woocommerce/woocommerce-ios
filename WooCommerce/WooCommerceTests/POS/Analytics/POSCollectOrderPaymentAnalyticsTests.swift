@@ -11,6 +11,7 @@ import struct PointOfSale.POSPaymentAnalyticsOrder
 import Foundation
 import Testing
 
+@Suite(.timeLimit(.minutes(5)))
 struct POSCollectOrderPaymentAnalyticsTests {
     private let analytics: MockPOSAnalytics
 
@@ -23,7 +24,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
     }
 
     @Test(arguments: [false, true], [false, true]) @MainActor
-    func test_cancel_completion_when_another_payment_starts_then_preserves_active_confirmation(newCheckout: Bool, oldPaymentConfirms: Bool) throws {
+    func test_cancel_completion_when_another_payment_starts_then_preserves_active_confirmation(newCheckout: Bool, oldPaymentConfirms: Bool) async throws {
         // Given
         var now = 0
         let configuration = CardPresentPaymentsConfiguration(country: .US)
@@ -48,7 +49,12 @@ struct POSCollectOrderPaymentAnalyticsTests {
         receipts.isEligibleForBackendReceipts = false
         let orchestrator = MockPaymentCaptureOrchestrator()
         var completeCancellation: ((Result<Void, Error>) -> Void)?
-        orchestrator.mockCancelPaymentHandler = { completeCancellation = $0 }
+        let cancellationRequests = AsyncStream<Void>.makeStream()
+        orchestrator.mockCancelPaymentHandler = {
+            completeCancellation = $0
+            cancellationRequests.continuation.yield(())
+            cancellationRequests.continuation.finish()
+        }
         let alerts = MockCardPresentPaymentAlertsPresenter()
         orchestrator.mockCollectPaymentHandler = { onPreparingReader, _, _, _, _, _, _ in
             alerts.onPresentCalled = { viewModel in
@@ -69,6 +75,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         useCase.collectPayment(using: .bluetoothScan, channel: .pos, onFailure: { _ in }, onCancel: {},
                                onPaymentCompletion: {}, onCompleted: {})
         preflight.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: "stripe")
+        for await _ in cancellationRequests.stream { break }
         let heldCancellation = try #require(completeCancellation)
 
         // When
@@ -151,7 +158,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
     }
 
     @Test(arguments: [true, false]) @MainActor
-    func test_card_collection_when_capture_completes_then_tracks_value_only_on_success(captureSucceeds: Bool) {
+    func test_card_collection_when_capture_completes_then_tracks_value_only_on_success(captureSucceeds: Bool) async {
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: .US)
         let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
@@ -168,6 +175,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         let receipts = MockReceiptEligibilityUseCase()
         receipts.isEligibleForBackendReceipts = false
         let orchestrator = MockPaymentCaptureOrchestrator()
+        let captureCompletions = AsyncStream<Void>.makeStream()
         orchestrator.mockCollectPaymentHandler = { _, _, _, _, _, _, completion in
             #expect(!analytics.events.contains { $0.eventName == "card_present_collect_payment_success" })
             if captureSucceeds {
@@ -175,6 +183,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
             } else {
                 completion(.failure(NSError(domain: "capture", code: 1)))
             }
+            captureCompletions.continuation.yield(())
+            captureCompletions.continuation.finish()
         }
         let useCase = CollectOrderPaymentUseCase<TapToPayCardReaderPaymentAlertsProvider,
                                                 BluetoothCardReaderPaymentAlertsProvider,
@@ -190,6 +200,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
         useCase.collectPayment(using: .bluetoothScan, channel: .pos, onFailure: { _ in }, onCancel: {},
                                onPaymentCompletion: {}, onCompleted: {})
         preflight.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: account.gatewayID)
+        for await _ in captureCompletions.stream { break }
+        withExtendedLifetime(useCase) {}
 
         // Then
         #expect(orchestrator.spyDidCallCollectPayment)
@@ -1060,7 +1072,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
 private extension POSCollectOrderPaymentAnalyticsTests {
     struct TestError: Error { }
 
-    static let order = POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "")
+    @MainActor static let order = POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "")
 
     @MainActor
     func makeTimedAdaptor(clock: TestClock) -> POSCollectOrderPaymentAnalyticsAdaptor {

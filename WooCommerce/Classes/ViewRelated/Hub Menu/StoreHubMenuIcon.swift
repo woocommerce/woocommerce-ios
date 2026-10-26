@@ -8,16 +8,11 @@ struct StoreHubMenuIcon: View {
     var body: some View {
         switch item.id {
         case HubMenuViewModel.Blaze.id, HubMenuViewModel.GoogleAds.id:
-            Image(uiImage: item.icon)
-                .renderingMode(item.id == HubMenuViewModel.Blaze.id ? .template : .original)
-                .resizable()
-                .scaledToFit()
-                .frame(width: StoreSpacing.s5, height: StoreSpacing.s5)
-                .foregroundStyle(Color.storePaletteSandstone60)
-                .frame(width: StoreSize.iconContainerSize, height: StoreSize.iconContainerSize)
-                .background(Color.storePaletteSandstone10)
-                .clipShape(RoundedRectangle(cornerRadius: StoreRadius.medium))
-                .accessibilityHidden(true)
+            StoreIconContainer(
+                Image(uiImage: item.icon).renderingMode(.original),
+                size: .small,
+                tone: .sandstone
+            )
         default:
             StoreIconContainer(icon, tone: .sandstone)
         }

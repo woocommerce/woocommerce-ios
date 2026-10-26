@@ -54,7 +54,7 @@ struct PointOfSaleOrderControllerTests {
         }
 
         // Then
-        guard case let .loaded(_, order) = sut.orderState else {
+        guard case let .loaded(_, order, _) = sut.orderState else {
             Issue.record("Expected the replacement order to remain loaded")
             return
         }
@@ -72,6 +72,7 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.orderToReturn = Order.fake().copy(orderID: 1)
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        let originalGeneration = try #require(sut.orderState.generation)
         var responseContinuation: CheckedContinuation<Void, Never>?
         var responseTask: Task<Order, Error>?
         await withCheckedContinuation { started in
@@ -96,6 +97,8 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.onSyncOrderCalled = {
             // The original order ID is still cached until this sync finishes.
             #expect(sut.orderState.isSyncing)
+            #expect(sut.orderState.order?.orderID == 1)
+            #expect(sut.orderState.generation != originalGeneration)
             responseContinuation?.resume()
             await #expect(throws: CancellationError.self) {
                 try await pendingResponse.value
@@ -106,11 +109,41 @@ struct PointOfSaleOrderControllerTests {
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem(), makeItem()]), retryHandler: {})
 
         // Then
-        guard case let .loaded(_, order) = sut.orderState else {
+        guard case let .loaded(_, order, _) = sut.orderState else {
             Issue.record("Expected the replacement order to be loaded")
             return
         }
         #expect(order.orderID == replacement.orderID)
+    }
+
+    @Test(arguments: [false, true])
+    func test_order_response_when_current_then_updates_loaded_state_preserving_generation(promote: Bool) async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let original = Order.fake().copy(orderID: 1)
+        mockOrderService.orderToReturn = original
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        let generation = try #require(sut.orderState.generation)
+        let updated = original.copy(status: .pending, paymentURL: URL(string: "https://example.com/pay/1"))
+        mockOrderService.orderToReturn = updated
+        mockOrderService.promoteOrderToPendingOverride = updated
+
+        // When
+        let response = if promote {
+            try await sut.promoteCurrentOrderToPending()
+        } else {
+            try await sut.reloadCurrentOrder()
+        }
+
+        // Then
+        #expect(response == updated)
+        #expect(sut.orderState.order == updated)
+        #expect(sut.orderState.generation == generation)
+        let provider = POSCartPaymentOrderProvider(orderController: sut)
+        #expect(try await provider.provideOrder().order == updated)
     }
 
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {
@@ -326,7 +359,7 @@ struct PointOfSaleOrderControllerTests {
         // Then
         #expect(mockOrderService.syncOrderCallCount == 1)
         #expect(try joinedSyncResult?.get() == .newOrder)
-        guard case .loaded(let totals, _) = sut.orderState else {
+        guard case .loaded(let totals, _, _) = sut.orderState else {
             Issue.record("Expected loaded order state, got \(sut.orderState)")
             return
         }
@@ -350,7 +383,7 @@ struct PointOfSaleOrderControllerTests {
         // Then
         #expect(try result.get() == .orderNotChanged)
         #expect(mockOrderService.syncOrderCallCount == 1)
-        guard case .loaded(let totals, _) = sut.orderState else {
+        guard case .loaded(let totals, _, _) = sut.orderState else {
             Issue.record("Expected loaded order state, got \(sut.orderState)")
             return
         }
@@ -408,7 +441,7 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
         #expect(sut.orderState == .idle)
         mockOrderService.onSyncOrderCalled = { [weak sut] in
-            #expect(sut?.orderState == .syncing)
+            #expect(sut?.orderState == .syncing())
         }
 
         // When
@@ -429,7 +462,7 @@ struct PointOfSaleOrderControllerTests {
 
         #expect(sut.orderState == .idle)
         mockOrderService.onSyncOrderCalled = { [weak sut] in
-            #expect(sut?.orderState == .syncing)
+            #expect(sut?.orderState == .syncing())
         }
 
         // When
@@ -450,7 +483,7 @@ struct PointOfSaleOrderControllerTests {
 
         #expect(sut.orderState == .idle)
         mockOrderService.onSyncOrderCalled = { [weak sut] in
-            #expect(sut?.orderState == .syncing)
+            #expect(sut?.orderState == .syncing())
         }
 
         // When
@@ -952,7 +985,7 @@ struct PointOfSaleOrderControllerTests {
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
 
         // Then
-        guard case .loaded(let totals, _) = sut.orderState else {
+        guard case .loaded(let totals, _, _) = sut.orderState else {
             Issue.record("Expected loaded order state, got \(sut.orderState)")
             return
         }
@@ -975,7 +1008,7 @@ struct PointOfSaleOrderControllerTests {
         await sut.syncOrder(for: Cart(purchasableItems: [discountedCartItem, fullPriceCartItem]), retryHandler: {})
 
         // Then
-        guard case .loaded(let totals, _) = sut.orderState else {
+        guard case .loaded(let totals, _, _) = sut.orderState else {
             Issue.record("Expected loaded order state, got \(sut.orderState)")
             return
         }
@@ -997,7 +1030,7 @@ struct PointOfSaleOrderControllerTests {
         await sut.syncOrder(for: Cart(purchasableItems: [firstCartRow, secondCartRow]), retryHandler: {})
 
         // Then
-        guard case .loaded(let totals, _) = sut.orderState else {
+        guard case .loaded(let totals, _, _) = sut.orderState else {
             Issue.record("Expected loaded order state, got \(sut.orderState)")
             return
         }
@@ -1020,7 +1053,7 @@ struct PointOfSaleOrderControllerTests {
         await sut.syncOrder(for: cart, retryHandler: {})
 
         // Then
-        guard case .loaded(let totals, _) = sut.orderState else {
+        guard case .loaded(let totals, _, _) = sut.orderState else {
             Issue.record("Expected loaded order state, got \(sut.orderState)")
             return
         }
@@ -1106,7 +1139,7 @@ struct PointOfSaleOrderControllerTests {
 
         #expect(sut.orderState == .idle)
         mockOrderService.onSyncOrderCalled = { [weak sut] in
-            #expect(sut?.orderState == .syncing)
+            #expect(sut?.orderState == .syncing())
         }
 
         // When
@@ -1141,7 +1174,7 @@ struct PointOfSaleOrderControllerTests {
 
         #expect(sut.orderState == .idle)
         mockOrderService.onSyncOrderCalled = { [weak sut] in
-            #expect(sut?.orderState == .syncing)
+            #expect(sut?.orderState == .syncing())
         }
 
         // When

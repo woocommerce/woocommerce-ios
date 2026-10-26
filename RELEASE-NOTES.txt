@@ -17,7 +17,7 @@
 - [*] Orders: The "Show Orders" button in order filters no longer gets cut off after trying to filter by a guest customer. [https://github.com/woocommerce/woocommerce-ios/pull/18094]
 - [*] Orders: The address form shows the order's country and state the first time it opens, and keeps free-text states such as UK counties. [https://github.com/woocommerce/woocommerce-ios/pull/18146]
 - [*] Shipping Labels: The origin address editor opened from the missing phone number notice is now titled "Edit Origin" instead of "Edit Destination". [https://github.com/woocommerce/woocommerce-ios/pull/18149]
-
+- [*] Improved camera barcode scanning accuracy by confirming repeated reads before searching for a product. [https://github.com/woocommerce/woocommerce-ios/pull/18157]
 
 25.9
 -----

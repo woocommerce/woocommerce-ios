@@ -76,8 +76,6 @@ protocol POSRefundControllerProtocol {
             result = .failure(error)
         }
 
-        // Service callbacks may still finish after the flow is dismissed or replaced.
-        // Check ownership for failures as well as successes before changing shared state.
         guard case .loading(let activeRequestID) = preparationState,
               activeRequestID == requestID else { return .failed }
         preparationState = .idle
@@ -134,7 +132,6 @@ protocol POSRefundControllerProtocol {
     }
 
     func clearSelection() {
-        // Completion screens still need a finished preparation; only invalidate pending work here.
         if case .loading = preparationState {
             preparationState = .idle
         }

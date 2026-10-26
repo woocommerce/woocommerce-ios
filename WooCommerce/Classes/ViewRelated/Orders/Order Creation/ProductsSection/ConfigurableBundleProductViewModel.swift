@@ -5,6 +5,7 @@ import Combine
 import WooFoundation
 
 /// View model for `ConfigurableBundleProductView`.
+@MainActor
 final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     @Published private(set) var bundleItemViewModels: [ConfigurableBundleItemViewModel] = [] {
         didSet {
@@ -111,7 +112,7 @@ private extension ConfigurableBundleProductViewModel {
     func loadProductsAndCreateItemViewModels() {
         loadProductsErrorMessage = nil
 
-        Task { @MainActor in
+        Task {
             do {
                 let products = try await loadProducts(from: product.bundledItems)
                 let defaultVariations = await resolveDefaultVariations(products: products)
@@ -123,7 +124,6 @@ private extension ConfigurableBundleProductViewModel {
         }
     }
 
-    @MainActor
     func loadProducts(from bundleItems: [ProductBundleItem]) async throws -> [Product] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.retrieveProductsIfNeeded(siteID: product.siteID,
@@ -251,7 +251,6 @@ private extension ConfigurableBundleProductViewModel {
             .joined(separator: "-")
     }
 
-    @MainActor
     func loadAllVariations(productID: Int64) async throws -> [ProductVariation] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductVariationAction.synchronizeAllProductVariations(siteID: product.siteID,

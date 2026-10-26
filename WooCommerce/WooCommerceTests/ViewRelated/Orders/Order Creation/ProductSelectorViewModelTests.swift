@@ -1993,8 +1993,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 }
             case let .synchronizeProducts(_, _, _, stockStatus, _, _, _, _, _, _, _, onCompletion):
                 XCTAssertEqual(stockStatus, .outOfStock)
-                self.storageManager.performAndSave({ storage in
-                    storage.deleteProducts(siteID: self.sampleSiteID)
+                self.storageManager.performAndSave({ [sampleSiteID = self.sampleSiteID] storage in
+                    storage.deleteProducts(siteID: sampleSiteID)
                 }, completion: {}, on: .main)
                 onCompletion(.success(false))
                 filteredRequest.fulfill()
@@ -2074,8 +2074,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
             requestCount += 1
             let products = requestCount == 1 ? [popularProduct, deletedLastSoldProduct, remainingLastSoldProduct] :
                 [popularProduct, remainingLastSoldProduct, laterLastSoldProduct]
-            self.storageManager.performAndSave({ storage in
-                storage.deleteProducts(siteID: self.sampleSiteID)
+            self.storageManager.performAndSave({ [sampleSiteID = self.sampleSiteID] storage in
+                storage.deleteProducts(siteID: sampleSiteID)
                 for product in products {
                     let storedProduct = storage.insertNewObject(ofType: StorageProduct.self)
                     storedProduct.update(with: product)
@@ -2119,8 +2119,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
         let viewModel = makeViewModel(popularProductIDs: [popularProduct.productID])
         viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
-        self.storageManager.performAndSave({ storage in
-            storage.deleteProducts(siteID: self.sampleSiteID)
+        self.storageManager.performAndSave({ [sampleSiteID = self.sampleSiteID] storage in
+            storage.deleteProducts(siteID: sampleSiteID)
         }, completion: {}, on: .main)
 
         // When
@@ -2368,6 +2368,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_loads_and_sets_favorite_product_IDs_correctly() async {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()
@@ -2417,6 +2418,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncStatus, .empty)
     }
 
+    @MainActor
     func test_sync_when_currency_search_and_favorites_filter_are_configured_then_forwards_favorite_productIDs() async {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()

@@ -18,17 +18,21 @@ extension UINavigationController {
         setNavigationBarHidden(hidden, animated: animated)
     }
 
-    /// Whenever there's a single viewController onscreen, this method will set the "Top" UIScrollView's
-    /// Content Offset to zero.
+    /// Whenever there's a single viewController onscreen, this method will scroll its main UIScrollView
+    /// (`ScrollToTopProviding`, or else the view's first subview) to the top of its content.
     ///
     func scrollContentToTop(animated: Bool) {
         guard viewControllers.count == 1,
-            let scrollView = visibleViewController?.view?.subviews.first as? UIScrollView
-            else {
-                return
+              let visibleViewController,
+              let scrollView = (visibleViewController as? ScrollToTopProviding)?.scrollToTopScrollView
+                ?? (visibleViewController.view?.subviews.first as? UIScrollView)
+        else {
+            return
         }
 
-        scrollView.setContentOffset(.zero, animated: animated)
+        // The top sits above `.zero` when bars or headers inset the content.
+        let topOffset = CGPoint(x: -scrollView.adjustedContentInset.left, y: -scrollView.adjustedContentInset.top)
+        scrollView.setContentOffset(topOffset, animated: animated)
     }
 
     /// Two-stage tab re-selection: pop to root, or scroll to top when already at root.
@@ -93,6 +97,16 @@ extension UINavigationController {
         helperViewControllers[helperViewControllers.count - 1] = viewController
         setViewControllers(helperViewControllers, animated: animated)
     }
+}
+
+// MARK: - Scroll to top on tab re-selection
+//
+/// Adopted by screens whose list isn't their view's first subview (e.g. it is nested in a stack view
+/// below a filters bar, or a hidden large title helper scroll view sits first), so tab re-selection
+/// scrolls the list itself.
+@MainActor
+protocol ScrollToTopProviding {
+    var scrollToTopScrollView: UIScrollView? { get }
 }
 
 // MARK: - Handle UINavigationBar's 'Back' button action

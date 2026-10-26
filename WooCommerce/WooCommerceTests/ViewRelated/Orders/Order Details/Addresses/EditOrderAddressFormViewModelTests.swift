@@ -390,6 +390,65 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(fields.state, "Greater London")
     }
 
+    func test_refreshCountryAndStateObjects_when_address_country_is_not_stored_then_keeps_country_and_state() {
+        // Given
+        var fields = AddressFormFields(with: sampleAddress())
+
+        // When
+        fields.refreshCountryAndStateObjects(with: [])
+
+        // Then
+        XCTAssertNil(fields.selectedCountry)
+        XCTAssertEqual(fields.country, "US")
+        XCTAssertEqual(fields.state, "NY")
+    }
+
+    func test_refreshCountryAndStateObjects_when_address_country_has_no_states_then_keeps_free_text_state() {
+        // Given
+        let unitedKingdom = Country(code: "GB", name: "United Kingdom", states: [])
+        var fields = AddressFormFields(with: sampleAddress().copy(state: "Greater London", country: "GB"))
+
+        // When
+        fields.refreshCountryAndStateObjects(with: [unitedKingdom])
+
+        // Then
+        XCTAssertEqual(fields.selectedCountry?.code, "GB")
+        XCTAssertEqual(fields.country, "United Kingdom")
+        XCTAssertEqual(fields.state, "Greater London")
+    }
+
+    func test_onLoadTrigger_when_countries_are_synced_after_load_then_selects_address_country_and_state() {
+        // Given
+        testingStorage.reset()
+        testingStores.whenReceivingAction(ofType: DataAction.self) { action in
+            switch action {
+            case .synchronizeCountries(_, let completion):
+                // Stores the countries asynchronously, like the remote sync does, so they arrive after the initial form refresh.
+                DispatchQueue.main.async {
+                    self.testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
+                    completion(.success(Self.sampleCountries))
+                }
+            }
+        }
+
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()),
+                                                      type: .shipping,
+                                                      storageManager: testingStorage,
+                                                      stores: testingStores)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        waitUntil {
+            viewModel.fields.selectedCountry != nil
+        }
+        let unitedStates = Self.sampleCountries.first { $0.code == "US" }
+        XCTAssertEqual(viewModel.fields.country, unitedStates?.name)
+        XCTAssertEqual(viewModel.fields.state, "New York")
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+    }
+
     func test_view_model_updates_billing_and_shipping_address_fields_when_use_as_toggle_is_on() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

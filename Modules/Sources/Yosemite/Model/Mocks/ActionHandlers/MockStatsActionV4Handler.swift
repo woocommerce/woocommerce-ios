@@ -9,7 +9,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
     let storageManager: StorageManagerType
     let store: StatsStoreV4
 
-    init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
+    init(objectGraph: MockObjectGraph, storageManager: any StorageManagerType & Sendable) {
         self.objectGraph = objectGraph
         self.storageManager = storageManager
         self.store = StatsStoreV4(dispatcher: Dispatcher(),
@@ -34,7 +34,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
     func retrieveSiteSummaryStats(siteID: Int64,
                                   period: StatGranularity,
                                   latestDateToInclude: Date,
-                                  onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> ()) {
+                                  onCompletion: @escaping @Sendable (Result<SiteSummaryStats, Error>) -> ()) {
         let mockStats = ScreenshotObjectGraph.createSiteSummaryStats(siteId: siteID,
                                                                  period: period,
                                                                  latestDateToInclude: latestDateToInclude,
@@ -45,7 +45,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
         onCompletion(.success(mockStats))
     }
 
-    func retrieveStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
+    func retrieveStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping @Sendable (Result<Void, Error>) -> ()) {
 
         switch timeRange {
             case .today:
@@ -63,7 +63,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
         }
     }
 
-    func retrieveSiteVisitStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<Void, Error>) -> ()) {
+    func retrieveSiteVisitStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping @Sendable (Result<Void, Error>) -> ()) {
 
         switch timeRange {
             case .today:
@@ -81,7 +81,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
         }
     }
 
-    func retrieveTopEarnerStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Result<TopEarnerStats, Error>) -> ()) {
+    func retrieveTopEarnerStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping @Sendable (Result<TopEarnerStats, Error>) -> ()) {
 
         switch timeRange {
         case .today:
@@ -89,8 +89,9 @@ struct MockStatsActionV4Handler: MockActionHandler {
         case .thisWeek:
             onCompletion(.success(objectGraph.thisMonthTopProducts))
         case .thisMonth:
-            store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisMonthTopProducts) {
-                onCompletion(.success(objectGraph.thisMonthTopProducts))
+            let stats = objectGraph.thisMonthTopProducts
+            store.upsertStoredTopEarnerStats(readOnlyStats: stats) {
+                onCompletion(.success(stats))
             }
         case .thisYear:
             onCompletion(.success(objectGraph.thisMonthTopProducts))

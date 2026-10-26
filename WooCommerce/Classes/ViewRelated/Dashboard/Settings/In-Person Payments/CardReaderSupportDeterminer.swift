@@ -2,21 +2,21 @@ import Foundation
 import Yosemite
 import CoreLocation
 
+@MainActor
 protocol CardReaderSupportDetermining {
     func connectedReader() async -> CardReader?
 
-    @MainActor
     func hasPreviousTapToPayUsage() async -> Bool
 
     func siteSupportsTapToPayReader() -> Bool
 
-    @MainActor
     func deviceSupportsTapToPayReader() async -> Bool
 
     func firstTapToPayTransactionDate() async -> Date?
     var locationIsAuthorized: Bool { get }
 }
 
+@MainActor
 final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     private let stores: StoresManager
     private let configuration: CardPresentPaymentsConfiguration
@@ -43,7 +43,6 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
         }
     }
 
-    @MainActor
     func connectedReader() async -> CardReader? {
         await withCheckedContinuation { continuation in
             let action = CardPresentPaymentAction.publishCardReaderConnections { connectionPublisher in
@@ -55,7 +54,6 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
         }
     }
 
-    @MainActor
     func hasPreviousTapToPayUsage() async -> Bool {
         await firstTapToPayTransactionDate() != nil
     }
@@ -64,7 +62,6 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
         configuration.supportedReaders.contains(.tapToPay)
     }
 
-    @MainActor
     func deviceSupportsTapToPayReader() async -> Bool {
         /// There may be crashes due to multiple consecutive calls checkDeviceSupport
         /// Limit the calls to once every 30 seconds and cache the result
@@ -89,7 +86,6 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
         return deviceSupportsTapToPayReader
     }
 
-    @MainActor
     func firstTapToPayTransactionDate() async -> Date? {
         await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(

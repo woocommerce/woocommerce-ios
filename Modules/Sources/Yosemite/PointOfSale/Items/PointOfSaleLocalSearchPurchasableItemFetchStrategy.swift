@@ -18,7 +18,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     private let itemMapper: PointOfSaleItemMapperProtocol
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
-    /// Caps the reported match count, so broad searches do not count every match.
     nonisolated static let searchCountLimit = 1_000
 
     init(siteID: Int64,
@@ -95,7 +94,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
 
         let countLimit = Self.searchCountLimit
         let (pageResults, totalCount) = try await grdbManager.databaseConnection.read { db in
-            // One extra row tells whether another page exists without counting every match.
             let results = try POSSearchIndexBuilder.search(
                 siteID: siteID,
                 term: searchTerm,

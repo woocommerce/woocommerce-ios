@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 import GRDB
 @testable import Storage
@@ -61,6 +62,38 @@ struct GRDBManagerTests {
             #expect(indexes[0].contains(["siteid", "productid"]))
             #expect(indexes[1].contains(["siteid", "productid"]))
             #expect(indexes[2].contains(["siteid", "productvariationid"]))
+        }
+
+        @Test("V004 migration succeeds when an existing row violates a foreign key")
+        func test_v004_migration_when_orphaned_relation_row_exists_then_succeeds() throws {
+            // Given: a database migrated before V004 that holds an orphaned attribute row
+            let path = FileManager.default.temporaryDirectory
+                .appendingPathComponent("v004-migration-\(UUID().uuidString).sqlite").path
+            defer { try? FileManager.default.removeItem(atPath: path) }
+            do {
+                let manager = try GRDBManager(databasePath: path)
+                try manager.databaseConnection.writeWithoutTransaction { db in
+                    try db.execute(sql: "DROP INDEX productAttribute_on_siteID_productID")
+                    try db.execute(sql: "DROP INDEX productVariation_on_siteID_productID")
+                    try db.execute(sql: "DROP INDEX productVariationAttribute_on_siteID_productVariationID")
+                    try db.execute(sql: "DELETE FROM grdb_migrations WHERE identifier = 'V004AddRelationLookupIndexes'")
+                    try db.execute(sql: "PRAGMA foreign_keys = OFF")
+                    try db.execute(sql: """
+                        INSERT INTO productAttribute (siteID, productID, remoteAttributeID, name, position, visible, variation, options)
+                        VALUES (1, 999, 0, 'Color', 0, 1, 0, '[]')
+                        """)
+                    try db.execute(sql: "PRAGMA foreign_keys = ON")
+                }
+            }
+
+            // When: the app opens the database and runs pending migrations
+            let manager = try GRDBManager(databasePath: path)
+
+            // Then: the migration does not fail on the unrelated violation
+            let indexNames = try manager.databaseConnection.read { db in
+                try db.indexes(on: "productAttribute").map(\.name)
+            }
+            #expect(indexNames.contains("productAttribute_on_siteID_productID"))
         }
 
         @Test("Relation lookups use an index instead of scanning the table")

@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
+# Uploaded by build-and-run-unit-tests.sh once the build products are available,
+# so the UI tests run in parallel with the unit tests.
+
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+
+steps:
+  - label: ":microscope: UI Tests (iPhone)"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE
+    artifact_paths:
+      - fastlane/test_output/*
+      - build/logs/wiremock.txt
+    notify:
+      - github_commit_status:
+          context: UI Tests (iPhone)
+
+  - label: ":microscope: UI Tests (iPad)"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
+    artifact_paths:
+      - fastlane/test_output/*
+      - build/logs/wiremock.txt
+    notify:
+      - github_commit_status:
+          context: UI Tests (iPad)

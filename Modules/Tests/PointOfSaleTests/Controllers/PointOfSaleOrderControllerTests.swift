@@ -36,7 +36,7 @@ struct PointOfSaleOrderControllerTests {
         let replacement = Order.fake().copy(orderID: 2)
         mockOrderService.orderToReturn = original
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
-        let replaceOrder: @MainActor () async -> Void = {
+        let replaceOrder: @MainActor @Sendable () async -> Void = {
             sut.clearOrder()
             mockOrderService.orderToReturn = replacement
             await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
@@ -76,7 +76,7 @@ struct PointOfSaleOrderControllerTests {
         var responseContinuation: CheckedContinuation<Void, Never>?
         var responseTask: Task<Order, Error>?
         await withCheckedContinuation { started in
-            let delayResponse: @MainActor () async -> Void = {
+            let delayResponse: @MainActor @Sendable () async -> Void = {
                 await withCheckedContinuation { continuation in
                     responseContinuation = continuation
                     started.resume()

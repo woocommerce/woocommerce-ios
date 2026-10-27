@@ -7,7 +7,7 @@ import struct Yosemite.POSStaffMember
 ///
 /// `DefaultPOSStaffSettingsService` is the standard implementation; the app target supplies the
 /// manage-on-web URL (see `Site.posStaffManagementAdminURL`).
-public protocol POSStaffSettingsService {
+public protocol POSStaffSettingsService: Sendable {
     func loadStaff() async throws -> [POSStaffMember]
     var manageStaffURL: String { get }
 }

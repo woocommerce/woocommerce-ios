@@ -663,7 +663,7 @@ public extension OrdersRemote {
 
     /// Order fields supported for update
     ///
-    enum UpdateOrderField: CaseIterable {
+    enum UpdateOrderField: CaseIterable, Sendable {
         case customerNote
         case shippingAddress
         case billingAddress
@@ -679,7 +679,7 @@ public extension OrdersRemote {
 
     /// Order fields supported for create
     ///
-    enum CreateOrderField {
+    enum CreateOrderField: Sendable {
         case feeLines
         case status
         case items

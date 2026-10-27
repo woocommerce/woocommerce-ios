@@ -42,6 +42,7 @@ private struct ComponentsView: View {
             NavigationLink("Search Field") { SearchFieldComponentView() }
             NavigationLink("Segmented Control") { SegmentedControlComponentView() }
             NavigationLink("Sheet") { SheetComponentView() }
+            NavigationLink("Tabs") { TabsComponentView() }
             NavigationLink("Tooltip") { TooltipComponentView() }
             NavigationLink("Top App Bar") { TopAppBarComponentView() }
         }

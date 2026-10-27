@@ -10,6 +10,7 @@ import Combine
 ///
 /// Encapsulates logic for displaying and editing (adding, updating, or removing) shipping lines on an order.
 ///
+@MainActor
 final class EditableOrderShippingLineViewModel: ObservableObject {
     private var siteID: Int64
     private var analytics: Analytics
@@ -238,7 +239,10 @@ private extension EditableOrderShippingLineViewModel {
         let action = ShippingMethodAction.synchronizeShippingMethods(siteID: siteID) { [weak self] result in
             switch result {
             case .success:
-                self?.updateShippingMethodsResultsController()
+                guard let self else { return }
+                Task { @MainActor in
+                    self.updateShippingMethodsResultsController()
+                }
             case let .failure(error):
                 DDLogError("⛔️ Error retrieving available shipping methods: \(error)")
             }

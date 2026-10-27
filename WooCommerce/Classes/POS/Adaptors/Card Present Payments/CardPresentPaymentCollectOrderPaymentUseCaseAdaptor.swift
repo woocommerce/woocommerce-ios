@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import PointOfSale
 import WooFoundation
 import Combine
@@ -17,12 +18,15 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let isCancelled = OSAllocatedUnfairLock(initialState: false)
     private let stores: StoresManager
     private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
+    private let applicationStateProvider: @MainActor () -> UIApplication.State
 
     init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings),
          paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>,
          stores: StoresManager = ServiceLocator.stores,
-         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) {
+         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
+         applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.currencyFormatter = currencyFormatter
+        self.applicationStateProvider = applicationStateProvider
         self.stores = stores
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         paymentEventPublisher
@@ -43,7 +47,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
-            let invalidatablePaymentOrchestrator = CardPresentPaymentInvalidatablePaymentOrchestrator()
+            let invalidatablePaymentOrchestrator = CardPresentPaymentInvalidatablePaymentOrchestrator(stores: stores)
 
             let orderPaymentUseCase = CollectOrderPaymentUseCase<CardPresentPaymentsTransactionAlertsProvider,
                                                                  CardPresentPaymentsTransactionAlertsProvider,
@@ -59,7 +63,8 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(showsTapToPayCancellationConfirmation: true),
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 preflightController: preflightController,
-                analyticsTracker: collectOrderPaymentAnalyticsTracker)
+                analyticsTracker: collectOrderPaymentAnalyticsTracker,
+                applicationStateProvider: applicationStateProvider)
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in
@@ -157,10 +162,11 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             // We can't cancel an in-progress connection, but we've invalidated the payment orchestrator
             return
             /// Connection already completed, before attempting payment
-        case .validatingOrder, .connectionSuccess:
+        case .connectionSuccess:
             // No need to cancel at this stage – having invalidated the payment orchestrator is enough
             return
-        case .preparingForPayment(cancelPayment: let cancelPayment),
+        case .validatingOrder(cancelPayment: let cancelPayment),
+                .preparingForPayment(cancelPayment: let cancelPayment),
                 .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment),
                 .cardInserted(cancelPayment: let cancelPayment),
                 .paymentError(_, _, cancelPayment: let cancelPayment),

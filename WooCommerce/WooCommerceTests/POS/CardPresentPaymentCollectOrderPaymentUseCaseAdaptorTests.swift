@@ -6,6 +6,7 @@ import Yosemite
 @testable import WooCommerce
 
 @MainActor
+@Suite(.timeLimit(.minutes(5)))
 struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
     @Test func test_cancellation_when_cancelled_on_main_actor_then_event_action_runs_synchronously() async throws {
         // Given
@@ -112,18 +113,53 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
         #expect(result == .cancellation)
         #expect(cancelCount == 1)
     }
+
+    @Test func test_cancellation_when_cancelled_while_validating_order_then_returns_cancellation() async throws {
+        // Given
+        var didRequestOrderValidation = false
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case .retrieveOrderRemotely = action {
+                didRequestOrderValidation = true
+            }
+        }
+        let (paymentTask, preflightController) = await startPayment(events: PassthroughSubject(), stores: stores)
+        preflightController.completeConnection(reader: MockCardReader.bbposChipper2XBT(), gatewayID: WCPayAccount.gatewayID)
+        try #require(didRequestOrderValidation)
+
+        // When
+        paymentTask.cancel()
+
+        // Then
+        let result = try await paymentTask.value
+        #expect(result == .cancellation)
+    }
 }
 
 private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
-    /// Starts the real collect flow and returns once it is waiting on the reader connection.
-    func startPayment(events: PassthroughSubject<CardPresentPaymentEvent, Never>)
-    async -> (Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>, MockCardPresentPaymentPreflightController) {
+    func makeStores() -> MockStoresManager {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case .cancelReconnection(let completion) = action {
+            switch action {
+            case .cancelReconnection(let completion):
                 completion(.success(()))
+            case .cancelPayment(let completion):
+                completion?(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
+            default:
+                break
             }
         }
+        return stores
+    }
+
+    /// Starts the real collect flow and returns once it is waiting on the reader connection.
+    func startPayment(events: PassthroughSubject<CardPresentPaymentEvent, Never>,
+                      order: Order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", total: "10.00"),
+                      stores: MockStoresManager? = nil,
+                      alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor? = nil)
+    async -> (Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>, MockCardPresentPaymentPreflightController) {
+        let stores = stores ?? makeStores()
+        let alertsPresenter = alertsPresenter ?? CardPresentPaymentsAlertPresenterAdaptor()
         let currencySettings = CurrencySettings(currencyCode: .USD,
                                                 currencyPosition: .left,
                                                 thousandSeparator: ",",
@@ -131,19 +167,20 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
                                                 numberOfDecimals: 2)
         let adaptor = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(
             currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
-            paymentEventPublisher: events.eraseToAnyPublisher(),
+            paymentEventPublisher: events.merge(with: alertsPresenter.paymentEventPublisher).eraseToAnyPublisher(),
             stores: stores,
-            collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker()
+            collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
+            applicationStateProvider: { .active }
         )
         let preflightController = MockCardPresentPaymentPreflightController()
         let paymentTask = await withCheckedContinuation { continuation in
             let task = adaptor.collectPaymentTask(
-                for: Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", total: "10.00"),
+                for: order,
                 using: .bluetooth,
                 siteID: 123,
                 preflightController: preflightController,
                 configuration: CardPresentPaymentsConfiguration(country: .US),
-                alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor(),
+                alertsPresenter: alertsPresenter,
                 paymentEventSubject: events,
                 channel: .storeManagement
             )

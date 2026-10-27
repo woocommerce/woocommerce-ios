@@ -5,6 +5,7 @@ import Yosemite
 //
 
 /// Encapsulates configuration and interaction of a UITableView row.
+@MainActor
 protocol ProductSettingsRowMediator {
 
     /// Update the cell UI and bind to events if needed.

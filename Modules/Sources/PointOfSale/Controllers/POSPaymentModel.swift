@@ -141,6 +141,7 @@ final class POSPaymentModel {
     /// "still loading the URL" from "no URL available".
     private(set) var isPreparingScanToPay: Bool = false
     private var scanToPayPollingTask: Task<Void, Never>?
+    private var scanToPayGeneration = UUID()
 
     /// Coalesces concurrent silent-TTP pre-connect attempts. Without this,
     /// every call to `connectTapToPayReader` (which can come from
@@ -723,6 +724,9 @@ extension POSPaymentModel {
         startPaymentOnCardReaderConnection = nil
         startPaymentGeneration += 1
 
+        let generation = UUID()
+        scanToPayGeneration = generation
+
         // Flip state right away so the dashboard observer pushes the QR screen.
         scanToPayURL = nil
         isPreparingScanToPay = true
@@ -742,10 +746,7 @@ extension POSPaymentModel {
             let paymentOrder = try await orderProvider.provideOrderForScanToPay()
 
             // Bail if the merchant cancelled while we were waiting for the network.
-            guard paymentState.scanToPay.isShowingQRCode else {
-                isPreparingScanToPay = false
-                return
-            }
+            guard generation == scanToPayGeneration, paymentState.scanToPay.isShowingQRCode else { return }
 
             currentOrder = paymentOrder.order
             formattedOrderTotalPrice = paymentOrder.formattedTotal
@@ -756,6 +757,7 @@ extension POSPaymentModel {
             // would always classify the autoDraft as pending and burn API calls for nothing.
             startScanToPayPolling()
         } catch {
+            guard generation == scanToPayGeneration else { return }
             DDLogError("📲 [ScanToPay] failed to provide order: \(error)")
             isPreparingScanToPay = false
             // Leave state as `.showingQRCode` so the view can render an "unable to generate"
@@ -765,6 +767,7 @@ extension POSPaymentModel {
 
     /// Stage 2 (cancel): merchant tapped back. Resets state and re-arms the card flow.
     func cancelScanToPayPayment() async {
+        scanToPayGeneration = UUID()
         analytics.track(.pointOfSaleBackToCheckoutFromScanToPayTapped)
         stopScanToPayPolling()
         paymentState.scanToPay = .idle
@@ -1026,6 +1029,7 @@ extension POSPaymentModel {
 // MARK: - Reset
 extension POSPaymentModel {
     func reset() {
+        scanToPayGeneration = UUID()
         cancelConnectCardReaderTask()
         cancelTapToPayConnectTask()
         stopScanToPayPolling()
@@ -1141,6 +1145,7 @@ private extension POSPaymentModel {
             .sink(receiveValue: { [weak self] connectionStatus in
                 guard let self else { return }
                 cardReaderConnectionStatus = connectionStatus
+                collectOrderPaymentAnalyticsTracker.trackCardReaderConnectionChanged(isConnected: connectionStatus.isConnected)
                 if connectionStatus == .disconnected {
                     // Clear the tracking flag so the next pre-connect can't
                     // mistakenly think a TTP reader is still attached and
@@ -1341,12 +1346,16 @@ private extension POSPaymentModel {
                 let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
                                                                       using: presentationStyleDeterminerDependencies)
 
-                if case .acceptingCard = newCardPaymentState {
+                switch newCardPaymentState {
+                case .validatingOrder, .preparingReader:
+                    // Re-arming at both steps keeps a failed validation from reporting the previous attempt's timing.
+                    collectOrderPaymentAnalyticsTracker.trackCardPaymentAttemptStarted()
+                case .acceptingCard:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
-                }
-
-                if case .processingPayment = newCardPaymentState {
+                case .processingPayment:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
+                default:
+                    break
                 }
 
                 return newCardPaymentState

@@ -250,6 +250,11 @@ WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator
 
 The WooAIAssistant module (`Modules/Sources/WooAIAssistant/`) is a self-contained feature module that ships an in-app conversational agent for merchants. The architecture is designed to be flexible: it can integrate REST tools, MCP tools, or both, and the chat endpoint is swappable without touching the agentic loop. The module renders rich entity cards that integrate with existing app views and screens. See `Modules/Sources/WooAIAssistant/AGENTS.md` for architecture, decisions, and anti-patterns. Live evaluation runs through the `/woo-ai-smoke` skill.
 
+## Code Comments
+
+- Comment only what the code can't say: the reason behind a non-obvious choice, an external constraint, or an edge case that is hard to infer.
+- Don't restate what the code, its name or its type already says, and don't document each property or method by default.
+
 ## Git Conventions
 
 - **Main branch**: `trunk`

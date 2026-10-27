@@ -69,6 +69,131 @@ final class POSRefundControllerTests {
         #expect(refundSubmissionProcessor.preloadedOrderIDs.isEmpty)
     }
 
+    @Test(arguments: [false, true], [false, true])
+    func startRefundFlow_when_an_older_request_finishes_then_keeps_newer_preparation(sameOrder: Bool, fails: Bool) async throws {
+        // Given a first preparation that remains suspended while a newer preparation completes
+        let firstOrder = POSOrderTestFactory.makeOrder(id: 1, lineItems: [
+            POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1)
+        ])
+        let secondOrder = POSOrderTestFactory.makeOrder(id: sameOrder ? 1 : 2, lineItems: [
+            POSOrderTestFactory.makePOSOrderItem(itemID: 2, quantity: 1)
+        ])
+        var continuation: CheckedContinuation<Void, Never>?
+        var firstTask: Task<StartRefundFlowResult, Never>?
+        await fireOnce { fire in
+            refundSubmissionProcessor.onPrepareRefundCalled = { order in
+                guard order.lineItems.first?.itemID == 1 else { return }
+                await withCheckedContinuation { continuation = $0; fire() }
+                if fails {
+                    throw TestError.prepareRefundFailed
+                }
+            }
+            firstTask = Task { await sut.startRefundFlow(for: firstOrder) }
+        }
+        if !sameOrder {
+            sut.reset()
+        }
+        _ = await sut.startRefundFlow(for: secondOrder)
+
+        // When the older request returns, even if its service ignores cancellation
+        continuation?.resume()
+        _ = await firstTask?.value
+
+        // Then the newer selection and its preparation remain usable
+        #expect(sut.selectableItems.map(\.itemID) == [2])
+        guard case .ready = await sut.prepareReview() else {
+            Issue.record("The newer preparation must remain available for review")
+            return
+        }
+        let result = try await sut.processRefund(reason: nil)
+        #expect(result.refundedOrderID == secondOrder.id)
+    }
+
+    @Test(arguments: [false, true])
+    func startRefundFlow_when_the_flow_is_closed_then_ignores_its_pending_response(resetFlow: Bool) async throws {
+        // Given a suspended preparation
+        let order = POSOrderTestFactory.makeOrder(lineItems: [POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1)])
+        var continuation: CheckedContinuation<Void, Never>?
+        var preparationTask: Task<StartRefundFlowResult, Never>?
+        await fireOnce { fire in
+            refundSubmissionProcessor.onPrepareRefundCalled = { _ in
+                await withCheckedContinuation { continuation = $0; fire() }
+            }
+            preparationTask = Task { await sut.startRefundFlow(for: order) }
+        }
+
+        // When the flow is dismissed or the selected order is reset before its response arrives
+        if resetFlow {
+            sut.reset()
+        } else {
+            sut.clearSelection()
+        }
+        continuation?.resume()
+        _ = await preparationTask?.value
+
+        // Then the closed flow stays empty
+        #expect(sut.selectableItems.isEmpty)
+        #expect(sut.hasLoadedSelectableItems == false)
+        #expect(sut.reviewPreparationState == .idle)
+    }
+
+    @Test func startRefundFlow_when_its_task_is_cancelled_then_ignores_the_pending_preparation() async throws {
+        // Given a suspended preparation whose service ignores cancellation
+        let order = POSOrderTestFactory.makeOrder(lineItems: [POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1)])
+        var continuation: CheckedContinuation<Void, Never>?
+        var preparationTask: Task<StartRefundFlowResult, Never>?
+        await fireOnce { fire in
+            refundSubmissionProcessor.onPrepareRefundCalled = { _ in
+                await withCheckedContinuation { continuation = $0; fire() }
+            }
+            preparationTask = Task { await sut.startRefundFlow(for: order) }
+        }
+
+        // When the task that started the flow is cancelled before the preparation returns
+        preparationTask?.cancel()
+        continuation?.resume()
+        let result = await preparationTask?.value
+
+        // Then the preparation is not accepted and nothing can be reviewed or submitted
+        #expect(result == .failed)
+        #expect(sut.selectableItems.isEmpty)
+        #expect(sut.hasLoadedSelectableItems == false)
+        #expect(await sut.prepareReview() == .preparationError)
+        await #expect(performing: {
+            _ = try await sut.processRefund(reason: nil)
+        }, throws: { error in
+            (error as? POSRefundProcessingError) == .missingRefundPreparation
+        })
+        #expect(refundSubmissionProcessor.submitRefundCalled == false)
+    }
+
+    @Test(arguments: [false, true])
+    func startRefundFlow_when_preparation_belongs_to_another_order_then_rejects_it(afterLoadedItems: Bool) async throws {
+        // Given an order, optionally with items loaded by an earlier preparation
+        let order = POSOrderTestFactory.makeOrder(id: 1, lineItems: [
+            POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 2)
+        ])
+        if afterLoadedItems {
+            _ = await sut.startRefundFlow(for: order)
+        }
+        refundSubmissionProcessor.preparationOrderIDOverride = order.id + 1
+
+        // When the processor returns a preparation for a different order
+        let result = afterLoadedItems ? await sut.refreshRefundableItems() : await sut.startRefundFlow(for: order)
+
+        // Then the preparation is rejected; earlier items stay visible as after any failed reload,
+        // but they cannot be reviewed or submitted
+        #expect(result == .failed)
+        #expect(sut.selectableItems.count == (afterLoadedItems ? 2 : 0))
+        #expect(await sut.prepareReview() == .preparationError)
+        await #expect(performing: {
+            _ = try await sut.processRefund(reason: nil)
+        }, throws: { error in
+            (error as? POSRefundProcessingError) == .missingRefundPreparation
+        })
+        #expect(refundSubmissionProcessor.submitRefundCalled == false)
+    }
+
     @Test func startRefundFlow_when_product_has_multiple_quantities_then_creates_one_row_per_unit() async throws {
         // Given
         let order = POSOrderTestFactory.makeOrder(lineItems: [
@@ -413,12 +538,14 @@ final class POSRefundControllerTests {
 
     @Test func reset_then_clears_the_selection() async throws {
         // Given
+        refundSubmissionProcessor.requiresCardPresentRefund = true
         let order = POSOrderTestFactory.makeOrder(lineItems: [
             POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00", formattedTotal: "$10.00")
         ])
 
         _ = await sut.startRefundFlow(for: order)
         sut.toggleItemSelection(at: 0)
+        try #require(sut.requiresCardPresentRefund)
         try #require(sut.hasModifiedSelection == true)
         try #require(sut.selectableItems.isNotEmpty)
 
@@ -428,6 +555,7 @@ final class POSRefundControllerTests {
         // Then
         #expect(sut.selectableItems.isEmpty)
         #expect(sut.hasModifiedSelection == false)
+        #expect(sut.requiresCardPresentRefund == false)
 
         // The pinned order is dropped: submitting after a reset fails instead of
         // refunding the previously selected order.
@@ -905,8 +1033,9 @@ final class POSRefundControllerTests {
         #expect(sut.reviewPreparationState == .idle)
     }
 
-    @Test func clearSelection_after_a_completed_preparation_returns_state_to_idle() async throws {
+    @Test func clearSelection_after_completed_preparation_then_resets_review_and_keeps_card_present_requirement() async throws {
         // Given a completed preparation
+        refundSubmissionProcessor.requiresCardPresentRefund = true
         let order = POSOrderTestFactory.makeOrder(lineItems: [
             POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
         ])
@@ -918,6 +1047,7 @@ final class POSRefundControllerTests {
 
         // Then
         #expect(sut.reviewPreparationState == .idle)
+        #expect(sut.requiresCardPresentRefund)
     }
 
     // MARK: - Process Refund Tests

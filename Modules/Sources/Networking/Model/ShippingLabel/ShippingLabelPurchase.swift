@@ -5,7 +5,7 @@ import Codegen
 ///
 /// Shipping label purchases contain a subset of the label data included in a purchased `ShippingLabel`.
 ///
-public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     /// The remote ID of the site that owns this shipping label.
     public let siteID: Int64
 

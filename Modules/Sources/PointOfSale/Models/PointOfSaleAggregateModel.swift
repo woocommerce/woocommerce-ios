@@ -269,7 +269,12 @@ extension PointOfSaleAggregateModel {
         setStateForEditing()
     }
 
-    func cancelInFlightCheckout() {
+    func leaveCheckout() {
+        // A paid order can't be edited or charged again, so leaving its success screen starts a fresh cart.
+        guard !paymentState.isSuccess else {
+            startNewCart()
+            return
+        }
         setStateForEditing()
     }
 

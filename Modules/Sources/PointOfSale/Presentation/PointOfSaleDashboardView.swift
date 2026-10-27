@@ -701,7 +701,7 @@ private extension PointOfSaleDashboardView {
     }
 
     func presentOrders() {
-        posModel.cancelInFlightCheckout()
+        posModel.leaveCheckout()
         showOrders = true
     }
 

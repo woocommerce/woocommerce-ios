@@ -1,15 +1,41 @@
 import Foundation
+import Synchronization
 import Yosemite
 import enum WooFoundation.CurrencyCode
 
 /// Mock for `POSOrderServiceProtocol` in app-target tests. Only `loadOrder` is stubbed with a
 /// meaningful value; the remaining methods are unused by the current tests and fail loudly if reached.
 final class MockPOSOrderService: POSOrderServiceProtocol {
-    var orderToReturn: Order?
-    private(set) var spyLoadOrderID: Int64?
+    private struct State {
+        var orderToReturn: Order?
+        var onLoadOrder: (@MainActor @Sendable (Int64) async throws -> Order)?
+        var spyLoadOrderID: Int64?
+    }
+
+    private let state = Mutex(State())
+
+    var orderToReturn: Order? {
+        get { state.withLock { $0.orderToReturn } }
+        set { state.withLock { $0.orderToReturn = newValue } }
+    }
+
+    var onLoadOrder: (@MainActor @Sendable (Int64) async throws -> Order)? {
+        get { state.withLock { $0.onLoadOrder } }
+        set { state.withLock { $0.onLoadOrder = newValue } }
+    }
+
+    var spyLoadOrderID: Int64? {
+        state.withLock { $0.spyLoadOrderID }
+    }
 
     func loadOrder(orderID: Int64) async throws -> Order {
-        spyLoadOrderID = orderID
+        let (orderToReturn, onLoadOrder) = state.withLock {
+            $0.spyLoadOrderID = orderID
+            return ($0.orderToReturn, $0.onLoadOrder)
+        }
+        if let onLoadOrder {
+            return try await onLoadOrder(orderID)
+        }
         guard let order = orderToReturn else {
             throw MockPOSOrderServiceError.missingStub
         }

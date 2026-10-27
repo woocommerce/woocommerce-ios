@@ -30,12 +30,15 @@ final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcessing {
 
     private(set) var preloadedOrderIDs: [Int64] = []
     var prepareRefundErrorToThrow: Error?
+    var onPrepareRefundCalled: (@MainActor (POSOrder) async throws -> Void)?
+    var preparationOrderIDOverride: Int64?
 
     func preloadRefund(for order: POSOrder) async {
         preloadedOrderIDs.append(order.id)
     }
 
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
+        try await onPrepareRefundCalled?(order)
         if let prepareRefundErrorToThrow {
             throw prepareRefundErrorToThrow
         }
@@ -60,7 +63,7 @@ final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcessing {
             .map { POSRefundSelectableItem(from: $0, isSelected: true) }
 
         return POSRefundPreparation(
-            orderID: order.id,
+            orderID: preparationOrderIDOverride ?? order.id,
             selectableItems: productSelectables + feeSelectables,
             paymentMethodDescription: String(format: "via %1$@", order.paymentMethodTitle),
             customerEmail: order.customerEmail,

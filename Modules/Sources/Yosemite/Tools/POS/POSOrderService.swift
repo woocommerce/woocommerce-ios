@@ -6,7 +6,7 @@ import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 import enum Alamofire.AFError
 
-public protocol POSOrderServiceProtocol {
+public protocol POSOrderServiceProtocol: Sendable {
     /// Syncs order based on the cart.
     /// - Parameters:
     ///   - cart: Cart with different types of items and quantities.

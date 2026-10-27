@@ -6,10 +6,10 @@ import Networking
 // MARK: - ReceiptStore
 //
 public class ReceiptStore: Store {
-    private let remote: ReceiptRemote
+    private let requestHandler: ReceiptStoreRequestHandler
 
     override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = ReceiptRemote(network: network)
+        self.requestHandler = ReceiptStoreRequestHandler(remote: ReceiptRemote(network: network))
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -36,11 +36,18 @@ public class ReceiptStore: Store {
     }
 }
 
+private final class ReceiptStoreRequestHandler: Sendable {
+    let remote: ReceiptRemote
+
+    init(remote: ReceiptRemote) {
+        self.remote = remote
+    }
+}
 
 private extension ReceiptStore {
     func retrieveReceipt(order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void) {
-        remote.retrieveReceipt(siteID: order.siteID,
-                               orderID: order.orderID) { result in
+        requestHandler.remote.retrieveReceipt(siteID: order.siteID,
+                                              orderID: order.orderID) { result in
             switch result {
             case let .success(receipt):
                 onCompletion(.success(receipt))
@@ -57,7 +64,7 @@ private extension ReceiptStore {
     ///  - email: The email address to which the receipt is being sent.
     ///  - onCompletion: The completion block to call when the operation is complete.
     ///
-    func sendReceipt(order: Order, email: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func sendReceipt(order: Order, email: String, onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
         guard order.billingAddress?.email == nil || order.billingAddress?.email?.isEmpty == true else {
             onCompletion(.failure(ReceiptStoreError.customerEmailAlreadySet))
             return
@@ -76,14 +83,17 @@ private extension ReceiptStore {
                                                                                         email: email)
         let orderToUpdate = order.copy(billingAddress: updatedBillingAddress)
 
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: orderToUpdate, giftCard: nil, fields: [.billingAddress]) { [weak self] result in
-            guard let self else {
+        let action = OrderAction.updateOrder(siteID: order.siteID,
+                                             order: orderToUpdate,
+                                             giftCard: nil,
+                                             fields: [.billingAddress]) { [weak requestHandler] result in
+            guard let requestHandler else {
                 return onCompletion(.failure(ReceiptStoreError.storeDeallocated))
             }
 
             switch result {
             case let .success(updatedOrder):
-                remote.sendReceipt(siteID: order.siteID, orderID: order.orderID) { result in
+                requestHandler.remote.sendReceipt(siteID: order.siteID, orderID: order.orderID) { result in
                     switch result {
                     case .success:
                         onCompletion(.success(updatedOrder))

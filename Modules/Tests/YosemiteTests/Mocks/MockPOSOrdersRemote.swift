@@ -1,163 +1,151 @@
 import Networking
+import Synchronization
 
+@dynamicMemberLookup
 final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
-    var updatePOSOrderCalled: Bool = false
-    var spyUpdatePOSOrder: Order?
-    var spyUpdatePOSOrderFields: [OrdersRemote.UpdateOrderField]?
-    var spyUpdatePOSOrderCashPaymentChangeDueAmount: String?
-    var updatePOSOrderResult: Result<Order, Error> = .success(Order.fake())
+    struct State {
+        var updatePOSOrderCalled: Bool = false
+        var spyUpdatePOSOrder: Order?
+        var spyUpdatePOSOrderFields: [OrdersRemote.UpdateOrderField]?
+        var spyUpdatePOSOrderCashPaymentChangeDueAmount: String?
+        var updatePOSOrderResult: Result<Order, Error> = .success(Order.fake())
+
+        var updatePOSOrderEmailCalled: Bool = false
+        var spyUpdatePOSOrderEmailSiteID: Int64?
+        var spyUpdatePOSOrderEmailOrderID: Int64?
+        var spyUpdatePOSOrderEmailAddress: String?
+        var updatePOSOrderEmailResult: Result<Void, Error> = .success(())
+
+        var createPOSOrderCalled: Bool = false
+        var spyCreatePOSOrder: Order?
+        var spyCreatePOSOrderFields: [OrdersRemote.CreateOrderField]?
+        var createPOSOrderResult: Result<Order, Error>?
+
+        var mockPagedOrdersResult: Result<PagedItems<Order>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        var loadPOSOrdersCalled = false
+        var spySiteID: Int64?
+        var spyPageNumber: Int?
+        var spyPageSize: Int?
+
+        var mockSearchPagedOrdersResult: Result<PagedItems<Order>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+        var searchPOSOrdersCalled = false
+        var spySearchTerm: String?
+
+        var loadPOSOrderCalled = false
+        var spyLoadPOSOrderID: Int64?
+        var loadPOSOrderResult: Result<Order, Error> = .success(Order.fake())
+
+        var loadPOSOrdersByIDsCalled = false
+        var loadPOSOrdersByIDsResult: Result<[Order], Error> = .success([])
+
+        var addPOSOrderNoteCalled = false
+        var spyAddPOSOrderNoteOrderID: Int64?
+        var spyAddPOSOrderNoteIsCustomerNote: Bool?
+        var spyAddPOSOrderNoteText: String?
+        var addPOSOrderNoteError: Error?
+    }
+
+    private let state = Mutex(State())
+
+    subscript<T: Sendable>(dynamicMember keyPath: WritableKeyPath<State, T>) -> T {
+        get { state.withLock { $0[keyPath: keyPath] } }
+        set { state.withLock { $0[keyPath: keyPath] = newValue } }
+    }
+
     func updatePOSOrder(siteID: Int64,
                         order: Order,
                         cashPaymentChangeDueAmount: String?,
                         fields: [OrdersRemote.UpdateOrderField]) async throws -> Order {
-        updatePOSOrderCalled = true
-        spyUpdatePOSOrder = order
-        spyUpdatePOSOrderFields = fields
-        spyUpdatePOSOrderCashPaymentChangeDueAmount = cashPaymentChangeDueAmount
-        switch updatePOSOrderResult {
-        case .success(let updatedOrder):
-            return updatedOrder
-        case .failure(let error):
-            throw error
+        try state.withLock {
+            $0.updatePOSOrderCalled = true
+            $0.spyUpdatePOSOrder = order
+            $0.spyUpdatePOSOrderFields = fields
+            $0.spyUpdatePOSOrderCashPaymentChangeDueAmount = cashPaymentChangeDueAmount
+            return try $0.updatePOSOrderResult.get()
         }
     }
-
-    var updatePOSOrderEmailCalled: Bool = false
-    var spyUpdatePOSOrderEmailSiteID: Int64?
-    var spyUpdatePOSOrderEmailOrderID: Int64?
-    var spyUpdatePOSOrderEmailAddress: String?
-    var updatePOSOrderEmailResult: Result<Void, Error> = .success(())
 
     func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
-        updatePOSOrderEmailCalled = true
-        spyUpdatePOSOrderEmailSiteID = siteID
-        spyUpdatePOSOrderEmailOrderID = orderID
-        spyUpdatePOSOrderEmailAddress = emailAddress
-        switch updatePOSOrderEmailResult {
-        case .success:
-            return
-        case .failure(let error):
-            throw error
+        try state.withLock {
+            $0.updatePOSOrderEmailCalled = true
+            $0.spyUpdatePOSOrderEmailSiteID = siteID
+            $0.spyUpdatePOSOrderEmailOrderID = orderID
+            $0.spyUpdatePOSOrderEmailAddress = emailAddress
+            try $0.updatePOSOrderEmailResult.get()
         }
     }
 
-    var createPOSOrderCalled: Bool = false
-    var spyCreatePOSOrder: Order?
-    var spyCreatePOSOrderFields: [OrdersRemote.CreateOrderField]?
-    var createPOSOrderResult: Result<Order, Error>?
     func createPOSOrder(siteID: Int64,
                         order: Networking.Order,
                         fields: [OrdersRemote.CreateOrderField]) async throws -> Order {
-        createPOSOrderCalled = true
-        spyCreatePOSOrder = order
-        spyCreatePOSOrderFields = fields
+        try state.withLock {
+            $0.createPOSOrderCalled = true
+            $0.spyCreatePOSOrder = order
+            $0.spyCreatePOSOrderFields = fields
 
-        // If a custom result is set, use it
-        if let result = createPOSOrderResult {
-            switch result {
-            case .success(let customOrder):
-                return customOrder
-            case .failure(let error):
-                throw error
+            // If a custom result is set, use it
+            if let result = $0.createPOSOrderResult {
+                return try result.get()
             }
+
+            // By default, return the order that was passed in (simulating server echo)
+            return order
         }
-
-        // By default, return the order that was passed in (simulating server echo)
-        return order
     }
-
-    var mockPagedOrdersResult: Result<PagedItems<Order>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
-    var loadPOSOrdersCalled = false
-    var spySiteID: Int64?
-    var spyPageNumber: Int?
-    var spyPageSize: Int?
 
     func loadPOSOrders(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
-        loadPOSOrdersCalled = true
-        spySiteID = siteID
-        spyPageNumber = pageNumber
-        spyPageSize = pageSize
-
-        switch mockPagedOrdersResult {
-        case .success(let pagedOrders):
-            return pagedOrders
-        case .failure(let error):
-            throw error
+        try state.withLock {
+            $0.loadPOSOrdersCalled = true
+            $0.spySiteID = siteID
+            $0.spyPageNumber = pageNumber
+            $0.spyPageSize = pageSize
+            return try $0.mockPagedOrdersResult.get()
         }
     }
-
-    var mockSearchPagedOrdersResult: Result<PagedItems<Order>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
-    var searchPOSOrdersCalled = false
-    var spySearchTerm: String?
 
     func searchPOSOrders(siteID: Int64, searchTerm: String, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
-        searchPOSOrdersCalled = true
-        spySiteID = siteID
-        spySearchTerm = searchTerm
-        spyPageNumber = pageNumber
-        spyPageSize = pageSize
-
-        switch mockSearchPagedOrdersResult {
-        case .success(let pagedOrders):
-            return pagedOrders
-        case .failure(let error):
-            throw error
+        try state.withLock {
+            $0.searchPOSOrdersCalled = true
+            $0.spySiteID = siteID
+            $0.spySearchTerm = searchTerm
+            $0.spyPageNumber = pageNumber
+            $0.spyPageSize = pageSize
+            return try $0.mockSearchPagedOrdersResult.get()
         }
     }
-
-    var loadPOSOrderCalled = false
-    var spyLoadPOSOrderID: Int64?
-    var loadPOSOrderResult: Result<Order, Error> = .success(Order.fake())
 
     func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order {
-        loadPOSOrderCalled = true
-        spySiteID = siteID
-        spyLoadPOSOrderID = orderID
-
-        switch loadPOSOrderResult {
-        case .success(let order):
-            return order
-        case .failure(let error):
-            throw error
+        try state.withLock {
+            $0.loadPOSOrderCalled = true
+            $0.spySiteID = siteID
+            $0.spyLoadPOSOrderID = orderID
+            return try $0.loadPOSOrderResult.get()
         }
     }
-
-    var loadPOSOrdersByIDsCalled = false
-    var loadPOSOrdersByIDsResult: Result<[Order], Error> = .success([])
 
     func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
-        loadPOSOrdersByIDsCalled = true
-        spySiteID = siteID
-
-        switch loadPOSOrdersByIDsResult {
-        case .success(let orders):
-            return orders
-        case .failure(let error):
-            throw error
+        try state.withLock {
+            $0.loadPOSOrdersByIDsCalled = true
+            $0.spySiteID = siteID
+            return try $0.loadPOSOrdersByIDsResult.get()
         }
     }
-
-    var addPOSOrderNoteCalled = false
-    var spyAddPOSOrderNoteOrderID: Int64?
-    var spyAddPOSOrderNoteIsCustomerNote: Bool?
-    var spyAddPOSOrderNoteText: String?
-    var addPOSOrderNoteResult: Result<OrderNote, Error> = .success(OrderNote.fake())
 
     func addPOSOrderNote(siteID: Int64,
                          orderID: Int64,
                          isCustomerNote: Bool,
                          note: String) async throws -> OrderNote {
-        addPOSOrderNoteCalled = true
-        spySiteID = siteID
-        spyAddPOSOrderNoteOrderID = orderID
-        spyAddPOSOrderNoteIsCustomerNote = isCustomerNote
-        spyAddPOSOrderNoteText = note
-
-        switch addPOSOrderNoteResult {
-        case .success(let orderNote):
-            return orderNote
-        case .failure(let error):
+        let error = state.withLock {
+            $0.addPOSOrderNoteCalled = true
+            $0.spySiteID = siteID
+            $0.spyAddPOSOrderNoteOrderID = orderID
+            $0.spyAddPOSOrderNoteIsCustomerNote = isCustomerNote
+            $0.spyAddPOSOrderNoteText = note
+            return $0.addPOSOrderNoteError
+        }
+        if let error {
             throw error
         }
+        return OrderNote.fake()
     }
 }

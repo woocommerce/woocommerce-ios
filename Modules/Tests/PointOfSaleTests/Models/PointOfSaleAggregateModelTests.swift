@@ -1871,6 +1871,7 @@ private func makePointOfSaleAggregateModel(
     )
 }
 
+@MainActor
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     var retrievePointOfSaleSettingsWasCalled = false
     var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)

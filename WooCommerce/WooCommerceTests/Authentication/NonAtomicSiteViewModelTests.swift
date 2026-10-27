@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class NonAtomicSiteViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title() {

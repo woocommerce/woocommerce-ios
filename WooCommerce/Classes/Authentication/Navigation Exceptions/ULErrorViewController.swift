@@ -1,6 +1,5 @@
 import Combine
 import UIKit
-import WordPressAuthenticator
 import SafariServices
 
 

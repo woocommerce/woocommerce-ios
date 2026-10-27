@@ -1197,6 +1197,7 @@ private extension AuthenticationManager {
     ///     - matcher: the matcher used to check for matching sites.
     ///     - navigationController: the controller that will present the view.
     ///
+    @MainActor
     func accountMismatchUI(for siteURL: String,
                            siteCredentials: WordPressOrgCredentials?,
                            with matcher: ULAccountMatcher,
@@ -1283,6 +1284,7 @@ private extension AuthenticationManager {
     /// The error screen to be displayed when Jetpack setup for a site is required.
     /// This is the entry point to the native Jetpack setup flow.
     ///
+    @MainActor
     func jetpackSetupUI(for siteURL: String,
                         connectionMissingOnly: Bool,
                         reportsLoginStep: Bool = false,
@@ -1297,6 +1299,7 @@ private extension AuthenticationManager {
     /// Appropriate error to display for a site when entered from the site discovery flow.
     /// More about this flow: pe5sF9-mz-p2
     ///
+    @MainActor
     func errorUI(for site: WordPressComSiteInfo, in navigationController: UINavigationController) -> UIViewController {
         guard site.isWP else {
             return noWPUI

@@ -1,6 +1,6 @@
 import Combine
 import UIKit
-import WordPressAuthenticator
+import class WordPressAuthenticator.NUXButton
 import SafariServices
 
 

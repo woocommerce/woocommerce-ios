@@ -2,14 +2,8 @@ import Combine
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class ULAccountMismatchViewControllerTests: XCTestCase {
-
-    private var subscriptions: Set<AnyCancellable>!
-
-    override func setUp() {
-        super.setUp()
-        subscriptions = []
-    }
 
     func test_viewcontroller_presents_username_provided_by_viewmodel() throws {
         // Given

@@ -3,6 +3,7 @@ import UIKit
 
 /// Abstracts different configurations and logic related to user interaction
 /// for error view controllers presented as part of the Unified Login flow
+@MainActor
 protocol ULAccountMismatchViewModel {
     /// The logged in user's email
     var userEmail: String { get }

@@ -1,12 +1,18 @@
 import UIKit
 import SafariServices
-import WordPressAuthenticator
+import struct WordPressAuthenticator.NavigateBack
+import struct WordPressAuthenticator.NavigateToRoot
 import WordPressUI
 
 
 /// Configuration and actions for an ULErrorViewController, modeling
 /// an error when the site is not a WordPress site
+@MainActor
 struct NotWPErrorViewModel: ULErrorViewModel {
+    // Nonisolated because `AuthenticationManager` builds this view model from authenticator delegate methods
+    // that are not main-actor isolated yet. It assigns only Sendable values. Remove once WOOMOB-4179 isolates them.
+    nonisolated init() {}
+
     // MARK: - Data and configuration
     let image: UIImage = .loginNoWordPressError
 

@@ -4,6 +4,7 @@ import Yosemite
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when the user tries to log in to the app with a simple WP.com site.
+@MainActor
 struct NonAtomicSiteViewModel: ULErrorViewModel {
     private let site: Site
     private let stores: StoresManager

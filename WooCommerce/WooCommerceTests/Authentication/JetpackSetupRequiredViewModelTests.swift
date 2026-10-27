@@ -3,6 +3,7 @@ import XCTest
 import WordPressShared
 @testable import WooCommerce
 
+@MainActor
 final class JetpackSetupRequiredViewModelTests: XCTestCase {
 
     private let testSiteURL = "https://test.com"

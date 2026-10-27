@@ -11,7 +11,7 @@ public extension NSNotification.Name {
 
 /// Defines the methods and properties implemented by any concrete StorageManager implementation.
 ///
-public protocol StorageManagerType: AnyObject {
+public protocol StorageManagerType: AnyObject, Sendable {
 
     /// Returns the `Storage` associated to the main thread.
     ///

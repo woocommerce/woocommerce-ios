@@ -13,7 +13,7 @@ public final class StatsStoreV4: Store {
     private let productBundleStatsRemote: ProductBundleStatsRemote
     private let giftCardStatsRemote: GiftCardStatsRemote
 
-    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: any StorageManagerType & Sendable, network: Network) {
         self.siteStatsRemote = SiteStatsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
@@ -149,7 +149,7 @@ public final class StatsStoreV4: Store {
 private extension StatsStoreV4 {
     /// Deletes all of the Stats data.
     ///
-    func resetStoredStats(onCompletion: @escaping () -> Void) {
+    func resetStoredStats(onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ storage in
             storage.deleteAllObjects(ofType: Storage.OrderStatsV4.self)
             storage.deleteAllObjects(ofType: Storage.OrderStatsV4Totals.self)
@@ -169,7 +169,7 @@ private extension StatsStoreV4 {
                        latestDateToInclude: Date,
                        quantity: Int,
                        forceRefresh: Bool,
-                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                       onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
         orderStatsRemote.loadOrderStats(for: siteID,
                                         unit: timeRange.intervalGranularity,
                                         timeZone: timeZone,
@@ -214,7 +214,7 @@ private extension StatsStoreV4 {
                                 siteTimezone: TimeZone,
                                 timeRange: StatsTimeRangeV4,
                                 latestDateToInclude: Date,
-                                onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                                onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
 
         let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: siteTimezone)
 
@@ -243,7 +243,7 @@ private extension StatsStoreV4 {
                                   quantity: Int,
                                   latestDateToInclude: Date,
                                   saveInStorage: Bool,
-                                  onCompletion: @escaping (Result<SiteSummaryStats, Error>) -> Void) {
+                                  onCompletion: @escaping @Sendable (Result<SiteSummaryStats, Error>) -> Void) {
         if quantity == 1 {
             siteStatsRemote.loadSiteSummaryStats(for: siteID,
                                                  siteTimezone: siteTimezone,
@@ -300,18 +300,24 @@ private extension StatsStoreV4 {
                                 quantity: Int,
                                 forceRefresh: Bool,
                                 saveInStorage: Bool,
-                                onCompletion: @escaping (Result<TopEarnerStats, Error>) -> Void) {
-        Task { @MainActor in
+                                onCompletion: @escaping @Sendable (Result<TopEarnerStats, Error>) -> Void) {
+        // Keep the legacy store alive through this request, as before. Only the main-actor task reads its immutable storage dependency.
+        // Remove this bridge when stores are isolated (WOOMOB-4186).
+        nonisolated(unsafe) let owner = self
+        Task { @MainActor [productsReportsRemote] in
             do {
-                let topEarnersStats = try await loadTopEarnerStats(siteID: siteID,
-                                                                   timeRange: timeRange,
-                                                                   timeZone: timeZone,
-                                                                   earliestDateToInclude: earliestDateToInclude,
-                                                                   latestDateToInclude: latestDateToInclude,
-                                                                   quantity: quantity,
-                                                                   forceRefresh: forceRefresh)
+                let productsReport = try await productsReportsRemote.loadTopProductsReport(for: siteID,
+                                                                                           timeZone: timeZone,
+                                                                                           earliestDateToInclude: earliestDateToInclude,
+                                                                                           latestDateToInclude: latestDateToInclude,
+                                                                                           quantity: quantity)
+                let topEarnersStats = Self.convertProductsReportIntoTopEarners(siteID: siteID,
+                                                                              timeRange: timeRange,
+                                                                              date: latestDateToInclude,
+                                                                              productsReport: productsReport,
+                                                                              quantity: quantity)
                 if saveInStorage {
-                    upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats) {
+                    owner.upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats) {
                         onCompletion(.success(topEarnersStats))
                     }
                 } else {
@@ -323,26 +329,6 @@ private extension StatsStoreV4 {
         }
     }
 
-    @MainActor
-    func loadTopEarnerStats(siteID: Int64,
-                            timeRange: StatsTimeRangeV4,
-                            timeZone: TimeZone,
-                            earliestDateToInclude: Date,
-                            latestDateToInclude: Date,
-                            quantity: Int,
-                            forceRefresh: Bool) async throws -> TopEarnerStats {
-        let productsReport = try await productsReportsRemote.loadTopProductsReport(for: siteID,
-                                                                                   timeZone: timeZone,
-                                                                                   earliestDateToInclude: earliestDateToInclude,
-                                                                                   latestDateToInclude: latestDateToInclude,
-                                                                                   quantity: quantity)
-        return convertProductsReportIntoTopEarners(siteID: siteID,
-                                                   timeRange: timeRange,
-                                                   date: latestDateToInclude,
-                                                   productsReport: productsReport,
-                                                   quantity: quantity)
-    }
-
     /// Retrieves the product bundle stats for the provided siteID, and time range, without saving them to the Storage layer.
     ///
     func retrieveProductBundleStats(siteID: Int64,
@@ -352,8 +338,8 @@ private extension StatsStoreV4 {
                                     latestDateToInclude: Date,
                                     quantity: Int,
                                     forceRefresh: Bool,
-                                    onCompletion: @escaping (Result<ProductBundleStats, Error>) -> Void) {
-        Task { @MainActor in
+                                    onCompletion: @escaping @Sendable (Result<ProductBundleStats, Error>) -> Void) {
+        Task { @MainActor [productBundleStatsRemote] in
             do {
                 let bundleStats = try await productBundleStatsRemote.loadProductBundleStats(for: siteID,
                                                                                             unit: unit,
@@ -376,8 +362,8 @@ private extension StatsStoreV4 {
                                    earliestDateToInclude: Date,
                                    latestDateToInclude: Date,
                                    quantity: Int,
-                                   onCompletion: @escaping (Result<[ProductsReportItem], Error>) -> Void) {
-        Task { @MainActor in
+                                   onCompletion: @escaping @Sendable (Result<[ProductsReportItem], Error>) -> Void) {
+        Task { @MainActor [productBundleStatsRemote] in
             do {
                 let topBundles = try await productBundleStatsRemote.loadTopProductBundlesReport(for: siteID,
                                                                                                 timeZone: timeZone,
@@ -400,8 +386,8 @@ private extension StatsStoreV4 {
                                    latestDateToInclude: Date,
                                    quantity: Int,
                                    forceRefresh: Bool,
-                                   onCompletion: @escaping (Result<GiftCardStats, Error>) -> Void) {
-        Task { @MainActor in
+                                   onCompletion: @escaping @Sendable (Result<GiftCardStats, Error>) -> Void) {
+        Task { @MainActor [giftCardStatsRemote] in
             do {
                 let giftCardStats = try await giftCardStatsRemote.loadUsedGiftCardStats(for: siteID,
                                                                                         unit: unit,
@@ -421,25 +407,31 @@ private extension StatsStoreV4 {
 
 // MARK: - Persistence
 //
+// Closure bodies use owners only for lifetime checks; static helpers use only their inputs.
+// Store deinit can still unregister from the writer queue, as before; dispatcher isolation remains a follow-up.
+// The initializer requires a Sendable storage manager.
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly OrderStatsV4 Entity into the Storage Layer.
     ///
-    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: (() -> Void)?) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
+    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: (@Sendable () -> Void)?) {
+        // Lifetime-only reference; remove when stores are isolated (WOOMOB-4186).
+        nonisolated(unsafe) weak let owner = self
+        storageManager.performAndSave({ storage in
+            guard let owner else { return }
+            defer { withExtendedLifetime(owner) {} }
             let storageOrderStats = storage.loadOrderStatsV4(siteID: readOnlyStats.siteID, timeRange: timeRange.rawValue) ??
                 storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
 
             storageOrderStats.timeRange = timeRange.rawValue
             storageOrderStats.totals = storage.insertNewObject(ofType: Storage.OrderStatsV4Totals.self)
             storageOrderStats.update(with: readOnlyStats)
-            handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
+            Self.handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
         }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageOrderStats items using the provided read-only OrderStats items
     ///
-    private func handleOrderStatsIntervals(_ readOnlyStats: Networking.OrderStatsV4, _ storageStats: Storage.OrderStatsV4, _ storage: StorageType) {
+    private static func handleOrderStatsIntervals(_ readOnlyStats: Networking.OrderStatsV4, _ storageStats: Storage.OrderStatsV4, _ storage: StorageType) {
         let readOnlyIntervals = readOnlyStats.intervals
 
         if readOnlyIntervals.isEmpty {
@@ -480,22 +472,25 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: (() -> Void)? = nil) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: (@Sendable () -> Void)? = nil) {
+        // Lifetime-only reference; remove when stores are isolated (WOOMOB-4186).
+        nonisolated(unsafe) weak let owner = self
+        storageManager.performAndSave({ storage in
+            guard let owner else { return }
+            defer { withExtendedLifetime(owner) {} }
             let storageSiteVisitStats = storage.loadSiteVisitStats(
                 granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
             storageSiteVisitStats.update(with: readOnlyStats)
             storageSiteVisitStats.timeRange = timeRange.rawValue
-            handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
+            Self.handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
         }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageSiteVisitStats items using the provided read-only SiteVisitStats items
     ///
-    private func handleSiteVisitStatsItems(_ readOnlyStats: Networking.SiteVisitStats,
-                                           _ storageSiteVisitStats: Storage.SiteVisitStats,
-                                           _ storage: StorageType) {
+    private static func handleSiteVisitStatsItems(_ readOnlyStats: Networking.SiteVisitStats,
+                                                   _ storageSiteVisitStats: Storage.SiteVisitStats,
+                                                   _ storage: StorageType) {
 
         // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored SiteVisitStatsItems
         storageSiteVisitStats.items?.forEach {
@@ -515,22 +510,25 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly TopEarnerStats Entity into the Storage Layer.
     ///
-    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (() -> Void)? = nil) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
+    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (@Sendable () -> Void)? = nil) {
+        // Lifetime-only reference; remove when stores are isolated (WOOMOB-4186).
+        nonisolated(unsafe) weak let owner = self
+        storageManager.performAndSave({ storage in
+            guard let owner else { return }
+            defer { withExtendedLifetime(owner) {} }
             let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
                                                                    granularity: readOnlyStats.granularity.rawValue)
                 ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
             storageTopEarnerStats.update(with: readOnlyStats)
-            handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
+            Self.handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
         }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageTopEarnerStats items using the provided read-only TopEarnerStats items
     ///
-    private func handleTopEarnerStatsItems(_ readOnlyStats: Networking.TopEarnerStats,
-                                           _ storageTopEarnerStats: Storage.TopEarnerStats,
-                                           _ storage: StorageType) {
+    private static func handleTopEarnerStatsItems(_ readOnlyStats: Networking.TopEarnerStats,
+                                                  _ storageTopEarnerStats: Storage.TopEarnerStats,
+                                                  _ storage: StorageType) {
 
         // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored TopEarnerStatsItems
         storageTopEarnerStats.items?.forEach {
@@ -551,7 +549,7 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteSummaryStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: (() -> Void)? = nil) {
+    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: (@Sendable () -> Void)? = nil) {
         storageManager.performAndSave({ storage in
             let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue)
                 ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
@@ -566,11 +564,11 @@ private extension StatsStoreV4 {
 
     /// Converts the `[ProductsReportItem]` list in a Products analytics report into `TopEarnerStats`
     ///
-    func convertProductsReportIntoTopEarners(siteID: Int64,
-                                             timeRange: StatsTimeRangeV4,
-                                             date: Date,
-                                             productsReport: [ProductsReportItem],
-                                             quantity: Int) -> TopEarnerStats {
+    static func convertProductsReportIntoTopEarners(siteID: Int64,
+                                                    timeRange: StatsTimeRangeV4,
+                                                    date: Date,
+                                                    productsReport: [ProductsReportItem],
+                                                    quantity: Int) -> TopEarnerStats {
         let statsDate = Self.buildDateString(from: date, timeRange: timeRange)
         let statsItems = productsReport.map { product in
             TopEarnerStatsItem(productID: product.productID,

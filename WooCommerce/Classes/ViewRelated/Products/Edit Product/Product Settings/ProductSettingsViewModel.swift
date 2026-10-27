@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 
 /// The Product Settings contains 2 sections: Publish Settings and More Options
+@MainActor
 final class ProductSettingsViewModel {
 
     private let product: Product

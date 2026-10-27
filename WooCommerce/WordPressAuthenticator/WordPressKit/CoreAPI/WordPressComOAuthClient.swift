@@ -56,6 +56,7 @@ public struct AuthenticationFailure: LocalizedError {
     public var kind: Kind
     public var localizedErrorMessage: String?
     public var newNonce: String?
+    public var supportedAuthTypes = [String]()
     public var originalErrorJSON: [String: AnyObject]
 
     init(response: HTTPURLResponse, body: Data) throws {
@@ -79,6 +80,7 @@ public struct AuthenticationFailure: LocalizedError {
         if let errorStr = responseDict["error"] as? String {
             kind = Self.errorsMap[errorStr] ?? .unknown
             localizedErrorMessage = responseDict["error_description"] as? String
+            supportedAuthTypes = responseDict["two_step_supported_auth_types"] as? [String] ?? []
         } else if let data = responseDict["data"] as? [String: AnyObject],
             let errors = data["errors"] as? NSArray,
             let err = errors.firstObject as? [String: AnyObject] {
@@ -183,12 +185,14 @@ public final class WordPressComOAuthClient: NSObject {
             "grant_type": "password",
             "client_id": clientID,
             "client_secret": secret,
-            "wpcom_supports_2fa": "true",
             "with_auth_types": "true"
         ]
 
         if let multifactorCode, !multifactorCode.isEmpty {
             form["wpcom_otp"] = multifactorCode
+        } else {
+            // Only the first request opts in to 2FA: with a code, the server would text or email a new code before checking the submitted one.
+            form["wpcom_supports_2fa"] = "true"
         }
 
         let builder = tokenRequestBuilder().body(form: form)

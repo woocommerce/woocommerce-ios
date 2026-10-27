@@ -1,7 +1,7 @@
 /// Models a Card Reader. This is the public struct that clients of
 /// Hardware are expected to consume.
 /// CardReader is meant to be immutable.
-public struct CardReader {
+public struct CardReader: Sendable {
 
     /// The CardReader serial number
     public let serial: String

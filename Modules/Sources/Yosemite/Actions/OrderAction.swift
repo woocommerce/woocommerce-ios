@@ -8,7 +8,7 @@ import Networking
 //
 public enum OrderAction: Action {
 
-    public enum OrdersStorageWriteStrategy {
+    public enum OrdersStorageWriteStrategy: Sendable {
         case save
         case deleteAllBeforeSaving
         case doNotSave
@@ -16,7 +16,7 @@ public enum OrderAction: Action {
 
     /// Searches orders that contain a given keyword.
     ///
-    case searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+    case searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @Sendable (Error?) -> Void)
 
     /// Performs the fetch for the first pages of order list.
     ///
@@ -46,7 +46,7 @@ public enum OrderAction: Action {
         createdVia: String? = nil,
         writeStrategy: OrdersStorageWriteStrategy,
         pageSize: Int,
-        onCompletion: (TimeInterval, Result<[Order], Error>) -> Void
+        onCompletion: @Sendable (TimeInterval, Result<[Order], Error>) -> Void
     )
 
     /// Synchronizes the Orders matching the specified criteria.
@@ -72,25 +72,25 @@ public enum OrderAction: Action {
                            createdVia: String? = nil,
                            pageNumber: Int,
                            pageSize: Int,
-                           onCompletion: (TimeInterval, Error?) -> Void)
+                           onCompletion: @Sendable (TimeInterval, Error?) -> Void)
 
     /// Nukes all of the cached orders.
     ///
-    case resetStoredOrders(onCompletion: () -> Void)
+    case resetStoredOrders(onCompletion: @Sendable () -> Void)
 
     /// Retrieves the specified OrderID.
     /// If the order exists in storage, it syncs the order's last modified date and if it is different, it syncs the order remotely.
     /// Otherwise, the order in storage is returned.
     ///
-    case retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: (Order?, Error?) -> Void)
+    case retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @Sendable (Order?, Error?) -> Void)
 
     /// Retrieves the specified OrderID remotely.
     ///
-    case retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: (Result<Order, Error>) -> Void)
+    case retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: @Sendable (Result<Order, Error>) -> Void)
 
     /// Updates a given Order's Status.
     ///
-    case updateOrderStatus(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: (Error?) -> Void)
+    case updateOrderStatus(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: @Sendable (Error?) -> Void)
 
     /// Updates the specified fields from an order.
     ///
@@ -99,11 +99,11 @@ public enum OrderAction: Action {
                      giftCard: String?,
                      fields: [OrderUpdateField],
                      requestCurrency: String? = nil,
-                     onCompletion: (Result<Order, Error>) -> Void)
+                     onCompletion: @Sendable (Result<Order, Error>) -> Void)
 
     /// Updates the specified fields from an order **optimistically**.
     ///
-    case updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
+    case updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @Sendable (Result<Order, Error>) -> Void)
 
     /// Creates a simple payments order with a specific amount value and  tax status.
     ///
@@ -112,11 +112,11 @@ public enum OrderAction: Action {
                                    amount: String,
                                    taxable: Bool,
                                    currency: String,
-                                   onCompletion: (Result<Order, Error>) -> Void)
+                                   onCompletion: @Sendable (Result<Order, Error>) -> Void)
 
     /// Creates a manual order with the provided order details.
     ///
-    case createOrder(siteID: Int64, order: Order, giftCard: String?, onCompletion: (Result<Order, Error>) -> Void)
+    case createOrder(siteID: Int64, order: Order, giftCard: String?, onCompletion: @Sendable (Result<Order, Error>) -> Void)
 
     /// Updates a simple payments order with the specified values.
     ///
@@ -129,17 +129,17 @@ public enum OrderAction: Action {
                                    taxable: Bool,
                                    orderNote: String?,
                                    email: String?,
-                                   onCompletion: (Result<Order, Error>) -> Void)
+                                   onCompletion: @Sendable (Result<Order, Error>) -> Void)
 
     /// Updates an order to be considered as paid locally, for use cases where the payment is captured in the
     /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
     /// Internally, the order is marked with a paid date and the order status is changed to processing.
     ///
-    case markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: (Result<Order, Error>) -> Void)
+    case markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: @Sendable (Result<Order, Error>) -> Void)
 
     /// Deletes a given order.
     ///
-    case deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: (Result<Order, Error>) -> Void)
+    case deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @Sendable (Result<Order, Error>) -> Void)
 
     /// Returns a publisher that emits inserted orders on the view storage context.
     ///
@@ -147,5 +147,5 @@ public enum OrderAction: Action {
 
     /// Checks if the store already has any orders.
     ///
-    case checkIfStoreHasOrders(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+    case checkIfStoreHasOrders(siteID: Int64, onCompletion: @Sendable (Result<Bool, Error>) -> Void)
 }

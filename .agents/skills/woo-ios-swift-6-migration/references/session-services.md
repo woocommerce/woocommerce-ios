@@ -10,6 +10,23 @@ Construct session services that need the main actor in the main-actor coordinato
 
 A type-erased Combine publisher does not retain its producer. If a service observes an app-owned state object, retain that object for the service lifetime. Alternatively, use a publisher from an object that the session already retains. Verify lifetime with a weak-reference test.
 
+## Request handlers for non-Sendable owners
+
+When a `@Sendable` callback captures a non-`Sendable` store, first consider capturing only the required `Sendable` dependencies. Use static helpers for operations that need no instance. Prefer this shape when the request can complete independently of store lifetime.
+
+If callbacks depend on owner lifetime, consider separating dispatcher registration from request handling. Keep the store as the registration object. A private `final` request handler can hold immutable `Sendable` dependencies and implement the request and storage operations. Swift checks its stored properties against their declared sendability. It still relies on any unchecked guarantees in those dependencies. This separation adds no actor, queue, or serialization.
+
+Choose the approach from the existing contract:
+
+- Direct dependency captures use less structure, but can keep requests, writes, and side effects alive after the store is released. Check weak-reference branches before replacing them.
+- Whole-store actor isolation fits an actor-owned store only when its dispatcher requirements and callers support that isolation. An actor handler is useful when mutable state needs serialized access; its asynchronous calls can change execution order.
+- A checked request handler keeps the non-`Sendable` registration object out of concurrent callbacks without changing the shared store hierarchy. Use it when the lifetime requirement justifies another object. Name it for the work it performs.
+- An unchecked conformance on the store needs a separate safety argument for every inherited field and access path. A small checked handler does not require that broader promise.
+
+Verify which object each task and callback retains. The registration object can be released while its handler remains alive. Test release during an in-flight request and release before a queued write. Preserve the intended write, completion, error, retry, and cancellation behavior. Test the negative case by removing the lifetime guard temporarily.
+
+Weak ownership is not session cancellation. Check logout and storage reset separately. A serial write queue does not reject a remote callback that submits a write after reset. Use an explicit cancellation or session-validity contract when work must stop at that boundary.
+
 ## Protocol witnesses
 
 An async requirement with a default implementation can hide a missing actor witness. A forwarding extension can accidentally satisfy the requirement if its method has the same name and labels. Default arguments do not make signatures different.

@@ -668,7 +668,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
-        let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { order, error in
+        let finish: @MainActor @Sendable (Order?, Error?) -> Void = { order, error in
             guard let _ = order else {
                 DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
                 onCompletion?(nil, error)
@@ -678,6 +678,9 @@ extension OrderDetailsViewModel {
             onCompletion?(order, nil)
         }
 
+        let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { order, error in
+            Task { @MainActor in finish(order, error) }
+        }
         stores.dispatch(action)
     }
 
@@ -815,7 +818,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncShippingMethods(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ShippingMethodAction.synchronizeShippingMethods(siteID: order.siteID) { result in
+        let finish: @MainActor @Sendable (Result<Void, Error>) -> Void = { result in
             switch result {
             case .success:
                 onCompletion?(nil)
@@ -823,6 +826,9 @@ extension OrderDetailsViewModel {
                 DDLogError("⛔️ Error synchronizing shipping methods: \(error)")
                 onCompletion?(error)
             }
+        }
+        let action = ShippingMethodAction.synchronizeShippingMethods(siteID: order.siteID) { result in
+            Task { @MainActor in finish(result) }
         }
         stores.dispatch(action)
     }
@@ -925,13 +931,16 @@ extension OrderDetailsViewModel {
     /// Put an order in the trash, without deleting it permanently.
     ///
     func trashOrder(_ onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        let action = OrderAction.deleteOrder(siteID: order.siteID, order: order, deletePermanently: false) { result in
+        let finish: @MainActor @Sendable (Result<Order, Error>) -> Void = { result in
             switch result {
             case .success(let order):
                 onCompletion(.success(order))
             case .failure(let error):
                 onCompletion(.failure(error))
             }
+        }
+        let action = OrderAction.deleteOrder(siteID: order.siteID, order: order, deletePermanently: false) { result in
+            Task { @MainActor in finish(result) }
         }
         stores.dispatch(action)
     }

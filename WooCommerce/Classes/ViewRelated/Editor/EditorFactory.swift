@@ -8,6 +8,7 @@ protocol Editor {
 
 /// This class takes care of instantiating the editor.
 ///
+@MainActor
 final class EditorFactory {
     struct EditorContext {
         let initialContent: String?

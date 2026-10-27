@@ -4,6 +4,7 @@ import XCTest
 
 @testable import WooCommerce
 
+@MainActor
 final class AztecHorizontalRulerFormatBarCommandTests: XCTestCase {
 
     func testFormattingIdentifier() {

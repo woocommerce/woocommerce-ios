@@ -4,6 +4,7 @@ import XCTest
 
 @testable import WooCommerce
 
+@MainActor
 final class AztecHeaderFormatBarCommandTests: XCTestCase {
     private let viewController = UIViewController()
     private let textView = TextView(defaultFont: .body, defaultMissingImage: .asideImage)

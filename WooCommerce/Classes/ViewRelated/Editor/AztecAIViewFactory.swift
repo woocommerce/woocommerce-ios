@@ -1,6 +1,7 @@
 import UIKit
 
 /// Creates Jetpack AI CTAs in Aztec editor.
+@MainActor
 struct AztecAIViewFactory {
     /// Returns a view that contains a CTA for the Jetpack AI action to be shown next to the Aztec format bar.
     /// - Parameter onTap: Called when the CTA is tapped.

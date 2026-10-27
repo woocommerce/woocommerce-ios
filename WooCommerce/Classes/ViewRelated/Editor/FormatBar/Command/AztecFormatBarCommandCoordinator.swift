@@ -1,6 +1,7 @@
 import Aztec
 
 /// Coordinates the format bar commands for handling formatting actions.
+@MainActor
 struct AztecFormatBarCommandCoordinator {
     let commandsByFormattingIdentifier: [FormattingIdentifier: AztecFormatBarCommand]
 

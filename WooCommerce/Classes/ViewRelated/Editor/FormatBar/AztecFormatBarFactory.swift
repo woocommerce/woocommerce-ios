@@ -1,9 +1,10 @@
-import Aztec
+@preconcurrency import Aztec
 import Gridicons
 import UIKit
 import WordPressEditor
 
 /// Creates Aztec format bar & action handling coordinator for the format bar.
+@MainActor
 struct AztecFormatBarFactory {
     func formatBar(onAction: @escaping (_ formatBarItem: FormatBarItem, _ formatBar: FormatBar) -> Void) -> FormatBar {
         let toolbar = Aztec.FormatBar()

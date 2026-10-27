@@ -59,6 +59,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.failure(error))
             case .loadPackages, .verifyDestinationAddress:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -88,6 +90,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadAccountSettings(_, let completion):
                 completion(.failure(error))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -134,6 +138,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -196,6 +202,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: true)))
             case .loadPackages, .loadConfig:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -241,6 +249,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -336,6 +346,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -403,6 +415,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -450,6 +464,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -495,6 +511,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -523,6 +541,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -549,6 +569,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -589,6 +611,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadOriginAddresses(_, let completion):
                 let originAddress = WooShippingOriginAddress.fake().copy(address1: "123 Main Street", defaultAddress: true)
                 completion(.success([originAddress]))
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1136,6 +1160,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1177,6 +1203,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -1244,6 +1272,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 didLoadAccountSettings = true
                 completion(.success(settings))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -1325,6 +1355,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 self.insert(accountSettings: accountSettings)
                 completion(.success(settings))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -1438,6 +1470,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress, .loadOriginAddresses:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1492,6 +1526,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadPackages, .verifyDestinationAddress, .loadAccountSettings:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1532,6 +1568,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadOriginAddresses(_, let completion):
                 let originAddress = WooShippingOriginAddress.fake().copy(address1: "123 Main Street", defaultAddress: true)
                 completion(.success([originAddress]))
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1873,6 +1911,8 @@ private extension WooShippingCreateLabelsViewModelTests {
                 completion(accountSettingsResult)
             case .loadPackages, .verifyDestinationAddress:
                 break // Ignored for these tests
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1943,7 +1983,10 @@ private extension WooShippingCreateLabelsViewModelTests {
     /// Creates a `WooShippingCreateLabelsViewModel` configured with a mock store that returns
     /// the given `purchaseError` when a shipping label purchase is attempted.
     @MainActor
-    func makePurchaseLabelViewModel(purchaseError: Error) async -> WooShippingCreateLabelsViewModel {
+    func makePurchaseLabelViewModel(purchaseError: Error,
+                                    rateLoadingError: Error? = nil,
+                                    serviceStatus: ServiceStatusResponses = ServiceStatusResponses())
+    async -> WooShippingCreateLabelsViewModel {
         let originAddress = WooShippingOriginAddress.fake().copy(id: "default", country: "US", defaultAddress: true)
         insert(originAddress: originAddress)
 
@@ -1969,12 +2012,20 @@ private extension WooShippingCreateLabelsViewModelTests {
                                                                                isVerified: true)))
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
                 completion(.failure(purchaseError))
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                if let rateLoadingError {
+                    completion(packages, .failure(rateLoadingError))
+                }
+            case let .loadServiceStatusNotices(_, completion):
+                serviceStatus.respond(completion)
             default:
                 break
             }
         }
 
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager)
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
         await until { viewModel.state == .ready }
         await until { viewModel.currentShipmentDetailsViewModel?.shippingService != nil }
         viewModel.didUpdateAccountSettings(accountSettings)
@@ -2077,5 +2128,179 @@ private extension WooShippingAccountSettings {
     static func fake() -> WooShippingAccountSettings {
         .init(storeOptions: .init(currencySymbol: "$", dimensionUnit: "in", weightUnit: "lbs", originCountry: "US"),
               accountSettings: .fake())
+    }
+}
+
+// MARK: - Service status notices
+extension WooShippingCreateLabelsViewModelTests {
+    @MainActor
+    func test_init_when_service_status_loads_then_exposes_notices_in_order() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice, upsWarningNotice, dhlInfoNotice])])
+
+        // When
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await until { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // Then
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice, upsWarningNotice, dhlInfoNotice])
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+    }
+
+    @MainActor
+    func test_init_when_service_status_fails_then_exposes_no_notices() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.failure(NetworkError.notFound(response: nil))])
+
+        // When
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await until { serviceStatus.requestCount == 1 }
+
+        // Then
+        XCTAssertEqual(viewModel.state, .ready)
+        XCTAssertTrue(viewModel.serviceStatusNotices.isEmpty)
+    }
+
+    @MainActor
+    func test_dismissServiceStatusNotice_removes_only_that_notice() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice, upsWarningNotice, dhlInfoNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await until { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // When
+        viewModel.dismissServiceStatusNotice(id: upsWarningNotice.id)
+
+        // Then
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice, dhlInfoNotice])
+    }
+
+    @MainActor
+    func test_dismissServiceStatusNotice_when_notices_are_refetched_then_keeps_notice_hidden() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice, upsWarningNotice, dhlInfoNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await until { viewModel.serviceStatusNotices.isNotEmpty }
+        viewModel.dismissServiceStatusNotice(id: upsWarningNotice.id)
+
+        // When
+        await viewModel.refreshServiceStatusNotices().value
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice, dhlInfoNotice])
+    }
+
+    @MainActor
+    func test_refreshServiceStatusNotices_when_refresh_is_in_flight_then_reuses_it() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([nil])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await until { serviceStatus.requestCount == 1 }
+
+        // When
+        viewModel.refreshServiceStatusNotices()
+        viewModel.refreshServiceStatusNotices()
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+    }
+
+    @MainActor
+    func test_rates_failure_when_error_is_an_outage_then_refetches_service_status() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([]), .success([uspsErrorNotice])])
+
+        // When
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError,
+                                                         rateLoadingError: connectServerRateError,
+                                                         serviceStatus: serviceStatus)
+        await until { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice])
+        XCTAssertEqual(viewModel.currentShipmentDetailsViewModel?.shippingService?.loadingState, .error(.failedLoadingLabelRates))
+    }
+
+    @MainActor
+    func test_rates_failure_when_error_is_not_an_outage_then_does_not_refetch_service_status() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([])])
+
+        // When
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError,
+                                                         rateLoadingError: NetworkError.timeout(response: nil),
+                                                         serviceStatus: serviceStatus)
+        await until { viewModel.currentShipmentDetailsViewModel?.shippingService?.loadingState == .error(.failedLoadingLabelRates) }
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+    }
+}
+
+/// Replies to `loadServiceStatusNotices` in order, repeating the last reply. A `nil` reply never completes.
+private final class ServiceStatusResponses {
+    private let replies: [Result<[WooShippingServiceStatusNotice], Error>?]
+    private var pendingCompletion: ((Result<[WooShippingServiceStatusNotice], Error>) -> Void)?
+    private(set) var requestCount = 0
+
+    init(_ replies: [Result<[WooShippingServiceStatusNotice], Error>?] = [nil]) {
+        self.replies = replies
+    }
+
+    func respond(_ completion: @escaping (Result<[WooShippingServiceStatusNotice], Error>) -> Void) {
+        let reply = replies[min(requestCount, replies.count - 1)]
+        requestCount += 1
+        guard let reply else {
+            pendingCompletion = completion
+            return
+        }
+        completion(reply)
+    }
+
+    func completePendingRequest(with result: Result<[WooShippingServiceStatusNotice], Error>) {
+        pendingCompletion?(result)
+        pendingCompletion = nil
+    }
+}
+
+private extension WooShippingCreateLabelsViewModelTests {
+    var uspsErrorNotice: WooShippingServiceStatusNotice {
+        WooShippingServiceStatusNotice(id: "service-status-easypost-usps",
+                                       severity: .error,
+                                       message: "USPS: API Outage | Status: Investigating",
+                                       isDismissible: false,
+                                       actionURL: URL(string: "https://www.easypoststatus.com"))
+    }
+
+    var upsWarningNotice: WooShippingServiceStatusNotice {
+        WooShippingServiceStatusNotice(id: "service-status-easypost-ups",
+                                       severity: .warning,
+                                       message: "UPS: Label creation delays | Status: Monitoring",
+                                       isDismissible: true,
+                                       actionURL: nil)
+    }
+
+    var dhlInfoNotice: WooShippingServiceStatusNotice {
+        WooShippingServiceStatusNotice(id: "service-status-easypost-dhl",
+                                       severity: .info,
+                                       message: "DHL Express: Scheduled maintenance tonight",
+                                       isDismissible: true,
+                                       actionURL: URL(string: "https://www.easypoststatus.com"))
+    }
+
+    /// Rate failures lose the upstream status, so only the code identifies the outage.
+    var connectServerRateError: Error {
+        DotcomError.unknown(code: "wcc_server_error",
+                            message: "Error: The WooCommerce Shipping server returned HTTP code: 503",
+                            data: ["message": AnyDecodable("Error: The WooCommerce Shipping server returned HTTP code: 503")])
+    }
+
+    /// A Connect Server 402, which the app also receives as HTTP 500.
+    var cardDeclinedError: Error {
+        DotcomError.unknown(code: "wcc_server_error_response",
+                            message: "Error: The WooCommerce Shipping server returned: Payment Required Your card was declined. ( 402 )",
+                            data: ["response_status_code": AnyDecodable(402)])
     }
 }

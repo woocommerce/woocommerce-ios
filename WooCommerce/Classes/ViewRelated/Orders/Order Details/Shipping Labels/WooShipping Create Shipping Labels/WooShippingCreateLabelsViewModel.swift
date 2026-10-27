@@ -76,6 +76,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     @Published var labelPurchaseErrorNotice: Notice?
 
+    /// Store-wide carrier incidents, shown on every unpurchased shipment.
+    @Published private(set) var serviceStatusNotices: [WooShippingServiceStatusNotice] = []
+
+    /// Hidden until the screen is reopened, even if a refetch returns them again.
+    private var dismissedServiceStatusNoticeIDs: Set<String> = []
+
+    private var serviceStatusRefreshTask: Task<Void, Never>?
+
     @Published private(set) var state = ContentState.loading
 
     @Published private(set) var shouldShowNotices = false
@@ -318,6 +326,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         configureAccountSettingsResultsController()
 
         Task { @MainActor in
+            refreshServiceStatusNotices()
             await loadRequiredData()
 
             // After shipment configs are updated, shipments are updated with purchased label details.
@@ -559,6 +568,47 @@ private extension WooShippingCreateLabelsViewModel {
     }
 }
 
+// MARK: Service status notices
+extension WooShippingCreateLabelsViewModel {
+    @MainActor
+    func dismissServiceStatusNotice(id: String) {
+        dismissedServiceStatusNoticeIDs.insert(id)
+        serviceStatusNotices.removeAll { $0.id == id }
+    }
+
+    /// Fetches the active carrier incidents, reusing the request already in flight.
+    @MainActor
+    @discardableResult
+    func refreshServiceStatusNotices() -> Task<Void, Never> {
+        if let serviceStatusRefreshTask {
+            return serviceStatusRefreshTask
+        }
+        let task = Task { @MainActor [weak self] in
+            await self?.loadServiceStatusNotices()
+            self?.serviceStatusRefreshTask = nil
+        }
+        serviceStatusRefreshTask = task
+        return task
+    }
+}
+
+private extension WooShippingCreateLabelsViewModel {
+    @MainActor
+    func loadServiceStatusNotices() async {
+        do {
+            let notices = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(WooShippingAction.loadServiceStatusNotices(siteID: order.siteID) { result in
+                    continuation.resume(with: result)
+                })
+            }
+            serviceStatusNotices = notices.filter { !dismissedServiceStatusNoticeIDs.contains($0.id) }
+        } catch {
+            // Older plugins don't have the endpoint (404). The notices are optional, so keep the screen as is.
+            DDLogError("⛔️ Error loading WooShipping service status: \(error)")
+        }
+    }
+}
+
 // MARK: Split Shipments
 // Accessors describing Split Shipments elements availability
 extension WooShippingCreateLabelsViewModel {
@@ -676,6 +726,11 @@ private extension WooShippingCreateLabelsViewModel {
                     self?.handleLabelPurchaseSuccess(newLabel: newLabel, in: shipment)
                 }, onLabelRefund: { [weak self] labelID in
                     self?.handleLabelRefundRequested(labelID: labelID, in: shipment)
+                }, onLabelRatesLoadingFailure: { [weak self] error in
+                    guard WooShippingServiceOutage.isOutage(error) else { return }
+                    Task { @MainActor in
+                        self?.refreshServiceStatusNotices()
+                    }
                 })
         }
         observeHAZMATNotices()

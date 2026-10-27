@@ -222,7 +222,9 @@ private extension WooShippingCreateLabelsView {
                     })
                 }
                 if let currentShipmentDetailsViewModel = viewModel.currentShipmentDetailsViewModel {
-                    WooShippingShipmentDetailsView(viewModel: currentShipmentDetailsViewModel)
+                    WooShippingShipmentDetailsView(viewModel: currentShipmentDetailsViewModel,
+                                                   serviceStatusNotices: viewModel.serviceStatusNotices,
+                                                   onDismissServiceStatusNotice: { viewModel.dismissServiceStatusNotice(id: $0) })
                         .disabled(viewModel.isPurchasingLabel)
                 }
             }

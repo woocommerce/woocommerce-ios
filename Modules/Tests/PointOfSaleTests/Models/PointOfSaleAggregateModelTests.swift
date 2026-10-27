@@ -1,6 +1,5 @@
 import Testing
 import Foundation
-import Synchronization
 @testable import PointOfSale
 import protocol WooFoundation.Analytics
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
@@ -1872,24 +1871,18 @@ private func makePointOfSaleAggregateModel(
     )
 }
 
-@dynamicMemberLookup
+@MainActor
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
-    struct State {
-        var retrievePointOfSaleSettingsWasCalled = false
-        var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
-    }
-
-    private let state = Mutex(State())
-
-    subscript<T: Sendable>(dynamicMember keyPath: WritableKeyPath<State, T>) -> T {
-        get { state.withLock { $0[keyPath: keyPath] } }
-        set { state.withLock { $0[keyPath: keyPath] = newValue } }
-    }
+    var retrievePointOfSaleSettingsWasCalled = false
+    var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
 
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
-        try state.withLock {
-            $0.retrievePointOfSaleSettingsWasCalled = true
-            return try $0.retrievePointOfSaleSettingsResult.get()
+        retrievePointOfSaleSettingsWasCalled = true
+        switch retrievePointOfSaleSettingsResult {
+        case .success(let receiptInfo):
+            return receiptInfo
+        case .failure(let error):
+            throw error
         }
     }
 }

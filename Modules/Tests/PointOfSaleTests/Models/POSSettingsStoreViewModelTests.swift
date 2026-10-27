@@ -1,10 +1,10 @@
 import Testing
 import Foundation
-import Synchronization
 @testable import PointOfSale
 @testable import Yosemite
 import Storage
 
+@MainActor
 struct POSSettingsStoreViewModelTests {
     private let mockSettingsService = MockPointOfSaleSettingsService()
     private let mockPluginService = MockPluginsService()
@@ -255,26 +255,19 @@ struct POSSettingsStoreViewModelTests {
     }
 }
 
-@dynamicMemberLookup
+@MainActor
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     let siteID: Int64 = 123
-
-    struct State {
-        var retrievePointOfSaleSettingsWasCalled = false
-        var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
-    }
-
-    private let state = Mutex(State())
-
-    subscript<T: Sendable>(dynamicMember keyPath: WritableKeyPath<State, T>) -> T {
-        get { state.withLock { $0[keyPath: keyPath] } }
-        set { state.withLock { $0[keyPath: keyPath] = newValue } }
-    }
+    var retrievePointOfSaleSettingsWasCalled = false
+    var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
 
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
-        try state.withLock {
-            $0.retrievePointOfSaleSettingsWasCalled = true
-            return try $0.retrievePointOfSaleSettingsResult.get()
+        retrievePointOfSaleSettingsWasCalled = true
+        switch retrievePointOfSaleSettingsResult {
+        case .success(let receiptInfo):
+            return receiptInfo
+        case .failure(let error):
+            throw error
         }
     }
 }

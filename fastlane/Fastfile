@@ -29,6 +29,9 @@ RELEASE_NOTES_SOURCE_PATH = File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt')
 CHANGELOG_PATH = File.join(PROJECT_ROOT_FOLDER, 'CHANGELOG.md')
 FASTLANE_DIR = File.join(PROJECT_ROOT_FOLDER, 'fastlane')
 DERIVED_DATA_DIR = File.join(PROJECT_ROOT_FOLDER, 'DerivedData')
+# CI resolves Swift packages into `Modules/.build` (see `.buildkite/commands/shared-set-up.sh`).
+# Test lanes point `xcodebuild` at those checkouts so it doesn't resolve and check them out a second time.
+SWIFT_PACKAGES_CHECKOUT_DIR = File.join(PROJECT_ROOT_FOLDER, 'Modules', '.build')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
@@ -1014,6 +1017,7 @@ platform :ios do
       workspace: WORKSPACE_PATH,
       scheme: TEST_SCHEME,
       derived_data_path: DERIVED_DATA_DIR,
+      cloned_source_packages_path: SWIFT_PACKAGES_CHECKOUT_DIR,
       buildlog_path: File.join(FASTLANE_DIR, 'logs'),
       build_for_testing: true,
       device: device,
@@ -1552,6 +1556,7 @@ lane :test_without_building do |options|
   run_tests(
     workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
+    cloned_source_packages_path: SWIFT_PACKAGES_CHECKOUT_DIR,
     device: options[:device],
     ensure_devices_found: true,
     force_quit_simulator: true,

@@ -110,7 +110,7 @@ private extension StoreIconImage {
     @MainActor
     func uiImage(displayScale: CGFloat) -> UIImage? {
         let renderer = ImageRenderer(content: image(size: .largeIncreased))
-        renderer.scale = displayScale
+        renderer.scale = displayScale > 0 ? displayScale : max(UITraitCollection.current.displayScale, 1)
         return renderer.uiImage?.withRenderingMode(.alwaysTemplate)
     }
 }
@@ -1187,7 +1187,7 @@ private extension MainTabBarController {
         httpsConfigurationWarningPresenter.updateAll()
     }
 
-    private func configureStoreDesignSystemTabIconsIfNeeded() {
+    func configureStoreDesignSystemTabIconsIfNeeded() {
         guard featureFlagService.usesStoreDesignSystem,
               let items = tabBar.items else {
             return

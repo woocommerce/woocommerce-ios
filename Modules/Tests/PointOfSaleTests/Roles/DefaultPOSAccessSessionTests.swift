@@ -444,7 +444,7 @@ private extension DefaultPOSAccessSessionTests {
     }
 
     func makeSUT(authenticator: POSPINAuthenticating,
-                 fetcher: POSStaffFetching = MockPOSStaffFetcher(),
+                 fetcher: POSStaffFetching? = nil,
                  cache: POSStaffCache = POSStaffCache(storage: InMemoryStaffStorage()),
                  now: @escaping () -> Date = { Date() }) -> SUT {
         let scope = UserDefaultsTestScope()
@@ -454,7 +454,7 @@ private extension DefaultPOSAccessSessionTests {
             authenticator: authenticator,
             rateLimiter: limiter,
             cache: cache,
-            fetcher: fetcher,
+            fetcher: fetcher ?? MockPOSStaffFetcher(),
             userDefaults: scope.defaults
         )
         return SUT(session: session, limiter: limiter, scope: scope, cache: cache)

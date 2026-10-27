@@ -108,7 +108,6 @@
     "Modules/Sources/Yosemite/Tools/ProductVariations/ProductVariationStorageManager.swift": 4,
     "Modules/Sources/YosemiteTestHelpers/MockStorageManager.swift": 2,
     "Modules/Tests/PointOfSaleTests/Card Present Payments/Connection Alerts/PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift": 2,
-    "Modules/Tests/PointOfSaleTests/Models/POSSettingsStoreViewModelTests.swift": 5,
     "Modules/Tests/PointOfSaleTests/Models/PointOfSaleAggregateModelTests.swift": 1,
     "Modules/Tests/PointOfSaleTests/Presentation/Settings/POSSettingsLocalCatalogViewModelTests.swift": 15,
     "Modules/Tests/YosemiteTests/Mocks/CardPresentPayments/MockCardReaderService.swift": 21,

@@ -42,22 +42,22 @@ final class ScannerContainerViewController: UIViewController {
 
     func handleBarcodeDetectionResult(_ result: Result<[ScannedBarcode], Error>) {
         guard !hasDetectedBarcode else { return }
-        guard let barcode = try? result.get().first else {
+        guard case let .success(barcodes) = result, let firstBarcode = barcodes.first else {
             candidateBarcode = nil
             consecutiveDetectionCount = 0
             return
         }
 
-        if barcode == candidateBarcode {
+        if let candidateBarcode, barcodes.contains(candidateBarcode) {
             consecutiveDetectionCount += 1
         } else {
-            candidateBarcode = barcode
+            candidateBarcode = firstBarcode
             consecutiveDetectionCount = 1
         }
 
-        guard consecutiveDetectionCount >= requiredConsecutiveDetections else { return }
+        guard consecutiveDetectionCount >= requiredConsecutiveDetections, let candidateBarcode else { return }
         hasDetectedBarcode = true
-        onBarcodeScanned(barcode)
+        onBarcodeScanned(candidateBarcode)
     }
 }
 

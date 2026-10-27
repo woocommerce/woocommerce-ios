@@ -9,8 +9,7 @@ import WordPressUI
 /// an error when the site is not a WordPress site
 @MainActor
 struct NotWPErrorViewModel: ULErrorViewModel {
-    // Nonisolated because `AuthenticationManager` builds this view model from authenticator delegate methods
-    // that are not main-actor isolated yet. It assigns only Sendable values. Remove once WOOMOB-4179 isolates them.
+    // Nonisolated until WOOMOB-4179 isolates the `AuthenticationManager` delegate methods that build this view model.
     nonisolated init() {}
 
     // MARK: - Data and configuration

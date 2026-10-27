@@ -6,8 +6,7 @@ import struct WordPressAuthenticator.NavigateToRoot
 /// attempts to log in with a site that has an invalid SSL certificate.
 @MainActor
 struct NoSecureConnectionErrorViewModel: ULErrorViewModel {
-    // Nonisolated because `AuthenticationManager` builds this view model from authenticator delegate methods
-    // that are not main-actor isolated yet. It assigns only Sendable values. Remove once WOOMOB-4179 isolates them.
+    // Nonisolated until WOOMOB-4179 isolates the `AuthenticationManager` delegate methods that build this view model.
     nonisolated init() {}
 
     // MARK: - Data and configuration

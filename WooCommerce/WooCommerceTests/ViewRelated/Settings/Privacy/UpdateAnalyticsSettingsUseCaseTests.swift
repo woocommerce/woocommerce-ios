@@ -110,6 +110,49 @@ final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
         XCTAssertEqual(userDefaults[.hasSavedPrivacyBannerSettings], true)
     }
 
+    @MainActor func test_enqueued_updates_when_first_request_is_pending_then_final_choice_wins() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, displayName: "Test Account"))
+        let analytics = TestAnalytics()
+        analytics.setUserHasOptedOut(true)
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
+        let useCase = UpdateAnalyticsSettingUseCase(stores: stores, analytics: analytics, userDefaults: userDefaults)
+        let firstRequestDispatched = expectation(description: "First account settings request dispatched")
+        let secondRequestDispatched = expectation(description: "Second account settings request dispatched")
+        var receivedOptOutValues: [Bool] = []
+        var requestCompletions: [(Result<Void, Error>) -> Void] = []
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .updateAccountSettings(_, optOut, onCompletion):
+                receivedOptOutValues.append(optOut)
+                requestCompletions.append(onCompletion)
+                if receivedOptOutValues.count == 1 {
+                    firstRequestDispatched.fulfill()
+                } else {
+                    secondRequestDispatched.fulfill()
+                }
+            default:
+                break
+            }
+        }
+
+        // When
+        let optInUpdate = useCase.enqueueUpdate(optOut: false)
+        await fulfillment(of: [firstRequestDispatched], timeout: 1)
+        let finalOptOutUpdate = useCase.enqueueUpdate(optOut: true)
+
+        // Then
+        XCTAssertEqual(receivedOptOutValues, [false])
+        requestCompletions.removeFirst()(.success(()))
+        try await optInUpdate.value
+        await fulfillment(of: [secondRequestDispatched], timeout: 1)
+        XCTAssertEqual(receivedOptOutValues, [false, true])
+        requestCompletions.removeFirst()(.success(()))
+        try await finalOptOutUpdate.value
+        XCTAssertFalse(analytics.userHasOptedIn)
+        XCTAssertEqual(userDefaults[.hasSavedPrivacyBannerSettings], true)
+    }
+
     override class func tearDown() {
         super.tearDown()
         SessionManager.removeTestingDatabase()

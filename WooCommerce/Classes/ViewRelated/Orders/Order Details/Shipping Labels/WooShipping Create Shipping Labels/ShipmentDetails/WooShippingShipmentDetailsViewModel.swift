@@ -13,6 +13,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
     private let currencyFormatter: CurrencyFormatter
     private let onLabelPurchase: ((ShippingLabel) -> Void)?
     private let onLabelRefund: ((Int64) -> Void)?
+    private let onLabelRatesLoadingFailure: ((Error) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
     private let analytics: Analytics
     private lazy var starToggleService = PackageStarToggleService(siteID: order.siteID, stores: stores, analytics: analytics)
@@ -172,7 +173,8 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          debounceDuration: Double = 1,
          onLabelPurchase: ((ShippingLabel) -> Void)? = nil,
-         onLabelRefund: ((Int64) -> Void)? = nil) {
+         onLabelRefund: ((Int64) -> Void)? = nil,
+         onLabelRatesLoadingFailure: ((Error) -> Void)? = nil) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
@@ -182,6 +184,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
         self.debounceDuration = debounceDuration
         self.onLabelPurchase = onLabelPurchase
         self.onLabelRefund = onLabelRefund
+        self.onLabelRatesLoadingFailure = onLabelRatesLoadingFailure
 
         if let shippingLabel {
             self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
@@ -376,9 +379,12 @@ private extension WooShippingShipmentDetailsViewModel {
                 return WooShippingServiceViewModel(order: order,
                                                    originAddress: originAddress,
                                                    destinationAddress: destinationAddress,
-                                                   stores: stores) { [weak self] selectedRate in
+                                                   stores: stores,
+                                                   onSelectRate: { [weak self] selectedRate in
                     self?.selectedRate = selectedRate
-                }
+                }, onLabelRatesLoadingFailure: { [weak self] error in
+                    self?.onLabelRatesLoadingFailure?(error)
+                })
             }
             .assign(to: &$shippingService)
 

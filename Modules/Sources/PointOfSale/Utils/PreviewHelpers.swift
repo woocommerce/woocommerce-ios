@@ -596,6 +596,10 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
     func trackCardReaderTapped() {}
 
+    func trackCardReaderConnectionChanged(isConnected: Bool) {}
+
+    func trackCardPaymentAttemptStarted() {}
+
     func resetCheckoutTiming() {}
 
     func trackCheckoutTapped() {}

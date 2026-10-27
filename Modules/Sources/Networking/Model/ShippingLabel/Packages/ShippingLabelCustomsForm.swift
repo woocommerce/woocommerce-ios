@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents customs info for a shipping label package
 ///
-public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     /// ID of the associated package.
     ///
     /// This is for identifying the package when inputing customs form only,
@@ -97,7 +97,7 @@ extension ShippingLabelCustomsForm.Item {
 public extension ShippingLabelCustomsForm {
     /// Types of contents to declare with customs.
     ///
-    enum ContentsType: String, CaseIterable, Codable, GeneratedFakeable {
+    enum ContentsType: String, CaseIterable, Codable, GeneratedFakeable, Sendable {
         case merchandise
         case documents
         case gift
@@ -107,7 +107,7 @@ public extension ShippingLabelCustomsForm {
 
     /// Types of restriction of contents to declare with customs.
     ///
-    enum RestrictionType: String, CaseIterable, Codable, GeneratedFakeable {
+    enum RestrictionType: String, CaseIterable, Codable, GeneratedFakeable, Sendable {
         case none
         case quarantine
         case sanitaryOrPhytosanitaryInspection = "sanitary_phytosanitary_inspection"
@@ -116,14 +116,14 @@ public extension ShippingLabelCustomsForm {
 
     /// Options if delivery fails.
     ///
-    enum NonDeliveryOption: String, Codable, GeneratedFakeable {
+    enum NonDeliveryOption: String, Codable, GeneratedFakeable, Sendable {
         case `return`
         case abandon
     }
 
     /// Information about a item to declare with customs.
     ///
-    struct Item: Codable, Hashable, Equatable, GeneratedFakeable, GeneratedCopiable {
+    struct Item: Codable, Hashable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
         /// Description of item.
         public let description: String
 

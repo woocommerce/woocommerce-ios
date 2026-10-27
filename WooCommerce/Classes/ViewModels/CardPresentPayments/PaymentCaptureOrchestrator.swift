@@ -16,6 +16,7 @@ protocol PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
+                        readerType: CardReaderType,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         countryCode: CountryCode,
@@ -73,6 +74,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
+                        readerType: CardReaderType,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         countryCode: CountryCode,
@@ -108,7 +110,9 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
         /// reader begins to collect payment.
         ///
-        suppressPassPresentation()
+        if readerType != .tapToPay {
+            suppressPassPresentation()
+        }
 
         let paymentAction = CardPresentPaymentAction.collectPayment(
             siteID: order.siteID,

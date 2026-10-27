@@ -27,6 +27,14 @@ public struct POSCartItem {
     }
 }
 
+extension POSCart: Equatable {}
+
+extension POSCartItem: Equatable {
+    public static func == (lhs: POSCartItem, rhs: POSCartItem) -> Bool {
+        lhs.item.isEqual(to: rhs.item) && lhs.quantity == rhs.quantity
+    }
+}
+
 public extension POSCart {
     func matches(order: Order?) -> Bool {
         return items.matches(order: order)

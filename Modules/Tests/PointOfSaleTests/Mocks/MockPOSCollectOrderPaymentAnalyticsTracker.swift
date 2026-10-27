@@ -18,12 +18,23 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         orderSyncSuccessCount += 1
     }
 
+    var trackCardReaderReadyCallCount = 0
     func trackCardReaderReady() {
-        // no-op
+        trackCardReaderReadyCallCount += 1
     }
 
     func trackCardReaderTapped() {
         // no-op
+    }
+
+    var cardReaderConnectionChanges: [Bool] = []
+    func trackCardReaderConnectionChanged(isConnected: Bool) {
+        cardReaderConnectionChanges.append(isConnected)
+    }
+
+    var cardPaymentAttemptStartedCount = 0
+    func trackCardPaymentAttemptStarted() {
+        cardPaymentAttemptStartedCount += 1
     }
 
     private(set) var didResetCheckoutTiming = false

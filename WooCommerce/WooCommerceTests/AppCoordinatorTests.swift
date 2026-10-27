@@ -7,6 +7,8 @@ import YosemiteTestHelpers
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
+import protocol WooFoundationCore.CrashLogger
+import enum WooFoundationCore.SeverityLevel
 
 final class AppCoordinatorTests: XCTestCase {
     private var sessionManager: SessionManager!
@@ -593,6 +595,129 @@ final class AppCoordinatorTests: XCTestCase {
     }
 
     @MainActor
+    func test_consent_blocker_when_topmost_controller_is_being_dismissed_then_presents_on_the_visible_controller() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let analytics = MockAnalyticsProvider()
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(
+            decision: .restrictConsentRequired,
+            result: .eligible(significantAppChangeApprovalRequired: true, isMinor: true)
+        )
+        // Stands in for the Declared Age Range host sheet, still going away when the decision lands.
+        let systemSheet = UIViewController()
+        ageRangeVerificationCoordinator.beforeResult = { window in
+            window.topmostPresentedViewController?.present(systemSheet, animated: false)
+            systemSheet.dismiss(animated: true)
+        }
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: MockAuthentication(),
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator)
+
+        // When
+        appCoordinator.start()
+
+        // Then the wall lands on a controller that is on screen, and is only reported as shown once it is.
+        XCTAssertFalse(analytics.receivedEvents.contains(WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue))
+        waitUntil { self.window.topmostPresentedViewController is SignificantChangeConsentBlockingHostingController }
+        let blocker = try XCTUnwrap(window.topmostPresentedViewController as? SignificantChangeConsentBlockingHostingController)
+        waitUntil { blocker.isBeingPresented == false }
+        XCTAssertTrue(blocker.viewIfLoaded?.window === window)
+        XCTAssertFalse(blocker.presentingViewController === systemSheet)
+        XCTAssertNil(systemSheet.presentingViewController)
+        waitUntil { analytics.receivedEvents.contains(WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue) }
+        XCTAssertEqual(analytics.receivedEvents.filter { $0 == WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue }.count, 1)
+    }
+
+    @MainActor
+    func test_consent_recheck_while_blocker_presentation_is_in_flight_then_updates_the_same_blocker() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let analytics = MockAnalyticsProvider()
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(
+            decision: .restrictConsentRequired,
+            result: .eligible(significantAppChangeApprovalRequired: true, isMinor: true)
+        )
+        let systemSheet = UIViewController()
+        ageRangeVerificationCoordinator.beforeResult = { window in
+            window.topmostPresentedViewController?.present(systemSheet, animated: false)
+            systemSheet.dismiss(animated: true)
+        }
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: MockAuthentication(),
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator)
+        appCoordinator.start()
+
+        // When a re-check lands before the wall made it on screen
+        ageRangeVerificationCoordinator.beforeResult = nil
+        ageRangeVerificationCoordinator.decision = .restrictPendingConsent
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then a single wall shows the latest context, reported once
+        waitUntil { self.window.topmostPresentedViewController is SignificantChangeConsentBlockingHostingController }
+        let blocker = try XCTUnwrap(window.topmostPresentedViewController as? SignificantChangeConsentBlockingHostingController)
+        waitUntil { blocker.isBeingPresented == false }
+        XCTAssertEqual(blocker.context, .pendingApproval)
+        XCTAssertNil(blocker.presentedViewController)
+        XCTAssertFalse(blocker.presentingViewController is SignificantChangeConsentBlockingHostingController)
+        waitUntil { analytics.receivedEvents.contains(WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue) }
+        let dialogShownIndices = analytics.receivedEvents.indices.filter {
+            analytics.receivedEvents[$0] == WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue
+        }
+        XCTAssertEqual(dialogShownIndices.count, 1)
+        XCTAssertEqual(analytics.receivedProperties[try XCTUnwrap(dialogShownIndices.first)]["screen"] as? String, "consent_pending")
+    }
+
+    @MainActor
+    func test_consent_blocker_when_presenter_stays_busy_past_the_retry_budget_then_presents_once_it_is_free() throws {
+        // Given a system sheet whose dismissal outlasts every retry check
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let analytics = MockAnalyticsProvider()
+        let crashLogging = MockCrashLogger()
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(
+            decision: .restrictConsentRequired,
+            result: .eligible(significantAppChangeApprovalRequired: true, isMinor: true)
+        )
+        let slowDismissal = SlowDismissalTransitioningDelegate(duration: 0.5)
+        let systemSheet = UIViewController()
+        systemSheet.modalPresentationStyle = .custom
+        systemSheet.transitioningDelegate = slowDismissal
+        ageRangeVerificationCoordinator.beforeResult = { window in
+            window.topmostPresentedViewController?.present(systemSheet, animated: false)
+            systemSheet.dismiss(animated: true)
+        }
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: MockAuthentication(),
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             crashLogging: crashLogging,
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator,
+                                             blockerPresentationRetryDelay: .milliseconds(20))
+
+        // When
+        appCoordinator.start()
+
+        // Then the wall still lands once the sheet is gone, and waiting on it was not reported as failed attempts
+        waitUntil { self.window.topmostPresentedViewController is SignificantChangeConsentBlockingHostingController }
+        let blocker = try XCTUnwrap(window.topmostPresentedViewController as? SignificantChangeConsentBlockingHostingController)
+        waitUntil { blocker.isBeingPresented == false }
+        XCTAssertTrue(blocker.viewIfLoaded?.window === window)
+        XCTAssertNil(systemSheet.presentingViewController)
+        waitUntil { analytics.receivedEvents.contains(WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue) }
+        XCTAssertEqual(analytics.receivedEvents.filter { $0 == WooAnalyticsStat.accountAgeRestrictionDialogShown.rawValue }.count, 1)
+        XCTAssertTrue(crashLogging.loggedMessages.isEmpty)
+    }
+
+    @MainActor
     func test_consent_blocker_dismissal_when_help_and_support_is_on_top_then_dismisses_the_whole_chain() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -852,6 +977,7 @@ private extension AppCoordinatorTests {
                          authenticationManager: Authentication? = nil,
                          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil,
                          analytics: Analytics = ServiceLocator.analytics,
+                         crashLogging: CrashLogger = ServiceLocator.crashLogging,
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
@@ -862,7 +988,8 @@ private extension AppCoordinatorTests {
                             result: .featureUnavailable
                          ),
                          notificationCenter: NotificationCenter = .default,
-                         applicationStateProvider: @escaping () -> UIApplication.State = { .active }
+                         applicationStateProvider: @escaping () -> UIApplication.State = { .active },
+                         blockerPresentationRetryDelay: Duration = .seconds(1)
     ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
@@ -870,6 +997,7 @@ private extension AppCoordinatorTests {
                               authenticationManager: authenticationManager ?? self.authenticationManager,
                               roleEligibilityUseCase: roleEligibilityUseCase ?? MockRoleEligibilityUseCase(),
                               analytics: analytics,
+                              crashLogging: crashLogging,
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
@@ -877,7 +1005,8 @@ private extension AppCoordinatorTests {
                               themeInstaller: themeInstaller,
                               ageRangeVerificationCoordinator: ageRangeVerificationCoordinator,
                               notificationCenter: notificationCenter,
-                              applicationStateProvider: applicationStateProvider)
+                              applicationStateProvider: applicationStateProvider,
+                              blockerPresentationRetryDelay: blockerPresentationRetryDelay)
     }
 
     /// Makes the previous role check pass so the logged-in UI is shown right away.
@@ -888,6 +1017,44 @@ private extension AppCoordinatorTests {
             }
             // any failure except `.insufficientRole` will be treated as having an eligible status.
             completion(.failure(SampleError.first))
+        }
+    }
+}
+
+private final class MockCrashLogger: CrashLogger {
+    private(set) var loggedMessages: [(message: String, properties: [String: Any]?, level: SeverityLevel)] = []
+
+    func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {}
+
+    func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {
+        loggedMessages.append((message, properties, level))
+    }
+
+    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?) -> Never {
+        fatalError(error.localizedDescription)
+    }
+}
+
+/// Dismisses with a custom animation of the given duration, so a presenter stays busy for that long.
+@MainActor
+private final class SlowDismissalTransitioningDelegate: NSObject, UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning {
+    private let duration: TimeInterval
+
+    init(duration: TimeInterval) {
+        self.duration = duration
+    }
+
+    func animationController(forDismissed dismissed: UIViewController) -> (any UIViewControllerAnimatedTransitioning)? {
+        self
+    }
+
+    func transitionDuration(using transitionContext: (any UIViewControllerContextTransitioning)?) -> TimeInterval {
+        duration
+    }
+
+    func animateTransition(using transitionContext: any UIViewControllerContextTransitioning) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            transitionContext.completeTransition(true)
         }
     }
 }

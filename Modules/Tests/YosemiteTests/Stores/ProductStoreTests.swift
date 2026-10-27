@@ -9,6 +9,7 @@ import YosemiteTestHelpers
 
 /// ProductStore Unit Tests
 ///
+@MainActor
 final class ProductStoreTests: XCTestCase {
 
     private typealias SyncedProducts = (products: [Networking.Product], hasNextPage: Bool, missingProductIDs: [Int64])
@@ -58,8 +59,8 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
@@ -1204,7 +1205,8 @@ final class ProductStoreTests: XCTestCase {
         // Stack
         let viewContext = storageManager.persistentContainer.viewContext
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: sampleProduct())
+        let product = sampleProduct()
+        let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: product)
 
         // Track Events: Upsert == 2 / Delete == 0
         var numberOfUpsertEvents = 0
@@ -1223,14 +1225,14 @@ final class ProductStoreTests: XCTestCase {
         let derivedContext = storageManager.writerDerivedStorage
 
         derivedContext.perform {
-            productStore.upsertStoredProduct(readOnlyProduct: self.sampleProduct(), in: derivedContext)
+            productStore.upsertStoredProduct(readOnlyProduct: product, in: derivedContext)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedContext) {
 
             // Secondary Save: Expect ZERO new Upsert Events
             derivedContext.perform {
-                productStore.upsertStoredProduct(readOnlyProduct: self.sampleProduct(), in: derivedContext)
+                productStore.upsertStoredProduct(readOnlyProduct: product, in: derivedContext)
             }
 
             self.storageManager.saveDerivedType(derivedStorage: derivedContext) {

@@ -594,7 +594,7 @@ extension PointOfSaleAggregateModel {
     /// Triggers an incremental catalog sync if the order response indicates product prices have changed.
     /// The sync updates GRDB, which the cart product observer picks up to update cart item prices reactively.
     private func triggerIncrementalSyncIfPriceChanged() {
-        guard case .loaded(_, let order) = orderController.orderState else { return }
+        guard case .loaded(_, let order, _) = orderController.orderState else { return }
         guard POSOrderPriceChangeDetector().detectsPriceChange(cart: cart, order: order) else { return }
         guard let catalogSyncCoordinator else { return }
 
@@ -689,6 +689,7 @@ extension PointOfSaleAggregateModel {
     func pointOfSaleClosed() {
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
+        checkoutGeneration += 1
         orderController.clearOrder()
 
         // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,

@@ -5,6 +5,7 @@ import Combine
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
@@ -15,8 +16,13 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     var subscriptions = Set<AnyCancellable>()
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
+        setUpFixtures()
+    }
+
+    @MainActor
+    private func setUpFixtures() {
 
         testingStorage.reset()
         testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
@@ -162,7 +168,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(viewModel.navigationTrailingItem, .loading)
     }
 
-    func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
+    func test_loading_indicator_gets_disabled_after_the_network_operation_completes() async throws {
         // Given
         let viewModel = EditOrderAddressFormViewModel(
             order: order(withShippingAddress: sampleAddress()),
@@ -181,11 +187,10 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         viewModel.onLoadTrigger.send()
-        let navigationItem = waitFor { promise in
-            viewModel.saveAddress { _ in
-                promise(viewModel.navigationTrailingItem)
-            }
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.saveAddress(onFinish: completion)
         }
+        let navigationItem = viewModel.navigationTrailingItem
 
         // Then
         assertEqual(navigationItem, .done(enabled: false))
@@ -385,6 +390,65 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(fields.state, "Greater London")
     }
 
+    func test_refreshCountryAndStateObjects_when_address_country_is_not_stored_then_keeps_country_and_state() {
+        // Given
+        var fields = AddressFormFields(with: sampleAddress())
+
+        // When
+        fields.refreshCountryAndStateObjects(with: [])
+
+        // Then
+        XCTAssertNil(fields.selectedCountry)
+        XCTAssertEqual(fields.country, "US")
+        XCTAssertEqual(fields.state, "NY")
+    }
+
+    func test_refreshCountryAndStateObjects_when_address_country_has_no_states_then_keeps_free_text_state() {
+        // Given
+        let unitedKingdom = Country(code: "GB", name: "United Kingdom", states: [])
+        var fields = AddressFormFields(with: sampleAddress().copy(state: "Greater London", country: "GB"))
+
+        // When
+        fields.refreshCountryAndStateObjects(with: [unitedKingdom])
+
+        // Then
+        XCTAssertEqual(fields.selectedCountry?.code, "GB")
+        XCTAssertEqual(fields.country, "United Kingdom")
+        XCTAssertEqual(fields.state, "Greater London")
+    }
+
+    func test_onLoadTrigger_when_countries_are_synced_after_load_then_selects_address_country_and_state() {
+        // Given
+        testingStorage.reset()
+        testingStores.whenReceivingAction(ofType: DataAction.self) { action in
+            switch action {
+            case .synchronizeCountries(_, let completion):
+                // Stores the countries asynchronously, like the remote sync does, so they arrive after the initial form refresh.
+                DispatchQueue.main.async {
+                    self.testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
+                    completion(.success(Self.sampleCountries))
+                }
+            }
+        }
+
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()),
+                                                      type: .shipping,
+                                                      storageManager: testingStorage,
+                                                      stores: testingStores)
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        waitUntil {
+            viewModel.fields.selectedCountry != nil
+        }
+        let unitedStates = Self.sampleCountries.first { $0.code == "US" }
+        XCTAssertEqual(viewModel.fields.country, unitedStates?.name)
+        XCTAssertEqual(viewModel.fields.state, "New York")
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+    }
+
     func test_view_model_updates_billing_and_shipping_address_fields_when_use_as_toggle_is_on() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -412,7 +476,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(update.fields, [.billingAddress, .shippingAddress])
     }
 
-    func test_view_model_fires_success_notice_after_updating_address_successfully() {
+    func test_view_model_fires_success_notice_after_updating_address_successfully() async throws {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -425,17 +489,16 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         }
 
         // When
-        let noticeRequest = waitFor { promise in
-            viewModel.saveAddress { _ in
-                promise(viewModel.notice)
-            }
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.saveAddress(onFinish: completion)
         }
+        let noticeRequest = viewModel.notice
 
         // Then
         assertEqual(noticeRequest, EditOrderAddressFormViewModel.NoticeFactory.createSuccessNotice())
     }
 
-    func test_view_model_fires_error_notice_after_failing_to_update_address() {
+    func test_view_model_fires_error_notice_after_failing_to_update_address() async throws {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -448,11 +511,10 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         }
 
         // When
-        let noticeRequest = waitFor { promise in
-            viewModel.saveAddress { _ in
-                promise(viewModel.notice)
-            }
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.saveAddress(onFinish: completion)
         }
+        let noticeRequest = viewModel.notice
 
         // Then
         assertEqual(noticeRequest, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress))
@@ -569,7 +631,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showEmailField)
     }
 
-    func test_view_model_tracks_success_after_updating_shipping_address() {
+    func test_view_model_tracks_success_after_updating_shipping_address() async throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
@@ -586,10 +648,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         }
 
         // When
-        _ = waitFor { promise in
-            viewModel.saveAddress(onFinish: { finished in
-                promise(finished)
-            })
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.saveAddress(onFinish: completion)
         }
 
         // Then
@@ -597,7 +657,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "shipping_address")
     }
 
-    func test_view_model_tracks_success_after_updating_billing_address() {
+    func test_view_model_tracks_success_after_updating_billing_address() async throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
@@ -614,10 +674,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         }
 
         // When
-        _ = waitFor { promise in
-            viewModel.saveAddress(onFinish: { finished in
-                promise(finished)
-            })
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.saveAddress(onFinish: completion)
         }
 
         // Then
@@ -625,7 +683,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
     }
 
-    func test_view_model_tracks_failure_after_updating_shipping_address() {
+    func test_view_model_tracks_failure_after_updating_shipping_address() async throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
@@ -642,10 +700,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         }
 
         // When
-        _ = waitFor { promise in
-            viewModel.saveAddress(onFinish: { finished in
-                promise(finished)
-            })
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.saveAddress(onFinish: completion)
         }
 
         // Then
@@ -653,7 +709,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "shipping_address")
     }
 
-    func test_view_model_tracks_failure_after_updating_billing_address() {
+    func test_view_model_tracks_failure_after_updating_billing_address() async throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
@@ -670,10 +726,8 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         }
 
         // When
-        _ = waitFor { promise in
-            viewModel.saveAddress(onFinish: { finished in
-                promise(finished)
-            })
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.saveAddress(onFinish: completion)
         }
 
         // Then
@@ -733,17 +787,16 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
     }
 
-    func test_view_model_fires_error_notice_when_providing_an_invalid_email() {
+    func test_view_model_fires_error_notice_when_providing_an_invalid_email() async throws {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
         viewModel.fields.email = "invalid"
 
         // When
-        let notice: Notice? = waitFor { promise in
-            viewModel.saveAddress { _ in
-                promise(viewModel.notice)
-            }
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.saveAddress(onFinish: completion)
         }
+        let notice = viewModel.notice
 
         // Then
         XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())

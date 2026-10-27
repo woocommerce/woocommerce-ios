@@ -2,7 +2,7 @@ import SwiftUI
 import Networking
 import struct Combine.AnyPublisher
 
-public protocol POSReceiptServiceProtocol {
+public protocol POSReceiptServiceProtocol: Sendable {
     func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool, templateID: String?) async throws
 }
 

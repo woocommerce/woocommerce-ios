@@ -85,13 +85,14 @@ protocol PointOfSaleOrderControllerProtocol {
     private let analytics: POSAnalyticsProviding
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
-    private var order: Order? = nil
 
     /// The custom amounts as they were on the last successful sync. Used to detect a "Charge
     /// taxes" toggle on an otherwise-unchanged amount, which `POSCart.matches(order:)` cannot
     /// see (it ignores `isTaxable`). Compared against the cart's intent — never the server's
     /// returned tax status — so a legitimate server/cart tax divergence won't cause a resync loop.
     private var lastSyncedCustomAmounts: [POSCustomAmount] = []
+
+    private var pendingOrderSync: (cart: POSCart, task: Task<Result<SyncOrderState, Error>, Never>)?
 
     private var currencyFormatter: CurrencyFormatter {
         CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
@@ -106,33 +107,64 @@ protocol PointOfSaleOrderControllerProtocol {
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         let posCart = POSCart(cart: cart)
 
+        if let pendingOrderSync, pendingOrderSync.cart == posCart {
+            let result = await pendingOrderSync.task.value
+            if case .success = result, case .loaded(_, let order, let generation) = orderState {
+                orderState = .loaded(totals(for: order, cart: cart), order, generation: generation)
+            }
+            return result
+        }
+        pendingOrderSync?.task.cancel()
+        pendingOrderSync = nil
+
         // `matches(order:)` ignores `isTaxable`, so a "Charge taxes" toggle on an otherwise-
         // unchanged amount would short-circuit and never re-sync. Force a sync when the cart's
         // taxable intent diverges from what we last synced.
         let taxableIntentChanged = !posCart.customAmounts.taxableIntentMatches(lastSyncedCustomAmounts)
 
-        guard !orderState.isSyncing,
-              !posCart.matches(order: order) || taxableIntentChanged else {
+        guard !posCart.matches(order: orderState.order) || taxableIntentChanged else {
+            if let order = orderState.order, let generation = orderState.generation {
+                orderState = .loaded(totals(for: order, cart: cart), order, generation: generation)
+            } else if orderState.isSyncing {
+                orderState = .idle
+            }
             return .success(.orderNotChanged)
         }
 
-        orderState = .syncing
+        let generation = UUID()
+        orderState = .syncing(generation: generation, previousOrder: orderState.order)
 
-        do {
-            let syncedOrder = try await orderService.syncOrder(cart: posCart,
-                                                               currency: storeCurrency)
-            self.order = syncedOrder
-            self.lastSyncedCustomAmounts = posCart.customAmounts
-            orderState = .loaded(totals(for: syncedOrder, cart: cart), syncedOrder)
-            analytics.track(.orderCreationSuccess)
-            return .success(.newOrder)
-        } catch {
-            self.order = nil
-            self.lastSyncedCustomAmounts = []
-            trackOrderCreationFailed(error: error)
-            setOrderStateToError(error, retryHandler: retryHandler)
-            return .failure(SyncOrderStateError.syncFailure)
+        let task = Task<Result<SyncOrderState, Error>, Never> {
+            let result: Result<Order, Error>
+            do {
+                result = .success(try await orderService.syncOrder(cart: posCart, currency: storeCurrency))
+            } catch {
+                result = .failure(error)
+            }
+            switch result {
+            case .success:
+                analytics.track(.orderCreationSuccess)
+            case .failure(let error):
+                trackOrderCreationFailed(error: error)
+            }
+            guard !Task.isCancelled else {
+                return .failure(CancellationError())
+            }
+            pendingOrderSync = nil
+
+            switch result {
+            case .success(let syncedOrder):
+                self.lastSyncedCustomAmounts = posCart.customAmounts
+                orderState = .loaded(totals(for: syncedOrder, cart: cart), syncedOrder, generation: generation)
+                return .success(.newOrder)
+            case .failure(let error):
+                self.lastSyncedCustomAmounts = []
+                setOrderStateToError(error, retryHandler: retryHandler)
+                return .failure(SyncOrderStateError.syncFailure)
+            }
         }
+        pendingOrderSync = (posCart, task)
+        return await task.value
     }
 
     private func setOrderStateToError(_ error: Error,
@@ -145,7 +177,7 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func sendReceipt(recipientEmail: String) async throws {
-        guard let order else {
+        guard let order = orderState.order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
@@ -153,13 +185,14 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func clearOrder() {
-        order = nil
+        pendingOrderSync?.task.cancel()
+        pendingOrderSync = nil
         lastSyncedCustomAmounts = []
         orderState = .idle
     }
 
     func collectCashPayment(changeDueAmount: String?) async throws {
-        guard let order else {
+        guard let order = orderState.order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
@@ -172,7 +205,7 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func markOrderAsPaidManually(note: String?) async throws {
-        guard let order else {
+        guard let order = orderState.order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
@@ -197,7 +230,7 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func confirmScanToPayPayment() async throws {
-        guard let order else {
+        guard let order = orderState.order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
@@ -213,7 +246,7 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func recordScanToPayPaymentMethod() async {
-        guard let order else {
+        guard let order = orderState.order else {
             DDLogWarn("⚠️ [ScanToPay] Could not record payment method title because there is no current order")
             return
         }
@@ -230,24 +263,26 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func reloadCurrentOrder() async throws -> Order {
-        guard let order else {
+        guard let order = orderState.order, let generation = orderState.generation else {
             throw PointOfSaleOrderControllerError.noOrder
         }
         let refreshed = try await orderService.loadOrder(orderID: order.orderID)
-        self.order = refreshed
+        guard generation == orderState.generation, orderState.order?.orderID == order.orderID else {
+            throw CancellationError()
+        }
+        orderState.updateOrder(refreshed)
         return refreshed
     }
 
     func promoteCurrentOrderToPending() async throws -> Order {
-        guard let order else {
+        guard let order = orderState.order, let generation = orderState.generation else {
             throw PointOfSaleOrderControllerError.noOrder
         }
         let promoted = try await orderService.promoteOrderToPending(order: order)
-        self.order = promoted
-        // Keep the loaded totals in sync; the order is the same, only its status changed.
-        if case let .loaded(totals, _) = orderState {
-            orderState = .loaded(totals, promoted)
+        guard generation == orderState.generation, orderState.order?.orderID == order.orderID else {
+            throw CancellationError()
         }
+        orderState.updateOrder(promoted)
         return promoted
     }
 }
@@ -401,9 +436,40 @@ private extension PointOfSaleOrderController {
 // Conversely, PointOfSaleOrderState is available to the Views, as it doesn't include the Order.
 enum PointOfSaleInternalOrderState {
     case idle
-    case syncing
-    case loaded(PointOfSaleOrderTotals, Order)
+    case syncing(generation: UUID = UUID(), previousOrder: Order? = nil)
+    case loaded(PointOfSaleOrderTotals, Order, generation: UUID = UUID())
     case error(PointOfSaleOrderState.OrderStateError, PointOfSaleOrderState.OrderStateRetryHandler)
+
+    var order: Order? {
+        switch self {
+        case .syncing(_, let previousOrder):
+            return previousOrder
+        case .loaded(_, let order, _):
+            return order
+        case .idle, .error:
+            return nil
+        }
+    }
+
+    var generation: UUID? {
+        switch self {
+        case .syncing(let generation, _), .loaded(_, _, let generation):
+            return generation
+        case .idle, .error:
+            return nil
+        }
+    }
+
+    mutating func updateOrder(_ order: Order) {
+        switch self {
+        case .syncing(let generation, _):
+            self = .syncing(generation: generation, previousOrder: order)
+        case .loaded(let totals, _, let generation):
+            self = .loaded(totals, order, generation: generation)
+        case .idle, .error:
+            break
+        }
+    }
 
     var isSyncing: Bool {
         switch self {
@@ -420,7 +486,7 @@ enum PointOfSaleInternalOrderState {
             return .idle
         case .error(let error, let handler):
             return .error(error, handler)
-        case .loaded(let totals, _):
+        case .loaded(let totals, _, _):
             return .loaded(totals)
         case .syncing:
             return .syncing
@@ -437,7 +503,7 @@ extension PointOfSaleInternalOrderState: Equatable {
             return lhsError == rhsError
         case (.syncing, .syncing):
             return true
-        case (.loaded(let lhsTotals, let lhsOrder), .loaded(let rhsTotals, let rhsOrder)):
+        case (.loaded(let lhsTotals, let lhsOrder, _), .loaded(let rhsTotals, let rhsOrder, _)):
             return lhsTotals == rhsTotals &&
             lhsOrder == rhsOrder
         default:

@@ -59,11 +59,18 @@ struct OrderListSyncActionUseCase {
     }
 
     /// Returns the action to use when synchronizing.
+    @MainActor
     func actionFor(pageNumber: Int,
                    pageSize: Int,
                    reason: SyncReason?,
                    lastFullSyncTimestamp: Date?,
                    completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
+        let finish: @MainActor @Sendable (TimeInterval, Error?) -> Void = { timeInterval, error in
+            completionHandler(timeInterval, error)
+        }
+        let completion: @Sendable (TimeInterval, Error?) -> Void = { timeInterval, error in
+            Task { @MainActor in finish(timeInterval, error) }
+        }
         let filterStatuses = filters?.orderStatus ?? []
         let statuses = filterStatuses.map { $0.rawValue }
         let startDate = filters?.dateRange?.computedStartDate
@@ -101,9 +108,9 @@ struct OrderListSyncActionUseCase {
                 onCompletion: { timeInterval, result in
                     switch result {
                     case .success:
-                        completionHandler(timeInterval, nil)
+                        completion(timeInterval, nil)
                     case .failure(let error):
-                        completionHandler(timeInterval, error)
+                        completion(timeInterval, error)
                     }
                 }
             )
@@ -119,7 +126,7 @@ struct OrderListSyncActionUseCase {
             createdVia: createdVia,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            onCompletion: completionHandler
+            onCompletion: completion
         )
     }
 }

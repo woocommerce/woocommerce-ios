@@ -20,6 +20,21 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
     private var orderSyncCompleted: Int?
     private var paymentConfirmed: Int?
 
+    // Reader-ready timing, in monotonic milliseconds.
+    private var interactionStarted: Int?
+    /// Latest order sync, while `orderSyncCompleted` keeps the first one of the checkout.
+    private var orderSynced: Int?
+    /// Reader-ready stamp of the current payment attempt only, while `cardReaderReady` keeps its legacy lifetime.
+    private var attemptCardReaderReady: Int?
+    private var attemptStarted: Int?
+    /// `nil` until the first status arrives, so an unknown state is never reported as disconnected.
+    private var isCardReaderConnected: Bool?
+    private var readerConnectedAtCheckout: Bool?
+    /// First connection in an interaction that started without a reader. Ends the connection waiting interval.
+    private var cardReaderConnected: Int?
+    /// Latest connection before this attempt's reader-ready. Preparation starts no earlier than this.
+    private var latestCardReaderConnected: Int?
+
     private let analytics: POSAnalyticsProviding
 
     private let currentTimestamp: () -> TimeInterval
@@ -61,6 +76,9 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
 
     func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {
         cardPaymentOrder = order
+        // Resetting before preflight keeps an outcome reported before validation from carrying an earlier attempt's timing.
+        resetCardReaderReadyForAttempt()
+        attemptStarted = nil
     }
 
     func clearPaymentConfirmation() {
@@ -121,7 +139,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             millisecondsSinceOrderSyncSuccess: elapsedTimeSinceOrderSync,
             millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,
             millisecondsSinceCardTapped: elapsedTimeSinceCardTapped,
-            checkoutTapCount: checkoutTapCount
+            checkoutTapCount: checkoutTapCount,
+            readerReadyTiming: readerReadyTiming()
         ))
 
         clearPaymentConfirmation()
@@ -174,7 +193,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
             millisecondsSinceOrderSyncSuccess: calculateElapsedTimeInMilliseconds(since: orderSync),
             millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
             millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
-            checkoutTapCount: checkoutTapCount
+            checkoutTapCount: checkoutTapCount,
+            readerReadyTiming: readerReadyTiming()
         ))
         clearPaymentConfirmation()
 
@@ -201,17 +221,51 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
         resetCheckoutTiming()
         analytics.track(.pointOfSaleInteractionWithCustomerStarted)
         customerInteractionStarted = currentTimestamp()
+        interactionStarted = monotonicMilliseconds()
+        readerConnectedAtCheckout = isCardReaderConnected
+    }
+
+    func trackCardReaderConnectionChanged(isConnected: Bool) {
+        let wasConnected = isCardReaderConnected
+        isCardReaderConnected = isConnected
+
+        // The first status ever received is not a connection: it only tells us the current state.
+        guard isConnected, wasConnected == false else {
+            return
+        }
+        let now = monotonicMilliseconds()
+        // Frozen once the reader is ready, so a later reconnect never changes that attempt's preparation.
+        if attemptCardReaderReady == nil {
+            latestCardReaderConnected = now
+        }
+        if readerConnectedAtCheckout == false, cardReaderConnected == nil {
+            cardReaderConnected = now
+        }
+    }
+
+    func trackCardPaymentAttemptStarted() {
+        resetCardReaderReadyForAttempt()
+        // Called when validating the order and again when preparing the reader: the first call starts the attempt.
+        if attemptStarted == nil {
+            attemptStarted = monotonicMilliseconds()
+        }
     }
 
     func trackOrderSyncSuccess() {
         orderSync = trackCurrentTime()
+        orderSynced = monotonicMilliseconds()
         if checkoutStarted != nil, orderSyncCompleted == nil {
             orderSyncCompleted = monotonicMilliseconds()
         }
     }
 
+    // Only the first card input request of a payment attempt marks the reader as ready.
     func trackCardReaderReady() {
+        guard attemptCardReaderReady == nil else {
+            return
+        }
         cardReaderReady = trackCurrentTime()
+        attemptCardReaderReady = monotonicMilliseconds()
 
         // As a side effect of knowing when the reader is ready, we track the elapsed from order sync (created or updated)
         trackElapsedTimeFromOrderSyncToCardReady()
@@ -247,7 +301,32 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPa
 
     private func trackElapsedTimeFromOrderSyncToCardReady() {
         let elapsedTime = calculateElapsedTimeInSeconds(from: orderSync, to: cardReaderReady)
-        analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime))
+        analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime,
+                                                                          readerReadyTiming: readerReadyTiming()))
+    }
+
+    private func readerReadyTiming() -> WooAnalyticsEvent.PointOfSale.ReaderReadyTiming {
+        let millisecondsFromOrderSyncToReaderReady: Int? = {
+            guard let orderSynced, let attemptCardReaderReady else {
+                return nil
+            }
+            // Neither connection waiting nor time on a previous attempt's error screen counts as preparation.
+            let preparationStart = [orderSynced, latestCardReaderConnected, attemptStarted].compactMap { $0 }.max() ?? orderSynced
+            return attemptCardReaderReady - preparationStart
+        }()
+        let millisecondsWaitingForReaderConnection: Int? = {
+            guard let interactionStarted, let cardReaderConnected else {
+                return nil
+            }
+            return cardReaderConnected - interactionStarted
+        }()
+
+        return WooAnalyticsEvent.PointOfSale.ReaderReadyTiming(
+            readerConnectedAtCheckout: readerConnectedAtCheckout,
+            millisecondsWaitingForReaderConnection: millisecondsWaitingForReaderConnection,
+            millisecondsFromOrderSyncToReaderReady: millisecondsFromOrderSyncToReaderReady,
+            readerReadySignal: attemptCardReaderReady != nil ? .inputRequested : nil
+        )
     }
 }
 
@@ -292,12 +371,21 @@ private extension POSCollectOrderPaymentAnalyticsAdaptor {
 
     private func resetProcessingPaymentTracking() {
         hasTrackedProcessingPayment = false
+        resetCardReaderReadyForAttempt()
+        attemptStarted = nil
+    }
+
+    private func resetCardReaderReadyForAttempt() {
+        attemptCardReaderReady = nil
     }
 
     private func resetAllCountersOnInteractionStarted() {
         orderSync = 0
         cardReaderReady = 0
         cardReaderTapped = 0
+        orderSynced = nil
+        cardReaderConnected = nil
+        latestCardReaderConnected = nil
         resetCheckoutTapCountTracker()
         resetProcessingPaymentTracking()
     }

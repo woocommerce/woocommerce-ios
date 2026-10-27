@@ -1,4 +1,5 @@
 import SwiftUI
+import Experiments
 import Kingfisher
 import WooFoundation
 import Yosemite
@@ -21,10 +22,14 @@ struct HubMenu: View {
 
     @ObservedObject private var httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel
 
+    private let featureFlagService: FeatureFlagService
+
     init(viewModel: HubMenuViewModel,
-         httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel) {
+         httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.viewModel = viewModel
         self.httpsConfigurationWarningViewModel = httpsConfigurationWarningViewModel
+        self.featureFlagService = featureFlagService
     }
 
     var body: some View {
@@ -32,7 +37,7 @@ struct HubMenu: View {
             /// TODO: switch to `navigationDestination(item:destination)`
             /// when we drop support for iOS 16.
             SafeAreaInsetsReader { safeAreaInsets in
-                menuList
+                rootMenuList
                     .safeAreaInset(edge: .top, spacing: 0) {
                         VStack(spacing: 0) {
                             // Top inset 0 with one-sided horizontal insets: the system bars run down one side (iPhone Duo), so no status bar spaces the list.
@@ -81,14 +86,29 @@ struct HubMenu: View {
 // MARK: SubViews
 private extension HubMenu {
 
+    @ViewBuilder
+    var rootMenuList: some View {
+        if featureFlagService.usesStoreDesignSystem {
+            StoreHubMenuList(
+                viewModel: viewModel,
+                onSwitchStore: switchStore,
+                onMenuItemTap: handleTap
+            )
+        } else {
+            menuList
+        }
+    }
+
+    func switchStore() {
+        ServiceLocator.analytics.track(.hubMenuSwitchStoreTapped)
+        switchStoreHandler()
+    }
+
     var menuList: some View {
         List {
             // Store Section
             Section {
-                Button {
-                    ServiceLocator.analytics.track(.hubMenuSwitchStoreTapped)
-                    switchStoreHandler()
-                } label: {
+                Button(action: switchStore) {
                     Row(title: viewModel.storeTitle,
                         titleBadge: viewModel.planName,
                         iconBadge: nil,
@@ -387,7 +407,9 @@ private extension HubMenu {
             sizeCategory.isAccessibilityCategory ? .zero : 4
         }
     }
+}
 
+extension HubMenu {
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
         static let general = NSLocalizedString("General", comment: "General section title in the hub menu")

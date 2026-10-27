@@ -2,7 +2,7 @@ import Foundation
 import protocol WooFoundation.Analytics
 import protocol WooAIAssistant.AssistantAnalyticsProviding
 
-struct AIAssistantAnalyticsAdaptor: @unchecked Sendable, AssistantAnalyticsProviding {
+struct AIAssistantAnalyticsAdaptor: Sendable, AssistantAnalyticsProviding {
 
     private let analytics: Analytics
 

@@ -236,6 +236,48 @@ struct POSPaymentModelTests {
         #expect(service.cancelPaymentCalled == true)
     }
 
+    @Test("card payment attempt start is tracked when validating the order and preparing the reader")
+    @MainActor
+    func cardPaymentAttempt_whenValidatingOrderAndPreparingReader_tracksAttemptStarted() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: orderProvider,
+                                        collectOrderPaymentAnalyticsTracker: tracker)
+        await sut.startPayment()
+        let attemptsBefore = tracker.cardPaymentAttemptStartedCount
+
+        // When
+        service.paymentEvent = .show(eventDetails: .validatingOrder(cancelPayment: {}))
+        service.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
+
+        // Then
+        #expect(tracker.cardPaymentAttemptStartedCount == attemptsBefore + 2)
+    }
+
+    @Test("reader connection changes reach the payment analytics tracker")
+    @MainActor
+    func readerConnectionStatus_whenReaderConnectsAndDisconnects_reportsEachChange() {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+        let sut = makePaymentController(cardPresentPaymentService: service, collectOrderPaymentAnalyticsTracker: tracker)
+
+        // When
+        withExtendedLifetime(sut) {
+            service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+            service.connectedReader = nil
+        }
+
+        // Then
+        #expect(Array(tracker.cardReaderConnectionChanges.suffix(2)) == [true, false])
+    }
+
     @Test("idle card event is dropped during cash flow")
     @MainActor
     func cardIdleEvent_during_cashFlow_isDropped() async {
@@ -1992,6 +2034,37 @@ struct POSPaymentModelTests {
     }
 
     // MARK: - Scan to Pay
+
+    @Test(arguments: [false, true])
+    @MainActor
+    func test_startScanToPayPayment_when_old_preparation_finishes_then_preserves_new_flow(fails: Bool) async throws {
+        // Given
+        let provider = MockPOSPaymentOrderProvider()
+        let sut = makePaymentController(orderProvider: provider)
+        let replacementURL = try #require(URL(string: "https://example.com/pay/2"))
+        var callCount = 0
+        provider.onProvideScanToPayOrder = {
+            callCount += 1
+            if callCount == 1 {
+                await sut.cancelScanToPayPayment()
+                await sut.startScanToPayPayment()
+                if fails { throw POSPaymentError.noOrder }
+                return POSPaymentOrder(order: Order.fake().copy(orderID: 1),
+                                       formattedTotal: "$10.00", totalDecimal: 10,
+                                       paymentURL: URL(string: "https://example.com/pay/1"))
+            }
+            return POSPaymentOrder(order: Order.fake().copy(orderID: 2),
+                                   formattedTotal: "$20.00", totalDecimal: 20, paymentURL: replacementURL)
+        }
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then
+        #expect(sut.scanToPayURL == replacementURL)
+        #expect(sut.isPreparingScanToPay == false)
+        #expect(sut.paymentState.scanToPay.isShowingQRCode)
+    }
 
     @Test("startScanToPayPayment transitions scanToPay to showingQRCode")
     @MainActor

@@ -3,6 +3,7 @@ import Yosemite
 
 /// Abstracts the code needed to sync the information for the Dashboard performance card.
 ///
+@MainActor
 struct PerformanceCardDataSyncUseCase {
 
     let siteID: Int64
@@ -21,7 +22,6 @@ struct PerformanceCardDataSyncUseCase {
 
     /// Sync all stats needed for the performance card.
     ///
-    @MainActor
     func sync() async throws {
         let timeRange = await {
             guard let initialTimeRange = self.timeRange else {
@@ -35,7 +35,6 @@ struct PerformanceCardDataSyncUseCase {
 
     /// Loads the last selected time range in any. If there isn't any returns the `.today` range.
     ///
-    @MainActor
     private func loadLastTimeRange() async -> StatsTimeRangeV4 {
         await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadLastSelectedPerformanceTimeRange(siteID: siteID) { timeRange in
@@ -47,7 +46,6 @@ struct PerformanceCardDataSyncUseCase {
 
     /// Orchestrate all networks request needed for the performance card.
     ///
-    @MainActor
     private func syncAllStats(timeRange: StatsTimeRangeV4) async throws {
         let currentDate = Date()
         let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
@@ -75,7 +73,6 @@ struct PerformanceCardDataSyncUseCase {
     }
 
     /// Syncs store stats for dashboard UI.
-    @MainActor
     func syncStats(timeRange: StatsTimeRangeV4, latestDateToInclude: Date) async throws {
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         try await withCheckedThrowingContinuation { continuation in
@@ -93,7 +90,6 @@ struct PerformanceCardDataSyncUseCase {
     }
 
     /// Syncs visitor stats for dashboard UI.
-    @MainActor
     func syncSiteVisitStats(timeRange: StatsTimeRangeV4, latestDateToInclude: Date) async throws {
         guard stores.isAuthenticatedWithoutWPCom == false else { // Visit stats are only available for stores connected to WPCom
             return
@@ -114,7 +110,6 @@ struct PerformanceCardDataSyncUseCase {
     }
 
     /// Syncs summary stats for dashboard UI.
-    @MainActor
     func syncSiteSummaryStats(timeRange: StatsTimeRangeV4, latestDateToInclude: Date) async throws {
         guard stores.isAuthenticatedWithoutWPCom == false else { // Summary stats are only available for stores connected to WPCom
             return

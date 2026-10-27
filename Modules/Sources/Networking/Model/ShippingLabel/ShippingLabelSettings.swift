@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents Shipping Label Settings for an order.
 ///
-public struct ShippingLabelSettings: Equatable, GeneratedFakeable {
+public struct ShippingLabelSettings: Equatable, GeneratedFakeable, Sendable {
     public let siteID: Int64
     public let orderID: Int64
 

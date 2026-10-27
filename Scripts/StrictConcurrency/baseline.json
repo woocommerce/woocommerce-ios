@@ -3,7 +3,6 @@
     "Modules/Sources/Hardware/CardReader/StripeCardReader/Cancelable+Stripe.swift": 1,
     "Modules/Sources/Hardware/CardReader/StripeCardReader/StripeCardReaderService.swift": 43,
     "Modules/Sources/Hardware/Internal/Logging.swift": 1,
-    "Modules/Sources/Networking/ProductImageInBackground/ProductImageStatusStorage.swift": 1,
     "Modules/Sources/NetworkingCore/ApplicationPassword/ApplicationPasswordUseCase.swift": 4,
     "Modules/Sources/NetworkingCore/Internal/Logging.swift": 3,
     "Modules/Sources/NetworkingCore/Model/DotcomError.swift": 12,

@@ -3,6 +3,7 @@
 
 # Uploaded by build-and-run-unit-tests.sh once the build products are available,
 # so the UI tests run in parallel with the unit tests.
+# Empty dependencies let these steps start before the uploading job finishes its unit tests.
 
 agents:
   queue: mac
@@ -13,6 +14,7 @@ env:
 steps:
   - label: ":microscope: UI Tests (iPhone)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
+    depends_on: []
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
     if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:
@@ -31,6 +33,7 @@ steps:
 
   - label: ":microscope: UI Tests (iPad)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
+    depends_on: []
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
     if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:

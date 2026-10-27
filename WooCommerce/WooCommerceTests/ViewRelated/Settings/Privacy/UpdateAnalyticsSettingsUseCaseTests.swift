@@ -2,6 +2,7 @@ import XCTest
 import TestKit
 import protocol WooFoundation.Analytics
 import protocol WooFoundation.AnalyticsProvider
+import os
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -116,8 +117,21 @@ final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
 }
 
 final class TestAnalytics: Analytics {
-    var lastReceivedEventName: String? = nil
-    var lastReceivedWaitingTime: TimeInterval? = nil
+    private struct State: Sendable {
+        var lastReceivedEventName: String?
+        var lastReceivedWaitingTime: TimeInterval?
+        var userHasOptedIn = true
+    }
+
+    private let state = OSAllocatedUnfairLock(initialState: State())
+
+    var lastReceivedEventName: String? {
+        state.withLock { $0.lastReceivedEventName }
+    }
+
+    var lastReceivedWaitingTime: TimeInterval? {
+        state.withLock { $0.lastReceivedWaitingTime }
+    }
 
     // MARK: - Protocol conformance
 
@@ -125,8 +139,11 @@ final class TestAnalytics: Analytics {
     }
 
     func track(_ eventName: String, properties: [AnyHashable: Any]?, error: Error?) {
-        lastReceivedEventName = eventName
-        lastReceivedWaitingTime = properties?["waiting_time"] as? TimeInterval
+        let waitingTime = properties?["waiting_time"] as? TimeInterval
+        state.withLock { state in
+            state.lastReceivedEventName = eventName
+            state.lastReceivedWaitingTime = waitingTime
+        }
     }
 
     func refreshUserData() {
@@ -136,6 +153,9 @@ final class TestAnalytics: Analytics {
         userHasOptedIn = !optedOut
     }
 
-    var userHasOptedIn: Bool = true
-    private(set) var analyticsProvider: AnalyticsProvider = MockAnalyticsProvider()
+    var userHasOptedIn: Bool {
+        get { state.withLock { $0.userHasOptedIn } }
+        set { state.withLock { $0.userHasOptedIn = newValue } }
+    }
+    let analyticsProvider: AnalyticsProvider = MockAnalyticsProvider()
 }

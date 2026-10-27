@@ -4,24 +4,25 @@ import TestKit
 import Combine
 @testable import WooCommerce
 
+@MainActor
 final class CountrySelectorViewModelTests: XCTestCase {
 
     var subscriptions = Set<AnyCancellable>()
     var binding: Binding<AreaSelectorCommandProtocol?>!
     var viewModel: CountrySelectorViewModel!
 
-    override func setUp () {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         binding = Binding<AreaSelectorCommandProtocol?>(get: { nil }, set: { _ in })
         viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         subscriptions.removeAll()
         binding = nil
         viewModel = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_filter_countries_return_expected_results() {

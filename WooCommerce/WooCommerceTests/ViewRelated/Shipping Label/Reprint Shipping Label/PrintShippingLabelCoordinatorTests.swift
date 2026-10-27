@@ -3,6 +3,7 @@ import XCTest
 import TestKit
 import Yosemite
 
+@MainActor
 final class PrintShippingLabelCoordinatorTests: XCTestCase {
     // MARK: `showPaperSizeSelector`
 

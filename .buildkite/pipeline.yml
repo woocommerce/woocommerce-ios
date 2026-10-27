@@ -10,26 +10,15 @@ env:
 # This is the default pipeline – it will build and test the app
 steps:
   #################
-  # Build the app and run the Unit Tests
-  #
-  # One job, so the unit tests don't set up packages and download the build again on another agent.
-  # It uploads the steps that need the build output (build-warning-count.yml, ui-tests.yml) once the build is done.
+  # Build the app
   #################
-  - label: ":pipeline: Build and :microscope: Unit Tests"
+  - label: ":pipeline: Build"
     key: build
-    command: .buildkite/commands/build-and-run-unit-tests.sh
-    plugins:
-      - $CI_TOOLKIT
-      - ${TEST_COLLECTOR}:
-          files: fastlane/test_output/report.junit
-          format: junit
-          missing-error: 0
-          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UNIT_TESTS
-    artifact_paths:
-      - fastlane/test_output/*
+    command: .buildkite/commands/build-for-testing.sh
+    plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:
-          context: Build and Unit Tests
+          context: Build
 
   - label: ":warning: Build Warning Baseline"
     key: build-warning-baseline
@@ -37,6 +26,20 @@ steps:
     if: build.pull_request.id != null
     # Advisory-only: if the baseline can't be produced, the comparison step
     # reports it as unavailable instead of the PR build going red.
+    soft_fail: true
+    plugins: [$CI_TOOLKIT]
+
+  - label: ":warning: Build Warning Count"
+    command: .buildkite/commands/comment-build-warning-increase.sh
+    depends_on:
+      - build
+      - build-warning-baseline
+    # Run even when a dependency fails: the script reports missing data as
+    # unavailable and only clears the comment after a valid clean comparison.
+    allow_dependency_failure: true
+    if: build.pull_request.id != null
+    # Advisory-only, like the baseline step: a failure here should never
+    # turn the PR build red.
     soft_fail: true
     plugins: [$CI_TOOLKIT]
 
@@ -82,6 +85,22 @@ steps:
   #################
   # Run Unit Tests
   #################
+  - label: ":microscope: Unit Tests"
+    command: .buildkite/commands/run-unit-tests.sh
+    depends_on: build
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UNIT_TESTS
+    artifact_paths:
+      - fastlane/test_output/*
+    notify:
+      - github_commit_status:
+          context: Unit Tests
+
   - label: ":microscope: Standalone WordPressAuthenticator Unit Tests"
     command: .buildkite/commands/run-wordpress-authenticator-tests.sh
     plugins: [$CI_TOOLKIT]
@@ -153,6 +172,47 @@ steps:
         notify:
           - github_commit_status:
               context: Check Package.resolved
+
+  #################
+  # UI Tests
+  #################
+  - label: ":microscope: UI Tests (iPhone)"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
+    depends_on: build
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE
+    artifact_paths:
+      - fastlane/test_output/*
+      - build/logs/wiremock.txt
+    notify:
+      - github_commit_status:
+          context: UI Tests (iPhone)
+
+  - label: ":microscope: UI Tests (iPad)"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
+    depends_on: build
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
+    artifact_paths:
+      - fastlane/test_output/*
+      - build/logs/wiremock.txt
+    notify:
+      - github_commit_status:
+          context: UI Tests (iPad)
 
   #################
   # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the wait

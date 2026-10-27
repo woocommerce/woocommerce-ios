@@ -1,11 +1,14 @@
 #!/bin/bash -eu
 
-# Runs after build-for-testing.sh in the same job (see build-and-run-unit-tests.sh), which already set up
-# the gems, the Swift packages and the build products.
-
 if .buildkite/commands/should-skip-job.sh --job-type validation; then
   exit 0
 fi
+
+echo "--- 📦 Downloading Build Artifacts"
+download_artifact build-products.tar
+tar -xf build-products.tar
+
+"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
 echo "--- 🧪 Testing"
 set +e

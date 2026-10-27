@@ -87,9 +87,6 @@ steps:
   #################
   - label: ":microscope: Unit Tests"
     command: .buildkite/commands/run-unit-tests.sh
-    # The Xcode 27.0 image stalls in simulator diagnostics after the tests finish.
-    env:
-      IMAGE_ID: xcode-27.1
     depends_on: build
     plugins:
       - $CI_TOOLKIT

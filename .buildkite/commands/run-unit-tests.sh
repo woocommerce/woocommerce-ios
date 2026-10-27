@@ -12,7 +12,7 @@ tar -xf build-products.tar
 
 echo "--- 🧪 Testing"
 set +e
-bundle exec fastlane test_without_building name:UnitTests device:'iPhone 17 Pro (26.5)'
+bundle exec fastlane test_without_building name:UnitTests
 TESTS_EXIT_STATUS=$?
 set -e
 

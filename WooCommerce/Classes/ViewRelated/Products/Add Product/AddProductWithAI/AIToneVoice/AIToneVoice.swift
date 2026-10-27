@@ -2,7 +2,7 @@ import Foundation
 
 /// Tone of voice for AI
 ///
-public enum AIToneVoice: String, CaseIterable {
+public enum AIToneVoice: String, CaseIterable, Sendable {
     case casual = "Casual"
     case formal = "Formal"
     case flowery = "Flowery"

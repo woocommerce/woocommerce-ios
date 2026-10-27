@@ -1,6 +1,7 @@
 @testable import WooCommerce
 import UIKit
 
+@MainActor
 final class MockImageTextScanner: ImageTextScannerProtocol {
     var result: Result<[String], Error>
 

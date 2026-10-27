@@ -3,6 +3,7 @@ import Yosemite
 import protocol WooFoundation.Analytics
 
 /// View model for `ProductDescriptionGenerationView`.
+@MainActor
 final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Product name, editable.
     @Published var name: String {

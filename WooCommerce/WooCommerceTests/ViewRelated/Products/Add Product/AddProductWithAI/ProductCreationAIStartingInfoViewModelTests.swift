@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class ProductCreationAIStartingInfoViewModelTests: XCTestCase {
     private let siteID: Int64 = 123
     private let sampleImage = MediaPickerImage(image: .addImage, source: .media(media: .fake()))

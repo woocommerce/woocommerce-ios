@@ -97,42 +97,45 @@ final class WCPayRemoteTests: XCTestCase {
         XCTAssertEqual(account.isCardPresentEligible, true)
     }
 
-    func test_loadAccount_when_response_is_not_eligible_then_defaults_card_present_eligibility_to_true() throws {
-        // Given
+    /// Verifies that loadAccount properly detects when an account is NOT eligible for card present payments
+    ///
+    func test_loadAccount_properly_handles_not_eligible_for_card_present_payments() throws {
         let remote = WCPayRemote(network: network)
 
         network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-not-eligible")
 
-        // When
         let result: Result<WCPayAccount, Error> = waitFor { promise in
             remote.loadAccount(for: self.sampleSiteID) { result in
                 promise(result)
             }
         }
 
-        // Then
         XCTAssertTrue(result.isSuccess)
         let account = try result.get()
-        XCTAssertTrue(account.isCardPresentEligible)
+
+        XCTExpectFailure("isCardPresentEligible has been hardcoded to true. See https://github.com/woocommerce/woocommerce-ios/pull/5030")
+        XCTAssertEqual(account.isCardPresentEligible, false)
     }
 
-    func test_loadAccount_when_response_omits_eligibility_then_defaults_card_present_eligibility_to_true() throws {
-        // Given
+    /// Verifies that loadAccount properly detects when an account is implicitly NOT eligible for card present payments
+    /// i.e. when the response does not include the `card_present_eligible` flag
+    ///
+    func test_loadAccount_properly_handles_implicitly_not_eligible_for_card_present_payments() throws {
         let remote = WCPayRemote(network: network)
 
         network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-implicitly-not-eligible")
 
-        // When
         let result: Result<WCPayAccount, Error> = waitFor { promise in
             remote.loadAccount(for: self.sampleSiteID) { result in
                 promise(result)
             }
         }
 
-        // Then
         XCTAssertTrue(result.isSuccess)
         let account = try result.get()
-        XCTAssertTrue(account.isCardPresentEligible)
+
+        XCTExpectFailure("isCardPresentEligible has been hardcoded to true. See https://github.com/woocommerce/woocommerce-ios/pull/5030")
+        XCTAssertEqual(account.isCardPresentEligible, false)
     }
 
     /// Verifies that loadAccount properly handles the no account response

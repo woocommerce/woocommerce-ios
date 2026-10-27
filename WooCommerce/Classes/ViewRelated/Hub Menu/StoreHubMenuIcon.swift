@@ -7,9 +7,15 @@ struct StoreHubMenuIcon: View {
 
     var body: some View {
         switch item.id {
-        case HubMenuViewModel.Blaze.id, HubMenuViewModel.GoogleAds.id:
+        case HubMenuViewModel.Blaze.id:
             StoreIconContainer(
-                Image(uiImage: item.icon).renderingMode(item.id == HubMenuViewModel.Blaze.id ? .template : .original),
+                Image(uiImage: item.icon).renderingMode(.template),
+                size: .small,
+                tone: .sandstone
+            )
+        case HubMenuViewModel.GoogleAds.id:
+            StoreIconContainer(
+                Image(uiImage: item.icon).renderingMode(.original),
                 size: .small,
                 tone: .sandstone
             )

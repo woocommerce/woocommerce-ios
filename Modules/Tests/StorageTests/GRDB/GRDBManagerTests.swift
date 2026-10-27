@@ -41,6 +41,56 @@ struct GRDBManagerTests {
         }
     }
 
+    // MARK: - V004 Migration Tests
+
+    struct V004MigrationTests {
+        @Test("V004 migration adds relation lookup indexes")
+        func test_v004_migration_adds_relation_lookup_indexes() throws {
+            // Given
+            let manager = try GRDBManager()
+
+            // When
+            // Column names are case-insensitive in SQLite; productVariation declares `siteId`.
+            let indexes = try manager.databaseConnection.read { db in
+                try ["productAttribute", "productVariation", "productVariationAttribute"].map { table in
+                    try db.indexes(on: table).map { $0.columns.map { $0.lowercased() } }
+                }
+            }
+
+            // Then
+            #expect(indexes[0].contains(["siteid", "productid"]))
+            #expect(indexes[1].contains(["siteid", "productid"]))
+            #expect(indexes[2].contains(["siteid", "productvariationid"]))
+        }
+
+        @Test("Relation lookups use an index instead of scanning the table")
+        func test_v004_relation_lookups_use_index() throws {
+            // Given
+            let manager = try GRDBManager()
+            // productVariation already had siteID-only indexes, so each plan must name the new index.
+            let lookups = [
+                ("SELECT * FROM productAttribute WHERE siteID = 1 AND productID = 2",
+                 "productAttribute_on_siteID_productID"),
+                ("SELECT * FROM productVariation WHERE siteID = 1 AND productID = 2",
+                 "productVariation_on_siteID_productID"),
+                ("SELECT * FROM productVariationAttribute WHERE siteID = 1 AND productVariationID = 2",
+                 "productVariationAttribute_on_siteID_productVariationID")
+            ]
+
+            // When
+            let plans = try manager.databaseConnection.read { db in
+                try lookups.map { sql, _ in
+                    try Row.fetchAll(db, sql: "EXPLAIN QUERY PLAN " + sql).map { $0["detail"] as String }.joined(separator: " ")
+                }
+            }
+
+            // Then
+            for (plan, (_, indexName)) in zip(plans, lookups) {
+                #expect(plan.contains("USING INDEX \(indexName)"), "\(plan)")
+            }
+        }
+    }
+
     // MARK: - V003 Migration Tests
 
     struct V003MigrationTests {

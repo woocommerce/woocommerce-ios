@@ -18,6 +18,8 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     private let itemMapper: PointOfSaleItemMapperProtocol
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
+    /// Caps the reported match count, so broad searches do not count every match.
+    nonisolated static let searchCountLimit = 1_000
 
     init(siteID: Int64,
          searchTerm: String,
@@ -91,20 +93,23 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         let startTime = Date()
         let offset = (pageNumber - 1) * pageSize
 
-        let (searchResults, totalCount) = try await grdbManager.databaseConnection.read { db in
+        let countLimit = Self.searchCountLimit
+        let (pageResults, totalCount) = try await grdbManager.databaseConnection.read { db in
+            // One extra row tells whether another page exists without counting every match.
             let results = try POSSearchIndexBuilder.search(
                 siteID: siteID,
                 term: searchTerm,
-                limit: pageSize,
+                limit: pageSize + 1,
                 offset: offset,
                 in: db
             )
-            let count = try POSSearchIndexBuilder.searchCount(siteID: siteID, term: searchTerm, in: db)
+            let count = try POSSearchIndexBuilder.searchCount(siteID: siteID, term: searchTerm, limit: countLimit, in: db)
             return (results, count)
         }
 
+        let hasMorePages = pageResults.count > pageSize
+        let searchResults = Array(pageResults.prefix(pageSize))
         let items = try await hydrateSearchResults(searchResults)
-        let hasMorePages = (pageNumber * pageSize) < totalCount
 
         if pageNumber == 1 {
             let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))

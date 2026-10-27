@@ -236,7 +236,9 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let siteURL = "https://test.com"
+        // `resetPassword()` opens the reset URL for real. With an `https` URL, Safari moves the test host to the
+        // background, and UIKit transitions in later tests in the same process never finish.
+        let siteURL = "woo-unit-tests://test.com"
         let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
 
         // When

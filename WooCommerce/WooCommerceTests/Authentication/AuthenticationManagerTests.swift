@@ -11,21 +11,29 @@ import YosemiteTestHelpers
 /// Test cases for `AuthenticationManager`.
 final class AuthenticationManagerTests: XCTestCase {
     private var navigationController: UINavigationController!
-    private let window = UIWindow(frame: UIScreen.main.bounds)
+    private var window: UIWindow!
 
     override func setUp() {
         super.setUp()
 
-        window.makeKeyAndVisible()
-        navigationController = .init()
-        window.rootViewController = navigationController
+        // XCTest runs synchronous setup on the main thread.
+        MainActor.assumeIsolated {
+            window = UIWindow(frame: UIScreen.main.bounds)
+            window.makeKeyAndVisible()
+            navigationController = .init()
+            window.rootViewController = navigationController
+        }
         WordPressAuthenticator.initializeAuthenticator()
     }
 
     override func tearDown() {
-        navigationController = nil
-        window.resignKey()
-        window.rootViewController = nil
+        // XCTest runs synchronous teardown on the main thread.
+        MainActor.assumeIsolated {
+            navigationController = nil
+            window.resignKey()
+            window.rootViewController = nil
+            window = nil
+        }
 
         super.tearDown()
     }
@@ -101,6 +109,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(capturedEndpoints?.adminBaseURL.absoluteString, "https://example.com/custom-admin/")
     }
 
+    @MainActor
     func test_site_credential_login_factory_receives_custom_endpoints_from_wordpress_org_credentials() {
         // Given
         let credentials = WordPressOrgCredentials(
@@ -434,6 +443,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(viewModel is NoSecureConnectionErrorViewModel)
     }
 
+    @MainActor
     func test_it_presents_email_controller_for_wpcom_site() {
         // Given
         let manager = AuthenticationManager()
@@ -457,6 +467,7 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_presents_email_controller_for_non_wpcom_site_with_jetpack() {
         // Given
         let manager = AuthenticationManager()
@@ -480,6 +491,7 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_presents_email_controller_for_commerce_garden_site() {
         // Given
         let manager = AuthenticationManager()
@@ -504,6 +516,7 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_presents_username_and_password_controller_for_non_wpcom_site_without_jetpack_site() {
         // Given
         let manager = AuthenticationManager()
@@ -840,6 +853,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_connected"] as? Bool))
     }
 
+    @MainActor
     func test_shouldPresentUsernamePasswordController_tracks_fetched_site_info() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -1864,6 +1878,7 @@ private final class SiteCredentialAlertPresenter: UIViewController, UIViewContro
     }
 }
 
+@MainActor
 private final class MockAuthenticationManagerSiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
     var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)?
     private(set) var cancellationCount = 0

@@ -16,18 +16,24 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
 
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        navigationController = UINavigationController()
+        // XCTest runs synchronous setup on the main thread.
+        MainActor.assumeIsolated {
+            navigationController = UINavigationController()
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = UIViewController()
-        window.makeKeyAndVisible()
-        window.rootViewController = navigationController
+            let window = UIWindow(frame: UIScreen.main.bounds)
+            window.rootViewController = UIViewController()
+            window.makeKeyAndVisible()
+            window.rootViewController = navigationController
+        }
         super.setUp()
     }
 
     override func tearDown() {
         stores = nil
-        navigationController = nil
+        // XCTest runs synchronous teardown on the main thread.
+        MainActor.assumeIsolated {
+            navigationController = nil
+        }
         super.tearDown()
     }
 
@@ -210,6 +216,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertEqual(fixture.provider.properties(for: WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue)?["result"] as? String, "success")
     }
 
+    @MainActor
     func test_application_password_disabled_error_is_displayed_when_application_password_is_disabled() {
         // Given
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
@@ -230,6 +237,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.topViewController is ULErrorViewController)
     }
 
+    @MainActor
     func test_error_alert_is_displayed_when_application_password_cannot_be_fetched() {
         // Given
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout())
@@ -251,6 +259,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
 
+    @MainActor
     func test_role_error_screen_is_displayed_when_the_user_is_not_eligible() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
@@ -275,6 +284,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.topViewController is RoleErrorViewController)
     }
 
+    @MainActor
     func test_error_alert_is_displayed_when_user_info_cannot_be_fetched() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
@@ -298,6 +308,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
 
+    @MainActor
     func test_onSuccess_is_triggered_when_the_site_has_active_woo() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
@@ -328,6 +339,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_error_alert_is_displayed_if_the_site_does_not_have_active_woo() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
@@ -360,6 +372,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
 
+    @MainActor
     func test_checkEligibility_when_the_site_has_no_woo_then_reports_not_woo_store() {
         // Given
         var events: [AnalyticsEvent] = []
@@ -390,6 +403,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertEqual(steps.first?.properties["url"], "test.com")
     }
 
+    @MainActor
     func test_checkEligibility_when_the_site_has_woo_then_reports_no_step() {
         // Given
         var events: [AnalyticsEvent] = []
@@ -419,6 +433,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertFalse(events.contains { $0.properties["step"] == "not_woo_store" })
     }
 
+    @MainActor
     func test_error_alert_is_displayed_if_the_site_info_cannot_be_fetched() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
@@ -450,6 +465,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
 
+    @MainActor
     func test_custom_endpoints_when_password_is_generated_then_persists_before_role_and_woo_checks() throws {
         // Given
         var events: [String] = []
@@ -511,6 +527,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_verified_standard_endpoints_when_custom_record_exists_then_removes_stale_record_before_role_check() throws {
         // Given
         let defaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
@@ -554,6 +571,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertNil(sessionManager.cookieNonceAuthenticationEndpoints(for: credentials))
     }
 
+    @MainActor
     func test_missing_endpoint_persistence_context_when_checking_browser_or_malformed_flow_then_does_not_mutate_endpoints() {
         // Given
         var persistenceCallCount = 0

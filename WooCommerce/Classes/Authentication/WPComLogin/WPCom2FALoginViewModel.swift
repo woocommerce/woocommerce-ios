@@ -89,6 +89,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     }
 
     @available(iOS 16, *)
+    @MainActor
     func loginWithSecurityKey() {
         guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
             return handleError(.webAuthNonceNotFound)
@@ -98,6 +99,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
         initialChallengeRequestTime = Date()
 
         Task { @MainActor in
+            // Pinned by LoginFacade: the fenced authenticator type is non-Sendable, so awaiting it sends it off the main actor.
             guard let challengeInfo = await loginFacade.requestWebauthnChallenge(userID: loginFields.nonceUserID, twoStepNonce: twoStepNonce) else {
                 return handleError(.webAuthChallengeRequestFailed)
             }
@@ -144,6 +146,7 @@ extension WPCom2FALoginViewModel: LoginFacadeDelegate {
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
+        // LoginFacadeDelegate keeps this nonisolated, and self is not Sendable while the coordinators building this type are nonisolated.
         Task { @MainActor in
             await onLoginSuccess(authToken)
             isLoggingIn = false
@@ -151,6 +154,7 @@ extension WPCom2FALoginViewModel: LoginFacadeDelegate {
     }
 
     func finishedLogin(withNonceAuthToken authToken: String) {
+        // LoginFacadeDelegate keeps this nonisolated, and self is not Sendable while the coordinators building this type are nonisolated.
         Task { @MainActor in
             await onLoginSuccess(authToken)
             isLoggingIn = false
@@ -212,6 +216,7 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
 //
 private extension WPCom2FALoginViewModel {
     @available(iOS 16, *)
+    @MainActor
     func signChallenge(_ challengeInfo: WebauthnChallengeInfo) {
 
         // Requesting a challenge uses up the nonce; keep its replacement for another attempt.

@@ -32,7 +32,7 @@ DERIVED_DATA_DIR = File.join(PROJECT_ROOT_FOLDER, 'DerivedData')
 # CI resolves Swift packages into `Modules/.build` (see `.buildkite/commands/shared-set-up.sh`).
 # Test lanes point `xcodebuild` at those checkouts so it doesn't resolve and check them out a second time.
 SWIFT_PACKAGES_CHECKOUT_DIR = File.join(PROJECT_ROOT_FOLDER, 'Modules', '.build')
-SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
+SCREENSHOTS_DIR = File.join(FASTLANE_DIR, 'screenshots')
 FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 

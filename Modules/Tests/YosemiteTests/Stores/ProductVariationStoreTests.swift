@@ -5,6 +5,7 @@ import YosemiteTestHelpers
 @testable import Storage
 @testable import Yosemite
 
+@MainActor
 final class ProductVariationStoreTests: XCTestCase {
     /// Mock Dispatcher!
     ///
@@ -40,8 +41,8 @@ final class ProductVariationStoreTests: XCTestCase {
     ///
     private let defaultPageSize = 75
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()

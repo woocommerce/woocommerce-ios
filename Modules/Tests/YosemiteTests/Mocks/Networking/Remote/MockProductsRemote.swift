@@ -5,6 +5,7 @@ import XCTest
 
 /// Mock for `ProductsRemote`.
 ///
+@MainActor
 final class MockProductsRemote {
     private(set) var searchProductTriggered: Bool = false
     private(set) var searchProductWithStockStatus: ProductStockStatus?
@@ -198,9 +199,9 @@ final class MockProductsRemote {
 
 // MARK: - ProductsEndpointsProviding
 
-extension MockProductsRemote: ProductsRemoteProtocol {
+extension MockProductsRemote: @MainActor ProductsRemoteProtocol {
     func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }
@@ -214,7 +215,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     }
 
     func duplicateProduct(siteID: Int64, productID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }
@@ -230,7 +231,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     }
 
     func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }
@@ -246,7 +247,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func loadProduct(for siteID: Int64,
                      productID: Int64,
                      completion: @escaping (Result<Product, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }
@@ -385,7 +386,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     }
 
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID, productIDs: [productID])
@@ -479,7 +480,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    nonisolated(nonsending) func loadProductsForPointOfSale(for siteID: Int64,
+    @MainActor
+    func loadProductsForPointOfSale(for siteID: Int64,
                                     productTypes: [ProductType],
                                     pageNumber: Int) async throws -> PagedItems<POSProduct> {
         guard let result = posProductsResultsBySiteID[siteID] else {
@@ -493,7 +495,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    nonisolated(nonsending) func searchProductsForPointOfSale(for siteID: Int64,
+    @MainActor
+    func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
                                       productTypes: [ProductType],
                                       pageNumber: Int) async throws -> PagedItems<POSProduct> {
@@ -508,12 +511,14 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    nonisolated(nonsending) func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
+    @MainActor
+    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
             return POSProduct.fake().copy(siteID: siteID,
                                           globalUniqueID: globalUniqueID)
     }
 
-    nonisolated(nonsending) func loadPopularProductsForPointOfSale(for siteID: Int64,
+    @MainActor
+    func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
                                            pageNumber: Int,
                                            perPage: Int) async throws -> PagedItems<POSProduct> {
@@ -529,7 +534,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    nonisolated(nonsending) func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+    @MainActor
+    func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
         invocationCountOfLoadPOSProduct += 1
         requestedProductIDsForFetchingPOSProduct.append(productID)
 

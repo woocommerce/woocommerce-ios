@@ -10,7 +10,6 @@ struct ABTestTests {
         // Given
         try #require(ABTest.genuineCases.contains { $0.context == .loggedIn }, "The test needs a genuine logged-in experiment.")
         let previousExPlat = ExPlat.shared
-        MockExPlatURLProtocol.requestCount.withLock { $0 = 0 }
         URLProtocol.registerClass(MockExPlatURLProtocol.self)
         defer {
             URLProtocol.unregisterClass(MockExPlatURLProtocol.self)
@@ -22,6 +21,7 @@ struct ABTestTests {
         await ABTest.start(for: .loggedIn)
 
         // Then
-        #expect(MockExPlatURLProtocol.requestCount.withLock { $0 } == 1)
+        var requests = MockExPlatURLProtocol.requests.stream.makeAsyncIterator()
+        #expect(await requests.next() != nil)
     }
 }

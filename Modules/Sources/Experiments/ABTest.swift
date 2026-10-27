@@ -52,7 +52,6 @@ public extension ABTest {
         await withCheckedContinuation { continuation in
             explat.register(experiments: experiments.map { $0.rawValue })
 
-            // ExPlat calls back off the main actor; @Sendable prevents an isolation check here.
             explat.refresh { @Sendable in
                 continuation.resume(returning: ())
             }

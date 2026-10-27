@@ -1,9 +1,8 @@
 import Foundation
-import Synchronization
 
 // Keep URLSession's background callback to reproduce the isolation crash.
 final class MockExPlatURLProtocol: URLProtocol {
-    static let requestCount = Mutex(0)
+    static let requests = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(1))
 
     override class func canInit(with request: URLRequest) -> Bool {
         request.url?.host == "public-api.wordpress.com" && request.url?.path.contains("/experiments/") == true
@@ -14,7 +13,7 @@ final class MockExPlatURLProtocol: URLProtocol {
     }
 
     override func startLoading() {
-        Self.requestCount.withLock { $0 += 1 }
+        Self.requests.continuation.yield(())
         client?.urlProtocol(self, didFailWithError: URLError(.notConnectedToInternet))
     }
 

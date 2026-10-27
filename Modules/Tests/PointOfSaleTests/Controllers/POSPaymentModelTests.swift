@@ -2035,6 +2035,37 @@ struct POSPaymentModelTests {
 
     // MARK: - Scan to Pay
 
+    @Test(arguments: [false, true])
+    @MainActor
+    func test_startScanToPayPayment_when_old_preparation_finishes_then_preserves_new_flow(fails: Bool) async throws {
+        // Given
+        let provider = MockPOSPaymentOrderProvider()
+        let sut = makePaymentController(orderProvider: provider)
+        let replacementURL = try #require(URL(string: "https://example.com/pay/2"))
+        var callCount = 0
+        provider.onProvideScanToPayOrder = {
+            callCount += 1
+            if callCount == 1 {
+                await sut.cancelScanToPayPayment()
+                await sut.startScanToPayPayment()
+                if fails { throw POSPaymentError.noOrder }
+                return POSPaymentOrder(order: Order.fake().copy(orderID: 1),
+                                       formattedTotal: "$10.00", totalDecimal: 10,
+                                       paymentURL: URL(string: "https://example.com/pay/1"))
+            }
+            return POSPaymentOrder(order: Order.fake().copy(orderID: 2),
+                                   formattedTotal: "$20.00", totalDecimal: 20, paymentURL: replacementURL)
+        }
+
+        // When
+        await sut.startScanToPayPayment()
+
+        // Then
+        #expect(sut.scanToPayURL == replacementURL)
+        #expect(sut.isPreparingScanToPay == false)
+        #expect(sut.paymentState.scanToPay.isShowingQRCode)
+    }
+
     @Test("startScanToPayPayment transitions scanToPay to showingQRCode")
     @MainActor
     func startScanToPayPayment_when_idle_then_transitions_to_showingQRCode() async {

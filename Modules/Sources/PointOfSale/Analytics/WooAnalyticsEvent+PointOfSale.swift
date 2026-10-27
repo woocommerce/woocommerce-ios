@@ -696,7 +696,7 @@ extension WooAnalyticsEvent {
         }
 
         static func ordersListLoaded() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .ordersListLoaded, properties: [:])
+            WooAnalyticsEvent(statName: .pointOfSaleOrdersListLoaded, properties: [:])
         }
 
         // MARK: - Checkout Outdated Item Detection Events

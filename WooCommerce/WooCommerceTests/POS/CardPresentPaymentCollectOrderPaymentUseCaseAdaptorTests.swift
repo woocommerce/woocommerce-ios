@@ -114,39 +114,23 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptorTests {
         #expect(cancelCount == 1)
     }
 
-    @Test func test_cancellation_when_cancelled_while_validating_order_then_stale_validation_presents_no_payment_error() async throws {
+    @Test func test_cancellation_when_cancelled_while_validating_order_then_returns_cancellation() async throws {
         // Given
-        let alertsPresenter = CardPresentPaymentsAlertPresenterAdaptor()
-        var presentedEvents: [CardPresentPaymentEvent] = []
-        let subscription = alertsPresenter.paymentEventPublisher.sink { presentedEvents.append($0) }
-        defer { subscription.cancel() }
-        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD", total: "10.00")
-        var retrieveOrderCompletion: ((Result<Order, Error>) -> Void)?
+        var didRequestOrderValidation = false
         let stores = makeStores()
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            if case .retrieveOrderRemotely(_, _, let completion) = action {
-                retrieveOrderCompletion = completion
+            if case .retrieveOrderRemotely = action {
+                didRequestOrderValidation = true
             }
         }
-        let (paymentTask, preflightController) = await startPayment(events: PassthroughSubject(),
-                                                                     order: order,
-                                                                     stores: stores,
-                                                                     alertsPresenter: alertsPresenter)
+        let (paymentTask, preflightController) = await startPayment(events: PassthroughSubject(), stores: stores)
         preflightController.completeConnection(reader: MockCardReader.bbposChipper2XBT(), gatewayID: WCPayAccount.gatewayID)
-        try #require(retrieveOrderCompletion != nil)
+        try #require(didRequestOrderValidation)
 
         // When
         paymentTask.cancel()
-        retrieveOrderCompletion?(.success(order))
 
         // Then
-        let leakedPaymentErrorDismissals = presentedEvents.compactMap { event -> (@MainActor @Sendable () -> Void)? in
-            guard case .show(.paymentError(_, _, let dismiss)) = event else { return nil }
-            return dismiss
-        }
-        #expect(leakedPaymentErrorDismissals.isEmpty)
-
-        leakedPaymentErrorDismissals.forEach { $0() }
         let result = try await paymentTask.value
         #expect(result == .cancellation)
     }

@@ -6,10 +6,14 @@ import enum WooFoundation.CurrencyCode
 /// meaningful value; the remaining methods are unused by the current tests and fail loudly if reached.
 final class MockPOSOrderService: POSOrderServiceProtocol {
     var orderToReturn: Order?
+    var onLoadOrder: (@MainActor (Int64) async throws -> Order)?
     private(set) var spyLoadOrderID: Int64?
 
     func loadOrder(orderID: Int64) async throws -> Order {
         spyLoadOrderID = orderID
+        if let onLoadOrder {
+            return try await onLoadOrder(orderID)
+        }
         guard let order = orderToReturn else {
             throw MockPOSOrderServiceError.missingStub
         }

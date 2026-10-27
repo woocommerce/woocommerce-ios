@@ -157,6 +157,7 @@ struct OrderCustomAmountsSection: View {
         optionsBottomSheetContent
             .presentationDetents(detentsForOptionsBottomSheet)
             .presentationDragIndicator(.visible)
+            .background(SheetAccessibilityModalView())
     }
 
     private var detentsForOptionsBottomSheet: Set<PresentationDetent> {

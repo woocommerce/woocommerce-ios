@@ -8,6 +8,7 @@ import enum WooFoundation.CurrencyCode
 final class MockPOSOrderService: POSOrderServiceProtocol {
     private struct State {
         var orderToReturn: Order?
+        var onLoadOrder: (@MainActor @Sendable (Int64) async throws -> Order)?
         var spyLoadOrderID: Int64?
     }
 
@@ -18,14 +19,22 @@ final class MockPOSOrderService: POSOrderServiceProtocol {
         set { state.withLock { $0.orderToReturn = newValue } }
     }
 
+    var onLoadOrder: (@MainActor @Sendable (Int64) async throws -> Order)? {
+        get { state.withLock { $0.onLoadOrder } }
+        set { state.withLock { $0.onLoadOrder = newValue } }
+    }
+
     var spyLoadOrderID: Int64? {
         state.withLock { $0.spyLoadOrderID }
     }
 
     func loadOrder(orderID: Int64) async throws -> Order {
-        let orderToReturn = state.withLock {
+        let (orderToReturn, onLoadOrder) = state.withLock {
             $0.spyLoadOrderID = orderID
-            return $0.orderToReturn
+            return ($0.orderToReturn, $0.onLoadOrder)
+        }
+        if let onLoadOrder {
+            return try await onLoadOrder(orderID)
         }
         guard let order = orderToReturn else {
             throw MockPOSOrderServiceError.missingStub

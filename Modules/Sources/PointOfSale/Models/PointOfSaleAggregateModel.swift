@@ -594,7 +594,7 @@ extension PointOfSaleAggregateModel {
     /// Triggers an incremental catalog sync if the order response indicates product prices have changed.
     /// The sync updates GRDB, which the cart product observer picks up to update cart item prices reactively.
     private func triggerIncrementalSyncIfPriceChanged() {
-        guard case .loaded(_, let order) = orderController.orderState else { return }
+        guard case .loaded(_, let order, _) = orderController.orderState else { return }
         guard POSOrderPriceChangeDetector().detectsPriceChange(cart: cart, order: order) else { return }
         guard let catalogSyncCoordinator else { return }
 

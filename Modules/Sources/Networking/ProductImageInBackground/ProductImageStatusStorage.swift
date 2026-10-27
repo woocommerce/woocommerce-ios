@@ -10,9 +10,6 @@ public final class ProductImageStatusStorage {
     private let key: String
     private let userDefaults: UserDefaults
 
-    // Private internal instance for static methods
-    private static let internalInstance = ProductImageStatusStorage()
-
     // Publisher for observing changes
     private let statusesSubject: CurrentValueSubject<[ProductImageStatus], Never>
     private var cancellables = Set<AnyCancellable>()

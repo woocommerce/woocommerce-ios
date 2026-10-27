@@ -19,6 +19,8 @@ final class MockPOSOrderService: POSOrderServiceProtocol {
         var spyCashPaymentChangeDueAmount: String?
 
         var onSyncOrderCalled: (@MainActor @Sendable () async -> Void)?
+        var onLoadOrderCalled: (@MainActor @Sendable () async -> Void)?
+        var onPromoteOrderCalled: (@MainActor @Sendable () async -> Void)?
 
         var loadOrderWasCalled = false
 
@@ -74,18 +76,20 @@ final class MockPOSOrderService: POSOrderServiceProtocol {
     }
 
     func loadOrder(orderID: Int64) async throws -> Order {
-        try state.withLock {
+        let (returnedOrder, onLoadOrderCalled) = state.withLock {
             $0.loadOrderWasCalled = true
-
-            if let error = $0.errorToReturn {
-                throw error
-            }
-
-            guard let order = $0.orderToReturn else {
-                throw MockPOSOrderServiceError.noOrderToReturn
-            }
-            return order
+            return ($0.orderToReturn, $0.onLoadOrderCalled)
         }
+        await onLoadOrderCalled?()
+
+        if let error = self.errorToReturn {
+            throw error
+        }
+
+        guard let order = returnedOrder else {
+            throw MockPOSOrderServiceError.noOrderToReturn
+        }
+        return order
     }
 
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
@@ -124,13 +128,14 @@ final class MockPOSOrderService: POSOrderServiceProtocol {
     }
 
     func promoteOrderToPending(order: Order) async throws -> Order {
-        let (result, override) = state.withLock {
+        let (promoted, onPromoteOrderCalled) = state.withLock {
             $0.promoteOrderToPendingWasCalled = true
             $0.spyPromoteOrderToPendingOrder = order
-            return ($0.resultToReturn, $0.promoteOrderToPendingOverride)
+            return ($0.promoteOrderToPendingOverride ?? order, $0.onPromoteOrderCalled)
         }
-        try result.get()
-        return override ?? order
+        await onPromoteOrderCalled?()
+        try self.resultToReturn.get()
+        return promoted
     }
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {

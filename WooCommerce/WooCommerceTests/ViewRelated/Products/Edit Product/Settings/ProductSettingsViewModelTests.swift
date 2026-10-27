@@ -23,6 +23,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func testOnReloadClosure() {
 
         let product = Product.fake().copy(slug: "this-is-a-slug",
@@ -58,6 +59,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.5, handler: nil)
     }
 
+    @MainActor
     func test_HasUnsavedChanges_with_WC_below_8_1() {
         // Given
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -82,6 +84,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    @MainActor
     func test_hasUnsavedChanges_with_WC_above_8_1() {
         // Given
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -106,6 +109,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    @MainActor
     func test_hasUnsavedChanges_with_only_the_password_changed_with_WC_below_8_1() {
         // Given
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -130,6 +134,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    @MainActor
     func test_hasUnsavedChanges_with_only_the_password_changed_with_WC_above_8_1() {
         // Given
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,

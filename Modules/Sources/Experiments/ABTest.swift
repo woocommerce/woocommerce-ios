@@ -52,7 +52,9 @@ public extension ABTest {
         await withCheckedContinuation { continuation in
             explat.register(experiments: experiments.map { $0.rawValue })
 
-            explat.refresh {
+            // ExPlat calls this completion on a URLSession delegate queue. `@Sendable` keeps the closure
+            // from inheriting main-actor isolation, which Swift 6 checks at runtime.
+            explat.refresh { @Sendable in
                 continuation.resume(returning: ())
             }
         } as Void

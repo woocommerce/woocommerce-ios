@@ -59,6 +59,8 @@ To make UI button actions crossable, type them `@MainActor @Sendable () -> Void`
 
 If a `@Sendable` closure captures a generic SwiftUI view, capture only the required `Sendable` dependencies when possible. For Combine callbacks, check the scheduler and actor isolation.
 
+Do not use `DispatchQueue.main.sync` from an initializer that can run inside a lazy static service initializer. A background caller can hold the static initialization lock while waiting for main, as the main thread waits for the same static value. For a main-actor-derived value, initialize lock-protected state with a safe fallback and queue an asynchronous main-actor refresh. Add a regression test that constructs the service off-main while the main thread waits synchronously, so a blocking hop reliably times out.
+
 Check each UIKit lifecycle or Objective-C callback separately. Use `MainActor.assumeIsolated` only if the framework guarantees main-actor delivery and the body accesses UI state. Test the callback path. A documented main-queue notification callback can meet these conditions. For app-owned protocols, declare isolation that the compiler checks. An `assumeIsolated` wrapper reached from a nonisolated requirement can add a `sending` warning for each captured value. In one uploader, the count went from 7 to 14.
 
 When a remote strengthens a completion to `@MainActor @Sendable`, propagate `@Sendable` through action cases and forwarding helpers. A declaration-level `@preconcurrency` annotation does not suppress the complete-checking warning when a Swift 5 caller forwards a non-`Sendable` closure. Keep the main-actor annotation at the delivery boundary; upstream layers that only forward the closure do not need to become main-actor isolated.
@@ -80,6 +82,8 @@ Keep tests that run work in parallel on purpose nonisolated. Examples are tests 
 Construct UI fixtures inside a main-actor test or factory. Nonisolated XCTest setup is not suitable for their construction. Use computed fixtures to create separate mutable values for each test. Keep immutable `Sendable` fixtures shared when their identity or generated timestamp must remain constant. A computed property can return different test data on each read. See [the fixture review](https://github.com/woocommerce/woocommerce-ios/pull/17867#discussion_r4025136932).
 
 When a protocol gains `Sendable`, check production and test conformers. Callback properties can need `@Sendable`. Build the code that creates these callbacks to check captured test state. Keep cleanup helpers compatible with their deinitializer isolation.
+
+If a checked `Sendable` provider serializes a third-party service that has no sendability annotations, keep the unchecked boundary smaller than the provider. Put only the immutable service reference and queued operation in documented `@unchecked Sendable` containers, and continue routing every access through the existing serial executor. Make completion requirements `@Sendable` when the provider invokes them from that executor. This preserves compiler checking for the provider's own stored state and lets higher-level adaptors use checked `Sendable` conformance.
 
 For a mutable mock of a `Sendable` protocol, use the first option that fits. Use a lock only when neither isolation option is possible:
 

@@ -139,8 +139,6 @@
     "WooCommerce/Classes/AIAssistant/AIAssistantSessionStore.swift": 2,
     "WooCommerce/Classes/Analytics/Site+AnalyticsProperties.swift": 1,
     "WooCommerce/Classes/Analytics/TrackEventRequestNotificationHandler.swift": 3,
-    "WooCommerce/Classes/Analytics/TracksProvider.swift": 16,
-    "WooCommerce/Classes/Analytics/WooAnalytics.swift": 2,
     "WooCommerce/Classes/Analytics/WooAnalyticsEvent+WPComPushNotificationsSetup.swift": 1,
     "WooCommerce/Classes/App Intents/CollectPaymentAppIntent.swift": 2,
     "WooCommerce/Classes/App Intents/CreateOrderAppIntent.swift": 2,

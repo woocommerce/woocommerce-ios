@@ -316,11 +316,9 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
                                                                  destinationAddress: destinationAddressWithoutEmail,
                                                                  package: packagePurchase,
                                                                  markOrderComplete: markOrderComplete) { [weak self] result in
-                switch result {
-                case .success:
+                // Failures are tracked by the caller, which knows whether a carrier incident was shown.
+                if case .success = result {
                     self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseSuccess))
-                case .failure(let error):
-                    self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseFailed, error: error))
                 }
                 continuation.resume(with: result)
             }

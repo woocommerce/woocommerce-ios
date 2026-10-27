@@ -916,10 +916,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let viewModel = WooShippingCreateLabelsViewModel(order: order,
                                                          stores: stores,
                                                          storageManager: storageManager)
-        await until {
+        await waitOnMainActor {
             viewModel.state == .ready
         }
-        await until {
+        await waitOnMainActor {
             viewModel.currentShipmentDetailsViewModel?.shippingService != nil
         }
         viewModel.didUpdateAccountSettings(accountSettings)
@@ -1985,7 +1985,9 @@ private extension WooShippingCreateLabelsViewModelTests {
     @MainActor
     func makePurchaseLabelViewModel(purchaseError: Error,
                                     rateLoadingError: Error? = nil,
-                                    serviceStatus: ServiceStatusResponses = ServiceStatusResponses())
+                                    serviceStatus: ServiceStatusResponses = ServiceStatusResponses(),
+                                    serviceStatusRefreshTimeout: Duration = .seconds(5),
+                                    analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
     async -> WooShippingCreateLabelsViewModel {
         let originAddress = WooShippingOriginAddress.fake().copy(id: "default", country: "US", defaultAddress: true)
         insert(originAddress: originAddress)
@@ -2025,9 +2027,11 @@ private extension WooShippingCreateLabelsViewModelTests {
 
         let viewModel = WooShippingCreateLabelsViewModel(order: order,
                                                          stores: stores,
-                                                         storageManager: storageManager)
-        await until { viewModel.state == .ready }
-        await until { viewModel.currentShipmentDetailsViewModel?.shippingService != nil }
+                                                         storageManager: storageManager,
+                                                         analytics: analytics,
+                                                         serviceStatusRefreshTimeout: serviceStatusRefreshTimeout)
+        await waitOnMainActor { viewModel.state == .ready }
+        await waitOnMainActor { viewModel.currentShipmentDetailsViewModel?.shippingService != nil }
         viewModel.didUpdateAccountSettings(accountSettings)
 
         let package = WooShippingPackageData(id: "box", name: "Box", length: "10", width: "10", height: "5",
@@ -2140,7 +2144,7 @@ extension WooShippingCreateLabelsViewModelTests {
 
         // When
         let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
-        await until { viewModel.serviceStatusNotices.isNotEmpty }
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
 
         // Then
         XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice, upsWarningNotice, dhlInfoNotice])
@@ -2154,7 +2158,7 @@ extension WooShippingCreateLabelsViewModelTests {
 
         // When
         let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
-        await until { serviceStatus.requestCount == 1 }
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
 
         // Then
         XCTAssertEqual(viewModel.state, .ready)
@@ -2166,7 +2170,7 @@ extension WooShippingCreateLabelsViewModelTests {
         // Given
         let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice, upsWarningNotice, dhlInfoNotice])])
         let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
-        await until { viewModel.serviceStatusNotices.isNotEmpty }
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
 
         // When
         viewModel.dismissServiceStatusNotice(id: upsWarningNotice.id)
@@ -2180,7 +2184,7 @@ extension WooShippingCreateLabelsViewModelTests {
         // Given
         let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice, upsWarningNotice, dhlInfoNotice])])
         let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
-        await until { viewModel.serviceStatusNotices.isNotEmpty }
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
         viewModel.dismissServiceStatusNotice(id: upsWarningNotice.id)
 
         // When
@@ -2196,7 +2200,7 @@ extension WooShippingCreateLabelsViewModelTests {
         // Given
         let serviceStatus = ServiceStatusResponses([nil])
         let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
-        await until { serviceStatus.requestCount == 1 }
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
 
         // When
         viewModel.refreshServiceStatusNotices()
@@ -2215,7 +2219,7 @@ extension WooShippingCreateLabelsViewModelTests {
         let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError,
                                                          rateLoadingError: connectServerRateError,
                                                          serviceStatus: serviceStatus)
-        await until { viewModel.serviceStatusNotices.isNotEmpty }
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
 
         // Then
         XCTAssertEqual(serviceStatus.requestCount, 2)
@@ -2232,10 +2236,213 @@ extension WooShippingCreateLabelsViewModelTests {
         let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError,
                                                          rateLoadingError: NetworkError.timeout(response: nil),
                                                          serviceStatus: serviceStatus)
-        await until { viewModel.currentShipmentDetailsViewModel?.shippingService?.loadingState == .error(.failedLoadingLabelRates) }
+        await waitOnMainActor { viewModel.currentShipmentDetailsViewModel?.shippingService?.loadingState == .error(.failedLoadingLabelRates) }
 
         // Then
         XCTAssertEqual(serviceStatus.requestCount, 1)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_outage_and_incidents_are_active_then_shows_most_severe_incident() async {
+        // Given
+        let notices = [dhlInfoNotice, upsWarningNotice, uspsErrorNotice]
+        let serviceStatus = ServiceStatusResponses([.success(notices), .success(notices)])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError, serviceStatus: serviceStatus)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: USPS: API Outage | Status: Investigating")
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.actionTitle, "Retry")
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_incident_started_after_screen_opened_then_shows_incident_and_banners() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([]), .success([upsWarningNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError, serviceStatus: serviceStatus)
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(viewModel.serviceStatusNotices, [upsWarningNotice])
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: UPS: Label creation delays | Status: Monitoring")
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_incident_banner_was_dismissed_then_still_shows_incident() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let serviceStatus = ServiceStatusResponses([.success([upsWarningNotice, dhlInfoNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError,
+                                                         serviceStatus: serviceStatus,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+        viewModel.dismissServiceStatusNotice(id: upsWarningNotice.id)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(viewModel.serviceStatusNotices, [dhlInfoNotice])
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: UPS: Label creation delays | Status: Monitoring")
+        XCTAssertEqual(purchaseFailedProperties(in: analyticsProvider)?["service_status_notice_shown"] as? Bool, true)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_only_info_notice_is_active_then_shows_generic_message() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([dhlInfoNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError, serviceStatus: serviceStatus)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message, genericPurchaseErrorMessage)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_outage_then_keeps_loading_until_service_status_is_refetched() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([]), nil])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError, serviceStatus: serviceStatus)
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // When
+        let purchase = Task { await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false) }
+        await waitOnMainActor { serviceStatus.requestCount == 2 }
+
+        // Then
+        XCTAssertTrue(viewModel.isPurchasingLabel)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
+
+        // When
+        serviceStatus.completePendingRequest(with: .success([uspsErrorNotice]))
+        await purchase.value
+
+        // Then
+        XCTAssertFalse(viewModel.isPurchasingLabel)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: USPS: API Outage | Status: Investigating")
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_service_status_refetch_times_out_then_stops_loading_with_current_notices() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([upsWarningNotice]), nil])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError,
+                                                         serviceStatus: serviceStatus,
+                                                         serviceStatusRefreshTimeout: .milliseconds(100))
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertFalse(viewModel.isPurchasingLabel)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: UPS: Label creation delays | Status: Monitoring")
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_error_is_not_an_outage_then_shows_generic_message_without_refetch() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message, genericPurchaseErrorMessage)
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice])
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_terms_of_service_error_then_does_not_refetch_service_status() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: DotcomError.unknown(code: "missing_upsdap_terms_of_service_acceptance",
+                                               message: "UPS Terms of Service have not been accepted.",
+                                               data: nil),
+            serviceStatus: serviceStatus
+        )
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+        XCTAssertTrue(viewModel.shouldShowUPSTermsAndConditions)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_phone_error_then_does_not_refetch_service_status() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: DotcomError.unknown(code: "wcc_server_error_response",
+                                               message: "Error: The WooCommerce Shipping server returned: Bad Request Invalid phone number ( 400 )",
+                                               data: nil),
+            serviceStatus: serviceStatus
+        )
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+        XCTAssertNotEqual(viewModel.labelPurchaseErrorNotice?.message, genericPurchaseErrorMessage)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_incident_is_shown_then_tracks_service_status_notice_shown() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError,
+                                                         serviceStatus: serviceStatus,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        let properties = purchaseFailedProperties(in: analyticsProvider)
+        XCTAssertEqual(properties?["service_status_notice_shown"] as? Bool, true)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_incident_is_not_shown_then_does_not_track_service_status_notice_shown() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError,
+                                                         serviceStatus: serviceStatus,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        let properties = purchaseFailedProperties(in: analyticsProvider)
+        XCTAssertNotNil(properties)
+        XCTAssertNil(properties?["service_status_notice_shown"])
     }
 }
 
@@ -2266,6 +2473,30 @@ private final class ServiceStatusResponses {
 }
 
 private extension WooShippingCreateLabelsViewModelTests {
+    /// Polls `condition` on the main actor, so main actor tests don't hand it to the nonisolated `until`.
+    @MainActor
+    func waitOnMainActor(timeout: Duration = .seconds(5), until condition: () -> Bool) async {
+        let deadline = ContinuousClock.now + timeout
+        while !condition() && ContinuousClock.now < deadline {
+            do {
+                try await Task.sleep(for: .milliseconds(10))
+            } catch {
+                break
+            }
+        }
+        XCTAssertTrue(condition())
+    }
+
+    func purchaseFailedProperties(in analyticsProvider: MockAnalyticsProvider) -> [AnyHashable: Any]? {
+        zip(analyticsProvider.receivedEvents, analyticsProvider.receivedProperties)
+            .first { $0.0 == "wcs_purchase_step" && $0.1["state"] as? String == "purchase_failed" }?
+            .1
+    }
+
+    var genericPurchaseErrorMessage: String {
+        "We are unable to purchase the shipping label. Please try again."
+    }
+
     var uspsErrorNotice: WooShippingServiceStatusNotice {
         WooShippingServiceStatusNotice(id: "service-status-easypost-usps",
                                        severity: .error,
@@ -2288,6 +2519,13 @@ private extension WooShippingCreateLabelsViewModelTests {
                                        message: "DHL Express: Scheduled maintenance tonight",
                                        isDismissible: true,
                                        actionURL: URL(string: "https://www.easypoststatus.com"))
+    }
+
+    /// A Connect Server 500, as wrapped by WooCommerce Shipping.
+    var connectServerOutageError: Error {
+        DotcomError.unknown(code: "wcc_server_error_response",
+                            message: "Error: The WooCommerce Shipping server returned: Internal Server Error An internal server error occurred ( 500 )",
+                            data: ["response_status_code": AnyDecodable(500)])
     }
 
     /// Rate failures lose the upstream status, so only the code identifies the outage.

@@ -31,7 +31,6 @@ public class SettingStore: Store {
             return
         }
 
-        // Capture the Sendable methods, not the store, in the handler tasks.
         let methods = methods
         switch action {
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):

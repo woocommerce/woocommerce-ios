@@ -3,6 +3,7 @@
 
 26.0
 -----
+- [*] Shipping labels: Carrier outage notices from WooCommerce Shipping now appear on the label creation screen, and a purchase that fails during an outage explains the incident instead of showing a generic error. [https://github.com/woocommerce/woocommerce-ios/pull/18194]
 - [*] POS: Made product search faster on large catalogs. [https://github.com/woocommerce/woocommerce-ios/pull/18174]
 - [*] POS: Prevented items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
 - [*] Orders: Prevented a crash when restoring focus to an amount field after a layout change. [https://github.com/woocommerce/woocommerce-ios/pull/18184]

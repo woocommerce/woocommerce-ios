@@ -495,7 +495,6 @@ enum PointOfSaleInternalOrderState {
 }
 
 extension PointOfSaleInternalOrderState: Equatable {
-    // Generation controls response ownership, not equality of the order data.
     static func ==(lhs: PointOfSaleInternalOrderState, rhs: PointOfSaleInternalOrderState) -> Bool {
         switch (lhs, rhs) {
         case (.idle, .idle):

@@ -1,6 +1,7 @@
 import SwiftUI
 import Shimmer
 
+@MainActor
 protocol FilterListSelectorViewModelable: ObservableObject {
 
     associatedtype Command: ObservableListSelectorCommand

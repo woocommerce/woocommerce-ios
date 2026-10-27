@@ -1,10 +1,7 @@
 import Foundation
 import Synchronization
 
-/// Fails every ExPlat assignments request without network access.
-///
-/// ExPlat sends the request with `URLSession.shared`, which then calls the refresh completion on its delegate queue.
-/// This is the background-queue callback that the app receives after login.
+// Keep URLSession's background callback to reproduce the isolation crash.
 final class MockExPlatURLProtocol: URLProtocol {
     static let requestCount = Mutex(0)
 

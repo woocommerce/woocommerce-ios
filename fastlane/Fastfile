@@ -1555,9 +1555,7 @@ lane :test_without_building do |options|
 
   # Fastlane attaches stdin and stderr to a pseudo-terminal. Keep CI unit tests non-interactive.
   command_options = {}
-  if options[:name] == 'UnitTests' && is_ci
-    command_options[:xcodebuild_command] = 'env NSUnbufferedIO=YES xcodebuild </dev/null 2>&1'
-  end
+  command_options[:xcodebuild_command] = 'env NSUnbufferedIO=YES xcodebuild </dev/null 2>&1' if options[:name] == 'UnitTests' && is_ci
 
   run_tests(
     workspace: WORKSPACE_PATH,

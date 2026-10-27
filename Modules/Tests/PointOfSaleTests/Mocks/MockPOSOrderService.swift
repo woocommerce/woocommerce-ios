@@ -39,15 +39,19 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         return order
     }
 
+    var onLoadOrderCalled: (@MainActor () async -> Void)?
+    var onPromoteOrderCalled: (@MainActor () async -> Void)?
     var loadOrderWasCalled = false
     func loadOrder(orderID: Int64) async throws -> Order {
         loadOrderWasCalled = true
+        let returnedOrder = orderToReturn
+        await onLoadOrderCalled?()
 
         if let error = errorToReturn {
             throw error
         }
 
-        guard let order = orderToReturn else {
+        guard let order = returnedOrder else {
             throw MockPOSOrderServiceError.noOrderToReturn
         }
         return order
@@ -100,9 +104,11 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     func promoteOrderToPending(order: Order) async throws -> Order {
         promoteOrderToPendingWasCalled = true
         spyPromoteOrderToPendingOrder = order
+        let promoted = promoteOrderToPendingOverride ?? order
+        await onPromoteOrderCalled?()
         switch resultToReturn {
         case .success:
-            return promoteOrderToPendingOverride ?? order
+            return promoted
         case .failure(let error):
             throw error
         }

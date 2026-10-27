@@ -3,6 +3,7 @@
 
 26.0
 -----
+- [*] Point of Sale: Prevent items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
 - [*] POS: Merchants can go back to the cart while checkout prepares the order and the card reader. [https://github.com/woocommerce/woocommerce-ios/pull/18127]
 - [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]
 - [*] In-Person Payments: Prevented a duplicate new-order notice after collecting a card payment in the app. [https://github.com/woocommerce/woocommerce-ios/pull/18130]
@@ -18,6 +19,7 @@
 - [*] Login: WordPress.com two-step login now shows instructions and options for your account's verification methods. [https://github.com/woocommerce/woocommerce-ios/pull/18138]
 - [*] Orders: The address form shows the order's country and state the first time it opens, and keeps free-text states such as UK counties. [https://github.com/woocommerce/woocommerce-ios/pull/18146]
 - [*] Shipping Labels: The origin address editor opened from the missing phone number notice is now titled "Edit Origin" instead of "Edit Destination". [https://github.com/woocommerce/woocommerce-ios/pull/18149]
+- [*] Orders: The refund details screen on iPad fills the detail column instead of a narrow column with cut-off text. [https://github.com/woocommerce/woocommerce-ios/pull/18163]
 
 
 25.9

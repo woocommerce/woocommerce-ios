@@ -1,5 +1,11 @@
 @testable import WooCommerce
+import os
 
 final class MockAnalyticsConsent: AnalyticsConsentProviding {
-    var userHasOptedIn = true
+    private let optedIn = OSAllocatedUnfairLock(initialState: true)
+
+    var userHasOptedIn: Bool {
+        get { optedIn.withLock { $0 } }
+        set { optedIn.withLock { $0 = newValue } }
+    }
 }

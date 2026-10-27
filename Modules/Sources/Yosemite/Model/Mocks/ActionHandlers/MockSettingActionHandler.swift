@@ -10,7 +10,7 @@ struct MockSettingActionHandler: MockActionHandler {
 
     private let settingStore: SettingStore
 
-    init(objectGraph: MockObjectGraph, storageManager: any StorageManagerType & Sendable) {
+    init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
         self.objectGraph = objectGraph
         self.storageManager = storageManager
 

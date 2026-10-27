@@ -36,7 +36,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
                             appPasswordSupportState: AnyPublisher<Bool, Never>,
-                            storage: any StorageManagerType & Sendable) {
+                            storage: StorageManagerType) {
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)

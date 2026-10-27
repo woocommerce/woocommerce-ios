@@ -28,10 +28,10 @@ internal protocol SettingStoreMethodsProtocol: Sendable {
 internal final class SettingStoreMethods: SettingStoreMethodsProtocol {
     private let siteSettingsRemote: SiteSettingsRemote
     private let siteAPIRemote: SiteAPIRemote
-    private let storageManager: any StorageManagerType & Sendable
+    private let storageManager: StorageManagerType
     private let network: Network
 
-    init(storageManager: any StorageManagerType & Sendable, network: Network) {
+    init(storageManager: StorageManagerType, network: Network) {
         self.siteSettingsRemote = SiteSettingsRemote(network: network)
         self.siteAPIRemote = SiteAPIRemote(network: network)
         self.network = network

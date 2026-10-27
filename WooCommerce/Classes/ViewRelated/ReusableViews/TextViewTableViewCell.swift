@@ -3,6 +3,7 @@ import Gridicons
 
 /// A table view cell that contains an icon and a text view.
 ///
+@MainActor
 final class TextViewTableViewCell: UITableViewCell {
     struct ViewModel {
         var icon: UIImage? = nil
@@ -60,7 +61,11 @@ final class TextViewTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureBackground()
         configureTextView()
 

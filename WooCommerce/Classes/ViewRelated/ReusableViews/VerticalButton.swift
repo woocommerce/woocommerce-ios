@@ -4,13 +4,15 @@ import UIKit
 
 // MARK: - VerticalButton: Renders the titleLabel *below* the imageView!
 //
+@MainActor
 class VerticalButton: UIButton {
 
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureButton()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureButton() }
     }
 
     override func layoutSubviews() {

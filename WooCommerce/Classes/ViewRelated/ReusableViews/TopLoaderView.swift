@@ -3,6 +3,7 @@ import UIKit
 /// A view with a loader on the left side, and a text on the right, useful for showing that there is some content that is still loading.
 /// Used on top of the Order Detail screen.
 ///
+@MainActor
 final class TopLoaderView: UIView {
 
     @IBOutlet private weak var stackView: UIStackView!
@@ -11,6 +12,11 @@ final class TopLoaderView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         customizeView()
         customizeIndicator()
         customizeLabels()

@@ -2,6 +2,7 @@ import UIKit
 
 /// A two column table view cell with Body styling.
 ///
+@MainActor
 final class TwoColumnTableViewCell: UITableViewCell {
 
     @IBOutlet weak var stackView: UIStackView!
@@ -10,7 +11,11 @@ final class TwoColumnTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         stackView.isLayoutMarginsRelativeArrangement = true
         configureBackground()
         configureLeftLabel()

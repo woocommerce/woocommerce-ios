@@ -3,6 +3,7 @@ import UIKit
 
 /// Represents a regular UITableView Cell with subtitle: [Image | Text + Subtitle |  Disclosure]
 ///
+@MainActor
 class LeftImageTitleSubtitleTableViewCell: UITableViewCell {
 
     /// Left Image
@@ -42,6 +43,11 @@ class LeftImageTitleSubtitleTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBackground()
         imageView?.tintColor = .primary
         textLabel?.applyBodyStyle()

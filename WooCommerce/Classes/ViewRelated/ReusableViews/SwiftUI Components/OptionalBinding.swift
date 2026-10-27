@@ -59,6 +59,7 @@ import SwiftUI
 ///
 /// The `projectedValue` returns a `Binding<Value>` that can be passed to child views, maintaining
 /// the same behavior regardless of whether the component is using internal or external state.
+@MainActor
 @propertyWrapper
 struct OptionalBinding<Value>: DynamicProperty {
     @State private var internalValue: Value

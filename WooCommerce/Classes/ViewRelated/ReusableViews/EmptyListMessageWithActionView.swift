@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class EmptyListMessageWithActionView: UIView {
     @IBOutlet private weak var messageLabel: UILabel!
     @IBOutlet private weak var actionButton: BordersView!
@@ -28,7 +29,11 @@ final class EmptyListMessageWithActionView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         applyBackgroundStyle()
         applyMessageLabelStyle()
         applyActionButtonStyle()

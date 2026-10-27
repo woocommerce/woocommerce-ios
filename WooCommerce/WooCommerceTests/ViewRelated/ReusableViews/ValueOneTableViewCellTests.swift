@@ -4,22 +4,11 @@ import XCTest
 
 /// Tests for `ValueOneTableViewCell`.
 ///
+@MainActor
 final class ValueOneTableViewCellTests: XCTestCase {
-    private var cell: ValueOneTableViewCell!
-
-    override func setUpWithError() throws {
-        super.setUp()
-        let nib = try XCTUnwrap(Bundle.main.loadNibNamed("ValueOneTableViewCell", owner: self, options: nil))
-        cell = try XCTUnwrap(nib.first as? ValueOneTableViewCell)
-    }
-
-    override func tearDown() {
-        cell = nil
-        super.tearDown()
-    }
-
-    func test_cell_is_configured_with_correct_values_from_the_view_model() {
+    func test_cell_is_configured_with_correct_values_from_the_view_model() throws {
         // Given
+        let cell = try makeCell()
         let viewModel = ValueOneTableViewCell.ViewModel(text: "Text", detailText: "DetailText")
 
         // When
@@ -31,50 +20,67 @@ final class ValueOneTableViewCellTests: XCTestCase {
     }
 
     func test_primary_style_of_text_label() throws {
+        // Given
+        let cell = try makeCell()
+
         // When
         cell.apply(style: .primary)
 
         // Then
-        XCTAssertEqual(cell?.textLabel?.font, UIFont.body)
-        XCTAssertEqual(cell?.textLabel?.textColor, UIColor.text)
-        let adjustsFontForContentSizeCategory = try XCTUnwrap(cell?.textLabel?.adjustsFontForContentSizeCategory)
+        XCTAssertEqual(cell.textLabel?.font, UIFont.body)
+        XCTAssertEqual(cell.textLabel?.textColor, UIColor.text)
+        let adjustsFontForContentSizeCategory = try XCTUnwrap(cell.textLabel?.adjustsFontForContentSizeCategory)
         XCTAssertTrue(adjustsFontForContentSizeCategory)
     }
 
     func test_secondary_style_of_text_label() throws {
+        // Given
+        let cell = try makeCell()
+
         // When
         cell.apply(style: .secondary)
 
         // Then
-        XCTAssertEqual(cell?.textLabel?.font, UIFont.body)
-        XCTAssertEqual(cell?.textLabel?.textColor, UIColor.text)
-        let adjustsFontForContentSizeCategory = try XCTUnwrap(cell?.textLabel?.adjustsFontForContentSizeCategory)
+        XCTAssertEqual(cell.textLabel?.font, UIFont.body)
+        XCTAssertEqual(cell.textLabel?.textColor, UIColor.text)
+        let adjustsFontForContentSizeCategory = try XCTUnwrap(cell.textLabel?.adjustsFontForContentSizeCategory)
         XCTAssertTrue(adjustsFontForContentSizeCategory)
     }
 
     func test_primary_style__of_detail_text_label() throws {
+        // Given
+        let cell = try makeCell()
+
         // When
         cell.apply(style: .primary)
 
         // Then
-        XCTAssertEqual(cell?.detailTextLabel?.font, UIFont.subheadline)
-        XCTAssertEqual(cell?.detailTextLabel?.textColor, UIColor.secondaryLabel)
-        let adjustsFontForContentSizeCategory = try XCTUnwrap(cell?.detailTextLabel?.adjustsFontForContentSizeCategory)
+        XCTAssertEqual(cell.detailTextLabel?.font, UIFont.subheadline)
+        XCTAssertEqual(cell.detailTextLabel?.textColor, UIColor.secondaryLabel)
+        let adjustsFontForContentSizeCategory = try XCTUnwrap(cell.detailTextLabel?.adjustsFontForContentSizeCategory)
         XCTAssertTrue(adjustsFontForContentSizeCategory)
-        XCTAssertEqual(cell?.detailTextLabel?.lineBreakMode, .byWordWrapping)
-        XCTAssertEqual(cell?.detailTextLabel?.numberOfLines, 0)
+        XCTAssertEqual(cell.detailTextLabel?.lineBreakMode, .byWordWrapping)
+        XCTAssertEqual(cell.detailTextLabel?.numberOfLines, 0)
     }
 
     func test_secondary_style__of_detail_text_label() throws {
+        // Given
+        let cell = try makeCell()
+
         // When
         cell.apply(style: .secondary)
 
         // Then
-        XCTAssertEqual(cell?.detailTextLabel?.font, UIFont.subheadline)
-        XCTAssertEqual(cell?.detailTextLabel?.textColor, UIColor.textTertiary)
-        let adjustsFontForContentSizeCategory = try XCTUnwrap(cell?.detailTextLabel?.adjustsFontForContentSizeCategory)
+        XCTAssertEqual(cell.detailTextLabel?.font, UIFont.subheadline)
+        XCTAssertEqual(cell.detailTextLabel?.textColor, UIColor.textTertiary)
+        let adjustsFontForContentSizeCategory = try XCTUnwrap(cell.detailTextLabel?.adjustsFontForContentSizeCategory)
         XCTAssertTrue(adjustsFontForContentSizeCategory)
-        XCTAssertEqual(cell?.detailTextLabel?.lineBreakMode, .byWordWrapping)
-        XCTAssertEqual(cell?.detailTextLabel?.numberOfLines, 0)
+        XCTAssertEqual(cell.detailTextLabel?.lineBreakMode, .byWordWrapping)
+        XCTAssertEqual(cell.detailTextLabel?.numberOfLines, 0)
+    }
+
+    private func makeCell() throws -> ValueOneTableViewCell {
+        let nib = try XCTUnwrap(Bundle.main.loadNibNamed("ValueOneTableViewCell", owner: nil, options: nil))
+        return try XCTUnwrap(nib.first as? ValueOneTableViewCell)
     }
 }

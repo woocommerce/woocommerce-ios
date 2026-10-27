@@ -47,6 +47,7 @@ private struct ShareSheetPresenterView: UIViewRepresentable {
 }
 
 private extension ShareSheetPresenterView {
+    @MainActor
     final class Coordinator: NSObject, UIAdaptivePresentationControllerDelegate {
         var isPresented: Binding<Bool>
         private weak var presentedController: UIActivityViewController?

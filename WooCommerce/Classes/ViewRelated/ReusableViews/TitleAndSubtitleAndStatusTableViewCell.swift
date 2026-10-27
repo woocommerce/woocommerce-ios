@@ -1,6 +1,7 @@
 import UIKit
 
-final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, SearchResultCell {
+@MainActor
+final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, @MainActor SearchResultCell {
     typealias SearchModel = ViewModel
 
     @IBOutlet private var subtitleLabel: UILabel!
@@ -14,6 +15,11 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, SearchResul
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBackground()
         configureLabels()
     }

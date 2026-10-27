@@ -2,6 +2,7 @@ import UIKit
 
 /// Contains a title label, a text field and an image.
 ///
+@MainActor
 final class TitleAndTextFieldWithImageTableViewCell: UITableViewCell {
 
     struct ViewModel {
@@ -39,7 +40,11 @@ final class TitleAndTextFieldWithImageTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureSelectionStyle()
         configureTitleLabel()
         configureTextField()

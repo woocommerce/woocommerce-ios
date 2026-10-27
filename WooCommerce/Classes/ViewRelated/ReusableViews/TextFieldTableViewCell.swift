@@ -2,6 +2,7 @@ import UIKit
 
 /// Contains a text field.
 ///
+@MainActor
 final class TextFieldTableViewCell: UITableViewCell {
     struct ViewModel {
         init(text: String? = nil,
@@ -42,7 +43,11 @@ final class TextFieldTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureTextField()
         configureDefaultBackgroundConfiguration()
         applyStyle(style: .headline)

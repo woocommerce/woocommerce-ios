@@ -2,6 +2,7 @@ import UIKit
 
 /// Cell containing a UIDatePicker, configured as Year / Month / Day
 ///
+@MainActor
 final class DatePickerTableViewCell: UITableViewCell {
 
     var onDateSelected: ((Date) -> Void)?
@@ -21,6 +22,11 @@ final class DatePickerTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBottomBorder()
         configureDatePicker()
     }

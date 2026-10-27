@@ -138,7 +138,7 @@ extension TitleAndValueRow {
 private extension Text {
     /// Styles the text based on the type of content.
     ///
-    @ViewBuilder func style(for value: TitleAndValueRow.Value = .content(""), bold: Bool, highlighted: Bool) -> some View {
+    @MainActor @ViewBuilder func style(for value: TitleAndValueRow.Value = .content(""), bold: Bool, highlighted: Bool) -> some View {
         switch (value, bold, highlighted) {
         case (.placeholder, _, _):
             self.modifier(SecondaryBodyStyle())

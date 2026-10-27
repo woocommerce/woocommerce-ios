@@ -2,6 +2,7 @@ import UIKit
 
 /// A table view cell with linkable text prompting users to learn more
 ///
+@MainActor
 class LearnMoreTableViewCell: UITableViewCell {
     @IBOutlet private weak var learnMoreButton: UIButton!
     @IBOutlet private weak var learnMoreLabel: UILabel!
@@ -10,7 +11,8 @@ class LearnMoreTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureCell()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureCell() }
     }
 
     private func configureCell() {

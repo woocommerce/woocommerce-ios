@@ -1,34 +1,34 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class StatusListTableViewCellTests: XCTestCase {
-    private var cell: StatusListTableViewCell?
 
-    override func setUp() {
-        super.setUp()
-        let nib = Bundle.main.loadNibNamed("StatusListTableViewCell", owner: self, options: nil)
-        cell = nib?.first as? StatusListTableViewCell
-    }
+    func testTextLabelStyleIsSetToBody() throws {
+        let cell = try makeView()
 
-    override func tearDown() {
-        cell = nil
-        super.tearDown()
-    }
-
-    func testTextLabelStyleIsSetToBody() {
         let mockLabel = UILabel()
         mockLabel.applyBodyStyle()
 
-        XCTAssertEqual(cell?.textLabel?.font, mockLabel.font)
-        XCTAssertEqual(cell?.textLabel?.textColor, mockLabel.textColor)
+        XCTAssertEqual(cell.textLabel?.font, mockLabel.font)
+        XCTAssertEqual(cell.textLabel?.textColor, mockLabel.textColor)
     }
 
-    func testTintColorMatchesExpectation() {
-        XCTAssertEqual(cell?.tintColor.cgColor, UIColor.primary.cgColor)
+    func testTintColorMatchesExpectation() throws {
+        let cell = try makeView()
+
+        XCTAssertEqual(cell.tintColor.cgColor, UIColor.primary.cgColor)
     }
 
-    func testAccessoryTypeForSelectedStateIsCheckMark() {
-        cell?.setSelected(true, animated: false)
-        XCTAssertEqual(cell?.accessoryType, .checkmark)
+    func testAccessoryTypeForSelectedStateIsCheckMark() throws {
+        let cell = try makeView()
+
+        cell.setSelected(true, animated: false)
+        XCTAssertEqual(cell.accessoryType, .checkmark)
+    }
+
+    private func makeView() throws -> StatusListTableViewCell {
+        let nib = try XCTUnwrap(Bundle.main.loadNibNamed("StatusListTableViewCell", owner: nil, options: nil))
+        return try XCTUnwrap(nib.first as? StatusListTableViewCell)
     }
 }

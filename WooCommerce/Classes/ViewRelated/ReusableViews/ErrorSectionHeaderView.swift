@@ -2,6 +2,7 @@ import UIKit
 
 /// Displays error for the table view section.
 ///
+@MainActor
 final class ErrorSectionHeaderView: UITableViewHeaderFooterView {
     @IBOutlet private weak var titleLabel: UILabel!
 
@@ -9,7 +10,11 @@ final class ErrorSectionHeaderView: UITableViewHeaderFooterView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         tintColor = .clear
         configureTitleLabel()
     }

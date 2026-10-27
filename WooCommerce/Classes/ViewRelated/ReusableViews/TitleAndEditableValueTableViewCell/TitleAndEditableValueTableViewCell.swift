@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class TitleAndEditableValueTableViewCell: UITableViewCell {
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var title: UILabel!
@@ -18,6 +19,11 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBackground()
         configureAsNonSelectable()
         applyStyle(Style.default)

@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class LabelAndButtonTableViewCell: UITableViewCell {
     @IBOutlet private weak var label: UILabel!
     @IBOutlet private weak var button: UIButton!
@@ -19,7 +20,8 @@ final class LabelAndButtonTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureButton()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureButton() }
     }
 }
 

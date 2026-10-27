@@ -23,6 +23,7 @@ final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase
         XCTAssertNil(dataSource.selected)
     }
 
+    @MainActor
     func test_cell_configuration() {
         let product = Product.fake()
         let model = EditableProductModel(product: product)

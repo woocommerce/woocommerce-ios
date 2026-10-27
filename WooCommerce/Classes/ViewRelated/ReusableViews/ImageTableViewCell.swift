@@ -1,11 +1,13 @@
 import UIKit
 
+@MainActor
 class ImageTableViewCell: UITableViewCell {
     @IBOutlet private weak var detailImageView: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureCell()
+        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
+        MainActor.assumeIsolated { configureCell() }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

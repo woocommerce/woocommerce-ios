@@ -10,6 +10,7 @@ private enum ProductTrackingSource: String {
 
 /// This helper class takes care of tracking the events of `ProductSelectorViewModelTracker`
 ///
+@MainActor
 final class ProductSelectorViewModelTracker {
     private let analytics: Analytics
     private var productIDTrackingSources: [Int64: ProductTrackingSource] = [:]

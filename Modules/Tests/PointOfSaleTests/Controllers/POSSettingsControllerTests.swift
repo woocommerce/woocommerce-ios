@@ -84,6 +84,7 @@ struct POSSettingsControllerTests {
     }
 }
 
+@MainActor
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     let siteID: Int64 = 123
     var retrievePointOfSaleSettingsWasCalled = false

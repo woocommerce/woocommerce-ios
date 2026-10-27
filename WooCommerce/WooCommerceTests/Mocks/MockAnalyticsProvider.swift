@@ -4,48 +4,74 @@ import protocol WooFoundation.AnalyticsProvider
 @testable import WordPressShared
 import XCTest
 import Testing
+import os
 
-public class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTracker {
-    private let lock = NSLock()
+public final class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTracker {
+    private struct State {
+        var receivedEvents = [String]()
+        var receivedProperties = [[AnyHashable: Any]]()
+        var userID: String?
+        var userOptedIn = true
+        var defersRefreshUserDataCompletion = false
+        var refreshUserDataCallCount = 0
+        var refreshUserDataCompletion: (@Sendable () -> Void)?
+    }
 
-    private var _receivedEvents = [String]()
+    private let state = OSAllocatedUnfairLock(uncheckedState: State())
+
     var receivedEvents: [String] {
-        lock.lock()
-        defer { lock.unlock() }
-        return _receivedEvents
+        state.withLockUnchecked { $0.receivedEvents }
     }
 
-    private var _receivedProperties = [[AnyHashable: Any]]()
     var receivedProperties: [[AnyHashable: Any]] {
-        lock.lock()
-        defer { lock.unlock() }
-        return _receivedProperties
+        state.withLockUnchecked { $0.receivedProperties }
     }
 
-    var userID: String?
-    var userOptedIn = true
-    var defersRefreshUserDataCompletion = false
-    private(set) var refreshUserDataCallCount = 0
-    private var refreshUserDataCompletion: (() -> Void)?
+    var userID: String? {
+        get { state.withLockUnchecked { $0.userID } }
+        set { state.withLockUnchecked { $0.userID = newValue } }
+    }
+
+    var userOptedIn: Bool {
+        get { state.withLockUnchecked { $0.userOptedIn } }
+        set { state.withLockUnchecked { $0.userOptedIn = newValue } }
+    }
+
+    var defersRefreshUserDataCompletion: Bool {
+        get { state.withLockUnchecked { $0.defersRefreshUserDataCompletion } }
+        set { state.withLockUnchecked { $0.defersRefreshUserDataCompletion = newValue } }
+    }
+
+    private(set) var refreshUserDataCallCount: Int {
+        get { state.withLockUnchecked { $0.refreshUserDataCallCount } }
+        set { state.withLockUnchecked { $0.refreshUserDataCallCount = newValue } }
+    }
 }
 
 // MARK: - AnalyticsProvider Conformance
 //
 public extension MockAnalyticsProvider {
 
-    func refreshUserData(completion: @escaping () -> Void) {
-        refreshUserDataCallCount += 1
-        userID = "aGeneratedUserGUID"
-        if defersRefreshUserDataCompletion {
-            refreshUserDataCompletion = completion
-        } else {
-            completion()
+    func refreshUserData(completion: @escaping @Sendable () -> Void) {
+        let completionToCall: (@Sendable () -> Void)? = state.withLockUnchecked { state in
+            state.refreshUserDataCallCount += 1
+            state.userID = "aGeneratedUserGUID"
+            if state.defersRefreshUserDataCompletion {
+                state.refreshUserDataCompletion = completion
+                return nil
+            }
+            return completion
         }
+        completionToCall?()
     }
 
     func completeRefreshUserData() {
-        refreshUserDataCompletion?()
-        refreshUserDataCompletion = nil
+        let completion = state.withLockUnchecked { state in
+            let completion = state.refreshUserDataCompletion
+            state.refreshUserDataCompletion = nil
+            return completion
+        }
+        completion?()
     }
 
     func track(_ eventName: String) {
@@ -53,24 +79,26 @@ public extension MockAnalyticsProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
-        lock.lock()
-        _receivedEvents.append(eventName)
-        if let properties {
-            _receivedProperties.append(properties)
+        state.withLockUnchecked { state in
+            state.receivedEvents.append(eventName)
+            if let properties {
+                state.receivedProperties.append(properties)
+            }
         }
-        lock.unlock()
     }
 
     func clearEvents() {
-        lock.lock()
-        _receivedEvents.removeAll()
-        _receivedProperties.removeAll()
-        lock.unlock()
+        state.withLockUnchecked {
+            $0.receivedEvents.removeAll()
+            $0.receivedProperties.removeAll()
+        }
     }
 
     func clearUsers() {
-        userOptedIn = false
-        userID = nil
+        state.withLockUnchecked {
+            $0.userOptedIn = false
+            $0.userID = nil
+        }
     }
 }
 

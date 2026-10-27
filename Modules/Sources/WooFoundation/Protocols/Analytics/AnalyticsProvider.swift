@@ -1,11 +1,11 @@
 /// Defines all of the Analytics Operations we'll be performing. This allows us to swap the actual Wrapper in our
 /// Unit Testing target.
 ///
-public protocol AnalyticsProvider {
+public protocol AnalyticsProvider: Sendable {
 
     /// Refresh the tracking metadata for the current user and notify the caller when the refresh has completed.
     ///
-    func refreshUserData(completion: @escaping () -> Void)
+    func refreshUserData(completion: @escaping @Sendable () -> Void)
 
     /// Track a spcific event without any associated properties
     ///

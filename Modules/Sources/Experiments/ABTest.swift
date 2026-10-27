@@ -75,7 +75,7 @@ public extension Variation {
 
 /// The context for an A/B testing experiment (where the experience being tested occurs).
 ///
-public enum ExperimentContext: Equatable {
+public enum ExperimentContext: Equatable, Sendable {
     case loggedOut
     case loggedIn
     case none // For the `null` experiment case

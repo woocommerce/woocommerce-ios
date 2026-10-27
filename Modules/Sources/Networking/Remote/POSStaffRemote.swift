@@ -3,7 +3,7 @@ import Foundation
 /// Fetches the POS staff list. Conformed to by `POSStaffRemote`; callers (e.g. the app-target
 /// `POSStaffAdaptor`) depend on this abstraction so they can be unit-tested with a mock.
 ///
-public protocol POSStaffRemoteProtocol {
+public protocol POSStaffRemoteProtocol: Sendable {
     func fetchStaff(siteID: Int64) async throws -> [POSStaffMember]
 }
 

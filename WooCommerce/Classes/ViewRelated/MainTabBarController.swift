@@ -53,7 +53,9 @@ extension WooTab {
             return (StoreIcon.Box.regular, StoreIcon.Box.solid)
         case .hubMenu:
             return (StoreIcon.Grid.regular, StoreIcon.Grid.solid)
-        case .bookings, .pointOfSale:
+        case .bookings:
+            return (StoreIcon.Calendar.regular, StoreIcon.Calendar.solid)
+        case .pointOfSale:
             return nil
         }
     }

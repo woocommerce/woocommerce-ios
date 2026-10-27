@@ -1,6 +1,7 @@
 import Combine
 import Photos
 import PointOfSale
+import StoreDesignSystem
 import SwiftUI
 import TestKit
 import XCTest
@@ -39,6 +40,20 @@ final class MainTabBarControllerTests: XCTestCase {
         SessionManager.testingInstance.reset()
         stores = nil
         super.tearDown()
+    }
+
+    func test_bookings_store_design_system_icons_use_regular_and_solid_calendar_variants() throws {
+        // Given
+        let tab = WooTab.bookings
+
+        // When
+        let icons = try XCTUnwrap(tab.storeDesignSystemIcons)
+
+        // Then
+        XCTAssertEqual(icons.normal.name, StoreIcon.Calendar.regular.name)
+        XCTAssertEqual(icons.normal.style, StoreIcon.Calendar.regular.style)
+        XCTAssertEqual(icons.selected.name, StoreIcon.Calendar.solid.name)
+        XCTAssertEqual(icons.selected.style, StoreIcon.Calendar.solid.style)
     }
 
     func test_selected_tab_is_dashboard_after_navigating_to_products_tab_then_updating_to_a_different_site() throws {

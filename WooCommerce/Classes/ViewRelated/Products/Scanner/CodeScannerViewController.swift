@@ -43,6 +43,7 @@ final class CodeScannerViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     private lazy var throttler = Throttler(seconds: 0.1)
+    private var isDetecting = false
 
     private let instructionText: String
     private let format: ScannedCodeFormat
@@ -112,15 +113,22 @@ extension CodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegat
         throttler.throttle { [weak self] in
             // Access of view frame is required on the main thread.
             DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
+                guard let self, !self.isDetecting else { return }
 
                 let orientation = self.imageOrientationFromDeviceOrientation()
                 guard let ciImage = self.imageForBarcodeDetection(from: sampleBuffer, orientation: orientation) else {
                     return
                 }
 
+                // Drop sampled frames until the current request finishes instead of retaining a backlog.
+                self.isDetecting = true
                 self.detectionQueue.async { [weak self] in
                     guard let self else { return }
+                    defer {
+                        DispatchQueue.main.async { [weak self] in
+                            self?.isDetecting = false
+                        }
+                    }
 
                     // Configures options for `VNImageRequestHandler`.
                     var requestOptions: [VNImageOption: Any] = [:]
@@ -136,7 +144,7 @@ extension CodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegat
                         DispatchQueue.main.async { [weak self] in
                             guard let self, self.session.isRunning else { return }
                             if case let .barcode(completion) = self.format {
-                                // Deliver here so errors and successful frames each take one main-queue hop.
+                                // Already on main; the helper schedules another hop, so deliver directly here.
                                 completion(.failure(error))
                             }
                         }

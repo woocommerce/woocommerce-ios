@@ -129,22 +129,40 @@ struct ScannerContainerViewControllerTests {
         #expect(scannedBarcodes == [barcode])
     }
 
-    @Test
-    func test_detection_when_first_barcode_changes_then_secondary_match_does_not_confirm() {
+    @Test(arguments: [false, true])
+    func test_detection_when_barcode_order_changes_then_confirms_original_candidate(candidateIsFirstInFinalFrame: Bool) {
         // Given
         var scannedBarcodes: [ScannedBarcode] = []
         let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
         let otherBarcode = ScannedBarcode(payloadStringValue: "DEF456", symbology: .code128)
         sut.handleBarcodeDetectionResult(.success([barcode, otherBarcode]))
-        sut.handleBarcodeDetectionResult(.success([barcode, otherBarcode]))
 
         // When
-        sut.handleBarcodeDetectionResult(.success([otherBarcode, barcode]))
         sut.handleBarcodeDetectionResult(.success([otherBarcode, barcode]))
 
         // Then
         #expect(scannedBarcodes.isEmpty)
+        let finalFrame = candidateIsFirstInFinalFrame ? [barcode, otherBarcode] : [otherBarcode, barcode]
+        sut.handleBarcodeDetectionResult(.success(finalFrame))
+        #expect(scannedBarcodes == [barcode])
+    }
+
+    @Test
+    func test_detection_when_candidate_disappears_then_requires_three_matches_for_replacement() {
+        // Given
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
+        let otherBarcode = ScannedBarcode(payloadStringValue: "DEF456", symbology: .code128)
+        sut.handleBarcodeDetectionResult(.success([barcode, otherBarcode]))
         sut.handleBarcodeDetectionResult(.success([otherBarcode, barcode]))
+
+        // When
+        sut.handleBarcodeDetectionResult(.success([otherBarcode]))
+        sut.handleBarcodeDetectionResult(.success([otherBarcode, barcode]))
+
+        // Then
+        #expect(scannedBarcodes.isEmpty)
+        sut.handleBarcodeDetectionResult(.success([barcode, otherBarcode]))
         #expect(scannedBarcodes == [otherBarcode])
     }
 

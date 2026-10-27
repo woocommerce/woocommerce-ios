@@ -1,11 +1,18 @@
 import UIKit
 import Combine
 
+@MainActor
 final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
 
-    var cancellable: Cancellable?
+    var cancellable: Cancellable? {
+        get { imageRequestCancellable }
+        set { imageRequestCancellable = newValue.map { AnyCancellable($0) } }
+    }
+
+    // The token cancels on release without accessing actor-owned state from deinit.
+    private var imageRequestCancellable: AnyCancellable?
 
     private(set) lazy var coverTagView: UIView = {
         let containerView = UIView(frame: .zero)
@@ -30,11 +37,14 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureImageView()
-        configureCellAppearance()
-        configureCoverTagView()
-        observeInterfaceStyleChange()
+        // UIKit loads these cells on the main thread; NSObject imports this callback as nonisolated.
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureImageView()
+            configureCellAppearance()
+            configureCoverTagView()
+            observeInterfaceStyleChange()
+        }
     }
 
     override func prepareForReuse() {
@@ -43,10 +53,6 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
         cancellable = nil
 
         imageView.image = nil
-    }
-
-    deinit {
-        cancellable?.cancel()
     }
 }
 

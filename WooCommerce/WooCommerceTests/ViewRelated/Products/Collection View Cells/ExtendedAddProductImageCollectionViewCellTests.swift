@@ -1,20 +1,13 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class ExtendedAddProductImageCollectionViewCellTests: XCTestCase {
 
-    private var cell: ExtendedAddProductImageCollectionViewCell?
-
-    override func setUp() {
-        super.setUp()
+    private lazy var cell: ExtendedAddProductImageCollectionViewCell? = {
         let nib = Bundle.main.loadNibNamed("ExtendedAddProductImageCollectionViewCell", owner: self, options: nil)
-        cell = nib?.first as? ExtendedAddProductImageCollectionViewCell
-    }
-
-    override func tearDown() {
-        cell = nil
-        super.tearDown()
-    }
+        return nib?.first as? ExtendedAddProductImageCollectionViewCell
+    }()
 
     func testImageViewIsNotEmpty() {
         XCTAssertNotNil(cell?.imageView.image)

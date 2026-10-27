@@ -3,6 +3,7 @@ import UIKit
 import Kingfisher
 import Yosemite
 
+@MainActor
 final class ProductImagesCollectionViewDataSource: NSObject {
     private let viewModel: ProductImagesHeaderViewModel
     private let productUIImageLoader: ProductUIImageLoader

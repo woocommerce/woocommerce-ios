@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class ExtendedAddProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
@@ -7,9 +8,12 @@ final class ExtendedAddProductImageCollectionViewCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureImageView()
-        configureLabel()
+        // UIKit loads these cells on the main thread; NSObject imports this callback as nonisolated.
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureImageView()
+            configureLabel()
+        }
     }
 
     func configurePlaceholderLabelForProductImages(isVariation: Bool) {

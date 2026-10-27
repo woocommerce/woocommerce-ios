@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class FailedProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet var imageView: UIImageView!
@@ -8,10 +9,13 @@ final class FailedProductImageCollectionViewCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureImageView()
-        configureErrorImageView()
-        configureCellAppearance()
+        // UIKit loads these cells on the main thread; NSObject imports this callback as nonisolated.
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureImageView()
+            configureErrorImageView()
+            configureCellAppearance()
+        }
     }
 }
 

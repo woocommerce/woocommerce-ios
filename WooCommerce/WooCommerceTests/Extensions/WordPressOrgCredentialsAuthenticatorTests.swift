@@ -796,8 +796,8 @@ private final class RecordingWKWebView: WKWebView {
     override func load(_ request: URLRequest) -> WKNavigation? {
         loadedRequests.append(request)
         let navigation = StubNavigation()
-        // `-[WKNavigation dealloc]` crashes for instances not created by WebKit, which kills the test host
-        // and makes CI wait for simulator diagnostics. Keep the stub alive for the rest of the test run.
+        // `-[WKNavigation dealloc]` crashes for instances not created by WebKit and kills the test host.
+        // Keep the stub alive for the rest of the test run.
         _ = Unmanaged.passRetained(navigation)
         loadedNavigations.append(navigation)
         return navigation

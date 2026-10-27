@@ -27,12 +27,14 @@ stopped = threading.Event()
 signal.signal(signal.SIGTERM, lambda *_: stopped.set())
 sampled = set()
 started = time.monotonic()
-names = {'xcodebuild', 'testmanagerd', 'simctl', 'diagnose', 'launchd_sim',
-         'log', 'lsdiagnose', 'darwinup', 'swcutil',
-         'com.apple.CoreSimulator.CoreSimulatorService'}
 while not stopped.is_set():
     rows = []
-    snapshot = subprocess.check_output(['ps', '-axo', 'pid=,ppid=,etime=,comm='], universal_newlines=True, timeout=5)
+    try:
+        snapshot = subprocess.check_output(['ps', '-axo', 'pid=,ppid=,etime=,comm='], universal_newlines=True, timeout=5)
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as error:
+        print('Process snapshot failed: %s' % error, flush=True)
+        stopped.wait(30)
+        continue
     for line in snapshot.splitlines():
         fields = line.split(None, 3)
         if len(fields) != 4:
@@ -43,7 +45,7 @@ while not stopped.is_set():
         rows.append((int(pid), int(parent), seconds, command.rsplit('/', 1)[-1], line))
     with (output / 'processes.log').open('a') as log:
         log.write(time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime()) + '\n')
-        log.write('\n'.join(row[4] for row in rows if row[3] in names) + '\n')
+        log.write(snapshot + '\n')
     roots = [row for row in rows if row[3] == 'simctl' and row[2] >= 60]
     targets = roots[:1]
     if targets:
@@ -52,12 +54,17 @@ while not stopped.is_set():
         targets += sorted([row for row in rows if row[3] in {'log', 'lsdiagnose', 'darwinup', 'swcutil'} and row[2] >= 60],
                           key=lambda row: row[2], reverse=True)[:1]
     if roots or time.monotonic() - started >= 720:
+        guest_parents = {row[0] for row in rows if row[3] == 'launchd_sim'}
+        guests = sorted([row for row in rows if row[1] in guest_parents and row[2] >= 60 and row[3] not in {'xctest', 'WooCommerce'}], key=lambda row: row[2])
+        targets += guests[:1] + guests[-1:]
         targets += [row for row in rows if row[3] == 'com.apple.CoreSimulator.CoreSimulatorService'][:1]
         targets += [row for row in rows if row[3] == 'xcodebuild'][:1]
         if not roots:
             targets += sorted([row for row in rows if row[3] == 'testmanagerd'], key=lambda row: row[2], reverse=True)[:1]
+    if any(row[3] in {'xctest', 'WooCommerce'} for row in rows):
+        targets = []
     for pid, _, _, name, _ in targets:
-        key = (pid, roots[0][0] if roots else 'fallback')
+        key = (pid, roots[0][0] if roots else 'fallback%d' % ((time.monotonic() - started) // 180))
         if stopped.is_set() or key in sampled:
             continue
         sampled.add(key)

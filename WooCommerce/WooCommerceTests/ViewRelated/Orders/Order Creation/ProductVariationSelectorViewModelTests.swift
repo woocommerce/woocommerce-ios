@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Storage
 
+@MainActor
 final class ProductVariationSelectorViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
@@ -14,15 +15,15 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
     }
     private let stores = MockStoresManager(sessionManager: .testingInstance)
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
         stores.reset()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_sync_when_currency_is_configured_then_retrieves_and_paginates_variations_in_memory_with_order_currency() {

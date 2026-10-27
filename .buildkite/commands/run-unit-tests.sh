@@ -39,4 +39,9 @@ else
     annotate_test_failures "fastlane/test_output/report.junit"
 fi
 
+# Temporary comparison after verification; collection failures must not change the test result.
+echo "--- 🔬 Comparing simulator diagnostics launchers"
+bundle exec ruby .buildkite/commands/compare-simulator-diagnostics.rb || true
+buildkite-agent artifact upload 'fastlane/test_output/diagnostics-launcher/*' || true
+
 exit $TESTS_EXIT_STATUS

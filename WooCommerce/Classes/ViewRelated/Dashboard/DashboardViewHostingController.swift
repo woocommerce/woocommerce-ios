@@ -3,9 +3,9 @@ import SwiftUI
 import WordPressUI
 import struct Yosemite.Site
 
-/// Hosting view for `DashboardView`
+/// Hosting controller for the dashboard feature-flag boundary.
 ///
-final class DashboardViewHostingController: UIHostingController<DashboardView> {
+final class DashboardViewHostingController: UIHostingController<DashboardRootView> {
 
     private let viewModel: DashboardViewModel
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
@@ -42,7 +42,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         self.viewModel = viewModel
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
-        super.init(rootView: DashboardView(viewModel: viewModel))
+        super.init(rootView: DashboardRootView(viewModel: viewModel))
 
         configureTabBarItem()
         configureStoreOnboarding()

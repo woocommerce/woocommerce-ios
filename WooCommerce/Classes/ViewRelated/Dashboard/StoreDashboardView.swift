@@ -9,7 +9,7 @@ import enum WooFoundation.ConnectivityStatus
 ///
 /// Card cases deliberately use their legacy implementations during the shell migration.
 /// Each case is replaced by its dedicated design-system card in the follow-up slices.
-struct StoreDashboardContent: View {
+struct StoreDashboardView: View {
     @ObservedObject private var viewModel: DashboardViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -135,7 +135,7 @@ struct StoreDashboardContent: View {
     }
 }
 
-private extension StoreDashboardContent {
+private extension StoreDashboardView {
     var shouldShowJetpackBenefitsBanner: Bool {
         let isJetpackCPSite = currentSite?.isJetpackCPConnected == true
         let isNonJetpackSite = currentSite?.isNonJetpackSite == true
@@ -421,7 +421,7 @@ private extension StoreDashboardContent {
     }
 }
 
-private extension StoreDashboardContent {
+private extension StoreDashboardView {
     enum Layout {
         static let outerPadding = StoreSpacing.s7
         static let cardSpacing = StoreSpacing.s7

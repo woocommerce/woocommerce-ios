@@ -55,8 +55,8 @@ echo "--- 🔬 Inspecting failed process launches"
     echo "darwinup_present=no"
     MISSING_EXECUTABLE=/usr/bin/darwinup
   fi
-  xcrun llvm-objdump --macho --arch=arm64e -d --section=__TEXT,__objc_stubs "$SIMCTL_BINARY" |
-    awk '/^10000d8a8:/,/^10000db90:/ { print }
+  xcrun llvm-objdump --macho --arch=arm64e -d --section=__TEXT,__text --section=__TEXT,__objc_stubs "$SIMCTL_BINARY" |
+    LC_ALL=C awk '/^10000d8a8:/,/^10000db90:/ { print }
          /Objc selector ref: (launchAndReturnError:|setLaunchPath:|waitUntilExit)$/ { print previous; print }
          { previous = $0 }'
   xcrun clang -fobjc-arc -Wno-deprecated-declarations \

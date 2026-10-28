@@ -194,6 +194,7 @@ let package = Package(
             name: "NetworkingCore",
             dependencies: [
                 "Codegen",
+                "WooFoundationCore",
                 .product(name: "Alamofire", package: "Alamofire"),
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "HTMLParser", package: "AztecEditor-iOS"),
@@ -372,7 +373,7 @@ let package = Package(
         ),
         .testTarget(
             name: "WooFoundationTests",
-            dependencies: ["TestKit", .target(name: "WooFoundation")],
+            dependencies: ["TestKit", .target(name: "WooFoundation"), .target(name: "WooFoundationCore")],
             swiftSettings: swift6
         ),
         .testTarget(

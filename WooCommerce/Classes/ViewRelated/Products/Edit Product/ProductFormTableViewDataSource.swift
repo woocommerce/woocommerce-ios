@@ -55,7 +55,7 @@ final class ProductFormTableViewDataSource: NSObject {
     }
 }
 
-extension ProductFormTableViewDataSource: @MainActor UITableViewDataSource {
+extension ProductFormTableViewDataSource: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return viewModel.sections.count
     }

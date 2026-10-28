@@ -119,6 +119,7 @@ final class LoginUnexpectedResponsePresenter {
                                         initialContext: context.siteURL.map { ["site_url": .string($0)] },
                                         initialMessage: context.initialMessage,
                                         supportSiteAddress: context.siteURL,
+                                        excludeStoreResponseExcerptsFromLogs: true,
                                         onContactHumanSupport: { chatID, transcript, area, entryPoint, receivedResponse in
             escalation = SupportEscalationCoordinator(navigationController: host?.navigationController,
                                                       mobileStatusReportProvider: MobileStatusReportProvider(),

@@ -98,6 +98,10 @@ final class ServiceLocator {
     ///
     private static var _fileLogger: Logs = DDFileLogger()
 
+    /// Recent warning and error log provider
+    ///
+    private static let _recentApplicationLogProvider = RecentApplicationLogProvider()
+
     /// Application Log Provider
     ///
     private static var _applicationLogProvider: ApplicationLogProvider = DefaultApplicationLogProvider()
@@ -310,6 +314,10 @@ final class ServiceLocator {
     /// - Returns: An implementation of the Logs protocol. It defaults to DDFileLogger
     static var fileLogger: Logs {
         return _fileLogger
+    }
+
+    static var recentApplicationLogProvider: RecentApplicationLogProvider {
+        _recentApplicationLogProvider
     }
 
     static var applicationLogProvider: ApplicationLogProvider {

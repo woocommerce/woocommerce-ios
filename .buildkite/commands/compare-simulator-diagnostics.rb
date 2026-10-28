@@ -8,6 +8,7 @@ require 'pty'
 require 'rbconfig'
 require 'tmpdir'
 require 'fileutils'
+require 'shellwords'
 
 def stop_group(pid)
   Process.kill('TERM', -pid)
@@ -86,26 +87,41 @@ if ARGV.first == '--arm'
   exit
 end
 
-require 'shellwords'
-require 'open3'
+def run_arm(mode, limit, command, directory, name = mode)
+  result_path = File.join(directory, "#{name}.json")
+  pid = Process.spawn(RbConfig.ruby, __FILE__, '--arm', Process.pid.to_s, mode, limit.to_s,
+                      File.join(directory, "#{name}.log"), result_path, command)
+  _, status = Process.waitpid2(pid)
+  raise "Diagnostic supervisor failed: #{status}" unless status.success?
+
+  JSON.parse(File.read(result_path))
+end
+
+def capture(arguments)
+  Dir.mktmpdir('woomob-4430-query-') do |temporary|
+    stderr = File.join(temporary, 'stderr.log')
+    command = "exec #{arguments.shelljoin} </dev/null 2>#{Shellwords.escape(stderr)}"
+    result = run_arm('pipe', 10, command, temporary, 'query')
+    raise "Diagnostic setup query failed: #{result}" unless result['reason'].nil? && result['exit']&.zero?
+
+    File.read(File.join(temporary, 'query.log'))
+  end
+end
 
 def simulator_processes
-  output, status = Open3.capture2('/bin/ps', '-axo', 'pid=,ppid=,etime=,comm=')
-  raise 'Cannot check existing simulator diagnostics' unless status.success?
-
+  output = capture(['/bin/ps', '-axo', 'pid=,ppid=,etime=,comm='])
   output.lines.select { |line| File.basename(line.split(nil, 4).last.to_s.strip) == 'simctl' }.map(&:strip)
 end
 
 output_dir = File.expand_path('fastlane/test_output/diagnostics-launcher')
 FileUtils.mkdir_p(output_dir)
-report = { limit_per_arm: 120, arms: [], before: simulator_processes }
+report = { limit_per_arm: 120, arms: [] }
 begin
+  report[:before] = simulator_processes
   raise 'Existing simctl process; comparison skipped' unless report[:before].empty?
 
-  summary, status = Open3.capture2('/usr/bin/xcrun', 'xcresulttool', 'get', 'test-results', 'summary',
-                                   '--path', 'fastlane/test_output/WooCommerce.xcresult', '--format', 'json')
-  raise 'Cannot read tested simulator' unless status.success?
-
+  summary = capture(['/usr/bin/xcrun', 'xcresulttool', 'get', 'test-results', 'summary',
+                     '--path', 'fastlane/test_output/WooCommerce.xcresult', '--format', 'json'])
   devices = JSON.parse(summary).fetch('devicesAndConfigurations').map { |item| item.fetch('device').fetch('deviceId') }.uniq
   raise 'Expected one tested simulator' unless devices.size == 1
 
@@ -113,25 +129,19 @@ begin
   raise 'Invalid simulator identifier' unless udid.match?(/\A[0-9A-F-]{36}\z/i)
 
   report[:device] = udid
-  inventory, status = Open3.capture2('/usr/bin/xcrun', 'simctl', 'list', 'devices', '--json')
-  raise 'Cannot read simulator state' unless status.success?
-
+  inventory = capture(['/usr/bin/xcrun', 'simctl', 'list', 'devices', '--json'])
   report[:device_state] = JSON.parse(inventory).fetch('devices').values.flatten.find { |device| device['udid'] == udid }&.fetch('state')
   Dir.mktmpdir('woomob-4430-diagnose-') do |temporary|
     %w[pipe pty].each do |mode|
       collected = File.join(temporary, mode)
       command = "exec env NSUnbufferedIO=YES /usr/bin/xcrun simctl diagnose -b --no-archive --udid=#{Shellwords.escape(udid)} --output=#{Shellwords.escape(collected)} </dev/null"
-      result_path = File.join(output_dir, "#{mode}.json")
-      pid = Process.spawn(RbConfig.ruby, __FILE__, '--arm', Process.pid.to_s, mode, '120',
-                          File.join(output_dir, "#{mode}.log"), result_path, command)
-      Process.waitpid(pid)
-      result = JSON.parse(File.read(result_path))
+      result = run_arm(mode, 120, command, output_dir)
       result['collected_bytes'] = Dir.glob(File.join(collected, '**', '*')).select { |path| File.file?(path) }.sum { |path| File.size(path) }
       result['top_level_files'] = Dir.exist?(collected) ? Dir.children(collected).sort : []
       result['remaining_simctl'] = simulator_processes
       report[:arms] << result
       FileUtils.rm_rf(collected)
-      break unless result['remaining_simctl'].empty?
+      break unless result['reason'].nil? && result['signal'].nil? && result['exit']&.zero? && result['remaining_simctl'].empty?
     end
   end
 rescue StandardError => e

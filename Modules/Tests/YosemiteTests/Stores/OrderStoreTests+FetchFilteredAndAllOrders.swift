@@ -1,4 +1,5 @@
 
+import Synchronization
 import XCTest
 
 import YosemiteTestHelpers
@@ -247,7 +248,11 @@ private enum Fixtures {
 private final class SaveCountingStorageManager: StorageManagerType {
     private let inner = MockStorageManager()
 
-    private(set) var performAndSaveCallCount = 0
+    private let callCount = Mutex(0)
+
+    var performAndSaveCallCount: Int {
+        callCount.withLock { $0 }
+    }
 
     var viewStorage: StorageType {
         inner.viewStorage
@@ -256,14 +261,14 @@ private final class SaveCountingStorageManager: StorageManagerType {
     func performAndSave(_ operation: @escaping @Sendable (StorageType) -> Void,
                         completion: (@Sendable () -> Void)?,
                         on queue: DispatchQueue) {
-        performAndSaveCallCount += 1
+        callCount.withLock { $0 += 1 }
         inner.performAndSave(operation, completion: completion, on: queue)
     }
 
     func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
                            completion: @escaping @Sendable (Result<T, Error>) -> Void,
                            on queue: DispatchQueue) {
-        performAndSaveCallCount += 1
+        callCount.withLock { $0 += 1 }
         inner.performAndSave(operation, completion: completion, on: queue)
     }
 

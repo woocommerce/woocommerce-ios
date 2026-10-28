@@ -5,5 +5,5 @@ public enum ReceiptAction: Action {
     case retrieveReceipt(order: Order, onCompletion: (Result<Receipt, Error>) -> Void)
 
     /// Sends a receipt to a customer email for a given `Order`.
-    case sendReceipt(order: Order, email: String, onCompletion: (Result<Order, Error>) -> Void)
+    case sendReceipt(order: Order, email: String, onCompletion: @Sendable (Result<Order, Error>) -> Void)
 }

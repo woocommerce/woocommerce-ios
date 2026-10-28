@@ -46,7 +46,7 @@ public class MockStoresManager: StoresManager {
 
 
 
-    init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
+    init(objectGraph: MockObjectGraph, storageManager: any StorageManagerType & Sendable) {
         self.objectGraph = objectGraph
         self.storageManager = storageManager
 

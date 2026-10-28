@@ -265,14 +265,15 @@ final class StoresManagerTests: XCTestCase {
     /// Verifies that `deauthenticate` invalidates card present payment onboarding state cache.
     ///
     func testDeauthenticate_invalidates_card_present_payment_onboarding_state_cache() {
-        let cardPresentPaymentOnboardingStateCache = MockCardPresentPaymentOnboardingStateCache()
+        let cardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache()
+        cardPresentPaymentOnboardingStateCache.update(.loading)
         let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
                                            notificationCenter: MockNotificationCenter.testingInstance,
                                            cardPresentPaymentOnboardingStateCache: cardPresentPaymentOnboardingStateCache)
 
         manager.deauthenticate()
 
-        XCTAssertTrue(cardPresentPaymentOnboardingStateCache.invalidateCalled)
+        XCTAssertNil(cardPresentPaymentOnboardingStateCache.value)
     }
 
     /// Verifies that `deauthenticate` handles catalog sync cleanup gracefully when there is a default store.
@@ -1411,13 +1412,5 @@ private final class MockStoresManagerState: StoresManagerState {
 
     func onAction(_ action: Action) {
         receivedActions.append(action)
-    }
-}
-
-final class MockCardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache {
-    var invalidateCalled: Bool = false
-
-    override func invalidate() {
-        invalidateCalled = true
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
+public enum CardPresentPaymentsPlugin: Equatable, CaseIterable, Sendable {
     case wcPay
     case stripe
 

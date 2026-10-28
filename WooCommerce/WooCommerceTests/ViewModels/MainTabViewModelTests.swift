@@ -50,6 +50,7 @@ final class MainTabViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
+    @MainActor
     func test_loadHubMenuTabBadge_when_should_show_reviews_badge_only_calls_onMenuBadgeShouldBeDisplayed_with_type_secondary() {
         // Given
         let sessionManager = SessionManager.makeForTesting(authenticated: true)
@@ -83,6 +84,7 @@ final class MainTabViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_loadHubMenuTabBadge_when_reviews_badge_should_be_hidden_calls_onMenuBadgeShouldBeHidden() {
         // Given
         let sessionManager = SessionManager.makeForTesting()

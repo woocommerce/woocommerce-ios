@@ -3,6 +3,7 @@ import WooFoundation
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
 
     private var eventEmitter: StoreStatsUsageTracksEventEmitter!
@@ -13,7 +14,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 12345
     private let sampleAdminURL = "https://example.com/wp-admin/"
 
-    override func setUp() {
+    override func setUp() async throws {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)

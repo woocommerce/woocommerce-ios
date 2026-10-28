@@ -1,3 +1,4 @@
+import Synchronization
 import Combine
 import XCTest
 import YosemiteTestHelpers
@@ -65,14 +66,15 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that OrderAction.synchronizeOrders returns the expected Orders.
     ///
     func testRetrieveOrdersReturnsExpectedFields() {
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Retrieve order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statuses: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 4)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
 
             expectation.fulfill()
         }
@@ -84,6 +86,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.synchronizeOrders` effectively persists any retrieved orders.
     ///
     func testRetrieveOrdersEffectivelyPersistsRetrievedOrders() {
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -92,8 +95,8 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 0)
 
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statuses: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 4)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
             XCTAssertNil(error)
 
             expectation.fulfill()
@@ -107,6 +110,7 @@ final class OrderStoreTests: XCTestCase {
     /// correctly across all of the related Order objects (items, coupons, etc).
     ///
     func testRetrieveOrdersEffectivelyPersistsOrderFieldsAndRelatedObjects() {
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -119,7 +123,7 @@ final class OrderStoreTests: XCTestCase {
             XCTAssertNil(error)
 
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
-            let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
+            let storedOrder = storageManager.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
             let readOnlyStoredOrder = storedOrder?.toReadOnly()
             XCTAssertNotNil(storedOrder)
             XCTAssertNotNil(readOnlyStoredOrder)
@@ -137,6 +141,7 @@ final class OrderStoreTests: XCTestCase {
     /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
     ///
     func testRetrieveOrdersWithBreakingDocumentIsProperlyParsedAndInsertedIntoStorage() {
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -145,7 +150,7 @@ final class OrderStoreTests: XCTestCase {
 
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statuses: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 6)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 6)
 
             expectation.fulfill()
         }
@@ -189,13 +194,14 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: - OrderAction.checkIfStoreHasOrders
 
-    func test_checkIfStoreHasOrders_returns_true_if_there_exists_any_order_in_storage() throws {
+    @MainActor
+    func test_checkIfStoreHasOrders_returns_true_if_there_exists_any_order_in_storage() async throws {
         // Given
         storageManager.insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = try await waitForCompletion { promise in
             store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             }))
@@ -207,13 +213,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(hasOrders)
     }
 
-    func test_checkIfStoreHasOrders_returns_true_if_remote_returns_non_empty_results() throws {
+    @MainActor
+    func test_checkIfStoreHasOrders_returns_true_if_remote_returns_non_empty_results() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = try await waitForCompletion { promise in
             store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             }))
@@ -225,13 +232,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(hasOrders)
     }
 
-    func test_checkIfStoreHasOrders_returns_false_if_remote_returns_empty_results() throws {
+    @MainActor
+    func test_checkIfStoreHasOrders_returns_false_if_remote_returns_empty_results() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "orders", filename: "empty-data-array")
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = try await waitForCompletion { promise in
             store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             }))
@@ -243,13 +251,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertFalse(hasOrders)
     }
 
-    func test_checkIfStoreHasOrders_relays_error_if_remote_request_fails() throws {
+    @MainActor
+    func test_checkIfStoreHasOrders_relays_error_if_remote_request_fails() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = try await waitForCompletion { promise in
             store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             }))
@@ -264,6 +273,8 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.searchOrder` effectively persists the retrieved orders.
     ///
     func testSearchOrdersEffectivelyPersistsRetrievedSearchOrders() {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
         let expectation = self.expectation(description: "Search Persists Orders")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectedOrder = sampleOrder()
@@ -275,8 +286,8 @@ final class OrderStoreTests: XCTestCase {
                                               keyword: defaultSearchKeyword,
                                               pageNumber: defaultPageNumber,
                                               pageSize: defaultPageSize) { error in
-                                                let readOnlyOrder = self.viewStorage.loadOrder(siteID: self.sampleSiteID,
-                                                                                               orderID: expectedOrder.orderID)?.toReadOnly()
+            let readOnlyOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID,
+                                                                      orderID: expectedOrder.orderID)?.toReadOnly()
             XCTAssertEqual(readOnlyOrder, expectedOrder)
             XCTAssertNil(error)
 
@@ -290,6 +301,8 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.searchOrders` effectively upserts the `OrderSearchResults` entity.
     ///
     func testSearchOrdersEffectivelyPersistsSearchResultsEntity() {
+        let storageManager: MockStorageManager = self.storageManager
+        let defaultSearchKeyword = self.defaultSearchKeyword
         let expectation = self.expectation(description: "Search Persists Results")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -301,10 +314,10 @@ final class OrderStoreTests: XCTestCase {
                                               keyword: defaultSearchKeyword,
                                               pageNumber: defaultPageNumber,
                                               pageSize: defaultPageSize) { error in
-            let searchResults = self.viewStorage.loadOrderSearchResults(keyword: self.defaultSearchKeyword)
+            let searchResults = storageManager.viewStorage.loadOrderSearchResults(keyword: defaultSearchKeyword)
 
-            XCTAssertEqual(searchResults?.keyword, self.defaultSearchKeyword)
-            XCTAssertEqual(searchResults?.orders?.count, self.viewStorage.countObjects(ofType: Storage.Order.self))
+            XCTAssertEqual(searchResults?.keyword, defaultSearchKeyword)
+            XCTAssertEqual(searchResults?.orders?.count, storageManager.viewStorage.countObjects(ofType: Storage.Order.self))
             XCTAssertNil(error)
 
             expectation.fulfill()
@@ -316,39 +329,32 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `OrderAction.searchOrders` does not result in duplicated entries in the OrderSearchResults entity.
     ///
-    func testSearchOrdersDoesNotProduceDuplicatedReferences() {
-        let expectation = self.expectation(description: "Search Doesnt Duplicate References")
+    @MainActor
+    func testSearchOrdersDoesNotProduceDuplicatedReferences() async throws {
+        // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let context = self.viewStorage
-
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
-        let nestedAction = OrderAction.searchOrders(siteID: sampleSiteID,
-                                                    keyword: defaultSearchKeyword,
-                                                    pageNumber: defaultPageNumber,
-                                                    pageSize: defaultPageSize) { error in
-            let orders = context.allObjects(ofType: Storage.Order.self, matching: nil, sortedBy: nil)
-            for order in orders {
-                XCTAssertEqual(order.searchResults?.count, 1)
-                XCTAssertEqual(order.searchResults?.first?.keyword, self.defaultSearchKeyword)
-            }
-
-            XCTAssertEqual(context.firstObject(ofType: OrderSearchResults.self)?.orders?.count, 4)
-            XCTAssertEqual(context.countObjects(ofType: OrderSearchResults.self), 1)
-            XCTAssertNil(error)
-
-            expectation.fulfill()
-        }
-
-        let firstAction = OrderAction.searchOrders(siteID: sampleSiteID,
+        // When
+        for _ in 0..<2 {
+            let error: Error? = try await waitForCompletion { completion in
+                orderStore.onAction(OrderAction.searchOrders(siteID: sampleSiteID,
                                                    keyword: defaultSearchKeyword,
                                                    pageNumber: defaultPageNumber,
-                                                   pageSize: defaultPageSize) { _ in
-            orderStore.onAction(nestedAction)
+                                                   pageSize: defaultPageSize,
+                                                   onCompletion: completion))
+            }
+            XCTAssertNil(error)
         }
 
-        orderStore.onAction(firstAction)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        let orders = viewStorage.allObjects(ofType: Storage.Order.self, matching: nil, sortedBy: nil)
+        for order in orders {
+            XCTAssertEqual(order.searchResults?.count, 1)
+            XCTAssertEqual(order.searchResults?.first?.keyword, defaultSearchKeyword)
+        }
+        XCTAssertEqual(viewStorage.firstObject(ofType: OrderSearchResults.self)?.orders?.count, 4)
+        XCTAssertEqual(viewStorage.countObjects(ofType: OrderSearchResults.self), 1)
     }
 
 
@@ -377,6 +383,7 @@ final class OrderStoreTests: XCTestCase {
     /// correctly across all of the related `Order` objects (items, coupons, etc).
     ///
     func testRetrieveSingleOrderEffectivelyPersistsOrderFieldsAndRelatedObjects() {
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Persist order")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -389,7 +396,7 @@ final class OrderStoreTests: XCTestCase {
             XCTAssertNil(error)
 
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
-            let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
+            let storedOrder = storageManager.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
             let readOnlyStoredOrder = storedOrder?.toReadOnly()
             XCTAssertNotNil(storedOrder)
             XCTAssertNotNil(readOnlyStoredOrder)
@@ -402,7 +409,11 @@ final class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_retrieve_single_order_fetches_up_to_date_order_from_storage() {
+    @MainActor
+    func test_retrieve_single_order_fetches_up_to_date_order_from_storage() async throws {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
+        let sampleOrderID = self.sampleOrderID
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "date-modified-gmt")
@@ -413,10 +424,10 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let predicate = NSPredicate(format: "orderID = %ld", order.orderID)
-        let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
+        let storedOrder = storageManager.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
 
-        let fetchedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
+        let fetchedOrder: Yosemite.Order? = try await waitForCompletion { promise in
+            let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, _ in
                 promise(order)
             }
 
@@ -427,7 +438,8 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(storedOrder, fetchedOrder)
     }
 
-    func test_retrieve_single_order_fetches_order_from_remote_when_stored_order_is_outdated() {
+    @MainActor
+    func test_retrieve_single_order_fetches_order_from_remote_when_stored_order_is_outdated() async throws {
         // Given
         network = MockNetwork(useResponseQueue: true)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "date-modified-gmt")
@@ -437,7 +449,7 @@ final class OrderStoreTests: XCTestCase {
         storageManager.insertSampleOrder(readOnlyOrder: sampleOrderMutated().withMetadataDerivedValues())
 
         // When
-        let fetchedOrder: Yosemite.Order? = waitFor { promise in
+        let fetchedOrder: Yosemite.Order? = try await waitForCompletion { promise in
             let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
                 promise(order)
             }
@@ -453,7 +465,8 @@ final class OrderStoreTests: XCTestCase {
     /// Orders stored from list and search fetches carry no metadata-derived values (those fetches omit
     /// `meta_data`), so the date-modified shortcut is skipped and the order is synced in full.
     ///
-    func test_retrieveOrder_when_stored_order_lacks_metadata_then_fetches_full_order_from_remote() {
+    @MainActor
+    func test_retrieveOrder_when_stored_order_lacks_metadata_then_fetches_full_order_from_remote() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
@@ -463,7 +476,7 @@ final class OrderStoreTests: XCTestCase {
         storageManager.insertSampleOrder(readOnlyOrder: sampleOrder())
 
         // When
-        let fetchedOrder: Yosemite.Order? = waitFor { promise in
+        let fetchedOrder: Yosemite.Order? = try await waitForCompletion { promise in
             let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
                 promise(order)
             }
@@ -482,14 +495,15 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that OrderAction.retrieveOrderRemotely returns the expected Order.
     ///
-    func test_retrieveOrderRemotely_returns_expected_fields() {
+    @MainActor
+    func test_retrieveOrderRemotely_returns_expected_fields() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             })
@@ -502,7 +516,8 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.retrieveOrderRemotely` effectively persists all of the remote order fields
     /// correctly across all of the related `Order` objects (items, coupons, etc).
     ///
-    func test_retrieveOrderRemotely_effectively_persists_order_fields_and_related_objects() {
+    @MainActor
+    func test_retrieveOrderRemotely_effectively_persists_order_fields_and_related_objects() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -511,7 +526,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             })
@@ -525,20 +540,20 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storedOrder?.toReadOnly(), remoteOrder)
     }
 
-    func test_retrieveOrderRemotely_deletes_existing_stored_order_when_remote_order_is_autoDraft() throws {
+    @MainActor
+    func test_retrieveOrderRemotely_deletes_existing_stored_order_when_remote_order_is_autoDraft() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let requestedOrderID = sampleOrderID + 1
         network.simulateResponse(requestUrlSuffix: "orders/\(requestedOrderID)", filename: "order-auto-draft-status")
 
         let existingOrder = sampleOrder().copy(orderID: requestedOrderID, status: .autoDraft)
-        storageManager.insertSampleOrder(readOnlyOrder: existingOrder)
-        viewStorage.saveIfNeeded()
+        upsertAndSaveOrder(existingOrder)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: requestedOrderID) { result in
                 promise(result)
             })
@@ -551,7 +566,8 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
-    func test_retrieveOrderRemotely_does_not_return_existing_order_in_storage_and_replaces_order_in_storage() throws {
+    @MainActor
+    func test_retrieveOrderRemotely_does_not_return_existing_order_in_storage_and_replaces_order_in_storage() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
@@ -559,8 +575,7 @@ final class OrderStoreTests: XCTestCase {
         // Inserting an order without related objects for simpler testing.
         // The status is different from the remote order in the simulated response.
         let existingOrder = sampleOrder().copy(status: .autoDraft)
-        storageManager.insertSampleOrder(readOnlyOrder: existingOrder)
-        viewStorage.saveIfNeeded()
+        upsertAndSaveOrder(existingOrder)
 
         let predicate = NSPredicate(format: "orderID = %ld", existingOrder.orderID)
         let existingOrderFromStorage = viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
@@ -569,7 +584,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             })
@@ -652,8 +667,7 @@ final class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
 
-        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: false, in: viewStorage)
-        viewStorage.saveIfNeeded()
+        upsertAndSaveOrder(remoteOrder, insertingSearchResults: false)
 
         orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
 
@@ -661,33 +675,27 @@ final class OrderStoreTests: XCTestCase {
         XCTAssert(storageOrder?.exclusiveForSearch == false)
     }
 
-    /// Verifies that `upsertStoredOrder` keeps the "Search Results" flag whenever the same order is upserted more than once.
+    /// Verifies that `OrdersUpsertUseCase` keeps the "Search Results" flag whenever the same order is upserted more than once.
     ///
-    func testUpsertStoredOrderPreservesPreExistantSearchResults() {
-        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    func test_upsert_orders_use_case_preserves_existing_search_results() {
         let remoteOrder = sampleOrder()
 
-        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
-        viewStorage.saveIfNeeded()
+        upsertAndSaveOrder(remoteOrder, insertingSearchResults: true)
 
-        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
-        viewStorage.saveIfNeeded()
+        upsertAndSaveOrder(remoteOrder, insertingSearchResults: true)
 
         let storageOrder = viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID)
         XCTAssert(storageOrder?.exclusiveForSearch == true)
     }
 
-    /// Verifies that `upsertStoredOrder` unmarks "Search Results Cached Orders" whenever we're storing "regular scroll" Orders.
+    /// Verifies that `OrdersUpsertUseCase` unmarks "Search Results Cached Orders" whenever we're storing "regular scroll" Orders.
     ///
-    func testUpsertStoredOrderUnmarksSearchResultsWhenUpsertingRegularPagingResults() {
-        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    func test_upsert_orders_use_case_unmarks_search_results_when_upserting_regular_paging_results() {
         let remoteOrder = sampleOrder()
 
-        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
-        viewStorage.saveIfNeeded()
+        upsertAndSaveOrder(remoteOrder, insertingSearchResults: true)
 
-        orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: false, in: viewStorage)
-        viewStorage.saveIfNeeded()
+        upsertAndSaveOrder(remoteOrder, insertingSearchResults: false)
 
         let storageOrder = viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID)
         XCTAssert(storageOrder?.exclusiveForSearch == false)
@@ -756,6 +764,7 @@ final class OrderStoreTests: XCTestCase {
     /// is obliterated from existence.
     ///
     func testRetrieveSingleOrderResultingInStatusCode404CausesTheStoredOrderToGetDeleted() {
+        let storageManager: MockStorageManager = self.storageManager
         let expectation = self.expectation(description: "Retrieve single order empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -766,7 +775,7 @@ final class OrderStoreTests: XCTestCase {
         let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNotNil(error)
             XCTAssertNil(order)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
             expectation.fulfill()
         }
@@ -781,6 +790,9 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that an Order's .status field gets effectively updated during `updateOrder`'s response processing.
     ///
     func testUpdateOrderEffectivelyChangesAffectedOrderStatusField() {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
+        let sampleOrderID = self.sampleOrderID
         let expectation = self.expectation(description: "Update Order Status")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -793,7 +805,7 @@ final class OrderStoreTests: XCTestCase {
         let action = OrderAction.updateOrderStatus(siteID: sampleSiteID, orderID: sampleOrderID, status: OrderStatusEnum.processing) { error in
             XCTAssertNil(error)
 
-            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
+            let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
             XCTAssert(storageOrder?.statusKey == OrderStatusEnum.processing.rawValue)
 
             expectation.fulfill()
@@ -806,6 +818,9 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that the Optimistic OrderStatus Update OP effectively reverts the (optimistic) change upon failure.
     ///
     func testUpdateOrderRevertsOptimisticUpdateUponFailure() {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
+        let sampleOrderID = self.sampleOrderID
         let expectation = self.expectation(description: "Optimistic Update Recovery")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -817,7 +832,7 @@ final class OrderStoreTests: XCTestCase {
         let action = OrderAction.updateOrderStatus(siteID: sampleSiteID, orderID: sampleOrderID, status: OrderStatusEnum.processing) { error in
             XCTAssertNotNil(error)
 
-            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
+            let storageOrder = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)
             XCTAssert(storageOrder?.statusKey == OrderStatusEnum.completed.rawValue)
 
             expectation.fulfill()
@@ -827,7 +842,8 @@ final class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_optimistic_update_order_customer_note_correctly() {
+    @MainActor
+    func test_optimistic_update_order_customer_note_correctly() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -841,7 +857,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
-        let result: Result<Networking.Order, Error> = waitFor { promise in
+        let result: Result<Networking.Order, Error> = try await waitForCompletion { promise in
             let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
                 promise(result)
             }
@@ -854,7 +870,8 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.customerNote, updatedOrder.customerNote)
     }
 
-    func test_optimistic_update_order_customer_note_reverts_upon_failure() {
+    @MainActor
+    func test_optimistic_update_order_customer_note_reverts_upon_failure() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -866,7 +883,7 @@ final class OrderStoreTests: XCTestCase {
         network.removeAllSimulatedResponses()
 
         // When
-        let result: Result<Networking.Order, Error> = waitFor { promise in
+        let result: Result<Networking.Order, Error> = try await waitForCompletion { promise in
             let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
                 promise(result)
             }
@@ -879,7 +896,8 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.customerNote, originalOrder.customerNote)
     }
 
-    func test_optimistic_update_deletes_order_from_storage_upon_failure_if_it_does_not_exist_locally() {
+    @MainActor
+    func test_optimistic_update_deletes_order_from_storage_upon_failure_if_it_does_not_exist_locally() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -889,7 +907,7 @@ final class OrderStoreTests: XCTestCase {
         network.removeAllSimulatedResponses()
 
         // When
-        let result: Result<Networking.Order, Error> = waitFor { promise in
+        let result: Result<Networking.Order, Error> = try await waitForCompletion { promise in
             let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.customerNote]) { result in
                 promise(result)
             }
@@ -902,7 +920,8 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNil(storageOrder)
     }
 
-    func test_optimistic_update_order_shipping_phone_correctly() {
+    @MainActor
+    func test_optimistic_update_order_shipping_phone_correctly() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -917,7 +936,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
-        let result: Result<Networking.Order, Error> = waitFor { promise in
+        let result: Result<Networking.Order, Error> = try await waitForCompletion { promise in
             let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.shippingAddress]) { result in
                 promise(result)
             }
@@ -930,7 +949,8 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.shippingPhone, updatedOrder.shippingAddress?.phone)
     }
 
-    func test_optimistic_update_order_shipping_phone_reverts_upon_failure() {
+    @MainActor
+    func test_optimistic_update_order_shipping_phone_reverts_upon_failure() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -943,7 +963,7 @@ final class OrderStoreTests: XCTestCase {
         network.removeAllSimulatedResponses()
 
         // When
-        let result: Result<Networking.Order, Error> = waitFor { promise in
+        let result: Result<Networking.Order, Error> = try await waitForCompletion { promise in
             let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID, order: updatedOrder, fields: [.shippingAddress]) { result in
                 promise(result)
             }
@@ -956,7 +976,8 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.shippingPhone, originalOrder.shippingAddress?.phone)
     }
 
-    func test_optimistic_update_order_shipping_and_billing_phone_correctly() {
+    @MainActor
+    func test_optimistic_update_order_shipping_and_billing_phone_correctly() async throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -971,7 +992,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
-        let result: Result<Networking.Order, Error> = waitFor { promise in
+        let result: Result<Networking.Order, Error> = try await waitForCompletion { promise in
             let action = OrderAction.updateOrderOptimistically(siteID: self.sampleSiteID,
                                                                order: updatedOrder,
                                                                fields: [.shippingAddress, .billingAddress]) { result in
@@ -993,6 +1014,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `resetStoredOrders` nukes the Orders Cache.
     ///
     func testResetStoredOrdersEffectivelyNukesTheOrdersCache() {
+        let storageManager: MockStorageManager = self.storageManager
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = sampleOrder().copy(appliedGiftCards: [.fake()])
 
@@ -1005,11 +1027,11 @@ final class OrderStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Stored Orders Reset")
         let action = OrderAction.resetStoredOrders {
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
+            XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
             expectation.fulfill()
         }
@@ -1025,15 +1047,16 @@ final class OrderStoreTests: XCTestCase {
     /// end up causing UI refresh OP's in the main thread.
     ///
     func testInnocuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+        let storageManager: MockStorageManager = self.storageManager
         // Stack
         let viewContext = storageManager.persistentContainer.viewContext
-        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = sampleOrder()
         let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: sampleOrder())
 
         // Track Events: Upsert == 1 / Delete == 0
-        var numberOfUpsertEvents = 0
+        let numberOfUpsertEvents = Mutex(0)
         entityListener.onUpsert = { _ in
-            numberOfUpsertEvents += 1
+            numberOfUpsertEvents.withLock { $0 += 1 }
         }
 
         // We expect *never* to get a replacement event
@@ -1046,18 +1069,18 @@ final class OrderStoreTests: XCTestCase {
         let derivedContext = storageManager.writerDerivedStorage
 
         derivedContext.perform {
-            orderStore.upsertStoredOrder(readOnlyOrder: self.sampleOrder(), in: derivedContext)
+            OrdersUpsertUseCase(storage: derivedContext).upsert([order])
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedContext) {
 
             // Secondary Save: Expect ZERO new Upsert Events
             derivedContext.perform {
-                orderStore.upsertStoredOrder(readOnlyOrder: self.sampleOrder(), in: derivedContext)
+                OrdersUpsertUseCase(storage: derivedContext).upsert([order])
             }
 
-            self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
-                XCTAssertEqual(numberOfUpsertEvents, 1)
+            storageManager.saveDerivedType(derivedStorage: derivedContext) {
+                XCTAssertEqual(numberOfUpsertEvents.withLock { $0 }, 1)
                 backgroundSaveExpectation.fulfill()
             }
         }
@@ -1136,19 +1159,23 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(request.parameters["currency"] as? String, "USD")
     }
 
-    func test_create_pending_simple_payments_order_stores_orders_correctly() throws {
+    @MainActor
+    func test_create_pending_simple_payments_order_stores_orders_correctly() async throws {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
+        let sampleOrderID = self.sampleOrderID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+        let storedOrder: Yosemite.Order? = try await waitForCompletion { promise in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: sampleSiteID,
                                                                status: .pending,
                                                                amount: "125.50",
                                                                taxable: false,
                                                                currency: "USD") { _ in
-                let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
+                let order = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)?.toReadOnly()
                 promise(order)
             }
             store.onAction(action)
@@ -1158,19 +1185,23 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNotNil(storedOrder)
     }
 
-    func test_create_draft_simple_payments_order_does_not_get_stored() throws {
+    @MainActor
+    func test_create_draft_simple_payments_order_does_not_get_stored() async throws {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
+        let sampleOrderID = self.sampleOrderID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order-auto-draft-status")
 
         // When
-        let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+        let storedOrder: Yosemite.Order? = try await waitForCompletion { promise in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: sampleSiteID,
                                                                status: .autoDraft,
                                                                amount: "125.50",
                                                                taxable: false,
                                                                currency: "USD") { _ in
-                let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
+                let order = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)?.toReadOnly()
                 promise(order)
             }
             store.onAction(action)
@@ -1180,15 +1211,19 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNil(storedOrder)
     }
 
-    func test_create_order_stores_orders_correctly() throws {
+    @MainActor
+    func test_create_order_stores_orders_correctly() async throws {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
+        let sampleOrderID = self.sampleOrderID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: nil) { _ in
-                let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
+        let storedOrder: Yosemite.Order? = try await waitForCompletion { promise in
+            let action = OrderAction.createOrder(siteID: sampleSiteID, order: self.sampleOrder(), giftCard: nil) { _ in
+                let order = storageManager.viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)?.toReadOnly()
                 promise(order)
             }
             store.onAction(action)
@@ -1198,13 +1233,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNotNil(storedOrder)
     }
 
-    func test_create_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {
+    @MainActor
+    func test_create_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134") { result in
                 promise(result)
             })
@@ -1215,13 +1251,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? OrderStore.GiftCardError, .notApplied)
     }
 
-    func test_create_order_with_gift_card_returns_cannotApply_error_when_error_is_returned() throws {
+    @MainActor
+    func test_create_order_with_gift_card_returns_cannotApply_error_when_error_is_returned() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order-gift-card-cannot-apply-error")
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134") { result in
                 promise(result)
             })
@@ -1233,13 +1270,14 @@ final class OrderStoreTests: XCTestCase {
                        .cannotApply(reason: "Requested amount for gift card code Z exceeded the order total."))
     }
 
-    func test_create_order_with_gift_card_returns_invalid_error_when_error_is_returned() throws {
+    @MainActor
+    func test_create_order_with_gift_card_returns_invalid_error_when_error_is_returned() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order-gift-card-invalid-error")
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134") { result in
                 promise(result)
             })
@@ -1399,14 +1437,17 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(expectedKeys, receivedKeys)
     }
 
-    func test_create_order_does_not_upsert_autodrafts() throws {
+    @MainActor
+    func test_create_order_does_not_upsert_autodrafts() async throws {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order-auto-draft-status")
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
-            let action = OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: nil) { result in
+        let result: Result<Yosemite.Order, Error> = try await waitForCompletion { promise in
+            let action = OrderAction.createOrder(siteID: sampleSiteID, order: self.sampleOrder(), giftCard: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -1414,17 +1455,20 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
-    func test_update_order_does_not_upsert_autodrafts() throws {
+    @MainActor
+    func test_update_order_does_not_upsert_autodrafts() async throws {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-auto-draft-status")
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
-            let action = OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: nil, fields: []) { result in
+        let result: Result<Yosemite.Order, Error> = try await waitForCompletion { promise in
+            let action = OrderAction.updateOrder(siteID: sampleSiteID, order: self.sampleOrder(), giftCard: nil, fields: []) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -1432,7 +1476,7 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
     func test_update_order_with_giftCard_sends_expected_fields() throws {
@@ -1473,13 +1517,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNil(request.requestParameters.dictionary?["currency"])
     }
 
-    func test_update_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {
+    @MainActor
+    func test_update_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134", fields: []) { result in
                 promise(result)
             })
@@ -1490,13 +1535,14 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? OrderStore.GiftCardError, .notApplied)
     }
 
-    func test_update_order_with_gift_card_returns_cannotApply_error_when_error_is_returned() throws {
+    @MainActor
+    func test_update_order_with_gift_card_returns_cannotApply_error_when_error_is_returned() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-gift-card-cannot-apply-error")
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134", fields: []) { result in
                 promise(result)
             })
@@ -1508,13 +1554,14 @@ final class OrderStoreTests: XCTestCase {
                        .cannotApply(reason: "Requested amount for gift card code Z exceeded the order total."))
     }
 
-    func test_update_order_with_gift_card_returns_invalid_error_when_error_is_returned() throws {
+    @MainActor
+    func test_update_order_with_gift_card_returns_invalid_error_when_error_is_returned() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-gift-card-invalid-error")
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134", fields: []) { result in
                 promise(result)
             })
@@ -1528,7 +1575,8 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: Tests for `markOrderAsPaidLocally`
 
-    func test_markOrderAsPaidLocally_sets_order_datePaid_and_status_to_processing() throws {
+    @MainActor
+    func test_markOrderAsPaidLocally_sets_order_datePaid_and_status_to_processing() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = Order.fake().copy(status: .pending)
@@ -1537,7 +1585,7 @@ final class OrderStoreTests: XCTestCase {
         let datePaid = Date(timeIntervalSince1970: 1652240703)
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+        let result: Result<Yosemite.Order, Error> = try await waitForCompletion { promise in
             let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: datePaid) { result in
                 promise(result)
             }
@@ -1554,7 +1602,8 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(orderInStorage, orderOnCompletion)
     }
 
-    func test_markOrderAsPaidLocally_returns_failure_when_there_is_no_order() throws {
+    @MainActor
+    func test_markOrderAsPaidLocally_returns_failure_when_there_is_no_order() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = Order.fake()
@@ -1562,7 +1611,7 @@ final class OrderStoreTests: XCTestCase {
         let datePaid = Date(timeIntervalSince1970: 1652240703)
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+        let result: Result<Yosemite.Order, Error> = try await waitForCompletion { promise in
             let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: datePaid) { result in
                 promise(result)
             }
@@ -1573,7 +1622,10 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? OrderStore.MarkOrderAsPaidLocallyError, .orderNotFoundInStorage)
     }
 
-    func test_delete_order_removes_order_from_storage() throws {
+    @MainActor
+    func test_delete_order_removes_order_from_storage() async throws {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = sampleOrder()
@@ -1581,8 +1633,8 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
-            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, order: order, deletePermanently: false) { result in
+        let result: Result<Yosemite.Order, Error> = try await waitForCompletion { promise in
+            let action = OrderAction.deleteOrder(siteID: sampleSiteID, order: order, deletePermanently: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -1590,10 +1642,13 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
-    func test_delete_order_keeps_order_in_storage_if_deletion_fails() throws {
+    @MainActor
+    func test_delete_order_keeps_order_in_storage_if_deletion_fails() async throws {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = sampleOrder()
@@ -1601,8 +1656,8 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
-            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, order: order, deletePermanently: false) { result in
+        let result: Result<Yosemite.Order, Error> = try await waitForCompletion { promise in
+            let action = OrderAction.deleteOrder(siteID: sampleSiteID, order: order, deletePermanently: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -1610,10 +1665,13 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 1)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 1)
     }
 
-    func test_delete_order_does_not_keep_autodraft_order_in_storage_if_deletion_fails() throws {
+    @MainActor
+    func test_delete_order_does_not_keep_autodraft_order_in_storage_if_deletion_fails() async throws {
+        let storageManager: MockStorageManager = self.storageManager
+        let sampleSiteID = self.sampleSiteID
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = sampleOrder().copy(status: .autoDraft)
@@ -1621,8 +1679,8 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
-            let action = OrderAction.deleteOrder(siteID: self.sampleSiteID, order: order, deletePermanently: false) { result in
+        let result: Result<Yosemite.Order, Error> = try await waitForCompletion { promise in
+            let action = OrderAction.deleteOrder(siteID: sampleSiteID, order: order, deletePermanently: false) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -1630,7 +1688,7 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
     // MARK: - `observeInsertedOrders`
@@ -1820,6 +1878,12 @@ final class OrderStoreTests: XCTestCase {
 // MARK: - Private Methods
 //
 private extension OrderStoreTests {
+    func upsertAndSaveOrder(_ order: Networking.Order, insertingSearchResults: Bool = false) {
+        storageManager.performAndSave({ storage in
+            OrdersUpsertUseCase(storage: storage).upsert([order], insertingSearchResults: insertingSearchResults)
+        }, completion: nil, on: .main)
+    }
+
     func sampleOrder() -> Networking.Order {
         return Order.fake().copy(siteID: sampleSiteID,
                                  orderID: 963,

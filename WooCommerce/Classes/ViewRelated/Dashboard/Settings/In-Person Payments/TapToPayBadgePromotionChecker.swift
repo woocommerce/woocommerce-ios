@@ -3,6 +3,7 @@ import Yosemite
 import Experiments
 import Combine
 
+@MainActor
 final class TapToPayBadgePromotionChecker {
     private let stores: StoresManager
 
@@ -28,7 +29,6 @@ final class TapToPayBadgePromotionChecker {
         shouldShowTapToPayBadges = false
     }
 
-    @MainActor
     private func checkTapToPayBadgeVisibility() async {
         guard let siteID = stores.sessionManager.defaultStoreID else {
             return shouldShowTapToPayBadges = false

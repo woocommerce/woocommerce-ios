@@ -9,7 +9,7 @@ class InPersonPaymentsMenuViewController: UIViewController {
 }
 
 // MARK: - SearchableActivity Conformance
-extension InPersonPaymentsMenuViewController: SearchableActivityConvertible {
+extension InPersonPaymentsMenuViewController: @MainActor SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.payments.rawValue
     }

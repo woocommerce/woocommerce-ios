@@ -37,6 +37,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     private var preloadedRefundSnapshots: [Int64: PreparedRefundSnapshot] = [:]
     private var preloadTasks: [Int64: (id: UUID, task: Task<PreparedRefundSnapshot, Error>)] = [:]
     private var preparedContexts: [Int64: POSRefundSubmissionMapping.PreparedRefundContext] = [:]
+    private var preparationRequest: (orderID: Int64, id: UUID)?
     /// Identifies one refund selection within an order. Two selections of the same items are the
     /// same key, and any change to which units are selected produces a different one.
     private struct SelectionKey: Hashable {
@@ -109,12 +110,17 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     }
 
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
+        let requestID = UUID()
+        preparationRequest = (order.id, requestID)
         stateModel.state = .loading
         defer {
-            stateModel.reset()
+            if preparationRequest?.id == requestID {
+                stateModel.reset()
+            }
         }
 
         let snapshot = try await preparedRefundSnapshot(for: order)
+        guard preparationRequest?.id == requestID else { throw CancellationError() }
         preparedContexts[snapshot.preparation.orderID] = snapshot.context
 
         return snapshot.preparation
@@ -124,7 +130,9 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                            preparation: POSRefundPreparation,
                            selectedItems: [POSRefundSelectableItem],
                            reason: String?) async throws -> POSRefundReviewData {
-        guard let context = preparedContexts[preparation.orderID] else {
+        guard preparation.orderID == order.id,
+              let context = preparedContexts[preparation.orderID],
+              context.order.orderID == order.id else {
             throw POSRefundSubmissionAdaptorError.missingPreparedRefund
         }
 
@@ -200,7 +208,9 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
             throw POSRefundSubmissionAdaptorError.refundAlreadyInProgress
         }
 
-        guard let context = preparedContexts[preparation.orderID] else {
+        guard preparation.orderID == order.id,
+              let context = preparedContexts[preparation.orderID],
+              context.order.orderID == order.id else {
             throw POSRefundSubmissionAdaptorError.missingPreparedRefund
         }
 
@@ -300,14 +310,27 @@ private extension POSRefundSubmissionAdaptor {
         // Prepared contexts hold the full order, charge, and refundable items, so they are dropped
         // alongside the rest of the refund's state instead of accumulating for the whole session.
         preparedContexts[orderID] = nil
+        if preparationRequest?.orderID == orderID {
+            invalidatePreparationRequest()
+        }
     }
 
     func removePreloadedRefunds(except orderID: Int64) {
         preloadedRefundSnapshots = preloadedRefundSnapshots.filter { $0.key == orderID }
         serverPreviewTotals = serverPreviewTotals.filter { $0.key.orderID == orderID }
         preparedContexts = preparedContexts.filter { $0.key == orderID }
+        if preparationRequest?.orderID != orderID {
+            invalidatePreparationRequest()
+        }
         for preloadedOrderID in Array(preloadTasks.keys) where preloadedOrderID != orderID {
             removePreloadedRefund(for: preloadedOrderID)
+        }
+    }
+
+    func invalidatePreparationRequest() {
+        preparationRequest = nil
+        if case .loading = stateModel.state {
+            stateModel.reset()
         }
     }
 

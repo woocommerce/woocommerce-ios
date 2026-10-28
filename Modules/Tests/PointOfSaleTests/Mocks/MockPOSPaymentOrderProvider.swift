@@ -11,6 +11,7 @@ final class MockPOSPaymentOrderProvider: POSPaymentOrderProviding {
     /// URL to expose via `provideOrderForScanToPay`. Defaults to nil so non-scan-to-pay
     /// tests are unaffected; set this in scan-to-pay-specific tests.
     var scanToPayPaymentURL: URL?
+    var onProvideScanToPayOrder: (@MainActor () async throws -> POSPaymentOrder)?
 
     func provideOrder() async throws -> POSPaymentOrder {
         provideOrderCallCount += 1
@@ -22,6 +23,9 @@ final class MockPOSPaymentOrderProvider: POSPaymentOrderProviding {
     }
 
     func provideOrderForScanToPay() async throws -> POSPaymentOrder {
+        if let onProvideScanToPayOrder {
+            return try await onProvideScanToPayOrder()
+        }
         if let error = errorToThrow { throw error }
         guard let order = orderToReturn else { throw POSPaymentError.noOrder }
         return POSPaymentOrder(order: order,

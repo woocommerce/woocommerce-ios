@@ -104,6 +104,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     /// View model for the product selector
     ///
+    @MainActor
     var productSelectorViewModel: ProductSelectorViewModel {
         ProductSelectorViewModel(siteID: siteID,
                                  source: .couponForm,

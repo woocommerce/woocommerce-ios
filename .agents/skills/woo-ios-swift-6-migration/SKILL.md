@@ -74,8 +74,8 @@ Some diagnostics show an architectural boundary, not a missing annotation. An ex
 
 Read the reference that applies to the change:
 
-- [Recurring patterns](references/patterns.md): timers, environment and preference defaults, deinitialization, isolated conformances, initializers, default arguments, framework callbacks, test isolation, and test fixtures.
-- [Session service boundaries](references/session-services.md): POS eligibility, session construction, publishers, protocol witnesses, legacy async remotes, and Action completions.
+- [Recurring patterns](references/patterns.md): timers, environment and preference defaults, deinitialization, isolated conformances, initializers, default arguments, framework callbacks, test isolation, test fixtures, and test mocks. For a mutable mock, prefer `@MainActor`, then an actor; use a `Mutex` only when neither fits.
+- [Session service boundaries](references/session-services.md): POS eligibility, session construction, publishers, request handlers for non-Sendable owners, protocol witnesses, legacy async remotes, and Action completions.
 - [Runtime boundaries](references/runtime-boundaries.md): language-mode switches, mixed Swift 5/6 callbacks, compiler crashes, supported OS runtimes, shared target sources, and callback-to-async changes.
 
 For general Swift concurrency guidance, use the `swift-concurrency` skill if available. Otherwise, read the public [Swift Concurrency skill](https://github.com/AvdLee/Swift-Concurrency-Agent-Skill/blob/main/skills/swift-concurrency/SKILL.md). Read only the reference needed for the diagnostic. Resolve its relative links from the upstream skill directory. Check guidance against the active toolchain. Keep this repository's scope and verification rules.

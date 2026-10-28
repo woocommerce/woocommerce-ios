@@ -1,11 +1,11 @@
 import Foundation
 
-public protocol POSReceiptsRemoteProtocol {
+public protocol POSReceiptsRemoteProtocol: Sendable {
     func sendReceipt(siteID: Int64, orderID: Int64) async throws
     func sendPOSReceipt(siteID: Int64, orderID: Int64, emailAddress: String, templateID: String?) async throws
 }
 
-public protocol POSOrdersRemoteProtocol {
+public protocol POSOrdersRemoteProtocol: Sendable {
     func updatePOSOrder(siteID: Int64,
                         order: Order,
                         cashPaymentChangeDueAmount: String?,

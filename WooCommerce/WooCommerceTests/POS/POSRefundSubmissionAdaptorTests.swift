@@ -18,6 +18,131 @@ struct POSRefundSubmissionAdaptorTests {
     private let siteID: Int64 = 123
     private let orderID: Int64 = 560
 
+    @Test(arguments: [false, true])
+    func prepareRefund_when_an_older_same_order_request_finishes_then_keeps_the_newer_context(staleFails: Bool) async throws {
+        // Given two snapshots of the same order and a first load that ignores cancellation
+        let sut = makeSUT(previewResult: nil, serverFlowEligible: false)
+        let oldOrder = order().copy(total: "11.00")
+        let latestOrder = oldOrder.copy(total: "22.00", items: [oldOrder.items[0].copy(price: NSDecimalNumber(string: "20"),
+                                                                                     subtotal: "20.00", total: "20.00", totalTax: "2.00")])
+        var pendingLoad: CheckedContinuation<Order, Error>?
+        var loads = 0
+        var firstTask: Task<POSRefundPreparation, Error>?
+        await withCheckedContinuation { (started: CheckedContinuation<Void, Never>) in
+            sut.orderService.onLoadOrder = { _ in
+                loads += 1
+                if loads == 1 {
+                    return try await withCheckedThrowingContinuation {
+                        pendingLoad = $0
+                        started.resume()
+                    }
+                }
+                return latestOrder
+            }
+            firstTask = Task { try await sut.adaptor.prepareRefund(for: posOrder()) }
+        }
+        let oldTask = try #require(firstTask)
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        sut.adaptor.stateModel.state = .submitting
+
+        // When the older response finishes after the current snapshot has been prepared
+        if staleFails {
+            pendingLoad?.resume(throwing: MockPOSOrderServiceError.missingStub)
+        } else {
+            pendingLoad?.resume(returning: oldOrder)
+        }
+        await #expect(throws: (any Error).self) { _ = try await oldTask.value }
+
+        // Then it cannot reset the active flow or replace its refund calculation context
+        guard case .submitting = sut.adaptor.stateModel.state else {
+            Issue.record("A stale preparation must not reset the active refund state")
+            return
+        }
+        let review = try await sut.adaptor.prepareReviewData(for: posOrder(), preparation: preparation,
+                                                            selectedItems: preparation.selectableItems, reason: nil)
+        #expect(review.formattedItemsSubtotal == "$20.00")
+        #expect(review.formattedTax == "$2.00")
+        #expect(review.formattedRefundTotal == "$22.00")
+    }
+
+    @Test(arguments: [false, true])
+    func refund_when_preparation_belongs_to_another_order_then_rejects_before_preview_or_submission(submit: Bool) async throws {
+        // Given valid preparation for a different order
+        let sut = makeSUT(previewResult: .success(preview()))
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        let otherOrder = posOrder().copy(id: orderID + 1)
+
+        // When / Then neither review nor submission can use that order's context
+        await #expect(throws: (any Error).self) {
+            if submit {
+                try await sut.adaptor.submitRefund(for: otherOrder,
+                                                   preparation: preparation,
+                                                   selectedItems: preparation.selectableItems,
+                                                   reason: nil)
+            } else {
+                _ = try await sut.adaptor.prepareReviewData(for: otherOrder,
+                                                            preparation: preparation,
+                                                            selectedItems: preparation.selectableItems,
+                                                            reason: nil)
+            }
+        }
+        #expect(sut.service.createRefundLineItems == nil)
+        #expect(sut.spy.dispatchedClassicCreate == false)
+    }
+
+    @Test func preloadRefund_for_another_order_when_a_preparation_is_loading_then_resets_the_loading_state() async throws {
+        // Given a preparation that is still loading
+        let sut = makeSUT(previewResult: nil, serverFlowEligible: false)
+        let pending = try await startPendingPreparation(in: sut)
+        try #require(sut.adaptor.stateModel.state.isLoading)
+
+        // When another order is preloaded, which invalidates that preparation
+        await sut.adaptor.preloadRefund(for: posOrder().copy(id: orderID + 1))
+
+        // Then no loading state remains for the invalidated preparation
+        #expect(sut.adaptor.stateModel.state.isIdle)
+
+        // When the invalidated preparation finishes
+        pending.load.resume(returning: order())
+        await #expect(throws: CancellationError.self) { _ = try await pending.task.value }
+
+        // Then the state stays idle
+        #expect(sut.adaptor.stateModel.state.isIdle)
+    }
+
+    @Test func preloadRefund_for_the_loading_order_then_keeps_its_loading_state() async throws {
+        // Given a preparation that is still loading
+        let sut = makeSUT(previewResult: nil, serverFlowEligible: false)
+        let pending = try await startPendingPreparation(in: sut)
+
+        // When the same order is preloaded
+        await sut.adaptor.preloadRefund(for: posOrder())
+
+        // Then the preparation still owns the loading state until it finishes
+        #expect(sut.adaptor.stateModel.state.isLoading)
+        pending.load.resume(returning: order())
+        _ = try await pending.task.value
+        #expect(sut.adaptor.stateModel.state.isIdle)
+    }
+
+    @Test func submitRefund_when_a_same_order_preparation_is_loading_then_keeps_the_completed_state() async throws {
+        // Given a prepared refund and a newer preparation of the same order that is still loading
+        let sut = makeSUT(previewResult: nil, serverFlowEligible: false)
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        let pending = try await startPendingPreparation(in: sut)
+
+        // When the prepared refund is submitted, which invalidates the loading preparation
+        try await sut.adaptor.submitRefund(for: posOrder(),
+                                           preparation: preparation,
+                                           selectedItems: preparation.selectableItems,
+                                           reason: nil)
+
+        // Then the completed state is kept
+        #expect(sut.adaptor.stateModel.state.isCompleted)
+        pending.load.resume(returning: order())
+        await #expect(throws: CancellationError.self) { _ = try await pending.task.value }
+    }
+
     @Test func prepareRefund_when_order_was_paid_with_gift_card_then_throws_eligibility_failure() async throws {
         // Given
         let giftCard = OrderGiftCard(giftCardID: 1, code: "GIFT-CARD", amount: 10)
@@ -455,6 +580,7 @@ private extension POSRefundSubmissionAdaptorTests {
 
     struct SUT {
         let adaptor: POSRefundSubmissionAdaptor
+        let orderService: MockPOSOrderService
         let service: MockManualRefundService
         let spy: RefundActionSpy
         let analyticsProvider: MockAnalyticsProvider
@@ -526,6 +652,7 @@ private extension POSRefundSubmissionAdaptorTests {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider),
                                                  serverRefundPreviewUseCase: previewUseCase)
         return SUT(adaptor: adaptor,
+                   orderService: orderService,
                    service: service,
                    spy: spy,
                    analyticsProvider: analyticsProvider,
@@ -588,5 +715,41 @@ private extension POSRefundSubmissionAdaptorTests {
 
     func preview(total: Decimal = 29.43) -> RefundPreview {
         RefundPreview(subtotal: 27, tax: 2.43, total: total, maxRefundable: 59, breakdown: .fake())
+    }
+
+    /// Starts a preparation whose order load waits for the test to resume it. Later loads return
+    /// the stubbed order with the requested ID.
+    func startPendingPreparation(in sut: SUT) async throws -> (task: Task<POSRefundPreparation, Error>,
+                                                               load: CheckedContinuation<Order, Error>) {
+        let stubbedOrder = try #require(sut.orderService.orderToReturn)
+        var pendingLoad: CheckedContinuation<Order, Error>?
+        var task: Task<POSRefundPreparation, Error>?
+        await withCheckedContinuation { (started: CheckedContinuation<Void, Never>) in
+            sut.orderService.onLoadOrder = { orderID in
+                guard pendingLoad == nil else {
+                    return stubbedOrder.copy(orderID: orderID)
+                }
+                return try await withCheckedThrowingContinuation {
+                    pendingLoad = $0
+                    started.resume()
+                }
+            }
+            task = Task { try await sut.adaptor.prepareRefund(for: posOrder()) }
+        }
+        return (try #require(task), try #require(pendingLoad))
+    }
+}
+
+private extension POSRefundSubmissionState {
+    var isIdle: Bool {
+        if case .idle = self { true } else { false }
+    }
+
+    var isLoading: Bool {
+        if case .loading = self { true } else { false }
+    }
+
+    var isCompleted: Bool {
+        if case .completed = self { true } else { false }
     }
 }

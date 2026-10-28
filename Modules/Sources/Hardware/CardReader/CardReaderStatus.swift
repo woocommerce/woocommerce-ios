@@ -1,5 +1,5 @@
 /// Models the status of a Card Reader
-public struct CardReaderStatus {
+public struct CardReaderStatus: Sendable {
 
     /// Indicates if the CardReader is connected
     public let connected: Bool

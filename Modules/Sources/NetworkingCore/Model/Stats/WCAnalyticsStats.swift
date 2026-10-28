@@ -2,7 +2,7 @@ import Foundation
 
 /// Protocol for stats over a specific period, returned from a `wc-analytics` endpoint.
 ///
-public protocol WCAnalyticsStats {
+public protocol WCAnalyticsStats: Sendable {
     associatedtype Totals: WCAnalyticsStatsTotals
     associatedtype Interval: WCAnalyticsStatsInterval
 
@@ -21,14 +21,14 @@ public protocol WCAnalyticsStats {
 
 /// Protocol for stats totals (the data associated with stats over a specific period) returned from a `wc-analytics` endpoint.
 ///
-public protocol WCAnalyticsStatsTotals {
+public protocol WCAnalyticsStatsTotals: Sendable {
     // The stats totals will vary depending on the specific stats type.
     // These may be counts, currency amounts, etc.
 }
 
 /// Protocol for stats intervals (represents a single order stat within a larger period) returned from a `wc-analytics` endpoint.
 ///
-public protocol WCAnalyticsStatsInterval {
+public protocol WCAnalyticsStatsInterval: Sendable {
     associatedtype Totals: WCAnalyticsStatsTotals
 
     /// Identifies which interval is represented.

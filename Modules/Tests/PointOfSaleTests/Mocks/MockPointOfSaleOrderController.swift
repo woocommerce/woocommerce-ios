@@ -26,7 +26,7 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         await onSyncOrderCalled?()
 
         guard let orderStateToReturn else {
-            orderState = .syncing
+            orderState = .syncing()
             return syncOrderResultToReturn
         }
 

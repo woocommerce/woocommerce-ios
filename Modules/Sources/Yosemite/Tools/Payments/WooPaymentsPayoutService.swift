@@ -5,14 +5,15 @@ import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
 public protocol WooPaymentsPayoutServiceProtocol {
+    @MainActor
     func fetchPayoutsOverview() async throws -> [WooPaymentsPayoutsOverviewByCurrency]
 }
 
-public final class WooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol {
+public final class WooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol, Sendable {
     // MARK: - Properties
 
     private let wooPaymentsRemote: WCPayRemote
-    private var siteID: Int64
+    private let siteID: Int64
 
     // MARK: - Initialization
 
@@ -36,7 +37,7 @@ public final class WooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol {
 
     // MARK: - Public Methods
 
-    public func fetchPayoutsOverview() async throws -> [WooPaymentsPayoutsOverviewByCurrency] {
+    nonisolated public func fetchPayoutsOverview() async throws -> [WooPaymentsPayoutsOverviewByCurrency] {
         do {
             let overview = try await wooPaymentsRemote.loadPayoutsOverview(for: siteID)
             return payoutsOverviewForViews(overview)

@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Shipping Method Entity.
 ///
-public struct ShippingMethod: Decodable, Equatable, Hashable {
+public struct ShippingMethod: Decodable, Equatable, Hashable, Sendable {
     public let siteID: Int64
 
     /// Shipping Method ID

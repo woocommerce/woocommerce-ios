@@ -26,6 +26,7 @@ protocol ListSelectorCommand {
     func isSelected(model: Model) -> Bool
 
     /// Configures the cell with the given model.
+    @MainActor
     func configureCell(cell: Cell, model: Model)
 }
 

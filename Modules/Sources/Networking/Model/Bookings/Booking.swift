@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Booking Entity.
 ///
-public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
+public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable, Sendable {
     public let siteID: Int64
     public let bookingID: Int64
     public let allDay: Bool
@@ -246,7 +246,7 @@ public enum BookingStatus: String, CaseIterable, Codable {
     case unknown
 }
 
-public enum BookingAttendanceStatus: String, CaseIterable, Codable {
+public enum BookingAttendanceStatus: String, CaseIterable, Codable, Sendable {
     case attended
     case unattended
     case unknown

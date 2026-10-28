@@ -180,6 +180,7 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
         Coordinator(parent: self)
     }
 
+    @MainActor
     final class Coordinator: NSObject, UITextFieldDelegate {
         var parent: FocusableHiddenInputTextField
         private var handledFocusRequestID: Int?

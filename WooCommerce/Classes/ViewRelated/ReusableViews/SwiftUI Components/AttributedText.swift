@@ -92,6 +92,7 @@ private extension GeometryProxy {
     }
 }
 
+@MainActor
 private final class TextViewStore {
     @Published var intrinsicContentSize: CGSize?
 
@@ -120,6 +121,7 @@ private struct TextViewWrapper: UIViewRepresentable {
         }
     }
 
+    @MainActor
     final class Coordinator: NSObject, UITextViewDelegate {
         var openURL: ((URL) -> Void)?
 
@@ -199,15 +201,15 @@ private extension Font {
 }
 
 private struct CustomOpenURL: EnvironmentKey {
-    static let defaultValue: ((URL) -> Void)? = nil
+    static var defaultValue: ((URL) -> Void)? { nil }
 }
 
 private struct ForegroundColorKey: EnvironmentKey {
-    static var defaultValue: Color? = nil
+    static let defaultValue: Color? = nil
 }
 
 private struct LinkColorKey: EnvironmentKey {
-    static var defaultValue: Color? = nil
+    static let defaultValue: Color? = nil
 }
 
 extension EnvironmentValues {

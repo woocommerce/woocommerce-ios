@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a `AddOnGroup` entity that groups global add-ons.
 ///
-public struct AddOnGroup: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct AddOnGroup: Codable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     /// SiteID
     ///
     public let siteID: Int64

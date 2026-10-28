@@ -3,7 +3,7 @@ import Foundation
 
 /// Language to target for a Blaze campaign.
 ///
-public struct BlazeTargetLanguage: Decodable, Equatable, Identifiable, Hashable, GeneratedCopiable, GeneratedFakeable {
+public struct BlazeTargetLanguage: Decodable, Equatable, Identifiable, Hashable, GeneratedCopiable, GeneratedFakeable, Sendable {
 
     /// ID of the language.
     public let id: String
@@ -35,7 +35,7 @@ public struct BlazeTargetLanguage: Decodable, Equatable, Identifiable, Hashable,
 
 /// Device to target for a Blaze campaign.
 ///
-public struct BlazeTargetDevice: Decodable, Equatable, Identifiable, Hashable, GeneratedCopiable, GeneratedFakeable {
+public struct BlazeTargetDevice: Decodable, Equatable, Identifiable, Hashable, GeneratedCopiable, GeneratedFakeable, Sendable {
 
     /// ID of the device.
     public let id: String
@@ -67,7 +67,7 @@ public struct BlazeTargetDevice: Decodable, Equatable, Identifiable, Hashable, G
 
 /// Topic to target for a Blaze campaign.
 ///
-public struct BlazeTargetTopic: Decodable, Equatable, Identifiable, Hashable, GeneratedCopiable, GeneratedFakeable {
+public struct BlazeTargetTopic: Decodable, Equatable, Identifiable, Hashable, GeneratedCopiable, GeneratedFakeable, Sendable {
 
     /// ID of the topic.
     public let id: String

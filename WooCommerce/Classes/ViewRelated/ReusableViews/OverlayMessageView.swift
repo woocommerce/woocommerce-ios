@@ -4,6 +4,7 @@ import UIKit
 
 /// OverlayMessageView: Displays an `Image + Text + Action` in a given superview.
 ///
+@MainActor
 class OverlayMessageView: UIView {
 
     /// Overlay's ImageView.
@@ -90,7 +91,10 @@ class OverlayMessageView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         backgroundColor = .listBackground
         messageLabel.applyBodyStyle()
         actionButton.applySecondaryButtonStyle()

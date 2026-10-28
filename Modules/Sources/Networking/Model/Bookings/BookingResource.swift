@@ -1,7 +1,7 @@
 import Codegen
 import Foundation
 
-public struct BookingResource: Hashable, Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct BookingResource: Hashable, Decodable, GeneratedFakeable, GeneratedCopiable, Sendable {
     public let siteID: Int64
     public let resourceID: Int64
     public let name: String

@@ -5,7 +5,7 @@ import Codegen
 
 /// Represents a Coupon entity: https://woocommerce.github.io/woocommerce-rest-api-docs/?shell#coupons
 ///
-public struct Coupon {
+public struct Coupon: Sendable {
     /// `siteID` should be set on a copy in the Mapper as it's not returned by the API.
     /// Using a default here gives us the benefit of synthesised codable conformance.
     /// `private(set) public var` is required so that `siteID` will still be on the synthesised`init` which `copy()` uses

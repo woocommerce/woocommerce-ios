@@ -9,7 +9,8 @@ struct MessageComposeView: UIViewControllerRepresentable {
     /// Phone number to set as recipient
     let phone: String?
 
-    class Coordinator: NSObject, MFMessageComposeViewControllerDelegate {
+    @MainActor
+    class Coordinator: NSObject, @MainActor MFMessageComposeViewControllerDelegate {
         func messageComposeViewController(_ controller: MFMessageComposeViewController,
                                           didFinishWith result: MessageComposeResult) {
             controller.dismiss(animated: true, completion: nil)

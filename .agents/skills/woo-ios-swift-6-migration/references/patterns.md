@@ -111,6 +111,8 @@ Swift checks a `Sendable` class conformance only on a `final` class whose superc
 
 Make the base class's own stored properties `Sendable` `let`s, so that the only reason for `@unchecked` is that the class is not `final`. Replace `var` test seams with an internal initializer that tests call.
 
+For new locked state, use `Mutex` from the standard library's `Synchronization` module. It is available on the app's iOS 18 deployment target. Its `withLock` takes and returns `sending` values, so it can hold state that is not `Sendable` without an unchecked variant, and the compiler checks what moves in and out of the lock. Prefer it to `OSAllocatedUnfairLock` from `os` everywhere except the watch-shared modules below. See `OrderDurationRecorder` and [the review](https://github.com/woocommerce/woocommerce-ios/pull/18162#discussion_r4400310919).
+
 `NetworkingCore` and `WooFoundationCore` also build for the watch app (watchOS 9), so use `OSAllocatedUnfairLock` there. `Mutex` needs watchOS 11. For a lazy property, keep the optional value in the lock and create it inside `withLock`. For state that is not `Sendable`, such as `AnyCancellable`, use `OSAllocatedUnfairLock(uncheckedState:)` and `withLockUnchecked`. Create a Combine subscription outside the lock and store it afterwards, because a publisher can emit synchronously when you subscribe. A `Mutex` can hold non-`Sendable` closures, but each append and read then needs a `sending` value. Use an `NSLock` and a private `var` for that case, with an `@unchecked Sendable` conformance and a comment.
 
 ## Module flips and public constants

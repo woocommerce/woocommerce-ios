@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class AddProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
@@ -7,10 +8,12 @@ final class AddProductImageCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        configureBackground()
-        configureImageView()
-        configureCellAppearance()
-        observeInterfaceStyleChange()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureImageView()
+            configureCellAppearance()
+            observeInterfaceStyleChange()
+        }
     }
 }
 

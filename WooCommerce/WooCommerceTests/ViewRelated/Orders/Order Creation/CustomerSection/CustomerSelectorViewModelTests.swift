@@ -11,8 +11,8 @@ final class CustomerSelectorViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
     }
 

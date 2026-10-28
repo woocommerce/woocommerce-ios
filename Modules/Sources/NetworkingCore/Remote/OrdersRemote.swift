@@ -2,7 +2,7 @@ import Foundation
 
 /// Order fetching for the Bookings feature. `meta_data` in responses from this protocol is limited to
 /// `_payment_status` — the only metadata key Bookings consumes (via `BookingOrderInfo`).
-public protocol BookingOrdersRemoteProtocol {
+public protocol BookingOrdersRemoteProtocol: Sendable {
     func loadBookingOrders(
         for siteID: Int64,
         orderIDs: [Int64]

@@ -20,6 +20,7 @@ final class ProductTaxClassListSelectorDataSourceTests: XCTestCase {
         XCTAssertNotNil(dataSource.selected)
     }
 
+    @MainActor
     func test_cell_configuration() {
         let taxClass = TaxClass(siteID: sampleSiteID, name: "Reduced rate", slug: "reduced-rate")
         let dataSource = ProductTaxClassListSelectorDataSource(siteID: sampleSiteID, selected: taxClass)

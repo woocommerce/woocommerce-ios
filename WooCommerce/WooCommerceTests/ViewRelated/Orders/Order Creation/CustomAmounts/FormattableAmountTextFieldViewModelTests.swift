@@ -167,6 +167,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         withExtendedLifetime(window) {}
     }
 
+    @MainActor
     func test_focus_when_text_field_detaches_before_async_request_runs_then_does_not_refocus_text_field() {
         // Given
         let focusState = FocusState()

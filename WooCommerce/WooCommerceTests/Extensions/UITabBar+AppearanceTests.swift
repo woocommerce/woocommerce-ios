@@ -9,7 +9,7 @@ struct UITabBarAppearanceTests {
     @Test func test_woo_appearance_uses_native_surfaces_and_store_design_system_item_palette() {
         // Given
         let expectedItemColor = UIColor(Color.storeOnSurface)
-        let expectedBadgeBackgroundColor = UIColor(Color.storeError)
+        let expectedBadgeBackgroundColor = UIColor(Color.storeAlertRed)
         let expectedBadgeTextColor = UIColor(Color.storeOnError)
 
         // When

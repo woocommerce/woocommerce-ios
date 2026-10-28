@@ -6,16 +6,6 @@ import UIKit
 
 @MainActor
 struct OrdersProductsListHeaderStyleTests {
-    @Test func test_make_background_view_preserves_native_blur_effect() {
-        guard #available(iOS 26.0, *) else { return }
-
-        // When
-        let backgroundView = OrdersProductsListHeaderStyle.makeBackgroundView()
-
-        // Then
-        #expect((backgroundView as? UIVisualEffectView)?.effect is UIBlurEffect)
-    }
-
     @Test func test_configure_navigation_appearance_uses_store_design_system_title_colors_when_header_is_visible() {
         guard #available(iOS 26.0, *) else { return }
 

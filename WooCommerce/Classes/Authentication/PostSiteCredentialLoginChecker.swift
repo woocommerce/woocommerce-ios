@@ -213,6 +213,7 @@ private extension PostSiteCredentialLoginChecker {
 
         errorViewModel.onSuccess = onSuccess
         errorViewModel.onDeauthenticationRequest = { [weak self] in
+            self?.cancel()
             self?.stores.deauthenticate()
             navigationController.popToRootViewController(animated: true)
         }
@@ -312,6 +313,7 @@ private extension PostSiteCredentialLoginChecker {
             alert.addAction(supportAction)
         }
         let restartAction = UIAlertAction(title: Localization.restartLoginButton, style: .cancel) { [weak self] _ in
+            self?.cancel()
             self?.stores.deauthenticate()
             navigationController.popToRootViewController(animated: true)
         }

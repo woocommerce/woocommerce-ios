@@ -290,7 +290,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             })
         case .noActionHandlerFound, .noRemoteProductIDFound:
             displayError(error: .unexpected)
-        case let .failedUploadingImage(asset, error):
+        case let .failedUploadingImage(error):
+            guard let asset = errorInfo.asset else {
+                return displayError(error: .unexpected)
+            }
             displayImageUploadErrorAlert(error: error, for: asset)
         }
     }

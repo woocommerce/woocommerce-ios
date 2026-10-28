@@ -46,7 +46,7 @@ struct SupportChatMobileStatusReportTests {
     func test_first_message_when_chat_starts_after_login_then_adds_recent_logs(entryPoint: SupportChatViewModel.EntryPoint) async throws {
         // Given
         let logProvider = MockRecentApplicationLogProvider(logEntries: [
-            .init(date: Date(), level: .error, message: "Do not send")
+            .init(date: Date(), level: .error, message: "Sync error")
         ])
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         var sentContext: RequestParameterDictionary?
@@ -71,7 +71,7 @@ struct SupportChatMobileStatusReportTests {
             return
         }
         #expect(troubleshootingResults.contains("# Recent app logs"))
-        #expect(troubleshootingResults.contains("Do not send"))
+        #expect(troubleshootingResults.contains("Sync error"))
     }
 
     @Test(arguments: [SupportChatViewModel.EntryPoint.preLogin, .helpAndSupport, .connectivityTool])

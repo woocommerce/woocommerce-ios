@@ -36,7 +36,7 @@ struct RecentApplicationLogsContext {
         var cleanedMessage = SensitiveLogDataSanitizer.sanitize(firstLine)
         if excludingStoreResponseExcerpts {
             cleanedMessage = cleanedMessage.replacingOccurrences(
-                of: #",? (?:raw_body_)?excerpt=.*$"#,
+                of: #",? excerpt=.*$"#,
                 with: "",
                 options: [.regularExpression, .caseInsensitive]
             )
@@ -104,6 +104,6 @@ private enum SensitiveLogDataSanitizer {
         (#"\?[^\s=]+=\S*"#, "?[redacted]", .regularExpression),
         (#"[A-Za-z0-9_\-]{32,}"#, "[redacted]", .regularExpression),
         (#"\b(?:\d{1,3}\.){3}\d{1,3}\b"#, "[ip]", .regularExpression),
-        (#"(?i)(?<![\da-f:])(?:[\da-f]{0,4}:){2,}[\da-f:.]*(?![\da-f:])"#, "[ip]", .regularExpression)
+        (#"(?i)(?<![\da-f:])(?:[\da-f:.]*::[\da-f:.]*|(?:[\da-f]{1,4}:){7}[\da-f]{1,4})(?![\da-f:])"#, "[ip]", .regularExpression)
     ]
 }

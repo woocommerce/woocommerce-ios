@@ -8,7 +8,8 @@ struct RecentApplicationLogsContextTests {
     @Test func test_build_when_logs_contain_sensitive_data_then_cleans_each_first_line() throws {
         // Given
         let message = "pass\u{200B}word=hunter2 email=merchant@example.com " +
-            "url=https://example.com/path?foo=bar Bearer abc123 192.168.1.2\nsecret second line"
+            "url=https://example.com/path?foo=bar Bearer abc123 192.168.1.2 " +
+            "2001:db8::1 2001:0db8:85a3:0000:0000:8a2e:0370:7334 at 10:20:30\nsecret second line"
         let sut = makeSUT(entries: [.init(date: now, level: .warning, message: message)])
 
         // When
@@ -24,13 +25,20 @@ struct RecentApplicationLogsContextTests {
         #expect(result.text.contains("[ip]"))
         #expect(!result.text.contains("hunter2"))
         #expect(!result.text.contains("merchant@example.com"))
+        #expect(!result.text.contains("2001:db8::1"))
+        #expect(!result.text.contains("2001:0db8:85a3:0000:0000:8a2e:0370:7334"))
+        #expect(result.text.contains("at 10:20:30"))
         #expect(!result.text.contains("secret second line"))
     }
 
     @Test func test_build_when_excluding_store_response_excerpts_then_removes_only_the_excerpt() throws {
         // Given
         let message = "Unexpected store response: kind=unexpected_content, status=503, excerpt=Maintenance mode"
-        let sut = makeSUT(entries: [.init(date: now, level: .error, message: message)])
+        let rawBodyMessage = "Jetpack Tunnel raw_body error: raw_body_truncated=false, raw_body_snippet=<html>Failure</html>"
+        let sut = makeSUT(entries: [
+            .init(date: now, level: .error, message: message),
+            .init(date: now, level: .warning, message: rawBodyMessage)
+        ])
 
         // When
         let result = try #require(sut.build(excludingStoreResponseExcerpts: true))
@@ -39,6 +47,7 @@ struct RecentApplicationLogsContextTests {
         #expect(result.text.contains("Unexpected store response: kind=unexpected_content, status=503"))
         #expect(!result.text.contains("Maintenance mode"))
         #expect(!result.text.contains("excerpt="))
+        #expect(result.text.contains("raw_body_snippet=<html>Failure</html>"))
     }
 
     @Test func test_build_when_more_than_twenty_logs_exist_then_keeps_the_newest_twenty() throws {

@@ -1835,6 +1835,7 @@ final class AuthenticationManagerTests: XCTestCase {
 }
 
 private extension AuthenticationManagerTests {
+    @MainActor
     func assertCenteredFancyAlertPresented(by presenter: SiteCredentialAlertPresenter) throws {
         let alert = try XCTUnwrap(presenter.presentedViewController as? FancyAlertViewController)
         XCTAssertEqual(alert.modalPresentationStyle, .custom)

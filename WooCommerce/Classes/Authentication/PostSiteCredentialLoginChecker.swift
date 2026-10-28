@@ -141,6 +141,8 @@ private extension PostSiteCredentialLoginChecker {
                 switch error {
                 case ApplicationPasswordUseCaseError.applicationPasswordsDisabled:
                     // show application password disabled error, and use the previous view controller.
+                    // That screen cannot resume this check, so release its completion.
+                    onEligibilityConfirmed = nil
                     let errorUI = applicationPasswordDisabledUI(for: siteURL, previousViewController: previousViewController)
                     navigationController.show(errorUI, sender: nil)
                 case ApplicationPasswordUseCaseError.unauthorizedRequest:
@@ -301,6 +303,8 @@ private extension PostSiteCredentialLoginChecker {
             }
             alert.addAction(retryAction)
         } else {
+            // Without a retry the check cannot resume, so release its completion as the alert takes over.
+            onEligibilityConfirmed = nil
             let supportAction = UIAlertAction(title: Localization.contactSupport, style: .default) { _ in
                 navigationController.popViewController(animated: true)
                 ServiceLocator.authenticationManager.presentSupport(from: navigationController, sourceTag: .loginSiteAddress, siteURL: URL(string: siteURL))

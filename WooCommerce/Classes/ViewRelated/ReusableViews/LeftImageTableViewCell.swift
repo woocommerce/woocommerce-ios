@@ -3,6 +3,7 @@ import UIKit
 
 /// Represents a regular UITableView Cell: [Image | Text |  Disclosure]
 ///
+@MainActor
 class LeftImageTableViewCell: UITableViewCell {
 
     /// Left Image
@@ -31,6 +32,10 @@ class LeftImageTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBackground()
         imageView?.tintColor = .primary
         textLabel?.applyBodyStyle()

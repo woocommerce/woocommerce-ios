@@ -559,11 +559,7 @@ private extension FilterListViewController {
         func configureCell(cell: TitleAndValueTableViewCell, model: FilterTypeViewModel) {
             cell.selectionStyle = .default
             cell.updateUI(title: model.cellViewModel.title, value: model.cellViewModel.value)
-            let accessibilityIdentifier = model.accessibilityIdentifier
-            // ListSelectorCommand is nonisolated; UIKit calls this helper on the main actor.
-            MainActor.assumeIsolated {
-                cell.accessibilityIdentifier = accessibilityIdentifier
-            }
+            cell.accessibilityIdentifier = model.accessibilityIdentifier
             cell.accessoryType = .disclosureIndicator
         }
     }

@@ -19,7 +19,7 @@ struct IconListItem: View {
         case adaptiveRemote(anyAppearance: URL, dark: URL?)
 
         /// Return an Image for base64 or a FKImage in case of a remote one
-        @ViewBuilder
+        @MainActor @ViewBuilder
         func getImage() -> some View {
             switch self {
             case .base64(let image):

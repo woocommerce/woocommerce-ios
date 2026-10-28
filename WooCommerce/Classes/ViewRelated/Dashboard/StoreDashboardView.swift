@@ -17,8 +17,6 @@ struct StoreDashboardView: View {
 
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
-    @State private var showingSupportForm = false
-    @State private var troubleshootURL: URL?
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
 
@@ -105,10 +103,6 @@ struct StoreDashboardView: View {
                 .frame(height: OfflineBannerView.height)
                 .renderedIf(connectivityStatus == .notReachable)
         }
-        .sheet(isPresented: $showingSupportForm) {
-            supportForm
-        }
-        .safariSheet(url: $troubleshootURL)
         .sheet(item: $viewModel.justInTimeMessagesWebViewModel) { webViewModel in
             WebViewSheet(viewModel: webViewModel) {
                 viewModel.justInTimeMessagesWebViewModel = nil
@@ -334,22 +328,6 @@ private extension StoreDashboardView {
         JetpackBenefitsBanner(tapAction: handleJetpackBenefitTap, dismissAction: dismissJetpackBenefitBanner)
     }
 
-    var supportForm: some View {
-        NavigationStack {
-            SupportForm(
-                isPresented: .constant(true),
-                viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider())
-            )
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.done) {
-                        showingSupportForm = false
-                    }
-                }
-            }
-        }
-    }
-
     @ViewBuilder
     var storePlanBanner: some View {
         if case .loaded(let plan) = storePlanState {
@@ -445,11 +423,6 @@ private extension StoreDashboardView {
             "dashboardView.title",
             value: "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
-        )
-        static let done = NSLocalizedString(
-            "dashboardView.supportForm.done",
-            value: "Done",
-            comment: "Button to dismiss the support form from the Blaze confirm payment view screen."
         )
         static let expiredPlan = NSLocalizedString(
             "dashboardView.storePlanBanner.expired",

@@ -8,21 +8,11 @@ final class JetpackConnectionServiceTests: XCTestCase {
     private let testEmail = "user@example.com"
     private let credentials = Credentials.wpcom(username: "test", authToken: "secret", siteAddress: "https://example.com")
 
-    private var stores: MockStoresManager!
+    private lazy var stores = MockStoresManager(sessionManager: .makeForTesting())
 
     /// Connection data representing a fully-connected user with email.
     private var connectedData: JetpackConnectionData {
         .fake().copy(currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: testEmail)))
-    }
-
-    override func setUp() {
-        super.setUp()
-        stores = MockStoresManager(sessionManager: .makeForTesting())
-    }
-
-    override func tearDown() {
-        stores = nil
-        super.tearDown()
     }
 
     // MARK: - evaluateAndConnect

@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 
 /// View model for `JetpackSetupView`.
 ///
+@MainActor
 final class JetpackSetupViewModel: ObservableObject {
     let siteURL: String
     let siteID: Int64
@@ -266,7 +267,7 @@ private extension JetpackSetupViewModel {
         connectionType = .web
         trackSetup()
         let authenticatedWithWPCom = !stores.isAuthenticatedWithoutWPCom
-        Task { @MainActor [weak self] in
+        Task { [weak self] in
             guard let self else { return }
             do {
                 let url = try await self.connectionService.fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom)
@@ -322,7 +323,7 @@ private extension JetpackSetupViewModel {
         // Set synchronously so the UI immediately reflects the connection step.
         // For .alreadyConnected, this transitions to .done in the next run-loop tick.
         currentSetupStep = .connection
-        Task { @MainActor [weak self] in
+        Task { [weak self] in
             guard let self else { return }
             do {
                 if afterConnection {

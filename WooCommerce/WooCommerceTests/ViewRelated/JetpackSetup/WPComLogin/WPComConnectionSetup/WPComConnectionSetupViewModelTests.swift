@@ -5,29 +5,11 @@ import protocol WooFoundation.Analytics
 @MainActor
 final class WPComConnectionSetupViewModelTests: XCTestCase {
 
-    private var mockHandler: MockWPComConnectionSetupHandler!
-    private var dismissCalled: Bool!
-    private var goToStoreCalled: Bool!
-    private var updatePluginCalled: Bool!
+    private lazy var mockHandler = MockWPComConnectionSetupHandler()
+    private var dismissCalled = false
+    private var goToStoreCalled = false
+    private var updatePluginCalled = false
     private var capturedUpdatePluginDismissed: (() -> Void)?
-
-    override func setUp() {
-        super.setUp()
-        mockHandler = MockWPComConnectionSetupHandler()
-        dismissCalled = false
-        goToStoreCalled = false
-        updatePluginCalled = false
-        capturedUpdatePluginDismissed = nil
-    }
-
-    override func tearDown() {
-        mockHandler = nil
-        dismissCalled = nil
-        goToStoreCalled = nil
-        updatePluginCalled = nil
-        capturedUpdatePluginDismissed = nil
-        super.tearDown()
-    }
 
     // MARK: - Initial State Tests
 

@@ -56,7 +56,6 @@ final class LedgerTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // UIKit loads view nibs on the main actor; NSObject's callback is nonisolated.
         MainActor.assumeIsolated { configureAfterNibLoad() }
     }
 

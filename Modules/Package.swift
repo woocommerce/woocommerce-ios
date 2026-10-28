@@ -188,7 +188,7 @@ let package = Package(
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "NetworkingCore",
@@ -359,7 +359,7 @@ let package = Package(
                 "WordPressShared",
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "StorageTests",

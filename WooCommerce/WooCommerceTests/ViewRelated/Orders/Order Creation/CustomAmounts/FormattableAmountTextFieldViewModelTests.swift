@@ -167,6 +167,26 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         withExtendedLifetime(window) {}
     }
 
+    func test_focus_when_text_field_detaches_before_async_request_runs_then_does_not_refocus_text_field() {
+        // Given
+        let focusState = FocusState()
+        let textField = SpyTextField()
+        let window = UIWindow()
+        let focusableField = makeFocusableHiddenInputTextField(focusState: focusState)
+        let coordinator = FocusableHiddenInputTextField.Coordinator(parent: focusableField)
+        window.addSubview(textField)
+        window.isHidden = false
+
+        // When
+        coordinator.focus(textField, requestID: 1)
+        textField.removeFromSuperview()
+        RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+
+        // Then
+        XCTAssertFalse(textField.didBecomeFirstResponder)
+        withExtendedLifetime(window) {}
+    }
+
     func test_textFieldDidEndEditing_when_focus_is_set_then_clears_focus() {
         // Given
         let focusState = FocusState()

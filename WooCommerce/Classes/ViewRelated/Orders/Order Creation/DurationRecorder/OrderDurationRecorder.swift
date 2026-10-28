@@ -1,5 +1,5 @@
 import Foundation
-import os
+import Synchronization
 
 enum OrderDurationRecorderError: Error {
     case noStartRecordingTimestamp
@@ -18,7 +18,7 @@ protocol OrderDurationRecorderProtocol {
 ///
 final class OrderDurationRecorder: OrderDurationRecorderProtocol, Sendable {
     static let shared = OrderDurationRecorder()
-    private let timestamps = OSAllocatedUnfairLock(initialState: Timestamps())
+    private let timestamps = Mutex(Timestamps())
     private static let timeout: TimeInterval = 60*10
 
     private init() { }

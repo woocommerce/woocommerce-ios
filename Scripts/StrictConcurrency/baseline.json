@@ -121,7 +121,6 @@
     "Modules/Tests/YosemiteTests/Stores/AccountStoreTests.swift": 2,
     "Modules/Tests/YosemiteTests/Stores/AppSettingsStoreTests+BookingFilters.swift": 5,
     "Modules/Tests/YosemiteTests/Stores/AppSettingsStoreTests+OrderFilterHistory.swift": 23,
-    "Modules/Tests/YosemiteTests/Stores/AppSettingsStoreTests+ProductFilterHistory.swift": 23,
     "Modules/Tests/YosemiteTests/Stores/AppSettingsStoreTests.swift": 14,
     "Modules/Tests/YosemiteTests/Stores/BookingStoreTests.swift": 5,
     "Modules/Tests/YosemiteTests/Stores/Order/OrdersUpsertUseCaseTests.swift": 2,

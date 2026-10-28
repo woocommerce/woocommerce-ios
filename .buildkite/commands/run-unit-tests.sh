@@ -39,4 +39,44 @@ else
     annotate_test_failures "fastlane/test_output/report.junit"
 fi
 
+# Temporary read-only host check after verification; never replace the test exit status.
+echo "--- 🔬 Inspecting failed process launches"
+(
+  PROBE_DIR="$(mktemp -d "${TMPDIR:-/tmp}/woomob-4430-launch.XXXXXX")" || exit 0
+  trap 'rm -rf "$PROBE_DIR"' EXIT
+  sw_vers
+  plutil -extract CFBundleVersion raw /System/Library/Frameworks/Foundation.framework/Resources/Info.plist
+  SIMCTL_BINARY=/Library/Developer/PrivateFrameworks/CoreSimulator.framework/Versions/A/Resources/bin/simctl
+  xcrun dwarfdump --uuid "$SIMCTL_BINARY"
+  if [[ -e /usr/bin/darwinup ]]; then
+    echo "darwinup_present=yes"
+    MISSING_EXECUTABLE="$PROBE_DIR/missing-executable"
+  else
+    echo "darwinup_present=no"
+    MISSING_EXECUTABLE=/usr/bin/darwinup
+  fi
+  xcrun llvm-objdump --macho --arch=arm64e -d --section=__TEXT,__objc_stubs "$SIMCTL_BINARY" |
+    awk '/^10000d8a8:/,/^10000db90:/ { print }
+         /Objc selector ref: (launchAndReturnError:|setLaunchPath:|waitUntilExit)$/ { print previous; print }
+         { previous = $0 }'
+  xcrun clang -fobjc-arc -Wno-deprecated-declarations \
+    .buildkite/commands/probe-failed-process-launch.m -framework Foundation -o "$PROBE_DIR/probe" || exit 0
+  for PROBE_SCENARIO in valid-background missing-main missing-background missing-checked; do
+    PROBE_EXECUTABLE="$MISSING_EXECUTABLE"
+    PROBE_THREAD=background
+    PROBE_POLICY=unchecked
+    case "$PROBE_SCENARIO" in
+      valid-background) PROBE_EXECUTABLE=/usr/bin/true ;;
+      missing-main) PROBE_THREAD=main ;;
+      missing-checked) PROBE_POLICY=checked ;;
+    esac
+    echo "probe_scenario=$PROBE_SCENARIO"
+    if "$PROBE_DIR/probe" "$PROBE_EXECUTABLE" "$PROBE_POLICY" "$PROBE_THREAD" null "$PROBE_DIR/output.log"; then
+      echo "probe_exit=0"
+    else
+      echo "probe_exit=$?"
+    fi
+  done
+) || true
+
 exit $TESTS_EXIT_STATUS

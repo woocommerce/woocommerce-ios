@@ -10,11 +10,7 @@ import WooFoundationCore
 
 /// Orchestrator class that fetches store stats for the widget and the Watch app.
 ///
-#if os(watchOS)
-// Keep iOS widget callers unchanged during the Watch app's Swift 6 migration.
-// Revisit uniform @MainActor isolation when StoreWidgetsExtension migrates to Swift 6.
 @MainActor
-#endif
 final class StoreInfoDataService {
 
     /// Date-range parameters required to fetch a snapshot of store stats.
@@ -59,7 +55,7 @@ final class StoreInfoDataService {
 
     /// Data extracted from networking types.
     ///
-    struct Stats {
+    struct Stats: Sendable {
         let revenue: Decimal
         let netRevenue: Decimal
         let averageOrderValue: Decimal
@@ -76,7 +72,7 @@ final class StoreInfoDataService {
         var ordersSeries: [IntervalPoint] = []
         var itemsSoldSeries: [IntervalPoint] = []
 
-        struct IntervalPoint: Equatable {
+        struct IntervalPoint: Equatable, Sendable {
             let date: Date
             let value: Double
         }
@@ -90,7 +86,7 @@ final class StoreInfoDataService {
     /// widget render. When the previous-period fetch fails, `previous` is `nil` and the
     /// metric cells fall back to rendering without the trend badge.
     ///
-    struct StatsPeriod {
+    struct StatsPeriod: Sendable {
         let current: Stats
         let previous: Stats?
     }
@@ -156,7 +152,7 @@ final class StoreInfoDataService {
 #if canImport(Networking)
     /// Fetches the store's general settings and extracts currency formatting settings.
     ///
-    func fetchGeneralSettings(siteID: Int64) async throws -> CurrencySettings {
+    func fetchGeneralSettings(siteID: Int64) async throws -> sending CurrencySettings {
         let siteSettings = try await fetchGeneralSiteSettings(for: siteID)
         guard let currencySettings = CurrencySettings.completeSettings(siteSettings: siteSettings) else {
             throw GeneralSettingsError.incompleteCurrencySettings
@@ -496,7 +492,7 @@ private extension StoreInfoDataService {
     func fetchGeneralSiteSettings(for siteID: Int64) async throws -> [SiteSetting] {
         try await withCheckedThrowingContinuation { continuation in
             let siteSettingsRemote = SiteSettingsRemote(network: network)
-            siteSettingsRemote.loadGeneralSettings(for: siteID) { settings, error in
+            siteSettingsRemote.loadGeneralSettings(for: siteID) { @Sendable settings, error in
                 if let settings {
                     continuation.resume(returning: settings)
                     return

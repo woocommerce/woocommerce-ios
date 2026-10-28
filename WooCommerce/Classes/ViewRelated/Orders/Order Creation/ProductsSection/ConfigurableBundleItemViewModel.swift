@@ -145,6 +145,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         observeSelectableVariationAttributesForSelectedOptions()
     }
 
+    @MainActor
     func createVariationSelectorViewModel() {
         let allowedProductVariationIDs = variableProductSettings?.allowedVariations ?? []
         variationSelectorViewModel = .init(siteID: product.siteID,

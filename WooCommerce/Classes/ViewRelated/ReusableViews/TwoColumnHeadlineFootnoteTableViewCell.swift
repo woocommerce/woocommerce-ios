@@ -4,6 +4,7 @@ import UIKit
 /// Represents a cell with a two-column title "row"
 /// and a footnote "row" below the titles
 ///
+@MainActor
 final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
 
     /// We want this reusable cell to be styled the same everywhere it's used, so the IBOutlets are made private.
@@ -86,7 +87,10 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
     ///
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureBackground()
         configureLabels()
         configureActivityIndicator()

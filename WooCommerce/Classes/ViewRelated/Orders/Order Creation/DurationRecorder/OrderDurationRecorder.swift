@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 
 enum OrderDurationRecorderError: Error {
     case noStartRecordingTimestamp
@@ -15,33 +16,33 @@ protocol OrderDurationRecorderProtocol {
 
 /// Measures the duration of Order Creation and In-Person Payments flows for analytical purposes
 ///
-class OrderDurationRecorder: OrderDurationRecorderProtocol {
+final class OrderDurationRecorder: OrderDurationRecorderProtocol, Sendable {
     static let shared = OrderDurationRecorder()
-    private var orderAddNewTimestamp: TimeInterval?
-    private var cardPaymentStartedTimestamp: TimeInterval?
+    private let timestamps = Mutex(Timestamps())
     private static let timeout: TimeInterval = 60*10
 
     private init() { }
 
     func startRecording() {
-        orderAddNewTimestamp = ProcessInfo.processInfo.systemUptime
+        let now = ProcessInfo.processInfo.systemUptime
+        timestamps.withLock { $0.orderAddNew = now }
     }
 
     func recordCardPaymentStarted() {
-        cardPaymentStartedTimestamp = ProcessInfo.processInfo.systemUptime
+        let now = ProcessInfo.processInfo.systemUptime
+        timestamps.withLock { $0.cardPaymentStarted = now }
     }
 
     func reset() {
-        orderAddNewTimestamp = nil
-        cardPaymentStartedTimestamp = nil
+        timestamps.withLock { $0 = Timestamps() }
     }
 
     func millisecondsSinceOrderAddNew() throws -> Int64 {
-        try millisecondsSince(orderAddNewTimestamp)
+        try millisecondsSince(timestamps.withLock { $0.orderAddNew })
     }
 
     func millisecondsSinceCardPaymentStarted() throws -> Int64 {
-        try millisecondsSince(cardPaymentStartedTimestamp)
+        try millisecondsSince(timestamps.withLock { $0.cardPaymentStarted })
     }
 
     private func millisecondsSince(_ origin: TimeInterval?) throws -> Int64 {
@@ -56,5 +57,12 @@ class OrderDurationRecorder: OrderDurationRecorderProtocol {
         }
 
         return Int64(timestamp*1000)
+    }
+}
+
+private extension OrderDurationRecorder {
+    struct Timestamps {
+        var orderAddNew: TimeInterval?
+        var cardPaymentStarted: TimeInterval?
     }
 }

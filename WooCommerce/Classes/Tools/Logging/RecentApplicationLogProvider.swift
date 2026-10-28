@@ -18,7 +18,9 @@ protocol RecentApplicationLogProviding {
 
 /// Keeps a small in-memory window of warnings and errors with their original log levels.
 /// CocoaLumberjack's file formatter does not persist the level, so the regular application log cannot be filtered reliably after the fact.
-final class RecentApplicationLogProvider: DDAbstractLogger, RecentApplicationLogProviding {
+/// `@unchecked Sendable` bridges CocoaLumberjack's missing concurrency contract: writes run on `loggerQueue`, and reads use that same queue.
+/// The unchecked conformance can be removed when CocoaLumberjack models this queue isolation as `Sendable`.
+final class RecentApplicationLogProvider: DDAbstractLogger, RecentApplicationLogProviding, @unchecked Sendable {
     private var storedEntries: [RecentApplicationLogEntry] = []
 
     override func log(message logMessage: DDLogMessage) {

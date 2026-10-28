@@ -10,6 +10,7 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
     private let options: [Value]
     private let title: (Value) -> String
 
+    @Environment(\.isEnabled) private var isEnabled
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Namespace private var selectionNamespace
 
@@ -51,7 +52,7 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
             }
         }
         .padding(StorePadding.p1)
-        .background(Color.storeTintLayerPrimaryContainerOpacity16)
+        .background(isEnabled ? Color.storeSecondaryContainer : Color.storeStateLayerOnSurfaceOpacity08)
         .clipShape(RoundedRectangle(cornerRadius: StoreRadius.full))
         .accessibilityHidden(true)
     }
@@ -79,17 +80,22 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
     private func pill(for option: Value, isSelected: Bool) -> some View {
         Text(title(option))
             .storeTextStyle(isSelected ? Constants.selectedTextStyle : Constants.unselectedTextStyle)
-            .foregroundStyle(isSelected ? Color.storeOnSurface : Color.storeOnPrimaryContainer)
+            .foregroundStyle(textColor(isSelected: isSelected))
             .lineLimit(1)
             .frame(maxWidth: .infinity)
             .frame(minHeight: StoreSize.segmentedControlHeight)
             .background {
                 if isSelected {
                     RoundedRectangle(cornerRadius: StoreRadius.extraLarge)
-                        .fill(Color.storeSurface)
+                        .fill(isEnabled ? Color.storeSurfaceBright : Color.storeStateLayerOnSurfaceOpacity16)
                         .matchedGeometryEffect(id: Constants.selectionID, in: selectionNamespace)
                 }
             }
+    }
+
+    private func textColor(isSelected: Bool) -> Color {
+        guard isEnabled else { return .storeStateLayerOnSurfaceOpacity24 }
+        return isSelected ? .storeOnSurface : .storeOnPrimaryContainer
     }
 }
 

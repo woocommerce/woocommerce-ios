@@ -37,7 +37,6 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // UIKit loads these cells on the main thread; NSObject imports this callback as nonisolated.
         MainActor.assumeIsolated {
             configureBackground()
             configureImageView()

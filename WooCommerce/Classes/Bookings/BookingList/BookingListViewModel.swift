@@ -65,6 +65,7 @@ final class BookingListViewModel: ObservableObject {
         return resultsController
     }()
 
+    @MainActor
     init(siteID: Int64,
          type: BookingListTab,
          parent: BookingListContainerViewModel? = nil,
@@ -87,6 +88,7 @@ final class BookingListViewModel: ObservableObject {
     }
 
     /// Called when loading the first page of bookings.
+    @MainActor
     func loadBookings() {
         guard !hasLoadedInitially else { return }
         hasLoadedInitially = true
@@ -94,6 +96,7 @@ final class BookingListViewModel: ObservableObject {
     }
 
     /// Called when the next page should be loaded.
+    @MainActor
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
     }
@@ -113,6 +116,7 @@ final class BookingListViewModel: ObservableObject {
     }
 
     /// Updates the sort order and reloads the results controller.
+    @MainActor
     func updateSortOrder(_ sortBy: SortBy) {
         currentOrder = sortBy
         let ascending = sortBy == .oldestToNewest
@@ -121,6 +125,7 @@ final class BookingListViewModel: ObservableObject {
         paginationTracker.resync(reason: Self.reorderReason) {}
     }
 
+    @MainActor
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
         hasFilters = filters.numberOfActiveFilters > 0
         self.filters = tabDateFilters.mergingDates(with: filters.bookingFilters)
@@ -142,6 +147,7 @@ final class BookingListViewModel: ObservableObject {
 // MARK: Configuration
 
 private extension BookingListViewModel {
+    @MainActor
     func configurePaginationTracker() {
         paginationTracker.delegate = self
     }
@@ -173,7 +179,8 @@ private extension BookingListViewModel {
     }
 }
 
-extension BookingListViewModel: PaginationTrackerDelegate {
+extension BookingListViewModel: @MainActor PaginationTrackerDelegate {
+    @MainActor
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
         withAnimation {

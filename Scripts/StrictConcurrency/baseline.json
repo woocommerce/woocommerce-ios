@@ -58,7 +58,6 @@
     "Modules/Sources/Yosemite/Stores/AccountStore.swift": 11,
     "Modules/Sources/Yosemite/Stores/AddOnGroupStore.swift": 4,
     "Modules/Sources/Yosemite/Stores/BlazeStore.swift": 49,
-    "Modules/Sources/Yosemite/Stores/BookingStore.swift": 66,
     "Modules/Sources/Yosemite/Stores/CardPresentPaymentStore.swift": 7,
     "Modules/Sources/Yosemite/Stores/CustomerStore.swift": 8,
     "Modules/Sources/Yosemite/Stores/DataStore.swift": 4,
@@ -123,7 +122,6 @@
     "Modules/Tests/YosemiteTests/Stores/AppSettingsStoreTests+OrderFilterHistory.swift": 23,
     "Modules/Tests/YosemiteTests/Stores/AppSettingsStoreTests+ProductFilterHistory.swift": 23,
     "Modules/Tests/YosemiteTests/Stores/AppSettingsStoreTests.swift": 14,
-    "Modules/Tests/YosemiteTests/Stores/BookingStoreTests.swift": 5,
     "Modules/Tests/YosemiteTests/Stores/Order/OrdersUpsertUseCaseTests.swift": 2,
     "Modules/Tests/YosemiteTests/Stores/OrderFulfillmentStoreTests.swift": 1,
     "Modules/Tests/YosemiteTests/Stores/ProductStoreTests.swift": 4,
@@ -632,5 +630,6 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/PostServiceRemoteXMLRPCTests.swift": 26,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
-  }
+  },
+  "total": 4391
 }

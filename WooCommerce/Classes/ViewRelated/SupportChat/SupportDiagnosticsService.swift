@@ -44,6 +44,7 @@ final class SupportDiagnosticsService {
         case analyticsSetting
         case notifications
         case paymentConfiguration
+        case paymentDevice
 
         var title: String {
             switch self {
@@ -63,6 +64,8 @@ final class SupportDiagnosticsService {
                 return Localization.Test.notifications
             case .paymentConfiguration:
                 return PaymentSupportDiagnostics.Localization.title
+            case .paymentDevice:
+                return PaymentDeviceDiagnostics.Localization.title
             }
         }
     }
@@ -285,6 +288,8 @@ final class SupportDiagnosticsService {
             return result(for: test, failure: await checkNotifications())
         case .paymentConfiguration:
             return await PaymentSupportDiagnostics(siteID: siteID, stores: stores).run()
+        case .paymentDevice:
+            return await PaymentDeviceDiagnostics(supportDeterminer: CardReaderSupportDeterminer(siteID: siteID, stores: stores)).run()
         }
     }
 

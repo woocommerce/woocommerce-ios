@@ -9,12 +9,12 @@ import enum NetworkingCore.WordPressApiError
 @Suite(.serialized, .timeLimit(.minutes(5)))
 @MainActor
 struct PaymentSupportDiagnosticsTests {
-    @Test func test_payment_issue_when_selected_then_runs_read_only_store_checks() {
+    @Test func test_payment_issue_when_selected_then_runs_read_only_store_and_device_checks() {
         // When
         let tests = SupportIssueType.inPersonPayments.testsToRun
 
         // Then
-        #expect(tests == [.internetConnection, .paymentConfiguration])
+        #expect(tests == [.internetConnection, .paymentConfiguration, .paymentDevice])
     }
 
     @Test func test_run_when_no_active_gateway_then_does_not_load_accounts() async {

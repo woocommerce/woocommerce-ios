@@ -24,7 +24,7 @@ enum SupportIssueType: String, CaseIterable {
         case .receivingNotifications:
             return [.internetConnection, .site, .notifications]
         case .inPersonPayments:
-            return [.internetConnection, .paymentConfiguration]
+            return [.internetConnection, .paymentConfiguration, .paymentDevice]
         case .other:
             return nil
         }

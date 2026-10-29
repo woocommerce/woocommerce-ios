@@ -8,7 +8,7 @@ import enum Networking.NetworkError
 struct SupportChatViewModelTests {
     private static let noopContactHumanSupport: SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _, _ in }
 
-    @Test(arguments: [SupportDiagnosticsService.Test.internetConnection, .paymentConfiguration])
+    @Test(arguments: [SupportDiagnosticsService.Test.internetConnection, .paymentConfiguration, .paymentDevice])
     func test_payment_diagnostics_when_any_check_fails_then_keeps_payment_safety_message(
         failedTest: SupportDiagnosticsService.Test
     ) async {
@@ -60,6 +60,24 @@ struct SupportChatViewModelTests {
         #expect(!sut.paymentDiagnosticsAreInconclusive)
         #expect(sut.paymentDiagnosticCompletionMessage?.contains("did not connect to a card reader") == true)
         #expect(sut.paymentSafetyMessage != nil)
+    }
+
+    @Test func test_payment_diagnostics_when_store_and_device_checks_add_notes_then_shows_both() async {
+        // Given
+        let service = MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                var result = SupportDiagnosticsService.Result.success(test: test)
+                result.advisoryMessage = test == .internetConnection ? nil : "Note for \(test)"
+                return result
+            }
+        }
+        let sut = makeSUT(diagnosticsService: service)
+
+        // When
+        await sut.selectIssue(.inPersonPayments)
+
+        // Then
+        #expect(sut.paymentAdvisoryMessage == "Note for paymentConfiguration\n\nNote for paymentDevice")
     }
 
     @Test func test_diagnostics_when_other_topic_selected_then_has_no_payment_specific_context() async {

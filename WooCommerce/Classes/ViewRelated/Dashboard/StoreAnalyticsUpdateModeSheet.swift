@@ -58,7 +58,7 @@ struct StoreAnalyticsUpdateModeSheet: View {
         .padding(.horizontal, StorePadding.p5)
         .padding(.top, StorePadding.p5)
         .sheet(isPresented: $showingLearnMoreWebView) {
-            WebViewSheet(viewModel: Constants.learnMoreWebViewModel) {
+            WebViewSheet(viewModel: AnalyticsUpdateModeBottomSheet.Constants.learnMoreWebViewModel) {
                 showingLearnMoreWebView = false
             }
         }
@@ -80,7 +80,7 @@ struct StoreAnalyticsUpdateModeSheet: View {
     private var footerText: AttributedString {
         var text = AttributedString(String.localizedStringWithFormat(Localization.footer, Localization.learnMore))
         guard let range = text.range(of: Localization.learnMore) else { return text }
-        text[range].link = URL(string: Constants.learnMoreURL)
+        text[range].link = URL(string: AnalyticsUpdateModeBottomSheet.Constants.learnMoreURL)
         text[range].foregroundColor = .storePrimary
         text[range].underlineStyle = .single
         return text
@@ -88,15 +88,6 @@ struct StoreAnalyticsUpdateModeSheet: View {
 }
 
 private extension StoreAnalyticsUpdateModeSheet {
-    enum Constants {
-        static let learnMoreURL = "https://woocommerce.com/document/woocommerce-analytics/#section-24"
-        static let learnMoreWebViewModel = WebViewSheetViewModel(
-            url: URL(string: learnMoreURL)!,
-            navigationTitle: Localization.learnMoreNavigationTitle,
-            authenticated: false
-        )
-    }
-
     enum Localization {
         static let title = NSLocalizedString(
             "analyticsUpdateModeBottomSheet.title",
@@ -117,11 +108,6 @@ private extension StoreAnalyticsUpdateModeSheet {
             "analyticsUpdateModeBottomSheet.learnMore",
             value: "Learn more",
             comment: "Link to WooCommerce Analytics documentation"
-        )
-        static let learnMoreNavigationTitle = NSLocalizedString(
-            "analyticsUpdateModeBottomSheet.learnMoreNavigationTitle",
-            value: "WooCommerce Analytics",
-            comment: "Navigation title for WooCommerce Analytics documentation"
         )
         static let updateErrorNotice = NSLocalizedString(
             "analyticsUpdateModeBottomSheet.updateErrorNotice",

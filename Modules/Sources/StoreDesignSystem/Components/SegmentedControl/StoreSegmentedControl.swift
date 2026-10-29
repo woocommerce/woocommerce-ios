@@ -43,6 +43,10 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
         options.firstIndex(of: selection)
     }
 
+    private var appearance: StoreSegmentedControlAppearance {
+        StoreSegmentedControlAppearance(isEnabled: isEnabled)
+    }
+
     /// The visible capsule and the selected pill, sized to the compact design height. Accessibility is
     /// exposed by ``segments`` — this layer is decorative, so it's hidden from VoiceOver.
     private var track: some View {
@@ -52,7 +56,7 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
             }
         }
         .padding(StorePadding.p1)
-        .background(isEnabled ? Color.storeSecondaryContainer : Color.storeStateLayerOnSurfaceOpacity08)
+        .background(appearance.track)
         .clipShape(RoundedRectangle(cornerRadius: StoreRadius.full))
         .accessibilityHidden(true)
     }
@@ -87,15 +91,14 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
             .background {
                 if isSelected {
                     RoundedRectangle(cornerRadius: StoreRadius.extraLarge)
-                        .fill(isEnabled ? Color.storeSurfaceBright : Color.storeStateLayerOnSurfaceOpacity16)
+                        .fill(appearance.selectedContainer)
                         .matchedGeometryEffect(id: Constants.selectionID, in: selectionNamespace)
                 }
             }
     }
 
     private func textColor(isSelected: Bool) -> Color {
-        guard isEnabled else { return .storeStateLayerOnSurfaceOpacity24 }
-        return isSelected ? .storeOnSurface : .storeOnPrimaryContainer
+        appearance.text(isSelected: isSelected)
     }
 }
 

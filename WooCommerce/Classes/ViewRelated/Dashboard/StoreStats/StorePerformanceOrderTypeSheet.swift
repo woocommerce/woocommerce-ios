@@ -9,8 +9,8 @@ struct StorePerformanceOrderTypeSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
             StoreDashboardSheetHeader(
-                title: Localization.title,
-                description: Localization.description
+                title: PerformanceCardOrderTypeBottomSheet.Localization.title,
+                description: PerformanceCardOrderTypeBottomSheet.Localization.description
             )
             .padding(.horizontal, StorePadding.p7)
 
@@ -32,7 +32,7 @@ struct StorePerformanceOrderTypeSheet: View {
             .padding(.horizontal, StorePadding.p7)
 
             if viewModel.orderTypeUpdateError != nil {
-                Text(Localization.updateError)
+                Text(PerformanceCardOrderTypeBottomSheet.Localization.updateError)
                     .storeTextStyle(.bodyMedium)
                     .foregroundStyle(.storeOnErrorContainer)
                     .padding(.horizontal, StorePadding.p3)
@@ -45,7 +45,7 @@ struct StorePerformanceOrderTypeSheet: View {
 
             Spacer().frame(height: StoreSpacing.s7)
 
-            Text(Localization.footer)
+            Text(PerformanceCardOrderTypeBottomSheet.Localization.footer)
                 .storeTextStyle(.bodySmall)
                 .foregroundStyle(.storeOnSurface)
                 .padding(.horizontal, StorePadding.p7)
@@ -61,31 +61,6 @@ struct StorePerformanceOrderTypeSheet: View {
                 dismiss()
             }
         }
-    }
-}
-
-private extension StorePerformanceOrderTypeSheet {
-    enum Localization {
-        static let title = NSLocalizedString(
-            "performanceCardOrderTypeBottomSheet.title.v2",
-            value: "Order date type",
-            comment: "Title of the order date type sheet"
-        )
-        static let description = NSLocalizedString(
-            "performanceCardOrderTypeBottomSheet.description.v2",
-            value: "Choose which orders to include in your performance metrics for the selected time range.",
-            comment: "Description of the order date type sheet"
-        )
-        static let footer = NSLocalizedString(
-            "performanceCardOrderTypeBottomSheet.footer",
-            value: "This is a store-wide setting, which also controls the “Date type” option in WooCommerce admin analytics settings.",
-            comment: "Footer of the order date type sheet"
-        )
-        static let updateError = NSLocalizedString(
-            "performanceCardOrderTypeBottomSheet.updateError",
-            value: "Couldn't update the order type. Please try again.",
-            comment: "Error shown when saving the order date type fails"
-        )
     }
 }
 

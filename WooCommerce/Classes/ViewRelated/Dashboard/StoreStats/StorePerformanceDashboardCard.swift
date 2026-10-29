@@ -226,10 +226,23 @@ private extension StorePerformanceDashboardCard {
 
     func redactedStat(withIcon: Bool) -> some View {
         VStack(alignment: .trailing, spacing: StoreSpacing.s0) {
-            if withIcon, viewModel.redactedViewIcon != nil {
-                StoreIcon.CircleInfo.regular.image(size: .extraSmall)
-                    .foregroundStyle(.storePrimary)
-                    .offset(x: StoreSpacing.s5)
+            if withIcon {
+                switch viewModel.siteVisitStatMode {
+                case .redactedDueToJetpack:
+                    Image(uiImage: .jetpackLogoImage)
+                        .renderingMode(.template)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: StoreSpacing.s5, height: StoreSpacing.s5)
+                        .foregroundStyle(Color(.jetpackGreen))
+                        .offset(x: StoreSpacing.s5)
+                case .redactedDueToCustomRange:
+                    StoreIcon.CircleInfo.regular.image(size: .extraSmall)
+                        .foregroundStyle(.storePrimary)
+                        .offset(x: StoreSpacing.s5)
+                case .default, .hidden:
+                    EmptyView()
+                }
             }
             Color.storeStateLayerOnSurfaceOpacity16
                 .frame(width: StoreSpacing.s8, height: StoreSpacing.s4)
@@ -322,7 +335,7 @@ private extension StorePerformanceDashboardCard {
     }
 
     var statsTextColor: Color {
-        colorScheme == .dark ? .storePaletteGray10 : .storePaletteGray80
+        .storeOnSurfaceVariant
     }
 
     var secondaryStatsTextColor: Color {

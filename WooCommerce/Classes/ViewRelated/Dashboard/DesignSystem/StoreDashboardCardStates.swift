@@ -12,14 +12,15 @@ struct StoreDashboardCardErrorView: View {
                 .accessibilityHidden(true)
             Text(Localization.errorTitle)
                 .storeTextStyle(.titleLarge.strong)
-            Text(Localization.errorMessage)
+            Text(errorMessage)
                 .storeTextStyle(.bodyLarge)
                 .foregroundStyle(.storeOnSurface)
                 .multilineTextAlignment(.center)
-                .contentShape(.rect)
-                .onTapGesture { showingSupportForm = true }
-                .accessibilityAddTraits(.isLink)
                 .padding(.horizontal, StorePadding.p8)
+                .environment(\.openURL, OpenURLAction { _ in
+                    showingSupportForm = true
+                    return .handled
+                })
             StoreButton(Localization.retry, variant: .outlined, action: retry)
                 .frame(maxWidth: .infinity)
         }
@@ -27,6 +28,15 @@ struct StoreDashboardCardErrorView: View {
         .padding(StorePadding.p5)
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingSupportForm) { supportForm }
+    }
+
+    private var errorMessage: AttributedString {
+        var text = AttributedString(Localization.errorMessage)
+        guard let range = text.range(of: Localization.contactSupport) else { return text }
+        text[range].link = URL(string: Constants.contactSupportURL)
+        text[range].foregroundColor = .storePrimary
+        text[range].underlineStyle = .single
+        return text
     }
 
     private var supportForm: some View {
@@ -39,6 +49,10 @@ struct StoreDashboardCardErrorView: View {
                     }
                 }
         }
+    }
+
+    private enum Constants {
+        static let contactSupportURL = "woocommerce://contact-support"
     }
 }
 

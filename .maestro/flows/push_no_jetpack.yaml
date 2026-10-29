@@ -1,0 +1,141 @@
+# p2: push-no-jetpack.login, push-no-jetpack.card-visible, push-no-jetpack.unlock
+# p2: push-no-jetpack.setup-completes, push-no-jetpack.card-hidden
+# Logs in to a WooCommerce site without Jetpack with its site credentials and sets
+# up push notifications from the My Store card. The runner disconnects the site
+# from WordPress.com first, so the setup connects it again on every run.
+# On the simulator the app completes the push step without a device token, so the
+# real registration stays manual with the notification items.
+appId: ${APP_ID}
+name: "Push notifications without Jetpack"
+tags:
+  - smoke_extended
+  - login
+  - no_jetpack_store
+---
+- assertTrue:
+    condition: ${NO_JETPACK_DISCONNECTED == "yes"}
+    label: "The runner disconnected the site from WordPress.com"
+- launchApp:
+    clearState: true
+    clearKeychain: true
+    arguments:
+      "-ui_testing": true
+- runFlow:
+    file: ../subflows/open_site_address_login.yaml
+- tapOn:
+    id: "Site address"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_URL}
+- hideKeyboard
+- tapOn:
+    id: "Site Address Next Button"
+
+# Some site configurations offer the credential path explicitly, while a
+# fully self-hosted site can route to it directly.
+- runFlow:
+    when:
+      visible:
+        id: "Sign in with site credentials Button"
+    commands:
+      - tapOn:
+          id: "Sign in with site credentials Button"
+
+- extendedWaitUntil:
+    visible: "Username"
+    timeout: 30000
+- tapOn: "Username"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME}
+- tapOn: "Password"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD}
+- hideKeyboard
+- tapOn: "Continue"
+
+- runFlow:
+    when:
+      visible:
+        id: "login-epilogue-continue-button"
+    commands:
+      - tapOn:
+          id: "login-epilogue-continue-button"
+- runFlow:
+    when:
+      visible: "Got it"
+    commands:
+      - tapOn: "Got it"
+- runFlow:
+    when:
+      visible: "Not now"
+    commands:
+      - tapOn: "Not now"
+
+# After login the privacy sheet and the iOS password prompt can arrive a few
+# seconds apart or stacked on top of each other, and while either is open the
+# tab bar is not in the hierarchy. Wait for any sign of the dashboard, dismiss
+# whatever is up, then wait for the tab bar.
+- extendedWaitUntil:
+    visible: "Manage Privacy|Save Password\\?|Orders"
+    timeout: 120000
+- runFlow:
+    file: ../subflows/dismiss_save_password_prompt.yaml
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Manage Privacy|Save Password\\?"
+    timeout: 10000
+    optional: true
+- runFlow:
+    file: ../subflows/dismiss_save_password_prompt.yaml
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-orders-item"
+    timeout: 30000
+
+- extendedWaitUntil:
+    visible: "Never miss a new order"
+    timeout: 30000
+    label: "The push notifications card shows in the first session"
+- takeScreenshot: push_no_jetpack_card
+- tapOn: "Never miss a new order"
+
+- extendedWaitUntil:
+    visible: "Unlock push notifications with WordPress.com"
+    timeout: 15000
+- tapOn: "Continue"
+
+- extendedWaitUntil:
+    visible:
+      text: "Complete"
+      below: "Enable push notifications"
+    timeout: 60000
+    label: "The push notifications setup completes"
+- assertVisible: "Check plugin compatibility"
+- assertVisible: "Connect store to WordPress.com"
+- assertVisible:
+    text: "Complete"
+    index: 2
+- takeScreenshot: push_no_jetpack_setup_complete
+- tapOn: "Go to My Store"
+
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-orders-item"
+    timeout: 15000
+- assertNotVisible:
+    text: "Never miss a new order"
+    label: "The push notifications card is hidden after the setup"

@@ -62,6 +62,10 @@ one store instead.
 The runner refuses destructive flows against the shared store. Run them with
 `--store lab`.
 
+`push_no_jetpack.yaml` logs in to the site without Jetpack (`MAESTRO_WOO_NO_JETPACK_*`)
+instead. Its setup connects that site to WordPress.com, so before each attempt the runner
+removes the connection again over SSH.
+
 ## Provisioning a lab store
 
 `.maestro/scripts/setup-jn-store.sh` turns a Jurassic Ninja site into the lab store:

@@ -7,8 +7,8 @@ import WidgetKit
 /// exposes a chart-only metric picker because its rectangular UI always renders a small chart.
 ///
 struct StoreTrendsConfigurationIntent: WidgetConfigurationIntent {
-    static var title: LocalizedStringResource = "Store Trends"
-    static var description = IntentDescription("Choose how the WooCommerce trends widget is displayed.")
+    static let title: LocalizedStringResource = "Store Trends"
+    static let description = IntentDescription("Choose how the WooCommerce trends widget is displayed.")
 
     static let defaultDateRange: StoreStatsWidgetDateRange = .today
 

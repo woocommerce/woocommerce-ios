@@ -572,6 +572,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state.value, state.code)
     }
 
+    @MainActor
     func test_selectedState_cleared_when_new_country_is_selected() {
         // Given
         let storageManager = MockStorageManager()
@@ -603,6 +604,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedState)
     }
 
+    @MainActor
     func test_selectedState_not_cleared_when_same_country_is_selected() {
         // Given
         let storageManager = MockStorageManager()

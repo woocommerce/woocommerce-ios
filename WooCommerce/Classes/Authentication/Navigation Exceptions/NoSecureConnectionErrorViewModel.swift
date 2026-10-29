@@ -1,9 +1,14 @@
 import UIKit
-import WordPressAuthenticator
+import struct WordPressAuthenticator.NavigateBack
+import struct WordPressAuthenticator.NavigateToRoot
 
 /// Configuration and actions for a `ULErrorViewController`, modelling an error when the merchant
 /// attempts to log in with a site that has an invalid SSL certificate.
+@MainActor
 struct NoSecureConnectionErrorViewModel: ULErrorViewModel {
+    // Nonisolated until WOOMOB-4179 isolates the `AuthenticationManager` delegate methods that build this view model.
+    nonisolated init() {}
+
     // MARK: - Data and configuration
     let image: UIImage = .loginNoWordPressError
 

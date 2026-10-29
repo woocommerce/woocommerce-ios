@@ -2,7 +2,6 @@ import Foundation
 import Networking
 
 // MARK: - BlazeAction: Defines all of the Actions supported by the BlazeStore.
-// Completions are delivered on the main actor after the remote request and any storage write.
 //
 public enum BlazeAction: Action {
 

@@ -83,12 +83,9 @@ final class BlazeStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Queued campaign persistence lifetime
-
     @MainActor
     func test_synchronizeCampaigns_when_released_before_queued_write_then_skips_persistence_and_completes() async {
         for singleCampaign in [false, true] {
-            // Given
             let queued = expectation(description: "Campaign write is queued")
             let completion = expectation(description: "Skipped campaign write completes once")
             completion.assertForOverFulfill = true
@@ -115,11 +112,9 @@ final class BlazeStoreTests: XCTestCase {
             await fulfillment(of: [queued], timeout: 5)
             XCTAssertTrue(deferredStorage.hasPendingWrite)
 
-            // When
             store = nil
             deferredStorage.performPendingWrite()
 
-            // Then
             await fulfillment(of: [completion], timeout: 5)
             XCTAssertEqual(storedCampaignListCount, 0, "Single campaign: \(singleCampaign)")
         }

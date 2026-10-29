@@ -53,8 +53,6 @@ public final class BlazeStore: Store {
     }
 }
 
-// Tasks retain the request owner until the remote result is handled. Queued campaign writes
-// keep the existing weak lifetime check without transferring the dispatcher's registration object.
 private final class BlazeRequestHandler: Sendable {
     private let remote: BlazeRemoteProtocol
     private let storageManager: StorageManagerType
@@ -96,7 +94,6 @@ private final class BlazeRequestHandler: Sendable {
         }
     }
 
-    /// StorageManager delivers the completion on the queue passed with the write, which is `.main` here.
     private func performAndSaveOnMain(_ operation: @escaping @Sendable (StorageType) -> Void,
                                       completion: @escaping @MainActor @Sendable () -> Void) {
         storageManager.performAndSave(operation, completion: {

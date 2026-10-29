@@ -3,7 +3,6 @@ import Synchronization
 import YosemiteTestHelpers
 @testable import Storage
 
-/// Defers non-generic writes; other operations use the underlying mock directly.
 final class MockDeferredStatsStorageManager: StorageManagerType, Sendable {
     private let storageManager: MockStorageManager
     private let onWriteQueued: @Sendable () -> Void

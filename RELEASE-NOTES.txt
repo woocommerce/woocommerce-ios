@@ -3,6 +3,7 @@
 
 26.0
 -----
+- [*] POS: Fix the refund subtotal item count and make cart item counts available for translation. [https://github.com/woocommerce/woocommerce-ios/pull/18203]
 - [*] Orders: Prevented a crash when restoring focus to an amount field after a layout change. [https://github.com/woocommerce/woocommerce-ios/pull/18184]
 - [*] Point of Sale: Prevent items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
 - [*] POS: Merchants can go back to the cart while checkout prepares the order and the card reader. [https://github.com/woocommerce/woocommerce-ios/pull/18127]

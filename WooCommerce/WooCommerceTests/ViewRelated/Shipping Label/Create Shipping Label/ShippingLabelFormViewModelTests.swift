@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 import Yosemite
 @testable import Storage
 
+@MainActor
 final class ShippingLabelFormViewModelTests: XCTestCase {
 
     private var storageManager: StorageManagerType!
@@ -13,17 +14,17 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
-    override func setUpWithError() throws {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
         userDefaults = try XCTUnwrap(UserDefaults(suiteName: "ShippingLabelFormViewModelTests"))
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
         userDefaults.removeObject(forKey: .storePhoneNumber)
         userDefaults = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_conversion_from_Address_to_ShippingLabelAddress_returns_correct_data() {

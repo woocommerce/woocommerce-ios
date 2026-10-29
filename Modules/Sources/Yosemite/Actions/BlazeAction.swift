@@ -15,7 +15,7 @@ public enum BlazeAction: Action {
     ///
     case createCampaign(campaign: CreateBlazeCampaign,
                         siteID: Int64,
-                        onCompletion: (Result<Void, Error>) -> Void)
+                        onCompletion: @MainActor @Sendable (Result<Void, Error>) -> Void)
 
     /// Retrieves and stores Blaze Campaign items for a site using v1.1 endpoint.
     ///
@@ -29,7 +29,7 @@ public enum BlazeAction: Action {
     case synchronizeCampaignsList(siteID: Int64,
                                    skip: Int,
                                    limit: Int,
-                                   onCompletion: (Result<Bool, Error>) -> Void)
+                                   onCompletion: @MainActor @Sendable (Result<Bool, Error>) -> Void)
 
     /// Retrieves and stores a Blaze Campaign item with the give ID for a site.
     ///
@@ -39,7 +39,7 @@ public enum BlazeAction: Action {
     ///
     case synchronizeCampaign(campaignID: String,
                              siteID: Int64,
-                             onCompletion: (Result<Void, Error>) -> Void)
+                             onCompletion: @MainActor @Sendable (Result<Void, Error>) -> Void)
 
     /// Retrieves and stores target devices for creating Blaze campaigns for a site.
     ///
@@ -51,7 +51,7 @@ public enum BlazeAction: Action {
     ///
     case synchronizeTargetDevices(siteID: Int64,
                                   locale: String,
-                                  onCompletion: (Result<[BlazeTargetDevice], Error>) -> Void)
+                                  onCompletion: @MainActor @Sendable (Result<[BlazeTargetDevice], Error>) -> Void)
 
     /// Retrieves and stores target languages for creating Blaze campaigns for a site.
     ///
@@ -63,7 +63,7 @@ public enum BlazeAction: Action {
     ///
     case synchronizeTargetLanguages(siteID: Int64,
                                     locale: String,
-                                    onCompletion: (Result<[BlazeTargetLanguage], Error>) -> Void)
+                                    onCompletion: @MainActor @Sendable (Result<[BlazeTargetLanguage], Error>) -> Void)
 
     /// Retrieves and stores target topics for creating Blaze campaigns for a site.
     ///
@@ -75,7 +75,7 @@ public enum BlazeAction: Action {
     ///
     case synchronizeTargetTopics(siteID: Int64,
                                  locale: String,
-                                 onCompletion: (Result<[BlazeTargetTopic], Error>) -> Void)
+                                 onCompletion: @MainActor @Sendable (Result<[BlazeTargetTopic], Error>) -> Void)
 
     /// Retrieves target locations for creating Blaze campaigns for a site.
     ///
@@ -89,7 +89,7 @@ public enum BlazeAction: Action {
     case fetchTargetLocations(siteID: Int64,
                               query: String,
                               locale: String,
-                              onCompletion: (Result<[BlazeTargetLocation], Error>) -> Void)
+                              onCompletion: @MainActor @Sendable (Result<[BlazeTargetLocation], Error>) -> Void)
 
     /// Retrieves forecasted amount of available impressions for a Blaze campaign to be created.
     ///
@@ -98,7 +98,7 @@ public enum BlazeAction: Action {
     /// - `onCompletion`: invoked when the fetch operation finishes.
     case fetchForecastedImpressions(siteID: Int64,
                                     input: BlazeForecastedImpressionsInput,
-                                    onCompletion: (Result<BlazeImpressions, Error>) -> Void)
+                                    onCompletion: @MainActor @Sendable (Result<BlazeImpressions, Error>) -> Void)
 
     /// Fetches AI based suggestions for Blaze campaign tagline and description for given product ID
     ///
@@ -110,7 +110,7 @@ public enum BlazeAction: Action {
     ///
     case fetchAISuggestions(siteID: Int64,
                             productID: Int64,
-                            onCompletion: (Result<[BlazeAISuggestion], Error>) -> Void)
+                            onCompletion: @MainActor @Sendable (Result<[BlazeAISuggestion], Error>) -> Void)
 
     /// Fetches payment info for Blaze campaign creation given a site ID.
     ///
@@ -120,7 +120,7 @@ public enum BlazeAction: Action {
     ///   - `result.failure(Error)`: error indicates issues fetching info.
     ///
     case fetchPaymentInfo(siteID: Int64,
-                          onCompletion: (Result<BlazePaymentInfo, Error>) -> Void)
+                          onCompletion: @MainActor @Sendable (Result<BlazePaymentInfo, Error>) -> Void)
 
     /// Fetches the Blaze billing summary of the current user, including any outstanding balance.
     ///
@@ -130,7 +130,7 @@ public enum BlazeAction: Action {
     ///   - `result.failure(Error)`: error indicates issues fetching the summary.
     ///
     case fetchBillingSummary(siteID: Int64,
-                             onCompletion: (Result<BlazeBillingSummary, Error>) -> Void)
+                             onCompletion: @MainActor @Sendable (Result<BlazeBillingSummary, Error>) -> Void)
 
     /// Retrieves and stores campaign objectives for creating Blaze campaigns for a site.
     ///
@@ -142,5 +142,5 @@ public enum BlazeAction: Action {
     ///
     case synchronizeCampaignObjectives(siteID: Int64,
                                        locale: String,
-                                       onCompletion: (Result<[BlazeCampaignObjective], Error>) -> Void)
+                                       onCompletion: @MainActor @Sendable (Result<[BlazeCampaignObjective], Error>) -> Void)
 }

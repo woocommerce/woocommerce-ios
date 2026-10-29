@@ -203,7 +203,7 @@ private extension BlazeCampaignListItem {
     }
 }
 
-public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable, Sendable {
     public let mode: Mode
     public let amount: Double
     public let currency: String

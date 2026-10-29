@@ -2,6 +2,7 @@ import UIKit
 
 /// Displays a button inside a `UITableViewCell`.
 ///
+@MainActor
 final class ButtonTableViewCell: UITableViewCell {
     @IBOutlet private(set) var button: ButtonActivityIndicator!
     @IBOutlet private weak var topConstraint: NSLayoutConstraint!
@@ -24,7 +25,10 @@ final class ButtonTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureBackground()
         apply(style: .default)
     }

@@ -21,17 +21,17 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     private let sampleFeeID: Int64 = 678
     private var subscriptions = Set<AnyCancellable>()
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         WordPressAuthenticator.initializeAuthenticator()
         subscriptions.removeAll()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         // There is no known tear down for the Authenticator. So this method intentionally does
         // nothing.
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_sending_status_input_updates_local_order() throws {
@@ -1654,7 +1654,7 @@ private extension RemoteOrderSynchronizerTests {
     }
 }
 
-extension OrderSyncState: Equatable {
+extension OrderSyncState: @retroactive Equatable {
     public static func == (lhs: OrderSyncState, rhs: OrderSyncState) -> Bool {
         switch (lhs, rhs) {
         case (.syncing(let lhsBlocking), .syncing(let rhsBlocking)):

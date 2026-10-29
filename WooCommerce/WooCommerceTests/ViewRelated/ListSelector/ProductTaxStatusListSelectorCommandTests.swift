@@ -21,6 +21,7 @@ final class ProductTaxStatusListSelectorCommandTests: XCTestCase {
         XCTAssertNotNil(command.selected)
     }
 
+    @MainActor
     func test_cell_configuration() {
         let taxStatus = ProductTaxStatus.taxable
         let command = ProductTaxStatusListSelectorCommand(selected: taxStatus)

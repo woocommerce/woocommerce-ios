@@ -17,8 +17,8 @@ struct AnimatedPlaceholder: View {
     }
 
     private enum Constants {
-        static var landscapeFourThirds: CGFloat = 4/3
-        static var placeholderPadding: CGFloat = 8
+        static let landscapeFourThirds: CGFloat = 4/3
+        static let placeholderPadding: CGFloat = 8
     }
 }
 

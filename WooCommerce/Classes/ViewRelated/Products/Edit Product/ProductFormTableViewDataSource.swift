@@ -122,6 +122,7 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
+    @MainActor
     func configureImages(cell: UITableViewCell, isEditable: Bool, isStorePublic: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
         // only show images row if it's a .org site or a public .com site. Private .com site will see a banner.
         guard isStorePublic else {

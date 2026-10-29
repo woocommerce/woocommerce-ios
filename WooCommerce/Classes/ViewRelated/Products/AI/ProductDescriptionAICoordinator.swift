@@ -3,6 +3,7 @@ import struct Yosemite.Site
 import protocol WooFoundation.Analytics
 
 /// Coordinates navigation for product description AI.
+@MainActor
 final class ProductDescriptionAICoordinator: Coordinator {
     typealias Source = WooAnalyticsEvent.ProductFormAI.ProductDescriptionAISource
 

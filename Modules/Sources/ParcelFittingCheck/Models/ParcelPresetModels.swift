@@ -56,5 +56,5 @@ public protocol ParcelFittingDelegate: AnyObject {
                                   starredPackageIDs: Set<String>,
                                   dimensionUnit: UnitLength)
     func parcelFittingDidCancel()
-    func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool)
+    @MainActor func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool)
 }

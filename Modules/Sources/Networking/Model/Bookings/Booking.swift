@@ -236,7 +236,7 @@ enum BookingDecodingError: Error {
 //
 
 /// Represents a Booking Status.
-public enum BookingStatus: String, CaseIterable, Codable {
+public enum BookingStatus: String, CaseIterable, Codable, Sendable {
     case complete
     case paid
     case unpaid

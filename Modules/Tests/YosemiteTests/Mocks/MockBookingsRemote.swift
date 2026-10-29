@@ -3,6 +3,7 @@ import Foundation
 
 /// Mock for BookingsRemoteProtocol
 ///
+@MainActor
 final class MockBookingsRemote: BookingsRemoteProtocol {
     private var loadAllBookingsResult: Result<[Booking], Error>?
     private var loadBookingResult: Result<Booking?, Error>?

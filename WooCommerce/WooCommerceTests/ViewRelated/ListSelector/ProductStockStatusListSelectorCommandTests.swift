@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class ProductStockStatusListSelectorCommandTests: XCTestCase {
 
     func test_selected_status() {

@@ -528,7 +528,7 @@ private extension ConfigurableBundleItemViewModelTests {
     }
 }
 
-extension ConfigurableVariableBundleAttributePickerViewModel: Equatable {
+extension ConfigurableVariableBundleAttributePickerViewModel: @retroactive Equatable {
     public static func == (lhs: ConfigurableVariableBundleAttributePickerViewModel, rhs: ConfigurableVariableBundleAttributePickerViewModel) -> Bool {
         lhs.name == rhs.name &&
         lhs.options == rhs.options &&

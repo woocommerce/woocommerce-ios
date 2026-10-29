@@ -576,10 +576,11 @@ private extension BlazeCampaignListViewModelTests {
 
     @MainActor
     func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
-        readOnlyCampaigns.forEach { campaign in
-            let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
-            newCampaign.update(with: campaign)
-        }
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            readOnlyCampaigns.forEach { campaign in
+                let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
+                newCampaign.update(with: campaign)
+            }
+        }, completion: {}, on: .main)
     }
 }

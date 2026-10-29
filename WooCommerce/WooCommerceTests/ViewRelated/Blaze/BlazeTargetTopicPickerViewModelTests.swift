@@ -4,7 +4,6 @@ import protocol Storage.StorageType
 import YosemiteTestHelpers
 @testable import WooCommerce
 
-@MainActor
 final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 122
@@ -23,22 +22,25 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting())
         storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
-    override func tearDown() {
+    @MainActor
+    override func tearDown() async throws {
         analyticsProvider = nil
         analytics = nil
         storageManager = nil
         stores = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
+    @MainActor
     func test_list_includes_all_fetchedTopics_if_searchQuery_is_empty() {
         // Given
         let topic1 = BlazeTargetTopic(id: "test", name: "Test", locale: locale.identifier)
@@ -59,6 +61,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_languages_filters_matching_languages_if_searchQuery_is_not_empty() {
         // Given
         let topic1 = BlazeTargetTopic(id: "test", name: "Test", locale: locale.identifier)
@@ -79,6 +82,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_result_state_contains_only_topics_matching_given_locale() {
         // Given
         let topic = BlazeTargetTopic(id: "test", name: "Test", locale: locale.identifier)
@@ -147,6 +151,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .result(items: [topic]))
     }
 
+    @MainActor
     func test_save_button_is_enabled_when_selectedTopics_is_not_empty_and_syncState_is_result() {
         // Given
         let topic = BlazeTargetTopic(id: "test", name: "Test", locale: locale.identifier)
@@ -197,6 +202,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableSaveButton)
     }
 
+    @MainActor
     func test_confirmSelection_triggers_onSelection_correctly() {
         // Given
         let topic = BlazeTargetTopic(id: "test", name: "Test", locale: "en")
@@ -219,6 +225,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
 
     // MARK: Analytics
 
+    @MainActor
     func test_confirmSelection_tracks_event() throws {
         // Given
         let viewModel = BlazeTargetTopicPickerViewModel(siteID: sampleSiteID,
@@ -236,9 +243,11 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
 }
 
 private extension BlazeTargetTopicPickerViewModelTests {
+    @MainActor
     func insertTopic(_ readOnlyTopic: BlazeTargetTopic) {
-        let newTopic = storage.insertNewObject(ofType: StorageBlazeTargetTopic.self)
-        newTopic.update(with: readOnlyTopic)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let newTopic = storage.insertNewObject(ofType: StorageBlazeTargetTopic.self)
+            newTopic.update(with: readOnlyTopic)
+        }, completion: {}, on: .main)
     }
 }

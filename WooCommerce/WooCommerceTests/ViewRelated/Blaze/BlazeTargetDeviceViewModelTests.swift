@@ -4,7 +4,6 @@ import protocol Storage.StorageType
 import YosemiteTestHelpers
 @testable import WooCommerce
 
-@MainActor
 final class BlazeTargetDeviceViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 122
@@ -23,22 +22,25 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
-    override func tearDown() {
+    @MainActor
+    override func tearDown() async throws {
         analyticsProvider = nil
         analytics = nil
         storageManager = nil
         stores = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
+    @MainActor
     func test_result_state_contains_only_devices_matching_given_locale() {
         // Given
         let mobile = BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale.identifier)
@@ -107,6 +109,7 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .result(items: [mobile]))
     }
 
+    @MainActor
     func test_save_button_is_enabled_when_selectedDevices_is_not_empty_and_syncState_is_result() {
         // Given
         let mobile = BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale.identifier)
@@ -156,6 +159,7 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableSaveButton)
     }
 
+    @MainActor
     func test_confirmSelection_triggers_onSelection_correctly() {
         // Given
         let mobile = BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale.identifier)
@@ -178,6 +182,7 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
 
     // MARK: Analytics
 
+    @MainActor
     func test_confirmSelection_tracks_event() throws {
         // Given
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
@@ -195,9 +200,11 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
 }
 
 private extension BlazeTargetDeviceViewModelTests {
+    @MainActor
     func insertDevice(_ readOnlyDevice: BlazeTargetDevice) {
-        let newDevice = storage.insertNewObject(ofType: StorageBlazeTargetDevice.self)
-        newDevice.update(with: readOnlyDevice)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let newDevice = storage.insertNewObject(ofType: StorageBlazeTargetDevice.self)
+            newDevice.update(with: readOnlyDevice)
+        }, completion: {}, on: .main)
     }
 }

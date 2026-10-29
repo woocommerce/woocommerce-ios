@@ -1142,7 +1142,6 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
         }
     }
 
-    @MainActor
     func requestImage(
         productImage: Yosemite.ProductImage,
         targetSize: CGSize?,
@@ -1152,12 +1151,10 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
         return nil
     }
 
-    @MainActor
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {
         // no-op
     }
 
-    @MainActor
     func requestImage(asset: PHAsset, targetSize: CGSize, skipsDegradedImage: Bool, completion: @escaping (UIImage) -> Void) {
         // no-op
     }

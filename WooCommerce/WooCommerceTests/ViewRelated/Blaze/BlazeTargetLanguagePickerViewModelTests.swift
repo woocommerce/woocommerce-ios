@@ -222,8 +222,9 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
 
 private extension BlazeTargetLanguagePickerViewModelTests {
     func insertLanguage(_ readOnlyLanguage: BlazeTargetLanguage) {
-        let newLanguage = storage.insertNewObject(ofType: StorageBlazeTargetLanguage.self)
-        newLanguage.update(with: readOnlyLanguage)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let newLanguage = storage.insertNewObject(ofType: StorageBlazeTargetLanguage.self)
+            newLanguage.update(with: readOnlyLanguage)
+        }, completion: {}, on: .main)
     }
 }

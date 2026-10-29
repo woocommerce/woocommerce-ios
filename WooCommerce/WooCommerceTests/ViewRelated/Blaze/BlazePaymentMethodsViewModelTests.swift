@@ -3,7 +3,6 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
-@MainActor
 final class BlazePaymentMethodsViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 322
@@ -19,8 +18,9 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
 
     private var subscription: AnyCancellable?
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true,
                                                                                  isWPCom: true,
                                                                                  displayName: sampleDisplayName,

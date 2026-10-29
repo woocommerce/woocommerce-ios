@@ -12,6 +12,7 @@ protocol AddressMapLocalSearchProviding {
     /// - Parameter completion: The search completion containing location query information.
     /// - Returns: A search response containing map items with placemarks.
     /// - Throws: MapKit errors if the search fails.
+    @MainActor
     func search(for completion: MKLocalSearchCompletion) async throws -> MKLocalSearch.Response
 }
 
@@ -25,6 +26,7 @@ final class DefaultAddressMapLocalSearchProvider: AddressMapLocalSearchProviding
     }
 }
 
+@MainActor
 @Observable
 final class AddressMapPickerViewModel: NSObject {
     var searchQuery = "" {
@@ -72,7 +74,6 @@ final class AddressMapPickerViewModel: NSObject {
 
     deinit {
         searchQueryContinuation.finish()
-        searchCompleter.delegate = nil
     }
 
     @MainActor
@@ -202,7 +203,7 @@ private extension AddressMapPickerViewModel {
     }
 }
 
-extension AddressMapPickerViewModel: MKLocalSearchCompleterDelegate {
+extension AddressMapPickerViewModel: @MainActor MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         searchResults = completer.results
     }

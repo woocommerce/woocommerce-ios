@@ -10,6 +10,7 @@ import WooFoundationCore
 
 /// Orchestrator class that fetches store stats for the widget and the Watch app.
 ///
+// Main-actor isolated because the remotes access `WKWebView` internally.
 @MainActor
 final class StoreInfoDataService {
 
@@ -508,17 +509,14 @@ private extension StoreInfoDataService {
     ///
     func fetchRevenueAndOrders(for storeID: Int64, dateRange: DateRange) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in
-            // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
-            Task { @MainActor in
-                orderStatsRemoteV4.loadOrderStats(for: storeID,
-                                                  unit: dateRange.orderStatsGranularity,
-                                                  timeZone: dateRange.timezone,
-                                                  earliestDateToInclude: dateRange.earliestDateToInclude,
-                                                  latestDateToInclude: dateRange.latestDateToInclude,
-                                                  quantity: dateRange.orderStatsQuantity,
-                                                  forceRefresh: true) { @Sendable result in
-                    continuation.resume(with: result)
-                }
+            orderStatsRemoteV4.loadOrderStats(for: storeID,
+                                              unit: dateRange.orderStatsGranularity,
+                                              timeZone: dateRange.timezone,
+                                              earliestDateToInclude: dateRange.earliestDateToInclude,
+                                              latestDateToInclude: dateRange.latestDateToInclude,
+                                              quantity: dateRange.orderStatsQuantity,
+                                              forceRefresh: true) { @Sendable result in
+                continuation.resume(with: result)
             }
         }
     }
@@ -527,13 +525,10 @@ private extension StoreInfoDataService {
     ///
     func fetchVisitors(for storeID: Int64, dateRange: DateRange) async throws -> SiteSummaryStats {
         try await withCheckedThrowingContinuation { continuation in
-            // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
-            Task { @MainActor in
-                siteStatsRemote.loadSiteSummaryStats(for: storeID,
-                                                     period: dateRange.summaryStatsPeriod,
-                                                     includingDate: dateRange.latestDateToInclude) { @Sendable result in
-                    continuation.resume(with: result)
-                }
+            siteStatsRemote.loadSiteSummaryStats(for: storeID,
+                                                 period: dateRange.summaryStatsPeriod,
+                                                 includingDate: dateRange.latestDateToInclude) { @Sendable result in
+                continuation.resume(with: result)
             }
         }
     }

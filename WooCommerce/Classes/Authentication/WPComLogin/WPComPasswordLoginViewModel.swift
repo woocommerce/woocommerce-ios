@@ -112,7 +112,6 @@ extension WPComPasswordLoginViewModel: LoginFacadeDelegate {
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        // LoginFacadeDelegate keeps this nonisolated, and self is not Sendable while the coordinators building this type are nonisolated.
         Task { @MainActor in
             await onLoginSuccess(authToken)
             isLoggingIn = false

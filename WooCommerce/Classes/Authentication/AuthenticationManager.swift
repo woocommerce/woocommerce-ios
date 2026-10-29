@@ -18,8 +18,6 @@ import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
 import struct NetworkingCore.WordPressAPIDiscovery
 
-// Isolated per method, not at the type: ServiceLocator builds it and `Authentication` calls it from nonisolated code.
-
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {

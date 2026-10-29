@@ -65,6 +65,7 @@ tags:
 - extendedWaitUntil:
     visible: Order Count
     timeout: 15000
+# Tap the trailing edge so the cursor lands after the value and eraseText clears it.
 - tapOn:
     text: "1"
     rightOf: Order Count

@@ -112,9 +112,10 @@ extension ShippingLabelPaymentMethodsViewModel {
 
     /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
     ///
+    @MainActor
     func syncShippingLabelAccountSettings() {
         isUpdating = true
-        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: accountSettings.siteID) { [weak self] result in
+        let handleResult: @MainActor @Sendable (Result<ShippingLabelAccountSettings, Error>) -> Void = { [weak self] result in
             guard let self else { return }
 
             self.isUpdating = false
@@ -126,17 +127,21 @@ extension ShippingLabelPaymentMethodsViewModel {
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
             }
         }
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: accountSettings.siteID) { result in
+            Task { @MainActor in handleResult(result) }
+        }
         ServiceLocator.stores.dispatch(action)
     }
 
     /// Updates remote shipping label account settings
     ///
+    @MainActor
     func updateShippingLabelAccountSettings(onCompletion: @escaping ((ShippingLabelAccountSettings) -> Void)) {
         isUpdating = true
         let newSettings = accountSettings.copy(selectedPaymentMethodID: selectedPaymentMethodID,
                                         isEmailReceiptsEnabled: isEmailReceiptsEnabled)
 
-        let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: accountSettings.siteID, settings: newSettings) { [weak self] result in
+        let handleResult: @MainActor @Sendable (Result<Bool, Error>) -> Void = { [weak self] result in
             self?.isUpdating = false
 
             switch result {
@@ -146,6 +151,9 @@ extension ShippingLabelPaymentMethodsViewModel {
                 ServiceLocator.noticePresenter.enqueue(notice: .init(title: Localization.updateSettingsError, feedbackType: .error))
                 DDLogError("⛔️ Error updating shipping label account settings")
             }
+        }
+        let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: accountSettings.siteID, settings: newSettings) { result in
+            Task { @MainActor in handleResult(result) }
         }
         ServiceLocator.stores.dispatch(action)
     }

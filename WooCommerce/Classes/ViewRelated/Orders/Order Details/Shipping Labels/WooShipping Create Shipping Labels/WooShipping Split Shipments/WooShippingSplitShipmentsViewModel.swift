@@ -702,9 +702,7 @@ extension WooShippingSplitShipmentsViewModel {
         let shipmentsInfo = WooShippingUpdateShipment(shipmentIdsToUpdate: shipmentIdsToUpdate,
                                                       shipments: editedShipmentsInfo)
         return try await withCheckedThrowingContinuation { continuation in
-            let action = WooShippingAction.updateShipment(siteID: order.siteID,
-                                                          orderID: order.orderID,
-                                                          shipmentToUpdate: shipmentsInfo) { [weak self] result in
+            let handleResult: @MainActor @Sendable (Result<WooShippingShipments, Error>) -> Void = { [weak self] result in
                 guard let self else { return }
 
                 switch result {
@@ -715,6 +713,11 @@ extension WooShippingSplitShipmentsViewModel {
                     DDLogError("⛔️ Error updating shipments for Woo Shipping labels: \(error)")
                     continuation.resume(throwing: error)
                 }
+            }
+            let action = WooShippingAction.updateShipment(siteID: order.siteID,
+                                                          orderID: order.orderID,
+                                                          shipmentToUpdate: shipmentsInfo) { result in
+                Task { @MainActor in handleResult(result) }
             }
             stores.dispatch(action)
         }

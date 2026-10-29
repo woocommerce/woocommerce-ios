@@ -176,6 +176,7 @@ final class ShippingLabelFormViewModel {
 
     var subscriptions = Set<AnyCancellable>()
 
+    @MainActor
     init(order: Order,
          originAddress: Address?,
          destinationAddress: Address?,
@@ -789,8 +790,9 @@ extension ShippingLabelFormViewModel {
 
     /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
     ///
+    @MainActor
     func syncShippingLabelAccountSettings() {
-        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { [weak self] result in
+        let handleResult: @MainActor @Sendable (Result<ShippingLabelAccountSettings, Error>) -> Void = { [weak self] result in
             guard let self else { return }
 
             switch result {
@@ -799,6 +801,9 @@ extension ShippingLabelFormViewModel {
             case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
             }
+        }
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { result in
+            Task { @MainActor in handleResult(result) }
         }
         stores.dispatch(action)
     }
@@ -826,6 +831,7 @@ extension ShippingLabelFormViewModel {
     /// Purchases a shipping label with the origin and destination address, package, and rate selected in the Shipping Label Form.
     /// - Parameter onCompletion: Closure to be executed on completion with the success/failure result of the purchase.
     ///
+    @MainActor
     func purchaseLabel(onCompletion: @escaping ((Result<TimeInterval, Error>) -> Void)) {
         guard let originAddress,
               let destinationAddress,
@@ -862,12 +868,7 @@ extension ShippingLabelFormViewModel {
         }
 
         let startTime = Date()
-        let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
-                                                               orderID: order.orderID,
-                                                               originAddress: originAddress,
-                                                               destinationAddress: destinationAddress,
-                                                               packages: packages,
-                                                               emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { [weak self] result in
+        let handleResult: @MainActor @Sendable (Result<[ShippingLabel], Error>) -> Void = { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let labels):
@@ -876,6 +877,14 @@ extension ShippingLabelFormViewModel {
             case .failure(let error):
                 onCompletion(.failure(error))
             }
+        }
+        let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
+                                                               orderID: order.orderID,
+                                                               originAddress: originAddress,
+                                                               destinationAddress: destinationAddress,
+                                                               packages: packages,
+                                                               emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { result in
+            Task { @MainActor in handleResult(result) }
         }
         stores.dispatch(action)
     }

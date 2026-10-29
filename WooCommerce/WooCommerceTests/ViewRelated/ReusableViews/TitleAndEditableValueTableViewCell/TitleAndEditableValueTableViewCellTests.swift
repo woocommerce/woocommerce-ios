@@ -1,26 +1,18 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class TitleAndEditableValueTableViewCellTests: XCTestCase {
-    private var cell: TitleAndEditableValueTableViewCell!
+    func test_cell_is_non_selectable() throws {
+        // Given
+        let cell = try makeCell()
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let nib = try XCTUnwrap(Bundle.main.loadNibNamed("TitleAndEditableValueTableViewCell", owner: self, options: nil))
-        cell = try XCTUnwrap(nib.first as? TitleAndEditableValueTableViewCell)
-    }
-
-    override func tearDown() {
-        cell = nil
-        super.tearDown()
-    }
-
-    func test_cell_is_non_selectable() {
         XCTAssertEqual(cell.selectionStyle, UITableViewCell.SelectionStyle.none)
     }
 
     func test_title_has_footnote_style_applied() throws {
         // Given
+        let cell = try makeCell()
         let mirror = try self.mirror(of: cell)
 
         // When
@@ -33,6 +25,7 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
 
     func test_value_has_body_style_applied() throws {
         // Given
+        let cell = try makeCell()
         let mirror = try self.mirror(of: cell)
 
         // When
@@ -45,6 +38,7 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
 
     func test_viewModel_is_updated_when_text_field_is_changed() throws {
         // Given
+        let cell = try makeCell()
         let mirror = try self.mirror(of: cell)
         let viewModel = TitleAndEditableValueTableViewCellViewModel(title: "Test")
 
@@ -60,8 +54,9 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
         XCTAssertEqual(viewModel.value, "Ut ullam itaque")
     }
 
-    func test_updateValue_then_updates_view_model() {
+    func test_updateValue_then_updates_view_model() throws {
         // Given
+        let cell = try makeCell()
         let newValue = "test"
         let viewModel = TitleAndEditableValueTableViewCellViewModel(title: "Test")
 
@@ -71,6 +66,11 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.value, newValue)
+    }
+
+    private func makeCell() throws -> TitleAndEditableValueTableViewCell {
+        let nib = try XCTUnwrap(Bundle.main.loadNibNamed("TitleAndEditableValueTableViewCell", owner: nil, options: nil))
+        return try XCTUnwrap(nib.first as? TitleAndEditableValueTableViewCell)
     }
 }
 

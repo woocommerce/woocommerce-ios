@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class InProgressProductImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet private weak var blurView: UIVisualEffectView!
@@ -7,13 +8,15 @@ final class InProgressProductImageCollectionViewCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureImageView()
-        configureBlurView()
-        configureSpinner()
-        configureCellAppearance()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureImageView()
+            configureBlurView()
+            configureSpinner()
+            configureCellAppearance()
 
-        spinnerView.animate()
+            spinnerView.animate()
+        }
     }
 
     override func prepareForReuse() {

@@ -13,6 +13,7 @@ import UIKit
 /// So here we are, building a `BasicTableViewCell` as a custom cell,
 /// so that the margins match. --- ¯\_(ツ)_/¯ 21.05.2019 tc
 ///
+@MainActor
 class WooBasicTableViewCell: UITableViewCell {
 
     @IBOutlet private(set) weak var bodyLabel: UILabel!
@@ -26,7 +27,10 @@ class WooBasicTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureBackground()
         configureSelectionStyle()
         configureLabel()

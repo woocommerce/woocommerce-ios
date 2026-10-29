@@ -5,6 +5,7 @@ import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Storage
 
+@MainActor
 final class ProductSelectorViewModelTests: XCTestCase {
 
     private typealias SyncedProducts = (products: [Yosemite.Product], hasNextPage: Bool, missingProductIDs: [Int64])
@@ -18,8 +19,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
     private let stores = MockStoresManager(sessionManager: .testingInstance)
     private let searchDebounceTime: UInt64 = 600_000_000 // 500 milliseconds with buffer
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
         storageManager.insertSampleSite(
             readOnlySite: Site.fake().copy(siteID: sampleSiteID)
@@ -29,11 +30,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
         analytics = nil
         analyticsProvider = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_sync_when_currency_is_configured_then_retrieves_and_paginates_products_in_memory_with_order_currency() {
@@ -1665,24 +1666,29 @@ final class ProductSelectorViewModelTests: XCTestCase {
         mockBundledProductsRetrieval([Product.fake().copy(siteID: sampleSiteID, purchasable: true)])
 
         // When
-        let productToConfigure: Yosemite.Product = try waitFor { promise in
-            let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
-                                                     source: .orderForm(flow: .creation),
-                                                     storageManager: self.storageManager,
-                                                     stores: self.stores,
-                                                     onConfigureProductRow: { product in
-                promise(product)
-            })
+        let configured = expectation(description: "onConfigureProductRow is called")
+        var productToConfigure: Yosemite.Product?
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 onConfigureProductRow: { product in
+            productToConfigure = product
+            configured.fulfill()
+        })
 
-            // Then bundle product row is configurable
-            XCTAssertEqual(viewModel.productRows.count, 1)
-            let productRow = try XCTUnwrap(viewModel.productRows.first)
-            XCTAssertTrue(productRow.isConfigurable)
-            productRow.configure?()
-        }
+        // Then bundle product row is configurable
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        let productRow = try XCTUnwrap(viewModel.productRows.first)
+        XCTAssertTrue(productRow.isConfigurable)
+        productRow.configure?()
+
+        await fulfillment(of: [configured], timeout: Constants.expectationTimeout)
+        // The bundle check runs in a task that holds the view model weakly, so keep it alive until the callback.
+        withExtendedLifetime(viewModel) {}
 
         // Then
-        assertEqual(bundleProduct, productToConfigure)
+        assertEqual(bundleProduct, try XCTUnwrap(productToConfigure))
     }
 
     // MARK: - Pagination
@@ -1993,8 +1999,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 }
             case let .synchronizeProducts(_, _, _, stockStatus, _, _, _, _, _, _, _, onCompletion):
                 XCTAssertEqual(stockStatus, .outOfStock)
-                self.storageManager.performAndSave({ storage in
-                    storage.deleteProducts(siteID: self.sampleSiteID)
+                self.storageManager.performAndSave({ [sampleSiteID = self.sampleSiteID] storage in
+                    storage.deleteProducts(siteID: sampleSiteID)
                 }, completion: {}, on: .main)
                 onCompletion(.success(false))
                 filteredRequest.fulfill()
@@ -2074,8 +2080,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
             requestCount += 1
             let products = requestCount == 1 ? [popularProduct, deletedLastSoldProduct, remainingLastSoldProduct] :
                 [popularProduct, remainingLastSoldProduct, laterLastSoldProduct]
-            self.storageManager.performAndSave({ storage in
-                storage.deleteProducts(siteID: self.sampleSiteID)
+            self.storageManager.performAndSave({ [sampleSiteID = self.sampleSiteID] storage in
+                storage.deleteProducts(siteID: sampleSiteID)
                 for product in products {
                     let storedProduct = storage.insertNewObject(ofType: StorageProduct.self)
                     storedProduct.update(with: product)
@@ -2119,8 +2125,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
         let viewModel = makeViewModel(popularProductIDs: [popularProduct.productID])
         viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
-        self.storageManager.performAndSave({ storage in
-            storage.deleteProducts(siteID: self.sampleSiteID)
+        self.storageManager.performAndSave({ [sampleSiteID = self.sampleSiteID] storage in
+            storage.deleteProducts(siteID: sampleSiteID)
         }, completion: {}, on: .main)
 
         // When
@@ -2363,8 +2369,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  stores: stores,
                                                  favoriteProductsUseCase: favoriteProductsUseCase)
         // Then
-        waitUntil {
-            favoriteProductsUseCase.favoriteProductIDsCalled == true
+        withExtendedLifetime(viewModel) {
+            waitUntil {
+                favoriteProductsUseCase.favoriteProductIDsCalled == true
+            }
         }
     }
 
@@ -2760,10 +2768,11 @@ private extension ProductSelectorViewModelTests {
     }
 
     func insert(_ readOnlyProductBundleItem: Yosemite.ProductBundleItem, for product: StorageProduct) {
+        let productObjectID = product.objectID
         storageManager.performAndSave({ storage in
             let bundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
             bundleItem.update(with: readOnlyProductBundleItem)
-            bundleItem.product = product
+            bundleItem.product = storage.loadObject(ofType: StorageProduct.self, with: productObjectID)
         }, completion: {}, on: .main)
     }
 

@@ -19,6 +19,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
 
 /// Configures the sections and rows of Product form table view based on the view model.
 ///
+@MainActor
 final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
     private var onNameChange: ((_ name: String?) -> Void)?
@@ -79,7 +80,6 @@ extension ProductFormTableViewDataSource: UITableViewDataSource {
 }
 
 private extension ProductFormTableViewDataSource {
-    @MainActor
     func configure(_ cell: UITableViewCell, section: ProductFormSection, indexPath: IndexPath) {
         cell.accessibilityIdentifier = nil
         switch section {
@@ -94,7 +94,6 @@ private extension ProductFormTableViewDataSource {
 // MARK: Configure rows in Primary Fields Section
 //
 private extension ProductFormTableViewDataSource {
-    @MainActor
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
         case .images(let editable, let isStorePublic, let allowsMultipleImages, let isVariation):
@@ -123,6 +122,7 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
+    @MainActor
     func configureImages(cell: UITableViewCell, isEditable: Bool, isStorePublic: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
         // only show images row if it's a .org site or a public .com site. Private .com site will see a banner.
         guard isStorePublic else {
@@ -385,7 +385,6 @@ private extension ProductFormTableViewDataSource {
 // MARK: Configure rows in Settings Fields Section
 //
 private extension ProductFormTableViewDataSource {
-    @MainActor
     func configureCellInSettingsFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.SettingsRow) {
         let accessibilityIdentifier: String?
         switch row {
@@ -439,7 +438,6 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
-    @MainActor
     func configureSettings(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
         guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
             fatalError()

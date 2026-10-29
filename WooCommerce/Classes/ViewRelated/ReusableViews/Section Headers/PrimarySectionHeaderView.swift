@@ -6,6 +6,7 @@ import UIKit
 ///
 /// This is originally used for the Order Details' Product section header.
 ///
+@MainActor
 final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
     /// Custom configurations for the CTA.
     struct ActionConfiguration {
@@ -21,7 +22,10 @@ final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         titleLabel.text = ""
         titleLabel.applyHeadlineStyle()
 

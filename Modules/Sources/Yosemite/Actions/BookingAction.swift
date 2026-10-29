@@ -16,20 +16,20 @@ public enum BookingAction: Action {
                              filters: BookingFilters? = nil,
                              order: BookingsRemote.Order = .descending,
                              shouldClearCache: Bool = false,
-                             onCompletion: (Result<Bool, Error>) -> Void)
+                             onCompletion: @MainActor @Sendable (Result<Bool, Error>) -> Void)
     /// Synchronizes the Booking matching the specified criteria.
     ///
     /// - Parameter onCompletion: called when sync completes, returns an error in case of a failure or empty in case of success.
     ///
     case synchronizeBooking(siteID: Int64,
                             bookingID: Int64,
-                            onCompletion: (Result<Void, Error>) -> Void)
+                            onCompletion: @MainActor @Sendable (Result<Void, Error>) -> Void)
 
     /// Checks if the store already has any bookings.
     /// Returns `false` if the store has no bookings.
     ///
     case checkIfStoreHasBookings(siteID: Int64,
-                                 onCompletion: (Result<Bool, Error>) -> Void)
+                                 onCompletion: @Sendable (Result<Bool, Error>) -> Void)
 
     /// Searches for bookings matching the specified criteria and search query.
     ///
@@ -41,7 +41,7 @@ public enum BookingAction: Action {
                         pageSize: Int = BookingsRemote.Default.pageSize,
                         filters: BookingFilters? = nil,
                         order: BookingsRemote.Order = .descending,
-                        onCompletion: (Result<[Booking], Error>) -> Void)
+                        onCompletion: @MainActor @Sendable (Result<[Booking], Error>) -> Void)
 
     /// Fetches a booking resource by resource ID.
     ///
@@ -49,7 +49,7 @@ public enum BookingAction: Action {
     ///
     case fetchResource(siteID: Int64,
                        resourceID: Int64,
-                       onCompletion: (Result<BookingResource, Error>) -> Void)
+                       onCompletion: @MainActor @Sendable (Result<BookingResource, Error>) -> Void)
 
     /// Synchronizes booking resources matching the specified criteria.
     ///
@@ -59,7 +59,7 @@ public enum BookingAction: Action {
                              pageNumber: Int,
                              pageSize: Int = BookingsRemote.Default.pageSize,
                              include: [Int64]? = nil,
-                             onCompletion: (Result<Bool, Error>) -> Void)
+                             onCompletion: @MainActor @Sendable (Result<Bool, Error>) -> Void)
 
     /// Updates a booking attendance status.
     ///
@@ -71,7 +71,7 @@ public enum BookingAction: Action {
     case updateBookingAttendanceStatus(siteID: Int64,
                                        bookingID: Int64,
                                        status: BookingAttendanceStatus,
-                                       onCompletion: (Error?) -> Void)
+                                       onCompletion: @MainActor @Sendable (Error?) -> Void)
 
     /// Cancels a booking by updating its status to cancelled.
     ///
@@ -81,7 +81,7 @@ public enum BookingAction: Action {
     ///
     case cancelBooking(siteID: Int64,
                        bookingID: Int64,
-                       onCompletion: (Error?) -> Void)
+                       onCompletion: @MainActor @Sendable (Error?) -> Void)
 
     /// Marks a booking as paid by updating its status to paid.
     ///
@@ -91,7 +91,7 @@ public enum BookingAction: Action {
     ///
     case markBookingAsPaid(siteID: Int64,
                            bookingID: Int64,
-                           onCompletion: (Error?) -> Void)
+                           onCompletion: @MainActor @Sendable (Error?) -> Void)
 
     /// Updates a booking note.
     ///
@@ -103,7 +103,7 @@ public enum BookingAction: Action {
     case updateBookingNote(siteID: Int64,
                            bookingID: Int64,
                            note: String,
-                           onCompletion: (Error?) -> Void)
+                           onCompletion: @MainActor @Sendable (Error?) -> Void)
 
 
     /// Reschedules a booking by updating its start date, end date, and optionally its resource.
@@ -120,7 +120,7 @@ public enum BookingAction: Action {
                            startDate: Date,
                            endDate: Date,
                            resourceID: Int64?,
-                           onCompletion: (Error?) -> Void)
+                           onCompletion: @MainActor @Sendable (Error?) -> Void)
 
     /// Fetches the booking location from the product endpoint and persists it on the booking.
     ///
@@ -132,12 +132,12 @@ public enum BookingAction: Action {
     case fetchBookingLocationResponse(siteID: Int64,
                                      bookingID: Int64,
                                      productID: Int64,
-                                     onCompletion: (Result<String?, Error>) -> Void)
+                                     onCompletion: @MainActor @Sendable (Result<String?, Error>) -> Void)
 
     /// Clears the booking cache.
     ///
     /// - Parameter siteID: The site ID of the booking.
     /// - Parameter onCompletion: Called when clear completes.
     case clearBookingsCache(siteID: Int64,
-                            onCompletion: () -> Void)
+                            onCompletion: @Sendable () -> Void)
 }

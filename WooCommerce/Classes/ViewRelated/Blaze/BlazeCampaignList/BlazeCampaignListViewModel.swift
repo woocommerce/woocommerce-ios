@@ -219,7 +219,6 @@ private extension BlazeCampaignListViewModel {
     }
 }
 
-// WOOMOB-4072
 extension BlazeCampaignListViewModel: @preconcurrency PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()

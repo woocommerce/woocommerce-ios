@@ -48,9 +48,6 @@ final class PostSiteCredentialLoginChecker {
     private let authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence?
     private let authenticationEndpointPersistenceAction: AuthenticationEndpointPersistenceAction
     private var checkID: UUID?
-    /// Completion of the current eligibility check. Held here rather than captured by the
-    /// `@Sendable` site-info completion, which cannot carry a non-Sendable closure.
-    private var onEligibilityConfirmed: (() -> Void)?
     private var generationTask: Task<Void, Never>?
     private(set) lazy var unexpectedResponsePresenter = LoginUnexpectedResponsePresenter(analytics: analytics)
 
@@ -83,24 +80,22 @@ final class PostSiteCredentialLoginChecker {
 
     /// Checks whether the user is eligible to use the app.
     ///
-    func checkEligibility(for siteURL: String, from navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+    func checkEligibility(for siteURL: String, from navigationController: UINavigationController, onSuccess: @escaping @MainActor @Sendable () -> Void) {
         cancel()
         checkID = UUID()
-        onEligibilityConfirmed = onSuccess
         checkApplicationPassword(for: siteURL,
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
             guard let self else { return }
             self.persistAuthenticationEndpointsIfNeeded()
             self.checkRoleEligibility(for: siteURL, in: navigationController) { [weak self] in
-                self?.checkWooInstallation(for: siteURL, in: navigationController)
+                self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
             }
         }
     }
 
     func cancel() {
         checkID = nil
-        onEligibilityConfirmed = nil
         generationTask?.cancel()
         unexpectedResponsePresenter.invalidate()
     }
@@ -141,8 +136,6 @@ private extension PostSiteCredentialLoginChecker {
                 switch error {
                 case ApplicationPasswordUseCaseError.applicationPasswordsDisabled:
                     // show application password disabled error, and use the previous view controller.
-                    // That screen cannot resume this check, so release its completion.
-                    onEligibilityConfirmed = nil
                     let errorUI = applicationPasswordDisabledUI(for: siteURL, previousViewController: previousViewController)
                     navigationController.show(errorUI, sender: nil)
                 case ApplicationPasswordUseCaseError.unauthorizedRequest:
@@ -213,7 +206,6 @@ private extension PostSiteCredentialLoginChecker {
 
         errorViewModel.onSuccess = onSuccess
         errorViewModel.onDeauthenticationRequest = { [weak self] in
-            self?.cancel()
             self?.stores.deauthenticate()
             navigationController.popToRootViewController(animated: true)
         }
@@ -223,12 +215,14 @@ private extension PostSiteCredentialLoginChecker {
     /// Checks if WooCommerce is active on the logged in site.
     ///
     func checkWooInstallation(for siteURL: String, in navigationController: UINavigationController,
-                              onRetryResult: LoginUnexpectedResponsePresenter.RetryResult? = nil) {
+                              onRetryResult: LoginUnexpectedResponsePresenter.RetryResult? = nil,
+                              onSuccess: @escaping @MainActor @Sendable () -> Void) {
         guard let id = checkID else { return }
         let action = WordPressSiteAction.fetchSiteInfo(siteURL: siteURL, detectUnexpectedResponses: true) { [weak self] result in
             // `WordPressSiteStore` completes `fetchSiteInfo` from a main-actor task; the completion type itself is only `@Sendable`.
             MainActor.assumeIsolated {
-                self?.handleWooInstallationResult(result, checkID: id, siteURL: siteURL, in: navigationController, onRetryResult: onRetryResult)
+                self?.handleWooInstallationResult(result, checkID: id, siteURL: siteURL, in: navigationController,
+                                                  onRetryResult: onRetryResult, onSuccess: onSuccess)
             }
         }
         stores.dispatch(action)
@@ -238,15 +232,14 @@ private extension PostSiteCredentialLoginChecker {
                                      checkID id: UUID,
                                      siteURL: String,
                                      in navigationController: UINavigationController,
-                                     onRetryResult: LoginUnexpectedResponsePresenter.RetryResult?) {
+                                     onRetryResult: LoginUnexpectedResponsePresenter.RetryResult?,
+                                     onSuccess: @escaping @MainActor @Sendable () -> Void) {
         guard checkID == id else { return }
         switch result {
         case .success(let site):
             onRetryResult?(true)
             if site.isWooCommerceActive {
-                let onEligibilityConfirmed = onEligibilityConfirmed
-                self.onEligibilityConfirmed = nil
-                onEligibilityConfirmed?()
+                onSuccess()
             } else {
                 self.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: nil))
                 // This route only runs during a site-credential login, so it is always a login
@@ -266,7 +259,7 @@ private extension PostSiteCredentialLoginChecker {
             self.showAlert(message: Localization.wooCheckError,
                             failure: LoginUnexpectedResponseFailure(error: error, step: .wooPluginCheck),
                             siteURL: siteURL, in: navigationController, onRetry: { [weak self] result in
-                self?.checkWooInstallation(for: siteURL, in: navigationController, onRetryResult: result)
+                self?.checkWooInstallation(for: siteURL, in: navigationController, onRetryResult: result, onSuccess: onSuccess)
             })
         }
     }
@@ -304,8 +297,6 @@ private extension PostSiteCredentialLoginChecker {
             }
             alert.addAction(retryAction)
         } else {
-            // Without a retry the check cannot resume, so release its completion as the alert takes over.
-            onEligibilityConfirmed = nil
             let supportAction = UIAlertAction(title: Localization.contactSupport, style: .default) { _ in
                 navigationController.popViewController(animated: true)
                 ServiceLocator.authenticationManager.presentSupport(from: navigationController, sourceTag: .loginSiteAddress, siteURL: URL(string: siteURL))
@@ -313,7 +304,6 @@ private extension PostSiteCredentialLoginChecker {
             alert.addAction(supportAction)
         }
         let restartAction = UIAlertAction(title: Localization.restartLoginButton, style: .cancel) { [weak self] _ in
-            self?.cancel()
             self?.stores.deauthenticate()
             navigationController.popToRootViewController(animated: true)
         }

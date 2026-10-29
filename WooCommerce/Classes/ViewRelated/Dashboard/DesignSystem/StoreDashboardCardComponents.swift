@@ -24,20 +24,22 @@ struct StoreDashboardCardHeader<Actions: View>: View {
     }
 
     var body: some View {
-        HStack(spacing: StoreSpacing.s3) {
+        HStack(spacing: StoreSpacing.s0) {
             if showsError {
-                StoreIcon.CircleInfo.regular.image(size: .medium)
-                    .foregroundStyle(.storeError)
+                StoreIcon.CircleInfo.regular.image(size: .largeIncreased)
+                    .foregroundStyle(.storeOnSurfaceVariant)
                     .accessibilityHidden(true)
             }
             Text(title)
                 .storeTextStyle(.titleSmall.emphasized)
                 .foregroundStyle(.storeOnSurface)
+                .padding(.leading, showsError ? StorePadding.p5 : StorePadding.p0)
+                .padding(.trailing, StorePadding.p5)
+                .padding(.vertical, StorePadding.p7)
                 .frame(maxWidth: .infinity, alignment: .leading)
             actions()
         }
-        .padding(.horizontal, StorePadding.p7)
-        .padding(.top, StorePadding.p7)
+        .padding(.leading, StorePadding.p5)
     }
 }
 
@@ -52,7 +54,7 @@ struct StoreDashboardCardOverflowMenu<Actions: View>: View {
 
     var body: some View {
         Menu(content: actions) {
-            StoreIcon.Ellipsis.regular.image(size: .medium)
+            StoreIcon.Ellipsis.regular.image(size: .largeIncreased)
                 .foregroundStyle(.storeOnSurface)
                 .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
                 .contentShape(.rect)
@@ -78,12 +80,14 @@ struct StoreDashboardCardFooterAction: View {
             Text(title)
                 .storeTextStyle(.labelLarge.emphasized)
                 .foregroundStyle(.storeOnSecondaryContainer)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(StorePadding.p7)
+                .padding(.horizontal, StorePadding.p4)
+                .frame(minHeight: StoreSize.minimumTapTarget)
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .disabled(isDisabled)
+        .padding(.leading, StorePadding.p3)
+        .padding(.bottom, StorePadding.p1)
     }
 }
 

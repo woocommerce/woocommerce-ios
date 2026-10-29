@@ -8,16 +8,19 @@ struct StorePerformanceOrderTypeSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
-            VStack(alignment: .leading, spacing: StoreSpacing.s4) {
-                Text(Localization.title)
-                    .storeTextStyle(.titleLarge.strong)
-                    .foregroundStyle(.storeOnSurface)
-                Text(Localization.description)
-                    .storeTextStyle(.bodyLarge)
-                    .foregroundStyle(.storeOnSurfaceVariant)
-            }
-            .padding(.horizontal, StorePadding.p7)
-            .padding(.vertical, StorePadding.p5)
+            Text(Localization.title)
+                .storeTextStyle(.titleLarge.strong)
+                .foregroundStyle(.storeOnSurface)
+                .padding(.horizontal, StorePadding.p7)
+
+            Spacer().frame(height: StoreSpacing.s4)
+
+            Text(Localization.description)
+                .storeTextStyle(.bodyLarge)
+                .foregroundStyle(.storeOnSurface)
+                .padding(.horizontal, StorePadding.p7)
+
+            Spacer().frame(height: StoreSpacing.s7 + StoreSpacing.s2)
 
             StoreRadioGroup(
                 selection: Binding(get: { viewModel.orderType }, set: select),
@@ -38,7 +41,7 @@ struct StorePerformanceOrderTypeSheet: View {
                         ProgressView().tint(.storePrimary)
                     }
                 }
-                .padding(.vertical, StorePadding.p5)
+                .padding(.vertical, StorePadding.p3)
                 .accessibilityIdentifier("performance-order-type-\(type.rawValue)")
             }
             .disabled(viewModel.updatingOrderType != nil)
@@ -48,19 +51,22 @@ struct StorePerformanceOrderTypeSheet: View {
                 Text(Localization.updateError)
                     .storeTextStyle(.bodyMedium)
                     .foregroundStyle(.storeOnErrorContainer)
-                    .padding(StorePadding.p4)
+                    .padding(.horizontal, StorePadding.p3)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color.storeErrorContainer)
                     .clipShape(.rect(cornerRadius: StoreRadius.medium))
                     .padding(.horizontal, StorePadding.p7)
-                    .padding(.top, StorePadding.p3)
+                    .padding(.vertical, StorePadding.p3)
             }
+
+            Spacer().frame(height: StoreSpacing.s7)
 
             Text(Localization.footer)
                 .storeTextStyle(.bodySmall)
-                .foregroundStyle(.storeOnSurfaceVariantLowest)
+                .foregroundStyle(.storeOnSurface)
                 .padding(.horizontal, StorePadding.p7)
-                .padding(.vertical, StorePadding.p5)
+
+            Spacer().frame(height: StoreSpacing.s8)
         }
     }
 

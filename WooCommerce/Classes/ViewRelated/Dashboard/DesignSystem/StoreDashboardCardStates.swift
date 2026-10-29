@@ -11,18 +11,20 @@ struct StoreDashboardCardErrorView: View {
                 .foregroundStyle(.storeError)
                 .accessibilityHidden(true)
             Text(Localization.errorTitle)
-                .storeTextStyle(.bodyLarge.emphasized)
+                .storeTextStyle(.titleLarge.strong)
             Text(Localization.errorMessage)
-                .storeTextStyle(.bodyMedium)
-                .foregroundStyle(.storeOnSurfaceVariant)
+                .storeTextStyle(.bodyLarge)
+                .foregroundStyle(.storeOnSurface)
                 .multilineTextAlignment(.center)
                 .contentShape(.rect)
                 .onTapGesture { showingSupportForm = true }
                 .accessibilityAddTraits(.isLink)
+                .padding(.horizontal, StorePadding.p8)
             StoreButton(Localization.retry, variant: .outlined, action: retry)
+                .frame(maxWidth: .infinity)
         }
         .foregroundStyle(.storeOnSurface)
-        .padding(StorePadding.p7)
+        .padding(StorePadding.p5)
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingSupportForm) { supportForm }
     }
@@ -50,15 +52,15 @@ struct StoreDashboardUnavailableAnalyticsView: View {
                 .foregroundStyle(.storeOnSurfaceVariant)
                 .accessibilityHidden(true)
             Text(title)
-                .storeTextStyle(.bodyLarge.emphasized)
+                .storeTextStyle(.titleLarge.strong)
             Text(Localization.unavailableDetails)
-                .storeTextStyle(.bodyMedium)
-                .foregroundStyle(.storeOnSurfaceVariant)
+                .storeTextStyle(.bodyLarge)
+                .foregroundStyle(.storeOnSurface)
             StoreButton(Localization.unavailableButton, variant: .outlined) { showingSupportForm = true }
         }
         .foregroundStyle(.storeOnSurface)
         .multilineTextAlignment(.center)
-        .padding(StorePadding.p7)
+        .padding(StorePadding.p5)
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingSupportForm) { supportForm }
     }

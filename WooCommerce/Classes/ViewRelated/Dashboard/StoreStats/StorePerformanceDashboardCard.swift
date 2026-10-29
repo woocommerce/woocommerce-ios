@@ -26,7 +26,7 @@ struct StorePerformanceDashboardCard: View {
 
     var body: some View {
         StoreDashboardCardSurface {
-            VStack(alignment: .leading, spacing: StoreSpacing.s5) {
+            VStack(alignment: .leading, spacing: StoreSpacing.s0) {
                 header
                 if viewModel.loadingError != nil {
                     errorState
@@ -63,17 +63,18 @@ private extension StorePerformanceDashboardCard {
     }
 
     var performanceContent: some View {
-        VStack(alignment: .leading, spacing: StoreSpacing.s5) {
+        VStack(alignment: .leading, spacing: StoreSpacing.s0) {
             dateRangeHeader
-                .padding(.horizontal, StorePadding.p7)
+                .padding(.leading, StorePadding.p5)
             StoreDivider()
             revenueTypeSelector
-                .padding(.horizontal, StorePadding.p7)
+                .padding(.horizontal, StorePadding.p5)
+                .padding(.top, StorePadding.p4)
+                .padding(.bottom, StorePadding.p2)
             stats
             timestamp
                 .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
             chart
-                .padding(.horizontal, StorePadding.p5)
             StoreDashboardCardFooterAction(Localization.viewAll, isDisabled: viewModel.syncingData) {
                 viewModel.trackInteraction()
                 onViewAllAnalytics(viewModel.siteID, viewModel.siteTimezone, viewModel.timeRange)
@@ -92,23 +93,28 @@ private extension StorePerformanceDashboardCard {
                 .foregroundStyle(.storeOnSurface)
                 .accessibilityIdentifier("performance-\(viewModel.timeRange.menuAccessibilityIdentifier)")
 
-            if viewModel.timeRange.isCustomTimeRange {
-                Button(action: editCustomRange) {
-                    HStack(spacing: StoreSpacing.s3) {
-                        Text(viewModel.timeRangeText).storeTextStyle(.bodyMedium)
-                        StoreIcon.Pen.regular.image(size: .small).accessibilityHidden(true)
-                    }
-                    .foregroundStyle(.storePrimary)
-                }
-                .buttonStyle(.plain)
-            } else {
-                Text(viewModel.timeRangeText)
-                    .storeTextStyle(.bodyMedium)
-                    .foregroundStyle(.storeOnSurface)
-            }
+            dateRangeValue
+                .padding(StorePadding.p3)
 
             Spacer(minLength: StoreSpacing.s0)
             dateRangeMenu
+        }
+    }
+
+    @ViewBuilder var dateRangeValue: some View {
+        if viewModel.timeRange.isCustomTimeRange {
+            Button(action: editCustomRange) {
+                HStack(spacing: StoreSpacing.s3) {
+                    Text(displayedDateText).storeTextStyle(.bodyMedium)
+                    StoreIcon.Pen.regular.image(size: .large).accessibilityHidden(true)
+                }
+                .foregroundStyle(.storeOnSecondaryContainer)
+            }
+            .buttonStyle(.plain)
+        } else {
+            Text(displayedDateText)
+                .storeTextStyle(.bodyMedium)
+                .foregroundStyle(.storeOnSurface)
         }
     }
 
@@ -150,27 +156,19 @@ private extension StorePerformanceDashboardCard {
     var stats: some View {
         VStack(spacing: StoreSpacing.s5) {
             if viewModel.hasRevenue {
-                VStack(spacing: StoreSpacing.s3) {
-                    if let selectedDateText = viewModel.selectedDateText {
-                        Text(selectedDateText)
-                            .storeTextStyle(.bodySmall)
-                            .foregroundStyle(statsTextColor)
-                    }
-                    Text(viewModel.revenueStatsText)
-                        .storeTextStyle(.headlineLarge)
-                        .foregroundStyle(statsValueColor)
-                        .accessibilityIdentifier("revenue-value")
-                }
+                Text(viewModel.revenueStatsText)
+                    .storeTextStyle(.headlineLarge)
+                    .foregroundStyle(statsValueColor)
+                    .accessibilityIdentifier("revenue-value")
             }
             statItems
-            if !viewModel.hasRevenue { emptyStats }
         }
         .foregroundStyle(.storeOnSurface)
-        .padding(.horizontal, StorePadding.p7)
+        .padding(.top, StorePadding.p5)
     }
 
     var statItems: some View {
-        HStack(alignment: .bottom, spacing: StoreSpacing.s3) {
+        HStack(alignment: .bottom, spacing: StoreSpacing.s0) {
             ordersStat.frame(maxWidth: .infinity)
             statItem(Localization.visitors, value: viewModel.visitorStatsText, redactMode: .withIcon).frame(maxWidth: .infinity)
             statItem(Localization.conversion, value: viewModel.conversionStatsText, redactMode: .withoutIcon).frame(maxWidth: .infinity)
@@ -178,7 +176,7 @@ private extension StorePerformanceDashboardCard {
     }
 
     var ordersStat: some View {
-        VStack(spacing: StoreSpacing.s3) {
+        VStack(spacing: StoreSpacing.s0) {
             Text(viewModel.orderStatsText)
                 .storeTextStyle(.titleLarge.emphasized)
                 .foregroundStyle(statsValueColor)
@@ -187,11 +185,11 @@ private extension StorePerformanceDashboardCard {
                 viewModel.trackOrderDateTypeSelectorTapped()
                 showingOrderTypePicker = true
             } label: {
-                HStack(spacing: StoreSpacing.s2) {
+                HStack(spacing: StoreSpacing.s0) {
                     Text(viewModel.orderType.localizedTitle)
                         .storeTextStyle(.bodySmall)
                         .multilineTextAlignment(.center)
-                    StoreIcon.AngleDown.regular.image(size: .extraSmall).accessibilityHidden(true)
+                    StoreIcon.AngleDown.regular.image(size: .medium).accessibilityHidden(true)
                 }
                 .foregroundStyle(statsTextColor)
             }
@@ -203,7 +201,7 @@ private extension StorePerformanceDashboardCard {
     }
 
     func statItem(_ title: String, value: String, redactMode: RedactMode) -> some View {
-        VStack(spacing: StoreSpacing.s3) {
+        VStack(spacing: StoreSpacing.s0) {
             if redactMode == .none || viewModel.siteVisitStatMode == .default {
                 Text(value)
                     .storeTextStyle(.titleLarge.emphasized)
@@ -240,14 +238,10 @@ private extension StorePerformanceDashboardCard {
     }
 
     var emptyStats: some View {
-        VStack(spacing: StoreSpacing.s5) {
-            StoreIcon.MagnifyingGlass.regular.image(size: .extraLarge)
-                .foregroundStyle(.storeOnSurfaceVariant)
-            Text(Localization.noRevenueText)
-                .storeTextStyle(.bodyMedium)
-                .foregroundStyle(.storeOnSurface)
-        }
-        .frame(maxWidth: .infinity)
+        Text(Localization.noRevenueText)
+            .storeTextStyle(.bodyLarge)
+            .foregroundStyle(.storeOnSurface)
+            .frame(maxWidth: .infinity, minHeight: Constants.chartContainerHeight)
     }
 
     var timestamp: some View {
@@ -271,23 +265,28 @@ private extension StorePerformanceDashboardCard {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.horizontal, StorePadding.p7)
+        .padding(.top, StorePadding.p5)
     }
 
     @ViewBuilder var chart: some View {
         if let chartViewModel = viewModel.chartViewModel, chartViewModel.hasRevenue {
-            VStack(spacing: StoreSpacing.s3) {
+            VStack(spacing: StoreSpacing.s0) {
                 StoreStatsChart(viewModel: chartViewModel,
                                 resetSignal: viewModel.chartSelectionResetPublisher,
                                 onIntervalSelected: viewModel.didSelectStatsInterval)
                     .frame(height: Constants.chartHeight)
+                    .padding(.horizontal, StorePadding.p5)
+                    .padding(.vertical, StorePadding.p4)
                     .accessibilityIdentifier("store-stats-chart")
                 if viewModel.hasRevenue, let granularityText = viewModel.granularityText {
                     Text(granularityText)
-                        .storeTextStyle(.bodySmall)
+                        .storeTextStyle(.bodyMedium)
                         .foregroundStyle(secondaryStatsTextColor)
+                        .frame(maxWidth: .infinity)
                 }
             }
+        } else if !viewModel.hasRevenue {
+            emptyStats
         }
     }
 
@@ -309,6 +308,10 @@ private extension StorePerformanceDashboardCard {
 
     var secondaryStatsTextColor: Color {
         colorScheme == .dark ? .storePaletteGray20 : .storePaletteGray60
+    }
+
+    var displayedDateText: String {
+        viewModel.selectedDateText ?? viewModel.timeRangeText
     }
 
     func editCustomRange() {
@@ -348,6 +351,7 @@ private extension StorePerformanceDashboardCard {
     enum Constants {
         static let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear, .custom(from: .now, to: .now)]
         static let chartHeight: CGFloat = 176
+        static let chartContainerHeight = chartHeight + StorePadding.p4 * 2
     }
 
     enum Localization {

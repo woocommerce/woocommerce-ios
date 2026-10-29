@@ -23,16 +23,14 @@ import struct NetworkingCore.WordPressAPIDiscovery
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
-    typealias SiteCredentialLoginUseCaseFactory = @MainActor (
+    typealias SiteCredentialLoginUseCaseFactory = @MainActor @Sendable (
         _ siteURL: String,
         _ endpoints: CookieNonceAuthenticationEndpoints?,
         _ verifyAdminDashboard: Bool
     ) -> SiteCredentialLoginProtocol
 
-    static var defaultSiteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory {
-        { siteURL, endpoints, verifyAdminDashboard in
-            SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: endpoints, verifyAdminDashboard: verifyAdminDashboard)
-        }
+    static let defaultSiteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory = { siteURL, endpoints, verifyAdminDashboard in
+        SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: endpoints, verifyAdminDashboard: verifyAdminDashboard)
     }
 
     var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?

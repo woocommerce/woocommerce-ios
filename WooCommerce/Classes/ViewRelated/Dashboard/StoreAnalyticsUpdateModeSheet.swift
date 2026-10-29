@@ -6,65 +6,52 @@ struct StoreAnalyticsUpdateModeSheet: View {
     @State private var viewModel: AnalyticsUpdateModeBottomSheetViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showingLearnMoreWebView = false
-    @State private var notice: Notice?
+    @State private var hasUpdateError = false
 
     init(viewModel: AnalyticsUpdateModeBottomSheetViewModel) {
         _viewModel = State(initialValue: viewModel)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: StoreSpacing.s0) {
-            VStack(alignment: .leading, spacing: StoreSpacing.s4) {
-                Text(Localization.title)
-                    .storeTextStyle(.titleLarge.strong)
-                    .foregroundStyle(.storeOnSurface)
-                Text(Localization.description)
-                    .storeTextStyle(.bodyLarge)
-                    .foregroundStyle(.storeOnSurfaceVariant)
-            }
-            .padding(.horizontal, StorePadding.p7)
-            .padding(.vertical, StorePadding.p5)
+        VStack(alignment: .leading, spacing: StoreSpacing.s5) {
+            Text(Localization.title)
+                .storeTextStyle(.titleLarge.strong)
+                .foregroundStyle(.storeOnSurface)
 
-            StoreRadioGroup(
-                selection: Binding(get: { viewModel.selectedMode }, set: select),
-                options: AnalyticsImportUpdateMode.allCases.map(Optional.some),
-                rowSpacing: StoreSpacing.s0
-            ) { mode in
-                if let mode {
-                    HStack(spacing: StoreSpacing.s4) {
-                        VStack(alignment: .leading, spacing: StoreSpacing.s2) {
-                            Text(mode.localizedTitle)
-                                .storeTextStyle(.bodyLarge.emphasized)
-                                .foregroundStyle(.storeOnSurface)
-                            Text(mode.localizedDescription)
-                                .storeTextStyle(.bodyMedium)
-                                .foregroundStyle(.storeOnSurfaceVariant)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        if viewModel.updatingMode == mode {
-                            ProgressView().tint(.storePrimary)
-                        }
-                    }
-                    .padding(.vertical, StorePadding.p5)
-                    .accessibilityIdentifier("dashboard-analytics-import-update-mode-\(mode.rawValue)")
+            Text(Localization.description)
+                .storeTextStyle(.bodyMedium)
+                .foregroundStyle(.storeOnSurfaceVariant)
+
+            Spacer()
+                .frame(height: StoreSpacing.s3)
+
+            VStack(alignment: .leading, spacing: StoreSpacing.s5) {
+                ForEach(AnalyticsImportUpdateMode.allCases, id: \.rawValue) { mode in
+                    optionButton(for: mode)
                 }
             }
             .disabled(viewModel.isUpdating)
-            .padding(.horizontal, StorePadding.p7)
+
+            if hasUpdateError {
+                Text(Localization.updateErrorNotice)
+                    .storeTextStyle(.bodySmall)
+                    .foregroundStyle(.storeError)
+            }
 
             Text(footerText)
                 .storeTextStyle(.bodySmall)
-                .foregroundStyle(.storeOnSurfaceVariantLowest)
+                .foregroundStyle(.storeOnSurfaceVariant)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .environment(\.openURL, OpenURLAction { _ in
                     showingLearnMoreWebView = true
                     return .handled
                 })
-            .padding(.horizontal, StorePadding.p7)
-            .padding(.vertical, StorePadding.p5)
+
+            Spacer()
+                .frame(height: StoreSpacing.s5)
         }
-        .notice($notice)
+        .padding(.horizontal, StorePadding.p5)
         .sheet(isPresented: $showingLearnMoreWebView) {
             WebViewSheet(viewModel: Constants.learnMoreWebViewModel) {
                 showingLearnMoreWebView = false
@@ -72,15 +59,53 @@ struct StoreAnalyticsUpdateModeSheet: View {
         }
     }
 
-    private func select(_ mode: AnalyticsImportUpdateMode?) {
-        guard let mode else { return }
+    private func optionButton(for mode: AnalyticsImportUpdateMode) -> some View {
+        Button {
+            select(mode)
+        } label: {
+            HStack(spacing: StoreSpacing.s5) {
+                VStack(alignment: .leading, spacing: StoreSpacing.s2) {
+                    Text(mode.localizedTitle)
+                        .storeTextStyle(.titleMedium.strong)
+                        .foregroundStyle(.storeOnSurface)
+                    Text(mode.localizedDescription)
+                        .storeTextStyle(.bodyMedium)
+                        .foregroundStyle(.storeOnSurfaceVariant)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                optionAccessory(for: mode)
+                    .frame(width: StoreSpacing.s7, height: StoreSpacing.s7)
+            }
+            .padding(.vertical, StorePadding.p3)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(viewModel.selectedMode == mode ? .isSelected : [])
+        .accessibilityIdentifier("dashboard-analytics-import-update-mode-\(mode.rawValue)")
+    }
+
+    @ViewBuilder
+    private func optionAccessory(for mode: AnalyticsImportUpdateMode) -> some View {
+        if viewModel.updatingMode == mode {
+            ProgressView()
+                .tint(.storePrimary)
+        } else if viewModel.selectedMode == mode {
+            StoreIcon.Check.solid.image(size: .largeIncreased)
+                .foregroundStyle(.storePrimary)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private func select(_ mode: AnalyticsImportUpdateMode) {
+        hasUpdateError = false
         Task { @MainActor in
             do {
                 if try await viewModel.handleSelection(mode) {
                     dismiss()
                 }
             } catch {
-                notice = Notice(title: Localization.updateErrorNotice, feedbackType: .error)
+                hasUpdateError = true
             }
         }
     }

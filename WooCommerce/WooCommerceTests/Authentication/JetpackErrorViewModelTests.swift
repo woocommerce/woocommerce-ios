@@ -3,21 +3,22 @@ import Yosemite
 import TestKit
 @testable import WooCommerce
 
+@MainActor
 final class JetpackErrorViewModelTests: XCTestCase {
 
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         analytics = nil
         analyticsProvider = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_viewmodel_provides_expected_image() {

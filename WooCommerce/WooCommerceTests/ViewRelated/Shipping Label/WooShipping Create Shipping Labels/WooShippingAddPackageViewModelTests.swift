@@ -313,7 +313,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_remove_saved_package_when_later_failure_reinserts_after_another_deletion_then_does_not_crash() throws {
+    func test_remove_saved_package_when_later_failure_reinserts_after_another_deletion_then_does_not_crash() async throws {
         // Given
         let siteID: Int64 = 1
         let customPackages: [WooShippingCustomPackage] = [
@@ -348,7 +348,10 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         try XCTUnwrap(deleteCompletions[secondPackage.id])(.failure(NSError(domain: "Test", code: 400)))
 
         // Then
-        XCTAssertTrue(true)
+        await until {
+            viewModel.customSavedPackages.contains { $0.id == secondPackage.id }
+        }
+        XCTAssertEqual(viewModel.customSavedPackages.map(\.id), [secondPackage.id])
     }
 
     func test_it_fetches_and_transforms_packages_from_storage() throws {

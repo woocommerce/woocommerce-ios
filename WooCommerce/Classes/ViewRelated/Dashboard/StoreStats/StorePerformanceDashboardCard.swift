@@ -144,7 +144,7 @@ private extension StorePerformanceDashboardCard {
 
     var revenueTypeSelector: some View {
         StoreSegmentedControl(
-            selection: Binding(get: { viewModel.revenueType }, set: viewModel.didSelectRevenueType),
+            selection: Binding(get: { viewModel.revenueType }, set: { viewModel.didSelectRevenueType($0) }),
             options: DashboardRevenueStatsType.allCases,
             title: revenueTypeTitle
         )

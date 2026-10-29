@@ -986,11 +986,13 @@ private extension PushNotificationsManager {
     }
 
     /// Self-driven push eligibility depends on the logged-in account, so it is unknown at the start of every session
-    /// until it's checked. Device tokens received before the check completes wait for its result.
+    /// until it's checked. Device tokens received before the check completes wait for its result. A token still
+    /// waiting from the previous session is dropped, as iOS delivers it again once the app registers for push.
     func observeLoggedInStateForSelfDrivenPushEligibility() {
         loggedInStateSubscription = stores.isLoggedInPublisher.sink { [weak self] _ in
             guard let self else { return }
             selfDrivenPushNotificationEnabled = nil
+            pendingTokenData = nil
             checkSelfDrivenPushNotificationsEligibility()
         }
     }

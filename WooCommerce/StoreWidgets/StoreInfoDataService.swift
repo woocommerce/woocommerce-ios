@@ -10,7 +10,6 @@ import WooFoundationCore
 
 /// Orchestrator class that fetches store stats for the widget and the Watch app.
 ///
-// Main-actor isolated because the remotes access `WKWebView` internally.
 @MainActor
 final class StoreInfoDataService {
 

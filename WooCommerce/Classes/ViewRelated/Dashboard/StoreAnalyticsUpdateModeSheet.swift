@@ -52,6 +52,7 @@ struct StoreAnalyticsUpdateModeSheet: View {
                 .frame(height: StoreSpacing.s5)
         }
         .padding(.horizontal, StorePadding.p5)
+        .padding(.top, StorePadding.p5)
         .sheet(isPresented: $showingLearnMoreWebView) {
             WebViewSheet(viewModel: Constants.learnMoreWebViewModel) {
                 showingLearnMoreWebView = false

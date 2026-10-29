@@ -245,27 +245,46 @@ private extension StorePerformanceDashboardCard {
     }
 
     var timestamp: some View {
-        HStack(spacing: StoreSpacing.s2) {
-            Text(viewModel.shouldShowScheduledAnalyticsImportInfo ?
-                 Localization.scheduledUpdatesDelayText :
-                 Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
-                .storeTextStyle(.bodyMedium)
-                .foregroundStyle(secondaryStatsTextColor)
+        Group {
             if viewModel.shouldShowAnalyticsImportUpdateModeInfoButton {
-                Button {
-                    viewModel.trackAnalyticsImportUpdateModeInfoTapped()
-                    onAnalyticsImportUpdateModeInfoTapped()
-                } label: {
-                    StoreIcon.CircleInfo.regular.image(size: .small)
-                        .foregroundStyle(.storePrimary)
-                        .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
+                Button(action: showAnalyticsImportUpdateModeInfo) {
+                    timestampContent
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(Localization.scheduledUpdatesInfoAccessibilityLabel)
+                .accessibilityLabel(timestampText)
+                .accessibilityHint(Localization.scheduledUpdatesInfoAccessibilityLabel)
+            } else {
+                timestampContent
             }
         }
         .frame(maxWidth: .infinity)
         .padding(.top, StorePadding.p5)
+    }
+
+    var timestampContent: some View {
+        HStack(spacing: StoreSpacing.s2) {
+            Text(timestampText)
+                .storeTextStyle(.bodyMedium)
+                .foregroundStyle(secondaryStatsTextColor)
+            if viewModel.shouldShowAnalyticsImportUpdateModeInfoButton {
+                StoreIcon.CircleInfo.regular.image(size: .small)
+                    .foregroundStyle(.storePrimary)
+                    .accessibilityHidden(true)
+            }
+        }
+        .frame(minHeight: StoreSize.minimumTapTarget)
+        .contentShape(Rectangle())
+    }
+
+    var timestampText: String {
+        viewModel.shouldShowScheduledAnalyticsImportInfo ?
+        Localization.scheduledUpdatesDelayText :
+        Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp)
+    }
+
+    func showAnalyticsImportUpdateModeInfo() {
+        viewModel.trackAnalyticsImportUpdateModeInfoTapped()
+        onAnalyticsImportUpdateModeInfoTapped()
     }
 
     @ViewBuilder var chart: some View {

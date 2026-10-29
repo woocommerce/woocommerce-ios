@@ -83,9 +83,52 @@ final class BlazeStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - Queued campaign persistence lifetime
+
+    @MainActor
+    func test_synchronizeCampaigns_when_released_before_queued_write_then_skips_persistence_and_completes() async {
+        for singleCampaign in [false, true] {
+            // Given
+            let queued = expectation(description: "Campaign write is queued")
+            let completion = expectation(description: "Skipped campaign write completes once")
+            completion.assertForOverFulfill = true
+            let deferredStorage = MockDeferredStatsStorageManager(storageManager: storageManager, onWriteQueued: { queued.fulfill() })
+            remote.whenLoadingCampaignList(thenReturn: .success([.fake()]))
+            remote.whenRetrieveCampaignDetail(thenReturn: .success(.fake()))
+            var store: BlazeStore? = BlazeStore(dispatcher: Dispatcher(), storageManager: deferredStorage, network: network, remote: remote)
+
+            let action: BlazeAction
+            if singleCampaign {
+                action = .synchronizeCampaign(campaignID: "1", siteID: sampleSiteID) { result in
+                    XCTAssertNil(result.failure)
+                    XCTAssertTrue(Thread.isMainThread)
+                    completion.fulfill()
+                }
+            } else {
+                action = .synchronizeCampaignsList(siteID: sampleSiteID, skip: 0, limit: 1) { result in
+                    XCTAssertNil(result.failure)
+                    XCTAssertTrue(Thread.isMainThread)
+                    completion.fulfill()
+                }
+            }
+            store?.onAction(action)
+            await fulfillment(of: [queued], timeout: 5)
+            XCTAssertTrue(deferredStorage.hasPendingWrite)
+
+            // When
+            store = nil
+            deferredStorage.performPendingWrite()
+
+            // Then
+            await fulfillment(of: [completion], timeout: 5)
+            XCTAssertEqual(storedCampaignListCount, 0, "Single campaign: \(singleCampaign)")
+        }
+    }
+
     // MARK: - Create campaign
 
-    func test_createCampaign_does_not_throw_errors_upon_success() throws {
+    @MainActor
+    func test_createCampaign_does_not_throw_errors_upon_success() async throws {
         // Given
         remote.whenCreatingCampaign(thenReturn: .success(()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -94,7 +137,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.createCampaign(campaign: .fake(),
                                                       siteID: self.sampleSiteID,
                                                       onCompletion: { result in
@@ -106,7 +149,8 @@ final class BlazeStoreTests: XCTestCase {
         try result.get()
     }
 
-    func test_createCampaign_returns_error_on_failure() throws {
+    @MainActor
+    func test_createCampaign_returns_error_on_failure() async throws {
         // Given
         remote.whenCreatingCampaign(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -115,7 +159,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.createCampaign(campaign: .fake(),
                                                       siteID: self.sampleSiteID,
                                                       onCompletion: { result in
@@ -131,7 +175,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - synchronizeCampaignsList
 
-    func test_synchronizeCampaignsList_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() throws {
+    @MainActor
+    func test_synchronizeCampaignsList_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() async throws {
         // Given
         remote.whenLoadingCampaignList(thenReturn: .success([]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -140,7 +185,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
@@ -154,7 +199,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertFalse(hasNextPage)
     }
 
-    func test_synchronizeCampaignsList_returns_true_for_hasNextPage_when_number_of_retrieved_results_is_not_zero() throws {
+    @MainActor
+    func test_synchronizeCampaignsList_returns_true_for_hasNextPage_when_number_of_retrieved_results_is_not_zero() async throws {
         // Given
         remote.whenLoadingCampaignList(thenReturn: .success([.fake()]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -163,7 +209,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
@@ -177,7 +223,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertTrue(hasNextPage)
     }
 
-    func test_synchronizeCampaignsList_returns_error_on_failure() throws {
+    @MainActor
+    func test_synchronizeCampaignsList_returns_error_on_failure() async throws {
         // Given
         remote.whenLoadingCampaignList(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -186,7 +233,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
@@ -200,7 +247,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
-    func test_synchronizeCampaignsList_stores_campaigns_upon_success() throws {
+    @MainActor
+    func test_synchronizeCampaignsList_stores_campaigns_upon_success() async throws {
         // Given
         remote.whenLoadingCampaignList(thenReturn: .success([.fake().copy(campaignID: "123")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -210,7 +258,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignListCount, 0)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
@@ -224,7 +272,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignListCount, 1)
     }
 
-    func test_synchronizeCampaignsList_deletes_campaigns_when_items_recieved_from_API_with_zero_as_pagination_skip_value() {
+    @MainActor
+    func test_synchronizeCampaignsList_deletes_campaigns_when_items_recieved_from_API_with_zero_as_pagination_skip_value() async throws {
         // Given
         storeCampaignListItem(.fake().copy(siteID: sampleSiteID, campaignID: "123"))
         remote.whenLoadingCampaignList(thenReturn: .success([.fake().copy(campaignID: "456")]))
@@ -235,7 +284,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignListCount, 1)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
@@ -249,7 +298,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignListCount, 1)
     }
 
-    func test_synchronizeCampaignsList_does_not_delete_campaigns_when_receiving_subsequent_items_using_non_zero_pagination_skip_value() {
+    @MainActor
+    func test_synchronizeCampaignsList_does_not_delete_campaigns_when_receiving_subsequent_items_using_non_zero_pagination_skip_value() async throws {
         // Given
         storeCampaignListItem(.fake().copy(siteID: sampleSiteID, campaignID: "123"))
         remote.whenLoadingCampaignList(thenReturn: .success([.fake().copy(campaignID: "456")]))
@@ -260,7 +310,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignListCount, 1)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: 2,
                                                                  limit: self.defaultPaginationLimit,
@@ -276,7 +326,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize single campaign
 
-    func test_synchronizeCampaign_updates_campaign_in_storage_upon_success() throws {
+    @MainActor
+    func test_synchronizeCampaign_updates_campaign_in_storage_upon_success() async throws {
         // Given
         let campaignID = "315"
         let storedCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: campaignID, uiStatus: "pending")
@@ -289,7 +340,7 @@ final class BlazeStoreTests: XCTestCase {
                                 storageManager: storageManager,
                                 network: network,
                                 remote: remote)
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             stores.onAction(BlazeAction.synchronizeCampaign(campaignID: campaignID, siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             }))
@@ -303,7 +354,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize target devices
 
-    func test_synchronizeTargetDevices_is_successful_when_fetching_successfully() throws {
+    @MainActor
+    func test_synchronizeTargetDevices_is_successful_when_fetching_successfully() async throws {
         // Given
         remote.whenFetchingTargetDevices(thenReturn: .success([.fake().copy(id: "mobile")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -312,7 +364,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -323,7 +375,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(devices.count, 1)
     }
 
-    func test_synchronizeTargetDevices_stores_devices_upon_success() throws {
+    @MainActor
+    func test_synchronizeTargetDevices_stores_devices_upon_success() async throws {
         // Given
         remote.whenFetchingTargetDevices(thenReturn: .success([.fake().copy(id: "mobile")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -333,7 +386,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetDeviceCount, 0)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -344,7 +397,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetDeviceCount, 1)
     }
 
-    func test_synchronizeTargetDevices_overwrites_existing_devices_with_the_given_locale() throws {
+    @MainActor
+    func test_synchronizeTargetDevices_overwrites_existing_devices_with_the_given_locale() async throws {
         // Given
         let locale = "vi"
         storeTargetDevice(.init(id: "test", name: "Test", locale: locale))
@@ -357,7 +411,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetDeviceCount, 2)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
                 promise(result)
             }))
@@ -374,7 +428,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(device.locale, locale)
     }
 
-    func test_synchronizeTargetDevices_returns_error_on_failure() throws {
+    @MainActor
+    func test_synchronizeTargetDevices_returns_error_on_failure() async throws {
         // Given
         remote.whenFetchingTargetDevices(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -383,7 +438,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -396,7 +451,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize target languages
 
-    func test_synchronizeTargetLanguages_is_successful_when_fetching_successfully() throws {
+    @MainActor
+    func test_synchronizeTargetLanguages_is_successful_when_fetching_successfully() async throws {
         // Given
         remote.whenFetchingTargetLanguages(thenReturn: .success([.fake().copy(id: "en")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -405,7 +461,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -416,7 +472,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(languages.count, 1)
     }
 
-    func test_synchronizeTargetLanguages_stores_languages_upon_success() throws {
+    @MainActor
+    func test_synchronizeTargetLanguages_stores_languages_upon_success() async throws {
         // Given
         remote.whenFetchingTargetLanguages(thenReturn: .success([.fake().copy(id: "en")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -426,7 +483,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetLanguageCount, 0)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -437,7 +494,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetLanguageCount, 1)
     }
 
-    func test_synchronizeTargetLanguages_overwrites_existing_languages_with_the_given_locale() throws {
+    @MainActor
+    func test_synchronizeTargetLanguages_overwrites_existing_languages_with_the_given_locale() async throws {
         // Given
         let locale = "en"
         storeTargetLanguage(.init(id: "test", name: "Test", locale: locale))
@@ -450,7 +508,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetLanguageCount, 2)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
                 promise(result)
             }))
@@ -467,7 +525,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(language.locale, locale)
     }
 
-    func test_synchronizeTargetLanguages_returns_error_on_failure() throws {
+    @MainActor
+    func test_synchronizeTargetLanguages_returns_error_on_failure() async throws {
         // Given
         remote.whenFetchingTargetLanguages(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -476,7 +535,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -489,7 +548,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize target topics
 
-    func test_synchronizeTargetTopics_is_successful_when_fetching_successfully() throws {
+    @MainActor
+    func test_synchronizeTargetTopics_is_successful_when_fetching_successfully() async throws {
         // Given
         remote.whenFetchingTargetTopics(thenReturn: .success([.fake().copy(id: "IAB1")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -498,7 +558,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetTopics(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -509,7 +569,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(topics.count, 1)
     }
 
-    func test_synchronizeTargetTopics_stores_topics_upon_success() throws {
+    @MainActor
+    func test_synchronizeTargetTopics_stores_topics_upon_success() async throws {
         // Given
         remote.whenFetchingTargetTopics(thenReturn: .success([.fake().copy(id: "IAB1")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -519,7 +580,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetTopicCount, 0)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetTopics(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -530,7 +591,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetTopicCount, 1)
     }
 
-    func test_synchronizeTargetTopics_overwrites_existing_topics_with_the_given_locale() throws {
+    @MainActor
+    func test_synchronizeTargetTopics_overwrites_existing_topics_with_the_given_locale() async throws {
         // Given
         let locale = "en"
         storeTargetTopic(.init(id: "test", name: "Test", locale: locale))
@@ -543,7 +605,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetTopicCount, 2)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetTopics(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
                 promise(result)
             }))
@@ -560,7 +622,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(topic.locale, locale)
     }
 
-    func test_synchronizeTargetTopics_returns_error_on_failure() throws {
+    @MainActor
+    func test_synchronizeTargetTopics_returns_error_on_failure() async throws {
         // Given
         remote.whenFetchingTargetTopics(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -569,7 +632,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeTargetTopics(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -582,7 +645,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetching target locations
 
-    func test_fetchTargetLocations_is_successful_when_fetching_successfully() throws {
+    @MainActor
+    func test_fetchTargetLocations_is_successful_when_fetching_successfully() async throws {
         // Given
         remote.whenFetchingTargetLocations(thenReturn: .success([.fake().copy(id: 123)]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -591,7 +655,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchTargetLocations(siteID: self.sampleSiteID, query: "test", locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -602,7 +666,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(locations.count, 1)
     }
 
-    func test_fetchTargetLocations_returns_error_on_failure() throws {
+    @MainActor
+    func test_fetchTargetLocations_returns_error_on_failure() async throws {
         // Given
         remote.whenFetchingTargetLocations(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -611,7 +676,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchTargetLocations(siteID: self.sampleSiteID, query: "test", locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -624,7 +689,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetching forecasted impressions
 
-    func test_fetchForecastedImpressions_is_successful_when_fetching_successfully() throws {
+    @MainActor
+    func test_fetchForecastedImpressions_is_successful_when_fetching_successfully() async throws {
         // Given
         remote.whenFetchingForecastedImpressions(thenReturn: .success(.fake().copy(totalImpressionsMax: 12345)))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -633,7 +699,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchForecastedImpressions(siteID: self.sampleSiteID,
                                                                   input: BlazeForecastedImpressionsInput.fake(),
                                                                   onCompletion: { result in
@@ -646,7 +712,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(impressions.totalImpressionsMax, 12345)
     }
 
-    func test_fetchForecastedImpressions_returns_error_on_failure() throws {
+    @MainActor
+    func test_fetchForecastedImpressions_returns_error_on_failure() async throws {
         // Given
         remote.whenFetchingForecastedImpressions(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -655,7 +722,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchForecastedImpressions(siteID: self.sampleSiteID,
                                                                   input: BlazeForecastedImpressionsInput.fake(),
                                                                   onCompletion: { result in
@@ -670,7 +737,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetching AI suggestions
 
-    func test_fetchAISuggestions_returns_suggestions_when_fetching_successfully() throws {
+    @MainActor
+    func test_fetchAISuggestions_returns_suggestions_when_fetching_successfully() async throws {
         // Given
         let suggestions = [BlazeAISuggestion(siteName: "Name 1", textSnippet: "Description 1", ctaText: "CTA 1"),
                            BlazeAISuggestion(siteName: "Name 2", textSnippet: "Description 2", ctaText: "CTA 2")]
@@ -681,7 +749,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchAISuggestions(siteID: self.sampleSiteID,
                                                           productID: 123,
                                                           onCompletion: { result in
@@ -694,7 +762,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(value, suggestions)
     }
 
-    func test_fetchAISuggestions_returns_error_on_failure() throws {
+    @MainActor
+    func test_fetchAISuggestions_returns_error_on_failure() async throws {
         // Given
         remote.whenFetchingAISuggestionsResult(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -703,7 +772,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchAISuggestions(siteID: self.sampleSiteID,
                                                           productID: 123,
                                                           onCompletion: { result in
@@ -718,7 +787,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetching payment info
 
-    func test_fetchPaymentInfo_is_successful_when_fetching_successfully() throws {
+    @MainActor
+    func test_fetchPaymentInfo_is_successful_when_fetching_successfully() async throws {
         // Given
         let paymentInfo = BlazePaymentInfo.fake().copy(
             paymentMethods: [])
@@ -729,7 +799,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchPaymentInfo(siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             }))
@@ -740,7 +810,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(info, paymentInfo)
     }
 
-    func test_fetchPaymentInfo_returns_error_on_failure() throws {
+    @MainActor
+    func test_fetchPaymentInfo_returns_error_on_failure() async throws {
         // Given
         remote.whenFetchingPaymentInfo(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -749,7 +820,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchPaymentInfo(siteID: self.sampleSiteID,
                                                         onCompletion: { result in
                 promise(result)
@@ -763,7 +834,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetch billing summary
 
-    func test_fetchBillingSummary_returns_summary_when_fetching_successfully() throws {
+    @MainActor
+    func test_fetchBillingSummary_returns_summary_when_fetching_successfully() async throws {
         // Given
         let summary = BlazeBillingSummary.fake().copy(debt: 25.05, paymentLinks: [.fake()])
         remote.whenFetchingBillingSummary(thenReturn: .success(summary))
@@ -773,7 +845,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchBillingSummary(siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             }))
@@ -783,7 +855,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(try result.get(), summary)
     }
 
-    func test_fetchBillingSummary_returns_error_on_failure() throws {
+    @MainActor
+    func test_fetchBillingSummary_returns_error_on_failure() async throws {
         // Given
         remote.whenFetchingBillingSummary(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -792,7 +865,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.fetchBillingSummary(siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             }))
@@ -804,7 +877,8 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize campaign objectives
 
-    func test_synchronizeCampaignObjectives_is_successful_when_fetching_successfully() throws {
+    @MainActor
+    func test_synchronizeCampaignObjectives_is_successful_when_fetching_successfully() async throws {
         // Given
         remote.whenFetchingCampaignObjectives(thenReturn: .success([.fake().copy(id: "sale")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -813,7 +887,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignObjectives(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -824,7 +898,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(objectives.count, 1)
     }
 
-    func test_synchronizeCampaignObjectives_stores_devices_upon_success() throws {
+    @MainActor
+    func test_synchronizeCampaignObjectives_stores_devices_upon_success() async throws {
         // Given
         remote.whenFetchingCampaignObjectives(thenReturn: .success([.fake().copy(id: "sale")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -834,7 +909,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignObjectiveCount, 0)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignObjectives(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
@@ -845,7 +920,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignObjectiveCount, 1)
     }
 
-    func test_synchronizeCampaignObjectives_overwrites_existing_objective_with_the_given_locale() throws {
+    @MainActor
+    func test_synchronizeCampaignObjectives_overwrites_existing_objective_with_the_given_locale() async throws {
         // Given
         let locale = "vi"
         storeCampaignObjectives(.init(id: "test", title: "Test", description: "", suitableForDescription: "", locale: locale))
@@ -860,7 +936,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignObjectiveCount, 2)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignObjectives(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
                 promise(result)
             }))
@@ -877,7 +953,8 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(objective.locale, locale)
     }
 
-    func test_synchronizeCampaignObjectives_returns_error_on_failure() throws {
+    @MainActor
+    func test_synchronizeCampaignObjectives_returns_error_on_failure() async throws {
         // Given
         remote.whenFetchingCampaignObjectives(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -886,7 +963,7 @@ final class BlazeStoreTests: XCTestCase {
                                remote: remote)
 
         // When
-        let result = waitFor { promise in
+        let result = try await waitForCompletion { promise in
             store.onAction(BlazeAction.synchronizeCampaignObjectives(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))

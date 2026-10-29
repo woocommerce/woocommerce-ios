@@ -20,11 +20,14 @@ protocol BlazeLocalNotificationScheduler {
 
 /// Handles the scheduling of Blaze local notifications.
 ///
+@MainActor
 final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationScheduler {
     private let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
-    private let scheduler: LocalNotificationScheduler
+    // Unaliased; only its nonisolated `cancel` leaves the main actor, and it reads just the notification
+    // center and analytics. Remove when the Notifications slice gives LocalNotificationScheduler a checked contract.
+    nonisolated(unsafe) private let scheduler: LocalNotificationScheduler
     private let userDefaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private var subscriptions: Set<AnyCancellable> = []

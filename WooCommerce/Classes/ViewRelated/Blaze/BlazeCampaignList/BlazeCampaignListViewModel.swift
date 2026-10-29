@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
 /// View model for `BlazeCampaignListView`
+@MainActor
 final class BlazeCampaignListViewModel: ObservableObject {
 
     @Published private(set) var campaigns: [BlazeCampaignListItem] = []
@@ -218,7 +219,9 @@ private extension BlazeCampaignListViewModel {
     }
 }
 
-extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
+// This private tracker is called only by the main-actor list owner. Remove this bridge
+// when PaginationTrackerDelegate declares its UI isolation contract.
+extension BlazeCampaignListViewModel: @preconcurrency PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
 

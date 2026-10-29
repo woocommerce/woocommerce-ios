@@ -24,7 +24,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                      images: [.fake().copy(imageID: 1)])
     }
 
-    private let sampleImage = UIImage.gridicon(.calendar, size: .init(width: 600, height: 600))
+    @MainActor
+    private var sampleImage: UIImage { UIImage.gridicon(.calendar, size: .init(width: 600, height: 600)) }
 
     private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline",
                                                          textSnippet: "First suggested description",
@@ -65,6 +66,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: Initial values
+    @MainActor
     func test_image_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
@@ -79,6 +81,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.image)
     }
 
+    @MainActor
     func test_tagline_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
@@ -93,6 +96,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tagline, "")
     }
 
+    @MainActor
     func test_description_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
@@ -107,6 +111,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.description, "")
     }
 
+    @MainActor
     func test_ad_destination_product_url_is_updated_correctly_if_empty() throws {
         // Given
         insertProduct(sampleProduct.copy(permalink: ""))
@@ -121,6 +126,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.adDestinationViewModel?.productURL, sampleSiteAddress + "?post_type=product&p=\(sampleProductID)")
     }
 
+    @MainActor
     func test_hasEndDate_is_false_by_default() {
         // Given
         insertProduct(sampleProduct)
@@ -135,6 +141,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.budgetSettingViewModel.hasEndDate)
     }
 
+    @MainActor
     func test_campaignObjectiveText_is_updated_based_on_saved_objective() throws {
         // Given
         insertProduct(sampleProduct)
@@ -584,6 +591,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isShowingMissingImageErrorAlert)
     }
 
+    @MainActor
     func test_it_shows_error_if_confirm_without_objective() async {
         // Given
         insertProduct(sampleProduct)
@@ -606,6 +614,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isShowingMissingObjectiveAlert)
     }
 
+    @MainActor
     func test_it_does_not_show_error_if_confirm_with_objective() async {
         // Given
         insertProduct(sampleProduct)
@@ -936,6 +945,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox First Line - Evergreen Campaigns
+    @MainActor
     func test_tos_checkbox_first_line_evergreen_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
@@ -966,6 +976,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox First Line - Finite Campaigns Up To 7 Days
+    @MainActor
     func test_tos_checkbox_first_line_finite_up_to_seven_days_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
@@ -999,6 +1010,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox First Line - Finite Campaigns More Than 7 Days
+    @MainActor
     func test_tos_checkbox_first_line_finite_more_than_seven_days_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
@@ -1034,6 +1046,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox Link Attributes
+    @MainActor
     func test_tos_checkbox_attributed_text_has_proper_link_attributes() throws {
         // Given
         insertProduct(sampleProduct)
@@ -1059,6 +1072,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox Second Line - Unified for All Campaign Types
+    @MainActor
     func test_tos_checkbox_second_line_displays_unified_text() throws {
         // Given
         insertProduct(sampleProduct)
@@ -1085,6 +1099,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 private extension BlazeCampaignCreationFormViewModelTests {
     /// Insert a `Product` into storage.
     ///
+    @MainActor
     func insertProduct(_ readOnlyProduct: Product) {
         storageManager.performAndSave({ storage in
             let product = storage.insertNewObject(ofType: StorageProduct.self)
@@ -1098,6 +1113,7 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }, completion: {}, on: .main)
     }
 
+    @MainActor
     func insertCampaignObjective(_ readOnlyObjective: BlazeCampaignObjective) {
         storageManager.performAndSave({ storage in
             let objective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
@@ -1105,6 +1121,7 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }, completion: {}, on: .main)
     }
 
+    @MainActor
     func selectCampaignObjective(in viewModel: BlazeCampaignCreationFormViewModel) {
         viewModel.campaignObjectiveViewModel.selectedObjective = .fake().copy(id: "sales")
         viewModel.campaignObjectiveViewModel.confirmSelection()
@@ -1115,6 +1132,7 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
     var imageRequestedForProductImage: Yosemite.ProductImage?
     var requestImageStubbedResponse: UIImage?
 
+    @MainActor
     func requestImage(productImage: ProductImage) async throws -> UIImage {
         imageRequestedForProductImage = productImage
         if let requestImageStubbedResponse {
@@ -1124,6 +1142,7 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
         }
     }
 
+    @MainActor
     func requestImage(
         productImage: Yosemite.ProductImage,
         targetSize: CGSize?,
@@ -1133,16 +1152,19 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
         return nil
     }
 
+    @MainActor
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {
         // no-op
     }
 
+    @MainActor
     func requestImage(asset: PHAsset, targetSize: CGSize, skipsDegradedImage: Bool, completion: @escaping (UIImage) -> Void) {
         // no-op
     }
 }
 
 private extension BlazeCampaignCreationFormViewModelTests {
+    @MainActor
     func mockAISuggestionsSuccess(_ suggestions: [BlazeAISuggestion]) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
@@ -1154,6 +1176,7 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }
     }
 
+    @MainActor
     func mockAISuggestionsFailure(_ error: Error) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
@@ -1165,6 +1188,7 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }
     }
 
+    @MainActor
     func mockDownloadImage(_ image: UIImage?) {
         imageLoader.requestImageStubbedResponse = image
     }

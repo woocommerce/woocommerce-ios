@@ -15,7 +15,7 @@ final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
     private let stores: StoresManager
 
     /// In-flight eligibility checks keyed by siteID, shared across all instances.
-    /// Thread-safe because all access is on @MainActor.
+    @MainActor
     private static var inFlightChecks: [Int64: Task<Bool, Never>] = [:]
 
     init(

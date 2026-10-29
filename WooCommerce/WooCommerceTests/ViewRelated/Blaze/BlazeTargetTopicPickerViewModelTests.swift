@@ -94,6 +94,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .result(items: [topic]))
     }
 
+    @MainActor
     func test_state_is_correct_when_no_cached_data_is_found() async {
         // Given
         let viewModel = BlazeTargetTopicPickerViewModel(siteID: sampleSiteID,
@@ -119,6 +120,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .error)
     }
 
+    @MainActor
     func test_state_is_result_when_there_is_cached_data() async {
         // Given
         let topic = BlazeTargetTopic(id: "test", name: "Test", locale: locale.identifier)
@@ -169,6 +171,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldDisableSaveButton)
     }
 
+    @MainActor
     func test_save_button_is_disabled_when_syncState_is_not_result() async {
         // Given
         let viewModel = BlazeTargetTopicPickerViewModel(siteID: sampleSiteID,

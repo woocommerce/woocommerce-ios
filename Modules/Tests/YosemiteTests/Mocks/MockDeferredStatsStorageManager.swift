@@ -3,13 +3,15 @@ import Synchronization
 import YosemiteTestHelpers
 @testable import Storage
 
-/// Defers the non-generic writes used by StatsStoreV4; other operations use the underlying mock directly.
+/// Defers non-generic writes; other operations use the underlying mock directly.
 final class MockDeferredStatsStorageManager: StorageManagerType, Sendable {
     private let storageManager: MockStorageManager
+    private let onWriteQueued: @Sendable () -> Void
     private let pendingWrite = Mutex<(@Sendable () -> Void)?>(nil)
 
-    init(storageManager: MockStorageManager) {
+    init(storageManager: MockStorageManager, onWriteQueued: @escaping @Sendable () -> Void = {}) {
         self.storageManager = storageManager
+        self.onWriteQueued = onWriteQueued
     }
 
     var viewStorage: StorageType { storageManager.viewStorage }
@@ -26,6 +28,7 @@ final class MockDeferredStatsStorageManager: StorageManagerType, Sendable {
             precondition($0 == nil, "Execute the pending write before queuing another")
             $0 = { storageManager.performAndSave(operation, completion: completion, on: queue) }
         }
+        onWriteQueued()
     }
 
     func performPendingWrite() {

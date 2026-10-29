@@ -43,6 +43,7 @@ struct WooShippingShipmentDetailsView: View {
             if !viewModel.canViewLabel && serviceStatusNotices.isNotEmpty {
                 WooShippingServiceStatusNoticesView(notices: serviceStatusNotices,
                                                     onDismiss: onDismissServiceStatusNotice)
+                    .padding(.bottom, Layout.contentSpacing)
             }
 
             if viewModel.canViewLabel {

@@ -112,24 +112,11 @@ final class LoginUnexpectedResponsePresenter {
         if let support {
             return support(controller, context)
         }
-        weak var model: SupportChatViewModel?
-        var escalation: SupportEscalationCoordinator?
-        weak var host: SupportChatHostingController?
-        let chat = SupportChatViewModel(entryPoint: .preLogin,
-                                        initialContext: context.siteURL.map { ["site_url": .string($0)] },
-                                        initialMessage: context.initialMessage,
-                                        supportSiteAddress: context.siteURL,
-                                        excludeStoreResponseExcerptsFromLogs: true,
-                                        onContactHumanSupport: { chatID, transcript, area, entryPoint, receivedResponse in
-            escalation = SupportEscalationCoordinator(navigationController: host?.navigationController,
-                                                      mobileStatusReportProvider: MobileStatusReportProvider(),
-                                                      onTicketCreated: { [weak model] in model?.markChatTicketCreated() })
-            escalation?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: area,
-                                        entryPoint: entryPoint, siteAddress: context.siteURL, hasReceivedBotResponse: receivedResponse)
-        })
-        model = chat
-        let chatController = SupportChatHostingController(viewModel: chat)
-        host = chatController
+        let chatController = SupportChatHostingController.makeForPreLogin(
+            siteAddress: context.siteURL,
+            initialMessage: context.initialMessage,
+            excludeStoreResponseExcerptsFromLogs: true
+        )
         chatController.show(from: (controller as? UINavigationController)?.topViewController ?? controller)
     }
 

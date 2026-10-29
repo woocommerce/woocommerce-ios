@@ -660,7 +660,11 @@ private extension StorePickerViewController {
     /// Displays an error view as a modal with options to see troubleshooting tips and to contact support.
     ///
     func displayUnknownErrorModal(isPermissionError: Bool = false) {
-        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self, isPermissionError: isPermissionError)
+        let viewController = StorePickerErrorHostingController.createWithActions(
+            presenting: self,
+            isPermissionError: isPermissionError,
+            siteAddress: currentlySelectedSite?.url
+        )
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
         errorPresenter(self, viewController) {}

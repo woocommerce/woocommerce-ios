@@ -2,12 +2,13 @@ import UIKit
 
 /// Represents a cell with a Headline Label
 ///
+@MainActor
 final class HeadlineTableViewCell: UITableViewCell {
     @IBOutlet private weak var headlineLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureCell()
+        MainActor.assumeIsolated { configureCell() }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

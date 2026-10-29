@@ -180,6 +180,7 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
         Coordinator(parent: self)
     }
 
+    @MainActor
     final class Coordinator: NSObject, UITextFieldDelegate {
         var parent: FocusableHiddenInputTextField
         private var handledFocusRequestID: Int?
@@ -231,12 +232,15 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
             handledFocusRequestID = requestID
             pendingFocusRequestID = nil
             DispatchQueue.main.async { [weak self, weak textField] in
-                guard self?.parent.isFocused == true,
-                      self?.handledFocusRequestID == requestID else {
+                guard let self,
+                      let textField,
+                      parent.isFocused,
+                      handledFocusRequestID == requestID,
+                      textField.window != nil else {
                     return
                 }
 
-                textField?.becomeFirstResponder()
+                textField.becomeFirstResponder()
             }
         }
 

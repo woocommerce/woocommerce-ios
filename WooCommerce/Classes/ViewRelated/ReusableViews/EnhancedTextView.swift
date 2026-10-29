@@ -2,6 +2,7 @@ import UIKit
 
 /// A text view which support the placeholder label.
 ///
+@MainActor
 final class EnhancedTextView: UITextView {
 
     var onTextChange: ((String) -> Void)?
@@ -28,6 +29,10 @@ final class EnhancedTextView: UITextView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         delegate = self
         configurePlaceholderLabel()
     }

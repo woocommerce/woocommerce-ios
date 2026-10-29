@@ -373,7 +373,8 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: productID,
-                           error: ProductImageUploaderError.failedUploadingImage(asset: asset, error: error))],
+                           error: ProductImageUploaderError.failedUploadingImage(error: error),
+                           asset: asset)],
                     errors)
     }
 
@@ -484,7 +485,8 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: productID,
-                           error: .failedUploadingImage(asset: asset, error: error))],
+                           error: .failedUploadingImage(error: error),
+                           asset: asset)],
                     errors)
     }
 
@@ -593,7 +595,8 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: productID,
-                           error: ProductImageUploaderError.failedUploadingImage(asset: asset, error: error))],
+                           error: ProductImageUploaderError.failedUploadingImage(error: error),
+                           asset: asset)],
                     errors)
     }
 
@@ -820,7 +823,8 @@ final class ProductImageUploaderTests: XCTestCase {
         let expectedError = ProductImageUploadErrorInfo(
             siteID: siteID,
             productOrVariationID: productID,
-            error: .failedUploadingImage(asset: asset, error: error)
+            error: .failedUploadingImage(error: error),
+            asset: asset
         )
 
         let errorsSubject = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
@@ -838,8 +842,8 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertEqual(receivedErrors.count, 1)
         XCTAssertEqual(receivedErrors.first?.siteID, siteID)
         XCTAssertEqual(receivedErrors.first?.productOrVariationID, productID)
-        if case let .failedUploadingImage(receivedAsset, receivedError) = receivedErrors.first?.error {
-            XCTAssertEqual(receivedAsset, asset)
+        if case let .failedUploadingImage(receivedError) = receivedErrors.first?.error {
+            XCTAssertEqual(receivedErrors.first?.asset, asset)
             XCTAssertEqual((receivedError as NSError).domain, error.domain)
             XCTAssertEqual((receivedError as NSError).code, error.code)
         } else {
@@ -1033,15 +1037,16 @@ extension ProductImageUploadErrorInfo: @retroactive Equatable {
     public static func == (lhs: ProductImageUploadErrorInfo, rhs: ProductImageUploadErrorInfo) -> Bool {
         return lhs.siteID == rhs.siteID &&
         lhs.productOrVariationID == rhs.productOrVariationID &&
-        lhs.error == rhs.error
+        lhs.error == rhs.error &&
+        lhs.asset == rhs.asset
     }
 }
 
 extension ProductImageUploaderError: @retroactive Equatable {
     public static func == (lhs: ProductImageUploaderError, rhs: ProductImageUploaderError) -> Bool {
         switch (lhs, rhs) {
-        case let (.failedUploadingImage(lAsset, lhsError), .failedUploadingImage(rAsset, rhsError)):
-            return lhsError as NSError == rhsError as NSError && lAsset == rAsset
+        case let (.failedUploadingImage(lhsError), .failedUploadingImage(rhsError)):
+            return lhsError as NSError == rhsError as NSError
         case (.failedSavingProductAfterImageUpload(let lhsError), .failedSavingProductAfterImageUpload(let rhsError)):
             return lhsError as NSError == rhsError as NSError
         default:

@@ -27,6 +27,7 @@ protocol PaginatedListSelectorDataSource {
     func isSelected(model: StorageModel.ReadOnlyType) -> Bool
 
     /// Configures the cell with the given model.
+    @MainActor
     func configureCell(cell: Cell, model: StorageModel.ReadOnlyType)
 
     /// Called when the UI is requesting to sync another page of data.

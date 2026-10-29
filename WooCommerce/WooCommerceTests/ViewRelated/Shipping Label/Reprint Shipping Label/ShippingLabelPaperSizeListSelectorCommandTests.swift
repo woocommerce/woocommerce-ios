@@ -2,6 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
+@MainActor
 final class ShippingLabelPaperSizeListSelectorCommandTests: XCTestCase {
     func test_data_are_set_to_paperSizeOptions_in_init() {
         // Given
@@ -49,6 +50,7 @@ final class ShippingLabelPaperSizeListSelectorCommandTests: XCTestCase {
         XCTAssertFalse(isSelected)
     }
 
+    @MainActor
     func test_configureCell_sets_cell_text_to_paper_size_description() {
         // Given
         let command = ShippingLabelPaperSizeListSelectorCommand(paperSizeOptions: [.legal, .label, .letter], selected: nil)

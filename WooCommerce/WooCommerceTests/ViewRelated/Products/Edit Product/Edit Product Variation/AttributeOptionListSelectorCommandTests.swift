@@ -83,6 +83,7 @@ final class AttributeOptionListSelectorCommandTests: XCTestCase {
         XCTAssertEqual(command.selected, redOption)
     }
 
+    @MainActor
     func test_configureCell_sets_cell_text_to_option_name() {
         // Given
         let attribute = ProductAttribute(siteID: sampleSiteID,

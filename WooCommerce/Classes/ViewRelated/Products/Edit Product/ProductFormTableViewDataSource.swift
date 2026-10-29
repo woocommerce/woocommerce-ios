@@ -19,6 +19,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
 
 /// Configures the sections and rows of Product form table view based on the view model.
 ///
+@MainActor
 final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
     private var onNameChange: ((_ name: String?) -> Void)?
@@ -123,6 +124,7 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
+    @MainActor
     func configureImages(cell: UITableViewCell, isEditable: Bool, isStorePublic: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
         // only show images row if it's a .org site or a public .com site. Private .com site will see a banner.
         guard isStorePublic else {

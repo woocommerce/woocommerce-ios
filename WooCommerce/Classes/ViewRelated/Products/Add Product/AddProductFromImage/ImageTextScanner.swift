@@ -1,7 +1,7 @@
 import UIKit
 import Vision
 
-protocol ImageTextScannerProtocol {
+protocol ImageTextScannerProtocol: Sendable {
     /// Scans text from the given image.
     /// - Parameter image: Image that can contain text.
     /// - Returns: An array of texts detected in the image.

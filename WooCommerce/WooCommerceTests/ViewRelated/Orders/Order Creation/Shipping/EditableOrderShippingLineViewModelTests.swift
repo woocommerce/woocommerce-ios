@@ -377,8 +377,9 @@ final class EditableOrderShippingLineViewModelTests: XCTestCase {
 
 private extension MockStorageManager {
     func insert(_ readOnlyShippingMethod: Yosemite.ShippingMethod) {
-        let shippingMethod = viewStorage.insertNewObject(ofType: StorageShippingMethod.self)
-        shippingMethod.update(with: readOnlyShippingMethod)
-        viewStorage.saveIfNeeded()
+        performAndSave({ storage in
+            let shippingMethod = storage.insertNewObject(ofType: StorageShippingMethod.self)
+            shippingMethod.update(with: readOnlyShippingMethod)
+        }, completion: {}, on: .main)
     }
 }

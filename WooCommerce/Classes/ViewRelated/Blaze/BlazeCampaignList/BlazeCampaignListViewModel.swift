@@ -219,8 +219,7 @@ private extension BlazeCampaignListViewModel {
     }
 }
 
-// WOOMOB-4072: This private tracker is called only by the main-actor list owner. Remove this bridge
-// when PaginationTrackerDelegate declares its UI isolation contract.
+// WOOMOB-4072
 extension BlazeCampaignListViewModel: @preconcurrency PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()

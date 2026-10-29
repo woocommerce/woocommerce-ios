@@ -25,8 +25,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
     private let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
-    // Unaliased; only its nonisolated `cancel` leaves the main actor, and it reads just the notification
-    // center and analytics. Remove when the Notifications slice gives LocalNotificationScheduler a checked contract.
+    // TODO: WOOMOB-4073
     nonisolated(unsafe) private let scheduler: LocalNotificationScheduler
     private let userDefaults: UserDefaults
     private let pushNotesManager: PushNotesManager

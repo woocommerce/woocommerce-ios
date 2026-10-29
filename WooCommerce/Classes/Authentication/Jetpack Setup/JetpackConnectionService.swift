@@ -27,6 +27,7 @@ enum JetpackConnectionServiceError: Error, CustomNSError {
 /// Encapsulates the full Jetpack/WPCom connection decision tree:
 /// fetch data → decide native/webview → connect → verify.
 /// Ref: pe5sF9-401-p2
+@MainActor
 protocol JetpackConnectionServiceProtocol {
     /// Establish site-only connection - minimum requirement for self-driven push notifications.
     func establishSiteConnection(siteURL: String) async throws
@@ -51,6 +52,7 @@ protocol JetpackConnectionServiceProtocol {
     func isJetpackInOfflineMode() async -> Bool
 }
 
+@MainActor
 final class JetpackConnectionService: JetpackConnectionServiceProtocol {
     private let siteID: Int64
     private let stores: StoresManager
@@ -204,14 +206,11 @@ private extension JetpackConnectionService {
     }
 
     func dispatch<T>(_ actionBuilder: @escaping (@escaping @Sendable (Result<T, Error>) -> Void) -> Action) async throws -> T {
-        let stores = self.stores
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             let action = actionBuilder { result in
                 continuation.resume(with: result)
             }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+            stores.dispatch(action)
         }
     }
 }

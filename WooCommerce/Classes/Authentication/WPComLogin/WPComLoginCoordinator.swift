@@ -15,6 +15,7 @@ enum WPComLoginFlow {
 }
 
 /// Coordinates navigation for the login flow with WPCom accounts.
+@MainActor
 final class WPComLoginCoordinator {
     let navigationController: UINavigationController
 
@@ -31,8 +32,8 @@ final class WPComLoginCoordinator {
               flow: flow,
               allowAccountCreation: true,
               accountService: accountService,
-              onPasswordUIRequest: showPasswordUIForLogin(email:),
-              onMagicLinkRequest: showMagicLinkRequestUI,
+              onPasswordUIRequest: { email in self.showPasswordUIForLogin(email: email) },
+              onMagicLinkRequest: { email in self.showMagicLinkRequestUI(email: email) },
               onMagicLinkSent: { [weak self] email, _ in self?.showMagicLinkSentUI(email: email) },
               onError: { [weak self] message in
             self?.showAlert(message: message)
@@ -59,7 +60,6 @@ final class WPComLoginCoordinator {
         navigationController.show(emailLoginController, sender: self)
     }
 
-    @MainActor
     func start(with email: String) async {
         do {
             let passwordless = try await checkPasswordlessAccount(email: email)
@@ -72,7 +72,6 @@ final class WPComLoginCoordinator {
 
 // MARK: - Login steps
 private extension WPComLoginCoordinator {
-    @MainActor
     func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
         if isPasswordlessAccount {
             await handleMagicLink(email: email)
@@ -81,7 +80,6 @@ private extension WPComLoginCoordinator {
         }
     }
 
-    @MainActor
     func handleMagicLink(email: String) async {
         do {
             try await requestAuthenticationLink(email: email)
@@ -144,7 +142,7 @@ private extension WPComLoginCoordinator {
                              onMagicLinkSent: { [weak self] email in
                                  self?.showMagicLinkSentUI(email: email)
                              },
-                             onUseUsernamePassword: showWPComUsernameLogin,
+                             onUseUsernamePassword: { self.showWPComUsernameLogin() },
                              onError: { [weak self] message in
                                  self?.showAlert(message: message)
                              })
@@ -189,7 +187,6 @@ private extension WPComLoginCoordinator {
 
 // MARK: - Private helpers
 private extension WPComLoginCoordinator {
-    @MainActor
     func checkPasswordlessAccount(email: String) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             accountService.isPasswordlessAccount(username: email, success: { passwordless in
@@ -201,7 +198,6 @@ private extension WPComLoginCoordinator {
         }
     }
 
-    @MainActor
     func requestAuthenticationLink(email: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             accountService.requestAuthenticationLink(for: email,

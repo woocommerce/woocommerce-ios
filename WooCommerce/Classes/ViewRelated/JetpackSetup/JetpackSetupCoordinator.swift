@@ -7,6 +7,7 @@ import WooFoundation
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
+@MainActor
 final class JetpackSetupCoordinator {
     let rootViewController: UIViewController
 
@@ -32,9 +33,9 @@ final class JetpackSetupCoordinator {
               flow: loginFlow,
               allowAccountCreation: true,
               accountService: accountService,
-              onPasswordUIRequest: showPasswordUI(email:),
-              onMagicLinkRequest: showMagicLinkRequestUI,
-              onMagicLinkSent: showMagicLinkSentUI,
+              onPasswordUIRequest: { email in self.showPasswordUI(email: email) },
+              onMagicLinkRequest: { email in self.showMagicLinkRequestUI(email: email) },
+              onMagicLinkSent: { email, isSignup in self.showMagicLinkSentUI(email: email, isSignup: isSignup) },
               onError: { [weak self] message in
             self?.showAlert(message: message)
         })
@@ -67,7 +68,7 @@ final class JetpackSetupCoordinator {
     /// Skips the benefits modal when the self-driven push notifications feature is enabled.
     ///
     func startSetup() {
-        Task { @MainActor in
+        Task {
             let isEligible = await pushNotificationEligibilityChecker.checkEligibility()
             if isEligible {
                 await startSetupDirectly()
@@ -99,7 +100,7 @@ final class JetpackSetupCoordinator {
 
     func startAuthentication(with emailOrUsername: String?) {
         if let emailOrUsername {
-            Task { @MainActor in
+            Task {
                 analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
                 await emailLoginViewModel.checkWordPressComAccount(emailOrUsername: emailOrUsername)
             }
@@ -124,7 +125,6 @@ private extension JetpackSetupCoordinator {
     /// Starts the Jetpack setup flow directly, skipping the benefits modal.
     /// Used when the self-driven push notifications feature is enabled.
     ///
-    @MainActor
     func startSetupDirectly() async {
         guard proceedToSetupSteps() == false else {
             return
@@ -134,7 +134,6 @@ private extension JetpackSetupCoordinator {
         await checkConnectionAndAuthenticateIfNeeded(dismissing: progressView)
     }
 
-    @MainActor
     func handleBenefitModalCTA() async {
         guard proceedToSetupSteps() == false else {
             return
@@ -158,7 +157,6 @@ private extension JetpackSetupCoordinator {
     /// Checks Jetpack connection state, tracks analytics, and starts authentication.
     /// Optionally dismisses a presented view controller (e.g. a loading indicator) on completion.
     ///
-    @MainActor
     func checkConnectionAndAuthenticateIfNeeded(dismissing viewController: UIViewController? = nil) async {
         do {
             try await checkJetpackConnectionState()
@@ -232,7 +230,7 @@ private extension JetpackSetupCoordinator {
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
-        Task { @MainActor [weak self] in
+        Task { [weak self] in
             guard let self else { return }
             guard let username = await loadWPComAccountUsername(authToken: authToken) else {
                 return showAlert(message: Localization.errorFetchingWPComAccount, onRetry: { [weak self] in
@@ -397,7 +395,6 @@ private extension JetpackSetupCoordinator {
 //
 private extension JetpackSetupCoordinator {
 
-    @MainActor
     func loadWPComAccountUsername(authToken: String) async -> String? {
         await withCheckedContinuation { continuation in
             let network = AlamofireNetwork(credentials: Credentials(authToken: authToken), selectedSite: nil, appPasswordSupportState: nil)
@@ -408,7 +405,6 @@ private extension JetpackSetupCoordinator {
         }
     }
 
-    @MainActor
     func isJetpackInstalledAndActive() async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: 0) { result in
@@ -454,7 +450,7 @@ private extension JetpackSetupCoordinator {
                                                                                                  onMagicLinkSent: { [weak self] email in
             self?.showMagicLinkSentUI(email: email, isSignup: false)
         },
-                                                                                                 onUseUsernamePassword: showWPComUsernameLogin,
+                                                                                                 onUseUsernamePassword: { self.showWPComUsernameLogin() },
                                                                                                  onError: { [weak self] message in
             self?.showAlert(message: message)
         }))

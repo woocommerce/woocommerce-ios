@@ -162,6 +162,7 @@ final class JetpackSetupRequiredViewModelTests: XCTestCase {
         XCTAssertEqual(text, expectedText)
     }
 
+    @MainActor
     func test_viewModel_invokes_present_support_when_the_help_button_is_tapped() throws {
         // Given
         let mockAuthentication = MockAuthentication()

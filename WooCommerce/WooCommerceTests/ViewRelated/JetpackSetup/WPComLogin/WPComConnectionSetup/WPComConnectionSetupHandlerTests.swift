@@ -7,27 +7,10 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
     private let testSiteURL = "https://example.com"
 
-    private var mockConnectionService: MockJetpackConnectionService!
-    private var mockPluginVersionChecker: MockPluginVersionChecker!
-    private var mockPushNotesManager: MockPushNotificationsManager!
-    private var delegateSpy: MockWPComConnectionSetupHandlerDelegate!
-
-    override func setUp() {
-        super.setUp()
-        mockConnectionService = MockJetpackConnectionService()
-        mockPluginVersionChecker = MockPluginVersionChecker()
-        mockPluginVersionChecker.result = .success(.compatible)
-        mockPushNotesManager = MockPushNotificationsManager()
-        delegateSpy = MockWPComConnectionSetupHandlerDelegate()
-    }
-
-    override func tearDown() {
-        mockConnectionService = nil
-        mockPluginVersionChecker = nil
-        mockPushNotesManager = nil
-        delegateSpy = nil
-        super.tearDown()
-    }
+    private lazy var mockConnectionService = MockJetpackConnectionService()
+    private lazy var mockPluginVersionChecker = MockPluginVersionChecker()
+    private lazy var mockPushNotesManager = MockPushNotificationsManager()
+    private lazy var delegateSpy = MockWPComConnectionSetupHandlerDelegate()
 
     // MARK: - start() Tests
 

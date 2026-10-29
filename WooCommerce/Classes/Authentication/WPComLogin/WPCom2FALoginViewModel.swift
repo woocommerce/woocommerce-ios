@@ -89,6 +89,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     }
 
     @available(iOS 16, *)
+    @MainActor
     func loginWithSecurityKey() {
         guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
             return handleError(.webAuthNonceNotFound)
@@ -212,6 +213,7 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
 //
 private extension WPCom2FALoginViewModel {
     @available(iOS 16, *)
+    @MainActor
     func signChallenge(_ challengeInfo: WebauthnChallengeInfo) {
 
         // Requesting a challenge uses up the nonce; keep its replacement for another attempt.

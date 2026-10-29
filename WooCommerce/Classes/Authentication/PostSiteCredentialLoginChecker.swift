@@ -331,6 +331,7 @@ private extension PostSiteCredentialLoginChecker {
     /// The error screen to be displayed when the user tries to log in with site credentials
     /// with application password disabled.
     ///
+    @MainActor
     func applicationPasswordDisabledUI(for siteURL: String, previousViewController: UIViewController?) -> UIViewController {
         let viewModel = ApplicationPasswordDisabledViewModel(siteURL: siteURL, previousViewController: previousViewController)
         return ULErrorViewController(viewModel: viewModel)

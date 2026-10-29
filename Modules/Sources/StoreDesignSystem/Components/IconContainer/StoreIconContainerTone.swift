@@ -21,7 +21,7 @@ public struct StoreIconContainerTone: Sendable {
     )
 
     public static let sandstone = StoreIconContainerTone(
-        appearance: Appearance(background: .storePaletteSandstone10, foreground: .storePaletteSandstone60)
+        appearance: Appearance(background: .storeIconContainerSandstone, foreground: .storePaletteSandstone60)
     )
 
     public static let blue = StoreIconContainerTone(

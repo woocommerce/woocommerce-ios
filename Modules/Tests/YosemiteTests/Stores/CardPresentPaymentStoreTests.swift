@@ -12,6 +12,7 @@ import YosemiteTestHelpers
 ///
 /// All mock properties are necessary because
 /// CardPresentPaymentStore extends Store.
+@MainActor
 final class CardPresentPaymentStoreTests: XCTestCase {
     /// Mock Dispatcher!
     ///
@@ -66,8 +67,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     ///
     private let samplePaymentIntentID: String = "p_idREDACTED"
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
@@ -80,13 +81,13 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                    cardReaderConfigProvider: mockCardReaderConfigProvider)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         dispatcher = nil
         storageManager = nil
         network = nil
         mockCardReaderService = nil
 
-        super.tearDown()
+        try await super.tearDown()
     }
 
     // MARK: - CardPresentPaymentAction.startCardReaderDiscovery

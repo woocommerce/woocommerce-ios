@@ -119,6 +119,7 @@ struct WebView: UIViewRepresentable {
         }
     }
 
+    @MainActor
     class WebViewCoordinator: NSObject, WKNavigationDelegate {
         private var parent: WebView
         private var urlSubscription: AnyCancellable?
@@ -149,7 +150,7 @@ struct WebView: UIViewRepresentable {
 
         func webView(_ webView: WKWebView, decidePolicyFor
                         navigationAction: WKNavigationAction,
-                     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+                     decisionHandler: @escaping @MainActor @Sendable (WKNavigationActionPolicy) -> Void) {
             if navigationAction.navigationType == .linkActivated && parent.disableLinkClicking {
                 decisionHandler(.cancel)
                 return

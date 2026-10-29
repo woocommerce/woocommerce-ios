@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class StatusListTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -18,7 +19,10 @@ final class StatusListTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureBackground()
         styleCheckmark()
     }

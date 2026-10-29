@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class NotWPErrorViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_image() {

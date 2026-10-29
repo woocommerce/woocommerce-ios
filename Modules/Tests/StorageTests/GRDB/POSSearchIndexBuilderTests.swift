@@ -349,6 +349,27 @@ struct POSSearchIndexBuilderTests {
         #expect(count == 5)
     }
 
+    @Test("searchCount stops counting at the limit")
+    func test_searchCount_when_limit_is_lower_than_matches_then_returns_limit() async throws {
+        // Given: Five products matching a term
+        try await grdbManager.databaseConnection.write { db in
+            for i in 1...5 {
+                try insertProduct(id: Int64(1400 + i), name: "Capped Item \(i)", productTypeKey: "simple", in: db)
+            }
+        }
+        try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
+
+        // When: Count with limits below and above the number of matches
+        let (capped, uncapped) = try await grdbManager.databaseConnection.read { db in
+            (try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "Capped", limit: 3, in: db),
+             try POSSearchIndexBuilder.searchCount(siteID: siteID, term: "Capped", limit: 10, in: db))
+        }
+
+        // Then: The count stops at the limit, and is exact below it
+        #expect(capped == 3)
+        #expect(uncapped == 5)
+    }
+
     @Test("search returns empty for no matches")
     func test_search_returns_empty_for_no_matches() async throws {
         // Given: Products that don't match the search term

@@ -7,6 +7,7 @@ import TestKit
 
 /// Test cases for `EmptyStateViewController`.
 ///
+@MainActor
 final class EmptyStateViewControllerTests: XCTestCase {
 
     func test_it_hides_all_configurable_elements_except_message_by_default() throws {

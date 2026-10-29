@@ -54,12 +54,16 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Closure to execute after a rate is selected.
     let onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)?
 
+    /// Receives the original error, which the loading state reduces to `Error.failedLoadingLabelRates`.
+    private let onLabelRatesLoadingFailure: ((Swift.Error) -> Void)?
+
     init(order: Order,
          originAddress: WooShippingAddress?,
          destinationAddress: WooShippingAddress?,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)? = nil) {
+         onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)? = nil,
+         onLabelRatesLoadingFailure: ((Swift.Error) -> Void)? = nil) {
         self.siteID = order.siteID
         self.orderID = order.orderID
         self.originAddress = originAddress
@@ -67,6 +71,7 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.onSelectRate = onSelectRate
+        self.onLabelRatesLoadingFailure = onLabelRatesLoadingFailure
         observeSelectedTab()
     }
 
@@ -195,6 +200,7 @@ final class WooShippingServiceViewModel: ObservableObject {
                 }
                 updateLoadingState(to: .error(loadingError))
                 analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
+                onLabelRatesLoadingFailure?(error)
                 onLoadingCompletion(.failure(loadingError))
             }
         }

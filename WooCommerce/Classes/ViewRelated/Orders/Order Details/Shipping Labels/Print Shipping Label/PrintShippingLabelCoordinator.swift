@@ -34,6 +34,7 @@ final class PrintShippingLabelCoordinator {
     /// Creates the main viewController for printing a shipping label.
     /// `self` is retained in the action callbacks so that the coordinator has the same life cycle as the main view controller
     /// (`PrintShippingLabelViewController`).
+    @MainActor
     func createPrintViewController() -> PrintShippingLabelViewController {
         let printViewController = PrintShippingLabelViewController(shippingLabels: shippingLabels, printType: printType)
 
@@ -67,6 +68,7 @@ extension PrintShippingLabelCoordinator {
 
 // MARK: Navigation actions
 private extension PrintShippingLabelCoordinator {
+    @MainActor
     func showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
                                selectedPaperSize: ShippingLabelPaperSize?,
                                onPaperSizeSelected: @escaping (ShippingLabelPaperSize?) -> Void) {

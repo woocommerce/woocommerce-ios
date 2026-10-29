@@ -142,12 +142,14 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureLabels()
-        configureImageView()
-        configureContentStackView()
-        configureTitleAndTextStackView()
-        configureDefaultBackgroundConfiguration()
-        configureSelectedBackground()
+        MainActor.assumeIsolated {
+            configureLabels()
+            configureImageView()
+            configureContentStackView()
+            configureTitleAndTextStackView()
+            configureDefaultBackgroundConfiguration()
+            configureSelectedBackground()
+        }
     }
 
     override func prepareForReuse() {

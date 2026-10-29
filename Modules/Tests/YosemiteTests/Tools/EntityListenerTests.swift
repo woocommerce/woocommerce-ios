@@ -81,6 +81,8 @@ class EntityListenerTests: XCTestCase {
         // notification proves the deletion was processed while the listener stayed silent.
         let notification = expectation(forNotification: .NSManagedObjectContextObjectsDidChange,
                                        object: viewContext)
+        // Only the first notification matters, as with the observer this expectation replaces.
+        notification.assertForOverFulfill = false
         viewContext.deleteObject(storageAccount)
         storageManager.performAndSave({ _ in }, completion: nil, on: .main)
         await fulfillment(of: [notification], timeout: Constants.expectationTimeout)

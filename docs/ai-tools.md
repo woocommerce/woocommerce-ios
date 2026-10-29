@@ -22,7 +22,6 @@ Shared task definitions live in `.agents/agents/`. Read the relevant definition 
 
 | Name | What it does | When to use | Example | Owner | Availability |
 |---|---|---|---|---|---|
-| [Main-actor XCTest wait](../WooCommerce/WooCommerceTests/Testing/XCTestCase+MainActorWait.swift) | Polls a condition without sending main-actor test state to a nonisolated helper | Async XCTest methods that wait for UI-owned state | `await waitOnMainActor { viewModel.isLoaded }` | Woo Mobile | Repo. WooCommerceTests target |
 | [Auto-login](../.agents/skills/auto-login/SKILL.md) | Logs a DEBUG app into a live store or explicit WireMock fixtures | Simulator checks that need a logged-in store | "Log in to a test store on the simulator" or "auto-login with mocks" | Woo Mobile | Repo. Signed DEBUG build with its runtime frameworks; authorized store access or mock server. Read the skill before using its launch script |
 | [Simulator finder](../Scripts/find-simulator.sh) | Finds a booted simulator or boots an available one | Selecting a device for testing | `bash Scripts/find-simulator.sh ipad` | Woo Mobile | Repo. Xcode and an installed simulator runtime |
 | [WireMock scripts](../API-Mocks/README.md) | Starts and stops the local API fixture server | UI tests or checks using mocked responses | `./API-Mocks/scripts/start.sh` | Woo Mobile | Repo. Java; follow the mocks skill for setup |

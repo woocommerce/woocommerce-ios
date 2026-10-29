@@ -14,5 +14,7 @@ public enum SystemStatusAction: Action {
 
     /// Fetch system status report for a site given its ID
     ///
-    case fetchSystemStatusReport(siteID: Int64, onCompletion: @Sendable (Result<SystemStatusReport, Error>) -> Void)
+    case fetchSystemStatusReport(siteID: Int64,
+                                 detectUnexpectedResponses: Bool = false,
+                                 onCompletion: @Sendable (Result<SystemStatusReport, Error>) -> Void)
 }

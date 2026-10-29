@@ -18,7 +18,7 @@ final class SystemStatusReportViewModelTests: XCTestCase {
         var fetchedSiteID: Int64?
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case .fetchSystemStatusReport(let siteID, let onCompletion):
+            case .fetchSystemStatusReport(let siteID, _, let onCompletion):
                 fetchedSiteID = siteID
                 onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
             default:

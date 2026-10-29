@@ -87,6 +87,8 @@ public final class CardPresentPaymentStore: Store {
             loadAccounts(siteID: siteID,
                          gateways: gateways,
                          onCompletion: onCompletion)
+        case .fetchPaymentGatewayAccount(let siteID, let gateway, let onCompletion):
+            fetchPaymentGatewayAccount(siteID: siteID, gateway: gateway, onCompletion: onCompletion)
         case .checkDeviceSupport(let siteID,
                                  let cardReaderType,
                                  let discoveryMethod,
@@ -573,6 +575,21 @@ private extension CardPresentPaymentStore {
             case (_, .none):
                 // This... shouldn't really happen.
                 onCompletion(.failure(CardPresentPaymentStoreError.unknownErrorFetchingAccounts))
+            }
+        }
+    }
+
+    func fetchPaymentGatewayAccount(siteID: Int64,
+                                    gateway: CardPresentPaymentsPlugin,
+                                    onCompletion: @escaping (Result<PaymentGatewayAccount, Error>) -> Void) {
+        switch gateway {
+        case .wcPay:
+            remote.loadAccount(for: siteID, detectUnexpectedResponses: true) { result in
+                onCompletion(result.map { $0.toPaymentGatewayAccount(siteID: siteID) })
+            }
+        case .stripe:
+            stripeRemote.loadAccount(for: siteID, detectUnexpectedResponses: true) { result in
+                onCompletion(result.map { $0.toPaymentGatewayAccount(siteID: siteID) })
             }
         }
     }

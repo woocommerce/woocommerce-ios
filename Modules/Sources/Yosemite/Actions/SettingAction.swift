@@ -17,6 +17,9 @@ public enum SettingAction: Action {
     ///
     case synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @Sendable (Error?) -> Void)
 
+    /// Retrieves the site's general settings without changing stored settings.
+    case retrieveGeneralSiteSettings(siteID: Int64, onCompletion: @Sendable (Result<[SiteSetting], Error>) -> Void)
+
     /// Synchronizes the site's product settings
     ///
     case synchronizeProductSiteSettings(siteID: Int64, onCompletion: @Sendable (Error?) -> Void)

@@ -3,8 +3,9 @@
 
 26.0
 -----
+- [*] POS: Made product search faster on large catalogs. [https://github.com/woocommerce/woocommerce-ios/pull/18174]
+- [*] POS: Prevented items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
 - [*] Orders: Prevented a crash when restoring focus to an amount field after a layout change. [https://github.com/woocommerce/woocommerce-ios/pull/18184]
-- [*] Point of Sale: Prevent items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
 - [*] POS: Merchants can go back to the cart while checkout prepares the order and the card reader. [https://github.com/woocommerce/woocommerce-ios/pull/18127]
 - [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]
 - [*] In-Person Payments: Prevented a duplicate new-order notice after collecting a card payment in the app. [https://github.com/woocommerce/woocommerce-ios/pull/18130]

@@ -70,8 +70,8 @@ tags:
     timeout: 15000
 - tapOn:
     text: "1"
-    below: Order Count
-    above: Price
+    rightOf: Order Count
+    point: "90%,50%"
 - eraseText
 - inputText: "2"
 - tapOn: Done
@@ -80,7 +80,8 @@ tags:
     below: Order Count
 - tapOn:
     text: "2"
-    below: Order Count
+    rightOf: Order Count
+    point: "90%,50%"
 - eraseText
 - inputText: "1"
 - tapOn: Done

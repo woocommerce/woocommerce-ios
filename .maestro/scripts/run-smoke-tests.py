@@ -41,6 +41,22 @@ SHARED_STORE_TAG = "store_shared"
 # last logged in to, so a later run knows whether to sign the app out first.
 STORE_MARKER_NAME = ".woo-maestro-store"
 NOTIFICATION_FLOW = "ios_notification_long_press.yaml"
+# Flows with this tag set up push notifications on the site without Jetpack, which
+# connects it to WordPress.com, so the runner disconnects it before each attempt.
+NO_JETPACK_STORE_TAG = "no_jetpack_store"
+JN_SSH = SCRIPT_DIR / "jn-ssh.exp"
+# Uninstalls Jetpack if the app installed it and removes the site's own connection, as
+# Jurassic Ninja keeps the site ID. The check runs in a separate wp-cli call, as the
+# previous one still holds the removed tokens.
+DISCONNECT_NO_JETPACK_SITE = (
+    "wp plugin is-active jetpack >/dev/null 2>&1 && wp jetpack disconnect blog >/dev/null 2>&1; "
+    "wp plugin uninstall jetpack --deactivate >/dev/null 2>&1; "
+    "wp eval '$options = get_option( \"jetpack_options\" ); unset( $options[\"id\"], $options[\"master_user\"] ); "
+    "update_option( \"jetpack_options\", $options ); $tokens = get_option( \"jetpack_private_options\" ); "
+    "unset( $tokens[\"blog_token\"], $tokens[\"user_tokens\"] ); update_option( \"jetpack_private_options\", $tokens );' "
+    "&& wp eval '$manager = new Automattic\\Jetpack\\Connection\\Manager(); "
+    "echo $manager->is_connected() || $manager->has_connected_owner() ? \"CONNECTED\" : \"DISCONNECTED\";'"
+)
 STORE_ORDER_PUSH = MAESTRO_DIR / "helpers" / "store_order_push.json"
 LOGIN_FLOW = MAESTRO_DIR / "subflows" / "login.yaml"
 # Flows read these store-neutral names; the runner fills them from the
@@ -554,6 +570,19 @@ def deliver_store_order_push(udid: str, app_id: str) -> None:
     # Notification Center, where the notification flow opens it.
     run(["xcrun", "simctl", "terminate", udid, app_id], check=False)
     run(["xcrun", "simctl", "push", udid, app_id, str(STORE_ORDER_PUSH)])
+
+
+def disconnect_no_jetpack_site(values: dict[str, str]) -> bool:
+    site = urlsplit(values.get("MAESTRO_WOO_NO_JETPACK_SITE_URL", "")).hostname
+    password = values.get("MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD", "")
+    if not site or not password:
+        return False
+    # SSH to Jurassic Ninja sometimes drops a session, so it tries a few times.
+    for _ in range(3):
+        result = run([str(JN_SSH), site, DISCONNECT_NO_JETPACK_SITE], check=False, env={**os.environ, "JN_SSH_PASS": password})
+        if "DISCONNECTED" in result.stdout:
+            return True
+    return False
 
 
 def sign_in_allowing_notifications(udid: str, env_args: list[str], environment: dict[str, str]) -> subprocess.CompletedProcess[str]:
@@ -1072,7 +1101,11 @@ def main() -> int:
                         sign_in_log = output / "logs" / f"{prefix}-sign-in.log"
                         sign_in_log.write_text(redact(signed_in.stdout + signed_in.stderr, values), encoding="utf-8")
                         deliver_store_order_push(simulator["udid"], app_id)
-                    command = ["maestro", "test", "--udid", simulator["udid"], "--config", str(CONFIG_FILE), "--format", "JUNIT", "--output", str(junit), "--debug-output", str(debug), "--test-output-dir", str(screenshot_dir), *env_args, str(flow)]
+                    flow_env_args: list[str] = []
+                    if NO_JETPACK_STORE_TAG in flow_tags(flow):
+                        disconnected = "yes" if disconnect_no_jetpack_site(values) else "no"
+                        flow_env_args = ["--env", f"NO_JETPACK_DISCONNECTED={disconnected}"]
+                    command = ["maestro", "test", "--udid", simulator["udid"], "--config", str(CONFIG_FILE), "--format", "JUNIT", "--output", str(junit), "--debug-output", str(debug), "--test-output-dir", str(screenshot_dir), *env_args, *flow_env_args, str(flow)]
                     try:
                         completed = run(
                             command,

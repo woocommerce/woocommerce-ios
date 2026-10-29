@@ -226,6 +226,40 @@ class RunnerTests(unittest.TestCase):
         )
         self.assertIn("NOTIFICATIONS=allow", commands[0])
 
+    def test_no_jetpack_site_disconnect_retries_a_dropped_ssh_session(self) -> None:
+        calls: list[tuple[list[str], dict[str, str]]] = []
+        outputs = iter(["", "DISCONNECTED\n"])
+
+        def fake_run(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+            calls.append((command, kwargs["env"]))
+            return subprocess.CompletedProcess(command, 0, next(outputs), "")
+
+        values = {
+            "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://no-jetpack.example.com",
+            "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD": "site-password",
+        }
+        with mock.patch.object(RUNNER, "run", side_effect=fake_run):
+            disconnected = RUNNER.disconnect_no_jetpack_site(values)
+
+        self.assertTrue(disconnected)
+        self.assertEqual(2, len(calls))
+        command, env = calls[0]
+        self.assertEqual([str(RUNNER.JN_SSH), "no-jetpack.example.com", RUNNER.DISCONNECT_NO_JETPACK_SITE], command)
+        self.assertEqual("site-password", env["JN_SSH_PASS"])
+        self.assertNotIn("site-password", " ".join(command))
+
+    def test_no_jetpack_site_disconnect_fails_while_the_site_stays_connected(self) -> None:
+        values = {
+            "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://no-jetpack.example.com",
+            "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD": "site-password",
+        }
+        connected = subprocess.CompletedProcess([], 0, "CONNECTED\n", "")
+        with mock.patch.object(RUNNER, "run", return_value=connected) as run:
+            disconnected = RUNNER.disconnect_no_jetpack_site(values)
+
+        self.assertFalse(disconnected)
+        self.assertEqual(3, run.call_count)
+
     def test_html_report_names_the_overall_status(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

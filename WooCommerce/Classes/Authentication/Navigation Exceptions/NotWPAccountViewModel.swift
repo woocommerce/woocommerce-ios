@@ -1,6 +1,6 @@
 import UIKit
 import SafariServices
-import WordPressAuthenticator
+import struct WordPressAuthenticator.NavigateToRoot
 import WordPressUI
 import Experiments
 import protocol WooFoundation.Analytics
@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 /// Configuration and actions for an ULErrorViewController, modeling
 /// an error when user attempts to log in with an invalid WordPress.com account
 /// (e.g. when the email is not linked to a WordPress.com account).
+@MainActor
 final class NotWPAccountViewModel: ULErrorViewModel {
     // MARK: - Data and configuration
     let image: UIImage = .loginNoWordPressError
@@ -43,7 +44,8 @@ final class NotWPAccountViewModel: ULErrorViewModel {
     private let analytics: Analytics
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    init(analytics: Analytics = ServiceLocator.analytics) {
+    // Nonisolated until WOOMOB-4179 isolates the `AuthenticationManager` delegate methods that build this view model.
+    nonisolated init(analytics: Analytics = ServiceLocator.analytics) {
         self.analytics = analytics
     }
 

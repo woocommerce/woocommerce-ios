@@ -95,13 +95,11 @@ final class StorePickerCoordinatorTests: XCTestCase {
     @MainActor
     func test_contact_support_when_unknown_store_error_is_presented_then_shows_ai_support_chat() throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
-        let storePicker = StorePickerViewController(configuration: .login, stores: stores)
+        let storePicker = UIViewController()
         navigationController.setViewControllers([storePicker], animated: false)
-        storePicker.loadViewIfNeeded()
-        storePicker.displayUnknownErrorModal()
-        waitUntil { storePicker.presentedViewController is StorePickerErrorHostingController }
-        let errorController = try XCTUnwrap(storePicker.presentedViewController as? StorePickerErrorHostingController)
+        let errorController = StorePickerErrorHostingController.createWithActions(presenting: storePicker)
+        storePicker.present(errorController, animated: false)
+        waitUntil { storePicker.presentedViewController === errorController }
 
         // When
         errorController.rootView.contactSupportAction()

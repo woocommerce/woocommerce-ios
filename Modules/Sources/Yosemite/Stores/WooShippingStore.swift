@@ -5,15 +5,19 @@ import Storage
 /// Implements `WooShippingAction` actions
 ///
 public final class WooShippingStore: Store {
-    private let remote: WooShippingRemoteProtocol
+    private let requestHandler: WooShippingStoreRequestHandler
 
     override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = WooShippingRemote(network: network)
+        self.requestHandler = WooShippingStoreRequestHandler(remote: WooShippingRemote(network: network), storageManager: storageManager)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: WooShippingRemoteProtocol) {
-        self.remote = remote
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: WooShippingRemoteProtocol,
+         schedule: (@Sendable (TimeInterval, @escaping @MainActor @Sendable () -> Void) -> Void)? = nil) {
+        self.requestHandler = WooShippingStoreRequestHandler(remote: remote, storageManager: storageManager, schedule: schedule)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -24,6 +28,33 @@ public final class WooShippingStore: Store {
 
     /// Receives and executes Actions.
     override public func onAction(_ action: Action) {
+        requestHandler.onAction(action)
+    }
+}
+
+private final class WooShippingStoreRequestHandler: Sendable {
+    let remote: WooShippingRemoteProtocol
+    let storageManager: StorageManagerType
+    let schedule: @Sendable (TimeInterval, @escaping @MainActor @Sendable () -> Void) -> Void
+
+    init(remote: WooShippingRemoteProtocol,
+         storageManager: StorageManagerType,
+         schedule: (@Sendable (TimeInterval, @escaping @MainActor @Sendable () -> Void) -> Void)? = nil) {
+        self.remote = remote
+        self.storageManager = storageManager
+        self.schedule = schedule ?? { delay, operation in
+            Task { @MainActor in
+                do {
+                    try await Task.sleep(for: .seconds(delay))
+                } catch {
+                    return
+                }
+                operation()
+            }
+        }
+    }
+
+    func onAction(_ action: Action) {
         guard let action = action as? WooShippingAction else {
             assertionFailure("WooShippingStore received an unsupported action")
             return
@@ -108,7 +139,7 @@ public final class WooShippingStore: Store {
     }
 }
 
-private extension WooShippingStore {
+private extension WooShippingStoreRequestHandler {
     /// Checks whether an order is eligible for shipping label creation.
     ///
     func checkCreationEligibility(siteID: Int64,
@@ -140,7 +171,7 @@ private extension WooShippingStore {
     func createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage? = nil,
                        predefinedOption: WooShippingPredefinedSavedOption? = nil,
-                       completion: @escaping (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void) {
+                       completion: @escaping @Sendable (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void) {
         remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption) { [weak self] result in
             switch result {
             case .success(let packages):
@@ -156,7 +187,7 @@ private extension WooShippingStore {
     func deletePackage(siteID: Int64,
                        packageID: String,
                        packageType: WooShippingPackageType,
-                       completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
+                       completion: @escaping @Sendable (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
         remote.deletePackage(siteID: siteID, packageID: packageID, packageType: packageType) { [weak self] result in
             switch result {
             case .success(let packages):
@@ -191,7 +222,7 @@ private extension WooShippingStore {
     }
 
     func loadPackages(siteID: Int64,
-                      completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
+                      completion: @escaping @Sendable (Result<WooShippingPackagesResponse, Error>) -> Void) {
         remote.loadPackages(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let packages):
@@ -205,7 +236,7 @@ private extension WooShippingStore {
     }
 
     func loadAccountSettings(siteID: Int64,
-                             completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
+                             completion: @escaping @Sendable (Result<WooShippingAccountSettings, Error>) -> Void) {
         remote.loadAccountSettings(siteID: siteID, completion: { [weak self] result in
             guard let self else { return }
             switch result {
@@ -234,14 +265,14 @@ private extension WooShippingStore {
                                backendProcessingDelay: TimeInterval,
                                pollingDelay: TimeInterval,
                                pollingMaximumRetries: Int64,
-                               completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
+                               completion: @escaping @Sendable (Result<ShippingLabel, Error>) -> Void) {
         // Make the initial purchase request.
         remote.purchaseShippingLabel(siteID: siteID,
                                      orderID: orderID,
                                      originAddress: originAddress,
                                      destinationAddress: destinationAddress,
                                      package: package,
-                                     markOrderComplete: markOrderComplete) { [weak self] result in
+                                     markOrderComplete: markOrderComplete) { [weak self, schedule] result in
             switch result {
             case .success(let labelPurchases):
                 // Purchase endpoint returns an array of labels, but the polling endpoint only takes a single label at a time.
@@ -252,7 +283,7 @@ private extension WooShippingStore {
                 }
 
                 // Wait to give the backend time to process the purchase
-                DispatchQueue.main.asyncAfter(deadline: .now() + backendProcessingDelay) { [weak self] in
+                schedule(backendProcessingDelay) { [weak self] in
                     guard let self else { return }
 
                     // Poll the status of the label purchase from the response above
@@ -278,7 +309,7 @@ private extension WooShippingStore {
     }
 
     func loadOriginAddresses(siteID: Int64,
-                             completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void) {
+                             completion: @escaping @Sendable (Result<[WooShippingOriginAddress], Error>) -> Void) {
         remote.loadOriginAddresses(siteID: siteID, completion: { [weak self] result in
             guard let self else { return }
             switch result {
@@ -293,7 +324,7 @@ private extension WooShippingStore {
     }
 
     func refundShippingLabel(shippingLabel: ShippingLabel,
-                             completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
+                             completion: @escaping @Sendable (Result<ShippingLabel, Error>) -> Void) {
         remote.refundShippingLabel(siteID: shippingLabel.siteID,
                                    orderID: shippingLabel.orderID,
                                    shippingLabelID: shippingLabel.shippingLabelID) { [weak self] result in
@@ -323,7 +354,7 @@ private extension WooShippingStore {
 
     func syncShipments(siteID: Int64,
                        orderID: Int64,
-                       completion: @escaping (Result<[WooShippingShipment], Error>) -> Void) {
+                       completion: @escaping @Sendable (Result<[WooShippingShipment], Error>) -> Void) {
         remote.loadConfig(siteID: siteID, orderID: orderID) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -342,7 +373,7 @@ private extension WooShippingStore {
 }
 
 // MARK: Helpers
-private extension WooShippingStore {
+private extension WooShippingStoreRequestHandler {
     /// Polls the status of the purchase for the provided label ID,
     /// with a delay of 1 second each time, and a maximum of 3 retries for failed requests.
     func pollLabelStatus(withDelayInSeconds delay: Double,
@@ -350,8 +381,8 @@ private extension WooShippingStore {
                          siteID: Int64,
                          orderID: Int64,
                          labelID: Int64,
-                         completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
-        remote.checkLabelStatus(siteID: siteID, orderID: orderID, labelID: labelID) { [weak self] result in
+                         completion: @escaping @Sendable (Result<ShippingLabel, Error>) -> Void) {
+        remote.checkLabelStatus(siteID: siteID, orderID: orderID, labelID: labelID) { [weak self, schedule] result in
             switch result {
             case .success(let labelStatusResponse):
                 // If label has PURCHASED status, stop polling
@@ -373,7 +404,7 @@ private extension WooShippingStore {
 
                 // If no error but status is not PURCHASED, poll again after delay
                 else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                    schedule(delay) { [weak self] in
                         self?.pollLabelStatus(withDelayInSeconds: delay,
                                               maxErrorRetries: maxErrorRetries,
                                               siteID: siteID,
@@ -386,7 +417,7 @@ private extension WooShippingStore {
             case .failure(let error):
                 // If there are retries left, poll again after delay
                 if maxErrorRetries > 0 {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                    schedule(delay) { [weak self] in
                         self?.pollLabelStatus(withDelayInSeconds: delay,
                                               maxErrorRetries: maxErrorRetries - 1,
                                               siteID: siteID,
@@ -481,7 +512,7 @@ private extension WooShippingStore {
     func updateShipment(siteID: Int64,
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
-                        completion: @escaping (Result<WooShippingShipments, Error>) -> Void) {
+                        completion: @escaping @Sendable (Result<WooShippingShipments, Error>) -> Void) {
         remote.updateShipment(siteID: siteID, orderID: orderID, shipmentToUpdate: shipmentToUpdate) { [weak self] result in
             guard let self, let contents = try? result.get() else {
                 return completion(result)
@@ -503,13 +534,13 @@ private extension WooShippingStore {
 }
 
 // MARK: - Storage
-private extension WooShippingStore {
+private extension WooShippingStoreRequestHandler {
     /// Updates (OR Inserts) the specified ReadOnly WooShippingPackagesResponse Entities *in a background thread*.
     /// `onCompletion` will be called on the main thread!
     ///
     func upsertPackagesResponseInBackground(readOnlyPackages: Networking.WooShippingPackagesResponse,
                                             siteID: Int64,
-                                            onCompletion: @escaping () -> Void) {
+                                            onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             upsertPackagesResponse(readOnlyPackages: readOnlyPackages, in: storage)
@@ -521,7 +552,7 @@ private extension WooShippingStore {
     ///
     func upsertCreatePackagesResponseInBackground(readOnlyPackages: Networking.WooShippingCreatePackageResponse,
                                                   siteID: Int64,
-                                                  onCompletion: @escaping () -> Void) {
+                                                  onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             upsertCreatePackageResponse(readOnlyPackages: readOnlyPackages, siteID: siteID, in: storage)
@@ -723,7 +754,7 @@ private extension WooShippingStore {
     /// `onCompletion` will be called on the main thread!
     func upsertOriginAddressesInBackground(siteID: Int64,
                                            originAddresses: [WooShippingOriginAddress],
-                                           onCompletion: @escaping () -> Void) {
+                                           onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ storage in
             let storedOriginAddresses = storage.loadAllOriginAddresses(siteID: siteID)
             for address in originAddresses {
@@ -746,7 +777,7 @@ private extension WooShippingStore {
     /// `onCompletion` will be called on the main thread!
     func upsertShippingLabelRefundInBackground(shippingLabel: ShippingLabel,
                                                refund: ShippingLabelRefund,
-                                               onCompletion: @escaping (_ updatedLabel: ShippingLabel) -> Void) {
+                                               onCompletion: @escaping @Sendable (_ updatedLabel: ShippingLabel) -> Void) {
         storageManager.performAndSave ({ storage -> ShippingLabel in
             let storageShippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
                                                                  orderID: shippingLabel.orderID,
@@ -796,7 +827,7 @@ private extension WooShippingStore {
     func insertPurchasedLabelInBackground(siteID: Int64,
                                           orderID: Int64,
                                           shippingLabel: ShippingLabel,
-                                          onCompletion: @escaping () -> Void) {
+                                          onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
 
@@ -818,7 +849,7 @@ private extension WooShippingStore {
     func upsertShipmentsInBackground(siteID: Int64,
                                      orderID: Int64,
                                      shipments: [WooShippingShipment],
-                                     onCompletion: @escaping () -> Void) {
+                                     onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave ({ [weak self] storage in
             guard let self else { return }
             guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
@@ -932,7 +963,7 @@ private extension WooShippingStore {
     ///
     func upsertShippingLabelAccountSettingsInBackground(siteID: Int64,
                                                         accountSettings: ShippingLabelAccountSettings,
-                                                        onCompletion: @escaping () -> Void) {
+                                                        onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ storage in
             let storageAccountSettings = storage.loadShippingLabelAccountSettings(siteID: siteID) ??
                 storage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)

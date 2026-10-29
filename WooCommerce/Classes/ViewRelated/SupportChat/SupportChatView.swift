@@ -231,17 +231,21 @@ struct SupportChatView: View {
     private func diagnosticsSuccessBubble() -> some View {
         VStack(alignment: .leading, spacing: Layout.resultsSpacing) {
             HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color.green)
+                Image(systemName: viewModel.paymentDiagnosticsAreInconclusive ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                    .foregroundStyle(viewModel.paymentDiagnosticsAreInconclusive ? Color.orange : Color.green)
 
-                Text(Localization.allChecksPassed)
+                Text(viewModel.paymentDiagnosticCompletionMessage ?? Localization.allChecksPassed)
                     .font(.body)
             }
 
-            Button(Localization.continueToChat) {
-                viewModel.proceedToChat()
+            if let advisory = viewModel.paymentAdvisoryMessage {
+                Text(advisory)
+                    .font(.body)
             }
-            .buttonStyle(SecondaryButtonStyle())
+
+            paymentDiagnosticContext
+
+            diagnosticContinuation
         }
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
@@ -266,6 +270,8 @@ struct SupportChatView: View {
                     .foregroundStyle(Color(.secondaryLabel))
             }
 
+            paymentDiagnosticContext
+
             if let action = result.suggestedAction {
                 Button {
                     Task {
@@ -277,14 +283,35 @@ struct SupportChatView: View {
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
             }
 
-            Button(Localization.continueToChat) {
-                viewModel.proceedToChat()
-            }
-            .buttonStyle(SecondaryButtonStyle())
+            diagnosticContinuation
         }
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
+    }
+
+    @ViewBuilder
+    private var paymentDiagnosticContext: some View {
+        if let message = viewModel.paymentSafetyMessage {
+            Text(message)
+                .font(.body)
+        }
+        if !viewModel.earlierPaymentFailures.isEmpty {
+            DisclosureGroup(Localization.earlierPaymentChecks) {
+                ForEach(Array(viewModel.earlierPaymentFailures.enumerated()), id: \.offset) { _, summary in
+                    Text(summary)
+                        .font(.footnote)
+                        .foregroundStyle(Color(.secondaryLabel))
+                }
+            }
+        }
+    }
+
+    private var diagnosticContinuation: some View {
+        Button(Localization.continueToChat) {
+            viewModel.proceedToChat()
+        }
+        .buttonStyle(SecondaryButtonStyle())
     }
 
     private func scrollToBottom(proxy: ScrollViewProxy) {
@@ -416,6 +443,11 @@ private extension SupportChatView {
 
 private extension SupportChatView {
     enum Localization {
+        static let earlierPaymentChecks = NSLocalizedString(
+            "supportChatView.earlierPaymentChecks",
+            value: "Earlier setup checks (not payment attempts)",
+            comment: "Title of a collapsible list in support chat that shows failed payment setup checks from earlier retries"
+        )
         static let placeholder = NSLocalizedString(
             "supportChatView.placeholder",
             value: "Type a message...",

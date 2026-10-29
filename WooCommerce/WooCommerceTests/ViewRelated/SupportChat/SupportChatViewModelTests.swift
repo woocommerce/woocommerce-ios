@@ -8,6 +8,156 @@ import enum Networking.NetworkError
 struct SupportChatViewModelTests {
     private static let noopContactHumanSupport: SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _, _ in }
 
+    @Test(arguments: [SupportDiagnosticsService.Test.internetConnection, .paymentConfiguration])
+    func test_payment_diagnostics_when_any_check_fails_then_keeps_payment_safety_message(
+        failedTest: SupportDiagnosticsService.Test
+    ) async {
+        // Given
+        let service = MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                test == failedTest ? .failure(test: test, failure: .init(errorMessage: "Check failed")) : .success(test: test)
+            }
+        }
+        let sut = makeSUT(diagnosticsService: service)
+
+        // When
+        await sut.selectIssue(.inPersonPayments)
+
+        // Then
+        #expect(sut.paymentSafetyMessage?.contains("before you charge again") == true)
+        #expect(sut.diagnosticResults.last?.test == failedTest)
+    }
+
+    @Test func test_payment_diagnostics_when_live_status_unknown_then_completion_needs_review() async {
+        // Given
+        let service = MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                var result = SupportDiagnosticsService.Result.success(test: test)
+                result.isInconclusive = test == .paymentConfiguration
+                return result
+            }
+        }
+        let sut = makeSUT(diagnosticsService: service)
+
+        // When
+        await sut.selectIssue(.inPersonPayments)
+
+        // Then
+        #expect(sut.paymentDiagnosticsAreInconclusive)
+        #expect(sut.paymentDiagnosticCompletionMessage?.contains("could not confirm") == true)
+        #expect(sut.paymentSafetyMessage != nil)
+    }
+
+    @Test func test_payment_diagnostics_when_checks_pass_then_does_not_claim_payment_success() async {
+        // Given
+        let service = MockSupportDiagnosticsService { $0.map { .success(test: $0) } }
+        let sut = makeSUT(diagnosticsService: service)
+
+        // When
+        await sut.selectIssue(.inPersonPayments)
+
+        // Then
+        #expect(!sut.paymentDiagnosticsAreInconclusive)
+        #expect(sut.paymentDiagnosticCompletionMessage?.contains("did not connect to a card reader") == true)
+        #expect(sut.paymentSafetyMessage != nil)
+    }
+
+    @Test func test_diagnostics_when_other_topic_selected_then_has_no_payment_specific_context() async {
+        // Given
+        let sut = makeSUT()
+
+        // When
+        await sut.selectIssue(.other)
+
+        // Then
+        #expect(sut.paymentSafetyMessage == nil)
+        #expect(sut.paymentDiagnosticCompletionMessage == nil)
+        #expect(sut.earlierPaymentFailures.isEmpty)
+    }
+
+    @Test func test_payment_diagnostics_when_live_status_unknown_then_human_handoff_and_analytics_stay_inconclusive() async {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let service = MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                var result = SupportDiagnosticsService.Result.success(test: test)
+                result.isInconclusive = test == .paymentConfiguration
+                return result
+            }
+        }
+        var transcript: String?
+        let sut = makeSUT(diagnosticsService: service, analyticsProvider: analytics,
+                          onContactHumanSupport: { _, text, _, _, _ in transcript = text })
+
+        // When
+        await sut.selectIssue(.inPersonPayments)
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(transcript?.contains("All diagnostics passed") == false)
+        #expect(transcript?.contains("Result: Inconclusive") == true)
+        #expect(transcript?.contains("before you charge again") == true)
+        assertProperties(analytics, event: "support_chat_troubleshooting_completed", include: ["result": "inconclusive"])
+    }
+
+    @Test func test_payment_diagnostics_when_retry_recovers_then_human_handoff_keeps_earlier_failure() async {
+        // Given
+        let service = makeRecoveringPaymentService()
+        var transcript: String?
+        let sut = makeSUT(diagnosticsService: service, onContactHumanSupport: { _, text, _, _, _ in transcript = text })
+        await sut.selectIssue(.inPersonPayments)
+        #expect(sut.earlierPaymentFailures.isEmpty)
+
+        // When
+        await sut.executeAction(.retryDiagnostics)
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(sut.earlierPaymentFailures.count == 1)
+        #expect(transcript?.contains("Earlier setup checks (not payment attempts)") == true)
+        #expect(transcript?.contains("2026-10-27T12:00:00Z") == true)
+        #expect(transcript?.contains("http_status=503") == true)
+        #expect(transcript?.contains("All diagnostics passed") == false)
+    }
+
+    @Test(arguments: [false, true])
+    func test_payment_diagnostics_when_retry_follows_continue_then_sends_current_result_and_earlier_failure(firstSendFails: Bool) async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var requests = [SupportChatAction]()
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            requests.append(action)
+            if case let .sendMessage(_, _, _, _, _, completion) = action, firstSendFails, requests.count == 1 {
+                completion(.failure(NSError(domain: "Test", code: 503)))
+            }
+        }
+        let sut = makeSUT(stores: stores, diagnosticsService: makeRecoveringPaymentService())
+        await sut.selectIssue(.inPersonPayments)
+        sut.proceedToChat()
+        if firstSendFails {
+            sut.inputText = "First mock send"
+            await sut.sendMessage()
+            sut.dismissError()
+        }
+
+        // When
+        await sut.executeAction(.retryDiagnostics)
+        sut.inputText = "Send current evidence"
+        await sut.sendMessage()
+
+        // Then
+        guard case let .sendMessage(_, _, _, _, context, _) = requests.last,
+              case let .string(description) = context?["troubleshootingResults"] else {
+            Issue.record("Expected payment diagnostics in the mock request context")
+            return
+        }
+        let currentPart = description.components(separatedBy: "Earlier setup checks").first ?? ""
+        #expect(currentPart.contains("Result: Success"))
+        #expect(!currentPart.contains("Server error"))
+        #expect(description.contains("Earlier setup checks (not payment attempts)"))
+        #expect(description.contains("http_status=503"))
+    }
+
     @Test func test_start_when_initial_message_exists_then_sends_once_without_greeting() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -2301,6 +2451,20 @@ struct SupportChatViewModelTests {
     }
 
     // MARK: - Test Helpers
+
+    private func makeRecoveringPaymentService() -> MockSupportDiagnosticsService {
+        var accountChecks = 0
+        return MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                guard test == .paymentConfiguration else { return .success(test: test) }
+                accountChecks += 1
+                return accountChecks == 1 ? .failure(test: test, failure: .init(
+                    errorMessage: "Server error",
+                    technicalDetails: "checked_at=2026-10-27T12:00:00Z; stage=woocommerce-payments/accounts; server_error; http_status=503",
+                    suggestedAction: .retryDiagnostics)) : .success(test: test)
+            }
+        }
+    }
 
     private func makeSUT(
         entryPoint: SupportChatViewModel.EntryPoint = .helpAndSupport,

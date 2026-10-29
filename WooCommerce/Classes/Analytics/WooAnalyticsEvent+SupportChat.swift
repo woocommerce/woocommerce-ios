@@ -8,6 +8,7 @@ extension WooAnalyticsEvent {
             case skipped
             case failed
             case passed
+            case inconclusive
         }
 
         enum FeedbackRating: String {

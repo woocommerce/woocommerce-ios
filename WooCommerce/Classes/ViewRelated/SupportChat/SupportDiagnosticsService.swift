@@ -43,6 +43,7 @@ final class SupportDiagnosticsService {
         case loadingProducts
         case analyticsSetting
         case notifications
+        case paymentConfiguration
 
         var title: String {
             switch self {
@@ -60,6 +61,8 @@ final class SupportDiagnosticsService {
                 return Localization.Test.analyticsSetting
             case .notifications:
                 return Localization.Test.notifications
+            case .paymentConfiguration:
+                return PaymentSupportDiagnostics.Localization.title
             }
         }
     }
@@ -135,12 +138,16 @@ final class SupportDiagnosticsService {
         let errorMessage: String?
         let technicalDetails: String?
         let suggestedAction: Action?
+        var advisoryMessage: String? = nil
+        var isInconclusive: Bool = false
 
         static func == (lhs: Result, rhs: Result) -> Bool {
             lhs.test == rhs.test &&
             lhs.isSuccess == rhs.isSuccess &&
             lhs.errorMessage == rhs.errorMessage &&
-            lhs.suggestedAction == rhs.suggestedAction
+            lhs.suggestedAction == rhs.suggestedAction &&
+            lhs.advisoryMessage == rhs.advisoryMessage &&
+            lhs.isInconclusive == rhs.isInconclusive
         }
 
         static func success(test: Test) -> Result {
@@ -161,10 +168,13 @@ final class SupportDiagnosticsService {
         }
 
         func troubleshootingDescription() -> String {
-            let status = isSuccess ? "Success" : (errorMessage ?? "Failed")
+            let status = isInconclusive ? "Inconclusive" : (isSuccess ? "Success" : (errorMessage ?? "Failed"))
             var lines = [test.title, "Result: \(status)"]
             if let details = technicalDetails {
                 lines.append("Details: \(details)")
+            }
+            if let advisoryMessage {
+                lines.append("Advisory: \(advisoryMessage)")
             }
             return lines.joined(separator: "\n")
         }
@@ -273,6 +283,8 @@ final class SupportDiagnosticsService {
             return await checkAnalyticsSetting()
         case .notifications:
             return result(for: test, failure: await checkNotifications())
+        case .paymentConfiguration:
+            return await PaymentSupportDiagnostics(siteID: siteID, stores: stores).run()
         }
     }
 

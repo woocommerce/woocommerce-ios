@@ -159,6 +159,35 @@ final class SupportChatViewModel {
     private(set) var messages: [ChatMessage] = []
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
+    private(set) var earlierPaymentFailures: [String] = []
+
+    var paymentSafetyMessage: String? {
+        selectedIssue == .inPersonPayments ? Localization.checkPaymentBeforeRetry : nil
+    }
+
+    var paymentDiagnosticsAreInconclusive: Bool {
+        selectedIssue == .inPersonPayments && diagnosticResults.contains(where: \.isInconclusive)
+    }
+
+    var paymentDiagnosticCompletionMessage: String? {
+        guard selectedIssue == .inPersonPayments else { return nil }
+        return paymentDiagnosticsAreInconclusive ? Localization.paymentChecksNeedReview : Localization.paymentChecksPassed
+    }
+
+    var paymentAdvisoryMessage: String? {
+        guard selectedIssue == .inPersonPayments else { return nil }
+        let advisories = diagnosticResults.compactMap(\.advisoryMessage)
+        return advisories.isEmpty ? nil : advisories.joined(separator: "\n\n")
+    }
+
+    private var paymentDiagnosticSupportSummary: String? {
+        guard selectedIssue == .inPersonPayments else { return nil }
+        var parts = [SupportDiagnosticsService.troubleshootingDescription(from: diagnosticResults), paymentSafetyMessage].compactMap { $0 }
+        if !earlierPaymentFailures.isEmpty {
+            parts.append("Earlier setup checks (not payment attempts):\n" + earlierPaymentFailures.joined(separator: "\n"))
+        }
+        return parts.joined(separator: "\n\n")
+    }
 
 
     /// Whether the input area should be shown.
@@ -430,7 +459,7 @@ final class SupportChatViewModel {
                 role: .bot,
                 content: .diagnosticsSuccess
             )
-            trackTroubleshootingCompleted(issueType: issue, result: .passed)
+            trackTroubleshootingCompleted(issueType: issue, result: paymentDiagnosticsAreInconclusive ? .inconclusive : .passed)
         }
     }
 
@@ -567,6 +596,13 @@ final class SupportChatViewModel {
         let messageId = messages[messageIndex].id
 
         // Clear previous results
+        if selectedIssue == .inPersonPayments {
+            if case .diagnosticsFailure(let failure) = messages[messageIndex].content, let details = failure.technicalDetails {
+                earlierPaymentFailures = Array(([details] + earlierPaymentFailures).prefix(3))
+            }
+            // Retry can run after Continue to chat, so the first message must use the new results.
+            preparedInitialContext = nil
+        }
         diagnosticResults = []
 
         // Initialize progress with all tests pending
@@ -763,6 +799,9 @@ final class SupportChatViewModel {
         var context = diagnosticsContext ?? initialContext ?? [:]
         let contextSiteAddress: String? = if case .string(let address) = context["site_url"] { address } else { nil }
         let report = await mobileStatusReportProvider.generateReport(siteAddress: supportSiteAddress ?? contextSiteAddress)
+        if let summary = paymentDiagnosticSupportSummary {
+            context["troubleshootingResults"] = .string(summary)
+        }
         if !report.isEmpty {
             let existing: String? = if case .string(let text) = context["troubleshootingResults"] { text } else { nil }
             context["troubleshootingResults"] = .string([existing, report].compactMap { $0 }.joined(separator: "\n\n"))
@@ -808,7 +847,7 @@ final class SupportChatViewModel {
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
 
-        return messages.compactMap { message -> String? in
+        var transcript = messages.compactMap { message -> String? in
             let roleName: String
             switch message.role {
             case .user: roleName = "User"
@@ -827,7 +866,7 @@ final class SupportChatViewModel {
                 let summary = steps.map { "\($0.test.title): \($0.status)" }.joined(separator: ", ")
                 contentText = "[Running diagnostics: \(summary)]"
             case .diagnosticsSuccess:
-                contentText = "[All diagnostics passed]"
+                contentText = paymentDiagnosticCompletionMessage ?? "[All diagnostics passed]"
             case .diagnosticsFailure(let result):
                 contentText = "[Diagnostics failed: \(result.test.title) - \(result.errorMessage ?? "Unknown error")]"
             case .resolvedPrompt:
@@ -836,6 +875,10 @@ final class SupportChatViewModel {
 
             return "[\(timestamp)] \(roleName): \(contentText)"
         }.joined(separator: "\n\n")
+        if let summary = paymentDiagnosticSupportSummary {
+            transcript += "\n\n" + summary
+        }
+        return transcript
     }
 
     func dismissError() {
@@ -1121,6 +1164,23 @@ final class SupportChatViewModel {
 //
 private extension SupportChatViewModel {
     enum Localization {
+        static let paymentChecksPassed = NSLocalizedString(
+            "supportChatViewModel.paymentChecksPassed",
+            value: "Your payment setup checks passed. The app did not connect to a card reader, check the reader location " +
+                "with Stripe, test network stability, or take a payment.",
+            comment: "Shown in support chat when the Payments troubleshooting checks find no problem"
+        )
+        static let paymentChecksNeedReview = NSLocalizedString(
+            "supportChatViewModel.paymentChecksNeedReview",
+            value: "The checks finished, but the app could not confirm that you can take live payments. The app did not connect " +
+                "to a card reader, check the reader location with Stripe, test network stability, or take a payment.",
+            comment: "Shown in support chat when the payment setup checks pass but the payment provider does not confirm a live account"
+        )
+        static let checkPaymentBeforeRetry = NSLocalizedString(
+            "supportChatViewModel.checkPaymentBeforeRetry",
+            value: "If you are not sure whether an earlier payment went through, check its status with your payment provider before you charge again.",
+            comment: "Shown under every payment troubleshooting result in support chat, to prevent charging a customer twice"
+        )
         static let greetingMessage = NSLocalizedString(
             "supportChatViewModel.greetingMessage",
             value: "Hello! I'm your Woo Mobile Support Bot. Is there anything I can help you with today?",

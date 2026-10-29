@@ -522,6 +522,50 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         XCTAssertTrue(trace.successfulProtectedCookie?.contains(scenario.loginCookie) == true)
     }
 
+    @MainActor
+    func test_wordpress_org_network_when_site_rejects_credentials_then_fails_with_invalid_credentials_retry_error() async throws {
+        // Given
+        let failurePage = "<div id=\"login_error\">Incorrect credentials</div>" +
+            "<script>document.querySelector('form').classList.add('shake')</script>"
+        let scenario = CookieNonceLoopbackScenario(requiredInitialProtectedRequests: 1,
+                                                   credentialLoginFailurePage: failurePage)
+        let server = try CookieNonceLoopbackServer(handler: scenario.response)
+        defer { server.stop() }
+        let siteURL = server.siteURL
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: siteURL,
+            loginEntryURL: siteURL.appendingPathComponent("custom-entry"),
+            adminBaseURL: siteURL.appendingPathComponent("private-admin", isDirectory: true)
+        )
+        let network = WordPressOrgNetwork(
+            configuration: CookieNonceAuthenticatorConfiguration(
+                username: sampleUser,
+                password: samplePassword,
+                endpoints: endpoints
+            ),
+            siteAddress: siteURL.absoluteString
+        )
+        let request = URLRequest(url: siteURL.appendingPathComponent("wp-json/protected"))
+
+        // When
+        var failure: Error?
+        do {
+            _ = try await network.responseData(for: request)
+            XCTFail("Expected the site's rejected credentials")
+        } catch {
+            failure = error
+        }
+
+        // Then
+        guard let error = failure as? AFError,
+              case AFError.requestRetryFailed(
+                retryError: CookieNonceAuthenticator.Error.authenticationFailed(.invalidCredentials),
+                originalError: _
+              ) = error else {
+            return XCTFail("Unexpected error: \(String(describing: failure))")
+        }
+    }
+
     func test_wordpress_org_network_when_second_network_uses_authenticated_shared_cookie_then_does_not_post_credentials_again() async throws {
         // Given
         let scenario = CookieNonceLoopbackScenario(requiredInitialProtectedRequests: 1)
@@ -965,6 +1009,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
     private let token = UUID().uuidString
     private let requiredInitialProtectedRequests: Int
     private let preflightBasicCredential: BasicCredential?
+    private let credentialLoginFailurePage: String?
     private let credentialRedirectStatusCode: Int?
     private let credentialRedirectsToAdminBase: Bool
     private let protectedMethod: String
@@ -986,6 +1031,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
     init(
         requiredInitialProtectedRequests: Int,
         preflightBasicCredential: BasicCredential? = nil,
+        credentialLoginFailurePage: String? = nil,
         credentialRedirectStatusCode: Int? = nil,
         credentialRedirectsToAdminBase: Bool = false,
         protectedMethod: String = "GET",
@@ -994,6 +1040,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
     ) {
         self.requiredInitialProtectedRequests = requiredInitialProtectedRequests
         self.preflightBasicCredential = preflightBasicCredential
+        self.credentialLoginFailurePage = credentialLoginFailurePage
         self.credentialRedirectStatusCode = credentialRedirectStatusCode
         self.credentialRedirectsToAdminBase = credentialRedirectsToAdminBase
         self.protectedMethod = protectedMethod
@@ -1056,6 +1103,9 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
             }
             guard request.headers["cookie"]?.contains(preflightCookie) == true else {
                 return .init(statusCode: 403)
+            }
+            if let credentialLoginFailurePage {
+                return .init(statusCode: 200, body: Data(credentialLoginFailurePage.utf8))
             }
             if let credentialRedirectStatusCode {
                 return .init(

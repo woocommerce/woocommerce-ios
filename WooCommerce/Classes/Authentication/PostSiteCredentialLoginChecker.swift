@@ -137,7 +137,7 @@ private extension PostSiteCredentialLoginChecker {
                     // show application password disabled error, and use the previous view controller.
                     let errorUI = applicationPasswordDisabledUI(for: siteURL, previousViewController: previousViewController)
                     navigationController.show(errorUI, sender: nil)
-                case ApplicationPasswordUseCaseError.unauthorizedRequest:
+                case ApplicationPasswordUseCaseError.unauthorizedRequest, ApplicationPasswordUseCaseError.siteCredentialsRejected:
                     showAlert(message: Localization.unauthorizedForAppPassword, siteURL: siteURL, in: navigationController)
                 default:
                     DDLogError("⛔️ Error generating application password: \(error)")

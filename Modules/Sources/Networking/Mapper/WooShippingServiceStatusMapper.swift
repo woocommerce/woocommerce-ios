@@ -80,14 +80,7 @@ private struct ServiceStatusNoticeResponse: Decodable {
     }
 
     private var severity: WooShippingServiceStatusSeverity {
-        switch type?.lowercased() {
-        case "error":
-            return .error
-        case "warning":
-            return .warning
-        default:
-            return .info
-        }
+        type.flatMap { WooShippingServiceStatusSeverity(rawValue: $0.lowercased()) } ?? .info
     }
 
     private var actionURL: URL? {

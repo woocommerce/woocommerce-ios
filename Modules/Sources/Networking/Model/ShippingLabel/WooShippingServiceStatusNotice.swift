@@ -24,14 +24,18 @@ public struct WooShippingServiceStatusNotice: Equatable, GeneratedFakeable, Gene
     }
 }
 
-/// Ordered from least to most severe.
+/// Raw values match the API's notice `type`. Ordered from least to most severe.
 ///
-public enum WooShippingServiceStatusSeverity: Int, Comparable, GeneratedFakeable, Sendable {
+public enum WooShippingServiceStatusSeverity: String, CaseIterable, Comparable, GeneratedFakeable, Sendable {
     case info
     case warning
     case error
 
     public static func < (lhs: Self, rhs: Self) -> Bool {
-        lhs.rawValue < rhs.rawValue
+        lhs.rank < rhs.rank
+    }
+
+    private var rank: Int {
+        Self.allCases.firstIndex(of: self) ?? 0
     }
 }

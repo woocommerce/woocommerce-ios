@@ -147,14 +147,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         fatalError("init(coder:) has not been implemented")
     }
 
-    deinit {
-        productSubscription?.cancel()
-        productNameSubscription?.cancel()
-        updateEnabledSubscription?.cancel()
-        newVariationsPriceSubscription?.cancel()
-        blazeEligibilitySubscription?.cancel()
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         configurePresentationStyle()

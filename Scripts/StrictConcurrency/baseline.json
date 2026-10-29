@@ -341,7 +341,6 @@
     "WooCommerce/Classes/ViewRelated/Products/Cells/TitleBodyTableViewCell.swift": 3,
     "WooCommerce/Classes/ViewRelated/Products/Edit Product/BottomSheetListSelector/ProductFormBottomSheetListSelectorCommand.swift": 3,
     "WooCommerce/Classes/ViewRelated/Products/Edit Product/BottomSheetListSelector/ProductTypeBottomSheetListSelectorCommand.swift": 2,
-    "WooCommerce/Classes/ViewRelated/Products/Edit Product/Cells/ImageAndTitleAndTextTableViewCell.swift": 6,
     "WooCommerce/Classes/ViewRelated/Products/Edit Product/Downloadable Files/File List/BottomSheetListSelector/DownloadableFileBottomSheetListSelectorCommand.swift": 3,
     "WooCommerce/Classes/ViewRelated/Products/Edit Product/Downloadable Files/File List/ProductDownloadListViewController+Droppable.swift": 6,
     "WooCommerce/Classes/ViewRelated/Products/Edit Product/Downloadable Files/File List/ProductDownloadListViewController.swift": 6,

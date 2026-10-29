@@ -80,7 +80,6 @@ extension ProductFormTableViewDataSource: UITableViewDataSource {
 }
 
 private extension ProductFormTableViewDataSource {
-    @MainActor
     func configure(_ cell: UITableViewCell, section: ProductFormSection, indexPath: IndexPath) {
         cell.accessibilityIdentifier = nil
         switch section {
@@ -95,7 +94,6 @@ private extension ProductFormTableViewDataSource {
 // MARK: Configure rows in Primary Fields Section
 //
 private extension ProductFormTableViewDataSource {
-    @MainActor
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
         case .images(let editable, let isStorePublic, let allowsMultipleImages, let isVariation):
@@ -387,7 +385,6 @@ private extension ProductFormTableViewDataSource {
 // MARK: Configure rows in Settings Fields Section
 //
 private extension ProductFormTableViewDataSource {
-    @MainActor
     func configureCellInSettingsFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.SettingsRow) {
         let accessibilityIdentifier: String?
         switch row {
@@ -441,7 +438,6 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
-    @MainActor
     func configureSettings(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
         guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
             fatalError()

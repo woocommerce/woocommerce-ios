@@ -8,41 +8,25 @@ struct StorePerformanceOrderTypeSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
-            Text(Localization.title)
-                .storeTextStyle(.titleLarge.strong)
-                .foregroundStyle(.storeOnSurface)
-                .padding(.horizontal, StorePadding.p7)
-
-            Spacer().frame(height: StoreSpacing.s4)
-
-            Text(Localization.description)
-                .storeTextStyle(.bodyLarge)
-                .foregroundStyle(.storeOnSurface)
-                .padding(.horizontal, StorePadding.p7)
+            StoreDashboardSheetHeader(
+                title: Localization.title,
+                description: Localization.description
+            )
+            .padding(.horizontal, StorePadding.p7)
 
             Spacer().frame(height: StoreSpacing.s7 + StoreSpacing.s2)
 
-            StoreRadioGroup(
-                selection: Binding(get: { viewModel.orderType }, set: select),
-                options: AnalyticsOrderDateType.allCases,
-                rowSpacing: StoreSpacing.s0
-            ) { type in
-                HStack(spacing: StoreSpacing.s4) {
-                    VStack(alignment: .leading, spacing: StoreSpacing.s2) {
-                        Text(type.localizedTitle)
-                            .storeTextStyle(.bodyLarge.emphasized)
-                            .foregroundStyle(.storeOnSurface)
-                        Text(type.localizedDescription)
-                            .storeTextStyle(.bodyMedium)
-                            .foregroundStyle(.storeOnSurfaceVariant)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    if viewModel.updatingOrderType == type {
-                        ProgressView().tint(.storePrimary)
-                    }
+            VStack(alignment: .leading, spacing: StoreSpacing.s0) {
+                ForEach(AnalyticsOrderDateType.allCases, id: \.rawValue) { type in
+                    StoreDashboardSheetOptionRow(
+                        title: type.localizedTitle,
+                        description: type.localizedDescription,
+                        isSelected: viewModel.orderType == type,
+                        isLoading: viewModel.updatingOrderType == type,
+                        accessibilityIdentifier: "performance-order-type-\(type.rawValue)",
+                        action: { select(type) }
+                    )
                 }
-                .padding(.vertical, StorePadding.p3)
-                .accessibilityIdentifier("performance-order-type-\(type.rawValue)")
             }
             .disabled(viewModel.updatingOrderType != nil)
             .padding(.horizontal, StorePadding.p7)
@@ -68,6 +52,7 @@ struct StorePerformanceOrderTypeSheet: View {
 
             Spacer().frame(height: StoreSpacing.s8)
         }
+        .padding(.top, StorePadding.p5)
     }
 
     private func select(_ type: AnalyticsOrderDateType) {

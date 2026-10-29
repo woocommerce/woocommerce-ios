@@ -14,20 +14,24 @@ struct StoreAnalyticsUpdateModeSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s5) {
-            Text(Localization.title)
-                .storeTextStyle(.titleLarge.strong)
-                .foregroundStyle(.storeOnSurface)
-
-            Text(Localization.description)
-                .storeTextStyle(.bodyMedium)
-                .foregroundStyle(.storeOnSurfaceVariant)
+            StoreDashboardSheetHeader(
+                title: Localization.title,
+                description: Localization.description
+            )
 
             Spacer()
                 .frame(height: StoreSpacing.s3)
 
             VStack(alignment: .leading, spacing: StoreSpacing.s5) {
                 ForEach(AnalyticsImportUpdateMode.allCases, id: \.rawValue) { mode in
-                    optionButton(for: mode)
+                    StoreDashboardSheetOptionRow(
+                        title: mode.localizedTitle,
+                        description: mode.localizedDescription,
+                        isSelected: viewModel.selectedMode == mode,
+                        isLoading: viewModel.updatingMode == mode,
+                        accessibilityIdentifier: "dashboard-analytics-import-update-mode-\(mode.rawValue)",
+                        action: { select(mode) }
+                    )
                 }
             }
             .disabled(viewModel.isUpdating)
@@ -57,44 +61,6 @@ struct StoreAnalyticsUpdateModeSheet: View {
             WebViewSheet(viewModel: Constants.learnMoreWebViewModel) {
                 showingLearnMoreWebView = false
             }
-        }
-    }
-
-    private func optionButton(for mode: AnalyticsImportUpdateMode) -> some View {
-        Button {
-            select(mode)
-        } label: {
-            HStack(spacing: StoreSpacing.s5) {
-                VStack(alignment: .leading, spacing: StoreSpacing.s2) {
-                    Text(mode.localizedTitle)
-                        .storeTextStyle(.titleMedium.strong)
-                        .foregroundStyle(.storeOnSurface)
-                    Text(mode.localizedDescription)
-                        .storeTextStyle(.bodyMedium)
-                        .foregroundStyle(.storeOnSurfaceVariant)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                optionAccessory(for: mode)
-                    .frame(width: StoreSpacing.s7, height: StoreSpacing.s7)
-            }
-            .padding(.vertical, StorePadding.p3)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(viewModel.selectedMode == mode ? .isSelected : [])
-        .accessibilityIdentifier("dashboard-analytics-import-update-mode-\(mode.rawValue)")
-    }
-
-    @ViewBuilder
-    private func optionAccessory(for mode: AnalyticsImportUpdateMode) -> some View {
-        if viewModel.updatingMode == mode {
-            ProgressView()
-                .tint(.storePrimary)
-        } else if viewModel.selectedMode == mode {
-            StoreIcon.Check.solid.image(size: .largeIncreased)
-                .foregroundStyle(.storePrimary)
-                .accessibilityHidden(true)
         }
     }
 

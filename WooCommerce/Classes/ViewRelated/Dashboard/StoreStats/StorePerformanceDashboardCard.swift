@@ -239,8 +239,8 @@ private extension StorePerformanceDashboardCard {
 
     var emptyStats: some View {
         Text(Localization.noRevenueText)
-            .storeTextStyle(.bodyLarge)
-            .foregroundStyle(.storeOnSurface)
+            .storeTextStyle(.bodyMedium)
+            .foregroundStyle(.storeOnSurfaceVariant)
             .frame(maxWidth: .infinity, minHeight: Constants.chartContainerHeight)
     }
 

@@ -2043,7 +2043,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Store Widgets Development";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -2073,7 +2073,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.automattic.woocommerce.storewidgets";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -2103,7 +2103,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse com.automattic.alpha.woocommerce.storewidgets";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = "Release-Alpha";

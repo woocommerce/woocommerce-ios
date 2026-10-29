@@ -87,6 +87,7 @@ steps:
     key: unit-tests
     command: .buildkite/commands/run-unit-tests.sh
     depends_on: build
+    parallelism: 12
     plugins:
       - $CI_TOOLKIT
       - ${TEST_COLLECTOR}:

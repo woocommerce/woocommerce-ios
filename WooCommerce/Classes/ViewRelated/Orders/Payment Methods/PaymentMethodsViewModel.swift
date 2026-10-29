@@ -31,7 +31,6 @@ final class PaymentMethodsViewModel: ObservableObject {
     private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
 
     /// Defines if the view should show a loading indicator.
-    /// Currently set while marking the order as complete
     ///
     @Published private(set) var showLoadingIndicator = false
 
@@ -316,20 +315,22 @@ final class PaymentMethodsViewModel: ObservableObject {
                 // No tracking required at present because it's handled internally.
             },
             onCompleted: { [weak self] in
-                // Update order in case its status and/or other details are updated after a successful in-person payment
-                self?.updateOrderAsynchronously()
-
-                // Inform success to consumer
-                onSuccess()
-
-                // Sent notice request
-                self?.presentNoticeSubject.send(.completed)
-
-                // Make sure we free all the resources
-                self?.collectPaymentsUseCase = nil
-
-                // Tracks completion
-                self?.trackFlowCompleted(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
+                guard let self else { return }
+                showLoadingIndicator = true
+                let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: orderID) { [weak self] result in
+                    Task { @MainActor [weak self] in
+                        guard let self else { return }
+                        if case .failure(let error) = result {
+                            DDLogError("⛔️ Error refreshing order after payment: \(error)")
+                        }
+                        showLoadingIndicator = false
+                        onSuccess()
+                        presentNoticeSubject.send(.completed)
+                        collectPaymentsUseCase = nil
+                        trackFlowCompleted(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
+                    }
+                }
+                stores.dispatch(action)
             })
     }
 
@@ -381,7 +382,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// Defines if the swipe-to-dismiss gesture on the payment flow should be enabled
     ///
     var shouldEnableSwipeToDismiss: Bool {
-        true
+        !showLoadingIndicator
     }
 }
 

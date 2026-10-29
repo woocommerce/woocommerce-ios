@@ -131,6 +131,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.formattedAmount, "€\(newInput)")
     }
 
+    @MainActor
     func test_focus_when_focus_is_cleared_before_async_request_runs_then_does_not_refocus_text_field() {
         // Given
         let focusState = FocusState()
@@ -148,6 +149,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         XCTAssertFalse(textField.didBecomeFirstResponder)
     }
 
+    @MainActor
     func test_focus_when_focus_is_still_requested_then_refocuses_text_field() {
         // Given
         let focusState = FocusState()
@@ -167,6 +169,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         withExtendedLifetime(window) {}
     }
 
+    @MainActor
     func test_textFieldDidEndEditing_when_focus_is_set_then_clears_focus() {
         // Given
         let focusState = FocusState()
@@ -185,6 +188,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         withExtendedLifetime(window) {}
     }
 
+    @MainActor
     func test_textFieldDidEndEditing_when_text_field_is_detached_then_keeps_focus_requested() {
         // Given
         let focusState = FocusState()
@@ -199,6 +203,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         XCTAssertTrue(focusState.isFocused)
     }
 
+    @MainActor
     private func makeFocusableHiddenInputTextField(focusState: FocusState) -> FocusableHiddenInputTextField {
         FocusableHiddenInputTextField(text: Binding(get: { focusState.text }, set: { focusState.text = $0 }),
                                       isFocused: Binding(get: { focusState.isFocused }, set: { focusState.isFocused = $0 }),
@@ -207,6 +212,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
     }
 }
 
+@MainActor
 private final class FocusState {
     var text = ""
     var isFocused = true

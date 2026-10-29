@@ -2,7 +2,7 @@ import Foundation
 
 /// Abstracts the Analytics engine.
 ///
-public protocol Analytics {
+public protocol Analytics: Sendable {
     /// Initialize the analytics engine
     ///
     func initialize()

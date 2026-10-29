@@ -16,15 +16,21 @@ class PrivacySettingsViewController: UIViewController {
     private var sections = [Section]()
 
     /// Collect tracking info
-    /// Mimic the behaviour of Calypso:
-    /// the switch in https://wordpress.com/me/privacy
-    /// is initalised as on, and visibly animated back to false after a reload
     private var collectInfo = true {
         didSet {
+            guard oldValue != collectInfo else {
+                return
+            }
             configureSections()
             tableView.reloadData()
         }
     }
+
+    /// Used to keep an in-flight account settings request from overwriting a newer user interaction.
+    private var collectInfoChangeRevision = 0
+
+    /// Serializes analytics setting updates so the final switch value is persisted last.
+    private lazy var updateAnalyticsSettingUseCase = UpdateAnalyticsSettingUseCase()
 
     /// Send crash reports
     ///
@@ -58,6 +64,8 @@ class PrivacySettingsViewController: UIViewController {
 
         registerTableViewCells()
 
+        // Show the persisted preference immediately while the account setting is refreshed.
+        collectInfo = ServiceLocator.analytics.userHasOptedIn
         loadAccountSettings()
     }
 
@@ -86,12 +94,16 @@ private extension PrivacySettingsViewController {
         }
 
         let userID = defaultAccount.userID
+        let collectInfoChangeRevisionWhenLoadingStarted = collectInfoChangeRevision
 
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] result in
             switch result {
             case .success(let accountSettings):
-                // Switch is off when opting out of Tracks
-                self?.collectInfo = !accountSettings.tracksOptOut
+                // Do not let a request started before a user interaction overwrite the new switch value.
+                if self?.collectInfoChangeRevision == collectInfoChangeRevisionWhenLoadingStarted {
+                    // Switch is off when opting out of Tracks
+                    self?.collectInfo = !accountSettings.tracksOptOut
+                }
                 UpdateCrashReportingSettingUseCase().handleRemoteValue(accountSettings.crashReportingOptOut)
                 self?.reportCrashes = CrashLoggingSettings.didOptIn
             case .failure:
@@ -294,15 +306,20 @@ private extension PrivacySettingsViewController {
     //
     func collectInfoWasUpdated(newValue: Bool) {
         let userOptedOut = !newValue
+        collectInfoChangeRevision += 1
+        let changeRevision = collectInfoChangeRevision
+        collectInfo = newValue
 
-        let useCase = UpdateAnalyticsSettingUseCase()
-        Task { [self] in
+        let update = updateAnalyticsSettingUseCase.enqueueUpdate(optOut: userOptedOut)
+        Task { [weak self] in
             do {
-                try await useCase.update(optOut: userOptedOut)
+                try await update.value
             } catch {
+                guard let self, collectInfoChangeRevision == changeRevision else {
+                    return
+                }
                 collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
                 presentErrorUpdatingSettingNotice { [weak self] in
-                    self?.collectInfo = newValue
                     self?.collectInfoWasUpdated(newValue: newValue)
                 }
             }

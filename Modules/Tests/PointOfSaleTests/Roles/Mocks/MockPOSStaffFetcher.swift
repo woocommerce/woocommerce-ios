@@ -3,6 +3,7 @@ import Foundation
 import struct Yosemite.POSStaffMember
 
 /// Spy fetcher for tests.
+@MainActor
 final class MockPOSStaffFetcher: POSStaffFetching {
     var result: Result<[POSStaffMember], POSStaffFetchError>
     private(set) var callCount = 0

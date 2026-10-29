@@ -1,4 +1,4 @@
-public struct BookingLocationResponse: Decodable {
+public struct BookingLocationResponse: Decodable, Sendable {
     public let productID: Int64
     public let bookingLocation: String?
 

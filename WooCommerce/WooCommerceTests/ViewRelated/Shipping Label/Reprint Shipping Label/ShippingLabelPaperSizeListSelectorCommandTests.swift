@@ -50,6 +50,7 @@ final class ShippingLabelPaperSizeListSelectorCommandTests: XCTestCase {
         XCTAssertFalse(isSelected)
     }
 
+    @MainActor
     func test_configureCell_sets_cell_text_to_paper_size_description() {
         // Given
         let command = ShippingLabelPaperSizeListSelectorCommand(paperSizeOptions: [.legal, .label, .letter], selected: nil)

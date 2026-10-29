@@ -5,70 +5,114 @@ import AutomatticTracks
 import WordPressShared
 import protocol WooFoundation.AnalyticsProvider
 import WooFoundationCore
+import os
 
-public enum POSAnalyticsEntryPoint: String {
+public enum POSAnalyticsEntryPoint: String, Sendable {
     case posTab = "pos_tab"
     case autoReopen = "auto_reopen"
 }
 
-public class TracksProvider: NSObject, AnalyticsProvider {
+public final class TracksProvider: NSObject, AnalyticsProvider {
 
     let consent: AnalyticsConsentProviding
 
-    init(consent: AnalyticsConsentProviding) {
-        self.consent = consent
-        super.init()
-    }
-
     /// `TracksServiceExecutor` ensures that we access the Tracks service on a background queue, while always creating the service on the main thread.
     enum TracksServiceExecutor {
-        private static let contextManager = TracksContextManager()
+        /// AutomatticTracks does not declare its Objective-C service types `Sendable`. The container is created on the
+        /// main thread and every service access is serialized on `queue`, so the references never race.
+        private final class ServiceContainer: @unchecked Sendable {
+            private let contextManager = TracksContextManager()
+            let service: TracksService
 
-        private static let service: TracksService = {
-            let service = TracksService(contextManager: contextManager)!
-            service.eventNamePrefix = Constants.eventNamePrefix
-            return service
-        }()
+            init() {
+                service = TracksService(contextManager: contextManager)!
+                service.eventNamePrefix = Constants.eventNamePrefix
+            }
+        }
+
+        /// Captures can include Tracks' type-erased property dictionaries. The operation is immutable after creation
+        /// and invoked exactly once on `queue`, which provides the missing synchronization contract.
+        private final class Operation: @unchecked Sendable {
+            let body: (TracksService) -> Void
+
+            init(_ body: @escaping (TracksService) -> Void) {
+                self.body = body
+            }
+        }
+
+        private static let serviceContainer = ServiceContainer()
 
         private static let queue = DispatchQueue(label: "com.woocommerce.TracksProvider")
 
         /// Keep lazy `TracksService` construction off the serialization queue while still serializing service use.
         static func enqueue(_ operation: @escaping (TracksService) -> Void) {
-            let enqueue: (TracksService) -> Void = { tracksService in
+            let operation = Operation(operation)
+            let enqueue: @Sendable (ServiceContainer) -> Void = { container in
                 queue.async {
-                    operation(tracksService)
+                    operation.body(container.service)
                 }
             }
 
             if Thread.isMainThread {
-                enqueue(service)
+                enqueue(serviceContainer)
             } else {
                 DispatchQueue.main.async {
-                    enqueue(service)
+                    enqueue(serviceContainer)
                 }
             }
         }
     }
 
-    private static var isPOSModeActive: Bool = false
-
-    private static var posEntryPoint: POSAnalyticsEntryPoint?
-
-    static var activePOSEntryPoint: POSAnalyticsEntryPoint? {
-        isPOSModeActive ? posEntryPoint : nil
+    private struct POSState: Sendable {
+        var isModeActive = false
+        var entryPoint: POSAnalyticsEntryPoint?
     }
 
-    let deviceTypeForAnalytics = UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics
+    private static let posState = OSAllocatedUnfairLock(initialState: POSState())
+
+    private static var isPOSModeActive: Bool {
+        posState.withLock { $0.isModeActive }
+    }
+
+    static var activePOSEntryPoint: POSAnalyticsEntryPoint? {
+        posState.withLock { state in
+            state.isModeActive ? state.entryPoint : nil
+        }
+    }
+
+    /// Background construction starts with `.unspecified` and refreshes asynchronously to avoid blocking
+    /// the main actor while `ServiceLocator` holds its static-initialization lock.
+    private let deviceTypeForAnalyticsState: OSAllocatedUnfairLock<String>
+
+    var deviceTypeForAnalytics: String {
+        deviceTypeForAnalyticsState.withLock { $0 }
+    }
+
+    init(consent: AnalyticsConsentProviding,
+         deviceTypeForAnalytics: String? = nil) {
+        self.consent = consent
+        deviceTypeForAnalyticsState = OSAllocatedUnfairLock(
+            initialState: deviceTypeForAnalytics ?? UIUserInterfaceIdiom.unspecified.deviceTypeForAnalytics
+        )
+        super.init()
+
+        guard deviceTypeForAnalytics == nil else {
+            return
+        }
+        Self.refreshDeviceTypeForAnalytics(state: deviceTypeForAnalyticsState)
+    }
 
     public static func setPOSMode(_ active: Bool) {
-        isPOSModeActive = active
-        if active == false {
-            posEntryPoint = nil
+        posState.withLock { state in
+            state.isModeActive = active
+            if active == false {
+                state.entryPoint = nil
+            }
         }
     }
 
     public static func setPOSEntryPoint(_ entryPoint: POSAnalyticsEntryPoint) {
-        posEntryPoint = entryPoint
+        posState.withLock { $0.entryPoint = entryPoint }
     }
 }
 
@@ -80,7 +124,9 @@ extension TracksProvider {
         guard Thread.isMainThread else {
             return .unspecified
         }
-        return UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass ?? .unspecified
+        return MainActor.assumeIsolated {
+            UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass ?? .unspecified
+        }
     }
 
     /// Adds `horizontal_size_class` to the event's properties when a concrete layout is known,
@@ -119,7 +165,7 @@ extension TracksProvider {
 // MARK: - AnalyticsProvider Conformance
 //
 public extension TracksProvider {
-    func refreshUserData(completion: @escaping () -> Void) {
+    func refreshUserData(completion: @escaping @Sendable () -> Void) {
         switchTracksUsersIfNeeded(completion: completion)
         refreshTracksMetadata()
     }
@@ -194,7 +240,7 @@ public extension TracksProvider {
 // MARK: - Private Helpers
 //
 private extension TracksProvider {
-    func switchTracksUsersIfNeeded(completion: @escaping () -> Void = {}) {
+    func switchTracksUsersIfNeeded(completion: @escaping @Sendable () -> Void = {}) {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
         let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
         if ServiceLocator.stores.isAuthenticated,
@@ -342,7 +388,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,
 
             // Order
-            WooAnalyticsStat.ordersListLoaded,
             WooAnalyticsStat.orderCreationSuccess,
             WooAnalyticsStat.orderCreationFailed,
 
@@ -446,7 +491,7 @@ private extension TracksProvider {
 
     func refreshTracksMetadata() {
         DDLogInfo("♻️ Refreshing tracks metadata...")
-        let readUIKitAndApply = {
+        let readUIKitAndApply: @MainActor @Sendable () -> Void = {
             let voiceOver = UIAccessibility.isVoiceOverRunning
             let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
             Self.TracksServiceExecutor.enqueue { tracksService in
@@ -459,9 +504,25 @@ private extension TracksProvider {
             }
         }
         if Thread.isMainThread {
-            readUIKitAndApply()
+            MainActor.assumeIsolated {
+                readUIKitAndApply()
+            }
         } else {
             DispatchQueue.main.async { readUIKitAndApply() }
+        }
+    }
+
+    static func refreshDeviceTypeForAnalytics(state: OSAllocatedUnfairLock<String>) {
+        let readAndStoreDeviceType: @MainActor @Sendable () -> Void = {
+            let deviceType = UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics
+            state.withLock { $0 = deviceType }
+        }
+        if Thread.isMainThread {
+            MainActor.assumeIsolated {
+                readAndStoreDeviceType()
+            }
+        } else {
+            DispatchQueue.main.async(execute: readAndStoreDeviceType)
         }
     }
 }

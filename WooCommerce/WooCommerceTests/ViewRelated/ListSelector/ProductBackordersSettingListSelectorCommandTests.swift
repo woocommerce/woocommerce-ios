@@ -23,6 +23,7 @@ final class ProductBackordersSettingListSelectorCommandTests: XCTestCase {
         XCTAssertEqual(command.data.count, 3)
     }
 
+    @MainActor
     func test_cell_configuration() {
         let product = Product.fake()
         let command = ProductBackordersSettingListSelectorCommand(selected: product.backordersSetting)

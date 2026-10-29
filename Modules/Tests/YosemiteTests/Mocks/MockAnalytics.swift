@@ -1,5 +1,6 @@
 import Foundation
 import WooFoundation
+import os
 
 /// Simple mock for Analytics protocol used in Yosemite tests
 final class MockAnalytics: Analytics {
@@ -9,14 +10,29 @@ final class MockAnalytics: Analytics {
         let error: Error?
     }
 
-    var trackedEvents: [TrackedEvent] = []
-    var userHasOptedIn: Bool = true
+    private struct State {
+        var trackedEvents: [TrackedEvent] = []
+        var userHasOptedIn = true
+    }
+
+    private let state = OSAllocatedUnfairLock(uncheckedState: State())
+
+    var trackedEvents: [TrackedEvent] {
+        state.withLockUnchecked { $0.trackedEvents }
+    }
+
+    var userHasOptedIn: Bool {
+        get { state.withLockUnchecked { $0.userHasOptedIn } }
+        set { state.withLockUnchecked { $0.userHasOptedIn = newValue } }
+    }
     let analyticsProvider: AnalyticsProvider = MockAnalyticsProvider()
 
     func initialize() {}
 
     func track(_ eventName: String, properties: [AnyHashable: Any]?, error: Error?) {
-        trackedEvents.append(TrackedEvent(eventName: eventName, properties: properties, error: error))
+        state.withLockUnchecked {
+            $0.trackedEvents.append(TrackedEvent(eventName: eventName, properties: properties, error: error))
+        }
     }
 
     func refreshUserData() {}
@@ -28,7 +44,7 @@ final class MockAnalytics: Analytics {
 
 /// Minimal mock for AnalyticsProvider
 final class MockAnalyticsProvider: AnalyticsProvider {
-    func refreshUserData(completion: @escaping () -> Void) { completion() }
+    func refreshUserData(completion: @escaping @Sendable () -> Void) { completion() }
     func track(_ eventName: String) {}
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {}
     func clearEvents() {}

@@ -3,6 +3,7 @@ import UIKit
 
 /// Represents a cell with a Title label, body label, and call-to-action button
 ///
+@MainActor
 final class ReadMoreTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
@@ -15,7 +16,10 @@ final class ReadMoreTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureLabels()
         configureMoreButton()
     }

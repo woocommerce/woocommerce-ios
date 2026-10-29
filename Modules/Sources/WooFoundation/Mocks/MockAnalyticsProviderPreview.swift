@@ -3,7 +3,7 @@ import Foundation
 public final class MockAnalyticsProviderPreview: AnalyticsProvider {
     public init() {}
 
-    public func refreshUserData(completion: @escaping () -> Void) {
+    public func refreshUserData(completion: @escaping @Sendable () -> Void) {
         completion()
     }
 

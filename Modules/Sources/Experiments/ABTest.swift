@@ -52,7 +52,7 @@ public extension ABTest {
         await withCheckedContinuation { continuation in
             explat.register(experiments: experiments.map { $0.rawValue })
 
-            explat.refresh {
+            explat.refresh { @Sendable in
                 continuation.resume(returning: ())
             }
         } as Void
@@ -75,7 +75,7 @@ public extension Variation {
 
 /// The context for an A/B testing experiment (where the experience being tested occurs).
 ///
-public enum ExperimentContext: Equatable {
+public enum ExperimentContext: Equatable, Sendable {
     case loggedOut
     case loggedIn
     case none // For the `null` experiment case

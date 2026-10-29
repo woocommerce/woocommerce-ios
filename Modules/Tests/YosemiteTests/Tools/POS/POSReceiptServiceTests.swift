@@ -2,6 +2,7 @@ import Testing
 import XCTest
 @testable import Yosemite
 
+@MainActor
 struct POSReceiptServiceTests {
     let sut: POSReceiptService
     let receiptsRemote: MockPOSReceiptsRemote

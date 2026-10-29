@@ -4,7 +4,7 @@ import Storage
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
-public protocol PointOfSaleSettingsServiceProtocol {
+public protocol PointOfSaleSettingsServiceProtocol: Sendable {
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation
 }
 

@@ -6,6 +6,7 @@ import WooFoundation
 
 /// View model for `ProductVariationSelectorView`.
 ///
+@MainActor
 final class ProductVariationSelectorViewModel: ObservableObject {
     private let siteID: Int64
     private let currency: String?
@@ -246,7 +247,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 }
 
 // MARK: - PaginationTrackerDelegate & Sync Methods
-extension ProductVariationSelectorViewModel: PaginationTrackerDelegate {
+extension ProductVariationSelectorViewModel: @MainActor PaginationTrackerDelegate {
     /// Sync product variations from remote.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {

@@ -1,5 +1,6 @@
 import Networking
 
+@MainActor
 final class MockPOSReceiptsRemote: POSReceiptsRemoteProtocol {
     var sendReceiptCalled = false
     var sendPOSReceiptCalled = false

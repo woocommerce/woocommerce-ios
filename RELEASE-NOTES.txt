@@ -3,7 +3,7 @@
 
 26.0
 -----
-- [Internal] AI support: Include sanitized recent warning and error logs with new chats. [https://github.com/woocommerce/woocommerce-ios/pull/18189]
+- [Internal] AI support: Include sanitized recent warning and error logs with new chats for login failures. [https://github.com/woocommerce/woocommerce-ios/pull/18189]
 - [*] Point of Sale: Prevent items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
 - [*] POS: Merchants can go back to the cart while checkout prepares the order and the card reader. [https://github.com/woocommerce/woocommerce-ios/pull/18127]
 - [Internal] Age verification: The significant-change parental consent wall is presented reliably after the Declared Age Range check. [https://github.com/woocommerce/woocommerce-ios/pull/18096]

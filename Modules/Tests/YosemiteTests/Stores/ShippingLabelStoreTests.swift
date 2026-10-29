@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 import XCTest
 import YosemiteTestHelpers
 @testable import Yosemite
@@ -44,7 +45,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: - `loadShippingLabels`
 
-    func test_loadShippingLabels_persists_shipping_labels_and_settings_on_success() throws {
+    func test_loadShippingLabels_persists_shipping_labels_and_settings_on_success() async throws {
         // Given
         let remote = MockShippingLabelRemote()
         let orderID: Int64 = 22
@@ -99,7 +100,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         insertOrder(siteID: sampleSiteID, orderID: orderID)
 
         // When
-        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -119,7 +120,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(persistedSettings.toReadOnly(), expectedSettings)
     }
 
-    func test_loadShippingLabels_does_not_persist_shipping_labels_and_settings_on_success_with_empty_shipping_labels() throws {
+    func test_loadShippingLabels_does_not_persist_shipping_labels_and_settings_on_success_with_empty_shipping_labels() async throws {
         // Given
         let remote = MockShippingLabelRemote()
         let orderID: Int64 = 22
@@ -132,7 +133,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         insertOrder(siteID: sampleSiteID, orderID: orderID)
 
         // When
-        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -152,7 +153,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelSettings.self), 0)
     }
 
-    func test_loadShippingLabels_returns_error_on_failure() throws {
+    func test_loadShippingLabels_returns_error_on_failure() async throws {
         // Given
         let remote = MockShippingLabelRemote()
         let orderID: Int64 = 22
@@ -161,7 +162,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -227,7 +228,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: - `refundShippingLabel`
 
-    func test_refundShippingLabel_returns_refund_and_updates_local_ShippingLabel_refund_on_success() throws {
+    func test_refundShippingLabel_returns_refund_and_updates_local_ShippingLabel_refund_on_success() async throws {
         // Given
         let remote = MockShippingLabelRemote()
         let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
@@ -245,7 +246,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
 
         // When
-        let result: Result<Yosemite.ShippingLabelRefund, Error> = waitFor { promise in
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
                 promise(result)
             }
@@ -265,7 +266,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 1)
     }
 
-    func test_refundShippingLabel_returns_refund_on_success_without_storage_changes_if_no_existing_ShippingLabel_in_storage() throws {
+    func test_refundShippingLabel_returns_refund_on_success_without_storage_changes_if_no_existing_ShippingLabel_in_storage() async throws {
         // Given
         let remote = MockShippingLabelRemote()
         let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
@@ -280,7 +281,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
 
         // When
-        let result: Result<Yosemite.ShippingLabelRefund, Error> = waitFor { promise in
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
                 promise(result)
             }
@@ -295,7 +296,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
     }
 
-    func test_refundShippingLabel_returns_error_on_failure() throws {
+    func test_refundShippingLabel_returns_error_on_failure() async throws {
         // Given
         let remote = MockShippingLabelRemote()
         let expectedError = NetworkError.notFound()
@@ -307,7 +308,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Yosemite.ShippingLabelRefund, Error> = waitFor { promise in
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
                 promise(result)
             }
@@ -588,7 +589,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `synchronizeShippingLabelAccountSettings`
 
-    func test_synchronizeShippingLabelAccountSettings_persists_account_settings_on_success() throws {
+    func test_synchronizeShippingLabelAccountSettings_persists_account_settings_on_success() async throws {
         // Given
         let expectedSettings = sampleShippingLabelAccountSettings()
         let remote = MockShippingLabelRemote()
@@ -597,7 +598,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Yosemite.ShippingLabelAccountSettings, Error> = waitFor { promise in
+        let result: Result<Yosemite.ShippingLabelAccountSettings, Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -611,7 +612,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(persistedSettings.toReadOnly(), expectedSettings)
     }
 
-    func test_synchronizeShippingLabelAccountSettings_returns_error_on_failure() throws {
+    func test_synchronizeShippingLabelAccountSettings_returns_error_on_failure() async throws {
         // Given
         let expectedError = NetworkError.notFound()
         let remote = MockShippingLabelRemote()
@@ -620,7 +621,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Yosemite.ShippingLabelAccountSettings, Error> = waitFor { promise in
+        let result: Result<Yosemite.ShippingLabelAccountSettings, Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -634,7 +635,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `updateShippingLabelAccountSettings`
 
-    func test_updateShippingLabelAccountSettings_returns_success_response() throws {
+    func test_updateShippingLabelAccountSettings_returns_success_response() async throws {
         // Given
         let settings = ShippingLabelAccountSettings.fake().copy()
         let remote = MockShippingLabelRemote()
@@ -644,7 +645,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
                 promise(result)
             }
@@ -655,7 +656,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_updateShippingLabelAccountSettings_returns_error_on_failure() throws {
+    func test_updateShippingLabelAccountSettings_returns_error_on_failure() async throws {
         // Given
         let settings = ShippingLabelAccountSettings.fake().copy()
         let remote = MockShippingLabelRemote()
@@ -666,7 +667,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
                 promise(result)
             }
@@ -678,7 +679,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
-    func test_purchaseShippingLabel_returns_shipping_label_on_success() throws {
+    func test_purchaseShippingLabel_returns_shipping_label_on_success() async throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
@@ -699,7 +700,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                    orderID: self.sampleOrderID,
                                                                    originAddress: mockAddress,
@@ -718,7 +719,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(actualLabels, [expectedLabel])
     }
 
-    func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
+    func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() async throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
@@ -734,7 +735,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                    orderID: self.sampleOrderID,
                                                                    originAddress: mockAddress,
@@ -752,7 +753,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
-    func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
+    func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() async throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
@@ -772,7 +773,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor(timeout: 6.0) { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = try await waitForCompletion(timeout: 6.0) { promise in
             let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                    orderID: self.sampleOrderID,
                                                                    originAddress: mockAddress,
@@ -790,7 +791,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
-    func test_purchaseShippingLabel_returns_error_on_purchase_error() throws {
+    func test_purchaseShippingLabel_returns_error_on_purchase_error() async throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
@@ -811,7 +812,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = try await waitForCompletion { promise in
             let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                    orderID: self.sampleOrderID,
                                                                    originAddress: mockAddress,
@@ -848,14 +849,14 @@ final class ShippingLabelStoreTests: XCTestCase {
                                     labelIDs: [13579],
                                     thenReturn: .success([labelStatusResponse]))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
-        var purchaseResult: Result<[Yosemite.ShippingLabel], Error>? = nil
+        let purchaseResult = Mutex<Result<[Yosemite.ShippingLabel], Error>?>(nil)
         let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                orderID: self.sampleOrderID,
                                                                originAddress: mockAddress,
                                                                destinationAddress: mockAddress,
                                                                packages: mockPackages,
                                                                emailCustomerReceipt: true,
-                                                               completion: { purchaseResult = $0 },
+                                                               completion: { result in purchaseResult.withLock { $0 = result } },
                                                                backendProcessingDelay: 0.01,
                                                                pollingDelay: 0.01,
                                                                // Irrelevant, because it caps retries on error only.
@@ -868,7 +869,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // never be an error.
         let exp = expectation(
             for: NSPredicate(block: { _, _ in
-                switch purchaseResult {
+                switch purchaseResult.withLock({ $0 }) {
                 case .failure: return true
                 default: return false
                 }

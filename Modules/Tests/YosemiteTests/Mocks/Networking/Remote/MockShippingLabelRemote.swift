@@ -1,15 +1,33 @@
 import Foundation
-import Networking
+@testable import Networking
+import Synchronization
 
 import XCTest
 
 /// Mock for `ShippingLabelRemote`.
 ///
-@MainActor
-final class MockShippingLabelRemote {
+final class MockShippingLabelRemote: Sendable {
+    private struct State {
+        var purchaseShippingLabelCalled = false
+        var checkLabelStatusCallsCount = 0
+        var loadAllResults = [LoadAllResultKey: Result<([ShippingLabel], ShippingLabelSettings), Error>]()
+        var printResults = [PrintResultKey: Result<ShippingLabelPrintData, Error>]()
+        var refundResults = [RefundResultKey: Result<ShippingLabelRefund, Error>]()
+        var addressValidationResults = [AddressValidationResultKey: Result<ShippingLabelAddressValidationSuccess, Error>]()
+        var packagesDetailsResults = [PackagesDetailsResultKey: Result<ShippingLabelPackagesResponse, Error>]()
+        var createPackageResults = [CreatePackageResultKey: Result<Bool, Error>]()
+        var loadCarriersAndRatesResults = [LoadCarriersAndRatesKey: Result<[ShippingLabelCarriersAndRates], Error>]()
+        var loadAccountSettings = [LoadAccountSettingsResultKey: Result<ShippingLabelAccountSettings, Error>]()
+        var updateAccountSettings = [UpdateAccountSettingsResultKey: Result<Bool, Error>]()
+        var creationEligibilityResults = [CreationEligibilityResultKey: Result<ShippingLabelCreationEligibilityResponse, Error>]()
+        var purchaseShippingLabelResults = [PurchaseShippingLabelResultKey: Result<[ShippingLabelPurchase], Error>]()
+        var checkLabelStatusResults = [CheckLabelStatusResultKey: Result<[ShippingLabelStatusPollingResponse], Error>]()
+    }
 
-    private(set) var purchaseShippingLabelCalled = false
-    private(set) var checkLabelStatusCallsCount = 0
+    private let state = Mutex(State())
+
+    var purchaseShippingLabelCalled: Bool { state.withLock { $0.purchaseShippingLabelCalled } }
+    var checkLabelStatusCallsCount: Int { state.withLock { $0.checkLabelStatusCallsCount } }
 
     private struct LoadAllResultKey: Hashable {
         let siteID: Int64
@@ -65,48 +83,13 @@ final class MockShippingLabelRemote {
         let siteID: Int64
     }
 
-    /// The results to return based on the given arguments in `loadShippingLabels`
-    private var loadAllResults = [LoadAllResultKey: Result<OrderShippingLabelListResponse, Error>]()
-
-    /// The results to return based on the given arguments in `printShippingLabel`
-    private var printResults = [PrintResultKey: Result<ShippingLabelPrintData, Error>]()
-
-    /// The results to return based on the given arguments in `refundShippingLabel`
-    private var refundResults = [RefundResultKey: Result<ShippingLabelRefund, Error>]()
-
-    /// The results to return based on the given arguments in `addressValidation`
-    private var addressValidationResults = [AddressValidationResultKey: Result<ShippingLabelAddressValidationSuccess, Error>]()
-
-    /// The results to return based on the given arguments in `packagesDetails`
-    private var packagesDetailsResults = [PackagesDetailsResultKey: Result<ShippingLabelPackagesResponse, Error>]()
-
-    /// The results to return based on the given arguments in `createPackage`
-    private var createPackageResults = [CreatePackageResultKey: Result<Bool, Error>]()
-
-    /// The results to return based on the given arguments in `loadCarriersAndRates`
-    private var loadCarriersAndRatesResults = [LoadCarriersAndRatesKey: Result<[ShippingLabelCarriersAndRates], Error>]()
-
-    /// The results to return based on the given arguments in `loadShippingLabelAccountSettings`
-    private var loadAccountSettings = [LoadAccountSettingsResultKey: Result<ShippingLabelAccountSettings, Error>]()
-
-    /// The results to return based on the given arguments in `updateShippingLabelAccountSettings`
-    private var updateAccountSettings = [UpdateAccountSettingsResultKey: Result<Bool, Error>]()
-
-    /// The results to return based on the given arguments in `checkCreationEligibility`
-    private var creationEligibilityResults = [CreationEligibilityResultKey: Result<ShippingLabelCreationEligibilityResponse, Error>]()
-
-    /// The results to return based on the given arguments in `purchaseShippingLabel`
-    private var purchaseShippingLabelResults = [PurchaseShippingLabelResultKey: Result<[ShippingLabelPurchase], Error>]()
-
-    /// The results to return based on the given arguments in `checkLabelStatus`
-    private var checkLabelStatusResults = [CheckLabelStatusResultKey: Result<[ShippingLabelStatusPollingResponse], Error>]()
-
     /// Set the value passed to the `completion` block if `loadShippingLabels` is called.
     func whenLoadingShippingLabels(siteID: Int64,
                                    orderID: Int64,
                                    thenReturn result: Result<OrderShippingLabelListResponse, Error>) {
         let key = LoadAllResultKey(siteID: siteID, orderID: orderID)
-        loadAllResults[key] = result
+        let snapshot = result.map { ($0.shippingLabels, $0.settings) }
+        state.withLock { $0.loadAllResults[key] = snapshot }
     }
 
     /// Set the value passed to the `completion` block if `printShippingLabel` is called.
@@ -115,7 +98,7 @@ final class MockShippingLabelRemote {
                                    paperSize: String,
                                    thenReturn result: Result<ShippingLabelPrintData, Error>) {
         let key = PrintResultKey(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize)
-        printResults[key] = result
+        state.withLock { $0.printResults[key] = result }
     }
 
     /// Set the value passed to the `completion` block if `refundShippingLabel` is called.
@@ -124,42 +107,42 @@ final class MockShippingLabelRemote {
                                     shippingLabelID: Int64,
                                     thenReturn result: Result<ShippingLabelRefund, Error>) {
         let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
-        refundResults[key] = result
+        state.withLock { $0.refundResults[key] = result }
     }
 
     /// Set the value passed to the `completion` block if `addressValidation` is called.
     func whenValidatingAddress(siteID: Int64,
                                thenReturn result: Result<ShippingLabelAddressValidationSuccess, Error>) {
         let key = AddressValidationResultKey(siteID: siteID)
-        addressValidationResults[key] = result
+        state.withLock { $0.addressValidationResults[key] = result }
     }
 
     /// Set the value passed to the `completion` block if `packagesDetails` is called.
     func whenPackagesDetails(siteID: Int64,
                              thenReturn result: Result<ShippingLabelPackagesResponse, Error>) {
         let key = PackagesDetailsResultKey(siteID: siteID)
-        packagesDetailsResults[key] = result
+        state.withLock { $0.packagesDetailsResults[key] = result }
     }
 
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
                            thenReturn result: Result<Bool, Error>) {
         let key = CreatePackageResultKey(siteID: siteID)
-        createPackageResults[key] = result
+        state.withLock { $0.createPackageResults[key] = result }
     }
 
     /// Set the value passed to the `completion` block if `loadCarriersAndRates` is called.
     func whenLoadCarriersAndRates(siteID: Int64,
                            thenReturn result: Result<[ShippingLabelCarriersAndRates], Error>) {
         let key = LoadCarriersAndRatesKey(siteID: siteID)
-        loadCarriersAndRatesResults[key] = result
+        state.withLock { $0.loadCarriersAndRatesResults[key] = result }
     }
 
     /// Set the value passed to the `completion` block if `loadShippingLabelAccountSettings` is called.
     func whenLoadShippingLabelAccountSettings(siteID: Int64,
                                        thenReturn result: Result<ShippingLabelAccountSettings, Error>) {
         let key = LoadAccountSettingsResultKey(siteID: siteID)
-        loadAccountSettings[key] = result
+        state.withLock { $0.loadAccountSettings[key] = result }
     }
 
     /// Set the value passed to the `completion` block if `updateShippingLabelAccountSettings` is called.
@@ -167,7 +150,7 @@ final class MockShippingLabelRemote {
                                                 settings: ShippingLabelAccountSettings,
                                                 thenReturn result: Result<Bool, Error>) {
         let key = UpdateAccountSettingsResultKey(siteID: siteID)
-        updateAccountSettings[key] = result
+        state.withLock { $0.updateAccountSettings[key] = result }
     }
 
     func whenCheckingCreationEligiblity(siteID: Int64,
@@ -175,7 +158,7 @@ final class MockShippingLabelRemote {
                                         thenReturn result: Result<ShippingLabelCreationEligibilityResponse, Error>) {
         let key = CreationEligibilityResultKey(siteID: siteID,
                                                orderID: orderID)
-        creationEligibilityResults[key] = result
+        state.withLock { $0.creationEligibilityResults[key] = result }
     }
 
     /// Set the value passed to the `completion` block if `purchaseShippingLabel` is called.
@@ -187,7 +170,7 @@ final class MockShippingLabelRemote {
                                    emailCustomerReceipt: Bool,
                                    thenReturn result: Result<[ShippingLabelPurchase], Error>) {
         let key = PurchaseShippingLabelResultKey(siteID: siteID)
-        purchaseShippingLabelResults[key] = result
+        state.withLock { $0.purchaseShippingLabelResults[key] = result }
     }
 
     /// Set the value passed to the `completion` block if `checkLabelStatus` is called.
@@ -196,22 +179,19 @@ final class MockShippingLabelRemote {
                               labelIDs: [Int64],
                               thenReturn result: Result<[ShippingLabelStatusPollingResponse], Error>) {
         let key = CheckLabelStatusResultKey(siteID: siteID)
-        checkLabelStatusResults[key] = result
+        state.withLock { $0.checkLabelStatusResults[key] = result }
     }
 }
 
 // MARK: - ShippingLabelRemoteProtocol
-extension MockShippingLabelRemote: @MainActor ShippingLabelRemoteProtocol {
+extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
     func loadShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<OrderShippingLabelListResponse, Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = LoadAllResultKey(siteID: siteID, orderID: orderID)
-            if let result = self.loadAllResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = LoadAllResultKey(siteID: siteID, orderID: orderID)
+        if let result = state.withLock({ $0.loadAllResults[key] }) {
+            completion(result.map { OrderShippingLabelListResponse(shippingLabels: $0.0, settings: $0.1) })
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
@@ -219,55 +199,43 @@ extension MockShippingLabelRemote: @MainActor ShippingLabelRemoteProtocol {
                             shippingLabelIDs: [Int64],
                             paperSize: ShippingLabelPaperSize,
                             completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = PrintResultKey(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize.rawValue)
-            if let result = self.printResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = PrintResultKey(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize.rawValue)
+        if let result = state.withLock({ $0.printResults[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
     func refundShippingLabel(siteID: Int64, orderID: Int64, shippingLabelID: Int64, completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
-            if let result = self.refundResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
+        if let result = state.withLock({ $0.refundResults[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
     func addressValidation(siteID: Int64, address: ShippingLabelAddressVerification,
                            completion: @escaping (Result<ShippingLabelAddressValidationSuccess, Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = AddressValidationResultKey(siteID: siteID)
-            if let result = self.addressValidationResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = AddressValidationResultKey(siteID: siteID)
+        if let result = state.withLock({ $0.addressValidationResults[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
     func packagesDetails(siteID: Int64, completion: @escaping (Result<ShippingLabelPackagesResponse, Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = PackagesDetailsResultKey(siteID: siteID)
-            if let result = self.packagesDetailsResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = PackagesDetailsResultKey(siteID: siteID)
+        if let result = state.withLock({ $0.packagesDetailsResults[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
@@ -275,15 +243,12 @@ extension MockShippingLabelRemote: @MainActor ShippingLabelRemoteProtocol {
                        customPackage: ShippingLabelCustomPackage?,
                        predefinedOption: ShippingLabelPredefinedOption?,
                        completion: @escaping (Result<Bool, Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = CreatePackageResultKey(siteID: siteID)
-            if let result = self.createPackageResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = CreatePackageResultKey(siteID: siteID)
+        if let result = state.withLock({ $0.createPackageResults[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
@@ -293,59 +258,47 @@ extension MockShippingLabelRemote: @MainActor ShippingLabelRemoteProtocol {
                               destinationAddress: ShippingLabelAddress,
                               packages: [ShippingLabelPackageSelected],
                               completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            let key = LoadCarriersAndRatesKey(siteID: siteID)
+        let key = LoadCarriersAndRatesKey(siteID: siteID)
 
-            if let result = self.loadCarriersAndRatesResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        if let result = state.withLock({ $0.loadCarriersAndRatesResults[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
     func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = LoadAccountSettingsResultKey(siteID: siteID)
-            if let result = self.loadAccountSettings[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = LoadAccountSettingsResultKey(siteID: siteID)
+        if let result = state.withLock({ $0.loadAccountSettings[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
     func updateShippingLabelAccountSettings(siteID: Int64,
                                             settings: ShippingLabelAccountSettings,
                                             completion: @escaping (Result<Bool, Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = UpdateAccountSettingsResultKey(siteID: siteID)
-            if let result = self.updateAccountSettings[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = UpdateAccountSettingsResultKey(siteID: siteID)
+        if let result = state.withLock({ $0.updateAccountSettings[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
                                   completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = CreationEligibilityResultKey(siteID: siteID,
-                                                   orderID: orderID)
-            if let result = self.creationEligibilityResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = CreationEligibilityResultKey(siteID: siteID,
+                                               orderID: orderID)
+        if let result = state.withLock({ $0.creationEligibilityResults[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
@@ -356,16 +309,13 @@ extension MockShippingLabelRemote: @MainActor ShippingLabelRemoteProtocol {
                                packages: [ShippingLabelPackagePurchase],
                                emailCustomerReceipt: Bool,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = PurchaseShippingLabelResultKey(siteID: siteID)
-            if let result = self.purchaseShippingLabelResults[key] {
-                self.purchaseShippingLabelCalled = true
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = PurchaseShippingLabelResultKey(siteID: siteID)
+        if let result = state.withLock({ $0.purchaseShippingLabelResults[key] }) {
+            state.withLock { $0.purchaseShippingLabelCalled = true }
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 
@@ -373,16 +323,13 @@ extension MockShippingLabelRemote: @MainActor ShippingLabelRemoteProtocol {
                           orderID: Int64,
                           labelIDs: [Int64],
                           completion: @escaping (Result<[ShippingLabelStatusPollingResponse], Error>) -> Void) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
 
-            let key = CheckLabelStatusResultKey(siteID: siteID)
-            if let result = self.checkLabelStatusResults[key] {
-                self.checkLabelStatusCallsCount += 1
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = CheckLabelStatusResultKey(siteID: siteID)
+        if let result = state.withLock({ $0.checkLabelStatusResults[key] }) {
+            state.withLock { $0.checkLabelStatusCallsCount += 1 }
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
         }
     }
 }

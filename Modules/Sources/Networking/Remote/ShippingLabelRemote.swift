@@ -1,7 +1,7 @@
 import Foundation
 
 /// Protocol for `ShippingLabelRemote` mainly used for mocking.
-public protocol ShippingLabelRemoteProtocol {
+public protocol ShippingLabelRemoteProtocol: Sendable {
     func loadShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<OrderShippingLabelListResponse, Error>) -> Void)
     func printShippingLabel(siteID: Int64,
                             shippingLabelIDs: [Int64],

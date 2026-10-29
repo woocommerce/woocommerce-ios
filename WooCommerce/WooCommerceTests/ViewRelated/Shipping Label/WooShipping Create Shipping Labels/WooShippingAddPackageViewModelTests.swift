@@ -33,6 +33,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedCarriersPackage)
     }
 
+    @MainActor
     func test_star_unstar_package() {
         // Given
         let siteID: Int64 = 1234
@@ -55,6 +56,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.starredCarriersPackages.count, 0)
     }
 
+    @MainActor
     func test_staring_package_creates_notice_when_fails() {
         // Given
         let siteID: Int64 = 1234
@@ -83,6 +85,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notice?.feedbackType, .error)
     }
 
+    @MainActor
     func test_unstaring_package_triggers_removing_package_correctly() {
         // Given
         let testSiteID: Int64 = 1234
@@ -119,6 +122,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(triggeredPackageType, .predefined)
     }
 
+    @MainActor
     func test_unstaring_package_creates_notice_when_fails() {
         // Given
         let testSiteID: Int64 = 1234
@@ -201,6 +205,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.packageLoadingError as? NSError, expectedError)
     }
 
+    @MainActor
     func test_remove_saved_package_dispatches_deletePackage_action_correctly_for_predefined_package() {
         // Given
         let siteID: Int64 = 1234
@@ -243,6 +248,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(triggeredPackageType, .predefined)
     }
 
+    @MainActor
     func test_remove_saved_package_dispatches_deletePackage_action_correctly_for_custom_package() {
         // Given
         let siteID: Int64 = 1234
@@ -277,6 +283,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(triggeredPackageType, .custom)
     }
 
+    @MainActor
     func test_remove_saved_package_creates_notice_when_fails() {
         // Given
         let siteID: Int64 = 1234
@@ -305,7 +312,8 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notice?.feedbackType, .error)
     }
 
-    func test_remove_saved_package_when_later_failure_reinserts_after_another_deletion_then_does_not_crash() throws {
+    @MainActor
+    func test_remove_saved_package_when_later_failure_reinserts_after_another_deletion_then_does_not_crash() async throws {
         // Given
         let siteID: Int64 = 1
         let customPackages: [WooShippingCustomPackage] = [
@@ -340,7 +348,10 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         try XCTUnwrap(deleteCompletions[secondPackage.id])(.failure(NSError(domain: "Test", code: 400)))
 
         // Then
-        XCTAssertTrue(true)
+        await until {
+            viewModel.customSavedPackages.contains { $0.id == secondPackage.id }
+        }
+        XCTAssertEqual(viewModel.customSavedPackages.map(\.id), [secondPackage.id])
     }
 
     func test_it_fetches_and_transforms_packages_from_storage() throws {

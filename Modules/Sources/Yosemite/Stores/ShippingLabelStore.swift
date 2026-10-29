@@ -5,15 +5,19 @@ import Storage
 /// Implements `ShippingLabelAction` actions
 ///
 public final class ShippingLabelStore: Store {
-    private let remote: ShippingLabelRemoteProtocol
+    private let requestHandler: ShippingLabelStoreRequestHandler
 
     override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = ShippingLabelRemote(network: network)
+        self.requestHandler = ShippingLabelStoreRequestHandler(remote: ShippingLabelRemote(network: network), storageManager: storageManager)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ShippingLabelRemoteProtocol) {
-        self.remote = remote
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: ShippingLabelRemoteProtocol,
+         schedule: (@Sendable (TimeInterval, @escaping @MainActor @Sendable () -> Void) -> Void)? = nil) {
+        self.requestHandler = ShippingLabelStoreRequestHandler(remote: remote, storageManager: storageManager, schedule: schedule)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -24,6 +28,33 @@ public final class ShippingLabelStore: Store {
 
     /// Receives and executes Actions.
     override public func onAction(_ action: Action) {
+        requestHandler.onAction(action)
+    }
+}
+
+private final class ShippingLabelStoreRequestHandler: Sendable {
+    let remote: ShippingLabelRemoteProtocol
+    let storageManager: StorageManagerType
+    let schedule: @Sendable (TimeInterval, @escaping @MainActor @Sendable () -> Void) -> Void
+
+    init(remote: ShippingLabelRemoteProtocol,
+         storageManager: StorageManagerType,
+         schedule: (@Sendable (TimeInterval, @escaping @MainActor @Sendable () -> Void) -> Void)? = nil) {
+        self.remote = remote
+        self.storageManager = storageManager
+        self.schedule = schedule ?? { delay, operation in
+            Task { @MainActor in
+                do {
+                    try await Task.sleep(for: .seconds(delay))
+                } catch {
+                    return
+                }
+                operation()
+            }
+        }
+    }
+
+    func onAction(_ action: Action) {
         guard let action = action as? ShippingLabelAction else {
             assertionFailure("ShippingLabelStore received an unsupported action")
             return
@@ -86,8 +117,8 @@ public final class ShippingLabelStore: Store {
     }
 }
 
-private extension ShippingLabelStore {
-    func synchronizeShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
+private extension ShippingLabelStoreRequestHandler {
+    func synchronizeShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping @Sendable (Result<[ShippingLabel], Error>) -> Void) {
         remote.loadShippingLabels(siteID: siteID, orderID: orderID) { [weak self] result in
             guard let self else { return }
 
@@ -98,8 +129,8 @@ private extension ShippingLabelStore {
                 self.upsertShippingLabelsAndSettingsInBackground(siteID: siteID,
                                                                  orderID: orderID,
                                                                  shippingLabels: response.shippingLabels,
-                                                                 settings: response.settings) {
-                    completion(.success(response.shippingLabels))
+                                                                 settings: response.settings) { [shippingLabels = response.shippingLabels] in
+                    completion(.success(shippingLabels))
                 }
             }
         }
@@ -113,7 +144,7 @@ private extension ShippingLabelStore {
     }
 
     func refundShippingLabel(shippingLabel: ShippingLabel,
-                             completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
+                             completion: @escaping @Sendable (Result<ShippingLabelRefund, Error>) -> Void) {
         remote.refundShippingLabel(siteID: shippingLabel.siteID,
                                    orderID: shippingLabel.orderID,
                                    shippingLabelID: shippingLabel.shippingLabelID) { [weak self] result in
@@ -200,7 +231,7 @@ private extension ShippingLabelStore {
     }
 
     func synchronizeShippingLabelAccountSettings(siteID: Int64,
-                                                 completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
+                                                 completion: @escaping @Sendable (Result<ShippingLabelAccountSettings, Error>) -> Void) {
         remote.loadShippingLabelAccountSettings(siteID: siteID) { [weak self] result in
             guard let self else { return }
 
@@ -217,7 +248,7 @@ private extension ShippingLabelStore {
 
     func updateShippingLabelAccountSettings(siteID: Int64,
                                             settings: ShippingLabelAccountSettings,
-                                            completion: @escaping (Result<Bool, Error>) -> Void) {
+                                            completion: @escaping @Sendable (Result<Bool, Error>) -> Void) {
         remote.updateShippingLabelAccountSettings(siteID: siteID, settings: settings) { [weak self] result in
             guard let self else { return }
 
@@ -241,25 +272,20 @@ private extension ShippingLabelStore {
                                backendProcessingDelay: TimeInterval,
                                pollingDelay: TimeInterval,
                                pollingMaximumRetries: Int64,
-                               completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
-        var labelPurchaseIDs: [Int64] = []
-
+                               completion: @escaping @Sendable (Result<[ShippingLabel], Error>) -> Void) {
         // Make the initial purchase request.
         remote.purchaseShippingLabel(siteID: siteID,
                                      orderID: orderID,
                                      originAddress: originAddress,
                                      destinationAddress: destinationAddress,
                                      packages: packages,
-                                     emailCustomerReceipt: emailCustomerReceipt) { [weak self] result in
+                                     emailCustomerReceipt: emailCustomerReceipt) { [weak self, schedule] result in
             switch result {
             case .success(let labelPurchases):
-                // Save the IDs of label purchases in the response so we can poll the backend for their status.
-                for label in labelPurchases {
-                    labelPurchaseIDs.append(label.shippingLabelID)
-                }
+                let labelPurchaseIDs = labelPurchases.map(\.shippingLabelID)
 
                 // Wait to give the backend time to process the purchase
-                DispatchQueue.main.asyncAfter(deadline: .now() + backendProcessingDelay) { [weak self] in
+                schedule(backendProcessingDelay) { [weak self] in
                     guard let self else { return }
 
                     // Poll the status of the label purchases from the response above
@@ -278,14 +304,14 @@ private extension ShippingLabelStore {
     }
 }
 
-private extension ShippingLabelStore {
+private extension ShippingLabelStoreRequestHandler {
     /// Updates/inserts the specified readonly shipping label & settings entities *in a background thread*.
     /// `onCompletion` will be called on the main thread!
     func upsertShippingLabelsAndSettingsInBackground(siteID: Int64,
                                                      orderID: Int64,
                                                      shippingLabels: [ShippingLabel],
                                                      settings: ShippingLabelSettings,
-                                                     onCompletion: @escaping () -> Void) {
+                                                     onCompletion: @escaping @Sendable () -> Void) {
         guard shippingLabels.isEmpty == false else {
             return onCompletion()
         }
@@ -304,7 +330,7 @@ private extension ShippingLabelStore {
     /// `onCompletion` will be called on the main thread!
     func upsertShippingLabelRefundInBackground(shippingLabel: ShippingLabel,
                                                refund: ShippingLabelRefund,
-                                               onCompletion: @escaping () -> Void) {
+                                               onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave ({ [weak self] storage in
             guard let self else { return }
             // If a shipping label does not exist in storage, skip upserting the refund in storage.
@@ -374,7 +400,7 @@ private extension ShippingLabelStore {
     ///
     func upsertShippingLabelAccountSettingsInBackground(siteID: Int64,
                                                         accountSettings: ShippingLabelAccountSettings,
-                                                        onCompletion: @escaping () -> Void) {
+                                                        onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             self?.upsertShippingLabelAccountSettings(siteID: siteID, accountSettings: accountSettings, using: storage)
         }, completion: onCompletion, on: .main)
@@ -412,8 +438,8 @@ private extension ShippingLabelStore {
                          siteID: Int64,
                          orderID: Int64,
                          labelIDs: [Int64],
-                         completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
-        remote.checkLabelStatus(siteID: siteID, orderID: orderID, labelIDs: labelIDs) { [weak self] result in
+                         completion: @escaping @Sendable (Result<[ShippingLabel], Error>) -> Void) {
+        remote.checkLabelStatus(siteID: siteID, orderID: orderID, labelIDs: labelIDs) { [weak self, schedule] result in
             switch result {
             case .success(let labelStatusResponse):
                 // If all labels have PURCHASED status, stop polling
@@ -430,7 +456,7 @@ private extension ShippingLabelStore {
 
                 // If no errors but status is not PURCHASED for all labels, poll again after delay
                 else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                    schedule(delay) { [weak self] in
                         self?.pollLabelStatus(withDelayInSeconds: delay,
                                               maxErrorRetries: maxErrorRetries,
                                               siteID: siteID,
@@ -443,7 +469,7 @@ private extension ShippingLabelStore {
             case .failure(let error):
                 // If there are retries left, poll again after delay
                 if maxErrorRetries > 0 {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                    schedule(delay) { [weak self] in
                         self?.pollLabelStatus(withDelayInSeconds: delay,
                                               maxErrorRetries: maxErrorRetries - 1,
                                               siteID: siteID,

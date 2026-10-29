@@ -7,7 +7,7 @@ public enum WooShippingPackageType: String {
 
 /// Protocol for `WooShippingRemote` mainly used for mocking.
 ///
-public protocol WooShippingRemoteProtocol {
+public protocol WooShippingRemoteProtocol: Sendable {
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
                                   completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void)

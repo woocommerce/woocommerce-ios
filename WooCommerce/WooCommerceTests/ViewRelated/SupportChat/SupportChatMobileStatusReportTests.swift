@@ -43,7 +43,7 @@ struct SupportChatMobileStatusReportTests {
     }
 
     @Test(arguments: [SupportChatViewModel.EntryPoint.helpAndSupport, .connectivityTool])
-    func test_first_message_when_chat_starts_after_login_then_adds_recent_logs(entryPoint: SupportChatViewModel.EntryPoint) async throws {
+    func test_first_message_when_chat_starts_after_login_then_omits_recent_logs(entryPoint: SupportChatViewModel.EntryPoint) async throws {
         // Given
         let logProvider = MockRecentApplicationLogProvider(logEntries: [
             .init(date: Date(), level: .error, message: "Sync error")
@@ -70,8 +70,9 @@ struct SupportChatMobileStatusReportTests {
             Issue.record("Expected troubleshooting context")
             return
         }
-        #expect(troubleshootingResults.contains("# Recent app logs"))
-        #expect(troubleshootingResults.contains("Sync error"))
+        #expect(!troubleshootingResults.contains("# Recent app logs"))
+        #expect(!troubleshootingResults.contains("Sync error"))
+        #expect(troubleshootingResults == "Mock mobile status report")
     }
 
     @Test(arguments: [SupportChatViewModel.EntryPoint.preLogin, .helpAndSupport, .connectivityTool])

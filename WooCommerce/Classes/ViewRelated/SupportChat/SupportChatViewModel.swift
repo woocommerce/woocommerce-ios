@@ -770,7 +770,8 @@ final class SupportChatViewModel {
         let contextSiteAddress: String? = if case .string(let address) = context["site_url"] { address } else { nil }
         let report = await mobileStatusReportProvider.generateReport(siteAddress: supportSiteAddress ?? contextSiteAddress)
         var sections: [String] = if case .string(let existing) = context["troubleshootingResults"] { [existing] } else { [] }
-        if let recentLogs = recentApplicationLogsContext.build(excludingStoreResponseExcerpts: excludeStoreResponseExcerptsFromLogs) {
+        if entryPoint == .preLogin,
+           let recentLogs = recentApplicationLogsContext.build(excludingStoreResponseExcerpts: excludeStoreResponseExcerptsFromLogs) {
             sections.append(recentLogs.text)
             DDLogInfo("Added \(recentLogs.entryCount) recent warning and error log entries to the AI support chat context.")
         }

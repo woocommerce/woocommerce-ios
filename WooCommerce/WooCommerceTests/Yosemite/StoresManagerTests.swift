@@ -911,6 +911,75 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [false, true])
     }
 
+    @MainActor
+    func test_generationFailedNotification_when_site_rejects_saved_credentials_then_logs_out_with_site_credentials_rejected_reason() {
+        // Given
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        let analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+
+        // When
+        notificationCenter.post(name: .ApplicationPasswordsGenerationFailed,
+                                object: ApplicationPasswordUseCaseError.siteCredentialsRejected,
+                                userInfo: nil)
+
+        // Then
+        XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertEqual(analyticsProvider.receivedEvents.last, "account_involuntary_logout")
+        XCTAssertEqual(analyticsProvider.receivedProperties.last?["reason"] as? String, "site_credentials_rejected")
+    }
+
+    @MainActor
+    func test_generationFailedNotification_when_failure_is_not_a_credential_rejection_then_stays_logged_in() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+
+        // When
+        notificationCenter.post(name: .ApplicationPasswordsGenerationFailed,
+                                object: ApplicationPasswordUseCaseError.unauthorizedRequest,
+                                userInfo: nil)
+
+        // Then
+        XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("account_involuntary_logout"))
+    }
+
+    @MainActor
+    func test_generationFailedNotification_when_callback_runs_after_switching_to_wpcom_then_keeps_wpcom_session() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+        let generationFailureObserver = try XCTUnwrap(notificationCenter.generationFailureObserver)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        // When
+        generationFailureObserver(Notification(name: .ApplicationPasswordsGenerationFailed,
+                                               object: ApplicationPasswordUseCaseError.siteCredentialsRejected))
+
+        // Then
+        XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertFalse(manager.isAuthenticatedWithoutWPCom)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("account_involuntary_logout"))
+    }
+
     /// Verifies that the selected store is reset—while keeping the user authenticated—upon receiving an unknown blog error notification.
     ///
     func test_it_resets_selected_store_and_stays_authenticated_upon_receiving_unknown_blog_error_notification() {
@@ -1401,6 +1470,18 @@ final class MockSessionManager: SessionManagerProtocol {
 
 private class MockNotificationCenter: NotificationCenter, @unchecked Sendable {
     static var testingInstance = MockNotificationCenter()
+
+    private(set) var generationFailureObserver: (@Sendable (Notification) -> Void)?
+
+    override func addObserver(forName name: NSNotification.Name?,
+                              object obj: Any?,
+                              queue: OperationQueue?,
+                              using block: @escaping @Sendable (Notification) -> Void) -> NSObjectProtocol {
+        if name == .ApplicationPasswordsGenerationFailed {
+            generationFailureObserver = block
+        }
+        return super.addObserver(forName: name, object: obj, queue: queue, using: block)
+    }
 }
 
 private final class MockStoresManagerState: StoresManagerState {

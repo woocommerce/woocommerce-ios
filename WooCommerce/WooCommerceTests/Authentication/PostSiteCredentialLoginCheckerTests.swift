@@ -210,6 +210,23 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertEqual(fixture.provider.properties(for: WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue)?["result"] as? String, "success")
     }
 
+    @MainActor
+    func test_checkEligibility_when_site_rejects_saved_credentials_then_shows_unauthorized_alert_without_retry() throws {
+        // Given
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: ApplicationPasswordUseCaseError.siteCredentialsRejected)
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     previousViewController: nil)
+
+        // When
+        checker.checkEligibility(for: testURL, from: navigationController) {}
+        waitUntil { self.navigationController.presentedViewController != nil }
+
+        // Then
+        let alert = try XCTUnwrap(navigationController.presentedViewController as? UIAlertController)
+        XCTAssertEqual(alert.actions.count, 2)
+        XCTAssertEqual(useCase.generationCallCount, 1)
+    }
+
     func test_application_password_disabled_error_is_displayed_when_application_password_is_disabled() {
         // Given
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)

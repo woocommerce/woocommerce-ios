@@ -160,6 +160,33 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         XCTAssertTrue(failure == .unauthorizedRequest)
     }
 
+    @MainActor
+    func test_generateNewPassword_when_site_rejects_saved_credentials_then_throws_siteCredentialsRejected() async throws {
+        // Given
+        let originalError = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+        let error = AFError.requestRetryFailed(
+            retryError: CookieNonceAuthenticator.Error.authenticationFailed(.invalidCredentials),
+            originalError: originalError
+        )
+        network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: error)
+        let sut = try DefaultApplicationPasswordUseCase(username: "demo",
+                                                        password: "qeWOhQ5RUV8W",
+                                                        siteAddress: "https://test.com",
+                                                        network: network,
+                                                        rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
+
+        // When
+        var failure: ApplicationPasswordUseCaseError?
+        do {
+            _ = try await sut.generateNewPassword()
+        } catch {
+            failure = error as? ApplicationPasswordUseCaseError
+        }
+
+        // Then
+        XCTAssertTrue(failure == .siteCredentialsRejected)
+    }
+
     func test_password_is_generated_with_correct_values_upon_success_response_when_authenticated_with_wpcom() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: URLSuffix.applicationPassword,

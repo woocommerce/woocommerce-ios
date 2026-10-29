@@ -190,6 +190,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         withExtendedLifetime(window) {}
     }
 
+    @MainActor
     func test_textFieldDidEndEditing_when_focus_is_set_then_clears_focus() {
         // Given
         let focusState = FocusState()

@@ -26,6 +26,7 @@
 - [*] Improved camera barcode scanning accuracy by confirming repeated reads before searching for a product. [https://github.com/woocommerce/woocommerce-ios/pull/18157]
 - [*] Orders: The refund details screen on iPad fills the detail column instead of a narrow column with cut-off text. [https://github.com/woocommerce/woocommerce-ios/pull/18163]
 - [*] POS: Opening Orders after a completed payment starts a new cart, instead of bringing the paid items back. [https://github.com/woocommerce/woocommerce-ios/pull/18179]
+- [*] Orders: VoiceOver now reaches the fixed amount and percentage options when adding a custom amount. [https://github.com/woocommerce/woocommerce-ios/pull/18196]
 
 25.9
 -----

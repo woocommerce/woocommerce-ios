@@ -3,8 +3,8 @@ import Codegen
 
 /// Represents the entity sent for creating a new Blaze Campaign
 ///
-public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiable {
-    public struct Image: Encodable, GeneratedFakeable, GeneratedCopiable {
+public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiable, Sendable {
+    public struct Image: Encodable, GeneratedFakeable, GeneratedCopiable, Sendable {
         /// URL of the image for the campaign
         ///
         public let url: String

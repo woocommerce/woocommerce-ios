@@ -54,7 +54,7 @@ private extension POSRefundReviewView {
     var itemsAndTaxRows: some View {
         VStack(spacing: POSSpacing.small) {
             summaryRow(
-                label: String(format: Localization.itemsSubtotalFormat, itemsCount),
+                label: POSRefundSubtotalLabel.make(itemsCount),
                 value: formattedItemsSubtotal,
                 labelColor: .posOnSurfaceVariantHighest,
                 valueColor: .posOnSurface
@@ -147,12 +147,6 @@ private extension POSRefundReviewView {
             "pos.refundReviewView.backButton.accessibilityLabel",
             value: "Back",
             comment: "Accessibility label for the back button on the refund review screen"
-        )
-
-        static let itemsSubtotalFormat = NSLocalizedString(
-            "pos.refundReviewView.itemsSubtotalFormat",
-            value: "Items subtotal (%d items)",
-            comment: "Label for items subtotal row in refund review. %d is the number of items."
         )
 
         static let taxLabel = NSLocalizedString(

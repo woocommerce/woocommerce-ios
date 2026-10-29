@@ -52,16 +52,19 @@ final class StoreInfoProvider {
         }
 
         let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
-        let service = StoreInfoDataService(credentials: dependencies.credentials)
+        let credentials = dependencies.credentials
+        let service = await StoreInfoDataService(credentials: credentials)
+        let storeID = dependencies.store.storeID
+        let serviceDateRange = dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone)
         do {
             async let statsPeriodRequest = service.fetchStats(
-                for: dependencies.store.storeID,
-                dateRange: dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone)
+                for: storeID,
+                dateRange: serviceDateRange
             )
             async let storeRequest = Self.refreshedStoreMetadata(dependencies.store, service: service)
             let statsPeriod = try await statsPeriodRequest
             let store = await storeRequest
-            let updatedDependencies = Dependencies(credentials: dependencies.credentials, store: store)
+            let updatedDependencies = Dependencies(credentials: credentials, store: store)
             let entry = Self.dataEntry(
                 for: statsPeriod,
                 dateRange: dateRange,
@@ -77,9 +80,9 @@ final class StoreInfoProvider {
         }
     }
 
-    static func refreshedStoreMetadata(_ store: StoreMetadata,
+    static func refreshedStoreMetadata(_ store: sending StoreMetadata,
                                        service: StoreInfoDataService,
-                                       currencyCache: WidgetSiteCurrencyCache = WidgetSiteCurrencyCache()) async -> StoreMetadata {
+                                       currencyCache: sending WidgetSiteCurrencyCache = WidgetSiteCurrencyCache()) async -> sending StoreMetadata {
         guard let siteID = store.siteIDNeedingCurrencySettingsRefresh else {
             return store
         }

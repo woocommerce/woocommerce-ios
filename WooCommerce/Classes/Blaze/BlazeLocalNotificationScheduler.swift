@@ -20,11 +20,13 @@ protocol BlazeLocalNotificationScheduler {
 
 /// Handles the scheduling of Blaze local notifications.
 ///
+@MainActor
 final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationScheduler {
     private let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
-    private let scheduler: LocalNotificationScheduler
+    // TODO: WOOMOB-4073
+    nonisolated(unsafe) private let scheduler: LocalNotificationScheduler
     private let userDefaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private var subscriptions: Set<AnyCancellable> = []

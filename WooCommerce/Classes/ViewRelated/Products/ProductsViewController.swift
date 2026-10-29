@@ -1338,6 +1338,12 @@ private extension ProductsViewController {
     }
 }
 
+extension ProductsViewController: ScrollToTopProviding {
+    var scrollToTopScrollView: UIScrollView? {
+        tableView
+    }
+}
+
 // MARK: - UITableViewDataSource Conformance
 //
 extension ProductsViewController: UITableViewDataSource {

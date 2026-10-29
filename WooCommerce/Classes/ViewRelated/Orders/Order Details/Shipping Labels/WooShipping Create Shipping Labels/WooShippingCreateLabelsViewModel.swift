@@ -1,4 +1,5 @@
 import Foundation
+import os
 import Yosemite
 import WooFoundation
 import Combine
@@ -37,6 +38,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
     private var subscriptions: Set<AnyCancellable> = []
     private let initialNoticeDelay: RunLoop.SchedulerTimeType.Stride
+    private let serviceStatusRefreshTimeout: Duration
     private let analytics: Analytics
 
     private(set) var orderItems: WooShippingItemsViewModel
@@ -75,6 +77,17 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     }
 
     @Published var labelPurchaseErrorNotice: Notice?
+
+    /// Store-wide carrier incidents, shown on every unpurchased shipment.
+    @Published private(set) var serviceStatusNotices: [WooShippingServiceStatusNotice] = []
+
+    /// Includes dismissed notices, so a purchase failure can still explain an incident whose banner was dismissed.
+    private var fetchedServiceStatusNotices: [WooShippingServiceStatusNotice] = []
+
+    /// Hidden until the screen is reopened, even if a refetch returns them again.
+    private var dismissedServiceStatusNoticeIDs: Set<String> = []
+
+    private var serviceStatusRefreshTask: Task<Void, Never>?
 
     @Published private(set) var state = ContentState.loading
 
@@ -270,6 +283,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
+         serviceStatusRefreshTimeout: Duration = .seconds(5),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
         self.itemsDataSource = DefaultWooShippingItemsDataSource(
@@ -289,6 +303,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.weightUnit = shippingSettingsService.weightUnit ?? ""
         self.dimensionsUnit = shippingSettingsService.dimensionUnit ?? ""
         self.initialNoticeDelay = initialNoticeDelay
+        self.serviceStatusRefreshTimeout = serviceStatusRefreshTimeout
         self.isOrderCompleted = order.status == .completed
 
         let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
@@ -318,6 +333,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         configureAccountSettingsResultsController()
 
         Task { @MainActor in
+            refreshServiceStatusNotices()
             await loadRequiredData()
 
             // After shipment configs are updated, shipments are updated with purchased label details.
@@ -400,13 +416,20 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         }
         isPurchasingLabel = true
         labelPurchaseErrorNotice = nil
+        var purchaseError: Error?
+        var isServiceStatusIncidentShown = false
 
         do {
             if shouldRefreshPackageAndRate {
                 try await currentShipmentDetailsViewModel.refreshPackagesAndShippingRates()
             }
             let markOrderComplete = isOrderCompleted ? nil : self.markOrderComplete
-            try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
+            do {
+                try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
+            } catch {
+                purchaseError = error
+                throw error
+            }
         } catch let DotcomError.unknown(code, _, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
         } catch let DotcomError.unknown(code, _, _) where code == Constants.missingFedExTermsOfServiceAcceptance {
@@ -426,9 +449,15 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                     self?.editDestinationAddress()
                 }
             } else {
+                var incident: WooShippingServiceStatusNotice?
+                if WooShippingServiceOutage.isOutage(error) {
+                    incident = await activeServiceStatusIncident()
+                }
+                isServiceStatusIncidentShown = incident != nil
                 labelPurchaseErrorNotice = Notice(
                     title: Localization.LabelPurchaseError.title,
-                    message: Localization.LabelPurchaseError.message,
+                    message: incident.map { String(format: Localization.LabelPurchaseError.serviceStatusMessage, $0.message) }
+                        ?? Localization.LabelPurchaseError.message,
                     feedbackType: .error,
                     actionTitle: Localization.LabelPurchaseError.retry
                 ) { [weak self] in
@@ -440,6 +469,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 }
             }
             DDLogError("⛔️ Error purchasing shipping label: \(error)")
+        }
+        if let purchaseError {
+            analytics.track(event: .WooShipping.purchaseStep(state: .purchaseFailed,
+                                                             error: purchaseError,
+                                                             serviceStatusNoticeShown: isServiceStatusIncidentShown))
         }
         isPurchasingLabel = false
     }
@@ -556,6 +590,79 @@ private extension WooShippingCreateLabelsViewModel {
     /// This is useful for checking countries in the customs form and listing countries in the edit address form.
     func syncCountries() {
         stores.dispatch(DataAction.synchronizeCountries(siteID: order.siteID) { _ in })
+    }
+}
+
+// MARK: Service status notices
+extension WooShippingCreateLabelsViewModel {
+    @MainActor
+    func dismissServiceStatusNotice(id: String) {
+        dismissedServiceStatusNoticeIDs.insert(id)
+        serviceStatusNotices.removeAll { $0.id == id }
+    }
+
+    /// Fetches the active carrier incidents, reusing the request already in flight.
+    @MainActor
+    @discardableResult
+    func refreshServiceStatusNotices() -> Task<Void, Never> {
+        if let serviceStatusRefreshTask {
+            return serviceStatusRefreshTask
+        }
+        let task = Task { @MainActor [weak self] in
+            await self?.loadServiceStatusNotices()
+            self?.serviceStatusRefreshTask = nil
+        }
+        serviceStatusRefreshTask = task
+        return task
+    }
+}
+
+private extension WooShippingCreateLabelsViewModel {
+    @MainActor
+    func loadServiceStatusNotices() async {
+        do {
+            let notices = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(WooShippingAction.loadServiceStatusNotices(siteID: order.siteID) { result in
+                    continuation.resume(with: result)
+                })
+            }
+            fetchedServiceStatusNotices = notices
+            serviceStatusNotices = notices.filter { !dismissedServiceStatusNoticeIDs.contains($0.id) }
+        } catch {
+            // Older plugins don't have the endpoint (404). The notices are optional, so keep the screen as is.
+            DDLogError("⛔️ Error loading WooShipping service status: \(error)")
+        }
+    }
+
+    /// Refetches the notices, waiting at most `serviceStatusRefreshTimeout`, and returns the most severe warning or error.
+    @MainActor
+    func activeServiceStatusIncident() async -> WooShippingServiceStatusNotice? {
+        let refresh = refreshServiceStatusNotices()
+        let timeout = serviceStatusRefreshTimeout
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            // The refresh and the timeout race to resume; the second one is ignored, so neither needs cancelling.
+            let hasResumed = OSAllocatedUnfairLock(initialState: false)
+            let resumeOnce: @Sendable () -> Void = {
+                let isFirst = hasResumed.withLock { resumed in
+                    defer { resumed = true }
+                    return !resumed
+                }
+                if isFirst {
+                    continuation.resume()
+                }
+            }
+            Task {
+                await refresh.value
+                resumeOnce()
+            }
+            Task {
+                try? await Task.sleep(for: timeout)
+                resumeOnce()
+            }
+        }
+        return fetchedServiceStatusNotices
+            .filter { $0.severity != .info }
+            .max { $0.severity < $1.severity }
     }
 }
 
@@ -676,6 +783,11 @@ private extension WooShippingCreateLabelsViewModel {
                     self?.handleLabelPurchaseSuccess(newLabel: newLabel, in: shipment)
                 }, onLabelRefund: { [weak self] labelID in
                     self?.handleLabelRefundRequested(labelID: labelID, in: shipment)
+                }, onLabelRatesLoadingFailure: { [weak self] error in
+                    guard WooShippingServiceOutage.isOutage(error) else { return }
+                    Task { @MainActor in
+                        self?.refreshServiceStatusNotices()
+                    }
                 })
         }
         observeHAZMATNotices()
@@ -992,6 +1104,12 @@ private extension WooShippingCreateLabelsViewModel {
             static let message = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.message",
                                                    value: "We are unable to purchase the shipping label. Please try again.",
                                                    comment: "Message in the notice when purchasing a shipping label fails")
+            static let serviceStatusMessage = NSLocalizedString(
+                "wooShipping.createLabels.labelPurchaseError.serviceStatusMessage",
+                value: "We are unable to purchase the shipping label due to a carrier service issue: %1$@",
+                comment: "Message in the notice when purchasing a shipping label fails during a carrier outage. " +
+                "%1$@ is the incident reported by the carrier, e.g. 'USPS: API Outage | Status: Investigating'."
+            )
             static let retry = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.retry",
                                                    value: "Retry",
                                                    comment: "Button to retry label purchase when an error occurs")

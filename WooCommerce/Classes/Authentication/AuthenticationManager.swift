@@ -21,7 +21,7 @@ import struct NetworkingCore.WordPressAPIDiscovery
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
-    typealias SiteCredentialLoginUseCaseFactory = (
+    typealias SiteCredentialLoginUseCaseFactory = @MainActor @Sendable (
         _ siteURL: String,
         _ endpoints: CookieNonceAuthenticationEndpoints?,
         _ verifyAdminDashboard: Bool
@@ -179,10 +179,12 @@ class AuthenticationManager: Authentication {
                 guard let navigationController else { return }
                 NavigateToEnterSite().execute(from: navigationController)
             },
-            onShowHelp: { [weak self, weak navigationController] in
-                guard let self, let navigationController else { return }
+            onShowHelp: { [weak navigationController] in
+                guard let navigationController else { return }
                 let presenter = navigationController.topViewController ?? navigationController
-                self.presentSupport(from: presenter, sourceTag: .loginWithQRCode, siteURL: nil)
+                AuthenticationManager.presentHelpAndSupport(from: presenter,
+                                                            sourceTagOrigin: WordPressSupportSourceTag.loginWithQRCode.origin,
+                                                            siteURL: nil)
             },
             onSuccess: { [weak self, weak navigationController] in
                 guard let self, let navigationController else { return }
@@ -247,6 +249,7 @@ class AuthenticationManager: Authentication {
         return false
     }
 
+    @MainActor
     private func showWPCOMLogin(siteURL: String, email: String, rootViewController: UIViewController) {
         let loginFields = LoginFields()
         loginFields.siteAddress = siteURL
@@ -256,6 +259,7 @@ class AuthenticationManager: Authentication {
         NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: rootViewController)
     }
 
+    @MainActor
     private func showWPOrgLogin(siteURL: String, username: String, rootViewController: UIViewController) {
         let loginFields = LoginFields()
         loginFields.siteAddress = siteURL
@@ -265,6 +269,7 @@ class AuthenticationManager: Authentication {
         NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
     }
 
+    @MainActor
     private func showLoginURLFailure(rootViewController: UIViewController) {
         let contextNoticePresenter: NoticePresenter = {
             let noticePresenter = DefaultNoticePresenter()
@@ -483,6 +488,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
         return isSupportedError(error)
     }
 
+    @MainActor
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
         guard let errorViewModel = viewModel(error) else {
             return
@@ -496,6 +502,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
     /// Validates that the self-hosted site contains the correct information
     /// and can proceed to the self-hosted username and password view controller.
     ///
+    @MainActor
     func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
         if let site = siteInfo {
             analytics.track(event: .Login.siteInfoFetched(
@@ -573,6 +580,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
 
     /// Navigates back to the store picker and selects the site that the user
     /// entered via site discovery, as if they had tapped it in the list.
+    @MainActor
     private func switchToAlreadyConnectedSite(_ site: Site, in navigationController: UINavigationController) {
         navigationController.popToRootViewController(animated: true)
         if let storePicker = navigationController.viewControllers
@@ -583,6 +591,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
     }
 
     /// Handles site credential login
+    @MainActor
     func handleSiteCredentialLogin(credentials: WordPressOrgCredentials,
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
@@ -753,6 +762,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
         unexpectedResponsePresenter.invalidate()
     }
 
+    @MainActor
     private func cancelSiteCredentialLoginAttempt() {
         postSiteCredentialLoginChecker?.cancel()
         credentialAttemptID = UUID()
@@ -853,13 +863,19 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
     func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen, siteURL: URL?) {
         let customHelpCenterContent = CustomHelpCenterContent(screen: screen,
                                                               flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow)
-        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: nil, siteURL: siteURL)
+        Self.performOnMainActor {
+            AuthenticationManager.presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent,
+                                                        sourceTagOrigin: nil, siteURL: siteURL)
+        }
     }
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, siteURL: URL?) {
-        presentHelpAndSupport(from: sourceViewController, sourceTag: sourceTag, siteURL: siteURL)
+        let sourceTagOrigin = sourceTag.origin
+        Self.performOnMainActor {
+            AuthenticationManager.presentHelpAndSupport(from: sourceViewController, sourceTagOrigin: sourceTagOrigin, siteURL: siteURL)
+        }
     }
 
     /// Presents the Support Interface from a given ViewController.
@@ -870,6 +886,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
     ///     - lastStep: Last `Step` tracked in `AuthenticatorAnalyticsTracker`
     ///     - lastFlow: Last `Flow` tracked in `AuthenticatorAnalyticsTracker`
     ///
+    @MainActor
     func presentSupport(from sourceViewController: UIViewController,
                         sourceTag: WordPressSupportSourceTag,
                         lastStep: AuthenticatorAnalyticsTracker.Step,
@@ -886,18 +903,21 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
             return url
         }()
         guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
-            presentSupport(from: sourceViewController, sourceTag: sourceTag, siteURL: parsedURL)
+            Self.presentHelpAndSupport(from: sourceViewController, sourceTagOrigin: sourceTag.origin, siteURL: parsedURL)
             return
         }
 
-        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag, siteURL: parsedURL)
+        Self.presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent,
+                                   sourceTagOrigin: sourceTag.origin, siteURL: parsedURL)
     }
 
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
+    @MainActor
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
+        let sourceTagOrigin = sourceTag.origin
         Task { @MainActor in
-            let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.origin,
+            let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTagOrigin,
                                                                             mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: sourceViewController)
         }
@@ -952,6 +972,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
         ServiceLocator.stores.dispatch(action)
     }
 
+    @MainActor
     func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
         DDLogError("⚠️ Site info check failed for \(siteURL): \(error.localizedDescription)")
 
@@ -995,6 +1016,7 @@ extension AuthenticationManager: @MainActor WordPressAuthenticatorDelegate {
         analytics.track(wooEvent, withError: error)
     }
 
+    @MainActor
     func showSiteCreationGuide(in navigationController: UINavigationController) {
         analytics.track(event: .StoreCreation.loginPrologueStartingANewStoreTapped())
 
@@ -1241,6 +1263,7 @@ private extension AuthenticationManager {
 
     /// The error screen to be displayed when the user tries to enter a site without WordPress.
     ///
+    @MainActor
     var noWPUI: UIViewController {
         let viewModel = NotWPErrorViewModel()
         return ULErrorViewController(viewModel: viewModel)
@@ -1579,20 +1602,35 @@ extension UserDefaults {
 // MARK: - Help and support helpers
 private extension AuthenticationManager {
 
-    func presentHelpAndSupport(from sourceViewController: UIViewController,
-                               customHelpCenterContent: CustomHelpCenterContent? = nil,
-                               sourceTag: WordPressSupportSourceTag?,
-                               siteURL: URL?) {
+    /// The `presentSupport` overloads that `Authentication` declares are nonisolated because some of their
+    /// callers are, and those callers run on the main thread. Run there synchronously, as before, and hop otherwise.
+    static func performOnMainActor(_ operation: @escaping @MainActor @Sendable () -> Void) {
+        if Thread.isMainThread {
+            MainActor.assumeIsolated {
+                operation()
+            }
+        } else {
+            Task { @MainActor in
+                operation()
+            }
+        }
+    }
+
+    @MainActor
+    static func presentHelpAndSupport(from sourceViewController: UIViewController,
+                                      customHelpCenterContent: CustomHelpCenterContent? = nil,
+                                      sourceTagOrigin: String?,
+                                      siteURL: URL?) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
         let supportViewController = UIStoryboard.settings.instantiateViewController(identifier: identifier,
                                                                                      creator: { coder -> HelpAndSupportViewController? in
             if let customHelpCenterContent {
                 return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent,
-                                                    sourceTag: sourceTag?.origin,
+                                                    sourceTag: sourceTagOrigin,
                                                     loginSiteURL: siteURL,
                                                     coder: coder)
             }
-            return HelpAndSupportViewController(sourceTag: sourceTag?.origin,
+            return HelpAndSupportViewController(sourceTag: sourceTagOrigin,
                                                 loginSiteURL: siteURL,
                                                 coder: coder)
         })

@@ -290,7 +290,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             })
         case .noActionHandlerFound, .noRemoteProductIDFound:
             displayError(error: .unexpected)
-        case let .failedUploadingImage(asset, error):
+        case let .failedUploadingImage(error):
+            guard let asset = errorInfo.asset else {
+                ServiceLocator.crashLogging.logMessage(
+                    "Product image upload failure received without its asset",
+                    properties: nil,
+                    level: .error
+                )
+                return displayError(error: .unexpected)
+            }
             displayImageUploadErrorAlert(error: error, for: asset)
         }
     }

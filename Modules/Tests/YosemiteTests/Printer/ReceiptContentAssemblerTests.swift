@@ -227,7 +227,9 @@ struct ReceiptContentAssemblerTests {
 
 // MARK: - Test Data
 private extension ReceiptContentAssemblerTests {
-    static let cardPresentCharge = Charge.fake().copy(paymentMethod: .cardPresent(details: .fake()))
+    static var cardPresentCharge: Charge {
+        Charge.fake().copy(paymentMethod: .cardPresent(details: .fake()))
+    }
 
     func makeReceiptParameters(amount: UInt = 100) throws -> CardPresentReceiptParameters {
         let intent = PaymentIntent.fake().copy(amount: amount, charges: [Self.cardPresentCharge])

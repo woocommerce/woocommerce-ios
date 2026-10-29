@@ -4,7 +4,8 @@ import Foundation
 
 
 /// Supports tests for CardPresentPaymentStore
-final class MockCardReaderService: CardReaderService {
+@MainActor
+final class MockCardReaderService: @MainActor CardReaderService {
     var discoveredReaders: AnyPublisher<[Hardware.CardReader], Error> {
         CurrentValueSubject<[Hardware.CardReader], Error>([]).eraseToAnyPublisher()
     }
@@ -104,7 +105,8 @@ final class MockCardReaderService: CardReaderService {
         didReceiveAConfigurationProvider = true
         spyStartDiscoveryMethod = discoveryMethod
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {[weak self] in
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(10))
             self?.discoveryStatusSubject.send(.discovering)
         }
     }
@@ -114,7 +116,8 @@ final class MockCardReaderService: CardReaderService {
 
         /// Delaying the effect of this method so that unit tests are actually async
         return Future { [weak self] promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {[weak self] in
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .milliseconds(10))
                 self?.discoveryStatusSubject.send(.idle)
                 promise(.success(()))
             }
@@ -124,7 +127,8 @@ final class MockCardReaderService: CardReaderService {
     func connect(_ reader: Hardware.CardReader, options: Hardware.CardReaderConnectionOptions?) -> AnyPublisher<CardReader, Error> {
         Future() { [weak self] promise in
             /// Delaying the effect of this method so that unit tests are actually async
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {[weak self] in
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .milliseconds(10))
                 let connectedReader = MockCardReader.bbposChipper2XBT()
                 promise(Result.success(connectedReader))
                 self?.connectedReadersSubject.send([connectedReader])
@@ -135,7 +139,8 @@ final class MockCardReaderService: CardReaderService {
     func disconnect() -> Future<Void, Error> {
         didHitDisconnect = true
         return Future() { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(10))
                 promise(Result.success(()))
             }
         }
@@ -145,7 +150,7 @@ final class MockCardReaderService: CardReaderService {
         didHitWaitForInsertedCardToBeRemoved = true
         return waitForInsertedCardToBeRemovedFuture ??
         Future() { promise in
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 promise(.success(()))
             }
         }
@@ -194,7 +199,8 @@ final class MockCardReaderService: CardReaderService {
             return cancelPaymentIntentFuture
         }
         return Future() { [weak self] promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .milliseconds(10))
                 self?.didTapCancelPayment = true
                 promise(Result.success(()))
             }
@@ -219,7 +225,8 @@ final class MockCardReaderService: CardReaderService {
     func cancelReconnection() -> Future<Void, Error> {
         didHitCancelReconnection = true
         return Future { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(10))
                 promise(.success(()))
             }
         }

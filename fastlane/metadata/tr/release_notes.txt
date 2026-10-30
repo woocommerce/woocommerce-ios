@@ -1,0 +1,1 @@
+AB'ye gönderim artık daha kolay: Gümrük formlarınız her öğenin SKU'sunu, üretici parça numarasını ve gerektiğinde GTIN/EAN'ini ister. Şahsen kurulum, WooPayments veya Stripe olmadan mağazalar için sorunsuz çalışır. Gönderim etiketleri artık alıcının telefon numarasını yerel siparişler için isteğe bağlı yapar.

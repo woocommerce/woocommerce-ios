@@ -159,7 +159,7 @@ final class SupportChatViewModel {
     private(set) var messages: [ChatMessage] = []
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
-    private(set) var earlierPaymentFailures: [String] = []
+    private var earlierPaymentFailures: [String] = []
 
     var paymentSafetyMessage: String? {
         selectedIssue == .inPersonPayments ? Localization.checkPaymentBeforeRetry : nil

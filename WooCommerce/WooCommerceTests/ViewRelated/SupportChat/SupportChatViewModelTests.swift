@@ -72,7 +72,6 @@ struct SupportChatViewModelTests {
         // Then
         #expect(sut.paymentSafetyMessage == nil)
         #expect(sut.paymentDiagnosticCompletionMessage == nil)
-        #expect(sut.earlierPaymentFailures.isEmpty)
     }
 
     @Test func test_payment_diagnostics_when_live_status_unknown_then_human_handoff_and_analytics_stay_inconclusive() async {
@@ -106,14 +105,12 @@ struct SupportChatViewModelTests {
         var transcript: String?
         let sut = makeSUT(diagnosticsService: service, onContactHumanSupport: { _, text, _, _, _ in transcript = text })
         await sut.selectIssue(.inPersonPayments)
-        #expect(sut.earlierPaymentFailures.isEmpty)
 
         // When
         await sut.executeAction(.retryDiagnostics)
         sut.contactHumanSupport()
 
         // Then
-        #expect(sut.earlierPaymentFailures.count == 1)
         #expect(transcript?.contains("Earlier setup checks (not payment attempts)") == true)
         #expect(transcript?.contains("2026-10-27T12:00:00Z") == true)
         #expect(transcript?.contains("http_status=503") == true)

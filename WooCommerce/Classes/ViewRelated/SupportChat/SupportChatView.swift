@@ -296,15 +296,6 @@ struct SupportChatView: View {
             Text(message)
                 .font(.body)
         }
-        if !viewModel.earlierPaymentFailures.isEmpty {
-            DisclosureGroup(Localization.earlierPaymentChecks) {
-                ForEach(Array(viewModel.earlierPaymentFailures.enumerated()), id: \.offset) { _, summary in
-                    Text(summary)
-                        .font(.footnote)
-                        .foregroundStyle(Color(.secondaryLabel))
-                }
-            }
-        }
     }
 
     private var diagnosticContinuation: some View {
@@ -443,11 +434,6 @@ private extension SupportChatView {
 
 private extension SupportChatView {
     enum Localization {
-        static let earlierPaymentChecks = NSLocalizedString(
-            "supportChatView.earlierPaymentChecks",
-            value: "Earlier setup checks (not payment attempts)",
-            comment: "Title of a collapsible list in support chat that shows failed payment setup checks from earlier retries"
-        )
         static let placeholder = NSLocalizedString(
             "supportChatView.placeholder",
             value: "Type a message...",

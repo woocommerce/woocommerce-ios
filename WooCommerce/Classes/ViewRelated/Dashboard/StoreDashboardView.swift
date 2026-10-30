@@ -122,8 +122,8 @@ struct StoreDashboardView: View {
         .sheet(isPresented: $viewModel.showingTapToPayAwarenessMoment) {
             TapToPayAwarenessMomentView()
         }
-        .sheet(isPresented: $viewModel.showingAnalyticsImportUpdateModeInfo) {
-            AnalyticsUpdateModeBottomSheet(viewModel: viewModel.makeAnalyticsUpdateModeBottomSheetViewModel())
+        .storeSheet(isPresented: $viewModel.showingAnalyticsImportUpdateModeInfo, sizing: .fitContent) {
+            StoreAnalyticsUpdateModeSheet(viewModel: viewModel.makeAnalyticsUpdateModeBottomSheetViewModel())
         }
         .onAppear(perform: handleAppearance)
     }
@@ -173,14 +173,14 @@ private extension StoreDashboardView {
     func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.cardSpacing) {
             ForEach(Array(items.enumerated()), id: \.element.hashValue) { _, card in
-                legacyCard(for: card)
+                dashboardCard(for: card)
             }
         }
         .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder
-    func legacyCard(for card: DashboardCard) -> some View {
+    func dashboardCard(for card: DashboardCard) -> some View {
         switch card.type {
         case .onboarding:
             StoreOnboardingView(
@@ -195,12 +195,13 @@ private extension StoreDashboardView {
                 createCampaignTapped: actions.createBlazeCampaignTapped
             )
         case .performance:
-            StorePerformanceView(
+            StorePerformanceDashboardCard(
                 viewModel: viewModel.storePerformanceViewModel,
                 onCustomRangeRedactedViewTap: { actions.customRangeRedactedViewTapped?() },
                 onViewAllAnalytics: { actions.viewAllAnalyticsTapped?($0, $1, $2) },
                 onAnalyticsImportUpdateModeInfoTapped: viewModel.showAnalyticsImportUpdateModeInfo
             )
+            .padding(.horizontal, StorePadding.p5)
         case .topPerformers:
             TopPerformersDashboardView(
                 viewModel: viewModel.topPerformersViewModel,

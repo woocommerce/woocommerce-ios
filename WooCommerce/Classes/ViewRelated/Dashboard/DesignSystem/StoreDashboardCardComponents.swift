@@ -26,7 +26,8 @@ struct StoreDashboardCardHeader<Actions: View>: View {
     var body: some View {
         HStack(spacing: StoreSpacing.s0) {
             if showsError {
-                StoreIcon.CircleInfo.regular.image(size: .largeIncreased)
+                Image(systemName: "exclamationmark.circle")
+                    .imageScale(.large)
                     .foregroundStyle(.storeOnSurfaceVariant)
                     .accessibilityHidden(true)
             }

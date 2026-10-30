@@ -175,9 +175,10 @@ final class SupportChatViewModel {
         return diagnosticResults.first(where: \.isInconclusive)?.headline ?? Localization.paymentChecksPassedHeadline
     }
 
-    var paymentInconclusiveAction: SupportDiagnosticsService.Action? {
-        guard selectedIssue == .inPersonPayments else { return nil }
-        return diagnosticResults.first(where: \.isInconclusive)?.suggestedAction
+    /// Actions for orange results and for notes on passed checks.
+    var paymentResultActions: [SupportDiagnosticsService.Action] {
+        guard selectedIssue == .inPersonPayments else { return [] }
+        return diagnosticResults.filter(\.isSuccess).compactMap(\.suggestedAction)
     }
 
     var storeAdminURL: URL?
@@ -1200,8 +1201,8 @@ private extension SupportChatViewModel {
             comment: "Headline shown in support chat when the Payments troubleshooting checks find no problem"
         )
         static let paymentChecksPassed = NSLocalizedString(
-            "supportChatViewModel.paymentChecksPassedOrderDetails",
-            value: "If a payment failed, note the order number and time, then continue to chat.",
+            "supportChatViewModel.paymentChecksPassedOrderNumber",
+            value: "If a payment failed, continue to chat and share the order number.",
             comment: "Shown in support chat under the headline when the Payments troubleshooting checks find no problem"
         )
         static let greetingMessage = NSLocalizedString(

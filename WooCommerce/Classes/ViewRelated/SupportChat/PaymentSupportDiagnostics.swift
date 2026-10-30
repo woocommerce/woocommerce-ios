@@ -1,11 +1,230 @@
 import Foundation
 import Yosemite
+import class WooFoundation.VersionHelpers
+import enum Alamofire.AFError
+import enum NetworkingCore.DotcomError
+import enum NetworkingCore.WordPressApiError
 
 /// Reads fresh store data without the stored-account writes that `CardPresentPaymentsOnboardingUseCase` makes.
 @MainActor
 struct PaymentSupportDiagnostics {
     let siteID: Int64
     let stores: StoresManager
+
+    func run() async -> SupportDiagnosticsService.Result {
+        var stage = "system_status"
+        do {
+            let report: Yosemite.SystemStatusReport = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(SystemStatusAction.fetchSystemStatusReport(siteID: siteID, detectUnexpectedResponses: true) {
+                    continuation.resume(with: $0)
+                })
+            }
+            let active = CardPresentPaymentsPlugin.allCases.filter { gateway in
+                report.activePlugins.contains { Plugin(systemPlugin: $0) == gateway.plugin }
+            }
+            stage = "settings/general"
+            let settings: [SiteSetting] = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(SettingAction.retrieveGeneralSiteSettings(siteID: siteID) {
+                    continuation.resume(with: $0)
+                })
+            }
+            let address = SiteAddress(siteSettings: settings)
+            let country = address.countryCode
+            let countrySetting = settings.first(where: { $0.settingID == "woocommerce_default_country" })?.value ?? ""
+            guard !countrySetting.isEmpty else {
+                return failure(Localization.missingCountry, reason: "missing_country", action: .openStoreSettings)
+            }
+            guard let currency = settings.first(where: { $0.settingID == "woocommerce_currency" })?.value, !currency.isEmpty else {
+                return failure(Localization.missingCurrency, reason: "missing_currency", action: .openStoreSettings)
+            }
+            let configuration = CardPresentPaymentsConfiguration(country: country)
+            guard country != .unknown, configuration.isSupportedCountry else {
+                return failure(Localization.unsupportedCountry, reason: "country_not_supported", action: .openStoreSettings)
+            }
+            guard !active.isEmpty else {
+                let hasInactiveProvider = report.inactivePlugins.contains { plugin in
+                    CardPresentPaymentsPlugin.allCases.contains {
+                        configuration.paymentGateways.contains($0.gatewayID) && Plugin(systemPlugin: plugin) == $0.plugin
+                    }
+                }
+                return failure(hasInactiveProvider ? Localization.inactivePlugin : Localization.noActivePlugin,
+                               reason: hasInactiveProvider ? "payment_plugin_inactive" : "no_active_payment_plugin",
+                               action: .openPlugins)
+            }
+
+            // AppSettingsStore reads local settings and calls back before `dispatch` returns.
+            var preferred: CardPresentPaymentsPlugin?
+            stores.dispatch(AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: siteID) {
+                preferred = $0.flatMap(CardPresentPaymentsPlugin.with(gatewayID:))
+            })
+            let gateway: CardPresentPaymentsPlugin
+            if active.count == 1, let only = active.first {
+                gateway = only
+            } else if !configuration.paymentGateways.contains(CardPresentPaymentsPlugin.stripe.gatewayID) {
+                gateway = .wcPay
+            } else if let preferred {
+                gateway = preferred
+            } else {
+                return failure(Localization.chooseGateway, reason: "payment_gateway_selection_required", action: .retryDiagnostics)
+            }
+            // WooPayments is available in every supported country, so only Stripe can fail here.
+            guard let support = configuration.supportedPluginVersions.first(where: { $0.plugin == gateway }),
+                  configuration.paymentGateways.contains(gateway.gatewayID) else {
+                return failure(Localization.providerNotSupported, reason: "gateway_not_supported_in_country", action: .openPlugins)
+            }
+            guard let plugin = report.activePlugins.first(where: { Plugin(systemPlugin: $0) == gateway.plugin }),
+                  VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: support.minimumVersion) else {
+                return failure(Localization.oldPlugin, reason: "payment_plugin_version_unsupported", action: .openPlugins)
+            }
+            guard configuration.currencies.contains(where: { $0.rawValue.caseInsensitiveCompare(currency) == .orderedSame }) else {
+                return failure(Localization.unsupportedCurrency, reason: "store_currency_not_supported")
+            }
+
+            stage = gateway.gatewayID + "/accounts"
+            let account: PaymentGatewayAccount = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(CardPresentPaymentAction.fetchPaymentGatewayAccount(siteID: siteID, gateway: gateway) {
+                    continuation.resume(with: $0)
+                })
+            }
+            let result = evaluate(account: account, gateway: gateway, currency: currency, country: country.rawValue)
+            // Both payment plugins need these fields to find or create the card reader location.
+            guard !result.isSuccess || [address.address, address.city, address.postalCode].allSatisfy({ !$0.isEmpty }) else {
+                return failure(Localization.incompleteAddress, reason: "store_address_incomplete", action: .openStoreSettings)
+            }
+            return result
+        } catch {
+            return requestFailure(error, stage: stage)
+        }
+    }
+
+    func evaluate(account: PaymentGatewayAccount,
+                  gateway: CardPresentPaymentsPlugin,
+                  currency: String,
+                  country: String) -> SupportDiagnosticsService.Result {
+        let status = WCPayAccountStatusEnum(rawValue: account.status)
+        let openProvider = SupportDiagnosticsService.Action.openPaymentProvider(gateway)
+        if status == .noAccount {
+            return failure(Localization.setupIncomplete, reason: "account_setup_incomplete", action: openProvider)
+        }
+        // Matches onboarding: test mode blocks only a live account.
+        if account.isInTestMode && account.isLive {
+            return failure(Localization.testMode, reason: "payment_gateway_in_test_mode", action: openProvider)
+        }
+        // Terminal location APIs normalize Puerto Rico to the US account country.
+        let accountCountry = account.country.uppercased()
+        let storeCountry = country.uppercased()
+        guard accountCountry == storeCountry || (storeCountry == "PR" && accountCountry == "US") else {
+            return failure(Localization.countryMismatch, reason: "account_country_mismatch")
+        }
+        switch status {
+        case .complete, .enabled, .pendingVerification, .restrictedSoon:
+            break
+        case .restricted where account.hasPendingRequirements && !account.hasOverdueRequirements:
+            break
+        case .restricted where !account.hasOverdueRequirements:
+            return failure(Localization.accountUnderReview, reason: "account_under_review")
+        case .restricted:
+            return failure(Localization.overdueRequirements, reason: "account_overdue_requirements", action: openProvider)
+        case .rejectedFraud, .rejectedListed, .rejectedTermsOfService, .rejectedOther:
+            return failure(Localization.rejectedAccount, reason: "account_rejected")
+        case .noAccount, .unknown:
+            return failure(Localization.unknownAccount, reason: "account_status_unknown", action: openProvider)
+        }
+        // Stripe reports a live account only in live mode with charges enabled, so outside test mode it cannot take payments.
+        guard account.isLive || account.isInTestMode || gateway == .wcPay else {
+            return failure(Localization.chargesDisabled, reason: "live_account_unavailable", action: .retryDiagnostics)
+        }
+        // Older account responses can omit supported currencies.
+        if !account.supportedCurrencies.isEmpty,
+           !account.supportedCurrencies.contains(where: { $0.caseInsensitiveCompare(currency) == .orderedSame }) {
+            return failure(Localization.accountCurrency, reason: "account_currency_not_supported")
+        }
+        let hasPendingRequirements = account.hasPendingRequirements || status == .restrictedSoon
+        let notLive: (finding: Finding, detail: String)? = account.isLive ? nil :
+            (account.isInTestMode ? (Localization.testPaymentsOnly, "account_in_test_mode") : (Localization.accountNotLiveYet, "account_not_live"))
+        return .init(test: .paymentConfiguration,
+                     isSuccess: true,
+                     errorMessage: notLive?.finding.message,
+                     technicalDetails: evidence((notLive?.detail ?? "configuration_checks_passed") +
+                        "; gateway=\(gateway.gatewayID)." +
+                        " Reader, location, network stability, payment collection and capture were not tested."),
+                     suggestedAction: notLive != nil || hasPendingRequirements ? openProvider : nil,
+                     advisoryMessage: hasPendingRequirements ? Localization.pendingRequirements : nil,
+                     isInconclusive: notLive != nil,
+                     headline: notLive?.finding.headline,
+                     reason: notLive?.detail)
+    }
+
+    func requestFailure(_ error: Error, stage: String) -> SupportDiagnosticsService.Result {
+        let code = (error as? UnexpectedStoreResponseError)?.statusCode ??
+            (error as? NetworkRequestError)?.responseCode ?? (error as? AFError)?.responseCode
+        let status = code.map { "; http_status=\($0)" } ?? ""
+        let reason: String
+        let finding: Finding
+        let isTunnelTimeout: Bool
+        if let connectionError = error as? DotcomError, case let .requestFailed(message, _) = connectionError {
+            isTunnelTimeout = message?.localizedCaseInsensitiveContains("cURL error 28:") == true
+        } else {
+            isTunnelTimeout = false
+        }
+        // The internet check runs first, so a timeout here points to a slow store.
+        if error.isTimeoutError || code == 408 || isTunnelTimeout {
+            (reason, finding) = ("request_timeout", Localization.siteError)
+        } else if let code, (500...599).contains(code) {
+            (reason, finding) = ("server_error", Localization.siteError)
+        } else if isAccessDenied(error) {
+            (reason, finding) = ("access_denied", Localization.accessDenied)
+        } else if code == 401 || code == 403 {
+            (reason, finding) = ("request_blocked", Localization.blocked)
+        } else if error is DecodingError || (error as? UnexpectedStoreResponseError)?.kind == .unexpectedContent {
+            (reason, finding) = ("invalid_response", Localization.siteError)
+        } else {
+            (reason, finding) = ("request_failed", Localization.requestFailed)
+        }
+        // WordPress.com hosts these stores, so support can check the site instead of a hosting provider.
+        let isSiteProblem = [Localization.siteError, Localization.blocked].contains(finding)
+        let shownFinding = isSiteProblem && stores.sessionManager.defaultSite?.isWordPressComStore == true ?
+            Finding(headline: finding.headline, message: Localization.hostedSiteMessage) : finding
+        // Do not attach response bodies, account IDs, statement descriptors, or raw error descriptions.
+        return failure(shownFinding, reason: reason, details: "stage=\(stage); \(reason)\(status)", action: .retryDiagnostics)
+    }
+
+    /// WordPress refused the login or its permissions. Other 401 and 403 replies usually come from a firewall or security plugin.
+    private func isAccessDenied(_ error: Error) -> Bool {
+        let deniedCodes = ["rest_forbidden", "rest_not_logged_in", "woocommerce_rest_cannot_view", "rest_forbidden_context"]
+        if let networkError = error as? NetworkRequestError, let code = networkError.errorCode {
+            return deniedCodes.contains(code)
+        }
+        if let apiError = error as? WordPressApiError, case let .unknown(code, _) = apiError {
+            return deniedCodes.contains(code)
+        }
+        guard let connectionError = error as? DotcomError else { return false }
+        switch connectionError {
+        case .unauthorized, .invalidToken:
+            return true
+        case .unknown(let code, _, _):
+            return deniedCodes.contains(code)
+        default:
+            return false
+        }
+    }
+
+    private func failure(_ finding: Finding,
+                         reason: String,
+                         details: String? = nil,
+                         action: SupportDiagnosticsService.Action? = nil) -> SupportDiagnosticsService.Result {
+        var result = SupportDiagnosticsService.Result.failure(test: .paymentConfiguration,
+                                                              failure: .init(errorMessage: finding.message,
+                                                                             technicalDetails: evidence(details ?? reason),
+                                                                             suggestedAction: action,
+                                                                             headline: finding.headline))
+        result.reason = reason
+        return result
+    }
+
+    private func evidence(_ detail: String) -> String {
+        "checked_at=\(ISO8601DateFormatter().string(from: Date())); \(detail)"
+    }
 }
 
 extension PaymentSupportDiagnostics {

@@ -132,7 +132,8 @@ struct SupportChatView: View {
                 .padding()
             }
             .scrollDismissesKeyboard(.immediately)
-            .onChange(of: viewModel.messages.count) { _, _ in
+            // Diagnostics results replace the progress message in place, so the count alone misses them.
+            .onChange(of: viewModel.messages.last) { _, _ in
                 scrollToBottom(proxy: proxy)
             }
             .onChange(of: viewModel.state) { _, newState in
@@ -258,6 +259,7 @@ struct SupportChatView: View {
             if let advisory = viewModel.paymentAdvisoryMessage {
                 Text(advisory)
                     .font(.body)
+                    .foregroundStyle(Color(.secondaryLabel))
             }
 
             ForEach(viewModel.paymentResultActions, id: \.title) { action in

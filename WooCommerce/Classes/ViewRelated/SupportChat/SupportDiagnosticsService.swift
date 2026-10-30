@@ -741,6 +741,11 @@ private extension SupportDiagnosticsService {
                 value: "Checking notification settings",
                 comment: "Title for the notification settings diagnostic test"
             )
+            static let paymentConfiguration = NSLocalizedString(
+                "supportDiagnosticsService.test.paymentConfiguration",
+                value: "Checking your store's payment setup",
+                comment: "Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay"
+            )
         }
 
         enum Action {
@@ -750,12 +755,12 @@ private extension SupportDiagnosticsService {
                 comment: "Action button that opens the WooPayments or Stripe settings page in the store admin"
             )
             static let openStoreSettings = NSLocalizedString(
-                "supportDiagnosticsService.action.openStoreSettingsTitle",
+                "supportDiagnosticsService.action.openStoreSettings",
                 value: "Open Store Settings",
                 comment: "Action button that opens WooCommerce General settings in the store admin"
             )
             static let openPlugins = NSLocalizedString(
-                "supportDiagnosticsService.action.openPluginsTitle",
+                "supportDiagnosticsService.action.openPlugins",
                 value: "Open Plugins",
                 comment: "Action button that opens the Plugins page in the store admin"
             )

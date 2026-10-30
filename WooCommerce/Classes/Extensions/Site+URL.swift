@@ -20,6 +20,9 @@ extension Site {
     var pluginsURL: String {
         adminURL + "plugins.php"
     }
+
+    /// WooCommerce General settings in wp-admin, where the store address, country and currency are set.
+    ///
     var generalSettingsURL: String {
         adminURL + "admin.php?page=wc-settings&tab=general"
     }

@@ -262,17 +262,20 @@ if [ -n "$NO_JETPACK_SITE" ]; then
   DEADLINE=$(( $(date +%s) + 900 ))
   NJ_STATE=""
   while :; do
-    NJ_STATE="$(remote_on "$NO_JETPACK_SITE" "$NO_JETPACK_PASS" 'wp plugin is-active woocommerce && echo WC:active; wp plugin is-installed jetpack && echo JP:installed; echo WPCLI:ok')"
-    if ! printf '%s' "$NJ_STATE" | grep -q "WPCLI:ok"; then
-      nj_ssh_failures=$(( ${nj_ssh_failures:-0} + 1 ))
-      [ "$nj_ssh_failures" -lt 3 ] || die "could not run wp-cli on $NO_JETPACK_SITE over SSH. Check JN_NO_JETPACK_SSH_PASS."
-    fi
-    if printf '%s' "$NJ_STATE" | grep -q "WC:active"; then
-      printf '%s' "$NJ_STATE" | grep -q "JP:installed" && die "$NO_JETPACK_SITE has Jetpack installed; create it without Jetpack"
-      break
+    code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "https://$NO_JETPACK_SITE/wp-json/" || echo 000)"
+    if [ "$code" = "200" ]; then
+      NJ_STATE="$(remote_on "$NO_JETPACK_SITE" "$NO_JETPACK_PASS" 'wp plugin is-active woocommerce && echo WC:active; wp plugin is-installed jetpack && echo JP:installed; echo WPCLI:ok')"
+      if ! printf '%s' "$NJ_STATE" | grep -q "WPCLI:ok"; then
+        nj_ssh_failures=$(( ${nj_ssh_failures:-0} + 1 ))
+        [ "$nj_ssh_failures" -lt 3 ] || die "could not run wp-cli on $NO_JETPACK_SITE over SSH. Check JN_NO_JETPACK_SSH_PASS."
+      fi
+      if printf '%s' "$NJ_STATE" | grep -q "WC:active"; then
+        printf '%s' "$NJ_STATE" | grep -q "JP:installed" && die "$NO_JETPACK_SITE has Jetpack installed; create it without Jetpack"
+        break
+      fi
     fi
     [ "$(date +%s)" -lt "$DEADLINE" ] || die "$NO_JETPACK_SITE did not finish provisioning within 15 minutes"
-    printf '  still provisioning, waiting...\n'
+    printf '  still provisioning (http=%s), waiting...\n' "$code"
     sleep 15
   done
   # While auto_login is set, JN's companion plugin sends the first login on the site

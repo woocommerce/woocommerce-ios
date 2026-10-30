@@ -24,7 +24,7 @@ struct StoreDashboardCardHeader<Actions: View>: View {
     }
 
     var body: some View {
-        HStack(spacing: StoreSpacing.s0) {
+        HStack(spacing: StoreSpacing.s5) {
             if showsError {
                 Image(systemName: "exclamationmark.circle")
                     .imageScale(.large)
@@ -34,13 +34,11 @@ struct StoreDashboardCardHeader<Actions: View>: View {
             Text(title)
                 .storeTextStyle(.titleSmall.emphasized)
                 .foregroundStyle(.storeOnSurface)
-                .padding(.leading, showsError ? StorePadding.p5 : StorePadding.p0)
-                .padding(.trailing, StorePadding.p5)
                 .padding(.vertical, StorePadding.p7)
                 .frame(maxWidth: .infinity, alignment: .leading)
             actions()
         }
-        .padding(.leading, StorePadding.p5)
+        .padding(.horizontal, StorePadding.p5)
     }
 }
 
@@ -57,7 +55,9 @@ struct StoreDashboardCardOverflowMenu<Actions: View>: View {
         Menu(content: actions) {
             StoreIcon.Ellipsis.regular.image(size: .largeIncreased)
                 .foregroundStyle(.storeOnSurface)
-                .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
+                .frame(minWidth: StoreSize.minimumTapTarget,
+                       minHeight: StoreSize.minimumTapTarget,
+                       alignment: .trailing)
                 .contentShape(.rect)
         }
         .disabled(isDisabled)

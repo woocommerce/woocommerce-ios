@@ -65,7 +65,7 @@ private extension StorePerformanceDashboardCard {
     var performanceContent: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
             dateRangeHeader
-                .padding(.leading, StorePadding.p5)
+                .padding(.horizontal, StorePadding.p5)
             StoreDivider()
             revenueTypeSelector
                 .padding(.horizontal, StorePadding.p5)
@@ -134,7 +134,9 @@ private extension StorePerformanceDashboardCard {
         } label: {
             StoreIcon.CalendarDays.regular.image(size: .largeIncreased)
                 .foregroundStyle(.storeOnSurface)
-                .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
+                .frame(minWidth: StoreSize.minimumTapTarget,
+                       minHeight: StoreSize.minimumTapTarget,
+                       alignment: .trailing)
                 .contentShape(.rect)
         }
         .disabled(viewModel.syncingData)

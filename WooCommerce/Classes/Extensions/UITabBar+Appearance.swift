@@ -37,7 +37,7 @@ extension UITabBar {
     ///
     private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance, usesStoreDesignSystem: Bool) {
         let badgeTextColor = usesStoreDesignSystem ? UIColor(Color.storeOnError) : .white
-        let badgeBackgroundColor = usesStoreDesignSystem ? UIColor(Color.storeAlertRed) : .primary
+        let badgeBackgroundColor = usesStoreDesignSystem ? UIColor(Color.storeAccentRed) : .primary
         let badgeTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: badgeTextColor]
 
         if usesStoreDesignSystem {

@@ -77,6 +77,9 @@ public extension ShapeStyle where Self == Color {
     static var storeTintLayerPrimaryContainerOpacity16: Color { bundledColor("storeTintLayerPrimaryContainerOpacity16") }
     static var storeTintLayerPrimaryContainerOpacity24: Color { bundledColor("storeTintLayerPrimaryContainerOpacity24") }
 
+    // MARK: - Accents
+    static var storeAccentRed: Color { bundledColor("storeAccentRed") }
+
     // MARK: - Palette (primitives)
     static var storePaletteWhite: Color { bundledColor("storePaletteWhite") }
     static var storePaletteBlack: Color { bundledColor("storePaletteBlack") }

@@ -34,7 +34,7 @@ struct PaymentSupportDiagnosticsTests {
         let result = await sut.run()
         // Then
         #expect(result.technicalDetails?.contains("country_not_supported") == true)
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.unsupportedCountry)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.unsupportedCountry.message)
         #expect(requestedGateways(sut).isEmpty)
     }
 
@@ -45,7 +45,9 @@ struct PaymentSupportDiagnosticsTests {
         let result = await sut.run()
         // Then
         #expect(result.technicalDetails?.contains("payment_plugin_inactive") == true)
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.inactivePlugin)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.inactivePlugin.message)
+        #expect(result.headline == PaymentSupportDiagnostics.Localization.inactivePlugin.headline)
+        #expect(result.suggestedAction == .openPlugins)
         #expect(requestedGateways(sut).isEmpty)
     }
 
@@ -59,8 +61,8 @@ struct PaymentSupportDiagnosticsTests {
         // Then
         #expect(!result.isSuccess)
         #expect(result.technicalDetails?.contains("account_under_review") == true)
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.accountUnderReview)
-        #expect(result.errorMessage?.contains("appears to be under review") == true)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.accountUnderReview.message)
+        #expect(result.suggestedAction == nil)
     }
 
     @Test func test_run_when_settings_request_fails_then_reports_unknown_instead_of_incomplete_setup() async {
@@ -71,7 +73,7 @@ struct PaymentSupportDiagnosticsTests {
         // Then
         #expect(!result.isSuccess)
         #expect(result.technicalDetails?.contains("stage=settings/general; server_error; http_status=503") == true)
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.serverError)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.siteError.message)
         #expect(result.suggestedAction == .retryDiagnostics)
     }
 
@@ -85,7 +87,8 @@ struct PaymentSupportDiagnosticsTests {
 
         // Then
         #expect(!result.isSuccess)
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.incompleteAddress)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.incompleteAddress.message)
+        #expect(result.suggestedAction == .openStoreSettings)
         #expect(result.technicalDetails?.contains("store_address_incomplete") == true)
     }
 
@@ -107,7 +110,8 @@ struct PaymentSupportDiagnosticsTests {
         let result = await sut.run()
         // Then
         #expect(result.technicalDetails?.contains("payment_gateway_selection_required") == true)
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.chooseGateway)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.chooseGateway.message)
+        #expect(result.suggestedAction == .retryDiagnostics)
     }
 
     @Test func test_run_when_selected_gateway_fails_then_other_gateway_does_not_mask_error() async {
@@ -132,7 +136,9 @@ struct PaymentSupportDiagnosticsTests {
         #expect(requestedGateways(sut) == [.wcPay])
     }
 
-    @Test(arguments: [("ZZ", "USD", "missing_country_or_currency"),
+    @Test(arguments: [("", "USD", "missing_country"),
+                      ("ZZ", "USD", "country_not_supported"),
+                      ("US", "", "missing_currency"),
                       ("LT", "EUR", "country_not_supported"),
                       ("US", "EUR", "store_currency_not_supported")])
     func test_run_when_store_settings_invalid_then_identifies_configuration_reason(country: String, currency: String, reason: String) async {
@@ -153,7 +159,14 @@ struct PaymentSupportDiagnosticsTests {
         let result = await sut.run()
         // Then
         #expect(result.technicalDetails?.contains("payment_gateway_in_test_mode") == isLive)
-        #expect((result.errorMessage == PaymentSupportDiagnostics.Localization.testMode) == isLive)
+        #expect((result.errorMessage == PaymentSupportDiagnostics.Localization.testMode.message) == isLive)
+        #expect(result.isInconclusive == !isLive)
+        #expect(result.suggestedAction == .openPaymentProvider(.wcPay))
+        if !isLive {
+            #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.testModeOnly.message)
+            #expect(result.headline == PaymentSupportDiagnostics.Localization.testModeOnly.headline)
+            #expect(result.technicalDetails?.contains("account_in_test_mode") == true)
+        }
     }
 
     @Test func test_run_when_response_changes_between_checks_then_uses_fresh_account() async {
@@ -224,11 +237,13 @@ struct PaymentSupportDiagnosticsTests {
                                   gateway: gateway, currency: "USD", country: "US")
         // Then
         #expect(result.isSuccess == (gateway == .wcPay))
+        #expect(result.suggestedAction == (gateway == .wcPay ? .openPaymentProvider(gateway) : .retryDiagnostics))
         if gateway == .wcPay {
             #expect(result.isInconclusive)
-            #expect(result.technicalDetails?.contains("configuration_checks_inconclusive") == true)
+            #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.wooPaymentsNotLive.message)
+            #expect(result.technicalDetails?.contains("account_not_live") == true)
             #expect(result.advisoryMessage == nil)
-            #expect(result.troubleshootingDescription().contains("Result: Inconclusive"))
+            #expect(result.troubleshootingDescription().contains("Result: \(PaymentSupportDiagnostics.Localization.wooPaymentsNotLive.message)"))
         } else {
             #expect(result.technicalDetails?.contains("live_account_unavailable") == true)
         }
@@ -255,7 +270,45 @@ struct PaymentSupportDiagnosticsTests {
         #expect(result.technicalDetails?.contains("http_status=\(status)") == true)
         #expect(result.technicalDetails?.contains("secret") == false)
         #expect(result.technicalDetails?.contains("checked_at=") == true)
-        #expect(result.errorMessage == (status < 500 ? PaymentSupportDiagnostics.Localization.accessDenied : PaymentSupportDiagnostics.Localization.serverError))
+        let expected = status < 500 ? PaymentSupportDiagnostics.Localization.blocked : PaymentSupportDiagnostics.Localization.siteError
+        #expect(result.errorMessage == expected.message)
+        #expect(result.headline == expected.headline)
+    }
+
+    @Test func test_requestFailure_when_direct_REST_reply_has_wordpress_permission_code_then_reports_access_denied() {
+        // Given
+        let sut = makeSUT()
+        let error = NetworkRequestError.unacceptableStatusCode(statusCode: 403, response: Data(#"{"code":"woocommerce_rest_cannot_view"}"#.utf8))
+        // When
+        let result = sut.requestFailure(error, stage: "woocommerce-payments/accounts")
+        // Then
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.accessDenied.message)
+        #expect(result.technicalDetails?.contains("access_denied; http_status=403") == true)
+    }
+
+    @Test(arguments: [false, true])
+    func test_requestFailure_when_store_blocks_request_then_points_to_the_party_that_hosts_the_site(isHostedByWordPressCom: Bool) {
+        // Given
+        let site = Site.fake().copy(isWordPressComStore: isHostedByWordPressCom)
+        let sut = PaymentSupportDiagnostics(siteID: 123,
+                                            stores: MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site)))
+        // When
+        let result = sut.requestFailure(UnexpectedStoreResponseError(kind: .unacceptableStatusCode, statusCode: 403), stage: "system_status")
+        // Then
+        #expect(result.headline == PaymentSupportDiagnostics.Localization.blocked.headline)
+        #expect(result.errorMessage == (isHostedByWordPressCom ?
+                                        PaymentSupportDiagnostics.Localization.hostedSiteMessage :
+                                        PaymentSupportDiagnostics.Localization.blocked.message))
+    }
+
+    @Test func test_requestFailure_when_connection_fails_then_asks_to_check_connection() {
+        // Given
+        let sut = makeSUT()
+        // When
+        let result = sut.requestFailure(URLError(.networkConnectionLost), stage: "system_status")
+        // Then
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.requestFailed.message)
+        #expect(result.suggestedAction == .retryDiagnostics)
     }
 
     @Test func test_requestFailure_when_timeout_then_keeps_unknown_outcome_and_diagnostic_retry() {
@@ -264,7 +317,7 @@ struct PaymentSupportDiagnosticsTests {
         // When
         let result = sut.requestFailure(URLError(.timedOut), stage: "accounts")
         // Then
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.timeout)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.siteError.message)
         #expect(result.technicalDetails?.contains("request_timeout") == true)
         #expect(result.suggestedAction == .retryDiagnostics)
     }
@@ -277,7 +330,7 @@ struct PaymentSupportDiagnosticsTests {
         // When
         let result = sut.requestFailure(error, stage: stage)
         // Then
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.invalidResponse)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.siteError.message)
         #expect(result.technicalDetails?.contains("stage=\(stage); invalid_response") == true)
     }
 
@@ -303,7 +356,7 @@ struct PaymentSupportDiagnosticsTests {
         // When
         let result = sut.requestFailure(UnexpectedStoreResponseError(kind: .unacceptableStatusCode, statusCode: 503), stage: "accounts")
         // Then
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.serverError)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.siteError.message)
         #expect(result.technicalDetails?.contains("http_status=503") == true)
     }
 
@@ -313,7 +366,7 @@ struct PaymentSupportDiagnosticsTests {
         // When
         let result = sut.requestFailure(WordPressApiError.unknown(code: "rest_forbidden", message: "private response"), stage: "accounts")
         // Then
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.accessDenied)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.accessDenied.message)
         #expect(result.technicalDetails?.contains("access_denied") == true)
         #expect(result.technicalDetails?.contains("http_status=") == false)
         #expect(result.technicalDetails?.contains("private response") == false)
@@ -326,7 +379,7 @@ struct PaymentSupportDiagnosticsTests {
         // When
         let result = sut.requestFailure(error, stage: "accounts")
         // Then
-        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.timeout)
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.siteError.message)
         #expect(result.technicalDetails?.contains("request_timeout") == true)
         #expect(result.technicalDetails?.contains("private data") == false)
     }

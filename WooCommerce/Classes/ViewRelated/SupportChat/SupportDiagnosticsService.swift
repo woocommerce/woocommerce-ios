@@ -78,6 +78,9 @@ final class SupportDiagnosticsService {
         case openNotificationSettings
         case openPushNotificationPreferences
         case retryDiagnostics
+        case openPaymentProvider(CardPresentPaymentsPlugin)
+        case openStoreSettings
+        case openPlugins
 
         var title: String {
             switch self {
@@ -97,6 +100,12 @@ final class SupportDiagnosticsService {
                 return Localization.Action.openPushNotificationPreferences
             case .retryDiagnostics:
                 return Localization.Action.retryDiagnostics
+            case .openPaymentProvider(let plugin):
+                return String(format: Localization.Action.openPaymentProvider, plugin.pluginName)
+            case .openStoreSettings:
+                return Localization.Action.openStoreSettings
+            case .openPlugins:
+                return Localization.Action.openPlugins
             }
         }
 
@@ -112,6 +121,8 @@ final class SupportDiagnosticsService {
                 return "gear"
             case .retryDiagnostics:
                 return "arrow.clockwise"
+            case .openPaymentProvider, .openStoreSettings, .openPlugins:
+                return "arrow.up.forward.square"
             }
         }
     }
@@ -122,11 +133,13 @@ final class SupportDiagnosticsService {
         let errorMessage: String
         let technicalDetails: String?
         let suggestedAction: Action?
+        let headline: String?
 
-        init(errorMessage: String, technicalDetails: String? = nil, suggestedAction: Action? = nil) {
+        init(errorMessage: String, technicalDetails: String? = nil, suggestedAction: Action? = nil, headline: String? = nil) {
             self.errorMessage = errorMessage
             self.technicalDetails = technicalDetails
             self.suggestedAction = suggestedAction
+            self.headline = headline
         }
     }
 
@@ -140,10 +153,13 @@ final class SupportDiagnosticsService {
         let suggestedAction: Action?
         var advisoryMessage: String? = nil
         var isInconclusive: Bool = false
+        /// Short statement of the problem, shown in place of the check name.
+        var headline: String? = nil
 
         static func == (lhs: Result, rhs: Result) -> Bool {
             lhs.test == rhs.test &&
             lhs.isSuccess == rhs.isSuccess &&
+            lhs.headline == rhs.headline &&
             lhs.errorMessage == rhs.errorMessage &&
             lhs.suggestedAction == rhs.suggestedAction &&
             lhs.advisoryMessage == rhs.advisoryMessage &&
@@ -164,11 +180,12 @@ final class SupportDiagnosticsService {
                    isSuccess: false,
                    errorMessage: failure.errorMessage,
                    technicalDetails: failure.technicalDetails,
-                   suggestedAction: failure.suggestedAction)
+                   suggestedAction: failure.suggestedAction,
+                   headline: failure.headline)
         }
 
         func troubleshootingDescription() -> String {
-            let status = isInconclusive ? "Inconclusive" : (isSuccess ? "Success" : (errorMessage ?? "Failed"))
+            let status = isSuccess && !isInconclusive ? "Success" : (errorMessage ?? "Failed")
             var lines = [test.title, "Result: \(status)"]
             if let details = technicalDetails {
                 lines.append("Details: \(details)")
@@ -724,6 +741,22 @@ private extension SupportDiagnosticsService {
         }
 
         enum Action {
+            static let openPaymentProvider = NSLocalizedString(
+                "supportDiagnosticsService.action.openPaymentProvider",
+                value: "Open %1$@",
+                comment: "Action button that opens the payment provider's page in the store admin. " +
+                    "%1$@ is the plugin name: WooPayments or WooCommerce Stripe Gateway."
+            )
+            static let openStoreSettings = NSLocalizedString(
+                "supportDiagnosticsService.action.openStoreSettings",
+                value: "Open store settings",
+                comment: "Action button that opens WooCommerce General settings in the store admin"
+            )
+            static let openPlugins = NSLocalizedString(
+                "supportDiagnosticsService.action.openPlugins",
+                value: "Open plugins",
+                comment: "Action button that opens the Plugins page in the store admin"
+            )
             static let enableAnalytics = NSLocalizedString(
                 "supportDiagnosticsService.action.enableAnalytics",
                 value: "Enable Analytics",

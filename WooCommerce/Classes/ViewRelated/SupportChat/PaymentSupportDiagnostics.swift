@@ -30,14 +30,16 @@ struct PaymentSupportDiagnostics {
             }
             let address = SiteAddress(siteSettings: settings)
             let country = address.countryCode
-            guard country != .unknown,
-                  let currency = settings.first(where: { $0.settingID == "woocommerce_currency" })?.value,
-                  !currency.isEmpty else {
-                return failure(Localization.missingSettings, detail: "missing_country_or_currency")
+            let countrySetting = settings.first(where: { $0.settingID == "woocommerce_default_country" })?.value ?? ""
+            guard !countrySetting.isEmpty else {
+                return failure(Localization.missingCountry, detail: "missing_country", action: .openStoreSettings)
+            }
+            guard let currency = settings.first(where: { $0.settingID == "woocommerce_currency" })?.value, !currency.isEmpty else {
+                return failure(Localization.missingCurrency, detail: "missing_currency", action: .openStoreSettings)
             }
             let configuration = CardPresentPaymentsConfiguration(country: country)
-            guard configuration.isSupportedCountry else {
-                return failure(Localization.unsupportedCountry, detail: "country_not_supported")
+            guard country != .unknown, configuration.isSupportedCountry else {
+                return failure(Localization.unsupportedCountry, detail: "country_not_supported", action: .openStoreSettings)
             }
             guard !active.isEmpty else {
                 let hasInactiveProvider = report.inactivePlugins.contains { plugin in
@@ -46,7 +48,8 @@ struct PaymentSupportDiagnostics {
                     }
                 }
                 return failure(hasInactiveProvider ? Localization.inactivePlugin : Localization.noActivePlugin,
-                               detail: hasInactiveProvider ? "payment_plugin_inactive" : "no_active_payment_plugin")
+                               detail: hasInactiveProvider ? "payment_plugin_inactive" : "no_active_payment_plugin",
+                               action: .openPlugins)
             }
 
             // AppSettingsStore reads local settings and calls back before `dispatch` returns.
@@ -62,15 +65,15 @@ struct PaymentSupportDiagnostics {
             } else if let preferred {
                 gateway = preferred
             } else {
-                return failure(Localization.chooseGateway, detail: "payment_gateway_selection_required")
+                return failure(Localization.chooseGateway, detail: "payment_gateway_selection_required", action: .retryDiagnostics)
             }
             guard let support = configuration.supportedPluginVersions.first(where: { $0.plugin == gateway }),
                   configuration.paymentGateways.contains(gateway.gatewayID) else {
-                return failure(Localization.unsupportedGateway, detail: "gateway_not_supported_in_country")
+                return failure(Localization.unsupportedGateway, detail: "gateway_not_supported_in_country", action: .openPlugins)
             }
             guard let plugin = report.activePlugins.first(where: { Plugin(systemPlugin: $0) == gateway.plugin }),
                   VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: support.minimumVersion) else {
-                return failure(Localization.oldPlugin, detail: "payment_plugin_version_unsupported")
+                return failure(Localization.oldPlugin, detail: "payment_plugin_version_unsupported", action: .openPlugins)
             }
             guard configuration.currencies.contains(where: { $0.rawValue.caseInsensitiveCompare(currency) == .orderedSame }) else {
                 return failure(Localization.unsupportedCurrency, detail: "store_currency_not_supported")
@@ -85,7 +88,7 @@ struct PaymentSupportDiagnostics {
             let result = evaluate(account: account, gateway: gateway, currency: currency, country: country.rawValue)
             // Both payment plugins need these fields to find or create the card reader location.
             guard !result.isSuccess || [address.address, address.city, address.postalCode].allSatisfy({ !$0.isEmpty }) else {
-                return failure(Localization.incompleteAddress, detail: "store_address_incomplete")
+                return failure(Localization.incompleteAddress, detail: "store_address_incomplete", action: .openStoreSettings)
             }
             return result
         } catch {
@@ -98,12 +101,13 @@ struct PaymentSupportDiagnostics {
                   currency: String,
                   country: String) -> SupportDiagnosticsService.Result {
         let status = WCPayAccountStatusEnum(rawValue: account.status)
+        let openProvider = SupportDiagnosticsService.Action.openPaymentProvider(gateway)
         if status == .noAccount {
-            return failure(Localization.setupIncomplete, detail: "account_setup_incomplete")
+            return failure(Localization.setupIncomplete, detail: "account_setup_incomplete", action: openProvider)
         }
         // Matches onboarding: test mode blocks only a live account.
         if account.isInTestMode && account.isLive {
-            return failure(Localization.testMode, detail: "payment_gateway_in_test_mode")
+            return failure(Localization.testMode, detail: "payment_gateway_in_test_mode", action: openProvider)
         }
         // Terminal location APIs normalize Puerto Rico to the US account country.
         let accountCountry = account.country.uppercased()
@@ -119,15 +123,15 @@ struct PaymentSupportDiagnostics {
         case .restricted where !account.hasOverdueRequirements:
             return failure(Localization.accountUnderReview, detail: "account_under_review")
         case .restricted:
-            return failure(Localization.overdueRequirements, detail: "account_overdue_requirements")
+            return failure(Localization.overdueRequirements, detail: "account_overdue_requirements", action: openProvider)
         case .rejectedFraud, .rejectedListed, .rejectedTermsOfService, .rejectedOther:
             return failure(Localization.rejectedAccount, detail: "account_rejected")
         case .noAccount, .unknown:
-            return failure(Localization.unknownAccount, detail: "account_status_unknown")
+            return failure(Localization.unknownAccount, detail: "account_status_unknown", action: openProvider)
         }
-        // Stripe's flag also reflects disabled charges; older WooPayments summaries may omit it.
+        // Stripe's flag also reflects disabled charges, so only WooPayments continues without a live account.
         guard account.isLive || gateway == .wcPay else {
-            return failure(Localization.accountNotLive, detail: "live_account_unavailable")
+            return failure(Localization.accountNotLive, detail: "live_account_unavailable", action: .retryDiagnostics)
         }
         // Older account responses can omit supported currencies.
         if !account.supportedCurrencies.isEmpty,
@@ -135,50 +139,60 @@ struct PaymentSupportDiagnostics {
             return failure(Localization.accountCurrency, detail: "account_currency_not_supported")
         }
         let hasPendingRequirements = account.hasPendingRequirements || status == .restrictedSoon
+        let notLive: (finding: Finding, detail: String)? = account.isLive ? nil :
+            (account.isInTestMode ? (Localization.testModeOnly, "account_in_test_mode") : (Localization.wooPaymentsNotLive, "account_not_live"))
         return .init(test: .paymentConfiguration,
                      isSuccess: true,
-                     errorMessage: nil,
-                     technicalDetails: evidence((account.isLive ? "configuration_checks_passed" : "configuration_checks_inconclusive") +
+                     errorMessage: notLive?.finding.message,
+                     technicalDetails: evidence((notLive?.detail ?? "configuration_checks_passed") +
                         "; gateway=\(gateway.gatewayID)." +
                         " Reader, location, network stability, payment collection and capture were not tested."),
-                     suggestedAction: nil,
+                     suggestedAction: notLive == nil ? nil : openProvider,
                      advisoryMessage: hasPendingRequirements ? Localization.pendingRequirements : nil,
-                     isInconclusive: !account.isLive)
+                     isInconclusive: notLive != nil,
+                     headline: notLive?.finding.headline)
     }
 
     func requestFailure(_ error: Error, stage: String) -> SupportDiagnosticsService.Result {
         let code = (error as? UnexpectedStoreResponseError)?.statusCode ??
             (error as? NetworkRequestError)?.responseCode ?? (error as? AFError)?.responseCode
+        let status = code.map { "; http_status=\($0)" } ?? ""
         let reason: String
-        let message: String
+        let finding: Finding
         let isTunnelTimeout: Bool
         if let connectionError = error as? DotcomError, case let .requestFailed(message, _) = connectionError {
             isTunnelTimeout = message?.localizedCaseInsensitiveContains("cURL error 28:") == true
         } else {
             isTunnelTimeout = false
         }
+        // The internet check runs first, so a timeout here points to a slow store.
         if error.isTimeoutError || code == 408 || isTunnelTimeout {
-            reason = "request_timeout"
-            message = Localization.timeout
+            (reason, finding) = ("request_timeout", Localization.siteError)
         } else if let code, (500...599).contains(code) {
-            reason = "server_error; http_status=\(code)"
-            message = Localization.serverError
-        } else if code == 401 || code == 403 || isAccessDenied(error) {
-            reason = "access_denied" + (code.map { "; http_status=\($0)" } ?? "")
-            message = Localization.accessDenied
+            (reason, finding) = ("server_error" + status, Localization.siteError)
+        } else if isAccessDenied(error) {
+            (reason, finding) = ("access_denied" + status, Localization.accessDenied)
+        } else if code == 401 || code == 403 {
+            (reason, finding) = ("request_blocked" + status, Localization.blocked)
         } else if error is DecodingError || (error as? UnexpectedStoreResponseError)?.kind == .unexpectedContent {
-            reason = "invalid_response"
-            message = Localization.invalidResponse
+            (reason, finding) = ("invalid_response", Localization.siteError)
         } else {
-            reason = "request_failed" + (code.map { "; http_status=\($0)" } ?? "")
-            message = Localization.requestFailed
+            (reason, finding) = ("request_failed" + status, Localization.requestFailed)
         }
+        // WordPress.com hosts these stores, so support can check the site instead of a hosting provider.
+        let isSiteProblem = [Localization.siteError, Localization.blocked].contains(finding)
+        let shownFinding = isSiteProblem && stores.sessionManager.defaultSite?.isWordPressComStore == true ?
+            Finding(headline: finding.headline, message: Localization.hostedSiteMessage) : finding
         // Do not attach response bodies, account IDs, statement descriptors, or raw error descriptions.
-        return failure(message, detail: "stage=\(stage); \(reason)", retry: true)
+        return failure(shownFinding, detail: "stage=\(stage); \(reason)", action: .retryDiagnostics)
     }
 
+    /// WordPress refused the login or its permissions. Other 401 and 403 replies usually come from a firewall or security plugin.
     private func isAccessDenied(_ error: Error) -> Bool {
         let deniedCodes = ["rest_forbidden", "rest_not_logged_in", "woocommerce_rest_cannot_view", "rest_forbidden_context"]
+        if let networkError = error as? NetworkRequestError, let code = networkError.errorCode {
+            return deniedCodes.contains(code)
+        }
         if let apiError = error as? WordPressApiError, case let .unknown(code, _) = apiError {
             return deniedCodes.contains(code)
         }
@@ -193,161 +207,355 @@ struct PaymentSupportDiagnostics {
         }
     }
 
-    private func failure(_ message: String, detail: String, retry: Bool = false) -> SupportDiagnosticsService.Result {
+    private func failure(_ finding: Finding,
+                         detail: String,
+                         action: SupportDiagnosticsService.Action? = nil) -> SupportDiagnosticsService.Result {
         .failure(test: .paymentConfiguration,
-                 failure: .init(errorMessage: message,
+                 failure: .init(errorMessage: finding.message,
                                 technicalDetails: evidence(detail),
-                                suggestedAction: retry ? .retryDiagnostics : nil))
+                                suggestedAction: action,
+                                headline: finding.headline))
     }
-
     private func evidence(_ detail: String) -> String {
         "checked_at=\(ISO8601DateFormatter().string(from: Date())); \(detail)"
     }
 }
 
 extension PaymentSupportDiagnostics {
+    struct Finding: Equatable {
+        let headline: String
+        let message: String
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "paymentSupportDiagnostics.title",
             value: "Checking your store's payment setup",
             comment: "Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay"
         )
-        static let noActivePlugin = NSLocalizedString(
-            "paymentSupportDiagnostics.noActivePlugin",
-            value: "No payment plugin that supports in-person payments is active. In your store admin, install and activate one " +
-                "for your country, then finish its setup.",
-            comment: "Payment setup check result when neither WooPayments nor Stripe is active for the store country"
-        )
-        static let inactivePlugin = NSLocalizedString(
-            "paymentSupportDiagnostics.inactivePlugin",
-            value: "A payment plugin is installed but not active. In your store admin, activate it and finish its setup.",
-            comment: "Payment setup check result when WooPayments or Stripe is installed but not activated"
-        )
-        static let missingSettings = NSLocalizedString(
-            "paymentSupportDiagnostics.missingSettings",
-            value: "The app could not check your store country or currency. Check General settings in your store admin, " +
-                "then run these checks again.",
-            comment: "Payment setup check result when the store country or currency is empty"
-        )
-        static let unsupportedCountry = NSLocalizedString(
-            "paymentSupportDiagnostics.unsupportedCountry",
-            value: "The app does not support in-person payments in your store country. Check your store address in your store admin.",
-            comment: "Payment setup check result when the store country does not support card reader payments in the app"
-        )
-        static let chooseGateway = NSLocalizedString(
-            "paymentSupportDiagnostics.chooseGateway",
-            value: "WooPayments and Stripe are both active. Choose one under Payment Provider in Payments settings, then run " +
-                "these checks again. You do not need to deactivate either plugin.",
-            comment: "Payment setup check result when both payment plugins are active and the merchant has not chosen one in the app"
-        )
-        static let unsupportedGateway = NSLocalizedString(
-            "paymentSupportDiagnostics.unsupportedGateway",
-            value: "Your payment provider does not support in-person payments in your store country. Check Payment Provider " +
-                "in Payments settings.",
-            comment: "Payment setup check result when the chosen payment provider does not support card readers in the store country"
-        )
-        static let oldPlugin = NSLocalizedString(
-            "paymentSupportDiagnostics.oldPlugin",
-            value: "Your payment plugin is too old for in-person payments. Update it in your store admin, then run these checks again.",
-            comment: "Payment setup check result when the WooPayments or Stripe plugin version is below the app's minimum"
-        )
-        static let unsupportedCurrency = NSLocalizedString(
-            "paymentSupportDiagnostics.unsupportedCurrency",
-            value: "In-person payments do not support your store currency in this country. Check your store currency before " +
-                "you change other settings.",
-            comment: "Payment setup check result when the store currency is not supported for card reader payments in the store country"
-        )
-        static let incompleteAddress = NSLocalizedString(
-            "paymentSupportDiagnostics.incompleteAddress",
-            value: "Your store address is incomplete. Card readers and Tap to Pay need a street address, city and postcode. " +
-                "Add them in General settings in your store admin.",
-            comment: "Payment setup check result when the store address is missing the street address, city or postcode"
-        )
-        static let setupIncomplete = NSLocalizedString(
-            "paymentSupportDiagnostics.setupIncomplete",
-            value: "Your payment provider has not set up an account for this store. Finish setup in your store admin or " +
-                "contact payment support.",
-            comment: "Payment setup check result when the payment plugin reports no connected account"
-        )
-        static let testMode = NSLocalizedString(
-            "paymentSupportDiagnostics.testMode",
-            value: "Your payment provider is in test mode. Check its settings in your store admin before you take a live payment.",
-            comment: "Payment setup check result when a live payment account is in test mode"
+        static let hostedSiteMessage = NSLocalizedString(
+            "paymentSupportDiagnostics.hostedSite.message",
+            value: "Your payment setup is unknown. Continue to chat so we can check your site.",
+            comment: "Payment setup check result when a store hosted on WordPress.com blocks, fails or times out a request"
         )
         static let pendingRequirements = NSLocalizedString(
-            "paymentSupportDiagnostics.pendingRequirements",
-            value: "Your payment account has pending requirements. Payments may keep working until the deadline. Review them " +
-                "in your payment provider dashboard.",
-            comment: "Extra note under a passed payment setup check when the payment account has requirements that are due but not overdue"
+            "paymentSupportDiagnostics.pendingRequirements.note",
+            value: "Your payment account has requirements due. Submit them before the deadline to avoid paused payouts.",
+            comment: "Note on a payment setup check result when the payment account has pending requirements"
         )
-        static let accountNotLive = NSLocalizedString(
-            "paymentSupportDiagnostics.accountNotLive",
-            value: "Your payment provider does not report a live account that can accept charges. Check the account in your " +
-                "payment provider dashboard or contact payment support.",
-            comment: "Payment setup check result when the Stripe account is not live or cannot accept charges"
+        static let noActivePlugin = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.noActivePlugin.headline",
+                value: "No payment plugin is active",
+                comment: "Headline of the payment setup check result when neither WooPayments nor Stripe is active for the store country"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.noActivePlugin.message",
+                value: "Install and activate WooPayments, then finish its setup.",
+                comment: "Payment setup check result when neither WooPayments nor Stripe is active for the store country"
+            )
         )
-        static let countryMismatch = NSLocalizedString(
-            "paymentSupportDiagnostics.countryMismatch",
-            value: "Your payment account country does not match your store country. Ask your payment provider before you " +
-                "change the store address.",
-            comment: "Payment setup check result when the payment account country differs from the store country"
+        static let inactivePlugin = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.inactivePlugin.headline",
+                value: "Payment plugin is not active",
+                comment: "Headline of the payment setup check result when a supported payment plugin is installed but not active"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.inactivePlugin.message",
+                value: "Activate the payment plugin, then finish its setup.",
+                comment: "Payment setup check result when a supported payment plugin is installed but not active"
+            )
         )
-        static let overdueRequirements = NSLocalizedString(
-            "paymentSupportDiagnostics.overdueRequirements",
-            value: "Your payment account summary shows overdue requirements. Check them in your payment provider dashboard. " +
-                "If none show there, ask support to compare. Some payments may be restricted.",
-            comment: "Payment setup check result when the payment account is restricted because requirements are overdue"
+        static let missingCountry = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.missingCountry.headline",
+                value: "Store country is not set",
+                comment: "Headline of the payment setup check result when the store country is empty"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.missingCountry.message",
+                value: "Set your store country in your store settings.",
+                comment: "Payment setup check result when the store country is empty"
+            )
         )
-        static let accountUnderReview = NSLocalizedString(
-            "paymentSupportDiagnostics.accountUnderReview",
-            value: "Your payment account appears to be under review. Check its status with your payment provider. Your store's " +
-                "account summary shows no pending or overdue requirements to submit.",
-            comment: "Payment setup check result when the payment account is restricted but has no pending or overdue requirements"
+        static let missingCurrency = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.missingCurrency.headline",
+                value: "Store currency is not set",
+                comment: "Headline of the payment setup check result when the store currency is empty"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.missingCurrency.message",
+                value: "Set your store currency in your store settings.",
+                comment: "Payment setup check result when the store currency is empty"
+            )
         )
-        static let rejectedAccount = NSLocalizedString(
-            "paymentSupportDiagnostics.rejectedAccount",
-            value: "Your payment provider has rejected the account. Contact payment support to review the account status.",
-            comment: "Payment setup check result when the payment provider rejected the account"
+        static let unsupportedCountry = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.unsupportedCountry.headline",
+                value: "Country not supported",
+                comment: "Headline of the payment setup check result when the store country does not support card reader payments"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.unsupportedCountry.message",
+                value: "In-person card payments are not available in your store country. If your store address shows the " +
+                "wrong country, correct it. You can still take cash payments in the app.",
+                comment: "Payment setup check result when the store country does not support card reader payments"
+            )
         )
-        static let unknownAccount = NSLocalizedString(
-            "paymentSupportDiagnostics.unknownAccount",
-            value: "The app could not confirm your payment account status. Contact support before you change the account.",
-            comment: "Payment setup check result when the payment account status is not one the app knows"
+        static let chooseGateway = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.chooseGateway.headline",
+                value: "Choose a payment provider",
+                comment: "Headline of the payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.chooseGateway.message",
+                value: "WooPayments and Stripe are both active. In the app, go to Menu > Payments, tap Continue setup, and " +
+                "choose a provider. You do not need to deactivate either plugin.",
+                comment: "Payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app"
+            )
         )
-        static let accountCurrency = NSLocalizedString(
-            "paymentSupportDiagnostics.accountCurrency",
-            value: "Your payment account does not support your store currency. Check the currency settings with your payment provider.",
-            comment: "Payment setup check result when the payment account does not list the store currency"
+        static let unsupportedGateway = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.unsupportedGateway.headline",
+                value: "Provider not available in your country",
+                comment: "Headline of the payment setup check result when the chosen payment provider does not support card reader payments in the store country"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.unsupportedGateway.message",
+                value: "Your payment plugin does not support in-person payments in your store country. Install and activate " +
+                "WooPayments, then go to Menu > Payments and tap Continue setup.",
+                comment: "Payment setup check result when the chosen payment provider does not support card reader payments in the store country"
+            )
         )
-        static let timeout = NSLocalizedString(
-            "paymentSupportDiagnostics.timeout",
-            value: "A store request timed out. This does not show a reader fault. Check your connection, then ask your host " +
-                "to check the server logs.",
-            comment: "Payment setup check result when a request to the store times out"
+        static let oldPlugin = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.oldPlugin.headline",
+                value: "Payment plugin needs an update",
+                comment: "Headline of the payment setup check result when the payment plugin version is too old for card reader payments"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.oldPlugin.message",
+                value: "This version is too old for in-person payments. Update the plugin.",
+                comment: "Payment setup check result when the payment plugin version is too old for card reader payments"
+            )
         )
-        static let serverError = NSLocalizedString(
-            "paymentSupportDiagnostics.serverError",
-            value: "Your store returned a server error. A hosting or plugin problem can cause this. Ask your host or support " +
-                "to check the error logs.",
-            comment: "Payment setup check result when the store returns an HTTP 5xx error"
+        static let unsupportedCurrency = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.unsupportedCurrency.headline",
+                value: "Currency not supported",
+                comment: "Headline of the payment setup check result when the store currency is not supported for card reader payments in the store country"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.unsupportedCurrency.message",
+                value: "In-person payments do not support your store currency in this country. Changing the currency does " +
+                "not convert your product prices, so continue to chat before you change it.",
+                comment: "Payment setup check result when the store currency is not supported for card reader payments in the store country"
+            )
         )
-        static let accessDenied = NSLocalizedString(
-            "paymentSupportDiagnostics.accessDenied",
-            value: "Your store blocked a setup check. A permission or security rule can cause this. It does not show that " +
-                "payment setup is incomplete. Ask support to check.",
-            comment: "Payment setup check result when the store denies a request with HTTP 401 or 403"
+        static let incompleteAddress = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.incompleteAddress.headline",
+                value: "Store address is incomplete",
+                comment: "Headline of the payment setup check result when the store address is missing the street address, city or postcode"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.incompleteAddress.message",
+                value: "Card readers and Tap to Pay need a street address, city and postcode. Add them in your store settings.",
+                comment: "Payment setup check result when the store address is missing the street address, city or postcode"
+            )
         )
-        static let invalidResponse = NSLocalizedString(
-            "paymentSupportDiagnostics.invalidResponse",
-            value: "The app could not read a reply from your store, so your payment setup is unknown. Ask support to check it. " +
-                "This does not show a reader fault.",
-            comment: "Payment setup check result when the store returns data in an unexpected format"
+        static let setupIncomplete = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.setupIncomplete.headline",
+                value: "No payment account connected",
+                comment: "Headline of the payment setup check result when the payment provider reports no account for the store"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.setupIncomplete.message",
+                value: "Your store is not connected to a payment account. Finish the account setup in your store admin.",
+                comment: "Payment setup check result when the payment provider reports no account for the store"
+            )
         )
-        static let requestFailed = NSLocalizedString(
-            "paymentSupportDiagnostics.requestFailed",
-            value: "A store request failed, so your payment setup is unknown. Check your connection and run the checks again, " +
-                "or contact support.",
-            comment: "Payment setup check result when a request to the store fails for another reason"
+        static let testMode = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.testMode.headline",
+                value: "Test mode is on",
+                comment: "Headline of the payment setup check result when a live payment account is in test mode"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.testMode.message",
+                value: "Your payment plugin is in test mode, so real card payments will not work. Turn off test mode in its " +
+                "settings. If this is a staging copy of your store, take payments from your live store.",
+                comment: "Payment setup check result when a live payment account is in test mode"
+            )
+        )
+        static let testModeOnly = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.testModeOnly.headline",
+                value: "Using a test account",
+                comment: "Headline of the payment setup check result when the store uses a WooPayments test account that is not live"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.testModeOnly.message",
+                value: "Your store uses a WooPayments test account, so real card payments will not work. To take them, set " +
+                "up a live account in WooPayments. On a staging site, use your live store instead.",
+                comment: "Payment setup check result when the store uses a WooPayments test account that is not live"
+            )
+        )
+        static let wooPaymentsNotLive = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.wooPaymentsNotLive.headline",
+                value: "WooPayments account is not live",
+                comment: "Headline of the payment setup check result when the WooPayments account is not live and not in test mode"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.wooPaymentsNotLive.message",
+                value: "Real card payments will not work until the account is live. Check the account status in WooPayments.",
+                comment: "Payment setup check result when the WooPayments account is not live and not in test mode"
+            )
+        )
+        static let accountNotLive = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.accountNotLive.headline",
+                value: "Stripe account is not live",
+                comment: "Headline of the payment setup check result when the Stripe account is not live or cannot accept charges"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.accountNotLive.message",
+                value: "Stripe does not show your account as able to take live card payments. Finish the account setup in " +
+                "your Stripe Dashboard, then tap Retry.",
+                comment: "Payment setup check result when the Stripe account is not live or cannot accept charges"
+            )
+        )
+        static let countryMismatch = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.countryMismatch.headline",
+                value: "Account country does not match",
+                comment: "Headline of the payment setup check result when the payment account country does not match the store country"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.countryMismatch.message",
+                value: "Check that your store address is correct. Your payment account country cannot be changed, so " +
+                "continue to chat before you change other settings.",
+                comment: "Payment setup check result when the payment account country does not match the store country"
+            )
+        )
+        static let overdueRequirements = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.overdueRequirements.headline",
+                value: "Account has overdue requirements",
+                comment: "Headline of the payment setup check result when the payment account is restricted with overdue requirements"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.overdueRequirements.message",
+                value: "Payouts or payments can be paused until you submit the requested details. Submit them in your " +
+                "payment account settings.",
+                comment: "Payment setup check result when the payment account is restricted with overdue requirements"
+            )
+        )
+        static let accountUnderReview = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.accountUnderReview.headline",
+                value: "Account may be under review",
+                comment: "Headline of the payment setup check result when the payment account is restricted without pending or overdue requirements"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.accountUnderReview.message",
+                value: "There is nothing for you to submit now. Continue to chat if you need help with the account review.",
+                comment: "Payment setup check result when the payment account is restricted without pending or overdue requirements"
+            )
+        )
+        static let rejectedAccount = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.rejectedAccount.headline",
+                value: "Payment account was rejected",
+                comment: "Headline of the payment setup check result when the payment provider rejected the account"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.rejectedAccount.message",
+                value: "In-person payments are not available with this payment account. Continue to chat to learn about your " +
+                "options. You can still take cash payments in the app.",
+                comment: "Payment setup check result when the payment provider rejected the account"
+            )
+        )
+        static let unknownAccount = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.unknownAccount.headline",
+                value: "Account status is unknown",
+                comment: "Headline of the payment setup check result when the payment account status is unknown"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.unknownAccount.message",
+                value: "The app could not read your payment account status. Continue to chat for help before you change the account.",
+                comment: "Payment setup check result when the payment account status is unknown"
+            )
+        )
+        static let accountCurrency = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.accountCurrency.headline",
+                value: "Account does not support currency",
+                comment: "Headline of the payment setup check result when the payment account does not support the store currency"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.accountCurrency.message",
+                value: "Your payment account cannot take payments in your store currency. Changing the store currency does " +
+                "not convert your product prices, so continue to chat before you change it.",
+                comment: "Payment setup check result when the payment account does not support the store currency"
+            )
+        )
+        static let accessDenied = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.accessDenied.headline",
+                value: "Payment settings access denied",
+                comment: "Headline of the payment setup check result when WordPress refuses the request because of the login or its permissions"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.accessDenied.message",
+                value: "Your store did not let this login read the payment settings. Log in again with an administrator or " +
+                "shop manager account, then tap Retry.",
+                comment: "Payment setup check result when WordPress refuses the request because of the login or its permissions"
+            )
+        )
+        static let blocked = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.blocked.headline",
+                value: "Setup check was blocked",
+                comment: "Headline of the payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.blocked.message",
+                value: "Your payment setup is unknown. A security plugin or a firewall on your site usually causes this. " +
+                "Allow requests from the WooCommerce app in that plugin, or ask your hosting provider to allow them. " +
+                "You do not need to turn the plugin off.",
+                comment: "Payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code"
+            )
+        )
+        static let siteError = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.siteError.headline",
+                value: "Store did not respond correctly",
+                comment: "Headline of the payment setup check result when the store times out, fails, or sends an unreadable reply"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.siteError.message",
+                value: "Your payment setup is unknown. Ask your hosting provider to check the server error logs.",
+                comment: "Payment setup check result when the store times out, fails, or sends an unreadable reply"
+            )
+        )
+        static let requestFailed = Finding(
+            headline: NSLocalizedString(
+                "paymentSupportDiagnostics.requestFailed.headline",
+                value: "Could not check payment setup",
+                comment: "Headline of the payment setup check result when a request to the store fails for another reason"
+            ),
+            message: NSLocalizedString(
+                "paymentSupportDiagnostics.requestFailed.message",
+                value: "Your payment setup is unknown. Check your internet connection, then tap Retry.",
+                comment: "Payment setup check result when a request to the store fails for another reason"
+            )
         )
     }
 }

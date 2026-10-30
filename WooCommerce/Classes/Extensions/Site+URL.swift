@@ -20,6 +20,10 @@ extension Site {
     var pluginsURL: String {
         adminURL + "plugins.php"
     }
+    var generalSettingsURL: String {
+        adminURL + "admin.php?page=wc-settings&tab=general"
+    }
+
     /// Payment plugin settings in wp-admin. This can be helpful when the plugin needs to be setup completely.
     ///
     func pluginSettingsSectionURL(from plugin: CardPresentPaymentsPlugin) -> String {

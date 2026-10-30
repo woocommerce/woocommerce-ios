@@ -1,0 +1,207 @@
+# p2: login.no-jetpack
+# Logs in to a WooCommerce site without Jetpack with its site credentials, opens
+# the store setup tasks, installs Jetpack from Settings with the lab WordPress.com
+# account, then checks that the order and product lists load. The runner removes
+# Jetpack and the WordPress.com connection first, so every run starts without them.
+appId: ${APP_ID}
+name: "Login - WooCommerce site without Jetpack"
+tags:
+  - smoke_extended
+  - login
+  - no_jetpack_store
+---
+- assertTrue:
+    condition: ${NO_JETPACK_DISCONNECTED == "yes"}
+    label: "The runner removed Jetpack and the WordPress.com connection"
+- launchApp:
+    clearState: true
+    clearKeychain: true
+    arguments:
+      "-ui_testing": true
+- runFlow:
+    file: ../subflows/open_site_address_login.yaml
+- tapOn:
+    id: "Site address"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_URL}
+- hideKeyboard
+- tapOn:
+    id: "Site Address Next Button"
+
+# Some site configurations offer the credential path explicitly, while a
+# fully self-hosted site can route to it directly.
+- runFlow:
+    when:
+      visible:
+        id: "Sign in with site credentials Button"
+    commands:
+      - tapOn:
+          id: "Sign in with site credentials Button"
+
+- extendedWaitUntil:
+    visible: "Username"
+    timeout: 30000
+- tapOn: "Username"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME}
+- tapOn: "Password"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD}
+- hideKeyboard
+- tapOn: "Continue"
+
+- runFlow:
+    when:
+      visible:
+        id: "login-epilogue-continue-button"
+    commands:
+      - tapOn:
+          id: "login-epilogue-continue-button"
+- runFlow:
+    when:
+      visible: "Got it"
+    commands:
+      - tapOn: "Got it"
+- runFlow:
+    when:
+      visible: "Not now"
+    commands:
+      - tapOn: "Not now"
+
+# After login the privacy sheet and the iOS password prompt can arrive a few
+# seconds apart or stacked on top of each other, and while either is open the
+# tab bar is not in the hierarchy. Wait for any sign of the dashboard, dismiss
+# whatever is up, then wait for the tab bar.
+- extendedWaitUntil:
+    visible: "Manage Privacy|Save Password\\?|Orders"
+    timeout: 120000
+- runFlow:
+    file: ../subflows/dismiss_save_password_prompt.yaml
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Manage Privacy|Save Password\\?"
+    timeout: 10000
+    optional: true
+- runFlow:
+    file: ../subflows/dismiss_save_password_prompt.yaml
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-orders-item"
+    timeout: 30000
+
+- takeScreenshot: no_jetpack_logged_in
+
+- extendedWaitUntil:
+    visible: "View all .* tasks"
+    timeout: 30000
+- tapOn: "View all .* tasks"
+- extendedWaitUntil:
+    visible: ".* of .* tasks completed"
+    timeout: 15000
+    label: "The store setup tasks open"
+- takeScreenshot: no_jetpack_store_setup_tasks
+# The close button sits in a toolbar that is hidden from accessibility, so swipe
+# the sheet down instead.
+- swipe:
+    from: ".* of .* tasks completed"
+    direction: DOWN
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-orders-item"
+    timeout: 15000
+
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- tapOn:
+    id: "dashboard-settings-button"
+- scrollUntilVisible:
+    element: "Install Jetpack"
+    direction: DOWN
+    timeout: 15000
+- tapOn: "Install Jetpack"
+
+- extendedWaitUntil:
+    visible: "Enter email address or username"
+    timeout: 15000
+- tapOn: "Enter email address or username"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_WPCOM_EMAIL}
+# The keyboard moves the button up, but the hierarchy keeps reporting it at the
+# bottom, so close the keyboard with Return first. The first "Install Jetpack" is
+# the screen title, the second one the button.
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    text: "Install Jetpack"
+    index: 1
+- extendedWaitUntil:
+    visible: "Enter the password for your account"
+    timeout: 30000
+- tapOn: "Enter the password for your account"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_WPCOM_PASSWORD}
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn: "Continue"
+
+# Every step title is on screen from the start, so wait for the button that only
+# appears once the setup finishes.
+- extendedWaitUntil:
+    visible: "Go to Store"
+    timeout: 180000
+    label: "Jetpack installs and connects"
+- assertVisible: "Connected"
+- takeScreenshot: no_jetpack_installed
+- tapOn: "Go to Store"
+
+# After the Jetpack setup the tab bar items lose their identifiers, so pick the
+# tabs by their titles.
+- extendedWaitUntil:
+    visible:
+      text: "Orders"
+      childOf: "Tab Bar"
+    timeout: 60000
+- tapOn:
+    text: "Orders"
+    childOf: "Tab Bar"
+- extendedWaitUntil:
+    visible:
+      text: "#.*"
+      childOf:
+        id: "orders-table-view"
+    timeout: 30000
+    label: "The order list loads"
+- takeScreenshot: no_jetpack_orders
+
+- tapOn:
+    text: "Products"
+    childOf: "Tab Bar"
+- extendedWaitUntil:
+    visible:
+      text: ".+"
+      childOf:
+        id: "(?!product-stock-status-).+"
+        childOf:
+          id: "products-table-view"
+    timeout: 30000
+    label: "The product list loads"
+- takeScreenshot: no_jetpack_products

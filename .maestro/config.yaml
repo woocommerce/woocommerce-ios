@@ -13,6 +13,7 @@ executionOrder:
     - flows/login_help.yaml
     - flows/login_not_woo_store.yaml
     - flows/login_wrong_account.yaml
+    - flows/no_jetpack.yaml
     - flows/push_no_jetpack.yaml
     - flows/login_successful.yaml
     - flows/dashboard_stats.yaml

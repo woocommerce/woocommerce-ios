@@ -62,6 +62,10 @@ one store instead.
 The runner refuses destructive flows against the shared store. Run them with
 `--store lab`.
 
+`push_no_jetpack.yaml` logs in to the site without Jetpack (`MAESTRO_WOO_NO_JETPACK_*`)
+instead. Its setup connects that site to WordPress.com, so before each attempt the runner
+removes the connection again over SSH.
+
 ## Provisioning a lab store
 
 `.maestro/scripts/setup-jn-store.sh` turns a Jurassic Ninja site into the lab store:
@@ -109,8 +113,9 @@ password grant cannot answer a 2FA challenge non-interactively. Use test account
 It ships with the WooCommerce sample products. The script tops it up to 100 products and
 100 completed orders, and adds one customer and a `maestro10` coupon, so the order and
 analytics flows run against it.
-The negative-login fixtures (`MAESTRO_WOO_NOT_A_WOO_STORE_*`,
-`MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are filled in by hand.
+Pass `--no-jetpack-site` with a second Jurassic Ninja site created without Jetpack to fill
+in `MAESTRO_WOO_NO_JETPACK_*` as well. The other negative-login fixtures
+(`MAESTRO_WOO_NOT_A_WOO_STORE_*`, `MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are filled in by hand.
 
 Jurassic Ninja sites expire after 7 days of inactivity. Re-run the script or the skill
 against a new site when that happens; the WordPress.com account already in `.env.local`

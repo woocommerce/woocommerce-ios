@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-16 12:46:21+0000 */
+/* Translation-Revision-Date: 2026-10-22 09:55:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -9899,8 +9899,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Det totala beställningsbeloppet har ändrats sedan betalningen inleddes. Gå tillbaka och kontrollera att beställningen är korrekt och försök sedan betala igen.";
 
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "Växel: %1$@";
+
 /* Dismiss the login failure alert */
 "com.woocommerce.login.unexpectedResponse.dismiss" = "Avfärda";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "Din butik returnerade ett oväntat svar, så vi kunde inte slutföra inloggningen. Försök igen eller kontakta supporten för att få hjälp.";
 
 /* Retry the failed login step */
 "com.woocommerce.login.unexpectedResponse.retry" = "Försök igen";
@@ -10917,6 +10923,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Den läsare som returnerats från identifiering har ingen IP-adress och det går inte att ansluta till den.";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "Gå tillbaka till tidigare AI-supportchattar";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Chatthistorik";
 
@@ -11904,6 +11913,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "Visa foto";
+
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "Kunde inte kontrollera om denna beställning kan betalas med kort. Försök igen.";
 
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "Kortbetalningar är inte tillgängliga för den här beställningens valuta (%1$@).";
@@ -14087,6 +14099,12 @@ which should be translated separately and considered part of this sentence. */
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Uppdateringsdatum ej tillgängligt";
 
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "Spela upp ett ljud när en betalning slutförs";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "Ljud för lyckad betalning";
+
 /* Navigation title for the payments settings in Point of Sale settings. */
 "posSettingsPaymentsDetailView.title" = "Betalningar";
 
@@ -15357,8 +15375,14 @@ which should be translated separately and considered part of this sentence. */
 /* Range label for the Last Month option in the Store Stats widget */
 "storeWidgets.dateRange.lastMonth" = "Förra månaden";
 
+/* Compact range label for the previous calendar month option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.lastMonthCompact.calendarMonth" = "LM";
+
 /* Range label for the Last Week option in the Store Stats widget */
 "storeWidgets.dateRange.lastWeek" = "Förra veckan";
+
+/* Compact range label for the previous calendar week option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.lastWeekCompact.calendarWeek" = "LW";
 
 /* Range label for the Month to Date option in the Store Stats widget */
 "storeWidgets.dateRange.monthToDate" = "Månad till datum";
@@ -15510,6 +15534,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Chatt utan rubrik";
+
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "Du har inte startat någon AI-supportchatt än.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Chatthistorik";
@@ -16342,6 +16369,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "Telefonnummer är obligatoriskt för destinationsadress.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@ kräver ett telefonnummer till mottagaren.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Lägg till företag";
 
@@ -16699,6 +16729,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Mer information om ITN";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "Försändelser till EU behöver nu produktidentifierare för varje vara. Uppdatera WooCommerce Shipping-tillägget för att lägga till dem.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Produktdetaljer";
 
@@ -16750,6 +16783,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown when an EU product identifier exceeds the allowed character count */
 "wooShipping.customsItems.euProductIdentifier.tooLong" = "Måste vara %1$d tecken eller färre.";
 
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "EU-produktidentifierare";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "Krävs för försändelser till EU. SKU och GTIN\/EAN är förifyllda från produktens lagerinställningar.";
+
 /* Label for the GTIN/EAN field in customs items */
 "wooShipping.customsItems.gtin" = "GTIN\/EAN";
 
@@ -16764,6 +16803,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "Valfritt";
+
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "Tillverkarens artikelnummer";
 
 /* Toggle label for items without a barcode */
 "wooShipping.customsItems.noBarcode" = "Ingen streckkod";

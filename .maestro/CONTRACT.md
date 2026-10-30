@@ -95,6 +95,7 @@ Only the Core owner edits `.maestro/subflows/`. Shared names are:
 - `open_site_address_login.yaml`
 - `dismiss_save_password_prompt.yaml`
 - `login.yaml`
+- `login_no_jetpack_site.yaml`
 - `ensure_logged_in.yaml`
 - `navigate_to_dashboard.yaml`
 - `navigate_to_orders.yaml`

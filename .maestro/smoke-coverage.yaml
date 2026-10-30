@@ -27,7 +27,7 @@ items:
     flow: .maestro/flows/login_not_woo_store.yaml
   - id: login.no-jetpack
     title: Login to WooCommerce site without Jetpack
-    manual: "Installing Jetpack from the app permanently changes the site, and the manual test needs the site-credential login first, so the whole scenario is one manual test."
+    flow: .maestro/flows/no_jetpack.yaml
   - id: login.jetpack-not-connected
     title: Login with Jetpack installed but not connected
     manual: "Ends by checking that a push arrives, and the simulator gets no real pushes."

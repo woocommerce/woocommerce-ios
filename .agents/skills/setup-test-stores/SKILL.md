@@ -58,7 +58,7 @@ hand against a site created in a browser.
    reuse the existing WP.com account lines rather than asking for them again.
 
 2. **Provision two sites.** The lab store, and a WooCommerce site without Jetpack for
-   `push_no_jetpack`:
+   `no_jetpack` and `push_no_jetpack`:
 
    ```
    provision-site  features: {"woocommerce":"true","woocommerce-import-sample-data":"true","jetpack":"true"}

@@ -59,7 +59,10 @@ struct StoreDashboardUnavailableAnalyticsView: View {
 
     var body: some View {
         VStack(spacing: StoreSpacing.s5) {
-            illustration
+            Image("woo-no-store")
+                .renderingMode(.original)
+                .flipsForRightToLeftLayoutDirection(true)
+                .accessibilityHidden(true)
             Text(title)
                 .storeTextStyle(.titleLarge.strong)
             Text(Localization.unavailableDetails)
@@ -74,16 +77,6 @@ struct StoreDashboardUnavailableAnalyticsView: View {
         .padding(StorePadding.p5)
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingSupportForm) { supportForm }
-    }
-
-    private var illustration: some View {
-        let image = UIImage.noStoreImage
-        return Image(uiImage: image)
-            .renderingMode(.original)
-            .resizable()
-            .scaledToFit()
-            .frame(width: image.size.width, height: image.size.height)
-            .accessibilityHidden(true)
     }
 
     private var supportForm: some View {

@@ -47,6 +47,7 @@ struct PaymentSupportDiagnosticsTests {
         #expect(result.technicalDetails?.contains("payment_plugin_inactive") == true)
         #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.inactivePlugin.message)
         #expect(result.headline == PaymentSupportDiagnostics.Localization.inactivePlugin.headline)
+        #expect(result.reason == "payment_plugin_inactive")
         #expect(result.suggestedAction == .openPlugins)
         #expect(requestedGateways(sut).isEmpty)
     }
@@ -309,6 +310,7 @@ struct PaymentSupportDiagnosticsTests {
         let expected = status < 500 ? PaymentSupportDiagnostics.Localization.blocked : PaymentSupportDiagnostics.Localization.siteError
         #expect(result.errorMessage == expected.message)
         #expect(result.headline == expected.headline)
+        #expect(result.reason == (status < 500 ? "request_blocked" : "server_error"))
     }
 
     @Test func test_requestFailure_when_direct_REST_reply_has_wordpress_permission_code_then_reports_access_denied() {

@@ -461,14 +461,17 @@ final class SupportChatViewModel {
             )
             trackTroubleshootingCompleted(issueType: issue,
                                           result: .failed,
-                                          failedTest: failure.test)
+                                          failedTest: failure.test,
+                                          failureReason: failure.reason)
         } else {
             messages[progressIndex] = ChatMessage(
                 id: messages[progressIndex].id,
                 role: .bot,
                 content: .diagnosticsSuccess
             )
-            trackTroubleshootingCompleted(issueType: issue, result: paymentDiagnosticsAreInconclusive ? .inconclusive : .passed)
+            trackTroubleshootingCompleted(issueType: issue,
+                                          result: paymentDiagnosticsAreInconclusive ? .inconclusive : .passed,
+                                          failureReason: diagnosticResults.first(where: \.isInconclusive)?.reason)
         }
     }
 
@@ -1128,11 +1131,13 @@ final class SupportChatViewModel {
 
     private func trackTroubleshootingCompleted(issueType: SupportIssueType,
                                               result: WooAnalyticsEvent.SupportChat.TroubleshootingResult,
-                                              failedTest: SupportDiagnosticsService.Test? = nil) {
+                                              failedTest: SupportDiagnosticsService.Test? = nil,
+                                              failureReason: String? = nil) {
         analytics.track(event: WooAnalyticsEvent.SupportChat.troubleshootingCompleted(
             issueType: issueType,
             result: result,
-            failedTest: failedTest
+            failedTest: failedTest,
+            failureReason: failureReason
         ))
     }
 

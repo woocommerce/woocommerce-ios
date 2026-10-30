@@ -23,5 +23,7 @@ public protocol PrinterDiscoveryService: AnyObject {
     ///
     /// The text is composed by the caller (Yosemite); this backend only wraps it into the
     /// printer's own print command, so it stays agnostic of receipt content and layout.
+    ///
+    /// A connection failure disconnects the printer before the error is thrown.
     func printReceipt(text: String) async throws
 }

@@ -18,7 +18,7 @@ struct MockSystemStatusActionHandler: MockActionHandler {
             let systemPlugins = objectGraph.systemPlugins(for: siteID)
             let matchingPlugin = systemPlugins.first { $0.plugin == pluginPath }
             onCompletion(matchingPlugin)
-        case .fetchSystemStatusReport(_, let onCompletion):
+        case .fetchSystemStatusReport(_, _, let onCompletion):
             // For now, returns a failure since this mock doesn't implement system status report fetching.
             onCompletion(.failure(NSError(domain: "MockSystemStatusActionHandler", code: 1, userInfo: [:])))
         }

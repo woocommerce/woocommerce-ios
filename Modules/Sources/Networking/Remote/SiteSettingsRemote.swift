@@ -26,16 +26,16 @@ public class SiteSettingsRemote: Remote, @unchecked Sendable {
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadGeneralSettings(for siteID: Int64, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
-        let path = Constants.siteSettingsPath + Constants.generalSettingsGroup
-        let request = JetpackRequest(wooApiVersion: .mark3,
-                                     method: .get,
-                                     siteID: siteID,
-                                     path: path,
-                                     parameters: nil,
-                                     availableAsRESTRequest: true)
-        let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
+        enqueue(generalSettingsRequest(for: siteID), mapper: generalSettingsMapper(for: siteID), completion: completion)
+    }
 
-        enqueue(request, mapper: mapper, completion: completion)
+    public func loadGeneralSettings(for siteID: Int64,
+                                    detectUnexpectedResponses: Bool,
+                                    completion: @escaping (Result<[SiteSetting], Error>) -> Void) {
+        enqueue(generalSettingsRequest(for: siteID),
+                mapper: generalSettingsMapper(for: siteID),
+                detectUnexpectedResponses: detectUnexpectedResponses,
+                completion: completion)
     }
 
     /// Retrieves all of the product `SiteSetting`s for a given site.
@@ -272,6 +272,21 @@ public extension SiteSettingsFeature {
         case .pointOfSale:
             return "point_of_sale"
         }
+    }
+}
+
+private extension SiteSettingsRemote {
+    func generalSettingsRequest(for siteID: Int64) -> JetpackRequest {
+        JetpackRequest(wooApiVersion: .mark3,
+                       method: .get,
+                       siteID: siteID,
+                       path: Constants.siteSettingsPath + Constants.generalSettingsGroup,
+                       parameters: nil,
+                       availableAsRESTRequest: true)
+    }
+
+    func generalSettingsMapper(for siteID: Int64) -> SiteSettingsMapper {
+        SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
     }
 }
 

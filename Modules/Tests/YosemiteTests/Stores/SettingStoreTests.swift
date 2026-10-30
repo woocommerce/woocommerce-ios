@@ -37,9 +37,74 @@ final class SettingStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
-        network = MockNetwork()
+        network = MockDiagnosticReadNetwork()
     }
 
+
+    // MARK: - SettingAction.retrieveGeneralSiteSettings
+
+    @MainActor
+    func test_retrieveGeneralSiteSettings_when_request_succeeds_then_returns_fresh_settings_without_caching() async throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
+
+        // When
+        let result: Result<[Networking.SiteSetting], Error> = try await waitForCompletion { completion in
+            store.onAction(SettingAction.retrieveGeneralSiteSettings(siteID: self.sampleSiteID, onCompletion: completion))
+        }
+
+        // Then
+        let settings = try result.get()
+        XCTAssertEqual(settings.count, 20)
+        XCTAssertTrue(settings.contains(sampleGeneralSiteSetting()))
+        XCTAssertTrue(settings.allSatisfy { $0.siteID == sampleSiteID && $0.settingGroupKey == SiteSettingGroup.general.rawValue })
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
+    }
+
+    @MainActor
+    func test_retrieveGeneralSiteSettings_when_request_succeeds_then_preserves_stored_settings() async throws {
+        // Given
+        let storedSetting = sampleGeneralSiteSettingMutated()
+        await storageManager.performAndSaveAsync { storage in
+            storage.insertNewObject(ofType: Storage.SiteSetting.self).update(with: storedSetting)
+        }
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
+
+        // When
+        let result: Result<[Networking.SiteSetting], Error> = try await waitForCompletion { completion in
+            store.onAction(SettingAction.retrieveGeneralSiteSettings(siteID: self.sampleSiteID, onCompletion: completion))
+        }
+
+        // Then
+        XCTAssertTrue(try result.get().contains(sampleGeneralSiteSetting()))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
+        XCTAssertEqual(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: storedSetting.settingID)?.toReadOnly(), storedSetting)
+    }
+
+    @MainActor
+    func test_retrieveGeneralSiteSettings_when_request_fails_then_forwards_error_and_preserves_stored_settings() async throws {
+        // Given
+        let storedSetting = sampleGeneralSiteSetting()
+        await storageManager.performAndSaveAsync { storage in
+            storage.insertNewObject(ofType: Storage.SiteSetting.self).update(with: storedSetting)
+        }
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let error = NSError(domain: "GeneralSiteSettingsTests", code: 42)
+        network.simulateError(requestUrlSuffix: "settings/general", error: error)
+
+        // When
+        let result: Result<[Networking.SiteSetting], Error> = try await waitForCompletion { completion in
+            store.onAction(SettingAction.retrieveGeneralSiteSettings(siteID: self.sampleSiteID, onCompletion: completion))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertTrue((result.failure as NSError?) === error)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 1)
+        XCTAssertEqual(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: storedSetting.settingID)?.toReadOnly(), storedSetting)
+    }
 
     // MARK: - SettingAction.synchronizeGeneralSiteSettings
 

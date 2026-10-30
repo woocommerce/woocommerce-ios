@@ -17,6 +17,12 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             publishCardReaderConnections(onCompletion: onCompletion)
         case .selectedPaymentGatewayAccount(let onCompletion):
             onCompletion(objectGraph.paymentGatewayAccounts.first)
+        case .fetchPaymentGatewayAccount(let siteID, let gateway, let onCompletion):
+            if let account = objectGraph.paymentGatewayAccounts(for: siteID).first(where: { $0.gatewayID == gateway.gatewayID }) {
+                onCompletion(.success(account))
+            } else {
+                onCompletion(.failure(NSError(domain: "MockCardPresentPaymentActionHandler", code: 1)))
+            }
         case .checkDeviceSupport(_, _, _, _, let onCompletion):
             onCompletion(true)
         case .observeConnectedReaders(let onCompletion):

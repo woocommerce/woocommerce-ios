@@ -142,7 +142,7 @@ tags:
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_WPCOM_EMAIL}
+      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_EMAIL}
 # The keyboard moves the button up, but the hierarchy keeps reporting it at the
 # bottom, so close the keyboard with Return first. The first "Install Jetpack" is
 # the screen title, the second one the button.
@@ -158,7 +158,7 @@ tags:
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_WPCOM_PASSWORD}
+      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_PASSWORD}
 - pressKey: Enter
 - waitForAnimationToEnd
 - tapOn: "Continue"

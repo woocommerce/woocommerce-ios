@@ -163,11 +163,14 @@ final class SupportDiagnosticsService {
         var isInconclusive: Bool = false
         /// Short statement of the problem, shown in place of the check name.
         var headline: String? = nil
+        /// Stable code of the finding for analytics, without store data.
+        var reason: String? = nil
 
         static func == (lhs: Result, rhs: Result) -> Bool {
             lhs.test == rhs.test &&
             lhs.isSuccess == rhs.isSuccess &&
             lhs.headline == rhs.headline &&
+            lhs.reason == rhs.reason &&
             lhs.errorMessage == rhs.errorMessage &&
             lhs.suggestedAction == rhs.suggestedAction &&
             lhs.advisoryMessage == rhs.advisoryMessage &&

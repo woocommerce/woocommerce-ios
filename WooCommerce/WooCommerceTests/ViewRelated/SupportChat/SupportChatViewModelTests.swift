@@ -147,7 +147,8 @@ struct SupportChatViewModelTests {
         // Then
         #expect(transcript?.contains("All diagnostics passed") == false)
         #expect(transcript?.contains("Result: Account not live") == true)
-        assertProperties(analytics, event: "support_chat_troubleshooting_completed", include: ["result": "inconclusive"])
+        assertProperties(analytics, event: "support_chat_troubleshooting_completed",
+                         include: ["result": "inconclusive", "failure_reason": "account_not_live"])
     }
 
     @Test func test_payment_diagnostics_when_retry_recovers_then_human_handoff_keeps_earlier_failure() async {
@@ -2519,7 +2520,7 @@ struct SupportChatViewModelTests {
             tests.map { test in
                 guard test == .paymentConfiguration else { return .success(test: test) }
                 return .init(test: test, isSuccess: true, errorMessage: "Account not live", technicalDetails: nil,
-                             suggestedAction: .openPaymentProvider(.wcPay), isInconclusive: true, headline: "Not live")
+                             suggestedAction: .openPaymentProvider(.wcPay), isInconclusive: true, headline: "Not live", reason: "account_not_live")
             }
         }
     }

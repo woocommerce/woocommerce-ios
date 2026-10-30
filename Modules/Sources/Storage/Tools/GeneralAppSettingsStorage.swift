@@ -9,14 +9,14 @@ public struct GeneralAppSettingsStorage {
     private let fileStorage: FileStorage
     private let fileURL: URL
 
-    /// This subject is used internally to force a refresh of any settings publisher.
-    /// Every time the underlying settings change, we should emit a value here.
+    /// This notification is used internally to force a refresh of any settings publisher.
+    /// Every time the underlying settings change, we should post it.
     ///
     /// Since there is no guarantee that there will be a single instance of GeneralAppSettingsStorage,
-    /// we use a shared static property so that any instance that writes changes to settings emits a
-    /// value that would refresh the data on any other instance.
+    /// we post it app-wide so that any instance that writes changes to settings refreshes the data
+    /// on any other instance.
     ///
-    private static let refreshSubject = CurrentValueSubject<Void, Never>(())
+    private static let refreshNotification = Notification.Name("GeneralAppSettingsStorageDidChange")
 
     public init(fileStorage: FileStorage = PListFileStorage(), fileURL: URL? = nil) {
         self.fileStorage = fileStorage
@@ -55,7 +55,9 @@ public struct GeneralAppSettingsStorage {
     /// Returns a publisher that emits updates every time the settings change..
     ///
     public var settingsPublisher: AnyPublisher<GeneralAppSettings, Never> {
-        Self.refreshSubject
+        NotificationCenter.default.publisher(for: Self.refreshNotification)
+            .map { _ in () }
+            .prepend(())
             .map { settings }
             .removeDuplicates()
             .eraseToAnyPublisher()
@@ -65,7 +67,7 @@ public struct GeneralAppSettingsStorage {
     ///
     public func saveSettings(_ settings: GeneralAppSettings) throws {
         try saveGeneralAppSettings(settings)
-        Self.refreshSubject.send(())
+        NotificationCenter.default.post(name: Self.refreshNotification, object: nil)
     }
 }
 

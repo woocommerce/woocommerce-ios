@@ -62,13 +62,13 @@ public final class CoreDataManager: StorageManagerType, @unchecked Sendable {
             /// This simplifies the process of merging updates from persistent container to view context.
             /// When disable auto merge, we need to handle merging manually using `NSManagedObjectContextDidSave` notifications.
             context.automaticallyMergesChangesFromParent = true
-            context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             return context
         }()
 
         self.writerStorage = {
             let backgroundContext = persistentContainer.newBackgroundContext()
-            backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             return backgroundContext
         }()
     }
@@ -129,9 +129,9 @@ public final class CoreDataManager: StorageManagerType, @unchecked Sendable {
     ///   - completion: A closure which is called with the `operation`'s execution result,
     ///   which is either an error thrown by the `operation` or the return value of the `operation`.
     ///   - queue: A queue on which to execute the completion closure.
-    public func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
-                                  completion: @escaping @Sendable (Result<T, Error>) -> Void,
-                                  on queue: DispatchQueue) {
+    public func performAndSave<T: Sendable>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                                            completion: @escaping @Sendable (Result<T, Error>) -> Void,
+                                            on queue: DispatchQueue) {
         assert((T.self is NSManagedObject.Type) == false, "Managed objects should not be sent between different contexts to avoid threading issues.")
         let derivedStorage = writerStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
@@ -204,14 +204,14 @@ public final class CoreDataManager: StorageManagerType, @unchecked Sendable {
                 let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                      "persistentStoreRemovalError": persistentStoreRemovalError,
                                                      "retryError": underlyingError,
-                                                     "appState": UIApplication.shared.applicationState.rawValue,
+                                                     "appState": applicationStateRawValue(),
                                                      "migrationMessages": migrationDebugMessages]
                 crashLogger.logFatalErrorAndExit(error, userInfo: logProperties.compactMapValues { $0 })
             }
 
             let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                  "persistentStoreRemovalError": persistentStoreRemovalError,
-                                                 "appState": UIApplication.shared.applicationState.rawValue,
+                                                 "appState": applicationStateRawValue(),
                                                  "migrationMessages": migrationDebugMessages]
             crashLogger.logMessage("[CoreDataManager] Recovered from persistent store loading error",
                                    properties: logProperties.compactMapValues { $0 },
@@ -219,6 +219,16 @@ public final class CoreDataManager: StorageManagerType, @unchecked Sendable {
         }
 
         return container
+    }
+
+    /// Stores load synchronously on the thread that creates the manager, which is not always the main thread.
+    private static func applicationStateRawValue() -> Int? {
+        guard Thread.isMainThread else {
+            return nil
+        }
+        return MainActor.assumeIsolated {
+            UIApplication.shared.applicationState.rawValue
+        }
     }
 
     private func deleteAllStoredObjects(in context: NSManagedObjectContext) {

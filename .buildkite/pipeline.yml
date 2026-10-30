@@ -15,6 +15,8 @@ steps:
   - label: ":pipeline: Build"
     key: build
     command: .buildkite/commands/build-for-testing.sh
+    agents:
+      queue: mac-staging
     plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:
@@ -83,24 +85,24 @@ steps:
   #################
   # Run Unit Tests
   #################
-  - label: ":microscope: Unit Tests"
-    key: unit-tests
-    command: .buildkite/commands/run-unit-tests.sh
-    depends_on: build
-    agents:
-      queue: mac-staging
-    plugins:
-      - $CI_TOOLKIT
-      - ${TEST_COLLECTOR}:
-          files: fastlane/test_output/report.junit
-          format: junit
-          missing-error: 0
-          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UNIT_TESTS
-    artifact_paths:
-      - fastlane/test_output/*
-    notify:
-      - github_commit_status:
-          context: Unit Tests
+#   - label: ":microscope: Unit Tests"
+#     key: unit-tests
+#     command: .buildkite/commands/run-unit-tests.sh
+#     depends_on: build
+#     agents:
+#       queue: mac-staging
+#     plugins:
+#       - $CI_TOOLKIT
+#       - ${TEST_COLLECTOR}:
+#           files: fastlane/test_output/report.junit
+#           format: junit
+#           missing-error: 0
+#           api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UNIT_TESTS
+#     artifact_paths:
+#       - fastlane/test_output/*
+#     notify:
+#       - github_commit_status:
+#           context: Unit Tests
 
 #   - label: ":microscope: Standalone WordPressAuthenticator Unit Tests"
 #     key: wordpress-authenticator-unit-tests

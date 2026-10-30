@@ -290,6 +290,17 @@ final class SupportChatViewModel {
     var onOpenPushNotificationPreferences: (@escaping () -> Void) -> Void
     private let diagnosticsService: SupportDiagnosticsServicing
 
+    private var shouldIncludeRecentApplicationLogs: Bool {
+        switch entryPoint {
+        case .preLogin:
+            true
+        case .helpAndSupport:
+            stores.sessionManager.defaultSite == nil
+        case .connectivityTool, .chatHistory:
+            false
+        }
+    }
+
     /// Pre-fetched system status report, if available (e.g., from connectivity tool).
     ///
     private let prefetchedSystemStatusReport: String?
@@ -770,7 +781,7 @@ final class SupportChatViewModel {
         let contextSiteAddress: String? = if case .string(let address) = context["site_url"] { address } else { nil }
         let report = await mobileStatusReportProvider.generateReport(siteAddress: supportSiteAddress ?? contextSiteAddress)
         var sections: [String] = if case .string(let existing) = context["troubleshootingResults"] { [existing] } else { [] }
-        if entryPoint == .preLogin,
+        if shouldIncludeRecentApplicationLogs,
            let recentLogs = recentApplicationLogsContext.build(excludingStoreResponseExcerpts: excludeStoreResponseExcerptsFromLogs) {
             sections.append(recentLogs.text)
             DDLogInfo("Added \(recentLogs.entryCount) recent warning and error log entries to the AI support chat context.")

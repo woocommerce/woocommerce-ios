@@ -42,13 +42,44 @@ struct SupportChatMobileStatusReportTests {
         #expect(troubleshootingResults.hasSuffix("\n\nMobile status report"))
     }
 
+    @Test func test_first_message_when_chat_starts_after_login_before_store_selection_then_adds_recent_logs() async throws {
+        // Given
+        let logProvider = MockRecentApplicationLogProvider(logEntries: [
+            .init(date: Date(), level: .error, message: "Store selection error")
+        ])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var sentContext: RequestParameterDictionary?
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, context, _) = action { sentContext = context }
+        }
+        let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
+            entryPoint: .helpAndSupport,
+            stores: stores,
+            recentApplicationLogProvider: logProvider,
+            onContactHumanSupport: { _, _, _, _, _ in }
+        )
+        sut.inputText = "Help"
+
+        // When
+        await sut.sendMessage()
+
+        // Then
+        guard case .string(let troubleshootingResults) = sentContext?["troubleshootingResults"] else {
+            Issue.record("Expected troubleshooting context")
+            return
+        }
+        #expect(troubleshootingResults.contains("# Recent app logs"))
+        #expect(troubleshootingResults.contains("Store selection error"))
+    }
+
     @Test(arguments: [SupportChatViewModel.EntryPoint.helpAndSupport, .connectivityTool])
-    func test_first_message_when_chat_starts_after_login_then_omits_recent_logs(entryPoint: SupportChatViewModel.EntryPoint) async throws {
+    func test_first_message_when_chat_starts_with_selected_store_then_omits_recent_logs(entryPoint: SupportChatViewModel.EntryPoint) async throws {
         // Given
         let logProvider = MockRecentApplicationLogProvider(logEntries: [
             .init(date: Date(), level: .error, message: "Sync error")
         ])
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake()))
         var sentContext: RequestParameterDictionary?
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
             if case let .sendMessage(_, _, _, _, context, _) = action { sentContext = context }

@@ -104,8 +104,8 @@ final class SupportDiagnosticsService {
                 return Localization.Action.openPushNotificationPreferences
             case .retryDiagnostics:
                 return Localization.Action.retryDiagnostics
-            case .openPaymentProvider(let plugin):
-                return String(format: Localization.Action.openPaymentProvider, plugin.pluginName)
+            case .openPaymentProvider:
+                return Localization.Action.openPaymentSettings
             case .openStoreSettings:
                 return Localization.Action.openStoreSettings
             case .openPlugins:
@@ -754,20 +754,19 @@ private extension SupportDiagnosticsService {
         }
 
         enum Action {
-            static let openPaymentProvider = NSLocalizedString(
-                "supportDiagnosticsService.action.openPaymentProvider",
-                value: "Open %1$@",
-                comment: "Action button that opens the payment provider's page in the store admin. " +
-                    "%1$@ is the plugin name: WooPayments or WooCommerce Stripe Gateway."
+            static let openPaymentSettings = NSLocalizedString(
+                "supportDiagnosticsService.action.openPaymentSettings",
+                value: "Open Payment Settings",
+                comment: "Action button that opens the WooPayments or Stripe settings page in the store admin"
             )
             static let openStoreSettings = NSLocalizedString(
-                "supportDiagnosticsService.action.openStoreSettings",
-                value: "Open store settings",
+                "supportDiagnosticsService.action.openStoreSettingsTitle",
+                value: "Open Store Settings",
                 comment: "Action button that opens WooCommerce General settings in the store admin"
             )
             static let openPlugins = NSLocalizedString(
-                "supportDiagnosticsService.action.openPlugins",
-                value: "Open plugins",
+                "supportDiagnosticsService.action.openPluginsTitle",
+                value: "Open Plugins",
                 comment: "Action button that opens the Plugins page in the store admin"
             )
             static let enableAnalytics = NSLocalizedString(

@@ -163,8 +163,8 @@ struct PaymentSupportDiagnosticsTests {
         #expect(result.isInconclusive == !isLive)
         #expect(result.suggestedAction == .openPaymentProvider(.wcPay))
         if !isLive {
-            #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.testModeOnly.message)
-            #expect(result.headline == PaymentSupportDiagnostics.Localization.testModeOnly.headline)
+            #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.testPaymentsOnly.message)
+            #expect(result.headline == PaymentSupportDiagnostics.Localization.testPaymentsOnly.headline)
             #expect(result.technicalDetails?.contains("account_in_test_mode") == true)
         }
     }
@@ -219,6 +219,30 @@ struct PaymentSupportDiagnosticsTests {
         #expect(result.technicalDetails?.contains("capture were not tested") == true)
     }
 
+    @Test func test_run_when_only_stripe_active_in_country_without_stripe_then_reports_provider_not_supported() async {
+        // Given
+        let sut = makeSUT(plugins: [plugin(.stripe)], country: "CA", currency: "CAD")
+        // When
+        let result = await sut.run()
+        // Then
+        #expect(result.headline == PaymentSupportDiagnostics.Localization.providerNotSupported.headline)
+        #expect(result.technicalDetails?.contains("gateway_not_supported_in_country") == true)
+        #expect(result.suggestedAction == .openPlugins)
+        #expect(requestedGateways(sut).isEmpty)
+    }
+
+    @Test func test_evaluate_when_stripe_in_test_mode_then_warns_instead_of_failing() {
+        // Given
+        let sut = makeSUT()
+        // When
+        let result = sut.evaluate(account: account().copy(isLive: false, isInTestMode: true), gateway: .stripe, currency: "USD", country: "US")
+        // Then
+        #expect(result.isSuccess)
+        #expect(result.isInconclusive)
+        #expect(result.headline == PaymentSupportDiagnostics.Localization.testPaymentsOnly.headline)
+        #expect(result.suggestedAction == .openPaymentProvider(.stripe))
+    }
+
     @Test func test_evaluate_when_account_is_healthy_then_passes_without_action() {
         // Given
         let sut = makeSUT()
@@ -252,10 +276,10 @@ struct PaymentSupportDiagnosticsTests {
         #expect(result.suggestedAction == (gateway == .wcPay ? .openPaymentProvider(gateway) : .retryDiagnostics))
         if gateway == .wcPay {
             #expect(result.isInconclusive)
-            #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.wooPaymentsNotLive.message)
+            #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.accountNotLiveYet.message)
             #expect(result.technicalDetails?.contains("account_not_live") == true)
             #expect(result.advisoryMessage == nil)
-            #expect(result.troubleshootingDescription().contains("Result: \(PaymentSupportDiagnostics.Localization.wooPaymentsNotLive.message)"))
+            #expect(result.troubleshootingDescription().contains("Result: \(PaymentSupportDiagnostics.Localization.accountNotLiveYet.message)"))
         } else {
             #expect(result.technicalDetails?.contains("live_account_unavailable") == true)
         }

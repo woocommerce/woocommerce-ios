@@ -82,4 +82,12 @@ struct PrinterErrorStarIO10Tests {
         // Then
         #expect(printerError.localizedDescription == "Not opened.")
     }
+
+    @Test func test_localizedDescription_when_paperEmpty_then_names_the_case() {
+        // Given
+        let printerError: Error = PrinterError.paperEmpty
+
+        // Then
+        #expect(printerError.localizedDescription == "paperEmpty")
+    }
 }

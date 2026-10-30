@@ -1892,7 +1892,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(device.deviceID, 456)
     }
 
-    func test_registerSiteForSelfDrivenPushNotifications_when_logged_out_then_fails_before_plugin_check_and_registration() async {
+    func test_registerSiteForSelfDrivenPushNotifications_when_logged_out_then_skips_plugin_check_and_registration() async throws {
         // Given
         let checker = MockPluginVersionChecker()
         var checkerCalls = 0
@@ -1904,12 +1904,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.deauthenticate()
 
         // When
-        do {
-            try await manager.registerSiteForSelfDrivenPushNotifications(200)
-            XCTFail("Expected registration to fail when logged out")
-        } catch {
-            // Expected failure.
-        }
+        try await manager.registerSiteForSelfDrivenPushNotifications(200)
 
         // Then
         XCTAssertEqual(checkerCalls, 0)
@@ -2676,6 +2671,52 @@ final class PushNotificationsManagerTests: XCTestCase {
             if case .registerDeviceForSelfDrivenPushNotifications = $0 { return true }
             return false
         }))
+    }
+
+    func test_registerDeviceToken_when_token_arrives_after_login_before_eligibility_check_then_registers_for_self_driven_push() async {
+        // Given — self-driven push is off for the account logged in at launch, which then logs out
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        let launchCheckExpectation = expectation(description: "Eligibility check at launch completed")
+        mockRemoteFeatureFlagAction(isEnabled: false, onCompletion: {
+            launchCheckExpectation.fulfill()
+        })
+        manager = makeManager()
+        await fulfillment(of: [launchCheckExpectation], timeout: 1.0)
+        storesManager.deauthenticate()
+
+        // Checks in the next session find self-driven push on, once the test lets them complete.
+        var completesEligibilityChecks = false
+        var pendingEligibilityChecks: [(Bool) -> Void] = []
+        storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            guard case let .isRemoteFeatureFlagEnabled(_, _, _, completion) = action else { return }
+            if completesEligibilityChecks {
+                completion(true)
+            } else {
+                pendingEligibilityChecks.append(completion)
+            }
+        }
+        let registrationExpectation = expectation(description: "Self-driven push registration dispatched")
+        registrationExpectation.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
+                onCompletion(.success(42))
+                registrationExpectation.fulfill()
+            }
+        }
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When — the user logs in and the token arrives before the eligibility check completes
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager.registerDeviceToken(with: tokenAsData)
+        completesEligibilityChecks = true
+        pendingEligibilityChecks.forEach { $0(true) }
+
+        // Then
+        await fulfillment(of: [registrationExpectation], timeout: 2.0)
     }
 
     func test_registerDeviceToken_when_self_driven_succeeds_and_deviceID_is_nil_then_registers_dotcom_and_disables_WPCom() async throws {

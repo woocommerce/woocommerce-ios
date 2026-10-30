@@ -1,9 +1,14 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
-26.0
+26.1
 -----
 - [*] Help & Support: A new "Payments" topic checks your payment setup, then suggests the next step. [https://github.com/woocommerce/woocommerce-ios/pull/18207]
+
+
+26.0
+-----
+- [*] Push notifications: The "Never miss a new order" card now shows right after logging in to a store without Jetpack. [https://github.com/woocommerce/woocommerce-ios/pull/18216]
 - [*] Shipping labels: Carrier outage notices from WooCommerce Shipping now appear on the label creation screen, and a purchase that fails during an outage explains the incident instead of showing a generic error. [https://github.com/woocommerce/woocommerce-ios/pull/18194]
 - [*] POS: Made product search faster on large catalogs. [https://github.com/woocommerce/woocommerce-ios/pull/18174]
 - [*] POS: Prevented items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-06 09:58:37+0000 */
+/* Translation-Revision-Date: 2026-10-20 09:57:46+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -8628,6 +8628,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "新しいストアを始めますか ?";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "太字";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "斜体";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "下線";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Telegram メッセージを送信";
 
@@ -9890,6 +9899,24 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "支払い開始以降に注文合計額が変更されました。 戻って注文が正しいことを確認してから、もう一度お支払いをお試しください。";
 
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "おつり: %1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "閉じる";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "ストアから予期しない応答が返されたため、ログインを完了できませんでした。 もう一度やり直すか、サポートにお問い合わせください。";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "もう一度試す";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "サポートに連絡";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "ログインできません";
+
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "セキュリティプラグインによって WordPress ダッシュボードが移動する場合があります。 ダッシュボードを開くために使用するアドレスを入力します。";
 
@@ -10896,6 +10923,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "検出により返されたリーダーには IP アドレスがないため、接続できません。";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "過去の AI サポートチャットを再訪問";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "チャットの履歴";
 
@@ -11884,6 +11914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "写真を表示";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "この注文がカードで支払えるかどうかを確認できませんでした。 もう一度お試しください。";
+
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "この注文の通貨 (%1$@) ではカード支払いを利用できません。";
 
@@ -12831,6 +12864,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "商品カタログ";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "支払い設定を管理";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "支払い";
 
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "スタッフと PIN アクセスを表示";
@@ -14059,6 +14098,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "更新日を利用できません";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "支払いが完了したときにサウンドを再生";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "支払い成功のサウンド";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "支払い";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "POS はメニューから「POS をロック」をタップするとロックされるほか、非アクティブになった5分後に自動的にロックされます。";
@@ -15487,6 +15535,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "無題のチャット";
 
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "AI サポートチャットをまだ開始していません。";
+
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "チャットの履歴";
 
@@ -16318,6 +16369,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "配送先住所には電話番号が必須です。";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@ には受取人の電話番号が必要です。";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "会社を追加";
 
@@ -16675,6 +16729,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "ITN に関する詳細";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "EU への配送では、各商品に商品識別子が必要になりました。 WooCommerce Shipping プラグインを更新して追加します。";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "商品情報";
 
@@ -16720,6 +16777,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "説明は30文字以内にしてください。";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "EU への配送に必要";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "%1$d文字以下にしてください。";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "EU 商品識別子";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "EU への配送に必要です。 SKU と GTIN \/ EAN は商品の在庫設定から事前に入力されます。";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN \/ EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "GTIN\/EAN を入力するか、「バーコードなし」を選択";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS コード番号";
 
@@ -16729,8 +16804,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "オプション";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "製品番号 (MPN)";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "バーコードなし";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "配送元の国";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "6～12桁の HS コードが必要です";

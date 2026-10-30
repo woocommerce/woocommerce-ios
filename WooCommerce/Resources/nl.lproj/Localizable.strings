@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-06 09:55:29+0000 */
+/* Translation-Revision-Date: 2026-10-30 09:55:53+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -8625,6 +8625,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Begin je een nieuwe winkel?";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "Dikgedrukt";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "Cursief";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "Onderstreept";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Telegram-bericht versturen";
 
@@ -9887,6 +9896,24 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Het totale aantal bestellingen is veranderd sinds de start van het betaalproces. Ga terug en controleer of de bestelling juist is. Probeer daarna opnieuw te betalen.";
 
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "Wisselgeld: %1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "Negeren";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "Je winkel heeft een onverwachte reactie gegeven, dus we konden het inloggen niet voltooien. Probeer het opnieuw of neem contact op met ondersteuning voor hulp.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "Probeer opnieuw";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "Neem contact op met de ondersteuning";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "Kan niet inloggen";
+
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Een beveiligingsplugin kan het WordPress Dashboard verplaatsen. Voer het adres in dat je gebruikt om het te openen.";
 
@@ -10893,6 +10920,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "De lezer heeft na ontdekking geen IP-adres gevonden en verbinding is niet mogelijk.";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "Bekijk eerdere AI-ondersteuningschats opnieuw";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Chatgeschiedenis";
 
@@ -11875,6 +11905,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "Foto weergeven";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "Kon niet controleren of deze bestelling met een kaart kan worden betaald. Probeer het nog eens.";
+
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "Kaartbetalingen zijn niet beschikbaar voor de valuta van deze bestelling (%1$@).";
 
@@ -12822,6 +12855,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Productcatalogus";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "Beheer de betaalinstellingen";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Betalingen";
 
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Bekijk personeel en PIN-toegang";
@@ -14050,6 +14089,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Datum niet beschikbaar updaten";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "Een geluid afspelen wanneer een betaling is voltooid";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "Geluid van betalingssucces";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "Betalingen";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "POS vergrendelt wanneer je op POS vergrendelen tikt vanuit het menu, of automatisch na 5 minuten inactiviteit.";
@@ -15478,6 +15526,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Chat zonder titel";
 
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "Je hebt nog geen AI-ondersteuningschat gestart.";
+
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Chatgeschiedenis";
 
@@ -16309,6 +16360,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "Telefoonnummer is vereist voor het bestemmingsadres.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@ vereist een telefoonnummer van de ontvanger.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Bedrijf toevoegen";
 
@@ -16666,6 +16720,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Meer informatie over ITN";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "Voor verzendingen naar de EU zijn nu voor elk artikel productcodes nodig. Werk de WooCommerce Shipping-plugin bij om ze toe te voegen.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Productgegevens";
 
@@ -16711,6 +16768,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "Beschrijving moet uit 30 tekens of minder bestaan.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "Vereist voor verzendingen naar de EU";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "Mag uit maximaal %1$d tekens bestaan.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "EU-product-ID's";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "Vereist voor verzendingen naar de EU. SKU en GTIN \/ EAN zijn vooraf ingevuld in de voorraadinstellingen van het product.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN\/EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "Voer de GTIN\/EAN in of selecteer \"Geen streepjescode\"";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS Tariff-nummer";
 
@@ -16720,8 +16795,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "Optioneel";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "Onderdeelnummer fabrikant";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "Geen streepjescode";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Land van herkomst";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "Het tariefnummer moet tussen de 6 en 12 cijfers lang zijn";

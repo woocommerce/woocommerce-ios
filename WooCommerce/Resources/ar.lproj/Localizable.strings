@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-06 13:56:08+0000 */
+/* Translation-Revision-Date: 2026-10-22 15:57:37+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -8628,6 +8628,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "هل تريد بدء متجر جديد؟";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "عريض";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "مائل";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "تسطير";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "إرسال رسالة عبر Telegram";
 
@@ -9298,6 +9307,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "التعرّف على كيفية عمل %1$@";
 
+/* Message of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. %1$@ is the formatted outstanding amount, e.g. $25.05. */
+"blazeOutstandingBalanceView.message" = "يبلغ الرصيد المستحق في حسابك حاليًا %1$@. يرجى سداد المبلغ قبل إنشاء حملات جديدة.";
+
 /* Button to open the payment page of an unpaid Blaze order. */
 "blazeOutstandingBalanceView.pay" = "الدفع";
 
@@ -9886,6 +9898,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "شهد إجمالي الطلبات تغييرًا منذ بداية الدفع. يرجى الرجوع والتحقق من أن الطلب صحيح، ثم محاولة الدفع مجددًا.";
+
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "المبلغ المتبقي المستحق: %1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "تجاهل";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "عرض متجرك استجابة غير متوقعة، لذا تعذَّر علينا إكمال عملية تسجيل دخولك. حاول مجددًا أو تواصل مع فريق الدعم للحصول على المساعدة.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "حاول مرة أخرى";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "التواصل مع الدعم";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "يتعذر تسجيل الدخول";
 
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "قد تقوم إحدى إضافات الأمان بنقل لوحة تحكم ووردبريس. أدخل العنوان الذي تستخدمه لفتحه.";
@@ -10893,6 +10923,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "لا يحتوي القارئ الذي تم إرجاعه من الاكتشاف على عنوان IP ولا يمكن ربطه به.";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "العودة إلى دردشات سابقة مع فريق الدعم باستخدام الذكاء الاصطناعي";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "سجل الدردشة";
 
@@ -11881,6 +11914,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "عرض الصورة";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "تعذَّر التحقق مما إذا كان يمكن دفع قيمة هذا الطلب بواسطة البطاقة أم لا. يُرجى إعادة المحاولة.";
+
+/* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
+"paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "لا تتوفر مدفوعات البطاقة لعملة هذا الطلب (%1$@).";
+
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "الدفع بشكل شخصي";
 
@@ -12825,6 +12864,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "كتالوج المنتجات";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "إدارة إعدادات الدفع";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "المدفوعات";
 
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "عرض بيانات فريق العمل وصلاحية الوصول عبر رمز PIN";
@@ -14053,6 +14098,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "تاريخ التحديث غير متوفر";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "إصدار صوت عند إكمال عملية الدفع";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "الصوت الصادر عند نجاح عملية الدفع";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "المدفوعات";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "يُقفَل نظام نقطة البيع (POS) عند الضغط على \"قفل نقطة البيع\" من القائمة، أو تلقائيًا بعد مرور 5 دقائق من عدم الاستخدام.";
@@ -15481,6 +15535,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "دردشة من دون عنوان";
 
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "لم تبدأ بعد دردشة مع فريق الدعم باستخدام الذكاء الاصطناعي.";
+
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "سجل الدردشة";
 
@@ -16312,6 +16369,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "رقم الهاتف مطلوب لعنوان الوجهة.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "تتطلب خدمة %1$@ إدخال رقم هاتف المُستلِم.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "إضافة شركة";
 
@@ -16669,6 +16729,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "مزيد من المعلومات حول رقم المعاملة";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "تتطلب الشحنات المتجهة إلى دول الاتحاد الأوروبي (EU) الآن توفير معرّف المنتج لكل سلعة. قم بتحديث الإضافة WooCommerce Shipping لإضافة المعرّفات.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "تفاصيل المنتج";
 
@@ -16714,6 +16777,21 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "يجب ألا يتجاوز الوصف 30 حرفًا.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "مطلوب للشحنات المتجهة إلى دول الاتحاد الأوروبي (EU)";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "يجب أن يكون عدد الأحرف ⁦%1$d⁩ من الأحرف أو أقل.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "معرّفات المنتجات الخاصة بالاتحاد الأوروبي (EU)";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "مطلوب للشحنات المتجهة إلى دول الاتحاد الأوروبي (EU). يتم ملء كل من حقل وحدة حفظ المخزون (SKU) وحقل الرقم التجاري العالمي للسلعة (GTIN) \/ الرقم الأوروبي للسلعة (EAN) تلقائيًا باستخدام البيانات الموجودة في إعدادات المخزون للمنتج.";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "أدخل الرقم التجاري العالمي للسلعة (GTIN)\/الرقم الأوروبي للسلعة (EAN)، أو حدد \"بدون رمز شريطي\"";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "رقم تعريف النظام المنسق";
 
@@ -16722,6 +16800,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "اختياري";
+
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "رقم القطعة المحدّد من الشركة المُصنّعة";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "بدون رمز شريطي";
 
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "بلد المنشأ";

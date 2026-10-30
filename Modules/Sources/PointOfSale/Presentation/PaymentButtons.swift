@@ -3,6 +3,7 @@ import SwiftUI
 struct PaymentsActionButtons: View {
     let successAction: PaymentFlowAction
     let showsPrintReceipt: Bool
+    var printButtonState: POSButtonState = .idle
     let printReceiptAction: () -> Void
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posNavigationRouter) private var router
@@ -63,7 +64,7 @@ private extension PaymentsActionButtons {
                 Text(Localization.printReceipt)
             }
         })
-        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal, state: printButtonState))
         .frame(maxWidth: .infinity)
         .accessibilityIdentifier("pos-print-receipt-button")
     }

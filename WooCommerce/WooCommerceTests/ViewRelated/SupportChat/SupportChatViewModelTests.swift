@@ -101,7 +101,7 @@ struct SupportChatViewModelTests {
         // Then
         #expect(!sut.paymentDiagnosticsAreInconclusive)
         #expect(sut.paymentDiagnosticHeadline == "Payment setup checks passed")
-        #expect(sut.paymentDiagnosticCompletionMessage?.contains("continue to chat") == true)
+        #expect(sut.paymentDiagnosticCompletionMessage?.contains("order number") == true)
     }
 
     @Test func test_diagnostics_when_other_topic_selected_then_has_no_payment_specific_context() async {

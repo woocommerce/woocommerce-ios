@@ -1194,8 +1194,8 @@ private extension SupportChatViewModel {
             comment: "Headline shown in support chat when the Payments troubleshooting checks find no problem"
         )
         static let paymentChecksPassed = NSLocalizedString(
-            "supportChatViewModel.paymentChecksPassedOrderDetails",
-            value: "If a payment failed, note the order number and time, then continue to chat.",
+            "supportChatViewModel.paymentChecksPassedOrderNumber",
+            value: "If a payment failed, continue to chat and share the order number.",
             comment: "Shown in support chat under the headline when the Payments troubleshooting checks find no problem"
         )
         static let greetingMessage = NSLocalizedString(

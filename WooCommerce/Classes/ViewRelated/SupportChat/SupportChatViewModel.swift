@@ -175,9 +175,10 @@ final class SupportChatViewModel {
         return diagnosticResults.first(where: \.isInconclusive)?.headline ?? Localization.paymentChecksPassedHeadline
     }
 
-    var paymentInconclusiveAction: SupportDiagnosticsService.Action? {
-        guard selectedIssue == .inPersonPayments else { return nil }
-        return diagnosticResults.first(where: \.isInconclusive)?.suggestedAction
+    /// Actions for orange results and for notes on passed checks.
+    var paymentResultActions: [SupportDiagnosticsService.Action] {
+        guard selectedIssue == .inPersonPayments else { return [] }
+        return diagnosticResults.filter(\.isSuccess).compactMap(\.suggestedAction)
     }
 
     var storeAdminURL: URL?

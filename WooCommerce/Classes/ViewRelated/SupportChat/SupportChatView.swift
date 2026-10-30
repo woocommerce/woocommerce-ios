@@ -260,7 +260,7 @@ struct SupportChatView: View {
                     .font(.body)
             }
 
-            if let action = viewModel.paymentInconclusiveAction {
+            ForEach(viewModel.paymentResultActions, id: \.title) { action in
                 suggestedActionButton(action)
             }
 

@@ -147,7 +147,7 @@ struct PaymentSupportDiagnostics {
                      technicalDetails: evidence((notLive?.detail ?? "configuration_checks_passed") +
                         "; gateway=\(gateway.gatewayID)." +
                         " Reader, location, network stability, payment collection and capture were not tested."),
-                     suggestedAction: notLive == nil ? nil : openProvider,
+                     suggestedAction: notLive != nil || hasPendingRequirements ? openProvider : nil,
                      advisoryMessage: hasPendingRequirements ? Localization.pendingRequirements : nil,
                      isInconclusive: notLive != nil,
                      headline: notLive?.finding.headline)

@@ -18,8 +18,28 @@ struct SupportChatViewModelTests {
         // Then
         #expect(sut.paymentDiagnosticsAreInconclusive)
         #expect(sut.paymentDiagnosticCompletionMessage == "Account not live")
-        #expect(sut.paymentInconclusiveAction == .openPaymentProvider(.wcPay))
+        #expect(sut.paymentResultActions == [.openPaymentProvider(.wcPay)])
         #expect(sut.paymentDiagnosticHeadline == "Not live")
+    }
+
+    @Test func test_payment_diagnostics_when_passed_check_has_note_action_then_shows_it() async {
+        // Given
+        let service = MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                guard test == .paymentConfiguration else { return .success(test: test) }
+                return .init(test: test, isSuccess: true, errorMessage: nil, technicalDetails: nil,
+                             suggestedAction: .openPaymentProvider(.stripe), advisoryMessage: "Requirements due")
+            }
+        }
+        let sut = makeSUT(diagnosticsService: service)
+
+        // When
+        await sut.selectIssue(.inPersonPayments)
+
+        // Then
+        #expect(!sut.paymentDiagnosticsAreInconclusive)
+        #expect(sut.paymentAdvisoryMessage == "Requirements due")
+        #expect(sut.paymentResultActions == [.openPaymentProvider(.stripe)])
     }
 
     @Test func test_executeAction_when_openPaymentProvider_then_sets_provider_admin_URL() async {

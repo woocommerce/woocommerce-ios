@@ -215,7 +215,19 @@ struct PaymentSupportDiagnosticsTests {
         // Then
         #expect(result.isSuccess)
         #expect(result.advisoryMessage == PaymentSupportDiagnostics.Localization.pendingRequirements)
+        #expect(result.suggestedAction == .openPaymentProvider(.wcPay))
         #expect(result.technicalDetails?.contains("capture were not tested") == true)
+    }
+
+    @Test func test_evaluate_when_account_is_healthy_then_passes_without_action() {
+        // Given
+        let sut = makeSUT()
+        // When
+        let result = sut.evaluate(account: account(), gateway: .wcPay, currency: "USD", country: "US")
+        // Then
+        #expect(result.isSuccess)
+        #expect(!result.isInconclusive)
+        #expect(result.suggestedAction == nil)
     }
 
     @Test func test_evaluate_when_restricted_overdue_then_identifies_requirements() {

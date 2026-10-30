@@ -3,7 +3,6 @@
 
 26.1
 -----
-- [*] Help & Support: A new "Payments" topic checks your payment setup, then suggests the next step. [https://github.com/woocommerce/woocommerce-ios/pull/18207]
 
 
 26.0

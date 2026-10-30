@@ -236,35 +236,17 @@ struct SupportChatView: View {
     private func diagnosticsSuccessBubble() -> some View {
         VStack(alignment: .leading, spacing: Layout.resultsSpacing) {
             HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
-                Image(systemName: viewModel.paymentDiagnosticsAreInconclusive ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
-                    .foregroundStyle(viewModel.paymentDiagnosticsAreInconclusive ? Color.orange : Color.green)
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(Color.green)
 
-                if let headline = viewModel.paymentDiagnosticHeadline {
-                    Text(headline)
-                        .font(.body.weight(.semibold))
-                        .accessibilityAddTraits(.isHeader)
-                } else {
-                    Text(viewModel.paymentDiagnosticCompletionMessage ?? Localization.allChecksPassed)
-                        .font(.body)
-                }
-            }
-
-            if viewModel.paymentDiagnosticHeadline != nil, let message = viewModel.paymentDiagnosticCompletionMessage {
-                Text(message)
-                    .font(.body)
-                    .foregroundStyle(Color(.secondaryLabel))
-            }
-
-            if let advisory = viewModel.paymentAdvisoryMessage {
-                Text(advisory)
+                Text(Localization.allChecksPassed)
                     .font(.body)
             }
 
-            ForEach(viewModel.paymentResultActions, id: \.title) { action in
-                suggestedActionButton(action)
+            Button(Localization.continueToChat) {
+                viewModel.proceedToChat()
             }
-
-            diagnosticContinuation
+            .buttonStyle(SecondaryButtonStyle())
         }
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
@@ -278,11 +260,9 @@ struct SupportChatView: View {
             HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundStyle(Color.red)
-                    .accessibilityHidden(true)
 
-                Text(result.headline ?? result.test.title)
+                Text(result.test.title)
                     .font(.body.weight(.semibold))
-                    .accessibilityAddTraits(.isHeader)
             }
 
             if let errorMessage = result.errorMessage {
@@ -292,32 +272,24 @@ struct SupportChatView: View {
             }
 
             if let action = result.suggestedAction {
-                suggestedActionButton(action)
+                Button {
+                    Task {
+                        await viewModel.executeAction(action)
+                    }
+                } label: {
+                    Label(action.title, systemImage: action.systemImage)
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
             }
 
-            diagnosticContinuation
+            Button(Localization.continueToChat) {
+                viewModel.proceedToChat()
+            }
+            .buttonStyle(SecondaryButtonStyle())
         }
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
-    }
-
-    private func suggestedActionButton(_ action: SupportDiagnosticsService.Action) -> some View {
-        Button {
-            Task {
-                await viewModel.executeAction(action)
-            }
-        } label: {
-            Label(action.title, systemImage: action.systemImage)
-        }
-        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
-    }
-
-    private var diagnosticContinuation: some View {
-        Button(Localization.continueToChat) {
-            viewModel.proceedToChat()
-        }
-        .buttonStyle(SecondaryButtonStyle())
     }
 
     private func scrollToBottom(proxy: ScrollViewProxy) {

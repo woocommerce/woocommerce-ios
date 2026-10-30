@@ -8,185 +8,22 @@ import enum Networking.NetworkError
 struct SupportChatViewModelTests {
     private static let noopContactHumanSupport: SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _, _ in }
 
-    @Test func test_payment_diagnostics_when_account_not_live_then_shows_result_message_and_provider_action() async {
-        // Given
-        let sut = makeSUT(diagnosticsService: makeNotLivePaymentService())
-
-        // When
-        await sut.selectIssue(.inPersonPayments)
-
-        // Then
-        #expect(sut.paymentDiagnosticsAreInconclusive)
-        #expect(sut.paymentDiagnosticCompletionMessage == "Account not live")
-        #expect(sut.paymentResultActions == [.openPaymentProvider(.wcPay)])
-        #expect(sut.paymentDiagnosticHeadline == "Not live")
-    }
-
-    @Test func test_payment_diagnostics_when_passed_check_has_note_action_then_shows_it() async {
-        // Given
-        let service = MockSupportDiagnosticsService { tests in
-            tests.map { test in
-                guard test == .paymentConfiguration else { return .success(test: test) }
-                return .init(test: test, isSuccess: true, errorMessage: nil, technicalDetails: nil,
-                             suggestedAction: .openPaymentProvider(.stripe), advisoryMessage: "Requirements due")
-            }
-        }
-        let sut = makeSUT(diagnosticsService: service)
-
-        // When
-        await sut.selectIssue(.inPersonPayments)
-
-        // Then
-        #expect(!sut.paymentDiagnosticsAreInconclusive)
-        #expect(sut.paymentAdvisoryMessage == "Requirements due")
-        #expect(sut.paymentResultActions == [.openPaymentProvider(.stripe)])
-    }
-
-    @Test func test_executeAction_when_openPaymentProvider_then_sets_provider_admin_URL() async {
-        // Given
-        let site = Site.fake().copy(adminURL: "https://example.com/wp-admin/")
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
-        let sut = makeSUT(stores: stores, diagnosticsService: makeNotLivePaymentService())
-        await sut.selectIssue(.inPersonPayments)
-
-        // When
-        await sut.executeAction(.openPaymentProvider(.wcPay))
-
-        // Then
-        #expect(sut.storeAdminURL?.absoluteString == "https://example.com/wp-admin/admin.php?page=wc-admin&path=%2Fpayments%2Fconnect")
-    }
-
-    @Test func test_executeAction_when_openStoreSettings_then_sets_general_settings_URL() async {
+    @Test(arguments: [
+        (SupportDiagnosticsService.Action.openPaymentProvider(.wcPay), "admin.php?page=wc-admin&path=%2Fpayments%2Fconnect"),
+        (.openStoreSettings, "admin.php?page=wc-settings&tab=general"),
+        (.openPlugins, "plugins.php")
+    ])
+    func test_executeAction_when_store_admin_action_then_sets_store_admin_URL(action: SupportDiagnosticsService.Action, path: String) async {
         // Given
         let site = Site.fake().copy(adminURL: "https://example.com/wp-admin/")
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
         let sut = makeSUT(stores: stores)
 
         // When
-        await sut.executeAction(.openStoreSettings)
+        await sut.executeAction(action)
 
         // Then
-        #expect(sut.storeAdminURL?.absoluteString == "https://example.com/wp-admin/admin.php?page=wc-settings&tab=general")
-    }
-
-    @Test func test_executeAction_when_retry_after_not_live_result_then_runs_checks_again() async {
-        // Given
-        var configurationRuns = 0
-        let service = MockSupportDiagnosticsService { tests in
-            tests.map { test in
-                guard test == .paymentConfiguration else { return .success(test: test) }
-                configurationRuns += 1
-                return .init(test: test, isSuccess: true, errorMessage: "Account not live", technicalDetails: nil,
-                             suggestedAction: .openPaymentProvider(.wcPay), isInconclusive: true, headline: "Not live")
-            }
-        }
-        let sut = makeSUT(diagnosticsService: service)
-        await sut.selectIssue(.inPersonPayments)
-
-        // When
-        await sut.executeAction(.retryDiagnostics)
-
-        // Then
-        #expect(configurationRuns == 2)
-    }
-
-    @Test func test_payment_diagnostics_when_checks_pass_then_does_not_claim_payment_success() async {
-        // Given
-        let service = MockSupportDiagnosticsService { $0.map { .success(test: $0) } }
-        let sut = makeSUT(diagnosticsService: service)
-
-        // When
-        await sut.selectIssue(.inPersonPayments)
-
-        // Then
-        #expect(!sut.paymentDiagnosticsAreInconclusive)
-        #expect(sut.paymentDiagnosticHeadline == "Payment setup checks passed")
-        #expect(sut.paymentDiagnosticCompletionMessage?.contains("order number") == true)
-    }
-
-    @Test func test_diagnostics_when_other_topic_selected_then_has_no_payment_specific_context() async {
-        // Given
-        let sut = makeSUT()
-
-        // When
-        await sut.selectIssue(.other)
-
-        // Then
-        #expect(sut.paymentDiagnosticCompletionMessage == nil)
-    }
-
-    @Test func test_payment_diagnostics_when_account_not_live_then_human_handoff_and_analytics_stay_inconclusive() async {
-        // Given
-        let analytics = MockAnalyticsProvider()
-        var transcript: String?
-        let sut = makeSUT(diagnosticsService: makeNotLivePaymentService(), analyticsProvider: analytics,
-                          onContactHumanSupport: { _, text, _, _, _ in transcript = text })
-
-        // When
-        await sut.selectIssue(.inPersonPayments)
-        sut.contactHumanSupport()
-
-        // Then
-        #expect(transcript?.contains("All diagnostics passed") == false)
-        #expect(transcript?.contains("Result: Account not live") == true)
-        assertProperties(analytics, event: "support_chat_troubleshooting_completed",
-                         include: ["result": "inconclusive", "failure_reason": "account_not_live"])
-    }
-
-    @Test func test_payment_diagnostics_when_retry_recovers_then_human_handoff_keeps_earlier_failure() async {
-        // Given
-        let service = makeRecoveringPaymentService()
-        var transcript: String?
-        let sut = makeSUT(diagnosticsService: service, onContactHumanSupport: { _, text, _, _, _ in transcript = text })
-        await sut.selectIssue(.inPersonPayments)
-
-        // When
-        await sut.executeAction(.retryDiagnostics)
-        sut.contactHumanSupport()
-
-        // Then
-        #expect(transcript?.contains("Earlier setup checks (not payment attempts)") == true)
-        #expect(transcript?.contains("2026-10-27T12:00:00Z") == true)
-        #expect(transcript?.contains("http_status=503") == true)
-        #expect(transcript?.contains("All diagnostics passed") == false)
-    }
-
-    @Test(arguments: [false, true])
-    func test_payment_diagnostics_when_retry_follows_continue_then_sends_current_result_and_earlier_failure(firstSendFails: Bool) async {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        var requests = [SupportChatAction]()
-        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
-            requests.append(action)
-            if case let .sendMessage(_, _, _, _, _, completion) = action, firstSendFails, requests.count == 1 {
-                completion(.failure(NSError(domain: "Test", code: 503)))
-            }
-        }
-        let sut = makeSUT(stores: stores, diagnosticsService: makeRecoveringPaymentService())
-        await sut.selectIssue(.inPersonPayments)
-        sut.proceedToChat()
-        if firstSendFails {
-            sut.inputText = "First mock send"
-            await sut.sendMessage()
-            sut.dismissError()
-        }
-
-        // When
-        await sut.executeAction(.retryDiagnostics)
-        sut.inputText = "Send current evidence"
-        await sut.sendMessage()
-
-        // Then
-        guard case let .sendMessage(_, _, _, _, context, _) = requests.last,
-              case let .string(description) = context?["troubleshootingResults"] else {
-            Issue.record("Expected payment diagnostics in the mock request context")
-            return
-        }
-        let currentPart = description.components(separatedBy: "Earlier setup checks").first ?? ""
-        #expect(currentPart.contains("Result: Success"))
-        #expect(!currentPart.contains("Server error"))
-        #expect(description.contains("Earlier setup checks (not payment attempts)"))
-        #expect(description.contains("http_status=503"))
+        #expect(sut.storeAdminURL?.absoluteString == "https://example.com/wp-admin/" + path)
     }
 
     @Test func test_start_when_initial_message_exists_then_sends_once_without_greeting() async {
@@ -2482,30 +2319,6 @@ struct SupportChatViewModelTests {
     }
 
     // MARK: - Test Helpers
-
-    private func makeRecoveringPaymentService() -> MockSupportDiagnosticsService {
-        var accountChecks = 0
-        return MockSupportDiagnosticsService { tests in
-            tests.map { test in
-                guard test == .paymentConfiguration else { return .success(test: test) }
-                accountChecks += 1
-                return accountChecks == 1 ? .failure(test: test, failure: .init(
-                    errorMessage: "Server error",
-                    technicalDetails: "checked_at=2026-10-27T12:00:00Z; stage=woocommerce-payments/accounts; server_error; http_status=503",
-                    suggestedAction: .retryDiagnostics)) : .success(test: test)
-            }
-        }
-    }
-
-    private func makeNotLivePaymentService() -> MockSupportDiagnosticsService {
-        MockSupportDiagnosticsService { tests in
-            tests.map { test in
-                guard test == .paymentConfiguration else { return .success(test: test) }
-                return .init(test: test, isSuccess: true, errorMessage: "Account not live", technicalDetails: nil,
-                             suggestedAction: .openPaymentProvider(.wcPay), isInconclusive: true, headline: "Not live", reason: "account_not_live")
-            }
-        }
-    }
 
     private func makeSUT(
         entryPoint: SupportChatViewModel.EntryPoint = .helpAndSupport,

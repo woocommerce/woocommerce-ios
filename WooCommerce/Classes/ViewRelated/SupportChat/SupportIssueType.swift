@@ -7,7 +7,6 @@ enum SupportIssueType: String, CaseIterable {
     case loadingProducts
     case loadingAnalytics
     case receivingNotifications
-    case inPersonPayments
     case other
 
     /// The diagnostic tests to run for this issue type.
@@ -23,8 +22,6 @@ enum SupportIssueType: String, CaseIterable {
             return [.internetConnection, .site, .analyticsSetting]
         case .receivingNotifications:
             return [.internetConnection, .site, .notifications]
-        case .inPersonPayments:
-            return [.internetConnection, .paymentConfiguration]
         case .other:
             return nil
         }
@@ -40,8 +37,6 @@ enum SupportIssueType: String, CaseIterable {
             return Localization.loadingAnalytics
         case .receivingNotifications:
             return Localization.receivingNotifications
-        case .inPersonPayments:
-            return Localization.inPersonPayments
         case .other:
             return Localization.other
         }
@@ -52,12 +47,6 @@ enum SupportIssueType: String, CaseIterable {
 
 private extension SupportIssueType {
     enum Localization {
-        static let inPersonPayments = NSLocalizedString(
-            "supportIssueType.payments",
-            value: "Payments",
-            comment: "Support issue type for problems with taking payments in person: card readers, Tap to Pay and the payment provider. " +
-                "Matches the Payments menu."
-        )
         static let loadingOrders = NSLocalizedString(
             "supportIssueType.loadingOrders",
             value: "Loading orders",

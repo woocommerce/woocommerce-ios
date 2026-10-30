@@ -43,7 +43,6 @@ final class SupportDiagnosticsService {
         case loadingProducts
         case analyticsSetting
         case notifications
-        case paymentConfiguration
 
         var title: String {
             switch self {
@@ -61,8 +60,6 @@ final class SupportDiagnosticsService {
                 return Localization.Test.analyticsSetting
             case .notifications:
                 return Localization.Test.notifications
-            case .paymentConfiguration:
-                return PaymentSupportDiagnostics.Localization.title
             }
         }
     }
@@ -303,8 +300,6 @@ final class SupportDiagnosticsService {
             return await checkAnalyticsSetting()
         case .notifications:
             return result(for: test, failure: await checkNotifications())
-        case .paymentConfiguration:
-            return await PaymentSupportDiagnostics(siteID: siteID, stores: stores).run()
         }
     }
 

@@ -9900,7 +9900,7 @@ which should be translated separately and considered part of this sentence. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "El total del pedido ha cambiado desde el inicio del pago. Vuelve y comprueba que el pedido sea correcto; después, vuelve a intentar el pago.";
 
 /* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue.1" = "El cambio vence el %1$@";
+"collectcashviewhelper.changedue.1" = "Cambio a devolver: %1$@";
 
 /* Dismiss the login failure alert */
 "com.woocommerce.login.unexpectedResponse.dismiss" = "Descartar";

@@ -9897,7 +9897,7 @@ which should be translated separately and considered part of this sentence. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Het totale aantal bestellingen is veranderd sinds de start van het betaalproces. Ga terug en controleer of de bestelling juist is. Probeer daarna opnieuw te betalen.";
 
 /* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue.1" = "Wijziging als gevolg van: %1$@";
+"collectcashviewhelper.changedue.1" = "Wisselgeld: %1$@";
 
 /* Dismiss the login failure alert */
 "com.woocommerce.login.unexpectedResponse.dismiss" = "Negeren";

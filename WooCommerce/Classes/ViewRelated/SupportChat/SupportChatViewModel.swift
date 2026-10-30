@@ -275,6 +275,8 @@ final class SupportChatViewModel {
     private let initialMessage: String?
     let supportSiteAddress: String?
     private let mobileStatusReportProvider: MobileStatusReportProviding
+    private let recentApplicationLogsContext: RecentApplicationLogsContext
+    private let excludeStoreResponseExcerptsFromLogs: Bool
     private var preparedInitialContext: RequestParameterDictionary?
     private let onContactHumanSupport: ContactHumanSupportCallback
     private var latestSupportArea: SupportChatSupportArea?
@@ -287,6 +289,17 @@ final class SupportChatViewModel {
     var onUpdateWooCommercePlugin: (@escaping () -> Void) -> Void
     var onOpenPushNotificationPreferences: (@escaping () -> Void) -> Void
     private let diagnosticsService: SupportDiagnosticsServicing
+
+    private var shouldIncludeRecentApplicationLogs: Bool {
+        switch entryPoint {
+        case .preLogin:
+            true
+        case .helpAndSupport:
+            stores.sessionManager.defaultSite == nil
+        case .connectivityTool, .chatHistory:
+            false
+        }
+    }
 
     /// Pre-fetched system status report, if available (e.g., from connectivity tool).
     ///
@@ -303,6 +316,8 @@ final class SupportChatViewModel {
          initialMessage: String? = nil,
          supportSiteAddress: String? = nil,
          diagnosticsService: SupportDiagnosticsServicing? = nil,
+         recentApplicationLogProvider: RecentApplicationLogProviding = ServiceLocator.recentApplicationLogProvider,
+         excludeStoreResponseExcerptsFromLogs: Bool = false,
          chatID: Int64? = nil,
          sessionID: String? = nil,
          hasCreatedTicket: Bool = false,
@@ -321,6 +336,8 @@ final class SupportChatViewModel {
         self.initialMessage = initialMessage
         self.supportSiteAddress = supportSiteAddress
         self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
+        self.recentApplicationLogsContext = RecentApplicationLogsContext(provider: recentApplicationLogProvider)
+        self.excludeStoreResponseExcerptsFromLogs = excludeStoreResponseExcerptsFromLogs
         self.chatID = chatID
         self.sessionID = sessionID
         self.isResumedChat = chatID != nil
@@ -763,9 +780,17 @@ final class SupportChatViewModel {
         var context = diagnosticsContext ?? initialContext ?? [:]
         let contextSiteAddress: String? = if case .string(let address) = context["site_url"] { address } else { nil }
         let report = await mobileStatusReportProvider.generateReport(siteAddress: supportSiteAddress ?? contextSiteAddress)
+        var sections: [String] = if case .string(let existing) = context["troubleshootingResults"] { [existing] } else { [] }
+        if shouldIncludeRecentApplicationLogs,
+           let recentLogs = recentApplicationLogsContext.build(excludingStoreResponseExcerpts: excludeStoreResponseExcerptsFromLogs) {
+            sections.append(recentLogs.text)
+            DDLogInfo("Added \(recentLogs.entryCount) recent warning and error log entries to the AI support chat context.")
+        }
         if !report.isEmpty {
-            let existing: String? = if case .string(let text) = context["troubleshootingResults"] { text } else { nil }
-            context["troubleshootingResults"] = .string([existing, report].compactMap { $0 }.joined(separator: "\n\n"))
+            sections.append(report)
+        }
+        if sections.isNotEmpty {
+            context["troubleshootingResults"] = .string(sections.joined(separator: "\n\n"))
         }
         preparedInitialContext = context
         return context

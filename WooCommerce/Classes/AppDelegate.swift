@@ -253,6 +253,7 @@ extension AppDelegate {
         }
         DDLog.add(DDOSLogger.sharedInstance)
         DDLog.add(logger)
+        DDLog.add(ServiceLocator.recentApplicationLogProvider, with: .warning)
     }
 
     /// Sets up loggers for WordPress libraries

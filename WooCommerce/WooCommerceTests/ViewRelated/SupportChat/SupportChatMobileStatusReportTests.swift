@@ -6,6 +6,106 @@ import Yosemite
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct SupportChatMobileStatusReportTests {
+    @Test func test_first_message_when_chat_starts_before_login_then_adds_recent_logs_to_context() async throws {
+        // Given
+        let reportProvider = MockMobileStatusReportProvider()
+        reportProvider.report = "Mobile status report"
+        let logProvider = MockRecentApplicationLogProvider(logEntries: [
+            .init(date: Date(), level: .warning, message: "Connection warning")
+        ])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        var sentContext: RequestParameterDictionary?
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, context, _) = action { sentContext = context }
+        }
+        let sut = SupportChatViewModel(
+            mobileStatusReportProvider: reportProvider,
+            entryPoint: .preLogin,
+            stores: stores,
+            initialContext: ["troubleshootingResults": .string("Login context")],
+            recentApplicationLogProvider: logProvider,
+            onContactHumanSupport: { _, _, _, _, _ in }
+        )
+        sut.inputText = "Help"
+
+        // When
+        await sut.sendMessage()
+
+        // Then
+        guard case .string(let troubleshootingResults) = sentContext?["troubleshootingResults"] else {
+            Issue.record("Expected troubleshooting context")
+            return
+        }
+        #expect(troubleshootingResults.hasPrefix("Login context\n\n"))
+        #expect(troubleshootingResults.contains("# Recent app logs"))
+        #expect(troubleshootingResults.contains("Connection warning"))
+        #expect(troubleshootingResults.hasSuffix("\n\nMobile status report"))
+    }
+
+    @Test func test_first_message_when_chat_starts_after_login_before_store_selection_then_adds_recent_logs() async throws {
+        // Given
+        let logProvider = MockRecentApplicationLogProvider(logEntries: [
+            .init(date: Date(), level: .error, message: "Store selection error")
+        ])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var sentContext: RequestParameterDictionary?
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, context, _) = action { sentContext = context }
+        }
+        let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
+            entryPoint: .helpAndSupport,
+            stores: stores,
+            recentApplicationLogProvider: logProvider,
+            onContactHumanSupport: { _, _, _, _, _ in }
+        )
+        sut.inputText = "Help"
+
+        // When
+        await sut.sendMessage()
+
+        // Then
+        guard case .string(let troubleshootingResults) = sentContext?["troubleshootingResults"] else {
+            Issue.record("Expected troubleshooting context")
+            return
+        }
+        #expect(troubleshootingResults.contains("# Recent app logs"))
+        #expect(troubleshootingResults.contains("Store selection error"))
+    }
+
+    @Test(arguments: [SupportChatViewModel.EntryPoint.helpAndSupport, .connectivityTool])
+    func test_first_message_when_chat_starts_with_selected_store_then_omits_recent_logs(entryPoint: SupportChatViewModel.EntryPoint) async throws {
+        // Given
+        let logProvider = MockRecentApplicationLogProvider(logEntries: [
+            .init(date: Date(), level: .error, message: "Sync error")
+        ])
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake()))
+        var sentContext: RequestParameterDictionary?
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            if case let .sendMessage(_, _, _, _, context, _) = action { sentContext = context }
+        }
+        let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
+            entryPoint: entryPoint,
+            stores: stores,
+            recentApplicationLogProvider: logProvider,
+            onContactHumanSupport: { _, _, _, _, _ in }
+        )
+        sut.inputText = "Help"
+
+        // When
+        await sut.sendMessage()
+
+        // Then
+        guard case .string(let troubleshootingResults) = sentContext?["troubleshootingResults"] else {
+            Issue.record("Expected troubleshooting context")
+            return
+        }
+        #expect(!troubleshootingResults.contains("# Recent app logs"))
+        #expect(!troubleshootingResults.contains("Sync error"))
+        #expect(troubleshootingResults == "Mock mobile status report")
+    }
+
     @Test(arguments: [SupportChatViewModel.EntryPoint.preLogin, .helpAndSupport, .connectivityTool])
     func test_first_message_when_chat_is_new_then_merges_mobile_report_and_preserves_other_context(entryPoint: SupportChatViewModel.EntryPoint) async {
         // Given
@@ -20,6 +120,7 @@ struct SupportChatMobileStatusReportTests {
                                                    "site_url": .string("https://context.example.com"), "selectedSiteId": .int64(123)]
         let sut = SupportChatViewModel(mobileStatusReportProvider: provider, entryPoint: entryPoint, stores: stores,
                                       initialContext: context, supportSiteAddress: "https://failed.example.com",
+                                      recentApplicationLogProvider: MockRecentApplicationLogProvider(),
                                       onContactHumanSupport: { _, _, _, _, _ in })
         sut.inputText = "Help with my store"
 
@@ -51,6 +152,7 @@ struct SupportChatMobileStatusReportTests {
         let initialContext: RequestParameterDictionary? = hasInitialContext ? ["site_url": .string("https://example.com")] : nil
         let sut = SupportChatViewModel(mobileStatusReportProvider: provider, entryPoint: .helpAndSupport, stores: stores,
                                       analytics: WooAnalytics(analyticsProvider: analyticsProvider), initialContext: initialContext,
+                                      recentApplicationLogProvider: MockRecentApplicationLogProvider(),
                                       onContactHumanSupport: { _, _, _, _, _ in })
         analyticsProvider.clearEvents()
         sut.inputText = "Help with my store"
@@ -81,7 +183,8 @@ struct SupportChatMobileStatusReportTests {
             if case .sendMessage = action { sendCount += 1 }
         }
         let sut = SupportChatViewModel(mobileStatusReportProvider: provider, entryPoint: .preLogin, stores: stores,
-                                      initialMessage: "Login failed", onContactHumanSupport: { _, _, _, _, _ in })
+                                      initialMessage: "Login failed", recentApplicationLogProvider: MockRecentApplicationLogProvider(),
+                                      onContactHumanSupport: { _, _, _, _, _ in })
         provider.onGenerateReport = {
             #expect(sut.state == .sending)
             #expect(sut.messages.map(\.role) == [.user])
@@ -117,7 +220,8 @@ struct SupportChatMobileStatusReportTests {
         }
         let sut = SupportChatViewModel(mobileStatusReportProvider: provider, entryPoint: .preLogin, stores: stores,
                                       initialContext: ["site_url": .string("https://context.example.com")],
-                                      initialMessage: "Login failed", onContactHumanSupport: { _, _, _, _, _ in })
+                                      initialMessage: "Login failed", recentApplicationLogProvider: MockRecentApplicationLogProvider(),
+                                      onContactHumanSupport: { _, _, _, _, _ in })
 
         // When
         await sut.startIfNeeded()
@@ -144,7 +248,8 @@ struct SupportChatMobileStatusReportTests {
             if case .sendMessage = action { sendCount += 1 }
         }
         let sut = SupportChatViewModel(mobileStatusReportProvider: provider, entryPoint: .chatHistory, stores: stores,
-                                      initialMessage: "Do not resend", chatID: 123, sessionID: "session",
+                                      initialMessage: "Do not resend", recentApplicationLogProvider: MockRecentApplicationLogProvider(),
+                                      chatID: 123, sessionID: "session",
                                       onContactHumanSupport: { _, _, _, _, _ in })
 
         // When
@@ -172,7 +277,8 @@ struct SupportChatMobileStatusReportTests {
             if case .sendMessage = action { sendCount += 1 }
         }
         let sut = SupportChatViewModel(mobileStatusReportProvider: provider, entryPoint: .preLogin, stores: stores,
-                                      initialMessage: "Login failed", onContactHumanSupport: { _, _, _, _, _ in })
+                                      initialMessage: "Login failed", recentApplicationLogProvider: MockRecentApplicationLogProvider(),
+                                      onContactHumanSupport: { _, _, _, _, _ in })
 
         // When
         let task = Task { await sut.startIfNeeded() }
@@ -213,6 +319,7 @@ struct SupportChatMobileStatusReportTests {
         }
         let sut = SupportChatViewModel(mobileStatusReportProvider: provider, entryPoint: .preLogin, stores: stores,
                                       initialContext: context, initialMessage: "Login failed",
+                                      recentApplicationLogProvider: MockRecentApplicationLogProvider(),
                                       onContactHumanSupport: { _, _, _, _, _ in })
 
         // When

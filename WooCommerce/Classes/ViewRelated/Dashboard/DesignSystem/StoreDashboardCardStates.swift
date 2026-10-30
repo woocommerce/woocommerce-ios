@@ -33,7 +33,6 @@ struct StoreDashboardCardErrorView: View {
         guard let range = text.range(of: Localization.contactSupport) else { return text }
         text[range].link = URL(string: Constants.contactSupportURL)
         text[range].foregroundColor = .storePrimary
-        text[range].underlineStyle = .single
         return text
     }
 

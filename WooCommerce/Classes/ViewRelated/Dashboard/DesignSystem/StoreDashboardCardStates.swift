@@ -59,14 +59,13 @@ struct StoreDashboardUnavailableAnalyticsView: View {
 
     var body: some View {
         VStack(spacing: StoreSpacing.s5) {
-            Image(uiImage: .noStoreImage)
-                .accessibilityHidden(true)
+            illustration
             Text(title)
-                .storeTextStyle(.titleMedium.emphasized)
+                .storeTextStyle(.titleLarge.strong)
             Text(Localization.unavailableDetails)
-                .storeTextStyle(.bodyMedium)
+                .storeTextStyle(.bodyLarge)
                 .foregroundStyle(.storeOnSurface)
-            StoreButton(Localization.unavailableButton, variant: .outlined, isFullWidth: true) {
+            StoreButton(Localization.unavailableButton, variant: .outlined, size: .medium) {
                 showingSupportForm = true
             }
         }
@@ -75,6 +74,16 @@ struct StoreDashboardUnavailableAnalyticsView: View {
         .padding(StorePadding.p5)
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingSupportForm) { supportForm }
+    }
+
+    private var illustration: some View {
+        let image = UIImage.noStoreImage
+        return Image(uiImage: image)
+            .renderingMode(.original)
+            .resizable()
+            .scaledToFit()
+            .frame(width: image.size.width, height: image.size.height)
+            .accessibilityHidden(true)
     }
 
     private var supportForm: some View {

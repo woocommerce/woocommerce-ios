@@ -271,7 +271,7 @@ private extension StorePerformanceDashboardCard {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, StorePadding.p5)
+        .padding(StorePadding.p5)
     }
 
     var timestampContent: some View {

@@ -15,6 +15,19 @@ struct ProductImageUploadErrorInfo {
     let siteID: Int64
     let productOrVariationID: ProductOrVariationID
     let error: ProductImageUploaderError
+
+    /// Retained for retry/discard UI, outside the transferable Error payload.
+    let asset: ProductImageAssetType?
+
+    init(siteID: Int64,
+         productOrVariationID: ProductOrVariationID,
+         error: ProductImageUploaderError,
+         asset: ProductImageAssetType? = nil) {
+        self.siteID = siteID
+        self.productOrVariationID = productOrVariationID
+        self.error = error
+        self.asset = asset
+    }
 }
 
 /// Identifiable information about a specific product or product variation of different sites for image upload.
@@ -118,7 +131,8 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                             return ProductImageUploadErrorInfo(
                                 siteID: errorItem.siteID,
                                 productOrVariationID: productOrVariationID,
-                                error: .failedUploadingImage(asset: assetType, error: errorItem.error)
+                                error: .failedUploadingImage(error: errorItem.error),
+                                asset: assetType
                             )
                         }
                 }
@@ -409,7 +423,8 @@ private extension ProductImageUploader {
             if case .failure(let error) = result {
                 let infoError = ProductImageUploadErrorInfo(siteID: key.siteID,
                                                             productOrVariationID: key.productOrVariationID,
-                                                            error: .failedUploadingImage(asset: asset, error: error))
+                                                            error: .failedUploadingImage(error: error),
+                                                            asset: asset)
                 if statusUpdatesExcludedProductKeys.contains(key) == false {
                     if !self.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
                         // Only send the error directly if `backgroundProductImageUpload` feature flag is disabled
@@ -453,7 +468,7 @@ enum ProductImageUploaderError: Error {
     case noActionHandlerFound
     case noRemoteProductIDFound
     case failedSavingProductAfterImageUpload(error: Error)
-    case failedUploadingImage(asset: ProductImageAssetType, error: Error)
+    case failedUploadingImage(error: Error)
 }
 
 private enum Localization {

@@ -5,6 +5,7 @@ import Yosemite
 //
 
 /// Encapsulates configuration and interaction of a UITableView row.
+@MainActor
 protocol ProductSettingsRowMediator {
 
     /// Update the cell UI and bind to events if needed.
@@ -12,6 +13,7 @@ protocol ProductSettingsRowMediator {
 
     /// Show a reusable ViewController like AztecEditorViewController.
     ///
+    @MainActor
     func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (_ settings: ProductSettings) -> Void)
 
     var reuseIdentifier: String { get }

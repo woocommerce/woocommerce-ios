@@ -6,8 +6,8 @@ import WidgetKit
 /// Surfaces the user-facing widget settings (long-press → Edit Widget).
 ///
 struct StoreStatsConfigurationIntent: WidgetConfigurationIntent {
-    static var title: LocalizedStringResource = "Store Stats"
-    static var description = IntentDescription("Choose how the WooCommerce stats widget is displayed.")
+    static let title: LocalizedStringResource = "Store Stats"
+    static let description = IntentDescription("Choose how the WooCommerce stats widget is displayed.")
 
     static let defaultDateRange: StoreStatsWidgetDateRange = .today
 
@@ -78,7 +78,7 @@ enum StoreStatsStoreSelection {
 struct StoreStatsStoreEntity: AppEntity, Hashable {
     static let defaultStore = StoreStatsStoreEntity(id: StoreStatsStoreSelection.defaultStoreEntityID, name: nil)
 
-    static var defaultQuery = StoreStatsStoreQuery()
+    static let defaultQuery = StoreStatsStoreQuery()
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation {
         TypeDisplayRepresentation(name: "Store")

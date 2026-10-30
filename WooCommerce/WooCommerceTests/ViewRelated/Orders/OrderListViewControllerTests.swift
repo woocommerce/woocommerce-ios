@@ -86,7 +86,7 @@ struct OrderListViewControllerTests {
         #expect(mirror.actionButton.titleLabel?.text == "Learn more")
     }
 
-    @Test
+    @Test(.timeLimit(.minutes(1)))
     func test_sync_when_loading_fails_then_reuses_the_same_table_and_refresh_control() async throws {
         // Given
         let siteID: Int64 = 123
@@ -110,8 +110,14 @@ struct OrderListViewControllerTests {
         let originalSyncDate = OrderListSyncBackgroundTask.latestSyncDate
         defer { OrderListSyncBackgroundTask.latestSyncDate = originalSyncDate }
 
+        let syncResults = AsyncStream<Bool>.makeStream()
+        defer { syncResults.continuation.finish() }
+        var syncResultIterator = syncResults.stream.makeAsyncIterator()
+
         // When: loading an empty list
-        viewController.sync(pageNumber: 1, pageSize: 25, retryTimeout: false)
+        viewController.sync(pageNumber: 1, pageSize: 25, retryTimeout: false) {
+            syncResults.continuation.yield($0)
+        }
 
         // Then: placeholders are rows in the same table, with no overlay scroll view
         #expect(tableView.numberOfRows(inSection: 0) == 3)
@@ -131,21 +137,27 @@ struct OrderListViewControllerTests {
         // When: synchronization fails
         let failSync = try #require(completeSync)
         failSync(0, .failure(URLError(.notConnectedToInternet)))
+        let failedSyncSucceeded = await syncResultIterator.next()
 
         // Then: the error and empty content belong to that table
+        #expect(failedSyncSucceeded == false)
         #expect(tableView.tableHeaderView?.subviews.contains { $0 is TopBannerView } == true)
         #expect(tableView.tableFooterView is ListEmptyView)
         #expect(viewController.children.isEmpty)
         #expect(tableView.refreshControl === refreshControl)
 
         // When: retry loads an order
-        viewController.sync(pageNumber: 1, pageSize: 25, retryTimeout: false)
+        viewController.sync(pageNumber: 1, pageSize: 25, retryTimeout: false) {
+            syncResults.continuation.yield($0)
+        }
         let order = MockOrders().empty().copy(siteID: siteID, orderID: 1, status: .processing, dateCreated: Date())
         try await insert([order], into: storageManager)
         let finishRetry = try #require(completeSync)
         finishRetry(0, .success([order]))
+        let retrySucceeded = await syncResultIterator.next()
 
         // Then: results replace placeholders without replacing the scroll view or refresh control
+        #expect(retrySucceeded == true)
         #expect(tableView.numberOfRows(inSection: 0) == 1)
         #expect(viewController.firstAvailableOrder?.orderID == order.orderID)
         let orderCell = try #require(tableView.dataSource?.tableView(tableView, cellForRowAt: firstRow))

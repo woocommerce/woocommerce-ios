@@ -2,7 +2,7 @@ import Foundation
 
 /// Order fetching for the Bookings feature. `meta_data` in responses from this protocol is limited to
 /// `_payment_status` — the only metadata key Bookings consumes (via `BookingOrderInfo`).
-public protocol BookingOrdersRemoteProtocol {
+public protocol BookingOrdersRemoteProtocol: Sendable {
     func loadBookingOrders(
         for siteID: Int64,
         orderIDs: [Int64]
@@ -663,7 +663,7 @@ public extension OrdersRemote {
 
     /// Order fields supported for update
     ///
-    enum UpdateOrderField: CaseIterable {
+    enum UpdateOrderField: CaseIterable, Sendable {
         case customerNote
         case shippingAddress
         case billingAddress
@@ -679,7 +679,7 @@ public extension OrdersRemote {
 
     /// Order fields supported for create
     ///
-    enum CreateOrderField {
+    enum CreateOrderField: Sendable {
         case feeLines
         case status
         case items

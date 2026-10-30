@@ -155,6 +155,53 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         #expect(page4.totalItems == 30)
     }
 
+    @Test("fetchMixedItems reports more pages only when another match exists")
+    func test_fetchMixedItems_when_one_match_beyond_page_then_has_more_pages() async throws {
+        // Given - one more product than fits on a page
+        for index in 1...11 {
+            try await insertProduct(makeProduct(id: Int64(index), name: "Test Boundary Product \(index)"))
+        }
+        try await rebuildSearchIndex()
+        let strategy = makeStrategy(pageSize: 10)
+
+        // When
+        let page1 = try #require(await strategy.fetchMixedItems(pageNumber: 1))
+        let page2 = try #require(await strategy.fetchMixedItems(pageNumber: 2))
+
+        // Then
+        #expect(page1.items.count == 10)
+        #expect(page1.hasMorePages == true)
+        #expect(page1.totalItems == 11)
+        #expect(page2.items.count == 1)
+        #expect(page2.hasMorePages == false)
+        #expect(Set(page1.items.map(\.id)).isDisjoint(with: page2.items.map(\.id)))
+    }
+
+    @Test("fetchMixedItems keeps paging past the match count limit")
+    func test_fetchMixedItems_when_matches_exceed_count_limit_then_pages_until_last_match() async throws {
+        // Given - one more matching product than the count limit
+        let products = (1...1_001).map { makeProduct(id: Int64($0), name: "Test Capped Product \($0)") }
+        try await grdbManager.databaseConnection.write { db in
+            for product in products {
+                try product.insert(db)
+            }
+        }
+        try await rebuildSearchIndex()
+        let strategy = makeStrategy(pageSize: 25)
+
+        // When
+        let page1 = try #require(await strategy.fetchMixedItems(pageNumber: 1))
+        let page40 = try #require(await strategy.fetchMixedItems(pageNumber: 40))
+        let page41 = try #require(await strategy.fetchMixedItems(pageNumber: 41))
+
+        // Then
+        #expect(page1.totalItems == 1_000)
+        #expect(page40.items.count == 25)
+        #expect(page40.hasMorePages == true)
+        #expect(page41.items.count == 1)
+        #expect(page41.hasMorePages == false)
+    }
+
     @Test("fetchMixedItems only returns items from the specified site")
     func test_fetchMixedItems_respects_site_isolation() async throws {
         // Given

@@ -187,8 +187,8 @@ final class MainTabBarControllerTests: XCTestCase {
         // When
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
-                                                              error: NSError(domain: "", code: 8))))
+                                 error: .failedUploadingImage(error: NSError(domain: "", code: 8)),
+                                 asset: .phAsset(asset: PHAsset())))
 
         // Given
         XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
@@ -288,8 +288,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
-                                                              error: error)))
+                                 error: .failedUploadingImage(error: error),
+                                 asset: .phAsset(asset: PHAsset())))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
@@ -334,8 +334,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
-                                                              error: error)))
+                                 error: .failedUploadingImage(error: error),
+                                 asset: .phAsset(asset: PHAsset())))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 

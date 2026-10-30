@@ -209,7 +209,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
             return
         }
 
-        let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
+        let gateways = storeDataSynced ? gatewaysWithAccountRoutes() : CardPresentPaymentsPlugin.allCases
+        let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID, gateways: gateways) { [weak self] result in
             guard let self else {
                 return
             }
@@ -331,6 +332,24 @@ private extension CardPresentPaymentsOnboardingUseCase {
                 self.updateAccounts(storeDataSynced: errors.isEmpty)
             }
         })
+    }
+
+    /// Gateways whose account routes exist, based on freshly synced plugins.
+    /// An inactive gateway plugin has no account route, so its account request would fail.
+    ///
+    func gatewaysWithAccountRoutes() -> [CardPresentPaymentsPlugin] {
+        let status = cardPresentPluginsDataProvider.paymentPluginsInstalledAndActiveStatus(
+            wcPay: cardPresentPluginsDataProvider.getWCPayPlugin(),
+            stripe: cardPresentPluginsDataProvider.getStripePlugin()
+        )
+        switch status {
+        case .onlyWCPayIsInstalledAndActive:
+            return [.wcPay]
+        case .onlyStripeIsInstalledAndActive:
+            return [.stripe]
+        case .bothAreInstalledAndActive, .noneAreInstalledAndActive:
+            return CardPresentPaymentsPlugin.allCases
+        }
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {

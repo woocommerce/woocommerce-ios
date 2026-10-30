@@ -12,6 +12,7 @@ protocol AddressMapLocalSearchProviding {
     /// - Parameter completion: The search completion containing location query information.
     /// - Returns: A search response containing map items with placemarks.
     /// - Throws: MapKit errors if the search fails.
+    @MainActor
     func search(for completion: MKLocalSearchCompletion) async throws -> MKLocalSearch.Response
 }
 
@@ -25,6 +26,7 @@ final class DefaultAddressMapLocalSearchProvider: AddressMapLocalSearchProviding
     }
 }
 
+@MainActor
 @Observable
 final class AddressMapPickerViewModel: NSObject {
     var searchQuery = "" {
@@ -72,10 +74,8 @@ final class AddressMapPickerViewModel: NSObject {
 
     deinit {
         searchQueryContinuation.finish()
-        searchCompleter.delegate = nil
     }
 
-    @MainActor
     func startObservingSearchQuery() async {
         for await query in searchQueryStream.debounce(for: .seconds(0.3)) {
             if query.isEmpty {
@@ -88,7 +88,6 @@ final class AddressMapPickerViewModel: NSObject {
 
     /// Selects a location from the local map search results.
     /// - Parameter result: The selected search completion result.
-    @MainActor
     func selectLocation(_ result: MKLocalSearchCompletion) async {
         do {
             let response = try await searchProvider.search(for: result)
@@ -154,7 +153,7 @@ private extension AddressMapPickerViewModel {
         // Tries to geocode the existing address if possible.
         let addressString = formatAddressString(fields: fields)
         if addressString.isNotEmpty {
-            Task { @MainActor in
+            Task {
                 do {
                     let placemarks = try await CLGeocoder().geocodeAddressString(addressString)
                     guard let location = placemarks.first?.location else {
@@ -175,7 +174,6 @@ private extension AddressMapPickerViewModel {
         }
     }
 
-    @MainActor
     func onSelectedPlacemark(_ placemark: MKPlacemark) async {
         await withCheckedContinuation { continuation in
             withAnimation { [weak self] in
@@ -202,7 +200,8 @@ private extension AddressMapPickerViewModel {
     }
 }
 
-extension AddressMapPickerViewModel: MKLocalSearchCompleterDelegate {
+// MapKit delivers completer delegate callbacks on the main queue.
+extension AddressMapPickerViewModel: @MainActor MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         searchResults = completer.results
     }

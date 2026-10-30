@@ -18,8 +18,13 @@ final class EditableOrderShippingLineViewModelTests: XCTestCase {
     let sampleProductID: Int64 = 5
     let currencySettings = CurrencySettings()
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
+        setUpFixtures()
+    }
+
+    @MainActor
+    private func setUpFixtures() {
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         analytics = MockAnalyticsProvider()
@@ -372,8 +377,9 @@ final class EditableOrderShippingLineViewModelTests: XCTestCase {
 
 private extension MockStorageManager {
     func insert(_ readOnlyShippingMethod: Yosemite.ShippingMethod) {
-        let shippingMethod = viewStorage.insertNewObject(ofType: StorageShippingMethod.self)
-        shippingMethod.update(with: readOnlyShippingMethod)
-        viewStorage.saveIfNeeded()
+        performAndSave({ storage in
+            let shippingMethod = storage.insertNewObject(ofType: StorageShippingMethod.self)
+            shippingMethod.update(with: readOnlyShippingMethod)
+        }, completion: {}, on: .main)
     }
 }

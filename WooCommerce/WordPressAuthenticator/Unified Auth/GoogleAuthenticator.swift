@@ -127,6 +127,7 @@ class GoogleAuthenticator: NSObject {
         // seem ideal...
         self.loginFields = loginFields
         self.loginFields.meta.socialService = SocialServiceName.google
+        self.loginFields.supportedAuthTypes = []
         self.authType = authType
 
         Task { @MainActor in

@@ -302,7 +302,7 @@ private extension CollectOrderPaymentUseCase {
             }
         }))
 
-        let action = OrderAction.retrieveOrderRemotely(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
+        let handleOrder: @MainActor @Sendable (Result<Order, Error>) -> Void = { [weak self] result in
             guard let self, isPaymentFlowCanceled == false else { return }
 
             switch result {
@@ -328,6 +328,12 @@ private extension CollectOrderPaymentUseCase {
             }
 
             onCheckCompletion(.success(()))
+        }
+
+        let action = OrderAction.retrieveOrderRemotely(siteID: order.siteID, orderID: order.orderID) { result in
+            Task { @MainActor in
+                handleOrder(result)
+            }
         }
 
         stores.dispatch(action)

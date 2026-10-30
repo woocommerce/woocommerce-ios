@@ -91,7 +91,8 @@ final class ReceiptStoreTests: XCTestCase {
         XCTAssertNotNil(expectedError)
     }
 
-    func test_sendReceipt_when_order_updates_and_action_succeeds() throws {
+    @MainActor
+    func test_sendReceipt_when_order_updates_and_action_succeeds() async throws {
         // Given order update and send_order_details actions succeed
         let email = "test@test.com"
         let orderID: Int64 = 56
@@ -105,7 +106,7 @@ final class ReceiptStoreTests: XCTestCase {
         dispatcher.register(processor: mockProcessor, for: OrderAction.self)
 
         // When we send receipt to the given email
-        let expectedResult: Result<Yosemite.Order, Error> = waitFor { promise in
+        let expectedResult: Result<Yosemite.Order, Error> = try await waitForCompletion { promise in
             let action = ReceiptAction.sendReceipt(order: mockOrder, email: email) { result in
                 promise(result)
             }
@@ -120,7 +121,8 @@ final class ReceiptStoreTests: XCTestCase {
         XCTAssert(result.billingAddress?.email == email)
     }
 
-    func test_sendReceipt_when_order_update_fails_then_send_receipt_fails() {
+    @MainActor
+    func test_sendReceipt_when_order_update_fails_then_send_receipt_fails() async throws {
         // Given order update fails
         let email = "test@test.com"
         let orderID: Int64 = 56
@@ -133,7 +135,7 @@ final class ReceiptStoreTests: XCTestCase {
         dispatcher.register(processor: mockProcessor, for: OrderAction.self)
 
         // When we send receipt to the given email
-        let expectedResult: Result<Yosemite.Order, Error> = waitFor { promise in
+        let expectedResult: Result<Yosemite.Order, Error> = try await waitForCompletion { promise in
             let action = ReceiptAction.sendReceipt(order: mockOrder, email: email) { result in
                 promise(result)
             }

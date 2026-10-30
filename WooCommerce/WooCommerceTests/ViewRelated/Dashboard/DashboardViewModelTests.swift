@@ -1389,6 +1389,7 @@ private final class MockAIAssistantEligibilityChecker: AIAssistantEligibilityChe
 
 private extension DashboardViewModelTests {
 
+    @MainActor
     func mockReloadingData(jitmResult: Result<[Yosemite.JustInTimeMessage], Error> = .success([]),
                            storeHasOrders: Bool = true,
                            existingProducts: [Product] = [],

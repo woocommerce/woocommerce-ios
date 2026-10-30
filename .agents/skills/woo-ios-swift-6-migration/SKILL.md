@@ -66,7 +66,7 @@ Start at the warning. Check the owner, protocol, conformers, direct callers, and
 
 Apply isolation to the required declarations and callers. Stop where the existing code has isolation that the compiler checks. Keep construction order, service lifetime, cancellation, retry, cached state, and UI presentation unchanged. Build after each isolation change. Check for new warnings in callers.
 
-Isolation violations are errors, not warnings, at every strictness level. A synchronous call from nonisolated code to a `@MainActor` member of the same module fails under `minimal` and Swift 5 too. Only `Sendable` diagnostics are warnings at that level. Change every nonisolated caller in the same commit, including tests. Emit-module stops at the first error, so each hop of callers costs one build. Change the obvious callers together before you build. See [the product image handler](https://github.com/woocommerce/woocommerce-ios/pull/17874).
+Isolation violations are errors, not warnings, at every strictness level. A synchronous call from nonisolated code to a `@MainActor` member of the same module fails under `minimal` and Swift 5 too. Two cases only warn: calls to Objective-C main-actor API such as XCUI, and calls in synchronous XCTest `setUp` and `tearDown` overrides. See [test fixtures and mocks](references/patterns.md#test-fixtures-and-mocks). Only `Sendable` diagnostics are warnings at that level. Change every nonisolated caller in the same commit, including tests. Emit-module stops at the first error, so each hop of callers costs one build. Change the obvious callers together before you build. See [the product image handler](https://github.com/woocommerce/woocommerce-ios/pull/17874).
 
 When a slice must change a shared contract, such as a widely used protocol or a closure type, change it in place. Do not add a parallel API to keep the baseline guard flat. Swift cannot overload on `@Sendable` alone. Do not deprecate the old API either, because the guard counts deprecation warnings too. Raise the affected baseline entries in the same PR and explain why. Later slices lower them.
 
@@ -74,8 +74,8 @@ Some diagnostics show an architectural boundary, not a missing annotation. An ex
 
 Read the reference that applies to the change:
 
-- [Recurring patterns](references/patterns.md): timers, environment and preference defaults, deinitialization, isolated conformances, initializers, default arguments, framework callbacks, test isolation, and test fixtures.
-- [Session service boundaries](references/session-services.md): POS eligibility, session construction, publishers, protocol witnesses, legacy async remotes, and Action completions.
+- [Recurring patterns](references/patterns.md): timers, environment and preference defaults, deinitialization, isolated conformances, initializers, default arguments, framework callbacks, test isolation, test fixtures, and test mocks. For a mutable mock, prefer `@MainActor`, then an actor; use a `Mutex` only when neither fits.
+- [Session service boundaries](references/session-services.md): POS eligibility, session construction, publishers, request handlers for non-Sendable owners, protocol witnesses, legacy async remotes, and Action completions.
 - [Runtime boundaries](references/runtime-boundaries.md): language-mode switches, mixed Swift 5/6 callbacks, compiler crashes, supported OS runtimes, shared target sources, and callback-to-async changes.
 
 For general Swift concurrency guidance, use the `swift-concurrency` skill if available. Otherwise, read the public [Swift Concurrency skill](https://github.com/AvdLee/Swift-Concurrency-Agent-Skill/blob/main/skills/swift-concurrency/SKILL.md). Read only the reference needed for the diagnostic. Resolve its relative links from the upstream skill directory. Check guidance against the active toolchain. Keep this repository's scope and verification rules.

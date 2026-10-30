@@ -7,6 +7,7 @@ import YosemiteTestHelpers
 
 /// ProductStore Unit Tests with products filtering
 ///
+@MainActor
 final class ProductStore_FilterProductsTests: XCTestCase {
 
     /// Mock Dispatcher!
@@ -35,18 +36,18 @@ final class ProductStore_FilterProductsTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         dispatcher = nil
         storageManager = nil
         network = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     // MARK: - ProductAction.synchronizeProducts

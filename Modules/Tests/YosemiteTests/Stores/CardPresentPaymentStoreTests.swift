@@ -12,6 +12,7 @@ import YosemiteTestHelpers
 ///
 /// All mock properties are necessary because
 /// CardPresentPaymentStore extends Store.
+@MainActor
 final class CardPresentPaymentStoreTests: XCTestCase {
     /// Mock Dispatcher!
     ///
@@ -66,8 +67,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     ///
     private let samplePaymentIntentID: String = "p_idREDACTED"
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
@@ -80,13 +81,13 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                    cardReaderConfigProvider: mockCardReaderConfigProvider)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         dispatcher = nil
         storageManager = nil
         network = nil
         mockCardReaderService = nil
 
-        super.tearDown()
+        try await super.tearDown()
     }
 
     // MARK: - CardPresentPaymentAction.startCardReaderDiscovery
@@ -401,6 +402,67 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
 
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.PaymentGatewayAccount.self, matching: nil))
+    }
+
+    func test_loadAccounts_when_only_stripe_gateway_is_requested_then_skips_wcpay_request_and_deletes_stored_wcpay_account() throws {
+        // Given
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake().copy(siteID: sampleSiteID, gatewayID: WCPayAccount.gatewayID))
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "stripe-account-complete")
+
+        // When
+        let result = loadAccounts(gateways: [.stripe])
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(requestedPaths(), ["wc_stripe/account/summary"])
+        XCTAssertNil(viewStorage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: WCPayAccount.gatewayID))
+        XCTAssertNotNil(viewStorage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: StripeAccount.gatewayID))
+    }
+
+    func test_loadAccounts_when_only_wcpay_gateway_is_requested_then_skips_stripe_request_and_deletes_stored_stripe_account() throws {
+        // Given
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: .fake().copy(siteID: sampleSiteID, gatewayID: StripeAccount.gatewayID))
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "stripe-account-complete")
+
+        // When
+        let result = loadAccounts(gateways: [.wcPay])
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(requestedPaths(), ["payments/accounts"])
+        XCTAssertNotNil(viewStorage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: WCPayAccount.gatewayID))
+        XCTAssertNil(viewStorage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: StripeAccount.gatewayID))
+    }
+
+    func test_loadAccounts_when_only_stripe_gateway_is_requested_and_stripe_request_fails_then_returns_failure() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "generic_error")
+
+        // When
+        let result = loadAccounts(gateways: [.stripe])
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertNil(viewStorage.firstObject(ofType: Storage.PaymentGatewayAccount.self, matching: nil))
+    }
+
+    func test_loadAccounts_when_gateways_are_not_specified_and_stored_plugins_are_stale_then_loads_the_active_wcpay_account() throws {
+        // Given the stored plugins still show Stripe as the only active gateway, but the store switched to WooPayments.
+        insertPaymentPlugin(.wcPay, active: false)
+        insertPaymentPlugin(.stripe, active: true)
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "generic_error")
+
+        // When
+        let result = loadAccounts()
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(Set(requestedPaths()), ["payments/accounts", "wc_stripe/account/summary"])
+        XCTAssertNotNil(viewStorage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: WCPayAccount.gatewayID))
     }
 
     /// Verifies that the store hits the network when fetching a charge, and propagates success.
@@ -1233,6 +1295,23 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 }
 
 private extension CardPresentPaymentStoreTests {
+    func insertPaymentPlugin(_ plugin: CardPresentPaymentsPlugin, active: Bool) {
+        let systemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID,
+                                                    plugin: plugin.fileNameWithPathExtension + ".php",
+                                                    active: active)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: systemPlugin)
+    }
+
+    func loadAccounts(gateways: [CardPresentPaymentsPlugin] = CardPresentPaymentsPlugin.allCases) -> Result<Void, Error> {
+        waitFor { promise in
+            self.cardPresentStore.onAction(CardPresentPaymentAction.loadAccounts(siteID: self.sampleSiteID, gateways: gateways, onCompletion: promise))
+        }
+    }
+
+    func requestedPaths() -> [String] {
+        network.requestsForResponseData.compactMap { ($0 as? JetpackRequest)?.path }
+    }
+
     func paymentIntent(collectedPaymentMethod: PaymentMethod?) -> PaymentIntent {
         PaymentIntent.fake().copy(collectedPaymentMethod: collectedPaymentMethod)
     }

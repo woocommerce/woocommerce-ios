@@ -30,15 +30,21 @@ public class SocialLogin2FANonceInfo: NSObject {
         switch code.count {
         case TwoFactorTypeLengths.sms.rawValue:
             typeNoncePair = ("sms", nonceSMS)
-            nonceSMS = Constants.lastUsedPlaceholder
+            if !nonceSMS.isEmpty {
+                nonceSMS = Constants.lastUsedPlaceholder
+            }
         case TwoFactorTypeLengths.backup.rawValue:
             typeNoncePair = ("backup", nonceBackup)
-            nonceBackup = Constants.lastUsedPlaceholder
+            if !nonceBackup.isEmpty {
+                nonceBackup = Constants.lastUsedPlaceholder
+            }
         case TwoFactorTypeLengths.authenticator.rawValue:
             fallthrough
         default:
             typeNoncePair = ("authenticator", nonceAuthenticator)
-            nonceAuthenticator = Constants.lastUsedPlaceholder
+            if !nonceAuthenticator.isEmpty {
+                nonceAuthenticator = Constants.lastUsedPlaceholder
+            }
         }
         return typeNoncePair
     }

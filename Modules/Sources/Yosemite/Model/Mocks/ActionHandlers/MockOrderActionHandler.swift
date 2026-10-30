@@ -35,7 +35,7 @@ struct MockOrderActionHandler: MockActionHandler {
     func fetchFilteredAndAllOrders(siteID: Int64,
                                    writeStrategy: OrderAction.OrdersStorageWriteStrategy,
                                    pageSize: Int,
-                                   onCompletion: @escaping (TimeInterval, Result<[Order], Error>) -> ()) {
+                                   onCompletion: @escaping @Sendable (TimeInterval, Result<[Order], Error>) -> ()) {
         guard writeStrategy != .doNotSave else {
             let sortedOrders = Array(objectGraph.orders(forSiteId: siteID)
                 .sorted(by: { $0.dateCreated > $1.dateCreated })
@@ -49,7 +49,7 @@ struct MockOrderActionHandler: MockActionHandler {
         }
     }
 
-    private func saveOrders(orders: [Order], onCompletion: @escaping () -> ()) {
+    private func saveOrders(orders: [Order], onCompletion: @escaping @Sendable () -> ()) {
         storageManager.performAndSave({ storage in
             let updater = OrdersUpsertUseCase(storage: storage)
             updater.upsert(orders)

@@ -1,10 +1,12 @@
 import Foundation
+import Synchronization
 import Testing
 import YosemiteTestHelpers
 @testable import Networking
 @testable import Storage
 @testable import Yosemite
 
+@Suite(.timeLimit(.minutes(5)))
 @MainActor
 struct BookingStoreTests {
     /// Mock network to inject responses
@@ -61,6 +63,58 @@ struct BookingStoreTests {
         storageManager = MockStorageManager()
         remote = MockBookingsRemote()
         ordersRemote = MockBookingOrdersRemote()
+    }
+
+    @Test func test_synchronize_bookings_when_store_is_released_then_request_and_persistence_complete() async throws {
+        // Given
+        let booking = Booking.fake().copy(siteID: sampleSiteID)
+        remote.whenLoadingAllBookings(thenReturn: .success([booking]))
+        let dispatcher = Dispatcher()
+        var store: BookingStore? = BookingStore(dispatcher: dispatcher,
+                                                storageManager: storageManager,
+                                                network: network,
+                                                remote: remote,
+                                                ordersRemote: ordersRemote)
+        let storeWasReleased = { [weak store] in store == nil }
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store?.onAction(BookingAction.synchronizeBookings(siteID: sampleSiteID, pageNumber: 1) { result in
+                #expect(storeWasReleased())
+                continuation.resume(returning: result)
+            })
+            store = nil
+        }
+
+        // Then
+        _ = try result.get()
+        #expect(storeWasReleased())
+        #expect(storedBookingCount == 1)
+        #expect(dispatcher.processor(for: BookingAction.self) == nil)
+    }
+
+    @Test func test_update_attendance_when_store_is_released_before_storage_completion_then_reports_error_on_main_actor() async {
+        // Given
+        let queuedStorage = MockQueuedBookingStorageManager(underlying: storageManager)
+        remote.whenUpdatingBooking(thenReturn: .success(Booking.fake().copy(siteID: sampleSiteID, bookingID: 1)))
+        var store: BookingStore? = BookingStore(dispatcher: Dispatcher(),
+                                                storageManager: queuedStorage,
+                                                network: network,
+                                                remote: remote,
+                                                ordersRemote: ordersRemote)
+
+        // When
+        let error = await withCheckedContinuation { continuation in
+            store?.onAction(BookingAction.updateBookingAttendanceStatus(siteID: sampleSiteID, bookingID: 1, status: .attended) { error in
+                MainActor.preconditionIsolated()
+                continuation.resume(returning: error)
+            })
+            store = nil
+            queuedStorage.performPendingWrite()
+        }
+
+        // Then
+        #expect(error != nil)
     }
 
     // MARK: - synchronizeBookings
@@ -732,6 +786,9 @@ struct BookingStoreTests {
                     bookingID: 1,
                     status: .attended,
                     onCompletion: { error in
+                        MainActor.preconditionIsolated()
+                        #expect(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1)?.attendanceStatusKey ==
+                                BookingAttendanceStatus.unattended.rawValue)
                         continuation.resume(returning: error)
                     }
                 )
@@ -1461,7 +1518,8 @@ private extension BookingStoreTests {
     }
 }
 
-private class MockBookingOrdersRemote: BookingOrdersRemoteProtocol {
+@MainActor
+private final class MockBookingOrdersRemote: BookingOrdersRemoteProtocol {
     var invokedLoadOrders = false
     var invokedLoadOrdersParameters: (siteID: Int64, orderIDs: [Int64])?
     private var loadOrdersResult: Result<[Yosemite.Order], Error> = .success([])
@@ -1483,5 +1541,45 @@ private class MockBookingOrdersRemote: BookingOrdersRemoteProtocol {
 
     func loadOrder(for siteID: Int64, orderID: Int64, completion: @escaping (NetworkingCore.Order?, (any Error)?) -> Void) {
         return
+    }
+}
+
+// Defers the initial attendance write so the weak request lifetime can be tested.
+private final class MockQueuedBookingStorageManager: StorageManagerType, Sendable {
+    private let underlying: MockStorageManager
+    private let pendingWrite = Mutex<(@Sendable () -> Void)?>(nil)
+
+    init(underlying: MockStorageManager) {
+        self.underlying = underlying
+    }
+
+    var viewStorage: StorageType { underlying.viewStorage }
+
+    func performAndSave(_ operation: @escaping @Sendable (StorageType) -> Void,
+                        completion: (@Sendable () -> Void)?,
+                        on queue: DispatchQueue) {
+        underlying.performAndSave(operation, completion: completion, on: queue)
+    }
+
+    func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                           completion: @escaping @Sendable (Result<T, Error>) -> Void,
+                           on queue: DispatchQueue) {
+        let underlying = underlying
+        pendingWrite.withLock {
+            precondition($0 == nil)
+            $0 = { underlying.performAndSave(operation, completion: completion, on: queue) }
+        }
+    }
+
+    func performPendingWrite() {
+        let write = pendingWrite.withLock { pending in
+            defer { pending = nil }
+            return pending
+        }
+        write?()
+    }
+
+    func reset(onCompletion: (@Sendable () -> Void)?) {
+        underlying.reset(onCompletion: onCompletion)
     }
 }

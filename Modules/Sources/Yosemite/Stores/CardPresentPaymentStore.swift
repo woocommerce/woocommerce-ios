@@ -83,8 +83,9 @@ public final class CardPresentPaymentStore: Store {
             completion(paymentGatewayAccount)
         case .loadActivePaymentGatewayExtension(let completion):
             loadActivePaymentGateway(onCompletion: completion)
-        case .loadAccounts(let siteID, let onCompletion):
+        case .loadAccounts(let siteID, let gateways, let onCompletion):
             loadAccounts(siteID: siteID,
+                         gateways: gateways,
                          onCompletion: onCompletion)
         case .checkDeviceSupport(let siteID,
                                  let cardReaderType,
@@ -518,36 +519,48 @@ private extension CardPresentPaymentStore {
         onCompletion(usingBackend)
     }
 
-    /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
+    /// Loads the accounts of the given gateways. Deletes the stored accounts of the other gateways.
     ///
-    func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func loadAccounts(siteID: Int64, gateways: [CardPresentPaymentsPlugin], onCompletion: @escaping (Result<Void, Error>) -> Void) {
         var error: Error? = nil
         var hasSuccess: Bool? = nil
 
         let group = DispatchGroup()
         group.enter()
-        loadWCPayAccount(siteID: siteID, onCompletion: { result in
-            switch result {
-            case .failure(let loadError):
-                DDLogError("⛔️ Error synchronizing WCPay Account: \(loadError)")
-                error = loadError
-            case .success:
-                hasSuccess = true
+        if gateways.contains(.wcPay) {
+            loadWCPayAccount(siteID: siteID, onCompletion: { result in
+                switch result {
+                case .failure(let loadError):
+                    DDLogError("⛔️ Error synchronizing WCPay Account: \(loadError)")
+                    error = loadError
+                case .success:
+                    hasSuccess = true
+                }
+                group.leave()
+            })
+        } else {
+            deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID) {
+                group.leave()
             }
-            group.leave()
-        })
+        }
 
         group.enter()
-        loadStripeAccount(siteID: siteID, onCompletion: {result in
-            switch result {
-            case .failure(let loadError):
-                DDLogError("⛔️ Error synchronizing Stripe Account: \(loadError)")
-                error = loadError
-            case .success:
-                hasSuccess = true
+        if gateways.contains(.stripe) {
+            loadStripeAccount(siteID: siteID, onCompletion: {result in
+                switch result {
+                case .failure(let loadError):
+                    DDLogError("⛔️ Error synchronizing Stripe Account: \(loadError)")
+                    error = loadError
+                case .success:
+                    hasSuccess = true
+                }
+                group.leave()
+            })
+        } else {
+            deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID) {
+                group.leave()
             }
-            group.leave()
-        })
+        }
 
         group.notify(queue: .main) {
             switch (hasSuccess, error) {

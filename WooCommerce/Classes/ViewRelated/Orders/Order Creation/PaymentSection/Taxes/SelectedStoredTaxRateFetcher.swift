@@ -4,6 +4,7 @@ import Networking
 
 /// Provides the selected store tax rate information. If the stored information is not valid remotely anymore it clears the cache
 ///
+@MainActor
 struct SelectedStoredTaxRateFetcher {
     private let stores: StoresManager
 

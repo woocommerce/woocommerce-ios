@@ -4,6 +4,7 @@ import Foundation
 import UIKit
 import WordPressShared
 import WidgetKit
+import os
 import enum Alamofire.AFError
 import enum Networking.NetworkError
 import Yosemite
@@ -13,20 +14,23 @@ import WooFoundationCore
 
 final class WooAnalytics: Analytics {
 
-    typealias ABTestStarter = (ExperimentContext) -> Void
-    typealias WidgetConfigurationProvider = (@escaping (Result<[WidgetInfo], Error>) -> Void) -> Void
+    typealias ABTestStarter = @Sendable (ExperimentContext) -> Void
+    typealias WidgetConfigurationProvider = @Sendable (@escaping @Sendable (Result<[WidgetInfo], Error>) -> Void) -> Void
+
+    private struct State {
+        var applicationOpenedTime: Date?
+        var widgetSetupChangeTracker = WidgetSetupChangeTracker()
+        var isObservingNotifications = false
+    }
 
     // MARK: - Properties
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
-    private(set) var analyticsProvider: AnalyticsProvider
+    let analyticsProvider: AnalyticsProvider
 
-    /// Time when app was opened — used for calculating the time-in-app property
-    ///
-    private var applicationOpenedTime: Date?
-
-    private lazy var widgetSetupChangeTracker = WidgetSetupChangeTracker()
+    /// `WidgetSetupChangeTracker` has mutable persistence, so keep it and the lifecycle state behind one lock.
+    private let state = OSAllocatedUnfairLock(uncheckedState: State())
 
     /// Shared consent state, independent of the analytics provider and logged-in session.
     ///
@@ -35,8 +39,6 @@ final class WooAnalytics: Analytics {
     private let startABTest: ABTestStarter
     private let notificationCenter: NotificationCenter
     private let getWidgetConfigurations: WidgetConfigurationProvider
-    private var isObservingNotifications = false
-
     /// Check user opt-in for analytics
     ///
     var userHasOptedIn: Bool {
@@ -308,10 +310,20 @@ private extension Analytics {
 private extension WooAnalytics {
 
     func startObservingNotifications() {
-        guard userHasOptedIn, !isObservingNotifications else {
+        guard userHasOptedIn else {
             return
         }
-        isObservingNotifications = true
+
+        let shouldStartObserving = state.withLockUnchecked { state in
+            guard state.isObservingNotifications == false else {
+                return false
+            }
+            state.isObservingNotifications = true
+            return true
+        }
+        guard shouldStartObserving else {
+            return
+        }
 
         notificationCenter.addObserver(self,
                                        selector: #selector(trackApplicationOpened),
@@ -337,20 +349,24 @@ private extension WooAnalytics {
 
             let snapshot = WidgetSnapshot(from: infos)
             var properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
-            if let diff = self.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot) {
+            let diff = self.state.withLockUnchecked { state in
+                state.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot)
+            }
+            if let diff {
                 properties.merge(diff.analyticsProperties) { _, new in new }
             }
             self.track(.applicationOpened, withProperties: properties)
         }
-        applicationOpenedTime = Date()
+        state.withLockUnchecked { $0.applicationOpenedTime = Date() }
     }
 
     @objc func trackApplicationClosed() {
         track(.applicationClosed, withProperties: applicationClosedProperties())
-        applicationOpenedTime = nil
+        state.withLockUnchecked { $0.applicationOpenedTime = nil }
     }
 
     func applicationClosedProperties() -> [String: Any]? {
+        let applicationOpenedTime = state.withLockUnchecked { $0.applicationOpenedTime }
         guard let applicationOpenedTime else {
             return nil
         }

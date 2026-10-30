@@ -42,6 +42,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published private(set) var totalValue: Decimal = 0
 
     /// View model for selecting a country from a list.
+    @MainActor
     var countrySelectorVM: CountrySelectorViewModel {
         let selectedCountryBinding = Binding<AreaSelectorCommandProtocol?>(
             get: { self.selectedCountry },

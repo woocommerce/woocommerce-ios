@@ -7,8 +7,19 @@ struct CartViewHelper {
             return nil
         }
         return String.pluralize(itemsCount,
-                                singular: "%1$d item",
-                                plural: "%1$d items")
+                                singular: Localization.itemCountSingular,
+                                plural: Localization.itemCountPlural)
+    }
+
+    private enum Localization {
+        static let itemCountSingular = NSLocalizedString(
+            "pos.cart.itemCount.singular", value: "%1$d item",
+            comment: "Number of items in the cart when there is one item. %1$d is the number of items."
+        )
+        static let itemCountPlural = NSLocalizedString(
+            "pos.cart.itemCount.plural", value: "%1$d items",
+            comment: "Number of items in the cart when there are multiple items. %1$d is the number of items."
+        )
     }
 
     func shouldPreventCartEditing(paymentState: PointOfSalePaymentState) -> Bool {

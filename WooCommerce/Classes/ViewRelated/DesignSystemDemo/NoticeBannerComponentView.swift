@@ -32,6 +32,9 @@ struct NoticeBannerComponentView: View {
     @State private var description = "New order data is available."
     @State private var showsIcon = true
     @State private var showsDescription = true
+    @State private var showsAction = false
+    @State private var showsDismiss = false
+    @State private var accessibilityStatus = ""
 
     var body: some View {
         ComponentDemoScaffold(title: "NoticeBanner") {
@@ -42,13 +45,20 @@ struct NoticeBannerComponentView: View {
             }
             Toggle("Icon", isOn: $showsIcon)
             Toggle("Description", isOn: $showsDescription)
+            Toggle("Action", isOn: $showsAction)
+            Toggle("Dismiss", isOn: $showsDismiss)
             TextField("Title", text: $title)
             TextField("Description", text: $description)
+            TextField("Accessibility status", text: $accessibilityStatus)
         } preview: {
             StoreNoticeBanner(title,
                               description: showsDescription ? description : nil,
                               tone: tone.value,
-                              icon: showsIcon ? StoreIcon.CircleInfo.regular : nil)
+                              icon: showsIcon ? StoreIcon.CircleInfo.regular : nil,
+                              actionTitle: showsAction ? "Learn more" : nil,
+                              action: showsAction ? {} : nil,
+                              onDismiss: showsDismiss ? {} : nil,
+                              accessibilityStatus: accessibilityStatus.isEmpty ? nil : accessibilityStatus)
                 .padding()
         }
     }

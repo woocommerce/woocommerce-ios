@@ -6,6 +6,7 @@ import SwiftUI
 
 /// Protocol to describe viewmodel of editable address
 ///
+@MainActor
 protocol AddressFormViewModelProtocol: AnyObject, Observable {
 
     /// Site ID
@@ -87,7 +88,7 @@ protocol AddressFormViewModelProtocol: AnyObject, Observable {
 
     /// Save the address and invoke a completion block when finished
     ///
-    func saveAddress(onFinish: @escaping (Bool) -> Void)
+    func saveAddress(onFinish: @escaping @MainActor @Sendable (Bool) -> Void)
 
     /// Track the flow cancel scenario.
     ///
@@ -202,9 +203,20 @@ struct AddressFormFields {
             return
         }
 
+        // Keep the raw country and state values until the stored countries include the address country (e.g. while they sync),
+        // otherwise the `selectedCountry` setter clears the country value and the later refresh can't match it anymore.
+        guard let matchingCountry = allCountries.first(where: { $0.code == country }) else {
+            return
+        }
+
         let initialStateValue = state // storing initial state value because it will be cleared by selectedCountry setter
-        selectedCountry = allCountries.first { $0.code == country }
-        selectedState = selectedCountry?.states.first { $0.code == initialStateValue }
+        selectedCountry = matchingCountry
+
+        if let matchingState = matchingCountry.states.first(where: { $0.code == initialStateValue }) {
+            selectedState = matchingState
+        } else {
+            state = initialStateValue // Free-text or unknown state of the address country, not a leftover from a previous country.
+        }
     }
 }
 

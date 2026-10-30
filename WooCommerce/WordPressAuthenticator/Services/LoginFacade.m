@@ -97,7 +97,8 @@
         if ([self.delegate respondsToSelector:@selector(finishedLoginWithAuthToken:requiredMultifactorCode:)]) {
             [self.delegate finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.requiredMultifactor];
         }
-    } needsMultifactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo) {
+    } needsMultifactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo, NSArray<NSString *> *supportedAuthTypes) {
+        loginFields.supportedAuthTypes = supportedAuthTypes;
         if (nonceInfo == nil && [self.delegate respondsToSelector:@selector(needsMultifactorCode)]) {
             [self.delegate needsMultifactorCode];
         } else if (nonceInfo != nil && [self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {

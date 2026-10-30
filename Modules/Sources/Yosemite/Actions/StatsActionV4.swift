@@ -7,7 +7,7 @@ public enum StatsActionV4: Action {
 
     /// Clears all of the stats data.
     ///
-    case resetStoredStats(onCompletion: () -> Void)
+    case resetStoredStats(onCompletion: @Sendable () -> Void)
 
     /// Synchronizes `OrderStats` for the provided siteID, time range, and date.
     ///
@@ -18,7 +18,7 @@ public enum StatsActionV4: Action {
                        latestDateToInclude: Date,
                        quantity: Int,
                        forceRefresh: Bool,
-                       onCompletion: (Result<Void, Error>) -> Void)
+                       onCompletion: @Sendable (Result<Void, Error>) -> Void)
 
     /// Retrieves `OrderStats` for the provided siteID, and time range, without saving them to the Storage layer.
     ///
@@ -37,7 +37,7 @@ public enum StatsActionV4: Action {
         siteTimezone: TimeZone,
         timeRange: StatsTimeRangeV4,
         latestDateToInclude: Date,
-        onCompletion: (Result<Void, Error>) -> Void)
+        onCompletion: @Sendable (Result<Void, Error>) -> Void)
 
     /// Retrieves `TopEarnerStats` for the provided siteID, time range, and date.
     /// Conditionally saves it to storage.
@@ -50,7 +50,7 @@ public enum StatsActionV4: Action {
                                 quantity: Int,
                                 forceRefresh: Bool,
                                 saveInStorage: Bool,
-                                onCompletion: (Result<TopEarnerStats, Error>) -> Void)
+                                onCompletion: @Sendable (Result<TopEarnerStats, Error>) -> Void)
 
     /// Retrieves the site summary stats for the provided site ID, period(s), and date.
     /// Conditionally saves them to storage, if a single period is retrieved.
@@ -61,7 +61,7 @@ public enum StatsActionV4: Action {
                                   quantity: Int,
                                   latestDateToInclude: Date,
                                   saveInStorage: Bool,
-                                  onCompletion: (Result<SiteSummaryStats, Error>) -> Void)
+                                  onCompletion: @Sendable (Result<SiteSummaryStats, Error>) -> Void)
 
     /// Retrieves the product bundle stats for the provided site ID and time range, without saving them to the Storage layer.
     ///
@@ -72,7 +72,7 @@ public enum StatsActionV4: Action {
                                     latestDateToInclude: Date,
                                     quantity: Int,
                                     forceRefresh: Bool,
-                                    onCompletion: (Result<ProductBundleStats, Error>) -> Void)
+                                    onCompletion: @Sendable (Result<ProductBundleStats, Error>) -> Void)
 
     /// Retrieves the top product bundles for the provided site ID and time range, without saving them to the Storage layer.
     ///
@@ -81,7 +81,7 @@ public enum StatsActionV4: Action {
                                    earliestDateToInclude: Date,
                                    latestDateToInclude: Date,
                                    quantity: Int,
-                                   onCompletion: (Result<[ProductsReportItem], Error>) -> Void)
+                                   onCompletion: @Sendable (Result<[ProductsReportItem], Error>) -> Void)
 
     /// Retrieves the used gift card stats for the provided site ID and time range, without saving them to the Storage layer.
     ///
@@ -92,5 +92,5 @@ public enum StatsActionV4: Action {
                                    latestDateToInclude: Date,
                                    quantity: Int,
                                    forceRefresh: Bool,
-                                   onCompletion: (Result<GiftCardStats, Error>) -> Void)
+                                   onCompletion: @Sendable (Result<GiftCardStats, Error>) -> Void)
 }

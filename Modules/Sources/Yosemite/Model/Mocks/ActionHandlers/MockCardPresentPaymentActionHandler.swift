@@ -11,7 +11,7 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .loadAccounts(let siteID, let onCompletion):
+        case .loadAccounts(let siteID, _, let onCompletion):
             loadAccounts(siteID: siteID, onCompletion: onCompletion)
         case .publishCardReaderConnections(let onCompletion):
             publishCardReaderConnections(onCompletion: onCompletion)

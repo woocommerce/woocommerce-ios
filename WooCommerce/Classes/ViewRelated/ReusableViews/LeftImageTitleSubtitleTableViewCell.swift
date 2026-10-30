@@ -3,6 +3,7 @@ import UIKit
 
 /// Represents a regular UITableView Cell with subtitle: [Image | Text + Subtitle |  Disclosure]
 ///
+@MainActor
 class LeftImageTitleSubtitleTableViewCell: UITableViewCell {
 
     /// Left Image
@@ -42,6 +43,10 @@ class LeftImageTitleSubtitleTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBackground()
         imageView?.tintColor = .primary
         textLabel?.applyBodyStyle()

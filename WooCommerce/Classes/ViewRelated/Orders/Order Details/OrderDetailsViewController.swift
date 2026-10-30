@@ -958,7 +958,7 @@ private extension OrderDetailsViewController {
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
     private static func updateOrderStatusAction(viewModel: OrderDetailsViewModel, siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
-        return OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
+        let finish: @MainActor @Sendable (Error?) -> Void = { error in
             guard let error else {
                 let updatedOrder = viewModel.order.copy(status: status)
                 viewModel.update(order: updatedOrder)
@@ -973,7 +973,10 @@ private extension OrderDetailsViewController {
             DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status)]. Error: \(error)")
 
             OrderDetailsViewController.displayOrderStatusErrorNotice(viewModel: viewModel, orderID: orderID, status: status)
-        })
+        }
+        return OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: status) { error in
+            Task { @MainActor in finish(error) }
+        }
     }
 
     /// Enqueues the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.

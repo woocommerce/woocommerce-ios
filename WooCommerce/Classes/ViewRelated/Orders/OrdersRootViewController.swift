@@ -545,6 +545,12 @@ private extension OrdersRootViewController {
     }
 }
 
+extension OrdersRootViewController: ScrollToTopProviding {
+    var scrollToTopScrollView: UIScrollView? {
+        ordersViewController.tableView
+    }
+}
+
 extension OrdersRootViewController: @MainActor OrderListViewControllerDelegate {
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController) {
         // Do nothing here

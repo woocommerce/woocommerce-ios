@@ -668,6 +668,25 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: .stripeOnly))
     }
 
+    func test_onboarding_when_stripe_active_wcpay_inactive_and_wcpay_was_preferred_then_returns_stripe_complete() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        setupPreferredPaymentGateway(.wcPay)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .completed(plugin: .stripeOnly))
+    }
+
     func test_onboarding_returns_complete_when_wcpay_plugin_active() {
         // Given
         setupCountry(country: .us)
@@ -1443,7 +1462,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let networkError = AFError.sessionTaskFailed(error: urlError)
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             switch action {
-            case let .loadAccounts(_, onCompletion):
+            case let .loadAccounts(_, _, onCompletion):
                 onCompletion(.failure(networkError))
             default:
                 break
@@ -1469,7 +1488,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let genericError = NSError(domain: "test.error", code: 500, userInfo: nil)
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             switch action {
-            case let .loadAccounts(_, onCompletion):
+            case let .loadAccounts(_, _, onCompletion):
                 // Both accounts fail to load
                 onCompletion(.failure(genericError))
             default:
@@ -1625,6 +1644,72 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
             useCase.state == .genericError
         }
     }
+
+    func test_refresh_when_plugins_sync_and_only_stripe_is_active_then_loads_only_stripe_account() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        whenSynchronizingStoreData(systemInformationResult: .success(.fake()))
+        var requestedGateways: [CardPresentPaymentsPlugin]?
+        whenLoadingAccounts(thenReturn: .success(())) { requestedGateways = $0 }
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            requestedGateways != nil
+        }
+        XCTAssertEqual(requestedGateways, [.stripe])
+    }
+
+    func test_refresh_when_plugin_sync_fails_and_stored_plugins_show_only_stripe_then_loads_both_accounts() {
+        // Given the stored plugins may be stale: the store could have switched to WooPayments.
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        whenSynchronizingStoreData(systemInformationResult: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        var requestedGateways: [CardPresentPaymentsPlugin]?
+        whenLoadingAccounts(thenReturn: .success(())) { requestedGateways = $0 }
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            requestedGateways != nil
+        }
+        XCTAssertEqual(requestedGateways, CardPresentPaymentsPlugin.allCases)
+    }
+
+    func test_refresh_when_plugins_sync_and_both_are_active_then_loads_both_accounts() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        whenSynchronizingStoreData(systemInformationResult: .success(.fake()))
+        var requestedGateways: [CardPresentPaymentsPlugin]?
+        whenLoadingAccounts(thenReturn: .success(())) { requestedGateways = $0 }
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            requestedGateways != nil
+        }
+        XCTAssertEqual(requestedGateways, CardPresentPaymentsPlugin.allCases)
+    }
 }
 
 // MARK: - Store sync helpers
@@ -1642,9 +1727,11 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
         }
     }
 
-    func whenLoadingAccounts(thenReturn result: Result<Void, Error>) {
+    func whenLoadingAccounts(thenReturn result: Result<Void, Error>,
+                             onRequestedGateways: (([CardPresentPaymentsPlugin]) -> Void)? = nil) {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case let .loadAccounts(_, onCompletion) = action {
+            if case let .loadAccounts(_, gateways, onCompletion) = action {
+                onRequestedGateways?(gateways)
                 onCompletion(result)
             }
         }

@@ -41,7 +41,7 @@ final class ReceiptEmailViewModel: ObservableObject {
     func sendReceipt() {
         let email = trimmedEmail
         let action = ReceiptAction.sendReceipt(order: order, email: email) { [weak self] result in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 self.state = .idle
                 switch result {

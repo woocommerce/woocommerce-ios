@@ -4,6 +4,7 @@ import Yosemite
 import protocol WooFoundation.Analytics
 
 /// View model for `BlazeTargetLocationPickerView`
+@MainActor
 final class BlazeTargetLocationPickerViewModel: ObservableObject {
 
     @Published var selectedLocations: Set<BlazeTargetLocation>?

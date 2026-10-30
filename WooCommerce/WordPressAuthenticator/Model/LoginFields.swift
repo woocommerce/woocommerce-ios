@@ -58,6 +58,9 @@ public class LoginFields: NSObject {
     /// User ID for use with the nonce for social login
     @objc public var nonceUserID: Int = 0
 
+    /// 2FA methods WordPress.com listed for the last password login that needed a code.
+    @objc public var supportedAuthTypes = [String]()
+
     /// Used to restrict login to WordPress.com
     public var restrictToWPCom = false
 
@@ -112,6 +115,7 @@ public class LoginFields: NSObject {
                      multifactorCode: String,
                      nonceInfo: SocialLogin2FANonceInfo?,
                      nonceUserID: Int,
+                     supportedAuthTypes: [String] = [],
                      restrictToWPCom: Bool,
                      emailAddress: String,
                      meta: LoginFieldsMeta,
@@ -124,6 +128,7 @@ public class LoginFields: NSObject {
         self.multifactorCode = multifactorCode
         self.nonceInfo = nonceInfo
         self.nonceUserID = nonceUserID
+        self.supportedAuthTypes = supportedAuthTypes
         self.restrictToWPCom = restrictToWPCom
         self.emailAddress = emailAddress
         self.meta = meta
@@ -140,6 +145,7 @@ extension LoginFields {
               multifactorCode: multifactorCode,
               nonceInfo: nonceInfo,
               nonceUserID: nonceUserID,
+              supportedAuthTypes: supportedAuthTypes,
               restrictToWPCom: restrictToWPCom,
               emailAddress: emailAddress,
               meta: meta.copy(),

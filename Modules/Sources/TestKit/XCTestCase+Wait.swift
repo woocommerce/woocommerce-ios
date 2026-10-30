@@ -1,4 +1,4 @@
-
+import Synchronization
 import XCTest
 import Nimble
 
@@ -150,19 +150,19 @@ extension XCTestCase {
     /// ```
     ///
     @MainActor
-    public func waitForCompletion<ValueType>(file: StaticString = #filePath,
-                                             line: UInt = #line,
-                                             timeout: TimeInterval = 5.0,
-                                             _ body: (_ completion: @escaping @Sendable (ValueType) -> Void) -> Void) async throws -> ValueType {
+    public func waitForCompletion<ValueType: Sendable>(file: StaticString = #filePath,
+                                                     line: UInt = #line,
+                                                     timeout: TimeInterval = 5.0,
+                                                     _ body: (_ completion: @escaping @Sendable (ValueType) -> Void) -> Void) async throws -> ValueType {
         let exp = expectation(description: "Expect completion to be called.")
 
-        nonisolated(unsafe) var receivedValue: ValueType?
+        let receivedValue = Mutex<ValueType?>(nil)
         body { value in
-            receivedValue = value
+            receivedValue.withLock { $0 = value }
             exp.fulfill()
         }
 
         await fulfillment(of: [exp], timeout: timeout)
-        return try XCTUnwrap(receivedValue, file: file, line: line)
+        return try XCTUnwrap(receivedValue.withLock { $0 }, file: file, line: line)
     }
 }

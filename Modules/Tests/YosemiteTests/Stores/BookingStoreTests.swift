@@ -1561,9 +1561,9 @@ private final class MockQueuedBookingStorageManager: StorageManagerType, Sendabl
         underlying.performAndSave(operation, completion: completion, on: queue)
     }
 
-    func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
-                           completion: @escaping @Sendable (Result<T, Error>) -> Void,
-                           on queue: DispatchQueue) {
+    func performAndSave<T: Sendable>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                                     completion: @escaping @Sendable (Result<T, Error>) -> Void,
+                                     on queue: DispatchQueue) {
         let underlying = underlying
         pendingWrite.withLock {
             precondition($0 == nil)

@@ -210,7 +210,7 @@ let package = Package(
             ],
             exclude: ["Model/Migrations.md"],
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "TestKit",

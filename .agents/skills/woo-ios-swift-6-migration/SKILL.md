@@ -43,7 +43,7 @@ swift build --package-path Modules --target UITestsFoundation \
   -Xswiftc -strict-concurrency=complete
 ```
 
-Use it to iterate on a module. It does not compile the Xcode targets that consume the module, so finish with the scheme build above before you measure or report.
+Use it to iterate on a module. It does not compile the Xcode targets that consume the module, so finish with the scheme build above before you measure or report. Keep `--scratch-path` outside the repository, including `.agent-artifacts/`. The app's SwiftLint build phase scans the package checkouts there, and their violations fail the app build.
 
 Save the build log. Record warnings by target, file path relative to the repository, and diagnostic text. Use the same build scope and settings before and after the change. Remove repeated compiler output with the same method in both logs. Compare warnings without line and column numbers. Keep the file path and number of occurrences.
 

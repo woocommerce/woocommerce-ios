@@ -57,7 +57,8 @@ public struct GeneralAppSettingsStorage {
     public var settingsPublisher: AnyPublisher<GeneralAppSettings, Never> {
         NotificationCenter.default.publisher(for: Self.refreshNotification)
             .map { _ in () }
-            .prepend(())
+            // Observe changes before delivering the initial value, which may trigger another save.
+            .merge(with: Just(()))
             .map { settings }
             .removeDuplicates()
             .eraseToAnyPublisher()

@@ -100,7 +100,7 @@ public struct BlazeTargetTopic: Decodable, Equatable, Identifiable, Hashable, Ge
 /// Location to target for a Blaze campaign.
 /// This has to be a class so that it can reference a property with the type of itself.
 ///
-public final class BlazeTargetLocation: NSObject, Decodable, Identifiable, GeneratedCopiable, GeneratedFakeable {
+public final class BlazeTargetLocation: NSObject, Decodable, Identifiable, GeneratedCopiable, GeneratedFakeable, Sendable {
 
     /// ID of the location
     public let id: Int64

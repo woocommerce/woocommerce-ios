@@ -3,6 +3,7 @@ import Yosemite
 
 /// View model for `BlazePaymentMethodsView`.
 ///
+@MainActor
 final class BlazePaymentMethodsViewModel: ObservableObject {
     typealias Completion = (_ selectedPaymentMethodID: String) -> Void
     private let onCompletion: Completion
@@ -100,11 +101,11 @@ private extension BlazePaymentMethodsViewModel {
 // MARK: - Methods for rendering a SwiftUI Preview
 //
 extension BlazePaymentMethodsViewModel {
-    static func samplePaymentInfo(paymentMethods: [BlazePaymentMethod] = samplePaymentMethods()) -> BlazePaymentInfo {
+    nonisolated static func samplePaymentInfo(paymentMethods: [BlazePaymentMethod] = samplePaymentMethods()) -> BlazePaymentInfo {
         BlazePaymentInfo(paymentMethods: paymentMethods)
     }
 
-    static func samplePaymentMethods() -> [BlazePaymentMethod] {
+    nonisolated static func samplePaymentMethods() -> [BlazePaymentMethod] {
 
         let paymentMethod1 = BlazePaymentMethod(id: "payment-method-1",
                                                 rawType: "credit_card",

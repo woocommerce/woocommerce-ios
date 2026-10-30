@@ -3,7 +3,6 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
-@MainActor
 final class BlazePaymentMethodsViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 322
@@ -19,8 +18,9 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
 
     private var subscription: AnyCancellable?
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true,
                                                                                  isWPCom: true,
                                                                                  displayName: sampleDisplayName,
@@ -30,6 +30,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
 
     // MARK: Load payment methods
 
+    @MainActor
     func test_reloadPaymentMethods_loads_paymentMethods() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
@@ -44,6 +45,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentMethods, samplePaymentInfo.paymentMethods)
     }
 
+    @MainActor
     func test_reloadPaymentMethods_shows_error_upon_failure() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
@@ -60,6 +62,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
     }
 
     // MARK: `selectedPaymentMethodID`
+    @MainActor
     func test_selectedPaymentMethodID_returns_injected_initial_value() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
@@ -71,6 +74,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
     }
 
     // MARK: Account related
+    @MainActor
     func test_account_details_reflect_the_logged_in_account() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
@@ -85,6 +89,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
 
     // MARK: `didSelectPaymentMethod`
 
+    @MainActor
     func test_didSelectPaymentMethod_updates_selected_payment_method_id() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
@@ -100,6 +105,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
 
     // MARK: Save selection
 
+    @MainActor
     func test_didSelectPaymentMethod_sends_selected_payment_id_via_completion_handler() async throws {
         // Given
         var selectedPaymentID = ""
@@ -116,6 +122,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
 }
 
 private extension BlazePaymentMethodsViewModelTests {
+    @MainActor
     func mockPaymentFetch(with result: Result<BlazePaymentInfo, Error>) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {

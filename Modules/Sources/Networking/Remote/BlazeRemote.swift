@@ -4,7 +4,7 @@ import struct Alamofire.JSONEncoding
 
 /// Protocol for `BlazeRemote` mainly used for mocking.
 ///
-public protocol BlazeRemoteProtocol {
+public protocol BlazeRemoteProtocol: Sendable {
     /// Creates a new Blaze campaign
     /// - Parameters:
     ///    - campaign: Details of the Blaze campaign to be created
@@ -343,7 +343,7 @@ private extension BlazeRemote {
 }
 
 /// Blaze Forecasted Impressions input
-public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
+public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable, Sendable {
     // Start date of the campaign.
     public let startDate: Date
     // End date of the campaign
@@ -382,7 +382,7 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
 }
 
 /// Blaze Forecasted Impressions sub-input related to targetings.
-public struct BlazeTargetOptions: Encodable, GeneratedFakeable, GeneratedCopiable, Equatable {
+public struct BlazeTargetOptions: Encodable, GeneratedFakeable, GeneratedCopiable, Equatable, Sendable {
     // Target location IDs for the campaign. Optional.
     public let locations: [Int64]?
     // Target languages for the campaign. Optional.

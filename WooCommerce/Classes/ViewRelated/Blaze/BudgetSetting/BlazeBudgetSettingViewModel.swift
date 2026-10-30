@@ -5,6 +5,7 @@ import Yosemite
 import protocol WooFoundation.Analytics
 
 /// View model for `BlazeBudgetSettingView`
+@MainActor
 final class BlazeBudgetSettingViewModel: ObservableObject {
     @Published var dailyAmount: Double
     /// Using Double because Slider doesn't work with Int

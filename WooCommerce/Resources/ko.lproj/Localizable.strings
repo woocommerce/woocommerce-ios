@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-08 09:54:25+0000 */
+/* Translation-Revision-Date: 2026-10-30 09:55:27+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -8628,6 +8628,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "새 스토어를 시작하시나요?";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "굵게";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "기울임꼴";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "밑줄";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Telegram 메시지 보내기";
 
@@ -9890,6 +9899,24 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "결제를 시작한 이후로 주문 총액이 변경되었습니다. 돌아가서 주문이 정확한지 확인하고 다시 결제를 시도해 주세요.";
 
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "거스름돈: %1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "무시";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "스토어에서 예기치 않은 응답이 반환되어서 로그인을 완료할 수 없습니다. 다시 시도하거나 도움말을 지원팀에 문의하세요.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "다시 시도";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "지원 문의";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "로그인할 수 없음";
+
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "보안 플러그인이 워드프레스 알림판 위치를 변경할 수도 있습니다. 여는 데 사용하는 주소를 입력하세요.";
 
@@ -10896,6 +10923,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "검색에서 반환된 리더에 IP 주소가 없으며 연결할 수 없습니다.";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "과거 AI 지원 채팅 다시 방문";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "채팅 기록";
 
@@ -11884,6 +11914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "사진 보기";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "이 주문을 카드로 결제할 수 있는지 확인할 수 없습니다. 다시 시도해 주세요.";
+
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "이 주문의 통화(%1$@)에는 카드 결제를 이용할 수 없습니다.";
 
@@ -12831,6 +12864,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "제품 카탈로그";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "결제 설정 관리";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "결제";
 
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "직원 및 PIN 접근 권한 보기";
@@ -14059,6 +14098,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "업데이트 날짜가 제공되지 않음";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "결제가 완료되면 소리 재생";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "결제 성공 소리";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "결제";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "POS는 메뉴에서 POS 잠금을 누르면 잠기며, 5분 동안 활동이 없으면 자동으로 잠깁니다.";
@@ -15487,6 +15535,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "제목 없는 채팅";
 
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "아직 AI 지원 채팅을 시작하지 않았습니다.";
+
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "채팅 기록";
 
@@ -16318,6 +16369,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "목적지 주소의 전화번호가 필요합니다.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@에는 받는 사람의 전화번호가 필요합니다.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "회사 추가";
 
@@ -16675,6 +16729,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "ITN에 대한 자세한 내용";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "이제 EU로 배송하려면 각 아이템에 대한 상품 식별자가 필요합니다. 우커머스 배송 플러그인을 업데이트하여 추가하세요.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "상품 상세 정보";
 
@@ -16720,6 +16777,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "설명은 30자 이하여야 합니다.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "EU로 배송하기 위한 필수 사항";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "%1$d자 이하여야 합니다.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "EU 상품 식별자";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "EU로 배송하기 위한 필수 사항입니다. SKU와 GTIN\/EAN은 상품의 재고 설정에서 미리 채워집니다.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN\/EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "GTIN\/EAN을 입력하거나 \"바코드 없음\"을 선택합니다.";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS 관세 번호";
 
@@ -16729,8 +16804,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "선택 사항";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "제조업체 품목 번호(MPN)";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "바코드 없음";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "원산지 국가";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "세관 번호는 6~12자리여야 함";

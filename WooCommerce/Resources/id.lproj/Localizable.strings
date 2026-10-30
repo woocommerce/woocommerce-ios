@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-06 09:56:24+0000 */
+/* Translation-Revision-Date: 2026-10-20 11:54:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -8625,6 +8625,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Membuat toko baru?";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "Cetak tebal";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "Cetak miring";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "Garis bawah";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Kirim pesan Telegram";
 
@@ -9887,6 +9896,24 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Total pesanan telah berubah sejak awal pembayaran. Silakan kembali dan periksa apakah pesanan sudah benar, lalu coba pembayaran lagi.";
 
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "Kembalian terutang: %1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "Tutup";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "Toko Anda memberikan respons yang tidak terduga, sehingga kami tidak dapat menyelesaikan proses login Anda. Coba lagi atau hubungi dukungan untuk mendapatkan bantuan.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "Coba Lagi";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "Hubungi Dukungan";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "Tidak dapat login";
+
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Plugin keamanan dapat memindahkan dasbor WordPress. Masukkan alamat yang Anda gunakan untuk membukanya.";
 
@@ -10893,6 +10920,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Perangkat pembaca ditemukan, tetapi tidak memiliki alamat IP dan tidak dapat terhubung.";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "Kunjungi kembali obrolan dukungan AI sebelumnya";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Riwayat Obrolan";
 
@@ -11881,6 +11911,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "Lihat Foto";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "Tidak dapat memeriksa apakah pesanan ini dapat dibayar dengan kartu. Harap coba lagi.";
+
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "Pembayaran kartu tidak tersedia untuk mata uang pesanan ini (%1$@).";
 
@@ -12828,6 +12861,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Katalog produk";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "Kelola pengaturan pembayaran";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Pembayaran";
 
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Lihat staf dan akses PIN";
@@ -14056,6 +14095,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Tanggal pembaruan tidak tersedia";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "Putar suara setelah pembayaran selesai";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "Suara pembayaran berhasil";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "Pembayaran";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "POS akan terkunci jika Anda mengetuk Kunci POS dari menu, atau secara otomatis setelah 5 menit tidak aktif.";
@@ -15484,6 +15532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Obrolan tanpa judul";
 
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "Anda belum memulai obrolan dukungan AI.";
+
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Riwayat Obrolan";
 
@@ -16315,6 +16366,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "Nomor telepon wajib disertakan untuk alamat tujuan.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@ memerlukan nomor telepon penerima.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Tambahkan perusahaan";
 
@@ -16672,6 +16726,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Info selengkapnya tentang ITN";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "Pengiriman ke UE sekarang memerlukan kode identifikasi produk pada setiap item.  Perbarui plugin WooCommerce Shipping untuk menambahkannya.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Rincian Produk";
 
@@ -16717,6 +16774,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "Deskripsi harus terdiri atas 30 karakter atau kurang.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "Diperlukan untuk pengiriman ke UE";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "Harus berjumlah %1$d atau lebih sedikit karakter.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "Kode identifikasi produk UE";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "Diperlukan untuk pengiriman ke UE. Kode SKU dan GTIN \/ EAN sudah terisi secara otomatis dari pengaturan Inventaris produk.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "Kode GTIN \/ EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "Masukkan kode GTIN\/EAN, atau pilih \"Tanpa barcode\"";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "Nomor tarif HS";
 
@@ -16726,8 +16801,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "Opsional";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "Nomor Komponen Produsen (MPN)";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "Tanpa barcode";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Negara Asal";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "Kode SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "Nomor tarif harus terdiri atas 6 hingga 12 digit";

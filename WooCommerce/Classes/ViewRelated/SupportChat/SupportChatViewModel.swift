@@ -159,8 +159,44 @@ final class SupportChatViewModel {
     private(set) var messages: [ChatMessage] = []
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
+    private var earlierPaymentFailures: [String] = []
+
+    var paymentDiagnosticsAreInconclusive: Bool {
+        selectedIssue == .inPersonPayments && diagnosticResults.contains(where: \.isInconclusive)
+    }
+
+    var paymentDiagnosticCompletionMessage: String? {
+        guard selectedIssue == .inPersonPayments else { return nil }
+        return diagnosticResults.first(where: \.isInconclusive)?.errorMessage ?? Localization.paymentChecksPassed
+    }
+
+    var paymentDiagnosticHeadline: String? {
+        guard selectedIssue == .inPersonPayments else { return nil }
+        return diagnosticResults.first(where: \.isInconclusive)?.headline ?? Localization.paymentChecksPassedHeadline
+    }
+
+    /// Actions for orange results and for notes on passed checks.
+    var paymentResultActions: [SupportDiagnosticsService.Action] {
+        guard selectedIssue == .inPersonPayments else { return [] }
+        return diagnosticResults.filter(\.isSuccess).compactMap(\.suggestedAction)
+    }
 
     var storeAdminURL: URL?
+
+    var paymentAdvisoryMessage: String? {
+        guard selectedIssue == .inPersonPayments else { return nil }
+        let advisories = diagnosticResults.compactMap(\.advisoryMessage)
+        return advisories.isEmpty ? nil : advisories.joined(separator: "\n\n")
+    }
+
+    private var paymentDiagnosticSupportSummary: String? {
+        guard selectedIssue == .inPersonPayments else { return nil }
+        var parts = [SupportDiagnosticsService.troubleshootingDescription(from: diagnosticResults)].compactMap { $0 }
+        if !earlierPaymentFailures.isEmpty {
+            parts.append("Earlier setup checks (not payment attempts):\n" + earlierPaymentFailures.joined(separator: "\n"))
+        }
+        return parts.joined(separator: "\n\n")
+    }
 
 
     /// Whether the input area should be shown.
@@ -425,14 +461,17 @@ final class SupportChatViewModel {
             )
             trackTroubleshootingCompleted(issueType: issue,
                                           result: .failed,
-                                          failedTest: failure.test)
+                                          failedTest: failure.test,
+                                          failureReason: failure.reason)
         } else {
             messages[progressIndex] = ChatMessage(
                 id: messages[progressIndex].id,
                 role: .bot,
                 content: .diagnosticsSuccess
             )
-            trackTroubleshootingCompleted(issueType: issue, result: .passed)
+            trackTroubleshootingCompleted(issueType: issue,
+                                          result: paymentDiagnosticsAreInconclusive ? .inconclusive : .passed,
+                                          failureReason: diagnosticResults.first(where: \.isInconclusive)?.reason)
         }
     }
 
@@ -569,15 +608,28 @@ final class SupportChatViewModel {
     private func rerunAllTests() async {
         guard let tests = selectedIssue?.testsToRun else { return }
 
-        // Find the failure message to update
+        // Find the failure message to update; payment checks can also run again from an orange result.
         guard let messageIndex = messages.lastIndex(where: {
-            if case .diagnosticsFailure = $0.content { return true }
-            return false
+            switch $0.content {
+            case .diagnosticsFailure:
+                return true
+            case .diagnosticsSuccess:
+                return selectedIssue == .inPersonPayments
+            default:
+                return false
+            }
         }) else { return }
 
         let messageId = messages[messageIndex].id
 
         // Clear previous results
+        if selectedIssue == .inPersonPayments {
+            if case .diagnosticsFailure(let failure) = messages[messageIndex].content, let details = failure.technicalDetails {
+                earlierPaymentFailures = Array(([details] + earlierPaymentFailures).prefix(3))
+            }
+            // Retry can run after Continue to chat, so the first message must use the new results.
+            preparedInitialContext = nil
+        }
         diagnosticResults = []
 
         // Initialize progress with all tests pending
@@ -774,6 +826,9 @@ final class SupportChatViewModel {
         var context = diagnosticsContext ?? initialContext ?? [:]
         let contextSiteAddress: String? = if case .string(let address) = context["site_url"] { address } else { nil }
         let report = await mobileStatusReportProvider.generateReport(siteAddress: supportSiteAddress ?? contextSiteAddress)
+        if let summary = paymentDiagnosticSupportSummary {
+            context["troubleshootingResults"] = .string(summary)
+        }
         if !report.isEmpty {
             let existing: String? = if case .string(let text) = context["troubleshootingResults"] { text } else { nil }
             context["troubleshootingResults"] = .string([existing, report].compactMap { $0 }.joined(separator: "\n\n"))
@@ -819,7 +874,7 @@ final class SupportChatViewModel {
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
 
-        return messages.compactMap { message -> String? in
+        var transcript = messages.compactMap { message -> String? in
             let roleName: String
             switch message.role {
             case .user: roleName = "User"
@@ -838,15 +893,23 @@ final class SupportChatViewModel {
                 let summary = steps.map { "\($0.test.title): \($0.status)" }.joined(separator: ", ")
                 contentText = "[Running diagnostics: \(summary)]"
             case .diagnosticsSuccess:
-                contentText = "[All diagnostics passed]"
+                if selectedIssue == .inPersonPayments {
+                    contentText = paymentDiagnosticsAreInconclusive ? "[Payment setup needs attention]" : "[Payment setup checks passed]"
+                } else {
+                    contentText = "[All diagnostics passed]"
+                }
             case .diagnosticsFailure(let result):
-                contentText = "[Diagnostics failed: \(result.test.title) - \(result.errorMessage ?? "Unknown error")]"
+                contentText = "[Diagnostics failed: \(result.headline ?? result.test.title) - \(result.errorMessage ?? "Unknown error")]"
             case .resolvedPrompt:
                 contentText = Localization.resolvedPromptMessage
             }
 
             return "[\(timestamp)] \(roleName): \(contentText)"
         }.joined(separator: "\n\n")
+        if let summary = paymentDiagnosticSupportSummary {
+            transcript += "\n\n" + summary
+        }
+        return transcript
     }
 
     func dismissError() {
@@ -1072,11 +1135,13 @@ final class SupportChatViewModel {
 
     private func trackTroubleshootingCompleted(issueType: SupportIssueType,
                                               result: WooAnalyticsEvent.SupportChat.TroubleshootingResult,
-                                              failedTest: SupportDiagnosticsService.Test? = nil) {
+                                              failedTest: SupportDiagnosticsService.Test? = nil,
+                                              failureReason: String? = nil) {
         analytics.track(event: WooAnalyticsEvent.SupportChat.troubleshootingCompleted(
             issueType: issueType,
             result: result,
-            failedTest: failedTest
+            failedTest: failedTest,
+            failureReason: failureReason
         ))
     }
 

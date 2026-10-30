@@ -5,17 +5,20 @@ public struct StoreButton: View {
     private let icon: StoreIconImage?
     private let variant: StoreButtonVariant
     private let size: StoreButtonSize
+    private let isFullWidth: Bool
     private let action: () -> Void
 
     public init(_ title: String,
                 icon: StoreIconImage? = nil,
                 variant: StoreButtonVariant = .filled,
                 size: StoreButtonSize = .small,
+                isFullWidth: Bool = false,
                 action: @escaping () -> Void) {
         self.title = title
         self.icon = icon
         self.variant = variant
         self.size = size
+        self.isFullWidth = isFullWidth
         self.action = action
     }
 
@@ -25,6 +28,7 @@ public struct StoreButton: View {
                 icon?.image(size: size.iconSize)
                 Text(title).storeTextStyle(size.textStyle)
             }
+            .frame(maxWidth: isFullWidth ? .infinity : nil)
         }
         .buttonStyle(StoreButtonStyle(variant: variant, size: size))
     }

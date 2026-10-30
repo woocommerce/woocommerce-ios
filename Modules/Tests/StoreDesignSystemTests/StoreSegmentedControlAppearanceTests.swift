@@ -4,11 +4,14 @@ import Testing
 
 @Suite struct StoreSegmentedControlAppearanceTests {
 
-    @Test func test_init_when_enabled_then_uses_android_segmented_control_roles() {
-        // Given / When an enabled segmented control resolves its appearance
-        let sut = StoreSegmentedControlAppearance(isEnabled: true)
+    @Test func test_init_when_enabled_then_uses_enabled_roles() {
+        // Given
+        let isEnabled = true
 
-        // Then its track, selected pill, and labels use the matching Android design-system roles
+        // When
+        let sut = StoreSegmentedControlAppearance(isEnabled: isEnabled)
+
+        // Then
         #expect(sut.track == .storeSecondaryContainer)
         #expect(sut.selectedContainer == .storeSurfaceBright)
         #expect(sut.selectedText == .storeOnSurface)
@@ -16,10 +19,13 @@ import Testing
     }
 
     @Test func test_init_when_disabled_then_uses_state_layer_roles() {
-        // Given / When a disabled segmented control resolves its appearance
-        let sut = StoreSegmentedControlAppearance(isEnabled: false)
+        // Given
+        let isEnabled = false
 
-        // Then the track, selected pill, and labels use the disabled state layers
+        // When
+        let sut = StoreSegmentedControlAppearance(isEnabled: isEnabled)
+
+        // Then
         #expect(sut.track == .storeStateLayerOnSurfaceOpacity08)
         #expect(sut.selectedContainer == .storeStateLayerOnSurfaceOpacity16)
         #expect(sut.selectedText == .storeStateLayerOnSurfaceOpacity24)

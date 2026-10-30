@@ -7,8 +7,7 @@ struct StoreDashboardCardErrorView: View {
 
     var body: some View {
         VStack(spacing: StoreSpacing.s5) {
-            StoreIcon.CircleInfo.regular.image(size: .largeIncreased)
-                .foregroundStyle(.storeError)
+            Image(uiImage: .noConnectionImage)
                 .accessibilityHidden(true)
             Text(Localization.errorTitle)
                 .storeTextStyle(.titleLarge.strong)
@@ -21,8 +20,7 @@ struct StoreDashboardCardErrorView: View {
                     showingSupportForm = true
                     return .handled
                 })
-            StoreButton(Localization.retry, variant: .outlined, action: retry)
-                .frame(maxWidth: .infinity)
+            StoreButton(Localization.retry, variant: .outlined, isFullWidth: true, action: retry)
         }
         .foregroundStyle(.storeOnSurface)
         .padding(StorePadding.p5)
@@ -62,8 +60,7 @@ struct StoreDashboardUnavailableAnalyticsView: View {
 
     var body: some View {
         VStack(spacing: StoreSpacing.s5) {
-            StoreIcon.ChartLineUp.regular.image(size: .extraLarge)
-                .foregroundStyle(.storeOnSurfaceVariant)
+            Image(uiImage: .noStoreImage)
                 .accessibilityHidden(true)
             Text(title)
                 .storeTextStyle(.titleLarge.strong)

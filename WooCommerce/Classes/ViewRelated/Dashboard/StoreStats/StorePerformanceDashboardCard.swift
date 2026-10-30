@@ -149,8 +149,6 @@ private extension StorePerformanceDashboardCard {
             title: revenueTypeTitle
         )
         .disabled(viewModel.syncingData)
-        .accessibilityIdentifier("performance-revenue-type-picker")
-        .accessibilityLabel(Localization.revenueTypeAccessibilityLabel)
     }
 
     var stats: some View {
@@ -416,11 +414,6 @@ private extension StorePerformanceDashboardCard {
         static let revenueTypeTotal = NSLocalizedString("storePerformanceView.revenueType.total", value: "Total", comment: "Total revenue option")
         static let revenueTypeGross = NSLocalizedString("storePerformanceView.revenueType.gross", value: "Gross", comment: "Gross revenue option")
         static let revenueTypeNet = NSLocalizedString("storePerformanceView.revenueType.net", value: "Net", comment: "Net revenue option")
-        static let revenueTypeAccessibilityLabel = NSLocalizedString(
-            "storePerformanceView.revenueType.accessibilityLabel",
-            value: "Revenue type",
-            comment: "Accessibility label for the revenue selector"
-        )
         static let scheduledUpdatesInfoAccessibilityLabel = NSLocalizedString(
             "storePerformanceView.scheduledUpdatesInfoAccessibilityLabel",
             value: "Analytics update details",

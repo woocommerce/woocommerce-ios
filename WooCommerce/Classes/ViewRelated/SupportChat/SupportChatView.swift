@@ -244,12 +244,12 @@ struct SupportChatView: View {
                         .font(.body.weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
                 } else {
-                    Text(viewModel.paymentDiagnosticCompletionMessage ?? Localization.allChecksPassed)
+                    Text(Localization.allChecksPassed)
                         .font(.body)
                 }
             }
 
-            if viewModel.paymentDiagnosticHeadline != nil, let message = viewModel.paymentDiagnosticCompletionMessage {
+            if let message = viewModel.paymentDiagnosticCompletionMessage {
                 Text(message)
                     .font(.body)
                     .foregroundStyle(Color(.secondaryLabel))

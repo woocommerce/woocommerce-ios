@@ -25,6 +25,7 @@ struct PaymentSupportDiagnosticsTests {
         // Then
         #expect(!result.isSuccess)
         #expect(result.technicalDetails?.contains("no_active_payment_plugin") == true)
+        #expect(requestedGateways(sut).isEmpty)
     }
 
     @Test func test_run_when_country_unsupported_and_no_plugin_then_does_not_recommend_installing_provider() async {
@@ -274,7 +275,7 @@ struct PaymentSupportDiagnosticsTests {
                                   gateway: gateway, currency: "USD", country: "US")
         // Then
         #expect(result.isSuccess == (gateway == .wcPay))
-        #expect(result.suggestedAction == (gateway == .wcPay ? .openPaymentProvider(gateway) : .retryDiagnostics))
+        #expect(result.suggestedAction == .openPaymentProvider(gateway))
         if gateway == .wcPay {
             #expect(result.isInconclusive)
             #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.accountNotLiveYet.message)
@@ -337,6 +338,16 @@ struct PaymentSupportDiagnosticsTests {
         #expect(result.errorMessage == (isHostedByWordPressCom ?
                                         PaymentSupportDiagnostics.Localization.hostedSiteMessage :
                                         PaymentSupportDiagnostics.Localization.blocked.message))
+    }
+
+    @Test func test_requestFailure_when_application_password_is_rejected_then_reports_access_denied() {
+        // Given
+        let sut = makeSUT()
+        let error = NetworkRequestError.unacceptableStatusCode(statusCode: 401, response: Data(#"{"code":"incorrect_password"}"#.utf8))
+        // When
+        let result = sut.requestFailure(error, stage: "system_status")
+        // Then
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.accessDenied.message)
     }
 
     @Test func test_requestFailure_when_connection_fails_then_asks_to_check_connection() {

@@ -38,7 +38,7 @@ struct PaymentSupportDiagnostics {
                 return failure(Localization.missingCurrency, reason: "missing_currency", action: .openStoreSettings)
             }
             let configuration = CardPresentPaymentsConfiguration(country: country)
-            guard country != .unknown, configuration.isSupportedCountry else {
+            guard configuration.isSupportedCountry else {
                 return failure(Localization.unsupportedCountry, reason: "country_not_supported", action: .openStoreSettings)
             }
             guard !active.isEmpty else {
@@ -52,11 +52,11 @@ struct PaymentSupportDiagnostics {
                                action: .openPlugins)
             }
 
-            // AppSettingsStore reads local settings and calls back before `dispatch` returns.
-            var preferred: CardPresentPaymentsPlugin?
-            stores.dispatch(AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: siteID) {
-                preferred = $0.flatMap(CardPresentPaymentsPlugin.with(gatewayID:))
-            })
+            let preferred: CardPresentPaymentsPlugin? = await withCheckedContinuation { continuation in
+                stores.dispatch(AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: siteID) {
+                    continuation.resume(returning: $0.flatMap(CardPresentPaymentsPlugin.with(gatewayID:)))
+                })
+            }
             let gateway: CardPresentPaymentsPlugin
             if active.count == 1, let only = active.first {
                 gateway = only
@@ -132,7 +132,7 @@ struct PaymentSupportDiagnostics {
         }
         // Stripe reports a live account only in live mode with charges enabled, so outside test mode it cannot take payments.
         guard account.isLive || account.isInTestMode || gateway == .wcPay else {
-            return failure(Localization.chargesDisabled, reason: "live_account_unavailable", action: .retryDiagnostics)
+            return failure(Localization.chargesDisabled, reason: "live_account_unavailable", action: openProvider)
         }
         // Older account responses can omit supported currencies.
         if !account.supportedCurrencies.isEmpty,
@@ -182,7 +182,7 @@ struct PaymentSupportDiagnostics {
             (reason, finding) = ("request_failed", Localization.requestFailed)
         }
         // WordPress.com hosts these stores, so support can check the site instead of a hosting provider.
-        let isSiteProblem = [Localization.siteError, Localization.blocked].contains(finding)
+        let isSiteProblem = ["request_timeout", "server_error", "request_blocked", "invalid_response"].contains(reason)
         let shownFinding = isSiteProblem && stores.sessionManager.defaultSite?.isWordPressComStore == true ?
             Finding(headline: finding.headline, message: Localization.hostedSiteMessage) : finding
         // Do not attach response bodies, account IDs, statement descriptors, or raw error descriptions.
@@ -191,7 +191,8 @@ struct PaymentSupportDiagnostics {
 
     /// WordPress refused the login or its permissions. Other 401 and 403 replies usually come from a firewall or security plugin.
     private func isAccessDenied(_ error: Error) -> Bool {
-        let deniedCodes = ["rest_forbidden", "rest_not_logged_in", "woocommerce_rest_cannot_view", "rest_forbidden_context"]
+        let deniedCodes = ["rest_forbidden", "rest_not_logged_in", "woocommerce_rest_cannot_view", "rest_forbidden_context",
+                           "incorrect_password", "invalid_username"]
         if let networkError = error as? NetworkRequestError, let code = networkError.errorCode {
             return deniedCodes.contains(code)
         }

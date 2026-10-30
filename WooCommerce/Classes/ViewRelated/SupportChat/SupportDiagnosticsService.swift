@@ -62,7 +62,7 @@ final class SupportDiagnosticsService {
             case .notifications:
                 return Localization.Test.notifications
             case .paymentConfiguration:
-                return PaymentSupportDiagnostics.Localization.title
+                return Localization.Test.paymentConfiguration
             }
         }
     }

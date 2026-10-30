@@ -893,7 +893,11 @@ final class SupportChatViewModel {
                 let summary = steps.map { "\($0.test.title): \($0.status)" }.joined(separator: ", ")
                 contentText = "[Running diagnostics: \(summary)]"
             case .diagnosticsSuccess:
-                contentText = paymentDiagnosticCompletionMessage ?? "[All diagnostics passed]"
+                if selectedIssue == .inPersonPayments {
+                    contentText = paymentDiagnosticsAreInconclusive ? "[Payment setup needs attention]" : "[Payment setup checks passed]"
+                } else {
+                    contentText = "[All diagnostics passed]"
+                }
             case .diagnosticsFailure(let result):
                 contentText = "[Diagnostics failed: \(result.headline ?? result.test.title) - \(result.errorMessage ?? "Unknown error")]"
             case .resolvedPrompt:

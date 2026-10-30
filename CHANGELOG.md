@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 26.0
+Add and edit attributes on all product types, with control over which are visible on product pages or used for variations. Product search in POS is now faster for big catalogs. You'll also notice clearer carrier outage notices on shipping labels and better reliability across refunds, orders, and login.
+
 ## 25.9
 Shipping into the EU is now easier—your customs forms ask for each item's SKU, manufacturer part number and GTIN/EAN when needed. In-person setup works smoothly for stores without WooPayments or Stripe. Shipping labels now make the recipient phone number optional for domestic orders.
 

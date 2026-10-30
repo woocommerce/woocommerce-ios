@@ -64,7 +64,7 @@ struct StoreDashboardUnavailableAnalyticsView: View {
             Text(title)
                 .storeTextStyle(.titleMedium.emphasized)
             Text(Localization.unavailableDetails)
-                .storeTextStyle(.bodyLarge)
+                .storeTextStyle(.bodyMedium)
                 .foregroundStyle(.storeOnSurface)
             StoreButton(Localization.unavailableButton, variant: .outlined, isFullWidth: true) {
                 showingSupportForm = true

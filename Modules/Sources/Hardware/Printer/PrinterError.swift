@@ -13,8 +13,8 @@ public enum PrinterError: Error, Equatable {
     case printFailed(detail: String)
 }
 
-/// Keeps the SDK's message in `error_description`, so analytics can still tell failures apart after
-/// they are grouped into these cases.
+/// `connectionLost` and `printFailed` group several SDK failures, so they keep the SDK's message in
+/// `error_description` for analytics to tell those failures apart.
 extension PrinterError: LocalizedError {
     public var errorDescription: String? {
         switch self {

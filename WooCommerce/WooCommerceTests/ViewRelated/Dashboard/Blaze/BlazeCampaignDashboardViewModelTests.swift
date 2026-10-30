@@ -952,6 +952,7 @@ private extension BlazeCampaignDashboardViewModelTests {
         }
     }
 
+    @MainActor
     func mockSynchronizeCampaignsList(insertCampaignToStorage BlazeCampaignListItem: BlazeCampaignListItem? = nil) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             switch action {

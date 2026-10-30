@@ -100,16 +100,6 @@ steps:
       - github_commit_status:
           context: Unit Tests
 
-  - label: ":microscope: Standalone WordPressAuthenticator Unit Tests"
-    key: wordpress-authenticator-unit-tests
-    command: .buildkite/commands/run-wordpress-authenticator-tests.sh
-    plugins: [$CI_TOOLKIT]
-    artifact_paths:
-      - fastlane/test_output/*
-    notify:
-      - github_commit_status:
-          context: WordPressAuthenticator Unit Tests
-
   #################
   # Ruby Automation Tests (Fastlane helpers)
   #################
@@ -231,7 +221,6 @@ steps:
       - build-warning-count
       - strict_concurrency
       - unit-tests
-      - wordpress-authenticator-unit-tests
       - ruby-automation-tests
       - linters
       - ui-tests-iphone

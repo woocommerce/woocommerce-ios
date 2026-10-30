@@ -12,9 +12,6 @@ tags:
 - runFlow: ../subflows/navigate_to_orders.yaml
 - tapOn:
     id: new-order-type-sheet-button
-# Add the custom amount while the order is still empty. With products in the
-# order the app first asks for a fixed or percentage amount in a sheet that
-# Maestro cannot see.
 - tapOn:
     id: new-order-add-custom-amount-button
 - inputText: "1"

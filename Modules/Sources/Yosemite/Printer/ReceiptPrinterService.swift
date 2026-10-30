@@ -27,6 +27,7 @@ public protocol ReceiptPrinterServiceProtocol: AnyObject {
     ///
     /// `cardDetails` are included in the printed card/EMV block when present; pass `nil` for
     /// cash and other payment methods so the receipt prints without card fields.
+    /// A connection failure disconnects the printer before the error is thrown.
     func printReceipt(content: ReceiptContent,
                       storeInformation: ReceiptStoreInformation,
                       cardDetails: CardPresentTransactionDetails?) async throws
@@ -36,6 +37,7 @@ public protocol ReceiptPrinterServiceProtocol: AnyObject {
     /// Assembles the receipt content from the order (line items, totals, note) so callers that
     /// only hold an `Order` — like POS — don't have to build Hardware receipt parameters. The
     /// printed receipt carries no card details in this form (`cardDetails: nil`).
+    /// A connection failure disconnects the printer before the error is thrown.
     func printReceipt(order: Order,
                       storeInformation: ReceiptStoreInformation) async throws
 }

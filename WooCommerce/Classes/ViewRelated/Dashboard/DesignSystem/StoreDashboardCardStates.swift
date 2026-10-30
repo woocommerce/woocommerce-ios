@@ -59,14 +59,16 @@ struct StoreDashboardUnavailableAnalyticsView: View {
 
     var body: some View {
         VStack(spacing: StoreSpacing.s5) {
-            Image(uiImage: .noStoreImage)
+            Image("woo-no-store")
+                .renderingMode(.original)
+                .flipsForRightToLeftLayoutDirection(true)
                 .accessibilityHidden(true)
             Text(title)
-                .storeTextStyle(.titleMedium.emphasized)
+                .storeTextStyle(.titleLarge.strong)
             Text(Localization.unavailableDetails)
-                .storeTextStyle(.bodyMedium)
+                .storeTextStyle(.bodyLarge)
                 .foregroundStyle(.storeOnSurface)
-            StoreButton(Localization.unavailableButton, variant: .outlined, isFullWidth: true) {
+            StoreButton(Localization.unavailableButton, variant: .outlined, size: .medium) {
                 showingSupportForm = true
             }
         }

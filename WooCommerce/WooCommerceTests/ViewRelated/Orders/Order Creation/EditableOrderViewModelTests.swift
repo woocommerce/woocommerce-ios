@@ -1077,6 +1077,56 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, "")
     }
 
+    func test_customer_data_view_model_when_shipping_address_has_phone_then_shippingAddressFormatted_ends_with_phone() {
+        // Given
+        let shippingAddress = Address.fake().copy(firstName: "Skylar",
+                                                  lastName: "Ferry",
+                                                  address1: "60 29th Street",
+                                                  city: "San Francisco",
+                                                  state: "CA",
+                                                  postcode: "94110",
+                                                  country: "US",
+                                                  phone: "2125550199")
+
+        // When
+        let customerDataViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: Address.empty, shippingAddress: shippingAddress)
+
+        // Then
+        XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, shippingAddress.fullNameWithCompanyAddressAndPhone)
+        XCTAssertEqual(customerDataViewModel.shippingAddressFormatted?.components(separatedBy: "\n").last, "2125550199")
+    }
+
+    func test_customer_data_view_model_when_shipping_address_has_only_phone_then_shippingAddressFormatted_is_phone() {
+        // Given
+        let shippingAddress = Address.empty.copy(phone: "2125550199")
+
+        // When
+        let customerDataViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: Address.empty, shippingAddress: shippingAddress)
+
+        // Then
+        XCTAssertTrue(customerDataViewModel.isDataAvailable)
+        XCTAssertEqual(customerDataViewModel.shippingAddressFormatted, "2125550199")
+    }
+
+    func test_customer_data_view_model_when_billing_address_has_phone_then_billingAddressFormatted_does_not_include_phone() {
+        // Given
+        let billingAddress = Address.fake().copy(firstName: "Skylar",
+                                                 lastName: "Ferry",
+                                                 address1: "60 29th Street",
+                                                 city: "San Francisco",
+                                                 state: "CA",
+                                                 postcode: "94110",
+                                                 country: "US",
+                                                 phone: "2125550199")
+
+        // When
+        let customerDataViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: billingAddress, shippingAddress: Address.empty)
+
+        // Then
+        XCTAssertEqual(customerDataViewModel.billingAddressFormatted, billingAddress.fullNameWithCompanyAndAddress)
+        XCTAssertFalse(customerDataViewModel.billingAddressFormatted?.contains("2125550199") ?? true)
+    }
+
     func test_payment_data_view_model_is_initialized_with_expected_values() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)

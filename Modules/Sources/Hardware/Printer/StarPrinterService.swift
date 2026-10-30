@@ -219,7 +219,14 @@ private actor StarPrinterCoordinator {
             DDLogInfo("🖨️ Receipt printed")
         } catch {
             DDLogError("🖨️ Receipt printing failed: \(error.localizedDescription)")
-            throw error
+            let printerError = PrinterError(printFailure: error)
+            // Without this, `printer` stays set and POS keeps treating the printer as connected, so the
+            // next print fails again instead of offering setup. Identity is rechecked because the actor
+            // may have connected to another printer while the print was suspended.
+            if case .connectionLost = printerError, self.printer === printer {
+                await disconnect()
+            }
+            throw printerError
         }
     }
 }

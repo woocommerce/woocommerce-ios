@@ -20,6 +20,7 @@ struct POSPrintReceiptCoordinator {
     private let printReceipt: () async throws -> Void
     private let presentPrinterSetup: @MainActor () -> Void
     private let presentEmailReceipt: @MainActor () -> Void
+    private let isOnSuccessScreen: @MainActor () -> Bool
     private let presentFailure: @MainActor (POSPrintReceiptFailure) -> Void
     private let updateButtonState: @MainActor (POSButtonState) -> Void
 
@@ -27,12 +28,14 @@ struct POSPrintReceiptCoordinator {
          printReceipt: @escaping () async throws -> Void,
          presentPrinterSetup: @escaping @MainActor () -> Void,
          presentEmailReceipt: @escaping @MainActor () -> Void,
+         isOnSuccessScreen: @escaping @MainActor () -> Bool,
          presentFailure: @escaping @MainActor (POSPrintReceiptFailure) -> Void,
          updateButtonState: @escaping @MainActor (POSButtonState) -> Void) {
         self.analytics = analytics
         self.printReceipt = printReceipt
         self.presentPrinterSetup = presentPrinterSetup
         self.presentEmailReceipt = presentEmailReceipt
+        self.isOnSuccessScreen = isOnSuccessScreen
         self.presentFailure = presentFailure
         self.updateButtonState = updateButtonState
     }
@@ -83,7 +86,10 @@ struct POSPrintReceiptCoordinator {
             DDLogError("⛔️ POS receipt print failed: \(error)")
             analytics.track(.receiptPrintFailed, parameters: [:], error: error)
             updateButtonState(.idle)
-            presentFailure(POSPrintReceiptFailure(error: error))
+            // A print can fail after the merchant moved on to emailing the receipt, which must not be interrupted.
+            if isOnSuccessScreen() {
+                presentFailure(POSPrintReceiptFailure(error: error))
+            }
         }
     }
 }

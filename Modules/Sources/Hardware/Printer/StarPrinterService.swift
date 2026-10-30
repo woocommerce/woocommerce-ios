@@ -204,7 +204,10 @@ private actor StarPrinterCoordinator {
         emit(.disconnecting)
         current?.printerDelegate = nil
         await current?.close()
-        emit(.disconnected)
+        // A `connect(to:)` can complete while `close()` is suspended; its connected status must stand.
+        if printer == nil {
+            emit(.disconnected)
+        }
     }
 
     func printReceipt(text: String) async throws {

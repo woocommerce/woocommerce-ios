@@ -65,6 +65,7 @@ private extension PaymentsActionButtons {
             }
         })
         .buttonStyle(POSOutlinedButtonStyle(size: .normal, state: printButtonState))
+        .disabled(printButtonState != .idle)
         .frame(maxWidth: .infinity)
         .accessibilityIdentifier("pos-print-receipt-button")
     }

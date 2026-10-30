@@ -76,11 +76,13 @@ struct PointOfSalePaymentSuccessView: View {
                                    printReceipt: { try await posModel.printReceipt() },
                                    presentPrinterSetup: { showPrinterSetupModal = true },
                                    presentEmailReceipt: { router.pushEmailReceipt() },
+                                   isOnSuccessScreen: { !router.isNavigated },
                                    presentFailure: { printFailure = $0 },
                                    updateButtonState: { printButtonState = $0 })
     }
 
     private func handlePrintReceiptTap() {
+        guard printButtonState == .idle else { return }
         Task {
             await printCoordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
         }

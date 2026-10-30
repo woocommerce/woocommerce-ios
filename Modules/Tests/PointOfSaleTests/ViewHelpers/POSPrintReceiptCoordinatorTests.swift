@@ -87,6 +87,22 @@ struct POSPrintReceiptCoordinatorTests {
         #expect(spy.failures == [.paperEmpty])
     }
 
+    @Test func test_printButtonTapped_when_merchant_leaves_screen_during_print_then_tracks_failed_without_presenting_failure() async {
+        // Given
+        let sut = makeCoordinator(printReceipt: { [spy] in
+            spy.isOnSuccessScreen = false
+            throw PrinterError.paperEmpty
+        })
+
+        // When
+        await sut.printButtonTapped(isPrinterConnected: true)
+
+        // Then
+        #expect(spy.buttonStates == [.loading, .idle])
+        #expect(spy.failures.isEmpty)
+        #expect(analytics.events.map(\.eventName) == ["receipt_print_tapped", "receipt_print_failed"])
+    }
+
     // MARK: - setupModalVisibilityChanged
 
     @Test func test_setupModalVisibilityChanged_when_dismissed_after_connecting_then_prints_and_tracks_success_without_tapped() async {
@@ -176,6 +192,7 @@ private extension POSPrintReceiptCoordinatorTests {
                                    },
                                    presentPrinterSetup: { [spy] in spy.presentSetupCallCount += 1 },
                                    presentEmailReceipt: { [spy] in spy.presentEmailCallCount += 1 },
+                                   isOnSuccessScreen: { [spy] in spy.isOnSuccessScreen },
                                    presentFailure: { [spy] in spy.failures.append($0) },
                                    updateButtonState: { [spy] in spy.buttonStates.append($0) })
     }
@@ -186,6 +203,7 @@ private final class EffectsSpy {
     var printCallCount = 0
     var presentSetupCallCount = 0
     var presentEmailCallCount = 0
+    var isOnSuccessScreen = true
     var failures: [POSPrintReceiptFailure] = []
     var buttonStates: [POSButtonState] = []
 }

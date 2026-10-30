@@ -67,9 +67,10 @@ struct PaymentSupportDiagnostics {
             } else {
                 return failure(Localization.chooseGateway, detail: "payment_gateway_selection_required", action: .retryDiagnostics)
             }
+            // WooPayments is available in every supported country, so only Stripe can fail here.
             guard let support = configuration.supportedPluginVersions.first(where: { $0.plugin == gateway }),
                   configuration.paymentGateways.contains(gateway.gatewayID) else {
-                return failure(Localization.unsupportedGateway, detail: "gateway_not_supported_in_country", action: .openPlugins)
+                return failure(Localization.providerNotSupported, detail: "gateway_not_supported_in_country", action: .openPlugins)
             }
             guard let plugin = report.activePlugins.first(where: { Plugin(systemPlugin: $0) == gateway.plugin }),
                   VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: support.minimumVersion) else {
@@ -129,9 +130,9 @@ struct PaymentSupportDiagnostics {
         case .noAccount, .unknown:
             return failure(Localization.unknownAccount, detail: "account_status_unknown", action: openProvider)
         }
-        // Stripe's flag also reflects disabled charges, so only WooPayments continues without a live account.
-        guard account.isLive || gateway == .wcPay else {
-            return failure(Localization.accountNotLive, detail: "live_account_unavailable", action: .retryDiagnostics)
+        // Stripe reports a live account only in live mode with charges enabled, so outside test mode it cannot take payments.
+        guard account.isLive || account.isInTestMode || gateway == .wcPay else {
+            return failure(Localization.chargesDisabled, detail: "live_account_unavailable", action: .retryDiagnostics)
         }
         // Older account responses can omit supported currencies.
         if !account.supportedCurrencies.isEmpty,
@@ -140,7 +141,7 @@ struct PaymentSupportDiagnostics {
         }
         let hasPendingRequirements = account.hasPendingRequirements || status == .restrictedSoon
         let notLive: (finding: Finding, detail: String)? = account.isLive ? nil :
-            (account.isInTestMode ? (Localization.testModeOnly, "account_in_test_mode") : (Localization.wooPaymentsNotLive, "account_not_live"))
+            (account.isInTestMode ? (Localization.testPaymentsOnly, "account_in_test_mode") : (Localization.accountNotLiveYet, "account_not_live"))
         return .init(test: .paymentConfiguration,
                      isSuccess: true,
                      errorMessage: notLive?.finding.message,
@@ -317,17 +318,18 @@ extension PaymentSupportDiagnostics {
                 comment: "Payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app"
             )
         )
-        static let unsupportedGateway = Finding(
+        static let providerNotSupported = Finding(
             headline: NSLocalizedString(
-                "paymentSupportDiagnostics.unsupportedGateway.headline",
+                "paymentSupportDiagnostics.providerNotSupported.headline",
                 value: "Provider not available in your country",
-                comment: "Headline of the payment setup check result when the chosen payment provider does not support card reader payments in the store country"
+                comment: "Headline of the payment setup check result when the active payment provider does not support card reader payments " +
+                    "in the store country"
             ),
             message: NSLocalizedString(
-                "paymentSupportDiagnostics.unsupportedGateway.message",
-                value: "Your payment plugin does not support in-person payments in your store country. Install and activate " +
-                "WooPayments, then go to Menu > Payments and tap Continue setup.",
-                comment: "Payment setup check result when the chosen payment provider does not support card reader payments in the store country"
+                "paymentSupportDiagnostics.providerNotSupported.message",
+                value: "Your payment provider does not support in-person payments in your store country. Install and " +
+                "activate WooPayments, then go to Menu > Payments and tap Continue setup.",
+                comment: "Payment setup check result when the active payment provider does not support card reader payments in the store country"
             )
         )
         static let oldPlugin = Finding(
@@ -392,42 +394,43 @@ extension PaymentSupportDiagnostics {
                 comment: "Payment setup check result when a live payment account is in test mode"
             )
         )
-        static let testModeOnly = Finding(
+        static let testPaymentsOnly = Finding(
             headline: NSLocalizedString(
-                "paymentSupportDiagnostics.testModeOnly.headline",
-                value: "Using a test account",
-                comment: "Headline of the payment setup check result when the store uses a WooPayments test account that is not live"
+                "paymentSupportDiagnostics.testPaymentsOnly.headline",
+                value: "Test payments only",
+                comment: "Headline of the payment setup check result when the payment account is not live and is in test mode"
             ),
             message: NSLocalizedString(
-                "paymentSupportDiagnostics.testModeOnly.message",
-                value: "Your store uses a WooPayments test account, so real card payments will not work. To take them, set " +
-                "up a live account in WooPayments. On a staging site, use your live store instead.",
-                comment: "Payment setup check result when the store uses a WooPayments test account that is not live"
+                "paymentSupportDiagnostics.testPaymentsOnly.message",
+                value: "Your payment account is in test mode, so real card payments will not work. To take them, finish the " +
+                "live account setup with your payment provider. On a staging site, use your live store instead.",
+                comment: "Payment setup check result when the payment account is not live and is in test mode"
             )
         )
-        static let wooPaymentsNotLive = Finding(
+        static let accountNotLiveYet = Finding(
             headline: NSLocalizedString(
-                "paymentSupportDiagnostics.wooPaymentsNotLive.headline",
-                value: "WooPayments account is not live",
-                comment: "Headline of the payment setup check result when the WooPayments account is not live and not in test mode"
+                "paymentSupportDiagnostics.accountNotLiveYet.headline",
+                value: "Payment account is not live",
+                comment: "Headline of the payment setup check result when the payment account is not live and not in test mode"
             ),
             message: NSLocalizedString(
-                "paymentSupportDiagnostics.wooPaymentsNotLive.message",
-                value: "Real card payments will not work until the account is live. Check the account status in WooPayments.",
-                comment: "Payment setup check result when the WooPayments account is not live and not in test mode"
+                "paymentSupportDiagnostics.accountNotLiveYet.message",
+                value: "Real card payments will not work until the account is live. Check the account status with your " +
+                "payment provider.",
+                comment: "Payment setup check result when the payment account is not live and not in test mode"
             )
         )
-        static let accountNotLive = Finding(
+        static let chargesDisabled = Finding(
             headline: NSLocalizedString(
-                "paymentSupportDiagnostics.accountNotLive.headline",
-                value: "Stripe account is not live",
-                comment: "Headline of the payment setup check result when the Stripe account is not live or cannot accept charges"
+                "paymentSupportDiagnostics.chargesDisabled.headline",
+                value: "Account cannot take charges",
+                comment: "Headline of the payment setup check result when the payment provider reports that the live account cannot accept charges"
             ),
             message: NSLocalizedString(
-                "paymentSupportDiagnostics.accountNotLive.message",
-                value: "Stripe does not show your account as able to take live card payments. Finish the account setup in " +
-                "your Stripe Dashboard, then tap Retry.",
-                comment: "Payment setup check result when the Stripe account is not live or cannot accept charges"
+                "paymentSupportDiagnostics.chargesDisabled.message",
+                value: "Your payment provider does not show your account as able to take live card payments. Finish the " +
+                "account setup with your payment provider, then tap Retry.",
+                comment: "Payment setup check result when the payment provider reports that the live account cannot accept charges"
             )
         )
         static let countryMismatch = Finding(

@@ -44,6 +44,8 @@ struct PaymentDeviceDiagnosticsTests {
         // Then
         #expect(!result.isSuccess)
         #expect(result.errorMessage == PaymentDeviceDiagnostics.Localization.noPaymentMethod)
+        #expect(result.headline == PaymentDeviceDiagnostics.Localization.noPaymentMethodHeadline)
+        #expect(result.suggestedAction == .openAppSettings)
     }
 
     @Test func test_run_when_site_offers_tap_to_pay_and_device_does_not_support_it_then_adds_note() async {

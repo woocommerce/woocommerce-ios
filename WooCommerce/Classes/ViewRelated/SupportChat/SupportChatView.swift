@@ -9,6 +9,11 @@ struct SupportChatView: View {
 
     var body: some View {
         chatView
+            .sheet(item: $viewModel.storeAdminURL, onDismiss: {
+                Task { await viewModel.executeAction(.retryDiagnostics) }
+            }) { url in
+                AuthenticatableWebView(url: url)
+            }
             .background(Color(.listBackground))
             .navigationTitle(Localization.contactSupport)
             .navigationBarTitleDisplayMode(.inline)
@@ -234,8 +239,20 @@ struct SupportChatView: View {
                 Image(systemName: viewModel.paymentDiagnosticsAreInconclusive ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
                     .foregroundStyle(viewModel.paymentDiagnosticsAreInconclusive ? Color.orange : Color.green)
 
-                Text(viewModel.paymentDiagnosticCompletionMessage ?? Localization.allChecksPassed)
+                if let headline = viewModel.paymentDiagnosticHeadline {
+                    Text(headline)
+                        .font(.body.weight(.semibold))
+                        .accessibilityAddTraits(.isHeader)
+                } else {
+                    Text(viewModel.paymentDiagnosticCompletionMessage ?? Localization.allChecksPassed)
+                        .font(.body)
+                }
+            }
+
+            if viewModel.paymentDiagnosticHeadline != nil, let message = viewModel.paymentDiagnosticCompletionMessage {
+                Text(message)
                     .font(.body)
+                    .foregroundStyle(Color(.secondaryLabel))
             }
 
             if let advisory = viewModel.paymentAdvisoryMessage {
@@ -243,7 +260,9 @@ struct SupportChatView: View {
                     .font(.body)
             }
 
-            paymentDiagnosticContext
+            if let action = viewModel.paymentInconclusiveAction {
+                suggestedActionButton(action)
+            }
 
             diagnosticContinuation
         }
@@ -259,9 +278,11 @@ struct SupportChatView: View {
             HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundStyle(Color.red)
+                    .accessibilityHidden(true)
 
-                Text(result.test.title)
+                Text(result.headline ?? result.test.title)
                     .font(.body.weight(.semibold))
+                    .accessibilityAddTraits(.isHeader)
             }
 
             if let errorMessage = result.errorMessage {
@@ -270,17 +291,8 @@ struct SupportChatView: View {
                     .foregroundStyle(Color(.secondaryLabel))
             }
 
-            paymentDiagnosticContext
-
             if let action = result.suggestedAction {
-                Button {
-                    Task {
-                        await viewModel.executeAction(action)
-                    }
-                } label: {
-                    Label(action.title, systemImage: action.systemImage)
-                }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
+                suggestedActionButton(action)
             }
 
             diagnosticContinuation
@@ -290,12 +302,15 @@ struct SupportChatView: View {
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
     }
 
-    @ViewBuilder
-    private var paymentDiagnosticContext: some View {
-        if let message = viewModel.paymentSafetyMessage {
-            Text(message)
-                .font(.body)
+    private func suggestedActionButton(_ action: SupportDiagnosticsService.Action) -> some View {
+        Button {
+            Task {
+                await viewModel.executeAction(action)
+            }
+        } label: {
+            Label(action.title, systemImage: action.systemImage)
         }
+        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
     }
 
     private var diagnosticContinuation: some View {

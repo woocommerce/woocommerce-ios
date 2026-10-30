@@ -37,7 +37,10 @@ struct PaymentDeviceDiagnostics {
         ].compactMap { $0 }.joined(separator: "; ")
 
         guard bluetoothAuthorization != .denied || supportsTapToPay else {
-            return .failure(test: .paymentDevice, failure: .init(errorMessage: Localization.noPaymentMethod, technicalDetails: details))
+            return .failure(test: .paymentDevice, failure: .init(errorMessage: Localization.noPaymentMethod,
+                                                                 technicalDetails: details,
+                                                                 suggestedAction: .openAppSettings,
+                                                                 headline: Localization.noPaymentMethodHeadline))
         }
         return .init(test: .paymentDevice,
                      isSuccess: true,
@@ -90,10 +93,14 @@ extension PaymentDeviceDiagnostics {
             value: "The connected card reader has a low battery. Charge it before you take payments.",
             comment: "Note in support chat when the connected card reader battery is below 20 percent"
         )
+        static let noPaymentMethodHeadline = NSLocalizedString(
+            "paymentDeviceDiagnostics.noPaymentMethod.headline",
+            value: "Bluetooth access is off",
+            comment: "Headline of the support chat result when Bluetooth permission is off and Tap to Pay is not available on this device"
+        )
         static let noPaymentMethod = NSLocalizedString(
-            "paymentDeviceDiagnostics.noPaymentMethod",
-            value: "This device cannot take in-person payments now. Bluetooth access is off for this app, so card readers " +
-                "cannot connect, and Tap to Pay is not available. Turn on Bluetooth for this app in the Settings app.",
+            "paymentDeviceDiagnostics.noPaymentMethod.message",
+            value: "Card readers cannot connect, and Tap to Pay is not available on this device. Turn on Bluetooth for this app in Settings.",
             comment: "Support chat result when Bluetooth permission is off and Tap to Pay is not available on this device"
         )
     }

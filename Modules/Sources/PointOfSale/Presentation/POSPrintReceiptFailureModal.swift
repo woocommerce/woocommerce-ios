@@ -27,12 +27,8 @@ struct POSPrintReceiptFailureModal: View {
             Spacer()
 
             POSFlowButtonsView(configuration: .init(
-                primaryButton: .init(title: Localization.retryButton,
-                                     accessibilityIdentifier: "pos-print-failure-retry-button",
-                                     action: { selectAction(.retry) }),
-                secondaryButton: .init(title: Localization.emailButton,
-                                       accessibilityIdentifier: "pos-print-failure-email-button",
-                                       action: { selectAction(.emailReceipt) })))
+                primaryButton: .init(title: Localization.retryButton, action: { selectAction(.retry) }),
+                secondaryButton: .init(title: Localization.emailButton, action: { selectAction(.emailReceipt) })))
         }
         .posModalCloseButton(action: close)
         .posModalSizing(fullScreenWhenCompact: true)

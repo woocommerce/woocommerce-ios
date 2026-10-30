@@ -16,7 +16,7 @@
 #                     [--no-jetpack-site <domain>]
 #
 # --no-jetpack-site also writes the MAESTRO_WOO_NO_JETPACK_* values for
-# push_no_jetpack.yaml. Create that site with WooCommerce and without Jetpack,
+# no_jetpack.yaml and push_no_jetpack.yaml. Create that site with WooCommerce and without Jetpack,
 # and pass its admin password in JN_NO_JETPACK_SSH_PASS.
 #
 # Credentials are resolved in this order, so a second run needs no arguments

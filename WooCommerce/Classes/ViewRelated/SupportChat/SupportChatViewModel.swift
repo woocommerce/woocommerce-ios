@@ -160,6 +160,8 @@ final class SupportChatViewModel {
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
 
+    var storeAdminURL: URL?
+
 
     /// Whether the input area should be shown.
     /// Hidden during issue picker and diagnostics phases.
@@ -476,6 +478,15 @@ final class SupportChatViewModel {
 
             case .retryDiagnostics:
                 await rerunAllTests()
+
+            case .openPaymentProvider(let plugin):
+                storeAdminURL = stores.sessionManager.defaultSite.flatMap { URL(string: $0.cardPresentPluginHasPendingTasksURL(plugin: plugin)) }
+
+            case .openStoreSettings:
+                storeAdminURL = stores.sessionManager.defaultSite.flatMap { URL(string: $0.generalSettingsURL) }
+
+            case .openPlugins:
+                storeAdminURL = stores.sessionManager.defaultSite.flatMap { URL(string: $0.pluginsURL) }
             }
         } catch {
             DDLogError("⛔️ Failed to execute action \(action): \(error)")
@@ -1121,6 +1132,16 @@ final class SupportChatViewModel {
 //
 private extension SupportChatViewModel {
     enum Localization {
+        static let paymentChecksPassedHeadline = NSLocalizedString(
+            "supportChatViewModel.paymentChecksPassedHeadline",
+            value: "Payment setup checks passed",
+            comment: "Headline shown in support chat when the Payments troubleshooting checks find no problem"
+        )
+        static let paymentChecksPassed = NSLocalizedString(
+            "supportChatViewModel.paymentChecksPassed",
+            value: "If a payment failed, continue to chat and share the order number.",
+            comment: "Shown in support chat under the headline when the Payments troubleshooting checks find no problem"
+        )
         static let greetingMessage = NSLocalizedString(
             "supportChatViewModel.greetingMessage",
             value: "Hello! I'm your Woo Mobile Support Bot. Is there anything I can help you with today?",

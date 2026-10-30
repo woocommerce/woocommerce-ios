@@ -8,6 +8,24 @@ import enum Networking.NetworkError
 struct SupportChatViewModelTests {
     private static let noopContactHumanSupport: SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _, _ in }
 
+    @Test(arguments: [
+        (SupportDiagnosticsService.Action.openPaymentProvider(.wcPay), "admin.php?page=wc-admin&path=%2Fpayments%2Fconnect"),
+        (.openStoreSettings, "admin.php?page=wc-settings&tab=general"),
+        (.openPlugins, "plugins.php")
+    ])
+    func test_executeAction_when_store_admin_action_then_sets_store_admin_URL(action: SupportDiagnosticsService.Action, path: String) async {
+        // Given
+        let site = Site.fake().copy(adminURL: "https://example.com/wp-admin/")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        let sut = makeSUT(stores: stores)
+
+        // When
+        await sut.executeAction(action)
+
+        // Then
+        #expect(sut.storeAdminURL?.absoluteString == "https://example.com/wp-admin/" + path)
+    }
+
     @Test func test_start_when_initial_message_exists_then_sends_once_without_greeting() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))

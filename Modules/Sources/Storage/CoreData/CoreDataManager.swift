@@ -222,9 +222,9 @@ public final class CoreDataManager: StorageManagerType, @unchecked Sendable {
     }
 
     /// Stores load synchronously on the thread that creates the manager, which is not always the main thread.
-    private static func applicationStateRawValue() -> Int? {
+    private static func applicationStateRawValue() -> Int {
         guard Thread.isMainThread else {
-            return nil
+            return -1
         }
         return MainActor.assumeIsolated {
             UIApplication.shared.applicationState.rawValue

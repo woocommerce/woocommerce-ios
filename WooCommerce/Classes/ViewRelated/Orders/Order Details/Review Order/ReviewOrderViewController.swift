@@ -305,7 +305,7 @@ private extension ReviewOrderViewController {
         }
         cell.title = Localization.shippingAddressTitle
         cell.name = address?.fullNameWithCompany
-        cell.address = address?.formattedPostalAddress ?? Localization.noAddressCellTitle
+        cell.address = address?.formattedPostalAddressWithPhone ?? Localization.noAddressCellTitle
     }
 
     /// Setup: Shipping Method cell

@@ -935,7 +935,7 @@ private extension OrderDetailsDataSource {
 
         cell.name = shippingAddress?.fullNameWithCompany
 
-        if let formattedPostalAddress = shippingAddress?.formattedPostalAddress {
+        if let formattedPostalAddress = shippingAddress?.formattedPostalAddressWithPhone {
             cell.title = Title.shippingAddress
             cell.address = formattedPostalAddress
             cell.onEditTapped = { [weak self] in
@@ -1605,7 +1605,7 @@ extension OrderDetailsDataSource {
 
         switch row {
         case .shippingAddress:
-            order.shippingAddress?.fullNameWithCompanyAndAddress.sendToPasteboard()
+            order.shippingAddress?.fullNameWithCompanyAddressAndPhone.sendToPasteboard()
         case .tracking:
             orderTracking(at: indexPath)?.trackingNumber.sendToPasteboard(includeTrailingNewline: false)
         default:

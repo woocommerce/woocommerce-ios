@@ -1,11 +1,8 @@
 # p2: orders.create.quantity
-# Quarantined: the quantity stepper buttons and the keyboard's Done button are
-# hidden from accessibility, so Maestro cannot commit a new quantity.
 appId: ${APP_ID}
 name: Change the quantity of a product in a new order
 tags:
   - smoke_extended
-  - quarantine
   - destructive
   - orders
 ---
@@ -68,22 +65,32 @@ tags:
 - extendedWaitUntil:
     visible: Order Count
     timeout: 15000
+# Tap the trailing edge so the cursor lands after the value and eraseText clears it.
 - tapOn:
     text: "1"
-    below: Order Count
-    above: Price
+    rightOf: Order Count
+    point: "90%,50%"
 - eraseText
 - inputText: "2"
-- tapOn: Done
-- assertVisible:
-    text: "2"
-    below: Order Count
+# PassKit hides the keyboard toolbar's Done button from accessibility, so tap it
+# by its position at the trailing end of the toolbar.
+- waitForAnimationToEnd
+- tapOn:
+    id: Toolbar
+    below:
+      id: order-form-collect-payment
+    point: "87%,50%"
+- assertVisible: "2 × .*"
 - tapOn:
     text: "2"
-    below: Order Count
+    rightOf: Order Count
+    point: "90%,50%"
 - eraseText
 - inputText: "1"
-- tapOn: Done
-- assertVisible:
-    text: "1"
-    below: Order Count
+- waitForAnimationToEnd
+- tapOn:
+    id: Toolbar
+    below:
+      id: order-form-collect-payment
+    point: "87%,50%"
+- assertVisible: "1 × .*"

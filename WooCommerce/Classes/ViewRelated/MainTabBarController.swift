@@ -1,5 +1,6 @@
 import Combine
 import EventHorizonSDK
+import StoreDesignSystem
 import SwiftUI
 import UIKit
 import Yosemite
@@ -42,6 +43,23 @@ enum WooTab {
 }
 
 extension WooTab {
+    var storeDesignSystemIcons: (normal: StoreIconImage, selected: StoreIconImage)? {
+        switch self {
+        case .myStore:
+            return (StoreIcon.House.regular, StoreIcon.House.solid)
+        case .orders:
+            return (StoreIcon.File.regular, StoreIcon.File.solid)
+        case .products:
+            return (StoreIcon.Box.regular, StoreIcon.Box.solid)
+        case .hubMenu:
+            return (StoreIcon.Grid.regular, StoreIcon.Grid.solid)
+        case .bookings:
+            return (StoreIcon.Calendar.regular, StoreIcon.Calendar.solid)
+        case .pointOfSale:
+            return nil
+        }
+    }
+
     /// Initializes a tab with the visible tab index.
     ///
     /// - Parameters:
@@ -85,6 +103,15 @@ extension WooTab {
 
         tabs.append(.hubMenu)
         return tabs
+    }
+}
+
+private extension StoreIconImage {
+    @MainActor
+    func uiImage(displayScale: CGFloat) -> UIImage? {
+        let renderer = ImageRenderer(content: image(size: .largeIncreased))
+        renderer.scale = displayScale > 0 ? displayScale : max(UITraitCollection.current.displayScale, 1)
+        return renderer.uiImage?.withRenderingMode(.alwaysTemplate)
     }
 }
 
@@ -1156,7 +1183,25 @@ private extension MainTabBarController {
         // Updates site ID for the bookings tab to display correct bookings
         (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)
 
+        configureStoreDesignSystemTabIconsIfNeeded()
         httpsConfigurationWarningPresenter.updateAll()
+    }
+
+    func configureStoreDesignSystemTabIconsIfNeeded() {
+        guard featureFlagService.usesStoreDesignSystem,
+              let items = tabBar.items else {
+            return
+        }
+
+        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
+        let displayScale = tabBar.traitCollection.displayScale
+        for (tab, item) in zip(tabs, items) {
+            guard let icons = tab.storeDesignSystemIcons else {
+                continue
+            }
+            item.image = icons.normal.uiImage(displayScale: displayScale)
+            item.selectedImage = icons.selected.uiImage(displayScale: displayScale)
+        }
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {

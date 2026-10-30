@@ -87,6 +87,8 @@ When a mock of a nonisolated, non-`Sendable` protocol defers a completion handle
 
 If a test waits for main-queue work with `DispatchQueue.main.async` and an expectation, the `@Sendable` closure warns for each captured value. If the code under test updates state synchronously when it is called on the main thread, such as through a `Thread.isMainThread` fast path, make the test `@MainActor` and read the state directly. Keep the wait if the update is always queued.
 
+TestKit's `await until { }` is nonisolated, so a `@MainActor` async test that passes it a closure over main-actor state gets two `sending` warnings per call. Keep a synchronous test on `waitUntil`, which runs on the caller's actor. In an async test, poll with `waitOnMainActor(until:)` from `WooCommerceTests/Testing`. See WOOMOB-4072.
+
 The guard also counts "cannot use struct 'Site' in a property declaration ... 'NetworkingCore' was not imported by this file". Fix it with a targeted import, such as `import struct NetworkingCore.Site`.
 
 Keep tests that run work in parallel on purpose nonisolated. Examples are tests that use `concurrentPerform`, `async let`, or `TaskGroup`. Main-actor isolation stops the parallel execution that they test. Protect their shared state with a lock or `Mutex`. If a test depends on main-actor ordering, make that dependency explicit.

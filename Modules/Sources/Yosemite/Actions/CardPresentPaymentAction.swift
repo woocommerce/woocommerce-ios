@@ -28,6 +28,7 @@ public enum CardPresentPaymentAction: Action {
                       onCompletion: (Result<Void, Error>) -> Void)
 
     /// Fetches one gateway account without changing stored accounts, the selected gateway, or reader state.
+    /// Opts into unexpected-response detection, so failures can be `UnexpectedStoreResponseError`.
     case fetchPaymentGatewayAccount(siteID: Int64,
                                     gateway: CardPresentPaymentsPlugin,
                                     onCompletion: (Result<PaymentGatewayAccount, Error>) -> Void)

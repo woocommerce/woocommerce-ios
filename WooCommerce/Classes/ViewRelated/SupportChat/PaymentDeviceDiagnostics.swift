@@ -37,10 +37,13 @@ struct PaymentDeviceDiagnostics {
         ].compactMap { $0 }.joined(separator: "; ")
 
         guard bluetoothAuthorization != .denied || supportsTapToPay else {
-            return .failure(test: .paymentDevice, failure: .init(errorMessage: Localization.noPaymentMethod,
-                                                                 technicalDetails: details,
-                                                                 suggestedAction: .openAppSettings,
-                                                                 headline: Localization.noPaymentMethodHeadline))
+            var result = SupportDiagnosticsService.Result.failure(test: .paymentDevice,
+                                                                  failure: .init(errorMessage: Localization.noPaymentMethod,
+                                                                                 technicalDetails: details,
+                                                                                 suggestedAction: .openAppSettings,
+                                                                                 headline: Localization.noPaymentMethodHeadline))
+            result.reason = "no_payment_method"
+            return result
         }
         return .init(test: .paymentDevice,
                      isSuccess: true,

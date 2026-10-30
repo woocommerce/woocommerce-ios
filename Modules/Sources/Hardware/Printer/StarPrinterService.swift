@@ -210,8 +210,8 @@ private actor StarPrinterCoordinator {
         emit(.disconnecting)
         current?.printerDelegate = nil
         await current?.close()
-        // A `connect(to:)` can complete while `close()` is suspended; its connected status must stand.
-        if printer == nil {
+        // A `connect(to:)` can start or complete while `close()` is suspended; it reports its own status.
+        if printer == nil, !isConnecting {
             emit(.disconnected)
         }
     }

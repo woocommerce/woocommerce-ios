@@ -228,7 +228,7 @@ struct PaymentSupportDiagnostics {
 }
 
 extension PaymentSupportDiagnostics {
-    struct Finding: Equatable {
+    struct Finding {
         let headline: String
         let message: String
     }

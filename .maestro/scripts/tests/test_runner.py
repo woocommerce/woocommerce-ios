@@ -253,12 +253,14 @@ class RunnerTests(unittest.TestCase):
             "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://no-jetpack.example.com",
             "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD": "site-password",
         }
-        connected = subprocess.CompletedProcess([], 0, "CONNECTED\n", "")
-        with mock.patch.object(RUNNER, "run", return_value=connected) as run:
+        connected = subprocess.CompletedProcess([], 0, "site-password\nCONNECTED\n", "")
+        output = io.StringIO()
+        with mock.patch.object(RUNNER, "run", return_value=connected) as run, contextlib.redirect_stdout(output):
             disconnected = RUNNER.disconnect_no_jetpack_site(values)
 
         self.assertFalse(disconnected)
         self.assertEqual(3, run.call_count)
+        self.assertIn("disconnecting the site without Jetpack failed: [redacted] CONNECTED", output.getvalue())
 
     def test_html_report_names_the_overall_status(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

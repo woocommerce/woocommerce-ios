@@ -578,10 +578,13 @@ def disconnect_no_jetpack_site(values: dict[str, str]) -> bool:
     if not site or not password:
         return False
     # SSH to Jurassic Ninja sometimes drops a session, so it tries a few times.
+    output = ""
     for _ in range(3):
         result = run([str(JN_SSH), site, DISCONNECT_NO_JETPACK_SITE], check=False, env={**os.environ, "JN_SSH_PASS": password})
         if "DISCONNECTED" in result.stdout:
             return True
+        output = " ".join((result.stdout + result.stderr).split())
+    print(f"  disconnecting the site without Jetpack failed: {redact(output, values)[-300:]}", flush=True)
     return False
 
 

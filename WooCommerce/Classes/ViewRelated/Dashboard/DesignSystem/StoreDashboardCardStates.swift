@@ -62,11 +62,13 @@ struct StoreDashboardUnavailableAnalyticsView: View {
             Image(uiImage: .noStoreImage)
                 .accessibilityHidden(true)
             Text(title)
-                .storeTextStyle(.titleLarge.strong)
+                .storeTextStyle(.titleMedium.emphasized)
             Text(Localization.unavailableDetails)
                 .storeTextStyle(.bodyLarge)
                 .foregroundStyle(.storeOnSurface)
-            StoreButton(Localization.unavailableButton, variant: .outlined) { showingSupportForm = true }
+            StoreButton(Localization.unavailableButton, variant: .outlined, isFullWidth: true) {
+                showingSupportForm = true
+            }
         }
         .foregroundStyle(.storeOnSurface)
         .multilineTextAlignment(.center)

@@ -31,6 +31,7 @@ struct PaymentDeviceDiagnosticsTests {
         // Then
         #expect(result.isSuccess)
         #expect(result.advisoryMessage == PaymentDeviceDiagnostics.Localization.bluetoothDenied)
+        #expect(result.suggestedAction == .openAppSettings)
     }
 
     @Test(arguments: [true, false])

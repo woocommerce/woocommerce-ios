@@ -46,7 +46,7 @@ struct PaymentDeviceDiagnostics {
                      isSuccess: true,
                      errorMessage: nil,
                      technicalDetails: details,
-                     suggestedAction: nil,
+                     suggestedAction: bluetoothAuthorization == .denied ? .openAppSettings : nil,
                      advisoryMessage: notes.isEmpty ? nil : notes.joined(separator: "\n\n"))
     }
 }

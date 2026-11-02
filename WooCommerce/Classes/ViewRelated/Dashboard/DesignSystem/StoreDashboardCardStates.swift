@@ -59,7 +59,7 @@ struct StoreDashboardUnavailableAnalyticsView: View {
 
     var body: some View {
         VStack(spacing: StoreSpacing.s5) {
-            Image("woo-no-store")
+            Image(.wooNoStore)
                 .renderingMode(.original)
                 .flipsForRightToLeftLayoutDirection(true)
                 .accessibilityHidden(true)

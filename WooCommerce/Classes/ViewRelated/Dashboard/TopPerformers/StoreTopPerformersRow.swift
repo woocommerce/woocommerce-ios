@@ -3,7 +3,6 @@ import StoreDesignSystem
 import SwiftUI
 
 struct StoreTopPerformersRow: View {
-    @ScaledMetric(relativeTo: .body) private var imageSize = Constants.imageSize
 
     let data: TopPerformersRow.Data
     let showsDivider: Bool
@@ -18,7 +17,7 @@ struct StoreTopPerformersRow: View {
                     }
                     .resizable()
                     .scaledToFill()
-                    .frame(width: imageSize, height: imageSize)
+                    .frame(width: StoreSize.iconContainerSize, height: StoreSize.iconContainerSize)
                     .clipShape(.rect(cornerRadius: StoreRadius.small))
                     .accessibilityHidden(true)
                     .renderedIf(data.showImage)
@@ -54,12 +53,5 @@ struct StoreTopPerformersRow: View {
         .buttonStyle(.plain)
         .disabled(data.tapHandler == nil)
         .accessibilityElement(children: .combine)
-    }
-}
-
-private extension StoreTopPerformersRow {
-    enum Constants {
-        // Matches the shared Android ProductThumbnail default used by this card.
-        static let imageSize: CGFloat = 42
     }
 }

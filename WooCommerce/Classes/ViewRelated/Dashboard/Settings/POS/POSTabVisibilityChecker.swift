@@ -23,10 +23,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let eligibilityService: POSEligibilityServiceProtocol
     private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
     private let featureFlagService: FeatureFlagService
-    private let isOperatingSystemAtLeast: (OperatingSystemVersion) -> Bool
     private let connectivityObserver: ConnectivityObserver
-
-    private static let minimumPhonePOSOperatingSystemVersion = OperatingSystemVersion(majorVersion: 26, minorVersion: 0, patchVersion: 0)
 
     init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -34,15 +31,13 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
-         isOperatingSystemAtLeast: @escaping (OperatingSystemVersion) -> Bool = ProcessInfo.processInfo.isOperatingSystemAtLeast) {
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
         self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
         self.featureFlagService = featureFlagService
-        self.isOperatingSystemAtLeast = isOperatingSystemAtLeast
         self.connectivityObserver = connectivityObserver
     }
 
@@ -77,10 +72,6 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     func checkVisibility() async -> Bool {
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
-        }
-        guard userInterfaceIdiom != .phone || isPhoneOperatingSystemEligible else {
-            logNotVisible("phone POS needs iOS \(Self.minimumPhonePOSOperatingSystemVersion.majorVersion) or later")
-            return false
         }
 
         // Offline, fall back to the cached visibility instead of remote checks that would fail
@@ -124,10 +115,6 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private func logNotVisible(_ reason: String) {
         DDLogInfo("POS tab not visible for site \(site.siteID): \(reason)")
     }
-
-    private var isPhoneOperatingSystemEligible: Bool {
-        isOperatingSystemAtLeast(Self.minimumPhonePOSOperatingSystemVersion)
-    }
 }
 
 // MARK: - Site Settings Related Eligibility Check
@@ -155,20 +142,7 @@ private extension POSTabVisibilityChecker {
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
-        // Phone POS is GB-only, except for US stores when the `woo_pos_phone_us` remote flag
-        // is enabled — WPCOM whitelists that flag to Automattic accounts so internal testers
-        // can use Tap to Pay on US stores ahead of a wider rollout (WOOMOB-3775).
-        if userInterfaceIdiom == .phone, countryCode != .GB {
-            guard countryCode == .US, await isPhonePointOfSaleUSRemoteFlagEnabled() else {
-                return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
-            }
-        }
-
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
-    }
-
-    func isPhonePointOfSaleUSRemoteFlagEnabled() async -> Bool {
-        await remoteFeatureFlagService.isEnabled(.phonePointOfSaleUS, defaultValue: false)
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {

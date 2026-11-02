@@ -85,11 +85,8 @@ for line in open(path, encoding="utf-8"):
         raw = m.group(1).strip()
         # Like bash, "#" starts a comment only as a word of its own, so an
         # unquoted password can contain it.
-        lexer = shlex.shlex(raw, posix=True)
-        lexer.whitespace_split = True
-        lexer.commenters = ""
         try:
-            parts = list(lexer)
+            parts = shlex.split(raw)
         except ValueError:
             parts = [raw]
         print(parts[0] if parts else "")

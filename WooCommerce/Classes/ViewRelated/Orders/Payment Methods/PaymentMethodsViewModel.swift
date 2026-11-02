@@ -327,6 +327,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                 paymentOrderRefreshTask = refreshTask
                 refreshOrderBeforeReturningToDetails(after: refreshTask) { [weak self] in
                     guard let self else { return }
+                    _ = updateOrderAsynchronously()
                     onSuccess()
                     presentNoticeSubject.send(.completed)
                     collectPaymentsUseCase = nil

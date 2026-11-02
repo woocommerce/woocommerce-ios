@@ -7,6 +7,8 @@ struct StoreTopPerformersRow: View {
     let data: TopPerformersRow.Data
     let showsDivider: Bool
 
+    @ScaledMetric(relativeTo: .body) private var imageSize = StoreSize.iconContainerSize
+
     var body: some View {
         Button(action: { data.tapHandler?() }) {
             AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top) {
@@ -17,7 +19,7 @@ struct StoreTopPerformersRow: View {
                     }
                     .resizable()
                     .scaledToFill()
-                    .frame(width: StoreSize.iconContainerSize, height: StoreSize.iconContainerSize)
+                    .frame(width: imageSize, height: imageSize)
                     .clipShape(.rect(cornerRadius: StoreRadius.small))
                     .accessibilityHidden(true)
                     .renderedIf(data.showImage)

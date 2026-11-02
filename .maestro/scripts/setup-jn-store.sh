@@ -82,9 +82,12 @@ path, key = os.environ["ENV_FILE"], os.environ["ENV_KEY"]
 for line in open(path, encoding="utf-8"):
     m = re.match(r"\s*" + re.escape(key) + r"=(.*)$", line)
     if m:
+        # Like bash, "#" starts a comment only after whitespace, so an unquoted
+        # password can contain it.
+        if re.match(r"\s+#", m.group(1)):
+            print("")
+            break
         raw = m.group(1).strip()
-        # Like bash, "#" starts a comment only as a word of its own, so an
-        # unquoted password can contain it.
         try:
             parts = shlex.split(raw)
         except ValueError:

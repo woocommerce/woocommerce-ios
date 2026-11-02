@@ -302,8 +302,12 @@ class DefaultStoresManager: StoresManager {
         siteCredentialsRejectedObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
                                                                           object: nil,
                                                                           queue: .main) { [weak self] note in
-            guard let self, isAuthenticatedWithoutWPCom,
-                  (note.object as? ApplicationPasswordUseCaseError) == .siteCredentialsRejected else {
+            // A creation from an earlier login can end after logging in again, to another site or account.
+            guard let self,
+                  (note.object as? ApplicationPasswordUseCaseError) == .siteCredentialsRejected,
+                  case let .some(.wporg(username, _, siteAddress)) = sessionManager.defaultCredentials,
+                  (note.userInfo?[ApplicationPasswordGenerationUserInfoKey.siteAddress] as? String) == siteAddress,
+                  (note.userInfo?[ApplicationPasswordGenerationUserInfoKey.username] as? String) == username else {
                 return
             }
             ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .siteCredentialsRejected))

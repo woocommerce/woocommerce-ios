@@ -62,14 +62,16 @@ extension RequestProcessor: RequestRetrier {
         }
 
         if state.authenticator.canGenerateApplicationPassword() {
-            switch state.enqueueGeneration(completion) {
+            // A 401 means the site rejected the saved password; otherwise none was saved.
+            let isRegeneration = (error as? AFError)?.responseCode == 401
+            // Non-pretty-permalink sites carry the REST route as a query parameter.
+            let restRoute = urlRequest.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: false) }?
+                .queryItems?.first { $0.name == "rest_route" }?.value
+            switch state.enqueueGeneration(completion,
+                                           path: restRoute ?? urlRequest.url?.path ?? "",
+                                           isRegeneration: isRegeneration) {
             case .started:
-                // A 401 means the site rejected the saved password; otherwise none was saved.
-                let isRegeneration = (error as? AFError)?.responseCode == 401
-                // Non-pretty-permalink sites carry the REST route as a query parameter.
-                let restRoute = urlRequest.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: false) }?
-                    .queryItems?.first { $0.name == "rest_route" }?.value
-                generateApplicationPassword(path: restRoute ?? urlRequest.url?.path ?? "", isRegeneration: isRegeneration)
+                generateApplicationPassword()
             case .joined:
                 break
             case .paused(let lastFailure):
@@ -95,23 +97,27 @@ extension RequestProcessor: RequestRetrier {
 // MARK: Helpers
 //
 private extension RequestProcessor {
-    func generateApplicationPassword(path: String, isRegeneration: Bool) {
+    func generateApplicationPassword() {
         Task(priority: .medium) { @MainActor [weak self] in
-            guard let self else { return }
-            let authenticator = self.state.authenticator
-            let attemptSiteID = authenticator.jetpackSiteID
-            let userInfo: [AnyHashable: Any] = [
-                ApplicationPasswordGenerationUserInfoKey.path: path,
-                ApplicationPasswordGenerationUserInfoKey.isRegeneration: isRegeneration
+            guard let self, let generation = self.state.runningGeneration else {
+                return
+            }
+            let authenticator = generation.authenticator
+            var userInfo: [AnyHashable: Any] = [
+                ApplicationPasswordGenerationUserInfoKey.path: generation.path,
+                ApplicationPasswordGenerationUserInfoKey.isRegeneration: generation.isRegeneration
             ]
+            // The attempt can end after a logout and a new login, so observers need to know whose credentials it used.
+            userInfo[ApplicationPasswordGenerationUserInfoKey.siteAddress] = authenticator.credentials?.siteAddress
+            userInfo[ApplicationPasswordGenerationUserInfoKey.username] = authenticator.credentials?.username
             do {
                 let _ = try await authenticator.generateApplicationPassword()
-                let completions = self.state.finishGeneration(failure: nil, attemptSiteID: attemptSiteID)
+                let finished = self.state.finishGeneration(failure: nil)
 
                 // Post a notification for tracking
                 self.notificationCenter.post(name: .ApplicationPasswordsNewPasswordCreated, object: nil, userInfo: userInfo)
 
-                completions.forEach { $0(.retryWithDelay(0)) }
+                self.completeGeneration(finished, with: .retryWithDelay(0))
             } catch {
 
                 // Post a notification for tracking
@@ -119,15 +125,24 @@ private extension RequestProcessor {
 
                 let shouldRetry = await self.checkIfRetryingGenerationIsNeeded(for: error)
                 if shouldRetry {
-                    self.generateApplicationPassword(path: path, isRegeneration: isRegeneration)
+                    self.generateApplicationPassword()
                 } else {
-                    let completions = self.state.finishGeneration(failure: error, attemptSiteID: attemptSiteID)
-                    completions.forEach { $0(.doNotRetryWithError(error)) }
-                    if let siteID = self.state.currentSiteID {
+                    let finished = self.state.finishGeneration(failure: error)
+                    self.completeGeneration(finished, with: .doNotRetryWithError(error))
+                    if let siteID = generation.siteID {
                         self.notifyFailureIfNeeded(error, for: siteID)
                     }
                 }
             }
+        }
+    }
+
+    func completeGeneration(_ finished: RequestProcessorState.FinishedGeneration, with result: RetryResult) {
+        finished.completions.forEach { $0(result) }
+        // Requests for another store: it's no longer selected, and a retry would use the selected store's authenticator.
+        finished.dropped.forEach { $0(.doNotRetry) }
+        if finished.startsNext {
+            generateApplicationPassword()
         }
     }
 
@@ -153,16 +168,16 @@ private extension RequestProcessor {
 
     /// Checks error code to retry or mark site as unsupported for app password.
     /// Returns whether retry is needed.
+    /// Runs before `finishGeneration`, so the running generation is still the one that failed.
     @MainActor
     func checkIfRetryingGenerationIsNeeded(for error: Error) async -> Bool {
-        guard state.currentSiteID != nil else {
+        guard let authenticator = state.runningGeneration?.authenticator, authenticator.jetpackSiteID != nil else {
             return false
         }
         switch error {
         case NetworkError.unacceptableStatusCode(let statusCode, _) where statusCode == 409:
             /// Password with the same name already exists. Request deletion remotely and retry.
             do {
-                let authenticator = state.authenticator
                 try await authenticator.deleteApplicationPassword()
                 return true
             } catch {
@@ -239,16 +254,33 @@ public extension NSNotification.Name {
 public enum ApplicationPasswordGenerationUserInfoKey {
     public static let path = "path"
     public static let isRegeneration = "isRegeneration"
+    public static let siteAddress = "siteAddress"
+    public static let username = "username"
 }
 
 private extension RequestProcessor {
     final class RequestProcessorState {
+        // Password validation only. Creation uses `running` and `waiting`.
         private var requestsToRetry: [(RetryResult) -> Void]
         private var isAuthenticating: Bool
         private var requestAuthenticator: RequestAuthenticator
         private var siteID: Int64?
         private var cooldown = ApplicationPasswordCreationCooldown()
+        /// One creation runs at a time, because every store saves its password in the same keychain slot.
+        private var running: Generation?
+        /// Requests for other stores, waiting for the running creation to end.
+        private var waiting: [Int64?: Generation] = [:]
         private weak var _delegate: RequestProcessorDelegate?
+
+        struct Generation {
+            let siteID: Int64?
+            let authenticator: RequestAuthenticator
+            let path: String
+            let isRegeneration: Bool
+            var completions: [(RetryResult) -> Void] = []
+        }
+
+        typealias FinishedGeneration = (completions: [(RetryResult) -> Void], dropped: [(RetryResult) -> Void], startsNext: Bool)
 
         enum GenerationQueueing {
             case started
@@ -277,8 +309,8 @@ private extension RequestProcessor {
             queue.sync { requestAuthenticator }
         }
 
-        var currentSiteID: Int64? {
-            queue.sync { siteID }
+        var runningGeneration: Generation? {
+            queue.sync { running }
         }
 
         func shouldRetry(_ request: URLRequest) -> Bool {
@@ -296,34 +328,47 @@ private extension RequestProcessor {
             }
         }
 
-        func enqueueGeneration(_ completion: @escaping (RetryResult) -> Void) -> GenerationQueueing {
+        func enqueueGeneration(_ completion: @escaping (RetryResult) -> Void,
+                               path: String,
+                               isRegeneration: Bool) -> GenerationQueueing {
             queue.sync {
                 if let lastFailure = cooldown.pausedFailure(at: ContinuousClock.now) {
                     return .paused(lastFailure: lastFailure)
                 }
-                requestsToRetry.append(completion)
-                if isAuthenticating {
-                    return .joined
+                let generation = Generation(siteID: siteID,
+                                            authenticator: requestAuthenticator,
+                                            path: path,
+                                            isRegeneration: isRegeneration)
+                guard let current = running else {
+                    running = generation
+                    running?.completions.append(completion)
+                    return .started
                 }
-                isAuthenticating = true
-                return .started
+                if current.siteID == siteID {
+                    running?.completions.append(completion)
+                } else {
+                    waiting[siteID, default: generation].completions.append(completion)
+                }
+                return .joined
             }
         }
 
-        func finishGeneration(failure: Error?, attemptSiteID: Int64?) -> [(RetryResult) -> Void] {
+        func finishGeneration(failure: Error?) -> FinishedGeneration {
             queue.sync {
-                isAuthenticating = false
-                if let failure {
-                    // A failure from a store the user switched away from must not pause the new one.
-                    if siteID == attemptSiteID {
+                let finished = running
+                // A creation for a store the user switched away from leaves the selected store's pause alone.
+                if let finished, finished.siteID == siteID {
+                    if let failure {
                         cooldown.recordFailure(failure, at: ContinuousClock.now)
+                    } else {
+                        cooldown.reset()
                     }
-                } else {
-                    cooldown.reset()
                 }
-                let completions = requestsToRetry
-                requestsToRetry.removeAll()
-                return completions
+                // Promote the hand-off's selected store so its password is written after the running creation.
+                running = waiting.removeValue(forKey: siteID)
+                let dropped = waiting.values.flatMap { $0.completions }
+                waiting.removeAll()
+                return (finished?.completions ?? [], dropped, running != nil)
             }
         }
 
@@ -343,9 +388,12 @@ private extension RequestProcessor {
 
         func updateAuthenticator(_ authenticator: RequestAuthenticator) {
             queue.sync {
+                // Rebuilding the same store's authenticator must not clear its cooldown.
+                if siteID != authenticator.jetpackSiteID {
+                    cooldown.reset()
+                }
                 requestAuthenticator = authenticator
                 siteID = authenticator.jetpackSiteID
-                cooldown.reset()
             }
         }
     }

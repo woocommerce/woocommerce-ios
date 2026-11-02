@@ -361,6 +361,7 @@ final class RequestProcessorTests: XCTestCase {
         // Given
         let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest(url: URL(string: "https://test.com/wp-json/wc/v3/orders"))
+        mockRequestAuthenticator.credentials = .wporg(username: "merchant", password: "secret", siteAddress: "https://test.com")
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
 
         // When
@@ -375,9 +376,12 @@ final class RequestProcessorTests: XCTestCase {
         waitUntil {
             self.mockNotificationCenter.notificationName == .ApplicationPasswordsGenerationFailed
         }
-        XCTAssertEqual(mockNotificationCenter.notificationUserInfo?[ApplicationPasswordGenerationUserInfoKey.isRegeneration] as? Bool, false)
-        XCTAssertEqual(mockNotificationCenter.notificationUserInfo?[ApplicationPasswordGenerationUserInfoKey.path] as? String,
-                       "/wp-json/wc/v3/orders")
+        let userInfo = try XCTUnwrap(mockNotificationCenter.notificationUserInfo)
+        XCTAssertEqual(userInfo[ApplicationPasswordGenerationUserInfoKey.isRegeneration] as? Bool, false)
+        XCTAssertEqual(userInfo[ApplicationPasswordGenerationUserInfoKey.path] as? String, "/wp-json/wc/v3/orders")
+        XCTAssertEqual(userInfo[ApplicationPasswordGenerationUserInfoKey.siteAddress] as? String, "https://test.com")
+        XCTAssertEqual(userInfo[ApplicationPasswordGenerationUserInfoKey.username] as? String, "merchant")
+        XCTAssertFalse(userInfo.values.contains { $0 as? String == "secret" })
     }
 
     func test_posted_notification_holds_expected_error_when_application_password_generation_fails() throws {
@@ -434,8 +438,10 @@ final class RequestProcessorTests: XCTestCase {
     }
 
     @MainActor
-    func test_updateAuthenticator_when_creation_is_paused_then_next_request_attempts_creation() async throws {
+    func test_updateAuthenticator_when_store_changes_during_pause_then_next_request_attempts_creation() async throws {
         // Given
+        mockRequestAuthenticator.jetpackSiteID = 123
+        sut.updateAuthenticator(mockRequestAuthenticator)
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = NSError(domain: "ApplicationPasswordCreation", code: 1)
         let firstCompletion = expectation(description: "First request completes")
 
@@ -445,6 +451,7 @@ final class RequestProcessorTests: XCTestCase {
         }
         await fulfillment(of: [firstCompletion], timeout: 2)
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = nil
+        mockRequestAuthenticator.jetpackSiteID = 456
         sut.updateAuthenticator(mockRequestAuthenticator)
 
         let secondCompletion = expectation(description: "Request after authenticator update completes")
@@ -466,7 +473,7 @@ final class RequestProcessorTests: XCTestCase {
         let authenticatorB = MockRequestAuthenticator()
         authenticatorB.jetpackSiteID = 456
         sut.updateAuthenticator(authenticatorA)
-        let processor = sut!
+        let processor = try XCTUnwrap(sut)
         let failure = NSError(domain: "ApplicationPasswordCreation", code: 1)
         authenticatorA.onGenerate = {
             processor.updateAuthenticator(authenticatorB)
@@ -496,15 +503,201 @@ final class RequestProcessorTests: XCTestCase {
     }
 
     @MainActor
+    func test_retry_when_store_changes_before_queued_attempt_starts_then_each_attempt_uses_its_own_authenticator() async throws {
+        // Given
+        let processor = try XCTUnwrap(sut)
+        let authenticatorA = MockRequestAuthenticator()
+        authenticatorA.jetpackSiteID = 123
+        let authenticatorB = MockRequestAuthenticator()
+        authenticatorB.jetpackSiteID = 456
+        processor.updateAuthenticator(authenticatorA)
+        let storeACompletion = expectation(description: "Store A's request completes")
+        let storeBCompletion = expectation(description: "Store B's request completes")
+
+        // When
+        processor.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { _ in
+            storeACompletion.fulfill()
+        }
+        processor.updateAuthenticator(authenticatorB)
+        processor.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { _ in
+            storeBCompletion.fulfill()
+        }
+        await fulfillment(of: [storeACompletion, storeBCompletion], timeout: 2)
+
+        // Then
+        XCTAssertEqual(authenticatorA.generateApplicationPasswordCallCount, 1)
+        XCTAssertEqual(authenticatorB.generateApplicationPasswordCallCount, 1)
+    }
+
+    @MainActor
+    func test_retry_when_new_store_request_arrives_during_attempt_then_its_creation_starts_after_and_gets_its_own_result() async throws {
+        // Given
+        let processor = try XCTUnwrap(sut)
+        let testSession = try XCTUnwrap(session)
+        let delegate = MockRequestProcessorDelegate()
+        processor.delegate = delegate
+        let authenticatorA = MockRequestAuthenticator()
+        authenticatorA.jetpackSiteID = 123
+        let authenticatorB = MockRequestAuthenticator()
+        authenticatorB.jetpackSiteID = 456
+        processor.updateAuthenticator(authenticatorA)
+        let storeARequest = try mockRequest(url: URL(string: "https://test.com/wp-json/wc/v3/orders"))
+        let storeBRequest = try mockRequest(url: URL(string: "https://test.com/?rest_route=/wc/v3/products"))
+        let storeACompletion = expectation(description: "Store A's request gets store A's failure")
+        let storeBCreationStarted = expectation(description: "Store B's creation starts")
+        let storeBCompletion = expectation(description: "Store B's request gets store B's success")
+        let storeBError = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+        authenticatorA.onGenerate = {
+            processor.updateAuthenticator(authenticatorB)
+            processor.retry(storeBRequest, for: testSession, dueTo: storeBError) { result in
+                XCTAssertTrue(result.retryRequired)
+                storeBCompletion.fulfill()
+            }
+            throw NetworkError.notFound(response: nil)
+        }
+        authenticatorB.onGenerate = {
+            storeBCreationStarted.fulfill()
+        }
+
+        // When
+        processor.retry(storeARequest, for: testSession, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { result in
+            guard case .doNotRetryWithError = result else {
+                return XCTFail("Expected store A's failure")
+            }
+            storeACompletion.fulfill()
+        }
+        await fulfillment(of: [storeACompletion, storeBCreationStarted, storeBCompletion], timeout: 2, enforceOrder: true)
+
+        // Then
+        XCTAssertEqual(authenticatorA.generateApplicationPasswordCallCount, 1)
+        XCTAssertEqual(authenticatorB.generateApplicationPasswordCallCount, 1)
+        XCTAssertEqual(delegate.didFailToAuthenticateRequestForSiteID, 123)
+        let failurePost = try XCTUnwrap(mockNotificationCenter.notifications.first { $0.name == .ApplicationPasswordsGenerationFailed })
+        let successPost = try XCTUnwrap(mockNotificationCenter.notifications.first { $0.name == .ApplicationPasswordsNewPasswordCreated })
+        let storeAUserInfo = try XCTUnwrap(failurePost.userInfo)
+        let storeBUserInfo = try XCTUnwrap(successPost.userInfo)
+        XCTAssertEqual(storeAUserInfo[ApplicationPasswordGenerationUserInfoKey.path] as? String, "/wp-json/wc/v3/orders")
+        XCTAssertEqual(storeAUserInfo[ApplicationPasswordGenerationUserInfoKey.isRegeneration] as? Bool, false)
+        XCTAssertEqual(storeBUserInfo[ApplicationPasswordGenerationUserInfoKey.path] as? String, "/wc/v3/products")
+        XCTAssertEqual(storeBUserInfo[ApplicationPasswordGenerationUserInfoKey.isRegeneration] as? Bool, true)
+    }
+
+    @MainActor
+    func test_retry_when_store_changes_twice_during_attempt_then_only_selected_store_gets_a_creation() async throws {
+        // Given
+        let processor = try XCTUnwrap(sut)
+        let testSession = try XCTUnwrap(session)
+        let authenticatorA = MockRequestAuthenticator()
+        authenticatorA.jetpackSiteID = 123
+        let authenticatorB = MockRequestAuthenticator()
+        authenticatorB.jetpackSiteID = 456
+        let authenticatorC = MockRequestAuthenticator()
+        authenticatorC.jetpackSiteID = 789
+        processor.updateAuthenticator(authenticatorA)
+        let storeBRequest = try mockRequest()
+        let storeCRequest = try mockRequest()
+        let storeACompletion = expectation(description: "Store A's request completes")
+        let storeBCompletion = expectation(description: "Store B's request finishes without a retry")
+        let storeCCompletion = expectation(description: "Store C's request gets store C's success")
+        authenticatorA.onGenerate = {
+            processor.updateAuthenticator(authenticatorB)
+            processor.retry(storeBRequest, for: testSession, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { result in
+                guard case .doNotRetry = result else {
+                    return XCTFail("Expected store B's request to finish without a retry")
+                }
+                storeBCompletion.fulfill()
+            }
+            processor.updateAuthenticator(authenticatorC)
+            processor.retry(storeCRequest, for: testSession, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { result in
+                XCTAssertTrue(result.retryRequired)
+                storeCCompletion.fulfill()
+            }
+        }
+
+        // When
+        processor.retry(try mockRequest(), for: testSession, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { _ in
+            storeACompletion.fulfill()
+        }
+        await fulfillment(of: [storeACompletion, storeBCompletion, storeCCompletion], timeout: 2)
+
+        // Then
+        XCTAssertEqual(authenticatorB.generateApplicationPasswordCallCount, 0)
+        XCTAssertEqual(authenticatorC.generateApplicationPasswordCallCount, 1)
+    }
+
+    @MainActor
+    func test_retry_when_store_changes_before_duplicate_name_recovery_then_recovery_uses_attempt_authenticator() async throws {
+        // Given
+        let processor = try XCTUnwrap(sut)
+        let authenticatorA = MockRequestAuthenticator()
+        authenticatorA.jetpackSiteID = 123
+        let authenticatorB = MockRequestAuthenticator()
+        authenticatorB.jetpackSiteID = 456
+        processor.updateAuthenticator(authenticatorA)
+        authenticatorA.onGenerate = { [weak authenticatorA] in
+            guard authenticatorA?.generateApplicationPasswordCallCount == 1 else {
+                return
+            }
+            processor.updateAuthenticator(authenticatorB)
+            throw NetworkError.unacceptableStatusCode(statusCode: 409, response: nil)
+        }
+        let completion = expectation(description: "Store A's request completes")
+
+        // When
+        processor.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { _ in
+            completion.fulfill()
+        }
+        await fulfillment(of: [completion], timeout: 2)
+
+        // Then
+        XCTAssertTrue(authenticatorA.deleteApplicationPasswordCalled)
+        XCTAssertEqual(authenticatorA.generateApplicationPasswordCallCount, 2)
+        XCTAssertFalse(authenticatorB.deleteApplicationPasswordCalled)
+        XCTAssertEqual(authenticatorB.generateApplicationPasswordCallCount, 0)
+    }
+
+    @MainActor
+    func test_updateAuthenticator_when_store_is_unchanged_during_pause_then_next_request_is_skipped() async throws {
+        // Given
+        mockRequestAuthenticator.jetpackSiteID = 123
+        sut.updateAuthenticator(mockRequestAuthenticator)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = NSError(domain: "ApplicationPasswordCreation", code: 1)
+        let firstCompletion = expectation(description: "First request completes")
+        sut.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { _ in
+            firstCompletion.fulfill()
+        }
+        await fulfillment(of: [firstCompletion], timeout: 2)
+        let rebuiltAuthenticator = MockRequestAuthenticator()
+        rebuiltAuthenticator.jetpackSiteID = 123
+
+        // When
+        sut.updateAuthenticator(rebuiltAuthenticator)
+        let secondCompletion = expectation(description: "Request after the rebuild completes")
+        sut.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { result in
+            XCTAssertFalse(result.retryRequired)
+            secondCompletion.fulfill()
+        }
+        await fulfillment(of: [secondCompletion], timeout: 2)
+
+        // Then
+        XCTAssertEqual(rebuiltAuthenticator.generateApplicationPasswordCallCount, 0)
+    }
+
+    @MainActor
     func test_retry_when_requests_arrive_during_creation_then_they_share_one_attempt_and_one_notification() async throws {
         // Given
-        let processor = sut!
+        let processor = try XCTUnwrap(sut)
+        mockRequestAuthenticator.jetpackSiteID = 123
+        processor.updateAuthenticator(mockRequestAuthenticator)
+        let rebuiltAuthenticator = MockRequestAuthenticator()
+        rebuiltAuthenticator.jetpackSiteID = 123
         let failure = NSError(domain: "ApplicationPasswordCreation", code: 1)
         let waitingRequests = [try mockRequest(), try mockRequest()]
-        let testSession = session!
+        let testSession = try XCTUnwrap(session)
         let completions = expectation(description: "All waiting requests complete")
         completions.expectedFulfillmentCount = 3
         mockRequestAuthenticator.onGenerate = {
+            processor.updateAuthenticator(rebuiltAuthenticator)
             for request in waitingRequests {
                 processor.retry(request, for: testSession, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { result in
                     guard case .doNotRetryWithError = result else {
@@ -527,16 +720,17 @@ final class RequestProcessorTests: XCTestCase {
 
         // Then
         XCTAssertEqual(mockRequestAuthenticator.generateApplicationPasswordCallCount, 1)
+        XCTAssertEqual(rebuiltAuthenticator.generateApplicationPasswordCallCount, 0)
         XCTAssertEqual(mockNotificationCenter.notifications.map(\.name), [.ApplicationPasswordsGenerationFailed])
     }
 
     @MainActor
     func test_retry_when_request_reenters_from_success_notification_then_it_waits_for_its_own_attempt() async throws {
         // Given
-        let processor = sut!
+        let processor = try XCTUnwrap(sut)
         let authenticator = mockRequestAuthenticator!
         let notificationCenter = mockNotificationCenter!
-        let testSession = session!
+        let testSession = try XCTUnwrap(session)
         let secondRequest = try mockRequest()
         let secondFailure = NSError(domain: "ApplicationPasswordCreation", code: 2)
         authenticator.onGenerate = { [weak authenticator] in

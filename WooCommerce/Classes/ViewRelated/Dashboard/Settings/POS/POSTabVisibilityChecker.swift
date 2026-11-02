@@ -46,9 +46,6 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }
-        guard userInterfaceIdiom != .phone else {
-            return false
-        }
         return eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
     }
 
@@ -61,9 +58,6 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     ) -> Bool {
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
-        }
-        guard userInterfaceIdiom != .phone else {
-            return false
         }
         return eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) ?? false
     }

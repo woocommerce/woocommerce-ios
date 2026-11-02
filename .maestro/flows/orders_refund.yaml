@@ -25,6 +25,7 @@ tags:
       id: add-customer-note-button
     direction: DOWN
     visibilityPercentage: 100
+    centerElement: true
 - tapOn:
     id: add-customer-note-button
 - tapOn:
@@ -128,6 +129,19 @@ tags:
 - tapOn:
     text: Refund
     index: 0
+# Order details keeps its payment-section scroll position after the refund.
+# Wait for the result before moving the refunded-products header into view.
+- extendedWaitUntil:
+    visible:
+      text: "Refunded"
+      above: "Net Payment"
+    timeout: 30000
+- waitForAnimationToEnd:
+    timeout: 5000
+- swipe:
+    start: "50%, 30%"
+    end: "50%, 50%"
+    duration: 700
 # The refunded section header is rendered upper-cased, and Maestro matches text
 # case-sensitively, so "Refunded Products" never matched.
 - extendedWaitUntil:

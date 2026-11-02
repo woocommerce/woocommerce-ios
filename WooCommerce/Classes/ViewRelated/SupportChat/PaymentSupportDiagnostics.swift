@@ -378,7 +378,7 @@ extension PaymentSupportDiagnostics {
             ),
             message: NSLocalizedString(
                 "paymentSupportDiagnostics.setupIncomplete.message",
-                value: "Your store is not connected to a payment account. Finish the account setup in your store admin.",
+                value: "Your store is not connected to a payment account. Finish the account setup in the payment settings.",
                 comment: "Payment setup check result when the payment provider reports no account for the store"
             )
         )
@@ -512,7 +512,7 @@ extension PaymentSupportDiagnostics {
         static let accessDenied = Finding(
             headline: NSLocalizedString(
                 "paymentSupportDiagnostics.accessDenied.headline",
-                value: "Login cannot read payment settings",
+                value: "This login cannot read payment settings",
                 comment: "Headline of the payment setup check result when WordPress refuses the request because of the login or its permissions"
             ),
             message: NSLocalizedString(

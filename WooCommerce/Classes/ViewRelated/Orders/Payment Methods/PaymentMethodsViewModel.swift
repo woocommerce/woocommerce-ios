@@ -317,17 +317,21 @@ final class PaymentMethodsViewModel: ObservableObject {
             onCompleted: { [weak self] in
                 guard let self else { return }
                 showLoadingIndicator = true
-                let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: orderID) { [weak self] result in
-                    Task { @MainActor [weak self] in
-                        guard let self else { return }
-                        if case .failure(let error) = result {
-                            DDLogError("⛔️ Error refreshing order after payment: \(error)")
-                        }
-                        showLoadingIndicator = false
-                        onSuccess()
-                        presentNoticeSubject.send(.completed)
-                        collectPaymentsUseCase = nil
-                        trackFlowCompleted(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
+                let finish: @MainActor @Sendable (Result<Void, Error>) -> Void = { [weak self] result in
+                    guard let self else { return }
+                    if case .failure(let error) = result {
+                        DDLogError("⛔️ Error refreshing order after payment: \(error)")
+                    }
+                    showLoadingIndicator = false
+                    onSuccess()
+                    presentNoticeSubject.send(.completed)
+                    collectPaymentsUseCase = nil
+                    trackFlowCompleted(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
+                }
+                let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: orderID) { result in
+                    let refreshResult = result.map { _ in () }
+                    Task { @MainActor in
+                        finish(refreshResult)
                     }
                 }
                 stores.dispatch(action)

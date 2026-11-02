@@ -10,6 +10,7 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let siteID: Int64
     private let labelID: Int64
+    private let printDialogPresenter: (Data?) -> Void
 
     /// Available paper sizes for printing the shipping label.
     let labelSizes: [ShippingLabelPaperSize]
@@ -48,7 +49,8 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
          pickupURL: URL?,
          commercialInvoiceURL: URL?,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         printDialogPresenter: @escaping (Data?) -> Void = WooShippingPostPurchaseViewModel.presentSystemPrintDialog) {
         self.siteID = siteID
         self.labelID = labelID
         self.labelSizes = labelSizes
@@ -58,6 +60,7 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
         self.commercialInvoiceURL = commercialInvoiceURL
         self.stores = stores
         self.storageManager = storageManager
+        self.printDialogPresenter = printDialogPresenter
 
         configureAccountSettingsResultsController()
     }
@@ -65,7 +68,8 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     convenience init(shippingLabel: ShippingLabel,
                      siteAddress: SiteAddress = SiteAddress(),
                      stores: StoresManager = ServiceLocator.stores,
-                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     printDialogPresenter: @escaping (Data?) -> Void = WooShippingPostPurchaseViewModel.presentSystemPrintDialog) {
         // Label sizes aren't provided by the API, so we can hard-code them to match the extension behavior:
         // Ref: https://github.com/woocommerce/woocommerce-shipping/blob/trunk/client/components/label-purchase/label/utils.ts
         let labelSizes = {
@@ -92,7 +96,8 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
                   pickupURL: pickupURL,
                   commercialInvoiceURL: commercialInvoiceURL,
                   stores: stores,
-                  storageManager: storageManager)
+                  storageManager: storageManager,
+                  printDialogPresenter: printDialogPresenter)
     }
 
     /// Fetches the shipping label in the selected paper size and presents the print dialog.
@@ -143,6 +148,10 @@ private extension WooShippingPostPurchaseViewModel {
 
     /// Presents the print dialog with the provided print data.
     func presentPrintDialog(with data: Data?) {
+        printDialogPresenter(data)
+    }
+
+    static func presentSystemPrintDialog(with data: Data?) {
         let printController = UIPrintInteractionController()
         printController.printingItem = data
         printController.present(animated: true)

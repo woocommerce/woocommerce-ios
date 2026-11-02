@@ -23,6 +23,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     private let successHandler: () -> Void
     private let analytics: Analytics
     private let cookieJar: HTTPCookieStorage
+    private let openForgotPasswordURL: (LoginFields) -> Void
 
     private var loginFields: LoginFields {
         let loginFields = LoginFields()
@@ -37,12 +38,14 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared,
-         onLoginSuccess: @escaping () -> Void = {}) {
+         onLoginSuccess: @escaping () -> Void = {},
+         openForgotPasswordURL: @escaping (LoginFields) -> Void = { WordPressAuthenticator.openForgotPasswordURL($0) }) {
         self.siteURL = siteURL
         self.stores = stores
         self.analytics = analytics
         self.successHandler = onLoginSuccess
         self.cookieJar = cookieJar
+        self.openForgotPasswordURL = openForgotPasswordURL
         super.init()
         configurePrimaryButton()
     }
@@ -54,7 +57,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
 
     func resetPassword() {
         analytics.track(.loginJetpackSiteCredentialResetPasswordTapped)
-        WordPressAuthenticator.openForgotPasswordURL(loginFields)
+        openForgotPasswordURL(loginFields)
     }
 }
 

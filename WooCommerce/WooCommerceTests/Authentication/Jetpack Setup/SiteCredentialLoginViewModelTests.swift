@@ -134,9 +134,9 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         var triggeredAuthentication = false
         let siteURL = "https://test.com"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores, onLoginSuccess: {
             successHandlerTriggered = true
-        }
+        })
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .authenticate:
@@ -163,9 +163,9 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         var triggeredAuthentication = false
         let siteURL = "https://test.com"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores, onLoginSuccess: {
             successHandlerTriggered = true
-        }
+        })
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .authenticate:
@@ -193,9 +193,9 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         var triggeredAuthentication = false
         let siteURL = "https://test.com"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores) {
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, stores: stores, onLoginSuccess: {
             successHandlerTriggered = true
-        }
+        })
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .authenticate:
@@ -237,13 +237,18 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let siteURL = "https://test.com"
-        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL, analytics: analytics)
+        var openedSiteAddress: String?
+        // Opening the real URL launches Safari and moves the test host to the background.
+        let viewModel = SiteCredentialLoginViewModel(siteURL: siteURL,
+                                                     analytics: analytics,
+                                                     openForgotPasswordURL: { openedSiteAddress = $0.siteAddress })
 
         // When
         viewModel.resetPassword()
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_reset_password_button_tapped" }))
+        XCTAssertEqual(openedSiteAddress, siteURL)
     }
 
     func test_it_tracks_login_jetpack_site_credential_did_show_error_alert_when_displaying_remote_error() {

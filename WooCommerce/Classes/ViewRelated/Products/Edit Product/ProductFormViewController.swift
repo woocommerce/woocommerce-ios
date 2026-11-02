@@ -360,7 +360,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         let webViewModel = DefaultAuthenticatedWebViewModel(title: product.name,
                                                             initialURL: url,
-                                                            httpErrorHandler: { statusCode in
+                                                            initialURLHTTPErrorHandler: { statusCode in
             ServiceLocator.analytics.track(event: .ProductDetail.previewFailed(statusCode: statusCode))
         })
         presentAuthenticatedWebView(webViewModel)

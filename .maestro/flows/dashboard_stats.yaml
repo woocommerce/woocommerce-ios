@@ -89,14 +89,14 @@ tags:
       id: "store-stats-chart"
     direction: DOWN
     timeout: 20000
+    centerElement: true
 - assertVisible:
     id: "store-stats-chart"
 # Tapping the chart selects a month, and its name and year replace the range's
 # dates next to the range title.
 - tapOn:
     id: "store-stats-chart"
-# On small screens the range label is above the viewport. Scroll beside the
-# chart so its drag gesture cannot consume the scroll or clear the selection.
+# Start outside the chart, whose drag gesture changes the selected month.
 - runFlow:
     when:
       notVisible:
@@ -104,15 +104,16 @@ tags:
         rightOf: "This Year"
     commands:
       - swipe:
-          start: "95%, 30%"
-          end: "95%, 65%"
-          duration: 500
+          from:
+            text: "View all store analytics"
+          direction: DOWN
 - scrollUntilVisible:
     element:
       text: "[A-Za-z]+ [0-9]{4}"
       rightOf: "This Year"
     direction: UP
     timeout: 10000
+    centerElement: true
 - takeScreenshot: dashboard_stats
 
 - runFlow:
@@ -127,11 +128,6 @@ tags:
           direction: UP
           timeout: 20000
           centerElement: true
-      # Maestro can still report the menu under the navigation toolbar.
-      - swipe:
-          start: "95%, 30%"
-          end: "95%, 65%"
-          duration: 500
       - repeat:
           while:
             notVisible:

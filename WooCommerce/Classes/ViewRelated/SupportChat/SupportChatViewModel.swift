@@ -195,6 +195,7 @@ final class SupportChatViewModel {
         if !earlierPaymentFailures.isEmpty {
             parts.append("Earlier setup checks (not payment attempts):\n" + earlierPaymentFailures.joined(separator: "\n"))
         }
+        guard !parts.isEmpty else { return nil }
         return parts.joined(separator: "\n\n")
     }
 

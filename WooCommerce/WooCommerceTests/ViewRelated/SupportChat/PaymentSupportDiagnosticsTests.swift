@@ -350,6 +350,18 @@ struct PaymentSupportDiagnosticsTests {
         #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.accessDenied.message)
     }
 
+    @Test(arguments: [400, 404, 429])
+    func test_requestFailure_when_store_answers_with_other_status_then_reports_site_problem(status: Int) {
+        // Given
+        let sut = makeSUT()
+        // When
+        let result = sut.requestFailure(NetworkRequestError.unacceptableStatusCode(statusCode: status), stage: "woocommerce-payments/accounts")
+        // Then
+        #expect(result.errorMessage == PaymentSupportDiagnostics.Localization.siteError.message)
+        #expect(result.reason == "unexpected_status")
+        #expect(result.technicalDetails?.contains("http_status=\(status)") == true)
+    }
+
     @Test func test_requestFailure_when_connection_fails_then_asks_to_check_connection() {
         // Given
         let sut = makeSUT()

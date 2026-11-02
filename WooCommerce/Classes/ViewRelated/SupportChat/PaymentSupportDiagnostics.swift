@@ -173,11 +173,13 @@ struct PaymentSupportDiagnostics {
             (reason, finding) = ("request_blocked", Localization.blocked)
         } else if error is DecodingError || (error as? UnexpectedStoreResponseError)?.kind == .unexpectedContent {
             (reason, finding) = ("invalid_response", Localization.siteError)
+        } else if code != nil {
+            (reason, finding) = ("unexpected_status", Localization.siteError)
         } else {
             (reason, finding) = ("request_failed", Localization.requestFailed)
         }
         // WordPress.com hosts these stores, so support can check the site instead of a hosting provider.
-        let isSiteProblem = ["request_timeout", "server_error", "request_blocked", "invalid_response"].contains(reason)
+        let isSiteProblem = ["request_timeout", "server_error", "request_blocked", "invalid_response", "unexpected_status"].contains(reason)
         let shownFinding = isSiteProblem && stores.sessionManager.defaultSite?.isWordPressComStore == true ?
             Finding(headline: finding.headline, message: Localization.hostedSiteMessage) : finding
         // Do not attach response bodies, account IDs, statement descriptors, or raw error descriptions.

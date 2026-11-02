@@ -3,7 +3,7 @@
 
 26.1
 -----
-- [*] Help & Support: A new "Payments" topic checks your payment setup, then suggests the next step. [https://github.com/woocommerce/woocommerce-ios/pull/18229]
+- [*] Help & Support: Troubleshooting now checks your payment setup, so you can find and fix card payment problems faster. [https://github.com/woocommerce/woocommerce-ios/pull/18229]
 
 
 26.0

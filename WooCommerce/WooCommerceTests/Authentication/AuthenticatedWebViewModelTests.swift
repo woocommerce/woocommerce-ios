@@ -14,6 +14,38 @@ struct AuthenticatedWebViewModelTests {
     ]
     private let siteURL = "http://example.com"
 
+    @Test @MainActor func test_decidePolicy_when_response_is_http_error_then_calls_httpErrorHandler_with_status_code() async throws {
+        // Given
+        var receivedStatusCode: Int?
+        let url = try #require(URL(string: siteURL))
+        let response = try #require(HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: nil))
+        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: url, httpErrorHandler: { statusCode in
+            receivedStatusCode = statusCode
+        })
+
+        // When
+        _ = await viewModel.decidePolicy(for: response)
+
+        // Then
+        #expect(receivedStatusCode == 404)
+    }
+
+    @Test @MainActor func test_decidePolicy_when_response_succeeds_then_does_not_call_httpErrorHandler() async throws {
+        // Given
+        var handlerWasCalled = false
+        let url = try #require(URL(string: siteURL))
+        let response = try #require(HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil))
+        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: url, httpErrorHandler: { _ in
+            handlerWasCalled = true
+        })
+
+        // When
+        _ = await viewModel.decidePolicy(for: response)
+
+        // Then
+        #expect(!handlerWasCalled)
+    }
+
     @Test(arguments: Self.testURLs)
     func authenticationFlow_for_wpcom_pages_when_wpcom_credentials_are_available(_ initialURL: URL?) throws {
         // Given

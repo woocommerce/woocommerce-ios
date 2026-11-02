@@ -330,7 +330,7 @@ struct PaymentSupportDiagnosticsTests {
         // Given
         let site = Site.fake().copy(isWordPressComStore: isHostedByWordPressCom)
         let sut = PaymentSupportDiagnostics(siteID: 123,
-                                            stores: MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site)))
+                                            stores: MockStoresManager(sessionManager: sessionManager(site: site)))
         // When
         let result = sut.requestFailure(UnexpectedStoreResponseError(kind: .unacceptableStatusCode, statusCode: 403), stage: "system_status")
         // Then
@@ -456,6 +456,13 @@ struct PaymentSupportDiagnosticsTests {
                                                  storeAddress: storeAddress))
     }
 
+    /// Avoids `SessionManager.makeForTesting`, which writes credentials to a keychain that parallel suites share.
+    private func sessionManager(site: Site? = nil) -> MockSessionManager {
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultSite = site
+        return sessionManager
+    }
+
     private func stores(plugins: [Yosemite.SystemPlugin]? = nil,
                         inactivePlugins: [Yosemite.SystemPlugin] = [],
                         preferred: CardPresentPaymentsPlugin? = nil,
@@ -465,7 +472,7 @@ struct PaymentSupportDiagnosticsTests {
                         accountError: Error? = nil,
                         settingsError: Error? = nil,
                         storeAddress: [String] = ["1 Main Street", "San Francisco", "94110"]) -> MockStoresManager {
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let stores = MockStoresManager(sessionManager: sessionManager())
         let report = Yosemite.SystemStatusReport(activePlugins: plugins ?? [plugin(.wcPay)], inactivePlugins: inactivePlugins, environment: nil,
                                                  database: nil, dropinPlugins: [], mustUsePlugins: [], theme: nil, settings: nil,
                                                  pages: [], postTypeCounts: [], security: nil)

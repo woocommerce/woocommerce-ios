@@ -52,17 +52,12 @@ struct PaymentSupportDiagnostics {
                                action: .openPlugins)
             }
 
-            let preferred: CardPresentPaymentsPlugin? = await withCheckedContinuation { continuation in
-                stores.dispatch(AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: siteID) {
-                    continuation.resume(returning: $0.flatMap(CardPresentPaymentsPlugin.with(gatewayID:)))
-                })
-            }
             let gateway: CardPresentPaymentsPlugin
             if active.count == 1, let only = active.first {
                 gateway = only
             } else if !configuration.paymentGateways.contains(CardPresentPaymentsPlugin.stripe.gatewayID) {
                 gateway = .wcPay
-            } else if let preferred {
+            } else if let preferred = await preferredGateway() {
                 gateway = preferred
             } else {
                 return failure(Localization.chooseGateway, reason: "payment_gateway_selection_required", action: .retryDiagnostics)
@@ -207,6 +202,14 @@ struct PaymentSupportDiagnostics {
             return deniedCodes.contains(code)
         default:
             return false
+        }
+    }
+
+    private func preferredGateway() async -> CardPresentPaymentsPlugin? {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: siteID) {
+                continuation.resume(returning: $0.flatMap(CardPresentPaymentsPlugin.with(gatewayID:)))
+            })
         }
     }
 

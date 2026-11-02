@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-06 09:58:43+0000 */
+/* Translation-Revision-Date: 2026-10-23 10:36:26+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -8628,6 +8628,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "是否開設新商店？";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "粗體";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "斜體";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "底線";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "傳送 Telegram 訊息";
 
@@ -9887,6 +9896,24 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "從付款開始至今的訂單總數已變更。 請返回並檢查訂單是否正確，並嘗試重新付款。";
 
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "找零金額：%1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "關閉";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "商店傳回非預期的回應，因此系統無法完成登入流程。 請再試一次，或聯絡支援團隊尋求協助。";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "再試一次";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "聯絡支援團隊";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "無法登入";
+
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "安全性外掛程式可能會移動 WordPress 儀表板。 輸入你用來開啟的位址。";
 
@@ -10893,6 +10920,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "探索程序所回傳的讀卡機沒有 IP 位址，故無法連結。";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "查看之前的 AI 支援對話";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "聊天記錄";
 
@@ -11801,7 +11831,7 @@ which should be translated separately and considered part of this sentence. */
 "orderPaymentDetails.paymentSummary.dateOnly" = "付款日期：%1$@";
 
 /* Payment on <date> received via (payment method title) */
-"orderPaymentDetails.paymentSummary.withPaymentMethod" = "已在 %1$@透過「%2$@」方式退款";
+"orderPaymentDetails.paymentSummary.withPaymentMethod" = "「已在 %1$@透過「%2$@」方式付款」";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "orderPaymentDetails.refundSummary.manualRefund" = "手動退款";
@@ -11880,6 +11910,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "檢視照片";
+
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "無法確認此訂單是否可透過卡片付款。 請再試一次。";
 
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "此訂單的幣別 (%1$@) 無法刷卡付款。";
@@ -12828,6 +12861,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "商品目錄";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "管理付款設定";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "付款";
 
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "檢視員工和 PIN 存取權限";
@@ -14056,6 +14095,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "無法更新日期";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "付款完成時播放音效";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "付款成功音效";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "付款";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "點選選單中的「鎖定 POS」時，POS 就會鎖住，閒置 5 分鐘後也會自動鎖住。";
@@ -15484,6 +15532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "未命名的聊天";
 
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "尚未開始 AI 支援對話。";
+
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "聊天記錄";
 
@@ -16315,6 +16366,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "此目的地地址的電話號碼為必填資訊。";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "「%1$@」要求提供收件者電話號碼。";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "新增公司";
 
@@ -16672,6 +16726,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "更多 ITN 相關資訊";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "對於要運送到歐盟的貨物，現在需要提供各項目的產品識別碼。 請更新 WooCommerce Shipping 外掛程式並新增。";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "商品詳細資料";
 
@@ -16717,6 +16774,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "說明必須少於 30 個字元。";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "運送至歐盟時為必填";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "不可超過 %1$d 個字元。";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "歐盟產品識別碼";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "運送至歐盟時為必填。 系統會根據產品的庫存設定，預先填入貨號與 GTIN\/EAN。";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN\/EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "請輸入 GTIN\/EAN，或選取「無條碼」";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS 關稅代碼";
 
@@ -16726,8 +16801,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "選填";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "製造商零件編號";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "無條碼";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "原產國家\/地區";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "貨號";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "關稅號碼長度必須為 6 至 12 位數";

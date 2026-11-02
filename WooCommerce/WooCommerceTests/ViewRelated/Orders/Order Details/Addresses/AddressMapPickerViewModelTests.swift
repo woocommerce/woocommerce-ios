@@ -4,6 +4,7 @@ import Contacts
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 struct AddressMapPickerViewModelTests {
     private let mockCountryByCode: (String) -> Country?
 

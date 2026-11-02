@@ -7,6 +7,7 @@ import YosemiteTestHelpers
 @testable import Yosemite
 import Storage
 
+@MainActor
 final class FetchResultSnapshotsProviderTests: XCTestCase {
 
     private var storageManager: MockStorageManager!
@@ -17,18 +18,18 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         storageManager.viewStorage
     }
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
         cancellables.forEach {
             $0.cancel()
         }
         cancellables.removeAll()
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_objectWithID_returns_the_expected_immutable_object() throws {
@@ -222,7 +223,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // Delete a section
         viewStorage.deleteObject(yamada)
 
-        viewStorage.saveIfNeeded()
+        storageManager.performAndSave({ _ in }, completion: nil, on: .main)
 
         // Then
         XCTAssertEqual(snapshots.count, 2)
@@ -240,7 +241,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "W"), [wakaba.objectID])
     }
 
-    func test_snapshot_emits_a_new_snapshot_when_objects_are_updated_in_derived_storage() throws {
+    func test_snapshot_emits_a_new_snapshot_when_objects_are_updated_in_derived_storage() async throws {
         // Given
         let zanza = insertAccount(displayName: "Z", username: "Zanza")
         let zagato = insertAccount(displayName: "Z", username: "Zagato")
@@ -264,13 +265,15 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
         // When
         // This update should emit a new snapshot
-        waitForExpectation { exp in
+        let zanzaID = zanza.objectID
+        let storageManager = try XCTUnwrap(self.storageManager)
+        try await waitForCompletion { completion in
             derivedStorage.perform {
-                let zanzaInDerived = derivedStorage.loadObject(ofType: StorageAccount.self, with: zanza.objectID)!
+                let zanzaInDerived = derivedStorage.loadObject(ofType: StorageAccount.self, with: zanzaID)!
                 zanzaInDerived.username = "Zanza Lockman"
 
-                self.storageManager.saveDerivedType(derivedStorage: derivedStorage, {
-                    exp.fulfill()
+                storageManager.saveDerivedType(derivedStorage: derivedStorage, {
+                    completion(())
                 })
             }
         }
@@ -289,7 +292,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(lastSnapshot.itemIdentifiers, firstSnapshot.itemIdentifiers)
     }
 
-    func test_snapshot_does_not_emit_a_new_snapshot_when_differently_typed_objects_are_updated_in_derived_storage() throws {
+    func test_snapshot_does_not_emit_a_new_snapshot_when_differently_typed_objects_are_updated_in_derived_storage() async throws {
         // Given
         let account = insertAccount(displayName: "Z", username: "Zanza")
         let orderStatus = insertOrderStatus(name: "accusamus")
@@ -313,14 +316,20 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
         // When
         // This update should not emit a new snapshot since the updated object is not a `StorageAccount`.
-        waitForExpectation { exp in
+        let orderStatusID = orderStatus.objectID
+        let derivedContext = try XCTUnwrap(derivedStorage as? NSManagedObjectContext)
+        try await waitForCompletion { completion in
             derivedStorage.perform {
-                let orderStatusInDerived = derivedStorage.loadObject(ofType: StorageOrderStatus.self, with: orderStatus.objectID)!
+                let orderStatusInDerived = derivedStorage.loadObject(ofType: StorageOrderStatus.self, with: orderStatusID)!
                 orderStatusInDerived.name = "edited orderStatus"
 
-                derivedStorage.saveIfNeeded()
-
-                exp.fulfill()
+                // Save only the derived context: saving the view context too would emit a snapshot.
+                do {
+                    try derivedContext.save()
+                } catch {
+                    XCTFail("Failed to save the derived context: \(error)")
+                }
+                completion(())
             }
         }
 
@@ -328,7 +337,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         assertEmpty(snapshots)
     }
 
-    func test_snapshot_does_not_emit_a_new_snapshot_when_the_updated_objects_do_not_match_the_predicate() throws {
+    func test_snapshot_does_not_emit_a_new_snapshot_when_the_updated_objects_do_not_match_the_predicate() async throws {
         // Given
         let account = insertAccount(displayName: "Z", username: "Zanza")
         let excludedAccount = insertAccount(displayName: "Y", username: "Yamato")
@@ -354,15 +363,21 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // When
         // This update should not emit a new snapshot since the updated object is not part
         // of the query result because of the `query.predicate`.
-        waitForExpectation { exp in
+        let excludedAccountID = excludedAccount.objectID
+        let derivedContext = try XCTUnwrap(derivedStorage as? NSManagedObjectContext)
+        try await waitForCompletion { completion in
             derivedStorage.perform {
                 let excludedAccountInDerived = derivedStorage.loadObject(ofType: StorageAccount.self,
-                                                                         with: excludedAccount.objectID)!
+                                                                         with: excludedAccountID)!
                 excludedAccountInDerived.displayName = "edited displayName"
 
-                derivedStorage.saveIfNeeded()
-
-                exp.fulfill()
+                // Save only the derived context: saving the view context too would emit a snapshot.
+                do {
+                    try derivedContext.save()
+                } catch {
+                    XCTFail("Failed to save the derived context: \(error)")
+                }
+                completion(())
             }
         }
 
@@ -395,7 +410,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let sadako = insertAccount(displayName: "S", username: "Sadako")
         try viewStorage.obtainPermanentIDs(for: [sadako])
 
-        viewStorage.saveIfNeeded()
+        storageManager.performAndSave({ _ in }, completion: nil, on: .main)
 
         // Then
         XCTAssertEqual(snapshots.count, 3)

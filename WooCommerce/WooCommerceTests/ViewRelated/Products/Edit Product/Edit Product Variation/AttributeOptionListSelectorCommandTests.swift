@@ -5,6 +5,7 @@ import Yosemite
 
 /// Test cases for `AttributeOptionListSelectorCommand`
 ///
+@MainActor
 final class AttributeOptionListSelectorCommandTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123456

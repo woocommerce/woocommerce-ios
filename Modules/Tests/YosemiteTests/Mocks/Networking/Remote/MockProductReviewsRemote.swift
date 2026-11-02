@@ -6,6 +6,7 @@ import XCTest
 
 /// Mock for `ProductReviewsRemote`.
 ///
+@MainActor
 final class MockProductReviewsRemote {
     private struct ResultKey: Hashable {
         let siteID: Int64
@@ -28,11 +29,11 @@ final class MockProductReviewsRemote {
 
 // MARK: - ProductReviewsEndpointsProviding
 
-extension MockProductReviewsRemote: ProductReviewsRemoteProtocol {
+extension MockProductReviewsRemote: @MainActor ProductReviewsRemoteProtocol {
     func loadProductReview(for siteID: Int64,
                            reviewID: Int64,
                            completion: @escaping (Result<ProductReview, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }

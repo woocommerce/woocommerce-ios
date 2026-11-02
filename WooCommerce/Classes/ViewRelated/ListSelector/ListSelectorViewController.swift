@@ -2,6 +2,7 @@ import UIKit
 
 /// A generic data source for the list selector UI `ListSelectorViewController`.
 ///
+@MainActor
 protocol ListSelectorCommand {
     associatedtype Model
     associatedtype Cell: UITableViewCell

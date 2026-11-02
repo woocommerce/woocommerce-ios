@@ -74,6 +74,7 @@ final class ProductSettingsViewModel {
         }
     }
 
+    @MainActor
     func handleCellTap(at indexPath: IndexPath, sourceViewController: UIViewController) {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]

@@ -3,6 +3,7 @@ import protocol WooFoundation.Analytics
 import struct Networking.BlazeAISuggestion
 
 /// View model for `BlazeEditAdView`
+@MainActor
 final class BlazeEditAdViewModel: ObservableObject {
     typealias ImageState = EditableImageViewState
 
@@ -11,7 +12,7 @@ final class BlazeEditAdViewModel: ObservableObject {
     private let adData: BlazeEditAdData
 
     // Image selection
-    var onAddImage: ((MediaPickingSource) async -> MediaPickerImage?)?
+    var onAddImage: (@MainActor (MediaPickingSource) async -> MediaPickerImage?)?
     @Published private(set) var imageState: ImageState
     var image: MediaPickerImage? {
         imageState.image

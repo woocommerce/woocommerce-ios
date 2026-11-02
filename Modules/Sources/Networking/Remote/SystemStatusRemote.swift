@@ -36,10 +36,11 @@ public class SystemStatusRemote: Remote, @unchecked Sendable {
     ///   - completion: Closure to be excuted upon completion
     ///
     public func fetchSystemStatusReport(for siteID: Int64,
+                                        detectUnexpectedResponses: Bool = false,
                                         completion: @escaping (Result<SystemStatusReport, Error>) -> Void) {
         let request = makeRequest(siteID: siteID, fields: nil)
         let mapper = SystemStatusReportMapper(siteID: siteID)
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(request, mapper: mapper, detectUnexpectedResponses: detectUnexpectedResponses, completion: completion)
     }
 
     /// Loads system status information with configurable fields for a given site.

@@ -6,6 +6,7 @@ import enum Networking.NetworkError
 import protocol WooFoundation.Analytics
 
 /// View model for `BlazeConfirmPaymentView`
+@MainActor
 final class BlazeConfirmPaymentViewModel: ObservableObject {
 
     private let productID: Int64
@@ -132,7 +133,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
             // Set payment method ID, image URL and mimeType
             let updatedDetails = campaignInfo
                 .copy(paymentMethodID: selectedPaymentMethod.id,
-                      mainImage: .init(url: campaignMedia.src, mimeType: campaignMedia.mimeType))
+                      mainImage: campaignMedia)
 
             do {
                 try await requestCampaignCreation(details: updatedDetails)
@@ -155,7 +156,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
 }
 
 private extension BlazeConfirmPaymentViewModel {
-    func prepareImage() async throws -> Media {
+    func prepareImage() async throws -> CreateBlazeCampaign.Image {
         switch image.source {
         case .asset(let asset):
             do {
@@ -165,7 +166,7 @@ private extension BlazeConfirmPaymentViewModel {
                 throw BlazeCampaignCreationError.failedToUploadCampaignImage
             }
         case .media(let media):
-            return media
+            return .init(url: media.src, mimeType: media.mimeType)
         case .productImage(let image):
             do {
                 return try await retrieveMedia(mediaID: image.imageID)
@@ -186,19 +187,19 @@ private extension BlazeConfirmPaymentViewModel {
     }
 
     @MainActor
-    func retrieveMedia(mediaID: Int64) async throws -> Media {
+    func retrieveMedia(mediaID: Int64) async throws -> CreateBlazeCampaign.Image {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(MediaAction.retrieveMedia(siteID: siteID,
                                                       mediaID: mediaID,
                                                       onCompletion: { result in
-                continuation.resume(with: result)
+                continuation.resume(with: result.map { .init(url: $0.src, mimeType: $0.mimeType) })
             }))
         }
     }
 
     @MainActor
-    func uploadPendingImage(_ asset: PHAsset) async throws -> Media {
-        func uploadAsset(_ asset: PHAsset) async throws -> Media {
+    func uploadPendingImage(_ asset: PHAsset) async throws -> CreateBlazeCampaign.Image {
+        func uploadAsset(_ asset: PHAsset) async throws -> CreateBlazeCampaign.Image {
             try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(MediaAction.uploadMedia(siteID: siteID,
                                                         productID: productID,
@@ -206,7 +207,7 @@ private extension BlazeConfirmPaymentViewModel {
                                                         altText: nil,
                                                         filename: nil,
                                                         onCompletion: { result in
-                    continuation.resume(with: result)
+                    continuation.resume(with: result.map { .init(url: $0.src, mimeType: $0.mimeType) })
                 }))
             }
         }

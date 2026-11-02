@@ -104,6 +104,8 @@ public final class WooShippingStore: Store {
             acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
         case let .acceptFedExTermsOfService(siteID, completion):
             acceptFedExTermsOfService(siteID: siteID, completion: completion)
+        case let .loadServiceStatusNotices(siteID, completion):
+            remote.loadServiceStatusNotices(siteID: siteID, completion: completion)
         }
     }
 }

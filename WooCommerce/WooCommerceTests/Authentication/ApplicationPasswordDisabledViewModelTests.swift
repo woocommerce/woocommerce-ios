@@ -3,14 +3,15 @@ import SafariServices
 import WordPressAuthenticator
 @testable import WooCommerce
 
+@MainActor
 final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     private let testURL = "https://test.com"
     private var navigationController: UINavigationController!
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         window.makeKeyAndVisible()
         navigationController = .init()
@@ -18,12 +19,12 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
         WordPressAuthenticator.initializeAuthenticator()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         navigationController = nil
         window.resignKey()
         window.rootViewController = nil
 
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_viewmodel_provides_expected_image() {

@@ -1,0 +1,43 @@
+{
+    "notices": [
+        null,
+        {
+            "id": "missing-message",
+            "type": "error"
+        },
+        {
+            "id": " ",
+            "type": "error",
+            "message": "Blank id"
+        },
+        {
+            "id": "blank-message",
+            "type": "error",
+            "message": ""
+        },
+        {
+            "id": "uppercase-type",
+            "type": "WARNING",
+            "message": "Uppercase type",
+            "action": "HTTPS://status.example.com"
+        },
+        {
+            "id": "unknown-type",
+            "type": "critical",
+            "message": "Unknown type",
+            "dismissible": true,
+            "action": "javascript:alert(1)"
+        },
+        {
+            "id": "missing-type",
+            "message": "Missing type",
+            "action": "not a url"
+        },
+        {
+            "id": "url-without-host",
+            "type": "error",
+            "message": "URL without host",
+            "action": "https:status.example.com"
+        }
+    ]
+}

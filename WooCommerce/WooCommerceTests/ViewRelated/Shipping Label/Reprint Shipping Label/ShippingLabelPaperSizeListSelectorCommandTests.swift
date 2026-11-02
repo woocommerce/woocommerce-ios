@@ -2,6 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
+@MainActor
 final class ShippingLabelPaperSizeListSelectorCommandTests: XCTestCase {
     func test_data_are_set_to_paperSizeOptions_in_init() {
         // Given

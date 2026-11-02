@@ -1589,6 +1589,44 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(object?.items?.count, 1)
         XCTAssertEqual(object?.items?.first?.id, item.id)
     }
+
+    // MARK: - `loadServiceStatusNotices`
+
+    func test_loadServiceStatusNotices_returns_notices_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedNotices = [WooShippingServiceStatusNotice.fake().copy(id: "usps", severity: .error)]
+        remote.whenLoadingServiceStatusNotices(siteID: sampleSiteID, thenReturn: .success(expectedNotices))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[WooShippingServiceStatusNotice], Error> = waitFor { promise in
+            store.onAction(WooShippingAction.loadServiceStatusNotices(siteID: self.sampleSiteID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(try result.get(), expectedNotices)
+    }
+
+    func test_loadServiceStatusNotices_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.notFound()
+        remote.whenLoadingServiceStatusNotices(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[WooShippingServiceStatusNotice], Error> = waitFor { promise in
+            store.onAction(WooShippingAction.loadServiceStatusNotices(siteID: self.sampleSiteID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

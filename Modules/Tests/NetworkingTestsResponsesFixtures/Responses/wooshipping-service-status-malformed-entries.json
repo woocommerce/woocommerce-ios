@@ -1,0 +1,28 @@
+{
+    "notices": [
+        "not a notice",
+        42,
+        {
+            "id": 123,
+            "type": "error",
+            "message": "Numeric id"
+        },
+        {
+            "id": "wrong-field-types",
+            "type": ["warning"],
+            "message": "Wrong field types",
+            "dismissible": "yes",
+            "action": 7
+        },
+        {
+            "id": "duplicate",
+            "type": "error",
+            "message": "First duplicate"
+        },
+        {
+            "id": "duplicate",
+            "type": "warning",
+            "message": "Second duplicate"
+        }
+    ]
+}

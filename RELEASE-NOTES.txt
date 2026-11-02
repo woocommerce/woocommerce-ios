@@ -5,6 +5,7 @@
 -----
 - [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]
 - [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
+- [*] Products: Preview signs you in to your store when possible, works after logging in with your store username and password, and no longer shows "Page not found" on stores connected without the Jetpack plugin. [https://github.com/woocommerce/woocommerce-ios/pull/18238]
 
 26.0
 -----

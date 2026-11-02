@@ -5,9 +5,13 @@ import Yosemite
 /// Mock type for `CollectOrderPaymentProtocol`
 ///
 struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
+    typealias SuccessfulPaymentHandler = (_ onPaymentCompletion: @escaping () -> Void, _ onCompleted: @escaping () -> Void) -> Void
+
     /// Assign to configure `collectPayment` behaviour.
     ///
     var onCollectResult: Result<Void, Error>
+
+    var onSuccessfulPayment: SuccessfulPaymentHandler?
 
     /// Calls `onCompleted` for a successful collect result, and `onFailure` for an errer .
     ///
@@ -19,7 +23,11 @@ struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
                         onCompleted: @escaping () -> Void) {
         switch onCollectResult {
         case .success:
-            onCompleted()
+            if let onSuccessfulPayment {
+                onSuccessfulPayment(onPaymentCompletion, onCompleted)
+            } else {
+                onCompleted()
+            }
         case .failure(let error):
             onFailure(error)
         }

@@ -34,10 +34,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showLoadingIndicator = false
 
-    @MainActor private var isRefreshingOrder = false
-    @MainActor private var paymentAttemptID = 0
-    @MainActor private var requestedOrderRefreshAttemptID = 0
-    @MainActor private var orderRefreshCompletions: [() -> Void] = []
+    @MainActor private var lastOrderRefreshTask: Task<Void, Never>?
 
     /// Stores the payment link for the order.
     ///
@@ -253,7 +250,6 @@ final class PaymentMethodsViewModel: ObservableObject {
             DDLogError("⛔️ Order not found, can't collect payment.")
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
-        paymentAttemptID += 1
         let alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         let merchantEducationPresenter = TapToPayCardReaderMerchantEducationPresenter(rootViewController: rootViewController)
         let analyticsTracker = CardReaderConnectionAnalyticsTracker(
@@ -300,6 +296,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                                                                        tapToPayReconnectionController: ServiceLocator.tapToPayReconnectionController,
                                                                        analyticsTracker: analyticsTracker))
 
+        var paymentOrderRefreshTask: Task<Void, Never>?
         collectPaymentsUseCase?.collectPayment(
             using: discoveryMethod,
             channel: channel,
@@ -312,20 +309,23 @@ final class PaymentMethodsViewModel: ObservableObject {
                     onFailure()
                     return
                 }
+                let refreshTask = updateOrderAsynchronously()
                 if shouldReturnToOrderDetails(for: discoveryMethod, error: error) {
-                    refreshOrderBeforeReturningToDetails(onCompletion: onFailure)
-                } else {
-                    updateOrderAsynchronously()
+                    refreshOrderBeforeReturningToDetails(after: refreshTask, onCompletion: onFailure)
                 }
             },
             onCancel: {
                 // No tracking required because the flow remains on screen to choose other payment methods.
             },
             onPaymentCompletion: { [weak self] in
-                self?.updateOrderAsynchronously()
+                guard let self, paymentOrderRefreshTask == nil else { return }
+                paymentOrderRefreshTask = updateOrderAsynchronously()
             },
             onCompleted: { [weak self] in
-                self?.refreshOrderBeforeReturningToDetails { [weak self] in
+                guard let self else { return }
+                let refreshTask = paymentOrderRefreshTask ?? updateOrderAsynchronously()
+                paymentOrderRefreshTask = refreshTask
+                refreshOrderBeforeReturningToDetails(after: refreshTask) { [weak self] in
                     guard let self else { return }
                     onSuccess()
                     presentNoticeSubject.send(.completed)
@@ -549,49 +549,34 @@ private extension PaymentMethodsViewModel {
     }
 
     @MainActor
-    func refreshOrderBeforeReturningToDetails(onCompletion: @escaping () -> Void) {
+    func refreshOrderBeforeReturningToDetails(after task: Task<Void, Never>, onCompletion: @escaping () -> Void) {
         showLoadingIndicator = true
-        updateOrderAsynchronously { [weak self] in
-            self?.showLoadingIndicator = false
+        Task { @MainActor [weak self] in
+            await task.value
+            guard let self else { return }
+            showLoadingIndicator = false
             onCompletion()
         }
     }
 
     @MainActor
-    func updateOrderAsynchronously(onCompletion: (() -> Void)? = nil) {
-        if let onCompletion {
-            orderRefreshCompletions.append(onCompletion)
-        }
-        requestedOrderRefreshAttemptID = paymentAttemptID
-        guard !isRefreshingOrder else { return }
-        startOrderRefresh(for: paymentAttemptID)
-    }
-
-    @MainActor
-    func startOrderRefresh(for attemptID: Int) {
-        isRefreshingOrder = true
-
-        let finish: @MainActor @Sendable (Result<Void, Error>) -> Void = { [weak self] result in
-            guard let self else { return }
-            if case .failure(let error) = result {
-                DDLogError("⛔️ Error refreshing order after payment: \(error)")
-            }
-            isRefreshingOrder = false
-            if requestedOrderRefreshAttemptID != attemptID {
-                startOrderRefresh(for: requestedOrderRefreshAttemptID)
-                return
-            }
-            let completions = orderRefreshCompletions
-            orderRefreshCompletions.removeAll()
-            completions.forEach { $0() }
-        }
-        let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: orderID) { result in
-            let refreshResult = result.map { _ in () }
-            Task { @MainActor in
-                finish(refreshResult)
+    func updateOrderAsynchronously() -> Task<Void, Never> {
+        let previousTask = lastOrderRefreshTask
+        let task = Task { @MainActor [stores, siteID, orderID] in
+            // An older attempt's response must be saved before this refresh starts.
+            await previousTask?.value
+            await withCheckedContinuation { continuation in
+                let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: orderID) { result in
+                    if case .failure(let error) = result {
+                        DDLogError("⛔️ Error refreshing order after payment: \(error)")
+                    }
+                    continuation.resume()
+                }
+                stores.dispatch(action)
             }
         }
-        stores.dispatch(action)
+        lastOrderRefreshTask = task
+        return task
     }
 
     /// Tracks the `paymentsFlowCompleted` event.

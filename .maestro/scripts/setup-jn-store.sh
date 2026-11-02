@@ -83,8 +83,13 @@ for line in open(path, encoding="utf-8"):
     m = re.match(r"\s*" + re.escape(key) + r"=(.*)$", line)
     if m:
         raw = m.group(1).strip()
+        # Like bash, "#" starts a comment only as a word of its own, so an
+        # unquoted password can contain it.
+        lexer = shlex.shlex(raw, posix=True)
+        lexer.whitespace_split = True
+        lexer.commenters = ""
         try:
-            parts = shlex.split(raw, comments=True)
+            parts = list(lexer)
         except ValueError:
             parts = [raw]
         print(parts[0] if parts else "")

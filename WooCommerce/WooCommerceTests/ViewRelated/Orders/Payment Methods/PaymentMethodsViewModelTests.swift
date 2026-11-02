@@ -17,8 +17,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var storage: MockStorageManager!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         stores = MockStoresManager(sessionManager: .testingInstance)
         storage = MockStorageManager()
@@ -30,11 +30,10 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        super.tearDown()
-
+    override func tearDown() async throws {
         stores = nil
         storage = nil
+        try await super.tearDown()
     }
 
     func test_loading_is_enabled_while_marking_order_as_paid() async {

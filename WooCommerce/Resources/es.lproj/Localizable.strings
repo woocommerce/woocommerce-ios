@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-05 19:57:04+0000 */
+/* Translation-Revision-Date: 2026-10-30 09:50:41+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -8628,6 +8628,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "¿Deseas crear una nueva tienda?";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "Negrita";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "Cursiva";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "Subrayado";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Enviar mensaje de Telegram";
 
@@ -9890,6 +9899,24 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "El total del pedido ha cambiado desde el inicio del pago. Vuelve y comprueba que el pedido sea correcto; después, vuelve a intentar el pago.";
 
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "Cambio a devolver: %1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "Descartar";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "Tu tienda ha devuelto una respuesta inesperada, por lo que no hemos podido completar tu acceso. Vuelve a intentarlo o ponte en contacto con el equipo de soporte para obtener ayuda.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "Intentar de nuevo";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "Contactar con el soporte técnico";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "No se ha podido acceder";
+
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Un plugin de seguridad puede mover el escritorio de WordPress. Introduce la dirección que utilizas para abrirlo.";
 
@@ -10896,6 +10923,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "El lector devuelto por la detección no tiene dirección IP y no es posible conectarse a él.";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "Revisar los chats de soporte con IA anteriores";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Historial de chats";
 
@@ -11884,6 +11914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "Ver imagen";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "No se ha podido comprobar si este pedido se puede pagar con tarjeta. Inténtalo de nuevo.";
+
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "Los pagos con tarjeta no están disponibles para la moneda de este pedido (%1$@).";
 
@@ -12831,6 +12864,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Catálogo de productos";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "Gestionar los ajustes de pago";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Pagos";
 
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Ver el acceso del PIN y el personal";
@@ -14059,6 +14098,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Fecha de actualización no disponible";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "Reproducir un sonido cuando se complete un pago";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "Sonido de pago realizado correctamente";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "Pagos";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "El punto de venta se bloquea cuando tocas Bloquear punto de venta en el menú o automáticamente después de 5 minutos de inactividad.";
@@ -15487,6 +15535,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Chat sin título";
 
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "Todavía no has iniciado un chat de soporte con IA.";
+
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Historial de chats";
 
@@ -16318,6 +16369,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "Es necesario un número de teléfono para la dirección de destino.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@ necesita un número de teléfono del destinatario.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Añadir empresa";
 
@@ -16675,6 +16729,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Más información sobre el número de transacción internacional";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "Ahora, los envíos a la UE necesitan identificadores de producto para cada artículo. Actualiza el plugin WooCommerce Shipping para añadirlos.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Detalles del producto";
 
@@ -16720,6 +16777,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "La descripción debe tener 30 caracteres o menos.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "Necesario para envíos a la UE";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "Debe tener %1$d caracteres o menos.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "Identificadores de producto de la UE";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "Necesario para envíos a la UE. El SKU y el GTIN\/EAN se rellenan previamente a partir de los ajustes de inventario del producto.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN\/EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "Introduce el GTIN\/EAN o selecciona «Sin código de barras»";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "Número del arancel del SA";
 
@@ -16729,8 +16804,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "Opcional";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "Número de pieza del fabricante";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "Sin código de barras";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "País de origen";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "El número del arancel debe tener entre 6 y 12 dígitos";

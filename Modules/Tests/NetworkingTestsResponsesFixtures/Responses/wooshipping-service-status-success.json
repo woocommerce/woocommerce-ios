@@ -1,0 +1,28 @@
+{
+    "notices": [
+        {
+            "id": "service-status-easypost-usps",
+            "type": "error",
+            "message": "USPS: API Outage | Status: Investigating",
+            "dismissible": false,
+            "provider": "easypost",
+            "action": "https://www.easypoststatus.com"
+        },
+        {
+            "id": "service-status-easypost-ups",
+            "type": "warning",
+            "message": "UPS: Label creation delays | Status: Monitoring",
+            "dismissible": true,
+            "provider": "easypost",
+            "action": null
+        },
+        {
+            "id": "service-status-easypost-dhl",
+            "type": "info",
+            "message": "DHL Express: Scheduled maintenance tonight",
+            "dismissible": true,
+            "provider": "easypost",
+            "action": "https://www.easypoststatus.com"
+        }
+    ]
+}

@@ -16,8 +16,9 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
 
     private var navigationController: UINavigationController!
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
 
         navigationController = UINavigationController()
@@ -157,8 +158,9 @@ private extension BlazeCampaignCreationCoordinatorTests {
     /// Insert a `Product` into storage.
     ///
     func insertProduct(_ readOnlyProduct: Product) {
-        let product = storage.insertNewObject(ofType: StorageProduct.self)
-        product.update(with: readOnlyProduct)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let product = storage.insertNewObject(ofType: StorageProduct.self)
+            product.update(with: readOnlyProduct)
+        }, completion: {}, on: .main)
     }
 }

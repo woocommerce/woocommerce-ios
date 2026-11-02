@@ -30,6 +30,7 @@ final class MockWooShippingRemote: Sendable {
         var refundShippingLabel = [RefundResultKey: Result<ShippingLabelRefund, Error>]()
         var acceptUPSTermsOfService = [AcceptUPSTOSKey: Result<Bool, Error>]()
         var acceptFedExTermsOfService = [ResultKey: Result<Bool, Error>]()
+        var loadServiceStatusNoticesResults = [ResultKey: Result<[WooShippingServiceStatusNotice], Error>]()
     }
 
     private let state = Mutex(State())
@@ -207,6 +208,13 @@ final class MockWooShippingRemote: Sendable {
                                thenReturn result: Result<Bool, Error>) {
         let key = ResultKey(siteID: siteID)
         state.withLock { $0.acceptFedExTermsOfService[key] = result }
+    }
+
+    /// Set the value passed to the `completion` block if `loadServiceStatusNotices` is called
+    func whenLoadingServiceStatusNotices(siteID: Int64,
+                                         thenReturn result: Result<[WooShippingServiceStatusNotice], Error>) {
+        let key = ResultKey(siteID: siteID)
+        state.withLock { $0.loadServiceStatusNoticesResults[key] = result }
     }
 }
 
@@ -481,6 +489,16 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                                    completion: @escaping (Result<Bool, Error>) -> Void) {
         let key = ResultKey(siteID: siteID)
         if let result = state.withLock({ $0.acceptFedExTermsOfService[key] }) {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+        }
+    }
+
+    func loadServiceStatusNotices(siteID: Int64,
+                                  completion: @escaping (Result<[WooShippingServiceStatusNotice], Error>) -> Void) {
+        let key = ResultKey(siteID: siteID)
+        if let result = state.withLock({ $0.loadServiceStatusNoticesResults[key] }) {
             completion(result)
         } else {
             XCTFail("\(String(describing: self)) Could not find Result for \(key)")

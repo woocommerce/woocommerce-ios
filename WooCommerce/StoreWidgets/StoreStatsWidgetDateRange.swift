@@ -14,7 +14,7 @@ enum StoreStatsWidgetDateRange: String, AppEnum {
         TypeDisplayRepresentation(name: "Date Range")
     }
 
-    static var caseDisplayRepresentations: [Self: DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
         .today: "Today",
         .yesterday: "Yesterday",
         .lastWeek: "Last Week",

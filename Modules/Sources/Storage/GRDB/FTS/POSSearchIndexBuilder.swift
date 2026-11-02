@@ -43,18 +43,31 @@ public struct POSSearchIndexBuilder {
     /// - Parameters:
     ///   - siteID: The site ID to search within
     ///   - term: The search term
+    ///   - limit: Stops counting at this many matches. `nil` counts every match.
     ///   - db: The database to search in
-    /// - Returns: Total count of matching results
-    public static func searchCount(siteID: Int64, term: String, in db: Database) throws -> Int {
+    /// - Returns: Total count of matching results, capped at `limit` when provided
+    public static func searchCount(siteID: Int64, term: String, limit: Int? = nil, in db: Database) throws -> Int {
         let ftsQuery = buildFTSQuery(from: term)
         guard !ftsQuery.isEmpty else { return 0 }
 
+        guard let limit else {
+            return try Int.fetchOne(db, sql: """
+                SELECT COUNT(*)
+                FROM pos_search_fts
+                WHERE pos_search_fts MATCH ?
+                  AND siteID = ?
+            """, arguments: [ftsQuery, siteID]) ?? 0
+        }
+
         return try Int.fetchOne(db, sql: """
-            SELECT COUNT(*)
-            FROM pos_search_fts
-            WHERE pos_search_fts MATCH ?
-              AND siteID = ?
-        """, arguments: [ftsQuery, siteID]) ?? 0
+            SELECT COUNT(*) FROM (
+                SELECT 1
+                FROM pos_search_fts
+                WHERE pos_search_fts MATCH ?
+                  AND siteID = ?
+                LIMIT ?
+            )
+        """, arguments: [ftsQuery, siteID, limit]) ?? 0
     }
 
     /// Checks if the FTS index needs to be rebuilt for a site.

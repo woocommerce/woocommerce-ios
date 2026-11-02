@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 @testable import Storage
 @testable import Networking
 
+@MainActor
 struct AppSettingsStoreTests_BookingFilters {
 
     /// Mock Dispatcher!
@@ -29,7 +30,6 @@ struct AppSettingsStoreTests_BookingFilters {
         generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage)
     }
 
-    @MainActor
     @Test func loadBookingFilters_returns_error_when_no_filters_are_saved() async throws {
         // Given
         let siteID: Int64 = 123
@@ -48,7 +48,6 @@ struct AppSettingsStoreTests_BookingFilters {
         }
     }
 
-    @MainActor
     @Test func loadBookingFilters_returns_correct_values_after_being_set() async throws {
         // Given
         let siteID: Int64 = 134
@@ -77,17 +76,18 @@ struct AppSettingsStoreTests_BookingFilters {
         try #require(upsertError == nil)
 
         // Then
-        let result = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             let readAction = AppSettingsAction.loadBookingFilters(siteID: siteID) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    let storedFilters = try result.get()
+                    #expect(storedFilters == filters)
+                }
+                confirmation()
             }
             subject.onAction(readAction)
         }
-
-        #expect(result == filters)
     }
 
-    @MainActor
     @Test func loadBookingFilters_returns_correct_values_for_multiple_sites() async throws {
         // Given
         let siteID1: Int64 = 134
@@ -134,24 +134,29 @@ struct AppSettingsStoreTests_BookingFilters {
         try #require(upsertError2 == nil)
 
         // Then
-        let result1 = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             let readAction = AppSettingsAction.loadBookingFilters(siteID: siteID1) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    let storedFilters = try result.get()
+                    #expect(storedFilters == filters1)
+                }
+                confirmation()
             }
             subject.onAction(readAction)
         }
-        #expect(result1 == filters1)
 
-        let result2 = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             let readAction = AppSettingsAction.loadBookingFilters(siteID: siteID2) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    let storedFilters = try result.get()
+                    #expect(storedFilters == filters2)
+                }
+                confirmation()
             }
             subject.onAction(readAction)
         }
-        #expect(result2 == filters2)
     }
 
-    @MainActor
     @Test func upsertBookingFilters_updates_existing_filters_for_same_site() async throws {
         // Given
         let siteID: Int64 = 134
@@ -198,17 +203,18 @@ struct AppSettingsStoreTests_BookingFilters {
         try #require(secondError == nil)
 
         // Then
-        let result = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             let readAction = AppSettingsAction.loadBookingFilters(siteID: siteID) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    let storedFilters = try result.get()
+                    #expect(storedFilters == updatedFilters)
+                }
+                confirmation()
             }
             subject.onAction(readAction)
         }
-
-        #expect(result == updatedFilters)
     }
 
-    @MainActor
     @Test func resetBookingFilters_clears_all_filters() async throws {
         // Given
         let siteID: Int64 = 134
@@ -237,9 +243,12 @@ struct AppSettingsStoreTests_BookingFilters {
         try #require(upsertError == nil)
 
         // Verify filters are saved
-        _ = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             let readAction = AppSettingsAction.loadBookingFilters(siteID: siteID) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    _ = try result.get()
+                }
+                confirmation()
             }
             subject.onAction(readAction)
         }

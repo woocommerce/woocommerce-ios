@@ -141,4 +141,8 @@ public enum WooShippingAction: Action {
     /// Accept FedEx TOS
     case acceptFedExTermsOfService(siteID: Int64,
                                    completion: (Result<Bool, Error>) -> Void)
+
+    /// Loads active carrier service incidents
+    case loadServiceStatusNotices(siteID: Int64,
+                                  completion: (Result<[WooShippingServiceStatusNotice], Error>) -> Void)
 }

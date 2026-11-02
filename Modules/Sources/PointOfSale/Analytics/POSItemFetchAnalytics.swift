@@ -49,7 +49,7 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
     /// Tracks when a local search results fetch completes
     /// - Parameters:
     ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
-    ///   - totalItems: The total number of items found in the search
+    ///   - totalItems: The number of items found in the search, capped for local search
     ///   - searchMethod: How the local catalog produced the results
     ///   - source: The source of the results
     func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int,

@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Storage
 
+@MainActor
 struct AppSettingsStoreTests_OrderFilterHistory {
 
     /// Mock Dispatcher!
@@ -29,7 +30,6 @@ struct AppSettingsStoreTests_OrderFilterHistory {
         generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage)
     }
 
-    @MainActor
     @Test func loadOrderFilterHistory_returns_correct_results_after_upserting() async throws {
         // Given
         let siteID1: Int64 = 123
@@ -57,15 +57,17 @@ struct AppSettingsStoreTests_OrderFilterHistory {
         try await insertMockFilter(filter: filter2, using: subject)
 
         // Then
-        let resultAfterWritingAction = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             subject.onAction(AppSettingsAction.loadOrderFilterHistory(siteID: siteID1) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    let storedFilters = try result.get()
+                    #expect(storedFilters == [filter1])
+                }
+                confirmation()
             })
         }
-        #expect(resultAfterWritingAction == [filter1])
     }
 
-    @MainActor
     @Test func loadOrderFilterHistory_returns_correct_results_after_removing_filter() async throws {
         // Given
         let siteID1: Int64 = 123
@@ -81,12 +83,15 @@ struct AppSettingsStoreTests_OrderFilterHistory {
         try await insertMockFilter(filter: filter2, using: subject)
 
         // Confidence check
-        let initialResult = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             subject.onAction(AppSettingsAction.loadOrderFilterHistory(siteID: siteID1) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    let storedFilters = try result.get()
+                    #expect(storedFilters == [filter2, filter1])
+                }
+                confirmation()
             })
         }
-        #expect(initialResult == [filter2, filter1])
 
         // When
         let error = await withCheckedContinuation { continuation in
@@ -97,15 +102,17 @@ struct AppSettingsStoreTests_OrderFilterHistory {
         try #require(error == nil)
 
         // Then
-        let resultAfterRemoval = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             subject.onAction(AppSettingsAction.loadOrderFilterHistory(siteID: siteID1) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    let storedFilters = try result.get()
+                    #expect(storedFilters == [filter2])
+                }
+                confirmation()
             })
         }
-        #expect(resultAfterRemoval == [filter2])
     }
 
-    @MainActor
     @Test func resetOrderFilterHistory_clears_all_persisted_history() async throws {
         // Given
         let siteID1: Int64 = 123
@@ -131,19 +138,25 @@ struct AppSettingsStoreTests_OrderFilterHistory {
         try #require(error == nil)
 
         // Then
-        let site1Filters = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             subject.onAction(AppSettingsAction.loadOrderFilterHistory(siteID: siteID1) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    let storedFilters = try result.get()
+                    #expect(storedFilters.isEmpty)
+                }
+                confirmation()
             })
         }
-        #expect(site1Filters == [])
 
-        let site2Filters = try await withCheckedThrowingContinuation { continuation in
+        await confirmation { confirmation in
             subject.onAction(AppSettingsAction.loadOrderFilterHistory(siteID: siteID2) { result in
-                continuation.resume(with: result)
+                #expect(throws: Never.self) {
+                    let storedFilters = try result.get()
+                    #expect(storedFilters == [filter2])
+                }
+                confirmation()
             })
         }
-        #expect(site2Filters == [filter2])
     }
 }
 

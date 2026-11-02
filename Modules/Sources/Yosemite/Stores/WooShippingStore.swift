@@ -135,6 +135,8 @@ private final class WooShippingStoreRequestHandler: Sendable {
             acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
         case let .acceptFedExTermsOfService(siteID, completion):
             acceptFedExTermsOfService(siteID: siteID, completion: completion)
+        case let .loadServiceStatusNotices(siteID, completion):
+            remote.loadServiceStatusNotices(siteID: siteID, completion: completion)
         }
     }
 }

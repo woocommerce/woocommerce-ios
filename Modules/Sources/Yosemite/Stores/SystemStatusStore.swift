@@ -33,8 +33,8 @@ public final class SystemStatusStore: Store {
             fetchSystemPluginWithPath(siteID: siteID,
                                       pluginPath: pluginPath,
                                       onCompletion: onCompletion)
-        case .fetchSystemStatusReport(let siteID, let onCompletion):
-            fetchSystemStatusReport(siteID: siteID, completionHandler: onCompletion)
+        case .fetchSystemStatusReport(let siteID, let detectUnexpectedResponses, let onCompletion):
+            fetchSystemStatusReport(siteID: siteID, detectUnexpectedResponses: detectUnexpectedResponses, completionHandler: onCompletion)
         }
     }
 }
@@ -59,8 +59,10 @@ private extension SystemStatusStore {
         }
     }
 
-    func fetchSystemStatusReport(siteID: Int64, completionHandler: @escaping @Sendable (Result<SystemStatusReport, Error>) -> Void) {
-        remote.fetchSystemStatusReport(for: siteID, completion: completionHandler)
+    func fetchSystemStatusReport(siteID: Int64,
+                                 detectUnexpectedResponses: Bool,
+                                 completionHandler: @escaping @Sendable (Result<SystemStatusReport, Error>) -> Void) {
+        remote.fetchSystemStatusReport(for: siteID, detectUnexpectedResponses: detectUnexpectedResponses, completion: completionHandler)
     }
 }
 

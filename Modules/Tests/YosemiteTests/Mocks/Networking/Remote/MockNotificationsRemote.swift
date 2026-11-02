@@ -6,6 +6,7 @@ import XCTest
 
 /// Mock for `NotificationsRemote`.
 ///
+@MainActor
 final class MockNotificationsRemote {
     private typealias ResultKey = [Int64]
 
@@ -23,14 +24,14 @@ final class MockNotificationsRemote {
 
 // MARK: NotificationsEndpointsProviding
 
-extension MockNotificationsRemote: NotificationsRemoteProtocol {
+extension MockNotificationsRemote: @MainActor NotificationsRemoteProtocol {
 
     func loadNotes(noteIDs: [Int64]?, pageSize: Int?, completion: @escaping (Result<[Note], Error>) -> Void) {
         guard let noteIDs else {
             return XCTFail("Expected noteIDs to not be nil.")
         }
 
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }

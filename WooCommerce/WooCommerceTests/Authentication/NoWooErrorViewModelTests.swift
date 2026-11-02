@@ -4,6 +4,7 @@ import WordPressShared
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class NoWooErrorViewModelTests: XCTestCase {
 
     func test_title_is_correct() {

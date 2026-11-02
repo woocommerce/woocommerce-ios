@@ -2475,6 +2475,26 @@ extension Networking.WooShippingSelectedRate {
         )
     }
 }
+extension Networking.WooShippingServiceStatusNotice {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingServiceStatusNotice {
+        .init(
+            id: .fake(),
+            severity: .fake(),
+            message: .fake(),
+            isDismissible: .fake(),
+            actionURL: .fake()
+        )
+    }
+}
+extension Networking.WooShippingServiceStatusSeverity {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingServiceStatusSeverity {
+        .info
+    }
+}
 extension Networking.WooShippingShipment {
     /// Returns a "ready to use" type filled with fake values.
     ///

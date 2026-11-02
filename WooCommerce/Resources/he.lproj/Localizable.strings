@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-06 13:57:32+0000 */
+/* Translation-Revision-Date: 2026-10-20 15:54:15+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -8628,6 +8628,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "רוצה לפתוח חנות חדשה?";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "מודגש";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "נטוי";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "קו תחתון";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "לשלוח הודעת Telegram";
 
@@ -9890,6 +9899,24 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "סך כל ההזמנה שונה מתחילת תהליך התשלום. יש לחזור אחורה ולוודא שפרטי ההזמנה נכונים ולנסות לשלם שוב.";
 
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "עודף מגיע: %1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "סגירה";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "החנות שלך החזירה תגובה לא צפויה, לכן לא הצלחנו להשלים את הכניסה שלך. יש לנסות שוב, או לפנות לתמיכה לקבלת עזרה.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "יש לנסות שוב";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "פנייה לתמיכה";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "אין אפשרות לבצע כניסה";
+
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "תוסף אבטחה עשוי להעביר את לוח הבקרה של WordPress. יש להזין את הכתובת המשמשת אותך לפתיחתו.";
 
@@ -10896,6 +10923,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "לקורא הכרטיסים שחזר מהאיתור אין כתובת IP ולא ניתן להתחבר אליו.";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "עיון בצ'אטים האחרונים עם התמיכה באמצעות בינה מלאכותית";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "היסטוריית צ'אטים";
 
@@ -11884,6 +11914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "להציג את התמונה";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "לא ניתן היה לבדוק אם ניתן לשלם את ההזמנה באמצעות כרטיס. יש לנסות שוב.";
+
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "תשלומים בכרטיסים אינם זמינים עבור המטבע של ההזמנה הזו (%1$@).";
 
@@ -12831,6 +12864,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "קטלוג מוצרים";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "ניהול הגדרות תשלום";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "תשלומים";
 
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "הצגת צוות וגישת PIN";
@@ -14059,6 +14098,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "תאריך העדכון לא זמין";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "השמעת צליל עם השלמת תשלום";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "צליל תשלום מוצלח";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "תשלומים";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "קופת ה-POS ננעלת כשמקישים על 'נעילת קופה' מתוך התפריט, או באופן אוטומטי לאחר 5 דקות של חוסר פעילות.";
@@ -15487,6 +15535,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "צ'אט ללא כותרת";
 
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "עדיין לא התחלת שיחת תמיכה באמצעות בינה מלאכותית.";
+
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "היסטוריית צ'אטים";
 
@@ -16318,6 +16369,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "מספר טלפון נדרש עבור כתובת היעד.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "נדרש מספר טלפון של הנמען עבור %1$@.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "להוסיף חברה";
 
@@ -16675,6 +16729,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "מידע נוסף על ITN";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "כעת נדרשים מזהי מוצרים לכל פריט במשלוחים לאיחוד האירופי. יש לעדכן את התוסף WooCommerce Shipping כדי להוסיף אותם.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "פרטי המוצר";
 
@@ -16720,6 +16777,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "התיאור חייב להיות באורך של 30 תווים או פחות.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "חובה במשלוחים לאיחוד האירופי";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "חייב להכיל ⁦%1$d⁩ תווים לכל היותר.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "מזהי מוצרים לאיחוד האירופי";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "חובה במשלוחים אל תוך האיחוד האירופי. ה-SKU וה-GTIN \/ EAN ממולאים מראש מתוך הגדרות המלאי של המוצר.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN \/ EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "יש להזין GTIN\/EAN או לבחור באפשרות 'ללא ברקוד'";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "מספר של תעריף HS";
 
@@ -16729,8 +16804,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "אופציונלי";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "מק\"ט יצרן";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "ללא ברקוד";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "מדינת המוצא";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "מספר התעריף חייב להיות באורך של 6 עד 12 ספרות";

@@ -15,7 +15,7 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
         return storageManager.viewStorage
     }
     // Decoded once per class: the fixture is large and `Note` is an immutable value type.
-    private static let sampleNotesResult = Result { try MarkOrderAsReadUseCaseTests.mapNotes(from: "notifications-load-all") }
+    nonisolated(unsafe) private static let sampleNotesResult = Result { try MarkOrderAsReadUseCaseTests.mapNotes(from: "notifications-load-all") }
     private var sampleNotes: [Yosemite.Note] = []
 
     private func sampleNote(read: Bool) -> Yosemite.Note? {

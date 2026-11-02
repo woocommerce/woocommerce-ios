@@ -11,7 +11,7 @@ class NoteWooTests: XCTestCase {
 
     /// Decoded once per class: the fixture is large and `Note` is an immutable value type.
     ///
-    private static let sampleNotesResult = Result { try NoteWooTests.mapNotes(from: "notifications-load-all") }
+    nonisolated(unsafe) private static let sampleNotesResult = Result { try NoteWooTests.mapNotes(from: "notifications-load-all") }
 
     /// Sample Notes
     ///

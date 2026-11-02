@@ -156,7 +156,7 @@ extension MockStorageManager {
 
     /// Returns the Application's ManagedObjectModel. Decoding it takes milliseconds, and the model is immutable once used.
     ///
-    static let managedModel: NSManagedObjectModel = {
+    nonisolated(unsafe) static let managedModel: NSManagedObjectModel = {
         guard let mom = NSManagedObjectModel(contentsOf: modelURL) else {
             fatalError("Could not load model")
         }

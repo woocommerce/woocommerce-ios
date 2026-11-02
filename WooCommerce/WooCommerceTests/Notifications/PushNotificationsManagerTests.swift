@@ -1024,8 +1024,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Then — the store still holds a live registration: the site stays marked so the delete
         // retries on the next launch, and the failure is visible in Tracks.
-        // The error is tracked last in the delete loop, which never unmarks a site after a non-404 failure.
-        await until { self.analyticsProvider.receivedEvents.contains("woo_push_token_delete_error") }
+        try? await Task.sleep(nanoseconds: 100_000_000)
         XCTAssertEqual(manager.siteIDsRegisteredForWooPNs, [99])
         XCTAssertEqual(manager.wooPushNotificationToken, "555")
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))

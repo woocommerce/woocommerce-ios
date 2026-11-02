@@ -168,7 +168,8 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         mockPluginVersionChecker.result = .failure(NSError(domain: "Test", code: -1))
         let handler = makeHandler(siteAlreadyConnected: true)
         handler.start()
-        await delegateSpy.waitForStepUpdate(count: 3)
+        // A failed plugin check ends the flow after `running` and `failure`, so wait for the failure itself.
+        await delegateSpy.waitForStepUpdate { $0.contains(where: \.isCheckPluginFailure) }
 
         // Reset for retry
         mockPluginVersionChecker.result = .success(.compatible)
@@ -228,7 +229,8 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
         // When
         handler.start()
-        await delegateSpy.waitForStepUpdate(count: 3)
+        // A failed plugin check ends the flow after `running` and `failure`, so wait for the failure itself.
+        await delegateSpy.waitForStepUpdate { $0.contains(where: \.isCheckPluginFailure) }
 
         // Then
         let failureUpdate = delegateSpy.stepUpdates.first { update in
@@ -276,6 +278,13 @@ private final class MockWPComConnectionSetupHandlerDelegate: WPComConnectionSetu
     struct StepUpdate {
         let step: SetupStep
         let status: WPComConnectionSetupStep.Status
+
+        var isCheckPluginFailure: Bool {
+            guard case .failure = status else {
+                return false
+            }
+            return step == .checkPlugin
+        }
     }
 
     var stepUpdates: [StepUpdate] = []
@@ -291,8 +300,13 @@ private final class MockWPComConnectionSetupHandlerDelegate: WPComConnectionSetu
 
     /// Polls until the expected number of step updates are received.
     func waitForStepUpdate(count: Int, timeout: TimeInterval = 2.0) async {
+        await waitForStepUpdate(timeout: timeout) { $0.count >= count }
+    }
+
+    /// Polls until the received step updates satisfy `condition`.
+    func waitForStepUpdate(timeout: TimeInterval = 2.0, until condition: ([StepUpdate]) -> Bool) async {
         let deadline = Date().addingTimeInterval(timeout)
-        while stepUpdates.count < count, Date() < deadline {
+        while !condition(stepUpdates), Date() < deadline {
             try? await Task.sleep(nanoseconds: 10_000_000) // 10ms
         }
     }

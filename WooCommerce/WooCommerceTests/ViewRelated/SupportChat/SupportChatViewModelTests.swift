@@ -1,7 +1,7 @@
 import Testing
 import Foundation
 import Yosemite
-import enum Networking.NetworkError
+@testable import Networking
 @testable import WooCommerce
 
 @MainActor
@@ -241,7 +241,7 @@ struct SupportChatViewModelTests {
 
     @Test func shouldShowInputArea_when_proceeded_to_chat_then_returns_true() async {
         // Given
-        let sut = makeSUT(entryPoint: .helpAndSupport)
+        let sut = makeSUT(entryPoint: .helpAndSupport, diagnosticsService: makeOfflineDiagnosticsService())
         sut.showGreeting()
         await sut.selectIssue(.loadingOrders)
 
@@ -401,7 +401,7 @@ struct SupportChatViewModelTests {
 
     @Test func proceedToChat_appends_greeting_message() async {
         // Given
-        let sut = makeSUT()
+        let sut = makeSUT(diagnosticsService: makeOfflineDiagnosticsService())
         sut.showGreeting()
         await sut.selectIssue(.loadingOrders)
         let messageCountBeforeProceed = sut.messages.count
@@ -420,7 +420,7 @@ struct SupportChatViewModelTests {
 
     @Test func proceedToChat_sets_hasProceededToChat() async {
         // Given
-        let sut = makeSUT()
+        let sut = makeSUT(diagnosticsService: makeOfflineDiagnosticsService())
         sut.showGreeting()
         await sut.selectIssue(.loadingOrders)
         #expect(sut.hasProceededToChat == false)
@@ -635,7 +635,7 @@ struct SupportChatViewModelTests {
                 break
             }
         }
-        let diagnosticsService = SupportDiagnosticsService(stores: stores)
+        let diagnosticsService = makeOfflineDiagnosticsService(stores: stores)
         let sut = makeSUT(stores: stores, diagnosticsService: diagnosticsService)
         sut.showGreeting()
 
@@ -2325,6 +2325,16 @@ struct SupportChatViewModelTests {
         )
         viewModel.onStartJetpackSetup = onStartJetpackSetup
         return viewModel
+    }
+
+    /// Real diagnostics service that reports a reachable connection but has no stubbed responses,
+    /// so the site check fails without performing real network requests.
+    private func makeOfflineDiagnosticsService(
+        stores: StoresManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+    ) -> SupportDiagnosticsService {
+        let connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.reachable(type: .ethernetOrWiFi))
+        return SupportDiagnosticsService(stores: stores, connectivityObserver: connectivityObserver, network: MockNetwork())
     }
 
     private func completeSendMessageSuccessfully(_ action: SupportChatAction) {

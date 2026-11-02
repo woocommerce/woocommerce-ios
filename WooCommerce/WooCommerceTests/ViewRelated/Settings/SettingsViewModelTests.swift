@@ -289,7 +289,7 @@ final class SettingsViewModelTests: XCTestCase {
 
         // When
         viewModel.onViewDidLoad()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        await waitForPushNotificationEligibilityCheck(in: stores)
 
         // Then
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
@@ -309,7 +309,7 @@ final class SettingsViewModelTests: XCTestCase {
 
         // When
         viewModel.onViewDidLoad()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        await waitForPushNotificationEligibilityCheck(in: stores)
 
         // Then
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.pushNotificationPreferences) })
@@ -330,7 +330,7 @@ final class SettingsViewModelTests: XCTestCase {
 
         // When
         viewModel.onViewDidLoad()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        await waitForPushNotificationEligibilityCheck(in: stores)
 
         // Then
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.pushNotificationPreferences) })
@@ -351,7 +351,7 @@ final class SettingsViewModelTests: XCTestCase {
 
         // When
         viewModel.onViewDidLoad()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        await waitForPushNotificationEligibilityCheck(in: stores)
 
         // Then
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.pushNotificationPreferences) })
@@ -371,7 +371,7 @@ final class SettingsViewModelTests: XCTestCase {
 
         // When
         viewModel.onViewDidLoad()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        await waitForPushNotificationEligibilityCheck(in: stores)
 
         // Then
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.pushNotificationPreferences) })
@@ -390,7 +390,7 @@ final class SettingsViewModelTests: XCTestCase {
 
         // When
         viewModel.onViewDidLoad()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        await waitForPushNotificationEligibilityCheck(in: stores)
 
         // Then
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.enablePushNotifications) })
@@ -409,7 +409,7 @@ final class SettingsViewModelTests: XCTestCase {
 
         // When
         viewModel.onViewDidLoad()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        await waitForPushNotificationEligibilityCheck(in: stores)
 
         // Then
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.enablePushNotifications) })
@@ -430,7 +430,7 @@ final class SettingsViewModelTests: XCTestCase {
 
         // When
         viewModel.onViewDidLoad()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        await waitForPushNotificationEligibilityCheck(in: stores)
 
         // Then
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.enablePushNotifications) })
@@ -497,5 +497,25 @@ private final class MockSettingsPresenter: SettingsViewPresenter {
 
     func refreshViewContent() {
         refreshViewContentCalled = true
+    }
+}
+
+private extension SettingsViewModelTests {
+    /// The eligibility check ends by resolving the smarter notifications remote flag, which the mock store answers
+    /// synchronously, so the final `reloadSettings()` runs in the same main actor job as this dispatch.
+    func waitForPushNotificationEligibilityCheck(in stores: MockStoresManager, timeout: Duration = .seconds(5)) async {
+        let deadline = ContinuousClock.now + timeout
+        while !hasRequestedSmarterNotificationsFlag(stores) && ContinuousClock.now < deadline {
+            try? await Task.sleep(for: .milliseconds(1))
+        }
+    }
+
+    func hasRequestedSmarterNotificationsFlag(_ stores: MockStoresManager) -> Bool {
+        stores.receivedActions.contains { action in
+            guard case let .isRemoteFeatureFlagEnabled(flag, _, _, _) = action as? FeatureFlagAction else {
+                return false
+            }
+            return flag == .smarterNotifications
+        }
     }
 }

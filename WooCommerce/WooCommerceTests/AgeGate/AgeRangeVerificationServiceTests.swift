@@ -362,10 +362,11 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
 
     func test_verifyAgeRange_when_called_concurrently_coalesces_provider_requests() {
         let window = makeWindow()
+        let requirementsGate = MockAsyncGate()
         let provider = MockAgeRangeProvider(
             snapshotResult: .success(AgeRangeSnapshot(lowerBound: 20, upperBound: nil, significantAppChangeApprovalRequired: false)),
             requirementsResult: .success(.required()),
-            requirementsDelayNanoseconds: 100_000_000
+            requirementsGate: requirementsGate
         )
         let sut = AgeRangeVerificationService(provider: provider)
         let exp = expectation(description: "completion")
@@ -381,6 +382,10 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
                 exp.fulfill()
             }
         }
+        // Both calls enqueue their main-actor work above, so this block runs after the second call joined the in-flight request.
+        DispatchQueue.main.async {
+            requirementsGate.open()
+        }
 
         waitForExpectations(timeout: 1)
         XCTAssertEqual(provider.requirementsCallCount, 1)
@@ -391,7 +396,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
 private final class MockAgeRangeProvider: AgeRangeProviding, @unchecked Sendable {
     let snapshotResult: Result<AgeRangeSnapshot, Error>
     let requirementsResult: Result<AgeRangeRequirements, Error>
-    let requirementsDelayNanoseconds: UInt64
+    let requirementsGate: MockAsyncGate?
 
     private let stateQueue = DispatchQueue(label: "com.automattic.woocommerce.age-range-provider-mock")
     private var _requestCallCount = 0
@@ -408,11 +413,11 @@ private final class MockAgeRangeProvider: AgeRangeProviding, @unchecked Sendable
     init(
         snapshotResult: Result<AgeRangeSnapshot, Error>,
         requirementsResult: Result<AgeRangeRequirements, Error>,
-        requirementsDelayNanoseconds: UInt64 = 0
+        requirementsGate: MockAsyncGate? = nil
     ) {
         self.snapshotResult = snapshotResult
         self.requirementsResult = requirementsResult
-        self.requirementsDelayNanoseconds = requirementsDelayNanoseconds
+        self.requirementsGate = requirementsGate
     }
 
     @MainActor
@@ -427,10 +432,37 @@ private final class MockAgeRangeProvider: AgeRangeProviding, @unchecked Sendable
 
     func retrieveAgeRangeRequirements() async throws -> AgeRangeRequirements {
         stateQueue.sync { _requirementsCallCount += 1 }
-        if requirementsDelayNanoseconds > 0 {
-            try await Task.sleep(nanoseconds: requirementsDelayNanoseconds)
-        }
+        await requirementsGate?.wait()
         return try requirementsResult.get()
+    }
+}
+
+/// Suspends callers of `wait()` until `open()` is called; stays open afterwards.
+private final class MockAsyncGate: @unchecked Sendable {
+    private let lock = NSLock()
+    private var isOpen = false
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    func wait() async {
+        await withCheckedContinuation { continuation in
+            lock.lock()
+            if isOpen {
+                lock.unlock()
+                continuation.resume()
+            } else {
+                waiters.append(continuation)
+                lock.unlock()
+            }
+        }
+    }
+
+    func open() {
+        lock.lock()
+        isOpen = true
+        let pending = waiters
+        waiters = []
+        lock.unlock()
+        pending.forEach { $0.resume() }
     }
 }
 

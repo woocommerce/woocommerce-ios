@@ -395,7 +395,7 @@ struct MobileStatusReportProviderTests {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { _ in }
 
         // When
-        let report = await makeProvider().generateReport()
+        let report = await makeProvider(dispatchTimeout: 0).generateReport()
 
         // Then
         #expect(report.contains("Remote values loaded: false (nothing fetched this session, or the last fetch aged out)"))
@@ -421,7 +421,7 @@ struct MobileStatusReportProviderTests {
 
 private extension MobileStatusReportProviderTests {
 
-    func makeProvider(pushNotesManager: PushNotesManager? = nil) -> MobileStatusReportProvider {
+    func makeProvider(pushNotesManager: PushNotesManager? = nil, dispatchTimeout: TimeInterval = 0.05) -> MobileStatusReportProvider {
         // A short timeout so the unanswered-dispatch test exercises the degradation without waiting out the
         // production value.
         MobileStatusReportProvider(systemSnapshot: { .fixture() },
@@ -433,7 +433,7 @@ private extension MobileStatusReportProviderTests {
                                    posCatalogSettingsService: posCatalogSettingsService,
                                    featureFlagService: MockFeatureFlagService(),
                                    generalAppSettings: appSettings,
-                                   dispatchTimeout: 0.05)
+                                   dispatchTimeout: dispatchTimeout)
     }
 
     func givenAFullyPopulatedStore() async throws -> MockPushNotificationsManager {

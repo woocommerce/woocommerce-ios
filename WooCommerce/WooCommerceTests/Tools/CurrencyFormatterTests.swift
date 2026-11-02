@@ -9,11 +9,14 @@ import WooFoundation
 class CurrencyFormatterTests: XCTestCase {
     private let sampleLocale = Locale(identifier: "en")
 
-    private lazy var sampleCurrencySettings = CurrencySettings(siteSettings: setUpSampleSiteSettings())
+    /// Decoded once per class: `SiteSetting` is an immutable value, while each test still gets its own `CurrencySettings`.
+    private static let sampleSiteSettings = setUpSampleSiteSettings()
+
+    private lazy var sampleCurrencySettings = CurrencySettings(siteSettings: Self.sampleSiteSettings)
 
     /// Sample Site Settings
     ///
-    private func setUpSampleSiteSettings() -> [SiteSetting] {
+    private static func setUpSampleSiteSettings() -> [SiteSetting] {
         let settings = mapLoadGeneralSiteSettingsResponse()
         var siteSettings: [SiteSetting] = []
 
@@ -645,7 +648,7 @@ class CurrencyFormatterTests: XCTestCase {
 extension CurrencyFormatterTests {
     /// Returns the SiteSettings output upon receiving `filename` (Data Encoded)
     ///
-    func mapGeneralSettings(from filename: String) -> [SiteSetting] {
+    static func mapGeneralSettings(from filename: String) -> [SiteSetting] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
@@ -655,7 +658,7 @@ extension CurrencyFormatterTests {
 
     /// Returns the OrderNotesMapper output upon receiving `settings-general`
     ///
-    func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
+    static func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
         return mapGeneralSettings(from: "settings-general")
     }
 }

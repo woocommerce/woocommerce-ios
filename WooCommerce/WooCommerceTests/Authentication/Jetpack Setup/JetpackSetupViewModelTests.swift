@@ -883,7 +883,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_checkJetpackConnection_hits_fetchJetpackConnection_3_times_when_encountering_error_consistently_and_relays_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, siteID: 0, connectionOnly: false, wpcomCredentials: credentials, stores: stores)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              siteID: 0,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              connectionService: JetpackConnectionService(siteID: 0, stores: stores, delayBeforeRetry: 0))
         var fetchJetpackConnectionTriggerCount = 0
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -912,7 +917,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_checkJetpackConnection_hits_fetchJetpackConnectionData_3_times_when_failing_to_fetch_connected_wpcom_user() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, siteID: 0, connectionOnly: false, wpcomCredentials: credentials, stores: stores)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL,
+                                              siteID: 0,
+                                              connectionOnly: false,
+                                              wpcomCredentials: credentials,
+                                              stores: stores,
+                                              connectionService: JetpackConnectionService(siteID: 0, stores: stores, delayBeforeRetry: 0))
         var fetchJetpackConnectionTriggerCount = 0
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -1251,7 +1261,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                               connectionOnly: true,
                                               wpcomCredentials: credentials,
                                               stores: stores,
-                                              analytics: analytics)
+                                              analytics: analytics,
+                                              connectionService: JetpackConnectionService(siteID: 0, stores: stores, delayBeforeRetry: 0))
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {

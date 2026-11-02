@@ -266,9 +266,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
 
         // Then
-        waitUntil {
-            updatedVariations.isNotEmpty
-        }
+        XCTAssertTrue(updatedVariations.isNotEmpty)
         let expectedVariations = variations.map { PartialProductVariationUpdate(productVariationID: $0.productVariationID, regularPrice: "42") }
         assertEqual(updatedVariations, expectedVariations)
     }

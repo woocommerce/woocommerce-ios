@@ -79,8 +79,9 @@ final class KeyboardFrameObserverTests: XCTestCase {
         notificationCenter.postNonKeyboardNotification()
 
         // The expectation should not be fulfilled.
+        // `NotificationCenter.post` delivers synchronously, so any callback has already run by now.
         expectationForKeyboardFrame.isInverted = true
-        waitForExpectations(timeout: 0.1)
+        waitForExpectations(timeout: 0)
     }
 
     func test_observing_keyboard_frame_changes_without_keyboard_user_info() {
@@ -97,8 +98,9 @@ final class KeyboardFrameObserverTests: XCTestCase {
         notificationCenter.postKeyboardFrameNotificationWithoutUserInfo()
 
         // The expectation should not be fulfilled.
+        // `NotificationCenter.post` delivers synchronously, so any callback has already run by now.
         expectationForKeyboardFrame.isInverted = true
-        waitForExpectations(timeout: 0.1)
+        waitForExpectations(timeout: 0)
     }
 
     func test_it_will_not_emit_new_events_when_it_is_deallocated() {

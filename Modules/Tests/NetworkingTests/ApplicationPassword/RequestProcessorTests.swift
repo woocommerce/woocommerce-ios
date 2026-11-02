@@ -310,13 +310,14 @@ final class RequestProcessorTests: XCTestCase {
         mockRequestAuthenticator.mockedCanGenerateApplicationPassword = false
         mockRequestAuthenticator.mockedCanValidateApplicationPassword = true
         mockRequestAuthenticator.mockApplicationPasswordValidationResult = .valid
-        mockRequestAuthenticator.mockValidationDelayNanoseconds = 100_000_000
 
         let completionExpectation = expectation(description: "All retry completions are called")
         completionExpectation.expectedFulfillmentCount = 3
         var retryResults: [RetryResult] = []
 
         // When
+        // `retry` enqueues synchronously and validation runs in a main-actor task, so all three requests
+        // are enqueued before validation can start, without relying on a delayed validation.
         for _ in 0..<3 {
             let request = try mockRequest()
             let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
@@ -663,7 +664,6 @@ private class MockRequestAuthenticator: RequestAuthenticator {
     var mockErrorWhileDeletingPassword: Error?
     var mockErrorWhileValidatingPassword: Error?
     var mockApplicationPasswordValidationResult: ApplicationPasswordValidationResult = .valid
-    var mockValidationDelayNanoseconds: UInt64?
 
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest {
         authenticateCalled = true
@@ -687,9 +687,6 @@ private class MockRequestAuthenticator: RequestAuthenticator {
 
     func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult {
         validateApplicationPasswordCallCount += 1
-        if let mockValidationDelayNanoseconds {
-            try? await Task.sleep(nanoseconds: mockValidationDelayNanoseconds)
-        }
         if let mockErrorWhileValidatingPassword {
             throw mockErrorWhileValidatingPassword
         }

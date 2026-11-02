@@ -112,22 +112,30 @@ private extension ProductFormViewController_DuplicationTests {
 @MainActor
 private final class NavigationTestContext {
     private let originalStores: StoresManager
+    private let originalNoticePresenter: NoticePresenter
+    private let noticePresenter = DefaultNoticePresenter()
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
     init(stores: StoresManager) {
         originalStores = ServiceLocator.stores
+        originalNoticePresenter = ServiceLocator.noticePresenter
         ServiceLocator.setStores(stores)
+        // Keep notice rendering in this fixture's window instead of the app's tab hierarchy.
+        ServiceLocator.setNoticePresenter(noticePresenter)
         window.makeKeyAndVisible()
     }
 
     func present(_ viewController: UIViewController) {
         window.rootViewController = viewController
+        noticePresenter.presentingViewController = viewController
         viewController.loadViewIfNeeded()
     }
 
     func cleanUp() {
+        noticePresenter.presentingViewController = nil
         window.resignKey()
         window.rootViewController = nil
         ServiceLocator.setStores(originalStores)
+        ServiceLocator.setNoticePresenter(originalNoticePresenter)
     }
 }

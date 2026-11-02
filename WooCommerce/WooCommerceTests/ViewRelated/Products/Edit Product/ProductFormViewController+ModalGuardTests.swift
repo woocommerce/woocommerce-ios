@@ -214,7 +214,7 @@ private extension ProductFormViewController_ModalGuardTests {
                 Issue.record("Timed out waiting for condition")
                 return
             }
-            try await Task.sleep(nanoseconds: 10_000_000)
+            try await Task.sleep(nanoseconds: 1_000_000)
         }
     }
 }

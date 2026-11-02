@@ -183,7 +183,9 @@ class WordPressOrgAPITests: XCTestCase {
         }
 
         await fulfillment(of: [unauthenticatedReuqest, ajaxNonceRequest, newPostWebpageRequest, loginRequest], timeout: 0.1, enforceOrder: true)
-        await fulfillment(of: [authenticatedReuqest], timeout: 0.1)
+        // The awaited `get` above has completed, and stubs run before their response is delivered,
+        // so any authenticated request would already have fulfilled this inverted expectation.
+        await fulfillment(of: [authenticatedReuqest], timeout: 0)
     }
 
     func testNoRetryInWPComSite() async {

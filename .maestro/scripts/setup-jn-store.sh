@@ -13,6 +13,11 @@
 # Usage:
 #   setup-jn-store.sh --site <domain> [--site-password <password>] [--wpcom-user <email>]
 #                     [--admin-user <name>] [--admin-id <id>] [--env-out <path>] [--app-creds <path>]
+#                     [--no-jetpack-site <domain>]
+#
+# --no-jetpack-site also writes the MAESTRO_WOO_NO_JETPACK_* values for
+# push_no_jetpack.yaml. Create that site with WooCommerce and without Jetpack,
+# and pass its admin password in JN_NO_JETPACK_SSH_PASS.
 #
 # Credentials are resolved in this order, so a second run needs no arguments
 # beyond --site:
@@ -27,6 +32,7 @@
 set -uo pipefail
 
 SITE="" SITE_PASS="" WPCOM_USER="" WPCOM_PASS=""
+NO_JETPACK_SITE="" NO_JETPACK_PASS="${JN_NO_JETPACK_SSH_PASS:-}"
 ADMIN_USER="demo"
 ADMIN_ID="1"
 ENV_OUT=""
@@ -46,13 +52,18 @@ while [ $# -gt 0 ]; do
     --admin-id) ADMIN_ID="$2"; shift 2 ;;
     --env-out) ENV_OUT="$2"; shift 2 ;;
     --app-creds) APP_CREDS="$2"; shift 2 ;;
-    -h|--help) sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --no-jetpack-site) NO_JETPACK_SITE="$2"; shift 2 ;;
+    -h|--help) sed -n '2,29p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) die "unknown argument: $1" ;;
   esac
 done
 
 [ -n "$SITE" ] || die "--site is required"
+if [ -n "$NO_JETPACK_SITE" ] && [ -z "$NO_JETPACK_PASS" ]; then
+  die "set JN_NO_JETPACK_SSH_PASS to the admin password of $NO_JETPACK_SITE"
+fi
 TOTAL_STEPS=7
+[ -z "$NO_JETPACK_SITE" ] || TOTAL_STEPS=8
 command -v expect >/dev/null || die "expect is required for password-based SSH"
 command -v python3 >/dev/null || die "python3 is required"
 [ -f "$APP_CREDS" ] || die "app credentials not found: $APP_CREDS (run 'rake dependencies')"
@@ -129,29 +140,12 @@ fi
 [ -n "$WPCOM_USER" ] || die "no WordPress.com account supplied"
 [ -n "$WPCOM_PASS" ] || die "no WordPress.com password supplied"
 
-WORK="$(mktemp -d)"
-trap 'rm -rf "$WORK"' EXIT
-chmod 700 "$WORK"
-
-cat > "$WORK/ssh.exp" <<'EXP'
-#!/usr/bin/expect -f
-set timeout 120
-set site [lindex $argv 0]
-set pass $env(JN_SSH_PASS)
-set cmd  [lindex $argv 1]
-log_user 0
-spawn ssh -o StrictHostKeyChecking=accept-new -o PubkeyAuthentication=no \
-          -o NumberOfPasswordPrompts=1 $site@sftp.wp.com $cmd
-expect {
-  -re {[Pp]assword:} { send "$pass\r"; log_user 1; exp_continue }
-  eof
-}
-EXP
-chmod +x "$WORK/ssh.exp"
+JN_SSH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/jn-ssh.exp"
 
 # The password goes through the environment rather than argv so it never
 # appears in `ps` output.
-remote() { JN_SSH_PASS="$SITE_PASS" "$WORK/ssh.exp" "$SITE" "$1" 2>/dev/null | tr -d '\r'; }
+remote() { remote_on "$SITE" "$SITE_PASS" "$1"; }
+remote_on() { JN_SSH_PASS="$2" "$JN_SSH" "$1" "$3" 2>/dev/null | tr -d '\r'; }
 
 # Run PHP on the site. The source is base64-encoded so quoting survives the
 # shell/ssh/wp-cli layers, and staged as a file because `wp eval-file -` does
@@ -262,6 +256,33 @@ echo "USERCONNECTED:" . ( ! empty( $d["isUserConnected"] ) ? "yes" : "no" ) . "\
 echo "OWNER:" . ( ! empty( $d["hasConnectedOwner"] ) ? "yes" : "no" ) . "\n";')"
 printf '%s' "$CONN" | grep -q "USERCONNECTED:yes" || die "the Jetpack user connection did not complete"
 ok "isUserConnected=yes, hasConnectedOwner=yes"
+
+if [ -n "$NO_JETPACK_SITE" ]; then
+  step "Waiting for the no-Jetpack site $NO_JETPACK_SITE"
+  DEADLINE=$(( $(date +%s) + 900 ))
+  NJ_STATE=""
+  while :; do
+    code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "https://$NO_JETPACK_SITE/wp-json/" || echo 000)"
+    if [ "$code" = "200" ]; then
+      NJ_STATE="$(remote_on "$NO_JETPACK_SITE" "$NO_JETPACK_PASS" 'wp plugin is-active woocommerce && echo WC:active; wp plugin is-installed jetpack && echo JP:installed; echo WPCLI:ok')"
+      if ! printf '%s' "$NJ_STATE" | grep -q "WPCLI:ok"; then
+        nj_ssh_failures=$(( ${nj_ssh_failures:-0} + 1 ))
+        [ "$nj_ssh_failures" -lt 3 ] || die "could not run wp-cli on $NO_JETPACK_SITE over SSH. Check JN_NO_JETPACK_SSH_PASS."
+      fi
+      if printf '%s' "$NJ_STATE" | grep -q "WC:active"; then
+        printf '%s' "$NJ_STATE" | grep -q "JP:installed" && die "$NO_JETPACK_SITE has Jetpack installed; create it without Jetpack"
+        break
+      fi
+    fi
+    [ "$(date +%s)" -lt "$DEADLINE" ] || die "$NO_JETPACK_SITE did not finish provisioning within 15 minutes"
+    printf '  still provisioning (http=%s), waiting...\n' "$code"
+    sleep 15
+  done
+  # While auto_login is set, JN's companion plugin sends the first login on the site
+  # to /wp-admin instead of the requested redirect, and the app rejects that.
+  remote_on "$NO_JETPACK_SITE" "$NO_JETPACK_PASS" 'wp option delete auto_login' >/dev/null
+  ok "WooCommerce active, Jetpack not installed"
+fi
 
 # The order list, analytics and order creation flows need orders and a customer,
 # and POS needs a coupon. The pagination checks need more orders and products than
@@ -379,6 +400,7 @@ fi
 mkdir -p "$(dirname "$ENV_OUT")"
 SITE="$SITE" ADMIN_USER="$ADMIN_USER" WPCOM_USER="$WPCOM_USER" WPCOM_PASS="$WPCOM_PASS" \
 SITE_PASS="$SITE_PASS" CK="$CK" CS="$CS" APP_PASSWORD="$APP_PASSWORD" \
+NO_JETPACK_SITE="$NO_JETPACK_SITE" NO_JETPACK_PASS="$NO_JETPACK_PASS" \
 python3 - "$ENV_OUT" <<'PY' || die "could not write $ENV_OUT${BACKUP:+; the previous copy is $BACKUP}"
 import os, re, sys, pathlib
 
@@ -393,6 +415,12 @@ values = {
     "MAESTRO_WOO_LAB_CONSUMER_SECRET": os.environ["CS"],
     "MAESTRO_WOO_LAB_APPLICATION_PASSWORD": os.environ["APP_PASSWORD"],
 }
+if os.environ["NO_JETPACK_SITE"]:
+    values.update({
+        "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://" + os.environ["NO_JETPACK_SITE"],
+        "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME": os.environ["ADMIN_USER"],
+        "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD": os.environ["NO_JETPACK_PASS"],
+    })
 
 def quote(value):
     if re.search(r"[\s()\"'!$&|;<>`\\#]", value):
@@ -421,5 +449,6 @@ PY
 ok "wrote $ENV_OUT (mode 600)"
 
 printf '\n\033[32mDone.\033[0m Lab store ready: https://%s (blogID %s)\n' "$SITE" "$BLOG_ID"
+[ -z "$NO_JETPACK_SITE" ] || printf 'No-Jetpack site ready: https://%s\n' "$NO_JETPACK_SITE"
 printf 'Verify with:\n'
 printf '  .maestro/scripts/doctor.sh --app "$APP" --include-tags products --exclude-tags "" --seed --device "$UDID"\n'

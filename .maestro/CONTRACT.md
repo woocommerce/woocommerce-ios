@@ -42,6 +42,9 @@ MAESTRO_WOO_NOT_A_WOO_STORE_URL
 MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME
 MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD
 MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL
+MAESTRO_WOO_NO_JETPACK_SITE_URL
+MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME
+MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD
 ```
 
 `login_not_woo_store.yaml` runs against the shared store and logs in to a
@@ -107,8 +110,10 @@ iOS-only system files are `ios_quick_actions.yaml`,
 
 Tags are limited to `smoke_core`, `smoke_extended`, `quarantine`,
 `destructive`, `login`, `dashboard`, `orders`, `products`, `hub_menu`,
-`pos_ipad`, `ios_system`, and `store_shared`. A `store_shared` flow runs against
-the shared store and is never `destructive`.
+`pos_ipad`, `ios_system`, `store_shared`, and `no_jetpack_store`. A `store_shared` flow runs against
+the shared store and is never `destructive`. Before each attempt of a `no_jetpack_store` flow,
+the runner removes Jetpack and the WordPress.com connection from the site without Jetpack over
+SSH, and passes `NO_JETPACK_DISCONNECTED=yes` once the site is disconnected.
 
 Coverage IDs come from the committed P2 snapshot. An item is either covered by
 a flow or `manual:`. When a flow can't cover a whole item, the item is split into

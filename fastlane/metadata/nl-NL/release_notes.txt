@@ -1,0 +1,1 @@
+Verzending naar de EU is nu eenvoudiger: je douaneformulieren vragen om het artikelnummer van elk artikel, het artikelnummer van de fabrikant en GTIN/EAN wanneer dat nodig is. Fysieke configuratie werkt probleemloos voor winkels zonder WooPayments of Stripe. Verzendlabels maken het telefoonnummer van de ontvanger nu optioneel voor binnenlandse bestellingen.

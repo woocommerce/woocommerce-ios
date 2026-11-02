@@ -145,6 +145,8 @@ final class PushNotificationsManager: PushNotesManager {
     private let pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol
     private var selfDrivenPushNotificationEnabled: Bool?
     private var pendingTokenData: Data?
+    private var selfDrivenPushEligibilityCheck: Task<Void, Never>?
+    private var loggedInStateSubscription: AnyCancellable?
     private let currentDate: () -> Date
     /// The latest automatic Woo push refresh. A refresh waits for the previous one only when both started with the
     /// same credentials, so concurrent triggers never register a store twice per session.
@@ -182,7 +184,7 @@ final class PushNotificationsManager: PushNotesManager {
             featureFlagService: featureFlagService,
             stores: configuration.storesManager
         )
-        checkSelfDrivenPushNotificationsEligibility()
+        observeLoggedInStateForSelfDrivenPushEligibility()
     }
 }
 
@@ -983,9 +985,24 @@ private extension PushNotificationsManager {
         return site.isJetpackConnected && site.isJetpackThePluginInstalled
     }
 
+    /// Self-driven push eligibility depends on the logged-in account, so it is unknown at the start of every session
+    /// until it's checked. Device tokens received before the check completes wait for its result. A token still
+    /// waiting from the previous session is dropped, as iOS delivers it again once the app registers for push.
+    func observeLoggedInStateForSelfDrivenPushEligibility() {
+        loggedInStateSubscription = stores.isLoggedInPublisher.sink { [weak self] _ in
+            guard let self else { return }
+            selfDrivenPushNotificationEnabled = nil
+            pendingTokenData = nil
+            checkSelfDrivenPushNotificationsEligibility()
+        }
+    }
+
     func checkSelfDrivenPushNotificationsEligibility() {
-        Task { @MainActor in
+        selfDrivenPushEligibilityCheck?.cancel()
+        selfDrivenPushEligibilityCheck = Task { @MainActor in
             let isEnabled = await selfDriventPNEligiblityChecker.checkEligibility()
+            // A newer check replaced this one, for example after a login or logout.
+            guard !Task.isCancelled else { return }
             if selfDrivenPushNotificationEnabled != isEnabled {
                 selfDrivenPushNotificationEnabled = isEnabled
                 if let pendingTokenData {

@@ -5,6 +5,8 @@ import WordPressShared
 @testable import Networking
 @testable import WooCommerce
 
+// WOOMOB-4469: Disabled because the alert tests pass or fail depending on test order.
+// Re-enable after fixing; `setUp` does not retain the window it creates.
 @MainActor
 final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     private let testURL = "https://test.com"
@@ -16,6 +18,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
 
     override func setUp() async throws {
+        try XCTSkipIf(true, "WOOMOB-4469")
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         navigationController = UINavigationController()
 

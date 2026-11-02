@@ -260,8 +260,8 @@ private extension StoreDashboardView {
     @ViewBuilder
     var aiAssistantCard: some View {
         if let currentSite {
-            AIAssistantDashboardCard(site: currentSite)
-                .padding(.horizontal, LegacyLayout.padding)
+            StoreAIAssistantDashboardCard(site: currentSite)
+                .padding(.horizontal, StorePadding.p5)
         }
     }
 

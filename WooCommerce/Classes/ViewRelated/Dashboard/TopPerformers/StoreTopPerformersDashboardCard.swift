@@ -6,7 +6,6 @@ import struct Yosemite.TopEarnerStatsItem
 
 struct StoreTopPerformersDashboardCard: View {
     @ObservedObject private var viewModel: TopPerformersDashboardViewModel
-    @Environment(\.colorScheme) private var colorScheme
     @State private var showingCustomRangePicker = false
 
     private let onViewAllAnalytics: (Int64, TimeZone, StatsTimeRangeV4) -> Void
@@ -60,15 +59,27 @@ private extension StoreTopPerformersDashboardCard {
 
     var topPerformersContent: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
-            dateRangeHeader
-                .padding(.horizontal, StorePadding.p5)
-                .redacted(reason: viewModel.periodViewModel.redacted.header ? .placeholder : [])
-                .shimmering(active: viewModel.periodViewModel.redacted.header)
+            StoreDashboardDateRangeHeader(
+                timeRange: viewModel.timeRange,
+                dateText: viewModel.timeRangeText,
+                isDisabled: viewModel.syncingData,
+                accessibilityPrefix: "top-performers",
+                onSelect: selectTimeRange,
+                onEditCustom: editCustomRange
+            )
+            .padding(.horizontal, StorePadding.p5)
+            .redacted(reason: viewModel.periodViewModel.redacted.header ? .placeholder : [])
+            .shimmering(active: viewModel.periodViewModel.redacted.header)
             StoreDivider()
                 .padding(.bottom, StorePadding.p5)
             StoreTopPerformersPeriodView(viewModel: viewModel.periodViewModel)
-            timestamp
-                .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+            StoreDashboardTimestamp(
+                lastUpdatedTimestamp: viewModel.lastUpdatedTimestamp,
+                showsScheduledUpdatesDelay: viewModel.shouldShowScheduledAnalyticsImportInfo,
+                showsInfoButton: viewModel.shouldShowAnalyticsImportUpdateModeInfoButton,
+                onInfoTapped: showAnalyticsImportUpdateModeInfo
+            )
+            .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
             StoreDashboardCardFooterAction(Localization.viewAll, isDisabled: viewModel.syncingData) {
                 viewModel.trackInteraction()
                 onViewAllAnalytics(viewModel.siteID, viewModel.siteTimezone, viewModel.timeRange)
@@ -76,111 +87,6 @@ private extension StoreTopPerformersDashboardCard {
             .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? .placeholder : [])
             .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
         }
-    }
-
-    var dateRangeHeader: some View {
-        HStack(spacing: StoreSpacing.s3) {
-            Text(viewModel.timeRange.isCustomTimeRange ? Localization.custom : viewModel.timeRange.tabTitle)
-                .storeTextStyle(.bodyMedium)
-                .foregroundStyle(.storeOnSurface)
-                .accessibilityIdentifier("top-performers-\(viewModel.timeRange.menuAccessibilityIdentifier)")
-
-            dateRangeValue
-                .padding(StorePadding.p3)
-
-            Spacer(minLength: StoreSpacing.s0)
-            dateRangeMenu
-        }
-    }
-
-    @ViewBuilder var dateRangeValue: some View {
-        if viewModel.timeRange.isCustomTimeRange {
-            Button(action: editCustomRange) {
-                HStack(spacing: StoreSpacing.s3) {
-                    Text(viewModel.timeRangeText)
-                        .storeTextStyle(.bodyMedium)
-                    StoreIcon.Pen.regular.image(size: .large)
-                        .accessibilityHidden(true)
-                }
-                .foregroundStyle(.storeOnSecondaryContainer)
-            }
-            .buttonStyle(.plain)
-        } else {
-            Text(viewModel.timeRangeText)
-                .storeTextStyle(.bodyMedium)
-                .foregroundStyle(.storeOnSurface)
-        }
-    }
-
-    var dateRangeMenu: some View {
-        Menu {
-            ForEach(Constants.timeRanges, id: \.rawValue) { range in
-                Button { selectTimeRange(range) } label: {
-                    HStack {
-                        Text(range.tabTitle)
-                        if rangeMatchesSelection(range) {
-                            StoreIcon.Check.solid.image(size: .small)
-                        }
-                    }
-                }
-                .accessibilityIdentifier(range.menuAccessibilityIdentifier)
-            }
-        } label: {
-            StoreIcon.CalendarDays.regular.image(size: .largeIncreased)
-                .foregroundStyle(.storeOnSurface)
-                .frame(minWidth: StoreSize.minimumTapTarget,
-                       minHeight: StoreSize.minimumTapTarget,
-                       alignment: .trailing)
-                .contentShape(.rect)
-        }
-        .disabled(viewModel.syncingData)
-        .accessibilityIdentifier("top-performers-time-range-menu")
-        .accessibilityLabel(Localization.dateRange)
-    }
-
-    var timestamp: some View {
-        Group {
-            if viewModel.shouldShowAnalyticsImportUpdateModeInfoButton {
-                Button(action: showAnalyticsImportUpdateModeInfo) {
-                    timestampContent
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(timestampText)
-                .accessibilityHint(Localization.scheduledUpdatesInfoAccessibilityLabel)
-            } else {
-                timestampContent
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding(StorePadding.p5)
-        .redacted(reason: viewModel.periodViewModel.redacted.rows ? .placeholder : [])
-        .shimmering(active: viewModel.periodViewModel.redacted.rows)
-    }
-
-    var timestampContent: some View {
-        HStack(spacing: StoreSpacing.s2) {
-            Text(timestampText)
-                .storeTextStyle(.bodyMedium)
-                .foregroundStyle(secondaryTextColor)
-                .multilineTextAlignment(.center)
-            if viewModel.shouldShowAnalyticsImportUpdateModeInfoButton {
-                StoreIcon.CircleInfo.regular.image(size: .small)
-                    .foregroundStyle(.storePrimary)
-                    .accessibilityHidden(true)
-            }
-        }
-        .frame(minHeight: StoreSize.minimumTapTarget)
-        .contentShape(.rect)
-    }
-
-    var timestampText: String {
-        viewModel.shouldShowScheduledAnalyticsImportInfo ?
-        Localization.scheduledUpdatesDelayText :
-        Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp)
-    }
-
-    var secondaryTextColor: Color {
-        colorScheme == .dark ? .storePaletteGray20 : .storePaletteGray60
     }
 
     var errorState: some View {
@@ -213,10 +119,6 @@ private extension StoreTopPerformersDashboardCard {
         }
     }
 
-    func rangeMatchesSelection(_ range: StatsTimeRangeV4) -> Bool {
-        range.isCustomTimeRange && viewModel.timeRange.isCustomTimeRange || range == viewModel.timeRange
-    }
-
     func productDetailView(for item: TopEarnerStatsItem) -> UIViewController {
         let loaderViewController = ProductLoaderViewController(model: .init(topEarnerStatsItem: item),
                                                                siteID: viewModel.siteID,
@@ -226,10 +128,6 @@ private extension StoreTopPerformersDashboardCard {
 }
 
 private extension StoreTopPerformersDashboardCard {
-    enum Constants {
-        static let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear, .custom(from: .now, to: .now)]
-    }
-
     enum Localization {
         static let hideCard = NSLocalizedString(
             "topPerformersDashboardView.hideCard",
@@ -241,30 +139,10 @@ private extension StoreTopPerformersDashboardCard {
             value: "View all store analytics",
             comment: "Button to navigate to Analytics Hub."
         )
-        static let custom = NSLocalizedString(
-            "topPerformersDashboardView.custom",
-            value: "Custom",
-            comment: "Title of the custom time range on the Top Performers card on the Dashboard screen"
-        )
-        static let dateRange = NSLocalizedString("Date Range", comment: "Title of the range selection list")
-        static func lastUpdatedText(time: String) -> String {
-            let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the top performers card was last updated")
-            return String.localizedStringWithFormat(format, time)
-        }
-        static let scheduledUpdatesDelayText = NSLocalizedString(
-            "topPerformersDashboardView.scheduledUpdatesDelayText",
-            value: "Stats may be up to 12 hours delayed",
-            comment: "Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled."
-        )
         static let unavailableAnalytics = NSLocalizedString(
             "topPerformersDashboardView.unavailableAnalyticsView.title",
             value: "Unable to display your store's top performers",
             comment: "Title when the Top Performers card is disabled because the analytics feature is unavailable"
-        )
-        static let scheduledUpdatesInfoAccessibilityLabel = NSLocalizedString(
-            "topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel",
-            value: "Analytics update details",
-            comment: "Accessibility label for the info button next to the Top Performers card's last updated timestamp."
         )
     }
 }

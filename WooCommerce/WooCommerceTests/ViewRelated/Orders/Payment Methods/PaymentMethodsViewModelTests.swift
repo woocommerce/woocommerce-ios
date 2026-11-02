@@ -1221,8 +1221,12 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         var completeRefresh: (@Sendable (Result<Order, Error>) -> Void)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             if case let .retrieveOrderRemotely(_, _, completion) = action {
-                refreshStarted.fulfill()
-                completeRefresh = completion
+                if completeRefresh == nil {
+                    refreshStarted.fulfill()
+                    completeRefresh = completion
+                } else {
+                    completion(.success(order))
+                }
             }
         }
         let dependencies = Dependencies(cardPresentPaymentsOnboardingPresenter: MockCardPresentPaymentsOnboardingPresenter(),
@@ -1259,12 +1263,17 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         storage.insertSampleOrder(readOnlyOrder: order)
         var refreshCount = 0
         let refreshStarted = expectation(description: "Refreshes while the receipt is open")
+        let finalRefreshStarted = expectation(description: "Refreshes receipt-time changes after continuing")
         var completeRefresh: (@Sendable (Result<Order, Error>) -> Void)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             if case let .retrieveOrderRemotely(_, _, completion) = action {
                 refreshCount += 1
                 completeRefresh = completion
-                refreshStarted.fulfill()
+                if refreshCount == 1 {
+                    refreshStarted.fulfill()
+                } else {
+                    finalRefreshStarted.fulfill()
+                }
             }
         }
         let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderCreation,
@@ -1292,15 +1301,19 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         try XCTUnwrap(flowCompletion)()
 
         // Then
-        XCTAssertEqual(refreshCount, 1, "Continuing should reuse the in-flight refresh")
+        XCTAssertEqual(refreshCount, 1, "The final refresh must wait for the in-flight refresh")
         XCTAssertTrue(viewModel.showLoadingIndicator)
 
         // When
         try XCTUnwrap(completeRefresh)(.success(order.copy(status: .completed)))
-        await fulfillment(of: [returned], timeout: 2)
+        await fulfillment(of: [returned, finalRefreshStarted], timeout: 2)
 
         // Then
         XCTAssertFalse(viewModel.showLoadingIndicator)
+        XCTAssertEqual(refreshCount, 2, "Receipt-time changes are refreshed without blocking the return")
+        if refreshCount == 2 {
+            try XCTUnwrap(completeRefresh)(.success(order.copy(status: .completed)))
+        }
     }
 
     func test_collect_payment_when_previous_attempt_is_refreshing_then_success_waits_for_its_own_refresh() async throws {
@@ -1318,6 +1331,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 }
                 if refreshCompletions.count == 2 {
                     secondRefreshStarted.fulfill()
+                } else if refreshCompletions.count == 3 {
+                    completion(.success(order))
                 }
             }
         }

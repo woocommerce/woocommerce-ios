@@ -289,6 +289,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     // star/unstar packages
+    @MainActor
     func starUnstarPackage(_ packageID: String, carrierID: String) {
         let isStarring = !starredCarriersPackages.contains(packageID)
         withAnimation(starAnimation) {
@@ -308,6 +309,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     // delete saved packages
+    @MainActor
     func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) {
         // delete the package locally and on backend
 
@@ -329,9 +331,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
 
         // delete on backend
-        let deleteAction = WooShippingAction.deletePackage(siteID: siteID,
-                                                           packageID: packageToRemove.id,
-                                                           packageType: packageToRemove.source.isCustomPackage ? .custom : .predefined) { [weak self] result in
+        let handleResult: @MainActor @Sendable (Result<WooShippingCreatePackageResponse, Error>) -> Void = { [weak self] result in
             guard let self else { return }
             if case .failure(let error) = result {
                 DDLogError("⛔️ Error removing saved Woo Shipping package: \(error)")
@@ -364,6 +364,11 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             } else {
                 analytics.track(event: .WooShipping.packageSelectionStep(state: .removingSuccess))
             }
+        }
+        let deleteAction = WooShippingAction.deletePackage(siteID: siteID,
+                                                           packageID: packageToRemove.id,
+                                                           packageType: packageToRemove.source.isCustomPackage ? .custom : .predefined) { result in
+            Task { @MainActor in handleResult(result) }
         }
 
         stores.dispatch(deleteAction)

@@ -76,4 +76,32 @@ final class DashboardCustomizationViewModelTests: XCTestCase {
         let expectedCards = [stats.copy(enabled: true), onboarding.copy(enabled: false), blaze]
         assertEqual(expectedCards, actualCards)
     }
+
+    func test_setCard_when_card_is_the_only_selection_does_not_deselect_it() {
+        // Given
+        let onboarding = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+        let stats = DashboardCard(type: .performance, availability: .show, enabled: false)
+        let vm = DashboardCustomizationViewModel(allCards: [onboarding, stats])
+
+        // When
+        vm.setCard(onboarding, selected: false)
+
+        // Then
+        assertEqual([onboarding], vm.selectedCards)
+        XCTAssertFalse(vm.canToggleCard(onboarding))
+    }
+
+    func test_setCard_when_another_card_is_selected_allows_deselecting_it() {
+        // Given
+        let onboarding = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+        let stats = DashboardCard(type: .performance, availability: .show, enabled: true)
+        let vm = DashboardCustomizationViewModel(allCards: [onboarding, stats])
+
+        // When
+        vm.setCard(onboarding, selected: false)
+
+        // Then
+        assertEqual([stats], vm.selectedCards)
+        XCTAssertFalse(vm.canToggleCard(stats))
+    }
 }

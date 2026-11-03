@@ -1064,6 +1064,38 @@ struct POSPaymentModelTests {
         #expect(printer.printedCardDetails == nil)
     }
 
+    @Test("printReceipt ignores card details from a payment that completes after reset")
+    @MainActor
+    func test_printReceipt_when_card_payment_completes_after_reset_then_next_order_prints_without_card_details() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+        service.collectPaymentOverride = {
+            sut.reset()
+            return .success(CardPresentPaymentTransaction(cardDetails: makeCardDetails()))
+        }
+
+        // When
+        await sut.startPayment()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 456, total: "5.00")
+        try await sut.collectCashPayment(changeDueAmount: nil)
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedOrder?.orderID == 456)
+        #expect(printer.printedCardDetails == nil)
+    }
+
     // MARK: - Reset
 
     @Test("reset clears all state")

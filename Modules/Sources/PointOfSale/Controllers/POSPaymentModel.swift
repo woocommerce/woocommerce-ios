@@ -134,7 +134,7 @@ final class POSPaymentModel {
     private var cancellables: Set<AnyCancellable> = []
     private var paymentSessionCancellables: Set<AnyCancellable> = []
     private var currentOrder: Order?
-    private var currentCardDetails: CardPresentTransactionDetails?
+    private var cardPaymentDetails: (orderID: Int64, cardDetails: CardPresentTransactionDetails)?
     private var formattedOrderTotalPrice: String?
     /// QR-encodeable URL for the active scan-to-pay payment. Populated lazily when the
     /// merchant taps Scan to Pay (after promoting the autoDraft to `.pending`).
@@ -545,10 +545,9 @@ extension POSPaymentModel {
 
     private func collectPayment(for order: Order, using method: CardReaderConnectionMethod) async throws {
         collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(order: order))
-        currentCardDetails = nil
         let result = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
-        if case .success(let transaction) = result {
-            currentCardDetails = transaction.cardDetails
+        if case .success(let transaction) = result, let cardDetails = transaction.cardDetails {
+            cardPaymentDetails = (order.orderID, cardDetails)
         }
     }
 
@@ -989,7 +988,8 @@ extension POSPaymentModel {
         guard let receiptPrinter else {
             return
         }
-        try await receiptPrinter.printReceipt(order: order, storeInformation: storeInformation, cardDetails: currentCardDetails)
+        let cardDetails = cardPaymentDetails?.orderID == order.orderID ? cardPaymentDetails?.cardDetails : nil
+        try await receiptPrinter.printReceipt(order: order, storeInformation: storeInformation, cardDetails: cardDetails)
     }
 }
 
@@ -1043,7 +1043,7 @@ extension POSPaymentModel {
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
         currentOrder = nil
-        currentCardDetails = nil
+        cardPaymentDetails = nil
         formattedOrderTotalPrice = nil
         scanToPayURL = nil
         isPreparingScanToPay = false

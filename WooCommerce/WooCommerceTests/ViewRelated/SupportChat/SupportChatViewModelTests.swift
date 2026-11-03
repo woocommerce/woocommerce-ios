@@ -663,7 +663,8 @@ struct SupportChatViewModelTests {
 
     @Test func executeAction_openNotificationSettings_completes_without_error() async {
         // Given
-        let sut = makeSUT()
+        // The mock returns no settings URL; the real service would open the Settings app and background the test host.
+        let sut = makeSUT(diagnosticsService: MockSupportDiagnosticsService(resultProvider: { _ in [] }))
 
         // When
         await sut.executeAction(.openNotificationSettings)

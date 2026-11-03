@@ -421,9 +421,9 @@ struct MobileStatusReportProviderTests {
 
 private extension MobileStatusReportProviderTests {
 
-    func makeProvider(pushNotesManager: PushNotesManager? = nil, dispatchTimeout: TimeInterval = 0.05) -> MobileStatusReportProvider {
-        // A short timeout so the unanswered-dispatch test exercises the degradation without waiting out the
-        // production value.
+    func makeProvider(pushNotesManager: PushNotesManager? = nil, dispatchTimeout: TimeInterval = 1) -> MobileStatusReportProvider {
+        // Answered dispatches resume as soon as the mock store replies, so the production timeout costs nothing here;
+        // a shorter one lets the fallback win under parallel test load. The unanswered-dispatch test passes 0.
         MobileStatusReportProvider(systemSnapshot: { .fixture() },
                                    pushNotesManager: pushNotesManager ?? self.pushNotesManager,
                                    stores: stores,

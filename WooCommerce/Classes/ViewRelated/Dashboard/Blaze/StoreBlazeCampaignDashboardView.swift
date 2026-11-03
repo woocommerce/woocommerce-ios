@@ -202,8 +202,7 @@ private extension StoreBlazeCampaignDashboardView {
 }
 
 private struct ProductInfoView: View {
-    /// Scale of the view based on accessibility changes
-    @ScaledMetric private var scale: CGFloat = 1.0
+    @ScaledMetric(relativeTo: .body) private var imageSize = StoreSize.iconContainerSize
 
     private let product: BlazeCampaignProduct
 
@@ -218,7 +217,7 @@ private struct ProductInfoView: View {
                     .placeholder { Image(uiImage: .productPlaceholderImage) }
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
+                    .frame(width: imageSize, height: imageSize)
                     .clipShape(.rect(cornerRadius: StoreRadius.medium))
                     .accessibilityHidden(true)
 
@@ -239,10 +238,6 @@ private struct ProductInfoView: View {
             }
             .foregroundStyle(.storeOnSurface)
         }
-    }
-
-    private enum Layout {
-        static let imageSize: CGFloat = 44
     }
 
     private enum Localization {

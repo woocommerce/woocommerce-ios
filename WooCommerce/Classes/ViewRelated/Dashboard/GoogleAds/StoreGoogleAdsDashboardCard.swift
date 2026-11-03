@@ -47,7 +47,11 @@ struct StoreGoogleAdsDashboardCard: View {
                     .padding(.horizontal, StorePadding.p5)
                     .padding(.bottom, StorePadding.p5)
 
-                    StoreDashboardCardFooterAction(Localization.viewAll, action: onShowAllCampaigns)
+                    StoreDashboardCardFooterAction(Localization.viewAll,
+                                                   isDisabled: viewModel.syncingData,
+                                                   action: onShowAllCampaigns)
+                        .redacted(reason: viewModel.syncingData ? .placeholder : [])
+                        .shimmering(active: viewModel.syncingData)
                         .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
                 }
             }

@@ -4,7 +4,7 @@ import SwiftUI
 import struct Yosemite.BlazeCampaignListItem
 
 struct StoreBlazeCampaignItemView: View {
-    @ScaledMetric private var scale: CGFloat = 1
+    @ScaledMetric(relativeTo: .body) private var imageSize = StoreSize.iconContainerSize
 
     let campaign: BlazeCampaignListItem
 
@@ -16,7 +16,7 @@ struct StoreBlazeCampaignItemView: View {
                         .placeholder { Image(uiImage: .productPlaceholderImage) }
                         .resizable()
                         .scaledToFill()
-                        .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
+                        .frame(width: imageSize, height: imageSize)
                         .clipShape(.rect(cornerRadius: StoreRadius.medium))
                         .accessibilityHidden(true)
 
@@ -34,12 +34,16 @@ struct StoreBlazeCampaignItemView: View {
 
                 HStack(alignment: .firstTextBaseline, spacing: StoreSpacing.s5) {
                     Spacer()
-                        .frame(width: Layout.imageSize * scale)
+                        .frame(width: imageSize)
 
                     VStack(alignment: .leading, spacing: StoreSpacing.s3) {
                         Text(Localization.clickthroughs)
                             .storeTextStyle(.bodyMedium)
-                        Text("\(campaign.humanReadableImpressions) → \(campaign.humanReadableClicks)")
+                        (Text(campaign.humanReadableImpressions) +
+                         Text(" ") +
+                         Text(Image(systemName: "arrow.forward")) +
+                         Text(" ") +
+                         Text(campaign.humanReadableClicks))
                             .storeTextStyle(.titleLarge.emphasized)
                             .accessibilityLabel(Localization.clickThroughAccessibilityLabel(
                                 impressions: campaign.impressions,
@@ -87,10 +91,6 @@ private extension BlazeCampaignListItem.Status {
 }
 
 private extension StoreBlazeCampaignItemView {
-    enum Layout {
-        static let imageSize: CGFloat = 44
-    }
-
     enum Localization {
         static let clickthroughs = NSLocalizedString(
             "blazeCampaignItemView.clickthroughs",
@@ -108,7 +108,9 @@ private extension StoreBlazeCampaignItemView {
                 NSLocalizedString(
                     "blazeCampaignItemView.blazeCampaignAccessibilityLabelFormat",
                     value: "Blaze campaign for %1$@. %2$@",
-                    comment: "Accessibility label for a Blaze campaign. The placeholders are its name and status."
+                    comment: "Accessibility label format for a Blaze campaign card." +
+                        " The %1$@ is a placeholder for the campaign name." +
+                        " The %2$@ is a placeholder for the campaign status."
                 ),
                 campaignName,
                 status
@@ -120,7 +122,9 @@ private extension StoreBlazeCampaignItemView {
                 NSLocalizedString(
                     "blazeCampaignItemView.clickThroughAccessibilityLabelFormat",
                     value: "%1$d impressions, %2$d clicks",
-                    comment: "Accessibility label for a Blaze campaign's impressions and clicks."
+                    comment: "Accessibility label format for a Blaze campaign's click-through rates. " +
+                        "The placeholders are numbers of impressions and clicks. " +
+                        "Reads as: '20000 impressions, 200 clicks'"
                 ),
                 impressions,
                 clicks

@@ -3,7 +3,7 @@
 ///
 /// This information is persisted in a plist file, as part of `GeneralAppSettings`.
 ///
-public struct EligibilityErrorInfo: Codable, Equatable {
+public struct EligibilityErrorInfo: Codable, Equatable, Sendable {
     /// the name of the ineligible user, for display purposes.
     public let name: String
 

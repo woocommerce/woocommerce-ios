@@ -89,6 +89,51 @@ final class GeneralAppSettingsStorageTests: XCTestCase {
         cancelable.cancel()
     }
 
+    func test_settings_publisher_when_another_instance_saves_then_publishes_new_value() throws {
+        // Given
+        let otherStorage = GeneralAppSettingsStorage(fileStorage: fileStorage)
+        var receivedSettings = [GeneralAppSettings]()
+        let cancelable = storage.settingsPublisher.sink { settings in
+            receivedSettings.append(settings)
+        }
+
+        var newSettings = GeneralAppSettings.default
+        newSettings.knownCardReaders = ["READER2"]
+
+        // When
+        try otherStorage.saveSettings(newSettings)
+
+        // Then
+        XCTAssertEqual(receivedSettings, [GeneralAppSettings.default, newSettings])
+
+        // Tear down
+        cancelable.cancel()
+    }
+
+    func test_settings_publisher_when_another_instance_saves_during_initial_delivery_then_publishes_new_value() {
+        // Given
+        let otherStorage = GeneralAppSettingsStorage(fileStorage: fileStorage)
+        var newSettings = GeneralAppSettings.default
+        newSettings.knownCardReaders = ["READER2"]
+        var receivedSettings = [GeneralAppSettings]()
+
+        // When
+        let cancelable = storage.settingsPublisher.sink { settings in
+            receivedSettings.append(settings)
+            if receivedSettings.count == 1 {
+                do {
+                    try otherStorage.saveSettings(newSettings)
+                } catch {
+                    XCTFail("Failed to save settings: \(error)")
+                }
+            }
+        }
+        defer { cancelable.cancel() }
+
+        // Then
+        XCTAssertEqual(receivedSettings, [GeneralAppSettings.default, newSettings])
+    }
+
     func test_value_reads_settings_default_value() {
         // Given
 

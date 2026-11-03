@@ -128,6 +128,32 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.wrongCredentials)
     }
 
+    func test_errorMessage_when_login_fails_with_rejected_credentials_after_retry_then_shows_wrong_credentials() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = SiteCredentialLoginViewModel(siteURL: "https://test.com", stores: stores)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(_, let completion):
+                let originalError = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+                let error = AFError.requestRetryFailed(
+                    retryError: NSError(domain: "Authentication", code: 1),
+                    originalError: originalError
+                )
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.handleLogin()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowErrorAlert)
+        XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.wrongCredentials)
+    }
+
     func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_succeeds() {
         // Given
         var successHandlerTriggered = false

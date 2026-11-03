@@ -10,7 +10,7 @@ struct POSPrintReceiptFailureModal: View {
         VStack(spacing: POSSpacing.xLarge) {
             Spacer()
 
-            POSErrorExclamationMark()
+            POSErrorExclamationMark(size: .large)
 
             VStack(spacing: POSSpacing.small) {
                 Text(failure.title)

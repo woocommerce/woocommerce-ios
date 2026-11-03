@@ -79,7 +79,9 @@ struct SupportChatMobileStatusReportTests {
         let logProvider = MockRecentApplicationLogProvider(logEntries: [
             .init(date: Date(), level: .error, message: "Sync error")
         ])
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake()))
+        let sessionManager = SessionManager.makeForTesting(authenticated: true)
+        sessionManager.defaultStoreID = 123
+        let stores = MockStoresManager(sessionManager: sessionManager)
         var sentContext: RequestParameterDictionary?
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
             if case let .sendMessage(_, _, _, _, context, _) = action { sentContext = context }

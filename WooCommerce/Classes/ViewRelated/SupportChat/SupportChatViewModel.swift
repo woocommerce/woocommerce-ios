@@ -295,7 +295,7 @@ final class SupportChatViewModel {
         case .preLogin:
             true
         case .helpAndSupport:
-            stores.sessionManager.defaultSite == nil
+            stores.needsDefaultStore
         case .connectivityTool, .chatHistory:
             false
         }

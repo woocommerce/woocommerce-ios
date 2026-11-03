@@ -20,6 +20,8 @@ struct StoreDashboardShareStoreCard: View {
                 .multilineTextAlignment(.center)
 
                 if let url {
+                    // ShareLink cannot use StoreButton directly. This label mirrors the medium filled button
+                    // until StoreDesignSystem exposes a link-compatible public button style.
                     ShareLink(item: url) {
                         Text(Localization.share)
                             .storeTextStyle(.labelLarge.emphasized)

@@ -40,9 +40,8 @@ struct StoreDashboardView: View {
                         .renderedIf(verticalSizeClass == .regular)
 
                     featureAnnouncementCard
-                        .padding(.horizontal, StorePadding.p5)
+                        .padding(.horizontal, Layout.outerPadding)
                     dashboardCards(availableWidth: proxy.size.width)
-                        .padding(.horizontal, Layout.legacyOuterPaddingCompensation)
                 }
                 .padding(.bottom, Layout.outerPadding)
             }
@@ -158,14 +157,14 @@ private extension StoreDashboardView {
     @ViewBuilder
     func dashboardCards(availableWidth: CGFloat) -> some View {
         if shouldDisplayDashboardCardsInTwoColumns(availableWidth: availableWidth) {
-            // Legacy cards own a 16-point horizontal inset. Compensate between columns so
-            // their visible surfaces retain the design-system's 16-point column gap.
-            HStack(alignment: .top, spacing: Layout.legacyColumnSpacingCompensation) {
+            HStack(alignment: .top, spacing: Layout.columnSpacing) {
                 dashboardCardList(with: designSystemFirstColumn)
                 dashboardCardList(with: designSystemSecondColumn)
             }
+            .padding(.horizontal, Layout.outerPadding)
         } else {
             dashboardCardList(with: designSystemDashboardCards)
+                .padding(.horizontal, Layout.outerPadding)
         }
     }
 
@@ -185,7 +184,7 @@ private extension StoreDashboardView {
     @ViewBuilder
     func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.cardSpacing) {
-            ForEach(Array(items.enumerated()), id: \.element.hashValue) { _, card in
+            ForEach(items, id: \.type) { card in
                 dashboardCard(for: card)
             }
         }
@@ -201,14 +200,12 @@ private extension StoreDashboardView {
                 onTaskTapped: handleOnboardingTaskTap,
                 onViewAllTapped: handleViewAllOnboardingTasksTap
             )
-            .padding(.horizontal, StorePadding.p5)
         case .blaze:
             StoreBlazeCampaignDashboardView(
                 viewModel: viewModel.blazeCampaignDashboardViewModel,
                 showAllCampaignsTapped: actions.showAllBlazeCampaignsTapped,
                 createCampaignTapped: actions.createBlazeCampaignTapped
             )
-            .padding(.horizontal, StorePadding.p5)
         case .performance:
             StorePerformanceDashboardCard(
                 viewModel: viewModel.storePerformanceViewModel,
@@ -216,66 +213,54 @@ private extension StoreDashboardView {
                 onViewAllAnalytics: { actions.viewAllAnalyticsTapped?($0, $1, $2) },
                 onAnalyticsImportUpdateModeInfoTapped: viewModel.showAnalyticsImportUpdateModeInfo
             )
-            .padding(.horizontal, StorePadding.p5)
         case .topPerformers:
             StoreTopPerformersDashboardCard(
                 viewModel: viewModel.topPerformersViewModel,
                 onViewAllAnalytics: { actions.viewAllAnalyticsTapped?($0, $1, $2) },
                 onAnalyticsImportUpdateModeInfoTapped: viewModel.showAnalyticsImportUpdateModeInfo
             )
-            .padding(.horizontal, StorePadding.p5)
         case .inbox:
             StoreInboxDashboardCard(
                 viewModel: viewModel.inboxViewModel,
                 onShowAllInboxMessages: { actions.showAllInboxMessagesTapped?() }
             )
-            .padding(.horizontal, StorePadding.p5)
         case .reviews:
             StoreReviewsDashboardCard(
                 viewModel: viewModel.reviewsViewModel,
                 onViewAllReviews: { actions.viewAllReviewsTapped?() },
                 onViewReviewDetail: { actions.reviewDetailTapped?($0) }
             )
-            .padding(.horizontal, StorePadding.p5)
         case .coupons:
             StoreMostActiveCouponsCard(
                 viewModel: viewModel.mostActiveCouponsViewModel,
                 onViewAllCoupons: { actions.viewAllCouponsTapped?() },
                 onViewCouponDetail: { actions.couponDetailTapped?($0) }
             )
-            .padding(.horizontal, StorePadding.p5)
         case .stock:
             StoreProductStockDashboardCard(viewModel: viewModel.productStockCardViewModel)
-                .padding(.horizontal, StorePadding.p5)
         case .lastOrders:
             StoreLastOrdersDashboardCard(
                 viewModel: viewModel.lastOrdersCardViewModel,
                 onViewAllOrders: { actions.viewAllOrdersTapped?() },
                 onViewOrderDetail: { actions.orderDetailTapped?($0) }
             )
-            .padding(.horizontal, StorePadding.p5)
         case .googleAds:
             StoreGoogleAdsDashboardCard(
                 viewModel: viewModel.googleAdsDashboardCardViewModel,
                 onCreateNewCampaign: { actions.createGoogleAdsCampaignTapped?() },
                 onShowAllCampaigns: { actions.showAllGoogleAdsCampaignsTapped?() }
             )
-            .padding(.horizontal, StorePadding.p5)
         case .inAppFeedback:
             StoreDashboardFeedbackCard(viewModel: viewModel.inAppFeedbackCardViewModel)
-                .padding(.horizontal, StorePadding.p5)
         case .newCardsNotice:
             StoreDashboardNewCardsNotice(showCustomization: showNewSections)
-                .padding(.horizontal, StorePadding.p5)
         case .shareStore:
             StoreDashboardShareStoreCard(url: viewModel.siteURLToShare)
-                .padding(.horizontal, StorePadding.p5)
         case .connectWPCom:
             StoreConnectWPComCard(
                 setupAction: { actions.connectWPComSetupTapped?() },
                 hideAction: viewModel.hideWPComConnectionSuggestion
             )
-            .padding(.horizontal, StorePadding.p5)
             .onAppear(perform: viewModel.onConnectWPComCardAppear)
         case .aiAssistant:
             aiAssistantCard
@@ -286,7 +271,6 @@ private extension StoreDashboardView {
     var aiAssistantCard: some View {
         if let currentSite {
             StoreAIAssistantDashboardCard(site: currentSite)
-                .padding(.horizontal, StorePadding.p5)
         }
     }
 
@@ -378,8 +362,7 @@ private extension StoreDashboardView {
     enum Layout {
         static let outerPadding = StoreSpacing.s7
         static let cardSpacing = StoreSpacing.s7
-        static let legacyOuterPaddingCompensation = StoreSpacing.s3
-        static let legacyColumnSpacingCompensation = -StoreSpacing.s5
+        static let columnSpacing = StoreSpacing.s5
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)

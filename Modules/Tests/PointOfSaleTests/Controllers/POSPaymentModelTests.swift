@@ -4,6 +4,7 @@ import Combine
 import struct Yosemite.Order
 import struct Yosemite.Address
 import struct Yosemite.ReceiptStoreInformation
+import struct Yosemite.CardPresentTransactionDetails
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 import enum WooFoundationCore.WooAnalyticsStat
@@ -981,6 +982,86 @@ struct POSPaymentModelTests {
 
         // When / Then — printing without a configured printer silently no-ops.
         try await sut.printReceipt(storeInformation: .empty)
+    }
+
+    @Test("printReceipt includes the card details of a card payment")
+    @MainActor
+    func test_printReceipt_when_card_payment_succeeded_then_prints_card_details() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let cardDetails = makeCardDetails()
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        service.collectPaymentOverride = { .success(CardPresentPaymentTransaction(cardDetails: cardDetails)) }
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+        await sut.startPayment()
+
+        // When
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedCardDetails == cardDetails)
+    }
+
+    @Test("printReceipt has no card details for a cash payment")
+    @MainActor
+    func test_printReceipt_when_cash_payment_succeeded_then_prints_without_card_details() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+        try await sut.collectCashPayment(changeDueAmount: nil)
+
+        // When
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedOrder?.orderID == 123)
+        #expect(printer.printedCardDetails == nil)
+    }
+
+    @Test("printReceipt does not reuse card details from a previous payment")
+    @MainActor
+    func test_printReceipt_when_cash_payment_follows_card_payment_then_prints_without_card_details() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        service.collectPaymentOverride = { .success(CardPresentPaymentTransaction(cardDetails: makeCardDetails())) }
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+        await sut.startPayment()
+        try await sut.printReceipt(storeInformation: .empty)
+        #expect(printer.printedCardDetails != nil)
+
+        // When
+        sut.reset()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 456, total: "5.00")
+        try await sut.collectCashPayment(changeDueAmount: nil)
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedOrder?.orderID == 456)
+        #expect(printer.printedCardDetails == nil)
     }
 
     // MARK: - Reset
@@ -3063,6 +3144,19 @@ private func makePaymentController(
         preferredConnectionMethod: preferredConnectionMethod,
         cardPaymentSelectionMode: cardPaymentSelectionMode,
         paymentState: paymentState)
+}
+
+private func makeCardDetails() -> CardPresentTransactionDetails {
+    CardPresentTransactionDetails(last4: "4242",
+                                  expMonth: 12,
+                                  expYear: 2030,
+                                  cardholderName: nil,
+                                  brand: .visa,
+                                  generatedCard: nil,
+                                  receipt: nil,
+                                  emvAuthData: nil,
+                                  wallet: nil,
+                                  network: nil)
 }
 
 @MainActor

@@ -844,7 +844,8 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
                       cardDetails: CardPresentTransactionDetails?) async throws {}
 
     func printReceipt(order: Order,
-                      storeInformation: ReceiptStoreInformation) async throws {}
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {}
 }
 
 extension POSPreviewHelpers {

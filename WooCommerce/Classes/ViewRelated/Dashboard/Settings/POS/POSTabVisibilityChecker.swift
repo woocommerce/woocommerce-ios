@@ -1,5 +1,4 @@
 import Foundation
-import UIKit
 import class WooFoundation.CurrencySettings
 import protocol WooFoundation.ConnectivityObserver
 import enum WooFoundation.CountryCode
@@ -18,7 +17,6 @@ import enum Yosemite.POSCountryCurrencyValidator
 @MainActor
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site
-    private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
     private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
@@ -26,14 +24,12 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let connectivityObserver: ConnectivityObserver
 
     init(site: Site,
-         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
         self.site = site
-        self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
         self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
@@ -53,7 +49,6 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     /// Used for the initial state check when a site instance hasn't been loaded but a `siteID` is available
     static func checkInitialVisibility(
         for siteID: Int64,
-        userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()
     ) -> Bool {
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {

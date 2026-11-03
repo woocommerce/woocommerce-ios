@@ -77,7 +77,7 @@ final class DashboardCustomizationViewModelTests: XCTestCase {
         assertEqual(expectedCards, actualCards)
     }
 
-    func test_setCard_when_card_is_the_only_selection_does_not_deselect_it() {
+    func test_setCard_when_card_is_the_only_selection_then_card_remains_selected() {
         // Given
         let onboarding = DashboardCard(type: .onboarding, availability: .show, enabled: true)
         let stats = DashboardCard(type: .performance, availability: .show, enabled: false)
@@ -91,7 +91,7 @@ final class DashboardCustomizationViewModelTests: XCTestCase {
         XCTAssertFalse(vm.canToggleCard(onboarding))
     }
 
-    func test_setCard_when_another_card_is_selected_allows_deselecting_it() {
+    func test_setCard_when_another_card_is_selected_then_card_is_deselected() {
         // Given
         let onboarding = DashboardCard(type: .onboarding, availability: .show, enabled: true)
         let stats = DashboardCard(type: .performance, availability: .show, enabled: true)

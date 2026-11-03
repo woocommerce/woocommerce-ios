@@ -47,8 +47,8 @@ struct StoreDashboardCustomizationView: View {
                     Button(action: saveChanges) {
                         Text(Localization.saveButton)
                             .storeTextStyle(.labelLarge.emphasized)
-                            .foregroundStyle(.storePrimary)
                     }
+                    .tint(.storePrimary)
                     .disabled(!viewModel.hasChanges)
                 }
             }

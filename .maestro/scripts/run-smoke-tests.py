@@ -41,8 +41,8 @@ SHARED_STORE_TAG = "store_shared"
 # last logged in to, so a later run knows whether to sign the app out first.
 STORE_MARKER_NAME = ".woo-maestro-store"
 NOTIFICATION_FLOW = "ios_notification_long_press.yaml"
-# Flows with this tag set up push notifications on the site without Jetpack, which
-# connects it to WordPress.com, so the runner disconnects it before each attempt.
+# Flows with this tag install Jetpack on the site without Jetpack or connect it to
+# WordPress.com, so the runner removes both before each attempt.
 NO_JETPACK_STORE_TAG = "no_jetpack_store"
 JN_SSH = SCRIPT_DIR / "jn-ssh.exp"
 # Uninstalls Jetpack if the app installed it and removes the site's own connection, as
@@ -92,7 +92,7 @@ POS_TAG = "pos_ipad"
 ORDERED_FLOWS = [
     "diagnostic.yaml",
     "login_not_wp_site.yaml", "login_wrong_credentials.yaml", "login_help.yaml",
-    "login_not_woo_store.yaml", "login_wrong_account.yaml", "push_no_jetpack.yaml",
+    "login_not_woo_store.yaml", "login_wrong_account.yaml", "no_jetpack.yaml", "push_no_jetpack.yaml",
     "login_successful.yaml", "dashboard_stats.yaml",
     "dashboard_view_all_analytics.yaml", "dashboard_customize.yaml",
     "orders_list_and_search.yaml", "products_list_and_sort.yaml",

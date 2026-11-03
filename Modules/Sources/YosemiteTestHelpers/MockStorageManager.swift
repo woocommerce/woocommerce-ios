@@ -106,9 +106,9 @@ public final class MockStorageManager: StorageManagerType, Sendable {
     /// Handles a write operation using the background context and saves changes and returns result when done.
     /// Using view storage to write for simplicity in tests.
     ///
-    public func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
-                                  completion: @escaping @Sendable (Result<T, Error>) -> Void,
-                                  on queue: DispatchQueue) {
+    public func performAndSave<T: Sendable>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                                            completion: @escaping @Sendable (Result<T, Error>) -> Void,
+                                            on queue: DispatchQueue) {
         let context = persistentContainer.viewContext
         context.performAndWait {
             let result = Result(catching: { try operation(context) })

@@ -40,9 +40,9 @@ public protocol StorageManagerType: AnyObject, Sendable {
     ///   - completion: A closure which is called with the `operation`'s execution result,
     ///   which is either an error thrown by the `operation` or the return value of the `operation`.
     ///   - queue: A queue on which to execute the completion closure.
-    func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
-                           completion: @escaping @Sendable (Result<T, Error>) -> Void,
-                           on queue: DispatchQueue)
+    func performAndSave<T: Sendable>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                                     completion: @escaping @Sendable (Result<T, Error>) -> Void,
+                                     on queue: DispatchQueue)
 
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.

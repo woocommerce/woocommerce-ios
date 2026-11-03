@@ -53,13 +53,15 @@ enum POSPrintReceiptFailure: Hashable, Identifiable {
 private extension POSPrintReceiptFailure {
     enum Localization {
         static let paperEmptyTitle = NSLocalizedString(
-            "pos.printReceiptFailure.paperEmpty.title",
-            value: "Printer is out of paper",
-            comment: "Title of the modal shown when a POS receipt can't print because the printer has no paper.")
+            "pos.printReceiptFailure.paperEmpty.checkPaperTitle",
+            value: "Check the printer paper",
+            comment: "Title of the modal shown when a POS receipt can't print because the printer detects no paper. "
+                + "The roll may be empty or loaded incorrectly.")
         static let paperEmptyMessage = NSLocalizedString(
-            "pos.printReceiptFailure.paperEmpty.message",
-            value: "Load a new paper roll, then try again.",
-            comment: "Message of the modal shown when a POS receipt can't print because the printer has no paper.")
+            "pos.printReceiptFailure.paperEmpty.checkPaperMessage",
+            value: "Make sure a paper roll is loaded and seated correctly, then try again.",
+            comment: "Message of the modal shown when a POS receipt can't print because the printer detects no paper. "
+                + "The roll may be empty or loaded incorrectly.")
         static let coverOpenTitle = NSLocalizedString(
             "pos.printReceiptFailure.coverOpen.title",
             value: "Printer cover is open",

@@ -94,7 +94,7 @@ Use `MainActor.assumeIsolated` only where a documented contract guarantees main-
 
 ## Verify the complete change
 
-The target result is zero warnings in the requested scope. There must be no new warning occurrences in files built under comparable conditions. A new file has no baseline entry, so it must have zero warnings. Compare diagnostic text as well as counts. A lower total can hide new warnings in callers. An unchanged file count can hide a different unsafe operation. If dependencies prevent completion, report the remaining warnings and proposed work. Explain each baseline increase separately. Warnings removed elsewhere do not justify an increase.
+The target result is zero warnings in the requested scope. There must be no new warning occurrences in files built under comparable conditions. A new file has no baseline entry, so it must have zero warnings. Compare diagnostic text as well as counts. A lower total can hide new warnings in callers. It can also hide new warnings in the same file: in WOOMOB-4178, `JetpackSetupCoordinator` went from 83 to 5 warnings while gaining three new ones in the default build. Check the "New build warnings detected" PR comment, which compares the default build with trunk. An unchanged file count can hide a different unsafe operation. If dependencies prevent completion, report the remaining warnings and proposed work. Explain each baseline increase separately. Warnings removed elsewhere do not justify an increase.
 
 1. Repeat the strict build with the baseline settings. Compare warnings in the changed files and direct callers.
 2. Run the relevant tests with default build settings too. Changed strict-build settings can change which isolation warnings appear.

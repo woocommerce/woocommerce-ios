@@ -271,7 +271,7 @@
     "WooCommerce/Classes/ViewRelated/Hub Menu/HubMenuViewController.swift": 2,
     "WooCommerce/Classes/ViewRelated/Hub Menu/HubMenuViewModel.swift": 12,
     "WooCommerce/Classes/ViewRelated/Inbox/InboxViewModel.swift": 4,
-    "WooCommerce/Classes/ViewRelated/JetpackSetup/JetpackSetupCoordinator.swift": 5,
+    "WooCommerce/Classes/ViewRelated/JetpackSetup/JetpackSetupCoordinator.swift": 1,
     "WooCommerce/Classes/ViewRelated/Keyboard/KeyboardStateProvider.swift": 1,
     "WooCommerce/Classes/ViewRelated/ListSelector/PaginatedListSelectorViewController.swift": 7,
     "WooCommerce/Classes/ViewRelated/MainTabBarController.swift": 4,

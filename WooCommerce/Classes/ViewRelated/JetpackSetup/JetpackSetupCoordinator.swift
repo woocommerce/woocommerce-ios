@@ -326,7 +326,7 @@ private extension JetpackSetupCoordinator {
                     }
                 }
 
-                func dismiss() {
+                @MainActor func dismiss() {
                     rootViewController.dismiss(animated: true, completion: { [weak self] in
                         self?.analytics.track(.jetpackSetupSynchronizationCompleted)
                         self?.registerForPushNotifications()

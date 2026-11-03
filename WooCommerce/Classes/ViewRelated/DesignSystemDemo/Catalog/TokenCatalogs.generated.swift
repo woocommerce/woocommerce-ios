@@ -87,6 +87,7 @@ extension Color {
         StoreColorToken(name: "storeTintLayerPrimaryContainerOpacity10", color: .storeTintLayerPrimaryContainerOpacity10),
         StoreColorToken(name: "storeTintLayerPrimaryContainerOpacity16", color: .storeTintLayerPrimaryContainerOpacity16),
         StoreColorToken(name: "storeTintLayerPrimaryContainerOpacity24", color: .storeTintLayerPrimaryContainerOpacity24),
+        StoreColorToken(name: "storeAccentRed", color: .storeAccentRed),
         StoreColorToken(name: "storePaletteWhite", color: .storePaletteWhite),
         StoreColorToken(name: "storePaletteBlack", color: .storePaletteBlack),
         StoreColorToken(name: "storePaletteBlue20", color: .storePaletteBlue20),

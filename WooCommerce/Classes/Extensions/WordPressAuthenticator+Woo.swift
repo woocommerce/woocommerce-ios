@@ -3,6 +3,7 @@ import class Networking.UserAgent
 import struct Networking.Settings
 
 extension WordPressAuthenticator {
+    @MainActor
     static func initializeWithCustomConfigs(dotcomAuthScheme: String = Bundle.main.dotcomAuthScheme) {
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = true
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,

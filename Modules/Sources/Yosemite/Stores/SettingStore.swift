@@ -35,6 +35,8 @@ public class SettingStore: Store {
         switch action {
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):
             methods.synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveGeneralSiteSettings(let siteID, let onCompletion):
+            siteSettingsRemote.loadGeneralSettings(for: siteID, detectUnexpectedResponses: true, completion: onCompletion)
         case .synchronizeProductSiteSettings(let siteID, let onCompletion):
             methods.synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let detectUnexpectedResponses, let onCompletion):

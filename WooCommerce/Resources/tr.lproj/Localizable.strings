@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-10-07 09:55:00+0000 */
+/* Translation-Revision-Date: 2026-10-20 09:54:34+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -8625,6 +8625,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Yeni bir mağaza mı açıyorsunuz?";
 
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "Kalın";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "İtalik";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "Altını çiz";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Telegram mesajı gönder";
 
@@ -9887,6 +9896,24 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Ödemenin başlangıcından itibaren sipariş toplamı değişti. Lütfen geri gidin ve siparişin doğru olduğunu kontrol edin, ardından ödemeyi tekrar deneyin.";
 
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "Ödenmesi gereken para üstü: %1$@";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "Kapat";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "Mağazanız beklenmeyen bir yanıt döndürdü, bu nedenle oturum açma işleminizi tamamlayamadık. Tekrar deneyin veya destek birimimizle iletişime geçin.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "Yeniden Dene";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "Desteğe Başvurun";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "Oturum açılamıyor";
+
 /* Description shown when asking for a custom WordPress dashboard address. */
 "com.woocommerce.siteCredentials.recovery.admin.description" = "Bir güvenlik eklentisi WordPress panosunu taşıyabilir. Açmak için kullandığınız adresi girin.";
 
@@ -10893,6 +10920,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Keşiften döndürülen okuyucunun IP adresi yok ve bu okuyucuya bağlanılamıyor.";
 
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "Geçmiş yapay zeka destek sohbetlerini ziyaret edin";
+
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Sohbet Geçmişi";
 
@@ -11881,6 +11911,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "Fotoğrafı Görüntüle";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "Bu siparişin kartla ödenip ödenmeyeceği kontrol edilemedi. Lütfen tekrar deneyin.";
+
 /* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
 "paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "Bu siparişin para birimi (%1$@) için kart ödemeleri kullanılamıyor.";
 
@@ -12828,6 +12861,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Ürün kataloğu";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "Ödeme ayarlarını yönetin";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Ödemeler";
 
 /* Description of the settings to be found within the Staff section. */
 "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Ekibi ve PIN erişimini görüntüleyin";
@@ -14056,6 +14095,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Güncelleme tarihi mevcut değil";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "Ödeme tamamlandığında ses çıkar";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "Ödeme başarılı sesi";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "Ödemeler";
 
 /* Footer text explaining how POS locking works, including auto-lock timeout. */
 "posStaffSettingsView.autoLockFooter" = "POS, menüden POS'u kilitle seçeneğine tıkladığınızda veya 5 dakika hareketsiz kaldıktan sonra otomatik olarak kilitlenir.";
@@ -15484,6 +15532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Adsız sohbet";
 
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "Henüz bir Yapay Zeka destek sohbeti başlatmadınız.";
+
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Sohbet Geçmişi";
 
@@ -16315,6 +16366,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "Hedef adresi için telefon numarası gereklidir.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@ alıcının telefon numarasını gerektirir.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Şirket ekle";
 
@@ -16672,6 +16726,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "ITN hakkında daha fazla bilgi";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "AB'ye gönderimlerin artık her öğede ürün tanımlayıcısı olması gerekiyor. WooCommerce Shipping eklentisini güncelleyip bunları ekleyin.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Ürün Ayrıntıları";
 
@@ -16717,6 +16774,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "Açıklama 30 karakter veya daha az olmalıdır.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "AB'ye gönderim için gerekli";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "%1$d karakter veya daha az olmalıdır.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "AB ürün tanımlayıcıları";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "AB'ye gönderim için gerekli. SKU ve GTIN\/EAN, ürünün Stok ayarlarından önceden yüklenmiştir.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN\/EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "GTIN\/EAN girin veya \"Barkod yok\" seçin";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS tarife numarası";
 
@@ -16725,6 +16800,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "İsteğe bağlı";
+
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "Üretici parça numarası";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "Barkod yok";
 
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Menşe Ülke";

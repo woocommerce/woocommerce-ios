@@ -1,0 +1,1 @@
+Pengiriman ke UE sekarang lebih mudah—formulir bea cukai Anda meminta SKU setiap item, nomor komponen produsen, dan kode GTIN/EAN jika diperlukan. Penyiapan secara langsung berfungsi dengan baik untuk toko tanpa WooPayments atau Stripe. Label pengiriman sekarang menjadikan nomor telepon penerima tidak wajib diisi untuk pesanan domestik.

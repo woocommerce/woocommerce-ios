@@ -15,29 +15,6 @@ tags:
 - assertVisible:
     id: new-order-create-button
 
-# Add the custom amount while the order is still empty. With products in the
-# order the app first asks for a fixed or percentage amount in a sheet that
-# Maestro cannot see.
-- tapOn:
-    id: new-order-add-custom-amount-button
-- inputText: "1"
-- tapOn:
-    id: order-add-custom-amount-name-field
-- runFlow:
-    file: ../subflows/paste_into_focused_field.yaml
-    env:
-      TEXT_TO_PASTE: Custom amount ${SUITE_RUN_ID}
-# Maestro reads the button's position from before the keyboard opened, so a tap
-# lands on the space key. Close the keyboard with Return before tapping.
-- pressKey: Enter
-- extendedWaitUntil:
-    notVisible:
-      id: space
-    timeout: 5000
-- tapOn:
-    id: order-add-custom-amount-view-add-custom-amount-button
-- assertVisible: Custom amount ${SUITE_RUN_ID}
-
 # Filter to Variable products so the order always goes through the variation
 # picker, then select the first variation of the first variable product.
 - tapOn:
@@ -101,6 +78,33 @@ tags:
     text: ".*, 1 × .*"
     index: 1
 - takeScreenshot: order_variation_line_item
+
+- scrollUntilVisible:
+    element:
+      id: new-order-add-custom-amount-button
+    direction: DOWN
+    timeout: 30000
+- tapOn:
+    id: new-order-add-custom-amount-button
+- tapOn:
+    id: custom-amount-fixed-button
+- inputText: "1"
+- tapOn:
+    id: order-add-custom-amount-name-field
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Custom amount ${SUITE_RUN_ID}
+# Maestro reads the button's position from before the keyboard opened, so a tap
+# lands on the space key. Close the keyboard with Return before tapping.
+- pressKey: Enter
+- extendedWaitUntil:
+    notVisible:
+      id: space
+    timeout: 5000
+- tapOn:
+    id: order-add-custom-amount-view-add-custom-amount-button
+- assertVisible: Custom amount ${SUITE_RUN_ID}
 
 # Apply a discount on the selected variation. The discount button is exposed
 # only after expanding its initially collapsed line-item card.

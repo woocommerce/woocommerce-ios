@@ -37,6 +37,7 @@ struct StoreDashboardInboxNoteRow: View {
             Text(String(repeating: " ", count: 120))
                 .storeTextStyle(.bodyMedium)
         } else {
+            // AttributedText wraps UIKit and needs a UIFont; StoreDesignSystem does not provide a UIFont bridge yet.
             AttributedText(viewModel.attributedContent.addingAttributes([.font: UIFont.subheadline]))
                 .attributedTextLinkColor(.storePrimary)
         }

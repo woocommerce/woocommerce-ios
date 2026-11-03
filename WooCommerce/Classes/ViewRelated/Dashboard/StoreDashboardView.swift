@@ -5,10 +5,7 @@ import struct Yosemite.Site
 import struct Yosemite.StoreOnboardingTask
 import enum WooFoundation.ConnectivityStatus
 
-/// Design-system dashboard shell.
-///
-/// Card cases deliberately use their legacy implementations during the shell migration.
-/// Each case is replaced by its dedicated design-system card in the follow-up slices.
+/// Design-system dashboard shown while the dashboard design-system feature flag is enabled.
 struct StoreDashboardView: View {
     @ObservedObject private var viewModel: DashboardViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -43,7 +40,7 @@ struct StoreDashboardView: View {
                         .renderedIf(verticalSizeClass == .regular)
 
                     featureAnnouncementCard
-                        .padding(.horizontal, Layout.legacyOuterPaddingCompensation)
+                        .padding(.horizontal, StorePadding.p5)
                     dashboardCards(availableWidth: proxy.size.width)
                         .padding(.horizontal, Layout.legacyOuterPaddingCompensation)
                 }
@@ -96,7 +93,7 @@ struct StoreDashboardView: View {
             jetpackBenefitBanner
                 .renderedIf(shouldShowJetpackBenefitsBanner)
 
-            storePlanBanner
+            storePlanNotice
                 .renderedIf(connectivityStatus != .notReachable)
 
             OfflineBannerViewRepresentable()
@@ -130,6 +127,22 @@ struct StoreDashboardView: View {
 }
 
 private extension StoreDashboardView {
+    var designSystemDashboardCards: [DashboardCard] {
+        viewModel.showOnDashboardCards.cardsForStoreDashboard
+    }
+
+    var designSystemFirstColumn: [DashboardCard] {
+        designSystemDashboardCards.enumerated().compactMap { index, card in
+            index.isMultiple(of: 2) ? card : nil
+        }
+    }
+
+    var designSystemSecondColumn: [DashboardCard] {
+        designSystemDashboardCards.enumerated().compactMap { index, card in
+            index.isMultiple(of: 2) ? nil : card
+        }
+    }
+
     var shouldShowJetpackBenefitsBanner: Bool {
         let isJetpackCPSite = currentSite?.isJetpackCPConnected == true
         let isNonJetpackSite = currentSite?.isNonJetpackSite == true
@@ -148,11 +161,11 @@ private extension StoreDashboardView {
             // Legacy cards own a 16-point horizontal inset. Compensate between columns so
             // their visible surfaces retain the design-system's 16-point column gap.
             HStack(alignment: .top, spacing: Layout.legacyColumnSpacingCompensation) {
-                dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
-                dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
+                dashboardCardList(with: designSystemFirstColumn)
+                dashboardCardList(with: designSystemSecondColumn)
             }
         } else {
-            dashboardCardList(with: viewModel.showOnDashboardCards)
+            dashboardCardList(with: designSystemDashboardCards)
         }
     }
 
@@ -166,7 +179,7 @@ private extension StoreDashboardView {
 
         return hasRegularWidth &&
             !dynamicTypeSize.isAccessibilitySize &&
-            viewModel.showOnDashboardSecondColumn.isNotEmpty
+            designSystemSecondColumn.isNotEmpty
     }
 
     @ViewBuilder
@@ -183,11 +196,12 @@ private extension StoreDashboardView {
     func dashboardCard(for card: DashboardCard) -> some View {
         switch card.type {
         case .onboarding:
-            StoreOnboardingView(
+            StoreOnboardingDashboardCard(
                 viewModel: viewModel.storeOnboardingViewModel,
                 onTaskTapped: handleOnboardingTaskTap,
                 onViewAllTapped: handleViewAllOnboardingTasksTap
             )
+            .padding(.horizontal, StorePadding.p5)
         case .blaze:
             StoreBlazeCampaignDashboardView(
                 viewModel: viewModel.blazeCampaignDashboardViewModel,
@@ -248,14 +262,21 @@ private extension StoreDashboardView {
             )
             .padding(.horizontal, StorePadding.p5)
         case .inAppFeedback:
-            InAppFeedbackCardView(viewModel: viewModel.inAppFeedbackCardViewModel)
-                .padding(.horizontal, LegacyLayout.padding)
+            StoreDashboardFeedbackCard(viewModel: viewModel.inAppFeedbackCardViewModel)
+                .padding(.horizontal, StorePadding.p5)
         case .newCardsNotice:
-            newCardsNoticeCard
+            StoreDashboardNewCardsNotice(showCustomization: showNewSections)
+                .padding(.horizontal, StorePadding.p5)
         case .shareStore:
-            shareStoreCard
+            StoreDashboardShareStoreCard(url: viewModel.siteURLToShare)
+                .padding(.horizontal, StorePadding.p5)
         case .connectWPCom:
-            connectWPComCard
+            StoreConnectWPComCard(
+                setupAction: { actions.connectWPComSetupTapped?() },
+                hideAction: viewModel.hideWPComConnectionSuggestion
+            )
+            .padding(.horizontal, StorePadding.p5)
+            .onAppear(perform: viewModel.onConnectWPComCardAppear)
         case .aiAssistant:
             aiAssistantCard
         }
@@ -269,81 +290,29 @@ private extension StoreDashboardView {
         }
     }
 
-    var shareStoreCard: some View {
-        VStack(spacing: .zero) {
-            Image(uiImage: .launchImage)
-                .padding(.top, LegacyLayout.imagePadding)
-                .padding(.bottom, LegacyLayout.elementPadding)
-
-            Text(Localization.ShareStoreCard.title)
-                .headlineStyle()
-                .multilineTextAlignment(.center)
-
-            Text(Localization.ShareStoreCard.subtitle)
-                .bodyStyle()
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, LegacyLayout.elementPadding)
-                .padding(.top, LegacyLayout.textPadding)
-
-            if let url = viewModel.siteURLToShare {
-                ShareLink(item: url) {
-                    Text(Localization.ShareStoreCard.shareButtonLabel)
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, LegacyLayout.elementPadding)
-                .padding(.top, LegacyLayout.elementPadding)
-            }
-        }
-        .padding(.bottom, LegacyLayout.elementPadding)
-        .overlay {
-            RoundedRectangle(cornerRadius: LegacyLayout.cornerRadius)
-                .stroke(Color(.border), lineWidth: 1)
-        }
-        .padding(.horizontal, LegacyLayout.padding)
-    }
-
-    var connectWPComCard: some View {
-        ConnectWPComCard(
-            setupAction: { actions.connectWPComSetupTapped?() },
-            hideAction: viewModel.hideWPComConnectionSuggestion
-        )
-        .onAppear(perform: viewModel.onConnectWPComCardAppear)
-    }
-
-    var newCardsNoticeCard: some View {
-        VStack(spacing: LegacyLayout.padding) {
-            Text(Localization.NewCardsNoticeCard.title)
-                .headlineStyle()
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, LegacyLayout.elementPadding)
-                .padding(.top, LegacyLayout.padding)
-
-            Text(Localization.NewCardsNoticeCard.subtitle)
-                .bodyStyle()
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, LegacyLayout.elementPadding)
-
-            Button(Localization.NewCardsNoticeCard.addSectionsButtonText, action: showNewSections)
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, LegacyLayout.elementPadding)
-                .padding(.bottom, LegacyLayout.elementPadding)
-        }
-        .background(Color(.listForeground(modal: false)))
-        .clipShape(.rect(cornerRadius: LegacyLayout.cornerRadius))
-        .padding(.horizontal, LegacyLayout.padding)
-    }
-
     var jetpackBenefitBanner: some View {
         JetpackBenefitsBanner(tapAction: handleJetpackBenefitTap, dismissAction: dismissJetpackBenefitBanner)
     }
 
     @ViewBuilder
-    var storePlanBanner: some View {
+    var storePlanNotice: some View {
         if case .loaded(let plan) = storePlanState {
             if plan.isFreeTrial {
-                StorePlanBanner(text: FreeTrialBannerViewModel(sitePlan: plan).message)
+                StoreNoticeBanner(
+                    FreeTrialBannerViewModel(sitePlan: plan).message,
+                    tone: .info,
+                    icon: StoreIcon.CircleInfo.regular
+                )
+                .padding(.horizontal, StorePadding.p5)
+                .padding(.bottom, StorePadding.p3)
             } else if plan.isFreePlan && currentSite?.wasEcommerceTrial == true {
-                StorePlanBanner(text: Localization.expiredPlan)
+                StoreNoticeBanner(
+                    Localization.expiredPlan,
+                    tone: .info,
+                    icon: StoreIcon.CircleInfo.regular
+                )
+                .padding(.horizontal, StorePadding.p5)
+                .padding(.bottom, StorePadding.p3)
             }
         }
     }
@@ -352,7 +321,7 @@ private extension StoreDashboardView {
     var featureAnnouncementCard: some View {
         if viewModel.shouldShowAnnouncementBanner,
            let announcementViewModel = viewModel.announcementViewModel {
-            FeatureAnnouncementCardView(
+            StoreDashboardFeatureAnnouncementCard(
                 viewModel: announcementViewModel,
                 dismiss: { viewModel.announcementViewModel = nil },
                 callToAction: {
@@ -361,9 +330,6 @@ private extension StoreDashboardView {
                     }
                 }
             )
-            .background(Color(.listForeground(modal: false)))
-            .clipShape(.rect(cornerRadius: LegacyLayout.cornerRadius))
-            .padding(.horizontal, LegacyLayout.padding)
         }
     }
 
@@ -419,14 +385,6 @@ private extension StoreDashboardView {
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
     }
 
-    enum LegacyLayout {
-        static let padding: CGFloat = 16
-        static let elementPadding: CGFloat = 24
-        static let imagePadding: CGFloat = 40
-        static let textPadding: CGFloat = 8
-        static let cornerRadius: CGFloat = 8
-    }
-
     enum Localization {
         static let title = NSLocalizedString(
             "dashboardView.title",
@@ -443,41 +401,5 @@ private extension StoreDashboardView {
             value: "Edit",
             comment: "Title of the button to edit the layout of the Dashboard screen."
         )
-
-        enum ShareStoreCard {
-            static let title = NSLocalizedString(
-                "dashboardView.shareStoreCard.title",
-                value: "Get the word out!",
-                comment: "Title of the Share Your Store card"
-            )
-            static let subtitle = NSLocalizedString(
-                "dashboardView.shareStoreCard.subtitle",
-                value: "Use email or social media to spread the word about your store.",
-                comment: "Subtitle of the Share Your Store card"
-            )
-            static let shareButtonLabel = NSLocalizedString(
-                "dashboardView.shareStoreCard.shareButtonLabel",
-                value: "Share Your Store",
-                comment: "Label of the button to share the store"
-            )
-        }
-
-        enum NewCardsNoticeCard {
-            static let title = NSLocalizedString(
-                "dashboardView.newCardsNoticeCard.title",
-                value: "Looking for more insights?",
-                comment: "Title of the New Cards Notice card"
-            )
-            static let subtitle = NSLocalizedString(
-                "dashboardView.newCardsNoticeCard.subtitle",
-                value: "Add new sections to customize your store management experience",
-                comment: "Subtitle of the New Cards Notice card"
-            )
-            static let addSectionsButtonText = NSLocalizedString(
-                "dashboardView.newCardsNoticeCard.addSectionsButtonText",
-                value: "Add New Sections",
-                comment: "Label of the button to add sections"
-            )
-        }
     }
 }

@@ -483,8 +483,8 @@ final class RequestProcessorTests: XCTestCase {
 
         // When
         processor.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { result in
-            guard case .doNotRetryWithError = result else {
-                return XCTFail("Expected the first store's creation failure")
+            guard case .doNotRetry = result else {
+                return XCTFail("Expected the first store's request to finish without a retry")
             }
             firstCompletion.fulfill()
         }
@@ -503,7 +503,7 @@ final class RequestProcessorTests: XCTestCase {
     }
 
     @MainActor
-    func test_retry_when_store_changes_before_queued_attempt_starts_then_each_attempt_uses_its_own_authenticator() async throws {
+    func test_retry_when_store_changes_before_queued_attempt_starts_then_each_attempt_uses_its_own_authenticator_and_left_store_is_not_retried() async throws {
         // Given
         let processor = try XCTUnwrap(sut)
         let authenticatorA = MockRequestAuthenticator()
@@ -515,11 +515,15 @@ final class RequestProcessorTests: XCTestCase {
         let storeBCompletion = expectation(description: "Store B's request completes")
 
         // When
-        processor.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { _ in
+        processor.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { result in
+            guard case .doNotRetry = result else {
+                return XCTFail("Expected store A's request to finish without a retry")
+            }
             storeACompletion.fulfill()
         }
         processor.updateAuthenticator(authenticatorB)
-        processor.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { _ in
+        processor.retry(try mockRequest(), for: session, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { result in
+            XCTAssertTrue(result.retryRequired)
             storeBCompletion.fulfill()
         }
         await fulfillment(of: [storeACompletion, storeBCompletion], timeout: 2)
@@ -543,7 +547,7 @@ final class RequestProcessorTests: XCTestCase {
         processor.updateAuthenticator(authenticatorA)
         let storeARequest = try mockRequest(url: URL(string: "https://test.com/wp-json/wc/v3/orders"))
         let storeBRequest = try mockRequest(url: URL(string: "https://test.com/?rest_route=/wc/v3/products"))
-        let storeACompletion = expectation(description: "Store A's request gets store A's failure")
+        let storeACompletion = expectation(description: "Store A's request finishes without a retry")
         let storeBCreationStarted = expectation(description: "Store B's creation starts")
         let storeBCompletion = expectation(description: "Store B's request gets store B's success")
         let storeBError = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
@@ -561,8 +565,8 @@ final class RequestProcessorTests: XCTestCase {
 
         // When
         processor.retry(storeARequest, for: testSession, dueTo: RequestAuthenticatorError.applicationPasswordNotAvailable) { result in
-            guard case .doNotRetryWithError = result else {
-                return XCTFail("Expected store A's failure")
+            guard case .doNotRetry = result else {
+                return XCTFail("Expected store A's request to finish without a retry")
             }
             storeACompletion.fulfill()
         }

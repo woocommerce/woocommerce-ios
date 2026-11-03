@@ -139,7 +139,8 @@ private extension RequestProcessor {
 
     func completeGeneration(_ finished: RequestProcessorState.FinishedGeneration, with result: RetryResult) {
         finished.completions.forEach { $0(result) }
-        // Requests for another store: it's no longer selected, and a retry would use the selected store's authenticator.
+        // Requests for stores the user has left: a retry would use the selected store's authenticator,
+        // which would send the WordPress.com token to the other store's site.
         finished.dropped.forEach { $0(.doNotRetry) }
         if finished.startsNext {
             generateApplicationPassword()
@@ -356,19 +357,22 @@ private extension RequestProcessor {
         func finishGeneration(failure: Error?) -> FinishedGeneration {
             queue.sync {
                 let finished = running
-                // A creation for a store the user switched away from leaves the selected store's pause alone.
-                if let finished, finished.siteID == siteID {
-                    if let failure {
-                        cooldown.recordFailure(failure, at: ContinuousClock.now)
-                    } else {
-                        cooldown.reset()
-                    }
-                }
+                let finishedRequests = finished?.completions ?? []
                 // Promote the hand-off's selected store so its password is written after the running creation.
                 running = waiting.removeValue(forKey: siteID)
-                let dropped = waiting.values.flatMap { $0.completions }
+                let waitingRequests = waiting.values.flatMap { $0.completions }
                 waiting.removeAll()
-                return (finished?.completions ?? [], dropped, running != nil)
+                // A creation for a store the user switched away from leaves the selected store's pause alone,
+                // and its own requests are dropped like the other stores' waiting requests.
+                guard let finished, finished.siteID == siteID else {
+                    return ([], finishedRequests + waitingRequests, running != nil)
+                }
+                if let failure {
+                    cooldown.recordFailure(failure, at: ContinuousClock.now)
+                } else {
+                    cooldown.reset()
+                }
+                return (finishedRequests, waitingRequests, running != nil)
             }
         }
 

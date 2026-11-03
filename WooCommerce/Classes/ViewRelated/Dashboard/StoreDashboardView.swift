@@ -221,19 +221,22 @@ private extension StoreDashboardView {
                 onViewReviewDetail: { actions.reviewDetailTapped?($0) }
             )
         case .coupons:
-            MostActiveCouponsCard(
+            StoreMostActiveCouponsCard(
                 viewModel: viewModel.mostActiveCouponsViewModel,
                 onViewAllCoupons: { actions.viewAllCouponsTapped?() },
                 onViewCouponDetail: { actions.couponDetailTapped?($0) }
             )
+            .padding(.horizontal, StorePadding.p5)
         case .stock:
-            ProductStockDashboardCard(viewModel: viewModel.productStockCardViewModel)
+            StoreProductStockDashboardCard(viewModel: viewModel.productStockCardViewModel)
+                .padding(.horizontal, StorePadding.p5)
         case .lastOrders:
-            LastOrdersDashboardCard(
+            StoreLastOrdersDashboardCard(
                 viewModel: viewModel.lastOrdersCardViewModel,
                 onViewAllOrders: { actions.viewAllOrdersTapped?() },
                 onViewOrderDetail: { actions.orderDetailTapped?($0) }
             )
+            .padding(.horizontal, StorePadding.p5)
         case .googleAds:
             GoogleAdsDashboardCard(
                 viewModel: viewModel.googleAdsDashboardCardViewModel,

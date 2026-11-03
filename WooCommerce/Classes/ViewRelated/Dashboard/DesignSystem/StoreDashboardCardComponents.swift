@@ -43,6 +43,68 @@ struct StoreDashboardCardHeader<Actions: View>: View {
     }
 }
 
+struct StoreDashboardCardFilterHeader<Option>: View {
+    let title: String
+    let selectedOptionTitle: String
+    let options: [Option]
+    let isDisabled: Bool
+    let optionTitle: (Option) -> String
+    let isSelected: (Option) -> Bool
+    let onSelect: (Option) -> Void
+
+    var body: some View {
+        HStack(spacing: StoreSpacing.s3) {
+            Text(title)
+            Text(selectedOptionTitle)
+            Spacer(minLength: StoreSpacing.s0)
+            Menu {
+                ForEach(options.indices, id: \.self) { index in
+                    let option = options[index]
+                    Button {
+                        onSelect(option)
+                    } label: {
+                        HStack(spacing: StoreSpacing.s3) {
+                            Text(optionTitle(option))
+                            Spacer()
+                            if isSelected(option) {
+                                StoreIcon.Check.solid.image(size: .small)
+                            }
+                        }
+                    }
+                }
+            } label: {
+                StoreIcon.BarsFilter.regular.image(size: .largeIncreased)
+                    .foregroundStyle(.storeOnSurface)
+                    .frame(minWidth: StoreSize.minimumTapTarget,
+                           minHeight: StoreSize.minimumTapTarget,
+                           alignment: .trailing)
+                    .contentShape(.rect)
+            }
+            .disabled(isDisabled)
+            .accessibilityLabel(Localization.filterOptions)
+        }
+        .storeTextStyle(.bodyMedium)
+        .foregroundStyle(.storeOnSurface)
+        .padding(.horizontal, StorePadding.p5)
+    }
+}
+
+struct StoreDashboardOutlinedContent<Content: View>: View {
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        content()
+            .padding(StorePadding.p5)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.storeSurface)
+            .clipShape(.rect(cornerRadius: StoreRadius.medium))
+            .overlay {
+                RoundedRectangle(cornerRadius: StoreRadius.medium)
+                    .stroke(Color.storeOutlineVariant, lineWidth: StoreStrokeWidth.regular)
+            }
+    }
+}
+
 struct StoreDashboardCardOverflowMenu<Actions: View>: View {
     let isDisabled: Bool
     @ViewBuilder let actions: () -> Actions
@@ -222,6 +284,11 @@ struct StoreDashboardTimestamp: View {
 
 private enum Localization {
     static let moreOptions = NSLocalizedString("More options", comment: "Accessibility label for an overflow menu.")
+    static let filterOptions = NSLocalizedString(
+        "storeDashboardCardFilterHeader.filterOptions",
+        value: "Filter options",
+        comment: "Accessibility label for the filter menu on a Dashboard card"
+    )
     static let custom = NSLocalizedString(
         "storeDashboardDateRangeHeader.custom",
         value: "Custom",

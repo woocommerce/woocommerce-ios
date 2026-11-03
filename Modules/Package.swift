@@ -343,7 +343,8 @@ let package = Package(
         .testTarget(
             name: "HardwareTests",
             dependencies: [
-                "Hardware"
+                "Hardware",
+                .product(name: "StarIO10", package: "StarXpand-SDK-iOS")
             ],
             swiftSettings: swift5
         ),

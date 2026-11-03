@@ -3,6 +3,7 @@
 
 26.1
 -----
+- [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
 
 
 26.0

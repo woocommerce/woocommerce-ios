@@ -849,8 +849,9 @@ private extension PushNotificationsManager {
            let type = Note.Kind(rawValue: typeString),
            let siteID,
            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
-            // Badge: Update
-            incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
+            // Badge: Update. Site-credential sessions read the badge from the placeholder ID, not the push's blog ID.
+            let countSiteID = PushNotification.resolvedSiteID(notificationSiteID, stores: stores)
+            incrementNotificationCount(siteID: countSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: true)
             }
 
@@ -907,7 +908,7 @@ private extension PushNotificationsManager {
         }
         // The Products tab clears this on appear, but it may already be visible when the push is opened.
         if notification.kind == .storeStock {
-            resetBadgeCount(type: .storeStock, siteID: notification.siteID)
+            resetBadgeCount(type: .storeStock, siteID: notification.resolvedSiteID(stores: stores))
         }
     }
 }

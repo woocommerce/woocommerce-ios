@@ -2700,6 +2700,93 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(loadSiteIDs, [currentSiteID])
     }
 
+    func test_handleUserResponseToNotification_when_site_credential_session_and_storeStock_push_then_resets_count_for_placeholder_site() async throws {
+        // Given
+        let pushSiteID: Int64 = 606
+        application.applicationState = .inactive
+        storesManager.sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        var resetSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, _, onCompletion):
+                resetSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertEqual(resetSiteIDs, [WooConstants.placeholderStoreID])
+    }
+
+    func test_handleRemoteNotificationInTheBackground_when_site_credential_session_and_storeStock_push_then_increments_count_for_placeholder_site() async throws {
+        // Given
+        let pushSiteID: Int64 = 606
+        application.applicationState = .background
+        storesManager.sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        var incrementSiteIDs: [Int64] = []
+        var loadSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(siteID, _, _, onCompletion):
+                incrementSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(siteID, _, onCompletion):
+                loadSiteIDs.append(siteID)
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(incrementSiteIDs, [WooConstants.placeholderStoreID])
+        XCTAssertEqual(loadSiteIDs, [WooConstants.placeholderStoreID])
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+    }
+
+    func test_handleRemoteNotificationInTheBackground_when_wpcom_session_and_storeStock_push_then_increments_count_for_push_site() async throws {
+        // Given
+        let pushSiteID: Int64 = 606
+        application.applicationState = .background
+        storesManager.sessionManager.setStoreId(pushSiteID)
+        var incrementSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(siteID, _, _, onCompletion):
+                incrementSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(incrementSiteIDs, [pushSiteID])
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+    }
+
     func test_handleNotificationInTheForeground_when_storeStock_in_app_notice_is_tapped_then_resets_storeStock_count() async throws {
         // Given
         let siteID: Int64 = 606

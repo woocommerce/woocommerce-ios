@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Job lifecycle hooks are sourced by the Buildkite bootstrap in the different
+# job phases, so we need to explicitly call `set -e` etc. instead of passing
+# the options to the shebang.
+set -e
+
+# This is a temporary check while we provision the tool as part of our VMs in
+# CI.
+#
+# A more precise check would be:
+#
+# if [[ $IMAGE_ID =~ ^xcode ]]; then
+#
+# but our tooling doesn't currently forward that environment variable.
+# See
+#
+# - https://github.com/Automattic/hostmgr/pull/47
+# - https://github.com/Automattic/hostmgr/issues/48
+if [[ $BUILDKITE_AGENT_META_DATA_QUEUE = 'mac' ]]; then
+  echo '--- :xcode: Ensure xcodes tool is installed'
+  brew install xcodes
+else
+  # Leave a note in the logs for why the hook returned without doing anything.
+  echo 'Running on an agent that does not use Xcode. Skipping xcodes tool installation.'
+fi

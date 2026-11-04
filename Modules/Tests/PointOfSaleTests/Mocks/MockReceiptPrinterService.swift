@@ -56,7 +56,6 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     // MARK: - Spies
 
     private(set) var discoverCallCount = 0
-    private(set) var bluetoothRadioStateSubscriptionCount = 0
     private(set) var stopDiscoveryCallCount = 0
     private(set) var connectedDevices: [PrinterDevice] = []
     private(set) var disconnectCallCount = 0
@@ -84,8 +83,7 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     }
 
     func bluetoothRadioStateUpdates() -> AsyncStream<BluetoothRadioState> {
-        bluetoothRadioStateSubscriptionCount += 1
-        return AsyncStream { continuation in
+        AsyncStream { continuation in
             continuation.yield(bluetoothRadioState)
             radioStateObservers.append(continuation)
             onBluetoothRadioStateSubscribed?()

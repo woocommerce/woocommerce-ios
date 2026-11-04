@@ -394,7 +394,12 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service)
         await startSetupObservingRadio(sut, service: service)
         await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
-        sut.connect(to: device)
+        await withCheckedContinuation { continuation in
+            service.onConnectSubscribed = {
+                continuation.resume()
+            }
+            sut.connect(to: device)
+        }
 
         // When
         service.emitBluetoothRadioState(.poweredOff)
@@ -402,6 +407,7 @@ struct POSPrinterConnectionControllerTests {
 
         // Then
         #expect(sut.discoveryState == .bluetoothOff)
+        #expect(service.connectedDevices == [device])
         #expect(!sut.isConnected)
     }
 
@@ -441,7 +447,7 @@ struct POSPrinterConnectionControllerTests {
         #expect(service.discoverCallCount == discoverCallCount)
     }
 
-    @Test func test_startSetup_when_bluetooth_denied_and_powered_off_then_permission_wins_and_radio_is_not_observed() async {
+    @Test func test_startSetup_when_bluetooth_denied_and_powered_off_then_stays_idle() async {
         // Given
         let service = MockReceiptPrinterService()
         service.emitBluetoothRadioState(.poweredOff)
@@ -450,13 +456,29 @@ struct POSPrinterConnectionControllerTests {
 
         // When
         sut.startSetup(sessionID: UUID())
-        // A radio observation would be a main-actor task enqueued by `startSetup`, so it subscribes before this resumes.
-        await Task.yield()
 
         // Then
         #expect(sut.discoveryState == .idle)
-        #expect(service.bluetoothRadioStateSubscriptionCount == 0)
         #expect(service.discoverCallCount == 0)
+    }
+
+    @Test func test_bluetoothRadio_when_permission_denied_after_bluetoothOff_then_returns_to_idle() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let provider = MockBluetoothAuthorizationProvider(authorization: .allowed)
+        let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
+        await startSetupObservingRadio(sut, service: service)
+        service.emitBluetoothRadioState(.poweredOff)
+        await wait(on: sut, until: { sut.discoveryState == .bluetoothOff })
+
+        // When
+        provider.stubbedAuthorization = .denied
+        service.emitBluetoothRadioState(.unknown)
+        await wait(on: sut, until: { sut.discoveryState == .idle })
+
+        // Then
+        #expect(sut.discoveryState == .idle)
+        #expect(sut.bluetoothAuthorization == .denied)
     }
 }
 

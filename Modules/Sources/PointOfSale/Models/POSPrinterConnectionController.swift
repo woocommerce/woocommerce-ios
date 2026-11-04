@@ -222,7 +222,9 @@ final class POSPrinterConnectionController {
     private func observeBluetoothRadioState() {
         // Weak `self`, as in `observeConnectionStatus()`, so the open-ended loop doesn't keep the controller alive.
         radioStateTask = Task { [weak self] in
-            guard let updates = self?.service.bluetoothRadioStateUpdates() else { return }
+            // Subscribing creates a Bluetooth manager, which can prompt for permission, so a session that
+            // already ended must not subscribe.
+            guard !Task.isCancelled, let updates = self?.service.bluetoothRadioStateUpdates() else { return }
             for await state in updates {
                 guard !Task.isCancelled, let self else { return }
                 handleBluetoothRadioState(state)
@@ -231,22 +233,32 @@ final class POSPrinterConnectionController {
     }
 
     /// Turning the radio off replaces any search, result or connect with Turn on Bluetooth, since none of them
-    /// can succeed without it. Turning it back on resumes with a fresh search.
+    /// can succeed without it. Turning it back on resumes with a fresh search. A denied permission takes
+    /// precedence, returning to idle so the modal offers Open Settings.
     private func handleBluetoothRadioState(_ state: BluetoothRadioState) {
         bluetoothRadioState = state
+        guard bluetoothAuthorization != .denied else {
+            stopSearchAndConnect()
+            discoveryState = .idle
+            return
+        }
         switch state {
         case .poweredOff:
-            discoveryTask?.cancel()
-            connectTask?.cancel()
-            isDiscovering = false
-            discoveredDevices = []
-            hasShownMultiple = false
+            stopSearchAndConnect()
             discoveryState = .bluetoothOff
         case .poweredOn where discoveryState == .bluetoothOff:
             startDiscovery()
         case .poweredOn, .unknown:
             break
         }
+    }
+
+    private func stopSearchAndConnect() {
+        discoveryTask?.cancel()
+        connectTask?.cancel()
+        isDiscovering = false
+        discoveredDevices = []
+        hasShownMultiple = false
     }
 
     private func observeConnectionStatus() {

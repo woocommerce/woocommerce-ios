@@ -13,6 +13,41 @@ import enum WooFoundationCore.WooAnalyticsStat
 struct POSPaymentModelTests {
 
     @Test @MainActor
+    func test_start_card_payment_when_large_layout_reader_reconnects_during_cancel_then_preserves_bluetooth() async throws {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .large)
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
+            sut.connectCardReader()
+        }
+        let reader = try #require(service.connectedReader)
+        sut.observeReaderReconnection()
+        service.onCancelPaymentCalled = {
+            service.connectionStatus = .reconnecting(reader)
+        }
+
+        // When
+        await sut.startCardPayment(with: .bluetoothReader)
+        try #require(sut.currentPaymentMethod == .bluetooth)
+        service.onCancelPaymentCalled = nil
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
+            service.connectedReader = reader
+        }
+
+        // Then
+        #expect(service.disconnectReaderCallCount == 0)
+        #expect(service.spyCollectPaymentMethods == [.bluetooth])
+    }
+
+    @Test @MainActor
     func test_start_payment_when_reader_disconnects_during_cancellation_then_does_not_collect() async {
         // Given
         let service = MockCardPresentPaymentService()

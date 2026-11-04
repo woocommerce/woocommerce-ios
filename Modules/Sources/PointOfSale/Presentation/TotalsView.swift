@@ -4,6 +4,7 @@ import WooFoundation
 import Experiments
 
 struct TotalsView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(POSPaymentModel.self) private var paymentModel
     @Environment(\.posFeatureFlags) private var featureFlags
@@ -264,16 +265,6 @@ private extension TotalsView {
             self.bottomPadding = bottomPadding
             self.sidePadding = sidePadding
         }
-
-        static let primary = PaymentViewLayout(
-            topPadding: nil,
-            bottomPadding: POSPadding.small
-        )
-
-        static let outlined = PaymentViewLayout(
-            topPadding: POSPadding.xxLarge,
-            bottomPadding: POSPadding.xxLarge
-        )
     }
 
     private var isShowingPaymentView: Bool {
@@ -296,29 +287,37 @@ private extension TotalsView {
         }
     }
 
+    private var primaryLayout: PaymentViewLayout {
+        PaymentViewLayout(topPadding: nil, bottomPadding: metrics.padding.small)
+    }
+
+    private var outlinedLayout: PaymentViewLayout {
+        PaymentViewLayout(topPadding: metrics.padding.xxLarge, bottomPadding: metrics.padding.xxLarge)
+    }
+
     private var cardReaderViewLayout: PaymentViewLayout {
         guard isShowingPaymentView else {
-            return .primary
+            return primaryLayout
         }
 
         switch displayPaymentState.activePaymentMethod {
         case .cash, .scanToPay, .markAsPaid:
-            return PaymentViewLayout(topPadding: POSPadding.none,
-                                     bottomPadding: POSPadding.none,
-                                     sidePadding: POSPadding.none)
+            return PaymentViewLayout(topPadding: metrics.padding.none,
+                                     bottomPadding: metrics.padding.none,
+                                     sidePadding: metrics.padding.none)
         case .card:
             switch displayPaymentState.card {
             case .validatingOrderError,
                     .paymentIntentCreationError:
-                return .outlined
+                return outlinedLayout
             case .paymentError:
-                return PaymentViewLayout(topPadding: POSPadding.none,
-                                         bottomPadding: POSPadding.none,
-                                         sidePadding: POSPadding.none)
+                return PaymentViewLayout(topPadding: metrics.padding.none,
+                                         bottomPadding: metrics.padding.none,
+                                         sidePadding: metrics.padding.none)
             case .cardPaymentSuccessful:
-                return PaymentViewLayout(topPadding: POSPadding.none,
-                                         bottomPadding: POSPadding.none,
-                                         sidePadding: POSPadding.none)
+                return PaymentViewLayout(topPadding: metrics.padding.none,
+                                         bottomPadding: metrics.padding.none,
+                                         sidePadding: metrics.padding.none)
             case .idle,
                     .acceptingCard,
                     .cardInserted,
@@ -327,22 +326,22 @@ private extension TotalsView {
                     .processingPayment:
                 if totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                                 paymentState: displayPaymentState) {
-                    return .primary
+                    return primaryLayout
                 }
                 if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                           paymentState: displayPaymentState) {
-                    // On phone, drop the sidePadding (POSPadding.small) so the connect-reader
-                    // button can anchor to the same POSPadding.medium screen-edge insets as
-                    // the cash button below (which uses .padding(.horizontal, POSPadding.medium)
+                    // On phone, drop the sidePadding (metrics.padding.small) so the connect-reader
+                    // button can anchor to the same metrics.padding.medium screen-edge insets as
+                    // the cash button below (which uses .padding(.horizontal, metrics.padding.medium)
                     // directly off the screen).
                     return horizontalSizeClass == .compact
-                        ? PaymentViewLayout(topPadding: nil, bottomPadding: POSPadding.small, sidePadding: POSPadding.none)
-                        : .primary
+                        ? PaymentViewLayout(topPadding: nil, bottomPadding: metrics.padding.small, sidePadding: metrics.padding.none)
+                        : primaryLayout
                 }
             }
         }
 
-        return .primary
+        return primaryLayout
     }
 }
 
@@ -371,18 +370,7 @@ fileprivate extension View {
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
-        static let buttonHorizontalPadding: CGFloat = POSPadding.medium
-        static let cashButtonBottomPadding: CGFloat = POSPadding.medium
 
-        static let totalsLineViewPadding: EdgeInsets = .init(
-            top: POSPadding.medium,
-            leading: POSPadding.large,
-            bottom: POSPadding.medium,
-            trailing: POSPadding.large
-        )
-        static let subtotalsVerticalSpacing: CGFloat = POSSpacing.medium
-        static let totalVerticalSpacing: CGFloat = POSSpacing.medium
-        static let totalsHorizontalSpacing: CGFloat = POSSpacing.large
         static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular()
         static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
         static let totalTitleFont: POSFontStyle = .posHeadingBold
@@ -446,6 +434,7 @@ private extension TotalsView {
 }
 
 private struct TotalsFieldsContent: View {
+    @Environment(\.posMetrics) private var metrics
     let orderState: PointOfSaleOrderState
     let paymentState: PointOfSalePaymentState
     let cart: Cart
@@ -483,7 +472,7 @@ private struct TotalsFieldsContent: View {
                 formattedPrice: orderTotals?.cartTotal,
                 shimmeringActive: totalsLoading
             )
-            Spacer().frame(height: TotalsView.Constants.subtotalsVerticalSpacing)
+            Spacer().frame(height: metrics.spacing.medium)
 
             if viewHelper.shouldShowCustomAmountsField(cart: cart, orderTotals: orderTotals) {
                 SubtotalFieldView(
@@ -491,7 +480,7 @@ private struct TotalsFieldsContent: View {
                     formattedPrice: orderTotals?.customAmountsTotal,
                     shimmeringActive: totalsLoading
                 )
-                Spacer().frame(height: TotalsView.Constants.subtotalsVerticalSpacing)
+                Spacer().frame(height: metrics.spacing.medium)
             }
 
             if viewHelper.shouldShowTotalDiscountField(cart: cart, orderTotals: orderTotals) {
@@ -500,7 +489,7 @@ private struct TotalsFieldsContent: View {
                     formattedPrice: orderTotals?.discountTotal,
                     shimmeringActive: totalsLoading
                 )
-                Spacer().frame(height: TotalsView.Constants.subtotalsVerticalSpacing)
+                Spacer().frame(height: metrics.spacing.medium)
             }
 
             SubtotalFieldView(
@@ -508,17 +497,20 @@ private struct TotalsFieldsContent: View {
                 formattedPrice: orderTotals?.taxTotal,
                 shimmeringActive: totalsLoading
             )
-            Spacer().frame(height: TotalsView.Constants.totalVerticalSpacing)
+            Spacer().frame(height: metrics.spacing.medium)
             Divider()
                 .overlay(TotalsView.Constants.separatorColor)
                 .renderedIf(!totalsLoading)
-            Spacer().frame(height: TotalsView.Constants.totalVerticalSpacing)
+            Spacer().frame(height: metrics.spacing.medium)
             TotalFieldView(
                 formattedPrice: orderTotals?.orderTotal,
                 shimmeringActive: totalsLoading
             )
         }
-        .posContentPadding(TotalsView.Constants.totalsLineViewPadding)
+        .posContentPadding(EdgeInsets(top: metrics.padding.medium,
+                                       leading: metrics.padding.large,
+                                       bottom: metrics.padding.medium,
+                                       trailing: metrics.padding.large))
         .if(horizontalSizeClass == .compact) {
             $0.frame(maxWidth: .infinity)
         }
@@ -568,6 +560,7 @@ private struct SubtotalFieldView: View {
 }
 
 private struct TotalFieldView: View {
+    @Environment(\.posMetrics) private var metrics
     let formattedPrice: String?
     let shimmeringActive: Bool
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -590,7 +583,7 @@ private struct TotalFieldView: View {
                 Text(TotalsView.Localization.total)
                     .font(TotalsView.Constants.totalTitleFont)
                     .fontWeight(.semibold)
-                Spacer(minLength: TotalsView.Constants.totalsHorizontalSpacing)
+                Spacer(minLength: metrics.spacing.large)
                 Text(formattedPrice ?? "")
                     .font(TotalsView.Constants.totalAmountFont)
             }
@@ -603,6 +596,7 @@ private struct TotalFieldView: View {
 }
 
 private struct ShimmeringLineView: View {
+    @Environment(\.posMetrics) private var metrics
     /// When nil, the bar stretches to the available container width (used on phone, where the
     /// fixed iPad-tuned width would render asymmetrically inside a centered HStack).
     let width: CGFloat?
@@ -610,7 +604,7 @@ private struct ShimmeringLineView: View {
 
     var body: some View {
         POSPlaceholderBar(width: width, height: height, cornerRadius: TotalsView.Constants.shimmeringCornerRadius)
-            .padding(.horizontal, width == nil ? POSPadding.medium : 0)
+            .padding(.horizontal, width == nil ? metrics.padding.medium : 0)
     }
 }
 
@@ -746,15 +740,15 @@ private extension TotalsView {
             }
             .if(horizontalSizeClass != .compact) {
                 $0
-                    .posContentPadding(.horizontal, POSPadding.medium)
-                    .padding(.bottom, POSPadding.small)
+                    .posContentPadding(.horizontal, metrics.padding.medium)
+                    .padding(.bottom, metrics.padding.small)
             }
     }
 
     /// Reader-first layout used when Tap to Pay is unavailable but secondary methods exist.
     @ViewBuilder
     var readerAndOtherMethodsBottomStrip: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             cardReaderButton
             cashAndOtherPaymentMethodsButtons
         }
@@ -763,8 +757,8 @@ private extension TotalsView {
         }
         .if(horizontalSizeClass != .compact) {
             $0
-                .posContentPadding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.small)
+                .posContentPadding(.horizontal, metrics.padding.medium)
+                .padding(.bottom, metrics.padding.small)
         }
     }
 
@@ -843,18 +837,18 @@ private extension TotalsView {
     @ViewBuilder
     var cashAndOtherPaymentMethodsButtons: some View {
         if horizontalSizeClass == .compact {
-            VStack(spacing: POSSpacing.medium) {
+            VStack(spacing: metrics.spacing.medium) {
                 cashPaymentButton()
                 otherPaymentMethodsButton()
             }
         } else {
             ViewThatFits(in: .horizontal) {
-                HStack(spacing: POSSpacing.medium) {
+                HStack(spacing: metrics.spacing.medium) {
                     cashPaymentButton(lineLimit: 1)
                     otherPaymentMethodsButton(lineLimit: 1)
                 }
 
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     cashPaymentButton()
                     otherPaymentMethodsButton()
                 }

@@ -286,6 +286,37 @@ struct POSPrinterConnectionControllerTests {
         #expect(service.discoverCallCount == 0)
     }
 
+    @Test func test_startSetup_when_permission_denied_at_prompt_and_nothing_found_then_returns_to_idle() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let provider = MockBluetoothAuthorizationProvider(authorization: .notDetermined)
+        let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
+
+        // When
+        sut.startSetup(sessionID: UUID())
+        provider.stubbedAuthorization = .denied
+        await wait(on: sut, until: { !sut.isDiscovering })
+
+        // Then
+        #expect(sut.discoveryState == .idle)
+    }
+
+    @Test func test_startSetup_when_permission_denied_at_prompt_and_discovery_fails_then_returns_to_idle() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        service.discoverError = PrinterTestError()
+        let provider = MockBluetoothAuthorizationProvider(authorization: .notDetermined)
+        let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
+
+        // When
+        sut.startSetup(sessionID: UUID())
+        provider.stubbedAuthorization = .denied
+        await wait(on: sut, until: { !sut.isDiscovering })
+
+        // Then
+        #expect(sut.discoveryState == .idle)
+    }
+
     @Test func test_startSetup_when_called_again_for_same_session_then_does_not_restart_discovery() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star SM-L200")

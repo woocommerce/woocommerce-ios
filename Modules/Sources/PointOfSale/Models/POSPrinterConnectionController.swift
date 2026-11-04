@@ -124,7 +124,7 @@ final class POSPrinterConnectionController {
             } catch {
                 guard !Task.isCancelled, let self else { return }
                 isDiscovering = false
-                discoveryState = .error
+                discoveryState = bluetoothAuthorization == .denied ? .idle : .error
             }
         }
     }
@@ -149,12 +149,13 @@ final class POSPrinterConnectionController {
     }
 
     /// The scan ended (timed out or completed). Surface an empty result so the modal can offer a
-    /// retry instead of spinning forever; otherwise leave the found state in place and just stop the
-    /// scanning indicator.
+    /// retry instead of spinning forever, or return to idle, which explains how to turn Bluetooth
+    /// access back on, when the merchant denied the system prompt the search triggered. Otherwise
+    /// leave the found state in place and just stop the scanning indicator.
     private func finishDiscovery() {
         isDiscovering = false
         if discoveredDevices.isEmpty {
-            discoveryState = .noPrintersFound
+            discoveryState = bluetoothAuthorization == .denied ? .idle : .noPrintersFound
         }
     }
 

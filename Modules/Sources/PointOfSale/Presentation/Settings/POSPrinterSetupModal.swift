@@ -421,14 +421,16 @@ private extension POSPrinterSetupModal {
     let controller = POSPrinterConnectionController(
         service: POSReceiptPrinterPreviewService(
             devices: [PrinterDevice(id: "1", name: "Star TSP100")],
-            keepDiscovering: true))
+            keepDiscovering: true),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
 }
 
 #Preview("Discovery error") {
     let controller = POSPrinterConnectionController(
-        service: POSReceiptPrinterPreviewService(failsDiscovery: true))
+        service: POSReceiptPrinterPreviewService(failsDiscovery: true),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
 }
@@ -449,7 +451,8 @@ private extension POSPrinterSetupModal {
         service: POSReceiptPrinterPreviewService(
             devices: [PrinterDevice(id: "1", name: "Star TSP100"),
                       PrinterDevice(id: "2", name: "Star mC-Print3")],
-            keepDiscovering: true))
+            keepDiscovering: true),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
 }

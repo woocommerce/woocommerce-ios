@@ -46,7 +46,7 @@ struct HostedPaymentMethodsView: View {
 
     /// ViewModel to render the view content.
     ///
-    var viewModel: PaymentMethodsViewModel
+    @ObservedObject var viewModel: PaymentMethodsViewModel
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -69,6 +69,7 @@ struct HostedPaymentMethodsView: View {
                         dismiss()
                         viewModel.userDidCancelFlow()
                     })
+                    .disabled(viewModel.disableViewActions)
                     .accessibilityIdentifier(Accessibility.cancelButton)
                 }
             }
@@ -95,6 +96,7 @@ extension PaymentMethodsHostingController: UIAdaptivePresentationControllerDeleg
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        guard rootView.viewModel.disableViewActions == false else { return }
         presentCancelOrderActionSheet(viewController: self) { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
             self?.rootView.viewModel.userDidCancelFlow()

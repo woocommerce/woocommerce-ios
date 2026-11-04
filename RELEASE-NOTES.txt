@@ -3,6 +3,7 @@
 
 26.1
 -----
+- [*] In-Person Payments: Show the updated order after a successful card payment. [https://github.com/woocommerce/woocommerce-ios/pull/18213]
 - [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]
 - [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
 

@@ -636,6 +636,18 @@ extension WooAnalyticsEvent {
                               properties: [Key.scanner: scanner.analyticsName])
         }
 
+        // MARK: - Receipt Printer Analytics Events
+
+        static func receiptPrinterSetupStarted(source: POSPrinterSetupSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleReceiptPrinterSetupStarted,
+                              properties: [Key.sourceView: source.rawValue])
+        }
+
+        static func receiptPrinterSetupCompleted(source: POSPrinterSetupSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleReceiptPrinterSetupCompleted,
+                              properties: [Key.sourceView: source.rawValue])
+        }
+
         // MARK: - Orders Analytics Events
 
         static func ordersMenuItemTapped() -> WooAnalyticsEvent {

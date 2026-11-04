@@ -43,7 +43,7 @@ struct PointOfSalePaymentSuccessView: View {
         }
         .posModal(isPresented: $showPrinterSetupModal) {
             if let controller = posModel.settingsController.printerConnectionController {
-                POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
+                POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .printReceipt)
             }
         }
         .onChange(of: showPrinterSetupModal) { _, isShowing in

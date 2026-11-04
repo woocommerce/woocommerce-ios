@@ -6,6 +6,13 @@ import enum Yosemite.PrinterConnectionStatus
 import enum WooFoundation.BluetoothAuthorization
 import protocol WooFoundation.BluetoothAuthorizationProviding
 import struct WooFoundation.CoreBluetoothAuthorizationProvider
+import struct WooFoundation.WooAnalyticsEvent
+
+/// Where the merchant opened printer setup from, tracked with the setup events.
+enum POSPrinterSetupSource: String {
+    case settings
+    case printReceipt = "print_receipt"
+}
 
 /// Owns receipt-printer discovery and the connection lifecycle for POS settings.
 ///
@@ -43,6 +50,7 @@ final class POSPrinterConnectionController {
     }
 
     private let service: ReceiptPrinterServiceProtocol
+    private let analytics: POSAnalyticsProviding
     private let bluetoothAuthorizationProvider: BluetoothAuthorizationProviding
     private var discoveryTask: Task<Void, Never>?
     private var connectTask: Task<Void, Never>?
@@ -58,10 +66,13 @@ final class POSPrinterConnectionController {
     /// The setup modal presentation that currently owns the flow. A modal closed and quickly reopened
     /// can run its teardown after the new one starts, so teardown only applies to the current session.
     private var setupSessionID: UUID?
+    private var setupSource: POSPrinterSetupSource?
 
     init(service: ReceiptPrinterServiceProtocol,
+         analytics: POSAnalyticsProviding,
          bluetoothAuthorizationProvider: BluetoothAuthorizationProviding = CoreBluetoothAuthorizationProvider()) {
         self.service = service
+        self.analytics = analytics
         self.bluetoothAuthorizationProvider = bluetoothAuthorizationProvider
         observeConnectionStatus()
     }
@@ -75,11 +86,13 @@ final class POSPrinterConnectionController {
     /// Opens setup with a search, so BLE and already-paired printers connect without the pair-in-Settings
     /// step, which only appears if nothing is found. With Bluetooth permission denied discovery can't run,
     /// so setup stays idle to offer Open Settings. Repeated calls for the same session leave it as is.
-    func startSetup(sessionID: UUID) {
+    func startSetup(sessionID: UUID, source: POSPrinterSetupSource) {
         guard sessionID != setupSessionID else {
             return
         }
         setupSessionID = sessionID
+        setupSource = source
+        analytics.track(event: .PointOfSale.receiptPrinterSetupStarted(source: source))
         resetSetup()
         guard bluetoothAuthorization != .denied else {
             return
@@ -194,6 +207,7 @@ final class POSPrinterConnectionController {
             return
         }
         setupSessionID = nil
+        setupSource = nil
         resetSetup()
     }
 
@@ -207,22 +221,42 @@ final class POSPrinterConnectionController {
         discoveryState = .idle
     }
 
+    /// Tracked from the status stream rather than `connect(to:)`, because the setup modal closes as soon as
+    /// the printer reports connected and that teardown cancels the connect task.
+    private func trackConnected() {
+        analytics.track(.pointOfSaleReceiptPrinterConnected)
+        if let setupSource {
+            analytics.track(event: .PointOfSale.receiptPrinterSetupCompleted(source: setupSource))
+            self.setupSource = nil
+        }
+    }
+
     private func observeConnectionStatus() {
         // Reach the stream through a transient `self` so the long-lived iteration captures only a
         // weak reference. Holding `self` strongly across this never-ending loop would retain the
         // controller (which owns this task) and stop `deinit` — and its cancellation — from running.
         statusTask = Task { [weak self] in
             guard let updates = self?.service.connectionStatusUpdates() else { return }
+            // The stream opens by replaying the service's current status, which is not a connection
+            // change, e.g. a printer still connected from an earlier POS session.
+            var isReplayedStatus = true
             for await status in updates {
                 guard let self else { return }
                 switch status {
                 case .connected(let device):
+                    if !isReplayedStatus {
+                        trackConnected()
+                    }
                     connectedPrinter = device
                 case .disconnected, .idle:
+                    if connectedPrinter != nil {
+                        analytics.track(.pointOfSaleReceiptPrinterDisconnected)
+                    }
                     connectedPrinter = nil
                 case .connecting, .disconnecting:
                     break
                 }
+                isReplayedStatus = false
             }
         }
     }

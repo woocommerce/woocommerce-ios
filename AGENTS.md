@@ -288,6 +288,7 @@ Stars indicate priority. `[Internal]` for changes not visible to users.
 - **Structure**: Given / When / Then blocks with comments
 - **Mocks**: Hand-written, named `Mock<ServiceName>`, in `Mocks/` subdirectories
 - **Test data**: Use `.fake()` from Fakes module and `.copy()` from Copiable
+- **UIKit presentation tests**: Retain the `UIWindow` in a test-case property for the full test lifetime and release it in `tearDown`; a local window can be deallocated before presentation completes and make tests order-dependent
 - **Test plan**: `WooCommerce/WooCommerceTests/UnitTests.xctestplan`
 - See `Modules/Tests/AGENTS.md` for detailed async testing patterns
 - UI tests require a local mock server: run `rake mocks` and use the `WooCommerceUITests` scheme

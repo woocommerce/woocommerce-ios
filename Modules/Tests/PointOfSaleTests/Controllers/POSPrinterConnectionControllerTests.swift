@@ -466,6 +466,34 @@ struct POSPrinterConnectionControllerTests {
         #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started", "receipt_printer_connected"])
     }
 
+    @Test func test_connect_when_it_completes_after_setup_reopened_then_does_not_complete_the_new_session() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let analytics = MockPOSAnalytics()
+        let service = MockReceiptPrinterService()
+        service.parkConnect = true
+        let sut = await makeSubscribedController(service: service, analytics: analytics)
+        let settingsSessionID = UUID()
+        sut.startSetup(sessionID: settingsSessionID, source: .settings)
+        await withCheckedContinuation { continuation in
+            service.onConnectSubscribed = {
+                continuation.resume()
+            }
+            sut.connect(to: device)
+        }
+        sut.cancelSetup(sessionID: settingsSessionID)
+        sut.startSetup(sessionID: UUID(), source: .printReceipt)
+
+        // When — the connect started from Settings finishes inside the Print receipt session.
+        service.emitConnectionStatus(.connected(device))
+        await wait(on: sut, until: { sut.isConnected })
+
+        // Then
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
+                                                      "receipt_printer_setup_started",
+                                                      "receipt_printer_connected"])
+    }
+
     @Test func test_connect_when_fails_then_does_not_track_connected() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")

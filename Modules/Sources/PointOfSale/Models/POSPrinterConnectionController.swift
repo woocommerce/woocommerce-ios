@@ -67,6 +67,9 @@ final class POSPrinterConnectionController {
     /// can run its teardown after the new one starts, so teardown only applies to the current session.
     private var setupSessionID: UUID?
     private var setupSource: POSPrinterSetupSource?
+    /// The source of the setup session whose connect is in flight. Cleared when that session ends, so a
+    /// connect that completes after the modal closed and reopened doesn't complete the newer session.
+    private var connectingSetupSource: POSPrinterSetupSource?
 
     init(service: ReceiptPrinterServiceProtocol,
          analytics: POSAnalyticsProviding,
@@ -178,6 +181,7 @@ final class POSPrinterConnectionController {
         connectTask?.cancel()
         isDiscovering = false
         discoveryState = .connecting(device)
+        connectingSetupSource = setupSource
         connectTask = Task { [weak self] in
             // Reach the service through a transient `self` so the in-flight connect holds only a weak
             // reference; binding `self` strongly here would retain the controller for the whole
@@ -218,6 +222,7 @@ final class POSPrinterConnectionController {
         discoveredDevices = []
         skippedDeviceIDs = []
         hasShownMultiple = false
+        connectingSetupSource = nil
         discoveryState = .idle
     }
 
@@ -225,9 +230,9 @@ final class POSPrinterConnectionController {
     /// the printer reports connected and that teardown cancels the connect task.
     private func trackConnected() {
         analytics.track(.pointOfSaleReceiptPrinterConnected)
-        if let setupSource {
-            analytics.track(event: .PointOfSale.receiptPrinterSetupCompleted(source: setupSource))
-            self.setupSource = nil
+        if let connectingSetupSource {
+            analytics.track(event: .PointOfSale.receiptPrinterSetupCompleted(source: connectingSetupSource))
+            self.connectingSetupSource = nil
         }
     }
 

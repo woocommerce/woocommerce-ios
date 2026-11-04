@@ -26,6 +26,30 @@ struct CustomAmountRowView: View {
     }
 
     var body: some View {
+        HStack(spacing: 0) {
+            if let onEdit {
+                Button(action: onEdit) {
+                    rowContent
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint(Localization.editAccessibilityHint)
+            } else {
+                rowContent
+            }
+
+            if let onRemove {
+                CartRowRemoveButton(action: onRemove)
+            }
+        }
+        .padding(.trailing, Constants.cardContentHorizontalPadding)
+        .frame(maxWidth: .infinity, idealHeight: Constants.iconSize * scale)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+        .padding(.horizontal, Constants.horizontalPadding)
+        .accessibilityIdentifier("pos-custom-amount-row")
+    }
+
+    private var rowContent: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
             CustomAmountAvatar(name: customAmount.name)
                 .frame(width: dimension, height: dimension)
@@ -48,22 +72,12 @@ struct CustomAmountRowView: View {
             }
             .animation(.default, value: showsDiscountNotAppliedNote)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityElement(children: .combine)
-
-            if let onEdit {
-                CartRowEditButton(action: onEdit)
-            }
-
-            if let onRemove {
-                CartRowRemoveButton(action: onRemove)
-            }
         }
-        .padding(.trailing, Constants.cardContentHorizontalPadding)
+        .multilineTextAlignment(.leading)
+        .padding(.trailing, Constants.horizontalElementSpacing)
         .frame(maxWidth: .infinity, idealHeight: Constants.iconSize * scale)
-        .background(Color.posSurfaceContainerLowest)
-        .posItemCardBorderStyles()
-        .padding(.horizontal, Constants.horizontalPadding)
-        .accessibilityIdentifier("pos-custom-amount-row")
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
     }
 
     private var formattedAmount: String {
@@ -74,6 +88,11 @@ struct CustomAmountRowView: View {
 
 private extension CustomAmountRowView {
     enum Localization {
+        static let editAccessibilityHint = NSLocalizedString(
+            "pointOfSale.customAmountRow.edit.accessibilityHint",
+            value: "Edit custom amount",
+            comment: "Accessibility hint for a custom amount row in the Point of Sale cart. Activating the row opens the edit form.")
+
         static let discountNotApplied = NSLocalizedString(
             "pointOfSale.customAmountRow.discountNotApplied",
             value: "Discount not applied",

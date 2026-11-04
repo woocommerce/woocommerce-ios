@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let missingProducts: [PointOfSaleOrderState.OrderStateError.MissingProductInfo]
     let retryHandler: () -> Void
 
@@ -12,11 +13,11 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
         GeometryReader { geometry in
             HStack(alignment: .center) {
                 Spacer()
-                VStack(alignment: .center, spacing: POSSpacing.none) {
+                VStack(alignment: .center, spacing: metrics.spacing.none) {
                     Spacer()
                     POSErrorXMark()
-                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
-                    VStack(alignment: .center, spacing: PointOfSaleEmptyErrorStateViewLayout.textSpacing) {
+                    Spacer().frame(height: metrics.spacing.medium)
+                    VStack(alignment: .center, spacing: metrics.spacing.small) {
                         Text(title)
                             .foregroundStyle(Color.posOnSurface)
                             .font(.posHeadingBold)
@@ -26,9 +27,9 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                             .font(.posBodyLargeRegular())
                             .padding([.leading, .trailing])
                     }
-                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
+                    Spacer().frame(height: metrics.spacing.xxLarge)
 
-                    VStack(spacing: PointOfSaleEmptyErrorStateViewLayout.buttonSpacing) {
+                    VStack(spacing: metrics.spacing.medium) {
                         Button(Localization.editOrderTitle, action: {
                             let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
                             analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedEditOrderTapped(
@@ -63,8 +64,8 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                         }
                     }
                     .frame(width: geometry.size.width / 2)
-                    .padding([.leading, .trailing], Constants.buttonSidePadding)
-                    .padding([.bottom], Constants.buttonBottomPadding)
+                    .padding([.leading, .trailing], metrics.padding.xxLarge)
+                    .padding([.bottom], metrics.padding.medium)
 
                     Spacer()
                 }
@@ -126,8 +127,6 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
 
 private extension PointOfSaleOrderSyncMissingProductsErrorMessageView {
     enum Constants {
-        static let buttonSidePadding: CGFloat = POSPadding.xxLarge
-        static let buttonBottomPadding: CGFloat = POSPadding.medium
     }
 }
 

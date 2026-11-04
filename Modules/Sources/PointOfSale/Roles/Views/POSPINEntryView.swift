@@ -312,25 +312,25 @@ extension POSPINEntryView {
 #if DEBUG
 #Preview("Idle") {
     POSPINEntryView(state: .idle, onComplete: { _ in true })
-        .padding()
+        .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Error") {
     POSPINEntryView(state: .error(kind: .invalidPIN), onComplete: { _ in false })
-        .padding()
+        .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Lockout") {
     POSPINEntryView(state: .lockout(until: Date().addingTimeInterval(30)), onComplete: { _ in true })
-        .padding()
+        .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Loading") {
     POSPINEntryView(state: .loading, onComplete: { _ in true })
-        .padding()
+        .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
@@ -345,7 +345,7 @@ extension POSPINEntryView {
             }
         }
     })
-    .padding()
+    .posPadding(\.medium)
     .background(Color.posSurfaceContainerLow)
 }
 #endif

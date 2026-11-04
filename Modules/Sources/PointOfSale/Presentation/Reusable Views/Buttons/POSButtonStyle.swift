@@ -306,7 +306,7 @@ struct POSButtonStyle_Previews: View {
                         .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                 }
             }
-            .padding()
+            .posPadding(\.medium)
         }
     }
 

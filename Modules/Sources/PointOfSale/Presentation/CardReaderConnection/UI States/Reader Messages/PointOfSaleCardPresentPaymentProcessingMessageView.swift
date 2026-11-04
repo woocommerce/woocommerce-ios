@@ -28,7 +28,7 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
         }
-        .padding(.bottom)
+        .posPadding(.bottom, \.medium)
         .multilineTextAlignment(.center)
         .transition(.asymmetric(insertion: .identity, removal: .opacity))
         .onAppear {

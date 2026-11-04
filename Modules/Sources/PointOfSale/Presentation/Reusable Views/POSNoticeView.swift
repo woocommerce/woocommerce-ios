@@ -148,7 +148,7 @@ private enum Localization {
                 .foregroundColor(Color.posPrimary)
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 
 #Preview("Without dismiss") {
@@ -164,7 +164,7 @@ private enum Localization {
                 .foregroundColor(Color.posPrimary)
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 
 #Preview("Banner that fits to width") {
@@ -173,5 +173,5 @@ private enum Localization {
         icon: Image(systemName: "info.circle")
     )
     .fixedSize(horizontal: true, vertical: true)
-    .padding()
+    .posPadding(\.medium)
 }

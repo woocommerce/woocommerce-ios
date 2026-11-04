@@ -25,7 +25,7 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                         Text(subtitle)
                             .foregroundStyle(Color.posOnSurface)
                             .font(.posBodyLargeRegular())
-                            .padding([.leading, .trailing])
+                            .posPadding(.horizontal, \.medium)
                     }
                     Spacer().frame(height: metrics.spacing.xxLarge)
 

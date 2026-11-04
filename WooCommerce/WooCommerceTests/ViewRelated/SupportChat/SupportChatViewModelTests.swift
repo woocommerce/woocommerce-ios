@@ -180,16 +180,61 @@ struct SupportChatViewModelTests {
         await sut.sendMessage()
 
         // Then
-        guard case let .sendMessage(_, _, _, _, context, _) = requests.last,
+        guard case let .sendMessage(_, _, chatID, _, context, _) = requests.last,
               case let .string(description) = context?["troubleshootingResults"] else {
             Issue.record("Expected payment diagnostics in the mock request context")
             return
         }
+        #expect((chatID == 123) == (firstSend == .succeeded))
         let currentPart = description.components(separatedBy: "Earlier setup checks").first ?? ""
         #expect(currentPart.contains("Result: Success"))
         #expect(!currentPart.contains("Server error"))
         #expect(description.contains("Earlier setup checks (not payment attempts)"))
         #expect(description.contains("http_status=503"))
+    }
+
+    @Test func test_payment_diagnostics_when_send_completes_after_retry_then_next_message_sends_current_results() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var requests = [SupportChatAction]()
+        var pendingCompletion: ((Result<SupportChatResponse, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            requests.append(action)
+            if case let .sendMessage(_, _, _, _, _, completion) = action, requests.count == 1 {
+                pendingCompletion = completion
+            }
+        }
+        let sut = makeSUT(stores: stores, diagnosticsService: makeRecoveringPaymentService())
+        await sut.selectIssue(.inPersonPayments)
+        sut.proceedToChat()
+        sut.inputText = "Sent before the retry"
+        await sut.sendMessage()
+
+        // When
+        await sut.executeAction(.retryDiagnostics)
+        pendingCompletion?(.success(SupportChatResponse(chatID: 123, sessionID: "session", botSlug: "bot", botVersion: "1.0", messages: [])))
+        sut.inputText = "Sent after the retry"
+        await sut.sendMessage()
+
+        // Then
+        guard case let .sendMessage(_, _, chatID, _, context, completion) = requests.last,
+              case let .string(description) = context?["troubleshootingResults"] else {
+            Issue.record("Expected the current payment results in the mock request context")
+            return
+        }
+        #expect(chatID == 123)
+        let currentPart = description.components(separatedBy: "Earlier setup checks").first ?? ""
+        #expect(currentPart.contains("Result: Success"))
+
+        // When the updated results reached the chat, the next message does not repeat them.
+        completion(.success(SupportChatResponse(chatID: 123, sessionID: "session", botSlug: "bot", botVersion: "1.0", messages: [])))
+        sut.inputText = "Follow-up"
+        await sut.sendMessage()
+        guard case let .sendMessage(_, _, _, _, followUpContext, _) = requests.last else {
+            Issue.record("Expected a follow-up request")
+            return
+        }
+        #expect(followUpContext == nil)
     }
 
     @Test func test_payment_diagnostics_when_retry_follows_orange_result_then_keeps_it_as_earlier_finding() async {

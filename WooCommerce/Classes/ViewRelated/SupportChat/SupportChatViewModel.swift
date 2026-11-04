@@ -160,8 +160,10 @@ final class SupportChatViewModel {
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
     private var earlierPaymentFindings: [String] = []
-    /// Set when payment checks run again after the chat started, so the next message sends the new results.
-    private var chatNeedsUpdatedContext = false
+    /// Counts payment re-runs. Messages send context until a successful one carried the latest results,
+    /// so sends that overlap a re-run cannot leave the chat with older results.
+    private var paymentResultsRevision = 0
+    private var paymentResultsRevisionInChat = 0
 
     var paymentDiagnosticsAreInconclusive: Bool {
         selectedIssue == .inPersonPayments && diagnosticResults.contains(where: \.isInconclusive)
@@ -629,9 +631,6 @@ final class SupportChatViewModel {
         if selectedIssue == .inPersonPayments {
             let earlier = diagnosticResults.filter { !$0.isSuccess || $0.isInconclusive }.compactMap(\.technicalDetails)
             earlierPaymentFindings = Array((earlier + earlierPaymentFindings).prefix(3))
-            // Retry can run after Continue to chat, so the next message must carry the new results.
-            preparedInitialContext = nil
-            chatNeedsUpdatedContext = chatID != nil
         }
         diagnosticResults = []
 
@@ -694,6 +693,12 @@ final class SupportChatViewModel {
                 role: .bot,
                 content: .diagnosticsSuccess
             )
+        }
+
+        // Retry can run after Continue to chat, so the next message must carry the complete new results.
+        if selectedIssue == .inPersonPayments {
+            preparedInitialContext = nil
+            paymentResultsRevision += 1
         }
     }
 
@@ -788,7 +793,8 @@ final class SupportChatViewModel {
         state = .sending
 
         // Preparing context is local; the sending state prevents a second submission while it awaits system lookups.
-        let sendsContext = chatID == nil || chatNeedsUpdatedContext
+        let resultsRevision = paymentResultsRevision
+        let sendsContext = chatID == nil || paymentResultsRevisionInChat < resultsRevision
         let hasDiagnosticsContext = sendsContext && (diagnosticsContext ?? initialContext) != nil
         let context = sendsContext ? await prepareInitialContext() : nil
         guard !Task.isCancelled else {
@@ -816,9 +822,13 @@ final class SupportChatViewModel {
             sessionID: sessionID,
             context: context
         ) { [weak self] result in
-            self?.handleSendMessageResult(result,
-                                          wasNewChat: wasNewChat,
-                                          firstUserMessage: firstUserMessage)
+            guard let self else { return }
+            if case .success = result, sendsContext {
+                paymentResultsRevisionInChat = max(paymentResultsRevisionInChat, resultsRevision)
+            }
+            handleSendMessageResult(result,
+                                    wasNewChat: wasNewChat,
+                                    firstUserMessage: firstUserMessage)
         }
 
         stores.dispatch(action)
@@ -929,7 +939,6 @@ final class SupportChatViewModel {
         case .success(let response):
             chatID = response.chatID
             sessionID = response.sessionID
-            chatNeedsUpdatedContext = false
             persistChatBookmark(wasNewChat: wasNewChat,
                                 response: response,
                                 firstUserMessage: firstUserMessage)

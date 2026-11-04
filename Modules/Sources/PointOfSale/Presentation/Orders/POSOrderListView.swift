@@ -168,7 +168,7 @@ struct POSOrderListView: View {
 
                     footerRows
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, metrics.padding.medium)
                 .padding(.top, metrics.padding.xSmall)
                 .padding(.bottom, metrics.padding.medium)
             }

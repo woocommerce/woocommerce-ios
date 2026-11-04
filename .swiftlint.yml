@@ -208,6 +208,13 @@ custom_rules:
     message: "Localized strings must not use interpolated variables. Instead, use `String(format:`"
     severity: error
 
+  pos_metrics_spacing:
+    name: "POS Metrics Spacing"
+    regex: '(\.padding\((\.[a-zA-Z]+,\s*)?[1-9][0-9]*(\.[0-9]+)?\)|spacing:\s*[1-9][0-9]*(\.[0-9]+)?\s*[,)]|\.padding\((\.[a-zA-Z]+|\[[^\]]*\])?\))'
+    message: "In POS, use spacing and padding from `POSMetrics` (`metrics.spacing.medium`, `.posPadding(\\.medium)`) so they adapt on phone. Do not use numbers or the SwiftUI default padding."
+    included: Modules/Sources/PointOfSale/.*\.swift
+    severity: error
+
   swiftui_localization:
     name: "SwiftUI Localization"
     regex: 'LocalizedStringKey'

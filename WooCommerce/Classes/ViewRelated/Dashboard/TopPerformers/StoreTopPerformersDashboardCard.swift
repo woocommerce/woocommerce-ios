@@ -81,6 +81,8 @@ private extension StoreTopPerformersDashboardCard {
             )
             .padding(StorePadding.p5)
             .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+            .redacted(reason: viewModel.periodViewModel.redacted.rows ? .placeholder : [])
+            .shimmering(active: viewModel.periodViewModel.redacted.rows)
             StoreDashboardCardFooterAction(Localization.viewAll, isDisabled: viewModel.syncingData) {
                 viewModel.trackInteraction()
                 onViewAllAnalytics(viewModel.siteID, viewModel.siteTimezone, viewModel.timeRange)

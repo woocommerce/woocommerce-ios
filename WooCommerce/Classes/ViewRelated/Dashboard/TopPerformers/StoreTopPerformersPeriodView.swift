@@ -18,6 +18,8 @@ struct StoreTopPerformersPeriodView: View {
             .storeTextStyle(.bodyMedium.emphasized)
             .foregroundStyle(.storeOnSurface)
             .padding(.horizontal, StorePadding.p5)
+            .redacted(reason: viewModel.redacted.rows ? .placeholder : [])
+            .shimmering(active: viewModel.redacted.rows)
 
             if viewModel.rows.isNotEmpty {
                 VStack(spacing: StoreSpacing.s0) {

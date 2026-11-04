@@ -66,7 +66,7 @@ struct AddCustomAmountFormViewModelTests {
         let input = try #require(sut.resolvedCustomAmount())
         #expect(input.name == "Custom amount")
         #expect(input.amount == "12.50")
-        #expect(input.isTaxable == true)
+        #expect(input.isTaxable == false)
     }
 
     @Test func test_resolvedCustomAmount_when_name_has_whitespace_only_then_uses_default_name() async throws {
@@ -95,25 +95,25 @@ struct AddCustomAmountFormViewModelTests {
         #expect(input.name == "Service fee")
     }
 
-    @Test func test_resolvedCustomAmount_when_isTaxable_is_false_then_input_reflects_it() async throws {
+    @Test func test_resolvedCustomAmount_when_isTaxable_is_true_then_input_reflects_it() async throws {
         // Given
         let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
 
         // When
         sut.amount = "5.00"
-        sut.isTaxable = false
+        sut.isTaxable = true
 
         // Then
         let input = try #require(sut.resolvedCustomAmount())
-        #expect(input.isTaxable == false)
+        #expect(input.isTaxable == true)
     }
 
-    @Test func test_isTaxable_default_is_true() async throws {
+    @Test func test_isTaxable_when_creating_new_amount_then_defaults_to_false() async throws {
         // Given
         let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
 
         // When, Then
-        #expect(sut.isTaxable == true)
+        #expect(sut.isTaxable == false)
     }
 
     @Test func test_setAmount_when_input_is_valid_then_updates_amount() async throws {
@@ -139,10 +139,11 @@ struct AddCustomAmountFormViewModelTests {
         #expect(sut.amount == "12.34")
     }
 
-    @Test func test_init_when_editing_existing_then_prefills_fields() async throws {
+    @Test(arguments: [true, false])
+    func test_init_when_editing_existing_then_prefills_fields(isTaxable: Bool) async throws {
         // Given
         let id = UUID()
-        let existing = POSCustomAmount(id: id, name: "Service fee", amount: "7.50", isTaxable: false)
+        let existing = POSCustomAmount(id: id, name: "Service fee", amount: "7.50", isTaxable: isTaxable)
 
         // When
         let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings, editing: existing)
@@ -151,7 +152,7 @@ struct AddCustomAmountFormViewModelTests {
         #expect(sut.isEditing == true)
         #expect(sut.amount == "7.50")
         #expect(sut.name == "Service fee")
-        #expect(sut.isTaxable == false)
+        #expect(sut.isTaxable == isTaxable)
     }
 
     @Test func test_init_when_editing_existing_with_default_name_then_leaves_name_field_empty() async throws {

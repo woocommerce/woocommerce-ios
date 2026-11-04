@@ -7,6 +7,7 @@
 - [*] POS: Tap to Pay is no longer offered at checkout for stores in Canada, Australia and Puerto Rico, where it is not supported. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
 - [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]
 - [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
+- [*] POS: On iPhone, Point of Sale uses smaller spacing, paddings and cards, so more products and order details fit on the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18256]
 
 26.0
 -----

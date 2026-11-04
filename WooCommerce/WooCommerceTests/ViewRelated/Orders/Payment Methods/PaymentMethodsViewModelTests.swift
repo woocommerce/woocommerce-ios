@@ -1168,7 +1168,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(calledOnSuccess)
     }
 
-    func test_view_model_updates_order_async_after_collecting_payment_successfully() throws {
+    func test_view_model_updates_order_async_after_collecting_payment_successfully() async {
         // Given
         let order = Order.fake().copy(status: .pending)
         storage.insertSampleOrder(readOnlyOrder: order)
@@ -1190,22 +1190,34 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 channel: .storeManagement,
                                                 dependencies: dependencies)
 
-        // When
-        let (siteID, orderID): (Int64, Int64) = waitFor { promise in
-            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
-                switch action {
-                case let .retrieveOrderRemotely(siteID, orderID, _):
-                    promise((siteID, orderID))
-                default:
-                    XCTFail("Unexpected action: \(action)")
-                }
+        var requestedSiteID: Int64?
+        var requestedOrderID: Int64?
+        var refreshCount = 0
+        let returned = expectation(description: "Returns after the early refresh")
+        let refreshed = expectation(description: "Completes the final background refresh")
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .retrieveOrderRemotely(siteID, orderID, completion) = action else {
+                return XCTFail("Unexpected action: \(action)")
             }
-            viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {})
+            if refreshCount == 0 {
+                requestedSiteID = siteID
+                requestedOrderID = orderID
+            }
+            refreshCount += 1
+            completion(.success(order))
+            if refreshCount == 2 {
+                refreshed.fulfill()
+            }
         }
 
+        // When
+        viewModel.collectPayment(using: .bluetoothScan, on: UIViewController(), useCase: useCase,
+                                 onSuccess: { returned.fulfill() }, onFailure: {})
+        await fulfillment(of: [returned, refreshed], timeout: 2)
+
         // Then
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(orderID, order.orderID)
+        XCTAssertEqual(requestedSiteID, order.siteID)
+        XCTAssertEqual(requestedOrderID, order.orderID)
     }
 
     func test_collect_payment_when_order_refresh_is_delayed_then_success_waits_for_refresh() async throws {

@@ -13,6 +13,7 @@ private enum POSOrderDetailsNavigationDestination: Hashable {
 }
 
 struct POSOrderDetailsView: View {
+    @Environment(\.posMetrics) private var metrics
     let order: POSOrder
     let onBack: () -> Void
     @Binding private var detailNavigationPath: NavigationPath
@@ -66,7 +67,7 @@ struct POSOrderDetailsView: View {
         // refreshes refund details. Prefer the controller's live `selectedOrder` so the view
         // re-renders when refunds are loaded or the order is refetched after a refund.
         let order = orderListModel.ordersController.selectedOrder ?? self.order
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(
                 title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
@@ -77,12 +78,12 @@ struct POSOrderDetailsView: View {
                     headerBottomContent(for: order)
                 }
             )
-            .posHeaderBackButtonPadding(horizontalSizeClass == .compact ? backButtonPadding : POSPadding.none)
+            .posHeaderBackButtonPadding(horizontalSizeClass == .compact ? backButtonPadding : metrics.padding.none)
             .fixedSize(horizontal: false, vertical: true)
             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             ScrollView {
-                VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                VStack(alignment: .leading, spacing: metrics.spacing.medium) {
                     switch orderListModel.ordersController.orderDetailsItemsState {
                     case .loading(let rowCount):
                         ghostItemsSection(rowCount: rowCount)
@@ -112,9 +113,9 @@ struct POSOrderDetailsView: View {
                         selectedRefundForDetail: $selectedRefundForDetail
                     )
                 }
-                .padding(.top, POSPadding.xSmall)
-                .posContentPadding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+                .padding(.top, metrics.padding.xSmall)
+                .posContentPadding(.horizontal, metrics.padding.medium)
+                .padding(.bottom, metrics.padding.medium)
             }
         }
         .background(Color.posSurface)
@@ -215,13 +216,13 @@ private struct POSRefundNothingToRefundError: LocalizedError {
 private extension POSOrderDetailsView {
     @ViewBuilder
     func itemsSection(products: [POSOrderItem], customAmounts: [POSOrderCustomAmount]) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.itemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(Array(products.enumerated()), id: \.element.itemID) { index, item in
                     productRow(item: item)
 
@@ -239,14 +240,14 @@ private extension POSOrderDetailsView {
                 }
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
 
     @ViewBuilder
     func customAmountRow(customAmount: POSOrderCustomAmount) -> some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
             CustomAmountAvatar(name: customAmount.name)
                 .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
@@ -272,13 +273,13 @@ private extension POSOrderDetailsView {
         // so render exactly that many placeholder rows. The layout doesn't shrink/grow when the
         // refund details finish loading and the real rows replace the skeleton.
         let count = max(1, rowCount)
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.itemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(0..<count, id: \.self) { index in
                     ghostRefundedProductRow
 
@@ -288,7 +289,7 @@ private extension POSOrderDetailsView {
                 }
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .accessibilityElement(children: .ignore)
@@ -297,7 +298,7 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     var ghostRefundedProductsSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.refundedItemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
@@ -305,7 +306,7 @@ private extension POSOrderDetailsView {
 
             ghostRefundedProductRow
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .accessibilityElement(children: .ignore)
@@ -314,14 +315,14 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     var ghostRefundedProductRow: some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
             Rectangle()
                 .fill(Color.posOnSurfaceVariantLowest.opacity(POSLoadingPlaceholderStyle.imageBaseOpacity))
                 .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 .shimmering(gradient: POSLoadingPlaceholderStyle.shimmerGradient)
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 POSPlaceholderText(.redactedPlaceholder(length: 8), font: .posBodyLargeBold)
                 POSPlaceholderText(.redactedPlaceholder(length: 6), font: .posBodyMediumRegular())
             }
@@ -334,13 +335,13 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func refundedProductsSection(_ items: [POSRefundItem]) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.refundedItemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(items) { item in
                     refundedProductRow(item: item)
 
@@ -350,7 +351,7 @@ private extension POSOrderDetailsView {
                 }
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
@@ -362,7 +363,7 @@ private extension POSOrderDetailsView {
 private extension POSOrderDetailsView {
     @ViewBuilder
     func headerBottomContent(for order: POSOrder) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             Text(dateFormatter.string(from: order.dateCreated))
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
@@ -375,10 +376,10 @@ private extension POSOrderDetailsView {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            Spacer().frame(height: POSSpacing.xSmall)
+            Spacer().frame(height: metrics.spacing.xSmall)
             POSOrderBadgeView(order: order)
         }
-        .padding(.top, POSSpacing.xSmall)
+        .padding(.top, metrics.spacing.xSmall)
         .multilineTextAlignment(.leading)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(headerBottomContentAccessibilityLabel(for: order))
@@ -402,7 +403,7 @@ private extension POSOrderDetailsView {
 private extension POSOrderDetailsView {
     @ViewBuilder
     func productRow(item: POSOrderItem) -> some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
             productImageView(item: item)
             productDetailsView(item: item)
             Spacer()
@@ -433,7 +434,7 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func productDetailsView(item: POSOrderItem) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             Text(item.name)
                 .font(.posBodyLargeBold)
                 .foregroundStyle(Color.posOnSurface)
@@ -552,7 +553,7 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func actionsSection(setup: OrderDetailsActionsSetup) -> some View {
         if let primary = setup.primary {
-            HStack(spacing: POSSpacing.large) {
+            HStack(spacing: metrics.spacing.large) {
                 Button(action: handler(for: primary)) {
                     Text(primary.title)
                         .lineLimit(1)
@@ -574,7 +575,7 @@ private extension POSOrderDetailsView {
                     .font(.posBodyLargeBold)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .foregroundColor(.posOnSurface)
-                    .padding(POSPadding.small)
+                    .padding(metrics.padding.small)
             }
             .menuIndicator(.hidden)
         }
@@ -585,7 +586,7 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     var divider: some View {
         POSDivider()
-            .padding(.vertical, POSSpacing.small)
+            .padding(.vertical, metrics.spacing.small)
     }
 }
 

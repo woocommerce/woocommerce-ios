@@ -159,7 +159,9 @@ final class SupportChatViewModel {
     private(set) var messages: [ChatMessage] = []
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
-    private var earlierPaymentFailures: [String] = []
+    private var earlierPaymentFindings: [String] = []
+    /// Set when payment checks run again after the chat started, so the next message sends the new results.
+    private var chatNeedsUpdatedContext = false
 
     var paymentDiagnosticsAreInconclusive: Bool {
         selectedIssue == .inPersonPayments && diagnosticResults.contains(where: \.isInconclusive)
@@ -192,8 +194,8 @@ final class SupportChatViewModel {
     private var paymentDiagnosticSupportSummary: String? {
         guard selectedIssue == .inPersonPayments else { return nil }
         var parts = [SupportDiagnosticsService.troubleshootingDescription(from: diagnosticResults)].compactMap { $0 }
-        if !earlierPaymentFailures.isEmpty {
-            parts.append("Earlier setup checks (not payment attempts):\n" + earlierPaymentFailures.joined(separator: "\n"))
+        if !earlierPaymentFindings.isEmpty {
+            parts.append("Earlier setup checks (not payment attempts):\n" + earlierPaymentFindings.joined(separator: "\n"))
         }
         guard !parts.isEmpty else { return nil }
         return parts.joined(separator: "\n\n")
@@ -625,11 +627,11 @@ final class SupportChatViewModel {
 
         // Clear previous results
         if selectedIssue == .inPersonPayments {
-            if case .diagnosticsFailure(let failure) = messages[messageIndex].content, let details = failure.technicalDetails {
-                earlierPaymentFailures = Array(([details] + earlierPaymentFailures).prefix(3))
-            }
-            // Retry can run after Continue to chat, so the first message must use the new results.
+            let earlier = diagnosticResults.filter { !$0.isSuccess || $0.isInconclusive }.compactMap(\.technicalDetails)
+            earlierPaymentFindings = Array((earlier + earlierPaymentFindings).prefix(3))
+            // Retry can run after Continue to chat, so the next message must carry the new results.
             preparedInitialContext = nil
+            chatNeedsUpdatedContext = chatID != nil
         }
         diagnosticResults = []
 
@@ -786,8 +788,9 @@ final class SupportChatViewModel {
         state = .sending
 
         // Preparing context is local; the sending state prevents a second submission while it awaits system lookups.
-        let hasDiagnosticsContext = chatID == nil && (diagnosticsContext ?? initialContext) != nil
-        let context = chatID == nil ? await prepareInitialContext() : nil
+        let sendsContext = chatID == nil || chatNeedsUpdatedContext
+        let hasDiagnosticsContext = sendsContext && (diagnosticsContext ?? initialContext) != nil
+        let context = sendsContext ? await prepareInitialContext() : nil
         guard !Task.isCancelled else {
             markLastUserMessageAsFailed()
             inputText = trimmedText
@@ -926,6 +929,7 @@ final class SupportChatViewModel {
         case .success(let response):
             chatID = response.chatID
             sessionID = response.sessionID
+            chatNeedsUpdatedContext = false
             persistChatBookmark(wasNewChat: wasNewChat,
                                 response: response,
                                 firstUserMessage: firstUserMessage)

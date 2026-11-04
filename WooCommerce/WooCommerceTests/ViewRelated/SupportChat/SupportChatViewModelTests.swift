@@ -142,21 +142,33 @@ struct SupportChatViewModelTests {
         #expect(transcript?.contains("All diagnostics passed") == false)
     }
 
-    @Test(arguments: [false, true])
-    func test_payment_diagnostics_when_retry_follows_continue_then_sends_current_result_and_earlier_failure(firstSendFails: Bool) async {
+    enum FirstSend: CaseIterable {
+        case none
+        case failed
+        case succeeded
+    }
+
+    @Test(arguments: FirstSend.allCases)
+    func test_payment_diagnostics_when_retry_follows_continue_then_sends_current_result_and_earlier_failure(firstSend: FirstSend) async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         var requests = [SupportChatAction]()
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
             requests.append(action)
-            if case let .sendMessage(_, _, _, _, _, completion) = action, firstSendFails, requests.count == 1 {
+            guard case let .sendMessage(botSlug, _, _, _, _, completion) = action, requests.count == 1 else { return }
+            switch firstSend {
+            case .none:
+                break
+            case .failed:
                 completion(.failure(NSError(domain: "Test", code: 503)))
+            case .succeeded:
+                completion(.success(SupportChatResponse(chatID: 123, sessionID: "session", botSlug: botSlug, botVersion: "1.0", messages: [])))
             }
         }
         let sut = makeSUT(stores: stores, diagnosticsService: makeRecoveringPaymentService())
         await sut.selectIssue(.inPersonPayments)
         sut.proceedToChat()
-        if firstSendFails {
+        if firstSend != .none {
             sut.inputText = "First mock send"
             await sut.sendMessage()
             sut.dismissError()
@@ -178,6 +190,32 @@ struct SupportChatViewModelTests {
         #expect(!currentPart.contains("Server error"))
         #expect(description.contains("Earlier setup checks (not payment attempts)"))
         #expect(description.contains("http_status=503"))
+    }
+
+    @Test func test_payment_diagnostics_when_retry_follows_orange_result_then_keeps_it_as_earlier_finding() async {
+        // Given
+        var runs = 0
+        let service = MockSupportDiagnosticsService { tests in
+            tests.map { test in
+                guard test == .paymentConfiguration else { return .success(test: test) }
+                runs += 1
+                return runs == 1 ?
+                    .init(test: test, isSuccess: true, errorMessage: "Test account", technicalDetails: "account_in_test_mode; gateway=woocommerce_payments",
+                          suggestedAction: .openPaymentProvider(.wcPay), isInconclusive: true) :
+                    .failure(test: test, failure: .init(errorMessage: "Server error", technicalDetails: "server_error; http_status=503"))
+            }
+        }
+        var transcript: String?
+        let sut = makeSUT(diagnosticsService: service, onContactHumanSupport: { _, text, _, _, _ in transcript = text })
+        await sut.selectIssue(.inPersonPayments)
+
+        // When
+        await sut.executeAction(.retryDiagnostics)
+        sut.contactHumanSupport()
+
+        // Then
+        let earlier = transcript?.components(separatedBy: "Earlier setup checks (not payment attempts)").last ?? ""
+        #expect(earlier.contains("account_in_test_mode"))
     }
 
     @Test func test_start_when_initial_message_exists_then_sends_once_without_greeting() async {

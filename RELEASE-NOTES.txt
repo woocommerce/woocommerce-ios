@@ -3,6 +3,7 @@
 
 26.1
 -----
+- [*] POS: Wait for the card reader to reconnect if it disconnects while preparing a payment. [https://github.com/woocommerce/woocommerce-ios/pull/18254]
 - [**] POS: Point of Sale is now available on iPhone in the US, Canada, Australia and Puerto Rico, and on iOS 18 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
 
 

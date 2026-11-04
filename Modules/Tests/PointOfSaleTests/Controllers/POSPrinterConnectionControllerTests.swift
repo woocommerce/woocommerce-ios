@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import Observation
 import struct Yosemite.PrinterDevice
+import enum WooFoundation.BluetoothAuthorization
 @testable import PointOfSale
 
 @MainActor
@@ -219,6 +220,103 @@ struct POSPrinterConnectionControllerTests {
 
         // Then
         #expect(sut.bluetoothAuthorization == .allowed)
+    }
+
+    @Test(arguments: [BluetoothAuthorization.allowed, .notDetermined])
+    func test_startSetup_when_bluetooth_not_denied_then_starts_discovery(authorization: BluetoothAuthorization) async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let provider = MockBluetoothAuthorizationProvider(authorization: authorization)
+        let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
+
+        // When
+        sut.startSetup()
+
+        // Then
+        #expect(sut.discoveryState == .searching)
+        #expect(sut.isDiscovering)
+        await wait(on: sut, until: { !sut.isDiscovering })
+        #expect(service.discoverCallCount == 1)
+    }
+
+    @Test func test_startSetup_when_printer_found_then_connects_to_it() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star SM-L200")
+        let service = MockReceiptPrinterService()
+        service.discoveredDevices = [device]
+        let sut = await makeSubscribedController(service: service)
+
+        // When
+        sut.startSetup()
+        await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
+        sut.connect(to: device)
+        await wait(on: sut, until: { sut.isConnected })
+
+        // Then
+        #expect(service.connectedDevices == [device])
+        #expect(sut.connectedPrinterName == device.name)
+    }
+
+    @Test func test_startSetup_when_no_printers_found_then_state_is_noPrintersFound() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let sut = await makeSubscribedController(service: service)
+
+        // When
+        sut.startSetup()
+        await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
+
+        // Then
+        #expect(sut.discoveryState == .noPrintersFound)
+        #expect(!sut.isDiscovering)
+    }
+
+    @Test func test_startSetup_when_bluetooth_denied_then_stays_idle_without_discovering() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let provider = MockBluetoothAuthorizationProvider(authorization: .denied)
+        let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
+
+        // When
+        sut.startSetup()
+
+        // Then
+        #expect(sut.discoveryState == .idle)
+        #expect(!sut.isDiscovering)
+        #expect(service.discoverCallCount == 0)
+    }
+
+    @Test func test_startSetup_when_setup_already_underway_then_does_not_restart_discovery() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star SM-L200")
+        let service = MockReceiptPrinterService()
+        service.discoveredDevices = [device]
+        let sut = await makeSubscribedController(service: service)
+        sut.startSetup()
+        await wait(on: sut, until: { sut.discoveryState == .foundOne(device) && !sut.isDiscovering })
+
+        // When
+        sut.startSetup()
+
+        // Then
+        #expect(sut.discoveryState == .foundOne(device))
+        #expect(service.discoverCallCount == 1)
+    }
+
+    @Test func test_startSetup_when_called_after_cancelSetup_then_searches_again() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let sut = await makeSubscribedController(service: service)
+        sut.startSetup()
+        await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
+        await sut.cancelSetup()
+
+        // When
+        sut.startSetup()
+        await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
+
+        // Then
+        #expect(service.discoverCallCount == 2)
     }
 }
 

@@ -14,7 +14,8 @@ import struct WooFoundation.CoreBluetoothAuthorizationProvider
 @MainActor
 @Observable
 final class POSPrinterConnectionController {
-    /// Drives the setup modal: pairing → searching → found → connecting → error.
+    /// Drives the setup modal: searching → found → connecting, falling back to pairing guidance
+    /// when nothing is found or Bluetooth permission is denied.
     private(set) var discoveryState: PrinterDiscoveryState = .idle
 
     /// Whether a Bluetooth scan is currently running, so the multiple-printers list can show a live
@@ -65,6 +66,16 @@ final class POSPrinterConnectionController {
         discoveryTask?.cancel()
         connectTask?.cancel()
         statusTask?.cancel()
+    }
+
+    /// Opens setup with a search, so BLE and already-paired printers connect without the pair-in-Settings
+    /// step, which only appears if nothing is found. With Bluetooth permission denied discovery can't run,
+    /// so setup stays idle to offer Open Settings. A setup already underway is left as is.
+    func startSetup() {
+        guard discoveryState == .idle, bluetoothAuthorization != .denied else {
+            return
+        }
+        startDiscovery()
     }
 
     /// Starts a fresh Bluetooth discovery, clearing any previously skipped printers.
@@ -165,8 +176,8 @@ final class POSPrinterConnectionController {
         await service.disconnect()
     }
 
-    /// Tears down any in-flight discovery and returns to the pairing screen, so reopening the
-    /// modal always starts fresh.
+    /// Tears down any in-flight discovery and returns to idle, so reopening the modal starts a
+    /// fresh search.
     func cancelSetup() async {
         discoveryTask?.cancel()
         connectTask?.cancel()

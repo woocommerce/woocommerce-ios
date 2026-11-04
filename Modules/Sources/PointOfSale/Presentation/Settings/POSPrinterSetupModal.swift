@@ -3,8 +3,9 @@ import struct Yosemite.PrinterDevice
 import enum WooFoundation.BluetoothAuthorization
 import protocol WooFoundation.BluetoothAuthorizationProviding
 
-/// Drives the receipt-printer setup flow from a `POSPrinterConnectionController`, presenting
-/// pairing, discovery, connection, and error states. Dismisses itself once a printer connects.
+/// Drives the receipt-printer setup flow from a `POSPrinterConnectionController`, opening on a
+/// printer search and presenting discovery, connection, pairing guidance, and error states.
+/// Dismisses itself once a printer connects.
 struct POSPrinterSetupModal: View {
     @Binding var isPresented: Bool
     let controller: POSPrinterConnectionController
@@ -26,6 +27,9 @@ struct POSPrinterSetupModal: View {
                 if isConnected {
                     isPresented = false
                 }
+            }
+            .onAppear {
+                controller.startSetup()
             }
             .onDisappear {
                 Task {

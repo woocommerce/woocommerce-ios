@@ -33,9 +33,7 @@ struct POSPrinterSetupModal: View {
                 controller.startSetup(sessionID: setupSessionID)
             }
             .onDisappear {
-                Task {
-                    await controller.cancelSetup(sessionID: setupSessionID)
-                }
+                controller.cancelSetup(sessionID: setupSessionID)
             }
     }
 

@@ -58,9 +58,6 @@ final class POSPrinterConnectionController {
     /// The setup modal presentation that currently owns the flow. A modal closed and quickly reopened
     /// can run its teardown after the new one starts, so teardown only applies to the current session.
     private var setupSessionID: UUID?
-    /// The last teardown's service stop. The service stops whichever scan is active when the stop
-    /// lands, so the next scan waits for it rather than being ended by it.
-    private var pendingStop: Task<Void, Never>?
 
     init(service: ReceiptPrinterServiceProtocol,
          bluetoothAuthorizationProvider: BluetoothAuthorizationProviding = CoreBluetoothAuthorizationProvider()) {
@@ -110,12 +107,11 @@ final class POSPrinterConnectionController {
         hasShownMultiple = false
         isDiscovering = true
         discoveryState = .searching
-        discoveryTask = Task { [weak self, pendingStop] in
-            await pendingStop?.value
+        discoveryTask = Task { [weak self] in
             // Reach the stream through a transient `self` so the in-flight `for await` holds only a
             // weak reference; binding `self` strongly here would retain the controller (which owns
             // this task) and stop its deinit — and this task's cancellation — from running.
-            guard !Task.isCancelled, let stream = self?.service.discover() else { return }
+            guard let stream = self?.service.discover() else { return }
             do {
                 for try await device in stream {
                     // A cancelled discovery (a restart, or the merchant moving on to connecting)
@@ -190,18 +186,14 @@ final class POSPrinterConnectionController {
     }
 
     /// Tears down the session's in-flight discovery and returns to idle. Ignored once a newer
-    /// session has started, so a late teardown can't stop the reopened modal's search.
-    func cancelSetup(sessionID: UUID) async {
+    /// session has started. Cancelling the discovery task ends its stream, and the service then stops
+    /// that scan only, so a late teardown can't end the reopened modal's search.
+    func cancelSetup(sessionID: UUID) {
         guard sessionID == setupSessionID else {
             return
         }
         setupSessionID = nil
         resetSetup()
-        let stop = Task { [service] in
-            await service.stopDiscovery()
-        }
-        pendingStop = stop
-        await stop.value
     }
 
     private func resetSetup() {

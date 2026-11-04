@@ -210,7 +210,7 @@ custom_rules:
 
   pos_metrics_spacing:
     name: "POS Metrics Spacing"
-    regex: '(\.padding\((\.[a-zA-Z]+,\s*)?[1-9][0-9]*(\.[0-9]+)?\)|spacing:\s*[1-9][0-9]*(\.[0-9]+)?\s*[,)]|\.padding\((\.[a-zA-Z]+|\[[^\]]*\])?\))'
+    regex: '(\.padding\(\s*((\.(horizontal|vertical|top|bottom|leading|trailing|all)|\[[^\]]*\])\s*,\s*)?-?(0\.[0-9]*[1-9][0-9]*|[1-9][0-9]*(\.[0-9]+)?)\s*\)|spacing:\s*-?(0\.[0-9]*[1-9][0-9]*|[1-9][0-9]*(\.[0-9]+)?)\s*[,)]|\.padding\(\s*((\.(horizontal|vertical|top|bottom|leading|trailing|all)|\[[^\]]*\])\s*(,\s*nil\s*)?|nil\s*)?\))'
     message: "In POS, use spacing and padding from `POSMetrics` (`metrics.spacing.medium`, `.posPadding(\\.medium)`) so they adapt on phone. Do not use numbers or the SwiftUI default padding."
     included: Modules/Sources/PointOfSale/.*\.swift
     severity: error

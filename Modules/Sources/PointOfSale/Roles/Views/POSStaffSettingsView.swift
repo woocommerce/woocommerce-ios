@@ -3,6 +3,7 @@ import struct Yosemite.POSStaffMember
 import enum Yosemite.POSStaffPreset
 
 struct POSStaffSettingsView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.posAccessSession) private var session
 
@@ -28,18 +29,18 @@ struct POSStaffSettingsView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.staffTitle)
                 .foregroundColor(.posSurface)
 
             ScrollView {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     switch state {
                     case .idle, .loading:
                         ProgressView()
                             .progressViewStyle(POSProgressViewStyle(size: 20, lineWidth: 4))
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, POSPadding.xLarge)
+                            .padding(.vertical, metrics.padding.xLarge)
                     case .failed(let error):
                         staffLoadErrorView(error: error)
                     case .loaded(let staff):
@@ -52,7 +53,7 @@ struct POSStaffSettingsView: View {
                     }
                     footerText
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
             }
         }
         .background(Color.posSurface)
@@ -82,13 +83,13 @@ private extension POSStaffSettingsView {
     func staffListCard(staff: [POSStaffMember]) -> some View {
         let sortedStaff = sortedStaffMembers(staff)
         return POSInformationCard {
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 ForEach(Array(sortedStaff.enumerated()), id: \.element.userID) { index, member in
                     staffRow(member: member, isCurrentOperator: member.userID == currentOperatorID)
 
                     if index < sortedStaff.count - 1 {
                         Divider()
-                            .padding(.vertical, POSPadding.small)
+                            .padding(.vertical, metrics.padding.small)
                     }
                 }
             }
@@ -111,8 +112,8 @@ private extension POSStaffSettingsView {
     }
 
     func staffRow(member: POSStaffMember, isCurrentOperator: Bool) -> some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
+            VStack(alignment: .leading, spacing: metrics.padding.xSmall) {
                 Text(member.displayName)
                     .font(.posBodyMediumBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -128,7 +129,7 @@ private extension POSStaffSettingsView {
 
             pinStatusBadge(hasPIN: member.pin != nil)
         }
-        .padding(.vertical, POSPadding.xSmall)
+        .padding(.vertical, metrics.padding.xSmall)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -148,8 +149,8 @@ private extension POSStaffSettingsView {
         Text(Localization.signedInBadge)
             .font(.posCaptionRegular)
             .foregroundStyle(Color.posOnInfoLowest)
-            .padding(.horizontal, POSPadding.small)
-            .padding(.vertical, POSPadding.xSmall)
+            .padding(.horizontal, metrics.padding.small)
+            .padding(.vertical, metrics.padding.xSmall)
             .background(Color.posInfoLowest)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
     }
@@ -158,7 +159,7 @@ private extension POSStaffSettingsView {
     /// correctly for colourblind users and doesn't imply "No PIN" is an error — staff
     /// PIN setup is managed on the web, so a missing one is informational, not a warning.
     func pinStatusBadge(hasPIN: Bool) -> some View {
-        HStack(spacing: POSSpacing.small) {
+        HStack(spacing: metrics.spacing.small) {
             Image(systemName: hasPIN ? "lock.fill" : "lock.slash")
                 .foregroundStyle(hasPIN ? Color.posOnSurface : Color.posOnSurfaceVariantLowest)
             Text(hasPIN ? Localization.pinSetLabel : Localization.noPINLabel)
@@ -188,7 +189,7 @@ private extension POSStaffSettingsView {
     }
 
     func staffLoadErrorView(error: Error) -> some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             Text(Localization.staffLoadError)
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(.secondary)
@@ -202,7 +203,7 @@ private extension POSStaffSettingsView {
             .buttonStyle(POSOutlinedButtonStyle(size: .compact))
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, POSPadding.xLarge)
+        .padding(.vertical, metrics.padding.xLarge)
     }
 
     var footerText: some View {
@@ -210,7 +211,7 @@ private extension POSStaffSettingsView {
             .font(.posBodyMediumRegular())
             .foregroundStyle(.secondary)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, POSPadding.small)
+            .padding(.top, metrics.padding.small)
     }
 }
 

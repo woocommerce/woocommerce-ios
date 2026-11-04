@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSLockScreenView: View {
+    @Environment(\.posMetrics) private var metrics
     @State private var model: POSLockScreenModel
 
     init(session: POSAccessSession) {
@@ -16,7 +17,7 @@ struct POSLockScreenView: View {
             Color.posSurfaceContainerLow
                 .ignoresSafeArea()
 
-            VStack(spacing: POSPINEntryView.titleToPINSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 Text(Localization.title)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -33,7 +34,7 @@ struct POSLockScreenView: View {
                 .frame(height: POSPINEntryView.preferredHeight)
             }
             .frame(maxWidth: POSPINEntryView.contentWidth)
-            .padding(POSPadding.xxLarge)
+            .padding(metrics.padding.xxLarge)
         }
     }
 }

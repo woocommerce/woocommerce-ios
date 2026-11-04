@@ -4,6 +4,7 @@ import SwiftUI
 /// A view that displays when the Point of Sale (POS) feature is not available for the current store.
 /// Shows the specific reason why POS is ineligible and provides a button to re-check eligibility.
 struct POSIneligibleView: View {
+    @Environment(\.posMetrics) private var metrics
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
     @Environment(\.dismiss) private var dismiss
@@ -29,16 +30,16 @@ struct POSIneligibleView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 Spacer()
 
-                VStack(alignment: .center, spacing: POSSpacing.none) {
+                VStack(alignment: .center, spacing: metrics.spacing.none) {
                     POSErrorXMark()
 
                     Spacer()
-                        .frame(height: POSSpacing.medium)
+                        .frame(height: metrics.spacing.medium)
 
-                    VStack(spacing: POSSpacing.small) {
+                    VStack(spacing: metrics.spacing.small) {
                         Text(title)
                             .font(POSFontStyle.posHeadingBold.font())
                             .multilineTextAlignment(.center)
@@ -53,9 +54,9 @@ struct POSIneligibleView: View {
                     }
 
                     Spacer()
-                        .frame(height: POSSpacing.large)
+                        .frame(height: metrics.spacing.large)
 
-                    VStack(spacing: POSSpacing.medium) {
+                    VStack(spacing: metrics.spacing.medium) {
                         Button {
                             Task { @MainActor in
                                 do {
@@ -91,7 +92,7 @@ struct POSIneligibleView: View {
 
                 Spacer()
             }
-            .padding(POSPadding.large)
+            .padding(metrics.padding.large)
             .frame(maxWidth: .infinity, minHeight: scrollViewHeight > 0 ? scrollViewHeight : nil)
             .measureHeight { height in
                 contentHeight = height

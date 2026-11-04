@@ -376,8 +376,14 @@ extension PushNotificationsManager {
         guard let siteID else {
             return
         }
+        resetBadgeCount(type: type, siteID: siteID)
+    }
+
+    private func resetBadgeCount(type: Note.Kind, siteID: Int64) {
         let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
-            self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: false)
+            // The badge shows the selected store's count, which may differ from the reset store.
+            guard let self, let currentSiteID = self.siteID else { return }
+            loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: currentSiteID, type: type, postNotifications: false)
         }
         stores.dispatch(action)
     }
@@ -898,6 +904,10 @@ private extension PushNotificationsManager {
     func presentDetails(for notification: PushNotification) {
         if notification.kind != .comment {
             configuration.application.presentNotificationDetails(notification: notification)
+        }
+        // The Products tab clears this on appear, but it may already be visible when the push is opened.
+        if notification.kind == .storeStock {
+            resetBadgeCount(type: .storeStock, siteID: notification.siteID)
         }
     }
 }

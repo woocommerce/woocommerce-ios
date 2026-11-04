@@ -66,7 +66,8 @@ struct CartView: View {
                             .padding(.horizontal, metrics.padding.medium)
                             .padding(.top, metrics.padding.medium)
                             .padding(.bottom, horizontalSizeClass == .compact ?
-                                     POSCompactFooterLayout.bottomPadding(safeAreaInset: geometry.safeAreaInsets.bottom, metrics: metrics) : metrics.padding.medium)
+                                     POSCompactFooterLayout.bottomPadding(safeAreaInset: geometry.safeAreaInsets.bottom,
+                                                                          metrics: metrics) : metrics.padding.medium)
                             .accessibilityAddTraits(.isHeader)
                             .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
                             .zIndex(1)

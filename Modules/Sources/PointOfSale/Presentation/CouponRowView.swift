@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CouponRowView: View {
+    @Environment(\.posMetrics) private var metrics
     private let couponItem: Cart.CouponItem
     private let couponRowState: CouponRowState?
     private let onItemRemoveTapped: (() -> Void)?
@@ -20,7 +21,7 @@ struct CouponRowView: View {
     }
 
     private var dynamicSpacing: CGFloat {
-        Constants.titleSummarySpacing * (1 / scale)
+        metrics.spacing.xSmall * (1 / scale)
     }
 
     private var dimension: CGFloat {
@@ -39,7 +40,7 @@ struct CouponRowView: View {
     }
 
     var body: some View {
-        HStack(spacing: Constants.horizontalElementSpacing) {
+        HStack(spacing: metrics.spacing.medium) {
             POSCouponImageView(size: dimension, state: couponImageState)
                 .renderedIf(showImage)
 
@@ -67,7 +68,7 @@ struct CouponRowView: View {
             }
             .animation(.default, value: couponRowState)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, showImage ? 0 : Constants.cardContentHorizontalPadding)
+            .padding(.leading, showImage ? 0 : metrics.padding.medium)
             .accessibilityElement(children: .combine)
 
             if let onItemRemoveTapped {
@@ -76,11 +77,11 @@ struct CouponRowView: View {
                 }
             }
         }
-        .padding(.trailing, Constants.cardContentHorizontalPadding)
+        .padding(.trailing, metrics.padding.medium)
         .frame(maxWidth: .infinity, idealHeight: Constants.couponCardSize * scale)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .padding(.horizontal, Constants.horizontalPadding)
+        .padding(.horizontal, metrics.padding.medium)
         .geometryGroup()
         .accessibilityIdentifier("pos-cart-coupon-\(couponItem.posItemIdentifier.itemID)")
     }
@@ -90,11 +91,7 @@ private extension CouponRowView {
     enum Constants {
         static let couponCardSize: CGFloat = 96
         static let maximumCouponCardSize: CGFloat = Self.couponCardSize * 1.5
-        static let horizontalPadding: CGFloat = POSPadding.medium
-        static let horizontalElementSpacing: CGFloat = POSSpacing.medium
-        static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
         static let titleFont: POSFontStyle = .posBodySmallBold()
-        static let titleSummarySpacing: CGFloat = POSSpacing.xSmall
         static let summaryFont: POSFontStyle = .posBodySmallRegular()
     }
 }

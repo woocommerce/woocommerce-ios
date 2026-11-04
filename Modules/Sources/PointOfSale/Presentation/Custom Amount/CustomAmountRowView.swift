@@ -3,6 +3,7 @@ import class WooFoundation.CurrencyFormatter
 import struct Yosemite.POSCustomAmount
 
 struct CustomAmountRowView: View {
+    @Environment(\.posMetrics) private var metrics
     private let customAmount: POSCustomAmount
     private let showsDiscountNotAppliedNote: Bool
     private let onEdit: (() -> Void)?
@@ -26,11 +27,11 @@ struct CustomAmountRowView: View {
     }
 
     var body: some View {
-        HStack(spacing: Constants.horizontalElementSpacing) {
+        HStack(spacing: metrics.spacing.medium) {
             CustomAmountAvatar(name: customAmount.name)
                 .frame(width: dimension, height: dimension)
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall * (1 / scale)) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall * (1 / scale)) {
                 Text(customAmount.name)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.titleFont)
@@ -58,11 +59,11 @@ struct CustomAmountRowView: View {
                 CartRowRemoveButton(action: onRemove)
             }
         }
-        .padding(.trailing, Constants.cardContentHorizontalPadding)
+        .padding(.trailing, metrics.padding.medium)
         .frame(maxWidth: .infinity, idealHeight: Constants.iconSize * scale)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .padding(.horizontal, Constants.horizontalPadding)
+        .padding(.horizontal, metrics.padding.medium)
         .accessibilityIdentifier("pos-custom-amount-row")
     }
 
@@ -84,9 +85,6 @@ private extension CustomAmountRowView {
     enum Constants {
         static let iconSize: CGFloat = 96
         static let maximumIconSize: CGFloat = Self.iconSize * 1.5
-        static let horizontalPadding: CGFloat = POSPadding.medium
-        static let horizontalElementSpacing: CGFloat = POSSpacing.medium
-        static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
         static let titleFont: POSFontStyle = .posBodySmallBold()
         static let amountFont: POSFontStyle = .posBodySmallRegular()
     }

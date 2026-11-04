@@ -71,7 +71,7 @@ public final class StarPrinterService: PrinterDiscoveryService {
 /// Being an actor, it serializes all access on a single executor, so the discovery callbacks (funnelled
 /// in via `StarDiscoveryEvent`) and the `connect`/`disconnect`/`stopDiscovery` calls never interleave on
 /// shared state. This is what lets the rest of the file stay lock-free.
-private actor StarPrinterCoordinator {
+actor StarPrinterCoordinator {
     /// The in-flight discovery, if any. Compared by identity (`===`) so a superseded discovery that is
     /// still unwinding never mistakes itself for the current one once a newer discovery has replaced it.
     private var activeSession: DiscoverySession?
@@ -186,7 +186,9 @@ private actor StarPrinterCoordinator {
         }
 
         emit(.connecting)
-        let delegate = StarConnectionDelegate()
+        let delegate = StarConnectionDelegate { [weak self] delegate, error in
+            Task { await self?.handleCommunicationError(error, reportedBy: delegate) }
+        }
         starPrinter.printerDelegate = delegate
         do {
             try await starPrinter.open()
@@ -237,6 +239,35 @@ private actor StarPrinterCoordinator {
             }
             throw printerError
         }
+    }
+
+    /// StarIO10 has no disconnect callback: a printer that is turned off, goes out of range, or loses Bluetooth
+    /// only shows up as a communication error from the status monitor of the open connection.
+    func handleCommunicationError(_ error: any Error, reportedBy delegate: StarConnectionDelegate) async {
+        guard Self.isConnectionLoss(error,
+                                    reportedBy: delegate,
+                                    activeDelegate: connectionDelegate,
+                                    isConnecting: isConnecting) else {
+            return
+        }
+        DDLogInfo("🖨️ Printer connection lost")
+        await disconnect()
+    }
+
+    /// Each connection gets its own delegate, even a reconnect to the same `StarPrinter`, so the delegate identifies
+    /// the connection that reported the error. Reports from a replaced connection, repeats after `disconnect()` has
+    /// released the delegate, and reports during a `connect(to:)` (which drives its own status) are ignored.
+    static func isConnectionLoss(_ error: any Error,
+                                 reportedBy delegate: StarConnectionDelegate,
+                                 activeDelegate: StarConnectionDelegate?,
+                                 isConnecting: Bool) -> Bool {
+        guard delegate === activeDelegate, !isConnecting else {
+            return false
+        }
+        if case .connectionLost = PrinterError(printFailure: error) {
+            return true
+        }
+        return false
     }
 }
 
@@ -340,10 +371,18 @@ private final class StarDiscoveryDelegate: NSObject, StarDeviceDiscoveryManagerD
     }
 }
 
-/// Receives StarIO10 printer-status callbacks for a connected printer. Stateless: logs only.
-private final class StarConnectionDelegate: NSObject, PrinterDelegate {
+/// Receives StarIO10 printer-status callbacks for a connected printer. Logs them, and forwards communication errors
+/// so the coordinator can detect a dropped connection.
+final class StarConnectionDelegate: NSObject, PrinterDelegate {
+    private let onCommunicationError: @Sendable (StarConnectionDelegate, any Error) -> Void
+
+    init(onCommunicationError: @escaping @Sendable (StarConnectionDelegate, any Error) -> Void) {
+        self.onCommunicationError = onCommunicationError
+    }
+
     func printer(_ printer: StarPrinter, communicationErrorDidOccur error: any Error) {
         DDLogError("🖨️ Printer communication error: \(error.localizedDescription)")
+        onCommunicationError(self, error)
     }
 
     func printerIsReady(_ printer: StarPrinter) {

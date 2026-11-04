@@ -74,7 +74,7 @@ struct CustomAmountRowView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .multilineTextAlignment(.leading)
-        .padding(.trailing, Constants.horizontalElementSpacing)
+        .padding(.trailing, onRemove != nil ? Constants.horizontalElementSpacing : 0)
         .frame(maxWidth: .infinity, idealHeight: Constants.iconSize * scale)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)

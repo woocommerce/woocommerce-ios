@@ -273,7 +273,7 @@ private extension POSButtonSize {
 struct POSButtonStyle_Previews: View {
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
+            VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.xLarge) {
                 previewSection(title: "Filled Buttons - Normal",
                                variant: .filled, size: .normal)
 
@@ -295,7 +295,7 @@ struct POSButtonStyle_Previews: View {
                 LoadingStatePreviewSection(title: "Loading State Buttons - Extra Small", size: .extraSmall)
 
                 // Example with long text
-                VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.medium) {
                     Text("Long Text Examples")
                         .font(.headline)
 
@@ -311,7 +311,7 @@ struct POSButtonStyle_Previews: View {
     }
 
     private func previewSection(title: String, variant: POSButtonVariant, size: POSButtonSize) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.medium) {
             Text(title)
                 .font(.headline)
 
@@ -355,7 +355,7 @@ private struct LoadingPreviewSection: View {
     @State private var showsLoadingState: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.medium) {
             Text(title)
                 .font(.headline)
 
@@ -385,7 +385,7 @@ private struct LoadingStatePreviewSection: View {
     @State private var currentState: POSButtonState = .idle
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.medium) {
             Text(title)
                 .font(.headline)
 

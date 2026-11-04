@@ -368,6 +368,96 @@ struct POSPrinterConnectionControllerTests {
         #expect(service.discoverCallCount == 2)
         #expect(service.stopDiscoveryCallCount == 0)
     }
+
+    @Test func test_startSetup_when_bluetooth_is_powered_off_then_state_is_bluetoothOff() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        service.keepsDiscoveryOpen = true
+        service.emitBluetoothRadioState(.poweredOff)
+        let sut = await makeSubscribedController(service: service)
+
+        // When
+        sut.startSetup(sessionID: UUID())
+        await wait(on: sut, until: { sut.discoveryState == .bluetoothOff })
+
+        // Then
+        #expect(sut.discoveryState == .bluetoothOff)
+        #expect(!sut.isDiscovering)
+    }
+
+    @Test func test_bluetoothRadio_when_turned_off_while_connecting_then_state_is_bluetoothOff() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star SM-L200")
+        let service = MockReceiptPrinterService()
+        service.discoveredDevices = [device]
+        service.parkConnect = true
+        let sut = await makeSubscribedController(service: service)
+        await startSetupObservingRadio(sut, service: service)
+        await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
+        sut.connect(to: device)
+
+        // When
+        service.emitBluetoothRadioState(.poweredOff)
+        await wait(on: sut, until: { sut.discoveryState == .bluetoothOff })
+
+        // Then
+        #expect(sut.discoveryState == .bluetoothOff)
+        #expect(!sut.isConnected)
+    }
+
+    @Test func test_bluetoothRadio_when_turned_back_on_then_search_resumes() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star SM-L200")
+        let service = MockReceiptPrinterService()
+        service.emitBluetoothRadioState(.poweredOff)
+        let sut = await makeSubscribedController(service: service)
+        sut.startSetup(sessionID: UUID())
+        await wait(on: sut, until: { sut.discoveryState == .bluetoothOff })
+        service.discoveredDevices = [device]
+
+        // When
+        service.emitBluetoothRadioState(.poweredOn)
+        await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
+
+        // Then
+        #expect(sut.discoveryState == .foundOne(device))
+        #expect(service.discoverCallCount == 2)
+    }
+
+    @Test func test_startDiscovery_when_bluetooth_is_still_powered_off_then_stays_bluetoothOff_without_discovering() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        service.emitBluetoothRadioState(.poweredOff)
+        let sut = await makeSubscribedController(service: service)
+        sut.startSetup(sessionID: UUID())
+        await wait(on: sut, until: { sut.discoveryState == .bluetoothOff })
+        let discoverCallCount = service.discoverCallCount
+
+        // When
+        sut.startDiscovery()
+
+        // Then
+        #expect(sut.discoveryState == .bluetoothOff)
+        #expect(service.discoverCallCount == discoverCallCount)
+    }
+
+    @Test func test_startSetup_when_bluetooth_denied_and_powered_off_then_permission_wins_and_radio_is_not_observed() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        service.emitBluetoothRadioState(.poweredOff)
+        let provider = MockBluetoothAuthorizationProvider(authorization: .denied)
+        let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
+
+        // When
+        sut.startSetup(sessionID: UUID())
+        // A radio observation would be a main-actor task enqueued by `startSetup`, so it subscribes before this resumes.
+        await Task.yield()
+
+        // Then
+        #expect(sut.discoveryState == .idle)
+        #expect(service.bluetoothRadioStateSubscriptionCount == 0)
+        #expect(service.discoverCallCount == 0)
+    }
 }
 
 // MARK: - Helpers
@@ -390,6 +480,17 @@ private extension POSPrinterConnectionControllerTests {
             }
         }
         return controller
+    }
+
+    /// Starts setup and waits until the controller observes the radio, so radio states emitted afterwards reach it.
+    func startSetupObservingRadio(_ controller: POSPrinterConnectionController, service: MockReceiptPrinterService) async {
+        await withCheckedContinuation { continuation in
+            service.onBluetoothRadioStateSubscribed = {
+                continuation.resume()
+            }
+            controller.startSetup(sessionID: UUID())
+        }
+        service.onBluetoothRadioStateSubscribed = nil
     }
 
     /// Suspends until `condition` holds, re-arming observation after each change to the controller's

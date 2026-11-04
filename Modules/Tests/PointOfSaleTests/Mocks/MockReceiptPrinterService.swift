@@ -1,6 +1,7 @@
 import Foundation
 import struct Yosemite.PrinterDevice
 import enum Yosemite.PrinterConnectionStatus
+import enum Yosemite.BluetoothRadioState
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import struct Yosemite.ReceiptContent
 import struct Yosemite.ReceiptStoreInformation
@@ -13,6 +14,13 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
 
     private(set) var connectionStatus: PrinterConnectionStatus = .idle
     private var statusObservers: [AsyncStream<PrinterConnectionStatus>.Continuation] = []
+
+    private(set) var bluetoothRadioState: BluetoothRadioState = .poweredOn
+    private var radioStateObservers: [AsyncStream<BluetoothRadioState>.Continuation] = []
+
+    /// Fired when a `bluetoothRadioStateUpdates()` stream subscribes, so tests can wait for the controller
+    /// to start observing the radio before changing its state.
+    var onBluetoothRadioStateSubscribed: (() -> Void)?
 
     /// Devices emitted by `discover()`.
     var discoveredDevices: [PrinterDevice] = []
@@ -48,6 +56,7 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     // MARK: - Spies
 
     private(set) var discoverCallCount = 0
+    private(set) var bluetoothRadioStateSubscriptionCount = 0
     private(set) var stopDiscoveryCallCount = 0
     private(set) var connectedDevices: [PrinterDevice] = []
     private(set) var disconnectCallCount = 0
@@ -71,6 +80,23 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
         connectionStatus = status
         for continuation in statusObservers {
             continuation.yield(status)
+        }
+    }
+
+    func bluetoothRadioStateUpdates() -> AsyncStream<BluetoothRadioState> {
+        bluetoothRadioStateSubscriptionCount += 1
+        return AsyncStream { continuation in
+            continuation.yield(bluetoothRadioState)
+            radioStateObservers.append(continuation)
+            onBluetoothRadioStateSubscribed?()
+        }
+    }
+
+    /// Updates the radio state and forwards it to every active `bluetoothRadioStateUpdates()` stream.
+    func emitBluetoothRadioState(_ state: BluetoothRadioState) {
+        bluetoothRadioState = state
+        for continuation in radioStateObservers {
+            continuation.yield(state)
         }
     }
 

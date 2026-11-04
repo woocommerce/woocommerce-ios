@@ -287,6 +287,7 @@ public typealias PaymentIntent = Hardware.PaymentIntent
 public typealias PrintingResult = Hardware.PrintingResult
 public typealias PrinterDevice = Hardware.PrinterDevice
 public typealias PrinterConnectionStatus = Hardware.PrinterConnectionStatus
+public typealias BluetoothRadioState = Hardware.BluetoothRadioState
 public typealias PrinterError = Hardware.PrinterError
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
 public typealias CardPresentTransactionDetails = Hardware.CardPresentTransactionDetails

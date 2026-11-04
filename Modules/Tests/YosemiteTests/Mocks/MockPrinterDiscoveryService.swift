@@ -8,6 +8,7 @@ final class MockPrinterDiscoveryService: PrinterDiscoveryService {
     var discoveryError: Error?
     var connectError: Error?
     var printError: Error?
+    var bluetoothRadioState: BluetoothRadioState = .poweredOn
 
     // Spy properties
     private(set) var discoverWasCalled = false
@@ -32,6 +33,10 @@ final class MockPrinterDiscoveryService: PrinterDiscoveryService {
             continuation.yield(connectionStatus)
             statusObservers.append(continuation)
         }
+    }
+
+    func bluetoothRadioStateUpdates() -> AsyncStream<BluetoothRadioState> {
+        AsyncStream { $0.yield(bluetoothRadioState) }
     }
 
     func discover() -> AsyncThrowingStream<PrinterDevice, Error> {

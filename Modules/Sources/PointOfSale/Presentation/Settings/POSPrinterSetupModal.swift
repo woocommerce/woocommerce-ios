@@ -105,6 +105,10 @@ private struct POSPrinterSetupContent: View {
             deviceList(devices)
         case .connecting(let device):
             progressContent(message: String(format: Localization.connectingFormat, device.name))
+        case .bluetoothOff:
+            messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
+                           title: Localization.bluetoothOffTitle,
+                           message: Localization.bluetoothOffMessage)
         case .error:
             messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
                            title: Localization.errorTitle,
@@ -285,6 +289,18 @@ private extension POSPrinterSetupContent {
                 + "then search again.",
             comment: "Message shown when no receipt printers are discovered in POS settings.")
 
+        static let bluetoothOffTitle = NSLocalizedString(
+            "pos.printerSetup.bluetoothOff.title",
+            value: "Turn on Bluetooth",
+            comment: "Title shown during receipt printer setup in POS when the device's Bluetooth is switched off.")
+
+        static let bluetoothOffMessage = NSLocalizedString(
+            "pos.printerSetup.bluetoothOff.message",
+            value: "Bluetooth is turned off on this device. Turn it on in Control Center or in the Settings app "
+                + "under Bluetooth, and the search for your printer will continue.",
+            comment: "Message shown during receipt printer setup in POS when the device's Bluetooth is switched off. "
+                + "Tells the merchant where to turn it on; the search resumes automatically once it's on.")
+
         static let errorTitle = NSLocalizedString(
             "pos.printerSetup.error.title",
             value: "Something went wrong",
@@ -303,7 +319,7 @@ private extension POSPrinterSetupModal {
         switch controller.discoveryState {
         case .idle:
             return setupButtons(primaryTitle: Localization.connectButton)
-        case .noPrintersFound:
+        case .noPrintersFound, .bluetoothOff:
             return setupButtons(primaryTitle: Localization.searchAgainButton)
         case .error:
             return setupButtons(primaryTitle: Localization.searchAgainButton)
@@ -415,6 +431,13 @@ private extension POSPrinterSetupModal {
             bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .denied))
     )
     .posPreviewModalParentSize()
+}
+
+#Preview("Bluetooth off") {
+    POSPrinterSetupModal(isPresented: .constant(true),
+                         controller: POSPrinterConnectionController(
+                            service: POSReceiptPrinterPreviewService(bluetoothRadioState: .poweredOff)))
+        .posPreviewModalParentSize()
 }
 
 #Preview("Printer found") {

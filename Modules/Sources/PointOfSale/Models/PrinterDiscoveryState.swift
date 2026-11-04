@@ -15,5 +15,7 @@ public enum PrinterDiscoveryState: Hashable, Identifiable, Sendable {
     case foundOne(PrinterDevice)
     case foundMultiple([PrinterDevice])
     case connecting(PrinterDevice)
+    /// The Bluetooth radio is off, so the search waits for the merchant to turn it on.
+    case bluetoothOff
     case error
 }

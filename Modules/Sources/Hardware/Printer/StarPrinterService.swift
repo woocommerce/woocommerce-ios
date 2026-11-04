@@ -36,6 +36,10 @@ public final class StarPrinterService: PrinterDiscoveryService {
         }
     }
 
+    public func bluetoothRadioStateUpdates() -> AsyncStream<BluetoothRadioState> {
+        BluetoothRadioStateObserver.updates()
+    }
+
     public func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
         AsyncThrowingStream { [coordinator] continuation in
             let task = Task {

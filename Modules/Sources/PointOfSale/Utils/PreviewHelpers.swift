@@ -56,6 +56,7 @@ import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSItemIdentifier
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import enum Yosemite.PrinterConnectionStatus
+import enum Yosemite.BluetoothRadioState
 import struct Yosemite.PrinterDevice
 import struct Yosemite.ReceiptContent
 import struct Yosemite.ReceiptStoreInformation
@@ -793,6 +794,7 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
     private let keepDiscovering: Bool
     private let failsToConnect: Bool
     private let failsDiscovery: Bool
+    private let bluetoothRadioState: BluetoothRadioState
 
     /// - Parameters:
     ///   - devices: printers the discovery stream yields, so previews can land on the found states.
@@ -800,18 +802,25 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
     ///     scanning indicator visible instead of ending the scan.
     ///   - failsToConnect: when `true`, `connect(to:)` throws so previews can land on the error state.
     ///   - failsDiscovery: when `true`, `discover()` throws so previews can land on the error state.
+    ///   - bluetoothRadioState: the radio state reported to the setup flow, so previews can land on Turn on Bluetooth.
     init(devices: [PrinterDevice] = [],
          keepDiscovering: Bool = false,
          failsToConnect: Bool = false,
-         failsDiscovery: Bool = false) {
+         failsDiscovery: Bool = false,
+         bluetoothRadioState: BluetoothRadioState = .poweredOn) {
         self.devices = devices
         self.keepDiscovering = keepDiscovering
         self.failsToConnect = failsToConnect
         self.failsDiscovery = failsDiscovery
+        self.bluetoothRadioState = bluetoothRadioState
     }
 
     func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
         AsyncStream { $0.yield(.idle) }
+    }
+
+    func bluetoothRadioStateUpdates() -> AsyncStream<BluetoothRadioState> {
+        AsyncStream { $0.yield(bluetoothRadioState) }
     }
 
     func discover() -> AsyncThrowingStream<PrinterDevice, Error> {

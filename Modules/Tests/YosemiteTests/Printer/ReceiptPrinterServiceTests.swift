@@ -29,6 +29,22 @@ struct ReceiptPrinterServiceTests {
         #expect(status == .connected(device))
     }
 
+    @Test func test_bluetoothRadioStateUpdates_forwards_service_stream() async {
+        // Given
+        let sut = makeService()
+        printerDiscoveryService.bluetoothRadioState = .poweredOff
+
+        // When
+        var state: BluetoothRadioState?
+        for await update in sut.bluetoothRadioStateUpdates() {
+            state = update
+            break
+        }
+
+        // Then
+        #expect(state == .poweredOff)
+    }
+
     @Test func test_discover_forwards_service_stream_yielding_devices() async throws {
         // Given
         let sut = makeService()

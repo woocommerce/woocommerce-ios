@@ -7,6 +7,10 @@ public protocol PrinterDiscoveryService: AnyObject {
     /// current status immediately on subscription and then emits every subsequent change.
     func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus>
 
+    /// Streams whether the Bluetooth radio is on, starting with the current state. Subscribing can show the
+    /// Bluetooth permission prompt when the merchant hasn't been asked yet, as discovery does.
+    func bluetoothRadioStateUpdates() -> AsyncStream<BluetoothRadioState>
+
     /// Starts discovering available printers, emitting each device as it is found.
     func discover() -> AsyncThrowingStream<PrinterDevice, Error>
 

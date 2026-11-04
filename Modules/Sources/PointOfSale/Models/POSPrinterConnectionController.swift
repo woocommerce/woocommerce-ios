@@ -3,6 +3,7 @@ import Observation
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import struct Yosemite.PrinterDevice
 import enum Yosemite.PrinterConnectionStatus
+import enum Yosemite.BluetoothRadioState
 import enum WooFoundation.BluetoothAuthorization
 import protocol WooFoundation.BluetoothAuthorizationProviding
 import struct WooFoundation.CoreBluetoothAuthorizationProvider
@@ -16,7 +17,7 @@ import struct WooFoundation.CoreBluetoothAuthorizationProvider
 @Observable
 final class POSPrinterConnectionController {
     /// Drives the setup modal: searching → found → connecting, falling back to pairing guidance
-    /// when nothing is found or Bluetooth permission is denied.
+    /// when nothing is found or Bluetooth permission is denied, and to Turn on Bluetooth when the radio is off.
     private(set) var discoveryState: PrinterDiscoveryState = .idle
 
     /// Whether a Bluetooth scan is currently running, so the multiple-printers list can show a live
@@ -47,6 +48,9 @@ final class POSPrinterConnectionController {
     private var discoveryTask: Task<Void, Never>?
     private var connectTask: Task<Void, Never>?
     private var statusTask: Task<Void, Never>?
+    private var radioStateTask: Task<Void, Never>?
+    /// The latest radio state reported during the current setup session.
+    private var bluetoothRadioState: BluetoothRadioState = .unknown
 
     /// Printers found in the current scan, excluding duplicates and skipped devices.
     private var discoveredDevices: [PrinterDevice] = []
@@ -70,11 +74,13 @@ final class POSPrinterConnectionController {
         discoveryTask?.cancel()
         connectTask?.cancel()
         statusTask?.cancel()
+        radioStateTask?.cancel()
     }
 
     /// Opens setup with a search, so BLE and already-paired printers connect without the pair-in-Settings
     /// step, which only appears if nothing is found. With Bluetooth permission denied discovery can't run,
-    /// so setup stays idle to offer Open Settings. Repeated calls for the same session leave it as is.
+    /// so setup stays idle to offer Open Settings, without watching the radio. Repeated calls for the same
+    /// session leave it as is.
     func startSetup(sessionID: UUID) {
         guard sessionID != setupSessionID else {
             return
@@ -84,6 +90,7 @@ final class POSPrinterConnectionController {
         guard bluetoothAuthorization != .denied else {
             return
         }
+        observeBluetoothRadioState()
         startDiscovery()
     }
 
@@ -102,6 +109,10 @@ final class POSPrinterConnectionController {
     }
 
     private func beginDiscovery() {
+        guard bluetoothRadioState != .poweredOff else {
+            discoveryState = .bluetoothOff
+            return
+        }
         discoveryTask?.cancel()
         discoveredDevices = []
         hasShownMultiple = false
@@ -199,11 +210,43 @@ final class POSPrinterConnectionController {
     private func resetSetup() {
         discoveryTask?.cancel()
         connectTask?.cancel()
+        radioStateTask?.cancel()
+        bluetoothRadioState = .unknown
         isDiscovering = false
         discoveredDevices = []
         skippedDeviceIDs = []
         hasShownMultiple = false
         discoveryState = .idle
+    }
+
+    private func observeBluetoothRadioState() {
+        // Weak `self`, as in `observeConnectionStatus()`, so the open-ended loop doesn't keep the controller alive.
+        radioStateTask = Task { [weak self] in
+            guard let updates = self?.service.bluetoothRadioStateUpdates() else { return }
+            for await state in updates {
+                guard !Task.isCancelled, let self else { return }
+                handleBluetoothRadioState(state)
+            }
+        }
+    }
+
+    /// Turning the radio off replaces any search, result or connect with Turn on Bluetooth, since none of them
+    /// can succeed without it. Turning it back on resumes with a fresh search.
+    private func handleBluetoothRadioState(_ state: BluetoothRadioState) {
+        bluetoothRadioState = state
+        switch state {
+        case .poweredOff:
+            discoveryTask?.cancel()
+            connectTask?.cancel()
+            isDiscovering = false
+            discoveredDevices = []
+            hasShownMultiple = false
+            discoveryState = .bluetoothOff
+        case .poweredOn where discoveryState == .bluetoothOff:
+            startDiscovery()
+        case .poweredOn, .unknown:
+            break
+        }
     }
 
     private func observeConnectionStatus() {

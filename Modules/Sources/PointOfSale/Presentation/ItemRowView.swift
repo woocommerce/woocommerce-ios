@@ -7,10 +7,11 @@ struct ItemRowView: View {
     private let onCancelLoading: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.posMetrics) private var metrics
     @Binding private var showProductImage: Bool
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        min(metrics.cartRowSize * scale, metrics.cartRowSize * Constants.maximumCardSizeMultiplier)
     }
 
     init(cartItem: Cart.PurchasableItem,
@@ -27,7 +28,7 @@ struct ItemRowView: View {
 
     var body: some View {
         itemRow
-            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.horizontal, metrics.padding.medium)
             .geometryGroup()
             .accessibilityLabel(accessibilityLabel)
             .accessibilityIdentifier(accessibilityIdentifier)
@@ -52,12 +53,12 @@ struct ItemRowView: View {
 
     @ViewBuilder
     private var productRow: some View {
-        HStack(spacing: Constants.horizontalElementSpacing) {
+        HStack(spacing: metrics.spacing.medium) {
             productImage
                 .frame(width: dimension)
                 .frame(minHeight: dimension)
 
-            VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall * (1 / scale)) {
                 Text(cartItem.title)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)
@@ -83,15 +84,15 @@ struct ItemRowView: View {
             .multilineTextAlignment(.leading)
             .lineLimit(Constants.titleSubtitleLineLimit)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalPadding * (1 / scale))
+            .padding(.leading, showProductImage ? 0 : metrics.padding.medium * (1 / scale))
+            .padding(.vertical, metrics.padding.small * (1 / scale))
             if let onItemRemoveTapped {
                 CartRowRemoveButton {
                     onItemRemoveTapped()
                 }
             }
         }
-        .padding(.trailing, Constants.cardContentHorizontalPadding)
+        .padding(.trailing, metrics.padding.medium)
         .frame(maxWidth: .infinity, minHeight: dimension, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
@@ -155,13 +156,7 @@ private extension ItemRowView {
     }
 
     enum Constants {
-        static let productCardSize: CGFloat = 96
-        static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
-        static let horizontalPadding: CGFloat = POSPadding.medium
-        static let verticalPadding: CGFloat = POSPadding.small
-        static let horizontalElementSpacing: CGFloat = POSSpacing.medium
-        static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
-        static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall
+        static let maximumCardSizeMultiplier: CGFloat = 1.5
         static let itemTitleFont: POSFontStyle = .posBodySmallBold()
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
@@ -171,8 +166,8 @@ private extension ItemRowView {
             titleFont: Constants.itemTitleFont,
             detailFont: Constants.itemPriceFont,
             detailPlaceholderLength: (regular: 25, accessibility: 4),
-            cardSize: Constants.productCardSize,
-            maximumCardSize: Constants.maximumProductCardSize,
+            cardSize: \.cartRowSize,
+            maximumCardSizeMultiplier: Constants.maximumCardSizeMultiplier,
             backgroundColor: Color.posSurfaceContainerLowest
         )
     }

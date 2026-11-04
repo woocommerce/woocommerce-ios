@@ -100,6 +100,7 @@ fileprivate enum POSButtonVariant {
 
 private struct POSButtonStyleInternal: View {
     @Environment(\.isEnabled) var isEnabled
+    @Environment(\.posMetrics) private var metrics
 
     let configuration: ButtonStyleConfiguration
     let variant: POSButtonVariant
@@ -119,8 +120,8 @@ private struct POSButtonStyleInternal: View {
                 }
             }
         }
-        .padding(.vertical, size.padding.vertical)
-        .padding(.horizontal, size.padding.horizontal)
+        .padding(.vertical, size.padding(in: metrics).vertical)
+        .padding(.horizontal, size.padding(in: metrics).horizontal)
         .font(size.font)
         .background(backgroundColor)
         .foregroundColor(foregroundColor)
@@ -220,14 +221,14 @@ private extension POSButtonStyleInternal {
 // MARK: - POSButtonSize Extensions
 
 private extension POSButtonSize {
-    var padding: (vertical: CGFloat, horizontal: CGFloat) {
+    func padding(in metrics: POSMetrics) -> (vertical: CGFloat, horizontal: CGFloat) {
         switch self {
         case .normal:
-            (vertical: POSPadding.large, horizontal: POSPadding.large)
+            (vertical: metrics.padding.large, horizontal: metrics.padding.large)
         case .extraSmall:
-            (vertical: POSPadding.small, horizontal: POSPadding.medium)
+            (vertical: metrics.padding.small, horizontal: metrics.padding.medium)
         case .compact:
-            (vertical: POSPadding.small, horizontal: POSPadding.medium)
+            (vertical: metrics.padding.small, horizontal: metrics.padding.medium)
         }
     }
 

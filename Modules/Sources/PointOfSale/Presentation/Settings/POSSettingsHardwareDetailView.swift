@@ -79,7 +79,7 @@ struct POSSettingsHardwareDetailView: View {
                                 .foregroundStyle(.secondary)
                                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
-                        .padding()
+                        .posPadding(\.medium)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color.posSurfaceContainerLowest)
                         .posItemCardBorderStyles()
@@ -716,7 +716,7 @@ private extension POSSettingsHardwareDetailView {
                         .foregroundStyle(.secondary)
                 }
             }
-            .padding()
+            .posPadding(\.medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.posSurfaceContainerLowest)
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)

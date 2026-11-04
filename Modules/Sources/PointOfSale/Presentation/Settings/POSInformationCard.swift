@@ -9,7 +9,7 @@ struct POSInformationCard<Content: View>: View {
 
     var body: some View {
         content
-            .padding()
+            .posPadding(\.medium)
             .frame(maxWidth: .infinity)
             .background(Color.posSurfaceContainerLowest)
             .posItemCardBorderStyles()

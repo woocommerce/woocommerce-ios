@@ -116,7 +116,7 @@ extension POSSettingsView {
                         .font(.posBodyMediumBold)
                         .foregroundStyle(Color.posOnSurface)
                 }
-                .padding()
+                .posPadding(\.medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .contentShape(Rectangle())

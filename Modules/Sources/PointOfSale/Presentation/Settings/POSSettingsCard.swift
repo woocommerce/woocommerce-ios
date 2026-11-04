@@ -32,7 +32,7 @@ struct POSSettingsCard: View {
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(.secondary)
             }
-            .padding()
+            .posPadding(\.medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.posSurfaceContainerLowest)
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)

@@ -11,6 +11,7 @@ struct POSPrinterSetupModal: View {
     let controller: POSPrinterConnectionController
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var setupSessionID = UUID()
 
     private var isCompactWidth: Bool {
         horizontalSizeClass == .compact
@@ -29,11 +30,11 @@ struct POSPrinterSetupModal: View {
                 }
             }
             .onAppear {
-                controller.startSetup()
+                controller.startSetup(sessionID: setupSessionID)
             }
             .onDisappear {
                 Task {
-                    await controller.cancelSetup()
+                    await controller.cancelSetup(sessionID: setupSessionID)
                 }
             }
     }
@@ -423,7 +424,6 @@ private extension POSPrinterSetupModal {
         service: POSReceiptPrinterPreviewService(
             devices: [PrinterDevice(id: "1", name: "Star TSP100")],
             keepDiscovering: true))
-    controller.startDiscovery()
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
 }
@@ -431,7 +431,6 @@ private extension POSPrinterSetupModal {
 #Preview("Discovery error") {
     let controller = POSPrinterConnectionController(
         service: POSReceiptPrinterPreviewService(failsDiscovery: true))
-    controller.startDiscovery()
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
 }
@@ -440,9 +439,11 @@ private extension POSPrinterSetupModal {
     let device = PrinterDevice(id: "1", name: "Star TSP100")
     let controller = POSPrinterConnectionController(
         service: POSReceiptPrinterPreviewService(devices: [device], failsToConnect: true))
-    controller.connect(to: device)
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
+        .task {
+            controller.connect(to: device)
+        }
 }
 
 #Preview("Several printers found") {
@@ -451,7 +452,6 @@ private extension POSPrinterSetupModal {
             devices: [PrinterDevice(id: "1", name: "Star TSP100"),
                       PrinterDevice(id: "2", name: "Star mC-Print3")],
             keepDiscovering: true))
-    controller.startDiscovery()
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
 }

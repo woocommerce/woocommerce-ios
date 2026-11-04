@@ -1,3 +1,4 @@
+import Foundation
 import Observation
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import struct Yosemite.PrinterDevice
@@ -54,6 +55,9 @@ final class POSPrinterConnectionController {
     /// Latches once two or more printers have been seen, so the flow stays on the list rather than
     /// snapping back to the single-printer modal.
     private var hasShownMultiple = false
+    /// The setup modal presentation that currently owns the flow. A modal closed and quickly reopened
+    /// can run its teardown after the new one starts, so teardown only applies to the current session.
+    private var setupSessionID: UUID?
 
     init(service: ReceiptPrinterServiceProtocol,
          bluetoothAuthorizationProvider: BluetoothAuthorizationProviding = CoreBluetoothAuthorizationProvider()) {
@@ -70,9 +74,14 @@ final class POSPrinterConnectionController {
 
     /// Opens setup with a search, so BLE and already-paired printers connect without the pair-in-Settings
     /// step, which only appears if nothing is found. With Bluetooth permission denied discovery can't run,
-    /// so setup stays idle to offer Open Settings. A setup already underway is left as is.
-    func startSetup() {
-        guard discoveryState == .idle, bluetoothAuthorization != .denied else {
+    /// so setup stays idle to offer Open Settings. Repeated calls for the same session leave it as is.
+    func startSetup(sessionID: UUID) {
+        guard sessionID != setupSessionID else {
+            return
+        }
+        setupSessionID = sessionID
+        resetSetup()
+        guard bluetoothAuthorization != .denied else {
             return
         }
         startDiscovery()
@@ -176,9 +185,18 @@ final class POSPrinterConnectionController {
         await service.disconnect()
     }
 
-    /// Tears down any in-flight discovery and returns to idle, so reopening the modal starts a
-    /// fresh search.
-    func cancelSetup() async {
+    /// Tears down the session's in-flight discovery and returns to idle. Ignored once a newer
+    /// session has started, so a late teardown can't stop the reopened modal's search.
+    func cancelSetup(sessionID: UUID) async {
+        guard sessionID == setupSessionID else {
+            return
+        }
+        setupSessionID = nil
+        resetSetup()
+        await service.stopDiscovery()
+    }
+
+    private func resetSetup() {
         discoveryTask?.cancel()
         connectTask?.cancel()
         isDiscovering = false
@@ -186,7 +204,6 @@ final class POSPrinterConnectionController {
         skippedDeviceIDs = []
         hasShownMultiple = false
         discoveryState = .idle
-        await service.stopDiscovery()
     }
 
     private func observeConnectionStatus() {

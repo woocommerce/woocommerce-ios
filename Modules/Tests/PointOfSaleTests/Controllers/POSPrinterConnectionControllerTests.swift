@@ -230,7 +230,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
 
         // When
-        sut.startSetup()
+        sut.startSetup(sessionID: UUID())
 
         // Then
         #expect(sut.discoveryState == .searching)
@@ -247,7 +247,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service)
 
         // When
-        sut.startSetup()
+        sut.startSetup(sessionID: UUID())
         await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
         sut.connect(to: device)
         await wait(on: sut, until: { sut.isConnected })
@@ -263,7 +263,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service)
 
         // When
-        sut.startSetup()
+        sut.startSetup(sessionID: UUID())
         await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
 
         // Then
@@ -278,7 +278,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
 
         // When
-        sut.startSetup()
+        sut.startSetup(sessionID: UUID())
 
         // Then
         #expect(sut.discoveryState == .idle)
@@ -286,37 +286,74 @@ struct POSPrinterConnectionControllerTests {
         #expect(service.discoverCallCount == 0)
     }
 
-    @Test func test_startSetup_when_setup_already_underway_then_does_not_restart_discovery() async {
+    @Test func test_startSetup_when_called_again_for_same_session_then_does_not_restart_discovery() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star SM-L200")
         let service = MockReceiptPrinterService()
         service.discoveredDevices = [device]
         let sut = await makeSubscribedController(service: service)
-        sut.startSetup()
+        let sessionID = UUID()
+        sut.startSetup(sessionID: sessionID)
         await wait(on: sut, until: { sut.discoveryState == .foundOne(device) && !sut.isDiscovering })
 
         // When
-        sut.startSetup()
+        sut.startSetup(sessionID: sessionID)
 
         // Then
         #expect(sut.discoveryState == .foundOne(device))
         #expect(service.discoverCallCount == 1)
     }
 
+    @Test func test_cancelSetup_when_session_is_current_then_resets_to_idle_and_stops_discovery() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let sut = await makeSubscribedController(service: service)
+        let sessionID = UUID()
+        sut.startSetup(sessionID: sessionID)
+        await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
+
+        // When
+        await sut.cancelSetup(sessionID: sessionID)
+
+        // Then
+        #expect(sut.discoveryState == .idle)
+        #expect(service.stopDiscoveryCallCount == 1)
+    }
+
     @Test func test_startSetup_when_called_after_cancelSetup_then_searches_again() async {
         // Given
         let service = MockReceiptPrinterService()
         let sut = await makeSubscribedController(service: service)
-        sut.startSetup()
+        let firstSessionID = UUID()
+        sut.startSetup(sessionID: firstSessionID)
         await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
-        await sut.cancelSetup()
+        await sut.cancelSetup(sessionID: firstSessionID)
 
         // When
-        sut.startSetup()
+        sut.startSetup(sessionID: UUID())
         await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
 
         // Then
         #expect(service.discoverCallCount == 2)
+    }
+
+    @Test func test_cancelSetup_when_modal_reopened_before_previous_teardown_then_new_search_is_kept() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let sut = await makeSubscribedController(service: service)
+        let closedSessionID = UUID()
+        sut.startSetup(sessionID: closedSessionID)
+        await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
+
+        // When
+        sut.startSetup(sessionID: UUID())
+        await sut.cancelSetup(sessionID: closedSessionID)
+        await wait(on: sut, until: { !sut.isDiscovering })
+
+        // Then
+        #expect(sut.discoveryState == .noPrintersFound)
+        #expect(service.discoverCallCount == 2)
+        #expect(service.stopDiscoveryCallCount == 0)
     }
 }
 

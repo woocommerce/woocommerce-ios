@@ -13,6 +13,61 @@ import enum WooFoundationCore.WooAnalyticsStat
 struct POSPaymentModelTests {
 
     @Test @MainActor
+    func test_start_payment_when_reader_disconnects_during_cancellation_then_does_not_collect() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .bluetooth,
+                                        cardPaymentSelectionMode: .compact)
+        service.onCancelPaymentCalled = {
+            service.connectedReader = nil
+        }
+
+        // When
+        await sut.startPayment()
+
+        // Then
+        #expect(sut.cardReaderConnectionStatus == .disconnected)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.isPaymentSessionActive == false)
+    }
+
+    @Test @MainActor
+    func test_start_payment_when_reader_reconnects_after_cancellation_then_resumes_collection() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let reader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        service.connectedReader = reader
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .bluetooth,
+                                        cardPaymentSelectionMode: .compact)
+        service.onCancelPaymentCalled = {
+            service.connectedReader = nil
+        }
+        await sut.startPayment()
+        service.onCancelPaymentCalled = nil
+
+        // When
+        await withCheckedContinuation { continuation in
+            service.onCollectPaymentCalled = { continuation.resume() }
+            service.connectedReader = reader
+        }
+
+        // Then
+        #expect(service.spyCollectPaymentOrders.count == 1)
+        #expect(service.connectReaderCallCount == 0)
+    }
+
+    @Test @MainActor
     func test_start_payment_when_reader_connected_then_prepares_analytics_with_checkout_order() async {
         // Given
         let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()

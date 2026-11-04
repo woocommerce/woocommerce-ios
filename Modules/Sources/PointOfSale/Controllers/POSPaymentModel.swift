@@ -522,6 +522,14 @@ extension POSPaymentModel {
             return
         }
 
+        // The reader can disconnect while cancellation is suspended. Collecting now would
+        // start reader discovery through preflight without an explicit connection request.
+        guard case .connected = cardReaderConnectionStatus else {
+            currentPaymentMethod = nil
+            await startPaymentFlow(using: method)
+            return
+        }
+
         DDLogInfo("🃏 [CardPayment] startPayment proceeding to collectCardPayment")
         currentPaymentMethod = method
         isAwaitingExplicitPaymentStart = false

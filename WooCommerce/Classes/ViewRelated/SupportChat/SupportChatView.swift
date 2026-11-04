@@ -9,6 +9,11 @@ struct SupportChatView: View {
 
     var body: some View {
         chatView
+            .sheet(item: $viewModel.storeAdminURL, onDismiss: {
+                Task { await viewModel.executeAction(.retryDiagnostics) }
+            }) { url in
+                AuthenticatableWebView(url: url)
+            }
             .background(Color(.listBackground))
             .navigationTitle(Localization.contactSupport)
             .navigationBarTitleDisplayMode(.inline)

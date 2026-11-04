@@ -67,8 +67,8 @@ final class POSPrinterConnectionController {
     /// can run its teardown after the new one starts, so teardown only applies to the current session.
     private var setupSessionID: UUID?
     private var setupSource: POSPrinterSetupSource?
-    /// The source of the setup session whose connect is in flight. Cleared when that session ends, so a
-    /// connect that completes after the modal closed and reopened doesn't complete the newer session.
+    /// The source of the setup session whose connect is in flight. Cleared when that session ends or its
+    /// connect fails, so an earlier connect that completes after the modal reopened can't complete the newer session.
     private var connectingSetupSource: POSPrinterSetupSource?
 
     init(service: ReceiptPrinterServiceProtocol,
@@ -194,6 +194,7 @@ final class POSPrinterConnectionController {
                 // A superseded connect (another printer tapped, or setup cancelled) must not
                 // report an error over the newer flow.
                 guard !Task.isCancelled, let self else { return }
+                connectingSetupSource = nil
                 discoveryState = .error
             }
         }

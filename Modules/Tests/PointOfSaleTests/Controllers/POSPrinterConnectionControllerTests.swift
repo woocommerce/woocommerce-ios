@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import Observation
 import struct Yosemite.PrinterDevice
+import enum Yosemite.PrinterError
 import enum WooFoundation.BluetoothAuthorization
 @testable import PointOfSale
 
@@ -485,6 +486,38 @@ struct POSPrinterConnectionControllerTests {
         sut.startSetup(sessionID: UUID(), source: .printReceipt)
 
         // When — the connect started from Settings finishes inside the Print receipt session.
+        service.emitConnectionStatus(.connected(device))
+        await wait(on: sut, until: { sut.isConnected })
+
+        // Then
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
+                                                      "receipt_printer_setup_started",
+                                                      "receipt_printer_connected"])
+    }
+
+    @Test func test_connect_when_reopened_session_attempt_is_rejected_then_earlier_connect_does_not_complete_it() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let analytics = MockPOSAnalytics()
+        let service = MockReceiptPrinterService()
+        service.parkConnect = true
+        let sut = await makeSubscribedController(service: service, analytics: analytics)
+        let settingsSessionID = UUID()
+        sut.startSetup(sessionID: settingsSessionID, source: .settings)
+        await withCheckedContinuation { continuation in
+            service.onConnectSubscribed = {
+                continuation.resume()
+            }
+            sut.connect(to: device)
+        }
+        sut.cancelSetup(sessionID: settingsSessionID)
+        sut.startSetup(sessionID: UUID(), source: .printReceipt)
+        service.parkConnect = false
+        service.connectError = PrinterError.connectionInProgress
+        sut.connect(to: device)
+        await wait(on: sut, until: { sut.discoveryState == .error })
+
+        // When — the connect started from Settings finishes after the reopened session's attempt was rejected.
         service.emitConnectionStatus(.connected(device))
         await wait(on: sut, until: { sut.isConnected })
 

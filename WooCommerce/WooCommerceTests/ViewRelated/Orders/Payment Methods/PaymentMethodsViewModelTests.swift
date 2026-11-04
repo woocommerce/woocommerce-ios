@@ -278,6 +278,58 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedError)
     }
 
+    func test_cash_payment_when_card_refresh_is_pending_then_waits_before_updating_order() async throws {
+        // Given
+        let order = Order.fake().copy(status: .pending)
+        storage.insertSampleOrder(readOnlyOrder: order)
+        let refreshStarted = expectation(description: "Starts the failed card refresh")
+        var completeRefresh: (@Sendable (Result<Order, Error>) -> Void)?
+        var cashUpdateRequested = false
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .retrieveOrderRemotely(_, _, completion):
+                completeRefresh = completion
+                refreshStarted.fulfill()
+            case let .updateOrder(_, updatedOrder, _, _, _, completion):
+                cashUpdateRequested = true
+                completion(.success(updatedOrder))
+            case let .retrieveOrder(_, _, completion):
+                completion(order.copy(status: .completed), nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let viewModel = PaymentMethodsViewModel(siteID: order.siteID, orderID: order.orderID,
+                                                total: "12", formattedTotal: "$12.00", flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: Dependencies(stores: stores, storage: storage))
+        let error: CardReaderServiceError = .paymentCapture(
+            underlyingError: .paymentDeclinedByPaymentProcessorAPI(declineReason: .pinRequired))
+        viewModel.collectPayment(using: .tapToPay, on: UIViewController(),
+                                 useCase: MockCollectOrderPaymentUseCase(onCollectResult: .failure(error)),
+                                 onSuccess: {}, onFailure: { XCTFail("Should stay on payment methods") })
+        await fulfillment(of: [refreshStarted], timeout: 2)
+        let cashStarted = expectation(description: "Starts the cash payment")
+        viewModel.$showLoadingIndicator.filter { $0 }.first().sink { _ in
+            cashStarted.fulfill()
+        }.store(in: &subscriptions)
+
+        // When
+        let cashPayment = Task { await viewModel.markOrderAsPaidByCash(with: nil) }
+        await fulfillment(of: [cashStarted], timeout: 2)
+
+        // Then
+        XCTAssertFalse(cashUpdateRequested, "The older card response must be saved before the cash update")
+
+        // When
+        try XCTUnwrap(completeRefresh)(.success(order))
+        await cashPayment.value
+
+        // Then
+        XCTAssertTrue(cashUpdateRequested)
+        XCTAssertFalse(viewModel.showLoadingIndicator)
+    }
+
     func test_completed_event_is_tracked_after_marking_order_as_paid() async {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in

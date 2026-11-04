@@ -3,7 +3,7 @@
 
 26.1
 -----
-- [**] POS: Point of Sale is now available on iPhone in all countries where it works on iPad, on iOS 18 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
+- [**] POS: Point of Sale is now available on iPhone in the US, Canada, Australia and Puerto Rico, and on iOS 18 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
 
 
 26.0

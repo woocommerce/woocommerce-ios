@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import class WooFoundation.CurrencySettings
 import protocol WooFoundation.ConnectivityObserver
 import enum WooFoundation.CountryCode
@@ -17,19 +18,25 @@ import enum Yosemite.POSCountryCurrencyValidator
 @MainActor
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site
+    private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
     private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
     private let featureFlagService: FeatureFlagService
     private let connectivityObserver: ConnectivityObserver
 
+    /// Phone POS opens in the remaining POS countries together with Tap to Pay there (WOOMOB-4521).
+    static let phoneSupportedCountries: [CountryCode] = [.GB, .US, .PR, .CA, .AU]
+
     init(site: Site,
+         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
         self.site = site
+        self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
         self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
@@ -130,6 +137,10 @@ private extension POSTabVisibilityChecker {
         // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
+
+        if userInterfaceIdiom == .phone, !Self.phoneSupportedCountries.contains(countryCode) {
+            return .ineligible(reason: .unsupportedCountry(supportedCountries: Self.phoneSupportedCountries))
+        }
 
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
     }

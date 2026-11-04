@@ -90,12 +90,15 @@ final class POSPrinterConnectionController {
         guard bluetoothAuthorization != .denied else {
             return
         }
-        observeBluetoothRadioState()
         startDiscovery()
     }
 
-    /// Starts a fresh Bluetooth discovery, clearing any previously skipped printers.
+    /// Starts a fresh Bluetooth discovery, clearing any previously skipped printers. Within a setup session it
+    /// also starts watching the radio if nothing is yet, as when permission was granted after setup opened.
     func startDiscovery() {
+        if setupSessionID != nil, radioStateTask == nil, bluetoothAuthorization != .denied {
+            observeBluetoothRadioState()
+        }
         skippedDeviceIDs = []
         beginDiscovery()
     }
@@ -211,6 +214,7 @@ final class POSPrinterConnectionController {
         discoveryTask?.cancel()
         connectTask?.cancel()
         radioStateTask?.cancel()
+        radioStateTask = nil
         bluetoothRadioState = .unknown
         isDiscovering = false
         discoveredDevices = []

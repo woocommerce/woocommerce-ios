@@ -462,6 +462,29 @@ struct POSPrinterConnectionControllerTests {
         #expect(service.discoverCallCount == 0)
     }
 
+    @Test func test_startDiscovery_when_permission_granted_after_denied_setup_then_observes_bluetooth_radio() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star SM-L200")
+        let service = MockReceiptPrinterService()
+        let provider = MockBluetoothAuthorizationProvider(authorization: .denied)
+        let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
+        sut.startSetup(sessionID: UUID())
+        provider.stubbedAuthorization = .allowed
+        await waitForRadioSubscription(on: service) {
+            sut.startDiscovery()
+        }
+
+        // When
+        service.emitBluetoothRadioState(.poweredOff)
+        await wait(on: sut, until: { sut.discoveryState == .bluetoothOff })
+        service.discoveredDevices = [device]
+        service.emitBluetoothRadioState(.poweredOn)
+        await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
+
+        // Then
+        #expect(sut.discoveryState == .foundOne(device))
+    }
+
     @Test func test_bluetoothRadio_when_permission_denied_after_bluetoothOff_then_returns_to_idle() async {
         // Given
         let service = MockReceiptPrinterService()
@@ -506,11 +529,18 @@ private extension POSPrinterConnectionControllerTests {
 
     /// Starts setup and waits until the controller observes the radio, so radio states emitted afterwards reach it.
     func startSetupObservingRadio(_ controller: POSPrinterConnectionController, service: MockReceiptPrinterService) async {
+        await waitForRadioSubscription(on: service) {
+            controller.startSetup(sessionID: UUID())
+        }
+    }
+
+    /// Runs `action` and waits until it makes the controller observe the radio.
+    func waitForRadioSubscription(on service: MockReceiptPrinterService, after action: () -> Void) async {
         await withCheckedContinuation { continuation in
             service.onBluetoothRadioStateSubscribed = {
                 continuation.resume()
             }
-            controller.startSetup(sessionID: UUID())
+            action()
         }
         service.onBluetoothRadioStateSubscribed = nil
     }

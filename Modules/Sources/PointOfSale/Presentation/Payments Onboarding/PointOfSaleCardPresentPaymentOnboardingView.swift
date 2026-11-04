@@ -2,10 +2,11 @@ import SwiftUI
 
 /// Displays the WooPayments onboarding UI based on the state.
 struct PointOfSaleCardPresentPaymentOnboardingView: View {
+    @Environment(\.posMetrics) private var metrics
     @ObservedObject var viewModel: PointOfSaleCardPresentPaymentOnboardingViewModel
 
     var body: some View {
-        VStack(spacing: Constants.verticalSpacing) {
+        VStack(spacing: metrics.spacing.large) {
             AnyView(viewModel.onboardingViewContainer.view)
                 // Hides the navigation bar title `navigationTitle` in `CardPresentPaymentsOnboardingView`.
                 .toolbar(.hidden)
@@ -19,7 +20,6 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
 
 private extension PointOfSaleCardPresentPaymentOnboardingView {
     enum Constants {
-        static let verticalSpacing: CGFloat = POSSpacing.large
     }
 
     enum Localization {

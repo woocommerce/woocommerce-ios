@@ -1462,9 +1462,17 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showLoadingIndicator)
     }
 
-    func test_collectPayment_when_ttp_payment_error_requiresFallbackPaymentMethod_then_onFailure_not_called() {
+    func test_collectPayment_when_ttp_payment_error_requiresFallbackPaymentMethod_then_onFailure_not_called() async throws {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
+        let refreshStarted = expectation(description: "Refreshes while payment methods remain available")
+        var completeRefresh: (@Sendable (Result<Order, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrderRemotely(_, _, completion) = action {
+                completeRefresh = completion
+                refreshStarted.fulfill()
+            }
+        }
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             if case let .selectedPaymentGatewayAccount(onCompletion) = action {
                 onCompletion(PaymentGatewayAccount.fake())
@@ -1484,14 +1492,28 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 channel: .storeManagement,
                                                 dependencies: dependencies)
 
+        let returned = expectation(description: "Does not return to order details")
+        returned.isInverted = true
+        var onFailureCalled = false
+
         // When
-        var onFailureCalled: Bool = false
         viewModel.collectPayment(using: .tapToPay, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
             onFailureCalled = true
+            returned.fulfill()
         })
+        await fulfillment(of: [refreshStarted], timeout: 2)
 
         // Then
         XCTAssertFalse(onFailureCalled)
+        XCTAssertFalse(viewModel.showLoadingIndicator)
+
+        // When
+        try XCTUnwrap(completeRefresh)(.success(.fake()))
+        await fulfillment(of: [returned], timeout: 1)
+
+        // Then
+        XCTAssertFalse(onFailureCalled)
+        XCTAssertFalse(viewModel.showLoadingIndicator)
     }
 
     func test_collectPayment_when_card_reader_payment_error_requiresFallbackPaymentMethod_then_onFailure_called() {

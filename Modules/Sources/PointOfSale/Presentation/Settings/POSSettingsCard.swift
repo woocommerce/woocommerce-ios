@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSSettingsCard: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let title: String
@@ -23,7 +24,7 @@ struct POSSettingsCard: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+            VStack(alignment: .leading, spacing: metrics.padding.xSmall) {
                 Text(title)
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)

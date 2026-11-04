@@ -6,6 +6,7 @@ import protocol WooFoundation.BluetoothAuthorizationProviding
 /// Drives the receipt-printer setup flow from a `POSPrinterConnectionController`, presenting
 /// pairing, discovery, connection, and error states. Dismisses itself once a printer connects.
 struct POSPrinterSetupModal: View {
+    @Environment(\.posMetrics) private var metrics
     @Binding var isPresented: Bool
     let controller: POSPrinterConnectionController
     @Environment(\.posModalParentSize) private var parentSize
@@ -53,7 +54,7 @@ struct POSPrinterSetupModal: View {
     }
 
     private var modalCore: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             ScrollView(showsIndicators: false) {
                 HStack {
                     Spacer()
@@ -70,7 +71,7 @@ struct POSPrinterSetupModal: View {
         .posModalCloseButton(action: {
             isPresented = false
         })
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
         .background(Color.posSurfaceBright)
     }
 }
@@ -80,6 +81,7 @@ struct POSPrinterSetupModal: View {
 /// The step-specific body of the printer setup modal, switching on the controller's discovery state
 /// to present pairing guidance, progress, results, or errors.
 private struct POSPrinterSetupContent: View {
+    @Environment(\.posMetrics) private var metrics
     let controller: POSPrinterConnectionController
 
     var body: some View {
@@ -121,14 +123,14 @@ private struct POSPrinterSetupContent: View {
     }
 
     private func messageContent(icon: Image, title: String, message: String) -> some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             icon
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Constants.iconSize, height: Constants.iconSize)
                 .foregroundStyle(Color.posOnSurface)
 
-            VStack(alignment: .center, spacing: POSSpacing.small) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(.posOnSurface)
@@ -143,7 +145,7 @@ private struct POSPrinterSetupContent: View {
     }
 
     private func progressContent(message: String) -> some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
                 .padding(Constants.spinnerStrokeOverflow)
@@ -156,7 +158,7 @@ private struct POSPrinterSetupContent: View {
     }
 
     private func deviceList(_ devices: [PrinterDevice]) -> some View {
-        VStack(spacing: POSSpacing.large) {
+        VStack(spacing: metrics.spacing.large) {
             Text(Localization.severalPrintersTitle)
                 .font(.posHeadingBold)
                 .foregroundColor(.posOnSurface)
@@ -166,9 +168,9 @@ private struct POSPrinterSetupContent: View {
                 scanningIndicator
             }
 
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 ForEach(devices) { device in
-                    HStack(spacing: POSSpacing.medium) {
+                    HStack(spacing: metrics.spacing.medium) {
                         Text(device.name)
                             .font(.posBodyLargeRegular())
                             .foregroundStyle(Color.posOnSurface)
@@ -179,14 +181,14 @@ private struct POSPrinterSetupContent: View {
                         .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                         .accessibilityLabel(String(format: Localization.connectRowAccessibilityFormat, device.name))
                     }
-                    .padding(.vertical, POSPadding.small)
+                    .padding(.vertical, metrics.padding.small)
                 }
             }
         }
     }
 
     private var scanningIndicator: some View {
-        HStack(spacing: POSSpacing.medium) {
+        HStack(spacing: metrics.spacing.medium) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle(size: Constants.scanningSpinnerSize,
                                                         lineWidth: Constants.scanningSpinnerLineWidth))

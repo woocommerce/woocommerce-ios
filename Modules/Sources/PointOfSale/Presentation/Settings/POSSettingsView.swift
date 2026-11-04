@@ -45,6 +45,7 @@ struct POSSettingsView: View {
 
 extension POSSettingsView {
     private struct POSSettingsListView: View {
+        @Environment(\.posMetrics) private var metrics
         @Environment(\.dismiss) private var dismiss
         @Environment(\.posAnalytics) private var analytics
         @Binding var selection: SidebarNavigation?
@@ -52,7 +53,7 @@ extension POSSettingsView {
         let settingsController: POSSettingsControllerProtocol
 
         var body: some View {
-            VStack(alignment: .leading, spacing: POSSpacing.none) {
+            VStack(alignment: .leading, spacing: metrics.spacing.none) {
                 POSPageHeaderView(
                     title: Localization.navigationTitle,
                     backButtonConfiguration: .init(state: .enabled,
@@ -64,7 +65,7 @@ extension POSSettingsView {
                 .posHeaderBackButtonIcon(systemName: "xmark")
                 .foregroundColor(.posSurface)
 
-                VStack(spacing: POSSpacing.small) {
+                VStack(spacing: metrics.spacing.small) {
                     categoryCard(.store)
                     categoryCard(.hardware)
                     categoryCard(.payments)
@@ -78,7 +79,7 @@ extension POSSettingsView {
 
                     helpView
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
             }
             .background(Color.posSurfaceBright)
             .accessibilityElement(children: .contain)
@@ -105,7 +106,7 @@ extension POSSettingsView {
                 SidebarNavigation.help.trackSelection(with: analytics)
                 selection = .help
             } label: {
-                HStack(spacing: POSSpacing.small) {
+                HStack(spacing: metrics.spacing.small) {
                     if let icon = SidebarNavigation.help.icon {
                         Image(systemName: icon)
                             .font(.posBodyMediumBold)

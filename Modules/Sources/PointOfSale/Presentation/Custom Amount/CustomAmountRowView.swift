@@ -23,7 +23,7 @@ struct CustomAmountRowView: View {
     }
 
     private var dimension: CGFloat {
-        min(Constants.iconSize * scale, Constants.maximumIconSize)
+        min(metrics.cartRowSize * scale, metrics.cartRowSize * Constants.maximumCardSizeMultiplier)
     }
 
     var body: some View {
@@ -60,7 +60,7 @@ struct CustomAmountRowView: View {
             }
         }
         .padding(.trailing, metrics.padding.medium)
-        .frame(maxWidth: .infinity, idealHeight: Constants.iconSize * scale)
+        .frame(maxWidth: .infinity, idealHeight: metrics.cartRowSize * scale)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .padding(.horizontal, metrics.padding.medium)
@@ -83,8 +83,7 @@ private extension CustomAmountRowView {
     }
 
     enum Constants {
-        static let iconSize: CGFloat = 96
-        static let maximumIconSize: CGFloat = Self.iconSize * 1.5
+        static let maximumCardSizeMultiplier: CGFloat = 1.5
         static let titleFont: POSFontStyle = .posBodySmallBold()
         static let amountFont: POSFontStyle = .posBodySmallRegular()
     }

@@ -25,7 +25,7 @@ struct CouponRowView: View {
     }
 
     private var dimension: CGFloat {
-        min(Constants.couponCardSize * scale, Constants.maximumCouponCardSize)
+        min(metrics.cartRowSize * scale, metrics.cartRowSize * Constants.maximumCardSizeMultiplier)
     }
 
     private var couponImageState: POSCouponImageState {
@@ -78,7 +78,7 @@ struct CouponRowView: View {
             }
         }
         .padding(.trailing, metrics.padding.medium)
-        .frame(maxWidth: .infinity, idealHeight: Constants.couponCardSize * scale)
+        .frame(maxWidth: .infinity, idealHeight: metrics.cartRowSize * scale)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .padding(.horizontal, metrics.padding.medium)
@@ -89,8 +89,7 @@ struct CouponRowView: View {
 
 private extension CouponRowView {
     enum Constants {
-        static let couponCardSize: CGFloat = 96
-        static let maximumCouponCardSize: CGFloat = Self.couponCardSize * 1.5
+        static let maximumCardSizeMultiplier: CGFloat = 1.5
         static let titleFont: POSFontStyle = .posBodySmallBold()
         static let summaryFont: POSFontStyle = .posBodySmallRegular()
     }

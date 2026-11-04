@@ -38,6 +38,9 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     /// once the connect is genuinely in flight.
     var onConnectSubscribed: (() -> Void)?
 
+    /// Awaited inside `stopDiscovery()` before it returns, so a test can act while a stop is in flight.
+    var onStopDiscovery: (@MainActor () async -> Void)?
+
     // MARK: - Spies
 
     private(set) var discoverCallCount = 0
@@ -81,6 +84,7 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
 
     func stopDiscovery() async {
         stopDiscoveryCallCount += 1
+        await onStopDiscovery?()
     }
 
     func connect(to printer: PrinterDevice) async throws {

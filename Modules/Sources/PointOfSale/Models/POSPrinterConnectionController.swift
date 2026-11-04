@@ -58,6 +58,9 @@ final class POSPrinterConnectionController {
     /// The setup modal presentation that currently owns the flow. A modal closed and quickly reopened
     /// can run its teardown after the new one starts, so teardown only applies to the current session.
     private var setupSessionID: UUID?
+    /// The last teardown's service stop. The service stops whichever scan is active when the stop
+    /// lands, so the next scan waits for it rather than being ended by it.
+    private var pendingStop: Task<Void, Never>?
 
     init(service: ReceiptPrinterServiceProtocol,
          bluetoothAuthorizationProvider: BluetoothAuthorizationProviding = CoreBluetoothAuthorizationProvider()) {
@@ -107,11 +110,12 @@ final class POSPrinterConnectionController {
         hasShownMultiple = false
         isDiscovering = true
         discoveryState = .searching
-        discoveryTask = Task { [weak self] in
+        discoveryTask = Task { [weak self, pendingStop] in
+            await pendingStop?.value
             // Reach the stream through a transient `self` so the in-flight `for await` holds only a
             // weak reference; binding `self` strongly here would retain the controller (which owns
             // this task) and stop its deinit — and this task's cancellation — from running.
-            guard let stream = self?.service.discover() else { return }
+            guard !Task.isCancelled, let stream = self?.service.discover() else { return }
             do {
                 for try await device in stream {
                     // A cancelled discovery (a restart, or the merchant moving on to connecting)
@@ -193,7 +197,11 @@ final class POSPrinterConnectionController {
         }
         setupSessionID = nil
         resetSetup()
-        await service.stopDiscovery()
+        let stop = Task { [service] in
+            await service.stopDiscovery()
+        }
+        pendingStop = stop
+        await stop.value
     }
 
     private func resetSetup() {

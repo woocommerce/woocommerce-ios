@@ -355,6 +355,30 @@ struct POSPrinterConnectionControllerTests {
         #expect(service.discoverCallCount == 2)
         #expect(service.stopDiscoveryCallCount == 0)
     }
+
+    @Test func test_startSetup_when_previous_teardown_still_stopping_then_discovers_after_the_stop() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let sut = await makeSubscribedController(service: service)
+        let closedSessionID = UUID()
+        sut.startSetup(sessionID: closedSessionID)
+        await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
+        var discoverCallCountWhileStopping: Int?
+        service.onStopDiscovery = {
+            sut.startSetup(sessionID: UUID())
+            // Gives the new scan a chance to run while the old stop is still in flight.
+            await Task.yield()
+            discoverCallCountWhileStopping = service.discoverCallCount
+        }
+
+        // When
+        await sut.cancelSetup(sessionID: closedSessionID)
+        await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
+
+        // Then
+        #expect(discoverCallCountWhileStopping == 1)
+        #expect(service.discoverCallCount == 2)
+    }
 }
 
 // MARK: - Helpers

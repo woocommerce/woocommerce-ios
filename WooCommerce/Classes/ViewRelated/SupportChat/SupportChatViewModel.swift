@@ -292,9 +292,7 @@ final class SupportChatViewModel {
 
     private var shouldIncludeRecentApplicationLogs: Bool {
         switch entryPoint {
-        case .preLogin:
-            true
-        case .helpAndSupport:
+        case .preLogin, .helpAndSupport:
             stores.needsDefaultStore
         case .connectivityTool, .chatHistory:
             false

@@ -73,7 +73,7 @@ struct SupportChatMobileStatusReportTests {
         #expect(troubleshootingResults.contains("Store selection error"))
     }
 
-    @Test(arguments: [SupportChatViewModel.EntryPoint.helpAndSupport, .connectivityTool])
+    @Test(arguments: [SupportChatViewModel.EntryPoint.preLogin, .helpAndSupport, .connectivityTool])
     func test_first_message_when_chat_starts_with_selected_store_then_omits_recent_logs(entryPoint: SupportChatViewModel.EntryPoint) async throws {
         // Given
         let logProvider = MockRecentApplicationLogProvider(logEntries: [

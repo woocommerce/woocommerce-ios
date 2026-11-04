@@ -216,6 +216,8 @@ final class PaymentMethodsViewModel: ObservableObject {
     func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?) async {
         showLoadingIndicator = true
         do {
+            // Keep an earlier card response from overwriting the cash update.
+            await lastOrderRefreshTask?.value
             try await markOrderCompletedWithCashOnDelivery()
             let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { _, _ in }
             stores.dispatch(action)

@@ -98,6 +98,9 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
 
     func connect(to printer: PrinterDevice) async throws {
         connectedDevices.append(printer)
+        if connectError == nil {
+            emitConnectionStatus(.connecting)
+        }
         if parkConnect {
             // Hold the call open so a test can release the controller mid-connect; cancellation
             // from the controller's deinit unwinds the sleep.

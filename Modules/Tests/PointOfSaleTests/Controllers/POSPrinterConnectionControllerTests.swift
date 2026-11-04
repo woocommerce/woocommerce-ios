@@ -527,6 +527,36 @@ struct POSPrinterConnectionControllerTests {
                                                       "receipt_printer_connected"])
     }
 
+    @Test func test_connect_when_earlier_connect_completes_before_reopened_session_attempt_reaches_service_then_does_not_complete_it() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let analytics = MockPOSAnalytics()
+        let service = MockReceiptPrinterService()
+        service.parkConnect = true
+        let sut = await makeSubscribedController(service: service, analytics: analytics)
+        let settingsSessionID = UUID()
+        sut.startSetup(sessionID: settingsSessionID, source: .settings)
+        await withCheckedContinuation { continuation in
+            service.onConnectSubscribed = {
+                continuation.resume()
+            }
+            sut.connect(to: device)
+        }
+        sut.cancelSetup(sessionID: settingsSessionID)
+        sut.startSetup(sessionID: UUID(), source: .printReceipt)
+        service.onConnectSubscribed = nil
+        sut.connect(to: device)
+
+        // When — the connect started from Settings finishes before the new attempt reaches the service.
+        service.emitConnectionStatus(.connected(device))
+        await wait(on: sut, until: { sut.isConnected })
+
+        // Then
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
+                                                      "receipt_printer_setup_started",
+                                                      "receipt_printer_connected"])
+    }
+
     @Test func test_connect_when_fails_then_does_not_track_connected() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")

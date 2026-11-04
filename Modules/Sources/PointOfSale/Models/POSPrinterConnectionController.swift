@@ -67,8 +67,11 @@ final class POSPrinterConnectionController {
     /// can run its teardown after the new one starts, so teardown only applies to the current session.
     private var setupSessionID: UUID?
     private var setupSource: POSPrinterSetupSource?
-    /// The source of the setup session whose connect is in flight. Cleared when that session ends or its
-    /// connect fails, so an earlier connect that completes after the modal reopened can't complete the newer session.
+    /// The setup source of a connect the merchant just started, until the service reports it as `.connecting`.
+    private var pendingSetupSource: POSPrinterSetupSource?
+    /// The setup source of the connect the service is running. A source only moves here on a `.connecting` seen
+    /// after its attempt started, so an earlier connect that completes after the modal reopened can't complete
+    /// the newer session.
     private var connectingSetupSource: POSPrinterSetupSource?
 
     init(service: ReceiptPrinterServiceProtocol,
@@ -181,7 +184,7 @@ final class POSPrinterConnectionController {
         connectTask?.cancel()
         isDiscovering = false
         discoveryState = .connecting(device)
-        connectingSetupSource = setupSource
+        pendingSetupSource = setupSource
         connectTask = Task { [weak self] in
             // Reach the service through a transient `self` so the in-flight connect holds only a weak
             // reference; binding `self` strongly here would retain the controller for the whole
@@ -194,7 +197,7 @@ final class POSPrinterConnectionController {
                 // A superseded connect (another printer tapped, or setup cancelled) must not
                 // report an error over the newer flow.
                 guard !Task.isCancelled, let self else { return }
-                connectingSetupSource = nil
+                pendingSetupSource = nil
                 discoveryState = .error
             }
         }
@@ -223,6 +226,7 @@ final class POSPrinterConnectionController {
         discoveredDevices = []
         skippedDeviceIDs = []
         hasShownMultiple = false
+        pendingSetupSource = nil
         connectingSetupSource = nil
         discoveryState = .idle
     }
@@ -259,7 +263,11 @@ final class POSPrinterConnectionController {
                         analytics.track(.pointOfSaleReceiptPrinterDisconnected)
                     }
                     connectedPrinter = nil
-                case .connecting, .disconnecting:
+                    connectingSetupSource = nil
+                case .connecting:
+                    connectingSetupSource = pendingSetupSource
+                    pendingSetupSource = nil
+                case .disconnecting:
                     break
                 }
                 isReplayedStatus = false

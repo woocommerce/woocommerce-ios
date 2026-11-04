@@ -312,6 +312,13 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingCart = false
             }
         }
+        .onChange(of: posModel.cart.isEmpty) { _, cartIsEmpty in
+            guard PointOfSaleDashboardViewHelper.shouldDismissCompactCartSheet(isPhoneLayout: isPhoneLayout,
+                                                                               cartIsEmpty: cartIsEmpty) else {
+                return
+            }
+            phoneShowingCart = false
+        }
         .onChange(of: posModel.cart.latestScannedItemID) { _, itemID in
             // Auto-opens the cart sheet on scan
             guard itemID != nil,

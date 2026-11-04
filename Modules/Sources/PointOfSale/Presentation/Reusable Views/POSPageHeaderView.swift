@@ -340,7 +340,7 @@ extension View {
 #Preview {
     @Previewable @State var isProductsSelected: Bool = true
 
-    VStack(spacing: 20) {
+    VStack(spacing: POSMetrics.regular.spacing.large) {
         // Header without back button.
         POSPageHeaderView(
             title: "Products",
@@ -369,7 +369,7 @@ extension View {
             title: "Products",
             backButtonConfiguration: .init(state: .enabled, action: {}),
             trailingContent: {
-                HStack(spacing: 16) {
+                HStack(spacing: POSMetrics.regular.spacing.medium) {
                     Button(action: {}) {
                         Text(Image(systemName: "info.circle"))
                             .font(.posButtonSymbolLarge)
@@ -428,7 +428,7 @@ extension View {
                 .init(title: "Coupons", isSelected: !isProductsSelected) { isProductsSelected.toggle() }
             ],
             trailingContent: {
-                HStack(spacing: 16) {
+                HStack(spacing: POSMetrics.regular.spacing.medium) {
                     Button(action: {}) {
                         Text(Image(systemName: "plus"))
                             .font(.posButtonSymbolLarge)
@@ -465,7 +465,7 @@ extension View {
                     Button("Refund") {}
                         .buttonStyle(.borderedProminent)
                 }
-                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                .padding(.horizontal, POSMetrics.regular.padding.medium)
                 .padding(.top, POSMetrics.regular.spacing.medium)
             }
         )

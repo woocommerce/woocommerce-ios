@@ -10,6 +10,7 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
     private let options: [Value]
     private let title: (Value) -> String
 
+    @Environment(\.isEnabled) private var isEnabled
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Namespace private var selectionNamespace
 
@@ -42,6 +43,10 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
         options.firstIndex(of: selection)
     }
 
+    private var appearance: StoreSegmentedControlAppearance {
+        StoreSegmentedControlAppearance(isEnabled: isEnabled)
+    }
+
     /// The visible capsule and the selected pill, sized to the compact design height. Accessibility is
     /// exposed by ``segments`` — this layer is decorative, so it's hidden from VoiceOver.
     private var track: some View {
@@ -51,7 +56,7 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
             }
         }
         .padding(StorePadding.p1)
-        .background(Color.storeTintLayerPrimaryContainerOpacity16)
+        .background(appearance.track)
         .clipShape(RoundedRectangle(cornerRadius: StoreRadius.full))
         .accessibilityHidden(true)
     }
@@ -79,17 +84,21 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
     private func pill(for option: Value, isSelected: Bool) -> some View {
         Text(title(option))
             .storeTextStyle(isSelected ? Constants.selectedTextStyle : Constants.unselectedTextStyle)
-            .foregroundStyle(isSelected ? Color.storeOnSurface : Color.storeOnPrimaryContainer)
+            .foregroundStyle(textColor(isSelected: isSelected))
             .lineLimit(1)
             .frame(maxWidth: .infinity)
             .frame(minHeight: StoreSize.segmentedControlHeight)
             .background {
                 if isSelected {
                     RoundedRectangle(cornerRadius: StoreRadius.extraLarge)
-                        .fill(Color.storeSurface)
+                        .fill(appearance.selectedContainer)
                         .matchedGeometryEffect(id: Constants.selectionID, in: selectionNamespace)
                 }
             }
+    }
+
+    private func textColor(isSelected: Bool) -> Color {
+        appearance.text(isSelected: isSelected)
     }
 }
 

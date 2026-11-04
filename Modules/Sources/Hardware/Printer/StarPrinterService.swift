@@ -80,7 +80,13 @@ private actor StarPrinterCoordinator {
     /// so we can connect by `PrinterDevice` without exposing StarIO10 types.
     private var discoveredPrinters: [String: StarPrinter] = [:]
 
-    private var printer: StarPrinter?
+    private var printer: StarPrinter? {
+        didSet { connectionGeneration += 1 }
+    }
+
+    /// Changes on every connect and disconnect, including a reconnect to the same `StarPrinter` instance,
+    /// so a print that outlives its connection can't tear down the one that replaced it.
+    private var connectionGeneration = 0
 
     /// Retained for the connected printer's lifetime so the SDK delegate stays alive; released on disconnect.
     /// `StarPrinter` holds `printerDelegate` weakly, so a strong reference here keeps ours from deallocating.
@@ -204,7 +210,10 @@ private actor StarPrinterCoordinator {
         emit(.disconnecting)
         current?.printerDelegate = nil
         await current?.close()
-        emit(.disconnected)
+        // A `connect(to:)` can start or complete while `close()` is suspended; it reports its own status.
+        if printer == nil, !isConnecting {
+            emit(.disconnected)
+        }
     }
 
     func printReceipt(text: String) async throws {
@@ -214,12 +223,19 @@ private actor StarPrinterCoordinator {
         }
 
         let command = printCommand(text: text)
+        let generation = connectionGeneration
         do {
             try await printer.print(command: command)
             DDLogInfo("🖨️ Receipt printed")
         } catch {
             DDLogError("🖨️ Receipt printing failed: \(error.localizedDescription)")
-            throw error
+            let printerError = PrinterError(printFailure: error)
+            // Without this, `printer` stays set and POS keeps treating the printer as connected, so the
+            // next print fails again instead of offering setup.
+            if case .connectionLost = printerError, generation == connectionGeneration {
+                await disconnect()
+            }
+            throw printerError
         }
     }
 }

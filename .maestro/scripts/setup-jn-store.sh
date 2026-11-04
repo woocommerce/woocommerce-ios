@@ -16,7 +16,7 @@
 #                     [--no-jetpack-site <domain>]
 #
 # --no-jetpack-site also writes the MAESTRO_WOO_NO_JETPACK_* values for
-# push_no_jetpack.yaml. Create that site with WooCommerce and without Jetpack,
+# no_jetpack.yaml and push_no_jetpack.yaml. Create that site with WooCommerce and without Jetpack,
 # and pass its admin password in JN_NO_JETPACK_SSH_PASS.
 #
 # Credentials are resolved in this order, so a second run needs no arguments
@@ -82,9 +82,14 @@ path, key = os.environ["ENV_FILE"], os.environ["ENV_KEY"]
 for line in open(path, encoding="utf-8"):
     m = re.match(r"\s*" + re.escape(key) + r"=(.*)$", line)
     if m:
+        # Like bash, "#" starts a comment only after whitespace, so an unquoted
+        # password can contain it.
+        if re.match(r"\s+#", m.group(1)):
+            print("")
+            break
         raw = m.group(1).strip()
         try:
-            parts = shlex.split(raw, comments=True)
+            parts = shlex.split(raw)
         except ValueError:
             parts = [raw]
         print(parts[0] if parts else "")

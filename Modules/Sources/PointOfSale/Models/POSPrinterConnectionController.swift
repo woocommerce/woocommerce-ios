@@ -67,12 +67,6 @@ final class POSPrinterConnectionController {
     /// can run its teardown after the new one starts, so teardown only applies to the current session.
     private var setupSessionID: UUID?
     private var setupSource: POSPrinterSetupSource?
-    /// The setup source of a connect the merchant just started, until the service reports it as `.connecting`.
-    private var pendingSetupSource: POSPrinterSetupSource?
-    /// The setup source of the connect the service is running. A source only moves here on a `.connecting` seen
-    /// after its attempt started, so an earlier connect that completes after the modal reopened can't complete
-    /// the newer session.
-    private var connectingSetupSource: POSPrinterSetupSource?
 
     init(service: ReceiptPrinterServiceProtocol,
          analytics: POSAnalyticsProviding,
@@ -184,7 +178,7 @@ final class POSPrinterConnectionController {
         connectTask?.cancel()
         isDiscovering = false
         discoveryState = .connecting(device)
-        pendingSetupSource = setupSource
+        let setupSource = setupSource
         connectTask = Task { [weak self] in
             // Reach the service through a transient `self` so the in-flight connect holds only a weak
             // reference; binding `self` strongly here would retain the controller for the whole
@@ -193,11 +187,14 @@ final class POSPrinterConnectionController {
             await service.stopDiscovery()
             do {
                 try await service.connect(to: device)
+                // Tracked from this attempt's own result, even once cancelled, so a connect that finishes after
+                // the modal closed or reopened is credited to the setup that started it. The modal also closes,
+                // cancelling this task, as soon as the printer reports connected.
+                self?.trackConnected(setupSource: setupSource)
             } catch {
                 // A superseded connect (another printer tapped, or setup cancelled) must not
                 // report an error over the newer flow.
                 guard !Task.isCancelled, let self else { return }
-                pendingSetupSource = nil
                 discoveryState = .error
             }
         }
@@ -226,18 +223,13 @@ final class POSPrinterConnectionController {
         discoveredDevices = []
         skippedDeviceIDs = []
         hasShownMultiple = false
-        pendingSetupSource = nil
-        connectingSetupSource = nil
         discoveryState = .idle
     }
 
-    /// Tracked from the status stream rather than `connect(to:)`, because the setup modal closes as soon as
-    /// the printer reports connected and that teardown cancels the connect task.
-    private func trackConnected() {
+    private func trackConnected(setupSource: POSPrinterSetupSource?) {
         analytics.track(.pointOfSaleReceiptPrinterConnected)
-        if let connectingSetupSource {
-            analytics.track(event: .PointOfSale.receiptPrinterSetupCompleted(source: connectingSetupSource))
-            self.connectingSetupSource = nil
+        if let setupSource {
+            analytics.track(event: .PointOfSale.receiptPrinterSetupCompleted(source: setupSource))
         }
     }
 
@@ -247,30 +239,19 @@ final class POSPrinterConnectionController {
         // controller (which owns this task) and stop `deinit` — and its cancellation — from running.
         statusTask = Task { [weak self] in
             guard let updates = self?.service.connectionStatusUpdates() else { return }
-            // The stream opens by replaying the service's current status, which is not a connection
-            // change, e.g. a printer still connected from an earlier POS session.
-            var isReplayedStatus = true
             for await status in updates {
                 guard let self else { return }
                 switch status {
                 case .connected(let device):
-                    if !isReplayedStatus {
-                        trackConnected()
-                    }
                     connectedPrinter = device
                 case .disconnected, .idle:
                     if connectedPrinter != nil {
                         analytics.track(.pointOfSaleReceiptPrinterDisconnected)
                     }
                     connectedPrinter = nil
-                    connectingSetupSource = nil
-                case .connecting:
-                    connectingSetupSource = pendingSetupSource
-                    pendingSetupSource = nil
-                case .disconnecting:
+                case .connecting, .disconnecting:
                     break
                 }
-                isReplayedStatus = false
             }
         }
     }

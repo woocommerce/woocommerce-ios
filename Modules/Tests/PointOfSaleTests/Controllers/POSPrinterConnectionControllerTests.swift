@@ -440,7 +440,7 @@ struct POSPrinterConnectionControllerTests {
 
         // When
         sut.connect(to: device)
-        await wait(on: sut, until: { sut.isConnected })
+        await waitForEvents(analytics, count: 3)
 
         // Then
         #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
@@ -449,30 +449,29 @@ struct POSPrinterConnectionControllerTests {
         #expect(analytics.events.last?.properties["source"] as? String == "print_receipt")
     }
 
-    @Test func test_connect_when_setup_was_cancelled_then_tracks_connected_without_setup_completed() async {
+    @Test func test_connect_when_started_after_setup_was_cancelled_then_tracks_connected_without_setup_completed() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")
         let analytics = MockPOSAnalytics()
-        let service = MockReceiptPrinterService()
-        let sut = await makeSubscribedController(service: service, analytics: analytics)
+        let sut = await makeSubscribedController(service: MockReceiptPrinterService(), analytics: analytics)
         let sessionID = UUID()
         sut.startSetup(sessionID: sessionID, source: .settings)
         sut.cancelSetup(sessionID: sessionID)
 
         // When
-        service.emitConnectionStatus(.connected(device))
-        await wait(on: sut, until: { sut.isConnected })
+        sut.connect(to: device)
+        await waitForEvents(analytics, count: 2)
 
         // Then
         #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started", "receipt_printer_connected"])
     }
 
-    @Test func test_connect_when_it_completes_after_setup_reopened_then_does_not_complete_the_new_session() async {
+    @Test func test_connect_when_it_finishes_after_setup_reopened_then_completes_the_setup_that_started_it() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")
         let analytics = MockPOSAnalytics()
         let service = MockReceiptPrinterService()
-        service.parkConnect = true
+        service.holdsConnect = true
         let sut = await makeSubscribedController(service: service, analytics: analytics)
         let settingsSessionID = UUID()
         sut.startSetup(sessionID: settingsSessionID, source: .settings)
@@ -482,79 +481,24 @@ struct POSPrinterConnectionControllerTests {
             }
             sut.connect(to: device)
         }
+        service.onConnectSubscribed = nil
         sut.cancelSetup(sessionID: settingsSessionID)
         sut.startSetup(sessionID: UUID(), source: .printReceipt)
-
-        // When — the connect started from Settings finishes inside the Print receipt session.
-        service.emitConnectionStatus(.connected(device))
-        await wait(on: sut, until: { sut.isConnected })
-
-        // Then
-        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
-                                                      "receipt_printer_setup_started",
-                                                      "receipt_printer_connected"])
-    }
-
-    @Test func test_connect_when_reopened_session_attempt_is_rejected_then_earlier_connect_does_not_complete_it() async {
-        // Given
-        let device = PrinterDevice(id: "1", name: "Star TSP100")
-        let analytics = MockPOSAnalytics()
-        let service = MockReceiptPrinterService()
-        service.parkConnect = true
-        let sut = await makeSubscribedController(service: service, analytics: analytics)
-        let settingsSessionID = UUID()
-        sut.startSetup(sessionID: settingsSessionID, source: .settings)
-        await withCheckedContinuation { continuation in
-            service.onConnectSubscribed = {
-                continuation.resume()
-            }
-            sut.connect(to: device)
-        }
-        sut.cancelSetup(sessionID: settingsSessionID)
-        sut.startSetup(sessionID: UUID(), source: .printReceipt)
-        service.parkConnect = false
+        service.holdsConnect = false
         service.connectError = PrinterError.connectionInProgress
         sut.connect(to: device)
         await wait(on: sut, until: { sut.discoveryState == .error })
 
-        // When — the connect started from Settings finishes after the reopened session's attempt was rejected.
-        service.emitConnectionStatus(.connected(device))
-        await wait(on: sut, until: { sut.isConnected })
+        // When — the connect started from Settings finishes inside the Print receipt session.
+        service.finishHeldConnect()
+        await waitForEvents(analytics, count: 4)
 
         // Then
         #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
                                                       "receipt_printer_setup_started",
-                                                      "receipt_printer_connected"])
-    }
-
-    @Test func test_connect_when_earlier_connect_completes_before_reopened_session_attempt_reaches_service_then_does_not_complete_it() async {
-        // Given
-        let device = PrinterDevice(id: "1", name: "Star TSP100")
-        let analytics = MockPOSAnalytics()
-        let service = MockReceiptPrinterService()
-        service.parkConnect = true
-        let sut = await makeSubscribedController(service: service, analytics: analytics)
-        let settingsSessionID = UUID()
-        sut.startSetup(sessionID: settingsSessionID, source: .settings)
-        await withCheckedContinuation { continuation in
-            service.onConnectSubscribed = {
-                continuation.resume()
-            }
-            sut.connect(to: device)
-        }
-        sut.cancelSetup(sessionID: settingsSessionID)
-        sut.startSetup(sessionID: UUID(), source: .printReceipt)
-        service.onConnectSubscribed = nil
-        sut.connect(to: device)
-
-        // When — the connect started from Settings finishes before the new attempt reaches the service.
-        service.emitConnectionStatus(.connected(device))
-        await wait(on: sut, until: { sut.isConnected })
-
-        // Then
-        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
-                                                      "receipt_printer_setup_started",
-                                                      "receipt_printer_connected"])
+                                                      "receipt_printer_connected",
+                                                      "receipt_printer_setup_completed"])
+        #expect(analytics.events.last?.properties["source"] as? String == "settings")
     }
 
     @Test func test_connect_when_fails_then_does_not_track_connected() async {
@@ -580,6 +524,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: MockReceiptPrinterService(), analytics: analytics)
         sut.connect(to: device)
         await wait(on: sut, until: { sut.isConnected })
+        await waitForEvents(analytics, count: 1)
 
         // When
         await sut.disconnect()
@@ -627,6 +572,14 @@ private extension POSPrinterConnectionControllerTests {
             }
         }
         return controller
+    }
+
+    /// Connect results are tracked from the connect task, which can finish after the status stream
+    /// updates the controller, so wait for the events themselves.
+    func waitForEvents(_ analytics: MockPOSAnalytics, count: Int) async {
+        while analytics.events.count < count {
+            await Task.yield()
+        }
     }
 
     /// Suspends until `condition` holds, re-arming observation after each change to the controller's

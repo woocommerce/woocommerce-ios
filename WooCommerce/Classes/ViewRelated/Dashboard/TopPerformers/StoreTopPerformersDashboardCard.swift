@@ -79,6 +79,7 @@ private extension StoreTopPerformersDashboardCard {
                 showsInfoButton: viewModel.shouldShowAnalyticsImportUpdateModeInfoButton,
                 onInfoTapped: showAnalyticsImportUpdateModeInfo
             )
+            .padding(StorePadding.p5)
             .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
             StoreDashboardCardFooterAction(Localization.viewAll, isDisabled: viewModel.syncingData) {
                 viewModel.trackInteraction()

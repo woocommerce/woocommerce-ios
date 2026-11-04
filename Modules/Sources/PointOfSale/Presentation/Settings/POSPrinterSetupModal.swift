@@ -105,6 +105,10 @@ private struct POSPrinterSetupContent: View {
             deviceList(devices)
         case .connecting(let device):
             progressContent(message: String(format: Localization.connectingFormat, device.name))
+        case .discoveryFailed:
+            messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
+                           title: Localization.discoveryFailedTitle,
+                           message: Localization.discoveryFailedMessage)
         case .error:
             messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
                            title: Localization.errorTitle,
@@ -285,6 +289,17 @@ private extension POSPrinterSetupContent {
                 + "then search again.",
             comment: "Message shown when no receipt printers are discovered in POS settings.")
 
+        static let discoveryFailedTitle = NSLocalizedString(
+            "pos.printerSetup.discoveryFailed.title",
+            value: "Couldn't search for printers",
+            comment: "Title shown when the receipt printer search fails to run in POS settings.")
+
+        static let discoveryFailedMessage = NSLocalizedString(
+            "pos.printerSetup.discoveryFailed.message",
+            value: "Make sure Bluetooth is on, then search again.",
+            comment: "Message shown when the receipt printer search fails to run in POS settings, "
+                + "most often because the device's Bluetooth is switched off.")
+
         static let errorTitle = NSLocalizedString(
             "pos.printerSetup.error.title",
             value: "Something went wrong",
@@ -303,7 +318,7 @@ private extension POSPrinterSetupModal {
         switch controller.discoveryState {
         case .idle:
             return setupButtons(primaryTitle: Localization.connectButton)
-        case .noPrintersFound:
+        case .noPrintersFound, .discoveryFailed:
             return setupButtons(primaryTitle: Localization.searchAgainButton)
         case .error:
             return setupButtons(primaryTitle: Localization.searchAgainButton)

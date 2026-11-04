@@ -124,7 +124,7 @@ final class POSPrinterConnectionController {
             } catch {
                 guard !Task.isCancelled, let self else { return }
                 isDiscovering = false
-                discoveryState = bluetoothAuthorization == .denied ? .idle : .error
+                discoveryState = bluetoothAuthorization == .denied ? .idle : .discoveryFailed
             }
         }
     }

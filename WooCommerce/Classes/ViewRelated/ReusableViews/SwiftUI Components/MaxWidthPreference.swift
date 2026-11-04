@@ -4,7 +4,7 @@ import SwiftUI
 /// Used in `MaxWidthModifier` to calculate max title width among multiple fields/rows.
 ///
 struct MaxWidthPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat? = nil
+    static let defaultValue: CGFloat? = nil
 
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         if let nv = nextValue(), nv > value ?? .zero {

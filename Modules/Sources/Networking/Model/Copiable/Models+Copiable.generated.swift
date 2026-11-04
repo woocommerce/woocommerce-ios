@@ -3725,6 +3725,30 @@ extension Networking.WooShippingPackagesResponse {
     }
 }
 
+extension Networking.WooShippingServiceStatusNotice {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        severity: CopiableProp<WooShippingServiceStatusSeverity> = .copy,
+        message: CopiableProp<String> = .copy,
+        isDismissible: CopiableProp<Bool> = .copy,
+        actionURL: NullableCopiableProp<URL> = .copy
+    ) -> Networking.WooShippingServiceStatusNotice {
+        let id = id ?? self.id
+        let severity = severity ?? self.severity
+        let message = message ?? self.message
+        let isDismissible = isDismissible ?? self.isDismissible
+        let actionURL = actionURL ?? self.actionURL
+
+        return Networking.WooShippingServiceStatusNotice(
+            id: id,
+            severity: severity,
+            message: message,
+            isDismissible: isDismissible,
+            actionURL: actionURL
+        )
+    }
+}
+
 extension Networking.WooShippingShipment {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

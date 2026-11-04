@@ -137,6 +137,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     @Published private(set) var canConfirmWithoutVerification = false
 
     /// View model for selecting a country from a list.
+    @MainActor
     var countrySelectorVM: CountrySelectorViewModel {
         let selectedCountryBinding = Binding<AreaSelectorCommandProtocol?>(
             get: { self.selectedCountry },
@@ -146,6 +147,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 
     /// View model for selecting a state from a list.
+    @MainActor
     var stateSelectorVM: StateSelectorViewModel {
         let selectedStateBinding = Binding<AreaSelectorCommandProtocol?>(
             get: { self.selectedState },

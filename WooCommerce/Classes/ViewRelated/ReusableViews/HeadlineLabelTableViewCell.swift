@@ -3,6 +3,7 @@ import UIKit
 
 /// Represents a cell with a Title Label and Body Label
 ///
+@MainActor
 final class HeadlineLabelTableViewCell: UITableViewCell {
     @IBOutlet private weak var headlineLabel: UILabel?
     @IBOutlet private weak var bodyLabel: UILabel?
@@ -27,7 +28,10 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureBackground()
         configureHeadline()
         configureBody()

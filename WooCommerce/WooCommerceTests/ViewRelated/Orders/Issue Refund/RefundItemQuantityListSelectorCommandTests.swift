@@ -5,6 +5,7 @@ import Yosemite
 
 /// Test cases for `RefundItemQuantityListSelectorCommand`
 ///
+@MainActor
 final class RefundItemQuantityListSelectorCommandTests: XCTestCase {
     func test_command_produces_correct_data_when_max_quantity_is_0() {
         // When

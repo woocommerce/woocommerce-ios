@@ -1,7 +1,7 @@
 // periphery:ignore:all
 import Foundation
 
-public struct BookingOrderInfo: Hashable {
+public struct BookingOrderInfo: Hashable, Sendable {
     public let statusKey: String
     public let datePaid: Date?
     public let total: Decimal

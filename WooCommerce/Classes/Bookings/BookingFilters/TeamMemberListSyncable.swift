@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 /// Syncable implementation for team member (booking resource) filtering
-struct TeamMemberListSyncable: ListSyncable {
+struct TeamMemberListSyncable: @MainActor ListSyncable {
     typealias StorageType = StorageBookingResource
     typealias ModelType = BookingResource
     typealias ListFilterType = BookingTeamMemberFilter
@@ -30,6 +30,7 @@ struct TeamMemberListSyncable: ListSyncable {
 
     // MARK: - Sync Configuration
 
+    @MainActor
     func createSyncAction(
         pageNumber: Int,
         pageSize: Int,
@@ -39,7 +40,7 @@ struct TeamMemberListSyncable: ListSyncable {
             siteID: siteID,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            onCompletion: completion
+            onCompletion: { completion($0) }
         )
     }
 

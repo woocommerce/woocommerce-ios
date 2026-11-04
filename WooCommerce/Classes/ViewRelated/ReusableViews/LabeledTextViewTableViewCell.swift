@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 /// A table view cell that contains a label and a text view.
 ///
+@MainActor
 final class LabeledTextViewTableViewCell: UITableViewCell {
     struct ViewModel {
         var text: String? = nil
@@ -22,6 +23,10 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureLabelStyle()
         configureBackground()
     }

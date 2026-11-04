@@ -3,7 +3,7 @@ import Codegen
 
 /// WordPress.com Account Settings
 ///
-public struct AccountSettings: Decodable, Equatable, GeneratedFakeable {
+public struct AccountSettings: Decodable, Equatable, GeneratedFakeable, Sendable {
 
     /// Dotcom UserID
     ///

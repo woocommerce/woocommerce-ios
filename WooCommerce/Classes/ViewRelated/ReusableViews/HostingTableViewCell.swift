@@ -3,6 +3,7 @@ import UIKit
 
 /// Use this cell to host a SwiftUI view into a `UITableViewCell` so it can be displayed in a `UITableView` instance
 ///
+@MainActor
 class HostingTableViewCell<Content: View>: UITableViewCell {
     private weak var controller: UIHostingController<Content>?
 
@@ -36,8 +37,7 @@ class HostingTableViewCell<Content: View>: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
+        MainActor.assumeIsolated { configureBackground() }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

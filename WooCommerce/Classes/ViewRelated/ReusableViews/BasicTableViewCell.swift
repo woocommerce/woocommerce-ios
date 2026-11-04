@@ -1,10 +1,14 @@
 import UIKit
 
+@MainActor
 class BasicTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureBackground()
         textLabel?.applyBodyStyle()
     }

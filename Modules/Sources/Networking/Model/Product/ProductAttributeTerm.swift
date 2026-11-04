@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a `ProductAttributeTerm` entity.
 ///
-public struct ProductAttributeTerm: Equatable, GeneratedFakeable {
+public struct ProductAttributeTerm: Equatable, GeneratedFakeable, Sendable {
     public let siteID: Int64
     public let termID: Int64
     public let name: String

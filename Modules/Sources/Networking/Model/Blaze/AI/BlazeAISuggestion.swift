@@ -1,7 +1,7 @@
 import Foundation
 import Codegen
 
-public struct BlazeAISuggestion: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazeAISuggestion: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     /// Suggested tagline for the Blaze campaign.
     ///
     public let siteName: String

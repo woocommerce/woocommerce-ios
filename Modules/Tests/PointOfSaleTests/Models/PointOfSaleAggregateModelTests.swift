@@ -443,7 +443,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
         }
 
-        @Test func cancelInFlightCheckout_whileSyncing_prevents_card_collection_when_sync_finishes() async throws {
+        @Test func leaveCheckout_whileSyncing_prevents_card_collection_when_sync_finishes() async throws {
             // Given
             let cardPresentPaymentService = MockCardPresentPaymentService()
             let orderController = MockPointOfSaleOrderController()
@@ -475,7 +475,7 @@ struct PointOfSaleAggregateModelTests {
                 }
             }
 
-            sut.cancelInFlightCheckout()
+            sut.leaveCheckout()
             releaseSyncOrder?()
             await checkoutTask?.value
 
@@ -483,6 +483,52 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.orderStage == .building)
             #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
             #expect(tracker.orderSyncSuccessCount == 0)
+        }
+
+        @Test(arguments: [
+            PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle),
+            PointOfSalePaymentState(card: .idle, cash: .paymentSuccess),
+            PointOfSalePaymentState(card: .idle, cash: .idle, scanToPay: .paymentSuccess),
+            PointOfSalePaymentState(card: .idle, cash: .idle, markAsPaid: .paymentSuccess)
+        ])
+        func leaveCheckout_when_payment_succeeded_then_starts_new_cart(paymentState: PointOfSalePaymentState) async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+            sut.addToCart(makePurchasableItem())
+            await sut.checkOut()
+            sut.setPreviewState(paymentState: paymentState, inlineMessage: nil)
+            try #require(sut.orderStage == .finalizing)
+
+            // When
+            sut.leaveCheckout()
+
+            // Then
+            #expect(sut.cart.isEmpty)
+            #expect(orderController.clearOrderWasCalled)
+            #expect(sut.orderStage == .building)
+            #expect(sut.paymentState == .idle)
+        }
+
+        @Test func leaveCheckout_when_payment_not_completed_then_keeps_cart_and_order() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+            sut.addToCart(makePurchasableItem())
+            await sut.checkOut()
+            sut.setPreviewState(paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle), inlineMessage: nil)
+            try #require(sut.orderStage == .finalizing)
+
+            // When
+            sut.leaveCheckout()
+
+            // Then
+            #expect(!sut.cart.isEmpty)
+            #expect(!orderController.clearOrderWasCalled)
+            #expect(sut.orderStage == .building)
+            #expect(sut.paymentState == .idle)
         }
 
         @Test func sendReceipt_when_invoked_then_calls_receiptSender() async throws {

@@ -124,6 +124,33 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                        WooShippingServiceViewModel.Error.failedLoadingLabelRates)
     }
 
+    func test_loadLabelRates_when_request_fails_then_passes_original_error_to_failure_closure() {
+        // Given
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500, response: Data(#"{"code":"wcc_server_error"}"#.utf8))
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .failure(expectedError))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+        var receivedError: Error?
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores,
+                                                    onLabelRatesLoadingFailure: { receivedError = $0 })
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+
+        // Then
+        XCTAssertEqual(receivedError as? NetworkError, expectedError)
+        XCTAssertEqual(viewModel.loadingState, .error(.failedLoadingLabelRates))
+    }
+
     func test_selecting_standard_rate_updates_expected_values() {
         // Given
         let standardRate = sampleStandardRates()[1]

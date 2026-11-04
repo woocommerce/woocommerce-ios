@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 
+@MainActor
 final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     @IBOutlet weak var collectionView: UICollectionView!
@@ -33,10 +34,12 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        configureBackground()
-        configureSeparator()
-        updateCollectionViewHeight()
-        observeInterfaceTraitChanges()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureSeparator()
+            updateCollectionViewHeight()
+            observeInterfaceTraitChanges()
+        }
     }
 
     /// Configure cell

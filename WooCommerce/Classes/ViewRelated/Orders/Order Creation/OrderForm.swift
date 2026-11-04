@@ -905,7 +905,7 @@ private extension OrderForm {
 
 private extension OrderForm {
     struct WidthPreferenceKey: PreferenceKey {
-        static var defaultValue: CGFloat = .zero
+        static let defaultValue: CGFloat = .zero
         static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
             value = max(value, nextValue())
         }

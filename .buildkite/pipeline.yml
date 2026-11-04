@@ -30,6 +30,7 @@ steps:
     plugins: [$CI_TOOLKIT]
 
   - label: ":warning: Build Warning Count"
+    key: build-warning-count
     command: .buildkite/commands/comment-build-warning-increase.sh
     depends_on:
       - build
@@ -64,28 +65,26 @@ steps:
   #################
   # Create Prototype Build
   #################
+  # On demand on PRs and `trunk`, so that a Mac doesn't build a prototype for every push.
+  #
+  # No `github_commit_status` here: it would post "pending" while the step waits for the input,
+  # and leave that check pending on every build where nobody asks for a prototype.
   - group: ":rocket: Prototype Build"
-    # Prototype Builds are on-demand on `trunk`, but always built on PRs
+    if: build.pull_request.id != null || build.branch == "trunk"
     steps:
       - input: Create Prototype Build?
         prompt: Share a Prototype Build via Firebase App Distribution?
         key: prototype_build_triggered
-        if: build.branch == "trunk"
       - label: ":firebase: Prototype Build"
-        # Buildkite considers this implicitly satisfied if the `depends_on` step is skipped due to `if:` condition. So this will run unconditionally on PRs
-        # https://buildkite.com/docs/pipelines/configure/dependencies#how-skipped-steps-affect-dependencies
         depends_on: prototype_build_triggered
-        if: build.pull_request.id != null || build.branch == "trunk"
         command: .buildkite/commands/prototype-build.sh
         plugins: [$CI_TOOLKIT]
-        notify:
-          - github_commit_status:
-              context: Prototype Build
 
   #################
   # Run Unit Tests
   #################
   - label: ":microscope: Unit Tests"
+    key: unit-tests
     command: .buildkite/commands/run-unit-tests.sh
     depends_on: build
     plugins:
@@ -101,19 +100,11 @@ steps:
       - github_commit_status:
           context: Unit Tests
 
-  - label: ":microscope: Standalone WordPressAuthenticator Unit Tests"
-    command: .buildkite/commands/run-wordpress-authenticator-tests.sh
-    plugins: [$CI_TOOLKIT]
-    artifact_paths:
-      - fastlane/test_output/*
-    notify:
-      - github_commit_status:
-          context: WordPressAuthenticator Unit Tests
-
   #################
   # Ruby Automation Tests (Fastlane helpers)
   #################
   - label: ":ruby: Ruby Automation Tests"
+    key: ruby-automation-tests
     command: .buildkite/commands/run-ruby-automation-tests.sh
     plugins: [$CI_TOOLKIT]
     notify:
@@ -124,6 +115,7 @@ steps:
   # Linters
   #################
   - group: Linters
+    key: linters
     steps:
       - label: ":danger: Danger - PR Check"
         command: danger
@@ -177,6 +169,7 @@ steps:
   # UI Tests
   #################
   - label: ":microscope: UI Tests (iPhone)"
+    key: ui-tests-iphone
     command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
     depends_on: build
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
@@ -196,6 +189,7 @@ steps:
           context: UI Tests (iPhone)
 
   - label: ":microscope: UI Tests (iPad)"
+    key: ui-tests-ipad
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
     depends_on: build
     # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
@@ -215,12 +209,22 @@ steps:
           context: UI Tests (iPad)
 
   #################
-  # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the wait
+  # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the steps it depends on
   #################
-  - wait: ~
-    continue_on_failure: true
-
+  # Explicit `depends_on` rather than a `wait`, so the analysis doesn't wait on the Prototype Build input.
+  # Add any new CI step here, or the analysis may run before that step finishes.
   - label: ":claude: 🕵️ Check for Build Failures and Run Claude Analysis"
     command: .buildkite/commands/upload-claude-analysis.sh
+    depends_on:
+      - build
+      - build-warning-baseline
+      - build-warning-count
+      - strict_concurrency
+      - unit-tests
+      - ruby-automation-tests
+      - linters
+      - ui-tests-iphone
+      - ui-tests-ipad
+    allow_dependency_failure: true
     agents:
       queue: upload

@@ -32,6 +32,7 @@ struct UnitInputViewModel {
 
 /// Displays a title, an editable text field for user input and the unit of the text field value.
 ///
+@MainActor
 final class UnitInputTableViewCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var inputAndUnitStackView: UIStackView!
@@ -46,7 +47,10 @@ final class UnitInputTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureSelectionStyle()
         configureTitleLabel()
         configureSubtitleLabel()

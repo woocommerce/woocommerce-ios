@@ -2,6 +2,7 @@ import UIKit
 
 /// A generic data source for the list selector UI `ListSelectorViewController`.
 ///
+@MainActor
 protocol ListSelectorCommand {
     associatedtype Model
     associatedtype Cell: UITableViewCell
@@ -26,6 +27,7 @@ protocol ListSelectorCommand {
     func isSelected(model: Model) -> Bool
 
     /// Configures the cell with the given model.
+    @MainActor
     func configureCell(cell: Cell, model: Model)
 }
 

@@ -1,9 +1,9 @@
 import UIKit
-import WordPressAuthenticator
 
 /// Configuration and actions for an ULErrorViewController,
 /// modeling an error when application password is disabled.
 ///
+@MainActor
 struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
     init(siteURL: String,
          previousViewController: UIViewController?,

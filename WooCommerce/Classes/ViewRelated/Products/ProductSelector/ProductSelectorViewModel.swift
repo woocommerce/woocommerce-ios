@@ -48,6 +48,7 @@ enum ProductSelectorSource {
 
 /// View model for `ProductSelectorView`.
 ///
+@MainActor
 final class ProductSelectorViewModel: ObservableObject {
     private let siteID: Int64
     private let currency: String?
@@ -558,7 +559,7 @@ final class ProductSelectorViewModel: ObservableObject {
 }
 
 // MARK: - PaginationTrackerDelegate conformance
-extension ProductSelectorViewModel: PaginationTrackerDelegate {
+extension ProductSelectorViewModel: @MainActor PaginationTrackerDelegate {
     /// Sync products from remote.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {

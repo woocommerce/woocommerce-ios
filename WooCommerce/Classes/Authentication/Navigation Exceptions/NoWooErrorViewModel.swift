@@ -1,11 +1,12 @@
 import UIKit
-import WordPressAuthenticator
+import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import Yosemite
 import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController,
 /// modelling an error when WooCommerce is not installed or activated.
-final class NoWooErrorViewModel: @MainActor ULErrorViewModel {
+@MainActor
+final class NoWooErrorViewModel: ULErrorViewModel {
     private let site: Site
     private let showsConnectedStores: Bool
     /// Whether the account owns at least one Woo store. Distinct from `showsConnectedStores`,
@@ -80,7 +81,6 @@ final class NoWooErrorViewModel: @MainActor ULErrorViewModel {
     }
 
     // MARK: - Actions
-    @MainActor
     func didTapPrimaryButton(in viewController: UIViewController?) {
         analytics.track(.loginWooCommerceSetupButtonTapped)
         guard let viewController else {
@@ -98,14 +98,12 @@ final class NoWooErrorViewModel: @MainActor ULErrorViewModel {
         viewController.navigationController?.show(setupViewController, sender: nil)
     }
 
-    @MainActor
     func didTapSecondaryButton(in viewController: UIViewController?) {
         // Log out and pop
         stores.deauthenticate()
         viewController?.navigationController?.popToRootViewController(animated: true)
     }
 
-    @MainActor
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         guard let navigationController = viewController?.navigationController else {
             return

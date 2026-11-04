@@ -1,52 +1,56 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class EmptyListMessageWithActionTests: XCTestCase {
-    private var subject: EmptyListMessageWithActionView?
 
     private struct Expectations {
         static let message = "Yo!"
         static let buttonMessage = "Semite!"
     }
 
-    override func setUp() {
-        let nib = Bundle.main.loadNibNamed("EmptyListMessageWithActionView", owner: self, options: nil)
-        subject = nib?.first as? EmptyListMessageWithActionView
-        super.setUp()
+    func testMessageLabelRendersMessage() throws {
+        let subject = try makeView()
+
+        subject.messageText = Expectations.message
+
+        XCTAssertEqual(subject.getMessageLabel().text, Expectations.message)
     }
 
-    override func tearDown() {
-        subject = nil
-        super.tearDown()
+    func testButtonLabelRendersMessage() throws {
+        let subject = try makeView()
+
+        subject.actionText = Expectations.buttonMessage
+
+        XCTAssertEqual(subject.getButtonLabel().text, Expectations.buttonMessage)
     }
 
-    func testMessageLabelRendersMessage() {
-        subject?.messageText = Expectations.message
+    func testBackgroundStyle() throws {
+        let subject = try makeView()
 
-        XCTAssertEqual(subject?.getMessageLabel().text, Expectations.message)
+        XCTAssertEqual(subject.backgroundColor?.cgColor, UIColor.listBackground.cgColor)
     }
 
-    func testButtonLabelRendersMessage() {
-        subject?.actionText = Expectations.buttonMessage
+    func testMessageLabelStyle() throws {
+        let subject = try makeView()
 
-        XCTAssertEqual(subject?.getButtonLabel().text, Expectations.buttonMessage)
+        let label = subject.getMessageLabel()
+
+        XCTAssertEqual(label.textAlignment, NSTextAlignment.center)
+        XCTAssertEqual(label.font, UIFont.body)
     }
 
-    func testBackgroundStyle() {
-        XCTAssertEqual(subject?.backgroundColor?.cgColor, UIColor.listBackground.cgColor)
+    func testActionLabelStyle() throws {
+        let subject = try makeView()
+
+        let label = subject.getButtonLabel()
+
+        XCTAssertEqual(label.font, UIFont.body)
+        XCTAssertEqual(label.textColor, .text)
     }
 
-    func testMessageLabelStyle() {
-        let label = subject?.getMessageLabel()
-
-        XCTAssertEqual(label?.textAlignment, NSTextAlignment.center)
-        XCTAssertEqual(label?.font, UIFont.body)
-    }
-
-    func testActionLabelStyle() {
-        let label = subject?.getButtonLabel()
-
-        XCTAssertEqual(label?.font, UIFont.body)
-        XCTAssertEqual(label?.textColor, .text)
+    private func makeView() throws -> EmptyListMessageWithActionView {
+        let nib = try XCTUnwrap(Bundle.main.loadNibNamed("EmptyListMessageWithActionView", owner: nil, options: nil))
+        return try XCTUnwrap(nib.first as? EmptyListMessageWithActionView)
     }
 }

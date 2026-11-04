@@ -1,0 +1,1 @@
+Enviar a la UE ahora es más fácil: en tus formularios de aduanas se pide el SKU, el número de pieza del fabricante y el GTIN/EAN de cada artículo cuando es necesario. La configuración en persona funciona sin problemas para las tiendas que no tienen WooPayments ni Stripe. Ahora el número de teléfono del destinatario es opcional en las etiquetas de envío para pedidos nacionales.

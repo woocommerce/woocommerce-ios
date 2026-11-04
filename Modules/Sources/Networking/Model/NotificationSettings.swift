@@ -3,7 +3,7 @@ import Codegen
 
 /// Notification settings for a user
 ///
-public struct NotificationSettings: Equatable, Codable, GeneratedCopiable {
+public struct NotificationSettings: Equatable, Codable, GeneratedCopiable, Sendable {
 
     /// Settings for different blogs connected to the user.
     public let blogs: [Blog]
@@ -37,7 +37,7 @@ public struct NotificationSettings: Equatable, Codable, GeneratedCopiable {
 
 public extension NotificationSettings {
     /// Notification settings for a blog
-    struct Blog: Equatable, Codable, GeneratedCopiable {
+    struct Blog: Equatable, Codable, GeneratedCopiable, Sendable {
         /// ID of the blog
         public let blogID: Int64
 
@@ -76,7 +76,7 @@ public extension NotificationSettings {
     }
 
     /// Notification settings for a device
-    struct Device: Equatable, Codable, GeneratedCopiable {
+    struct Device: Equatable, Codable, GeneratedCopiable, Sendable {
 
         /// Unique ID of the device
         public let deviceID: Int64

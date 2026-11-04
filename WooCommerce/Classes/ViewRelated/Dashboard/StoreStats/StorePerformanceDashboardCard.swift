@@ -85,6 +85,7 @@ private extension StorePerformanceDashboardCard {
                 showsInfoButton: viewModel.shouldShowAnalyticsImportUpdateModeInfoButton,
                 onInfoTapped: showAnalyticsImportUpdateModeInfo
             )
+            .padding(.top, StorePadding.p5)
             .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
             chart
             StoreDashboardCardFooterAction(Localization.viewAll, isDisabled: viewModel.syncingData) {

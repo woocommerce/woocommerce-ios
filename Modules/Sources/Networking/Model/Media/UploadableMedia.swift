@@ -3,7 +3,7 @@ import Foundation
 
 /// Media that has the data fields to be uploaded to the WordPress Site Media
 ///
-public struct UploadableMedia: GeneratedFakeable {
+public struct UploadableMedia: GeneratedFakeable, Sendable {
     public let localURL: URL
     public let filename: String
     public let mimeType: String

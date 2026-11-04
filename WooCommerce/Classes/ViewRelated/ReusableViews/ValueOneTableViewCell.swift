@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 class ValueOneTableViewCell: UITableViewCell {
 
     /// The style options for the `ValueOneTableViewCell`
@@ -13,7 +14,10 @@ class ValueOneTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureTextLabel()
         configureDetailTextLabel()
         apply(style: .primary)

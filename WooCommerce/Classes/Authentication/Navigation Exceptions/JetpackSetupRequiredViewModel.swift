@@ -1,13 +1,14 @@
 import Combine
 import UIKit
-import WordPressAuthenticator
+import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController,
 /// modeling an error when Jetpack is not installed or is not connected
 /// Displayed as an entry point to the native Jetpack setup flow.
 ///
-final class JetpackSetupRequiredViewModel: @MainActor ULErrorViewModel {
+@MainActor
+final class JetpackSetupRequiredViewModel: ULErrorViewModel {
 
     let siteURL: String
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
@@ -114,7 +115,6 @@ final class JetpackSetupRequiredViewModel: @MainActor ULErrorViewModel {
         loadSiteFavicon()
     }
 
-    @MainActor
     func didTapPrimaryButton(in viewController: UIViewController?) {
         if connectionOnly {
             analytics.track(.loginJetpackConnectButtonTapped)

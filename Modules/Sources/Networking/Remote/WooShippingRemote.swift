@@ -7,7 +7,7 @@ public enum WooShippingPackageType: String {
 
 /// Protocol for `WooShippingRemote` mainly used for mocking.
 ///
-public protocol WooShippingRemoteProtocol {
+public protocol WooShippingRemoteProtocol: Sendable {
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
                                   completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void)
@@ -91,6 +91,9 @@ public protocol WooShippingRemoteProtocol {
 
     func acceptFedExTermsOfService(siteID: Int64,
                                    completion: @escaping(Result<Bool, Error>) -> Void)
+
+    func loadServiceStatusNotices(siteID: Int64,
+                                  completion: @escaping (Result<[WooShippingServiceStatusNotice], Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -633,6 +636,21 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol, @unchec
         acceptCarrierTermsOfService(siteID: siteID, path: Path.fedexCarrierStrategy, parameters: parameters, completion: completion)
     }
 
+    /// Loads the carrier service incidents shown on the label purchase screen.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadServiceStatusNotices(siteID: Int64,
+                                         completion: @escaping (Result<[WooShippingServiceStatusNotice], Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.serviceStatus,
+                                     availableAsRESTRequest: true)
+        let mapper = WooShippingServiceStatusMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Sends a carrier ToS acceptance request.
     private func acceptCarrierTermsOfService(siteID: Int64,
                                              path: String,
@@ -680,6 +698,7 @@ private extension WooShippingRemote {
         }
         static let upsdapCarrierStrategy = "carrier-strategy/upsdap"
         static let fedexCarrierStrategy = "carrier-strategy/fedex"
+        static let serviceStatus = "service-status"
     }
 
     enum ParameterKey {

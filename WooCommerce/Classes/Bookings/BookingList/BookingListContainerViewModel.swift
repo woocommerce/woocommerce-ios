@@ -52,6 +52,7 @@ final class BookingListContainerViewModel: ObservableObject {
         BookingFiltersViewModel(filter: filters, siteID: siteID)
     }
 
+    @MainActor
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -135,6 +136,7 @@ final class BookingListContainerViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     func updateFilters(_ filters: BookingFiltersViewModel.Filters, shouldPersist: Bool = true) {
         self.filters = filters
         self.numberOfActiveFilters = filters.numberOfActiveFilters
@@ -145,6 +147,7 @@ final class BookingListContainerViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     func clearFilters() {
         let filters = BookingFiltersViewModel.Filters()
         updateFilters(filters)
@@ -196,6 +199,7 @@ final class BookingListContainerViewModel: ObservableObject {
         analytics.track(Event.bookingListSortByTap)
     }
 
+    @MainActor
     func sortByOptionSelected(_ option: BookingListViewModel.SortBy) {
         sortBy = option
         analytics.track(Event.bookingListSortByOptionTap(sortOption: option.analyticsValue))

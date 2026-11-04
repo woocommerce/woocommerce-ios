@@ -4,6 +4,7 @@ import UIKit
 
 // MARK: - TableFooterView
 //
+@MainActor
 final class TableFooterView: UIView {
 
     @IBOutlet var icon: UIImageView!
@@ -15,8 +16,7 @@ final class TableFooterView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        setupFootnoteTextView()
+        MainActor.assumeIsolated { setupFootnoteTextView() }
     }
 
     override func layoutSubviews() {

@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 26.0
+You can now add and edit attributes on every product type. Camera barcode scanning is more accurate. Product search in Point of Sale is faster for large catalogs. Carrier outage notices appear while you create shipping labels. Give this update a try and let us know what you think.
+
 ## 25.9
 Shipping into the EU is now easier—your customs forms ask for each item's SKU, manufacturer part number and GTIN/EAN when needed. In-person setup works smoothly for stores without WooPayments or Stripe. Shipping labels now make the recipient phone number optional for domestic orders.
 

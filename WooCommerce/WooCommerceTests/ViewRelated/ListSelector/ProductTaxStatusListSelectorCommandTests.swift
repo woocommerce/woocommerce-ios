@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class ProductTaxStatusListSelectorCommandTests: XCTestCase {
 
     func test_selected_taxStatus() {
@@ -21,6 +22,7 @@ final class ProductTaxStatusListSelectorCommandTests: XCTestCase {
         XCTAssertNotNil(command.selected)
     }
 
+    @MainActor
     func test_cell_configuration() {
         let taxStatus = ProductTaxStatus.taxable
         let command = ProductTaxStatusListSelectorCommand(selected: taxStatus)

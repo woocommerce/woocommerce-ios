@@ -256,7 +256,6 @@ struct StoreDashboardTimestamp: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(StorePadding.p5)
     }
 
     private var content: some View {

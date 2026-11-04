@@ -1,6 +1,7 @@
 import UIKit
 
-final class UnderlineableTitleAndSubtitleAndDetailTableViewCell: UITableViewCell, SearchResultCell {
+@MainActor
+final class UnderlineableTitleAndSubtitleAndDetailTableViewCell: UITableViewCell, @MainActor SearchResultCell {
     typealias SearchModel = ViewModel
 
     @IBOutlet private var subtitleLabel: UILabel!
@@ -12,6 +13,10 @@ final class UnderlineableTitleAndSubtitleAndDetailTableViewCell: UITableViewCell
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBackground()
         accessoryType = .none
     }

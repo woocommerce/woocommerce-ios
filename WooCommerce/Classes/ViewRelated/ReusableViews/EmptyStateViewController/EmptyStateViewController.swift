@@ -12,7 +12,8 @@ import UIKit
 /// These elements are hidden by default and can be configured and shown using
 /// the `configure` method.
 ///
-final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentProvider {
+@MainActor
+final class EmptyStateViewController: UIViewController, @MainActor KeyboardFrameAdjustmentProvider {
 
     /// The main message shown at the top.
     ///

@@ -2,6 +2,7 @@ import UIKit
 
 /// Used for variable vertical spacing between two table view cells.
 /// The cell currently has default cell background color (`.listForeground`).
+@MainActor
 final class SpacerTableViewCell: UITableViewCell {
     private var height: CGFloat = 0 {
         didSet {
@@ -14,7 +15,10 @@ final class SpacerTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureDefaultBackgroundConfiguration()
         hideSeparator()
         view.backgroundColor = .clear

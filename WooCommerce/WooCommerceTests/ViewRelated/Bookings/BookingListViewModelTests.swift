@@ -1087,7 +1087,7 @@ class MockBookingListsRefreshCoordinating: BookingListsRefreshCoordinating {
 }
 
 fileprivate extension BookingAction {
-    var synchronizeBookingsCompletion: ((Result<Bool, Error>) -> Void)? {
+    var synchronizeBookingsCompletion: (@MainActor @Sendable (Result<Bool, Error>) -> Void)? {
         guard case let .synchronizeBookings(_, _, _, _, _, _, onCompletion) = self else {
             return nil
         }

@@ -251,7 +251,7 @@ private extension CookieNonceAuthenticator {
     func successfulLoginSequence() {
         DDLogInfo("Completed Cookie+Nonce login sequence for \(endpoints.loginEntryURL)")
         state.resetAfterSuccess()
-        completeRequests(true)
+        completeRequests(.retryWithDelay(0))
     }
 
     func invalidateLoginSequence(error: Error) {
@@ -262,11 +262,15 @@ private extension CookieNonceAuthenticator {
         }
         state.invalidate(allowRetry: allowRetry)
         DDLogInfo("Aborting Cookie+Nonce login sequence for \(endpoints.loginEntryURL)")
-        completeRequests(false)
+        if case .authenticationFailed(.invalidCredentials) = error {
+            // Otherwise callers only see the request's own 401, which doesn't say the site rejected the credentials.
+            completeRequests(.doNotRetryWithError(error))
+        } else {
+            completeRequests(.doNotRetry)
+        }
     }
 
-    func completeRequests(_ shouldRetry: Bool) {
-        let result: RetryResult = shouldRetry ? .retryWithDelay(0) : .doNotRetry
+    func completeRequests(_ result: RetryResult) {
         let pendingCompletions = state.drainPendingRetries()
         pendingCompletions.forEach { completion in
             completion(result)

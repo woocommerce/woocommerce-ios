@@ -7,6 +7,7 @@ import Photos
 import class Networking.UserAgent
 
 /// View model for `BlazeCampaignCreationForm`
+@MainActor
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     let siteID: Int64

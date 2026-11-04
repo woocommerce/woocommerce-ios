@@ -1,0 +1,14 @@
+{
+    "data": {
+        "notices": [
+            {
+                "id": "service-status-easypost-usps",
+                "type": "warning",
+                "message": "USPS: API Degradation | Status: Investigating",
+                "dismissible": false,
+                "provider": "easypost",
+                "action": "https://www.easypoststatus.com"
+            }
+        ]
+    }
+}

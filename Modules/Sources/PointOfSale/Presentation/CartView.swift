@@ -3,6 +3,7 @@ import class WooFoundation.KeyboardObserver
 import struct Yosemite.POSCustomAmount
 
 struct CartView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
@@ -62,10 +63,10 @@ struct CartView: View {
 
                     if viewHelper.shouldShowCheckout(orderStage: posModel.orderStage, cart: posModel.cart) {
                         checkoutButton
-                            .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                            .padding(.top, POSPadding.medium)
+                            .padding(.horizontal, metrics.padding.medium)
+                            .padding(.top, metrics.padding.medium)
                             .padding(.bottom, horizontalSizeClass == .compact ?
-                                     POSCompactFooterLayout.bottomPadding(safeAreaInset: geometry.safeAreaInsets.bottom) : POSPadding.medium)
+                                     POSCompactFooterLayout.bottomPadding(safeAreaInset: geometry.safeAreaInsets.bottom, metrics: metrics) : metrics.padding.medium)
                             .accessibilityAddTraits(.isHeader)
                             .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
                             .zIndex(1)
@@ -118,6 +119,7 @@ struct CartView: View {
 }
 
 private struct CartHeaderView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     private let viewHelper = CartViewHelper()
@@ -148,7 +150,7 @@ private struct CartHeaderView: View {
         POSPageHeaderView(title: Localization.cartTitle,
                           backButtonConfiguration: backButtonConfiguration,
                           trailingContent: {
-            HStack(spacing: Constants.cartHeaderElementSpacing) {
+            HStack(spacing: metrics.spacing.medium) {
                 if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: itemCount) {
                     Text(itemsInCartLabel)
                         .accessibilityIdentifier("pos-cart-item-count-\(itemCount)")
@@ -244,11 +246,7 @@ private enum Constants {
     static let itemsFont: POSFontStyle = .posBodySmallRegular()
     static let shoppingBagImageSize: CGFloat = 104
     static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
-    static let emptyViewImageTextSpacing: CGFloat = POSSpacing.xLarge // This should be 40 by designs, but the overlay technique means we have to tweak it
-    static let cartHeaderElementSpacing: CGFloat = POSSpacing.medium
     static let cartAnimation: Animation = .spring(duration: 0.2)
-    static let cartItemSpacing: CGFloat = POSSpacing.medium
-    static let cartLastItemBottomPadding: CGFloat = POSPadding.large
 }
 
 /// View sub-components
@@ -268,9 +266,14 @@ private extension CartView {
         .accessibilityIdentifier("pos-checkout-button")
     }
 
+    // This should be 40 by designs, but the overlay technique means we have to tweak it
+    private var emptyViewImageTextSpacing: CGFloat {
+        metrics.spacing.xLarge
+    }
+
     var cartEmptyView: some View {
         VStack {
-            Spacer(minLength: headerSize.height + Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing)
+            Spacer(minLength: headerSize.height + Constants.shoppingBagImageSize + emptyViewImageTextSpacing)
             // By designs, the text should be vertically centred with the image 40px above it.
             // SwiftUI doesn't allow us to absolutely pin a view to the centre then position other views relative to it
             // Instead, we can centre the text, and then put the image in an offset overlay. Offsetting from the top
@@ -283,7 +286,7 @@ private extension CartView {
                     PointOfSaleAssets.shoppingBags.decorativeImage
                         .resizable()
                         .frame(width: Constants.shoppingBagImageSize, height: Constants.shoppingBagImageSize, alignment: .bottom)
-                        .offset(y: -(Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing))
+                        .offset(y: -(Constants.shoppingBagImageSize + emptyViewImageTextSpacing))
                         .aspectRatio(contentMode: .fit)
                 }
                 Button(action: {
@@ -338,6 +341,7 @@ private struct CartClearMenuButton: View {
 }
 
 private struct CartScrollViewContent: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -355,7 +359,7 @@ private struct CartScrollViewContent: View {
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                VStack(spacing: Constants.cartItemSpacing) {
+                VStack(spacing: metrics.spacing.medium) {
                     if posModel.cart.customAmounts.isNotEmpty {
                         CustomAmountsCartSection()
                     }
@@ -366,7 +370,7 @@ private struct CartScrollViewContent: View {
 
                     PurchasableItemsCartSection(shouldShowItemImages: $shouldShowItemImages)
                 }
-                .padding(.bottom, Constants.cartLastItemBottomPadding)
+                .padding(.bottom, metrics.padding.large)
                 .background(GeometryReader { geometry in
                     Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                            value: geometry.frame(in: coordinateSpace).origin.y)
@@ -451,6 +455,7 @@ private struct CartScrollViewContent: View {
 }
 
 private struct CustomAmountsCartSection: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
 
@@ -462,7 +467,7 @@ private struct CustomAmountsCartSection: View {
             orderState: posModel.orderState,
             cart: posModel.cart
         )
-        LazyVStack(spacing: Constants.cartItemSpacing) {
+        LazyVStack(spacing: metrics.spacing.medium) {
             ForEach(posModel.cart.customAmounts, id: \.id) { customAmount in
                 let isInteractive = posModel.orderStage == .building
                 CustomAmountRowView(
@@ -487,6 +492,7 @@ private struct CustomAmountsCartSection: View {
 }
 
 private struct CouponsCartSection: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
 
@@ -495,7 +501,7 @@ private struct CouponsCartSection: View {
     private let viewHelper = CartViewHelper()
 
     var body: some View {
-        LazyVStack(spacing: Constants.cartItemSpacing) {
+        LazyVStack(spacing: metrics.spacing.medium) {
             ForEach(posModel.cart.coupons, id: \.id) { couponItem in
                 CouponRowView(
                     couponItem: couponItem,
@@ -523,6 +529,7 @@ private struct CouponsCartSection: View {
 }
 
 private struct PurchasableItemsCartSection: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Binding var shouldShowItemImages: Bool
@@ -531,7 +538,7 @@ private struct PurchasableItemsCartSection: View {
     private let viewHelper = CartViewHelper()
 
     var body: some View {
-        LazyVStack(spacing: Constants.cartItemSpacing) {
+        LazyVStack(spacing: metrics.spacing.medium) {
             ForEach(posModel.cart.purchasableItems, id: \.id) { cartItem in
                 ItemRowView(
                     cartItem: cartItem,

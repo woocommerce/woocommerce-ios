@@ -42,6 +42,8 @@ class DefaultStoresManager: StoresManager {
     ///
     private var invalidApplicationPasswordNotificationObserver: NSObjectProtocol?
 
+    private var siteCredentialsRejectedObserver: NSObjectProtocol?
+
     /// Observes unknown blog notification
     ///
     private var unknownBlogNotificationObserver: NSObjectProtocol?
@@ -283,7 +285,7 @@ class DefaultStoresManager: StoresManager {
         }
     }
 
-    /// De-authenticates upon receiving `ApplicationPasswordInvalidated` notification for non-WP.com sessions.
+    /// De-authenticates after application password invalidation or site credential rejection for non-WP.com sessions.
     ///
     func listenToApplicationPasswordInvalidatedNotification() {
         stopObservingApplicationPasswordInvalidation()
@@ -296,14 +298,32 @@ class DefaultStoresManager: StoresManager {
             ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .applicationPasswordUnauthorized))
             _ = self?.deauthenticate()
         }
+
+        siteCredentialsRejectedObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
+                                                                          object: nil,
+                                                                          queue: .main) { [weak self] note in
+            // A creation from an earlier login can end after logging in again, to another site or account.
+            guard let self,
+                  (note.object as? ApplicationPasswordUseCaseError) == .siteCredentialsRejected,
+                  case let .some(.wporg(username, _, siteAddress)) = sessionManager.defaultCredentials,
+                  (note.userInfo?[ApplicationPasswordGenerationUserInfoKey.siteAddress] as? String) == siteAddress,
+                  (note.userInfo?[ApplicationPasswordGenerationUserInfoKey.username] as? String) == username else {
+                return
+            }
+            ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .siteCredentialsRejected))
+            _ = deauthenticate()
+        }
     }
 
     func stopObservingApplicationPasswordInvalidation() {
-        guard let invalidApplicationPasswordNotificationObserver else {
-            return
+        if let invalidApplicationPasswordNotificationObserver {
+            notificationCenter.removeObserver(invalidApplicationPasswordNotificationObserver)
+            self.invalidApplicationPasswordNotificationObserver = nil
         }
-        notificationCenter.removeObserver(invalidApplicationPasswordNotificationObserver)
-        self.invalidApplicationPasswordNotificationObserver = nil
+        if let siteCredentialsRejectedObserver {
+            notificationCenter.removeObserver(siteCredentialsRejectedObserver)
+            self.siteCredentialsRejectedObserver = nil
+        }
     }
 
     /// Resets the selected store upon receiving `RemoteDidReceiveUnknownBlogError` notification.

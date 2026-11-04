@@ -14,6 +14,8 @@ public enum ApplicationPasswordUseCaseError: Error {
     case applicationPasswordsDisabled
     case failedToConstructLoginOrAdminURLUsingSiteAddress
     case unauthorizedRequest
+    /// The site's login page rejected the saved username or password.
+    case siteCredentialsRejected
     case unableToFindPasswordUUID
     case notSupported
 }
@@ -314,6 +316,8 @@ private extension DefaultApplicationPasswordUseCase {
                     }
 
                     switch error {
+                    case .requestRetryFailed(CookieNonceAuthenticator.Error.authenticationFailed(.invalidCredentials), _):
+                        continuation.resume(throwing: ApplicationPasswordUseCaseError.siteCredentialsRejected)
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.notFound)):
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.applicationPasswordsDisabledErrorCode)):

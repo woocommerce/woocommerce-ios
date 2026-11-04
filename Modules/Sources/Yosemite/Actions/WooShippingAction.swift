@@ -13,14 +13,14 @@ public enum WooShippingAction: Action {
     case createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage? = nil,
                        predefinedOption: WooShippingPredefinedSavedOption? = nil,
-                       completion: (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void)
+                       completion: @Sendable (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void)
 
     /// Deletes a package or deactivates a carrier package with provided package ID and type.
     ///
     case deletePackage(siteID: Int64,
                        packageID: String,
                        packageType: WooShippingPackageType,
-                       completion: (Result<WooShippingCreatePackageResponse, Error>) -> Void)
+                       completion: @Sendable (Result<WooShippingCreatePackageResponse, Error>) -> Void)
 
     /// Fetch list of shipping label rates for the order.
     ///
@@ -36,12 +36,12 @@ public enum WooShippingAction: Action {
     /// Fetch list of packages.
     ///
     case loadPackages(siteID: Int64,
-                      completion: (Result<WooShippingPackagesResponse, Error>) -> Void)
+                      completion: @Sendable (Result<WooShippingPackagesResponse, Error>) -> Void)
 
     /// Load account settings
     ///
     case loadAccountSettings(siteID: Int64,
-                             completion: (Result<WooShippingAccountSettings, Error>) -> Void)
+                             completion: @Sendable (Result<WooShippingAccountSettings, Error>) -> Void)
 
     /// Update account settings
     ///
@@ -60,7 +60,7 @@ public enum WooShippingAction: Action {
                                backendProcessingDelay: TimeInterval = 2.0,
                                pollingDelay: TimeInterval = 1.0,
                                pollingMaximumRetries: Int64 = 3,
-                               completion: (Result<ShippingLabel, Error>) -> Void)
+                               completion: @Sendable (Result<ShippingLabel, Error>) -> Void)
 
     /// Generates a shipping label document for printing.
     ///
@@ -72,7 +72,7 @@ public enum WooShippingAction: Action {
     /// Fetch list of origin addresses.
     ///
     case loadOriginAddresses(siteID: Int64,
-                             completion: (Result<[WooShippingOriginAddress], Error>) -> Void)
+                             completion: @Sendable (Result<[WooShippingOriginAddress], Error>) -> Void)
 
     /// Validate a shipping address.
     ///
@@ -119,19 +119,19 @@ public enum WooShippingAction: Action {
     ///
     case syncShipments(siteID: Int64,
                        orderID: Int64,
-                       completion: (Result<[WooShippingShipment], Error>) -> Void)
+                       completion: @Sendable (Result<[WooShippingShipment], Error>) -> Void)
 
     /// Updates shipments for given order
     ///
     case updateShipment(siteID: Int64,
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
-                        completion: (Result<WooShippingShipments, Error>) -> Void)
+                        completion: @Sendable (Result<WooShippingShipments, Error>) -> Void)
 
     /// Requests a refund for a shipping label
     ///
     case refundShippingLabel(shippingLabel: ShippingLabel,
-                             completion: (Result<ShippingLabel, Error>) -> Void)
+                             completion: @Sendable (Result<ShippingLabel, Error>) -> Void)
 
     /// Accept UPS TOS for an origin address
     case acceptUPSTermsOfService(siteID: Int64,

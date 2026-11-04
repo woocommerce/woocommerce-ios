@@ -25,6 +25,7 @@ tags:
       id: add-customer-note-button
     direction: DOWN
     visibilityPercentage: 100
+    centerElement: true
 - tapOn:
     id: add-customer-note-button
 - tapOn:
@@ -128,6 +129,18 @@ tags:
 - tapOn:
     text: Refund
     index: 0
+# Wait for the refund screen to close before scrolling order details.
+- extendedWaitUntil:
+    visible:
+      id: order-details-table-view
+    timeout: 30000
+- waitForAnimationToEnd:
+    timeout: 5000
+- scrollUntilVisible:
+    element: "View refunded order items"
+    direction: UP
+    centerElement: true
+    timeout: 20000
 # The refunded section header is rendered upper-cased, and Maestro matches text
 # case-sensitively, so "Refunded Products" never matched.
 - extendedWaitUntil:

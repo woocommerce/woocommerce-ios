@@ -116,6 +116,11 @@ private extension SiteCredentialLoginViewModel {
     }
 
     func handleRemoteError(_ error: Error) {
+        if case let AFError.requestRetryFailed(_, originalError) = error {
+            // A rejected username or password arrives wrapped around the request's 401.
+            handleRemoteError(originalError)
+            return
+        }
         switch error {
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)),
             AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):

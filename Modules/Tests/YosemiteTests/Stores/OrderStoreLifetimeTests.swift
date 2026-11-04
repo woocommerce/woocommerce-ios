@@ -87,9 +87,9 @@ private final class MockQueuedOrderStorageManager: StorageManagerType, Sendable 
         onWriteQueued()
     }
 
-    func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
-                           completion: @escaping @Sendable (Result<T, Error>) -> Void,
-                           on queue: DispatchQueue) {
+    func performAndSave<T: Sendable>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                                     completion: @escaping @Sendable (Result<T, Error>) -> Void,
+                                     on queue: DispatchQueue) {
         underlying.performAndSave(operation, completion: completion, on: queue)
     }
 

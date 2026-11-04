@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class MockJetpackConnectionService: JetpackConnectionServiceProtocol {
     var establishSiteConnectionResult: Result<Void, Error> = .success(())
     private(set) var establishSiteConnectionCallCount = 0

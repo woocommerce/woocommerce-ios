@@ -89,12 +89,18 @@ tags:
       id: "store-stats-chart"
     direction: DOWN
     timeout: 20000
+    centerElement: true
 - assertVisible:
     id: "store-stats-chart"
 # Tapping the chart selects a month, and its name and year replace the range's
 # dates next to the range title.
 - tapOn:
     id: "store-stats-chart"
+# Start outside the chart, whose drag gesture changes the selected month.
+- swipe:
+    from:
+      text: "View all store analytics"
+    direction: DOWN
 - scrollUntilVisible:
     element:
       text: "[A-Za-z]+ [0-9]{4}"

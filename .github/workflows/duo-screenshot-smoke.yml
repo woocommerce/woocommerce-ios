@@ -1,0 +1,109 @@
+name: Duo Screenshot Smoke
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/duo-screenshot-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: duo-screenshot-smoke-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: xcode-27
+    timeout-minutes: 60
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+    steps:
+      - name: Check out project
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Check Xcode and Duo runtime
+        run: |
+          mkdir -p .agent-artifacts/duo-screenshot-smoke
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import subprocess
+
+          def output(*args):
+              return subprocess.check_output(args, text=True)
+
+          version = output('xcodebuild', '-version')
+          assert version.splitlines()[0].split()[-1].split('.')[:2] == ['27', '1'], version
+          runtimes = json.loads(output('xcrun', 'simctl', 'list', 'runtimes', '--json'))['runtimes']
+          runtime = next((r for r in runtimes if r.get('isAvailable') and r['version'] == '27.1'
+                          and r['identifier'].startswith('com.apple.CoreSimulator.SimRuntime.iOS-')), None)
+          assert runtime is not None, 'The selected Xcode needs an available iOS 27.1 runtime'
+          types = json.loads(output('xcrun', 'simctl', 'list', 'devicetypes', '--json'))['devicetypes']
+          device = next((d for d in types if d['identifier'].endswith('.iPhone-Duo')), None)
+          assert device is not None, 'iPhone Duo device type is unavailable'
+          info = {'xcode': version.strip(), 'runtime': {k: runtime[k] for k in ['identifier', 'version', 'buildversion']},
+                  'deviceType': {k: device[k] for k in ['identifier', 'name']}}
+          pathlib.Path('.agent-artifacts/duo-screenshot-smoke/toolchain.json').write_text(json.dumps(info, indent=2))
+          print(json.dumps(info, indent=2))
+          PY
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        with:
+          bundler-cache: true
+
+      - name: Install app dependencies
+        run: bundle exec rake dependencies
+
+      - name: Build screenshot app
+        run: |
+          set -o pipefail
+          bundle exec fastlane build_screenshots device:'iPhone Duo' 2>&1 | tee .agent-artifacts/duo-screenshot-smoke/build.log
+
+      - name: Capture closed Duo in portrait
+        run: |
+          set -o pipefail
+          bundle exec fastlane take_screenshots include_duo:true devices:'iPhone Duo' ios_version:27.1 languages:en-US mode:light retries:0 \
+            2>&1 | tee .agent-artifacts/duo-screenshot-smoke/capture.log
+
+      - name: Check raw screenshot set
+        run: |
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import struct
+
+          directory = pathlib.Path('fastlane/screenshots/en-US')
+          expected = {f'iPhone Duo-{i}-light-{name}.png' for i, name in enumerate(
+              ['order-dashboard', 'order-creation', 'order-payment', 'product-add', 'order-notification'], start=1)}
+          images = {p.name: p for p in directory.glob('iPhone Duo-*.png')}
+          assert set(images) == expected, f'Expected five scenes; found {sorted(images)}'
+          report = []
+          for name, path in sorted(images.items()):
+              header = path.read_bytes()[:24]
+              assert header[:8] == b'\x89PNG\r\n\x1a\n', name
+              dimensions = struct.unpack('>II', header[16:24])
+              report.append({'name': name, 'dimensions': dimensions})
+          pathlib.Path('.agent-artifacts/duo-screenshot-smoke/images.json').write_text(json.dumps(report, indent=2))
+          assert all(i['dimensions'] == (1398, 2034) for i in report), report
+          print(json.dumps(report, indent=2))
+          PY
+
+      - name: Keep raw screenshots and diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: duo-screenshot-smoke
+          retention-days: 7
+          include-hidden-files: true
+          path: |
+            .agent-artifacts/duo-screenshot-smoke
+            fastlane/screenshots/en-US/iPhone Duo-*.png
+            fastlane/screenshots/test_output
+            fastlane/logs

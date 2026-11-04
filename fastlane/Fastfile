@@ -1054,10 +1054,11 @@ platform :ios do
   # Screenshot Lanes
   ########################################################################
   desc 'Build Screenshots'
-  lane :build_screenshots do
+  lane :build_screenshots do |options|
     scan(
       workspace: WORKSPACE_PATH,
       scheme: SCREENSHOTS_SCHEME,
+      device: options[:device],
       build_for_testing: true,
       derived_data_path: DERIVED_DATA_DIR
     )
@@ -1070,7 +1071,8 @@ platform :ios do
 
     languages &= options[:languages].split(',') unless options[:languages].nil?
 
-    devices = SCREENSHOT_DEVICES
+    devices = SCREENSHOT_DEVICES.dup
+    devices << 'iPhone Duo' if options[:include_duo].to_s == 'true'
 
     devices &= options[:devices].split(',') unless options[:devices].nil?
 
@@ -1079,7 +1081,8 @@ platform :ios do
     UI.message("Creating screenshots for #{languages} on #{devices}")
 
     # Erase the simulator between runs in order to get everything back to a default state
-    rebuild_screenshot_devices
+    runtime = latest_ios_simulator_runtime(version: options[:ios_version])
+    rebuild_screenshot_devices(devices: devices, ios_version: options[:ios_version])
 
     capture_ios_screenshots(
       scheme: SCREENSHOTS_SCHEME,
@@ -1112,7 +1115,7 @@ platform :ios do
       concurrent_simulators: false,
 
       # Explicitly set the iOS version to ensure we match the created simulators
-      ios_version: latest_ios_simulator_runtime.version,
+      ios_version: runtime.version,
 
       # Erase the simulator prior to booting the app
       erase_simulator: true,
@@ -1123,7 +1126,7 @@ platform :ios do
       # queries intermittently time out. The app itself is fine; the retries usually absorb it,
       # but a locale can still occasionally fail. Xcode 26.6 (#17484) did not fix it, so retry
       # generously — a re-run is otherwise needed whenever a single locale trips the timeout.
-      number_of_retries: 6,
+      number_of_retries: options.fetch(:retries, 6).to_i,
 
       # But fail completely after those retries
       stop_after_first_error: true,
@@ -1146,17 +1149,18 @@ platform :ios do
   end
 
   desc 'Rebuild Screenshot Devices'
-  lane :rebuild_screenshot_devices do
-    runtime = latest_ios_simulator_runtime
+  lane :rebuild_screenshot_devices do |options|
+    devices = options.fetch(:devices, SCREENSHOT_DEVICES)
+    runtime = latest_ios_simulator_runtime(version: options[:ios_version])
 
     SimCtl.list_devices.each do |device|
-      next unless SCREENSHOT_DEVICES.include? device.name
+      next unless devices.include? device.name
 
       puts "Deleting #{device.name} because it already exists."
       device.delete
     end
 
-    SCREENSHOT_DEVICES.each do |device|
+    devices.each do |device|
       devicetype = SimCtl.devicetype(name: device)
 
       SimCtl.create_device(device, devicetype, runtime)
@@ -1872,13 +1876,16 @@ def report_milestone_error(error_title:)
   buildkite_annotate(style: 'warning', context: 'error-with-milestone', message: error_message) if is_ci
 end
 
-# The newest iOS simulator runtime available on the machine, used to build and target the
-# screenshot devices. Resolved dynamically so it tracks whatever Xcode CI runs on, rather than
-# a hardcoded version that silently breaks screenshots whenever `.xcode-version` moves.
-def latest_ios_simulator_runtime
+# Normal screenshot jobs follow the installed runtime; controlled captures can request one
+# version so an image update does not silently change the device under test.
+def latest_ios_simulator_runtime(version: nil)
   require 'simctl'
 
-  SimCtl::Runtime.latest(:ios).tap do |runtime|
-    UI.user_error!('No iOS simulator runtime is available on this machine.') if runtime.nil?
-  end
+  runtime = if version.nil?
+              SimCtl::Runtime.latest(:ios)
+            else
+              SimCtl.list_runtimes.find { |candidate| candidate.type == :ios && candidate.is_available && candidate.version == version.to_s }
+            end
+  UI.user_error!("No available iOS simulator runtime matches #{version || 'latest'}.") if runtime.nil?
+  runtime
 end

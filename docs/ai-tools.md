@@ -46,6 +46,7 @@ Shared task definitions live in `.agents/agents/`. Read the relevant definition 
 | [AI Code Review](../.github/workflows/ai-code-review.yml) | Runs the shared AI PR review workflow | PR opened, reopened, ready for review, or a `@claude review` PR comment | Comment `@claude review` on a PR | Woo Mobile | CI |
 | [Claude Review Recommendation](../.github/workflows/claude-review-recommendation.yml) | Runs the shared reviewer recommendation workflow | PR opened or updated | Automatic | Woo Mobile | CI |
 | [Claude Build Analysis](../.buildkite/claude-analysis.yml) | Explains failed builds and comments on the PR | A Buildkite build fails | Automatic | Woo Mobile | CI |
+| [Duo screenshot smoke](../.github/workflows/duo-screenshot-smoke.yml) | Builds and captures the five mocked phone App Store scenes on a closed Duo | PR changes to its workflow, or manual dispatch once on trunk | Inspect raw PNG and diagnostic artifacts before changing the production screenshot set | Woo Mobile | CI. Xcode 27.1 preview runner; en-US/light only; no promo publishing or App Store upload |
 
 ## Configuration
 

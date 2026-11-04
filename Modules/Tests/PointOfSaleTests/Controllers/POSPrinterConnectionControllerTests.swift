@@ -88,7 +88,7 @@ struct POSPrinterConnectionControllerTests {
         #expect(sut.discoveryState == .foundOne(device2))
     }
 
-    @Test func test_startDiscovery_when_discover_fails_then_state_is_error() async {
+    @Test func test_startDiscovery_when_discover_fails_then_state_is_discoveryFailed() async {
         // Given
         let service = MockReceiptPrinterService()
         service.discoverError = PrinterTestError()
@@ -96,10 +96,10 @@ struct POSPrinterConnectionControllerTests {
 
         // When
         sut.startDiscovery()
-        await wait(on: sut, until: { sut.discoveryState == .error })
+        await wait(on: sut, until: { sut.discoveryState == .discoveryFailed })
 
         // Then
-        #expect(sut.discoveryState == .error)
+        #expect(sut.discoveryState == .discoveryFailed)
     }
 
     @Test func test_connect_when_succeeds_then_isConnected_and_name_are_set() async {

@@ -310,7 +310,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                  onSuccess: {}, onFailure: { XCTFail("Should stay on payment methods") })
         await fulfillment(of: [refreshStarted], timeout: 2)
         let cashStarted = expectation(description: "Starts the cash payment")
-        viewModel.$showLoadingIndicator.filter { $0 }.first().sink { _ in
+        viewModel.$showLoadingIndicator.first(where: { $0 }).sink { _ in
             cashStarted.fulfill()
         }.store(in: &subscriptions)
 

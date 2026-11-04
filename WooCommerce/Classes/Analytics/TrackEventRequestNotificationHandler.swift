@@ -1,6 +1,8 @@
 import Foundation
 import class Networking.Remote
+import enum Yosemite.ApplicationPasswordGenerationUserInfoKey
 import protocol WooFoundation.Analytics
+import UIKit
 
 final class TrackEventRequestNotificationHandler {
 
@@ -16,10 +18,14 @@ final class TrackEventRequestNotificationHandler {
     ///
     private let analytics: Analytics
 
+    private let applicationStateProvider: @MainActor @Sendable () -> UIApplication.State
+
     init(notificationCenter: NotificationCenter = .default,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         applicationStateProvider: @escaping @MainActor @Sendable () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.notificationCenter = notificationCenter
         self.analytics = analytics
+        self.applicationStateProvider = applicationStateProvider
         startListeningToNotifications()
     }
 }
@@ -56,7 +62,7 @@ private extension TrackEventRequestNotificationHandler {
     /// Tracks an event when an application password is created
     ///
     func trackApplicationPasswordsNewPasswordCreated(note: Notification) {
-        analytics.track(event: .ApplicationPassword.applicationPasswordGeneratedSuccessfully(scenario: .regeneration))
+        analytics.track(event: .ApplicationPassword.applicationPasswordGeneratedSuccessfully(scenario: scenario(of: note)))
     }
 
     /// Tracks an event when generating an application password fails
@@ -65,7 +71,20 @@ private extension TrackEventRequestNotificationHandler {
         guard let error = note.object as? Error else {
             return
         }
-        analytics.track(event: .ApplicationPassword.applicationPasswordGenerationFailed(scenario: .regeneration, error: error))
+        let path = note.userInfo?[ApplicationPasswordGenerationUserInfoKey.path] as? String
+        // This observer is delivered on the main queue.
+        let applicationStateProvider = applicationStateProvider
+        let isAppInForeground = MainActor.assumeIsolated {
+            applicationStateProvider() != .background
+        }
+        analytics.track(event: .ApplicationPassword.applicationPasswordGenerationFailed(scenario: scenario(of: note),
+                                                                                        error: error,
+                                                                                        path: path,
+                                                                                        isAppInForeground: isAppInForeground))
+    }
+
+    func scenario(of note: Notification) -> WooAnalyticsEvent.ApplicationPassword.Scenario {
+        (note.userInfo?[ApplicationPasswordGenerationUserInfoKey.isRegeneration] as? Bool) == true ? .regeneration : .generation
     }
 
     /// Tracks an event when JSON parsing fails

@@ -4,6 +4,7 @@ import WordPressAuthenticator
 import protocol WooFoundation.Analytics
 
 /// Coordinates navigation for the Jetpack setup flow during login.
+@MainActor
 final class LoginJetpackSetupCoordinator: Coordinator {
     let navigationController: UINavigationController
 

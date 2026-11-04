@@ -1,5 +1,6 @@
 import StoreDesignSystem
 import SwiftUI
+import enum Yosemite.StatsTimeRangeV4
 
 struct StoreDashboardCardSurface<Content: View>: View {
     @ViewBuilder let content: () -> Content
@@ -92,6 +93,161 @@ struct StoreDashboardCardFooterAction: View {
     }
 }
 
+struct StoreDashboardDateRangeHeader: View {
+    let timeRange: StatsTimeRangeV4
+    let dateText: String
+    let isDisabled: Bool
+    let accessibilityPrefix: String
+    let onSelect: (StatsTimeRangeV4) -> Void
+    let onEditCustom: () -> Void
+
+    var body: some View {
+        HStack(spacing: StoreSpacing.s3) {
+            Text(timeRange.isCustomTimeRange ? Localization.custom : timeRange.tabTitle)
+                .storeTextStyle(.bodyMedium)
+                .foregroundStyle(.storeOnSurface)
+                .accessibilityIdentifier("\(accessibilityPrefix)-\(timeRange.menuAccessibilityIdentifier)")
+
+            dateRangeValue
+                .padding(StorePadding.p3)
+
+            Spacer(minLength: StoreSpacing.s0)
+            dateRangeMenu
+        }
+    }
+
+    @ViewBuilder private var dateRangeValue: some View {
+        if timeRange.isCustomTimeRange {
+            Button(action: onEditCustom) {
+                HStack(spacing: StoreSpacing.s3) {
+                    Text(dateText)
+                        .storeTextStyle(.bodyMedium)
+                    StoreIcon.Pen.regular.image(size: .large)
+                        .accessibilityHidden(true)
+                }
+                .foregroundStyle(.storeOnSecondaryContainer)
+            }
+            .buttonStyle(.plain)
+        } else {
+            Text(dateText)
+                .storeTextStyle(.bodyMedium)
+                .foregroundStyle(.storeOnSurface)
+        }
+    }
+
+    private var dateRangeMenu: some View {
+        Menu {
+            ForEach(Constants.timeRanges, id: \.rawValue) { range in
+                Button {
+                    onSelect(range)
+                } label: {
+                    HStack {
+                        Text(range.tabTitle)
+                        if rangeMatchesSelection(range) {
+                            StoreIcon.Check.solid.image(size: .small)
+                        }
+                    }
+                }
+                .accessibilityIdentifier(range.menuAccessibilityIdentifier)
+            }
+        } label: {
+            StoreIcon.CalendarDays.regular.image(size: .largeIncreased)
+                .foregroundStyle(.storeOnSurface)
+                .frame(minWidth: StoreSize.minimumTapTarget,
+                       minHeight: StoreSize.minimumTapTarget,
+                       alignment: .trailing)
+                .contentShape(.rect)
+        }
+        .disabled(isDisabled)
+        .accessibilityIdentifier("\(accessibilityPrefix)-time-range-menu")
+        .accessibilityLabel(Localization.dateRange)
+    }
+
+    private func rangeMatchesSelection(_ range: StatsTimeRangeV4) -> Bool {
+        range.isCustomTimeRange && timeRange.isCustomTimeRange || range == timeRange
+    }
+
+    private enum Constants {
+        static let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear, .custom(from: .now, to: .now)]
+    }
+}
+
+struct StoreDashboardTimestamp: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    let lastUpdatedTimestamp: String
+    let showsScheduledUpdatesDelay: Bool
+    let showsInfoButton: Bool
+    let onInfoTapped: () -> Void
+
+    var body: some View {
+        Group {
+            if showsInfoButton {
+                Button(action: onInfoTapped) {
+                    content
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(text)
+                .accessibilityHint(Localization.scheduledUpdatesInfoAccessibilityLabel)
+            } else {
+                content
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var content: some View {
+        HStack(spacing: StoreSpacing.s2) {
+            Text(text)
+                .storeTextStyle(.bodyMedium)
+                .foregroundStyle(colorScheme == .dark ? .storePaletteGray20 : .storePaletteGray60)
+                .multilineTextAlignment(.center)
+            if showsInfoButton {
+                StoreIcon.CircleInfo.regular.image(size: .small)
+                    .foregroundStyle(.storePrimary)
+                    .accessibilityHidden(true)
+            }
+        }
+        .frame(minHeight: StoreSize.minimumTapTarget)
+        .contentShape(.rect)
+    }
+
+    private var text: String {
+        showsScheduledUpdatesDelay ?
+        Localization.scheduledUpdatesDelayText :
+        Localization.lastUpdatedText(time: lastUpdatedTimestamp)
+    }
+}
+
 private enum Localization {
     static let moreOptions = NSLocalizedString("More options", comment: "Accessibility label for an overflow menu.")
+    static let custom = NSLocalizedString(
+        "storeDashboardDateRangeHeader.custom",
+        value: "Custom",
+        comment: "Title of the custom time range on a Dashboard card"
+    )
+    static let dateRange = NSLocalizedString(
+        "storeDashboardDateRangeHeader.dateRange",
+        value: "Date Range",
+        comment: "Accessibility label for the date range selection menu on a Dashboard card"
+    )
+    static let scheduledUpdatesDelayText = NSLocalizedString(
+        "storeDashboardTimestamp.scheduledUpdatesDelayText",
+        value: "Stats may be up to 12 hours delayed",
+        comment: "Text shown on a Dashboard card instead of the last updated timestamp when analytics updates are scheduled"
+    )
+    static let scheduledUpdatesInfoAccessibilityLabel = NSLocalizedString(
+        "storeDashboardTimestamp.scheduledUpdatesInfoAccessibilityLabel",
+        value: "Analytics update details",
+        comment: "Accessibility hint for analytics update details on a Dashboard card"
+    )
+
+    static func lastUpdatedText(time: String) -> String {
+        let format = NSLocalizedString(
+            "storeDashboardTimestamp.lastUpdatedText",
+            value: "Last Updated: %1$@",
+            comment: "Time when a Dashboard card was last updated"
+        )
+        return String.localizedStringWithFormat(format, time)
+    }
 }

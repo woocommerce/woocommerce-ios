@@ -203,11 +203,12 @@ private extension StoreDashboardView {
             )
             .padding(.horizontal, StorePadding.p5)
         case .topPerformers:
-            TopPerformersDashboardView(
+            StoreTopPerformersDashboardCard(
                 viewModel: viewModel.topPerformersViewModel,
                 onViewAllAnalytics: { actions.viewAllAnalyticsTapped?($0, $1, $2) },
                 onAnalyticsImportUpdateModeInfoTapped: viewModel.showAnalyticsImportUpdateModeInfo
             )
+            .padding(.horizontal, StorePadding.p5)
         case .inbox:
             InboxDashboardCard(
                 viewModel: viewModel.inboxViewModel,

@@ -277,6 +277,17 @@ private extension FilterListViewController {
 
     func configureMainView() {
         view.backgroundColor = .listBackground
+
+        let bottomBackground = UIView()
+        bottomBackground.backgroundColor = .basicBackground
+        bottomBackground.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(bottomBackground, at: 0)
+        NSLayoutConstraint.activate([
+            bottomBackground.topAnchor.constraint(equalTo: filterActionContainerView.bottomAnchor),
+            bottomBackground.leadingAnchor.constraint(equalTo: filterActionContainerView.leadingAnchor),
+            bottomBackground.trailingAnchor.constraint(equalTo: filterActionContainerView.trailingAnchor),
+            bottomBackground.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 
     func observeListSelectorCommandItemSelection() {

@@ -52,32 +52,22 @@ public enum NetworkError: Error, Equatable {
 
     /// Content of the `code` field in the response if available
     public var errorCode: String? {
-        guard let response else { return nil }
-        let decoder = JSONDecoder()
-        guard let decodedResponse = try? decoder.decode(NetworkErrorResponse.self, from: response) else {
-            return nil
-        }
-        return decodedResponse.code
+        decodedResponse?.code
     }
 
     /// Content of the `message` field in the response if available
     public var errorMessage: String? {
-        guard let response else { return nil }
-        let decoder = JSONDecoder()
-        guard let decodedResponse = try? decoder.decode(NetworkErrorResponse.self, from: response) else {
-            return nil
-        }
-        return decodedResponse.message
+        decodedResponse?.message
     }
 
     /// Content of the `data` field in the response if available
     public var errorData: [String: AnyDecodable]? {
+        decodedResponse?.data
+    }
+
+    private var decodedResponse: NetworkErrorResponse? {
         guard let response else { return nil }
-        let decoder = JSONDecoder()
-        guard let decodedResponse = try? decoder.decode(NetworkErrorResponse.self, from: response) else {
-            return nil
-        }
-        return decodedResponse.data
+        return try? JSONDecoder().decode(NetworkErrorResponse.self, from: response)
     }
 }
 

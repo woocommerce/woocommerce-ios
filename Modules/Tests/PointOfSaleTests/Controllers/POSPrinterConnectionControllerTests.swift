@@ -515,18 +515,6 @@ struct POSPrinterConnectionControllerTests {
         #expect(analytics.events.isEmpty)
     }
 
-    @Test func test_disconnect_then_tracks_disconnect_tapped() async {
-        // Given
-        let analytics = MockPOSAnalytics()
-        let sut = await makeSubscribedController(service: MockReceiptPrinterService(), analytics: analytics)
-
-        // When
-        await sut.disconnect()
-
-        // Then
-        #expect(analytics.events.map(\.eventName) == ["receipt_printer_disconnect_tapped"])
-    }
-
     @Test func test_connection_status_when_printer_connects_and_drops_without_merchant_action_then_tracks_nothing() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")

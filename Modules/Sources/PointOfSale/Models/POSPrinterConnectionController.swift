@@ -200,9 +200,7 @@ final class POSPrinterConnectionController {
         }
     }
 
-    /// Disconnects at the merchant's request, from the Settings Disconnect button.
     func disconnect() async {
-        analytics.track(.pointOfSaleReceiptPrinterDisconnectTapped)
         await service.disconnect()
     }
 

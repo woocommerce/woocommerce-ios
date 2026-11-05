@@ -45,6 +45,7 @@ struct POSSettingsView: View {
 
 extension POSSettingsView {
     private struct POSSettingsListView: View {
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(\.dismiss) private var dismiss
         @Environment(\.posAnalytics) private var analytics
         @Binding var selection: SidebarNavigation?
@@ -80,7 +81,9 @@ extension POSSettingsView {
                 }
                 .padding(.horizontal, POSPadding.medium)
             }
-            .background(Color.posSurfaceBright)
+            // Side by side, the brighter list sets the categories apart from the detail next to them. On phone
+            // only one screen shows at a time, so the list matches the detail screens it pushes.
+            .background(horizontalSizeClass == .regular ? Color.posSurfaceBright : Color.posSurface)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("pos-settings-view")
         }

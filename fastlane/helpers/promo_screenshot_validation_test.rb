@@ -6,13 +6,14 @@ require 'fileutils'
 require 'zlib'
 require_relative 'promo_screenshot_validation'
 
+# Rejects partial replacement sets and PNG formats that App Store Connect cannot accept.
 class PromoScreenshotValidationTest < Minitest::Test
   def setup
     @directory = Dir.mktmpdir
     @config = File.join(@directory, 'config.json')
     File.write(@config, JSON.generate(devices: [{ name: 'Duo', canvas_size: [2, 3] }],
-                                     entries: [{ device: 'Duo', filename: 'duo.png', screenshot: 'duo.png',
-                                                 text: 'metadata/{locale}/caption.txt' }]))
+                                      entries: [{ device: 'Duo', filename: 'duo.png', screenshot: 'duo.png',
+                                                  text: 'metadata/{locale}/caption.txt' }]))
     %w[en-US de-DE].each do |locale|
       write_png(locale)
       FileUtils.mkdir_p(File.join(@directory, 'metadata', locale))
@@ -30,13 +31,22 @@ class PromoScreenshotValidationTest < Minitest::Test
 
   def write_png(locale, width: 2, alpha: false, transparency: false)
     FileUtils.mkdir_p(File.join(@directory, locale))
-    chunk = ->(type, data) { [data.bytesize].pack('N') + type + data + [Zlib.crc32(type + data)].pack('N') }
+    File.binwrite(File.join(@directory, locale, 'duo.png'), png_bytes(width, alpha, transparency))
+  end
+
+  def png_chunk(type, data)
+    [data.bytesize].pack('N') + type + data + [Zlib.crc32(type + data)].pack('N')
+  end
+
+  def png_pixels(width, alpha)
+    ("\0".b + ("\xff".b * width * (alpha ? 4 : 3))) * 3
+  end
+
+  def png_bytes(width, alpha, transparency)
     header = [width, 3, 8, alpha ? 6 : 2, 0, 0, 0].pack('NNCCCCC')
-    pixels = ("\0".b + ("\xff".b * width * (alpha ? 4 : 3))) * 3
-    bytes = "\x89PNG\r\n\x1a\n".b + chunk.call('IHDR', header)
-    bytes += chunk.call('tRNS', [0, 0, 0].pack('n3')) if transparency
-    bytes += chunk.call('IDAT', Zlib.deflate(pixels)) + chunk.call('IEND', '')
-    File.binwrite(File.join(@directory, locale, 'duo.png'), bytes)
+    bytes = "\x89PNG\r\n\x1a\n".b + png_chunk('IHDR', header)
+    bytes += png_chunk('tRNS', [0, 0, 0].pack('n3')) if transparency
+    bytes + png_chunk('IDAT', Zlib.deflate(png_pixels(width, alpha))) + png_chunk('IEND', '')
   end
 
   def test_complete_rgb_set_passes

@@ -48,6 +48,12 @@ SCREENSHOT_DEVICES = [
   'iPad Pro 13-inch (M5)',
   'iPhone Duo'
 ].freeze
+# The 27.1 simulator runtime supports Duo only; ordinary devices use 27.0 with the same SDK build.
+SCREENSHOT_IOS_VERSIONS = {
+  'iPhone 17 Pro Max' => '27.0',
+  'iPad Pro 13-inch (M5)' => '27.0',
+  'iPhone Duo' => '27.1'
+}.freeze
 
 # Instantiate versioning classes
 VERSION_CALCULATOR = Fastlane::Wpmreleasetoolkit::Versioning::MarketingVersionCalculator.new
@@ -1054,6 +1060,20 @@ platform :ios do
   ########################################################################
   # Screenshot Lanes
   ########################################################################
+  desc 'Check Screenshot Runtime Support'
+  lane :check_screenshot_runtime_support do
+    sh('xcodebuild', '-version')
+    profiles = JSON.parse(sh('xcrun', 'simctl', 'list', 'runtimes', '--json', log: false)).fetch('runtimes')
+    SCREENSHOT_DEVICES.each do |name|
+      runtime = latest_ios_simulator_runtime(version: SCREENSHOT_IOS_VERSIONS.fetch(name))
+      profile = profiles.find { |item| item['identifier'] == runtime.identifier }
+      device_type = SimCtl.devicetype(name: name)
+      supported = profile.fetch('supportedDeviceTypes').any? { |item| item['identifier'] == device_type.identifier }
+      UI.user_error!("#{name} is not supported by iOS #{runtime.version}") unless supported
+      UI.message("#{name}: iOS #{runtime.version} (#{runtime.buildversion})")
+    end
+  end
+
   desc 'Build Screenshots'
   lane :build_screenshots do |options|
     scan(
@@ -1080,7 +1100,6 @@ platform :ios do
     UI.message("Creating screenshots for #{languages} on #{devices}")
 
     # Erase the simulator between runs in order to get everything back to a default state
-    runtime = latest_ios_simulator_runtime(version: options[:ios_version])
     rebuild_screenshot_devices(devices: devices, ios_version: options[:ios_version])
 
     capture_ios_screenshots(
@@ -1113,8 +1132,8 @@ platform :ios do
       # waiting for AX loaded notification") and the test runner fails to init.
       concurrent_simulators: false,
 
-      # Explicitly set the iOS version to ensure we match the created simulators
-      ios_version: runtime.version,
+      # Resolve the uniquely named devices by UDID; Duo and ordinary devices use different runtimes.
+      ios_version: options[:ios_version],
 
       # Erase the simulator prior to booting the app
       erase_simulator: true,
@@ -1150,7 +1169,6 @@ platform :ios do
   desc 'Rebuild Screenshot Devices'
   lane :rebuild_screenshot_devices do |options|
     devices = options.fetch(:devices, SCREENSHOT_DEVICES)
-    runtime = latest_ios_simulator_runtime(version: options[:ios_version])
 
     SimCtl.list_devices.each do |device|
       next unless devices.include? device.name
@@ -1160,6 +1178,7 @@ platform :ios do
     end
 
     devices.each do |device|
+      runtime = latest_ios_simulator_runtime(version: options[:ios_version] || SCREENSHOT_IOS_VERSIONS.fetch(device))
       devicetype = SimCtl.devicetype(name: device)
 
       SimCtl.create_device(device, devicetype, runtime)
@@ -1346,7 +1365,7 @@ platform :ios do
     begin
       require_relative 'helpers/promo_screenshot_validation'
       PromoScreenshotValidation.validate_inputs!(directory: original_screenshot_directory, locales: IOS_LOCALES,
-                                                config_path: File.join(FASTLANE_DIR, 'screenshots.json'))
+                                                 config_path: File.join(FASTLANE_DIR, 'screenshots.json'))
       promo_screenshots(
         orig_folder: original_screenshot_directory,
         metadata_folder: FASTLANE_METADATA_FOLDER,
@@ -1355,7 +1374,7 @@ platform :ios do
       )
       PromoScreenshotValidation.remove_alpha!(directory: output_directory, locales: IOS_LOCALES)
       PromoScreenshotValidation.validate!(directory: output_directory, locales: IOS_LOCALES,
-                                         config_path: File.join(FASTLANE_DIR, 'screenshots.json'))
+                                          config_path: File.join(FASTLANE_DIR, 'screenshots.json'))
     ensure
       unless files_to_copy.empty?
         UI.message('Deleting any en-US screenshot title previously copied from default folder...')

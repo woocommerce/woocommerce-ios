@@ -5,6 +5,7 @@ require 'tmpdir'
 require 'fileutils'
 require_relative 'promo_screenshot_validation'
 
+# Exercises failure propagation in the checked-in lane, including its ensure cleanup.
 class PromoCompositionFailureTest < Minitest::Test
   FASTLANE_DIR = File.expand_path('..', __dir__)
   FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
@@ -33,7 +34,9 @@ class PromoCompositionFailureTest < Minitest::Test
     lane_start = source.index('  lane :create_promo_screenshots ')
     start = source.index("    begin\n", lane_start)
     finish = source.index('    next unless commit || push', start)
-    runner = eval("proc do\n#{source[start...finish]}\nend", binding, File.join(FASTLANE_DIR, 'Fastfile'))
+    # Only repository code is evaluated; retain its location for require_relative resolution.
+    # rubocop:disable-next Security/Eval, Style/DocumentDynamicEvalDefinition, Style/EvalWithLocation
+    runner = eval("proc do\n#{source[start...finish]}\nend", binding, File.join(FASTLANE_DIR, 'Fastfile'), 1)
     PromoScreenshotValidation.stub(:validate_inputs!, nil) do
       PromoScreenshotValidation.stub(:remove_alpha!, nil) { runner.call }
     end

@@ -64,28 +64,59 @@ class PromoScreenshotsConfigTest < Minitest::Test
     assert_equal [1398, 2034], device.fetch('canvas_size')
     width, height = device.fetch('screenshot_size')
     assert_equal 1398 * height, 2034 * width
-    refute device.key?('device_frame')
-    refute device.key?('screenshot_mask')
-    %w[text screenshot].each do |region|
-      size, offset = device.fetch("#{region}_size"), device.fetch("#{region}_offset")
-      2.times { |axis| assert_operator offset[axis] + size[axis], :<=, device['canvas_size'][axis] }
-    end
+    assert_no_hardware_frame(device)
+    %w[text screenshot].each { |region| assert_region_fits_canvas(device, region) }
   end
 
   def test_complete_device_families_reuse_the_localized_phone_captions
+    assert_device_counts
+    assert_phone_caption_reuse
+    assert_unique_filenames
+  end
+
+  private
+
+  def assert_no_hardware_frame(device)
+    refute device.key?('device_frame')
+    refute device.key?('screenshot_mask')
+  end
+
+  def assert_region_fits_canvas(device, region)
+    size = device.fetch("#{region}_size")
+    offset = device.fetch("#{region}_offset")
+    2.times { |axis| assert_operator offset[axis] + size[axis], :<=, device['canvas_size'][axis] }
+  end
+
+  def entries_for(device)
+    config['entries'].select { |entry| entry['device'] == device }
+  end
+
+  def entry_values(entries, key)
+    entries.map { |entry| entry.fetch(key) }
+  end
+
+  def capture_scenes(entries)
+    entry_values(entries, 'screenshot').map { |screenshot| screenshot.split('-', 2).last }
+  end
+
+  def assert_device_counts
     counts = config.fetch('entries').group_by { |entry| entry.fetch('device') }.transform_values(&:count)
     assert_equal 5, counts.fetch('iPhone Duo')
     assert_equal 5, counts.fetch('iPhone 17 Pro Max')
     assert_equal 8, counts.fetch('iPad Pro 13-inch (M5) - landscape')
-    duo = config['entries'].select { |entry| entry['device'] == 'iPhone Duo' }
-    phone = config['entries'].select { |entry| entry['device'] == 'iPhone 17 Pro Max' }
-    assert_equal phone.map { |entry| entry['text'] }, duo.map { |entry| entry['text'] }
-    assert_equal phone.map { |entry| entry['screenshot'].split('-', 2).last },
-                 duo.map { |entry| entry['screenshot'].split('-', 2).last }
-    assert_equal config['entries'].length, config['entries'].map { |entry| entry['filename'] }.uniq.length
   end
 
-  private
+  def assert_phone_caption_reuse
+    duo = entries_for('iPhone Duo')
+    phone = entries_for('iPhone 17 Pro Max')
+    assert_equal entry_values(phone, 'text'), entry_values(duo, 'text')
+    assert_equal capture_scenes(phone), capture_scenes(duo)
+  end
+
+  def assert_unique_filenames
+    entries = config['entries']
+    assert_equal entries.length, entry_values(entries, 'filename').uniq.length
+  end
 
   def assert_background_matches_canvas(entry)
     background = entry['background']

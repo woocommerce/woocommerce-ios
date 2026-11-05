@@ -27,6 +27,9 @@ jobs:
       with:
         bundler-cache: true
 
+    - name: Check Screenshot Runtime Support
+      run: bundle exec fastlane check_screenshot_runtime_support
+
     - name: Install App Dependencies
       run: bundle exec rake dependencies
 
@@ -77,7 +80,7 @@ jobs:
 
     - name: Generate Screenshots
       run: |
-        bundle exec fastlane take_screenshots ios_version:27.1 languages:${{ matrix.language }} mode:${{ matrix.mode }}
+        bundle exec fastlane take_screenshots languages:${{ matrix.language }} mode:${{ matrix.mode }}
 
     - name: Check Captured Images
       env:
@@ -200,6 +203,7 @@ jobs:
           ruby fastlane/helpers/promo_screenshots_config_test.rb
           ruby fastlane/helpers/promo_screenshot_validation_test.rb
           ruby fastlane/helpers/promo_composition_failure_test.rb
+          bundle exec ruby fastlane/helpers/promo_screenshot_normalization_check.rb
           bundle exec fastlane create_promo_screenshots force:true commit:true
 
       - name: Archive Promo Screenshots

@@ -201,8 +201,10 @@ extension ScreenObject {
         // Leaving the app schedules the mocked order notification in SceneDelegate.
         XCUIDevice.shared.press(.home)
         let background = XCTNSPredicateExpectation(
-            predicate: NSPredicate(format: "state IN %@", [XCUIApplication.State.runningBackground.rawValue,
-                                                          XCUIApplication.State.runningBackgroundSuspended.rawValue]),
+            predicate: NSPredicate(format: "state IN %@", [
+                XCUIApplication.State.runningBackground.rawValue,
+                XCUIApplication.State.runningBackgroundSuspended.rawValue
+            ]),
             object: app
         )
         XCTAssertEqual(XCTWaiter.wait(for: [background], timeout: 10), .completed,

@@ -1686,6 +1686,13 @@ public enum ProductUpdateError: Error, Equatable {
     case generic(message: String)
 
     init(error: Error) {
+        if let networkError = error as? NetworkError,
+           let code = networkError.errorCode,
+           let errorCode = ErrorCode(rawValue: code) {
+            self = errorCode.error(with: networkError.errorMessage)
+            return
+        }
+
         guard let dotcomError = error as? DotcomError else {
             self = .unknown(error: error.toAnyError)
             return

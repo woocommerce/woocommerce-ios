@@ -91,6 +91,29 @@ final class NetworkErrorTests: XCTestCase {
         XCTAssertEqual(response, jsonData)
     }
 
+    func test_errorMessage_when_response_has_message_then_returns_it_for_display_to_merchants() {
+        // Given
+        let response = Data(#"{"code":"product_invalid_sku","message":"Invalid or duplicated SKU."}"#.utf8)
+
+        // When
+        let error = NetworkError.unacceptableStatusCode(statusCode: 400, response: response)
+
+        // Then
+        XCTAssertEqual(error.errorMessage, "Invalid or duplicated SKU.")
+    }
+
+    func test_errorCode_when_message_is_not_a_string_then_code_is_still_available_for_error_mapping() {
+        // Given
+        let response = Data(#"{"code":"product_invalid_sku","message":{"nested":"value"}}"#.utf8)
+
+        // When
+        let error = NetworkError.unacceptableStatusCode(statusCode: 400, response: response)
+
+        // Then
+        XCTAssertEqual(error.errorCode, "product_invalid_sku")
+        XCTAssertNil(error.errorMessage)
+    }
+
     /// Verifies that provided response data is returned as a String when unacceptableStatusCode
     ///
     func test_description_contains_response_data_as_a_string_when_unacceptableStatusCode_error() throws {

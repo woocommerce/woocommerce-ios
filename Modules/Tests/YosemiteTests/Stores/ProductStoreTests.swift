@@ -213,6 +213,48 @@ final class ProductStoreTests: XCTestCase {
         assertDuplicateProductError(error, equals: .unknown(error: AnyError(error)))
     }
 
+    func test_addProduct_when_direct_REST_rejects_duplicated_SKU_then_returns_invalidSKU_so_merchants_see_the_SKU_message() {
+        let response = Data(#"{"code":"product_invalid_sku","message":"Invalid or duplicated SKU.","data":{"status":400,"resource_id":11}}"#.utf8)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 400, response: response)
+        assertAddProductError(error, equals: .invalidSKU)
+    }
+
+    func test_addProduct_when_direct_REST_rejects_global_unique_ID_then_returns_invalidOrDuplicatedGlobalUniqueID() {
+        let response = Data(#"{"code":"product_invalid_global_unique_id","message":"Invalid or duplicated GTIN.","data":{"status":400}}"#.utf8)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 400, response: response)
+        assertAddProductError(error, equals: .invalidOrDuplicatedGlobalUniqueID)
+    }
+
+    func test_addProduct_when_direct_REST_rejects_max_quantity_then_keeps_server_message_so_the_alert_is_not_blank() {
+        let response = Data(#"{"code":"woocommerce_rest_invalid_max_quantity","message":"Max must be above min.","data":{"status":400}}"#.utf8)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 400, response: response)
+        assertAddProductError(error, equals: .generic(message: "Max must be above min."))
+    }
+
+    func test_addProduct_when_direct_REST_returns_unmapped_code_then_preserves_error_as_unknown() {
+        let response = Data(#"{"code":"woocommerce_rest_cannot_create","message":"Sorry, you cannot create.","data":{"status":403}}"#.utf8)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 403, response: response)
+        assertAddProductError(error, equals: .unknown(error: AnyError(error)))
+    }
+
+    private func assertAddProductError(_ error: Error, equals expectedError: ProductUpdateError) {
+        // Given
+        let remote = MockProductsRemote()
+        remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .failure(error))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Yosemite.Product, ProductUpdateError> = waitFor { promise in
+            let action = ProductAction.addProduct(product: Product.fake().copy(siteID: self.sampleSiteID)) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure, expectedError)
+    }
+
     private func assertDuplicateProductError(_ error: Error, equals expectedError: ProductDuplicateError) {
         // Given
         let remote = MockProductsRemote()

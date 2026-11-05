@@ -29,7 +29,7 @@ class LoginFlow {
     static func logInWithSiteAddress() throws -> MyStoreScreen {
         return try PrologueScreen()
             .tapLogIn()
-            .proceedWith(siteUrl: TestCredentials.siteUrl)
+            .proceedWith(siteUrl: TestCredentials.siteAddressLoginUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .enterValidPassword()
             .enterValidTwoFACode()

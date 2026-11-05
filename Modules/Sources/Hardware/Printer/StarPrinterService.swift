@@ -67,8 +67,8 @@ public final class StarPrinterService: PrinterDiscoveryService {
 }
 
 /// The parts of `StarPrinter` the coordinator drives to connect and print, so the connection lifecycle doesn't depend on
-/// the SDK class. `nonisolated(nonsending)` runs them on the caller's executor, so a printer the coordinator owns never
-/// leaves the actor.
+/// the SDK class. `nonisolated(nonsending)` lets the actor call them without sending the printer it owns to another
+/// isolation domain.
 protocol StarPrinterConnection: AnyObject {
     var printerDelegate: (any PrinterDelegate)? { get set }
     nonisolated(nonsending) func open() async throws
@@ -202,6 +202,10 @@ actor StarPrinterCoordinator {
             await withCheckedContinuation { connectWaiters.append($0) }
         }
         guard attempt == connectAttempt, !Task.isCancelled else {
+            // The newest call reports status, so it settles the `.connecting` that the attempt it superseded left behind.
+            if attempt == connectAttempt, connectionStatus == .connecting {
+                emit(.disconnected)
+            }
             throw CancellationError()
         }
 

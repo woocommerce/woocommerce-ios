@@ -142,7 +142,6 @@
     "WooCommerce/Classes/Authentication/WPComLogin/WPComConnectionSetup/WPComConnectionSetupHandlerProtocol.swift": 1,
     "WooCommerce/Classes/Authentication/WPComLogin/WPComMagicLinkRequestViewModel.swift": 1,
     "WooCommerce/Classes/Authentication/WPComLogin/WPComPasswordLoginViewModel.swift": 1,
-    "WooCommerce/Classes/Authentication/WebAuth/WebKitViewController.swift": 2,
     "WooCommerce/Classes/Bookings/BookingBadgeView.swift": 6,
     "WooCommerce/Classes/Bookings/BookingList/BookingListContainerViewModel.swift": 3,
     "WooCommerce/Classes/Bookings/BookingList/BookingListView.swift": 3,

@@ -630,7 +630,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual(true, analyticsProvider.receivedProperties[safe: indexOfEvent]?["is_visible"] as? Bool)
     }
 
-    func test_initial_tabs_visibility_on_phone_ignores_cached_pos_visibility() throws {
+    func test_initial_tabs_visibility_on_phone_uses_cached_pos_visibility() throws {
         // Given
         let siteID: Int64 = 1126
         let mockPOSEligibilityService = MockPOSEligibilityService()
@@ -653,8 +653,8 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view) // This triggers viewDidLoad
 
         // Then
-        let expectedTabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
-        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: false, isBookingsTabVisible: false)
+        let expectedTabs: [WooTab] = [.myStore, .orders, .products, .pointOfSale, .hubMenu]
+        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: true, isBookingsTabVisible: false)
         XCTAssertEqual(tabBarController.viewControllers?.count, expectedTabs.count)
         XCTAssertEqual(visibleTabs, expectedTabs)
     }
@@ -677,7 +677,6 @@ final class MainTabBarControllerTests: XCTestCase {
                                  stores: stores,
                                  posTabVisibilityCheckerFactory: { site in
                                      POSTabVisibilityChecker(site: site,
-                                                             userInterfaceIdiom: .pad,
                                                              eligibilityService: mockPOSEligibilityService)
                                  },
                                  posEligibilityService: mockPOSEligibilityService,

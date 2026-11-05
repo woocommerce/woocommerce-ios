@@ -10,8 +10,8 @@ struct GhostItemCardView: View {
     private let accessory: AnyView?
 
     private var dimension: CGFloat {
-        min(metrics[keyPath: configuration.cardSize] * scale,
-            metrics[keyPath: configuration.cardSize] * configuration.maximumCardSizeMultiplier)
+        min(configuration.cardSize.value(in: metrics) * scale,
+            configuration.cardSize.value(in: metrics) * configuration.maximumCardSizeMultiplier)
     }
 
     init(configuration: GhostItemCardViewConfiguration = .itemList,
@@ -83,15 +83,29 @@ struct GhostItemCardViewConfiguration {
     let titleFont: POSFontStyle
     let detailFont: POSFontStyle
     let detailPlaceholderLength: (regular: Int, accessibility: Int)
-    let cardSize: KeyPath<POSMetrics, CGFloat>
+    let cardSize: CardSize
     let maximumCardSizeMultiplier: CGFloat
     let backgroundColor: Color
+
+    enum CardSize {
+        case productCard
+        case cartRow
+
+        func value(in metrics: POSMetrics) -> CGFloat {
+            switch self {
+            case .productCard:
+                metrics.productCardSize
+            case .cartRow:
+                metrics.cartRowSize
+            }
+        }
+    }
 
     static let itemList = GhostItemCardViewConfiguration(
         titleFont: Constants.itemTitleFont,
         detailFont: Constants.itemDetailFont,
         detailPlaceholderLength: (regular: 5, accessibility: 4),
-        cardSize: \.productCardSize,
+        cardSize: .productCard,
         maximumCardSizeMultiplier: Constants.maximumCardSizeMultiplier,
         backgroundColor: Color.posSurfaceBright
     )

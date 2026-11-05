@@ -3,7 +3,7 @@ import StoreDesignSystem
 import SwiftUI
 
 struct StoreProductStockRow: View {
-    @ScaledMetric private var scale: CGFloat = 1.0
+    @ScaledMetric(relativeTo: .body) private var imageSize = StoreSize.iconContainerSize
 
     let data: ProductStockRow.RowData
     let showDivider: Bool
@@ -20,8 +20,7 @@ struct StoreProductStockRow: View {
                         }
                         .resizable()
                         .scaledToFill()
-                        .frame(width: Layout.thumbnailSize * scale,
-                               height: Layout.thumbnailSize * scale)
+                        .frame(width: imageSize, height: imageSize)
                         .clipShape(.rect(cornerRadius: StoreRadius.small))
 
                     VStack(alignment: .leading, spacing: StoreSpacing.s2) {
@@ -54,11 +53,5 @@ struct StoreProductStockRow: View {
             }
         }
         .buttonStyle(.plain)
-    }
-}
-
-private extension StoreProductStockRow {
-    enum Layout {
-        static let thumbnailSize: CGFloat = 40
     }
 }

@@ -30,6 +30,7 @@ struct DashboardCustomizationView: View {
                     } label: {
                         Text(Localization.saveButton)
                     }
+                    .accessibilityIdentifier("dashboard-customization-save-button")
                     .disabled(!viewModel.hasChanges)
                 }
             })
@@ -43,7 +44,7 @@ struct DashboardCustomizationView: View {
 }
 
 // MARK: - Constants
-private extension DashboardCustomizationView {
+extension DashboardCustomizationView {
     enum Localization {
         static let title = NSLocalizedString(
             "dashboardCustomization.title",

@@ -49,6 +49,7 @@ struct StoreDashboardCustomizationView: View {
                             .storeTextStyle(.labelLarge.emphasized)
                     }
                     .tint(.storePrimary)
+                    .accessibilityIdentifier("dashboard-customization-save-button")
                     .disabled(!viewModel.hasChanges)
                 }
             }
@@ -83,23 +84,7 @@ struct StoreDashboardCustomizationView: View {
 }
 
 private extension StoreDashboardCustomizationView {
-    enum Localization {
-        static let title = NSLocalizedString(
-            "storeDashboardCustomization.title",
-            value: "Customize",
-            comment: "Title for the design-system screen to customize the dashboard."
-        )
-        static let saveButton = NSLocalizedString(
-            "storeDashboardCustomization.saveButton",
-            value: "Save",
-            comment: "Button to save changes on the design-system Customize Dashboard screen."
-        )
-        static let unavailable = NSLocalizedString(
-            "storeDashboardCustomization.unavailable",
-            value: "Unavailable",
-            comment: "Badge on unavailable cards in the design-system Customize Dashboard screen."
-        )
-    }
+    typealias Localization = DashboardCustomizationView.Localization
 }
 
 #Preview {

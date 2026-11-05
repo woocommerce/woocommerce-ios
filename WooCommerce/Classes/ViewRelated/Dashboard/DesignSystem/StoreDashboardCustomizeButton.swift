@@ -28,16 +28,10 @@ struct StoreDashboardCustomizeButton: View {
 }
 
 private extension StoreDashboardCustomizeButton {
+    typealias Localization = DashboardCustomizationView.Localization
+
     enum Layout {
         static let badgeSize = StoreSpacing.s3
         static let badgeOffset = CGSize(width: StoreSpacing.s2, height: -StoreSpacing.s2)
-    }
-
-    enum Localization {
-        static let title = NSLocalizedString(
-            "storeDashboardCustomizeButton.title",
-            value: "Customize",
-            comment: "Button below the dashboard cards that opens dashboard customization."
-        )
     }
 }

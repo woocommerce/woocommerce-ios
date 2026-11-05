@@ -41,5 +41,6 @@ appId: ${APP_ID}
           enabled: true
           retryTapIfNoChange: true
 - extendedWaitUntil:
-    visible: "Customize"
+    visible:
+      id: "dashboard-customization-save-button"
     timeout: 15000

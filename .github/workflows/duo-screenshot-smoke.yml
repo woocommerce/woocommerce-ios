@@ -5,6 +5,9 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - '.github/workflows/duo-screenshot-smoke.yml'
+      - 'fastlane/Fastfile'
+      - 'Modules/Sources/UITestsFoundation/**'
+      - 'WooCommerce/WooCommerceScreenshots/**'
   workflow_dispatch:
 
 permissions:

@@ -96,44 +96,5 @@ private extension BlazeCampaignListItem.Status {
 }
 
 private extension StoreBlazeCampaignItemView {
-    enum Localization {
-        static let clickthroughs = NSLocalizedString(
-            "blazeCampaignItemView.clickthroughs",
-            value: "Click-throughs",
-            comment: "Title label for the total impressions and clicks of a Blaze ads campaign"
-        )
-        static let campaignAccessibilityHint = NSLocalizedString(
-            "blazeCampaignItemView.campaignAccessibilityHint",
-            value: "Tap to view campaign details",
-            comment: "Accessibility hint for a Blaze campaign card"
-        )
-
-        static func campaignAccessibilityLabel(campaignName: String, status: String) -> String {
-            String.localizedStringWithFormat(
-                NSLocalizedString(
-                    "blazeCampaignItemView.blazeCampaignAccessibilityLabelFormat",
-                    value: "Blaze campaign for %1$@. %2$@",
-                    comment: "Accessibility label format for a Blaze campaign card." +
-                        " The %1$@ is a placeholder for the campaign name." +
-                        " The %2$@ is a placeholder for the campaign status."
-                ),
-                campaignName,
-                status
-            )
-        }
-
-        static func clickThroughAccessibilityLabel(impressions: Int64, clicks: Int64) -> String {
-            String.localizedStringWithFormat(
-                NSLocalizedString(
-                    "blazeCampaignItemView.clickThroughAccessibilityLabelFormat",
-                    value: "%1$d impressions, %2$d clicks",
-                    comment: "Accessibility label format for a Blaze campaign's click-through rates. " +
-                        "The placeholders are numbers of impressions and clicks. " +
-                        "Reads as: '20000 impressions, 200 clicks'"
-                ),
-                impressions,
-                clicks
-            )
-        }
-    }
+    typealias Localization = BlazeCampaignItemView.Localization
 }

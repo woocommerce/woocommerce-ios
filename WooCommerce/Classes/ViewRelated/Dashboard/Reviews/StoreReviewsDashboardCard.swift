@@ -135,34 +135,7 @@ private extension StoreReviewsDashboardCard {
 }
 
 private extension StoreReviewsDashboardCard {
-    enum Localization {
-        static let hideCard = NSLocalizedString(
-            "reviewsDashboardCard.hideCard",
-            value: "Hide Reviews",
-            comment: "Menu item to dismiss the Reviews card on the Dashboard screen"
-        )
-        static let status = NSLocalizedString(
-            "reviewsDashboardCard.status",
-            value: "Status",
-            comment: "Status label on the Reviews card's filter area."
-        )
-        static let viewAll = NSLocalizedString(
-            "reviewsDashboardCard.viewAll",
-            value: "View all reviews",
-            comment: "Button to navigate to Reviews list screen."
-        )
-        static let noReviewsText = NSLocalizedString(
-            "reviewsDashboardCard.noReviewsText",
-            value: "No reviews found.",
-            comment: "Message shown in the Reviews Dashboard Card if the site has no review"
-        )
-
-        static let noFilteredReviewsText = NSLocalizedString(
-            "reviewsDashboardCard.noFilteredReviewsText",
-            value: "No reviews matching %@ status. Try changing the filter.",
-            comment: "Message shown in the Reviews Dashboard Card if the list is filtered and there is no review. The %@ is a placeholder for the filter name."
-        )
-    }
+    typealias Localization = ReviewsDashboardCard.Localization
 }
 
 #Preview {

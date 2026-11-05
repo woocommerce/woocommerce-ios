@@ -110,16 +110,5 @@ struct StoreDashboardInboxNoteRow: View {
 }
 
 private extension StoreDashboardInboxNoteRow {
-    enum Localization {
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss button in inbox note row.")
-        static let inboxWebViewTitle = NSLocalizedString(
-            "Inbox",
-            comment: "Navigation title of the webview which is used in Inbox Notes."
-        )
-        static let doneButtonWebview = NSLocalizedString("Done", comment: "Done navigation button in Inbox Notes webview")
-        static let surveyCompleted = NSLocalizedString(
-            "Thank you for your feedback!",
-            comment: "Confirmation message in Inbox Notes after responding to a survey."
-        )
-    }
+    typealias Localization = InboxNoteRow.Localization
 }

@@ -157,47 +157,10 @@ private extension StoreBlazeCampaignDashboardView {
 }
 
 private extension StoreBlazeCampaignDashboardView {
+    typealias Localization = BlazeCampaignDashboardView.Localization
+
     enum Layout {
         static let logoSize: CGFloat = 24
-    }
-
-    enum Localization {
-
-        static let subtitle = NSLocalizedString(
-            "blazeCampaignDashboardView.subtitle",
-            value: "Increase visibility and get your products sold quickly.",
-            comment: "Subtitle of the Blaze campaign view."
-        )
-
-        static let showAllCampaigns = NSLocalizedString(
-            "blazeCampaignDashboardView.showAllCampaigns",
-            value: "View all campaigns",
-            comment: "Button when tapped will show the Blaze campaign list."
-        )
-
-        static let createCampaign = NSLocalizedString(
-            "blazeCampaignDashboardView.createCampaign",
-            value: "Create Campaign",
-            comment: "Button that when tapped will launch create Blaze campaign flow."
-        )
-
-        static let done = NSLocalizedString(
-            "blazeCampaignDashboardView.done",
-            value: "Done",
-            comment: "Button to dismiss the Blaze campaign detail view"
-        )
-
-        static let detailTitle = NSLocalizedString(
-            "blazeCampaignDashboardView.detailTitle",
-            value: "Campaign Details",
-            comment: "Title of the Blaze campaign details view."
-        )
-
-        static let hideBlaze = NSLocalizedString(
-            "blazeCampaignDashboardView.hideBlazeButton",
-            value: "Hide Blaze",
-            comment: "Button to dismiss the Blaze campaign section on the My Store screen."
-        )
     }
 }
 
@@ -222,7 +185,7 @@ private struct ProductInfoView: View {
                     .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: StoreSpacing.s2) {
-                    Text(Localization.suggestedProductLabel)
+                    Text(BlazeCampaignDashboardView.Localization.suggestedProductLabel)
                         .storeTextStyle(.bodySmall)
 
                     Text(product.name)
@@ -239,14 +202,6 @@ private struct ProductInfoView: View {
             }
             .foregroundStyle(.storeOnSurface)
         }
-    }
-
-    private enum Localization {
-        static let suggestedProductLabel = NSLocalizedString(
-            "productInfoView.suggestedProductLabel",
-            value: "Suggested product",
-            comment: "Label for the suggested product on the Blaze dashboard view."
-        )
     }
 }
 

@@ -71,7 +71,7 @@ struct ComponentsList: View {
             .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             FooterNotice(infoText: viewModel.infoNotice)
-            }
+        }
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )

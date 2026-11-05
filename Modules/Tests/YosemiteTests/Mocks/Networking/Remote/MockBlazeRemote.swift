@@ -3,7 +3,10 @@ import Networking
 
 /// Mock for `BlazeRemote`.
 ///
+@MainActor
 final class MockBlazeRemote {
+    nonisolated init() {}
+
     private var creatingCampaignResult: Result<Void, Error>?
     private var loadingCampaignListResult: Result<[BlazeCampaignListItem], Error>?
     private var retrieveCampaignResult: Result<BlazeCampaignListItem, Error>?

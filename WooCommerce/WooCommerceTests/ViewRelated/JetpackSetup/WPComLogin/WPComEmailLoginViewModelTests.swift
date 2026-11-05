@@ -97,6 +97,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         assertEqual(text, expectedString)
     }
 
+    @MainActor
     func test_checkWordPressComAccount_triggers_requestAuthenticationLink_if_account_is_passwordless() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()
@@ -121,6 +122,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         XCTAssertTrue(mockAccountService.triggeredRequestAuthenticationLink)
     }
 
+    @MainActor
     func test_checkWordPressComAccount_triggers_onError_on_failure() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()
@@ -141,6 +143,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredOnError)
     }
 
+    @MainActor
     func test_checkWordPressComAccount_triggers_passwordUIRequest_if_account_has_password() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()
@@ -161,6 +164,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredPasswordUIRequest)
     }
 
+    @MainActor
     func test_requestAuthenticationLink_triggers_onMagicLinkUIRequest_if_request_succeeds() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()
@@ -180,6 +184,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredOnMagicLinkUIRequest)
     }
 
+    @MainActor
     func test_requestAuthenticationLink_triggers_onError_if_request_fails() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()
@@ -200,6 +205,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredOnError)
     }
 
+    @MainActor
     func test_given_unknown_email_when_allowAccountCreation_true_then_create_account() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()
@@ -226,6 +232,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredOnMagicLinkUIRequest)
     }
 
+    @MainActor
     func test_given_unknown_email_when_allowAccountCreation_false_then_trigger_onError() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()
@@ -252,6 +259,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredOnError)
     }
 
+    @MainActor
     func test_given_unknown_username_when_allowAccountCreation_true_then_trigger_onError() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()
@@ -278,6 +286,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         XCTAssertEqual(errorMessage, WPComEmailLoginViewModel.Localization.unknownUsername)
     }
 
+    @MainActor
     func test_given_emailLoginNotAllowed_when_signingIn_then_trigger_onMagicLinkRequest() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()

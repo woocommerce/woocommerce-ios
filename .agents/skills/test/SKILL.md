@@ -44,3 +44,7 @@ does not establish that the tests passed.
 4. Suggest fixes for failing tests
 
 If the simulator is not available, use the `/simulator` skill to discover an available one, then retry.
+
+## UIKit presentation tests
+
+When a unit test presents a view controller, retain its `UIWindow` in a test-case property for the full test lifetime and release it in `tearDown`. A window created only as a local variable can be deallocated before an alert or other presentation completes, making the test depend on whether an earlier test left a window alive.

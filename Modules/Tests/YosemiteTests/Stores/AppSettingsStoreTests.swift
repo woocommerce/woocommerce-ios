@@ -23,6 +23,7 @@ private struct TestConstants {
 
 /// AppSettingsStore unit tests
 ///
+@MainActor
 final class AppSettingsStoreTests: XCTestCase {
     /// Mock Dispatcher!
     ///
@@ -48,8 +49,8 @@ final class AppSettingsStoreTests: XCTestCase {
 
     private var mockSiteSpecificAppSettingsStoreMethods: MockSiteSpecificAppSettingsStoreMethods!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
@@ -65,17 +66,17 @@ final class AppSettingsStoreTests: XCTestCase {
         subject?.customSelectedProvidersURL = TestConstants.customFileURL!
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         dispatcher = nil
         storageManager = nil
         fileStorage = nil
         generalAppSettings = nil
         subject = nil
         mockSiteSpecificAppSettingsStoreMethods = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
-    func testFileStorageIsRequestedToWriteWhenAddingANewShipmentProvider() {
+    func testFileStorageIsRequestedToWriteWhenAddingANewShipmentProvider() async {
         let expectation = self.expectation(description: "A write is requested")
 
         let action = AppSettingsAction.addTrackingProvider(siteID: TestConstants.newSiteID,
@@ -89,10 +90,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testFileStorageIsRequestedToWriteWhenAddingANewCustomShipmentProvider() {
+    func testFileStorageIsRequestedToWriteWhenAddingANewCustomShipmentProvider() async {
         let expectation = self.expectation(description: "A write is requested")
 
         let action = AppSettingsAction.addCustomTrackingProvider(siteID: TestConstants.newSiteID,
@@ -107,10 +108,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testFileStorageIsRequestedToWriteWhenAddingAShipmentProviderForExistingSite() {
+    func testFileStorageIsRequestedToWriteWhenAddingAShipmentProviderForExistingSite() async {
         let expectation = self.expectation(description: "A write is requested")
 
         let action = AppSettingsAction.addTrackingProvider(siteID: TestConstants.siteID,
@@ -124,10 +125,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testFileStorageIsRequestedToWriteWhenAddingACustomShipmentProviderForExistingSite() {
+    func testFileStorageIsRequestedToWriteWhenAddingACustomShipmentProviderForExistingSite() async {
         let expectation = self.expectation(description: "A write is requested")
 
         let action = AppSettingsAction.addCustomTrackingProvider(siteID: TestConstants.siteID,
@@ -142,10 +143,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testAddingNewProviderToExistingSiteUpdatesFile() {
+    func testAddingNewProviderToExistingSiteUpdatesFile() async {
         let expectation = self.expectation(description: "File is updated")
 
         let action = AppSettingsAction
@@ -162,10 +163,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testAddingNewCustomProviderToExistingSiteUpdatesFile() {
+    func testAddingNewCustomProviderToExistingSiteUpdatesFile() async {
         let expectation = self.expectation(description: "File is updated")
 
         let action = AppSettingsAction
@@ -183,10 +184,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testRestoreResetProvidersHitsClearFile() {
+    func testRestoreResetProvidersHitsClearFile() async {
         let expectation = self.expectation(description: "File is updated")
 
         let action = AppSettingsAction.resetStoredProviders { error in
@@ -199,7 +200,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
     // MARK: - General App Settings

@@ -211,7 +211,7 @@ let package = Package(
             ],
             exclude: ["Model/Migrations.md"],
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "TestKit",
@@ -344,7 +344,8 @@ let package = Package(
         .testTarget(
             name: "HardwareTests",
             dependencies: [
-                "Hardware"
+                "Hardware",
+                .product(name: "StarIO10", package: "StarXpand-SDK-iOS")
             ],
             swiftSettings: swift5
         ),

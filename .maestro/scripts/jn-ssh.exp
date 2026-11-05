@@ -1,0 +1,18 @@
+#!/usr/bin/expect -f
+# Run a command on a Jurassic Ninja site over SSH.
+#
+# Usage: JN_SSH_PASS=<site admin password> jn-ssh.exp <domain> <command>
+#
+# The password goes through the environment rather than argv so it never
+# appears in `ps` output.
+set timeout 120
+set site [lindex $argv 0]
+set pass $env(JN_SSH_PASS)
+set cmd  [lindex $argv 1]
+log_user 0
+spawn ssh -o StrictHostKeyChecking=accept-new -o PubkeyAuthentication=no \
+          -o NumberOfPasswordPrompts=1 $site@sftp.wp.com $cmd
+expect {
+  -re {[Pp]assword:} { send "$pass\r"; log_user 1; exp_continue }
+  eof
+}

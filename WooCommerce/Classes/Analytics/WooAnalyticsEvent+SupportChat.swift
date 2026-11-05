@@ -8,6 +8,7 @@ extension WooAnalyticsEvent {
             case skipped
             case failed
             case passed
+            case inconclusive
         }
 
         enum FeedbackRating: String {
@@ -39,6 +40,7 @@ extension WooAnalyticsEvent {
             case issueType = "issue_type"
             case result
             case failedTest = "failed_test"
+            case failureReason = "failure_reason"
             case isFirstMessage = "is_first_message"
             case hasDiagnosticsContext = "has_diagnostics_context"
             case supportArea = "support_area"
@@ -75,7 +77,8 @@ extension WooAnalyticsEvent {
 
         static func troubleshootingCompleted(issueType: SupportIssueType,
                                              result: TroubleshootingResult,
-                                             failedTest: SupportDiagnosticsService.Test? = nil) -> WooAnalyticsEvent {
+                                             failedTest: SupportDiagnosticsService.Test? = nil,
+                                             failureReason: String? = nil) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.issueType.rawValue: issueType.analyticsValue,
                 Key.result.rawValue: result.analyticsValue
@@ -83,6 +86,9 @@ extension WooAnalyticsEvent {
 
             if let failedTest {
                 properties[Key.failedTest.rawValue] = failedTest.analyticsValue
+            }
+            if let failureReason {
+                properties[Key.failureReason.rawValue] = failureReason
             }
 
             return WooAnalyticsEvent(statName: .supportChatTroubleshootingCompleted, properties: properties)

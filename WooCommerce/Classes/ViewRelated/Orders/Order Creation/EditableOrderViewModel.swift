@@ -1172,7 +1172,7 @@ extension EditableOrderViewModel {
                       hasEmail: billingAddress?.hasEmailAddress == true,
                       hasPhone: billingAddress?.hasPhoneNumber == true || shippingAddress?.hasPhoneNumber == true,
                       billingAddressFormatted: billingAddress?.fullNameWithCompanyAndAddress,
-                      shippingAddressFormatted: shippingAddress?.fullNameWithCompanyAndAddress)
+                      shippingAddressFormatted: shippingAddress?.fullNameWithCompanyAddressAndPhone)
         }
     }
 

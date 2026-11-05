@@ -31,10 +31,13 @@ final class WooShippingRefundViewModel {
     @MainActor
     func submitRefundRequest() async throws -> ShippingLabel {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(WooShippingAction.refundShippingLabel(shippingLabel: shippingLabel) { [weak self] result in
+            let handleResult: @MainActor @Sendable (Result<ShippingLabel, Error>) -> Void = { [weak self] result in
                 let error = result.failure
                 self?.analytics.track(event: .WooShipping.refundRequested(error: error))
                 continuation.resume(with: result)
+            }
+            stores.dispatch(WooShippingAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
+                Task { @MainActor in handleResult(result) }
             })
         }
     }

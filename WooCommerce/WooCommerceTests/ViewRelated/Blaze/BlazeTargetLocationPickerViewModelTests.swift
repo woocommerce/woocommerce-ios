@@ -29,6 +29,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
 
     // MARK: - Test `selectedSearchResults`
 
+    @MainActor
     func test_selectedSearchResults_is_empty_if_injected_selectedLocations_is_nil() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, onCompletion: { _ in })
@@ -37,6 +38,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedSearchResults, [])
     }
 
+    @MainActor
     func test_selectedSearchResults_is_not_empty_if_injected_selectedLocations_not_empty() {
         // Given
         let location = BlazeTargetLocation.fake()
@@ -48,6 +50,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
 
     // MARK: - `shouldDisableSaveButton`
 
+    @MainActor
     func test_shouldDisableSaveButton_is_true_if_selectedLocations_is_empty() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, onCompletion: { _ in })
@@ -59,6 +62,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableSaveButton)
     }
 
+    @MainActor
     func test_shouldDisableSaveButton_is_false_if_selectedLocations_is_not_empty() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, onCompletion: { _ in })
@@ -72,6 +76,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
 
     // MARK: - Test `emptyViewImage` and `emptyViewMessage`
 
+    @MainActor
     func test_emptyViewImage_is_searchImage_if_searchQuery_length_is_less_than_3_and_vice_versa() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, onCompletion: { _ in })
@@ -93,6 +98,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.emptyViewImage, .magnifyingGlassNotFound)
     }
 
+    @MainActor
     func test_emptyViewMessage_is_updated_based_on_query_length() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, onCompletion: { _ in })
@@ -116,6 +122,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
 
     // MARK: - Test search states
 
+    @MainActor
     func test_fetchInProgress_is_updated_correctly_when_fetching_search_results() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
@@ -135,6 +142,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_searchResults_is_updated_correctly_after_fetching_locations() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
@@ -150,6 +158,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_searchResults_is_updated_correctly_after_updating_searchQuery() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
@@ -171,6 +180,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
 
     // MARK: - addOptionFromSearchResult
 
+    @MainActor
     func test_addOptionFromSearchResult_updates_selectedSearchResults_and_selectedLocations_correctly() throws {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, onCompletion: { _ in })
@@ -184,6 +194,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(viewModel.selectedLocations).contains(tokyo))
     }
 
+    @MainActor
     func test_addOptionFromSearchResult_clears_searchResult() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
@@ -208,6 +219,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
 
     // MARK: Analytics
 
+    @MainActor
     func test_confirmSelection_tracks_event() throws {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID,
@@ -225,6 +237,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
 }
 
 private extension BlazeTargetLocationPickerViewModelTests {
+    @MainActor
     func mockSearchLocationRequest(with result: Result<[BlazeTargetLocation], Error>) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {

@@ -41,6 +41,7 @@ public class MockStoresManager: StoresManager {
     private let googleAdsActionHandler: MockGoogleAdsActionHandler
     private let justInTimeMessageActionHandler: MockJustInTimeMessageActionHandler
     private let shippingMethodActionHandler: MockShippingMethodActionHandler
+    private let wooShippingActionHandler: MockWooShippingActionHandler
     private let couponActionHandler: MockCouponActionHandler
     private let supportChatActionHandler: MockSupportChatActionHandler
 
@@ -77,6 +78,7 @@ public class MockStoresManager: StoresManager {
         googleAdsActionHandler = MockGoogleAdsActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         justInTimeMessageActionHandler = MockJustInTimeMessageActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shippingMethodActionHandler = MockShippingMethodActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        wooShippingActionHandler = MockWooShippingActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         couponActionHandler = MockCouponActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         supportChatActionHandler = MockSupportChatActionHandler(objectGraph: objectGraph, storageManager: storageManager)
     }
@@ -159,6 +161,8 @@ public class MockStoresManager: StoresManager {
             justInTimeMessageActionHandler.handle(action: action)
         case let action as ShippingMethodAction:
             shippingMethodActionHandler.handle(action: action)
+        case let action as WooShippingAction:
+            wooShippingActionHandler.handle(action: action)
         case let action as CouponAction:
             couponActionHandler.handle(action: action)
         case let action as SupportChatAction:

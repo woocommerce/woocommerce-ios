@@ -78,7 +78,7 @@ private extension POSRefundDetailView {
     var summaryRows: some View {
         VStack(spacing: POSSpacing.small) {
             summaryRow(
-                label: Localization.itemsSubtotalLabel(refund.itemCount),
+                label: POSRefundSubtotalLabel.make(refund.itemCount),
                 value: refund.formattedItemsSubtotal
             )
             summaryRow(
@@ -127,20 +127,6 @@ private extension POSRefundDetailView {
             value: "Close",
             comment: "Accessibility label for close button on refund detail dialog"
         )
-
-        static func itemsSubtotalLabel(_ count: Int) -> String {
-            let singular = NSLocalizedString(
-                "pos.refundDetailView.itemsSubtotalFormat.singular",
-                value: "Items subtotal (%1$d item)",
-                comment: "Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items."
-            )
-            let plural = NSLocalizedString(
-                "pos.refundDetailView.itemsSubtotalFormat.plural",
-                value: "Items subtotal (%1$d items)",
-                comment: "Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items."
-            )
-            return String.pluralize(count, singular: singular, plural: plural)
-        }
 
         static let taxLabel = NSLocalizedString(
             "pos.refundDetailView.taxLabel",

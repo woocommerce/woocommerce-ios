@@ -1,8 +1,17 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+26.1
+-----
+- [*] Help & Support: Troubleshooting now checks your payment setup, so you can find and fix card payment problems faster. [https://github.com/woocommerce/woocommerce-ios/pull/18229]
+
+- [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]
+- [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
+
 26.0
 -----
+- [*] Push notifications: The "Never miss a new order" card now shows right after logging in to a store without Jetpack. [https://github.com/woocommerce/woocommerce-ios/pull/18216]
+- [*] Shipping labels: Carrier outage notices from WooCommerce Shipping now appear on the label creation screen, and a purchase that fails during an outage explains the incident instead of showing a generic error. [https://github.com/woocommerce/woocommerce-ios/pull/18194]
 - [*] POS: Made product search faster on large catalogs. [https://github.com/woocommerce/woocommerce-ios/pull/18174]
 - [*] POS: Prevented items from another order from appearing during a refund. [https://github.com/woocommerce/woocommerce-ios/pull/18140]
 - [Internal] AI support: Include sanitized recent warning and error logs with new chats for login failures. [https://github.com/woocommerce/woocommerce-ios/pull/18189]
@@ -22,9 +31,11 @@
 - [*] Login: WordPress.com two-step login now shows instructions and options for your account's verification methods. [https://github.com/woocommerce/woocommerce-ios/pull/18138]
 - [*] Orders: The address form shows the order's country and state the first time it opens, and keeps free-text states such as UK counties. [https://github.com/woocommerce/woocommerce-ios/pull/18146]
 - [*] Shipping Labels: The origin address editor opened from the missing phone number notice is now titled "Edit Origin" instead of "Edit Destination". [https://github.com/woocommerce/woocommerce-ios/pull/18149]
+- [*] Orders and Products: Tapping the tab again scrolls the list back to the top. [https://github.com/woocommerce/woocommerce-ios/pull/18164]
 - [*] Improved camera barcode scanning accuracy by confirming repeated reads before searching for a product. [https://github.com/woocommerce/woocommerce-ios/pull/18157]
 - [*] Orders: The refund details screen on iPad fills the detail column instead of a narrow column with cut-off text. [https://github.com/woocommerce/woocommerce-ios/pull/18163]
 - [*] POS: Opening Orders after a completed payment starts a new cart, instead of bringing the paid items back. [https://github.com/woocommerce/woocommerce-ios/pull/18179]
+- [*] Orders: VoiceOver now reaches the fixed amount and percentage options when adding a custom amount. [https://github.com/woocommerce/woocommerce-ios/pull/18196]
 
 25.9
 -----

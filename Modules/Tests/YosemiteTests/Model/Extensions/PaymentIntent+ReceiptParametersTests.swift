@@ -51,6 +51,8 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
 
 private extension PaymentIntent_ReceiptParametersTests {
     enum Mocks {
-        static let cardPresentCharge = Charge.fake().copy(paymentMethod: .cardPresent(details: .fake()))
+        static var cardPresentCharge: Charge {
+            Charge.fake().copy(paymentMethod: .cardPresent(details: .fake()))
+        }
     }
 }

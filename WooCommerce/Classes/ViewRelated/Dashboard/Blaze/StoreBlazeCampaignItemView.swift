@@ -11,7 +11,9 @@ struct StoreBlazeCampaignItemView: View {
     var body: some View {
         StoreDashboardOutlinedContent {
             VStack(alignment: .leading, spacing: StoreSpacing.s5) {
-                HStack(alignment: .top, spacing: StoreSpacing.s5) {
+                AdaptiveStack(horizontalAlignment: .leading,
+                              verticalAlignment: .top,
+                              spacing: StoreSpacing.s5) {
                     KFImage(URL(string: campaign.imageURL ?? ""))
                         .placeholder { Image(uiImage: .productPlaceholderImage) }
                         .resizable()
@@ -29,10 +31,19 @@ struct StoreBlazeCampaignItemView: View {
 
                     Spacer(minLength: StoreSpacing.s0)
                     StoreIcon.AngleRight.regular.image(size: .largeIncreased)
+                        .flipsForRightToLeftLayoutDirection(true)
                         .accessibilityHidden(true)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Localization.campaignAccessibilityLabel(
+                    campaignName: campaign.name,
+                    status: campaign.status.displayText
+                ))
+                .accessibilityHint(Localization.campaignAccessibilityHint)
 
-                HStack(alignment: .firstTextBaseline, spacing: StoreSpacing.s5) {
+                CollapsibleHStack(horizontalAlignment: .leading,
+                                  verticalAlignment: .firstTextBaseline,
+                                  spacing: StoreSpacing.s5) {
                     Spacer()
                         .frame(width: imageSize)
 
@@ -64,12 +75,6 @@ struct StoreBlazeCampaignItemView: View {
             }
             .foregroundStyle(.storeOnSurface)
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Localization.campaignAccessibilityLabel(
-            campaignName: campaign.name,
-            status: campaign.status.displayText
-        ))
-        .accessibilityHint(Localization.campaignAccessibilityHint)
     }
 }
 

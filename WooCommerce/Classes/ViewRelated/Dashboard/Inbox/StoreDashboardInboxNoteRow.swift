@@ -15,7 +15,7 @@ struct StoreDashboardInboxNoteRow: View {
                     .storeTextStyle(.titleSmall)
 
                 Text(viewModel.title)
-                    .storeTextStyle(viewModel.isRead ? .titleMedium : .titleMedium.strong)
+                    .storeTextStyle(viewModel.isRead || viewModel.isActioned ? .titleMedium : .titleMedium.strong)
                     .fixedSize(horizontal: false, vertical: true)
 
                 content

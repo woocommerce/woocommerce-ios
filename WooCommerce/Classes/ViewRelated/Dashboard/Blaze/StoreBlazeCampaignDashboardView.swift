@@ -234,6 +234,7 @@ private struct ProductInfoView: View {
                 Spacer(minLength: StoreSpacing.s0)
 
                 StoreIcon.AngleRight.regular.image(size: .largeIncreased)
+                    .flipsForRightToLeftLayoutDirection(true)
                     .accessibilityHidden(true)
             }
             .foregroundStyle(.storeOnSurface)

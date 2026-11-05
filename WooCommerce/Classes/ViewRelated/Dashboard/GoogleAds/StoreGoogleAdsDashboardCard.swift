@@ -115,6 +115,7 @@ private extension StoreGoogleAdsDashboardCard {
                         Spacer(minLength: StoreSpacing.s0)
 
                         StoreIcon.AngleRight.regular.image(size: .largeIncreased)
+                            .flipsForRightToLeftLayoutDirection(true)
                             .accessibilityHidden(true)
                     }
 

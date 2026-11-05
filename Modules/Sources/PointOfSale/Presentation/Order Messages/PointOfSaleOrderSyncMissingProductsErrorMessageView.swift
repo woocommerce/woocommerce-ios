@@ -126,11 +126,6 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
 }
 
 private extension PointOfSaleOrderSyncMissingProductsErrorMessageView {
-    enum Constants {
-    }
-}
-
-private extension PointOfSaleOrderSyncMissingProductsErrorMessageView {
     enum Localization {
         static let titleSingular = NSLocalizedString(
             "pointOfSale.orderSync.missingProductsError.titleSingular",

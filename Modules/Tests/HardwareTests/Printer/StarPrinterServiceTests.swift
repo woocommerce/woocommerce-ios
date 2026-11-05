@@ -115,9 +115,12 @@ struct StarPrinterServiceTests {
         try await assertRetryWaitsForCancelledConnect(on: StarPrinterCoordinator())
     }
 
-    @Test(arguments: [true, false])
-    func test_connect_when_the_waiting_retry_is_cancelled_then_reports_disconnected(cancelledOpenSucceeds: Bool) async throws {
-        try await assertCancelledRetryReportsDisconnected(cancelledOpenSucceeds: cancelledOpenSucceeds, on: StarPrinterCoordinator())
+    @Test(arguments: [true, false], [true, false])
+    func test_connect_when_the_waiting_retry_is_cancelled_then_reports_disconnected(cancelledOpenSucceeds: Bool,
+                                                                                     disconnectsWhileWaiting: Bool) async throws {
+        try await assertCancelledRetryReportsDisconnected(cancelledOpenSucceeds: cancelledOpenSucceeds,
+                                                          disconnectsWhileWaiting: disconnectsWhileWaiting,
+                                                          on: StarPrinterCoordinator())
     }
 }
 
@@ -194,6 +197,7 @@ private extension StarPrinterServiceTests {
     }
 
     func assertCancelledRetryReportsDisconnected(cancelledOpenSucceeds: Bool,
+                                                 disconnectsWhileWaiting: Bool,
                                                  on coordinator: isolated StarPrinterCoordinator) async throws {
         // Given
         let (statuses, statusContinuation) = observeStatuses(of: coordinator)
@@ -217,6 +221,9 @@ private extension StarPrinterServiceTests {
 
         // When
         retry.cancel()
+        if disconnectsWhileWaiting {
+            await coordinator.disconnect()
+        }
         releaseOpen.finish()
 
         // Then
@@ -225,7 +232,10 @@ private extension StarPrinterServiceTests {
             try await retry.value
         }
         statusContinuation.finish()
-        #expect(await collect(statuses) == [.idle, .connecting, .disconnected])
+        let expectedStatuses: [PrinterConnectionStatus] = disconnectsWhileWaiting
+            ? [.idle, .connecting, .disconnecting, .disconnected]
+            : [.idle, .connecting, .disconnected]
+        #expect(await collect(statuses) == expectedStatuses)
         #expect(cancelledPrinter.closeCallCount == (cancelledOpenSucceeds ? 1 : 0))
         #expect(cancelledPrinter.printerDelegate == nil)
         #expect(retriedPrinter.printerDelegate == nil)

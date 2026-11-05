@@ -202,8 +202,9 @@ actor StarPrinterCoordinator {
             await withCheckedContinuation { connectWaiters.append($0) }
         }
         guard attempt == connectAttempt, !Task.isCancelled else {
-            // The newest call reports status, so it settles the `.connecting` that the attempt it superseded left behind.
-            if attempt == connectAttempt, connectionStatus == .connecting {
+            // The newest call reports status, so it settles what the attempt it superseded, or a `disconnect()` that
+            // deferred to the connect, left in progress.
+            if attempt == connectAttempt, [.connecting, .disconnecting].contains(connectionStatus) {
                 emit(.disconnected)
             }
             throw CancellationError()

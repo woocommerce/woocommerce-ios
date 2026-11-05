@@ -91,8 +91,11 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
             }
             .offset(x: policy.incomingOffset(progress: progress, totalWidth: totalWidth))
             .frame(width: totalWidth, height: geometry.size.height, alignment: .leading)
-            // Clip offscreen panes before callers add backgrounds that extend into system regions.
-            .clipped()
+            // Clips the offscreen pane horizontally. While sliding, each pane's background has to reach under
+            // the status bar and home indicator and move with it, otherwise those strips change color at once
+            // for the whole width. Side by side, the caller paints those strips instead.
+            .clipShape(VerticallyExtendedRectangle(top: sideBySide == nil ? geometry.safeAreaInsets.top : 0,
+                                                   bottom: sideBySide == nil ? geometry.safeAreaInsets.bottom : 0))
             .simultaneousGesture(backGesture(totalWidth: totalWidth), isEnabled: isBackGestureActive)
         }
         // Anchors the gesture's coordinates to this view rather than to the window, which is only the
@@ -281,4 +284,13 @@ private enum Constants {
     /// A spring rather than an ease: it front-loads the movement, which is what makes a platform push
     /// feel immediate.
     static let transition: Animation = .snappy(duration: 0.3)
+}
+
+private struct VerticallyExtendedRectangle: Shape {
+    let top: CGFloat
+    let bottom: CGFloat
+
+    func path(in rect: CGRect) -> Path {
+        Path(CGRect(x: rect.minX, y: rect.minY - top, width: rect.width, height: rect.height + top + bottom))
+    }
 }

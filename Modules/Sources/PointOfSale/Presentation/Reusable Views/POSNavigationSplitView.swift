@@ -104,7 +104,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 // detail is not yet drawn shows the host's background instead. It has to reach into
                 // the safe areas too, because the sidebar passes behind this pane rather than
                 // leaving the screen, and would otherwise show through above and below it.
-                .background(Color.posSurface.ignoresSafeArea())
+                .background(visibleDetailBackgroundColor.ignoresSafeArea())
             }
             .background {
                 if isRegular {

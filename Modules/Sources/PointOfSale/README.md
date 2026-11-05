@@ -93,7 +93,7 @@ The `PointOfSale` module depends on shared internal modules (e.g. `WooFoundation
 
 Use `POSNavigationSplitView` for list/detail screens and `POSPageHeaderView` for headers. The split container keeps content clear of an active book division and joins pane backgrounds at the fold. SDK and runtime guards are handled by the shared layout.
 
-For outer content padding, use `.posContentPadding(.horizontal, POSPadding.medium)` instead of `.padding(.horizontal, POSPadding.medium)`. It counts nearby system fold clearance toward the requested padding; keep ordinary padding inside cards. Use `.posContentPadding(insets)` when horizontal and vertical padding differ.
+For outer content padding, use `.posContentPadding(.horizontal, metrics.padding.medium)` instead of `.padding(.horizontal, metrics.padding.medium)`. It counts nearby system fold clearance toward the requested padding; keep ordinary padding inside cards. Use `.posContentPadding(insets)` when horizontal and vertical padding differ.
 
 A custom split container should use `POSBookPoseLayout.leadingWidth`, `trailingWidth` and `spacing` for content. Its background uses zero spacing and `backgroundLeadingWidth` for the leading color. Apply `.posBookPoseAnimation(layout)` once to the container, including its background, to animate entering and leaving book pose after the initial layout. Do not apply it to individual panes or detail views.
 

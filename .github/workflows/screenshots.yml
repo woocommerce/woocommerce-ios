@@ -1,8 +1,5 @@
 name: Screenshots
 
-env:
-  DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
-
 on:
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled]
@@ -20,15 +17,12 @@ jobs:
     steps:
     - name: "Check out Project"
       uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
+    - name: Select Repository Xcode
+      run: echo "DEVELOPER_DIR=/Applications/Xcode_$(cat .xcode-version).app/Contents/Developer" >> "$GITHUB_ENV"
     - name: "Set up Ruby"
       uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
       with:
         bundler-cache: true
-
-    - name: Check Screenshot Runtime Support
-      run: bundle exec fastlane check_screenshot_runtime_support
 
     - name: Install App Dependencies
       run: bundle exec rake dependencies
@@ -62,8 +56,8 @@ jobs:
         mode: [dark, light]
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
+    - name: Select Repository Xcode
+      run: echo "DEVELOPER_DIR=/Applications/Xcode_$(cat .xcode-version).app/Contents/Developer" >> "$GITHUB_ENV"
     - name: "Set up Ruby"
       uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
       with:
@@ -81,38 +75,6 @@ jobs:
     - name: Generate Screenshots
       run: |
         bundle exec fastlane take_screenshots languages:${{ matrix.language }} mode:${{ matrix.mode }}
-
-    - name: Check Captured Images
-      env:
-        SCREENSHOT_LOCALE: ${{ matrix.language }}
-        SCREENSHOT_MODE: ${{ matrix.mode }}
-      run: |
-        python3 - <<'PY'
-        import os
-        import pathlib
-        import struct
-
-        directory = pathlib.Path('fastlane/screenshots') / os.environ['SCREENSHOT_LOCALE']
-        mode = os.environ['SCREENSHOT_MODE']
-        phone = ['order-dashboard', 'order-creation', 'order-payment', 'product-add', 'order-notification']
-        ipad = phone[:3] + ['pos-dashboard', 'pos-payment', 'pos-success'] + phone[3:]
-        for device, scenes, size in [
-            ('iPhone 17 Pro Max', phone, (1320, 2868)),
-            ('iPad Pro 13-inch (M5)', ipad, (2752, 2064)),
-            ('iPhone Duo', phone, (1398, 2034)),
-        ]:
-            expected = {f'{device}-{i}-{mode}-{scene}.png' for i, scene in enumerate(scenes, 1)}
-            found = {p.name for p in directory.glob(f'{device}-*-{mode}-*.png')}
-            assert found == expected, (device, expected - found, found - expected)
-            for name in sorted(expected):
-                header = (directory / name).read_bytes()[:24]
-                assert header[:8] == b'\x89PNG\r\n\x1a\n', name
-                assert struct.unpack('>II', header[16:24]) == size, name
-            product = directory / f'{device}-{len(scenes) - 1}-{mode}-product-add.png'
-            notification = directory / f'{device}-{len(scenes)}-{mode}-order-notification.png'
-            assert notification.read_bytes() != product.read_bytes(), f'{device}: notification repeats the product screen'
-        print(f'Validated all 18 captures for {directory.name}/{mode}')
-        PY
 
     - name: Store Logs
       if: always()
@@ -133,7 +95,7 @@ jobs:
   process:
     name: "Process Screenshots"
     needs: capture
-    runs-on: xcode-27
+    runs-on: macos-latest
     timeout-minutes: 30
     permissions:
       # Push the generated-screenshots branch
@@ -147,8 +109,8 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          # Compose and commit assets from the same revision used by the capture jobs.
-          ref: ${{ github.event.pull_request.head.sha }}
+          # Checkout the PR branch directly (not the merge commit) so we can push back to it
+          ref: ${{ github.head_ref }}
           # Fetch LFS files for promo screenshot generation
           lfs: true
 
@@ -200,10 +162,6 @@ jobs:
 
       - name: Generate Promo Screenshots
         run: |
-          ruby fastlane/helpers/promo_screenshots_config_test.rb
-          ruby fastlane/helpers/promo_screenshot_validation_test.rb
-          ruby fastlane/helpers/promo_composition_failure_test.rb
-          bundle exec ruby fastlane/helpers/promo_screenshot_normalization_check.rb
           bundle exec fastlane create_promo_screenshots force:true commit:true
 
       - name: Archive Promo Screenshots

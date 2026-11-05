@@ -12,6 +12,8 @@ Keep skill descriptions in `SKILL.md`; update the index discovery guidance when 
 
 For agent builds and evidence capture, follow [local output paths](.agents/rules/verification.md#local-output-paths).
 
+For App Store screenshot capture, composition, upload, or failed-job recovery, read [the screenshot workflow guide](.agents/rules/app-store-screenshots.md).
+
 ## Repository Layout
 
 ```

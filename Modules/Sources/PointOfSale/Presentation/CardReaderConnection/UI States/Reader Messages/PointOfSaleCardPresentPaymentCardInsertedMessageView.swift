@@ -33,11 +33,6 @@ struct PointOfSaleCardPresentPaymentCardInsertedMessageView: View {
     }
 }
 
-private extension PointOfSaleCardPresentPaymentCardInsertedMessageView {
-    enum Constants {
-    }
-}
-
 #Preview {
     return PointOfSaleCardPresentPaymentCardInsertedMessageView(
         viewModel: PointOfSaleCardPresentPaymentCardInsertedMessageViewModel(),

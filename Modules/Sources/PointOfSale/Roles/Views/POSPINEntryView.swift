@@ -239,7 +239,7 @@ private extension POSPINEntryView {
         static let statusRowHeight = dotSize
         static let dotBorderWidth: CGFloat = 2
         static let keySize: CGFloat = 72
-        static let keySpacing: CGFloat = 16
+        static let keySpacing: CGFloat = POSMetrics.Scale.regular.medium
         static let keypadHeight = keySize * CGFloat(rows.count) + keySpacing * CGFloat(rows.count - 1)
         static let disabledOpacity: Double = 0.4
         static let shakeDuration: TimeInterval = 0.4
@@ -300,7 +300,7 @@ private extension POSPINEntryView {
 
 extension POSPINEntryView {
     static let contentWidth: CGFloat = 420
-    static let contentSpacing: CGFloat = 32
+    static let contentSpacing: CGFloat = POSMetrics.Scale.regular.xLarge
 
     static var preferredHeight: CGFloat {
         Constants.statusRowHeight + contentSpacing + Constants.keypadHeight

@@ -108,9 +108,6 @@ struct POSSingleFieldInputView: View {
 // MARK: - Helpers
 
 private extension POSSingleFieldInputView {
-    enum Constants {
-    }
-
     func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if shouldMinimizePadding {
             return metrics.spacing.xSmall

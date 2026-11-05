@@ -85,11 +85,7 @@ private extension PaymentsActionButtons {
     }
 }
 
-
 private extension PaymentsActionButtons {
-    enum Constants {
-    }
-
     enum Localization {
         static let sendReceipt = NSLocalizedString(
             "pos.totalsView.button.sendReceipt",

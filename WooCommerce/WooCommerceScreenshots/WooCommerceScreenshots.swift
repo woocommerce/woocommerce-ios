@@ -107,7 +107,7 @@ class WooCommerceScreenshots: XCTestCase {
         .tapAddProduct()
         .thenTakeScreenshot(named: "product-add", orientation: screenshotOrientation)
 
-        .lockScreenForNotificationScreenshot()
+        .openNotificationCenterForScreenshot()
         .thenTakeScreenshot(named: "order-notification", orientation: screenshotOrientation)
     }
 
@@ -196,24 +196,35 @@ extension BaseScreen {
 
 extension ScreenObject {
 
-    @discardableResult
-    func lockScreen() -> Self {
-        // This is a hack from https://stackoverflow.com/a/57356929
-        // ☠️ Beware of breaking changes in future updates ☠️
-        XCUIDevice.shared.perform(NSSelectorFromString("pressLockButton"))
-        sleep(5)
-        return self
-    }
+    @MainActor @discardableResult
+    func openNotificationCenterForScreenshot() -> Self {
+        // Leaving the app schedules the mocked order notification in SceneDelegate.
+        XCUIDevice.shared.press(.home)
+        let background = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "state IN %@", [XCUIApplication.State.runningBackground.rawValue,
+                                                          XCUIApplication.State.runningBackgroundSuspended.rawValue]),
+            object: app
+        )
+        XCTAssertEqual(XCTWaiter.wait(for: [background], timeout: 10), .completed,
+                       "The app must enter the background to schedule its notification.")
 
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let top = springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.01))
+        let bottom = springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8))
+        top.press(forDuration: 0.1, thenDragTo: bottom)
 
-    @discardableResult
-    func lockScreenForNotificationScreenshot() -> Self {
-        if #available(iOS 18.0, *) {
-            // iOS 18 and above needs double lock
-            return self.lockScreen().lockScreen()
-        } else {
-            return self.lockScreen()
+        // The fixture amount uses either decimal separator across the supported translations.
+        let notification = springboard.descendants(matching: .any)
+            .matching(NSPredicate(format: "label MATCHES %@", ".*13[.,]98.*")).firstMatch
+        let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isHittable == true"), object: notification)
+        if XCTWaiter.wait(for: [visible], timeout: 20) != .completed {
+            XCTContext.runActivity(named: "Missing order notification") { activity in
+                activity.add(XCTAttachment(string: springboard.debugDescription))
+                activity.add(XCTAttachment(screenshot: XCUIScreen.main.screenshot()))
+            }
+            XCTFail("The mocked order notification must be visible before capturing it.")
         }
+        return self
     }
 
     @MainActor @discardableResult

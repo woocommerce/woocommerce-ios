@@ -4,6 +4,15 @@
 	"stylesheet": "appstoreres/assets/styles/style.css",
 	"devices": [
 		{
+			"name": "iPhone Duo",
+			"canvas_size": [1398, 2034],
+			"text_size": [1190, 480],
+			"text_offset": [104, 0],
+			"font_size": "100px",
+			"screenshot_size": [932, 1356],
+			"screenshot_offset": [233, 560]
+		},
+		{
 			"name": "iPhone 17 Pro Max",
 			"canvas_size": [1320, 2868],
 			"text_size": [1066, 577],
@@ -44,6 +53,42 @@
 		}
 	],
 	"entries": [
+		// Duo uses the complete outer display without a decorative hardware frame.
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-01.png",
+			"background": "#720EEC",
+			"screenshot": "iPhone Duo-1-dark-order-dashboard.png",
+			"text": "metadata/{locale}/app_store_screenshot_1.txt"
+		},
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-02.png",
+			"background": "#720EEC",
+			"screenshot": "iPhone Duo-2-light-order-creation.png",
+			"text": "metadata/{locale}/app_store_screenshot_2.txt"
+		},
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-03.png",
+			"background": "#720EEC",
+			"screenshot": "iPhone Duo-3-dark-order-payment.png",
+			"text": "metadata/{locale}/app_store_screenshot_3.txt"
+		},
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-04.png",
+			"background": "#720EEC",
+			"screenshot": "iPhone Duo-4-light-product-add.png",
+			"text": "metadata/{locale}/app_store_screenshot_7.txt"
+		},
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-05.png",
+			"background": "#720EEC",
+			"screenshot": "iPhone Duo-5-dark-order-notification.png",
+			"text": "metadata/{locale}/app_store_screenshot_8.txt"
+		},
 		// iPhone 17 Pro Max
 		// Track sales and bestselling products
 		{

@@ -45,7 +45,8 @@ IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv 
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 17 Pro Max',
-  'iPad Pro 13-inch (M5)'
+  'iPad Pro 13-inch (M5)',
+  'iPhone Duo'
 ].freeze
 
 # Instantiate versioning classes
@@ -1072,8 +1073,6 @@ platform :ios do
     languages &= options[:languages].split(',') unless options[:languages].nil?
 
     devices = SCREENSHOT_DEVICES.dup
-    devices << 'iPhone Duo' if options[:include_duo].to_s == 'true'
-
     devices &= options[:devices].split(',') unless options[:devices].nil?
 
     UI.user_error!("Unable to run on devices: \"#{devices}\"") if devices.empty?
@@ -1345,18 +1344,24 @@ platform :ios do
     end
 
     begin
+      require_relative 'helpers/promo_screenshot_validation'
+      PromoScreenshotValidation.validate_inputs!(directory: original_screenshot_directory, locales: IOS_LOCALES,
+                                                config_path: File.join(FASTLANE_DIR, 'screenshots.json'))
       promo_screenshots(
         orig_folder: original_screenshot_directory,
         metadata_folder: FASTLANE_METADATA_FOLDER,
         output_folder: output_directory,
         force: force
       )
+      PromoScreenshotValidation.remove_alpha!(directory: output_directory, locales: IOS_LOCALES)
+      PromoScreenshotValidation.validate!(directory: output_directory, locales: IOS_LOCALES,
+                                         config_path: File.join(FASTLANE_DIR, 'screenshots.json'))
     ensure
-      next if files_to_copy.empty?
-
-      UI.message('Deleting any en-US screenshot title previously copied from default folder...')
-      files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
-      UI.message('Done')
+      unless files_to_copy.empty?
+        UI.message('Deleting any en-US screenshot title previously copied from default folder...')
+        files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
+        UI.message('Done')
+      end
     end
 
     next unless commit || push

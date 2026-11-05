@@ -59,6 +59,32 @@ class PromoScreenshotsConfigTest < Minitest::Test
     image_entries.each { |entry| assert_background_matches_canvas(entry) }
   end
 
+  def test_duo_uses_accepted_canvas_and_preserves_outer_display_aspect_ratio_without_a_frame
+    device = config.fetch('devices').find { |item| item['name'] == 'iPhone Duo' }
+    assert_equal [1398, 2034], device.fetch('canvas_size')
+    width, height = device.fetch('screenshot_size')
+    assert_equal 1398 * height, 2034 * width
+    refute device.key?('device_frame')
+    refute device.key?('screenshot_mask')
+    %w[text screenshot].each do |region|
+      size, offset = device.fetch("#{region}_size"), device.fetch("#{region}_offset")
+      2.times { |axis| assert_operator offset[axis] + size[axis], :<=, device['canvas_size'][axis] }
+    end
+  end
+
+  def test_complete_device_families_reuse_the_localized_phone_captions
+    counts = config.fetch('entries').group_by { |entry| entry.fetch('device') }.transform_values(&:count)
+    assert_equal 5, counts.fetch('iPhone Duo')
+    assert_equal 5, counts.fetch('iPhone 17 Pro Max')
+    assert_equal 8, counts.fetch('iPad Pro 13-inch (M5) - landscape')
+    duo = config['entries'].select { |entry| entry['device'] == 'iPhone Duo' }
+    phone = config['entries'].select { |entry| entry['device'] == 'iPhone 17 Pro Max' }
+    assert_equal phone.map { |entry| entry['text'] }, duo.map { |entry| entry['text'] }
+    assert_equal phone.map { |entry| entry['screenshot'].split('-', 2).last },
+                 duo.map { |entry| entry['screenshot'].split('-', 2).last }
+    assert_equal config['entries'].length, config['entries'].map { |entry| entry['filename'] }.uniq.length
+  end
+
   private
 
   def assert_background_matches_canvas(entry)

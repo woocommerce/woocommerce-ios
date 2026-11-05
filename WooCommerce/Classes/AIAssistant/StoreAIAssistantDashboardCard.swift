@@ -69,22 +69,11 @@ struct StoreAIAssistantDashboardCard: View {
 }
 
 private extension StoreAIAssistantDashboardCard {
+    typealias Localization = AIAssistantDashboardCard.Localization
+
     enum Layout {
         static let sparkleMinimumScale: CGFloat = 0.95
         static let sparkleMinimumOpacity = 0.6
         static let sparkleAnimationDuration = 0.8
-    }
-
-    enum Localization {
-        static let placeholder = NSLocalizedString(
-            "dashboardCard.aiAssistant.placeholder",
-            value: "Ask about your store…",
-            comment: "Placeholder text on the AI Assistant entry card on the dashboard, styled like a chat input."
-        )
-        static let accessibilityLabel = NSLocalizedString(
-            "dashboardCard.aiAssistant.accessibilityLabel",
-            value: "Open the AI assistant",
-            comment: "Accessibility label for the AI Assistant entry card on the dashboard."
-        )
     }
 }

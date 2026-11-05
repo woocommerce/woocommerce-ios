@@ -158,6 +158,7 @@ struct StoreDashboardCardFooterAction: View {
 struct StoreDashboardDateRangeHeader: View {
     let timeRange: StatsTimeRangeV4
     let dateText: String
+    let customTitle: String
     let isDisabled: Bool
     let accessibilityPrefix: String
     let onSelect: (StatsTimeRangeV4) -> Void
@@ -165,7 +166,7 @@ struct StoreDashboardDateRangeHeader: View {
 
     var body: some View {
         HStack(spacing: StoreSpacing.s3) {
-            Text(timeRange.isCustomTimeRange ? Localization.custom : timeRange.tabTitle)
+            Text(timeRange.isCustomTimeRange ? customTitle : timeRange.tabTitle)
                 .storeTextStyle(.bodyMedium)
                 .foregroundStyle(.storeOnSurface)
                 .accessibilityIdentifier("\(accessibilityPrefix)-\(timeRange.menuAccessibilityIdentifier)")
@@ -237,9 +238,9 @@ struct StoreDashboardDateRangeHeader: View {
 struct StoreDashboardTimestamp: View {
     @Environment(\.colorScheme) private var colorScheme
 
-    let lastUpdatedTimestamp: String
-    let showsScheduledUpdatesDelay: Bool
+    let text: String
     let showsInfoButton: Bool
+    let infoAccessibilityLabel: String
     let onInfoTapped: () -> Void
 
     var body: some View {
@@ -250,7 +251,7 @@ struct StoreDashboardTimestamp: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(text)
-                .accessibilityHint(Localization.scheduledUpdatesInfoAccessibilityLabel)
+                .accessibilityHint(infoAccessibilityLabel)
             } else {
                 content
             }
@@ -273,48 +274,16 @@ struct StoreDashboardTimestamp: View {
         .frame(minHeight: StoreSize.minimumTapTarget)
         .contentShape(.rect)
     }
-
-    private var text: String {
-        showsScheduledUpdatesDelay ?
-        Localization.scheduledUpdatesDelayText :
-        Localization.lastUpdatedText(time: lastUpdatedTimestamp)
-    }
 }
 
 private enum Localization {
     static let moreOptions = NSLocalizedString("More options", comment: "Accessibility label for an overflow menu.")
     static let filterOptions = NSLocalizedString(
-        "storeDashboardCardFilterHeader.filterOptions",
-        value: "Filter options",
-        comment: "Accessibility label for the filter menu on a Dashboard card"
-    )
-    static let custom = NSLocalizedString(
-        "storeDashboardDateRangeHeader.custom",
-        value: "Custom",
-        comment: "Title of the custom time range on a Dashboard card"
+        "Filter",
+        comment: "Accessibility label for the filter menu on a Dashboard card."
     )
     static let dateRange = NSLocalizedString(
-        "storeDashboardDateRangeHeader.dateRange",
-        value: "Date Range",
-        comment: "Accessibility label for the date range selection menu on a Dashboard card"
+        "Date Range",
+        comment: "Accessibility label for the date range selection menu on a Dashboard card."
     )
-    static let scheduledUpdatesDelayText = NSLocalizedString(
-        "storeDashboardTimestamp.scheduledUpdatesDelayText",
-        value: "Stats may be up to 12 hours delayed",
-        comment: "Text shown on a Dashboard card instead of the last updated timestamp when analytics updates are scheduled"
-    )
-    static let scheduledUpdatesInfoAccessibilityLabel = NSLocalizedString(
-        "storeDashboardTimestamp.scheduledUpdatesInfoAccessibilityLabel",
-        value: "Analytics update details",
-        comment: "Accessibility hint for analytics update details on a Dashboard card"
-    )
-
-    static func lastUpdatedText(time: String) -> String {
-        let format = NSLocalizedString(
-            "storeDashboardTimestamp.lastUpdatedText",
-            value: "Last Updated: %1$@",
-            comment: "Time when a Dashboard card was last updated"
-        )
-        return String.localizedStringWithFormat(format, time)
-    }
 }

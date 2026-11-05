@@ -54,6 +54,7 @@ private extension View {
 }
 
 private struct POSManagerOverrideModalSizing: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posModalParentSize) private var parentSize
 
@@ -71,18 +72,18 @@ private extension POSManagerOverrideModalSizing {
     }
 
     var horizontalPadding: CGFloat {
-        isCompactWidth ? POSPadding.none : POSPadding.xxLarge
+        isCompactWidth ? metrics.padding.none : metrics.padding.xxLarge
     }
 
     var verticalPadding: CGFloat {
-        isCompactWidth ? POSPadding.none : POSPadding.xxLarge
+        isCompactWidth ? metrics.padding.none : metrics.padding.xxLarge
     }
 
     var frameWidth: CGFloat? {
         guard !isCompactWidth else {
             return nil
         }
-        return min(parentSize.width, POSPINEntryView.contentWidth + POSPadding.xxLarge * 2)
+        return min(parentSize.width, POSPINEntryView.contentWidth + metrics.padding.xxLarge * 2)
     }
 }
 

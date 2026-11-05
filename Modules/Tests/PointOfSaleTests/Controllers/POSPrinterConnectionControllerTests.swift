@@ -570,9 +570,10 @@ private extension POSPrinterConnectionControllerTests {
     }
 
     /// Connect results are tracked from the connect task, which can finish after the status stream
-    /// updates the controller, so wait for the events themselves.
+    /// updates the controller, so wait for the events themselves. Stops once the suite's time limit
+    /// cancels the test, so a missing event fails the expectations that follow instead of hanging.
     func waitForEvents(_ analytics: MockPOSAnalytics, count: Int) async {
-        while analytics.events.count < count {
+        while analytics.events.count < count, !Task.isCancelled {
             await Task.yield()
         }
     }

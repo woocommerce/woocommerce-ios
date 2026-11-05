@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundLoadingView: View {
+    @Environment(\.posMetrics) private var metrics
     let onBack: () -> Void
 
     @Environment(\.posModalParentSize) private var parentSize
@@ -27,11 +28,11 @@ private extension POSRefundLoadingView {
     }
 
     var loadingContent: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPaymentLoadingView(title: Localization.loadingTitle,
                                   message: Localization.loadingMessage,
                                   animation: .init(namespace: loadingNamespace))
-            .padding(.horizontal, POSPadding.xLarge)
+            .padding(.horizontal, metrics.padding.xLarge)
             .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

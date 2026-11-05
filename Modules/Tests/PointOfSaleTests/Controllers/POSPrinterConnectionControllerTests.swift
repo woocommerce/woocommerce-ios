@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import Observation
 import struct Yosemite.PrinterDevice
+import enum Yosemite.PrinterError
 import enum WooFoundation.BluetoothAuthorization
 @testable import PointOfSale
 
@@ -230,7 +231,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
 
         // When
-        sut.startSetup(sessionID: UUID())
+        sut.startSetup(sessionID: UUID(), source: .settings)
 
         // Then
         #expect(sut.discoveryState == .searching)
@@ -247,7 +248,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service)
 
         // When
-        sut.startSetup(sessionID: UUID())
+        sut.startSetup(sessionID: UUID(), source: .settings)
         await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
         sut.connect(to: device)
         await wait(on: sut, until: { sut.isConnected })
@@ -263,7 +264,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service)
 
         // When
-        sut.startSetup(sessionID: UUID())
+        sut.startSetup(sessionID: UUID(), source: .settings)
         await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
 
         // Then
@@ -278,7 +279,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
 
         // When
-        sut.startSetup(sessionID: UUID())
+        sut.startSetup(sessionID: UUID(), source: .settings)
 
         // Then
         #expect(sut.discoveryState == .idle)
@@ -293,7 +294,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
 
         // When
-        sut.startSetup(sessionID: UUID())
+        sut.startSetup(sessionID: UUID(), source: .settings)
         provider.stubbedAuthorization = .denied
         await wait(on: sut, until: { !sut.isDiscovering })
 
@@ -309,7 +310,7 @@ struct POSPrinterConnectionControllerTests {
         let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
 
         // When
-        sut.startSetup(sessionID: UUID())
+        sut.startSetup(sessionID: UUID(), source: .settings)
         provider.stubbedAuthorization = .denied
         await wait(on: sut, until: { !sut.isDiscovering })
 
@@ -324,11 +325,11 @@ struct POSPrinterConnectionControllerTests {
         service.discoveredDevices = [device]
         let sut = await makeSubscribedController(service: service)
         let sessionID = UUID()
-        sut.startSetup(sessionID: sessionID)
+        sut.startSetup(sessionID: sessionID, source: .settings)
         await wait(on: sut, until: { sut.discoveryState == .foundOne(device) && !sut.isDiscovering })
 
         // When
-        sut.startSetup(sessionID: sessionID)
+        sut.startSetup(sessionID: sessionID, source: .settings)
 
         // Then
         #expect(sut.discoveryState == .foundOne(device))
@@ -343,7 +344,7 @@ struct POSPrinterConnectionControllerTests {
         service.keepsDiscoveryOpen = true
         let sut = await makeSubscribedController(service: service)
         let sessionID = UUID()
-        sut.startSetup(sessionID: sessionID)
+        sut.startSetup(sessionID: sessionID, source: .settings)
         await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
 
         // When
@@ -365,12 +366,12 @@ struct POSPrinterConnectionControllerTests {
         let service = MockReceiptPrinterService()
         let sut = await makeSubscribedController(service: service)
         let firstSessionID = UUID()
-        sut.startSetup(sessionID: firstSessionID)
+        sut.startSetup(sessionID: firstSessionID, source: .settings)
         await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
         sut.cancelSetup(sessionID: firstSessionID)
 
         // When
-        sut.startSetup(sessionID: UUID())
+        sut.startSetup(sessionID: UUID(), source: .settings)
         await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
 
         // Then
@@ -385,9 +386,9 @@ struct POSPrinterConnectionControllerTests {
         service.keepsDiscoveryOpen = true
         let sut = await makeSubscribedController(service: service)
         let closedSessionID = UUID()
-        sut.startSetup(sessionID: closedSessionID)
+        sut.startSetup(sessionID: closedSessionID, source: .settings)
         await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
-        sut.startSetup(sessionID: UUID())
+        sut.startSetup(sessionID: UUID(), source: .settings)
         await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
 
         // When
@@ -398,6 +399,137 @@ struct POSPrinterConnectionControllerTests {
         #expect(sut.isDiscovering)
         #expect(service.discoverCallCount == 2)
         #expect(service.stopDiscoveryCallCount == 0)
+    }
+
+    // MARK: - Analytics
+
+    @Test(arguments: [POSPrinterSetupSource.settings, .printReceipt])
+    func test_startSetup_then_tracks_setup_started_with_source(source: POSPrinterSetupSource) async {
+        // Given
+        let analytics = MockPOSAnalytics()
+        let sut = await makeSubscribedController(service: MockReceiptPrinterService(), analytics: analytics)
+
+        // When
+        sut.startSetup(sessionID: UUID(), source: source)
+
+        // Then
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started"])
+        #expect(analytics.events.first?.properties["source"] as? String == source.rawValue)
+    }
+
+    @Test func test_startSetup_when_called_again_for_same_session_then_tracks_setup_started_once() async {
+        // Given
+        let analytics = MockPOSAnalytics()
+        let sut = await makeSubscribedController(service: MockReceiptPrinterService(), analytics: analytics)
+        let sessionID = UUID()
+
+        // When
+        sut.startSetup(sessionID: sessionID, source: .settings)
+        sut.startSetup(sessionID: sessionID, source: .settings)
+
+        // Then
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started"])
+    }
+
+    @Test func test_connect_when_setup_is_open_then_tracks_connected_with_source() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let analytics = MockPOSAnalytics()
+        let sut = await makeSubscribedController(service: MockReceiptPrinterService(), analytics: analytics)
+        sut.startSetup(sessionID: UUID(), source: .printReceipt)
+
+        // When
+        sut.connect(to: device)
+        await waitForEvents(analytics, count: 2)
+
+        // Then
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started", "receipt_printer_connected"])
+        #expect(analytics.events.last?.properties["source"] as? String == "print_receipt")
+    }
+
+    @Test func test_connect_when_started_after_setup_was_cancelled_then_tracks_connected_without_source() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let analytics = MockPOSAnalytics()
+        let sut = await makeSubscribedController(service: MockReceiptPrinterService(), analytics: analytics)
+        let sessionID = UUID()
+        sut.startSetup(sessionID: sessionID, source: .settings)
+        sut.cancelSetup(sessionID: sessionID)
+
+        // When
+        sut.connect(to: device)
+        await waitForEvents(analytics, count: 2)
+
+        // Then
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started", "receipt_printer_connected"])
+        #expect(analytics.events.last?.properties["source"] == nil)
+    }
+
+    @Test func test_connect_when_it_finishes_after_setup_reopened_then_tracks_the_source_that_started_it() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let analytics = MockPOSAnalytics()
+        let service = MockReceiptPrinterService()
+        service.holdsConnect = true
+        let sut = await makeSubscribedController(service: service, analytics: analytics)
+        let settingsSessionID = UUID()
+        sut.startSetup(sessionID: settingsSessionID, source: .settings)
+        await withCheckedContinuation { continuation in
+            service.onConnectSubscribed = {
+                continuation.resume()
+            }
+            sut.connect(to: device)
+        }
+        service.onConnectSubscribed = nil
+        sut.cancelSetup(sessionID: settingsSessionID)
+        sut.startSetup(sessionID: UUID(), source: .printReceipt)
+        service.holdsConnect = false
+        service.connectError = PrinterError.connectionInProgress
+        sut.connect(to: device)
+        await wait(on: sut, until: { sut.discoveryState == .error })
+
+        // When — the connect started from Settings finishes inside the Print receipt session.
+        service.finishHeldConnect()
+        await waitForEvents(analytics, count: 3)
+
+        // Then
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
+                                                      "receipt_printer_setup_started",
+                                                      "receipt_printer_connected"])
+        #expect(analytics.events.last?.properties["source"] as? String == "settings")
+    }
+
+    @Test func test_connect_when_fails_then_does_not_track_connected() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let analytics = MockPOSAnalytics()
+        let service = MockReceiptPrinterService()
+        service.connectError = PrinterTestError()
+        let sut = await makeSubscribedController(service: service, analytics: analytics)
+
+        // When
+        sut.connect(to: device)
+        await wait(on: sut, until: { sut.discoveryState == .error })
+
+        // Then
+        #expect(analytics.events.isEmpty)
+    }
+
+    @Test func test_connection_status_when_printer_connects_and_drops_without_merchant_action_then_tracks_nothing() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let analytics = MockPOSAnalytics()
+        let service = MockReceiptPrinterService()
+        let sut = await makeSubscribedController(service: service, analytics: analytics)
+
+        // When
+        service.emitConnectionStatus(.connected(device))
+        await wait(on: sut, until: { sut.isConnected })
+        service.emitConnectionStatus(.disconnected)
+        await wait(on: sut, until: { !sut.isConnected })
+
+        // Then
+        #expect(analytics.events.isEmpty)
     }
 }
 
@@ -411,9 +543,11 @@ private extension POSPrinterConnectionControllerTests {
     /// right after construction reliably catches it.
     func makeSubscribedController(
         service: MockReceiptPrinterService,
+        analytics: MockPOSAnalytics = MockPOSAnalytics(),
         bluetoothAuthorizationProvider: MockBluetoothAuthorizationProvider = MockBluetoothAuthorizationProvider()
     ) async -> POSPrinterConnectionController {
         let controller = POSPrinterConnectionController(service: service,
+                                                        analytics: analytics,
                                                         bluetoothAuthorizationProvider: bluetoothAuthorizationProvider)
         await withCheckedContinuation { continuation in
             service.onConnectionStatusSubscribed = {
@@ -421,6 +555,15 @@ private extension POSPrinterConnectionControllerTests {
             }
         }
         return controller
+    }
+
+    /// Connect results are tracked from the connect task, which can finish after the status stream
+    /// updates the controller, so wait for the events themselves. Stops once the suite's time limit
+    /// cancels the test, so a missing event fails the expectations that follow instead of hanging.
+    func waitForEvents(_ analytics: MockPOSAnalytics, count: Int) async {
+        while analytics.events.count < count, !Task.isCancelled {
+            await Task.yield()
+        }
     }
 
     /// Suspends until `condition` holds, re-arming observation after each change to the controller's

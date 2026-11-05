@@ -147,6 +147,7 @@ public struct PointOfSaleEntryPointView: View {
                                                           receiptSender: receiptSender,
                                                           currencySettingsProvider: services.currency,
                                                           analytics: services.analytics)
+        let printerConnectionController = receiptPrinter.map { POSPrinterConnectionController(service: $0, analytics: services.analytics) }
         self.settingsController = PointOfSaleSettingsController(siteID: siteID,
                                                                 settingsService: settingsService,
                                                                 cardPresentPaymentService: cardPresentPaymentService,
@@ -158,7 +159,7 @@ public struct PointOfSaleEntryPointView: View {
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
                                                                 receiptSettingsAdminURL: receiptSettingsAdminURL,
                                                                 analytics: services.analytics,
-                                                                printerConnectionController: receiptPrinter.map { POSPrinterConnectionController(service: $0) },
+                                                                printerConnectionController: printerConnectionController,
                                                                 staffSettingsService: staffSettingsService)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService

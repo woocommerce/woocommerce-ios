@@ -123,7 +123,7 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
 
     static func withPrinter() -> POSSettingsPreviewController {
         let controller = POSSettingsPreviewController()
-        controller.printerConnectionController = POSPrinterConnectionController(service: POSReceiptPrinterPreviewService())
+        controller.printerConnectionController = POSPrinterConnectionController(service: POSReceiptPrinterPreviewService(), analytics: EmptyPOSAnalytics())
         return controller
     }
 }

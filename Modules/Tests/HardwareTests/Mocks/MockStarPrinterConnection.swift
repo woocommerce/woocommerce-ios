@@ -7,18 +7,23 @@ final class MockStarPrinterConnection: StarPrinterConnection {
     // swiftlint:disable:next weak_delegate
     var printerDelegate: (any PrinterDelegate)?
 
-    /// Runs inside `open()`, before it succeeds.
-    var onOpen: (() -> Void)?
+    /// Runs inside `open()` on the caller's executor, before `open()` returns or throws `openError`.
+    var onOpen: (nonisolated(nonsending) () async -> Void)?
+
+    var openError: (any Error)?
 
     private(set) var closeCallCount = 0
 
-    func open() async throws {
-        onOpen?()
+    nonisolated(nonsending) func open() async throws {
+        await onOpen?()
+        if let openError {
+            throw openError
+        }
     }
 
-    func close() async {
+    nonisolated(nonsending) func close() async {
         closeCallCount += 1
     }
 
-    func print(command: String) async throws {}
+    nonisolated(nonsending) func print(command: String) async throws {}
 }

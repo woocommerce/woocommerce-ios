@@ -187,12 +187,11 @@ private extension JetpackRequest {
     /// Returns the WordPress.com HTTP Method
     ///
     var dotcomMethod: HTTPMethod {
-        // If we are calling DELETE via a tunneled connection, use GET instead (DELETE will be added to the `_method` query string param)
-        // Likewise, PUT requests should be sent as POST for the tunneled request
+        // Only reads are sent as GET. PUT and DELETE are sent as POST, and the `_method` parameter carries the method the store should run.
         switch method {
-        case .get, .delete:
+        case .get:
             return .get
-        case .post, .put:
+        case .post, .put, .delete:
             return .post
         default:
             return method
@@ -248,9 +247,7 @@ private extension JetpackRequest {
         }
 
         var parameters = try requestParameters.validatedDictionaryOrEmpty()
-        if method == .get {
-            parameters.merge(try queryParameters.validatedDictionaryOrEmpty()) { _, queryValue in queryValue }
-        }
+        parameters.merge(try queryParameters.validatedDictionaryOrEmpty()) { _, queryValue in queryValue }
         return parameters.isEmpty ? nil : parameters.toJSONEncoded()
     }
 

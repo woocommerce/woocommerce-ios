@@ -65,15 +65,9 @@ struct StoreOnboardingDashboardTaskRow: View {
 }
 
 private extension StoreOnboardingDashboardTaskRow {
+    typealias Localization = StoreOnboardingTaskView.Localization
+
     enum Layout {
         static let iconSize: CGFloat = 24
-    }
-
-    enum Localization {
-        static let privateLabel = NSLocalizedString(
-            "storeOnboardingDashboardTaskRow.private",
-            value: "Private",
-            comment: "Badge on the Store Setup launch task when the store is not public."
-        )
     }
 }

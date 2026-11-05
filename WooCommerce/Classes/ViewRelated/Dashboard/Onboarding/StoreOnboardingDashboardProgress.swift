@@ -12,7 +12,7 @@ struct StoreOnboardingDashboardProgress: View {
                 ProgressView(value: Double(completedTasks), total: Double(max(totalTasks, 1)))
                     .tint(.storePrimary)
 
-                Text(String.localizedStringWithFormat(Localization.completed, completedTasks, totalTasks))
+                Text(String.localizedStringWithFormat(Localization.collapsed, completedTasks, totalTasks))
                     .storeTextStyle(.bodySmall)
                     .foregroundStyle(.storeOnSurface)
                     .redacted(reason: isRedacted ? .placeholder : [])
@@ -28,11 +28,5 @@ struct StoreOnboardingDashboardProgress: View {
 }
 
 private extension StoreOnboardingDashboardProgress {
-    enum Localization {
-        static let completed = NSLocalizedString(
-            "storeOnboardingDashboardProgress.completed",
-            value: "%1$d/%2$d completed",
-            comment: "Store Setup progress. %1$d is the completed task count and %2$d is the total task count."
-        )
-    }
+    typealias Localization = StoreSetupProgressView.Localization.TasksCompleted
 }

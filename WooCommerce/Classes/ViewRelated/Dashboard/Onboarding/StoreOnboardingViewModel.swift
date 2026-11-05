@@ -260,6 +260,21 @@ private extension StoreOnboardingViewModel {
     }
 }
 
+#if DEBUG
+extension StoreOnboardingViewModel {
+    static func preview(taskViewModels: [StoreOnboardingTaskViewModel]) -> StoreOnboardingViewModel {
+        let viewModel = StoreOnboardingViewModel(
+            siteID: 0,
+            isExpanded: false,
+            taskViewModels: taskViewModels,
+            analytics: MockAnalyticsPreview()
+        )
+        viewModel.update(state: .loaded(rows: taskViewModels))
+        return viewModel
+    }
+}
+#endif
+
 private extension StoreOnboardingViewModel {
     enum Constants {
         static let maxNumberOfTasksToDisplayInCollapsedMode = 3

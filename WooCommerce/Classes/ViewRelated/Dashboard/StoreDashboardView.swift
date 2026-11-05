@@ -363,6 +363,8 @@ private extension StoreDashboardView {
 }
 
 private extension StoreDashboardView {
+    typealias Localization = DashboardView.Localization
+
     enum Layout {
         static let outerPadding = StoreSpacing.s7
         static let cardSpacing = StoreSpacing.s7
@@ -370,23 +372,5 @@ private extension StoreDashboardView {
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
-    }
-
-    enum Localization {
-        static let title = NSLocalizedString(
-            "dashboardView.title",
-            value: "My store",
-            comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
-        )
-        static let expiredPlan = NSLocalizedString(
-            "dashboardView.storePlanBanner.expired",
-            value: "Your site plan has ended.",
-            comment: "Title on the banner when the site's WooExpress plan has expired"
-        )
-        static let edit = NSLocalizedString(
-            "dashboardView.edit",
-            value: "Edit",
-            comment: "Title of the button to edit the layout of the Dashboard screen."
-        )
     }
 }

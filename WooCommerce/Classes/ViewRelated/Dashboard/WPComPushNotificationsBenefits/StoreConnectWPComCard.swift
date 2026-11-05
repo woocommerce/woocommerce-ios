@@ -37,7 +37,7 @@ struct StoreConnectWPComCard: View {
             .buttonStyle(.plain)
             .overlay(alignment: .topTrailing) {
                 StoreDashboardCardOverflowMenu {
-                    Button(Localization.hide, action: hideAction)
+                    Button(Localization.hideButton, action: hideAction)
                 }
                 .padding(.top, StorePadding.p3)
                 .padding(.trailing, StorePadding.p3)
@@ -47,25 +47,9 @@ struct StoreConnectWPComCard: View {
 }
 
 private extension StoreConnectWPComCard {
+    typealias Localization = ConnectWPComCard.Localization
+
     enum Layout {
         static let iconSize: CGFloat = 35
-    }
-
-    enum Localization {
-        static let title = NSLocalizedString(
-            "storeConnectWPComCard.title",
-            value: "Never miss a new order",
-            comment: "Title of the dashboard card for enabling push notifications with WordPress.com."
-        )
-        static let subtitle = NSLocalizedString(
-            "storeConnectWPComCard.subtitle",
-            value: "Enable push notifications to stay on top of new orders and reviews.",
-            comment: "Description of the dashboard card for enabling push notifications with WordPress.com."
-        )
-        static let hide = NSLocalizedString(
-            "storeConnectWPComCard.hide",
-            value: "Hide this content",
-            comment: "Menu action that hides the WordPress.com connection card."
-        )
     }
 }

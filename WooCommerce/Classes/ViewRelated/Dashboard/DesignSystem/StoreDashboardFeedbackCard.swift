@@ -8,7 +8,7 @@ struct StoreDashboardFeedbackCard: View {
     var body: some View {
         StoreDashboardCardSurface {
             VStack(spacing: StoreSpacing.s5) {
-                Text(Localization.title)
+                Text(Localization.feedbackTitle)
                     .storeTextStyle(.titleMedium.emphasized)
                     .foregroundStyle(.storeOnSurface)
                     .multilineTextAlignment(.center)
@@ -40,23 +40,7 @@ struct StoreDashboardFeedbackCard: View {
 }
 
 private extension StoreDashboardFeedbackCard {
-    enum Localization {
-        static let title = NSLocalizedString(
-            "storeDashboardFeedbackCard.title",
-            value: "Are you enjoying the app?",
-            comment: "Title asking for feedback on the dashboard."
-        )
-        static let couldBeBetter = NSLocalizedString(
-            "storeDashboardFeedbackCard.couldBeBetter",
-            value: "Could be better",
-            comment: "Button for giving negative feedback from the dashboard."
-        )
-        static let iLikeIt = NSLocalizedString(
-            "storeDashboardFeedbackCard.iLikeIt",
-            value: "I like it",
-            comment: "Button for giving positive feedback from the dashboard."
-        )
-    }
+    typealias Localization = InAppFeedbackCardView.Localization
 }
 
 #Preview("Feedback") {

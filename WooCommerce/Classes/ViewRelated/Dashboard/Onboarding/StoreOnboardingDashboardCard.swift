@@ -27,7 +27,7 @@ struct StoreOnboardingDashboardCard: View {
                                      topPadding: StorePadding.p5,
                                      bottomPadding: StorePadding.p3) {
                 StoreDashboardCardOverflowMenu {
-                    Button(Localization.hide, action: viewModel.hideTaskList)
+                    Button(ProgressLocalization.hideStoreSetupListButton, action: viewModel.hideTaskList)
                 }
             }
 
@@ -80,18 +80,8 @@ struct StoreOnboardingDashboardCard: View {
 }
 
 private extension StoreOnboardingDashboardCard {
-    enum Localization {
-        static let hide = NSLocalizedString(
-            "storeOnboardingDashboardCard.hide",
-            value: "Hide store setup list",
-            comment: "Menu action that hides the Store Setup card from the dashboard."
-        )
-        static let viewAll = NSLocalizedString(
-            "storeOnboardingDashboardCard.viewAll",
-            value: "View all %1$d tasks",
-            comment: "Action that opens all Store Setup tasks. %1$d is the total number of tasks."
-        )
-    }
+    typealias Localization = StoreOnboardingView.Localization
+    typealias ProgressLocalization = StoreSetupProgressView.Localization
 }
 
 #Preview("Store setup") {
@@ -108,18 +98,3 @@ private extension StoreOnboardingDashboardCard {
     .padding(StorePadding.p5)
     .background(Color.storeSurfaceDim)
 }
-
-#if DEBUG
-extension StoreOnboardingViewModel {
-    static func preview(taskViewModels: [StoreOnboardingTaskViewModel]) -> StoreOnboardingViewModel {
-        let viewModel = StoreOnboardingViewModel(
-            siteID: 0,
-            isExpanded: false,
-            taskViewModels: taskViewModels,
-            analytics: MockAnalyticsPreview()
-        )
-        viewModel.update(state: .loaded(rows: taskViewModels))
-        return viewModel
-    }
-}
-#endif

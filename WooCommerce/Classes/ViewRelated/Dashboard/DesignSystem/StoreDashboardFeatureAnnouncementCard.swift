@@ -40,7 +40,7 @@ struct StoreDashboardFeatureAnnouncementCard: View {
             }
             .overlay(alignment: .topTrailing) {
                 StoreDashboardCardOverflowMenu {
-                    Button(Localization.hide, action: hideAnnouncement)
+                    Button(Localization.hideContent, action: hideAnnouncement)
                 }
                 .padding(.top, StorePadding.p3)
                 .padding(.trailing, StorePadding.p3)
@@ -52,9 +52,9 @@ struct StoreDashboardFeatureAnnouncementCard: View {
     @ViewBuilder private var announcementBadge: some View {
         switch viewModel.badgeType {
         case .new:
-            StoreBadge(Localization.newBadge)
+            StoreBadge(BadgeView.BadgeType.Localization.newTitle)
         case .tip:
-            StoreBadge(Localization.tipBadge)
+            StoreBadge(BadgeView.BadgeType.Localization.tipTitle)
         case .customText(let text):
             StoreBadge(text)
         case .remoteImage(let lightURL, let darkURL):
@@ -105,26 +105,10 @@ struct StoreDashboardFeatureAnnouncementCard: View {
 }
 
 private extension StoreDashboardFeatureAnnouncementCard {
+    typealias Localization = FeatureAnnouncementCardView.Localization
+
     enum Layout {
         static let imageWidth: CGFloat = 156
-    }
-
-    enum Localization {
-        static let hide = NSLocalizedString(
-            "storeDashboardFeatureAnnouncementCard.hide",
-            value: "Hide this content",
-            comment: "Menu action that hides a feature announcement from the dashboard."
-        )
-        static let newBadge = NSLocalizedString(
-            "storeDashboardFeatureAnnouncementCard.badge.new",
-            value: "New",
-            comment: "Badge identifying a newly announced dashboard feature."
-        )
-        static let tipBadge = NSLocalizedString(
-            "storeDashboardFeatureAnnouncementCard.badge.tip",
-            value: "Tip",
-            comment: "Badge identifying a dashboard feature tip."
-        )
     }
 }
 

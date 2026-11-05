@@ -23,7 +23,7 @@ struct StoreDashboardShareStoreCard: View {
                     // ShareLink cannot use StoreButton directly. This label mirrors the small filled button
                     // until StoreDesignSystem exposes a link-compatible public button style.
                     ShareLink(item: url) {
-                        Text(Localization.share)
+                        Text(Localization.shareButtonLabel)
                             .storeTextStyle(.labelLarge.emphasized)
                             .foregroundStyle(.storeOnPrimary)
                             .padding(.vertical, StorePadding.p3)
@@ -40,23 +40,7 @@ struct StoreDashboardShareStoreCard: View {
 }
 
 private extension StoreDashboardShareStoreCard {
-    enum Localization {
-        static let title = NSLocalizedString(
-            "storeDashboardShareStoreCard.title",
-            value: "Get the word out!",
-            comment: "Title of the Share Store dashboard card."
-        )
-        static let subtitle = NSLocalizedString(
-            "storeDashboardShareStoreCard.subtitle",
-            value: "Use email or social media to spread the word about your store.",
-            comment: "Description of the Share Store dashboard card."
-        )
-        static let share = NSLocalizedString(
-            "storeDashboardShareStoreCard.share",
-            value: "Share Your Store",
-            comment: "Button that opens the system share sheet for a store."
-        )
-    }
+    typealias Localization = DashboardView.Localization.ShareStoreCard
 }
 
 #Preview("Share store") {

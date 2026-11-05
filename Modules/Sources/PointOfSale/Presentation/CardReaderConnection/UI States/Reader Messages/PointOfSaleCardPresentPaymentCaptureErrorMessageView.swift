@@ -2,6 +2,7 @@ import SwiftUI
 import enum Yosemite.CardReaderServiceError
 
 struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     @StateObject private var viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -13,14 +14,14 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             POSErrorXMark()
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                .frame(height: metrics.spacing.large)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
                     .accessibilityFocused($isTitleFocused)
@@ -36,9 +37,9 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             .dynamicWidthScaling(containerWidth: width)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+                .frame(height: metrics.spacing.xxLarge)
 
-            VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))

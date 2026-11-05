@@ -2,6 +2,7 @@ import SwiftUI
 import enum Yosemite.CardReaderServiceError
 
 struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -9,14 +10,14 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
     @State private var width: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             POSErrorExclamationMark(size: .large)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                .frame(height: metrics.spacing.large)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
@@ -29,10 +30,10 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
                     .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
-            .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
+            .padding(.horizontal, metrics.padding.xxLarge)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+                .frame(height: metrics.spacing.xxLarge)
 
             if let tryAgainButtonViewModel = viewModel.tryAgainButtonViewModel {
                 Button(tryAgainButtonViewModel.title, action: tryAgainButtonViewModel.actionHandler)

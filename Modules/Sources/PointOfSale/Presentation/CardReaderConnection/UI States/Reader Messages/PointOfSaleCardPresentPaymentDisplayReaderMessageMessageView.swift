@@ -1,20 +1,21 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isMessageFocused: Bool
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing) {
+        VStack(alignment: .center, spacing: metrics.spacing.large) {
             ProgressView()
                 .progressViewStyle(CardWaveProgressViewStyle())
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .accessibilityHidden(true)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(viewModel.title)
                     .foregroundColor(.posOnPrimary)
                     .font(.posBodyLargeRegular())

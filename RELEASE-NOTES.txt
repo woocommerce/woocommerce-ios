@@ -3,6 +3,7 @@
 
 26.1
 -----
+- [*] Push notifications: The app icon badge no longer stays at 1 after a stock notification. [https://github.com/woocommerce/woocommerce-ios/pull/18250]
 - [**] POS: Point of Sale is now available on iPhone in the US, Canada, Australia and Puerto Rico, and on iOS 18 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
 - [*] POS: Tap to Pay is no longer offered at checkout for stores in Canada, Australia and Puerto Rico, where it is not supported. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
 - [*] Help & Support: Troubleshooting now checks your payment setup, so you can find and fix card payment problems faster. [https://github.com/woocommerce/woocommerce-ios/pull/18229]

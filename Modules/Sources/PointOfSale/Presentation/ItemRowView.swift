@@ -166,7 +166,7 @@ private extension ItemRowView {
             titleFont: Constants.itemTitleFont,
             detailFont: Constants.itemPriceFont,
             detailPlaceholderLength: (regular: 25, accessibility: 4),
-            cardSize: \.cartRowSize,
+            cardSize: .cartRow,
             maximumCardSizeMultiplier: Constants.maximumCardSizeMultiplier,
             backgroundColor: Color.posSurfaceContainerLowest
         )

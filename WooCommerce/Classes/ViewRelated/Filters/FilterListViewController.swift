@@ -276,7 +276,7 @@ private extension FilterListViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .basicBackground
+        view.backgroundColor = .listBackground
     }
 
     func observeListSelectorCommandItemSelection() {

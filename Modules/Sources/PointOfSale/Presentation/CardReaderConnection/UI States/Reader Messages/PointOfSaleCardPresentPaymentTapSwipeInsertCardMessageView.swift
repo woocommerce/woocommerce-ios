@@ -34,11 +34,6 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     }
 }
 
-private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView {
-    enum Constants {
-    }
-}
-
 #Preview {
     return PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(
         viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(

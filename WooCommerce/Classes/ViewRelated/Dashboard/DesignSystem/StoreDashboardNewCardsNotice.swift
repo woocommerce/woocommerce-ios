@@ -9,9 +9,9 @@ struct StoreDashboardNewCardsNotice: View {
             VStack(spacing: StoreSpacing.s5) {
                 VStack(spacing: StoreSpacing.s3) {
                     Text(Localization.title)
-                        .storeTextStyle(.titleLarge.strong)
+                        .storeTextStyle(.titleMedium.emphasized)
                     Text(Localization.subtitle)
-                        .storeTextStyle(.bodyLarge)
+                        .storeTextStyle(.bodyMedium)
                 }
                 .foregroundStyle(.storeOnSurface)
                 .multilineTextAlignment(.center)
@@ -42,4 +42,10 @@ private extension StoreDashboardNewCardsNotice {
             comment: "Button that opens dashboard customization to add new sections."
         )
     }
+}
+
+#Preview("Feedback") {
+    StoreDashboardNewCardsNotice(showCustomization: {})
+        .padding(StorePadding.p5)
+        .background(Color.storeSurfaceDim)
 }

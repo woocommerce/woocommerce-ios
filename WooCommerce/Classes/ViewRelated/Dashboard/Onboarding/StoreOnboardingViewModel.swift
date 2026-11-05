@@ -4,6 +4,9 @@ import Yosemite
 import Combine
 import Experiments
 import protocol WooFoundation.Analytics
+#if DEBUG
+import class WooFoundation.MockAnalyticsPreview
+#endif
 
 /// View model for `StoreOnboardingView`.
 @MainActor

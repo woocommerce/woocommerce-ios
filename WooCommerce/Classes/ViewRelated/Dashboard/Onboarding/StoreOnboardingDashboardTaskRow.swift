@@ -24,7 +24,7 @@ struct StoreOnboardingDashboardTaskRow: View {
                 VStack(alignment: .leading, spacing: StoreSpacing.s1) {
                     HStack(spacing: StoreSpacing.s3) {
                         Text(viewModel.title)
-                            .storeTextStyle(.bodyLarge.emphasized)
+                            .storeTextStyle(.titleMedium.emphasized)
                             .foregroundStyle(.storeOnSurface)
 
                         if !isRedacted && viewModel.task.type == .launchStore && !viewModel.isComplete {

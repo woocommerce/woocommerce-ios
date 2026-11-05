@@ -8,12 +8,12 @@ struct StoreOnboardingDashboardProgress: View {
 
     var body: some View {
         HStack(spacing: StoreSpacing.s0) {
-            VStack(alignment: .leading, spacing: StoreSpacing.s2) {
+            VStack(alignment: .leading, spacing: StoreSpacing.s3) {
                 ProgressView(value: Double(completedTasks), total: Double(max(totalTasks, 1)))
                     .tint(.storePrimary)
 
                 Text(String.localizedStringWithFormat(Localization.completed, completedTasks, totalTasks))
-                    .storeTextStyle(.bodyMedium)
+                    .storeTextStyle(.bodySmall)
                     .foregroundStyle(.storeOnSurface)
                     .redacted(reason: isRedacted ? .placeholder : [])
             }

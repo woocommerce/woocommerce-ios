@@ -22,7 +22,10 @@ struct StoreOnboardingDashboardCard: View {
     var body: some View {
         StoreDashboardCardSurface {
             StoreDashboardCardHeader(DashboardCard.CardType.onboarding.name,
-                                     showsError: viewModel.failedToLoadTasks) {
+                                     showsError: viewModel.failedToLoadTasks,
+                                     textStyle: .titleMedium.emphasized,
+                                     topPadding: StorePadding.p5,
+                                     bottomPadding: StorePadding.p3) {
                 StoreDashboardCardOverflowMenu {
                     Button(Localization.hide, action: viewModel.hideTaskList)
                 }
@@ -52,8 +55,11 @@ struct StoreOnboardingDashboardCard: View {
 
                 if viewModel.shouldShowViewAllButton {
                     StoreDivider()
+                        .padding(.leading, StorePadding.p5)
                     StoreDashboardCardFooterAction(
                         String.localizedStringWithFormat(Localization.viewAll, viewModel.taskViewModels.count),
+                        textStyle: .titleMedium,
+                        showsDisclosureIndicator: true,
                         action: showAllTasks
                     )
                 }
@@ -87,3 +93,33 @@ private extension StoreOnboardingDashboardCard {
         )
     }
 }
+
+#Preview("Store setup") {
+    StoreOnboardingDashboardCard(
+        viewModel: .preview(taskViewModels: [
+            .init(task: .init(isComplete: true, type: .storeDetails)),
+            .init(task: .init(isComplete: false, type: .addFirstProduct)),
+            .init(task: .init(isComplete: false, type: .payments), badgeText: "Payments available"),
+            .init(task: .init(isComplete: false, type: .launchStore))
+        ]),
+        onTaskTapped: { _ in },
+        onViewAllTapped: { _ in }
+    )
+    .padding(StorePadding.p5)
+    .background(Color.storeSurfaceDim)
+}
+
+#if DEBUG
+extension StoreOnboardingViewModel {
+    static func preview(taskViewModels: [StoreOnboardingTaskViewModel]) -> StoreOnboardingViewModel {
+        let viewModel = StoreOnboardingViewModel(
+            siteID: 0,
+            isExpanded: false,
+            taskViewModels: taskViewModels,
+            analytics: MockAnalyticsPreview()
+        )
+        viewModel.update(state: .loaded(rows: taskViewModels))
+        return viewModel
+    }
+}
+#endif

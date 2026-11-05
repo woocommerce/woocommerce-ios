@@ -19,10 +19,10 @@ struct StoreConnectWPComCard: View {
 
                     VStack(alignment: .leading, spacing: StoreSpacing.s3) {
                         Text(Localization.title)
-                            .storeTextStyle(.titleLarge.strong)
+                            .storeTextStyle(.titleMedium.emphasized)
                         Text(Localization.subtitle)
-                            .storeTextStyle(.bodyLarge)
-                            .foregroundStyle(.storeOnSurfaceVariant)
+                            .storeTextStyle(.bodyMedium)
+                            .foregroundStyle(.storeOnSurface)
                     }
                     .foregroundStyle(.storeOnSurface)
                     .multilineTextAlignment(.leading)

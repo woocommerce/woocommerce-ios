@@ -12,24 +12,24 @@ struct StoreDashboardShareStoreCard: View {
 
                 VStack(spacing: StoreSpacing.s3) {
                     Text(Localization.title)
-                        .storeTextStyle(.titleLarge.strong)
+                        .storeTextStyle(.titleMedium.emphasized)
                     Text(Localization.subtitle)
-                        .storeTextStyle(.bodyLarge)
+                        .storeTextStyle(.titleMedium)
                 }
                 .foregroundStyle(.storeOnSurface)
                 .multilineTextAlignment(.center)
 
                 if let url {
-                    // ShareLink cannot use StoreButton directly. This label mirrors the medium filled button
+                    // ShareLink cannot use StoreButton directly. This label mirrors the small filled button
                     // until StoreDesignSystem exposes a link-compatible public button style.
                     ShareLink(item: url) {
                         Text(Localization.share)
                             .storeTextStyle(.labelLarge.emphasized)
                             .foregroundStyle(.storeOnPrimary)
+                            .padding(.vertical, StorePadding.p3)
                             .padding(.horizontal, StorePadding.p5)
-                            .padding(.vertical, StorePadding.p6)
                             .background(Color.storePrimary)
-                            .clipShape(.rect(cornerRadius: StoreRadius.extraLarge))
+                            .clipShape(.rect(cornerRadius: StoreRadius.large))
                     }
                 }
             }
@@ -57,4 +57,10 @@ private extension StoreDashboardShareStoreCard {
             comment: "Button that opens the system share sheet for a store."
         )
     }
+}
+
+#Preview("Share store") {
+    StoreDashboardShareStoreCard(url: URL(string: "https://woocommerce.com"))
+        .padding(StorePadding.p5)
+        .background(Color.storeSurfaceDim)
 }

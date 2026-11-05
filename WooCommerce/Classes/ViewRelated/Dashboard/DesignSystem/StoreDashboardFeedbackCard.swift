@@ -1,5 +1,6 @@
 import StoreDesignSystem
 import SwiftUI
+import class WooFoundation.MockAnalyticsPreview
 
 struct StoreDashboardFeedbackCard: View {
     let viewModel: InAppFeedbackCardViewModel
@@ -8,7 +9,7 @@ struct StoreDashboardFeedbackCard: View {
         StoreDashboardCardSurface {
             VStack(spacing: StoreSpacing.s5) {
                 Text(Localization.title)
-                    .storeTextStyle(.bodyLarge.emphasized)
+                    .storeTextStyle(.titleMedium.emphasized)
                     .foregroundStyle(.storeOnSurface)
                     .multilineTextAlignment(.center)
 
@@ -28,9 +29,11 @@ struct StoreDashboardFeedbackCard: View {
     @ViewBuilder private var feedbackButtons: some View {
         StoreButton(Localization.couldBeBetter,
                     variant: .outlined,
+                    size: .medium,
                     isFullWidth: true,
                     action: viewModel.didTapCouldBeBetter)
         StoreButton(Localization.iLikeIt,
+                    size: .medium,
                     isFullWidth: true,
                     action: viewModel.didTapILikeIt)
     }
@@ -55,3 +58,23 @@ private extension StoreDashboardFeedbackCard {
         )
     }
 }
+
+#Preview("Feedback") {
+    StoreDashboardFeedbackCard(
+        viewModel: .init(
+            storeReviewRequesterType: StoreDashboardFeedbackCardPreviewReviewRequester.self,
+            analytics: MockAnalyticsPreview()
+        )
+    )
+        .padding(StorePadding.p5)
+        .background(Color.storeSurfaceDim)
+}
+
+#if DEBUG
+import UIKit
+
+@MainActor
+enum StoreDashboardFeedbackCardPreviewReviewRequester: AppStoreReviewRequesting {
+    static func requestReview(in windowScene: UIWindowScene) {}
+}
+#endif

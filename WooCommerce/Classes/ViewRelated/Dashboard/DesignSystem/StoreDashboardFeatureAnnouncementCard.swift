@@ -15,11 +15,11 @@ struct StoreDashboardFeatureAnnouncementCard: View {
                     announcementBadge
 
                     Text(viewModel.title)
-                        .storeTextStyle(.titleMedium.strong)
+                        .storeTextStyle(.titleMedium.emphasized)
                         .foregroundStyle(.storeOnSurface)
 
                     Text(viewModel.message)
-                        .storeTextStyle(.bodyLarge)
+                        .storeTextStyle(.bodyMedium)
                         .foregroundStyle(.storeOnSurfaceVariant)
                         .fixedSize(horizontal: false, vertical: true)
 
@@ -127,3 +127,36 @@ private extension StoreDashboardFeatureAnnouncementCard {
         )
     }
 }
+
+#Preview("Feature announcement") {
+    StoreDashboardFeatureAnnouncementCard(
+        viewModel: StoreDashboardFeatureAnnouncementCardPreviewModel(),
+        dismiss: {},
+        callToAction: {}
+    )
+    .padding(StorePadding.p5)
+    .background(Color.storeSurfaceDim)
+}
+
+#if DEBUG
+import UIKit
+
+struct StoreDashboardFeatureAnnouncementCardPreviewModel: AnnouncementCardViewModelProtocol {
+    let showDividers = false
+    let badgeType: BadgeView.BadgeType? = .new
+    let title = "Get paid in person"
+    let message = "Accept payments wherever you sell with WooCommerce point of sale."
+    let buttonTitle: String? = "Learn more"
+    let image = UIImage.paymentsFeatureBannerImage
+    let imageUrl: URL? = nil
+    let imageDarkUrl: URL? = nil
+    let showDismissConfirmation = false
+    let dismissAlertTitle = ""
+    let dismissAlertMessage = ""
+
+    func onAppear() {}
+    func ctaTapped() {}
+    func dontShowAgainTapped() {}
+    func remindLaterTapped() {}
+}
+#endif

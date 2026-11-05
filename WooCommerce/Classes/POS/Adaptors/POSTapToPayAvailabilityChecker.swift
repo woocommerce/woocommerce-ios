@@ -4,6 +4,8 @@ import ProximityReader
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.CardReaderDiscoveryMethod
 import enum Hardware.CardReaderType
+import enum WooFoundation.CountryCode
+import struct Yosemite.CardPresentPaymentsConfiguration
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSEligibilityServiceProtocol
 
@@ -11,25 +13,28 @@ import protocol Yosemite.POSEligibilityServiceProtocol
 ///
 /// Three gates, evaluated in order — fail fast on whichever is first to deny:
 /// 1. Hardware support — Apple's `PaymentCardReader.isSupported`.
-/// 2. Device support — Stripe's `Terminal.shared.supportsReaders(of: .appleBuiltIn, ...)`,
+/// 2. Site eligibility — the store country must support Tap to Pay, and the cached POS tab
+///    visibility (driven by IPP/country eligibility checks in `POSTabVisibilityChecker`) must be true.
+/// 3. Device support — Stripe's `Terminal.shared.supportsReaders(of: .appleBuiltIn, ...)`,
 ///    dispatched via `CardPresentPaymentAction.checkDeviceSupport`.
-/// 3. Site eligibility — proxied off cached POS tab visibility, which is itself driven
-///    by IPP/country eligibility checks in `POSTabVisibilityChecker`.
 ///
 /// One-shot — `POSTapToPayAvailabilityController` calls `checkAvailability()` once on
 /// POS entry and holds the result for the rest of the session.
 @MainActor
 final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
     private let siteID: Int64
+    private let countryCode: CountryCode
     private let stores: StoresManager
     private let eligibilityService: POSEligibilityServiceProtocol
     private let isTapToPayHardwareSupported: Bool
 
     init(siteID: Int64,
+         countryCode: CountryCode,
          stores: StoresManager = ServiceLocator.stores,
          eligibilityService: POSEligibilityServiceProtocol,
          isTapToPayHardwareSupported: Bool = PaymentCardReader.isSupported) {
         self.siteID = siteID
+        self.countryCode = countryCode
         self.stores = stores
         self.eligibilityService = eligibilityService
         self.isTapToPayHardwareSupported = isTapToPayHardwareSupported
@@ -39,11 +44,11 @@ final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
         guard isTapToPayHardwareSupported else {
             return .unavailable(reason: .deviceNotSupported)
         }
-        guard await deviceSupportsTapToPay() else {
-            return .unavailable(reason: .deviceNotSupported)
-        }
         guard siteIsEligibleForTapToPay() else {
             return .unavailable(reason: .siteNotEligible)
+        }
+        guard await deviceSupportsTapToPay() else {
+            return .unavailable(reason: .deviceNotSupported)
         }
         return .available
     }
@@ -66,10 +71,13 @@ private extension POSTapToPayAvailabilityChecker {
         }
     }
 
-    /// POS only renders when the site is IPP-eligible (see `POSTabVisibilityChecker`),
-    /// and the result is cached per-site once that check runs. Reusing it here avoids a
-    /// duplicate eligibility roundtrip on every POS entry.
+    /// POS is open in countries where Tap to Pay is not supported (e.g. PR, CA, AU), so POS
+    /// eligibility alone is not enough. The cached POS tab visibility avoids a duplicate
+    /// eligibility roundtrip on every POS entry.
     func siteIsEligibleForTapToPay() -> Bool {
-        eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) ?? false
+        guard CardPresentPaymentsConfiguration(country: countryCode).supportedReaders.contains(.tapToPay) else {
+            return false
+        }
+        return eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) ?? false
     }
 }

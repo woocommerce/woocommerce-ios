@@ -193,6 +193,8 @@ actor StarPrinterCoordinator {
     }
 
     func connect(to device: PrinterDevice, using starPrinter: any StarPrinterConnection) async throws {
+        // An already-cancelled call must not supersede, and so close, a connect that is still in flight.
+        try Task.checkCancellation()
         connectAttempt += 1
         let attempt = connectAttempt
 
@@ -242,7 +244,7 @@ actor StarPrinterCoordinator {
         }
 
         guard attempt == connectAttempt, !Task.isCancelled else {
-            DDLogInfo("🖨️ Closing printer \(device.id) opened by a cancelled connect")
+            DDLogInfo("🖨️ Closing printer \(device.id) opened by a cancelled or superseded connect")
             starPrinter.printerDelegate = nil
             await starPrinter.close()
             if attempt == connectAttempt {

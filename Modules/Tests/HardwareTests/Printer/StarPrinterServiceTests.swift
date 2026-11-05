@@ -122,6 +122,10 @@ struct StarPrinterServiceTests {
                                                           disconnectsWhileWaiting: disconnectsWhileWaiting,
                                                           on: StarPrinterCoordinator())
     }
+
+    @Test func test_connect_when_called_already_cancelled_then_leaves_the_in_flight_connect_untouched() async throws {
+        try await assertAlreadyCancelledConnectDoesNotSupersede(on: StarPrinterCoordinator())
+    }
 }
 
 private extension StarPrinterServiceTests {
@@ -239,6 +243,39 @@ private extension StarPrinterServiceTests {
         #expect(cancelledPrinter.closeCallCount == (cancelledOpenSucceeds ? 1 : 0))
         #expect(cancelledPrinter.printerDelegate == nil)
         #expect(retriedPrinter.printerDelegate == nil)
+    }
+
+    func assertAlreadyCancelledConnectDoesNotSupersede(on coordinator: isolated StarPrinterCoordinator) async throws {
+        // Given
+        let (statuses, statusContinuation) = observeStatuses(of: coordinator)
+        let printer = MockStarPrinterConnection()
+        let latePrinter = MockStarPrinterConnection()
+        let (opening, releaseOpen) = holdOpen(of: printer)
+        let connect = Task {
+            try await coordinator.connect(to: Self.device, using: printer)
+        }
+        await firstValue(of: opening)
+
+        // When
+        let (lateStarted, lateStartedContinuation) = AsyncStream.makeStream(of: Void.self)
+        let late = Task {
+            lateStartedContinuation.yield()
+            try await coordinator.connect(to: Self.retriedDevice, using: latePrinter)
+        }
+        // Cancelled before it runs, since the test holds the coordinator until it suspends.
+        late.cancel()
+        await firstValue(of: lateStarted)
+        releaseOpen.finish()
+
+        // Then
+        try await connect.value
+        await #expect(throws: CancellationError.self) {
+            try await late.value
+        }
+        statusContinuation.finish()
+        #expect(await collect(statuses) == [.idle, .connecting, .connected(Self.device)])
+        #expect(printer.closeCallCount == 0)
+        #expect(latePrinter.printerDelegate == nil)
     }
 
     func observeStatuses(of coordinator: isolated StarPrinterCoordinator)

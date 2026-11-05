@@ -1086,6 +1086,47 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
+    func test_retrieveProduct_when_direct_REST_reports_invalid_ID_then_returns_notFound_and_deletes_stored_product() throws {
+        // Given
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
+        let response = Data(#"{"code":"woocommerce_rest_product_invalid_id","message":"Invalid ID.","data":{"status":404}}"#.utf8)
+        network.simulateError(requestUrlSuffix: "products/282", error: NetworkError.notFound(response: response))
+
+        // When
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? ProductLoadError, .notFound)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+    }
+
+    func test_retrieveProduct_when_direct_REST_returns_other_404_then_keeps_stored_product_because_it_may_still_exist() throws {
+        // Given
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
+        let response = Data(#"{"code":"rest_no_route","message":"No route was found.","data":{"status":404}}"#.utf8)
+        let error = NetworkError.notFound(response: response)
+        network.simulateError(requestUrlSuffix: "products/282", error: error)
+
+        // When
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? ProductLoadError, .unknown(error: AnyError(error)))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+    }
+
     // MARK: - ProductAction.resetStoredProducts
 
     /// Verifies that `ProductAction.resetStoredProducts` deletes the Products from Storage

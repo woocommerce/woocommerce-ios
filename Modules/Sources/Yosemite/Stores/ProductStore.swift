@@ -1664,6 +1664,18 @@ extension ProductDuplicateError: LocalizedError {
     }
 }
 
+/// Jetpack tunnel requests fail with `DotcomError`, direct REST requests with `NetworkError`.
+private func remoteErrorDetails(from error: Error) -> (code: String, message: String?)? {
+    switch error {
+    case let DotcomError.unknown(code, message, _):
+        return (code, message)
+    case let networkError as NetworkError:
+        return networkError.errorCode.map { ($0, networkError.errorMessage) }
+    default:
+        return nil
+    }
+}
+
 /// An error that occurs while updating a Product.
 ///
 /// - duplicatedSKU: the SKU is used by another Product.
@@ -1686,27 +1698,12 @@ public enum ProductUpdateError: Error, Equatable {
     case generic(message: String)
 
     init(error: Error) {
-        if let networkError = error as? NetworkError,
-           let code = networkError.errorCode,
-           let errorCode = ErrorCode(rawValue: code) {
-            self = errorCode.error(with: networkError.errorMessage)
-            return
-        }
-
-        guard let dotcomError = error as? DotcomError else {
+        guard let (code, message) = remoteErrorDetails(from: error),
+              let errorCode = ErrorCode(rawValue: code) else {
             self = .unknown(error: error.toAnyError)
             return
         }
-        switch dotcomError {
-        case let .unknown(code, message, _):
-            guard let errorCode = ErrorCode(rawValue: code) else {
-                self = .unknown(error: dotcomError.toAnyError)
-                return
-            }
-            self = errorCode.error(with: message)
-        default:
-            self = .unknown(error: dotcomError.toAnyError)
-        }
+        self = errorCode.error(with: message)
     }
 
     private enum ErrorCode: String {
@@ -1786,12 +1783,12 @@ public enum ProductLoadError: Error, Equatable {
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {
-        guard case let DotcomError.unknown(code, _, _) = error else {
+        guard let (code, _) = remoteErrorDetails(from: error),
+              let errorCode = ErrorCode(rawValue: code) else {
             self = .unknown(error: error.toAnyError)
             return
         }
-
-        self = ErrorCode(rawValue: code)?.error ?? .unknown(error: error.toAnyError)
+        self = errorCode.error
     }
 
     enum ErrorCode: String {

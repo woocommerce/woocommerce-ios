@@ -55,11 +55,11 @@ struct POSCheckboxPreviewWrapper: View {
     @State private var isSelected = true
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: POSMetrics.regular.spacing.large) {
             POSCheckbox(isSelected: isSelected, onToggle: { isSelected.toggle() })
             POSCheckbox(isSelected: false, onToggle: {})
         }
-        .padding()
+        .posPadding(\.medium)
         .background(Color.posSurfaceBright)
     }
 }

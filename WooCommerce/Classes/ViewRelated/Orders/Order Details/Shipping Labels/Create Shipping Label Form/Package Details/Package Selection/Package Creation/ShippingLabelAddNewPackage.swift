@@ -19,7 +19,7 @@ struct ShippingLabelAddNewPackage: View {
                 ScrollView {
                     switch viewModel.selectedView {
                     case .customPackage:
-                        ShippingLabelCustomPackageForm(viewModel: viewModel.customPackageVM, safeAreaInsets: .zero)
+                        ShippingLabelCustomPackageForm(viewModel: viewModel.customPackageVM)
                     case .servicePackage:
                         ShippingLabelServicePackageList(viewModel: viewModel.servicePackageVM, geometry: geometry)
                     }

@@ -19,9 +19,6 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
 }
 
 private extension PointOfSaleCardPresentPaymentOnboardingView {
-    enum Constants {
-    }
-
     enum Localization {
         static let cancelOnboarding = NSLocalizedString(
             "pointOfSaleDashboard.payments.onboarding.cancel",
@@ -30,7 +27,6 @@ private extension PointOfSaleCardPresentPaymentOnboardingView {
         )
     }
 }
-
 
 #if DEBUG
 

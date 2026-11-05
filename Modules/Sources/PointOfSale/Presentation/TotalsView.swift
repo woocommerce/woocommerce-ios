@@ -260,7 +260,7 @@ private extension TotalsView {
         let bottomPadding: CGFloat?
         let sidePadding: CGFloat
 
-        init(topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat = 8) {
+        init(topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat) {
             self.topPadding = topPadding
             self.bottomPadding = bottomPadding
             self.sidePadding = sidePadding
@@ -288,11 +288,13 @@ private extension TotalsView {
     }
 
     private var primaryLayout: PaymentViewLayout {
-        PaymentViewLayout(topPadding: nil, bottomPadding: metrics.padding.small)
+        PaymentViewLayout(topPadding: nil, bottomPadding: metrics.padding.small, sidePadding: metrics.padding.small)
     }
 
     private var outlinedLayout: PaymentViewLayout {
-        PaymentViewLayout(topPadding: metrics.padding.xxLarge, bottomPadding: metrics.padding.xxLarge)
+        PaymentViewLayout(topPadding: metrics.padding.xxLarge,
+                          bottomPadding: metrics.padding.xxLarge,
+                          sidePadding: metrics.padding.small)
     }
 
     private var cardReaderViewLayout: PaymentViewLayout {

@@ -110,9 +110,6 @@ struct PointOfSaleExitPosAlertView: View {
 }
 
 private extension PointOfSaleExitPosAlertView {
-    enum Constants {
-    }
-
     enum Localization {
         static let exitTitle = NSLocalizedString(
             "pos.exitPOSModal.exitTitle",

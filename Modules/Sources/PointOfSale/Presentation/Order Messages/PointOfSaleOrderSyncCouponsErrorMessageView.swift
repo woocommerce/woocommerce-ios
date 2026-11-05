@@ -71,11 +71,6 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
 }
 
 private extension PointOfSaleOrderSyncCouponsErrorMessageView {
-    enum Constants {
-    }
-}
-
-private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     enum Localization {
         static let title = NSLocalizedString(
             "pointOfSale.orderSync.couponsError.errorTitle.2",

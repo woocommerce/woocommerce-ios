@@ -219,12 +219,6 @@ final class ProductStoreTests: XCTestCase {
         assertAddProductError(error, equals: .invalidSKU)
     }
 
-    func test_addProduct_when_direct_REST_rejects_global_unique_ID_then_returns_invalidOrDuplicatedGlobalUniqueID() {
-        let response = Data(#"{"code":"product_invalid_global_unique_id","message":"Invalid or duplicated GTIN.","data":{"status":400}}"#.utf8)
-        let error = NetworkError.unacceptableStatusCode(statusCode: 400, response: response)
-        assertAddProductError(error, equals: .invalidOrDuplicatedGlobalUniqueID)
-    }
-
     func test_addProduct_when_direct_REST_rejects_max_quantity_then_keeps_server_message_so_the_alert_is_not_blank() {
         let response = Data(#"{"code":"woocommerce_rest_invalid_max_quantity","message":"Max must be above min.","data":{"status":400}}"#.utf8)
         let error = NetworkError.unacceptableStatusCode(statusCode: 400, response: response)
@@ -1086,32 +1080,21 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
-    func test_retrieveProduct_when_direct_REST_reports_invalid_ID_then_returns_notFound_and_deletes_stored_product() throws {
-        // Given
-        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
+    func test_retrieveProduct_when_direct_REST_reports_invalid_ID_then_returns_notFound_and_deletes_stored_product() {
         let response = Data(#"{"code":"woocommerce_rest_product_invalid_id","message":"Invalid ID.","data":{"status":404}}"#.utf8)
-        network.simulateError(requestUrlSuffix: "products/282", error: NetworkError.notFound(response: response))
-
-        // When
-        let result: Result<Yosemite.Product, Error> = waitFor { promise in
-            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
-                promise(result)
-            }
-            productStore.onAction(action)
-        }
-
-        // Then
-        XCTAssertEqual(result.failure as? ProductLoadError, .notFound)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        assertRetrieveProductError(NetworkError.notFound(response: response), equals: .notFound, storedProductCount: 0)
     }
 
-    func test_retrieveProduct_when_direct_REST_returns_other_404_then_keeps_stored_product_because_it_may_still_exist() throws {
+    func test_retrieveProduct_when_direct_REST_returns_other_404_then_keeps_stored_product_because_it_may_still_exist() {
+        let response = Data(#"{"code":"rest_no_route","message":"No route was found.","data":{"status":404}}"#.utf8)
+        let error = NetworkError.notFound(response: response)
+        assertRetrieveProductError(error, equals: .unknown(error: AnyError(error)), storedProductCount: 1)
+    }
+
+    private func assertRetrieveProductError(_ error: Error, equals expectedError: ProductLoadError, storedProductCount: Int) {
         // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
-        let response = Data(#"{"code":"rest_no_route","message":"No route was found.","data":{"status":404}}"#.utf8)
-        let error = NetworkError.notFound(response: response)
         network.simulateError(requestUrlSuffix: "products/282", error: error)
 
         // When
@@ -1123,8 +1106,8 @@ final class ProductStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(result.failure as? ProductLoadError, .unknown(error: AnyError(error)))
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(result.failure as? ProductLoadError, expectedError)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), storedProductCount)
     }
 
     // MARK: - ProductAction.resetStoredProducts

@@ -89,6 +89,10 @@ private extension GRDBManager {
             try V003AddVariationTypeKey.migrate(db)
         }
 
+        migrator.registerMigration("V004AddRelationLookupIndexes", foreignKeyChecks: .immediate) { db in
+            try V004AddRelationLookupIndexes.migrate(db)
+        }
+
         try migrator.migrate(databaseConnection)
     }
 }

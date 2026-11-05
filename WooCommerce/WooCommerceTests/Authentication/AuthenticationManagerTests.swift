@@ -9,25 +9,28 @@ import YosemiteTestHelpers
 @testable import WooCommerce
 
 /// Test cases for `AuthenticationManager`.
+@MainActor
 final class AuthenticationManagerTests: XCTestCase {
     private var navigationController: UINavigationController!
-    private let window = UIWindow(frame: UIScreen.main.bounds)
+    private var window: UIWindow!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
+        window = UIWindow(frame: UIScreen.main.bounds)
         window.makeKeyAndVisible()
         navigationController = .init()
         window.rootViewController = navigationController
         WordPressAuthenticator.initializeAuthenticator()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         navigationController = nil
         window.resignKey()
         window.rootViewController = nil
+        window = nil
 
-        super.tearDown()
+        try await super.tearDown()
     }
 
     /// We do not allow automatic WPCOM account sign-up if the user entered an email that is not
@@ -224,7 +227,6 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
-    @MainActor
     func test_did_authenticate_user_applies_custom_default_and_malformed_endpoint_context_through_real_checker() throws {
         let cases: [(options: [String: Any], expectedStoredEndpoint: String?)] = [
             (
@@ -527,7 +529,6 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
-    @MainActor
     func test_it_shows_account_mismatch_upon_login_epilogue_if_the_site_has_active_jetpack_but_not_connected() {
         // Given
         let manager = AuthenticationManager()
@@ -552,7 +553,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(rootController is ULAccountMismatchViewController)
     }
 
-    @MainActor
     func test_it_does_not_display_jetpack_error_for_org_site_credentials_sign_in_when_using_application_password_authentication() {
         // Given
         let mockABTestVariationProvider = MockABTestVariationProvider()
@@ -574,7 +574,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(rootController is ULErrorViewController)
     }
 
-    @MainActor
     func test_errorViewController_display_account_mismatch_screen_if_no_site_matches_the_given_self_hosted_site() {
         // Given
         let manager = AuthenticationManager()
@@ -593,7 +592,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(controller is ULAccountMismatchViewController)
     }
 
-    @MainActor
     func test_errorViewController_returns_account_mismatch_if_no_site_matches_the_given_url() {
         // Given
         let manager = AuthenticationManager()
@@ -610,7 +608,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(controller is ULAccountMismatchViewController)
     }
 
-    @MainActor
     func test_errorViewController_returns_error_if_the_given_site_does_not_have_woo() {
         // Given
         let manager = AuthenticationManager()
@@ -632,7 +629,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(controller is ULErrorViewController)
     }
 
-    @MainActor
     func test_errorViewController_returns_nil_if_the_given_site_has_woo() {
         // Given
         let manager = AuthenticationManager()
@@ -653,7 +649,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertNil(controller)
     }
 
-    @MainActor
     func test_site_address_is_saved_to_local_storage_if_there_is_error_with_the_site() {
         // Given
         let navigationController = UINavigationController()
@@ -677,7 +672,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(settings.errorLoginSiteAddress, testSiteURL)
     }
 
-    @MainActor
     func test_site_address_is_cleared_if_there_is_no_error_with_the_site() {
         // Given
         let navigationController = UINavigationController()
@@ -701,7 +695,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertNil(settings.errorLoginSiteAddress)
     }
 
-    @MainActor
     func test_troubleshootSite_displays_error_screen_if_site_does_not_have_wordPress() {
         // Given
         let navigationController = UINavigationController()
@@ -720,7 +713,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULErrorViewController)
     }
 
-    @MainActor
     func test_troubleshootSite_displays_account_mismatch_error_if_site_is_wpcom() {
         // Given
         let navigationController = UINavigationController()
@@ -740,7 +732,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController)
     }
 
-    @MainActor
     func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_without_jetpack() {
         // Given
         let navigationController = UINavigationController()
@@ -759,7 +750,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULErrorViewController)
     }
 
-    @MainActor
     func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_with_jetpack_not_connected() {
         // Given
         let navigationController = UINavigationController()
@@ -778,7 +768,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController || topController is ULErrorViewController)
     }
 
-    @MainActor
     func test_troubleshootSite_displays_error_screen_if_site_is_self_hosted_with_jetpack() {
         // Given
         let navigationController = UINavigationController()
@@ -797,7 +786,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController || topController is ULErrorViewController)
     }
 
-    @MainActor
     func test_troubleshootSite_displays_account_mismatch_error_if_site_is_commerce_garden() {
         // Given
         let navigationController = UINavigationController()
@@ -817,7 +805,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController)
     }
 
-    @MainActor
     func test_troubleshootSite_tracks_site_discovery_event() throws {
         // Given
         let navigationController = UINavigationController()
@@ -862,7 +849,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["url_after_redirects"] as? String, siteInfo.url)
     }
 
-    @MainActor
     func test_it_auto_switches_store_when_there_is_only_one_valid_store() throws {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -899,7 +885,6 @@ final class AuthenticationManagerTests: XCTestCase {
         })
     }
 
-    @MainActor
     func test_it_does_not_auto_select_store_when_there_are_more_than_one_only_one_valid_stores() throws {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -937,7 +922,6 @@ final class AuthenticationManagerTests: XCTestCase {
         })
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_login_url_is_cross_site_then_recovers_without_starting_login() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -972,7 +956,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.isEmpty)
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_network_failure_surfaces_recovery_then_does_not_track_login_failure() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -999,7 +982,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsFailed.rawValue))
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_genuine_failure_occurs_then_tracks_login_failure() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -1026,7 +1008,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsFailed.rawValue))
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_login_retry_is_missing_then_recovers_not_found_after_loading_starts() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1069,7 +1050,6 @@ final class AuthenticationManagerTests: XCTestCase {
     /// seconds more. Ending the loading state here would re-enable the submit button and restore the back
     /// button while the merchant is still being signed in.
     ///
-    @MainActor
     func test_authenticate_site_credentials_when_login_succeeds_then_the_loading_state_is_not_ended() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1098,7 +1078,6 @@ final class AuthenticationManagerTests: XCTestCase {
     /// so plainly returning would leave the merchant on a credential form whose fields, submit button and back button
     /// are all still disabled. Login has to restart instead.
     ///
-    @MainActor
     func test_didAuthenticateUser_when_the_application_password_use_case_cannot_be_created_then_login_restarts() throws {
         // Given
         let sessionManager = SessionManager(
@@ -1124,7 +1103,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(stores.isAuthenticated)
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_login_retry_has_invalid_unverified_response_then_recovers_not_found() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1153,7 +1131,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(didFail)
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_initial_login_has_invalid_unverified_response_then_recovers_without_error() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1182,7 +1159,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(didFail)
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_admin_is_missing_after_verified_custom_login_then_recovers_admin() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1221,7 +1197,6 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_admin_retry_login_preflight_fails_then_routes_to_ordinary_failure() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1262,7 +1237,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(didRecover)
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_verified_credentials_are_invalid_then_marks_incorrect_and_preserves_login_url() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1294,7 +1268,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(offersBrowserAlternative, true)
     }
 
-    @MainActor
     func test_unexpected_credential_failure_when_alert_is_presented_then_tracks_only_after_presentation() {
         for stage in [CookieNonceAuthenticationResponseStage.credentials, .dashboard, .nonce] {
             for code: Int? in [nil, 429] {
@@ -1320,7 +1293,6 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
-    @MainActor
     func test_unexpected_credential_failure_when_forwarded_then_preserves_context_without_tracking_shown() throws {
         // Given
         let provider = MockAnalyticsProvider()
@@ -1354,7 +1326,6 @@ final class AuthenticationManagerTests: XCTestCase {
                        SiteCredentialLoginError.invalidLoginResponse.underlyingError.description)
     }
 
-    @MainActor
     func test_unexpected_login_page_when_authentication_fails_then_forwards_to_alert_without_recovery_or_shown_tracking() {
         // Given
         let provider = MockAnalyticsProvider()
@@ -1378,7 +1349,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsFailed.rawValue])
     }
 
-    @MainActor
     func test_unexpected_login_page_when_verifying_login_url_then_recovers_inline_and_tracks_invalid_page() {
         // Given
         let provider = MockAnalyticsProvider()
@@ -1402,7 +1372,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue])
     }
 
-    @MainActor
     func test_unexpected_status_when_verifying_endpoint_then_forwards_to_alert() {
         for stage in [CookieNonceAuthenticationResponseStage.preflight, .dashboard, .nonce] {
             for statusCode in [500, 429] {
@@ -1431,7 +1400,6 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
-    @MainActor
     func test_nonce_not_found_when_recovered_admin_returns_unexpected_content_then_routes_by_failed_stage() async {
         for stage in [CookieNonceAuthenticationResponseStage.dashboard, .nonce] {
             // Given
@@ -1506,7 +1474,6 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
-    @MainActor
     func test_retry_when_original_step_passes_and_later_step_fails_then_reports_success_once() {
         for stage in [CookieNonceAuthenticationResponseStage.preflight, .credentials, .dashboard, .nonce] {
             // Given
@@ -1529,7 +1496,6 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
-    @MainActor
     func test_retry_when_an_earlier_step_fails_then_reports_failure_once() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1550,7 +1516,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(results, [false])
     }
 
-    @MainActor
     func test_retry_when_cancelled_then_ignores_stale_stage_and_terminal_callbacks() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1574,7 +1539,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(useCase.cancellationCount, 1)
     }
 
-    @MainActor
     func test_retry_when_started_then_uses_current_credentials_and_configured_endpoints() throws {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1603,7 +1567,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(verifiesDashboard)
     }
 
-    @MainActor
     func test_ordinary_credential_failure_when_presented_then_does_not_track_unexpected_response() {
         // Given
         let provider = MockAnalyticsProvider()
@@ -1619,7 +1582,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(provider.receivedEvents.isEmpty)
     }
 
-    @MainActor
     func test_present_site_credential_login_failure_presents_centered_fancy_alert() throws {
         // Given
         let presenter = SiteCredentialAlertPresenter()
@@ -1638,7 +1600,6 @@ final class AuthenticationManagerTests: XCTestCase {
         try assertCenteredFancyAlertPresented(by: presenter)
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_login_recovery_is_requested_then_tracks_invalid_login_page_detected() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1666,7 +1627,6 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_unverified_response_recovers_login_then_tracks_invalid_login_page_detected() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1694,7 +1654,6 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_admin_recovery_is_requested_then_does_not_track_invalid_login_page_detected() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1721,7 +1680,6 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
-    @MainActor
     func test_present_site_credential_browser_alternative_presents_tutorial_without_tracking_detection() {
         // Given
         let presenter = UIViewController()
@@ -1737,7 +1695,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue))
     }
 
-    @MainActor
     func test_handle_site_credential_login_failure_when_login_page_is_inaccessible_then_presents_tutorial_without_tracking_detection() {
         // Given
         let presenter = UIViewController()
@@ -1757,7 +1714,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue))
     }
 
-    @MainActor
     func test_legacy_site_credential_login_failure_presents_centered_fancy_alert() throws {
         // Given
         let presenter = SiteCredentialAlertPresenter()
@@ -1775,7 +1731,6 @@ final class AuthenticationManagerTests: XCTestCase {
         try assertCenteredFancyAlertPresented(by: presenter)
     }
 
-    @MainActor
     func test_authenticate_site_credentials_when_custom_or_standard_login_succeeds_then_persists_only_nondefault_endpoints() throws {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1864,6 +1819,7 @@ private final class SiteCredentialAlertPresenter: UIViewController, UIViewContro
     }
 }
 
+@MainActor
 private final class MockAuthenticationManagerSiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
     var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)?
     private(set) var cancellationCount = 0

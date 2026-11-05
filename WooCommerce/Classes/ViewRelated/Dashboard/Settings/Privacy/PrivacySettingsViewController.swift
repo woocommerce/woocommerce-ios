@@ -29,6 +29,9 @@ class PrivacySettingsViewController: UIViewController {
     /// Used to keep an in-flight account settings request from overwriting a newer user interaction.
     private var collectInfoChangeRevision = 0
 
+    /// Serializes analytics setting updates so the final switch value is persisted last.
+    private lazy var updateAnalyticsSettingUseCase = UpdateAnalyticsSettingUseCase()
+
     /// Send crash reports
     ///
     private var reportCrashes = CrashLoggingSettings.didOptIn {
@@ -304,16 +307,19 @@ private extension PrivacySettingsViewController {
     func collectInfoWasUpdated(newValue: Bool) {
         let userOptedOut = !newValue
         collectInfoChangeRevision += 1
+        let changeRevision = collectInfoChangeRevision
         collectInfo = newValue
 
-        let useCase = UpdateAnalyticsSettingUseCase()
-        Task { [self] in
+        let update = updateAnalyticsSettingUseCase.enqueueUpdate(optOut: userOptedOut)
+        Task { [weak self] in
             do {
-                try await useCase.update(optOut: userOptedOut)
+                try await update.value
             } catch {
+                guard let self, collectInfoChangeRevision == changeRevision else {
+                    return
+                }
                 collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
                 presentErrorUpdatingSettingNotice { [weak self] in
-                    self?.collectInfo = newValue
                     self?.collectInfoWasUpdated(newValue: newValue)
                 }
             }

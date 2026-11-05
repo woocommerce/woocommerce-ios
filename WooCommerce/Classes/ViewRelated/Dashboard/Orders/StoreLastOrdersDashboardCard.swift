@@ -49,6 +49,8 @@ struct StoreLastOrdersDashboardCard: View {
 }
 
 private extension StoreLastOrdersDashboardCard {
+    typealias Localization = LastOrdersDashboardCard.Localization
+
     func viewAllOrders() {
         ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .lastOrders))
         onViewAllOrders()
@@ -100,26 +102,6 @@ private extension StoreLastOrdersDashboardCard {
         Task { @MainActor in
             await viewModel.updateOrderStatus(status)
         }
-    }
-}
-
-private extension StoreLastOrdersDashboardCard {
-    enum Localization {
-        static let hideCard = NSLocalizedString(
-            "lastOrdersDashboardCard.hideCard",
-            value: "Hide Orders",
-            comment: "Menu item to dismiss the Last Orders section on the My Store screen"
-        )
-        static let status = NSLocalizedString(
-            "lastOrdersDashboardCard.status",
-            value: "Status",
-            comment: "Header label on the Last Orders section on the My Store screen"
-        )
-        static let viewAll = NSLocalizedString(
-            "lastOrdersDashboardCard.viewAll",
-            value: "View all orders",
-            comment: "Button to navigate to Orders list screen."
-        )
     }
 }
 

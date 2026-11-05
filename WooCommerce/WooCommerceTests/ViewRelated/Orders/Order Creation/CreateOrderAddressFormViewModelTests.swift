@@ -437,7 +437,7 @@ private extension CreateOrderAddressFormViewModelTests {
 
 private extension CreateOrderAddressFormViewModelTests {
     static let sampleCountries: [Country] = {
-        return Locale.isoRegionCodes.map { regionCode in
+        return Locale.Region.isoRegions.map(\.identifier).filter { $0.count == 2 }.map { regionCode in
             let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""
             let states = regionCode == "US" ? [StateOfACountry(code: "NY", name: "New York")] : []
             return Country(code: regionCode, name: name, states: states)

@@ -1208,6 +1208,60 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    // MARK: Load service status notices
+
+    func test_loadServiceStatusNotices_sends_get_request_to_service_status_path() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "service-status", filename: "wooshipping-service-status-success")
+
+        // When
+        let _: Result<[WooShippingServiceStatusNotice], Error> = waitFor { promise in
+            remote.loadServiceStatusNotices(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.method, .get)
+        XCTAssertEqual(request.path, "service-status")
+    }
+
+    func test_loadServiceStatusNotices_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "service-status", filename: "wooshipping-service-status-success")
+
+        // When
+        let result: Result<[WooShippingServiceStatusNotice], Error> = waitFor { promise in
+            remote.loadServiceStatusNotices(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let notices = try XCTUnwrap(result.get())
+        XCTAssertEqual(notices.map(\.severity), [.error, .warning, .info])
+        XCTAssertEqual(notices.first?.message, "USPS: API Outage | Status: Investigating")
+    }
+
+    func test_loadServiceStatusNotices_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateError(requestUrlSuffix: "service-status", error: NetworkError.notFound(response: nil))
+
+        // When
+        let result: Result<[WooShippingServiceStatusNotice], Error> = waitFor { promise in
+            remote.loadServiceStatusNotices(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, .notFound(response: nil))
+    }
 }
 
 private extension WooShippingRemoteTests {

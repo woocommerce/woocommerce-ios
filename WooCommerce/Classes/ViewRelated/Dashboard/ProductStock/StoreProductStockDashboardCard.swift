@@ -55,6 +55,8 @@ struct StoreProductStockDashboardCard: View {
 }
 
 private extension StoreProductStockDashboardCard {
+    typealias Localization = ProductStockDashboardCard.Localization
+
     var header: some View {
         StoreDashboardCardHeader(DashboardCard.CardType.stock.name,
                                  showsError: !viewModel.analyticsEnabled || viewModel.syncingError != nil) {
@@ -168,75 +170,6 @@ private extension StoreProductStockDashboardCard {
                                                                siteID: viewModel.siteID,
                                                                forceReadOnly: false)
         return WooNavigationController(rootViewController: loaderViewController)
-    }
-}
-
-private extension StoreProductStockDashboardCard {
-    enum Localization {
-        static let hideCard = NSLocalizedString(
-            "productStockDashboardCard.hideCard",
-            value: "Hide Stock",
-            comment: "Menu item to dismiss the Stock section on the My Store screen"
-        )
-        static let status = NSLocalizedString(
-            "productStockDashboardCard.status",
-            value: "Status",
-            comment: "Header label on the Stock section on the My Store screen"
-        )
-        static let products = NSLocalizedString(
-            "productStockDashboardCard.products",
-            value: "Products",
-            comment: "Header label on the Stock section on the My Store screen"
-        )
-        static let stockLevels = NSLocalizedString(
-            "productStockDashboardCard.stockLevels",
-            value: "Stock levels",
-            comment: "Header label on the Stock section on the My Store screen"
-        )
-        static func lastUpdatedText(time: String) -> String {
-            let format = NSLocalizedString(
-                "productStockDashboardCard.lastUpdated",
-                value: "Last Updated: %1$@",
-                comment: "Time when the Stock dashboard card was last updated"
-            )
-            return String.localizedStringWithFormat(format, time)
-        }
-        static func refreshFailedText(time: String) -> String {
-            let format = NSLocalizedString(
-                "productStockDashboardCard.refreshFailed",
-                value: "Couldn't refresh · Last Updated: %1$@",
-                comment: "Message on the Stock dashboard card when a refresh fails; includes the last updated time"
-            )
-            return String.localizedStringWithFormat(format, time)
-        }
-        static let subtitleSingular = NSLocalizedString(
-            "productStockDashboardCard.item.subtitle.singular",
-            value: "%1$d item sold last 30 days",
-            comment: "Subtitle in singular mode for the stock items on the Stock section on the My Store screen. " +
-            "Reads as: 1 item sold last 30 days"
-        )
-        static let subtitlePlural = NSLocalizedString(
-            "productStockDashboardCard.item.subtitle.plural",
-            value: "%1$d items sold last 30 days",
-            comment: "Subtitle in plural mode for the stock items on the Stock section on the My Store screen. " +
-            "Reads as: 10 items sold last 30 days"
-        )
-        static let subtitleZero = NSLocalizedString(
-            "productStockDashboardCard.item.subtitle.zero",
-            value: "No item sold last 30 days",
-            comment: "Subtitle for the stock items with no items sold on the Stock section on the My Store screen."
-        )
-        static let emptyStateTitle = NSLocalizedString(
-            "productStockDashboardCard.emptyStateTitle",
-            value: "No item found with %1$@ status",
-            comment: "Text on the empty state of the Stock section on the My Store screen. " +
-            "Reads as: No item found with Out of stock status"
-        )
-        static let unavailableAnalytics = NSLocalizedString(
-            "productStockDashboardCard.unavailableAnalyticsView.title",
-            value: "Unable to display your store's stock analytics",
-            comment: "Title when the Stock card is disabled because the analytics feature is unavailable"
-        )
     }
 }
 

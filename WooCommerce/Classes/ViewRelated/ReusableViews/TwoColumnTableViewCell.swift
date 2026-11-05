@@ -2,6 +2,7 @@ import UIKit
 
 /// A two column table view cell with Body styling.
 ///
+@MainActor
 final class TwoColumnTableViewCell: UITableViewCell {
 
     @IBOutlet weak var stackView: UIStackView!
@@ -10,7 +11,10 @@ final class TwoColumnTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         stackView.isLayoutMarginsRelativeArrangement = true
         configureBackground()
         configureLeftLabel()

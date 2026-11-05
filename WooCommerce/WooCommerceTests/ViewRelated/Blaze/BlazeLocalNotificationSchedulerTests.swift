@@ -43,6 +43,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 
     // MARK: No campaign reminder
 
+    @MainActor
     func test_no_campaign_notification_is_scheduled_30_days_after_campaign_ends_when_an_active_non_evergreen_campaign_exists_in_storage() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -64,7 +65,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         insertCampaigns([fakeBlazeCampaign])
 
         // Then
-        await until {
+        await waitOnMainActor {
             self.pushNotesManager.requestedLocalNotifications.isNotEmpty
         }
 
@@ -77,6 +78,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(Calendar.current.date(byAdding: .day, value: 30, to: campaignEndTime)?.isSameDay(as: notificationTriggerDate)))
     }
 
+    @MainActor
     func test_previous_no_campaign_notification_is_cancelled_before_scheduling_new_no_campaign_notification() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -98,11 +100,11 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         // When
         insertCampaigns([fakeBlazeCampaign1])
 
-        await until {
+        await waitOnMainActor {
             self.pushNotesManager.requestedLocalNotifications.count == 1
         }
 
-        await until {
+        await waitOnMainActor {
             self.pushNotesManager.canceledLocalNotificationScenarios.isNotEmpty
         }
 
@@ -110,6 +112,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         XCTAssertTrue(pushNotesManager.canceledLocalNotificationScenarios.contains([LocalNotification.Scenario.blazeNoCampaignReminder]))
     }
 
+    @MainActor
     func test_no_campaign_notification_is_scheduled_when_evergreen_campaign_in_storage_is_not_active_and_a_non_evergreen_campaigns_exist() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -138,7 +141,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         insertCampaigns([fakeBlazeCampaign1, fakeBlazeCampaign2])
 
         // Then
-        await until {
+        await waitOnMainActor {
             self.pushNotesManager.requestedLocalNotifications.isNotEmpty
         }
 
@@ -148,6 +151,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         XCTAssertEqual(siteID, siteIDFromNotification)
     }
 
+    @MainActor
     func test_no_campaign_notification_is_not_scheduled_when_only_evergreen_campaign_exists_in_storage() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -174,6 +178,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         XCTAssertTrue(pushNotesManager.requestedLocalNotifications.isEmpty)
     }
 
+    @MainActor
     func test_no_campaign_notification_is_not_scheduled_when_notification_already_has_been_interacted_with() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -192,20 +197,21 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
                                                          blazeEligibilityChecker: blazeEligibilityChecker)
         await sut.scheduleNoCampaignReminder()
 
-        waitForExpectation(timeout: 0.5) { exp in
-            exp.isInverted = true
+        let exp = expectation(description: "No Blaze reminder is scheduled")
+        exp.isInverted = true
 
-            // When
-            insertCampaigns([fakeBlazeCampaign])
+        // When
+        insertCampaigns([fakeBlazeCampaign])
 
-            // Then
-            // No local notifications should be requested
-            if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
-                exp.fulfill()
-            }
+        // Then
+        // No local notifications should be requested
+        if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
+            exp.fulfill()
         }
+        await fulfillment(of: [exp], timeout: 0.5)
     }
 
+    @MainActor
     func test_no_campaign_notification_is_not_scheduled_when_store_is_not_eligible_for_blaze() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
@@ -223,20 +229,21 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
                                                          blazeEligibilityChecker: blazeEligibilityChecker)
         await sut.scheduleNoCampaignReminder()
 
-        waitForExpectation(timeout: 0.5) { exp in
-            exp.isInverted = true
+        let exp = expectation(description: "No Blaze reminder is scheduled")
+        exp.isInverted = true
 
-            // When
-            insertCampaigns([fakeBlazeCampaign])
+        // When
+        insertCampaigns([fakeBlazeCampaign])
 
-            // Then
-            // No local notifications should be requested
-            if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
-                exp.fulfill()
-            }
+        // Then
+        // No local notifications should be requested
+        if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
+            exp.fulfill()
         }
+        await fulfillment(of: [exp], timeout: 0.5)
     }
 
+    @MainActor
     func test_previous_no_campaign_notification_is_cancelled_when_site_is_not_eligible_for_blaze() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
@@ -250,7 +257,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         // When
         await sut.scheduleNoCampaignReminder()
 
-        await until {
+        await waitOnMainActor {
             self.pushNotesManager.canceledLocalNotificationScenarios.isNotEmpty
         }
 
@@ -260,6 +267,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 
     // MARK: Abandoned campaign creation flow
 
+    @MainActor
     func test_scheduleAbandonedCreationReminder_schedules_notification_correctly() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -274,7 +282,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         await sut.scheduleAbandonedCreationReminder()
 
         // Then
-        await until {
+        await waitOnMainActor {
             self.pushNotesManager.requestedLocalNotifications.isNotEmpty
         }
 
@@ -284,6 +292,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         XCTAssertEqual(siteID, siteIDFromNotification)
     }
 
+    @MainActor
     func test_abandoned_creation_notification_is_not_scheduled_when_store_is_not_eligible_for_blaze() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
@@ -297,17 +306,18 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         // When
         await sut.scheduleAbandonedCreationReminder()
 
-        waitForExpectation(timeout: 0.5) { exp in
-            exp.isInverted = true
+        let exp = expectation(description: "No Blaze reminder is scheduled")
+        exp.isInverted = true
 
-            // Then
-            // No local notifications should be requested
-            if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
-                exp.fulfill()
-            }
+        // Then
+        // No local notifications should be requested
+        if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
+            exp.fulfill()
         }
+        await fulfillment(of: [exp], timeout: 0.5)
     }
 
+    @MainActor
     func test_previous_abandoned_creation_notification_is_cancelled_before_scheduling_new_abandoned_creation_notification() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -320,7 +330,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         // When
         await sut.scheduleAbandonedCreationReminder()
 
-        await until {
+        await waitOnMainActor {
             self.pushNotesManager.requestedLocalNotifications.count == 1
         }
 
@@ -328,6 +338,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         XCTAssertTrue(pushNotesManager.canceledLocalNotificationScenarios.contains([LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder]))
     }
 
+    @MainActor
     func test_abandoned_creation_notification_is_not_scheduled_when_notification_already_has_been_interacted_with() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -342,15 +353,15 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         // When
         await sut.scheduleAbandonedCreationReminder()
 
-        waitForExpectation(timeout: 0.5) { exp in
-            exp.isInverted = true
+        let exp = expectation(description: "No Blaze reminder is scheduled")
+        exp.isInverted = true
 
-            // Then
-            // No local notifications should be requested
-            if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
-                exp.fulfill()
-            }
+        // Then
+        // No local notifications should be requested
+        if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
+            exp.fulfill()
         }
+        await fulfillment(of: [exp], timeout: 0.5)
     }
 
     // MARK: User response
@@ -429,23 +440,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 }
 
 private extension BlazeLocalNotificationSchedulerTests {
-    /// Polls `condition` on the main actor, so main actor tests don't hand it to a nonisolated wait helper.
     @MainActor
-    func waitOnMainActor(timeout: Duration = .seconds(5),
-                         file: StaticString = #filePath,
-                         line: UInt = #line,
-                         until condition: () -> Bool) async {
-        let deadline = ContinuousClock.now + timeout
-        while !condition() && ContinuousClock.now < deadline {
-            do {
-                try await Task.sleep(for: .milliseconds(10))
-            } catch {
-                break
-            }
-        }
-        XCTAssertTrue(condition(), file: file, line: line)
-    }
-
     func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
         storageManager.performAndSave({ storage in
             readOnlyCampaigns.forEach { campaign in

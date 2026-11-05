@@ -18,6 +18,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_formattedAmountAndDuration_is_updated_correctly_depending_on_hasEndDate() {
         // Given
         let initialStartDate = Date(timeIntervalSinceNow: 0)
@@ -37,6 +38,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.formattedAmountAndDuration.string, "$77 USD weekly spend") // weekly spend
     }
 
+    @MainActor
     func test_formatDayCount_returns_correct_content() {
         // Given
         let dateFormatter = DateFormatter()
@@ -96,6 +98,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         XCTAssertEqual(formattedStartDate, pendingStartDate)
     }
 
+    @MainActor
     func test_confirmSettings_triggers_onCompletion_with_updated_details() {
         // Given
         let initialStartDate = Date(timeIntervalSinceNow: 0)
@@ -265,6 +268,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
 
     // MARK: Analytics
 
+    @MainActor
     func test_confirmSettings_tracks_event_with_correct_properties() throws {
         // Given
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
@@ -299,6 +303,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         XCTAssertEqual(lastEventProperties["campaign_type"] as? String, "start_end")
     }
 
+    @MainActor
     func test_changing_schedule_tracks_event_with_correct_properties() throws {
         // Given
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,

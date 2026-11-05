@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 class LargeImageTableViewCell: UITableViewCell {
 
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
@@ -9,7 +10,10 @@ class LargeImageTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         clipsToBounds = true
         mainImageView.contentMode = .scaleAspectFill
         mainImageView.clipsToBounds = false

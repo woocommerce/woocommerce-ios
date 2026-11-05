@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class LedgerTableViewCell: UITableViewCell {
     @IBOutlet var verticalStackView: UIStackView!
     @IBOutlet var subtotalView: UIView!
@@ -39,6 +40,7 @@ final class LedgerTableViewCell: UITableViewCell {
     private lazy var totalViews = RowGroup(containerView: totalView, label: totalLabel, value: totalValue)
 
     @IBOutlet weak var verticalStackViewTopConstraint: NSLayoutConstraint!
+    @MainActor
     struct RowGroup {
         let containerView: UIView
         let label: UILabel
@@ -54,6 +56,10 @@ final class LedgerTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBackground()
         configureLabels()
     }

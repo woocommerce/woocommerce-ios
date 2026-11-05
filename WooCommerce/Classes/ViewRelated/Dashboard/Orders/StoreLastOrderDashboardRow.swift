@@ -24,19 +24,18 @@ struct StoreLastOrderDashboardRow: View {
 
                     VStack(alignment: .trailing, spacing: StoreSpacing.s3) {
                         HStack(spacing: StoreSpacing.s3) {
-                            statusBadge(data.statusDescription, background: data.statusBackgroundColor)
+                            StoreBadge(data.statusDescription,
+                                       tone: .custom(background: data.statusBackgroundColor,
+                                                     foreground: .storePaletteBlack))
                             if let fulfillmentText = data.fulfillmentBadgeText {
-                                statusBadge(fulfillmentText,
-                                            background: data.fulfillmentBadgeBackgroundColor ?? .clear)
+                                StoreBadge(fulfillmentText,
+                                           tone: .custom(background: data.fulfillmentBadgeBackgroundColor ?? .clear,
+                                                         foreground: .storePaletteBlack))
                             }
                             if let salesChannelText = data.salesChannelText {
-                                Text(salesChannelText)
-                                    .storeTextStyle(.labelSmall)
-                                    .foregroundStyle(.storePrimary)
-                                    .padding(.horizontal, StorePadding.p3 + StorePadding.p1)
-                                    .padding(.vertical, StorePadding.p2)
-                                    .background(Color.storePrimaryContainer)
-                                    .clipShape(.rect(cornerRadius: StoreRadius.small))
+                                StoreBadge(salesChannelText,
+                                           tone: .custom(background: .storePrimaryContainer,
+                                                         foreground: .storeSecondary))
                             }
                         }
 
@@ -53,15 +52,5 @@ struct StoreLastOrderDashboardRow: View {
             }
         }
         .buttonStyle(.plain)
-    }
-
-    private func statusBadge(_ text: String, background: Color) -> some View {
-        Text(text)
-            .storeTextStyle(.labelSmall)
-            .foregroundStyle(.storePaletteBlack)
-            .padding(.horizontal, StorePadding.p3 + StorePadding.p1)
-            .padding(.vertical, StorePadding.p2)
-            .background(background)
-            .clipShape(.rect(cornerRadius: StoreRadius.small))
     }
 }

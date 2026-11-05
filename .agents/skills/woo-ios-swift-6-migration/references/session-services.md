@@ -27,6 +27,12 @@ Verify which object each task and callback retains. The registration object can 
 
 Weak ownership is not session cancellation. Check logout and storage reset separately. A serial write queue does not reject a remote callback that submits a write after reset. Use an explicit cancellation or session-validity contract when work must stop at that boundary.
 
+For delayed polling, inject a scheduler accepting an `@MainActor @Sendable` operation. Its production implementation can sleep in a main-actor task; tests can queue and invoke the operation directly. Capture the handler weakly in the operation, so waiting does not extend its lifetime. Test release before the first poll and before a queued storage write, as well as the distinction between in-progress responses and retries after request errors.
+
+A remote's concrete `Sendable` conformance does not make its protocol existential `Sendable`. Strengthening the protocol also invalidates main-actor-isolated mock conformances: a `Sendable` protocol requires a nonisolated conformance. For synchronous callback requirements, a mock can protect its stubs and counters with `Mutex`, take snapshots under the lock, and invoke completions after releasing it. If this changes mock delivery from asynchronous to synchronous, keep tests of delayed work explicitly scheduled.
+
+Model migrations can leave response wrappers non-`Sendable`. Capture the required sendable fields before crossing the boundary instead of capturing the envelope. A locked mock can store those fields and reconstruct the response on delivery, keeping the wrapper within its existing contract.
+
 ## Protocol witnesses
 
 An async requirement with a default implementation can hide a missing actor witness. A forwarding extension can accidentally satisfy the requirement if its method has the same name and labels. Default arguments do not make signatures different.
@@ -44,6 +50,8 @@ This parameter only moves warnings when an actor method calls a service that is 
 ## Action completions
 
 Add `@Sendable` to Yosemite Action completions one Action case at a time. The compiler checks explicit `@Sendable` closures even under `minimal` checking. Use plain `@Sendable`, not `@MainActor @Sendable`, because the main-actor form makes nonisolated mock stubs fail. A `@Sendable` closure cannot change a captured `var`. Use a lock or async code in those callers.
+
+Use `@MainActor @Sendable` instead when the store already delivers every completion on the main actor and its callers are main-actor UI owners. The type then states the existing delivery, and callers need no new main-actor hop. Make the tests and mock stubs that call those completions `@MainActor`. For a storage completion queued `on: .main`, add one private helper that passes `.main` and wraps the completion in `MainActor.assumeIsolated`. See WOOMOB-4072 (`BlazeStore`).
 
 Treat callback isolation and argument ownership as separate contracts. When an Action completion returns an immutable value model, prefer adding checked `Sendable` conformance to that model and its stored-value graph. Adding `@Sendable` to the callback does not make its arguments transferable, while changing the parameter to `sending` can introduce warnings in stores, mocks, and fixtures that produce actor-isolated values. Reserve `sending` for APIs that genuinely transfer ownership, and compile every producer and caller before adopting it.
 

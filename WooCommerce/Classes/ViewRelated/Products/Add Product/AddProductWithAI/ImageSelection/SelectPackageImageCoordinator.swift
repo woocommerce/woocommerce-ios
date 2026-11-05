@@ -5,6 +5,7 @@ import WooFoundation
 
 /// Controls navigation for the flow to select a package photo
 ///
+@MainActor
 final class SelectPackageImageCoordinator: Coordinator {
     let navigationController: UINavigationController
     private var mediaPickingCoordinator: MediaPickingCoordinator?

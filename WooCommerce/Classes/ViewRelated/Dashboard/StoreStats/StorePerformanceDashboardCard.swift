@@ -67,6 +67,7 @@ private extension StorePerformanceDashboardCard {
             StoreDashboardDateRangeHeader(
                 timeRange: viewModel.timeRange,
                 dateText: displayedDateText,
+                customTitle: Localization.custom,
                 isDisabled: viewModel.syncingData,
                 accessibilityPrefix: "performance",
                 onSelect: selectTimeRange,
@@ -80,11 +81,12 @@ private extension StorePerformanceDashboardCard {
                 .padding(.bottom, StorePadding.p2)
             stats
             StoreDashboardTimestamp(
-                lastUpdatedTimestamp: viewModel.lastUpdatedTimestamp,
-                showsScheduledUpdatesDelay: viewModel.shouldShowScheduledAnalyticsImportInfo,
+                text: timestampText,
                 showsInfoButton: viewModel.shouldShowAnalyticsImportUpdateModeInfoButton,
+                infoAccessibilityLabel: Localization.scheduledUpdatesInfoAccessibilityLabel,
                 onInfoTapped: showAnalyticsImportUpdateModeInfo
             )
+            .padding(.top, StorePadding.p5)
             .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
             chart
             StoreDashboardCardFooterAction(Localization.viewAll, isDisabled: viewModel.syncingData) {
@@ -262,6 +264,12 @@ private extension StorePerformanceDashboardCard {
         viewModel.selectedDateText ?? viewModel.timeRangeText
     }
 
+    var timestampText: String {
+        viewModel.shouldShowScheduledAnalyticsImportInfo ?
+        Localization.scheduledUpdatesDelayText :
+        Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp)
+    }
+
     func editCustomRange() {
         viewModel.trackInteraction()
         viewModel.trackCustomRangeEvent(.DashboardCustomRange.editButtonTapped())
@@ -290,36 +298,13 @@ private extension StorePerformanceDashboardCard {
 }
 
 private extension StorePerformanceDashboardCard {
+    typealias Localization = StorePerformanceView.Localization
+
     enum RedactMode { case none, withIcon, withoutIcon }
 
     enum Constants {
         static let chartHeight: CGFloat = 176
         static let chartContainerHeight = chartHeight + StorePadding.p4 * 2
-    }
-
-    enum Localization {
-        static let hideCard = NSLocalizedString("storePerformanceView.hideCard", value: "Hide Performance", comment: "Menu item to dismiss Performance")
-        static let noRevenueText = NSLocalizedString(
-            "storePerformanceView.noRevenueText",
-            value: "No revenue for selected dates",
-            comment: "Text on the store stats chart when there is no revenue"
-        )
-        static let visitors = NSLocalizedString("storePerformanceView.visitors", value: "Visitors", comment: "Visitors stat label")
-        static let conversion = NSLocalizedString("storePerformanceView.conversion", value: "Conversion", comment: "Conversion stat label")
-        static let viewAll = NSLocalizedString("storePerformanceView.viewAll", value: "View all store analytics", comment: "Button to Analytics Hub")
-        static let orderTypeAccessibilityHint = NSLocalizedString(
-            "storePerformanceView.orderTypeAccessibilityHint",
-            value: "Opens a bottom sheet to change which orders are included in your performance totals.",
-            comment: "Accessibility hint for the order type button"
-        )
-        static let unavailableAnalytics = NSLocalizedString(
-            "storePerformanceView.unavailableAnalyticsView.title",
-            value: "Unable to display your store's performance",
-            comment: "Title when Analytics is unavailable"
-        )
-        static let revenueTypeTotal = NSLocalizedString("storePerformanceView.revenueType.total", value: "Total", comment: "Total revenue option")
-        static let revenueTypeGross = NSLocalizedString("storePerformanceView.revenueType.gross", value: "Gross", comment: "Gross revenue option")
-        static let revenueTypeNet = NSLocalizedString("storePerformanceView.revenueType.net", value: "Net", comment: "Net revenue option")
     }
 }
 

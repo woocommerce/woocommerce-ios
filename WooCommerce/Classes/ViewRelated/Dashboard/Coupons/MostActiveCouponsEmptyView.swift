@@ -14,16 +14,18 @@ struct MostActiveCouponsEmptyView: View {
 }
 
 private extension MostActiveCouponsEmptyView {
+    enum Layout {
+        static let defaultSpacing: CGFloat = 16
+    }
+}
+
+extension MostActiveCouponsEmptyView {
     enum Localization {
         static let text = NSLocalizedString(
             "mostActiveCouponsEmptyView.text",
             value: "No coupon usage during this period",
             comment: "Default text for Most active coupons dashboard card when no data exists for a given period."
         )
-    }
-
-    enum Layout {
-        static let defaultSpacing: CGFloat = 16
     }
 }
 

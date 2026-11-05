@@ -5,8 +5,7 @@ import Storage
 // MARK: - BookingStore
 //
 public class BookingStore: Store {
-    private let remote: BookingsRemoteProtocol
-    private let ordersRemote: BookingOrdersRemoteProtocol
+    private let requestHandler: BookingStoreRequestHandler
 
     override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = BookingsRemote(network: network)
@@ -19,8 +18,7 @@ public class BookingStore: Store {
                 network: Network,
                 remote: BookingsRemoteProtocol,
                 ordersRemote: BookingOrdersRemoteProtocol) {
-        self.remote = remote
-        self.ordersRemote = ordersRemote
+        self.requestHandler = BookingStoreRequestHandler(storageManager: storageManager, remote: remote, ordersRemote: ordersRemote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -30,9 +28,26 @@ public class BookingStore: Store {
         dispatcher.register(processor: self, for: BookingAction.self)
     }
 
+    override public func onAction(_ action: Action) {
+        requestHandler.onAction(action)
+    }
+}
+
+// Requests retain this handler without transferring the dispatcher or network owner.
+private final class BookingStoreRequestHandler: Sendable {
+    let storageManager: StorageManagerType
+    let remote: BookingsRemoteProtocol
+    let ordersRemote: BookingOrdersRemoteProtocol
+
+    init(storageManager: StorageManagerType, remote: BookingsRemoteProtocol, ordersRemote: BookingOrdersRemoteProtocol) {
+        self.storageManager = storageManager
+        self.remote = remote
+        self.ordersRemote = ordersRemote
+    }
+
     /// Receives and executes Actions.
     ///
-    override public func onAction(_ action: Action) {
+    func onAction(_ action: Action) {
         guard let action = action as? BookingAction else {
             assertionFailure("BookingStore received an unsupported action")
             return
@@ -108,7 +123,7 @@ public class BookingStore: Store {
 
 // MARK: - Services
 //
-private extension BookingStore {
+private extension BookingStoreRequestHandler {
 
     /// Synchronizes the bookings for the specified site.
     ///
@@ -118,7 +133,7 @@ private extension BookingStore {
                              filters: BookingFilters?,
                              order: BookingsRemote.Order,
                              shouldClearCache: Bool,
-                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+                             onCompletion: @escaping @MainActor @Sendable (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let bookings = try await remote.loadAllBookings(for: siteID,
@@ -150,7 +165,7 @@ private extension BookingStore {
     func synchronizeBooking(
         siteID: Int64,
         bookingID: Int64,
-        onCompletion: @escaping (Result<Void, Error>) -> Void
+        onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void
     ) {
         enum SynchronizeBookingError: Error {
             case bookingIsMissing
@@ -189,7 +204,7 @@ private extension BookingStore {
     /// Checks if the store already has any bookings.
     /// Returns `false` if the store has no bookings.
     ///
-    func checkIfStoreHasBookings(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func checkIfStoreHasBookings(siteID: Int64, onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void) {
         let derivedStorage = storageManager.viewStorage
         let hasLocalBookings = derivedStorage.countObjects(ofType: StorageBooking.self, matching: NSPredicate(format: "siteID == %lld", siteID)) > 0
 
@@ -223,7 +238,7 @@ private extension BookingStore {
                         pageSize: Int,
                         filters: BookingFilters?,
                         order: BookingsRemote.Order,
-                        onCompletion: @escaping (Result<[Booking], Error>) -> Void) {
+                        onCompletion: @escaping @MainActor @Sendable (Result<[Booking], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let bookings = try await remote.loadAllBookings(for: siteID,
@@ -254,7 +269,7 @@ private extension BookingStore {
     ///
     func fetchResource(siteID: Int64,
                        resourceID: Int64,
-                       onCompletion: @escaping (Result<BookingResource, Error>) -> Void) {
+                       onCompletion: @escaping @MainActor @Sendable (Result<BookingResource, Error>) -> Void) {
         enum FetchResourceError: Error {
             case resourceIsMissing
         }
@@ -287,7 +302,7 @@ private extension BookingStore {
                               pageNumber: Int,
                               pageSize: Int,
                               include: [Int64]?,
-                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+                              onCompletion: @escaping @MainActor @Sendable (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let resources = try await remote.fetchResources(
@@ -312,7 +327,7 @@ private extension BookingStore {
         siteID: Int64,
         bookingID: Int64,
         status: BookingAttendanceStatus,
-        onCompletion: @escaping (Error?) -> Void
+        onCompletion: @escaping @MainActor @Sendable (Error?) -> Void
     ) {
         updateBookingAttendanceStatusLocally(
             siteID: siteID,
@@ -320,7 +335,10 @@ private extension BookingStore {
             statusKey: status
         ) { [weak self] previousStatusKey in
             guard let self else {
-                return onCompletion(UpdateBookingStatusError.undefinedState)
+                Task { @MainActor in
+                    onCompletion(UpdateBookingStatusError.undefinedState)
+                }
+                return
             }
 
             Task { @MainActor in
@@ -349,7 +367,9 @@ private extension BookingStore {
                         bookingID: bookingID,
                         statusKey: previousStatusKey
                     ) { _ in
-                        onCompletion(error)
+                        Task { @MainActor in
+                            onCompletion(error)
+                        }
                     }
                 }
             }
@@ -360,7 +380,7 @@ private extension BookingStore {
         siteID: Int64,
         bookingID: Int64,
         note: String,
-        onCompletion: @escaping (Error?) -> Void
+        onCompletion: @escaping @MainActor @Sendable (Error?) -> Void
     ) {
         Task { @MainActor in
             do {
@@ -392,7 +412,7 @@ private extension BookingStore {
         siteID: Int64,
         bookingID: Int64,
         statusKey: BookingAttendanceStatus,
-        onCompletion: @escaping (BookingAttendanceStatus) -> Void
+        onCompletion: @escaping @Sendable (BookingAttendanceStatus) -> Void
     ) {
         storageManager.performAndSave({ storage -> BookingAttendanceStatus in
             guard let booking = storage.loadBooking(
@@ -419,7 +439,7 @@ private extension BookingStore {
     func cancelBooking(
         siteID: Int64,
         bookingID: Int64,
-        onCompletion: @escaping (Error?) -> Void
+        onCompletion: @escaping @MainActor @Sendable (Error?) -> Void
     ) {
         Task { @MainActor in
             do {
@@ -450,7 +470,7 @@ private extension BookingStore {
     func markBookingAsPaid(
         siteID: Int64,
         bookingID: Int64,
-        onCompletion: @escaping (Error?) -> Void
+        onCompletion: @escaping @MainActor @Sendable (Error?) -> Void
     ) {
         Task { @MainActor in
             do {
@@ -484,7 +504,7 @@ private extension BookingStore {
         startDate: Date,
         endDate: Date,
         resourceID: Int64?,
-        onCompletion: @escaping (Error?) -> Void
+        onCompletion: @escaping @MainActor @Sendable (Error?) -> Void
     ) {
         Task { @MainActor in
             do {
@@ -514,7 +534,7 @@ private extension BookingStore {
     func fetchBookingLocationResponse(siteID: Int64,
                                       bookingID: Int64,
                                       productID: Int64,
-                                      onCompletion: @escaping (Result<String?, Error>) -> Void) {
+                                      onCompletion: @escaping @MainActor @Sendable (Result<String?, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let result = try await remote.fetchBookingLocationResponse(for: siteID, productID: productID)
@@ -526,7 +546,7 @@ private extension BookingStore {
     }
 
 
-    func clearBookingsCache(siteID: Int64, onCompletion: @escaping () -> Void) {
+    func clearBookingsCache(siteID: Int64, onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ storage in
             storage.deleteBookings(siteID: siteID)
         }, completion: onCompletion, on: .main)
@@ -536,7 +556,7 @@ private extension BookingStore {
 
 // MARK: - Storage: Booking
 //
-private extension BookingStore {
+private extension BookingStoreRequestHandler {
 
     /// Updates (OR Inserts) the specified ReadOnly Booking Entities *in a background thread* async.
     /// Also deletes existing bookings if requested.
@@ -566,10 +586,10 @@ private extension BookingStore {
                                           readOnlyOrders: [Yosemite.Order],
                                           siteID: Int64,
                                           shouldDeleteExistingBookings: Bool = false,
-                                          onCompletion: @escaping () -> Void) {
+                                          onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else {
-                return onCompletion()
+                return
             }
             if shouldDeleteExistingBookings {
                 storage.deleteBookings(siteID: siteID)

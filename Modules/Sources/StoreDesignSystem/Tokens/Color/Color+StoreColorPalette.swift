@@ -50,6 +50,9 @@ public extension ShapeStyle where Self == Color {
     static var storeOutline: Color { bundledColor("storeOutline") }
     static var storeOutlineVariant: Color { bundledColor("storeOutlineVariant") }
 
+    // MARK: - Icon Container
+    static var storeIconContainerSandstone: Color { bundledColor("storeIconContainerSandstone") }
+
     // MARK: - Surface
     static var storeSurfaceDim: Color { bundledColor("storeSurfaceDim") }
     static var storeSurfaceBright: Color { bundledColor("storeSurfaceBright") }
@@ -76,6 +79,9 @@ public extension ShapeStyle where Self == Color {
     static var storeTintLayerPrimaryContainerOpacity10: Color { bundledColor("storeTintLayerPrimaryContainerOpacity10") }
     static var storeTintLayerPrimaryContainerOpacity16: Color { bundledColor("storeTintLayerPrimaryContainerOpacity16") }
     static var storeTintLayerPrimaryContainerOpacity24: Color { bundledColor("storeTintLayerPrimaryContainerOpacity24") }
+
+    // MARK: - Accents
+    static var storeAccentRed: Color { bundledColor("storeAccentRed") }
 
     // MARK: - Palette (primitives)
     static var storePaletteWhite: Color { bundledColor("storePaletteWhite") }
@@ -109,6 +115,7 @@ public extension ShapeStyle where Self == Color {
     static var storePaletteSandstone20: Color { bundledColor("storePaletteSandstone20") }
     static var storePaletteSandstone40: Color { bundledColor("storePaletteSandstone40") }
     static var storePaletteSandstone60: Color { bundledColor("storePaletteSandstone60") }
+    static var storePaletteSandstone80: Color { bundledColor("storePaletteSandstone80") }
     static var storePaletteGray0: Color { bundledColor("storePaletteGray0") }
     static var storePaletteGray5: Color { bundledColor("storePaletteGray5") }
     static var storePaletteGray10: Color { bundledColor("storePaletteGray10") }

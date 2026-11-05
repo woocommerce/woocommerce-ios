@@ -220,6 +220,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         XCTAssertEqual(pickerViewModel.selectedOption, "Indigo")
     }
 
+    @MainActor
     func test_selecting_variation_sets_selectedVariation_and_selectableVariationAttributeViewModels() throws {
         // Given
         let variableProduct = createVariableProduct()
@@ -259,6 +260,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_selecting_variation_sets_selectedVariation_and_selectableVariationAttributeViewModels_with_default_option() throws {
         // Given
         let variableProduct = createVariableProduct()
@@ -319,6 +321,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
                                                         isOptionalAndSelected: false))
     }
 
+    @MainActor
     func test_toConfiguration_sets_variationID_and_attributes_when_selectedVariation_is_not_nil() {
         // Given
         let variableProduct = createVariableProduct()
@@ -449,6 +452,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
 
     // MARK: - Validation
 
+    @MainActor
     func test_errorMessage_becomes_nil_after_selecting_options_for_all_selectable_variation_attributes() {
         // Given
         let variableProduct = createVariableProduct().copy(attributes: [
@@ -480,6 +484,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
 
     // MARK: - Analytics
 
+    @MainActor
     func test_selecting_variation_tracks_orderFormBundleProductConfigurationChanged_event() throws {
         // Given
         let variableProduct = createVariableProduct()
@@ -523,7 +528,7 @@ private extension ConfigurableBundleItemViewModelTests {
     }
 }
 
-extension ConfigurableVariableBundleAttributePickerViewModel: Equatable {
+extension ConfigurableVariableBundleAttributePickerViewModel: @retroactive Equatable {
     public static func == (lhs: ConfigurableVariableBundleAttributePickerViewModel, rhs: ConfigurableVariableBundleAttributePickerViewModel) -> Bool {
         lhs.name == rhs.name &&
         lhs.options == rhs.options &&

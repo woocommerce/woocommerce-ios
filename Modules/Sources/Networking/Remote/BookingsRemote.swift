@@ -5,7 +5,7 @@ import Foundation
 ///
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
-public protocol BookingsRemoteProtocol {
+public protocol BookingsRemoteProtocol: Sendable {
     func loadAllBookings(for siteID: Int64,
                          pageNumber: Int,
                          pageSize: Int,
@@ -43,7 +43,7 @@ public protocol BookingsRemoteProtocol {
 }
 
 /// Filters for booking queries
-public struct BookingFilters {
+public struct BookingFilters: Sendable {
     public let productIDs: [Int64]
     public let customerIDs: [Int64]
     public let resourceIDs: [Int64]
@@ -366,7 +366,7 @@ public extension BookingsRemote {
         public static let pageNumber: Int = Remote.Default.firstPageNumber
     }
 
-    enum Order: String {
+    enum Order: String, Sendable {
         case ascending = "asc"
         case descending = "desc"
     }

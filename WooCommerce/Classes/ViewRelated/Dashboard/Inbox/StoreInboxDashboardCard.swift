@@ -90,26 +90,10 @@ private extension StoreInboxDashboardCard {
 }
 
 private extension StoreInboxDashboardCard {
+    typealias Localization = InboxDashboardCard.Localization
+
     enum Layout {
         static let emptyStateImageWidth: CGFloat = 168
-    }
-
-    enum Localization {
-        static let hideCard = NSLocalizedString(
-            "inboxDashboardCard.hideCard",
-            value: "Hide Inbox",
-            comment: "Menu item to dismiss the Inbox section on the Dashboard screen"
-        )
-        static let viewAll = NSLocalizedString(
-            "inboxDashboardCard.viewAll",
-            value: "View all messages",
-            comment: "Button to navigate to Inbox messages list screen."
-        )
-        static let emptyStateTitle = NSLocalizedString(
-            "inboxDashboardCard.emptyStateTitle",
-            value: "No unread messages",
-            comment: "Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen."
-        )
     }
 }
 

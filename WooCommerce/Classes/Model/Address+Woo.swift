@@ -34,6 +34,23 @@ extension Address {
         return output.joined(separator: "\n")
     }
 
+    /// Returns the `formattedPostalAddress` with the phone as the last line, or nil when both are empty.
+    ///
+    var formattedPostalAddressWithPhone: String? {
+        let trimmedPhone = phone?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lines = [formattedPostalAddress, trimmedPhone].compactMap { $0 }.filter { !$0.isEmpty }
+        return lines.isEmpty ? nil : lines.joined(separator: "\n")
+    }
+
+    /// Returns the `fullNameWithCompany` and `formattedPostalAddressWithPhone`, skipping empty parts.
+    ///
+    var fullNameWithCompanyAddressAndPhone: String {
+        [fullNameWithCompany, formattedPostalAddressWithPhone]
+            .compactMap { $0 }
+            .filter { !$0.isEmpty }
+            .joined(separator: "\n")
+    }
+
     /// Returns the (clean) Phone number: contains only decimal digits.
     ///
     var cleanedPhoneNumber: String? {

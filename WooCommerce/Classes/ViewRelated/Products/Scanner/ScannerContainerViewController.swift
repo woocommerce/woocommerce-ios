@@ -5,15 +5,7 @@ final class ScannerContainerViewController: UIViewController {
     private lazy var barcodeScannerChildViewController: CodeScannerViewController = {
         return CodeScannerViewController(instructionText: instructionText,
                                             format: .barcode { [weak self] result in
-            guard let self else { return }
-            guard self.hasDetectedBarcode == false else {
-                return
-            }
-            guard let barcode = try? result.get().first else {
-                return
-            }
-            self.hasDetectedBarcode = true
-            self.onBarcodeScanned(barcode)
+            self?.handleBarcodeDetectionResult(result)
         })
     }()
 
@@ -24,6 +16,11 @@ final class ScannerContainerViewController: UIViewController {
 
     /// Tracks whether a barcode has been detected because the barcode detection callback is only handled once.
     private var hasDetectedBarcode: Bool = false
+    private var candidateBarcode: ScannedBarcode?
+    private var consecutiveDetectionCount = 0
+
+    // Vision samples the camera every 0.1 seconds; three matching samples filter isolated misreads.
+    private let requiredConsecutiveDetections = 3
 
     init(navigationTitle: String, instructionText: String, onBarcodeScanned: @escaping (ScannedBarcode) -> Void) {
         self.navigationTitle = navigationTitle
@@ -41,6 +38,26 @@ final class ScannerContainerViewController: UIViewController {
 
         configureNavigation()
         configureBarcodeScannerChildViewController()
+    }
+
+    func handleBarcodeDetectionResult(_ result: Result<[ScannedBarcode], Error>) {
+        guard !hasDetectedBarcode else { return }
+        guard case let .success(barcodes) = result, let firstBarcode = barcodes.first else {
+            candidateBarcode = nil
+            consecutiveDetectionCount = 0
+            return
+        }
+
+        if let candidateBarcode, barcodes.contains(candidateBarcode) {
+            consecutiveDetectionCount += 1
+        } else {
+            candidateBarcode = firstBarcode
+            consecutiveDetectionCount = 1
+        }
+
+        guard consecutiveDetectionCount >= requiredConsecutiveDetections, let candidateBarcode else { return }
+        hasDetectedBarcode = true
+        onBarcodeScanned(candidateBarcode)
     }
 }
 

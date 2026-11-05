@@ -3,6 +3,7 @@ import UIKit
 
 /// Represents a regular UITableView Cell with subtitle: [Image | Text + Subtitle |  Disclosure]
 ///
+@MainActor
 class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
     @IBOutlet weak var leftImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -56,6 +57,10 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBackground()
         leftImageView.tintColor = .primary
         titleLabel.applyBodyStyle()

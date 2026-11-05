@@ -1,6 +1,7 @@
 import UIKit
 
-final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, SearchResultCell {
+@MainActor
+final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, @MainActor SearchResultCell {
     typealias SearchModel = ViewModel
 
     @IBOutlet private var subtitleLabel: UILabel!
@@ -14,6 +15,10 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, SearchResul
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureBackground()
         configureLabels()
     }

@@ -61,6 +61,8 @@ struct StoreMostActiveCouponsCard: View {
 }
 
 private extension StoreMostActiveCouponsCard {
+    typealias Localization = MostActiveCouponsCard.Localization
+
     var header: some View {
         StoreDashboardCardHeader(DashboardCard.CardType.coupons.name,
                                  showsError: !viewModel.analyticsEnabled || viewModel.syncingError != nil) {
@@ -97,6 +99,7 @@ private extension StoreMostActiveCouponsCard {
         StoreDashboardDateRangeHeader(
             timeRange: viewModel.timeRange,
             dateText: viewModel.timeRangeText,
+            customTitle: Localization.custom,
             isDisabled: viewModel.syncingData,
             accessibilityPrefix: "coupons",
             onSelect: selectTimeRange,
@@ -128,36 +131,6 @@ private extension StoreMostActiveCouponsCard {
     func viewAllCoupons() {
         ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .coupons))
         onViewAllCoupons()
-    }
-}
-
-private extension StoreMostActiveCouponsCard {
-    enum Localization {
-        static let hideCard = NSLocalizedString(
-            "mostActiveCouponsCard.hideCard",
-            value: "Hide Coupons",
-            comment: "Menu item to dismiss the coupons card on the Dashboard screen"
-        )
-        static let viewAll = NSLocalizedString(
-            "mostActiveCouponsCard.viewAll",
-            value: "View all coupons",
-            comment: "Button to navigate to Coupons list screen."
-        )
-        static let coupons = NSLocalizedString(
-            "mostActiveCouponsCard.coupons",
-            value: "Coupons",
-            comment: "Title in the coupons list on the coupons card on the Dashboard screen"
-        )
-        static let uses = NSLocalizedString(
-            "mostActiveCouponsCard.uses",
-            value: "Uses",
-            comment: "Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used."
-        )
-        static let unavailableAnalytics = NSLocalizedString(
-            "mostActiveCouponsCard.unavailableAnalyticsView.title",
-            value: "Unable to display your store's coupon analytics",
-            comment: "Title when the Most Active Coupons card is disabled because the analytics feature is unavailable"
-        )
     }
 }
 

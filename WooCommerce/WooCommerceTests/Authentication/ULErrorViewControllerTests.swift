@@ -2,6 +2,7 @@ import XCTest
 import WordPressAuthenticator
 @testable import WooCommerce
 
+@MainActor
 final class ULErrorViewControllerTests: XCTestCase {
 
     override func setUp() {

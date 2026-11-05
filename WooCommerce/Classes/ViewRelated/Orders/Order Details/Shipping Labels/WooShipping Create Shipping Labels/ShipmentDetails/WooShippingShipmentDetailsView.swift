@@ -1,12 +1,21 @@
 import SwiftUI
 import WooFoundation
+import struct Yosemite.WooShippingServiceStatusNotice
 
 struct WooShippingShipmentDetailsView: View {
     @ObservedObject private var viewModel: WooShippingShipmentDetailsViewModel
     @State private var showingRefundRequest = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(viewModel: WooShippingShipmentDetailsViewModel) {
+    private let serviceStatusNotices: [WooShippingServiceStatusNotice]
+    private let onDismissServiceStatusNotice: (_ noticeID: String) -> Void
+
+    init(viewModel: WooShippingShipmentDetailsViewModel,
+         serviceStatusNotices: [WooShippingServiceStatusNotice] = [],
+         onDismissServiceStatusNotice: @escaping (_ noticeID: String) -> Void = { _ in }) {
         self.viewModel = viewModel
+        self.serviceStatusNotices = serviceStatusNotices
+        self.onDismissServiceStatusNotice = onDismissServiceStatusNotice
     }
 
     var body: some View {
@@ -31,6 +40,12 @@ struct WooShippingShipmentDetailsView: View {
                 .padding(.bottom, Layout.contentSpacing)
                 .renderedIf(viewModel.shouldShowCustomsForm)
 
+            if !viewModel.canViewLabel && serviceStatusNotices.isNotEmpty {
+                WooShippingServiceStatusNoticesView(notices: serviceStatusNotices,
+                                                    onDismiss: onDismissServiceStatusNotice)
+                    .padding(.bottom, Layout.contentSpacing)
+            }
+
             if viewModel.canViewLabel {
                 EmptyView()
             } else if let package = viewModel.selectedPackage,
@@ -49,6 +64,8 @@ struct WooShippingShipmentDetailsView: View {
                 )
             }
         }
+        // Animates only notice changes, so switching shipment tabs never re-animates the banners.
+        .animation(reduceMotion ? nil : .easeInOut, value: serviceStatusNotices.map(\.id))
         .sheet(isPresented: $showingRefundRequest) {
             if let refundViewModel = viewModel.refundViewModel {
                 WooShippingRefundView(viewModel: refundViewModel) { updatedLabel in

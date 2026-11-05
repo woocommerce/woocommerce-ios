@@ -7,6 +7,7 @@ import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 import enum NetworkingCore.CookieNonceAuthenticationRules
 import protocol NetworkingCore.URLSessionProtocol
 
+@MainActor
 protocol SiteCredentialLoginProtocol: AnyObject {
     var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)? { get set }
     func cancel()
@@ -164,6 +165,7 @@ enum SiteCredentialLoginError: LocalizedError {
 /// - Issue an explicit nonce GET using the same private session.
 /// Ref: pe5sF9-1iQ-p2
 ///
+@MainActor
 final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let endpointConfiguration: Result<CookieNonceAuthenticationEndpoints, SiteCredentialLoginError>
     private let cookieJar: HTTPCookieStorage
@@ -274,7 +276,6 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
-    @MainActor
     func startLogin(
         username: String,
         password: String,
@@ -333,7 +334,6 @@ private extension SiteCredentialLoginUseCase {
 
     /// Fetches a document, following only same-site redirects and never more than the shared bound.
     /// Returns the first non-redirect response, so callers only express their own terminal check.
-    @MainActor
     func loadDocument(
         from startURL: URL,
         stage: CookieNonceAuthenticationResponseStage,
@@ -359,7 +359,6 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
-    @MainActor
     func preflight(endpoints: CookieNonceAuthenticationEndpoints) async throws -> URL {
         let document = try await loadDocument(from: endpoints.loginEntryURL, stage: .preflight, endpoints: endpoints)
         guard let submissionURL = try endpointValue(stage: .preflight, response: document.response, {
@@ -370,7 +369,6 @@ private extension SiteCredentialLoginUseCase {
         return submissionURL
     }
 
-    @MainActor
     func retrieveNonce(
         at nonceURL: URL,
         afterLoginAt loginURL: URL,
@@ -385,7 +383,6 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
-    @MainActor
     func verifyDashboard(afterLoginAt loginURL: URL, endpoints: CookieNonceAuthenticationEndpoints) async throws {
         let adminBaseURL = try endpointValue { try endpoints.derivedAdminBaseURL(afterLoginAt: loginURL) }
         let document = try await loadDocument(from: adminBaseURL, stage: .dashboard, endpoints: endpoints)
@@ -400,7 +397,6 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
-    @MainActor
     func load(_ request: URLRequest, using session: URLSessionProtocol,
               stage: CookieNonceAuthenticationResponseStage) async throws -> LoginResponse {
         try Task.checkCancellation()
@@ -521,7 +517,7 @@ private extension SiteCredentialLoginUseCase {
         return .unexpectedResponse(failure)
     }
 
-    static func makeRedirectBlockingSession(cookieJar: HTTPCookieStorage) -> URLSession {
+    nonisolated static func makeRedirectBlockingSession(cookieJar: HTTPCookieStorage) -> URLSession {
         return URLSession(configuration: makeSessionConfiguration(cookieJar: cookieJar),
                           delegate: RedirectBlockingURLSessionDelegate(),
                           delegateQueue: nil)
@@ -529,7 +525,7 @@ private extension SiteCredentialLoginUseCase {
 }
 
 extension SiteCredentialLoginUseCase {
-    static func makePrivateCookieJar() -> HTTPCookieStorage {
+    nonisolated static func makePrivateCookieJar() -> HTTPCookieStorage {
         if let cookieJar = URLSessionConfiguration.ephemeral.httpCookieStorage,
            cookieJar !== HTTPCookieStorage.shared {
             return cookieJar
@@ -537,8 +533,8 @@ extension SiteCredentialLoginUseCase {
         return HTTPCookieStorage()
     }
 
-    static func makeSessionConfiguration(cookieJar: HTTPCookieStorage,
-                                         baseConfiguration: URLSessionConfiguration = .ephemeral) -> URLSessionConfiguration {
+    nonisolated static func makeSessionConfiguration(cookieJar: HTTPCookieStorage,
+                                                     baseConfiguration: URLSessionConfiguration = .ephemeral) -> URLSessionConfiguration {
         let configuration = baseConfiguration
         configuration.httpCookieStorage = cookieJar
         configuration.httpShouldSetCookies = true

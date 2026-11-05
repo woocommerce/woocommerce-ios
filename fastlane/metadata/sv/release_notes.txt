@@ -1,0 +1,1 @@
+Frakt till EU är nu enklare – dina tullformulär efterfrågar varje artikels artikelnummer, tillverkarens artikelnummer och GTIN/EAN vid behov. Personlig konfiguration fungerar smidigt för butiker utan WooPayments eller Stripe. Fraktetiketter gör nu mottagarens telefonnummer valfritt för inhemska beställningar.

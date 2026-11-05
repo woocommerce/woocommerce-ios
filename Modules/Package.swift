@@ -153,7 +153,7 @@ let package = Package(
                 "WooFoundationCore",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "Fakes",
@@ -188,7 +188,7 @@ let package = Package(
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "NetworkingCore",
@@ -210,7 +210,7 @@ let package = Package(
             ],
             exclude: ["Model/Migrations.md"],
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "TestKit",
@@ -338,12 +338,13 @@ let package = Package(
                 "Experiments",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "HardwareTests",
             dependencies: [
-                "Hardware"
+                "Hardware",
+                .product(name: "StarIO10", package: "StarXpand-SDK-iOS")
             ],
             swiftSettings: swift5
         ),
@@ -359,7 +360,7 @@ let package = Package(
                 "WordPressShared",
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "StorageTests",

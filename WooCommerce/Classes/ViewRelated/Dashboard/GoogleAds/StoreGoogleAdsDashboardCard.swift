@@ -115,6 +115,7 @@ private extension StoreGoogleAdsDashboardCard {
                         Spacer(minLength: StoreSpacing.s0)
 
                         StoreIcon.AngleRight.regular.image(size: .largeIncreased)
+                            .flipsForRightToLeftLayoutDirection(true)
                             .accessibilityHidden(true)
                     }
 
@@ -147,52 +148,7 @@ private extension StoreGoogleAdsDashboardCard {
 }
 
 private extension StoreGoogleAdsDashboardCard {
-    enum Localization {
-        static let hideCard = NSLocalizedString(
-            "googleAdsDashboardCard.hideCard",
-            value: "Hide Google Ads",
-            comment: "Menu item to dismiss the Google Ads campaigns section on the Dashboard screen"
-        )
-        static let viewAll = NSLocalizedString(
-            "googleAdsDashboardCard.viewAll",
-            value: "View all campaigns",
-            comment: "Button to navigate to the Google Ads campaign dashboard."
-        )
-        static let createCampaign = NSLocalizedString(
-            "googleAdsDashboardCard.createCampaign",
-            value: "Create Campaign",
-            comment: "Button that when tapped will launch create Google Ads campaign flow."
-        )
-        enum NoCampaign {
-            static let title = NSLocalizedString(
-                "googleAdsDashboardCard.noCampaign.title",
-                value: "Drive sales and generate more traffic with Google Ads",
-                comment: "Title label on the Google Ads campaigns section on the Dashboard screen"
-            )
-            static let subtitle = NSLocalizedString(
-                "googleAdsDashboardCard.noCampaign.details",
-                value: "Promote your products across Google Search, Shopping, Youtube, Gmail, and more.",
-                comment: "Subtitle label on the Google Ads campaigns section on the Dashboard screen"
-            )
-        }
-        enum Stats {
-            static let title = NSLocalizedString(
-                "googleAdsDashboardCard.stats.title",
-                value: "Paid campaign performance",
-                comment: "Title label for the Google Ads paid campaign performance section"
-            )
-            static let impressions = NSLocalizedString(
-                "googleAdsDashboardCard.stats.totalImpressions",
-                value: "Impressions",
-                comment: "Title label for the total impressions of Google Ads paid campaigns"
-            )
-            static let clicks = NSLocalizedString(
-                "googleAdsDashboardCard.stats.totalClicks",
-                value: "Clicks",
-                comment: "Title label for the total clicks of Google Ads paid campaigns"
-            )
-        }
-    }
+    typealias Localization = GoogleAdsDashboardCard.Localization
 }
 
 #Preview {

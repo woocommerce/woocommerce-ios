@@ -6,6 +6,7 @@ import protocol Storage.StorageManagerType
 
 /// View model for `ProductDetailPreviewView`
 ///
+@MainActor
 final class ProductDetailPreviewViewModel: ObservableObject {
     enum EditableField: String {
         case name
@@ -495,26 +496,44 @@ private extension ProductDetailPreviewViewModel {
 private extension ProductDetailPreviewViewModel {
     @MainActor
     func fetchPrerequisites() async throws {
-        await withThrowingTaskGroup(of: Void.self) { [weak self] group in
-            guard let self else { return }
+        await withThrowingTaskGroup(of: Prerequisite.self) { group in
             group.addTask {
                 await self.fetchSettingsIfNeeded()
+                return .settings
             }
-            group.addTask {
-                guard self.hasSyncedCategories == false else {
-                    return
+            if !hasSyncedCategories {
+                group.addTask {
+                    try await self.synchronizeAllCategories()
+                    return .categories
                 }
-                try await self.synchronizeAllCategories()
-                self.hasSyncedCategories = true
             }
-            group.addTask {
-                guard self.hasSyncedTags == false else {
-                    return
+            if !hasSyncedTags {
+                group.addTask {
+                    try await self.synchronizeAllTags()
+                    return .tags
                 }
-                try await self.synchronizeAllTags()
-                self.hasSyncedTags = true
+            }
+
+            while let result = await group.nextResult() {
+                guard case let .success(prerequisite) = result else {
+                    continue
+                }
+                switch prerequisite {
+                case .settings:
+                    break
+                case .categories:
+                    hasSyncedCategories = true
+                case .tags:
+                    hasSyncedTags = true
+                }
             }
         }
+    }
+
+    private enum Prerequisite: Sendable {
+        case settings
+        case categories
+        case tags
     }
 
     @MainActor

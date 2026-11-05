@@ -4,6 +4,7 @@ import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
 
 /// Coordinates navigation for product sharing
+@MainActor
 final class ShareProductCoordinator: Coordinator {
     let navigationController: UINavigationController
 

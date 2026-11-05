@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class TitleAndValueTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var stackView: UIStackView!
@@ -23,6 +24,10 @@ final class TitleAndValueTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
+
+    private func configureAfterNibLoad() {
         configureDefaultBackgroundConfiguration()
         enableMultipleLines()
         apply(style: .default)

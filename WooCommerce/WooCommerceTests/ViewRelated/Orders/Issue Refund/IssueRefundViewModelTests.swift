@@ -37,6 +37,7 @@ final class IssueRefundViewModelTests: XCTestCase {
     }
 
 
+    @MainActor
     func test_quantity_completion_when_selected_item_was_fully_refunded_then_does_not_select_next_item() throws {
         // Given
         let first = MockOrderItem.sampleItem(itemID: 10, productID: 100, quantity: 1, taxes: [], total: "10", totalTax: "0")
@@ -66,6 +67,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isNextButtonEnabled)
     }
 
+    @MainActor
     func test_quantity_completion_when_an_earlier_item_was_removed_then_selects_original_item() throws {
         // Given
         let first = MockOrderItem.sampleItem(itemID: 10, productID: 100, quantity: 1, taxes: [], total: "10", totalTax: "0")
@@ -96,6 +98,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(sut.title, "$30.00")
     }
 
+    @MainActor
     func test_quantity_completion_when_available_quantity_was_reduced_then_clamps_to_latest_quantity() throws {
         // Given
         let item = MockOrderItem.sampleItem(itemID: 10, quantity: 3, taxes: [], total: "30", totalTax: "0")

@@ -13,6 +13,7 @@ protocol ProductSettingsRowMediator {
 
     /// Show a reusable ViewController like AztecEditorViewController.
     ///
+    @MainActor
     func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (_ settings: ProductSettings) -> Void)
 
     var reuseIdentifier: String { get }

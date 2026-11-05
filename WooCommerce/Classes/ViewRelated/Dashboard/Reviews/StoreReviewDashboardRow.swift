@@ -11,7 +11,7 @@ struct StoreReviewDashboardRow: View {
             VStack(spacing: StoreSpacing.s0) {
                 HStack(alignment: .top, spacing: StoreSpacing.s5) {
                     StoreIcon.MessageLines.solid.image(size: .largeIncreased)
-                        .foregroundStyle(highlightsUnread ? .storeOnSurface : .storeSecondary)
+                        .foregroundStyle(highlightsUnread ? .storeSecondary : .storeOnSurface)
                         .accessibilityHidden(true)
 
                     VStack(alignment: .leading, spacing: StoreSpacing.s2) {
@@ -27,7 +27,7 @@ struct StoreReviewDashboardRow: View {
                         if viewModel.review.rating > 0 {
                             HStack(spacing: StoreSpacing.s2) {
                                 ForEach(0..<viewModel.review.rating, id: \.self) { _ in
-                                    StoreIcon.Star.solid.image(size: .extraSmall)
+                                    StoreIcon.Star.solid.image(size: .small)
                                 }
                             }
                             .accessibilityLabel(Localization.rating(viewModel.review.rating))

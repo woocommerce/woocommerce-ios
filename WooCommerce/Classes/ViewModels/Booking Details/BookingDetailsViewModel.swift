@@ -270,6 +270,7 @@ extension BookingDetailsViewModel {
 // MARK: Attendance status
 
 extension BookingDetailsViewModel {
+    @MainActor
     func updateAttendanceStatus(to newStatus: BookingAttendanceStatus) {
         let action = BookingAction.updateBookingAttendanceStatus(
             siteID: booking.siteID,

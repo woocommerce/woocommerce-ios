@@ -102,7 +102,7 @@ private struct OrderCustomerSectionContent: View {
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
     }
 
     private var createCustomerView: some View {

@@ -31,6 +31,9 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
     /// layout runs. Zero whenever no drag is in flight.
     @State private var dragTranslation: CGFloat = 0
     @State private var dragPhase: DragPhase = .idle
+    /// Set once an accepted back drag hands over to `onBack`. Changing `item` clears it, so if it is
+    /// still set after that update the caller kept the item and the pushed screen has to come back.
+    @State private var isAwaitingBackResult = false
     /// Resets itself when the drag ends *or is cancelled*, which is the only signal a cancelled drag
     /// gives us. See `DragPhase`.
     @GestureState private var isDragActive = false
@@ -111,8 +114,20 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
             }
         }
         .onChange(of: item) { oldValue, newValue in
+            isAwaitingBackResult = false
             dragGeneration += 1
             navigate(from: oldValue, to: newValue)
+        }
+        .task(id: isAwaitingBackResult) {
+            // Starts only after the update in which `onBack` ran has finished, so when the caller
+            // cleared the item, `onChange(of: item)` has already settled the drag by now.
+            guard isAwaitingBackResult else { return }
+            isAwaitingBackResult = false
+            guard dragPhase == .completing else { return }
+            dragPhase = .idle
+            withAnimation(Constants.transition) {
+                dragTranslation = 0
+            }
         }
         .onChange(of: canNavigateBack) { oldValue, newValue in
             // A release animation can still be running when checkout locks (a card is inserted) or a
@@ -257,13 +272,7 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
                 withTransaction(transaction, onBack)
                 // An accepted back clears the item, and `navigate` settles the drag. If the caller
                 // kept the item, nothing else would bring the pushed screen back on screen.
-                DispatchQueue.main.async {
-                    guard dragPhase == .completing, generation == dragGeneration else { return }
-                    dragPhase = .idle
-                    withAnimation(Constants.transition) {
-                        dragTranslation = 0
-                    }
-                }
+                isAwaitingBackResult = true
             }
         }
     }

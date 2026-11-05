@@ -2,6 +2,7 @@ import SwiftUI
 
 /// A view modifier that adjusts the width multiplier based on dynamic type size.
 struct DynamicWidthScaler: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posLayoutScale) private var layoutScale
     let containerWidth: CGFloat
@@ -13,7 +14,7 @@ struct DynamicWidthScaler: ViewModifier {
         if layoutScale == .compact {
             content
                 .frame(maxWidth: .infinity)
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
         } else {
             content
                 .frame(width: containerWidth * widthMultiplier)

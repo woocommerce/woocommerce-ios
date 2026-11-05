@@ -185,6 +185,7 @@ private extension HubMenu {
                 Inbox(viewModel: viewModel.inboxViewModel)
             case .reviews:
                 ReviewsView(siteID: viewModel.siteID)
+                    .background(Color(.listBackground).ignoresSafeArea())
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationTitle(Localization.reviews)
             case .coupons:

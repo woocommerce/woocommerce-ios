@@ -24,7 +24,6 @@ import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
-    @Environment(\.posMetrics) private var metrics
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
     @StateObject private var posSheetManager = POSSheetManager()
@@ -202,7 +201,7 @@ public struct PointOfSaleEntryPointView: View {
             // Keep native compact windows compact; collapse regular windows that cannot fit two panes.
             let isCompactLayout = horizontalSizeClass == .compact || geometry.size.width < Constants.minimumSplitWidth
             content(isCompactLayout: isCompactLayout)
-                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? metrics.padding.none : nil)
+                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? 0 : nil)
                 .environment(\.horizontalSizeClass, isCompactLayout ? .compact : .regular)
         }
     }

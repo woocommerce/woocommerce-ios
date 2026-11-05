@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CardReaderConnectionStatusView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -27,12 +28,12 @@ struct CardReaderConnectionStatusView: View {
                         Text(Localization.disconnectCardReader)
                     }
                 } label: {
-                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                    HStack(spacing: metrics.spacing.medium) {
                         circleIcon(with: Color.posSuccess)
                         Text(Localization.readerConnected)
                             .foregroundColor(connectedFontColor)
                     }
-                    .padding(.horizontal, Constants.horizontalPadding)
+                    .padding(.horizontal, metrics.padding.large)
                     .frame(maxHeight: .infinity)
                 }
                 .accessibilityIdentifier("pos-reader-connected")
@@ -44,18 +45,18 @@ struct CardReaderConnectionStatusView: View {
                 Button {
                     posModel.connectCardReader()
                 } label: {
-                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                    HStack(spacing: metrics.spacing.medium) {
                         circleIcon(with: Color.posAlert)
                         Text(Localization.readerDisconnected)
                             .foregroundColor(disconnectedFontColor)
                     }
-                    .padding(.horizontal, Constants.disconnectedBorderAndContentSpacing)
+                    .padding(.horizontal, metrics.spacing.medium)
                     .frame(maxHeight: .infinity)
                     .overlay(
                         RoundedRectangle(cornerRadius: Constants.disconnectedBorderCornerRadius)
                             .stroke(disconnectedBorderColor, lineWidth: Constants.disconnectedBorderWidth)
                     )
-                    .padding(Constants.disconnectedBorderInset)
+                    .padding(metrics.spacing.small)
                 }
                 .accessibilityIdentifier("pos-connect-reader-button")
             case .reconnecting:
@@ -87,7 +88,7 @@ struct CardReaderConnectionStatusView: View {
 private extension CardReaderConnectionStatusView {
     @ViewBuilder
     func progressIndicatingCardReaderStatus(title: String) -> some View {
-        HStack(spacing: Constants.buttonImageAndTextSpacing) {
+        HStack(spacing: metrics.spacing.medium) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle(
                     size: Constants.progressIndicatorDimension * scale,
@@ -96,7 +97,7 @@ private extension CardReaderConnectionStatusView {
             Text(title)
                 .foregroundColor(connectedFontColor)
         }
-        .padding(.horizontal, Constants.horizontalPadding)
+        .padding(.horizontal, metrics.padding.large)
         .frame(maxHeight: .infinity)
     }
 }
@@ -132,16 +133,12 @@ private extension CardReaderConnectionStatusView {
 
 private extension CardReaderConnectionStatusView {
     enum Constants {
-        static let buttonImageAndTextSpacing: CGFloat = POSSpacing.medium
         static let imageDimension: CGFloat = 14
         static let progressIndicatorDimension: CGFloat = 10
         static let progressIndicatorLineWidth: CGFloat = 2
         static let font = POSFontStyle.posBodyMediumRegular()
-        static let horizontalPadding: CGFloat = POSPadding.large
-        static let disconnectedBorderAndContentSpacing: CGFloat = POSSpacing.medium
         static let disconnectedBorderCornerRadius: CGFloat = POSCornerRadiusStyle.small.value
         static let disconnectedBorderWidth: CGFloat = 2
-        static let disconnectedBorderInset: CGFloat = POSSpacing.small
     }
 }
 

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel
     private let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -15,7 +16,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
         VStack(spacing: 0) {
             Spacer()
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 Image(decorative: viewModel.imageName, bundle: .module)
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
@@ -27,7 +28,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
             }
 
-            Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
+            Spacer(minLength: metrics.spacing.large)
 
             Button(viewModel.cancelButtonViewModel.title,
                    action: viewModel.cancelButtonViewModel.actionHandler)

@@ -149,7 +149,10 @@ struct ItemListRow: View {
             .accessibilityIdentifier("pos-search-variation-card-\(variation.productVariationID)")
         case let .coupon(coupon):
             Button(action: {
-                if !coupon.isExpired {
+                // Only compact layouts show the applied state on the card, so only there a tap unselects it.
+                if isApplied(coupon) {
+                    itemActionHandler.handleTapOnAppliedCoupon(item)
+                } else if !coupon.isExpired {
                     itemActionHandler.handleTap(item, position: position)
                 }
             }, label: {

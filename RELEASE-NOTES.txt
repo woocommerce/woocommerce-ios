@@ -5,6 +5,7 @@
 -----
 - [**] POS: Point of Sale is now available on iPhone in the US, Canada, Australia and Puerto Rico, and on iOS 18 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
 - [*] POS: Tap to Pay is no longer offered at checkout for stores in Canada, Australia and Puerto Rico, where it is not supported. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
+- [*] POS: On iPhone, tapping a selected coupon in the coupon list now removes it from the cart. [PR_URL_TBD]
 - [*] Help & Support: Troubleshooting now checks your payment setup, so you can find and fix card payment problems faster. [https://github.com/woocommerce/woocommerce-ios/pull/18229]
 
 - [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]

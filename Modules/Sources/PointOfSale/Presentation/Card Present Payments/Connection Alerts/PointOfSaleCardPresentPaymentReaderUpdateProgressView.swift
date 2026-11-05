@@ -6,6 +6,10 @@ struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
     let progress: CGFloat
     let isComplete: Bool
 
+    private var borderInset: CGFloat {
+        metrics.spacing.xSmall
+    }
+
     var body: some View {
         ZStack {
             Circle()
@@ -14,7 +18,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
 
             Circle()
                 .fill(Color.posPrimary)
-                .frame(width: Constants.size - metrics.spacing.xSmall, height: Constants.size - metrics.spacing.xSmall)
+                .frame(width: Constants.size - borderInset, height: Constants.size - borderInset)
                 .clipShape(
                     Rectangle()
                         .offset(y: (1 - progress) * Constants.size)

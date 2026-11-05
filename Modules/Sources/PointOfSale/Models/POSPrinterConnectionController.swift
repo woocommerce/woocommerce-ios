@@ -190,7 +190,7 @@ final class POSPrinterConnectionController {
                 // Tracked from this attempt's own result, even once cancelled, so a connect that finishes after
                 // the modal closed or reopened is credited to the setup that started it. The modal also closes,
                 // cancelling this task, as soon as the printer reports connected.
-                self?.trackConnected(setupSource: setupSource)
+                self?.analytics.track(event: .PointOfSale.receiptPrinterConnected(source: setupSource))
             } catch {
                 // A superseded connect (another printer tapped, or setup cancelled) must not
                 // report an error over the newer flow.
@@ -200,7 +200,9 @@ final class POSPrinterConnectionController {
         }
     }
 
+    /// Disconnects at the merchant's request, from the Settings Disconnect button.
     func disconnect() async {
+        analytics.track(.pointOfSaleReceiptPrinterDisconnectTapped)
         await service.disconnect()
     }
 
@@ -226,13 +228,6 @@ final class POSPrinterConnectionController {
         discoveryState = .idle
     }
 
-    private func trackConnected(setupSource: POSPrinterSetupSource?) {
-        analytics.track(.pointOfSaleReceiptPrinterConnected)
-        if let setupSource {
-            analytics.track(event: .PointOfSale.receiptPrinterSetupCompleted(source: setupSource))
-        }
-    }
-
     private func observeConnectionStatus() {
         // Reach the stream through a transient `self` so the long-lived iteration captures only a
         // weak reference. Holding `self` strongly across this never-ending loop would retain the
@@ -245,9 +240,6 @@ final class POSPrinterConnectionController {
                 case .connected(let device):
                     connectedPrinter = device
                 case .disconnected, .idle:
-                    if connectedPrinter != nil {
-                        analytics.track(.pointOfSaleReceiptPrinterDisconnected)
-                    }
                     connectedPrinter = nil
                 case .connecting, .disconnecting:
                     break

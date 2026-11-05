@@ -431,7 +431,7 @@ struct POSPrinterConnectionControllerTests {
         #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started"])
     }
 
-    @Test func test_connect_when_setup_is_open_then_tracks_connected_and_setup_completed_with_source() async {
+    @Test func test_connect_when_setup_is_open_then_tracks_connected_with_source() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")
         let analytics = MockPOSAnalytics()
@@ -440,16 +440,14 @@ struct POSPrinterConnectionControllerTests {
 
         // When
         sut.connect(to: device)
-        await waitForEvents(analytics, count: 3)
+        await waitForEvents(analytics, count: 2)
 
         // Then
-        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
-                                                      "receipt_printer_connected",
-                                                      "receipt_printer_setup_completed"])
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started", "receipt_printer_connected"])
         #expect(analytics.events.last?.properties["source"] as? String == "print_receipt")
     }
 
-    @Test func test_connect_when_started_after_setup_was_cancelled_then_tracks_connected_without_setup_completed() async {
+    @Test func test_connect_when_started_after_setup_was_cancelled_then_tracks_connected_without_source() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")
         let analytics = MockPOSAnalytics()
@@ -464,9 +462,10 @@ struct POSPrinterConnectionControllerTests {
 
         // Then
         #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started", "receipt_printer_connected"])
+        #expect(analytics.events.last?.properties["source"] == nil)
     }
 
-    @Test func test_connect_when_it_finishes_after_setup_reopened_then_completes_the_setup_that_started_it() async {
+    @Test func test_connect_when_it_finishes_after_setup_reopened_then_tracks_the_source_that_started_it() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")
         let analytics = MockPOSAnalytics()
@@ -491,13 +490,12 @@ struct POSPrinterConnectionControllerTests {
 
         // When — the connect started from Settings finishes inside the Print receipt session.
         service.finishHeldConnect()
-        await waitForEvents(analytics, count: 4)
+        await waitForEvents(analytics, count: 3)
 
         // Then
         #expect(analytics.events.map(\.eventName) == ["receipt_printer_setup_started",
                                                       "receipt_printer_setup_started",
-                                                      "receipt_printer_connected",
-                                                      "receipt_printer_setup_completed"])
+                                                      "receipt_printer_connected"])
         #expect(analytics.events.last?.properties["source"] as? String == "settings")
     }
 
@@ -517,33 +515,30 @@ struct POSPrinterConnectionControllerTests {
         #expect(analytics.events.isEmpty)
     }
 
-    @Test func test_disconnect_when_connected_then_tracks_disconnected() async {
+    @Test func test_disconnect_then_tracks_disconnect_tapped() async {
         // Given
-        let device = PrinterDevice(id: "1", name: "Star TSP100")
         let analytics = MockPOSAnalytics()
         let sut = await makeSubscribedController(service: MockReceiptPrinterService(), analytics: analytics)
-        sut.connect(to: device)
-        await wait(on: sut, until: { sut.isConnected })
-        await waitForEvents(analytics, count: 1)
 
         // When
         await sut.disconnect()
-        await wait(on: sut, until: { !sut.isConnected })
 
         // Then
-        #expect(analytics.events.map(\.eventName) == ["receipt_printer_connected", "receipt_printer_disconnected"])
+        #expect(analytics.events.map(\.eventName) == ["receipt_printer_disconnect_tapped"])
     }
 
-    @Test func test_connection_status_when_replayed_on_subscribe_then_does_not_track_connected() async {
+    @Test func test_connection_status_when_printer_connects_and_drops_without_merchant_action_then_tracks_nothing() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")
         let analytics = MockPOSAnalytics()
         let service = MockReceiptPrinterService()
-        service.emitConnectionStatus(.connected(device))
+        let sut = await makeSubscribedController(service: service, analytics: analytics)
 
         // When
-        let sut = await makeSubscribedController(service: service, analytics: analytics)
+        service.emitConnectionStatus(.connected(device))
         await wait(on: sut, until: { sut.isConnected })
+        service.emitConnectionStatus(.disconnected)
+        await wait(on: sut, until: { !sut.isConnected })
 
         // Then
         #expect(analytics.events.isEmpty)

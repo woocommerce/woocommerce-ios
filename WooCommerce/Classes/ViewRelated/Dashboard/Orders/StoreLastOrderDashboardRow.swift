@@ -32,7 +32,7 @@ struct StoreLastOrderDashboardRow: View {
                             if let salesChannelText = data.salesChannelText {
                                 Text(salesChannelText)
                                     .storeTextStyle(.labelSmall)
-                                    .foregroundStyle(.storePrimary)
+                                    .foregroundStyle(.storeOnPrimaryContainer)
                                     .padding(.horizontal, StorePadding.p3 + StorePadding.p1)
                                     .padding(.vertical, StorePadding.p2)
                                     .background(Color.storePrimaryContainer)

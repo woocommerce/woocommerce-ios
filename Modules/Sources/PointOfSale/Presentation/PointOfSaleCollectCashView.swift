@@ -3,6 +3,7 @@ import Combine
 import WooFoundation
 
 struct PointOfSaleCollectCashView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.posNavigationRouter) private var router
@@ -40,8 +41,8 @@ struct PointOfSaleCollectCashView: View {
 
     private var bottomPadding: CGFloat {
         keyboardObserver.isKeyboardVisible
-            ? Constants.bottomPadding
-            : floatingControlAreaSize.height + Constants.bottomPadding
+            ? metrics.padding.medium
+            : floatingControlAreaSize.height + metrics.padding.medium
     }
 
     private var isButtonEnabled: Bool {
@@ -76,16 +77,16 @@ struct PointOfSaleCollectCashView: View {
     private var collectCashContent: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.medium)) {
                     POSPageHeaderView(title: Localization.backNavigationTitle,
                                       subtitle: formattedOrderTotal,
                                       backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
                                                                      action: cancelCashPayment))
 
-                    VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                    VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.medium)) {
                         Spacer()
 
-                        VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
+                        VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.xSmall)) {
                             POSCashAmountTextField(
                                 input: $amountInput,
                                 isFocused: $isTextFieldFocused,
@@ -182,14 +183,9 @@ private extension PointOfSaleCollectCashView {
 }
 
 private extension PointOfSaleCollectCashView {
-    enum Constants {
-        static let minimumPadding: CGFloat = POSSpacing.xSmall
-        static let bottomPadding: CGFloat = POSPadding.medium
-    }
-
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if shouldMinimizePadding {
-            return Constants.minimumPadding
+            return metrics.spacing.xSmall
         }
 
         return padding

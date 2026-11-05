@@ -190,6 +190,7 @@ struct SupportChatViewModelTests {
         #expect(currentPart.contains("Result: Success"))
         #expect(!currentPart.contains("Server error"))
         #expect(description.contains("Earlier setup checks (not payment attempts)"))
+        #expect(description.contains("Server error"))
         #expect(description.contains("http_status=503"))
     }
 

@@ -159,7 +159,8 @@ private extension AddProductCoordinator {
     func presentProductTypeBottomSheet() {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
-        // Preserve the existing colors as an opaque surface over native popover glass.
+        // Re-create the resolved system color as a plain color so native popovers keep this surface opaque.
+        // Resolve inside the provider so appearance changes still update the picker.
         let backgroundColor = UIColor { traits in
             UIColor(cgColor: UIColor.basicBackground.resolvedColor(with: traits).cgColor)
         }

@@ -223,9 +223,9 @@ public class BottomSheetViewController: UIViewController {
         let hSizeClass = presentingViewController?.traitCollection.horizontalSizeClass
         let vSizeClass = presentingViewController?.traitCollection.verticalSizeClass
         let isRegular = hSizeClass == .regular && vSizeClass != .compact
-        // Hide the grip for popover presentations (iPad) and for regular
-        // size class. The grip is only appropriate for drawer-style sheets.
-        if isRegular || modalPresentationStyle == .popover {
+        // Hide the grip for native presentations and regular-size layouts.
+        // The grip is only appropriate for drawer-style sheets.
+        if isRegular || modalPresentationStyle == .popover || modalPresentationStyle == .formSheet {
             gripButton.isHidden = true
             additionalSafeAreaInsets = additionalSafeAreaInsetsRegular
         } else {

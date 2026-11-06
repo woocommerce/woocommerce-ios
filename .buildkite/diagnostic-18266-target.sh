@@ -5,6 +5,7 @@ BUILDKITE_BUILD_ID=01a1b0ed-9b45-4577-a1ca-58a83d25ec09 download_artifact build-
 tar -xf build-products.tar
 XCTESTRUN=$(find DerivedData/Build/Products -maxdepth 1 -name '*UnitTests*.xctestrun' -print -quit)
 test -n "$XCTESTRUN"
+python3 .buildkite/commands/prepare-test-simulator.py "$PROBE_DEVICE"
 date -u
 sysctl kern.boottime
 xcrun simctl list --json > simulator-before.json

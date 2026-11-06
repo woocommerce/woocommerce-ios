@@ -122,17 +122,6 @@ public struct StoreSearchField: View {
     }
 }
 
-private extension View {
-    @ViewBuilder
-    func accessibilityIdentifier(ifPresent identifier: String?) -> some View {
-        if let identifier {
-            accessibilityIdentifier(identifier)
-        } else {
-            self
-        }
-    }
-}
-
 private extension StoreSearchField {
     enum Constants {
         static let textStyle: StoreTextStyle = .bodyLarge

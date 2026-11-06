@@ -56,7 +56,8 @@ class PromoScreenshotsConfigTest < Minitest::Test
 
     refute_empty image_entries, 'No image backgrounds found — the config is missing or malformed'
 
-    image_entries.each { |entry| assert_background_matches_canvas(entry) }
+    # Check tracked phone/iPad artwork before a missing generated Duo asset can skip the test.
+    image_entries.sort_by { |entry| entry['device'] == 'iPhone Duo' ? 1 : 0 }.each { |entry| assert_background_matches_canvas(entry) }
   end
 
   private
@@ -65,7 +66,9 @@ class PromoScreenshotsConfigTest < Minitest::Test
     background = entry['background']
     path = File.join(FASTLANE_DIR, background)
 
-    assert_path_exists path
+    skip "#{background} is generated — prepare the official Duo artwork first" if entry['device'] == 'iPhone Duo' && !File.exist?(path)
+
+    assert File.file?(path), "Missing background: #{path}"
 
     # Assets live in Git LFS. Skip loudly rather than fail if they were not smudged,
     # so a checkout without LFS reports "skipped" instead of a bogus dimension failure.

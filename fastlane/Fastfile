@@ -12,7 +12,6 @@ fastlane_require 'xcodeproj'
 
 require_relative 'helpers/release_notes_pr_helper'
 require_relative 'helpers/release_notes_ai_helper'
-require_relative 'helpers/duo_screenshot_simulator'
 
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
@@ -1089,9 +1088,6 @@ platform :ios do
 
     # Erase the simulator between runs in order to get everything back to a default state
     rebuild_screenshot_devices(devices: devices)
-
-    fastlane_require 'snapshot'
-    DuoScreenshotSimulator.install(runtime: SCREENSHOT_IOS_VERSIONS.fetch('iPhone Duo'))
 
     capture_ios_screenshots(
       scheme: SCREENSHOTS_SCHEME,

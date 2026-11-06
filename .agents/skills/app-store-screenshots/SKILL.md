@@ -4,21 +4,27 @@ description: Generate App Store screenshots locally, compare them with the previ
 user-invocable: true
 ---
 
-Use the existing `WooCommerceScreenshots` UI tests and Fastlane lanes. Generate locally rather than adding the `generate screenshots` GitHub label.
+Use Xcode 27.1 or newer with the existing `WooCommerceScreenshots` UI tests and Fastlane lanes. Generate locally rather than adding the `generate screenshots` GitHub label.
 
 ## 1. Confirm changes
 
 Ask whether devices, languages, screens or view configurations need to change. Keep decisions already made. Use the current Fastfile and `fastlane/screenshots.json` for everything else.
 
+The screenshot target sets `SCREENSHOTS_SHOW_POS` to `true` for iPad and `false` for iPhone and Duo. Revisit this setting and the captured scenes when phone POS screenshots are supported.
+
 ## 2. Capture locally
 
-Build once with `bundle exec fastlane build_screenshots`. Run `take_screenshots` for each agreed appearance, for example:
+Build once with `bundle exec fastlane build_screenshots`. Use the existing screenshot tests for the agreed devices, locales and appearances.
+
+For Duo, use the available simulator controls to open it fully and rotate it to landscape. Confirm that the app is visible on the inner display. Preserve that state during capture, and restore it after a simulator reset. Use `xcodebuild test-without-building` on the prepared simulator if Fastlane would erase or recreate it. Follow the lane's Snapshot language, appearance and filename settings.
+
+For ordinary devices, use `take_screenshots`, for example:
 
 ```sh
-bundle exec fastlane take_screenshots languages:en-US devices:"iPhone Duo" mode:dark
+bundle exec fastlane take_screenshots languages:en-US devices:"iPhone 17 Pro Max" mode:dark
 ```
 
-The lane deletes its selected simulators and shuts down other booted simulators. Check for other sessions before running. Raw images go to `fastlane/screenshots/<locale>`. Review a representative set before expanding a changed configuration. Keep accepted captures when retrying a subset.
+Fastlane deletes selected simulators and shuts down other booted simulators, so check for other sessions first. Review a representative set before expanding a changed configuration. Keep accepted captures when retrying a subset.
 
 ## 3. Compose and compare
 

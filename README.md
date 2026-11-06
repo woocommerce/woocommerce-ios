@@ -108,7 +108,6 @@ Please, remember to not add this information on your commits and PRs.
     - [Tracking Events](docs/tracking-events.md)
         - [Custom Properties](docs/tracking-events.md#custom-properties)
 - Quality & Testing
-    - [Local App Store screenshots](.agents/skills/app-store-screenshots/SKILL.md)
     - [AI dev and testing tools](docs/ai-tools.md)
     - [UI Tests](WooCommerce/WooCommerceUITests/README.md)
     - [Testing Card Present Payments](docs/stripe-tests.md)
@@ -124,6 +123,9 @@ Please, remember to not add this information on your commits and PRs.
 Read our [Contributing Guide](CONTRIBUTING.md) to learn about reporting issues, contributing code, and more ways to contribute.
 
 ## 🤖 Automation
+
+Generate App Store screenshots locally with the [App Store screenshots skill](.agents/skills/app-store-screenshots/SKILL.md). The `generate screenshots` GitHub workflow is currently unreliable for Duo.
+
 
 ### Peril
 

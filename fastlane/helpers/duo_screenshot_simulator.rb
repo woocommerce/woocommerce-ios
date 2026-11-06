@@ -8,7 +8,7 @@ module DuoScreenshotSimulator
   def self.open(udid, runtime:)
     binary = pose_binary(runtime)
     raise 'Unable to boot Duo' unless system('xcrun', 'simctl', 'bootstatus', udid, '-b')
-    raise 'Unable to open Duo inner display' unless system('xcrun', 'simctl', 'spawn', udid, binary, udid, '180')
+    raise 'Unable to open Duo inner display' unless system('xcrun', 'simctl', 'spawn', udid, binary, udid)
   end
 
   def self.pose_binary(runtime)

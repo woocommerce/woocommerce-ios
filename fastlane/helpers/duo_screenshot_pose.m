@@ -2,7 +2,6 @@
 #import <dlfcn.h>
 #import <mach/mach_time.h>
 #import <math.h>
-#import <stdlib.h>
 #import <TargetConditionals.h>
 
 #if !TARGET_OS_SIMULATOR
@@ -19,25 +18,25 @@
 - (void)stopAngleUpdates;
 @end
 
-static NSNumber *readAngle(Class managerClass, NSNumber *target) {
+static BOOL waitUntilOpen(Class managerClass) {
     id<AngleManager> manager = [managerClass new];
     NSOperationQueue *queue = [NSOperationQueue new];
     queue.maxConcurrentOperationCount = 1;
     NSCondition *condition = [NSCondition new];
-    __block NSNumber *reading;
+    __block BOOL opened = NO;
     [manager startAngleUpdatesToQueue:queue handler:^(id<AngleReading> angle) {
         if (![angle respondsToSelector:@selector(isAngleValid)] || ![angle respondsToSelector:@selector(angleDegrees)]) return;
         if (!angle.isAngleValid || !isfinite(angle.angleDegrees)) return;
-        if (target && fabs(angle.angleDegrees - target.doubleValue) > 0.5) return;
+        if (fabs(angle.angleDegrees - 180) > 0.5) return;
         [condition lock];
-        reading = @(angle.angleDegrees);
+        opened = YES;
         [condition signal];
         [condition unlock];
     }];
     NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:8];
     [condition lock];
-    while (!reading && [condition waitUntilDate:deadline]) {}
-    NSNumber *result = reading;
+    while (!opened && [condition waitUntilDate:deadline]) {}
+    BOOL result = opened;
     [condition unlock];
     [manager stopAngleUpdates];
     return result;
@@ -45,8 +44,8 @@ static NSNumber *readAngle(Class managerClass, NSNumber *target) {
 
 int main(int argc, char **argv) {
     @autoreleasepool {
-        if (argc < 2 || argc > 3) {
-            fprintf(stderr, "Usage: duo-pose expected-simulator-udid [angle]\n");
+        if (argc != 2) {
+            fprintf(stderr, "Usage: duo-pose expected-simulator-udid\n");
             return 64;
         }
         NSString *expected = [NSString stringWithUTF8String:argv[1]];
@@ -63,13 +62,6 @@ int main(int argc, char **argv) {
             fprintf(stderr, "No available hinge sensor.\n");
             return 66;
         }
-        NSNumber *before = readAngle(managerClass, nil);
-        printf("before=%s\n", before ? before.stringValue.UTF8String : "unknown");
-        fflush(stdout);
-        if (argc == 2) return before ? 0 : 67;
-        char *end;
-        double angle = strtod(argv[2], &end);
-        if (end == argv[2] || *end || !isfinite(angle) || angle < 0 || angle > 180) return 64;
         void *library = dlopen("/System/Library/Frameworks/IOKit.framework/IOKit", RTLD_LAZY);
         CFDataRef (*serialize)(CFTypeRef, CFOptionFlags) = dlsym(library, "IOCFSerialize");
         CFTypeRef (*createEvent)(CFAllocatorRef, uint64_t, uint32_t, uint32_t, uint32_t, uint8_t *, CFIndex, uint32_t) = dlsym(library, "IOHIDEventCreateVendorDefinedEvent");
@@ -79,7 +71,7 @@ int main(int argc, char **argv) {
             fprintf(stderr, "Hinge event functions are unavailable.\n");
             return 68;
         }
-        NSDictionary *payload = @{@"provider": @"com.apple.Virtualization.VirtualMachines", @"source": @"hinge-slider-control", @"type": @"range", @"value": @(angle)};
+        NSDictionary *payload = @{@"provider": @"com.apple.Virtualization.VirtualMachines", @"source": @"hinge-slider-control", @"type": @"range", @"value": @180};
         CFDataRef data = serialize((__bridge CFTypeRef)payload, 1);
         if (!data) return 69;
         CFTypeRef event = createEvent(kCFAllocatorDefault, mach_absolute_time(), 0xff61, 0x5b, 0, (uint8_t *)CFDataGetBytePtr(data), CFDataGetLength(data), 0);
@@ -93,8 +85,8 @@ int main(int argc, char **argv) {
         dispatchEvent(client, event);
         CFRelease(event);
         CFRelease(client);
-        NSNumber *after = readAngle(managerClass, @(angle));
-        printf("after=%s\n", after ? after.stringValue.UTF8String : "unknown");
-        return after ? 0 : 71;
+        BOOL opened = waitUntilOpen(managerClass);
+        fprintf(opened ? stdout : stderr, opened ? "Duo opened to 180 degrees.\n" : "Duo did not open.\n");
+        return opened ? 0 : 71;
     }
 }

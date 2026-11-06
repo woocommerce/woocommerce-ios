@@ -42,6 +42,11 @@ struct ProcessConfiguration {
         #endif
     }
 
+    /// Overrides POS tab visibility for screenshots. Nil keeps normal eligibility checks.
+    static var shouldShowPOS: Bool? {
+        ProcessInfo.processInfo.environment["SCREENSHOTS_SHOW_POS"].flatMap { Bool($0) }
+    }
+
     /// Returns `true` when POS UI tests should force the POS tab visible regardless of rollout eligibility.
     static var shouldBypassPOSTabVisibilityChecks: Bool {
         #if DEBUG

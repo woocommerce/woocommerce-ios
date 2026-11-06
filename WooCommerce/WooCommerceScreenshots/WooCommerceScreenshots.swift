@@ -28,12 +28,14 @@ class WooCommerceScreenshots: XCTestCase {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         setupSnapshot(app)
+        let shouldShowPOS = UIDevice.current.userInterfaceIdiom == .pad
+        app.launchEnvironment["SCREENSHOTS_SHOW_POS"] = String(shouldShowPOS)
         app.launchArguments.append("mocked-network-layer")
         app.launchArguments.append("use-mocked-card-present-payment")
         app.launchArguments.append("-simulate-stripe-card-reader")
         // Disabling UIKit transitions leaves an idle refresh spinner visible on iPad.
         app.launchArguments.append("-mocks-push-notification")
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if shouldShowPOS {
             app.launchArguments.append("bypass-pos-eligibility-checks")
             app.launchArguments.append("load-mocked-pos-products")
             app.launchArguments.append("bypass-pos-order-syncing")
@@ -63,8 +65,8 @@ class WooCommerceScreenshots: XCTestCase {
             .goToMyStoreScreen()
             .dismissTopBannerIfNeeded()
             .then { screen in
-                XCTAssertEqual(screen.app.buttons["tab-bar-pos-item"].exists, UIDevice.current.userInterfaceIdiom == .pad,
-                               "Promotional screenshots show the POS tab only on iPad.")
+                XCTAssertEqual(screen.app.buttons["tab-bar-pos-item"].exists, shouldShowPOS,
+                               "The POS tab must match the screenshot configuration.")
             }
             .thenTakeScreenshot(named: "order-dashboard", orientation: screenshotOrientation)
 

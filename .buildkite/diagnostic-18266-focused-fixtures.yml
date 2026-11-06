@@ -1,0 +1,17 @@
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+
+steps:
+  - label: "Replay corrected authentication, duplication and payment fixtures"
+    command: |
+      set -eu
+      BUILDKITE_BUILD_ID=01a1b14e-cbf2-482d-bb2c-163381efdfec download_artifact build-products.tar
+      tar -xf build-products.tar
+      .buildkite/commands/shared-set-up.sh
+      SCAN_ONLY_TESTING='WooCommerceTests/WordPressOrgCredentialsAuthenticatorTests,WooCommerceTests/ProductFormViewController_DuplicationTests,WooCommerceTests/CardPresentPaymentPreflightControllerTests' bundle exec fastlane test_without_building name:UnitTests
+    plugins: [$CI_TOOLKIT]
+    artifact_paths:
+      - fastlane/test_output/*

@@ -481,6 +481,42 @@ private extension POSPrinterSetupModal {
         .posPreviewModalParentSize()
 }
 
+#Preview("iPhone SE: Printer found", traits: .sizeThatFitsLayout) {
+    let controller = POSPrinterConnectionController(
+        service: POSReceiptPrinterPreviewService(
+            devices: [PrinterDevice(id: "1", name: "Star TSP143IV-UEWB")],
+            keepDiscovering: true),
+        analytics: EmptyPOSAnalytics(),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .printReceipt)
+        .posPreviewSmallestPhone()
+}
+
+#Preview("iPhone SE: Several printers found", traits: .sizeThatFitsLayout) {
+    let controller = POSPrinterConnectionController(
+        service: POSReceiptPrinterPreviewService(
+            devices: [PrinterDevice(id: "1", name: "Star TSP143IV-UEWB"),
+                      PrinterDevice(id: "2", name: "Star mC-Print3"),
+                      PrinterDevice(id: "3", name: "Star TSP100IV")],
+            keepDiscovering: true),
+        analytics: EmptyPOSAnalytics(),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
+        .posPreviewSmallestPhone()
+}
+
+#Preview("iPhone SE: Bluetooth disabled", traits: .sizeThatFitsLayout) {
+    POSPrinterSetupModal(
+        isPresented: .constant(true),
+        controller: POSPrinterConnectionController(
+            service: POSReceiptPrinterPreviewService(),
+            analytics: EmptyPOSAnalytics(),
+            bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .denied)),
+        source: .settings
+    )
+    .posPreviewSmallestPhone()
+}
+
 private struct PreviewBluetoothAuthorizationProvider: BluetoothAuthorizationProviding {
     let current: BluetoothAuthorization
 }

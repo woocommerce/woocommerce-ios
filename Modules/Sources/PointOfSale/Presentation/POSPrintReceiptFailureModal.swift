@@ -59,4 +59,9 @@ private extension POSPrintReceiptFailureModal {
     POSPrintReceiptFailureModal(failure: .printerOffline, selectAction: { _ in }, close: {})
         .posPreviewModalParentSize()
 }
+
+#Preview("iPhone SE: Printer offline", traits: .sizeThatFitsLayout) {
+    POSPrintReceiptFailureModal(failure: .printerOffline, selectAction: { _ in }, close: {})
+        .posPreviewSmallestPhone()
+}
 #endif

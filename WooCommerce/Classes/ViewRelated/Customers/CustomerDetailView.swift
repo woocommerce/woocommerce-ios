@@ -166,7 +166,7 @@ struct CustomerDetailView: View {
             }
         }
         .listStyle(.plain)
-        .clipped()
+        .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
         .background(Color(uiColor: .listBackground))
         .navigationTitle(viewModel.name)
         .navigationBarTitleDisplayMode(.inline)

@@ -169,6 +169,7 @@ private extension IssueRefundViewController {
         registerCells()
         tableView.delegate = self
         tableView.dataSource = self
+        view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
         tableView.tableHeaderView = tableHeaderView
         tableView.tableFooterView = tableFooterView

@@ -16,6 +16,7 @@ struct CustomerDetailView: View {
         List {
             Section(header: Text(Localization.customerSection)) {
                 Text(viewModel.name)
+                    .customerRowHorizontalInsets()
                 HStack {
                     Text(viewModel.email ?? Localization.emailPlaceholder)
                         .style(for: viewModel.email)
@@ -41,6 +42,7 @@ struct CustomerDetailView: View {
                         }
                     }
                 }
+                .customerRowHorizontalInsets()
                 HStack {
                     Text(viewModel.phone ?? Localization.phonePlaceholder)
                         .style(for: viewModel.phone)
@@ -87,6 +89,7 @@ struct CustomerDetailView: View {
                         }
                     }
                 }
+                .customerRowHorizontalInsets()
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
 
@@ -106,6 +109,7 @@ struct CustomerDetailView: View {
                     .accessibilityLabel(Localization.newOrder)
                     .renderedIf(viewModel.canCreateNewOrder)
                 }
+                .customerRowHorizontalInsets()
             }
 
             Section(header: Text(Localization.registrationSection)) {
@@ -116,6 +120,7 @@ struct CustomerDetailView: View {
             if let billing = viewModel.formattedBilling, billing.isNotEmpty {
                 Section(header: Text(Localization.billingSection)) {
                     Text(billing)
+                        .customerRowHorizontalInsets()
                         .swipeActions(edge: .leading) {
                             Button {
                                 viewModel.copyBillingAddress()
@@ -135,6 +140,7 @@ struct CustomerDetailView: View {
             if let shipping = viewModel.formattedShipping, shipping.isNotEmpty {
                 Section(header: Text(Localization.shippingSection)) {
                     Text(shipping)
+                        .customerRowHorizontalInsets()
                         .swipeActions(edge: .leading) {
                             Button {
                                 viewModel.copyShippingAddress()
@@ -192,6 +198,17 @@ private extension CustomerDetailView {
             Spacer()
             Text(value ?? Localization.defaultPlaceholder)
                 .style(for: value)
+        }
+        .customerRowHorizontalInsets()
+    }
+}
+
+private extension View {
+    @ViewBuilder func customerRowHorizontalInsets() -> some View {
+        if #available(iOS 26, *) {
+            listRowInsets(.horizontal, 16)
+        } else {
+            self
         }
     }
 }

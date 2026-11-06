@@ -1,3 +1,4 @@
+import Combine
 import Testing
 import UIKit
 
@@ -5,6 +6,26 @@ import UIKit
 
 @MainActor
 struct SearchViewControllerTests {
+    @Test
+    func test_query_changes_when_initial_value_is_reassigned_then_ignores_duplicate_but_emits_typing_and_clear() {
+        // Given
+        let model = SearchViewControllerSearchFieldModel()
+        var receivedQueries: [String] = []
+        let subscription = model.queryChanges.sink { query in
+            receivedQueries.append(query)
+        }
+
+        // When
+        model.query = ""
+        model.query = "shirt"
+        model.query = "shirt"
+        model.query = ""
+
+        // Then
+        #expect(receivedQueries == ["shirt", ""])
+        withExtendedLifetime(subscription) {}
+    }
+
     @Test
     func test_view_when_store_design_system_is_enabled_then_hosts_store_search_field_and_hides_legacy_search_bar() throws {
         // Given

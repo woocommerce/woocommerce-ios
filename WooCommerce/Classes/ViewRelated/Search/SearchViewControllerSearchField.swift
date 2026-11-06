@@ -8,6 +8,13 @@ final class SearchViewControllerSearchFieldModel: ObservableObject {
     @Published var query = ""
     @Published var actionTitle = ""
     @Published var shouldFocus = false
+
+    var queryChanges: AnyPublisher<String, Never> {
+        $query
+            .removeDuplicates()
+            .dropFirst()
+            .eraseToAnyPublisher()
+    }
 }
 
 struct SearchViewControllerSearchField: View {

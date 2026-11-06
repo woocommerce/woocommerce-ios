@@ -496,9 +496,7 @@ private extension SearchViewController {
     /// Handles debouncing search upon update of search query to optimize search requests.
     ///
     func configureSearchFunctionality() {
-        searchQuerySubscription = searchFieldModel.$query
-            .dropFirst() // ignores initial value as it's not user's input
-            .removeDuplicates()
+        searchQuerySubscription = searchFieldModel.queryChanges
             .debounce(for: .milliseconds(Settings.searchDebounceTime), scheduler: DispatchQueue.main)
             .sink { [weak self] query in
                 self?.synchronizeSearchResults(with: query)

@@ -233,7 +233,7 @@ private final class DeferredShippingLabelStorage: StorageManagerType {
         pendingWrite.withLock { $0 = Write(operation: operation, completion: completion, queue: queue) }
     }
 
-    func performAndSave<T: Sendable>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+    func performAndSave<T>(_ operation: @escaping @Sendable (StorageType) throws -> T,
                            completion: @escaping @Sendable (Result<T, Error>) -> Void, on queue: DispatchQueue) {
         base.performAndSave(operation, completion: completion, on: queue)
     }

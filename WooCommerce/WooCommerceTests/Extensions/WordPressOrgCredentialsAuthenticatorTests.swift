@@ -789,20 +789,14 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
 
 @MainActor
 private final class RecordingWKWebView: WKWebView {
-    // WebKit must create navigation tokens; a bare WKNavigation has no backing navigation.
-    private let navigationFactory = WKWebView()
     private(set) var loadedRequests: [URLRequest] = []
     private(set) var loadedNavigations: [WKNavigation] = []
     private(set) var stopLoadingCallCount = 0
 
     override func load(_ request: URLRequest) -> WKNavigation? {
         loadedRequests.append(request)
-        guard let navigation = navigationFactory.loadHTMLString("", baseURL: nil) else {
-            XCTFail("WebKit did not create a navigation token")
-            return nil
-        }
+        let navigation = StubNavigation()
         loadedNavigations.append(navigation)
-        navigationFactory.stopLoading()
         return navigation
     }
 
@@ -811,6 +805,7 @@ private final class RecordingWKWebView: WKWebView {
     }
 }
 
+private final class StubNavigation: WKNavigation { }
 
 private final class StubAuthenticatedWebViewModel: AuthenticatedWebViewModel, WebviewReloadable {
     let title = ""

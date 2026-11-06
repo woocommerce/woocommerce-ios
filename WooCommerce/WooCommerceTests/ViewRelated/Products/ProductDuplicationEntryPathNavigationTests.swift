@@ -111,13 +111,10 @@ private extension ProductFormViewController_DuplicationTests {
 
 @MainActor
 private final class NavigationTestContext {
-    private let originalNoticePresenter: NoticePresenter
     private let originalStores: StoresManager
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
     init(stores: StoresManager) {
-        originalNoticePresenter = ServiceLocator.noticePresenter
-        ServiceLocator.setNoticePresenter(MockNoticePresenter())
         originalStores = ServiceLocator.stores
         ServiceLocator.setStores(stores)
         window.makeKeyAndVisible()
@@ -132,6 +129,5 @@ private final class NavigationTestContext {
         window.resignKey()
         window.rootViewController = nil
         ServiceLocator.setStores(originalStores)
-        ServiceLocator.setNoticePresenter(originalNoticePresenter)
     }
 }

@@ -401,6 +401,7 @@
     "WooCommerce/WooCommerceTests/ViewRelated/Bookings/BookingDetailsViewModelTests.swift": 9,
     "WooCommerce/WooCommerceTests/ViewRelated/Bookings/BookingListViewModelTests.swift": 3,
     "WooCommerce/WooCommerceTests/ViewRelated/BottomSheet/BottomSheetPresenterTests.swift": 19,
+    "WooCommerce/WooCommerceTests/ViewRelated/CardPresentPayments/CardPresentPaymentPreflightControllerTests.swift": 14,
     "WooCommerce/WooCommerceTests/ViewRelated/CardPresentPayments/CardPresentPaymentsOnboardingUseCaseTests.swift": 4,
     "WooCommerce/WooCommerceTests/ViewRelated/CardPresentPayments/CardReaderConnectionControllerTests.swift": 3,
     "WooCommerce/WooCommerceTests/ViewRelated/Coupons/AddEditCouponViewModelTests.swift": 4,

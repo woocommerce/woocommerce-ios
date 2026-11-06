@@ -104,6 +104,7 @@ final class DashboardViewModel: ObservableObject {
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let userDefaults: UserDefaults
     private let pushNotesManager: PushNotesManager
+    private let application: ApplicationAdapter
     private let storageManager: StorageManagerType
     private let aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
@@ -166,7 +167,8 @@ final class DashboardViewModel: ObservableObject {
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining? = nil,
          clientSideBannerProvider: ClientSideBannerProvider? = nil,
-         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck()) {
+         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck(),
+         application: ApplicationAdapter = UIApplication.shared) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -174,6 +176,7 @@ final class DashboardViewModel: ObservableObject {
         self.analytics = analytics
         self.userDefaults = userDefaults
         self.pushNotesManager = pushNotesManager
+        self.application = application
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID,
@@ -600,10 +603,11 @@ private extension DashboardViewModel {
 
                 previousDashboardCards = cards
 
-                if newlyEnabledCards.isNotEmpty {
-                    Task { @MainActor in
-                        await self.reloadCardsIfNeeded(newlyEnabledCards)
-                    }
+                /** Background launches (BGAppRefresh, silent push) build this view model with no view;
+                    reloading here emits dashboard events Looker counts as activity. */
+                guard newlyEnabledCards.isNotEmpty, application.applicationState != .background else { return }
+                Task { @MainActor in
+                    await self.reloadCardsIfNeeded(newlyEnabledCards)
                 }
             })
             .store(in: &subscriptions)

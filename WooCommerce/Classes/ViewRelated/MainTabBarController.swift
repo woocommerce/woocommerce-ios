@@ -1114,21 +1114,13 @@ private extension MainTabBarController {
             }
     }
 
-    /** The tab's `viewWillAppear` does not run on foreground return, so a push counted while it was visible
-     would otherwise keep the app icon badge set. */
+    /// The tab's `viewWillAppear` does not run on foreground return, so a push counted while it was visible
+    /// would otherwise keep the app icon badge set.
     func resetBadgeCountForSelectedTab() {
-        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-        // No tabs exist until a site is selected, and `selectedIndex` is then `NSNotFound`.
-        guard visibleTabs.indices.contains(selectedIndex) else {
-            return
-        }
-        switch visibleTabs[selectedIndex] {
-        case .orders:
+        if selectedViewController === ordersContainerController {
             pushNotesManager.resetBadgeCount(type: .storeOrder)
-        case .products:
+        } else if selectedViewController === productsContainerController {
             pushNotesManager.resetBadgeCount(type: .storeStock)
-        default:
-            break
         }
     }
 

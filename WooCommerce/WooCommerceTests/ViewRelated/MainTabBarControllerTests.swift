@@ -116,7 +116,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
     @MainActor
     func test_willEnterForeground_when_no_site_is_selected_then_does_not_reset_any_badge() throws {
-        // Given no site, so the tab bar has no tabs and `selectedIndex` is out of range
+        // Given no site, so the tab bar has no tabs and no selected view controller
         let pushNotesManager = MockPushNotificationsManager()
         _ = try makeTabBarControllerWithHiddenPOSTab(pushNotesManager: pushNotesManager, siteID: nil)
 
@@ -997,7 +997,7 @@ private extension MainTabBarControllerTests {
                                  stores: self.stores,
                                  pushNotesManager: pushNotesManager,
                                  posTabVisibilityCheckerFactory: { _ in posTabVisibilityChecker })
-        }) as? MainTabBarController)
+        }))
         // Triggers `viewDidLoad`, which subscribes to foreground notifications.
         XCTAssertNotNil(tabBarController.view)
         if let siteID {

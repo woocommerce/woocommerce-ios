@@ -6,21 +6,34 @@ struct StoreDashboardCardSurface<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     var body: some View {
-        content()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.storeSurfaceBright)
-            .clipShape(.rect(cornerRadius: StoreRadius.extraLarge))
+        VStack(alignment: .leading, spacing: StoreSpacing.s0) {
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.storeSurfaceBright)
+        .clipShape(.rect(cornerRadius: StoreRadius.extraLarge))
     }
 }
 
 struct StoreDashboardCardHeader<Actions: View>: View {
     let title: String
     let showsError: Bool
+    let textStyle: StoreTextStyle
+    let topPadding: CGFloat
+    let bottomPadding: CGFloat
     @ViewBuilder let actions: () -> Actions
 
-    init(_ title: String, showsError: Bool = false, @ViewBuilder actions: @escaping () -> Actions) {
+    init(_ title: String,
+         showsError: Bool = false,
+         textStyle: StoreTextStyle = .titleSmall.emphasized,
+         topPadding: CGFloat = StorePadding.p7,
+         bottomPadding: CGFloat = StorePadding.p7,
+         @ViewBuilder actions: @escaping () -> Actions) {
         self.title = title
         self.showsError = showsError
+        self.textStyle = textStyle
+        self.topPadding = topPadding
+        self.bottomPadding = bottomPadding
         self.actions = actions
     }
 
@@ -33,9 +46,10 @@ struct StoreDashboardCardHeader<Actions: View>: View {
                     .accessibilityHidden(true)
             }
             Text(title)
-                .storeTextStyle(.titleSmall.emphasized)
+                .storeTextStyle(textStyle)
                 .foregroundStyle(.storeOnSurface)
-                .padding(.vertical, StorePadding.p7)
+                .padding(.top, topPadding)
+                .padding(.bottom, bottomPadding)
                 .frame(maxWidth: .infinity, alignment: .leading)
             actions()
         }
@@ -131,27 +145,47 @@ struct StoreDashboardCardOverflowMenu<Actions: View>: View {
 struct StoreDashboardCardFooterAction: View {
     let title: String
     let isDisabled: Bool
+    let textStyle: StoreTextStyle
+    let showsDisclosureIndicator: Bool
     let action: () -> Void
 
-    init(_ title: String, isDisabled: Bool = false, action: @escaping () -> Void) {
+    init(_ title: String,
+         isDisabled: Bool = false,
+         textStyle: StoreTextStyle = .labelLarge.emphasized,
+         showsDisclosureIndicator: Bool = false,
+         action: @escaping () -> Void) {
         self.title = title
         self.isDisabled = isDisabled
+        self.textStyle = textStyle
+        self.showsDisclosureIndicator = showsDisclosureIndicator
         self.action = action
     }
 
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .storeTextStyle(.labelLarge.emphasized)
-                .foregroundStyle(.storeOnSecondaryContainer)
-                .padding(.horizontal, StorePadding.p4)
-                .frame(minHeight: StoreSize.minimumTapTarget)
-                .contentShape(.rect)
+            HStack(spacing: StoreSpacing.s3) {
+                Text(title)
+                    .storeTextStyle(textStyle)
+                    .foregroundStyle(showsDisclosureIndicator ? Color.storePrimary : Color.storeOnSecondaryContainer)
+
+                if showsDisclosureIndicator {
+                    Spacer(minLength: StoreSpacing.s0)
+                    StoreIcon.AngleRight.regular.image(size: .largeIncreased)
+                        .foregroundStyle(.storeOnSurfaceVariant)
+                        .flipsForRightToLeftLayoutDirection(true)
+                        .accessibilityHidden(true)
+                }
+            }
+            .padding(.horizontal, showsDisclosureIndicator ? StorePadding.p5 : StorePadding.p4)
+            .frame(maxWidth: showsDisclosureIndicator ? .infinity : nil,
+                   minHeight: StoreSize.minimumTapTarget,
+                   alignment: .leading)
+            .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .disabled(isDisabled)
-        .padding(.leading, StorePadding.p3)
-        .padding(.bottom, StorePadding.p1)
+        .padding(.leading, showsDisclosureIndicator ? StorePadding.p0 : StorePadding.p3)
+        .padding(.bottom, showsDisclosureIndicator ? StorePadding.p0 : StorePadding.p1)
     }
 }
 

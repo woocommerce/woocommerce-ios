@@ -108,6 +108,7 @@ Please, remember to not add this information on your commits and PRs.
     - [Tracking Events](docs/tracking-events.md)
         - [Custom Properties](docs/tracking-events.md#custom-properties)
 - Quality & Testing
+    - [Local App Store screenshots](.agents/skills/app-store-screenshots/SKILL.md)
     - [AI dev and testing tools](docs/ai-tools.md)
     - [UI Tests](WooCommerce/WooCommerceUITests/README.md)
     - [Testing Card Present Payments](docs/stripe-tests.md)

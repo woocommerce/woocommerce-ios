@@ -77,7 +77,7 @@ public struct StoreSearchField: View {
             .focused(focusBinding)
             .submitLabel(submitLabel)
             .accessibilityAddTraits(.isSearchField)
-            .accessibilityIdentifier(accessibilityIdentifier ?? "")
+            .accessibilityIdentifier(ifPresent: accessibilityIdentifier)
             if !text.isEmpty {
                 StoreSearchFieldClearButton(text: $text, color: appearance.content)
             }
@@ -114,11 +114,22 @@ public struct StoreSearchField: View {
         .buttonStyle(StorePressFeedbackButtonStyle())
         .frame(height: StoreSize.searchFieldHeight)
         .disabled(!action.isEnabled)
-        .accessibilityIdentifier(action.accessibilityIdentifier ?? "")
+        .accessibilityIdentifier(ifPresent: action.accessibilityIdentifier)
     }
 
     private func actionColor(for action: StoreSearchFieldAction) -> Color {
         StoreSearchFieldAppearance(isEnabled: isEnabled && action.isEnabled).action
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func accessibilityIdentifier(ifPresent identifier: String?) -> some View {
+        if let identifier {
+            accessibilityIdentifier(identifier)
+        } else {
+            self
+        }
     }
 }
 

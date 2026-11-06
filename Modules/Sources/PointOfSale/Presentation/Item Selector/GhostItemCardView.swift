@@ -3,13 +3,15 @@ import Shimmer
 
 struct GhostItemCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding private var showProductImage: Bool
     private let configuration: GhostItemCardViewConfiguration
     private let accessory: AnyView?
 
     private var dimension: CGFloat {
-        min(configuration.cardSize * scale, configuration.maximumCardSize)
+        min(configuration.cardSize.value(in: metrics) * scale,
+            configuration.cardSize.value(in: metrics) * configuration.maximumCardSizeMultiplier)
     }
 
     init(configuration: GhostItemCardViewConfiguration = .itemList,
@@ -28,7 +30,7 @@ struct GhostItemCardView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: Constants.cardSpacing) {
+        HStack(alignment: .center, spacing: metrics.spacing.none) {
             placeholders
                 .foregroundStyle(Color.posOnSurfaceVariantLowest)
                 .accessibilityElement(children: .ignore)
@@ -38,7 +40,7 @@ struct GhostItemCardView: View {
 
             if let accessory {
                 accessory
-                    .padding(Constants.accessoryButtonPadding)
+                    .padding(metrics.padding.medium)
             }
         }
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
@@ -48,13 +50,13 @@ struct GhostItemCardView: View {
     }
 
     private var placeholders: some View {
-        HStack(alignment: .center, spacing: Constants.cardSpacing) {
+        HStack(alignment: .center, spacing: metrics.spacing.none) {
             Rectangle()
                 .fill(Color.posOnSurfaceVariantLowest.opacity(POSLoadingPlaceholderStyle.imageBaseOpacity))
                 .frame(width: dimension, height: dimension)
                 .shimmering(gradient: POSLoadingPlaceholderStyle.shimmerGradient)
                 .renderedIf(showProductImage)
-            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 POSPlaceholderText(.redactedPlaceholder(length: dynamicTypeSize.isAccessibilitySize ? 9 : 24), font: configuration.titleFont)
                 POSPlaceholderText(.redactedPlaceholder(length: dynamicTypeSize.isAccessibilitySize
                                                        ? configuration.detailPlaceholderLength.accessibility
@@ -62,8 +64,8 @@ struct GhostItemCardView: View {
                                    font: configuration.detailFont)
             }
             .fixedSize(horizontal: false, vertical: true)
-            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            .padding(.horizontal, metrics.padding.medium * (1 / scale))
+            .padding(.vertical, metrics.padding.small * (1 / scale))
         }
     }
 }
@@ -81,16 +83,30 @@ struct GhostItemCardViewConfiguration {
     let titleFont: POSFontStyle
     let detailFont: POSFontStyle
     let detailPlaceholderLength: (regular: Int, accessibility: Int)
-    let cardSize: CGFloat
-    let maximumCardSize: CGFloat
+    let cardSize: CardSize
+    let maximumCardSizeMultiplier: CGFloat
     let backgroundColor: Color
+
+    enum CardSize {
+        case productCard
+        case cartRow
+
+        func value(in metrics: POSMetrics) -> CGFloat {
+            switch self {
+            case .productCard:
+                metrics.productCardSize
+            case .cartRow:
+                metrics.cartRowSize
+            }
+        }
+    }
 
     static let itemList = GhostItemCardViewConfiguration(
         titleFont: Constants.itemTitleFont,
         detailFont: Constants.itemDetailFont,
         detailPlaceholderLength: (regular: 5, accessibility: 4),
-        cardSize: Constants.productCardSize,
-        maximumCardSize: Constants.maximumProductCardSize,
+        cardSize: .productCard,
+        maximumCardSizeMultiplier: Constants.maximumCardSizeMultiplier,
         backgroundColor: Color.posSurfaceBright
     )
 }

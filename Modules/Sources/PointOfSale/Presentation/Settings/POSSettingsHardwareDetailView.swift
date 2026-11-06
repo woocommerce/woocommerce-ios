@@ -340,6 +340,7 @@ private extension POSSettingsHardwareDetailView {
             Spacer()
 
             Button(Localization.printerDisconnectTitle) {
+                analytics.track(.pointOfSaleReceiptPrinterDisconnectTapped)
                 Task {
                     await controller.disconnect()
                 }

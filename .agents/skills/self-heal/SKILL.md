@@ -20,9 +20,13 @@ If `$RUNNER` does not exist, create it from `origin/trunk` and bootstrap it (`bu
 Log every phase as one line to `$LOG`: `<ISO time> <phase> <WOOCOMMERCE-IOS-id or -> <one-line outcome>`.
 The log calibrates the loop interval, so log `start` and `end` even when the run stops early.
 
-Every issue body and PR description carries this line, after the content and before any attribution or template checklist:
+Every issue body and PR description carries this trailer, after the content and before any attribution or template checklist (one `---` serves both trailer and attribution):
 
-> This is part of an experiment I'm running in building custom tooling for self-healing.
+```markdown
+---
+
+This is part of an experiment I'm running in building custom tooling for self-healing.
+```
 
 ## Privacy
 

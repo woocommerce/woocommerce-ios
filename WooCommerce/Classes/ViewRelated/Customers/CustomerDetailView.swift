@@ -14,7 +14,7 @@ struct CustomerDetailView: View {
 
     var body: some View {
         List {
-            Section(header: Text(Localization.customerSection)) {
+            Section(header: Text(Localization.customerSection).customerRowHorizontalInsets()) {
                 Text(viewModel.name)
                     .customerRowHorizontalInsets()
                 HStack {
@@ -112,13 +112,13 @@ struct CustomerDetailView: View {
                 .customerRowHorizontalInsets()
             }
 
-            Section(header: Text(Localization.registrationSection)) {
+            Section(header: Text(Localization.registrationSection).customerRowHorizontalInsets()) {
                 customerDetailRow(label: Localization.usernameLabel, value: viewModel.username)
                 customerDetailRow(label: Localization.dateRegisteredLabel, value: viewModel.dateRegistered)
             }
 
             if let billing = viewModel.formattedBilling, billing.isNotEmpty {
-                Section(header: Text(Localization.billingSection)) {
+                Section(header: Text(Localization.billingSection).customerRowHorizontalInsets()) {
                     Text(billing)
                         .customerRowHorizontalInsets()
                         .swipeActions(edge: .leading) {
@@ -138,7 +138,7 @@ struct CustomerDetailView: View {
                 }
             }
             if let shipping = viewModel.formattedShipping, shipping.isNotEmpty {
-                Section(header: Text(Localization.shippingSection)) {
+                Section(header: Text(Localization.shippingSection).customerRowHorizontalInsets()) {
                     Text(shipping)
                         .customerRowHorizontalInsets()
                         .swipeActions(edge: .leading) {
@@ -158,7 +158,7 @@ struct CustomerDetailView: View {
                 }
             }
             if viewModel.showLocation {
-                Section(header: Text(Localization.locationSection)) {
+                Section(header: Text(Localization.locationSection).customerRowHorizontalInsets()) {
                     customerDetailRow(label: Localization.countryLabel, value: viewModel.country)
                     customerDetailRow(label: Localization.regionLabel, value: viewModel.region)
                     customerDetailRow(label: Localization.cityLabel, value: viewModel.city)

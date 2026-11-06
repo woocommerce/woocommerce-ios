@@ -39,8 +39,9 @@ struct SearchViewControllerSearchField: View {
             accessibilityIdentifier: searchFieldAccessibilityIdentifier
         )
         .onSubmit(onSubmit)
-        .onChange(of: model.shouldFocus) { _, shouldFocus in
-            isFocused = shouldFocus
+        .task(id: model.shouldFocus) {
+            await Task.yield()
+            isFocused = model.shouldFocus
         }
         .onChange(of: isFocused) { _, isFocused in
             model.shouldFocus = isFocused

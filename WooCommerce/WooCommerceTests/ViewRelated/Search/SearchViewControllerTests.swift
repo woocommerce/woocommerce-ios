@@ -5,7 +5,9 @@ import UIKit
 @testable import WooCommerce
 
 @MainActor
-struct SearchViewControllerTests {
+final class SearchViewControllerTests {
+    private var window: UIWindow?
+
     @Test
     func test_query_changes_when_initial_value_is_reassigned_then_ignores_duplicate_but_emits_typing_and_clear() {
         // Given
@@ -72,18 +74,27 @@ struct SearchViewControllerTests {
     }
 
     @Test
-    func test_view_did_appear_when_command_requests_initial_focus_then_focuses_store_search_field() throws {
+    func test_view_did_appear_when_command_requests_initial_focus_then_focuses_store_search_field() async throws {
         // Given
         let sut = makeSUT(usesStoreDesignSystem: true)
         sut.loadViewIfNeeded()
         let hostingController = try #require(storeSearchFieldHostingController(in: sut))
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = sut
 
         // When
-        sut.beginAppearanceTransition(true, animated: false)
-        sut.endAppearanceTransition()
+        window?.makeKeyAndVisible()
+        sut.view.frame = window?.bounds ?? UIScreen.main.bounds
+        sut.view.layoutIfNeeded()
+        hostingController.view.layoutIfNeeded()
+        try await Task.sleep(for: .milliseconds(100))
+        hostingController.view.layoutIfNeeded()
 
         // Then
-        #expect(hostingController.rootView.model.shouldFocus)
+        let textField = try #require(hostingController.view.firstSubview(ofType: UITextField.self))
+        #expect(textField.isFirstResponder)
+        window?.isHidden = true
+        window = nil
     }
 }
 

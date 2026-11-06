@@ -124,7 +124,9 @@ Read our [Contributing Guide](CONTRIBUTING.md) to learn about reporting issues, 
 
 ## 🤖 Automation
 
-Generate App Store screenshots locally with the [App Store screenshots skill](.agents/skills/app-store-screenshots/SKILL.md). The `generate screenshots` GitHub workflow is currently unreliable for Duo.
+### Screenshot generation
+
+Prefer local generation through agents using the [App Store screenshots skill](.agents/skills/app-store-screenshots/SKILL.md) for reliability and speed, rather than triggering CI with the `generate screenshots` label.
 
 ### Peril
 

@@ -16,6 +16,7 @@
 - [*] Products: Preview signs you in to your store when possible, works after logging in with your store username and password, and no longer shows "Page not found" on stores connected without the Jetpack plugin. [https://github.com/woocommerce/woocommerce-ios/pull/18238]
 - [*] Products: Saving a product with a duplicate SKU now shows a clear error message. [https://github.com/woocommerce/woocommerce-ios/pull/18269]
 - [*] Products: Opening a product that was deleted from the store now says so, for stores connected without Jetpack tunnel. [https://github.com/woocommerce/woocommerce-ios/pull/18269]
+- [*] Products: The Variations list now loads the rest of a product's variations right after a pull to refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18252]
 
 26.0
 -----

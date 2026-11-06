@@ -24,7 +24,9 @@ The log calibrates the loop interval, so log `start` and `end` even when the run
 
 Crash data reaches you only through `$CRASHES`, which drops user data and replaces literals with placeholders.
 Never query Sentry another way, and never copy breadcrumbs, user, tags or request data into anything.
-Before posting any issue, comment, PR or commit, pipe the text through `$CRASHES redact` and diff it against the original: the only allowed differences are Sentry and GitHub links.
+Before posting any issue, comment, PR or commit, pipe the text through `$CRASHES redact` and diff it against the original.
+Allowed differences: Sentry and GitHub links, issue and PR numbers, source line numbers, and app versions such as `25.9.0.4`.
+Rephrase code literals you wrote yourself rather than quoting them.
 
 ## 1. Tend open work first
 
@@ -66,7 +68,9 @@ Body: Sentry permalink, event and user counts, release range, the redacted excep
 
 In `$RUNNER`: `git fetch origin && git switch -c self-heal/<shortId-lowercased> origin/trunk`.
 
-Read the code at the crash frames, at the release tag the crash comes from (`git show <tag>:<path>`) and on trunk.
+Read the whole crashed thread (`$CRASHES event <id>`), not just its top frames or Sentry's culprit.
+Stack overflows and watchdog kills blame whatever frame was running last; the cause is the repeating pattern further down.
+Then read the code at the crash frames, at the release tag the crash comes from (`git show <tag>:<path>`, line numbers shift) and on trunk.
 If trunk already fixed it, comment with the commit, close the issue as completed, and stop.
 
 Do not touch, and stop if a fix would need to touch:

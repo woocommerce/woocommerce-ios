@@ -1,3 +1,4 @@
+import Foundation
 import Observation
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import struct Yosemite.PrinterDevice
@@ -14,7 +15,8 @@ import struct WooFoundation.CoreBluetoothAuthorizationProvider
 @MainActor
 @Observable
 final class POSPrinterConnectionController {
-    /// Drives the setup modal: pairing → searching → found → connecting → error.
+    /// Drives the setup modal: searching → found → connecting, falling back to pairing guidance
+    /// when nothing is found or Bluetooth permission is denied.
     private(set) var discoveryState: PrinterDiscoveryState = .idle
 
     /// Whether a Bluetooth scan is currently running, so the multiple-printers list can show a live
@@ -53,6 +55,9 @@ final class POSPrinterConnectionController {
     /// Latches once two or more printers have been seen, so the flow stays on the list rather than
     /// snapping back to the single-printer modal.
     private var hasShownMultiple = false
+    /// The setup modal presentation that currently owns the flow. A modal closed and quickly reopened
+    /// can run its teardown after the new one starts, so teardown only applies to the current session.
+    private var setupSessionID: UUID?
 
     init(service: ReceiptPrinterServiceProtocol,
          bluetoothAuthorizationProvider: BluetoothAuthorizationProviding = CoreBluetoothAuthorizationProvider()) {
@@ -65,6 +70,21 @@ final class POSPrinterConnectionController {
         discoveryTask?.cancel()
         connectTask?.cancel()
         statusTask?.cancel()
+    }
+
+    /// Opens setup with a search, so BLE and already-paired printers connect without the pair-in-Settings
+    /// step, which only appears if nothing is found. With Bluetooth permission denied discovery can't run,
+    /// so setup stays idle to offer Open Settings. Repeated calls for the same session leave it as is.
+    func startSetup(sessionID: UUID) {
+        guard sessionID != setupSessionID else {
+            return
+        }
+        setupSessionID = sessionID
+        resetSetup()
+        guard bluetoothAuthorization != .denied else {
+            return
+        }
+        startDiscovery()
     }
 
     /// Starts a fresh Bluetooth discovery, clearing any previously skipped printers.
@@ -104,7 +124,7 @@ final class POSPrinterConnectionController {
             } catch {
                 guard !Task.isCancelled, let self else { return }
                 isDiscovering = false
-                discoveryState = .error
+                discoveryState = bluetoothAuthorization == .denied ? .idle : .discoveryFailed
             }
         }
     }
@@ -129,12 +149,13 @@ final class POSPrinterConnectionController {
     }
 
     /// The scan ended (timed out or completed). Surface an empty result so the modal can offer a
-    /// retry instead of spinning forever; otherwise leave the found state in place and just stop the
-    /// scanning indicator.
+    /// retry instead of spinning forever, or return to idle, which explains how to turn Bluetooth
+    /// access back on, when the merchant denied the system prompt the search triggered. Otherwise
+    /// leave the found state in place and just stop the scanning indicator.
     private func finishDiscovery() {
         isDiscovering = false
         if discoveredDevices.isEmpty {
-            discoveryState = .noPrintersFound
+            discoveryState = bluetoothAuthorization == .denied ? .idle : .noPrintersFound
         }
     }
 
@@ -165,9 +186,18 @@ final class POSPrinterConnectionController {
         await service.disconnect()
     }
 
-    /// Tears down any in-flight discovery and returns to the pairing screen, so reopening the
-    /// modal always starts fresh.
-    func cancelSetup() async {
+    /// Tears down the session's in-flight discovery and returns to idle. Ignored once a newer
+    /// session has started. Cancelling the discovery task ends its stream, and the service then stops
+    /// that scan only, so a late teardown can't end the reopened modal's search.
+    func cancelSetup(sessionID: UUID) {
+        guard sessionID == setupSessionID else {
+            return
+        }
+        setupSessionID = nil
+        resetSetup()
+    }
+
+    private func resetSetup() {
         discoveryTask?.cancel()
         connectTask?.cancel()
         isDiscovering = false
@@ -175,7 +205,6 @@ final class POSPrinterConnectionController {
         skippedDeviceIDs = []
         hasShownMultiple = false
         discoveryState = .idle
-        await service.stopDiscovery()
     }
 
     private func observeConnectionStatus() {

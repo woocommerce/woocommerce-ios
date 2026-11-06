@@ -4,7 +4,6 @@ import XCTest
 // MARK: - WordPressAuthenticator Unit Tests
 //
 class WordPressAuthenticatorTests: XCTestCase {
-    let timeout = TimeInterval(3)
 
     override class func setUp() {
         super.setUp()
@@ -58,21 +57,15 @@ class WordPressAuthenticatorTests: XCTestCase {
     // MARK: View Tests
     func testShowLoginForJustWPComPresentsCorrectVC() {
         let presenterSpy = ModalViewControllerPresentingSpy()
-        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { _, _ -> Bool in
-            return presenterSpy.presentedVC != nil
-        }), object: .none)
 
         WordPressAuthenticator.showLoginForJustWPCom(from: presenterSpy)
-        wait(for: [expectation], timeout: timeout)
+        XCTAssertNotNil(presenterSpy.presentedVC)
 
         XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
     }
 
     func testShowLoginForJustWPComSetsMetaProperties() throws {
         let presenterSpy = ModalViewControllerPresentingSpy()
-        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { _, _ -> Bool in
-            return presenterSpy.presentedVC != nil
-        }), object: .none)
 
         WordPressAuthenticator.showLoginForJustWPCom(from: presenterSpy,
                                                      jetpackLogin: false,
@@ -80,8 +73,6 @@ class WordPressAuthenticatorTests: XCTestCase {
 
         let navController = try XCTUnwrap(presenterSpy.presentedVC as? LoginNavigationController)
         let controller = try XCTUnwrap(navController.viewControllers.first as? LoginEmailViewController)
-
-        wait(for: [expectation], timeout: timeout)
 
         XCTAssertEqual(controller.loginFields.restrictToWPCom, true)
         XCTAssertEqual(controller.loginFields.username, "email-address@example.com")

@@ -103,9 +103,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         viewModel.updateCurrentTheme(id: theme1.id)
 
         // Then
-        await until {
-            viewModel.state == .content(themes: [theme2])
-        }
+        XCTAssertEqual(viewModel.state, .content(themes: [theme2]))
     }
 
     func test_state_is_error_if_filtered_theme_list_is_empty() async {

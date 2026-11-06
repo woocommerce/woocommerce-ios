@@ -15,13 +15,20 @@ final class SessionManagerTests: XCTestCase {
 
     /// CredentialsStorage Unit-Testing Instance
     ///
-    private var manager = SessionManager(defaults: Settings.defaults, keychainServiceName: Settings.keychainServiceName)
+    private var manager: SessionManager!
 
     // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()
+        // Register storage-reset observers only while this test is running, not during suite discovery.
+        manager = SessionManager(defaults: Settings.defaults, keychainServiceName: Settings.keychainServiceName)
         manager.defaultCredentials = nil
+    }
+
+    override func tearDown() {
+        manager = nil
+        super.tearDown()
     }
 
     /// Verifies that `loadDefaultCredentials` returns nil whenever there are no default credentials stored.

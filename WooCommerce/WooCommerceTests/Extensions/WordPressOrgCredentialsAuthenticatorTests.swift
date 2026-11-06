@@ -797,6 +797,7 @@ private final class RecordingWKWebView: WKWebView {
         loadedRequests.append(request)
         let navigation = StubNavigation()
         loadedNavigations.append(navigation)
+        StubNavigation.retainedForProcessLifetime.append(navigation)
         return navigation
     }
 
@@ -805,7 +806,11 @@ private final class RecordingWKWebView: WKWebView {
     }
 }
 
-private final class StubNavigation: WKNavigation { }
+private final class StubNavigation: WKNavigation {
+    /// WebKit does not support deallocating a `WKNavigation` it did not create: the test host then exits once XCTest finishes,
+    /// and Xcode waits about 20 seconds before relaunching it for the Swift Testing suites.
+    @MainActor static var retainedForProcessLifetime: [StubNavigation] = []
+}
 
 private final class StubAuthenticatedWebViewModel: AuthenticatedWebViewModel, WebviewReloadable {
     let title = ""

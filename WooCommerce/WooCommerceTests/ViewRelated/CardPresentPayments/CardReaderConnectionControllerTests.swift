@@ -737,7 +737,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
-        let mockLocationService = MockLocationService(status: .notDetermined)
+        let mockLocationService = MockLocationService(status: .notDetermined, permissionResponseDelay: 0)
         mockAlerts.onLocationRequestPreAlert = { requestPermission in
             mockLocationService.requestPermissionStatus = .authorized
             requestPermission()
@@ -787,7 +787,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
-        let mockLocationService = MockLocationService(status: .notDetermined)
+        let mockLocationService = MockLocationService(status: .notDetermined, permissionResponseDelay: 0)
         mockAlerts.onLocationRequestPreAlert = { requestPermission in
             mockLocationService.requestPermissionStatus = .denied
             requestPermission()

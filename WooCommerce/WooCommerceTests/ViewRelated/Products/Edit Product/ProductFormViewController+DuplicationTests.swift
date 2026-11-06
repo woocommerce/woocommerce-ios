@@ -235,12 +235,17 @@ private extension ProductFormViewController_DuplicationTests {
 @MainActor
 private final class TestContext {
     private let originalAnalytics: Analytics
+    private let originalNoticePresenter: NoticePresenter
+    private let noticePresenter = DefaultNoticePresenter()
     let analyticsProvider = MockAnalyticsProvider()
     let window = UIWindow(frame: UIScreen.main.bounds)
 
     init() {
         originalAnalytics = ServiceLocator.analytics
+        originalNoticePresenter = ServiceLocator.noticePresenter
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        // The app's presenter belongs to its own window, outside this fixture's view hierarchy.
+        ServiceLocator.setNoticePresenter(noticePresenter)
         window.makeKeyAndVisible()
     }
 
@@ -253,13 +258,16 @@ private final class TestContext {
 
     func present(_ viewController: UIViewController) {
         window.rootViewController = UINavigationController(rootViewController: viewController)
+        noticePresenter.presentingViewController = window.rootViewController
         viewController.loadViewIfNeeded()
     }
 
     func cleanUp() {
+        noticePresenter.presentingViewController = nil
         window.resignKey()
         window.rootViewController = nil
         ServiceLocator.setAnalytics(originalAnalytics)
+        ServiceLocator.setNoticePresenter(originalNoticePresenter)
     }
 }
 

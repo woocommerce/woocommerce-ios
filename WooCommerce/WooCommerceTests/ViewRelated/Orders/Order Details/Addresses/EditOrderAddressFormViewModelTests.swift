@@ -10,15 +10,24 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
 
-    let testingStorage = MockStorageManager()
+    var testingStorage: MockStorageManager!
 
-    let testingStores = MockStoresManager(sessionManager: .testingInstance)
+    var testingStores: MockStoresManager!
 
     var subscriptions = Set<AnyCancellable>()
 
     override func setUp() async throws {
         try await super.setUp()
+        testingStorage = MockStorageManager()
+        testingStores = MockStoresManager(sessionManager: .testingInstance)
         setUpFixtures()
+    }
+
+    override func tearDown() async throws {
+        subscriptions.removeAll()
+        testingStores = nil
+        testingStorage = nil
+        try await super.tearDown()
     }
 
     @MainActor

@@ -145,6 +145,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
                                              timeRange: .today,
                                              isJetpackStatsDisabled: true,
                                              stores: stores,
+                                             backendProcessingDelay: 0,
                                              updateSiteStatsData: {})
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
             switch action {
@@ -195,6 +196,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
                                              isJetpackStatsDisabled: true,
                                              stores: stores,
                                              analytics: analytics,
+                                             backendProcessingDelay: 0,
                                              updateSiteStatsData: {})
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
             switch action {

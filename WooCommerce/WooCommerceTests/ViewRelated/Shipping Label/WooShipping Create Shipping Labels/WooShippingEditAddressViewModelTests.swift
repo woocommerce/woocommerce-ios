@@ -1446,17 +1446,14 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         await viewModel.remotelyValidateAddress() // First call - should fail and set alert
 
         // Then
-        await until {
-            viewModel.addressErrorState == .validation && validationCallCount == 1
-        }
+        XCTAssertEqual(viewModel.addressErrorState, .validation)
+        XCTAssertEqual(validationCallCount, 1)
 
         // Simulate retry button tap by calling remotelyValidateAddress again
         await viewModel.remotelyValidateAddress()
 
         // Then
-        await until {
-            validationCallCount == 2
-        }
+        XCTAssertEqual(validationCallCount, 2)
     }
 
     @MainActor

@@ -150,17 +150,17 @@ class URLSessionHelperTests: XCTestCase {
     }
 
     func testCancellation() async throws {
+        let progress = Progress.discreteProgress(totalUnitCount: 20)
+
         // Give a slow HTTP request that takes 0.5 second to complete
         stub(condition: isPath("/hello")) { _ in
+            // and cancelling it once the request is in flight, before it completes.
+            DispatchQueue.main.async {
+                progress.cancel()
+            }
             let response = HTTPStubsResponse(data: "success".data(using: .utf8)!, statusCode: 200, headers: nil)
             response.responseTime = 0.5
             return response
-        }
-
-        // and cancelling it (in 0.1 second) before it completes
-        let progress = Progress.discreteProgress(totalUnitCount: 20)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
-            progress.cancel()
         }
 
         // The result should be an cancellation result

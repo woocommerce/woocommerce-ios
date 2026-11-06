@@ -147,7 +147,8 @@ struct POSCatalogSyncCoordinatorTests: Sendable {
 
     @Test func performFullSyncIfApplicable_with_zero_maxAge_skips_age_check() async throws {
         // Given - previous sync was just now
-        let justNow = Date()
+        // The age check is `age > maxAge`, so the sync date needs a measurable age even when the test runs within the same instant.
+        let justNow = Date().addingTimeInterval(-1)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: justNow)
 
         // When - max age is 0 (always sync)

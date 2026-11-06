@@ -10,8 +10,13 @@ final class NoteListMapperTests: XCTestCase {
     /// Sample Notes: 99 Entries!
     ///
     private lazy var sampleNotes: [Note] = {
-        return try! mapLoadAllNotificationsResponse()
+        return try! Self.sampleNotesResult.get()
     }()
+
+    /// `Note` is an immutable value type, so the large fixture is decoded once per class instead of once per test.
+    /// `nonisolated(unsafe)`: the value is never mutated and static initialization is thread-safe.
+    ///
+    nonisolated(unsafe) private static let sampleNotesResult = Result { try mapNotes(from: "notifications-load-all") }
 
 
     /// Broken Notes: 2 (Hopefully gracefully handled) Scenarios.
@@ -331,14 +336,12 @@ private extension NoteListMapperTests {
     /// Returns the NoteListMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapNotes(from filename: String) throws -> [Note] {
-        let response = Loader.contentsOf(filename)!
-        return try NoteListMapper().map(response: response)
+        try Self.mapNotes(from: filename)
     }
 
-    /// Returns the NoteListMapper output upon receiving `notifications` endpoint's response.
-    ///
-    func mapLoadAllNotificationsResponse() throws -> [Note] {
-        return try mapNotes(from: "notifications-load-all")
+    static func mapNotes(from filename: String) throws -> [Note] {
+        let response = Loader.contentsOf(filename)!
+        return try NoteListMapper().map(response: response)
     }
 
     /// Returns the NoteListMapper output upon receiving `notifications` endpoint's response.

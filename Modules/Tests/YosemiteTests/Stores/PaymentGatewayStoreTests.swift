@@ -75,8 +75,13 @@ final class PaymentGatewayStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list-half")
 
-        let firstSync = PaymentGatewayAction.synchronizePaymentGateways(siteID: sampleSiteID) { _ in }
-        store.onAction(firstSync)
+        let firstResult: Result<Void, Error> = waitFor { promise in
+            let firstSync = PaymentGatewayAction.synchronizePaymentGateways(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            self.store.onAction(firstSync)
+        }
+        XCTAssertTrue(firstResult.isSuccess)
 
         // When
         let result: Result<Void, Error> = waitFor { promise in

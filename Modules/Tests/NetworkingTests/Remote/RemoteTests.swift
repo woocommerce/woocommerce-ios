@@ -419,8 +419,12 @@ final class RemoteTests: XCTestCase {
         // network-failure path passed it to `handleResponseError` — which it must not.
         network.simulateError(requestUrlSuffix: "something", error: DotcomError.requestFailed())
 
-        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
-        expectationForNotification.isInverted = true
+        // `handleResponseError` posts synchronously inside `enqueue`, so once it returns any post has already been observed.
+        let notifications = LockedCollector<Notification.Name>()
+        let observer = NotificationCenter.default.addObserver(forName: .RemoteDidReceiveJetpackTimeoutError, object: nil, queue: nil) { note in
+            notifications.append(note.name)
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
 
         // When
         do {
@@ -431,7 +435,7 @@ final class RemoteTests: XCTestCase {
             XCTAssertEqual(error as? DotcomError, .requestFailed())
         }
 
-        await fulfillment(of: [expectationForNotification], timeout: 1.0)
+        XCTAssertTrue(notifications.values.isEmpty)
     }
 
     // MARK: - Store connection error detection

@@ -23,7 +23,8 @@ struct StoreLastOrderDashboardRow: View {
                     Spacer(minLength: StoreSpacing.s0)
 
                     VStack(alignment: .trailing, spacing: StoreSpacing.s3) {
-                        HStack(spacing: StoreSpacing.s3) {
+                        CollapsibleHStack(horizontalAlignment: .trailing,
+                                          spacing: StoreSpacing.s3) {
                             StoreBadge(data.statusDescription,
                                        tone: .custom(background: data.statusBackgroundColor,
                                                      foreground: .storePaletteBlack))
@@ -35,7 +36,7 @@ struct StoreLastOrderDashboardRow: View {
                             if let salesChannelText = data.salesChannelText {
                                 StoreBadge(salesChannelText,
                                            tone: .custom(background: .storePrimaryContainer,
-                                                         foreground: .storeSecondary))
+                                                         foreground: .storeOnPrimaryContainer))
                             }
                         }
 

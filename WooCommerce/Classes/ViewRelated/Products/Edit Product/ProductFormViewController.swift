@@ -342,21 +342,28 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private func displayProductPreview() {
         ServiceLocator.analytics.track(event: .ProductDetail.previewTapped())
 
-        guard var permalink = URLComponents(string: product.permalink),
-              let nonce = ServiceLocator.stores.sessionManager.defaultSite?.frameNonce else {
+        guard var previewURL = URLComponents(string: product.permalink) else {
             return
         }
 
-        var updatedQueryItems = permalink.queryItems ?? []
+        var updatedQueryItems = previewURL.queryItems ?? []
         updatedQueryItems.append(.init(name: "preview", value: "true"))
-        updatedQueryItems.append(.init(name: "frame-nonce", value: nonce))
-        permalink.queryItems = updatedQueryItems
+        if let nonce = ServiceLocator.stores.sessionManager.defaultSite?.frameNonce, nonce.isNotEmpty {
+            // Lets the Jetpack plugin show the draft when the web view isn't signed in; it ignores the nonce for signed-in visitors.
+            updatedQueryItems.append(.init(name: "frame-nonce", value: nonce))
+        }
+        previewURL.queryItems = updatedQueryItems
 
-        let configuration = WebViewControllerConfiguration(url: permalink.url)
-        configuration.secureInteraction = true
-        let webKitVC = WebKitViewController(configuration: configuration)
-        let nc = WooNavigationController(rootViewController: webKitVC)
-        presentIfIdle(nc)
+        guard let url = previewURL.url else {
+            return
+        }
+
+        let webViewModel = DefaultAuthenticatedWebViewModel(title: product.name,
+                                                            initialURL: url,
+                                                            initialURLHTTPErrorHandler: { statusCode in
+            ServiceLocator.analytics.track(event: .ProductDetail.previewFailed(statusCode: statusCode))
+        })
+        presentAuthenticatedWebView(webViewModel)
     }
 
     // MARK: Navigation actions
@@ -1211,7 +1218,11 @@ private extension ProductFormViewController {
             return
         }
 
-        let viewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
+        let webViewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
+        presentAuthenticatedWebView(webViewModel)
+    }
+
+    private func presentAuthenticatedWebView(_ viewModel: DefaultAuthenticatedWebViewModel) {
         let controller = AuthenticatedWebViewController(viewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: controller)
         controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,

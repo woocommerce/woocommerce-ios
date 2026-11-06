@@ -73,7 +73,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
         return .allow
     }
 
-    func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy {
+    func decidePolicy(for response: URLResponse, isForMainFrame _: Bool) async -> WKNavigationResponsePolicy {
         guard let urlResponse = response as? HTTPURLResponse,
                 urlResponse.statusCode == 404 else {
             return .allow

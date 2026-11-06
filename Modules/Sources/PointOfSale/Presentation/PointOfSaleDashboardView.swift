@@ -412,13 +412,6 @@ struct PointOfSaleDashboardView: View {
                 }
             }
             Button {
-                analytics.track(.pointOfSaleExitMenuItemTapped)
-                requestExitPermission()
-            } label: {
-                Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
-            }
-            .accessibilityIdentifier("pos-exit-menu-item")
-            Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 requestSettingsPermission()
             } label: {
@@ -431,6 +424,13 @@ struct PointOfSaleDashboardView: View {
             } label: {
                 Label(Localization.phoneMenuOrders, systemImage: "text.document")
             }
+            Button {
+                analytics.track(.pointOfSaleExitMenuItemTapped)
+                requestExitPermission()
+            } label: {
+                Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
+            }
+            .accessibilityIdentifier("pos-exit-menu-item")
         } label: {
             Circle()
                 .foregroundColor(.posSurfaceContainerLow)
@@ -443,6 +443,9 @@ struct PointOfSaleDashboardView: View {
                 .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
                 .fixedSize()
         }
+        // Keep the declared order (Exit last) instead of letting the system reorder items by the
+        // button's position on screen.
+        .menuOrder(.fixed)
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
         .accessibilityIdentifier("pos-compact-overflow-menu")
     }

@@ -79,6 +79,10 @@ class RedactTests(unittest.TestCase):
         output = run("redact", stdin="'Ann' 10.0.0.1 1234 3fa85f64-5717-4562-b3fc-2c963f66afa6 Code 28\n")
         self.assertEqual(output.strip(), "'<string>' <ip> <number> <uuid> Code 28")
 
+    def test_apostrophes_in_prose_are_not_strings(self):
+        text = "Aztec's parser decodes a product's image"
+        self.assertEqual(run("redact", stdin=text + "\n").strip(), text)
+
 
 if __name__ == "__main__":
     unittest.main()

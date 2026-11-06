@@ -234,11 +234,14 @@ private extension ProductFormViewController_DuplicationTests {
 
 @MainActor
 private final class TestContext {
+    private let originalNoticePresenter: NoticePresenter
     private let originalAnalytics: Analytics
     let analyticsProvider = MockAnalyticsProvider()
     let window = UIWindow(frame: UIScreen.main.bounds)
 
     init() {
+        originalNoticePresenter = ServiceLocator.noticePresenter
+        ServiceLocator.setNoticePresenter(MockNoticePresenter())
         originalAnalytics = ServiceLocator.analytics
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
         window.makeKeyAndVisible()
@@ -260,6 +263,7 @@ private final class TestContext {
         window.resignKey()
         window.rootViewController = nil
         ServiceLocator.setAnalytics(originalAnalytics)
+        ServiceLocator.setNoticePresenter(originalNoticePresenter)
     }
 }
 

@@ -34,6 +34,17 @@ struct POSOrderDetailsView: View {
     @State private var currentRefundReason: String?
     @State private var selectedRefundForDetail: POSOrderRefund?
     @State private var refundOverrideHandler = POSManagerOverrideHandler()
+    /// Items last shown for a selected order. On a phone this screen keeps sliding away after its order
+    /// is deselected, and the controller has no items for a `nil` selection.
+    @State private var lastItemsState: POSOrderDetailsItemsState?
+
+    private var itemsState: POSOrderDetailsItemsState {
+        let controller = orderListModel.ordersController
+        guard controller.selectedOrder == nil, let lastItemsState else {
+            return controller.orderDetailsItemsState
+        }
+        return lastItemsState
+    }
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -83,7 +94,7 @@ struct POSOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    switch orderListModel.ordersController.orderDetailsItemsState {
+                    switch itemsState {
                     case .loading(let rowCount):
                         ghostItemsSection(rowCount: rowCount)
                         ghostRefundedProductsSection
@@ -182,6 +193,10 @@ struct POSOrderDetailsView: View {
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
         .posManagerOverrideModal(handler: refundOverrideHandler)
+        .onChange(of: orderListModel.ordersController.orderDetailsItemsState, initial: true) { _, newValue in
+            guard orderListModel.ordersController.selectedOrder != nil else { return }
+            lastItemsState = newValue
+        }
         .task {
             await orderListModel.ordersController.loadOrderRefunds()
         }

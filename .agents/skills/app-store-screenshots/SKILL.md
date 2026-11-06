@@ -10,7 +10,7 @@ Use Xcode 27.1 or newer with the existing `WooCommerceScreenshots` UI tests and 
 
 Ask whether devices, languages, screens or view configurations need to change. Keep decisions already made. Use the current Fastfile and `fastlane/screenshots.json` for everything else.
 
-The screenshot target sets `SCREENSHOTS_SHOW_POS` to `true` for iPad and `false` for iPhone and Duo. Revisit this setting and the captured scenes when phone POS screenshots are supported.
+The screenshot target sets `shouldShowPOS` to `true` for iPad and `false` for iPhone and Duo. It passes this through `SCREENSHOTS_SHOW_POS` to `ProcessConfiguration.shouldShowPOS`. Update this setting and the captured scenes when phone POS screenshots are supported.
 
 ## 2. Capture locally
 

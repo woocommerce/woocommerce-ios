@@ -643,9 +643,9 @@ extension WooAnalyticsEvent {
                               properties: [Key.sourceView: source.rawValue])
         }
 
-        static func receiptPrinterSetupCompleted(source: POSPrinterSetupSource) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleReceiptPrinterSetupCompleted,
-                              properties: [Key.sourceView: source.rawValue])
+        static func receiptPrinterConnected(source: POSPrinterSetupSource?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleReceiptPrinterConnected,
+                              properties: source.map { [Key.sourceView: $0.rawValue] } ?? [:])
         }
 
         // MARK: - Orders Analytics Events

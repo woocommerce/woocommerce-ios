@@ -66,6 +66,18 @@ public final class StarPrinterService: PrinterDiscoveryService {
     }
 }
 
+/// The parts of `StarPrinter` the coordinator drives to connect and print, so the connection lifecycle doesn't depend on
+/// the SDK class. `nonisolated(nonsending)` lets the actor call them without sending the printer it owns to another
+/// isolation domain.
+protocol StarPrinterConnection: AnyObject {
+    var printerDelegate: (any PrinterDelegate)? { get set }
+    nonisolated(nonsending) func open() async throws
+    nonisolated(nonsending) func close() async
+    nonisolated(nonsending) func print(command: String) async throws
+}
+
+extension StarPrinter: StarPrinterConnection {}
+
 /// Owns every StarIO10 object and all mutable connection/discovery state.
 ///
 /// Being an actor, it serializes all access on a single executor, so the discovery callbacks (funnelled
@@ -80,7 +92,7 @@ actor StarPrinterCoordinator {
     /// so we can connect by `PrinterDevice` without exposing StarIO10 types.
     private var discoveredPrinters: [String: StarPrinter] = [:]
 
-    private var printer: StarPrinter? {
+    private var printer: (any StarPrinterConnection)? {
         didSet { connectionGeneration += 1 }
     }
 
@@ -93,10 +105,16 @@ actor StarPrinterCoordinator {
     // swiftlint:disable:next weak_delegate
     private var connectionDelegate: StarConnectionDelegate?
 
-    /// Whether a `connect(to:)` is in flight, so overlapping calls are rejected and we stay the delegate of at
-    /// most one printer at a time. The check-and-set is atomic here because the actor admits no other call
-    /// between the guard and the assignment below (there is no suspension point between them).
+    /// Whether a `connect(to:)` is opening a printer, so overlapping calls queue behind it and we stay the delegate
+    /// of at most one printer at a time. The check-and-set is atomic here because the actor admits no other call
+    /// between the loop's check and the assignment (there is no suspension point between them).
     private var isConnecting = false
+
+    /// Changes on every `connect(to:)` call, so an attempt that a newer call superseded knows not to publish its result.
+    private var connectAttempt = 0
+
+    /// Connect calls waiting for the in-flight attempt to settle.
+    private var connectWaiters: [CheckedContinuation<Void, Never>] = []
 
     /// The latest connection status, replayed to each new observer so it never starts out of sync.
     private var connectionStatus: PrinterConnectionStatus = .idle
@@ -167,17 +185,40 @@ actor StarPrinterCoordinator {
     }
 
     func connect(to device: PrinterDevice) async throws {
-        guard !isConnecting else {
-            DDLogError("🖨️ A connection is already in progress; ignoring connect for \(device.id)")
-            throw PrinterError.connectionInProgress
-        }
         guard let starPrinter = discoveredPrinters[device.id] else {
             DDLogError("🖨️ No discovered printer matches device id \(device.id)")
             throw PrinterError.printerNotFound
         }
+        try await connect(to: device, using: starPrinter)
+    }
+
+    func connect(to device: PrinterDevice, using starPrinter: any StarPrinterConnection) async throws {
+        // An already-cancelled call must not supersede, and so close, a connect that is still in flight.
+        try Task.checkCancellation()
+        connectAttempt += 1
+        let attempt = connectAttempt
+
+        // StarIO10's `open()` ignores task cancellation and has no way to abort it, so a newer call waits for the
+        // in-flight attempt to settle. That attempt sees it was superseded and closes a late connection itself.
+        while isConnecting {
+            await withCheckedContinuation { connectWaiters.append($0) }
+        }
+        guard attempt == connectAttempt, !Task.isCancelled else {
+            // The newest call reports status, so it settles what the attempt it superseded, or a `disconnect()` that
+            // deferred to the connect, left in progress.
+            if attempt == connectAttempt, [.connecting, .disconnecting].contains(connectionStatus) {
+                emit(.disconnected)
+            }
+            throw CancellationError()
+        }
 
         isConnecting = true
-        defer { isConnecting = false }
+        defer {
+            isConnecting = false
+            let waiters = connectWaiters
+            connectWaiters = []
+            waiters.forEach { $0.resume() }
+        }
 
         // Tear down any current connection to a different printer first, so we never leave a second printer
         // open with us still set as its delegate.
@@ -192,16 +233,29 @@ actor StarPrinterCoordinator {
         starPrinter.printerDelegate = delegate
         do {
             try await starPrinter.open()
-            printer = starPrinter
-            connectionDelegate = delegate
-            emit(.connected(device))
-            DDLogInfo("🖨️ Connected to printer \(device.id)")
         } catch {
             starPrinter.printerDelegate = nil
-            emit(.disconnected)
+            // A superseding call reports its own status.
+            if attempt == connectAttempt {
+                emit(.disconnected)
+            }
             DDLogError("🖨️ Printer connection failed: \(error.localizedDescription)")
             throw error
         }
+
+        guard attempt == connectAttempt, !Task.isCancelled else {
+            DDLogInfo("🖨️ Closing printer \(device.id) opened by a cancelled or superseded connect")
+            starPrinter.printerDelegate = nil
+            await starPrinter.close()
+            if attempt == connectAttempt {
+                emit(.disconnected)
+            }
+            throw CancellationError()
+        }
+        printer = starPrinter
+        connectionDelegate = delegate
+        emit(.connected(device))
+        DDLogInfo("🖨️ Connected to printer \(device.id)")
     }
 
     func disconnect() async {
@@ -287,7 +341,7 @@ private extension StarPrinterCoordinator {
 
     /// Closes `existing` and drops it as the active printer, releasing its delegate. Used while switching to a
     /// new printer, so it stays quiet about connection status, which the in-flight `connect(to:)` then drives.
-    func teardown(_ existing: StarPrinter) async {
+    func teardown(_ existing: any StarPrinterConnection) async {
         existing.printerDelegate = nil
         await existing.close()
         if printer === existing {

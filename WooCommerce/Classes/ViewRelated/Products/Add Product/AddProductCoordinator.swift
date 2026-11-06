@@ -159,15 +159,19 @@ private extension AddProductCoordinator {
     func presentProductTypeBottomSheet() {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
+        // Preserve the existing colors as an opaque surface over native popover glass.
+        let backgroundColor = UIColor { traits in
+            UIColor(cgColor: UIColor.basicBackground.resolvedColor(with: traits).cgColor)
+        }
         let viewProperties = BottomSheetListSelectorViewProperties(
             subtitle: subtitle,
             accessibilityIdentifier: Accessibility.createProductSheetIdentifier,
-            backgroundColor: .basicBackground
+            backgroundColor: backgroundColor
         )
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
             subscriptionProductsEligibilityChecker: wooSubscriptionProductsEligibilityChecker,
-            backgroundColor: .basicBackground
+            backgroundColor: backgroundColor
         ) { [weak self] selectedBottomSheetProductType in
             guard let self else { return }
             self.analytics.track(event: .ProductCreation

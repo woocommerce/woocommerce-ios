@@ -25,6 +25,8 @@ struct POSPrinterSetupModal: View {
             .frame(minWidth: modalMinWidth, maxWidth: modalMaxWidth,
                    minHeight: modalMinHeight, maxHeight: modalMaxHeight)
             .fixedSize(horizontal: false, vertical: !isCompactWidth)
+            // Same cap as the payment success screen this opens from, so step text and buttons stay legible on a phone.
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .onChange(of: controller.isConnected) { _, isConnected in
                 if isConnected {
                     isPresented = false

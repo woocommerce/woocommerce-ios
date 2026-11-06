@@ -5,11 +5,53 @@ struct POSPrintReceiptFailureModal: View {
     let failure: POSPrintReceiptFailure
     let selectAction: (POSPrintReceiptFailureAction) -> Void
     let close: () -> Void
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
+        content
+            .posModalCloseButton(action: close)
+            .posModalSizing(fullScreenWhenCompact: true)
+            // Same cap as the payment success screen this opens from, so the message and buttons stay legible on a phone.
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+    }
+
+    /// On the full-screen phone modal, a message taller than the screen scrolls above the buttons
+    /// instead of being cut to a single line.
+    @ViewBuilder
+    private var content: some View {
+        if horizontalSizeClass == .compact {
+            ViewThatFits(in: .vertical) {
+                centeredContent
+                scrollingContent
+            }
+        } else {
+            centeredContent
+        }
+    }
+
+    private var centeredContent: some View {
         VStack(spacing: POSSpacing.xLarge) {
             Spacer()
+            failureMessage
+            Spacer()
+            buttons
+        }
+    }
 
+    private var scrollingContent: some View {
+        VStack(spacing: POSSpacing.xLarge) {
+            ScrollView(showsIndicators: false) {
+                failureMessage
+                    .frame(maxWidth: .infinity)
+            }
+            .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
+
+            buttons
+        }
+    }
+
+    private var failureMessage: some View {
+        VStack(spacing: POSSpacing.xLarge) {
             POSErrorExclamationMark(size: .large)
 
             VStack(spacing: POSSpacing.small) {
@@ -23,15 +65,13 @@ struct POSPrintReceiptFailureModal: View {
                     .foregroundStyle(Color.posOnSurface)
             }
             .multilineTextAlignment(.center)
-
-            Spacer()
-
-            POSFlowButtonsView(configuration: .init(
-                primaryButton: .init(title: Localization.retryButton, action: { selectAction(.retry) }),
-                secondaryButton: .init(title: Localization.emailButton, action: { selectAction(.emailReceipt) })))
         }
-        .posModalCloseButton(action: close)
-        .posModalSizing(fullScreenWhenCompact: true)
+    }
+
+    private var buttons: some View {
+        POSFlowButtonsView(configuration: .init(
+            primaryButton: .init(title: Localization.retryButton, action: { selectAction(.retry) }),
+            secondaryButton: .init(title: Localization.emailButton, action: { selectAction(.emailReceipt) })))
     }
 }
 

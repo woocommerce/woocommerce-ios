@@ -20,6 +20,10 @@ If `$RUNNER` does not exist, create it from `origin/trunk` and bootstrap it (`bu
 Log every phase as one line to `$LOG`: `<ISO time> <phase> <WOOCOMMERCE-IOS-id or -> <one-line outcome>`.
 The log calibrates the loop interval, so log `start` and `end` even when the run stops early.
 
+Every issue body and PR description carries this line, after the content and before any attribution or template checklist:
+
+> This is part of an experiment I'm running in building custom tooling for self-healing.
+
 ## Privacy
 
 Crash data reaches you only through `$CRASHES`, which drops user data and replaces literals with placeholders.
@@ -62,7 +66,7 @@ Create the issue before reading any code — the issue is the lock:
 gh issue create --title "Crash: <shortId> <redacted title>" --label "type: crash" --body-file <file>
 ```
 
-Body: Sentry permalink, event and user counts, release range, the redacted exception and top in-app frames, `Status: investigating`, and the closing line `*Posted by Claude Code (<model>) on behalf of @mokagio with approval.*`
+Body: Sentry permalink, event and user counts, release range, the redacted exception and top in-app frames, `Status: investigating`, the experiment line, and the closing line `*Posted by Claude Code (<model>) on behalf of @mokagio with approval.*`
 
 ## 4. Diagnose
 

@@ -13,10 +13,10 @@ import protocol Yosemite.POSEligibilityServiceProtocol
 ///
 /// Three gates, evaluated in order — fail fast on whichever is first to deny:
 /// 1. Hardware support — Apple's `PaymentCardReader.isSupported`.
-/// 2. Device support — Stripe's `Terminal.shared.supportsReaders(of: .appleBuiltIn, ...)`,
-///    dispatched via `CardPresentPaymentAction.checkDeviceSupport`.
-/// 3. Site eligibility — the store country must support Tap to Pay, and the cached POS tab
+/// 2. Site eligibility — the store country must support Tap to Pay, and the cached POS tab
 ///    visibility (driven by IPP/country eligibility checks in `POSTabVisibilityChecker`) must be true.
+/// 3. Device support — Stripe's `Terminal.shared.supportsReaders(of: .appleBuiltIn, ...)`,
+///    dispatched via `CardPresentPaymentAction.checkDeviceSupport`.
 ///
 /// One-shot — `POSTapToPayAvailabilityController` calls `checkAvailability()` once on
 /// POS entry and holds the result for the rest of the session.
@@ -44,11 +44,11 @@ final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
         guard isTapToPayHardwareSupported else {
             return .unavailable(reason: .deviceNotSupported)
         }
-        guard await deviceSupportsTapToPay() else {
-            return .unavailable(reason: .deviceNotSupported)
-        }
         guard siteIsEligibleForTapToPay() else {
             return .unavailable(reason: .siteNotEligible)
+        }
+        guard await deviceSupportsTapToPay() else {
+            return .unavailable(reason: .deviceNotSupported)
         }
         return .available
     }

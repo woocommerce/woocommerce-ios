@@ -46,6 +46,13 @@ public final class TwoFAScreen {
             app.dismissNotificationsPermissionPromptIfNeeded()
         }
 
+        let myStoreTitle = app.staticTexts["my-store-title"]
+        guard app.dismissSavePasswordPromptIfNeeded(timeout: 30,
+                                                    until: myStoreTitle,
+                                                    elementDescription: "My Store title") else {
+            throw TwoFAScreenError.timedOut
+        }
+
         return try MyStoreScreen()
     }
 
@@ -67,10 +74,6 @@ public final class TwoFAScreen {
     }
 
     private func focusTwoFAFieldIfNeeded() {
-        if app.keyboards.firstMatch.exists {
-            return
-        }
-
         if twoFAField.isHittable {
             twoFAField.tap()
         } else if !twoFAField.frame.isEmpty {

@@ -83,8 +83,6 @@ fastlane/logs
 # Notice that we ignore the raw screenshots but track (with Git LFS, see .gitattributes)
 # the annotated ones (promo_screenshots)
 fastlane/screenshots
-# Prepared locally from licensed Apple Design Resources.
-fastlane/appstoreres/assets/duo/
 
 Preview.html
 default.profraw

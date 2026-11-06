@@ -22,8 +22,6 @@ The lane deletes its selected simulators and shuts down other booted simulators.
 
 ## 3. Compose and compare
 
-For Duo, accept Apple's Design Resources license and prepare its official inner-open-landscape PNG with `BUNDLE_WITH=screenshots bundle exec ruby fastlane/helpers/prepare_duo_screenshot_assets.rb /path/to/official.png`.
-
 Run `BUNDLE_WITH=screenshots bundle exec fastlane create_promo_screenshots force:true commit:false push:false`. Inspect every new image in `fastlane/promo_screenshots` and compare with the previous set. Check text, light/dark mode, framing and crop. Preserve accepted images before a targeted recapture.
 
 ## 4. Show the results

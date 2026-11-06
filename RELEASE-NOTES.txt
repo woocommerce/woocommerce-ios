@@ -7,6 +7,7 @@
 - [*] Push notifications: The app icon badge now clears when the app returns to the Orders or Products tab after a push arrived while that tab was open. [https://github.com/woocommerce/woocommerce-ios/pull/18273]
 - [**] POS: Point of Sale is now available on iPhone in the US, Canada, Australia and Puerto Rico, and on iOS 18 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
 - [*] POS: Tap to Pay is no longer offered at checkout for stores in Canada, Australia and Puerto Rico, where it is not supported. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
+- [*] POS: On iPhone, tapping a selected coupon in the coupon list now removes it from the cart. [https://github.com/woocommerce/woocommerce-ios/pull/18270]
 - [*] POS: On iPhone, Exit POS is now the last item in the menu. [https://github.com/woocommerce/woocommerce-ios/pull/18268]
 - [*] Help & Support: Troubleshooting now checks your payment setup, so you can find and fix card payment problems faster. [https://github.com/woocommerce/woocommerce-ios/pull/18229]
 

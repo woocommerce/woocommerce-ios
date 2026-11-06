@@ -162,6 +162,10 @@ final class ProductsViewController: UIViewController {
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
 
+    /// Selecting a row can make UIKit display rows again, re-entering `willDisplay`, so nested restores wait their turn.
+    private var pendingSelectionRestores = [IndexPath]()
+    private var isRestoringSelection = false
+
     /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
@@ -1455,12 +1459,30 @@ extension ProductsViewController: UITableViewDelegate {
         //
         estimatedRowHeights[indexPath] = cell.frame.height
 
-        // Restore cell selection state
         if tableView.isEditing {
+            restoreSelection(at: indexPath, in: tableView)
+        }
+    }
+
+    private func restoreSelection(at indexPath: IndexPath, in tableView: UITableView) {
+        pendingSelectionRestores.append(indexPath)
+        guard !isRestoringSelection else {
+            return
+        }
+        isRestoringSelection = true
+        defer { isRestoringSelection = false }
+
+        while !pendingSelectionRestores.isEmpty {
+            let indexPath = pendingSelectionRestores.removeFirst()
             guard let product = presentedProduct(at: indexPath) else {
-                return
+                continue
             }
-            if self.viewModel.productIsSelected(product) {
+            let shouldBeSelected = viewModel.productIsSelected(product)
+            let isSelected = tableView.indexPathsForSelectedRows?.contains(indexPath) ?? false
+            guard shouldBeSelected != isSelected else {
+                continue
+            }
+            if shouldBeSelected {
                 tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
             } else {
                 tableView.deselectRow(at: indexPath, animated: false)

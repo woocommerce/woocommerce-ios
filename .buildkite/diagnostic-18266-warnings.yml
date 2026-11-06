@@ -1,0 +1,31 @@
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+
+steps:
+  - label: "Diagnose Xcode 27.2 compiler warnings"
+    command: |
+      set -eu
+      .buildkite/commands/shared-set-up.sh
+      set +e
+      xcodebuild -workspace WooCommerce.xcworkspace \
+        -scheme WooCommerce \
+        -destination 'generic/platform=iOS Simulator' \
+        -derivedDataPath "$$(mktemp -d)/DerivedData" \
+        build-for-testing SWIFT_STRICT_CONCURRENCY=complete \
+        CODE_SIGNING_ALLOWED=NO > strict-concurrency-build.log 2>&1
+      BUILD_STATUS=$$?
+      set -e
+      if [ "$$BUILD_STATUS" -ne 0 ]; then
+        tail -n 100 strict-concurrency-build.log
+        exit "$$BUILD_STATUS"
+      fi
+      STRICT_CONCURRENCY_LOG="$$PWD/strict-concurrency-build.log" \
+        Scripts/StrictConcurrency/count-warnings.sh strict-concurrency-current.json
+      rg 'CardPresentPaymentPreflightControllerTests.swift.*warning:' strict-concurrency-build.log || true
+    plugins: [$CI_TOOLKIT]
+    artifact_paths:
+      - strict-concurrency-build.log
+      - strict-concurrency-current.json

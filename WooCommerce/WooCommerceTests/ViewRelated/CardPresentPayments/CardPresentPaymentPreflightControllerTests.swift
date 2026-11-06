@@ -22,8 +22,8 @@ final class CardPresentPaymentPreflightControllerTests: XCTestCase {
         MockCardPresentPaymentAlertsPresenter
     > = makeSUT()
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
@@ -200,6 +200,7 @@ private final class DelayedCardPresentPaymentsOnboardingPresenter: CardPresentPa
 }
 
 private extension CardPresentPaymentPreflightControllerTests {
+    @MainActor
     enum Mocks {
         static let configuration = CardPresentPaymentsConfiguration(country: .US)
     }

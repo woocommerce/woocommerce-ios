@@ -1,8 +1,7 @@
-import Network
+import Embassy
 import ScreenObject
 import UITestsFoundation
 import XCTest
-import os
 
 class WooCommerceScreenshots: XCTestCase {
 
@@ -41,7 +40,7 @@ class WooCommerceScreenshots: XCTestCase {
             app.launchArguments.append("bypass-pos-order-syncing")
         }
         app.launchArguments.append("bypass-card-present-payment")
-        app.launchArguments.append(contentsOf: ["-mocks-port", "\(assetPort)"])
+        app.launchArguments.append(contentsOf: ["-mocks-port", "\(server.listenAddress.port)"])
 
         app.launch()
 
@@ -150,165 +149,68 @@ class WooCommerceScreenshots: XCTestCase {
         .thenTakeScreenshot(named: "order-notification", orientation: screenshotOrientation)
     }
 
-    private var server: ScreenshotAssetServer?
-    private var assetPort: UInt16 = 0
+    private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
+
+    private let queue = DispatchQueue(label: "screenshots-asset-server")
+
+    private lazy var server = DefaultHTTPServer(eventLoop: loop, app: handleWebRequest)
 
     func startWebServer() throws {
-        let bundle = Bundle(for: Self.self)
-        let server = try ScreenshotAssetServer { name in
-            UIImage(named: name, in: bundle, compatibleWith: nil)?.pngData()
+        try queue.sync {
+            /// Start HTTP server to listen on the port
+            try self.server.start()
+            debugPrint("Web Server running on port \(self.server.listenAddress.port)")
         }
-        assetPort = try server.start()
-        self.server = server
+
+        queue.async {
+            /// Run event loop
+            self.loop.runForever()
+        }
+    }
+
+    /// This method handles web requests to the asset server running in the test process. It allows for retrieving assets by name, so
+    /// passing in `/test-image` will cause the server to return the bits for the item in the `ScreenshotImages.xcassets` catalogue
+    /// named `test-image`. Right now only `png` images are supported, though we could add support for additional items over time as needed.
+    func handleWebRequest(env: [String: Any], startResponse: ((String, [(String, String)]) -> ()), sendBody: ((Data) -> ())) {
+        /// Extract the path, so http://localhost:9285/foo-bar would be `/foo-bar` here.
+        /// See https://github.com/envoy/Embassy#whats-swsgi-swift-web-server-gateway-interface for more about PATH_INFO
+        guard let path = env["PATH_INFO"] as? String else {
+            startResponse("404 Not Found", [])
+            sendBody(Data())
+            return
+        }
+
+        /// Remove the leading `/`, so we're left with `foo-bar`
+        let assetName = path.replacingOccurrences(of: "^/", with: "", options: .regularExpression)
+
+        /// Lookup the `assetName` in this bundle
+        let bundle = Bundle(for: Self.self)
+
+        guard
+            let image = UIImage(named: assetName, in: bundle, compatibleWith: nil),
+            let data = image.pngData()
+        else {
+            startResponse("404 Not Found", [])
+            sendBody(Data())
+            return
+        }
+
+        /// HTTP Header
+        startResponse("200 OK", [
+            ("Content-Type", "image/png"),
+            ("Content-Length", "\(data.count)")
+        ])
+
+        /// HTTP Body Data
+        sendBody(data)
+
+        /// HTTP EOF
+        sendBody(Data())
     }
 
     func stopWebServer() {
-        server?.stop()
-        server = nil
-        assetPort = 0
-    }
-}
-
-private final class ScreenshotAssetServer: Sendable {
-    private struct State: Sendable {
-        var stopped = false
-        var connections: [ObjectIdentifier: NWConnection] = [:]
-    }
-
-    private enum StartupError: Error {
-        case timedOut
-        case portUnavailable
-    }
-
-    private let listener: NWListener
-    private let queue = DispatchQueue(label: "screenshots-asset-server")
-    private let state = OSAllocatedUnfairLock(initialState: State())
-    private let assetData: @Sendable (String) -> Data?
-
-    init(assetData: @escaping @Sendable (String) -> Data?) throws {
-        let parameters = NWParameters.tcp
-        parameters.requiredLocalEndpoint = .hostPort(host: .ipv6(.loopback), port: .any)
-        listener = try NWListener(using: parameters)
-        self.assetData = assetData
-    }
-
-    deinit {
-        stop()
-    }
-
-    func start() throws -> UInt16 {
-        let ready = DispatchSemaphore(value: 0)
-        let result = OSAllocatedUnfairLock<Result<UInt16, Error>?>(initialState: nil)
-        listener.stateUpdateHandler = { [listener] state in
-            let update: Result<UInt16, Error>
-            switch state {
-            case .ready:
-                update = listener.port.map { .success($0.rawValue) } ?? .failure(StartupError.portUnavailable)
-            case .failed(let error), .waiting(let error):
-                update = .failure(error)
-            case .cancelled:
-                update = .failure(CancellationError())
-            default:
-                return
-            }
-            let firstResult = result.withLock { stored in
-                guard stored == nil else { return false }
-                stored = update
-                return true
-            }
-            if firstResult {
-                ready.signal()
-            }
-        }
-        listener.newConnectionHandler = { [weak self] connection in
-            self?.accept(connection)
-        }
-        listener.start(queue: queue)
-        guard ready.wait(timeout: .now() + 5) == .success else {
-            stop()
-            throw StartupError.timedOut
-        }
-        listener.stateUpdateHandler = nil
-        guard let startupResult = result.withLock({ $0 }) else {
-            stop()
-            throw StartupError.portUnavailable
-        }
-        do {
-            return try startupResult.get()
-        } catch {
-            stop()
-            throw error
-        }
-    }
-
-    func stop() {
-        let connections = state.withLock { state in
-            state.stopped = true
-            let connections = Array(state.connections.values)
-            state.connections.removeAll()
-            return connections
-        }
-        listener.newConnectionHandler = nil
-        listener.stateUpdateHandler = nil
-        listener.cancel()
-        for connection in connections {
-            connection.stateUpdateHandler = nil
-            connection.cancel()
-        }
-    }
-
-    private func accept(_ connection: NWConnection) {
-        connection.stateUpdateHandler = { [weak self, weak connection] state in
-            if case .failed = state, let connection {
-                self?.close(connection)
-            }
-        }
-        let accepted = state.withLock { state in
-            guard !state.stopped else { return false }
-            state.connections[ObjectIdentifier(connection)] = connection
-            connection.start(queue: queue)
-            return true
-        }
-        guard accepted else {
-            connection.cancel()
-            return
-        }
-        receiveRequest(on: connection, buffered: Data())
-    }
-
-    private func receiveRequest(on connection: NWConnection, buffered: Data) {
-        connection.receive(minimumIncompleteLength: 1, maximumLength: 16_384 - buffered.count) { [weak self] data, _, complete, error in
-            guard let self else { return }
-            var request = buffered
-            request.append(data ?? Data())
-            if let headerEnd = request.range(of: Data("\r\n\r\n".utf8)) {
-                connection.send(content: response(for: request[..<headerEnd.lowerBound]), contentContext: .finalMessage, isComplete: true,
-                                completion: .contentProcessed { [weak self] _ in self?.close(connection) })
-            } else if complete || error != nil || request.count >= 16_384 {
-                close(connection)
-            } else {
-                receiveRequest(on: connection, buffered: request)
-            }
-        }
-    }
-
-    private func response(for request: Data) -> Data {
-        let firstLine = String(decoding: request, as: UTF8.self).components(separatedBy: "\r\n").first ?? ""
-        let target = firstLine.split(separator: " ").dropFirst().first
-        let path = target.flatMap { URLComponents(string: String($0))?.path }
-        let body = path.flatMap { assetData(String($0.dropFirst())) }
-        let status = body == nil ? "404 Not Found" : "200 OK"
-        let payload = body ?? Data()
-        let header = "HTTP/1.1 \(status)\r\nContent-Type: image/png\r\nContent-Length: \(payload.count)\r\nConnection: close\r\n\r\n"
-        var response = Data(header.utf8)
-        response.append(payload)
-        return response
-    }
-
-    private func close(_ connection: NWConnection) {
-        state.withLock { $0.connections[ObjectIdentifier(connection)] = nil }
-        connection.stateUpdateHandler = nil
-        connection.cancel()
+        self.server.stop()
+        self.loop.stop()
     }
 }
 

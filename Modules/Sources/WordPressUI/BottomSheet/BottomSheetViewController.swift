@@ -78,6 +78,8 @@ public class BottomSheetViewController: UIViewController {
             if (sourceBarButtonItem == nil && sourceView == nil) ||
                 traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
                 modalPresentationStyle = .formSheet
+                // Keep native dismissal available instead of adapting to full screen at compact height.
+                sheetPresentationController?.prefersEdgeAttachedInCompactHeight = true
             } else {
                 modalPresentationStyle = .popover
 

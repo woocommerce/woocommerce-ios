@@ -18,6 +18,12 @@ struct POSPrinterSetupModal: View {
         horizontalSizeClass == .compact
     }
 
+    /// Phones cap text at the payment success screen's size so the steps and buttons fit; iPad keeps full scaling.
+    /// One range for both widths keeps a single view identity across size-class changes.
+    private var maximumDynamicTypeSize: DynamicTypeSize {
+        isCompactWidth ? .accessibility1 : .accessibility5
+    }
+
     var body: some View {
         // Size a single `modalCore` via these bounds so it keeps one view identity across size-class
         // changes on iPad, preserving any state internal to the modal.
@@ -25,6 +31,7 @@ struct POSPrinterSetupModal: View {
             .frame(minWidth: modalMinWidth, maxWidth: modalMaxWidth,
                    minHeight: modalMinHeight, maxHeight: modalMaxHeight)
             .fixedSize(horizontal: false, vertical: !isCompactWidth)
+            .dynamicTypeSize(...maximumDynamicTypeSize)
             .onChange(of: controller.isConnected) { _, isConnected in
                 if isConnected {
                     isPresented = false
@@ -57,25 +64,56 @@ struct POSPrinterSetupModal: View {
     }
 
     private var modalCore: some View {
+        stepContent
+            .posModalCloseButton(action: {
+                isPresented = false
+            })
+            .padding(POSPadding.xLarge)
+            .background(Color.posSurfaceBright)
+    }
+
+    /// On the full-screen phone modal, a step that fits is centred together with its buttons, matching the
+    /// other POS setup flows. A step taller than the screen scrolls instead.
+    @ViewBuilder
+    private var stepContent: some View {
+        if isCompactWidth {
+            ViewThatFits(in: .vertical) {
+                VStack(spacing: POSSpacing.xLarge) {
+                    centeredStep
+                    flowButtons
+                }
+
+                scrollingStepContent
+            }
+        } else {
+            scrollingStepContent
+        }
+    }
+
+    private var scrollingStepContent: some View {
         VStack(spacing: POSSpacing.xLarge) {
             ScrollView(showsIndicators: false) {
-                HStack {
-                    Spacer()
-                    POSPrinterSetupContent(controller: controller)
-                    Spacer()
-                }
+                centeredStep
             }
             .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
 
-            if let buttonConfiguration {
-                POSFlowButtonsView(configuration: buttonConfiguration)
-            }
+            flowButtons
         }
-        .posModalCloseButton(action: {
-            isPresented = false
-        })
-        .padding(POSPadding.xLarge)
-        .background(Color.posSurfaceBright)
+    }
+
+    private var centeredStep: some View {
+        HStack {
+            Spacer()
+            POSPrinterSetupContent(controller: controller)
+            Spacer()
+        }
+    }
+
+    @ViewBuilder
+    private var flowButtons: some View {
+        if let buttonConfiguration {
+            POSFlowButtonsView(configuration: buttonConfiguration)
+        }
     }
 }
 
@@ -145,8 +183,8 @@ private struct POSPrinterSetupContent: View {
                 Text(message)
                     .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurface)
-                    .multilineTextAlignment(.center)
             }
+            .multilineTextAlignment(.center)
         }
     }
 
@@ -168,6 +206,7 @@ private struct POSPrinterSetupContent: View {
             Text(Localization.severalPrintersTitle)
                 .font(.posHeadingBold)
                 .foregroundColor(.posOnSurface)
+                .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
 
             if controller.isDiscovering {
@@ -479,6 +518,42 @@ private extension POSPrinterSetupModal {
         bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
         .posPreviewModalParentSize()
+}
+
+#Preview("iPhone SE: Printer found", traits: .sizeThatFitsLayout) {
+    let controller = POSPrinterConnectionController(
+        service: POSReceiptPrinterPreviewService(
+            devices: [PrinterDevice(id: "1", name: "Star TSP143IV-UEWB")],
+            keepDiscovering: true),
+        analytics: EmptyPOSAnalytics(),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .printReceipt)
+        .posPreviewSmallestPhone()
+}
+
+#Preview("iPhone SE: Several printers found", traits: .sizeThatFitsLayout) {
+    let controller = POSPrinterConnectionController(
+        service: POSReceiptPrinterPreviewService(
+            devices: [PrinterDevice(id: "1", name: "Star TSP143IV-UEWB"),
+                      PrinterDevice(id: "2", name: "Star mC-Print3"),
+                      PrinterDevice(id: "3", name: "Star TSP100IV")],
+            keepDiscovering: true),
+        analytics: EmptyPOSAnalytics(),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
+        .posPreviewSmallestPhone()
+}
+
+#Preview("iPhone SE: Bluetooth disabled", traits: .sizeThatFitsLayout) {
+    POSPrinterSetupModal(
+        isPresented: .constant(true),
+        controller: POSPrinterConnectionController(
+            service: POSReceiptPrinterPreviewService(),
+            analytics: EmptyPOSAnalytics(),
+            bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .denied)),
+        source: .settings
+    )
+    .posPreviewSmallestPhone()
 }
 
 private struct PreviewBluetoothAuthorizationProvider: BluetoothAuthorizationProviding {

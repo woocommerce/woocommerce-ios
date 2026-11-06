@@ -46,6 +46,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the initial visibility of the POS tab without dependence on network requests.
     func checkInitialVisibility() -> Bool {
+        if ProcessConfiguration.shouldUseScreenshotsNetworkLayer {
+            return userInterfaceIdiom == .pad
+        }
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }
@@ -56,8 +59,12 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     /// Used for the initial state check when a site instance hasn't been loaded but a `siteID` is available
     static func checkInitialVisibility(
         for siteID: Int64,
+        userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()
     ) -> Bool {
+        if ProcessConfiguration.shouldUseScreenshotsNetworkLayer {
+            return userInterfaceIdiom == .pad
+        }
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }
@@ -66,6 +73,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
+        if ProcessConfiguration.shouldUseScreenshotsNetworkLayer {
+            return userInterfaceIdiom == .pad
+        }
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }

@@ -18,7 +18,7 @@ Build once with `bundle exec fastlane build_screenshots`. Run `take_screenshots`
 bundle exec fastlane take_screenshots languages:en-US devices:"iPhone Duo" mode:dark
 ```
 
-The lane resets its selected simulators. Raw images go to `fastlane/screenshots/<locale>`. Review a representative set before expanding a changed configuration. Keep accepted captures when retrying a subset.
+The lane deletes its selected simulators and shuts down other booted simulators. Check for other sessions before running. Raw images go to `fastlane/screenshots/<locale>`. Review a representative set before expanding a changed configuration. Keep accepted captures when retrying a subset.
 
 ## 3. Compose and compare
 

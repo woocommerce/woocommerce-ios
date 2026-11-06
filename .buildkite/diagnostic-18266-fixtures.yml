@@ -1,0 +1,25 @@
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+
+steps:
+  - label: "Build corrected Xcode 27.2 test fixtures"
+    key: build
+    command: .buildkite/commands/build-for-testing.sh
+    plugins: [$CI_TOOLKIT]
+  - label: "Run the full unit test plan with corrected fixtures"
+    depends_on: build
+    command: |
+      set +e
+      .buildkite/commands/run-unit-tests.sh
+      STATUS=$$?
+      for REPORT in "$$HOME"/Library/Logs/DiagnosticReports/WooCommerce*.ips; do
+        if [ -f "$$REPORT" ]; then cp "$$REPORT" .; fi
+      done
+      exit "$$STATUS"
+    plugins: [$CI_TOOLKIT]
+    artifact_paths:
+      - fastlane/test_output/*
+      - '*.ips'

@@ -57,25 +57,56 @@ struct POSPrinterSetupModal: View {
     }
 
     private var modalCore: some View {
+        stepContent
+            .posModalCloseButton(action: {
+                isPresented = false
+            })
+            .padding(POSPadding.xLarge)
+            .background(Color.posSurfaceBright)
+    }
+
+    /// On the full-screen phone modal, a step that fits is centred together with its buttons, matching the
+    /// other POS setup flows. A step taller than the screen scrolls instead.
+    @ViewBuilder
+    private var stepContent: some View {
+        if isCompactWidth {
+            ViewThatFits(in: .vertical) {
+                VStack(spacing: POSSpacing.xLarge) {
+                    centeredStep
+                    flowButtons
+                }
+
+                scrollingStepContent
+            }
+        } else {
+            scrollingStepContent
+        }
+    }
+
+    private var scrollingStepContent: some View {
         VStack(spacing: POSSpacing.xLarge) {
             ScrollView(showsIndicators: false) {
-                HStack {
-                    Spacer()
-                    POSPrinterSetupContent(controller: controller)
-                    Spacer()
-                }
+                centeredStep
             }
             .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
 
-            if let buttonConfiguration {
-                POSFlowButtonsView(configuration: buttonConfiguration)
-            }
+            flowButtons
         }
-        .posModalCloseButton(action: {
-            isPresented = false
-        })
-        .padding(POSPadding.xLarge)
-        .background(Color.posSurfaceBright)
+    }
+
+    private var centeredStep: some View {
+        HStack {
+            Spacer()
+            POSPrinterSetupContent(controller: controller)
+            Spacer()
+        }
+    }
+
+    @ViewBuilder
+    private var flowButtons: some View {
+        if let buttonConfiguration {
+            POSFlowButtonsView(configuration: buttonConfiguration)
+        }
     }
 }
 

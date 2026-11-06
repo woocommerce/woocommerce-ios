@@ -1,0 +1,36 @@
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+
+steps:
+  - label: "Compare existing tests across simulator runtimes"
+    command: |
+      set -eu
+      BUILDKITE_BUILD_ID=01a1b0ed-9b45-4577-a1ca-58a83d25ec09 download_artifact build-products.tar
+      tar -xf build-products.tar
+      .buildkite/commands/shared-set-up.sh
+      for SCENARIO in mixed-old mixed-new swift-old; do
+        DEVICE='iPhone 17 Pro'
+        TESTS='WooCommerceTests/WrongAccountErrorViewModelTests/test_viewModel_sends_correct_screen_value_in_present_support_method,WooCommerceTests/SyncableListSelectorViewModelTests/search_predicate_is_applied_when_search_query_is_not_empty()'
+        if [ "$$SCENARIO" = mixed-new ]; then DEVICE='iPhone 18 Pro'; fi
+        if [ "$$SCENARIO" = swift-old ]; then
+          TESTS='WooCommerceTests/SyncableListSelectorViewModelTests/search_predicate_is_applied_when_search_query_is_not_empty()'
+        fi
+        set +e
+        SCAN_ONLY_TESTING="$$TESTS" SCAN_OUTPUT_DIRECTORY="$$PWD/probe-$$SCENARIO" \
+          bundle exec fastlane test_without_building name:UnitTests device:"$$DEVICE" \
+          > "probe-$$SCENARIO.log" 2>&1
+        STATUS=$$?
+        set -e
+        echo "$$SCENARIO exit=$$STATUS"
+        tail -n 30 "probe-$$SCENARIO.log"
+        if [ -d "probe-$$SCENARIO/WooCommerce.xcresult" ]; then
+          zip -rq "probe-$$SCENARIO.xcresult.zip" "probe-$$SCENARIO/WooCommerce.xcresult"
+        fi
+      done
+    plugins: [$CI_TOOLKIT]
+    artifact_paths:
+      - probe-*.log
+      - probe-*.xcresult.zip

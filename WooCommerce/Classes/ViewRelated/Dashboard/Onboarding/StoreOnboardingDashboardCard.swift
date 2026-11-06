@@ -84,6 +84,7 @@ private extension StoreOnboardingDashboardCard {
     typealias ProgressLocalization = StoreSetupProgressView.Localization
 }
 
+#if DEBUG
 #Preview("Store setup") {
     StoreOnboardingDashboardCard(
         viewModel: .preview(taskViewModels: [
@@ -98,3 +99,4 @@ private extension StoreOnboardingDashboardCard {
     .padding(StorePadding.p5)
     .background(Color.storeSurfaceDim)
 }
+#endif

@@ -1,6 +1,5 @@
 import StoreDesignSystem
 import SwiftUI
-import class WooFoundation.MockAnalyticsPreview
 
 struct StoreDashboardFeedbackCard: View {
     let viewModel: InAppFeedbackCardViewModel
@@ -43,6 +42,10 @@ private extension StoreDashboardFeedbackCard {
     typealias Localization = InAppFeedbackCardView.Localization
 }
 
+#if DEBUG
+import UIKit
+import class WooFoundation.MockAnalyticsPreview
+
 #Preview("Feedback") {
     StoreDashboardFeedbackCard(
         viewModel: .init(
@@ -53,9 +56,6 @@ private extension StoreDashboardFeedbackCard {
         .padding(StorePadding.p5)
         .background(Color.storeSurfaceDim)
 }
-
-#if DEBUG
-import UIKit
 
 @MainActor
 enum StoreDashboardFeedbackCardPreviewReviewRequester: AppStoreReviewRequesting {

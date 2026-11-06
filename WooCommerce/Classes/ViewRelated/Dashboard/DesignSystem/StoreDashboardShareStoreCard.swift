@@ -24,7 +24,7 @@ struct StoreDashboardShareStoreCard: View {
                     // until StoreDesignSystem exposes a link-compatible public button style.
                     ShareLink(item: url) {
                         Text(Localization.shareButtonLabel)
-                            .storeTextStyle(.labelLarge.emphasized)
+                            .storeTextStyle(.labelMedium.emphasized)
                             .foregroundStyle(.storeOnPrimary)
                             .padding(.vertical, StorePadding.p3)
                             .padding(.horizontal, StorePadding.p5)

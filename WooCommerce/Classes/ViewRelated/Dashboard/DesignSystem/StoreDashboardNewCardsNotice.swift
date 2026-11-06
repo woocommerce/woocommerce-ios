@@ -28,7 +28,7 @@ private extension StoreDashboardNewCardsNotice {
     typealias Localization = DashboardView.Localization.NewCardsNoticeCard
 }
 
-#Preview("Feedback") {
+#Preview("New cards notice") {
     StoreDashboardNewCardsNotice(showCustomization: {})
         .padding(StorePadding.p5)
         .background(Color.storeSurfaceDim)

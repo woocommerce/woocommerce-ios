@@ -112,6 +112,9 @@ private extension StoreDashboardFeatureAnnouncementCard {
     }
 }
 
+#if DEBUG
+import UIKit
+
 #Preview("Feature announcement") {
     StoreDashboardFeatureAnnouncementCard(
         viewModel: StoreDashboardFeatureAnnouncementCardPreviewModel(),
@@ -121,9 +124,6 @@ private extension StoreDashboardFeatureAnnouncementCard {
     .padding(StorePadding.p5)
     .background(Color.storeSurfaceDim)
 }
-
-#if DEBUG
-import UIKit
 
 struct StoreDashboardFeatureAnnouncementCardPreviewModel: AnnouncementCardViewModelProtocol {
     let showDividers = false

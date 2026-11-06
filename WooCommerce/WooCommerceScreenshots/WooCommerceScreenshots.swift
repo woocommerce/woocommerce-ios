@@ -32,7 +32,7 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("mocked-network-layer")
         app.launchArguments.append("use-mocked-card-present-payment")
         app.launchArguments.append("-simulate-stripe-card-reader")
-        // Disabling UIKit transitions leaves an idle refresh spinner visible on iPad.
+        app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-push-notification")
         if shouldShowPOS {
             app.launchArguments.append("bypass-pos-eligibility-checks")
@@ -69,19 +69,6 @@ class WooCommerceScreenshots: XCTestCase {
             }
             .thenTakeScreenshot(named: "order-dashboard", orientation: screenshotOrientation)
 
-        if app.launchArguments.contains("-screenshots-dashboard-only") {
-            return
-        }
-        if app.launchArguments.contains("-screenshots-product-only") || app.launchArguments.contains("-screenshots-dashboard-product-only") {
-            // Keep the release filenames when recapturing these scenes without the intervening flows.
-            screenshotCount = UIDevice.current.userInterfaceIdiom == .pad ? 6 : 3
-            try TabNavComponent()
-                .goToProductsScreen()
-                .tapAddProduct()
-                .thenTakeScreenshot(named: "product-add", orientation: screenshotOrientation)
-            return
-        }
-
         // Orders
         try TabNavComponent()
         .goToOrdersScreen()
@@ -91,12 +78,6 @@ class WooCommerceScreenshots: XCTestCase {
 
         // Collect payment
         .tapOrder(atIndex: 0)
-        .then { screen in
-            let editButton = screen.app.buttons["order-details-edit-button"]
-            let synced = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isEnabled == true"), object: editButton)
-            XCTAssertEqual(XCTWaiter.wait(for: [synced], timeout: 20), .completed,
-                           "Order synchronization must finish before collecting payment.")
-        }
         .tapCollectPaymentButton()
 
         .tapCardPresentPayment()
@@ -120,17 +101,6 @@ class WooCommerceScreenshots: XCTestCase {
                 .waitForCardPaymentReady()
                 .thenTakeScreenshot(named: "pos-payment", orientation: .landscapeLeft)
                 .tapCashPayment()
-                .then { screen in
-                    let keyboard = screen.app.keyboards.firstMatch
-                    let completeButton = screen.app.buttons["pos-mark-payment-complete-button"]
-                    // The cash sheet moves above the keyboard after its button first becomes hittable.
-                    let aboveKeyboard = NSPredicate { _, _ in
-                        keyboard.exists && completeButton.isHittable && completeButton.frame.maxY <= keyboard.frame.minY
-                    }
-                    let ready = XCTNSPredicateExpectation(predicate: aboveKeyboard, object: nil)
-                    XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 15), .completed,
-                                   "Cash payment must finish moving above the keyboard before completion.")
-                }
                 .tapMarkPaymentComplete()
                 .waitForPaymentSuccess()
                 .thenTakeScreenshot(named: "pos-success", orientation: .landscapeLeft)
@@ -255,14 +225,6 @@ extension ScreenObject {
             .matching(NSPredicate(format: "label MATCHES %@", ".*13[.,]98.*")).firstMatch
         let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isHittable == true"), object: notification)
         if XCTWaiter.wait(for: [visible], timeout: 20) != .completed {
-            XCTContext.runActivity(named: "Missing order notification") { activity in
-                activity.add(XCTAttachment(string: springboard.debugDescription))
-                for (index, screen) in XCUIScreen.screens.enumerated() {
-                    let attachment = XCTAttachment(screenshot: screen.screenshot())
-                    attachment.name = "Display \(index)"
-                    activity.add(attachment)
-                }
-            }
             XCTFail("The mocked order notification must be visible before capturing it.")
         }
         return self

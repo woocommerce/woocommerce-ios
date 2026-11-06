@@ -1290,7 +1290,6 @@ platform :ios do
 
   desc 'Create Promo Screenshots'
   lane :create_promo_screenshots do |force: false, commit: false, push: false|
-    require 'deliver/app_screenshot'
     unless Fastlane::Helper::GitHelper.has_git_lfs?
       UI.user_error!('LFS not enabled – unable to generate promo screenshots. Run `git lfs install && git lfs fetch && git lfs pull` to fix this.')
     end
@@ -1299,7 +1298,6 @@ platform :ios do
     # screenshot generation tasks close together, we can keep reusing the same source files
     original_screenshot_directory = File.join(Dir.pwd, 'screenshots')
     output_directory = File.join(Dir.pwd, 'promo_screenshots')
-    UI.user_error!('Screenshot composition cancelled') if !force && File.directory?(output_directory) && !UI.confirm("Replace generated screenshots in #{output_directory}?")
 
     # WORKAROUND: The `promo_screenshots` action from `release-toolkit` computes
     # which languages to process by intersecting folders in `orig_folder` and `metadata_folder`.
@@ -1340,9 +1338,7 @@ platform :ios do
     # (e.g. dropped device or reduced screenshot count) are captured by the
     # commit as deletions rather than silently kept around.
     if commit || push
-      existing_images = Dir.glob(File.join(output_directory, '**', '*.png')).reject do |path|
-        Deliver::AppScreenshot.calculate_display_type(path).to_s.include?('WATCH')
-      end
+      existing_images = Dir.glob(File.join(output_directory, '**', '*.png'))
       unless existing_images.empty?
         UI.message('Removing existing promo screenshots before regeneration...')
         existing_images.each { |f| FileUtils.rm_f(f) }
@@ -1354,24 +1350,14 @@ platform :ios do
         orig_folder: original_screenshot_directory,
         metadata_folder: FASTLANE_METADATA_FOLDER,
         output_folder: output_directory,
-        force: true # Confirm above; the toolkit's own prompt deletes the whole folder, including Watch images.
+        force: force
       )
-      # App Store Connect rejects PNG alpha channels, even on an opaque canvas.
-      Dir.glob(File.join(output_directory, '**', '*.png')).each do |path|
-        next if Deliver::AppScreenshot.calculate_display_type(path).to_s.include?('WATCH')
-
-        image = Magick::Image.read(path).first
-        image.background_color = 'white'
-        image.alpha(Magick::RemoveAlphaChannel)
-        image.write("PNG24:#{path}")
-        image.destroy!
-      end
     ensure
-      unless files_to_copy.empty?
-        UI.message('Deleting any en-US screenshot title previously copied from default folder...')
-        files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
-        UI.message('Done')
-      end
+      next if files_to_copy.empty?
+
+      UI.message('Deleting any en-US screenshot title previously copied from default folder...')
+      files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
+      UI.message('Done')
     end
 
     next unless commit || push

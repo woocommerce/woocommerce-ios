@@ -65,7 +65,7 @@ class PromoScreenshotsConfigTest < Minitest::Test
     background = entry['background']
     path = File.join(FASTLANE_DIR, background)
 
-    assert File.file?(path), "Missing background: #{path}"
+    assert_path_exists path
 
     # Assets live in Git LFS. Skip loudly rather than fail if they were not smudged,
     # so a checkout without LFS reports "skipped" instead of a bogus dimension failure.

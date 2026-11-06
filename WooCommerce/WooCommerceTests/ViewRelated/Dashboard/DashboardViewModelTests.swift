@@ -573,6 +573,68 @@ final class DashboardViewModelTests: XCTestCase {
                     viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
+    // MARK: - Background launch
+
+    @MainActor
+    func test_init_when_app_is_in_background_then_newly_enabled_cards_are_not_reloaded() async throws {
+        // Given: a store with orders, so the analytics cards count as newly enabled on the first emission
+        insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
+        let application = MockApplicationAdapter()
+        application.applicationState = .background
+
+        // When: the view model is built by a background launch (no view ever appears)
+        let viewModel = makeViewModel(application: application)
+        try await waitUntil { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
+
+        // Then: no stats sync, so no `dashboard_main_stats_loaded` is tracked on a day the app was never opened
+        let reloaded = await waitFor(timeout: 1) { self.stores.receivedActions.contains { $0 is StatsActionV4 } }
+        XCTAssertFalse(reloaded)
+    }
+
+    @MainActor
+    func test_init_when_app_is_in_foreground_then_newly_enabled_cards_are_reloaded() async throws {
+        // Given
+        insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
+        let application = MockApplicationAdapter()
+        application.applicationState = .inactive
+
+        // When
+        let viewModel = makeViewModel(application: application)
+        try await waitUntil { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
+
+        // Then: the performance card syncs its stats on the first emission
+        let reloaded = await waitFor(timeout: 2) { self.stores.receivedActions.contains { $0 is StatsActionV4 } }
+        XCTAssertTrue(reloaded)
+    }
+
+    @MainActor
+    private func makeViewModel(application: ApplicationAdapter) -> DashboardViewModel {
+        DashboardViewModel(siteID: sampleSiteID,
+                           stores: stores,
+                           storageManager: storageManager,
+                           userDefaults: userDefaults,
+                           blazeEligibilityChecker: blazeEligibilityChecker,
+                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false),
+                           application: application)
+    }
+
+    private func waitUntil(_ condition: @escaping @MainActor () -> Bool) async throws {
+        let satisfied = await waitFor(timeout: 2, condition)
+        XCTAssertTrue(satisfied, "Condition not met in time")
+    }
+
+    private func waitFor(timeout: TimeInterval, _ condition: @escaping @MainActor () -> Bool) async -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if await condition() {
+                return true
+            }
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        return await condition()
+    }
+
     @MainActor
     func test_dashboard_cards_contain_enabled_last_orders_cards_when_there_is_order() async {
         // Given

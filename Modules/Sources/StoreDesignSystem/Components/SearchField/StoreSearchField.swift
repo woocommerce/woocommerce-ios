@@ -18,17 +18,29 @@ public struct StoreSearchField: View {
     @Binding private var text: String
     private let placeholder: String
     private let trailingAction: StoreSearchFieldAction?
+    private let submitLabel: SubmitLabel
+    private let focus: FocusState<Bool>.Binding?
+    private let accessibilityIdentifier: String?
 
     /// - Parameters:
     ///   - text: The query. The field writes every keystroke and the clear control writes `""`.
     ///   - placeholder: Shown while the query is empty; also the field's VoiceOver label.
     ///   - trailingAction: The text action after the field, e.g. Cancel. `nil` lets the field fill the row.
+    ///   - submitLabel: The keyboard return-key label.
+    ///   - focus: An optional focus binding owned by the host. When omitted, the field manages focus internally.
+    ///   - accessibilityIdentifier: An optional identifier for UI automation.
     public init(text: Binding<String>,
                 placeholder: String,
-                trailingAction: StoreSearchFieldAction? = nil) {
+                trailingAction: StoreSearchFieldAction? = nil,
+                submitLabel: SubmitLabel = .search,
+                focus: FocusState<Bool>.Binding? = nil,
+                accessibilityIdentifier: String? = nil) {
         self._text = text
         self.placeholder = placeholder
         self.trailingAction = trailingAction
+        self.submitLabel = submitLabel
+        self.focus = focus
+        self.accessibilityIdentifier = accessibilityIdentifier
     }
 
     public var body: some View {
@@ -62,9 +74,10 @@ public struct StoreSearchField: View {
             }
             .storeTextStyle(Constants.textStyle)
             .foregroundStyle(appearance.content)
-            .focused($isFieldFocused)
-            .submitLabel(.search)
+            .focused(focusBinding)
+            .submitLabel(submitLabel)
             .accessibilityAddTraits(.isSearchField)
+            .accessibilityIdentifier(ifPresent: accessibilityIdentifier)
             if !text.isEmpty {
                 StoreSearchFieldClearButton(text: $text, color: appearance.content)
             }
@@ -74,8 +87,12 @@ public struct StoreSearchField: View {
         .background(appearance.field, in: RoundedRectangle(cornerRadius: StoreRadius.large))
         .contentShape(Rectangle())
         .onTapGesture {
-            isFieldFocused = true
+            focusBinding.wrappedValue = true
         }
+    }
+
+    private var focusBinding: FocusState<Bool>.Binding {
+        focus ?? $isFieldFocused
     }
 
     private var prompt: Text {
@@ -97,6 +114,7 @@ public struct StoreSearchField: View {
         .buttonStyle(StorePressFeedbackButtonStyle())
         .frame(height: StoreSize.searchFieldHeight)
         .disabled(!action.isEnabled)
+        .accessibilityIdentifier(ifPresent: action.accessibilityIdentifier)
     }
 
     private func actionColor(for action: StoreSearchFieldAction) -> Color {

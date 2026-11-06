@@ -1,17 +1,19 @@
 ---
 name: self-heal
-description: Pick one unhandled production crash from Sentry, claim it with a GitHub issue, and prove a fix with a red/green draft PR validated on Buildkite. Use when asked to "self-heal", "fix a production crash", or when run on a loop. One crash per run.
+description: Pick one unhandled production crash from Sentry, claim it with a GitHub issue, and prove a fix with a red/green draft PR validated on Buildkite. Use when asked to "self-heal", "fix a production crash", or when run on a loop.
 user-invocable: true
 allowed-tools: "Bash, Read, Edit, Write, Grep, Glob"
 ---
 
-One run = one crash, start to finish or to an explicit stop.
+One run advances the oldest open self-heal PR that is ready, then claims at most one new crash.
+Runs start with no memory of earlier runs: GitHub, Buildkite and `$LOG` are the only state.
 Work in the runner worktree, never in the checkout that holds this skill:
 
 ```bash
 SELF_HEAL=~/Developer/git-worktrees/wcios/self-heal-prototype/.agents/skills/self-heal
 RUNNER=~/Developer/git-worktrees/wcios/self-heal-runner
 CRASHES="$SELF_HEAL/Scripts/sentry-crashes"
+CLAIMS="$SELF_HEAL/Scripts/claim-check"
 LOG=~/.self-heal/runs.log
 ```
 
@@ -27,6 +29,9 @@ Every issue body and PR description carries this trailer, after the content and 
 
 This is part of an experiment I'm running in building custom tooling for self-healing.
 ```
+
+The `Status:` line in the issue body is the crash's current state.
+Whenever it changes, edit the body in place (`gh issue edit --body-file`); comment only when there is something to explain, such as a diagnosis or a build link.
 
 ## Privacy
 
@@ -45,22 +50,27 @@ gh pr list --author @me --state open --json number,headRefName,headRefOid,status
   --jq '[.[] | select(.headRefName | startswith("self-heal/"))]'
 ```
 
-Advance the oldest PR that has a finished Buildkite build on its head commit, then stop the run:
+Advance the oldest PR that has a finished Buildkite build on its head commit:
 
 - Red commit, build failed on the new test → red proven: link the build in the PR, push the fix commit (step 5.4).
 - Red commit, build failed elsewhere or the new test passed → the proof is wrong: fix the test or abandon (step 5 fallback).
 - Fix commit, build passed → green proven: link the build in the PR, update the issue to `Status: PR #<n> ready for review`.
 - Fix commit, build failed → fix it on the branch.
 
-Builds still running on every PR: continue to step 2 only if fewer than 5 self-heal PRs are open, otherwise log `cap` and stop.
+Soft-failed steps count only if the PR caused them: compare with the same step on a recent trunk build.
+
+Then continue to step 2 if fewer than 5 self-heal PRs are open; otherwise log `cap` and stop.
 
 ## 2. Pick a crash
 
 1. `$CRASHES releases` → take the two most recent `X.Y` versions; use the older as `--min-version`.
 2. `$CRASHES list --min-version <X.Y>` → candidates by frequency.
-3. Skip a candidate if any issue, open or closed, already names it: `gh issue list --state all --search "<shortId> in:title" --json number`.
+3. Skip a candidate if `$CLAIMS <id> <shortId>` prints anything: an issue or PR on GitHub, or a Linear issue, already names it.
 4. Prefer crashes with in-app frames (`$CRASHES event <id>`, frames with `binary: "WooCommerce"` or `inApp: true`).
    Skip crashes that live entirely in Apple or third-party frameworks unless an app frame or the exception message names our code.
+5. Skip races between threads inside a framework (two threads in the same library at the crash, no app frame between them): a unit test cannot reproduce them.
+
+No candidate left: lower `--min-version` by one release and repeat, going back at most four releases. Still none: log `dry` and stop.
 
 ## 3. Claim it
 

@@ -126,7 +126,6 @@ Read our [Contributing Guide](CONTRIBUTING.md) to learn about reporting issues, 
 
 Generate App Store screenshots locally with the [App Store screenshots skill](.agents/skills/app-store-screenshots/SKILL.md). The `generate screenshots` GitHub workflow is currently unreliable for Duo.
 
-
 ### Peril
 
 The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.html) to enforce Pull Request guidelines.

@@ -16,7 +16,9 @@ The screenshot target sets `SCREENSHOTS_SHOW_POS` to `true` for iPad and `false`
 
 Build once with `bundle exec fastlane build_screenshots`. Use the existing screenshot tests for the agreed devices, locales and appearances.
 
-For Duo, use the available simulator controls to open it fully and rotate it to landscape. Confirm that the app is visible on the inner display. Preserve that state during capture, and restore it after a simulator reset. Use `xcodebuild test-without-building` on the prepared simulator if Fastlane would erase or recreate it. Follow the lane's Snapshot language, appearance and filename settings.
+For Duo, prepare a dedicated simulator, open it fully and rotate it to landscape with the available simulator controls. Confirm that the app is visible on the inner display. Run the existing `WooCommerceScreenshots` test with `xcodebuild test-without-building` on that simulator. The reset-based `take_screenshots` and `screenshots` lanes capture ordinary devices only.
+
+For each direct Duo run, set Snapshot's `language.txt`, `locale.txt` and `snapshot-launch_arguments.txt` in `~/Library/Caches/tools.fastlane`, and set the simulator appearance before capture. Snapshot saves `<simulator-name>-<N>-<light|dark>-<title>.png` under that cache's `screenshots/` folder. Copy each run's files to `fastlane/screenshots/<locale>/`, using the `iPhone Duo-` device prefix expected by `fastlane/screenshots.json`. Confirm inner-display landscape dimensions before composition.
 
 For ordinary devices, use `take_screenshots`, for example:
 

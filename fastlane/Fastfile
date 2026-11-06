@@ -45,8 +45,7 @@ IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv 
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 17 Pro Max',
-  'iPad Pro 13-inch (M5)',
-  'iPhone Duo'
+  'iPad Pro 13-inch (M5)'
 ].freeze
 # The 27.1 runtime is Duo-only; ordinary devices use 27.0 with the same SDK build.
 SCREENSHOT_IOS_VERSIONS = {

@@ -18,6 +18,12 @@ struct POSPrinterSetupModal: View {
         horizontalSizeClass == .compact
     }
 
+    /// Phones cap text at the payment success screen's size so the steps and buttons fit; iPad keeps full scaling.
+    /// One range for both widths keeps a single view identity across size-class changes.
+    private var maximumDynamicTypeSize: DynamicTypeSize {
+        isCompactWidth ? .accessibility1 : .accessibility5
+    }
+
     var body: some View {
         // Size a single `modalCore` via these bounds so it keeps one view identity across size-class
         // changes on iPad, preserving any state internal to the modal.
@@ -25,8 +31,7 @@ struct POSPrinterSetupModal: View {
             .frame(minWidth: modalMinWidth, maxWidth: modalMaxWidth,
                    minHeight: modalMinHeight, maxHeight: modalMaxHeight)
             .fixedSize(horizontal: false, vertical: !isCompactWidth)
-            // Same cap as the payment success screen this opens from, so step text and buttons stay legible on a phone.
-            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .dynamicTypeSize(...maximumDynamicTypeSize)
             .onChange(of: controller.isConnected) { _, isConnected in
                 if isConnected {
                     isPresented = false

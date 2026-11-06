@@ -11,8 +11,12 @@ struct POSPrintReceiptFailureModal: View {
         content
             .posModalCloseButton(action: close)
             .posModalSizing(fullScreenWhenCompact: true)
-            // Same cap as the payment success screen this opens from, so the message and buttons stay legible on a phone.
-            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .dynamicTypeSize(...maximumDynamicTypeSize)
+    }
+
+    /// Phones cap text at the payment success screen's size so the message and buttons fit; iPad keeps full scaling.
+    private var maximumDynamicTypeSize: DynamicTypeSize {
+        horizontalSizeClass == .compact ? .accessibility1 : .accessibility5
     }
 
     /// On the full-screen phone modal, a message taller than the screen scrolls above the buttons

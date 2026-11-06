@@ -29,9 +29,9 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="Aee-Pe-cKb" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="KKE-yJ-0h1"/>
-                <constraint firstItem="Aee-Pe-cKb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="LLk-g5-5YI"/>
+                <constraint firstItem="Aee-Pe-cKb" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="LLk-g5-5YI"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="Aee-Pe-cKb" secondAttribute="bottom" constant="9" id="d34-fT-NOy"/>
-                <constraint firstItem="Aee-Pe-cKb" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="ubU-yf-a7Y"/>
+                <constraint firstItem="Aee-Pe-cKb" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="ubU-yf-a7Y"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="136.60714285714286"/>
         </view>

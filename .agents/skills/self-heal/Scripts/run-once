@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Usage: run-once [prompt]
+#
+# launchd entrypoint: one headless self-heal run in a fresh Claude Code session.
+# The API tokens are only exported by an interactive zsh, hence `zsh -ic`.
+# Skipping permissions is bounded by the skill: draft PRs only, never ready or merged.
+
+readonly SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+readonly CHECKOUT="$(git -C "$SKILL_DIR" rev-parse --show-toplevel)"
+readonly PROMPT="${1:-/self-heal}"
+
+mkdir -p "$HOME/.self-heal/sessions"
+readonly TRANSCRIPT="$HOME/.self-heal/sessions/$(date -u +%Y%m%dT%H%M%SZ).log"
+
+cd "$CHECKOUT"
+exec /usr/bin/caffeinate -i /bin/zsh -ic \
+  'claude --dangerously-skip-permissions -p "$1" > "$2" 2>&1' run-once "$PROMPT" "$TRANSCRIPT"

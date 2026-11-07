@@ -72,7 +72,7 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
                 return
             case .syncing:
                 self.sections = []
-                self.displayGhostContent()
+                self.displayGhostContent(over: self.tableView)
             case let .synced(sections):
                 self.sections = sections
                 self.removeGhostContent()

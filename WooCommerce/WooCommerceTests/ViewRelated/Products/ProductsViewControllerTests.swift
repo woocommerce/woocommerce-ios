@@ -387,6 +387,24 @@ struct ProductsViewControllerTests {
         // Then
         #expect(pushNotesManager.resetBadgeCountKinds == [.storeStock])
     }
+
+    @Test
+    func test_viewWillDisappear_when_tab_switches_before_the_list_view_loads_then_does_not_crash() throws {
+        // Given: the products list is the navigation root, but its view was never loaded
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: MockStorageManager(), siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in })
+        let navigationController = UINavigationController(rootViewController: controller)
+        try #require(!controller.isViewLoaded)
+
+        // When: switching tabs forwards the disappearance through the navigation controller
+        navigationController.beginAppearanceTransition(false, animated: false)
+        navigationController.endAppearanceTransition()
+
+        // Then
+        #expect(controller.tableView == nil)
+    }
 }
 
 private extension ProductsViewControllerTests {

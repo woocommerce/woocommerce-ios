@@ -18,6 +18,7 @@ LOG=~/.self-heal/runs.log
 ```
 
 If `$RUNNER` does not exist, create it from `origin/trunk` and bootstrap it (`bundle install && bundle exec rake dependencies`).
+Leave `$RUNNER` clean at the end of every run: commit or `git stash` work in progress, switch back to the detached `origin/trunk`, and delete local branches that have no PR.
 
 Log every phase as one line to `$LOG`: `<ISO time> <phase> <WOOCOMMERCE-IOS-id or -> <one-line outcome>`.
 The log calibrates the loop interval, so log `start` and `end` even when the run stops early.
@@ -68,7 +69,9 @@ Then continue to step 2 if fewer than 5 self-heal PRs are open; otherwise log `c
 3. Skip a candidate if `$CLAIMS <id> <shortId>` prints anything: an issue or PR on GitHub, or a Linear issue, already names it.
 4. Prefer crashes with in-app frames (`$CRASHES event <id>`, frames with `binary: "WooCommerce"` or `inApp: true`).
    Skip crashes that live entirely in Apple or third-party frameworks unless an app frame or the exception message names our code.
-5. Skip races between threads inside a framework (two threads in the same library at the crash, no app frame between them): a unit test cannot reproduce them.
+5. Skip a candidate whose repeating in-app frames match an open `type: crash` issue (`gh issue list --label "type: crash" --state open`): the top frame of a stack overflow differs from crash to crash.
+   Add its short ID to that issue's body instead, so `$CLAIMS` finds it next time.
+6. Skip races between threads inside a framework (two threads in the same library at the crash, no app frame between them): a unit test cannot reproduce them.
 
 No candidate left: lower `--min-version` by one release and repeat, going back at most four releases. Still none: log `dry` and stop.
 

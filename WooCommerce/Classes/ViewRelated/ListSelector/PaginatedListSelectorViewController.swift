@@ -392,7 +392,7 @@ private extension PaginatedListSelectorViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        displayGhostContent()
+        displayGhostContent(over: tableView)
 
         resultsController.stopForwardingEvents()
     }

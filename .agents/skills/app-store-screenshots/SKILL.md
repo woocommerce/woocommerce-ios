@@ -8,7 +8,7 @@ Use Xcode 27.1 or newer with the existing `WooCommerceScreenshots` UI tests and 
 
 ## 1. Confirm scope
 
-Confirm changes to devices, languages, screens or view configurations, retaining prior decisions. Use the Fastfile and `fastlane/screenshots.json` for defaults. Capture-only requests stop after visual review. Upload requires an explicit request; use authorization already given.
+Confirm changes to devices, languages, screens or view configurations, retaining prior decisions. Use the Fastfile and `fastlane/screenshots.json` for defaults. Capture-only requests stop after visual review. Upload requires explicit approval for the reviewed batch.
 
 The screenshot target sets `shouldShowPOS` to `true` for iPad and `false` for iPhone and Duo, through `SCREENSHOTS_SHOW_POS` and `ProcessConfiguration.shouldShowPOS`. Revisit this setting and the scenes when phone POS screenshots are supported.
 
@@ -38,7 +38,9 @@ Normally take the target version from `config/Version.Public.xcconfig`. Check li
 
 Record the draft's state and release mode, and the live screenshot inventory before upload. For screenshots-only work, keep the draft editable and preserve its release mode.
 
-## 5. Upload within scope
+## 5. Ask before upload
+
+Show the reviewed gallery, complete batch summary and target draft, then ask whether the user wants to proceed with upload. Wait for explicit approval before uploading. If this exact reviewed batch already has approval, do not ask again.
 
 For screenshots-only uploads, use the pinned `Deliver::UploadScreenshots` component with the prepared batch, `overwrite_screenshots: true` and `edit_live: false`. It uses `get_edit_app_store_version`; confirm this resolves to the agreed draft immediately before upload. Keep text metadata, binaries, review submission and release outside this operation.
 

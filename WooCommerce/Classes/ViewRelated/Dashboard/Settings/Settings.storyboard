@@ -93,10 +93,10 @@
                         <viewLayoutGuide key="safeArea" id="nz7-i3-560"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="egg-mo-Y4S" secondAttribute="trailing" id="4lT-TU-td8"/>
+                            <constraint firstItem="nz7-i3-560" firstAttribute="trailing" secondItem="egg-mo-Y4S" secondAttribute="trailing" id="4lT-TU-td8"/>
                             <constraint firstItem="egg-mo-Y4S" firstAttribute="top" secondItem="nz7-i3-560" secondAttribute="top" id="bz0-ln-OvO"/>
                             <constraint firstItem="nz7-i3-560" firstAttribute="bottom" secondItem="egg-mo-Y4S" secondAttribute="bottom" id="hoc-dS-mst"/>
-                            <constraint firstItem="egg-mo-Y4S" firstAttribute="leading" secondItem="wie-fQ-LP9" secondAttribute="leading" id="nCX-Yb-zUk"/>
+                            <constraint firstItem="egg-mo-Y4S" firstAttribute="leading" secondItem="nz7-i3-560" secondAttribute="leading" id="nCX-Yb-zUk"/>
                         </constraints>
                     </view>
                     <connections>

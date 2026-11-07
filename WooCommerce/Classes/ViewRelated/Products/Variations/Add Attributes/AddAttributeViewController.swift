@@ -45,6 +45,11 @@ final class AddAttributeViewController: UIViewController, GhostableViewControlle
         configureViewModel()
         enableDoneButton(false)
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
 }
 
 // MARK: - View Configuration

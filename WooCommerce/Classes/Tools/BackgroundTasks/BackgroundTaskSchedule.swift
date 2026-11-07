@@ -17,8 +17,9 @@ extension BackgroundTaskRefreshDispatcher.BackgroundTaskType {
 ///
 /// The app updates the schedule on the main thread when entering background, while `BGTaskScheduler` runs task handlers
 /// on its own queue, so the dates are guarded by a lock.
+/// `@unchecked` because `TimeProvider` is not `Sendable`; the schedule only calls `now()` on it.
 ///
-final class BackgroundTaskSchedule {
+final class BackgroundTaskSchedule: @unchecked Sendable {
     private let preferredTaskDate = OSAllocatedUnfairLock<[BackgroundTaskRefreshDispatcher.BackgroundTaskType: Date]>(initialState: [:])
     private let timeProvider: TimeProvider
     private let userDefaults: UserDefaults

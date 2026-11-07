@@ -59,8 +59,8 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="qMn-MK-zzV"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="pYs-VV-dST" secondAttribute="trailing" id="9bn-9p-K1Z"/>
-                            <constraint firstItem="pYs-VV-dST" firstAttribute="leading" secondItem="kTI-Ip-3qK" secondAttribute="leading" id="OUm-VB-DJ3"/>
+                            <constraint firstItem="qMn-MK-zzV" firstAttribute="trailing" secondItem="pYs-VV-dST" secondAttribute="trailing" id="9bn-9p-K1Z"/>
+                            <constraint firstItem="pYs-VV-dST" firstAttribute="leading" secondItem="qMn-MK-zzV" secondAttribute="leading" id="OUm-VB-DJ3"/>
                             <constraint firstItem="pYs-VV-dST" firstAttribute="top" secondItem="qMn-MK-zzV" secondAttribute="top" id="nJg-fe-Omp"/>
                             <constraint firstItem="qMn-MK-zzV" firstAttribute="bottom" secondItem="pYs-VV-dST" secondAttribute="bottom" id="o10-zc-2HE"/>
                         </constraints>

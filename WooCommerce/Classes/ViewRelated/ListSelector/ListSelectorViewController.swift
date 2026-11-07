@@ -66,6 +66,11 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         configureTableView()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         if isMovingFromParent {
             onDismiss(command.selected)

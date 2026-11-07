@@ -59,7 +59,7 @@ struct AddOrderComponentsSection: View {
             .frame(minHeight: Constants.rowHeight)
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
     }
 }
 

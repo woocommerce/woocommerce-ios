@@ -58,6 +58,7 @@ struct SingleSelectionList<T: Hashable>: View {
             .listRowInsets(.zero)
         }
         .listStyle(.plain)
+        .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
         .background(backgroundColor.ignoresSafeArea())
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)

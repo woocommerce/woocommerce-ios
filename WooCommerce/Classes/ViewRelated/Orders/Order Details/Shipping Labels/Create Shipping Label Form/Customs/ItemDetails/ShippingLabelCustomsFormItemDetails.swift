@@ -51,7 +51,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         .padding(.leading, Constants.horizontalSpacing)
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground(modal: false)))
+                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
                 VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: viewModel.validationErrorMessage)
@@ -73,7 +73,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         .padding(.leading, Constants.horizontalSpacing)
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground(modal: false)))
+                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
                 VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.hsTariffNumberError)
@@ -89,7 +89,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         .padding(.leading, Constants.horizontalSpacing)
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground(modal: false)))
+                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
             }
 
             // Weight row and validation
@@ -103,7 +103,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         .padding(.leading, Constants.horizontalSpacing)
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground(modal: false)))
+                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
                 VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.weightError)
@@ -125,7 +125,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         .padding(.leading, Constants.horizontalSpacing)
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground(modal: false)))
+                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
                 VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.valueError)
@@ -155,7 +155,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         .padding(.leading, Constants.horizontalSpacing)
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground(modal: false)))
+                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
                 VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.originError)

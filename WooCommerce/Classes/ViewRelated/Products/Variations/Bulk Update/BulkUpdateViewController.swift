@@ -91,6 +91,7 @@ final class BulkUpdateViewController: UIViewController, GhostableViewController 
     ///
     private func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
+        view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
 
         registerTableViewHeaderSections()

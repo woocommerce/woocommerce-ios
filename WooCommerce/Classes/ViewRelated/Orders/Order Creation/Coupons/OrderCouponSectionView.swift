@@ -54,7 +54,7 @@ struct OrderCouponSectionView: View {
         .padding(.horizontal, insets: safeAreaInsets)
         .padding()
         .renderedIf(couponViewModel.couponLineRows.isNotEmpty)
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
         .addingTopAndBottomDividers()
         .sheet(isPresented: $shouldShowCouponList) {
             CouponListView(siteID: viewModel.siteID,

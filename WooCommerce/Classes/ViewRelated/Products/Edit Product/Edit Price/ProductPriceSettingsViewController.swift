@@ -78,6 +78,11 @@ final class ProductPriceSettingsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         startListeningToNotifications()

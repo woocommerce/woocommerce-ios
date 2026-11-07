@@ -150,7 +150,7 @@ private extension AddAttributeOptionsViewController {
         tableView.reloadData()
 
         if viewModel.showGhostTableView {
-            displayGhostContent()
+            displayGhostContent(over: tableView)
         } else {
             removeGhostContent()
         }

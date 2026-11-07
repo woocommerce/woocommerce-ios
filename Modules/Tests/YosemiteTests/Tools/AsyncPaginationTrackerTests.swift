@@ -9,16 +9,17 @@ struct AsyncPaginationTrackerTests {
         let callCount = 2_000
 
         // When
-        await withTaskGroup(of: Void.self) { group in
-            for index in 0..<callCount {
-                group.addTask { @MainActor in
-                    if index.isMultiple(of: 2) {
-                        try? await tracker.resync { _ in false }
-                    } else {
-                        _ = try? await tracker.ensureNextPageIsSynced { _ in false }
-                    }
+        let calls = (0..<callCount).map { index in
+            Task {
+                if index.isMultiple(of: 2) {
+                    try? await tracker.resync { @Sendable _ in false }
+                } else {
+                    _ = try? await tracker.ensureNextPageIsSynced { @Sendable _ in false }
                 }
             }
+        }
+        for call in calls {
+            await call.value
         }
 
         // Then

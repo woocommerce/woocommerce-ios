@@ -3,7 +3,7 @@ import os
 
 /// Async/await version of `PaginationTracker`, consider renaming `PaginationTracker` as deprecated and this class to `PaginationTracker`.
 /// Keeps track of the pagination for API syncing to support infinite scroll and pull-to-refresh.
-public final class AsyncPaginationTracker {
+public final class AsyncPaginationTracker: Sendable {
     public typealias SyncFunction = (_ pageNumber: Int) async throws -> Bool
 
     /// State of loading the next page in `ensureNextPageIsSynced`.

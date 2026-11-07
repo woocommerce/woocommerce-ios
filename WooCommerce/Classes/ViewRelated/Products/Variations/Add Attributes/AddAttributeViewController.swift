@@ -95,7 +95,9 @@ private extension AddAttributeViewController {
             case .initialized:
                 break
             case .syncing:
-                self?.displayGhostContent()
+                if let self {
+                    self.displayGhostContent(over: self.tableView)
+                }
             case .failed:
                 self?.removeGhostContent()
                 self?.displaySyncingErrorNotice()

@@ -48,20 +48,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppDelegate.shared.requirementsChecker.checkEligibilityForDefaultStore()
     }
 
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        // Don't track startup waiting time if app is backgrounded before everything is loaded
-        AppDelegate.shared.cancelStartupWaitingTimeTracker()
-
-        // Schedule the background app refresh when sending the app to the background.
-        // The OS is in charge of determining when these tasks will run based on app usage patterns.
-        AppDelegate.shared.appRefreshHandler.scheduleAppRefresh()
-
+    func sceneWillResignActive(_ scene: UIScene) {
         // Simulate push notification for capturing snapshot.
         // This is supposed to be called only by the WooCommerceScreenshots target.
         if ProcessConfiguration.shouldSimulatePushNotification {
-            let notificationCenter = UNUserNotificationCenter.current()
-            notificationCenter.removeAllDeliveredNotifications()
-            notificationCenter.removeAllPendingNotificationRequests()
             let content = UNMutableNotificationContent()
             content.title = NSLocalizedString(
                 "You have a new order! 🎉",
@@ -80,7 +70,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
 
             // add our notification request
-            notificationCenter.add(request)
+            UNUserNotificationCenter.current().add(request)
         }
     }
 
@@ -92,6 +82,15 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Task { @MainActor in
             await ServiceLocator.pushNotesManager.refreshWooPushRegistrationsIfNeeded()
         }
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        // Don't track startup waiting time if app is backgrounded before everything is loaded
+        AppDelegate.shared.cancelStartupWaitingTimeTracker()
+
+        // Schedule the background app refresh when sending the app to the background.
+        // The OS is in charge of determining when these tasks will run based on app usage patterns.
+        AppDelegate.shared.appRefreshHandler.scheduleAppRefresh()
     }
 
     // MARK: - URL / Activity Handling

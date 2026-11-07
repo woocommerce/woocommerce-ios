@@ -14,7 +14,7 @@ The screenshot target sets `shouldShowPOS` to `true` for iPad and `false` for iP
 
 ## 2. Capture and review
 
-Build once with `bundle exec fastlane build_screenshots`. For ordinary devices, use `take_screenshots languages:en-US devices:"iPhone 17 Pro Max" mode:dark`. This lane recreates selected simulators and shuts down booted ones; coordinate other sessions first.
+Build once with `bundle exec fastlane build_screenshots`. Choose ordinary devices from `SCREENSHOT_DEVICES` in `fastlane/Fastfile`, then run `take_screenshots` for the requested languages and appearances. This lane recreates selected simulators and shuts down booted ones; coordinate other sessions first.
 
 For Duo, prepare a dedicated simulator. Drag DeviceHub's hinge slider fully open, rotate to landscape and verify the inner display is active. Run the existing test with `xcodebuild test-without-building`; reset-based lanes exclude Duo. Between runs, uninstall only the app; the test reinstalls it with fresh state while preserving Duo's pose.
 

@@ -86,7 +86,13 @@ public final class SingleOrderScreen: ScreenObject {
             return try OrdersScreen()
         }
 
-        pop()
+        // Duo puts the system back button in the vertical bar, outside the navigation bar.
+        let systemBackButton = app.buttons["BackButton"]
+        if systemBackButton.exists {
+            systemBackButton.tap()
+        } else {
+            pop()
+        }
         return try OrdersScreen()
     }
 

@@ -47,6 +47,12 @@ SCREENSHOT_DEVICES = [
   'iPhone 17 Pro Max',
   'iPad Pro 13-inch (M5)'
 ].freeze
+# The 27.1 runtime is Duo-only; ordinary devices use 27.0 with the same SDK build.
+SCREENSHOT_IOS_VERSIONS = {
+  'iPhone 17 Pro Max' => '27.0',
+  'iPad Pro 13-inch (M5)' => '27.0',
+  'iPhone Duo' => '27.1'
+}.freeze
 
 # Instantiate versioning classes
 VERSION_CALCULATOR = Fastlane::Wpmreleasetoolkit::Versioning::MarketingVersionCalculator.new
@@ -1059,6 +1065,7 @@ platform :ios do
       workspace: WORKSPACE_PATH,
       scheme: SCREENSHOTS_SCHEME,
       build_for_testing: true,
+      xcargs: 'APP_DISPLAY_NAME=Woo',
       derived_data_path: DERIVED_DATA_DIR
     )
   end
@@ -1079,7 +1086,7 @@ platform :ios do
     UI.message("Creating screenshots for #{languages} on #{devices}")
 
     # Erase the simulator between runs in order to get everything back to a default state
-    rebuild_screenshot_devices
+    rebuild_screenshot_devices(devices: devices)
 
     capture_ios_screenshots(
       scheme: SCREENSHOTS_SCHEME,
@@ -1110,9 +1117,6 @@ platform :ios do
       # headroom to come up — under concurrent boots it times out ("Timed out
       # waiting for AX loaded notification") and the test runner fails to init.
       concurrent_simulators: false,
-
-      # Explicitly set the iOS version to ensure we match the created simulators
-      ios_version: latest_ios_simulator_runtime.version,
 
       # Erase the simulator prior to booting the app
       erase_simulator: true,
@@ -1146,17 +1150,18 @@ platform :ios do
   end
 
   desc 'Rebuild Screenshot Devices'
-  lane :rebuild_screenshot_devices do
-    runtime = latest_ios_simulator_runtime
+  lane :rebuild_screenshot_devices do |options|
+    devices = options.fetch(:devices, SCREENSHOT_DEVICES)
 
     SimCtl.list_devices.each do |device|
-      next unless SCREENSHOT_DEVICES.include? device.name
+      next unless devices.include? device.name
 
       puts "Deleting #{device.name} because it already exists."
       device.delete
     end
 
-    SCREENSHOT_DEVICES.each do |device|
+    devices.each do |device|
+      runtime = latest_ios_simulator_runtime(version: SCREENSHOT_IOS_VERSIONS.fetch(device))
       devicetype = SimCtl.devicetype(name: device)
 
       SimCtl.create_device(device, devicetype, runtime)
@@ -1872,13 +1877,11 @@ def report_milestone_error(error_title:)
   buildkite_annotate(style: 'warning', context: 'error-with-milestone', message: error_message) if is_ci
 end
 
-# The newest iOS simulator runtime available on the machine, used to build and target the
-# screenshot devices. Resolved dynamically so it tracks whatever Xcode CI runs on, rather than
-# a hardcoded version that silently breaks screenshots whenever `.xcode-version` moves.
-def latest_ios_simulator_runtime
+# Select an available runtime for the screenshot device's supported OS version.
+def latest_ios_simulator_runtime(version:)
   require 'simctl'
 
-  SimCtl::Runtime.latest(:ios).tap do |runtime|
-    UI.user_error!('No iOS simulator runtime is available on this machine.') if runtime.nil?
-  end
+  runtime = SimCtl.list_runtimes.find { |candidate| candidate.type == :ios && candidate.is_available && candidate.version == version }
+  UI.user_error!("No available iOS #{version} simulator runtime.") if runtime.nil?
+  runtime
 end

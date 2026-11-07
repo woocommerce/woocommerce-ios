@@ -124,6 +124,10 @@ Read our [Contributing Guide](CONTRIBUTING.md) to learn about reporting issues, 
 
 ## 🤖 Automation
 
+### Screenshot generation
+
+Prefer local generation through agents using the [App Store screenshots skill](.agents/skills/app-store-screenshots/SKILL.md) for reliability and speed, rather than triggering CI with the `generate screenshots` label.
+
 ### Peril
 
 The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.html) to enforce Pull Request guidelines.

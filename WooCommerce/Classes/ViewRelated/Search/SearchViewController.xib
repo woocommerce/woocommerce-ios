@@ -65,7 +65,7 @@
             <constraints>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="cOC-iR-MJr" secondAttribute="trailing" priority="250" constant="16" id="0Wn-0z-tOF"/>
                 <constraint firstItem="3D3-Fa-C7n" firstAttribute="top" secondItem="cOC-iR-MJr" secondAttribute="bottom" id="1cN-Hx-OP0"/>
-                <constraint firstItem="Ncr-u2-zVd" firstAttribute="leading" secondItem="chb-2b-70h" secondAttribute="leading" id="3GU-ol-Uc5"/>
+                <constraint firstItem="Ncr-u2-zVd" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" id="3GU-ol-Uc5"/>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="3D3-Fa-C7n" secondAttribute="trailing" id="74H-a0-TJ8"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="bottom" secondItem="Ncr-u2-zVd" secondAttribute="bottom" id="A3E-fX-OKH"/>
                 <constraint firstItem="y9n-QI-xEB" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" id="B3k-rC-VuB"/>
@@ -79,7 +79,7 @@
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="bottom" secondItem="y9n-QI-xEB" secondAttribute="bottom" id="rig-yz-o3K"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" constant="8" id="uzQ-AI-YZl"/>
                 <constraint firstItem="Ncr-u2-zVd" firstAttribute="top" secondItem="chb-2b-70h" secondAttribute="top" id="vuY-pt-mhn"/>
-                <constraint firstAttribute="trailing" secondItem="Ncr-u2-zVd" secondAttribute="trailing" id="wiA-kQ-6Lf"/>
+                <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="Ncr-u2-zVd" secondAttribute="trailing" id="wiA-kQ-6Lf"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <point key="canvasLocation" x="108" y="139.880059970015"/>

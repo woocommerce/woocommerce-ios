@@ -126,7 +126,7 @@ Read our [Contributing Guide](CONTRIBUTING.md) to learn about reporting issues, 
 
 ### Screenshot generation
 
-Prefer local generation through agents using the [App Store screenshots skill](.agents/skills/app-store-screenshots/SKILL.md) for reliability and speed, rather than triggering CI with the `generate screenshots` label.
+Prefer local generation through agents using the [App Store screenshots skill](.agents/skills/app-store-screenshots/SKILL.md) for reliability and speed. The `generate screenshots` CI workflow cannot compose the complete set because its capture jobs exclude Duo.
 
 ### Peril
 

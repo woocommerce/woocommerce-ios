@@ -4,7 +4,7 @@ description: Capture, review and upload App Store screenshots locally, preservin
 user-invocable: true
 ---
 
-Use Xcode 27.1 or newer with the existing `WooCommerceScreenshots` UI tests and Fastlane. Prefer local generation over the `generate screenshots` CI label. Set `FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK=1` for non-interactive Fastlane commands.
+Use the Xcode version in `.xcode-version` with the existing `WooCommerceScreenshots` UI tests and Fastlane. Prefer local generation over the `generate screenshots` CI label. Set `FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK=1` for non-interactive Fastlane commands.
 
 ## 1. Confirm scope
 

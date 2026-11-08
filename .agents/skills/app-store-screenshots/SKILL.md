@@ -18,7 +18,7 @@ Build once with `bundle exec fastlane build_screenshots`. Choose ordinary device
 
 For Duo, prepare a dedicated simulator. Select DeviceHub's Open pose, rotate to landscape and confirm the inner display shows content before starting. Run the existing test with `xcodebuild test-without-building`; reset-based lanes exclude Duo. Apply the status-bar override used by `take_screenshots` before direct runs. Between runs, uninstall only the app; the test reinstalls it with fresh state while preserving Duo's pose.
 
-Set Snapshot's `language.txt`, `locale.txt` and `snapshot-launch_arguments.txt` in `~/Library/Caches/tools.fastlane`. Set simulator appearance and system locale too; restart SpringBoard after locale changes. Create the cache's `screenshots/` folder if absent. Copy its PNGs to `fastlane/screenshots/<locale>/<device>-<N>-<mode>-<title>.png` as required by the composition config.
+For direct runs, use Snapshot's `prepare_directories_for_launch` to prepare language, locale and launch arguments with the lane's configuration. Set simulator appearance and system locale too; restart SpringBoard after locale changes. Collect raw PNGs with `Snapshot::Collector` into `fastlane/screenshots/<locale>/`, using the device prefix and filenames expected by `fastlane/screenshots.json`.
 
 Compose with `BUNDLE_WITH=screenshots bundle exec fastlane create_promo_screenshots force:true commit:false push:false`. For a subset, set `PROMOSS_CONFIG_FILE` to a temporary config containing only the selected devices and entries. Preserve accepted outputs before replacing or retrying a subset.
 

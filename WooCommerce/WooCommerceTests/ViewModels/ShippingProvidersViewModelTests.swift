@@ -54,7 +54,7 @@ struct ShippingProvidersViewModelTests {
         #expect(viewModel.titleForCellAt(IndexPath(row: 1, section: 0)) == "LayoutCarrier")
     }
 
-    @Test func test_is_list_empty_when_no_providers_exist_then_ignores_custom_carrier_row() {
+    @Test func test_isListEmpty_when_no_providers_exist_then_ignores_custom_carrier_row() {
         // Given
         let viewModel = makeViewModel(siteAddress: usSiteAddress)
 
@@ -68,7 +68,7 @@ struct ShippingProvidersViewModelTests {
         #expect(viewModel.isCustom(indexPath: IndexPath(row: 0, section: 0)))
     }
 
-    @Test func test_is_list_empty_when_only_other_country_has_providers_then_returns_false() async throws {
+    @Test func test_isListEmpty_when_only_other_country_has_providers_then_returns_false() async throws {
         // Given
         await insertProviders(groupName: "Canada", names: ["FixtureCarrier"])
         let viewModel = makeViewModel(siteAddress: usSiteAddress)
@@ -84,7 +84,7 @@ struct ShippingProvidersViewModelTests {
         #expect(viewModel.titleForCellAt(IndexPath(row: 0, section: 1)) == "FixtureCarrier")
     }
 
-    @Test func test_is_list_empty_when_store_country_is_unknown_and_providers_exist_then_returns_false() async {
+    @Test func test_isListEmpty_when_store_country_is_unknown_and_providers_exist_then_returns_false() async {
         // Given
         await insertProviders(groupName: "United States", names: ["FixtureCarrier"])
         let viewModel = makeViewModel(siteAddress: SiteAddress(siteSettings: []))

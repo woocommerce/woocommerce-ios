@@ -16,7 +16,7 @@ The screenshot target sets `shouldShowPOS` to `true` for iPad and `false` for iP
 
 Build once with `bundle exec fastlane build_screenshots`. Choose ordinary devices from `SCREENSHOT_DEVICES` in `fastlane/Fastfile`, then run `take_screenshots` for the requested languages and appearances. This lane recreates selected simulators and shuts down booted ones; coordinate other sessions first.
 
-For Duo, prepare a dedicated simulator. Drag DeviceHub's hinge slider fully open, rotate to landscape and verify the inner display is active. Run the existing test with `xcodebuild test-without-building`; reset-based lanes exclude Duo. Between runs, uninstall only the app; the test reinstalls it with fresh state while preserving Duo's pose.
+For Duo, prepare a dedicated simulator. Select DeviceHub's Open pose, rotate to landscape and confirm the inner display shows content before starting. Run the existing test with `xcodebuild test-without-building`; reset-based lanes exclude Duo. Apply the status-bar override used by `take_screenshots` before direct runs. Between runs, uninstall only the app; the test reinstalls it with fresh state while preserving Duo's pose.
 
 Set Snapshot's `language.txt`, `locale.txt` and `snapshot-launch_arguments.txt` in `~/Library/Caches/tools.fastlane`. Set simulator appearance and system locale too; restart SpringBoard after locale changes. Create the cache's `screenshots/` folder if absent. Copy its PNGs to `fastlane/screenshots/<locale>/<device>-<N>-<mode>-<title>.png` as required by the composition config.
 

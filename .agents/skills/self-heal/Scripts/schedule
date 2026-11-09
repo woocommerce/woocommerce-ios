@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Usage: schedule [install|uninstall]
+#
+# Installs a launchd agent that starts `run-once` every SELF_HEAL_INTERVAL seconds (default: 3 hours).
+# launchd plists cannot expand `~` or variables, so the plist is generated with this machine's paths.
+
+readonly LABEL="${SELF_HEAL_LABEL:-com.automattic.self-heal}"
+readonly INTERVAL="${SELF_HEAL_INTERVAL:-10800}"
+readonly RUN_ONCE="$(cd "$(dirname "$0")" && pwd)/run-once"
+readonly PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
+readonly LOGS="$HOME/.self-heal"
+readonly DOMAIN="gui/$(id -u)"
+
+unload() { launchctl bootout "$DOMAIN/$LABEL" 2>/dev/null || true; }
+
+case "${1:-install}" in
+  install)
+    mkdir -p "$LOGS" "$(dirname "$PLIST")"
+    cat > "$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>$LABEL</string>
+  <key>ProgramArguments</key><array><string>$RUN_ONCE</string></array>
+  <key>StartInterval</key><integer>$INTERVAL</integer>
+  <key>StandardOutPath</key><string>$LOGS/launchd.out.log</string>
+  <key>StandardErrorPath</key><string>$LOGS/launchd.err.log</string>
+  <key>ProcessType</key><string>Background</string>
+</dict>
+</plist>
+EOF
+    plutil -lint -s "$PLIST"
+    unload
+    launchctl bootstrap "$DOMAIN" "$PLIST"
+    echo "Scheduled $RUN_ONCE every ${INTERVAL}s ($PLIST)"
+    ;;
+  uninstall)
+    unload
+    rm -f "$PLIST"
+    echo "Unscheduled $LABEL"
+    ;;
+  *)
+    echo "usage: schedule [install|uninstall]" >&2
+    exit 1
+    ;;
+esac

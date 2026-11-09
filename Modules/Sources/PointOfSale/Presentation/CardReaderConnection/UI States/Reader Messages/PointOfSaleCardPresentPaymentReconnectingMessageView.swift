@@ -39,7 +39,7 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
                     .minimumScaleFactor(1)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isCancelling))
-            .frame(width: width * 0.5)
+            .posStatusButtonsWidth(regularWidth: width * 0.5)
         }
         .frame(maxWidth: .infinity)
         .measureWidth({ containerWidth in

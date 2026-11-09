@@ -74,8 +74,7 @@ struct POSListEmptyView: View {
                         Text(buttonTitle)
                     })
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .frame(width: viewWidth / 2)
-                    .padding([.leading, .trailing])
+                    .posStatusButtonsWidth(regularWidth: viewWidth / 2)
                 }
             }
             Spacer()

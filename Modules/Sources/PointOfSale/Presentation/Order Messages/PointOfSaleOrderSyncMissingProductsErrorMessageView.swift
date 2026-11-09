@@ -63,8 +63,7 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                         }
                     }
-                    .frame(width: geometry.size.width / 2)
-                    .padding([.leading, .trailing], metrics.padding.xxLarge)
+                    .posStatusButtonsWidth(regularWidth: geometry.size.width / 2)
                     .padding([.bottom], metrics.padding.medium)
 
                     Spacer()

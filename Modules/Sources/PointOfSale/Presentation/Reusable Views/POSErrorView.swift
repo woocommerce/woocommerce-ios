@@ -58,7 +58,7 @@ struct POSErrorView: View {
                         POSErrorButton(viewModel: secondaryButtonViewModel)
                     }
                 }
-                .frame(width: buttonWidth)
+                .posStatusButtonsWidth(regularWidth: buttonWidth)
             }
         }
         .multilineTextAlignment(.center)

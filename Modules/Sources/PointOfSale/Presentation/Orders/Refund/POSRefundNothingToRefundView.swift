@@ -9,10 +9,11 @@ struct POSRefundNothingToRefundView: View {
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             headerView
-            Spacer(minLength: POSSpacing.large)
-            contentView
-            Spacer(minLength: POSSpacing.large)
-            buttonsSection
+            POSStatusScreenLayout {
+                contentView
+            } buttons: {
+                buttonsSection
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
@@ -47,7 +48,6 @@ private extension POSRefundNothingToRefundView {
     var buttonsSection: some View {
         Button(Localization.doneButton, action: onClose)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

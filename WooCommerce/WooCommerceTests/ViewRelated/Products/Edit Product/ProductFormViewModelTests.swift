@@ -13,14 +13,14 @@ final class ProductFormViewModelTests: XCTestCase {
     private let siteID: Int64 = 123
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
-    private var sessionManager: SessionManager!
+    private var sessionManager: MockSessionManager!
     private var stores: StoresManager!
 
     override func setUp() {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        sessionManager = SessionManager.testingInstance
+        sessionManager = MockSessionManager()
         stores = MockStoresManager(sessionManager: sessionManager)
     }
 
@@ -621,6 +621,103 @@ final class ProductFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(actionButtons, [.publish, .more])
+    }
+
+    func test_actionButtons_when_new_product_has_changes_on_store_connected_without_Jetpack_plugin_then_excludes_preview() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(url: "https://example.com",
+                                                      frameNonce: "abc123",
+                                                      isJetpackThePluginInstalled: false,
+                                                      isJetpackConnected: true,
+                                                      jetpackConnectionActivePlugins: ["woocommerce"],
+                                                      hasSSOEnabled: false)
+        sessionManager.defaultCredentials = .wpcom(username: "merchant",
+                                                   authToken: "token",
+                                                   siteAddress: "https://example.com")
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
+
+    func test_actionButtons_when_new_product_has_changes_on_store_with_Jetpack_among_connected_plugins_then_includes_preview() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123",
+                                                      isJetpackThePluginInstalled: false,
+                                                      isJetpackConnected: true,
+                                                      jetpackConnectionActivePlugins: ["jetpack", "woocommerce"])
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_actionButtons_when_new_product_has_changes_and_site_credentials_then_includes_preview() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(url: "https://example.com", frameNonce: "", hasSSOEnabled: false)
+        sessionManager.defaultCredentials = .wporg(username: "merchant",
+                                                   password: "password",
+                                                   siteAddress: "https://example.com")
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_actionButtons_when_draft_has_permalink_then_checks_sign_in_against_permalink() {
+        // Given
+        sessionManager.defaultCredentials = .wpcom(username: "merchant",
+                                                   authToken: "token",
+                                                   siteAddress: "https://example.com")
+        sessionManager.defaultSite = Site.fake().copy(siteID: siteID,
+                                                      url: "https://example.com",
+                                                      frameNonce: "",
+                                                      hasSSOEnabled: false)
+        let draft = Product.fake().copy(productID: 123,
+                                        permalink: "https://wordpress.com/product/draft",
+                                        statusKey: ProductStatus.draft.rawValue)
+        let draftViewModel = createViewModel(product: draft, formType: .edit, stores: stores)
+
+        // When
+        let draftActionButtons = draftViewModel.actionButtons
+
+        // Then
+        XCTAssertTrue(draftActionButtons.contains(.preview))
+    }
+
+    func test_actionButtons_when_new_product_has_no_permalink_then_checks_sign_in_against_site_URL() throws {
+        // Given
+        sessionManager.defaultCredentials = .wpcom(username: "merchant",
+                                                   authToken: "token",
+                                                   siteAddress: "https://example.com")
+        sessionManager.defaultSite = Site.fake().copy(siteID: siteID,
+                                                      url: "https://wordpress.com/store",
+                                                      frameNonce: "",
+                                                      hasSSOEnabled: false)
+        let newProduct = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID))
+        let newProductViewModel = createViewModel(product: newProduct, formType: .add, stores: stores)
+        newProductViewModel.updateName("new name")
+
+        // When
+        let newProductActionButtons = newProductViewModel.actionButtons
+
+        // Then
+        XCTAssertTrue(newProductActionButtons.contains(.preview))
     }
 
     func test_canPublishOption_is_true_when_creating_new_product_with_different_status() {

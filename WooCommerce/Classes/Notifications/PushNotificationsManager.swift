@@ -376,8 +376,14 @@ extension PushNotificationsManager {
         guard let siteID else {
             return
         }
+        resetBadgeCount(type: type, siteID: siteID)
+    }
+
+    private func resetBadgeCount(type: Note.Kind, siteID: Int64) {
         let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
-            self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: false)
+            // The badge shows the selected store's count, which may differ from the reset store.
+            guard let self, let currentSiteID = self.siteID else { return }
+            loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: currentSiteID, type: type, postNotifications: false)
         }
         stores.dispatch(action)
     }
@@ -843,8 +849,9 @@ private extension PushNotificationsManager {
            let type = Note.Kind(rawValue: typeString),
            let siteID,
            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
-            // Badge: Update
-            incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
+            // Badge: Update. Site-credential sessions read the badge from the placeholder ID, not the push's blog ID.
+            let countSiteID = PushNotification.resolvedSiteID(notificationSiteID, stores: stores)
+            incrementNotificationCount(siteID: countSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: true)
             }
 
@@ -898,6 +905,10 @@ private extension PushNotificationsManager {
     func presentDetails(for notification: PushNotification) {
         if notification.kind != .comment {
             configuration.application.presentNotificationDetails(notification: notification)
+        }
+        // The Products tab clears this on appear, but it may already be visible when the push is opened.
+        if notification.kind == .storeStock {
+            resetBadgeCount(type: .storeStock, siteID: notification.resolvedSiteID(stores: stores))
         }
     }
 }

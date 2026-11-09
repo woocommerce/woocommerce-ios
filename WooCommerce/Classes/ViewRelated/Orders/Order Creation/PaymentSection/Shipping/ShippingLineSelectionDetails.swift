@@ -68,6 +68,7 @@ struct ShippingLineSelectionDetails: View {
                 .listRowSeparator(.hidden, edges: .bottom)
             }
             .listStyle(.plain)
+            .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
             .safeAreaInset(edge: .bottom, content: {
                 // MARK: Add Shipping Button
                 Button(Localization.doneButton(isEditing: viewModel.isExistingShippingLine)) {
@@ -78,7 +79,7 @@ struct ShippingLineSelectionDetails: View {
                 .disabled(!viewModel.enableDoneButton)
                 .accessibilityIdentifier(Accessibility.doneButton)
                 .padding()
-                .background(Color(.systemBackground))
+                .background(Color(.systemBackground), ignoresSafeAreaEdges: .bottom)
             })
             .navigationDestination(isPresented: $isMethodPickerPresented) {
                 SingleSelectionList(title: Localization.methodTitle,

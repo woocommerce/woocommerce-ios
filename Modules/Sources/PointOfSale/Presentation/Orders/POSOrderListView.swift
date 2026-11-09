@@ -107,7 +107,8 @@ struct POSOrderListView: View {
             }
         }
         .animation(.default, value: orderListModel.ordersController.ordersViewState.isEmpty)
-        .background(Color.posSurfaceBright)
+        // Reaches under the status bar so that strip slides away with the list on phone.
+        .background(Color.posSurfaceBright.ignoresSafeArea())
         .navigationBarHidden(true)
         .refreshable {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListPullToRefresh())

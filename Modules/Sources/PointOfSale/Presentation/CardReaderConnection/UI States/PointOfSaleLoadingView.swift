@@ -23,7 +23,7 @@ struct PointOfSaleLoadingView: View {
                     .progressViewStyle(POSProgressViewStyle())
 
                 if isCatalogSyncing {
-                    Spacer().frame(height: metrics.spacing.xLarge)
+                    Spacer().frame(height: POSMetrics.regular.spacing.xxLarge)
                     Text(Localization.syncingCatalogTitle)
                         .font(.posHeadingBold)
                     if let progressText {

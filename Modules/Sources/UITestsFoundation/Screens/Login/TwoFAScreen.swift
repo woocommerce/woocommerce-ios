@@ -101,6 +101,9 @@ public final class TwoFAScreen {
             guard waitForTwoFACode(expectedCode, timeout: 1) else {
                 // A delayed system prompt can interrupt a keypad tap after the 2FA screen appeared.
                 app.dismissSavePasswordPromptIfNeeded(timeout: 2)
+                if waitForTwoFACode(expectedCode, timeout: 0.2) {
+                    continue
+                }
                 focusTwoFAFieldIfNeeded()
                 key.tap()
                 guard waitForTwoFACode(expectedCode, timeout: 1) else {

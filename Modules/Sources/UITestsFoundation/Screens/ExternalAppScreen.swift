@@ -27,8 +27,17 @@ public final class ExternalAppScreen {
         let app = XCUIApplication()
         for attempt in 1...Constants.maximumOpenAttempts {
             XCUIDevice.shared.system.open(url)
-            if universalLink.destinationElement(app).waitForIsHittable(timeout: Constants.destinationWaitTimeout) {
+            let destinationElement = universalLink.destinationElement(app)
+            if destinationElement.waitForIsHittable(timeout: Constants.destinationWaitTimeout) {
                 return
+            }
+
+            // Once Woo handled the link, keep waiting for its destination instead of stacking the same route again.
+            if app.state == .runningForeground || destinationElement.exists {
+                if destinationElement.waitForIsHittable(timeout: Constants.routedDestinationWaitTimeout) {
+                    return
+                }
+                break
             }
 
             if attempt < Constants.maximumOpenAttempts {
@@ -51,5 +60,6 @@ public final class ExternalAppScreen {
     private enum Constants {
         static let maximumOpenAttempts = 3
         static let destinationWaitTimeout: TimeInterval = 10
+        static let routedDestinationWaitTimeout: TimeInterval = 20
     }
 }

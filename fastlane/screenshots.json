@@ -4,6 +4,16 @@
 	"stylesheet": "appstoreres/assets/styles/style.css",
 	"devices": [
 		{
+			"name": "iPhone Duo",
+			"canvas_size": [2853, 2007],
+			"text_size": [1862, 480],
+			"text_offset": [496, 0],
+			"font_size": "100px",
+			"screenshot_size": [1902, 1338],
+			"screenshot_offset": [476, 530],
+			"screenshot_mask": "appstoreres/assets/duo/inner-landscape-mask.png"
+		},
+		{
 			"name": "iPhone 17 Pro Max",
 			"canvas_size": [1320, 2868],
 			"text_size": [1066, 577],
@@ -44,6 +54,47 @@
 		}
 	],
 	"entries": [
+		// Paint the Duo bezel last so screenshots extend beneath its antialiased edge.
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-01.png",
+			"background": "appstoreres/assets/duo/background-1.png",
+			"screenshot": "iPhone Duo-1-dark-order-dashboard.png",
+			"text": "metadata/{locale}/app_store_screenshot_1.txt",
+			"attachments": [{ "file": "appstoreres/assets/duo/inner-landscape-frame.png", "size": [2062, 1498], "position": [396, 450] }]
+		},
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-02.png",
+			"background": "appstoreres/assets/duo/background-2.png",
+			"screenshot": "iPhone Duo-2-light-order-creation.png",
+			"text": "metadata/{locale}/app_store_screenshot_2.txt",
+			"attachments": [{ "file": "appstoreres/assets/duo/inner-landscape-frame.png", "size": [2062, 1498], "position": [396, 450] }]
+		},
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-03.png",
+			"background": "appstoreres/assets/duo/background-1.png",
+			"screenshot": "iPhone Duo-3-dark-order-payment.png",
+			"text": "metadata/{locale}/app_store_screenshot_3.txt",
+			"attachments": [{ "file": "appstoreres/assets/duo/inner-landscape-frame.png", "size": [2062, 1498], "position": [396, 450] }]
+		},
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-04.png",
+			"background": "appstoreres/assets/duo/background-2.png",
+			"screenshot": "iPhone Duo-4-light-product-add.png",
+			"text": "metadata/{locale}/app_store_screenshot_7.txt",
+			"attachments": [{ "file": "appstoreres/assets/duo/inner-landscape-frame.png", "size": [2062, 1498], "position": [396, 450] }]
+		},
+		{
+			"device": "iPhone Duo",
+			"filename": "iPhone Duo-05.png",
+			"background": "appstoreres/assets/duo/background-1.png",
+			"screenshot": "iPhone Duo-5-dark-order-notification.png",
+			"text": "metadata/{locale}/app_store_screenshot_8.txt",
+			"attachments": [{ "file": "appstoreres/assets/duo/inner-landscape-frame.png", "size": [2062, 1498], "position": [396, 450] }]
+		},
 		// iPhone 17 Pro Max
 		// Track sales and bestselling products
 		{

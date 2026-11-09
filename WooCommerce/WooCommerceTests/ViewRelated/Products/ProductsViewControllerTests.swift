@@ -365,6 +365,28 @@ struct ProductsViewControllerTests {
         #expect(table.indexPathForSelectedRow == selectedIndexPath)
         #expect(table.bounds.intersects(table.rectForRow(at: selectedIndexPath)))
     }
+
+    @Test
+    func test_viewWillAppear_when_products_list_appears_then_resets_only_store_stock_badge_count() {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let pushNotesManager = MockPushNotificationsManager()
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: MockStorageManager(), siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in },
+                                                 pushNotesManager: pushNotesManager)
+        controller.loadViewIfNeeded()
+
+        // When
+        controller.viewWillAppear(false)
+
+        // Then
+        #expect(pushNotesManager.resetBadgeCountKinds == [.storeStock])
+    }
 }
 
 private extension ProductsViewControllerTests {

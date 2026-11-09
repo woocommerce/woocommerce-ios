@@ -246,38 +246,40 @@ struct PointOfSaleDashboardView: View {
     @ViewBuilder
     private var phoneContentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
-        // Building stage: ItemListView (which carries its own NavigationStack for product drill-down)
-        //                 + bottom Cart button — NO outer NavigationStack here, otherwise nested stacks
-        //                 break .navigationDestination resolution for pushed views.
-        // Finalizing stage: a fresh NavigationStack siblinged to (not wrapping) the items list, used
-        //                   for pushing cash payment, email receipt, etc. via navigationPath.
-        Group {
-            switch posModel.orderStage {
-            case .building:
-                GeometryReader { geometry in
-                    VStack(spacing: metrics.spacing.none) {
-                        ItemListView(
-                            selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                            searchTerm: $viewStateCoordinator.searchTerm,
-                            httpsConfigurationNotice: httpsConfigurationNotice,
-                            phoneHeaderAccessoryBuilder: { context in
-                                AnyView(phoneOverflowMenu(
-                                    canCreateCoupon: context.canCreateCoupon,
-                                    onCreateCoupon: context.onCreateCoupon
-                                ))
-                            }
-                        )
-                        if PointOfSaleDashboardViewHelper.showsCompactCartButton(
-                            cartIsEmpty: posModel.cart.isEmpty,
-                            floatingControlSuppressed: floatingControlSuppressed
-                        ) {
-                            phoneCartButton(bottomSafeAreaInset: geometry.safeAreaInsets.bottom)
-                                .transition(.move(edge: .bottom).combined(with: .opacity))
+        // The items list and checkout are siblings, never nested: ItemListView carries its own
+        // NavigationStack for product drill-down, and nesting stacks breaks .navigationDestination
+        // resolution for pushed views. Checkout gets its own stack for cash payment, email receipt, etc.
+        POSPushTransitionContainer(
+            item: phoneCheckoutScreen,
+            isBackGestureEnabled: canExitFinalizingOnPhone && navigationPath.isEmpty,
+            animatesPop: { $0 != .paymentSuccess },
+            onBack: { posModel.addMoreToCart() }
+        ) {
+            GeometryReader { geometry in
+                VStack(spacing: metrics.spacing.none) {
+                    ItemListView(
+                        selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                        searchTerm: $viewStateCoordinator.searchTerm,
+                        httpsConfigurationNotice: httpsConfigurationNotice,
+                        phoneHeaderAccessoryBuilder: { context in
+                            AnyView(phoneOverflowMenu(
+                                canCreateCoupon: context.canCreateCoupon,
+                                onCreateCoupon: context.onCreateCoupon
+                            ))
                         }
+                    )
+                    if PointOfSaleDashboardViewHelper.showsCompactCartButton(
+                        cartIsEmpty: posModel.cart.isEmpty,
+                        floatingControlSuppressed: floatingControlSuppressed
+                    ) {
+                        phoneCartButton(bottomSafeAreaInset: geometry.safeAreaInsets.bottom)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
-                    .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
                 }
-            case .finalizing:
+                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
+            }
+        } pushed: { stage in
+            if stage != nil {
                 NavigationStack(path: $navigationPath) {
                     phoneTotalsContainer
                         .posNavigationDestinations()
@@ -312,6 +314,13 @@ struct PointOfSaleDashboardView: View {
             if newStage == .finalizing {
                 phoneShowingCart = false
             }
+        }
+        .onChange(of: posModel.cart.isEmpty) { _, cartIsEmpty in
+            guard PointOfSaleDashboardViewHelper.shouldDismissCompactCartSheet(isPhoneLayout: isPhoneLayout,
+                                                                               cartIsEmpty: cartIsEmpty) else {
+                return
+            }
+            phoneShowingCart = false
         }
         .onChange(of: posModel.cart.latestScannedItemID) { _, itemID in
             // Auto-opens the cart sheet on scan
@@ -357,8 +366,16 @@ struct PointOfSaleDashboardView: View {
                     )
                 }
         }
-        .animation(.default, value: posModel.orderStage)
         .background(Color.posSurface.ignoresSafeArea())
+    }
+
+    private var phoneCheckoutScreen: PhoneCheckoutScreen? {
+        switch posModel.orderStage {
+        case .building:
+            return nil
+        case .finalizing:
+            return posModel.paymentState.isSuccess ? .paymentSuccess : .checkout
+        }
     }
 
     private var canExitFinalizingOnPhone: Bool {
@@ -391,10 +408,6 @@ struct PointOfSaleDashboardView: View {
         }
         .background(Color.posSurface)
         .toolbar(.hidden, for: .navigationBar)
-        .posEdgeSwipeBackAction(
-            isEnabled: canExitFinalizingOnPhone,
-            onBack: { posModel.addMoreToCart() }
-        )
     }
 
     @State private var showOrders: Bool = false
@@ -413,13 +426,6 @@ struct PointOfSaleDashboardView: View {
                 }
             }
             Button {
-                analytics.track(.pointOfSaleExitMenuItemTapped)
-                requestExitPermission()
-            } label: {
-                Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
-            }
-            .accessibilityIdentifier("pos-exit-menu-item")
-            Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 requestSettingsPermission()
             } label: {
@@ -432,6 +438,13 @@ struct PointOfSaleDashboardView: View {
             } label: {
                 Label(Localization.phoneMenuOrders, systemImage: "text.document")
             }
+            Button {
+                analytics.track(.pointOfSaleExitMenuItemTapped)
+                requestExitPermission()
+            } label: {
+                Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
+            }
+            .accessibilityIdentifier("pos-exit-menu-item")
         } label: {
             Circle()
                 .foregroundColor(.posSurfaceContainerLow)
@@ -444,6 +457,9 @@ struct PointOfSaleDashboardView: View {
                 .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
                 .fixedSize()
         }
+        // Keep the declared order (Exit last) instead of letting the system reorder items by the
+        // button's position on screen.
+        .menuOrder(.fixed)
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
         .accessibilityIdentifier("pos-compact-overflow-menu")
     }
@@ -743,6 +759,11 @@ extension EnvironmentValues {
 }
 
 private extension PointOfSaleDashboardView {
+    enum PhoneCheckoutScreen {
+        case checkout
+        case paymentSuccess
+    }
+
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251

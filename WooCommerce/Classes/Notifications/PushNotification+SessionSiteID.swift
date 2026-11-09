@@ -19,6 +19,12 @@ extension PushNotification {
     /// against a site ID that isn't the one the session is currently pointing at.
     ///
     func resolvedSiteID(stores: StoresManager = ServiceLocator.stores) -> Int64 {
+        Self.resolvedSiteID(siteID, stores: stores)
+    }
+
+    /// Same as `resolvedSiteID(stores:)`, for callers that only have the push payload's site ID.
+    ///
+    static func resolvedSiteID(_ siteID: Int64, stores: StoresManager = ServiceLocator.stores) -> Int64 {
         stores.sessionManager.defaultStoreID == WooConstants.placeholderStoreID ? WooConstants.placeholderStoreID : siteID
     }
 }

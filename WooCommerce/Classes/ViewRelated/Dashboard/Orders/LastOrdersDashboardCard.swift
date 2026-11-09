@@ -155,7 +155,9 @@ private extension LastOrdersDashboardCard {
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
     }
+}
 
+extension LastOrdersDashboardCard {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "lastOrdersDashboardCard.hideCard",

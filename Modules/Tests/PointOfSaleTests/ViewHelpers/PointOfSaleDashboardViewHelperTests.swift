@@ -237,4 +237,40 @@ struct PointOfSaleDashboardViewHelperTests {
         // Then
         #expect(result == false)
     }
+
+    // MARK: - Dismiss Cart Sheet
+
+    @Test func shouldDismissCompactCartSheet_when_phone_layout_and_cart_is_empty_returns_true() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldDismissCompactCartSheet(
+            isPhoneLayout: true,
+            cartIsEmpty: true
+        )
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func shouldDismissCompactCartSheet_when_phone_layout_and_cart_has_items_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldDismissCompactCartSheet(
+            isPhoneLayout: true,
+            cartIsEmpty: false
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: [true, false])
+    func shouldDismissCompactCartSheet_when_not_phone_layout_returns_false(cartIsEmpty: Bool) async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldDismissCompactCartSheet(
+            isPhoneLayout: false,
+            cartIsEmpty: cartIsEmpty
+        )
+
+        // Then
+        #expect(result == false)
+    }
 }

@@ -46,6 +46,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the initial visibility of the POS tab without dependence on network requests.
     func checkInitialVisibility() -> Bool {
+        if let shouldShowPOS = ProcessConfiguration.shouldShowPOS {
+            return shouldShowPOS
+        }
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }
@@ -58,6 +61,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         for siteID: Int64,
         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()
     ) -> Bool {
+        if let shouldShowPOS = ProcessConfiguration.shouldShowPOS {
+            return shouldShowPOS
+        }
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }
@@ -66,6 +72,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
+        if let shouldShowPOS = ProcessConfiguration.shouldShowPOS {
+            return shouldShowPOS
+        }
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }

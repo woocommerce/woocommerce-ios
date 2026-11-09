@@ -62,6 +62,7 @@ private extension StoreTopPerformersDashboardCard {
             StoreDashboardDateRangeHeader(
                 timeRange: viewModel.timeRange,
                 dateText: viewModel.timeRangeText,
+                customTitle: Localization.custom,
                 isDisabled: viewModel.syncingData,
                 accessibilityPrefix: "top-performers",
                 onSelect: selectTimeRange,
@@ -74,9 +75,9 @@ private extension StoreTopPerformersDashboardCard {
                 .padding(.bottom, StorePadding.p5)
             StoreTopPerformersPeriodView(viewModel: viewModel.periodViewModel)
             StoreDashboardTimestamp(
-                lastUpdatedTimestamp: viewModel.lastUpdatedTimestamp,
-                showsScheduledUpdatesDelay: viewModel.shouldShowScheduledAnalyticsImportInfo,
+                text: timestampText,
                 showsInfoButton: viewModel.shouldShowAnalyticsImportUpdateModeInfoButton,
+                infoAccessibilityLabel: Localization.scheduledUpdatesInfoAccessibilityLabel,
                 onInfoTapped: showAnalyticsImportUpdateModeInfo
             )
             .padding(StorePadding.p5)
@@ -102,6 +103,12 @@ private extension StoreTopPerformersDashboardCard {
     func showAnalyticsImportUpdateModeInfo() {
         viewModel.trackAnalyticsImportUpdateModeInfoTapped()
         onAnalyticsImportUpdateModeInfoTapped()
+    }
+
+    var timestampText: String {
+        viewModel.shouldShowScheduledAnalyticsImportInfo ?
+        Localization.scheduledUpdatesDelayText :
+        Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp)
     }
 
     func editCustomRange() {
@@ -131,23 +138,7 @@ private extension StoreTopPerformersDashboardCard {
 }
 
 private extension StoreTopPerformersDashboardCard {
-    enum Localization {
-        static let hideCard = NSLocalizedString(
-            "topPerformersDashboardView.hideCard",
-            value: "Hide Top Performers",
-            comment: "Menu item to dismiss the Top Performers section on the Dashboard screen"
-        )
-        static let viewAll = NSLocalizedString(
-            "topPerformersDashboardView.viewAll",
-            value: "View all store analytics",
-            comment: "Button to navigate to Analytics Hub."
-        )
-        static let unavailableAnalytics = NSLocalizedString(
-            "topPerformersDashboardView.unavailableAnalyticsView.title",
-            value: "Unable to display your store's top performers",
-            comment: "Title when the Top Performers card is disabled because the analytics feature is unavailable"
-        )
-    }
+    typealias Localization = TopPerformersDashboardView.Localization
 }
 
 #Preview {

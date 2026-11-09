@@ -20,8 +20,6 @@ struct StoreLastOrderDashboardRow: View {
                             .storeTextStyle(.titleMedium)
                     }
 
-                    Spacer(minLength: StoreSpacing.s0)
-
                     VStack(alignment: .trailing, spacing: StoreSpacing.s3) {
                         CollapsibleHStack(horizontalAlignment: .trailing,
                                           spacing: StoreSpacing.s3) {
@@ -43,6 +41,7 @@ struct StoreLastOrderDashboardRow: View {
                         Text(data.total)
                             .storeTextStyle(.titleMedium)
                     }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
                 .foregroundStyle(.storeOnSurface)
                 .padding(StorePadding.p5)

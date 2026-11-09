@@ -395,74 +395,59 @@ struct TotalsViewHelperTests {
 extension TotalsViewHelperTests {
     @Test
     func test_showsPaymentStatusScreen_when_cash_payment_succeeded_then_returns_true() {
-        // Given
         let sut = TotalsViewHelper()
 
-        // When
         let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: .idle, cash: .paymentSuccess),
                                                   readerConnectionStatus: .disconnected,
                                                   inlineMessage: nil)
 
-        // Then
         #expect(result)
     }
 
     @MainActor
     @Test
     func test_showsPaymentStatusScreen_when_card_payment_failed_then_returns_true() {
-        // Given
         let sut = TotalsViewHelper()
 
-        // When
         let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: .paymentError, cash: .idle),
                                                   readerConnectionStatus: .connected(Self.reader),
                                                   inlineMessage: Self.cancelledOnReaderMessage)
 
-        // Then
         #expect(result)
     }
 
     @MainActor
     @Test(arguments: [PointOfSaleCardPaymentState.validatingOrderError, .paymentIntentCreationError])
     func test_showsPaymentStatusScreen_when_error_is_shown_with_order_totals_then_returns_false(cardState: PointOfSaleCardPaymentState) {
-        // Given
         let sut = TotalsViewHelper()
 
-        // When
         let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: cardState, cash: .idle),
                                                   readerConnectionStatus: .connected(Self.reader),
                                                   inlineMessage: Self.cancelledOnReaderMessage)
 
-        // Then
         #expect(!result)
     }
 
     @MainActor
     @Test
     func test_showsPaymentStatusScreen_when_reader_is_reconnecting_then_returns_false() {
-        // Given
         let sut = TotalsViewHelper()
 
-        // When
         let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: .idle, cash: .idle),
                                                   readerConnectionStatus: .reconnecting(Self.reader),
                                                   inlineMessage: Self.cancelledOnReaderMessage)
 
-        // Then
         #expect(!result)
     }
 
     @Test
     func test_showsPaymentStatusScreen_when_payment_is_processing_then_returns_false() {
-        // Given
         let sut = TotalsViewHelper()
 
-        // When
         let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: .processingPayment, cash: .idle),
                                                   readerConnectionStatus: .connected(Self.reader),
                                                   inlineMessage: .processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))
 
-        // Then
         #expect(!result)
     }
 }

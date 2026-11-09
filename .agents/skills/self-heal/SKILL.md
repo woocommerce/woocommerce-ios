@@ -1,11 +1,12 @@
 ---
 name: self-heal
-description: Pick one unhandled production crash from Sentry, claim it with a GitHub issue, and prove a fix with a red/green draft PR validated on Buildkite. Use when asked to "self-heal", "fix a production crash", or when run on a loop.
+description: Pick one unhandled production crash from Sentry, claim it with a GitHub issue, prove it with a red validation PR on Buildkite, and fix it in a draft PR that turns the test green. Use when asked to "self-heal", "fix a production crash", or when run on a loop.
 user-invocable: true
 allowed-tools: "Bash, Read, Edit, Write, Grep, Glob"
 ---
 
-One run advances the oldest open self-heal PR that is ready, then claims at most one new crash.
+Each crash moves through three artifacts: an issue (the claim), a validation PR (the red proof, closed once Buildkite confirms it), and a fix PR (the test plus the fix, green).
+One run tends open work, then claims at most one new crash.
 Runs start with no memory of earlier runs: GitHub, Buildkite and `$LOG` are the only state.
 Work in the runner worktree, never in the checkout that holds this skill:
 
@@ -18,7 +19,7 @@ LOG=~/.self-heal/runs.log
 ```
 
 If `$RUNNER` does not exist, create it from `origin/trunk` and bootstrap it (`bundle install && bundle exec rake dependencies`).
-Leave `$RUNNER` clean at the end of every run: commit or `git stash` work in progress, switch back to the detached `origin/trunk`, and delete local branches that have no PR.
+Leave `$RUNNER` clean at the end of every run: commit or `git stash` work in progress, switch back to the detached `origin/trunk`, and delete local branches that have no open PR.
 
 Log every phase as one line to `$LOG`: `<ISO time> <phase> <WOOCOMMERCE-IOS-id or -> <one-line outcome>`.
 The log calibrates the loop interval, so log `start` and `end` even when the run stops early.
@@ -44,25 +45,31 @@ Rephrase code literals you wrote yourself rather than quoting them.
 
 ## 1. Tend open work first
 
-List open self-heal PRs:
+List open self-heal PRs and issues:
 
 ```bash
-gh pr list --author @me --state open --json number,headRefName,headRefOid,statusCheckRollup \
+gh pr list --author @me --state open --json number,title,headRefName,headRefOid,statusCheckRollup \
   --jq '[.[] | select(.headRefName | startswith("self-heal/"))]'
+gh issue list --author @me --label "type: crash" --state open --json number,title
 ```
 
-Advance the oldest PR that has a finished Buildkite build on its head commit:
+Validation PRs have branches ending in `-red`; every other `self-heal/` branch is a fix PR.
+For each PR with a finished Buildkite build on its head commit:
 
-- Red commit, build failed on the new test → red proven: link the build in the PR, push the fix commit (step 5.4).
-- Red commit, build failed elsewhere or the new test passed → the proof is wrong: fix the test or abandon (step 5 fallback).
-- Fix commit, build passed → green proven: link the build in the PR, update the issue to `Status: PR #<n> ready for review`.
-- Fix commit, build failed → fix it on the branch.
+- Validation PR, build failed on the new test → red proven.
+  Comment the build link on the issue, set `Status: red proven, fix PR pending`, close the validation PR with a one-line comment linking the issue, and open the fix PR (step 6).
+- Validation PR, build failed elsewhere or the new test passed → the proof is wrong: fix the test on the branch, or close the PR and fall back (step 5).
+- Fix PR, build passed → green proven: link the build in the PR, set the issue to `Status: PR #<n> ready for review`.
+- Fix PR, build failed → fix it on the branch.
 
 Soft-failed steps count only if the PR caused them: compare with the same step on the latest trunk build, by total and by file.
 
-Then answer the PR's conversation, on every open self-heal PR, not just the one advanced.
-Read comments and reviews (`gh pr view <n> --json comments,reviews` and `gh api repos/{owner}/{repo}/pulls/<n>/comments`), including bot comments that are edited in place.
-Anything updated after your last reply needs either a fix pushed to the branch or one reply saying why no change is needed, with the evidence, such as the trunk build link.
+Then answer the conversation on every open self-heal PR and issue, including bot comments such as Danger's, which are edited in place:
+
+- PRs: `gh pr view <n> --json comments,reviews` and `gh api repos/{owner}/{repo}/pulls/<n>/comments`.
+- Issues: `gh issue view <n> --json comments,labels`.
+
+Anything updated after your last reply needs a fix (push to the branch, add the requested label) or one reply saying why no change is needed, with the evidence, such as the trunk build link.
 Replies follow the privacy rules and end with the experiment trailer and the attribution line.
 Never resolve review threads; the reviewer does that.
 
@@ -72,37 +79,39 @@ Then continue to step 2 if fewer than 5 self-heal PRs are open; otherwise log `c
 
 1. `$CRASHES releases` → take the two most recent `X.Y` versions; use the older as `--min-version`.
 2. `$CRASHES list --min-version <X.Y>` → candidates by frequency.
-3. Skip a candidate if `$CLAIMS <id> <shortId>` prints anything: an issue or PR on GitHub, or a Linear issue, already names it.
-4. Prefer crashes with in-app frames (`$CRASHES event <id>`, frames with `binary: "WooCommerce"` or `inApp: true`).
+3. Skip a candidate below the impact threshold: it needs `userCount` of at least 5, or a `count` of at least 10.
+   One user crashing ten times counts; one user crashing once does not.
+4. Skip a candidate if `$CLAIMS <id> <shortId>` prints anything: an issue or PR on GitHub, or a Linear issue, already names it.
+5. Prefer crashes with in-app frames (`$CRASHES event <id>`, frames with `binary: "WooCommerce"` or `inApp: true`).
    Skip crashes that live entirely in Apple or third-party frameworks unless an app frame or the exception message names our code.
-5. Skip a candidate whose repeating in-app frames match an open `type: crash` issue (`gh issue list --label "type: crash" --state open`): the top frame of a stack overflow differs from crash to crash.
+6. Skip a candidate whose repeating in-app frames match an open `type: crash` issue: the top frame of a stack overflow differs from crash to crash.
    Add its short ID to that issue's body instead, so `$CLAIMS` finds it next time.
-6. Skip races between threads inside a framework (two threads in the same library at the crash, no app frame between them): a unit test cannot reproduce them.
-
-7. Skip a candidate trunk has likely fixed. For each in-app file in the crashed thread, read `git log <release-tag>..origin/trunk -- <file>` in `$RUNNER`, and read any commit that touches the crashing function.
+7. Skip races between threads inside a framework (two threads in the same library at the crash, no app frame between them): a unit test cannot reproduce them.
+8. Skip a candidate trunk has likely fixed. For each in-app file in the crashed thread, read `git log <release-tag>..origin/trunk -- <file>` in `$RUNNER`, and read any commit that touches the crashing function.
    Skip, logging `fixed-on-trunk` with the commit, if one guards the crashing path, especially when Sentry has no events for the crash from releases that include that commit.
 
 No candidate left: log `dry` and stop.
-Do not widen to older releases: `--min-version` already includes old crashes that still happen, so older releases only add crashes that stopped, which are usually fixed.
+Do not widen to older releases or lower the threshold: older releases only add crashes that stopped, and smaller ones are not worth a reviewer's time.
 
 ## 3. Claim it
 
 Runs never overlap, so the read-only checks in step 2 are safe before claiming. Create the issue before changing any code:
 
 ```bash
-gh issue create --title "Crash: <shortId> <redacted title>" --label "type: crash" --body-file <file>
+gh issue create --title "Crash: <shortId> <redacted title>" --label "type: crash" --label "feature: <area>" --body-file <file>
 ```
 
-Body: Sentry permalink, event and user counts, release range, the redacted exception and top in-app frames, `Status: investigating`, the experiment line, and the closing line `*Posted by Claude Code (<model>) on behalf of @mokagio with approval.*`
+Pick the feature label from `gh label list --search "feature:"` by the code the crash runs through; Danger asks for one.
+Body: Sentry permalink, event and user counts, release range, the redacted exception and top in-app frames, `Status: investigating`, the experiment trailer, and the closing line `*Posted by Claude Code (<model>) on behalf of @mokagio with approval.*`
 
 ## 4. Diagnose
 
-In `$RUNNER`: `git fetch origin && git switch -c self-heal/<shortId-lowercased> origin/trunk`.
+In `$RUNNER`: `git fetch origin && git switch -c self-heal/<shortId-lowercased>-red origin/trunk`.
 
 Read the whole crashed thread (`$CRASHES event <id>`), not just its top frames or Sentry's culprit.
 Stack overflows and watchdog kills blame whatever frame was running last; the cause is the repeating pattern further down.
 Then read the code at the crash frames, at the release tag the crash comes from (`git show <tag>:<path>`, line numbers shift) and on trunk.
-If trunk turns out to have fixed it after all, comment with the commit, close the issue as completed, log `missed-pre-claim`, and stop: step 2.7 should have caught it.
+If trunk turns out to have fixed it after all, comment with the commit, close the issue as completed, log `missed-pre-claim`, and stop: step 2.8 should have caught it.
 
 Do not touch, and stop if a fix would need to touch:
 
@@ -112,24 +121,31 @@ Do not touch, and stop if a fix would need to touch:
 
 Comment the diagnosis and which path it would touch on the issue, set `Status: needs human`, and stop.
 
-## 5. Prove it red, then green
-
-Fix like a senior developer: never trade a crash for a silent wrong answer.
+## 5. Prove it red
 
 1. If needed, commit a behaviour-preserving extraction that makes the crashing code testable.
-2. Commit the test that reproduces the production signature, following `.agents/rules/testing.md`. Run it locally and confirm it fails for the crash's reason.
-3. Push and open a **draft** PR (see below), then stop the run. A later run checks that Buildkite's Unit Tests step failed on that test — the red proof.
-4. When red is proven: commit the fix, run the affected tests locally, push, and stop. A later run checks the build passes — the green proof.
+2. Commit the test that reproduces the production signature, following `.agents/rules/testing.md`.
+   Keep it fast and deterministic: no sleeps, and no stress loops beyond what reproduces the crash.
+3. Run it locally and confirm it fails for the crash's reason. Do not push a red proof you have not seen fail.
+4. Push and open the validation PR: draft, assigned to @mokagio, label `type: crash`, title `Validate crash <shortId>: <short description>`.
+   Body: a link to the issue (`Part of #<n>`, never `Fixes`), what the test reproduces, that the PR exists only for the red build and will be closed without merging, and the experiment trailer.
+5. Set the issue to `Status: validation PR #<n> awaiting red build`, log `end`, and stop.
 
 If you cannot write a reproducing test: add instrumentation that would confirm the cause, or a testable refactor, with a prediction to check on a later run.
 If neither is possible, comment the diagnosis on the issue, leave it open with `Status: needs human`, and stop.
 
-## 6. The PR
+## 6. Fix it green
 
-Follow `/pr` for the body template, labels (`type: crash` plus a feature label) and milestone, with these differences:
+Once red is proven, in `$RUNNER`: `git switch -c self-heal/<shortId-lowercased> origin/trunk`, cherry-pick the validation branch's commits, and commit the fix on top.
+Fix like a senior developer: never trade a crash for a silent wrong answer.
+Run the affected tests locally, push, and open the fix PR.
+
+Follow `/pr` for the body template, labels (`type: crash` plus the issue's feature label) and milestone, with these differences:
 
 - Draft, assigned to @mokagio, title `Fix crash <shortId>: <short description>`, body links the issue with `Fixes #<n>`.
-- Description says what crashed, why, how the red build proves the cause, and how the green build proves the fix.
+- Description says what crashed, why, and links the red build from the validation PR; the green build proves the fix.
+- A **Keep or delete the test** section: the test proved this crash and guards against its return, but if it costs more to maintain than it protects, the reviewer can drop it.
+  Name the test and include a ready-to-paste prompt, e.g. ``Remove `<test name>` from `<file>` and any helpers only it uses, then run the tests.``
 - No mention of AI in commits or the description (repo rule); the issue carries the attribution.
 
-Update the issue to `Status: PR #<n> awaiting red build`, log `end`, and stop. Never mark a PR ready or merge it.
+Set the issue to `Status: PR #<n> awaiting green build`, log `end`, and stop. Never mark a PR ready or merge it.

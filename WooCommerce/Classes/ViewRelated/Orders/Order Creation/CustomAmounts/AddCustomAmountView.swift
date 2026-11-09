@@ -14,7 +14,7 @@ struct AddCustomAmountView: View {
 
     var body: some View {
         NavigationStack {
-            SafeAreaInsetsReader { safeAreaInsets in
+            GeometryReader { geometry in
                 List {
                     if let formattableAmountTextFieldViewModel = viewModel.formattableAmountTextFieldViewModel {
                         VStack(alignment: .leading) {
@@ -75,7 +75,7 @@ struct AddCustomAmountView: View {
                     .disabled(!viewModel.shouldEnableDoneButton)
                     .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
                     .padding([.top, .horizontal])
-                    .padding(.bottom, keyboardObserver.isKeyboardVisible || safeAreaInsets.bottom == 0 ? Layout.footerBottomPadding : 0)
+                    .padding(.bottom, keyboardObserver.isKeyboardVisible || geometry.safeAreaInsets.bottom == 0 ? Layout.footerBottomPadding : 0)
                     .background(Color(.systemBackground), ignoresSafeAreaEdges: .bottom)
                 }
                 .navigationTitle(Localization.navigationTitle)

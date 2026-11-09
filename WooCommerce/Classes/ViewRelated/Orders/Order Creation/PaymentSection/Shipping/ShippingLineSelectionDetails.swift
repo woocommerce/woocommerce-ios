@@ -17,7 +17,7 @@ struct ShippingLineSelectionDetails: View {
 
     var body: some View {
         NavigationStack {
-            SafeAreaInsetsReader { safeAreaInsets in
+            GeometryReader { geometry in
                 List {
                     // MARK: Shipping Method
                     Button {
@@ -82,7 +82,7 @@ struct ShippingLineSelectionDetails: View {
                     .disabled(!viewModel.enableDoneButton)
                     .accessibilityIdentifier(Accessibility.doneButton)
                     .padding([.top, .horizontal])
-                    .padding(.bottom, keyboardObserver.isKeyboardVisible || safeAreaInsets.bottom == 0 ? Layout.footerBottomPadding : 0)
+                    .padding(.bottom, keyboardObserver.isKeyboardVisible || geometry.safeAreaInsets.bottom == 0 ? Layout.footerBottomPadding : 0)
                     .background(Color(.systemBackground), ignoresSafeAreaEdges: .bottom)
                 })
                 .navigationDestination(isPresented: $isMethodPickerPresented) {

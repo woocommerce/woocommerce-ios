@@ -1,17 +1,18 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isMessageFocused: Bool
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: Constants.imageAndTextSpacing) {
+        VStack(alignment: .center, spacing: metrics.spacing.xLarge) {
             POSCardPresentPaymentMessageViewImage(imageName: viewModel.imageName)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(.posBodyLargeRegular())
@@ -30,12 +31,6 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
         .onAppear {
             isMessageFocused = true
         }
-    }
-}
-
-private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView {
-    enum Constants {
-        static let imageAndTextSpacing: CGFloat = POSSpacing.xLarge
     }
 }
 

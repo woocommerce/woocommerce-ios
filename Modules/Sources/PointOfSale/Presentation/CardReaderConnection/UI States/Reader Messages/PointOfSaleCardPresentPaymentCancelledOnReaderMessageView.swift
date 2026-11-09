@@ -1,22 +1,23 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
     @State private var width: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             Spacer()
 
             POSErrorXMark()
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                .frame(height: metrics.spacing.large)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(viewModel.title)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -34,9 +35,9 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
             .dynamicWidthScaling(containerWidth: width)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+                .frame(height: metrics.spacing.xxLarge)
 
-            VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))

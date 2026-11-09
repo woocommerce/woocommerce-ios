@@ -2,20 +2,21 @@ import SwiftUI
 import enum Yosemite.CardReaderServiceError
 
 struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
     @State private var width: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             POSErrorXMark()
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                .frame(height: metrics.spacing.large)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
@@ -30,9 +31,9 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
             }
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+                .frame(height: metrics.spacing.xxLarge)
 
-            VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))

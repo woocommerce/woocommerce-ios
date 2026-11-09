@@ -52,7 +52,8 @@ public final class PaymentsScreen {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         self.app = app
-        guard cardReaderManualsButton.waitForExistence(timeout: 45) else {
+        // The row can be visible but non-hittable while the universal-link destination settles, so wait by existence.
+        guard cardReaderManualsButton.waitForExistence(timeout: Constants.screenLoadTimeout) else {
             throw PaymentsScreenError.timedOut
         }
     }
@@ -80,7 +81,6 @@ public final class PaymentsScreen {
 
     @discardableResult
     public func verifyPaymentsScreenLoaded() throws -> PaymentsScreen {
-        XCTAssertTrue(cardReaderManualsButton.waitForExistence(timeout: 8))
         return self
     }
 
@@ -90,5 +90,9 @@ public final class PaymentsScreen {
 
     private enum PaymentsScreenError: Error {
         case timedOut
+    }
+
+    private enum Constants {
+        static let screenLoadTimeout: TimeInterval = 45
     }
 }

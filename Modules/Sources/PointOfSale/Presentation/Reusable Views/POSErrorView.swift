@@ -13,7 +13,7 @@ struct POSErrorView: View {
             if viewModel.hasButtons {
                 Spacer().frame(height: metrics.spacing.xxLarge)
                 POSErrorButtonsView(viewModel: viewModel)
-                    .posStatusButtonsWidth()
+                    .posStatusButtonsWidth(addsHorizontalPadding: false)
             }
         }
     }

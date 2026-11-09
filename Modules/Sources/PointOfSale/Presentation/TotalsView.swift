@@ -11,6 +11,7 @@ struct TotalsView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAccessSession) private var session
+    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
 
@@ -153,7 +154,7 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
-        .environment(\.floatingControlAreaSize, .zero)
+        .environment(\.floatingControlAreaSize, posModel.orderState.isError ? .zero : floatingControlAreaSize)
         .posIgnoresHiddenKeyboardSafeArea()
         .animation(.default, value: posModel.orderState.isError)
         .onAppear {

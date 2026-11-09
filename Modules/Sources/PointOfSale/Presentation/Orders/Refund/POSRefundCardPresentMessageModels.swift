@@ -19,6 +19,15 @@ enum POSRefundCardPresentMessageType: Equatable {
             return false
         }
     }
+
+    var isStatusScreen: Bool {
+        switch self {
+        case .cancelledOnReader, .error:
+            return true
+        case .preparingReader, .waitingForCard, .cardInserted, .processing, .displayReaderMessage:
+            return false
+        }
+    }
 }
 
 struct POSRefundCardPresentBasicMessageViewModel: Equatable {

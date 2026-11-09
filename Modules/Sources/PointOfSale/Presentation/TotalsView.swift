@@ -147,6 +147,7 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
+        .environment(\.floatingControlAreaSize, .zero)
         .posIgnoresHiddenKeyboardSafeArea()
         .animation(.default, value: posModel.orderState.isError)
         .onAppear {

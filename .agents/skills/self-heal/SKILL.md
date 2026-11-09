@@ -128,7 +128,7 @@ If neither is possible, comment the diagnosis on the issue, leave it open with `
 
 Follow `/pr` for the body template, labels (`type: crash` plus a feature label) and milestone, with these differences:
 
-- Draft, title `Fix crash <shortId>: <short description>`, body links the issue with `Fixes #<n>`.
+- Draft, assigned to @mokagio, title `Fix crash <shortId>: <short description>`, body links the issue with `Fixes #<n>`.
 - Description says what crashed, why, how the red build proves the cause, and how the green build proves the fix.
 - No mention of AI in commits or the description (repo rule); the issue carries the attribution.
 

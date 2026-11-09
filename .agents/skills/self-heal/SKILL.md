@@ -73,11 +73,15 @@ Then continue to step 2 if fewer than 5 self-heal PRs are open; otherwise log `c
    Add its short ID to that issue's body instead, so `$CLAIMS` finds it next time.
 6. Skip races between threads inside a framework (two threads in the same library at the crash, no app frame between them): a unit test cannot reproduce them.
 
-No candidate left: lower `--min-version` by one release and repeat, going back at most four releases. Still none: log `dry` and stop.
+7. Skip a candidate trunk has likely fixed. For each in-app file in the crashed thread, read `git log <release-tag>..origin/trunk -- <file>` in `$RUNNER`, and read any commit that touches the crashing function.
+   Skip, logging `fixed-on-trunk` with the commit, if one guards the crashing path, especially when Sentry has no events for the crash from releases that include that commit.
+
+No candidate left: log `dry` and stop.
+Do not widen to older releases: `--min-version` already includes old crashes that still happen, so older releases only add crashes that stopped, which are usually fixed.
 
 ## 3. Claim it
 
-Create the issue before reading any code — the issue is the lock:
+Runs never overlap, so the read-only checks in step 2 are safe before claiming. Create the issue before changing any code:
 
 ```bash
 gh issue create --title "Crash: <shortId> <redacted title>" --label "type: crash" --body-file <file>
@@ -92,7 +96,7 @@ In `$RUNNER`: `git fetch origin && git switch -c self-heal/<shortId-lowercased> 
 Read the whole crashed thread (`$CRASHES event <id>`), not just its top frames or Sentry's culprit.
 Stack overflows and watchdog kills blame whatever frame was running last; the cause is the repeating pattern further down.
 Then read the code at the crash frames, at the release tag the crash comes from (`git show <tag>:<path>`, line numbers shift) and on trunk.
-If trunk already fixed it, comment with the commit, close the issue as completed, and stop.
+If trunk turns out to have fixed it after all, comment with the commit, close the issue as completed, log `missed-pre-claim`, and stop: step 2.7 should have caught it.
 
 Do not touch, and stop if a fix would need to touch:
 

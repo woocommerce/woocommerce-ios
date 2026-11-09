@@ -1,8 +1,7 @@
-import ScreenObject
 import XCTest
 
 @MainActor
-public final class PaymentsScreen: ScreenObject {
+public final class PaymentsScreen {
     private let cardReaderManualsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["card-reader-manuals"]
     }
@@ -49,17 +48,18 @@ public final class PaymentsScreen: ScreenObject {
     private var confirmCustomAmountButton: XCUIElement { confirmCustomAmountGetter(app) }
     private var orderFormCollectPaymentButton: XCUIElement { orderFormCollectPaymentButtonGetter(app) }
 
+    public let app: XCUIApplication
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
-        try super.init(
-            expectedElementGetters: [
-                cardReaderManualsButtonGetter
-            ],
-            app: app
-        )
+        self.app = app
+        guard cardReaderManualsButton.waitForExistence(timeout: 45) else {
+            throw PaymentsScreenError.timedOut
+        }
     }
 
     @discardableResult
     public func tapCardReaderManuals() throws -> CardReaderManualsScreen {
+        XCTAssertTrue(cardReaderManualsButton.waitForIsHittable(timeout: 10), "Card reader manuals button should be tappable.")
         cardReaderManualsButton.tap()
         return try CardReaderManualsScreen()
     }
@@ -86,5 +86,9 @@ public final class PaymentsScreen: ScreenObject {
 
     public func verifyIPPDocumentationLoadedInWebView() throws {
         XCTAssertTrue(IPPDocumentationHeaderText.waitForExistence(timeout: 30), "IPP Documentation not displayed on WebView!")
+    }
+
+    private enum PaymentsScreenError: Error {
+        case timedOut
     }
 }

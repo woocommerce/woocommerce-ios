@@ -125,6 +125,7 @@ Comment the diagnosis and which path it would touch on the issue, set `Status: n
 
 1. If needed, commit a behaviour-preserving extraction that makes the crashing code testable.
 2. Commit the test that reproduces the production signature, following `.agents/rules/testing.md`.
+   Write it in Swift Testing (`@Test`, `#expect`). When the code under test only has an XCTest class, put the test in a new Swift Testing file next to it rather than adding to that class.
    Keep it fast and deterministic: no sleeps, and no stress loops beyond what reproduces the crash.
 3. Run it locally and confirm it fails for the crash's reason. Do not push a red proof you have not seen fail.
 4. Push and open the validation PR: draft, assigned to @mokagio, label `type: crash`, title `Validate crash <shortId>: <short description>`.

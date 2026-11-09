@@ -603,8 +603,8 @@ private extension DashboardViewModel {
 
                 previousDashboardCards = cards
 
-                /** Background launches (BGAppRefresh, silent push) build this view model with no view;
-                    reloading here emits dashboard events Looker counts as activity. */
+                // Background launches (BGAppRefresh, silent push) build this view model with no view;
+                // reloading here emits dashboard events that Looker counts as user activity.
                 guard newlyEnabledCards.isNotEmpty, application.applicationState != .background else { return }
                 Task { @MainActor in
                     await self.reloadCardsIfNeeded(newlyEnabledCards)

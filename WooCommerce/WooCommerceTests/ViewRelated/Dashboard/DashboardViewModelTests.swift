@@ -584,11 +584,10 @@ final class DashboardViewModelTests: XCTestCase {
 
         // When: the view model is built by a background launch (no view ever appears)
         let viewModel = makeViewModel(application: application)
-        try await waitUntil { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
+        await until { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
 
         // Then: no stats sync, so no `dashboard_main_stats_loaded` is tracked on a day the app was never opened
-        let reloaded = await waitFor(timeout: 1) { self.stores.receivedActions.contains { $0 is StatsActionV4 } }
-        XCTAssertFalse(reloaded)
+        try await assertNoStatsSync()
     }
 
     @MainActor
@@ -600,11 +599,10 @@ final class DashboardViewModelTests: XCTestCase {
 
         // When
         let viewModel = makeViewModel(application: application)
-        try await waitUntil { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
+        await until { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
 
         // Then: the performance card syncs its stats on the first emission
-        let reloaded = await waitFor(timeout: 2) { self.stores.receivedActions.contains { $0 is StatsActionV4 } }
-        XCTAssertTrue(reloaded)
+        await until { self.hasSyncedStats }
     }
 
     @MainActor
@@ -619,20 +617,15 @@ final class DashboardViewModelTests: XCTestCase {
                            application: application)
     }
 
-    private func waitUntil(_ condition: @escaping @MainActor () -> Bool) async throws {
-        let satisfied = await waitFor(timeout: 2, condition)
-        XCTAssertTrue(satisfied, "Condition not met in time")
+    private var hasSyncedStats: Bool {
+        stores.receivedActions.contains { $0 is StatsActionV4 }
     }
 
-    private func waitFor(timeout: TimeInterval, _ condition: @escaping @MainActor () -> Bool) async -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            if await condition() {
-                return true
-            }
-            try? await Task.sleep(nanoseconds: 10_000_000)
-        }
-        return await condition()
+    // A reload starts its stats sync within a few main-actor hops, so a short wait catches it.
+    @MainActor
+    private func assertNoStatsSync(file: StaticString = #filePath, line: UInt = #line) async throws {
+        try await Task.sleep(nanoseconds: 300_000_000)
+        XCTAssertFalse(hasSyncedStats, file: file, line: line)
     }
 
     @MainActor

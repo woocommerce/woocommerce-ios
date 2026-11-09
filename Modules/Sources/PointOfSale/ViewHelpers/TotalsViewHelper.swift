@@ -38,6 +38,20 @@ struct TotalsViewHelper {
         }
     }
 
+    func showsPaymentStatusScreen(paymentState: PointOfSalePaymentState,
+                                  readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+                                  inlineMessage: PointOfSaleCardPresentPaymentMessageType?) -> Bool {
+        if paymentState.isSuccess {
+            return true
+        }
+        guard !paymentViewHelper.shouldShowTotalsFields(for: paymentState),
+              !shouldShowReconnectingMessage(readerConnectionStatus: readerConnectionStatus, paymentState: paymentState),
+              !paymentViewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: readerConnectionStatus, paymentState: paymentState) else {
+            return false
+        }
+        return inlineMessage?.isStatusScreen == true
+    }
+
     /// Cash payment button visibility for the cart flow (adds order state guards on top of the base check).
     func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
                                             paymentState: PointOfSalePaymentState,

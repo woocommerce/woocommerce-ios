@@ -68,6 +68,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
+    private lazy var productPreviewAuthenticationAvailability = ProductPreviewAuthenticationAvailability(sessionManager: stores.sessionManager)
+
     private var isEligibleForBlaze = false
 
     private var hasActiveBlazeCampaign = false
@@ -186,12 +188,19 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
         }()
 
-        // The `frame_nonce` value must be stored for the preview to be displayed
-        if let site = stores.sessionManager.defaultSite,
-           site.frameNonce.isNotEmpty,
-            // Preview existing drafts or new products that can be saved as a draft
-           canSaveAsDraft() || originalProductModel.status == .draft {
-            buttons.insert(.preview, at: 0)
+        // Preview existing drafts or new products that can be saved as a draft
+        if canSaveAsDraft() || originalProductModel.status == .draft,
+           let site = stores.sessionManager.defaultSite {
+            // Only the Jetpack plugin accepts `frame-nonce`, so stores without it show their 404 page when signed out.
+            // Flex sites can report `jetpack: false` while listing Jetpack as a connected plugin.
+            let jetpackCanPreview = site.frameNonce.isNotEmpty &&
+                (!site.isJetpackCPConnected || site.jetpackConnectionActivePlugins.contains("jetpack"))
+            let permalink = URL(string: product.permalink)
+            let urlToCheck = permalink?.host == nil ? URL(string: site.url) : permalink
+
+            if jetpackCanPreview || productPreviewAuthenticationAvailability.canAuthenticate(for: urlToCheck) {
+                buttons.insert(.preview, at: 0)
+            }
         }
 
         // Add more button if needed

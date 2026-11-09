@@ -184,6 +184,7 @@ final class ProductsViewController: UIViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
     private let imageUploader = ServiceLocator.productImageUploader
+    private let pushNotesManager: PushNotesManager
     private var activeUploadIds: [Int64] = []
 
     private var filters = FilterProductListViewModel.Filters() {
@@ -234,9 +235,11 @@ final class ProductsViewController: UIViewController {
     init(siteID: Int64,
          resultsController: ResultsController<StorageProduct>? = nil,
          selectedProduct: AnyPublisher<Product?, Never>,
-         navigateToContent: @escaping (NavigationContentType) -> Void) {
+         navigateToContent: @escaping (NavigationContentType) -> Void,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.providedResultsController = resultsController
+        self.pushNotesManager = pushNotesManager
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
         self.selectedProduct = selectedProduct
         self.navigateToContent = navigateToContent
@@ -275,6 +278,9 @@ final class ProductsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // Stock pushes open this tab; without a reset their count keeps the app icon badge on.
+        pushNotesManager.resetBadgeCount(type: .storeStock)
 
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()

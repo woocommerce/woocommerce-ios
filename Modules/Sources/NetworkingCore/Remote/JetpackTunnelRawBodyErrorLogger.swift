@@ -1,4 +1,5 @@
 import Foundation
+import enum WooFoundationCore.SensitiveDataSanitizer
 
 protocol JetpackTunnelRawBodyErrorLogging: Sendable {
     func logIfNeeded(responseData: Data?, request: Request, transportStatus: Int?)
@@ -145,32 +146,6 @@ private extension JetpackTunnelRawBodyErrorLogger {
         let rawBody: String
     }
 
-    struct RedactionPattern {
-        let expression: String
-        let replacement: String
-    }
-
-    private static let redactionPatterns: [RedactionPattern] = [
-        RedactionPattern(
-            expression: #"(?i)\bBearer\s+[^\s,;]+"#,
-            replacement: "Bearer [redacted]"
-        ),
-        RedactionPattern(
-            expression: #"(?i)\b(Cookie|Set-Cookie):\s*[^\n\r,]+"#,
-            replacement: "$1: [redacted]"
-        ),
-        RedactionPattern(
-            expression: #"(?i)("(?:consumer_key|consumer_secret|access_token|token|application_password|password)"\s*:\s*")[^"]*(")"#,
-            replacement: "$1[redacted]$2"
-        ),
-        RedactionPattern(
-            expression: #"(?i)(^|[?&;\s])((?:consumer_key|consumer_secret|access_token|token|application_password|password)=)[^&;\s,"'}]+"#,
-            replacement: "$1$2[redacted]"
-        )
-    ]
-
-    private static let whitespacePattern = #"\s+"#
-
     private func rawBodyErrorContext(from responseData: Data) -> RawBodyErrorContext? {
         guard let response = try? JSONDecoder().decode(RawBodyErrorResponse.self, from: responseData) else {
             return nil
@@ -227,14 +202,6 @@ private extension JetpackTunnelRawBodyErrorLogger {
     }
 
     private func sanitize(_ value: String?) -> String {
-        Self.redactionPatterns.reduce(value ?? "") { partialResult, pattern in
-            partialResult.replacingOccurrences(
-                of: pattern.expression,
-                with: pattern.replacement,
-                options: .regularExpression
-            )
-        }
-        .replacingOccurrences(of: Self.whitespacePattern, with: " ", options: .regularExpression)
-        .trimmingCharacters(in: .whitespacesAndNewlines)
+        SensitiveDataSanitizer.sanitize(value ?? "")
     }
 }

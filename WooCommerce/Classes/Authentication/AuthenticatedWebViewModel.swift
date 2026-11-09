@@ -32,7 +32,7 @@ protocol AuthenticatedWebViewModel {
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy
 
     /// Handler after receiving response for a navigation
-    func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy
+    func decidePolicy(for response: URLResponse, isForMainFrame: Bool) async -> WKNavigationResponsePolicy
 
     /// Triggered when a navigation completes.
     func didFinishNavigation(for url: URL)
@@ -45,7 +45,7 @@ protocol AuthenticatedWebViewModel {
 // MARK: Default implementation for the optional methods
 //
 extension AuthenticatedWebViewModel {
-    func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy {
+    func decidePolicy(for response: URLResponse, isForMainFrame: Bool) async -> WKNavigationResponsePolicy {
         return .allow
     }
 

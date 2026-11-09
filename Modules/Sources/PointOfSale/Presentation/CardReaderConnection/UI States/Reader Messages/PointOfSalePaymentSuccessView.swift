@@ -11,6 +11,9 @@ struct PointOfSalePaymentSuccessView: View {
 
     @State private var isViewLoaded: Bool = false
     @State private var showPrinterSetupModal: Bool = false
+    @State private var printButtonState: POSButtonState = .idle
+    @State private var printFailure: POSPrintReceiptFailure?
+    @State private var selectedFailureAction: POSPrintReceiptFailureAction?
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -53,17 +56,46 @@ struct PointOfSalePaymentSuccessView: View {
                     isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
+        .posModal(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
+            POSPrintReceiptFailureModal(failure: failure,
+                                        selectAction: { action in
+                                            selectedFailureAction = action
+                                            printFailure = nil
+                                        },
+                                        close: { printFailure = nil })
+        }
+        .task(id: printButtonState) {
+            guard printButtonState == .success else { return }
+            try? await Task.sleep(for: Constants.printConfirmationDuration)
+            guard !Task.isCancelled else { return }
+            printButtonState = .idle
+        }
     }
 
     private var printCoordinator: POSPrintReceiptCoordinator {
         POSPrintReceiptCoordinator(analytics: analytics,
                                    printReceipt: { try await posModel.printReceipt() },
-                                   presentPrinterSetup: { showPrinterSetupModal = true })
+                                   presentPrinterSetup: { showPrinterSetupModal = true },
+                                   presentEmailReceipt: { router.pushEmailReceipt() },
+                                   isOnSuccessScreen: { !router.isNavigated },
+                                   presentFailure: { printFailure = $0 },
+                                   updateButtonState: { printButtonState = $0 })
     }
 
     private func handlePrintReceiptTap() {
+        guard printButtonState == .idle else { return }
         Task {
             await printCoordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
+        }
+    }
+
+    /// Acts on the merchant's choice only once the failure modal has closed: `POSModalManager` holds one
+    /// modal, so presenting printer setup alongside this dismissal could lose the new modal.
+    private func handlePrintFailureDismissed() {
+        guard let action = selectedFailureAction else { return }
+        selectedFailureAction = nil
+        Task {
+            await printCoordinator.failureActionSelected(action, isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 
@@ -115,6 +147,7 @@ struct PointOfSalePaymentSuccessView: View {
                 // "Email receipt" — let them span the container minus standard insets instead.
                 PaymentsActionButtons(successAction: successAction,
                                       showsPrintReceipt: posModel.receiptPrinter != nil,
+                                      printButtonState: printButtonState,
                                       printReceiptAction: handlePrintReceiptTap)
                     .if(horizontalSizeClass != .compact) { view in
                         view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: metrics.spacing.none)
@@ -136,6 +169,7 @@ struct PointOfSalePaymentSuccessView: View {
 private extension PointOfSalePaymentSuccessView {
     enum Constants {
         static let animationOffset: CGFloat = 100
+        static let printConfirmationDuration: Duration = .seconds(2)
     }
 
     enum Localization {

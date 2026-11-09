@@ -179,6 +179,7 @@ private extension StoreDashboardView {
             }
         }
         .frame(maxWidth: .infinity)
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder
@@ -196,7 +197,6 @@ private extension StoreDashboardView {
                 showAllCampaignsTapped: actions.showAllBlazeCampaignsTapped,
                 createCampaignTapped: actions.createBlazeCampaignTapped
             )
-            .padding(.horizontal, StorePadding.p5)
         case .performance:
             StorePerformanceDashboardCard(
                 viewModel: viewModel.storePerformanceViewModel,
@@ -215,14 +215,12 @@ private extension StoreDashboardView {
                 viewModel: viewModel.inboxViewModel,
                 onShowAllInboxMessages: { actions.showAllInboxMessagesTapped?() }
             )
-            .padding(.horizontal, StorePadding.p5)
         case .reviews:
             StoreReviewsDashboardCard(
                 viewModel: viewModel.reviewsViewModel,
                 onViewAllReviews: { actions.viewAllReviewsTapped?() },
                 onViewReviewDetail: { actions.reviewDetailTapped?($0) }
             )
-            .padding(.horizontal, StorePadding.p5)
         case .coupons:
             StoreMostActiveCouponsCard(
                 viewModel: viewModel.mostActiveCouponsViewModel,
@@ -243,7 +241,6 @@ private extension StoreDashboardView {
                 onCreateNewCampaign: { actions.createGoogleAdsCampaignTapped?() },
                 onShowAllCampaigns: { actions.showAllGoogleAdsCampaignsTapped?() }
             )
-            .padding(.horizontal, StorePadding.p5)
         case .inAppFeedback:
             StoreDashboardFeedbackCard(viewModel: viewModel.inAppFeedbackCardViewModel)
         case .newCardsNotice:

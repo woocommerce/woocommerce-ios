@@ -13,28 +13,43 @@ struct StoreDashboardFeedbackCard: View {
                     .multilineTextAlignment(.center)
 
                 ViewThatFits(in: .horizontal) {
-                    HStack(spacing: StoreSpacing.s5) {
-                        feedbackButtons
-                    }
-                    VStack(spacing: StoreSpacing.s5) {
-                        feedbackButtons
-                    }
+                    horizontalButtonGroup
+                    verticalButtonGroup
                 }
             }
             .padding(StorePadding.p5)
         }
     }
 
-    @ViewBuilder private var feedbackButtons: some View {
+    private var horizontalButtonGroup: some View {
+        HStack(spacing: StoreSpacing.s5) {
+            iLikeItButton(isTitleFixedSize: true)
+            couldBeBetterButton(isTitleFixedSize: true)
+        }
+    }
+
+    private var verticalButtonGroup: some View {
+        VStack(spacing: StoreSpacing.s5) {
+            iLikeItButton()
+            couldBeBetterButton()
+        }
+    }
+
+    private func iLikeItButton(isTitleFixedSize: Bool = false) -> StoreButton {
+        StoreButton(Localization.iLikeIt,
+                    size: .medium,
+                    isFullWidth: true,
+                    isTitleFixedSize: isTitleFixedSize,
+                    action: viewModel.didTapILikeIt)
+    }
+
+    private func couldBeBetterButton(isTitleFixedSize: Bool = false) -> StoreButton {
         StoreButton(Localization.couldBeBetter,
                     variant: .outlined,
                     size: .medium,
                     isFullWidth: true,
+                    isTitleFixedSize: isTitleFixedSize,
                     action: viewModel.didTapCouldBeBetter)
-        StoreButton(Localization.iLikeIt,
-                    size: .medium,
-                    isFullWidth: true,
-                    action: viewModel.didTapILikeIt)
     }
 }
 

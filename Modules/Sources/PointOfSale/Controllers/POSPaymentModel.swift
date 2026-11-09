@@ -529,6 +529,13 @@ extension POSPaymentModel {
             // Large layouts retain the chosen method so the default Tap to Pay flow cannot take over.
             if isCompactCardPaymentSelectionEnabled {
                 currentPaymentMethod = nil
+                if selectedCardPaymentRail == .tapToPay {
+                    isAwaitingExplicitPaymentStart = true
+                    startPaymentOnCardReaderConnection?.cancel()
+                    startPaymentOnCardReaderConnection = nil
+                    startPaymentGeneration += 1
+                    return
+                }
             }
             await startPaymentFlow(using: method)
             return

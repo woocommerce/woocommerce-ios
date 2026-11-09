@@ -73,6 +73,42 @@ struct POSPaymentModelTests {
     }
 
     @Test @MainActor
+    func test_start_card_payment_when_compact_tap_to_pay_reader_disconnects_during_cancel_then_waits_for_tap() async throws {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
+            sut.connectTapToPayReader()
+        }
+        let reader = try #require(service.connectedReader)
+        sut.observeReaderReconnection()
+        service.onCancelPaymentCalled = {
+            service.connectedReader = nil
+        }
+        await sut.startCardPayment(with: .tapToPay)
+        service.onCancelPaymentCalled = nil
+
+        // When
+        await updateReaderConnectionStatus(observedBy: sut) {
+            service.connectedReader = reader
+        }
+        for _ in 0..<10 {
+            await Task.yield()
+        }
+
+        // Then
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.currentPaymentMethod == nil)
+    }
+
+    @Test @MainActor
     func test_start_payment_when_reader_reconnects_after_cancellation_then_resumes_collection() async {
         // Given
         let service = MockCardPresentPaymentService()

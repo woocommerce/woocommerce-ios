@@ -41,6 +41,7 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
     private let item: Item?
     private let sideBySide: SideBySideLayout?
     private let isBackGestureEnabled: Bool
+    private let animatesPop: (Item) -> Bool
     private let onBack: () -> Void
     private let root: Root
     private let pushed: (Item?) -> Pushed
@@ -48,12 +49,14 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
     init(item: Item?,
          sideBySide: SideBySideLayout? = nil,
          isBackGestureEnabled: Bool = true,
+         animatesPop: @escaping (Item) -> Bool = { _ in true },
          onBack: @escaping () -> Void,
          @ViewBuilder root: () -> Root,
          @ViewBuilder pushed: @escaping (Item?) -> Pushed) {
         self.item = item
         self.sideBySide = sideBySide
         self.isBackGestureEnabled = isBackGestureEnabled
+        self.animatesPop = animatesPop
         self.onBack = onBack
         self.root = root()
         self.pushed = pushed
@@ -147,7 +150,10 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
         navigationGeneration += 1
         let generation = navigationGeneration
 
-        switch POSPushTransitionHelper.navigation(from: oldValue, to: newValue, isCompletingDrag: dragPhase == .completing) {
+        switch POSPushTransitionHelper.navigation(from: oldValue,
+                                                  to: newValue,
+                                                  isCompletingDrag: dragPhase == .completing,
+                                                  animatesPop: oldValue.map(animatesPop) ?? true) {
         case .push:
             poppingItem = nil
             if dragPhase == .completing {
@@ -161,7 +167,7 @@ struct POSPushTransitionContainer<Item: Equatable, Root: View, Pushed: View>: Vi
             withAnimation(Constants.transition) {
                 isPushed = true
             }
-        case .settleCompletedDrag:
+        case .settleCompletedDrag, .popWithoutAnimation:
             // Animating this would move the panes a second time, back the way they came.
             var transaction = Transaction(animation: nil)
             transaction.disablesAnimations = true

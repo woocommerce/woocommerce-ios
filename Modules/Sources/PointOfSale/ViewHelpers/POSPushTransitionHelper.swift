@@ -9,13 +9,20 @@ enum POSPushTransitionHelper {
         case settleCompletedDrag
         /// Slide the pushed screen out, keeping `retainedItem` on it until it has left.
         case pop(retainedItem: Item?)
+        case popWithoutAnimation
     }
 
-    static func navigation<Item: Equatable>(from oldItem: Item?, to newItem: Item?, isCompletingDrag: Bool) -> Navigation<Item> {
+    static func navigation<Item: Equatable>(from oldItem: Item?,
+                                            to newItem: Item?,
+                                            isCompletingDrag: Bool,
+                                            animatesPop: Bool) -> Navigation<Item> {
         if newItem != nil {
             return .push
         }
-        return isCompletingDrag ? .settleCompletedDrag : .pop(retainedItem: oldItem)
+        if isCompletingDrag {
+            return .settleCompletedDrag
+        }
+        return animatesPop ? .pop(retainedItem: oldItem) : .popWithoutAnimation
     }
 
     /// The item the pushed screen renders. Side by side the pushed screen stays on screen, so a cleared

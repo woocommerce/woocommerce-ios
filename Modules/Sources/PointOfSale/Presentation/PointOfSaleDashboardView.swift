@@ -249,8 +249,9 @@ struct PointOfSaleDashboardView: View {
         // NavigationStack for product drill-down, and nesting stacks breaks .navigationDestination
         // resolution for pushed views. Checkout gets its own stack for cash payment, email receipt, etc.
         POSPushTransitionContainer(
-            item: posModel.orderStage == .finalizing ? PointOfSaleOrderStage.finalizing : nil,
+            item: phoneCheckoutScreen,
             isBackGestureEnabled: canExitFinalizingOnPhone && navigationPath.isEmpty,
+            animatesPop: { $0 != .paymentSuccess },
             onBack: { posModel.addMoreToCart() }
         ) {
             GeometryReader { geometry in
@@ -365,6 +366,15 @@ struct PointOfSaleDashboardView: View {
                 }
         }
         .background(Color.posSurface.ignoresSafeArea())
+    }
+
+    private var phoneCheckoutScreen: PhoneCheckoutScreen? {
+        switch posModel.orderStage {
+        case .building:
+            return nil
+        case .finalizing:
+            return posModel.paymentState.isSuccess ? .paymentSuccess : .checkout
+        }
     }
 
     private var canExitFinalizingOnPhone: Bool {
@@ -748,6 +758,11 @@ extension EnvironmentValues {
 }
 
 private extension PointOfSaleDashboardView {
+    enum PhoneCheckoutScreen {
+        case checkout
+        case paymentSuccess
+    }
+
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251

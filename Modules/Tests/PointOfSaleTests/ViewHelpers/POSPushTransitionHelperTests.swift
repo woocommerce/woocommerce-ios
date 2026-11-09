@@ -4,7 +4,7 @@ import Testing
 struct POSPushTransitionHelperTests {
     @Test func test_navigation_when_item_appears_then_pushes() {
         // When
-        let navigation = POSPushTransitionHelper.navigation(from: nil, to: "hardware", isCompletingDrag: false)
+        let navigation = POSPushTransitionHelper.navigation(from: nil, to: "hardware", isCompletingDrag: false, animatesPop: true)
 
         // Then
         #expect(navigation == .push)
@@ -12,7 +12,7 @@ struct POSPushTransitionHelperTests {
 
     @Test func test_navigation_when_item_changes_to_another_then_pushes() {
         // When
-        let navigation = POSPushTransitionHelper.navigation(from: "store", to: "hardware", isCompletingDrag: true)
+        let navigation = POSPushTransitionHelper.navigation(from: "store", to: "hardware", isCompletingDrag: true, animatesPop: true)
 
         // Then
         #expect(navigation == .push)
@@ -20,7 +20,7 @@ struct POSPushTransitionHelperTests {
 
     @Test func test_navigation_when_item_is_cleared_then_pops_retaining_the_outgoing_item() {
         // When
-        let navigation = POSPushTransitionHelper.navigation(from: "hardware", to: nil, isCompletingDrag: false)
+        let navigation = POSPushTransitionHelper.navigation(from: "hardware", to: nil, isCompletingDrag: false, animatesPop: true)
 
         // Then
         #expect(navigation == .pop(retainedItem: "hardware"))
@@ -28,10 +28,18 @@ struct POSPushTransitionHelperTests {
 
     @Test func test_navigation_when_item_is_cleared_by_a_completed_drag_then_only_settles_state() {
         // When
-        let navigation = POSPushTransitionHelper.navigation(from: "hardware", to: nil, isCompletingDrag: true)
+        let navigation = POSPushTransitionHelper.navigation(from: "hardware", to: nil, isCompletingDrag: true, animatesPop: true)
 
         // Then
         #expect(navigation == .settleCompletedDrag)
+    }
+
+    @Test func test_navigation_when_item_is_cleared_and_pop_is_not_animated_then_pops_without_animation() {
+        // When
+        let navigation = POSPushTransitionHelper.navigation(from: "hardware", to: nil, isCompletingDrag: false, animatesPop: false)
+
+        // Then
+        #expect(navigation == .popWithoutAnimation)
     }
 
     @Test func test_displayedItem_when_item_is_set_then_shows_it_over_a_popping_item() {

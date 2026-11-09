@@ -6,18 +6,6 @@ struct POSErrorView: View {
     @Environment(\.keyboardObserver) private var keyboard
 
     let viewModel: POSErrorViewModel
-    @Binding var buttonWidth: CGFloat?
-
-    init(viewModel: POSErrorViewModel, buttonWidth: Binding<CGFloat?>? = nil) {
-        self.viewModel = viewModel
-        if let buttonWidth {
-            self._buttonWidth = buttonWidth
-        } else {
-            self._buttonWidth = Binding<CGFloat?>(
-                get: { nil },
-                set: { _ in })
-        }
-    }
 
     var body: some View {
         VStack(alignment: .center, spacing: metrics.spacing.none) {
@@ -58,7 +46,7 @@ struct POSErrorView: View {
                         POSErrorButton(viewModel: secondaryButtonViewModel)
                     }
                 }
-                .frame(width: buttonWidth)
+                .posStatusButtonsWidth()
             }
         }
         .multilineTextAlignment(.center)

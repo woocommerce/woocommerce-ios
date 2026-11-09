@@ -300,12 +300,9 @@ struct POSCardPaymentContentView: View {
                 PointOfSaleCardPresentPaymentInLineMessage(messageType: inlineMessage,
                                                            animation: paymentMessageAnimation)
             default:
-                HStack(alignment: .center) {
-                    Spacer()
-                    PointOfSaleCardPresentPaymentInLineMessage(messageType: inlineMessage,
-                                                               animation: paymentMessageAnimation)
-                    Spacer()
-                }
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlineMessage,
+                                                           animation: paymentMessageAnimation)
+                    .frame(maxWidth: .infinity)
             }
         }
     }

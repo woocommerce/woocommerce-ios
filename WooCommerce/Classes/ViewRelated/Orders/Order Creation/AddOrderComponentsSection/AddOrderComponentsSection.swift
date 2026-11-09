@@ -98,6 +98,7 @@ private extension AddOrderComponentsSection {
                 }, onCouponSelected: { coupon in
                     viewModel.addNewCouponLineClosure(coupon)
                 })
+                .ignoresSafeArea(.container, edges: .bottom)
                 .navigationTitle(Localization.addCoupon)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {

@@ -31,7 +31,7 @@
                 <constraint firstItem="S3x-N3-wbe" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="H1C-V5-w8C"/>
                 <constraint firstItem="S3x-N3-wbe" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="fAu-IQ-sXB"/>
                 <constraint firstItem="S3x-N3-wbe" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="gXQ-hS-6R0"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="S3x-N3-wbe" secondAttribute="bottom" id="kQp-Tx-em8"/>
+                <constraint firstItem="i5M-Pr-FkT" firstAttribute="bottom" secondItem="S3x-N3-wbe" secondAttribute="bottom" id="kQp-Tx-em8"/>
             </constraints>
             <point key="canvasLocation" x="132" y="153"/>
         </view>

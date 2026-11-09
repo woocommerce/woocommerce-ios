@@ -30,7 +30,7 @@
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="ve6-T3-4xp" secondAttribute="trailing" id="dzk-Sr-7eF"/>
                 <constraint firstItem="ve6-T3-4xp" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="goy-iA-65I"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="ve6-T3-4xp" secondAttribute="bottom" id="p1P-sl-pmM"/>
+                <constraint firstItem="i5M-Pr-FkT" firstAttribute="bottom" secondItem="ve6-T3-4xp" secondAttribute="bottom" id="p1P-sl-pmM"/>
                 <constraint firstItem="ve6-T3-4xp" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="uhw-zT-fGm"/>
             </constraints>
             <point key="canvasLocation" x="139" y="89"/>

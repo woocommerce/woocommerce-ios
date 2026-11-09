@@ -64,6 +64,7 @@ struct OrderCouponSectionView: View {
                 addCouponLine(with: coupon.code)
                 shouldShowCouponList = false
             })
+            .ignoresSafeArea(.container, edges: .bottom)
         }
     }
 }

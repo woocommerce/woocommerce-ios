@@ -64,7 +64,7 @@ struct AddCustomAmountView: View {
             }
             .listStyle(.plain)
             .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaInset(edge: .bottom, spacing: .zero) {
                 Button(viewModel.doneButtonTitle) {
                     viewModel.doneButtonPressed()
                     dismiss()
@@ -72,7 +72,7 @@ struct AddCustomAmountView: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(!viewModel.shouldEnableDoneButton)
                 .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
-                .padding()
+                .padding([.top, .horizontal])
                 .background(Color(.systemBackground), ignoresSafeAreaEdges: .bottom)
             }
             .navigationTitle(Localization.navigationTitle)

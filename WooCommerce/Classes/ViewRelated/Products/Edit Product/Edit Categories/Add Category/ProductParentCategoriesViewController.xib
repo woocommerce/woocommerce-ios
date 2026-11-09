@@ -30,7 +30,7 @@
             <constraints>
                 <constraint firstItem="H3B-RM-SoD" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="Yky-f5-I11"/>
                 <constraint firstItem="H3B-RM-SoD" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="gfy-d3-xOw"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="H3B-RM-SoD" secondAttribute="bottom" id="iYq-KL-3Id"/>
+                <constraint firstItem="i5M-Pr-FkT" firstAttribute="bottom" secondItem="H3B-RM-SoD" secondAttribute="bottom" id="iYq-KL-3Id"/>
                 <constraint firstItem="H3B-RM-SoD" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="kJc-zl-olL"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="111.83035714285714"/>

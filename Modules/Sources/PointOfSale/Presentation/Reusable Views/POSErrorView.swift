@@ -3,6 +3,24 @@ import class WooFoundation.KeyboardObserver
 
 struct POSErrorView: View {
     @Environment(\.posMetrics) private var metrics
+
+    let viewModel: POSErrorViewModel
+
+    var body: some View {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
+            POSErrorMessageView(viewModel: viewModel)
+
+            if viewModel.hasButtons {
+                Spacer().frame(height: metrics.spacing.xxLarge)
+                POSErrorButtonsView(viewModel: viewModel)
+                    .posStatusButtonsWidth()
+            }
+        }
+    }
+}
+
+struct POSErrorMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.keyboardObserver) private var keyboard
 
     let viewModel: POSErrorViewModel
@@ -34,23 +52,27 @@ struct POSErrorView: View {
                 .font(.posBodyLargeRegular())
                 .padding([.leading, .trailing])
                 .fixedSize(horizontal: false, vertical: true)
-
-            if viewModel.primaryButton != nil || viewModel.secondaryButton != nil {
-                Spacer().frame(height: metrics.spacing.xxLarge)
-                VStack(spacing: metrics.spacing.medium) {
-                    if let primaryButtonViewModel = viewModel.primaryButton {
-                        POSErrorButton(viewModel: primaryButtonViewModel)
-                    }
-
-                    if let secondaryButtonViewModel = viewModel.secondaryButton {
-                        POSErrorButton(viewModel: secondaryButtonViewModel)
-                    }
-                }
-                .posStatusButtonsWidth()
-            }
         }
         .multilineTextAlignment(.center)
         .dynamicTypeSize(..<DynamicTypeSize.accessibility2)
+    }
+}
+
+struct POSErrorButtonsView: View {
+    @Environment(\.posMetrics) private var metrics
+
+    let viewModel: POSErrorViewModel
+
+    var body: some View {
+        VStack(spacing: metrics.spacing.medium) {
+            if let primaryButtonViewModel = viewModel.primaryButton {
+                POSErrorButton(viewModel: primaryButtonViewModel)
+            }
+
+            if let secondaryButtonViewModel = viewModel.secondaryButton {
+                POSErrorButton(viewModel: secondaryButtonViewModel)
+            }
+        }
     }
 }
 
@@ -88,6 +110,12 @@ struct POSErrorViewModel {
         default:
             self.imageAsset = nil
         }
+    }
+}
+
+extension POSErrorViewModel {
+    var hasButtons: Bool {
+        primaryButton != nil || secondaryButton != nil
     }
 }
 

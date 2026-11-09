@@ -294,7 +294,7 @@ private extension TotalsView {
     private var outlinedLayout: PaymentViewLayout {
         PaymentViewLayout(topPadding: metrics.padding.xxLarge,
                           bottomPadding: metrics.padding.xxLarge,
-                          sidePadding: metrics.padding.small)
+                          sidePadding: metrics.padding.none)
     }
 
     private var cardReaderViewLayout: PaymentViewLayout {
@@ -328,7 +328,8 @@ private extension TotalsView {
                     .processingPayment:
                 if totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                                 paymentState: displayPaymentState) {
-                    return primaryLayout
+                    // The reconnecting buttons carry the shared status button insets.
+                    return PaymentViewLayout(topPadding: nil, bottomPadding: metrics.padding.small, sidePadding: metrics.padding.none)
                 }
                 if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                           paymentState: displayPaymentState) {

@@ -47,7 +47,7 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
-            .dynamicWidthScaling(containerWidth: width)
+            .posStatusButtonsWidth()
 
             Spacer()
         }

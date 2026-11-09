@@ -1,27 +1,26 @@
 import SwiftUI
 
+enum POSStatusButtonsLayout {
+    /// One button width for every POS status, empty and error screen. Narrower containers (phone) get the full width.
+    static let maxWidth: CGFloat = 520
+}
+
 private struct POSStatusButtonsWidthModifier: ViewModifier {
     @Environment(\.posMetrics) private var metrics
-    @Environment(\.posLayoutScale) private var layoutScale
-
-    let regularWidth: CGFloat?
 
     func body(content: Content) -> some View {
-        if layoutScale == .compact {
-            content
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, metrics.padding.medium)
-        } else {
-            content
-                .frame(width: regularWidth)
-        }
+        content
+            .frame(maxWidth: .infinity)
+            .frame(maxWidth: POSStatusButtonsLayout.maxWidth)
+            .padding(.horizontal, metrics.padding.medium)
+            .frame(maxWidth: .infinity)
     }
 }
 
 extension View {
-    /// Width of the buttons on POS status, empty and error screens.
-    /// Compact layout: the buttons fill the width. Regular layout: `regularWidth`.
-    func posStatusButtonsWidth(regularWidth: CGFloat?) -> some View {
-        modifier(POSStatusButtonsWidthModifier(regularWidth: regularWidth))
+    /// Width of the buttons on POS status, empty and error screens: a centered column of
+    /// `POSStatusButtonsLayout.maxWidth`, full width when the container is narrower.
+    func posStatusButtonsWidth() -> some View {
+        modifier(POSStatusButtonsWidthModifier())
     }
 }

@@ -8,7 +8,6 @@ struct POSListErrorView: View {
     @Environment(\.posAnalytics) private var analytics
 
     private let error: PointOfSaleErrorState
-    @State private var buttonWidth: CGFloat? = nil
     private let viewModel: POSErrorViewModel
 
     @Environment(\.keyboardObserver) private var keyboard
@@ -34,13 +33,10 @@ struct POSListErrorView: View {
     var body: some View {
         ScrollableVStack {
             Spacer()
-            POSErrorView(viewModel: viewModel, buttonWidth: $buttonWidth)
+            POSErrorView(viewModel: viewModel)
             Spacer()
         }
         .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
-        .measureWidth { width in
-            buttonWidth = width / 2
-        }
         .onAppear {
             // Track error shown for splash screen errors (initial catalog sync)
             if error.errorType == .initialCatalogSyncError {

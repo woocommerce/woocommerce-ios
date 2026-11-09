@@ -6,8 +6,6 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
-    @State private var width: CGFloat = 0
-
     var body: some View {
         VStack(alignment: .center, spacing: metrics.spacing.none) {
             POSErrorXMark()
@@ -45,13 +43,10 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
                 }
             }
             .minimumScaleFactor(1)
-            .dynamicWidthScaling(containerWidth: width)
+            .posStatusButtonsWidth()
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .measureWidth({ containerWidth in
-            width = containerWidth
-        })
         .onAppear {
             isTitleFocused = true
         }

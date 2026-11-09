@@ -11,48 +11,43 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
-        GeometryReader { geometry in
-            HStack(alignment: .center) {
-                Spacer()
-                VStack(alignment: .center, spacing: metrics.spacing.none) {
-                    Spacer()
-                    POSErrorXMark()
-                    Spacer().frame(height: metrics.spacing.medium)
-                    VStack(alignment: .center, spacing: metrics.spacing.small) {
-                        Text(Localization.title)
-                            .foregroundStyle(Color.posOnSurface)
-                            .font(.posHeadingBold)
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
+            Spacer()
+            POSErrorXMark()
+            Spacer().frame(height: metrics.spacing.medium)
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
+                Text(Localization.title)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posHeadingBold)
 
-                        Text(attributedMessage)
-                            .padding([.leading, .trailing])
-                    }
-                    Spacer().frame(height: metrics.spacing.xxLarge)
-
-                    VStack(spacing: metrics.spacing.medium) {
-                        Button(Localization.editOrderTitle, action: {
-                            posModel.addMoreToCart()
-                        })
-                        .buttonStyle(POSFilledButtonStyle(size: .normal))
-
-                        Button(retryActionTitle, action: {
-                            analytics.track(event: .PointOfSale.itemRemovedFromCart(
-                                    sourceView: .error,
-                                    itemType: .coupon
-                                ))
-                            posModel.removeAllItemsFromCart(types: [.coupon])
-                            retryHandler()
-                        })
-                        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                    }
-                    .posStatusButtonsWidth(regularWidth: geometry.size.width / 2)
-                    .padding([.bottom], metrics.padding.medium)
-
-                    Spacer()
-                }
-                .multilineTextAlignment(.center)
-                Spacer()
+                Text(attributedMessage)
+                    .padding([.leading, .trailing])
             }
+            Spacer().frame(height: metrics.spacing.xxLarge)
+
+            VStack(spacing: metrics.spacing.medium) {
+                Button(Localization.editOrderTitle, action: {
+                    posModel.addMoreToCart()
+                })
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+
+                Button(retryActionTitle, action: {
+                    analytics.track(event: .PointOfSale.itemRemovedFromCart(
+                            sourceView: .error,
+                            itemType: .coupon
+                        ))
+                    posModel.removeAllItemsFromCart(types: [.coupon])
+                    retryHandler()
+                })
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            }
+            .posStatusButtonsWidth()
+            .padding([.bottom], metrics.padding.medium)
+
+            Spacer()
         }
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
         .onAppear {
             // Setting attributed string once in onAppear to prevent a SwiftUI crash
             // Building attributed HTML string within SwiftUI body causes never-ending redraw cycles

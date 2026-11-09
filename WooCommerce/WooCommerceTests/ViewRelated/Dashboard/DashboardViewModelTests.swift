@@ -591,6 +591,23 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_cards_enabled_in_background_are_reloaded_when_the_view_has_already_loaded() async throws {
+        // Given: the dashboard has been on screen for a store without orders, then the app is backgrounded
+        mockReloadingData(storeHasOrders: false)
+        let application = MockApplicationAdapter()
+        let viewModel = makeViewModel(application: application)
+        await viewModel.onViewAppear()
+        XCTAssertFalse(hasSyncedStats)
+        application.applicationState = .background
+
+        // When: the first order makes the analytics cards available
+        insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
+
+        // Then: they load right away, so the merchant doesn't come back to empty cards
+        await until { self.hasSyncedStats }
+    }
+
+    @MainActor
     func test_init_when_app_is_in_foreground_then_newly_enabled_cards_are_reloaded() async throws {
         // Given
         insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))

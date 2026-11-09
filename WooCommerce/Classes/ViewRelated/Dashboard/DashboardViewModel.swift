@@ -46,6 +46,9 @@ final class DashboardViewModel: ObservableObject {
     ///
     private var previousDashboardCards: [DashboardCard] = []
 
+    /// Set once the dashboard view has asked for its cards; a background launch alone never does.
+    private var hasViewRequestedCards = false
+
     /// Cards fetched from storage
     ///
     private var savedCards: [DashboardCard] = []
@@ -435,6 +438,7 @@ final class DashboardViewModel: ObservableObject {
 private extension DashboardViewModel {
     @MainActor
     func loadDashboardCardsFromStorage() async {
+        hasViewRequestedCards = true
         let storageCards = await withCheckedContinuation { continuation in
             stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
                 continuation.resume(returning: cards)
@@ -605,7 +609,10 @@ private extension DashboardViewModel {
 
                 // Background launches (BGAppRefresh, silent push) build this view model with no view;
                 // reloading here emits dashboard events that Looker counts as user activity.
-                guard newlyEnabledCards.isNotEmpty, application.applicationState != .background else { return }
+                guard newlyEnabledCards.isNotEmpty,
+                      hasViewRequestedCards || application.applicationState != .background else {
+                    return
+                }
                 Task { @MainActor in
                     await self.reloadCardsIfNeeded(newlyEnabledCards)
                 }

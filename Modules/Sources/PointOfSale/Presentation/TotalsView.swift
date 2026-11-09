@@ -57,71 +57,65 @@ struct TotalsView: View {
         HStack {
             switch posModel.orderState {
             case .idle, .syncing, .loaded:
-                VStack(alignment: .center) {
-                    Spacer()
+                VStack(spacing: 0) {
+                    VStack(alignment: .center) {
+                        Spacer()
 
-                    if shouldPrioritizePaymentViewOverHero {
-                        PaymentViewContent(
-                            paymentState: displayPaymentState,
-                            cardReaderViewLayout: cardReaderViewLayout,
-                            isShowingTotalsFields: isShowingTotalsFields,
-                            backgroundColor: backgroundColor,
-                            orderState: posModel.orderState,
-                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                            connectCardReaderAction: paymentModel.connectCardReader,
-                            cancelReconnectionAction: posModel.cancelReconnection
-                        )
-                    } else if useTapToPayHeroLayout {
-                        POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
-                                            isPayDisabled: isStartingPayment)
-                    } else if isShowingPaymentView {
-                        PaymentViewContent(
-                            paymentState: displayPaymentState,
-                            cardReaderViewLayout: cardReaderViewLayout,
-                            isShowingTotalsFields: isShowingTotalsFields,
-                            backgroundColor: backgroundColor,
-                            orderState: posModel.orderState,
-                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                            connectCardReaderAction: paymentModel.connectCardReader,
-                            cancelReconnectionAction: posModel.cancelReconnection
-                        )
-                    }
+                        if shouldPrioritizePaymentViewOverHero {
+                            PaymentViewContent(
+                                paymentState: displayPaymentState,
+                                cardReaderViewLayout: cardReaderViewLayout,
+                                isShowingTotalsFields: isShowingTotalsFields,
+                                backgroundColor: backgroundColor,
+                                orderState: posModel.orderState,
+                                cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+                                connectCardReaderAction: paymentModel.connectCardReader,
+                                cancelReconnectionAction: posModel.cancelReconnection
+                            )
+                        } else if useTapToPayHeroLayout {
+                            POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
+                                                isPayDisabled: isStartingPayment)
+                        } else if isShowingPaymentView {
+                            PaymentViewContent(
+                                paymentState: displayPaymentState,
+                                cardReaderViewLayout: cardReaderViewLayout,
+                                isShowingTotalsFields: isShowingTotalsFields,
+                                backgroundColor: backgroundColor,
+                                orderState: posModel.orderState,
+                                cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+                                connectCardReaderAction: paymentModel.connectCardReader,
+                                cancelReconnectionAction: posModel.cancelReconnection
+                            )
+                        }
 
-                    if (useTapToPayHeroLayout || isShowingPaymentView) && isShowingTotalsFields {
+                        if (useTapToPayHeroLayout || isShowingPaymentView) && isShowingTotalsFields {
+                            Spacer()
+                        }
+
+                        if isShowingTotalsFields {
+                            TotalsFieldsContent(
+                                orderState: posModel.orderState,
+                                paymentState: displayPaymentState,
+                                cart: posModel.cart,
+                                totalsFieldAnimation: totalsFieldAnimation
+                            )
+                            .opacity(shouldShowTotalsFields ? 1 : 0)
+                        }
+
                         Spacer()
                     }
+                    .scrollVerticallyIfNeeded()
+                    // A completed payment replaces the checkout content. Start the new screen at its top.
+                    .id(displayPaymentState.isSuccess)
 
-                    if isShowingTotalsFields {
-                        TotalsFieldsContent(
-                            orderState: posModel.orderState,
-                            paymentState: displayPaymentState,
-                            cart: posModel.cart,
-                            totalsFieldAnimation: totalsFieldAnimation
-                        )
-                        .opacity(shouldShowTotalsFields ? 1 : 0)
-                    }
-
-                    Spacer()
-
-                    switch bottomControlState {
-                    case .readerAndOtherMethods:
-                        readerAndOtherMethodsBottomStrip
-                    case .cashAndOtherMethods:
-                        cashAndOtherMethodsBottomStrip
-                    case .checkoutMethods(let methods):
-                        POSCheckoutPaymentButtonsRow(
-                            methods: methods,
-                            onSelect: handlePaymentMethodSelection
-                        )
-                    case .hidden:
-                        EmptyView()
-                    }
+                    // Outside the scroll view so the payment buttons stay on screen when the content above overflows.
+                    // The priority gives the buttons their full height first; otherwise the stack splits the height
+                    // with the scroll view and large text sizes truncate the button titles.
+                    bottomControls
+                        .layoutPriority(1)
                 }
-                .scrollVerticallyIfNeeded()
-                // A completed payment replaces the checkout content. Start the new screen at its top.
-                .id(displayPaymentState.isSuccess)
                 .animation(.default, value: isShowingPaymentView)
                 .animation(.default, value: useTapToPayHeroLayout)
                 .animation(.default, value: bottomControlState)
@@ -731,6 +725,23 @@ private extension TotalsView {
             return false
         }
         return true
+    }
+
+    @ViewBuilder
+    var bottomControls: some View {
+        switch bottomControlState {
+        case .readerAndOtherMethods:
+            readerAndOtherMethodsBottomStrip
+        case .cashAndOtherMethods:
+            cashAndOtherMethodsBottomStrip
+        case .checkoutMethods(let methods):
+            POSCheckoutPaymentButtonsRow(
+                methods: methods,
+                onSelect: handlePaymentMethodSelection
+            )
+        case .hidden:
+            EmptyView()
+        }
     }
 
     /// Cash + Other payment methods buttons shown below the primary card payment UI.

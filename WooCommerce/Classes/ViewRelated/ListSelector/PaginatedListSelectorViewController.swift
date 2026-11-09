@@ -63,9 +63,10 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     private let rowType = Cell.self
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .large,
-                                                                                                cellClass: Cell.self,
-                                                                                                separatorStyle: viewProperties.separatorStyle))
+    lazy var ghostTableViewController = GhostTableViewController(
+        options: GhostTableViewOptions(sectionHeaderVerticalSpace: viewProperties.loadingSectionHeaderVerticalSpace,
+                                       cellClass: Cell.self,
+                                       separatorStyle: viewProperties.separatorStyle))
 
     private lazy var tableView = UITableView(frame: .zero, style: viewProperties.tableViewStyle)
 

@@ -37,6 +37,7 @@ struct POSOrderDetailsView: View {
     /// Items last shown for a selected order. On a phone this screen keeps sliding away after its order
     /// is deselected, and the controller has no items for a `nil` selection.
     @State private var lastItemsState: POSOrderDetailsItemsState?
+    @State private var lastSelectedOrder: POSOrder?
 
     private var itemsState: POSOrderDetailsItemsState {
         let controller = orderListModel.ordersController
@@ -76,7 +77,7 @@ struct POSOrderDetailsView: View {
         // The `order` prop is captured at navigation time and goes stale once the controller
         // refreshes refund details. Prefer the controller's live `selectedOrder` so the view
         // re-renders when refunds are loaded or the order is refetched after a refund.
-        let order = orderListModel.ordersController.selectedOrder ?? self.order
+        let order = orderListModel.ordersController.selectedOrder ?? lastSelectedOrder ?? self.order
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: POSOrderListView.Localization.orderTitle(order.number),
@@ -196,6 +197,10 @@ struct POSOrderDetailsView: View {
         .onChange(of: orderListModel.ordersController.orderDetailsItemsState, initial: true) { _, newValue in
             guard orderListModel.ordersController.selectedOrder != nil else { return }
             lastItemsState = newValue
+        }
+        .onChange(of: orderListModel.ordersController.selectedOrder, initial: true) { _, newValue in
+            guard let newValue else { return }
+            lastSelectedOrder = newValue
         }
         .task {
             await orderListModel.ordersController.loadOrderRefunds()

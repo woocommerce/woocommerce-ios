@@ -1,0 +1,13 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/"
+    },
+    "response": {
+        "status": 200,
+        "body": "WooCommerce test store",
+        "headers": {
+            "Content-Type": "text/html"
+        }
+    }
+}

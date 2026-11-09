@@ -26,6 +26,10 @@ final class MockApplicationAdapter: ApplicationAdapter {
     ///
     var presentInAppMessages = [(title: String, subtitle: String?, message: String?)]()
 
+    /// Action handlers received via the `presentInAppNotification` method.
+    ///
+    var presentInAppActionHandlers = [() -> Void]()
+
     /// Notification Identifiers received via the `presentNotificationDetails` method.
     ///
     var presentDetailsNoteIDs = [Int64]()
@@ -41,6 +45,7 @@ final class MockApplicationAdapter: ApplicationAdapter {
     ///
     func presentInAppNotification(title: String, subtitle: String?, message: String?, actionTitle: String, actionHandler: @escaping () -> Void) {
         presentInAppMessages.append((title: title, subtitle: subtitle, message: message))
+        presentInAppActionHandlers.append(actionHandler)
     }
 
     /// Innocuous `displayNotificationDetails`

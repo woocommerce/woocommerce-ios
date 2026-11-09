@@ -214,7 +214,9 @@ private extension TopPerformersDashboardView {
         static let hideIconVerticalPadding: CGFloat = 8
         static let timestampInfoSpacing: CGFloat = 4
     }
+}
 
+extension TopPerformersDashboardView {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "topPerformersDashboardView.hideCard",

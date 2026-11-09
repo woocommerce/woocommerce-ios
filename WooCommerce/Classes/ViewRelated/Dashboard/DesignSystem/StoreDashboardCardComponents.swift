@@ -43,6 +43,68 @@ struct StoreDashboardCardHeader<Actions: View>: View {
     }
 }
 
+struct StoreDashboardCardFilterHeader<Option>: View {
+    let title: String
+    let selectedOptionTitle: String
+    let options: [Option]
+    let isDisabled: Bool
+    let optionTitle: (Option) -> String
+    let isSelected: (Option) -> Bool
+    let onSelect: (Option) -> Void
+
+    var body: some View {
+        HStack(spacing: StoreSpacing.s3) {
+            Text(title)
+            Text(selectedOptionTitle)
+            Spacer(minLength: StoreSpacing.s0)
+            Menu {
+                ForEach(options.indices, id: \.self) { index in
+                    let option = options[index]
+                    Button {
+                        onSelect(option)
+                    } label: {
+                        HStack(spacing: StoreSpacing.s3) {
+                            Text(optionTitle(option))
+                            Spacer()
+                            if isSelected(option) {
+                                StoreIcon.Check.solid.image(size: .small)
+                            }
+                        }
+                    }
+                }
+            } label: {
+                StoreIcon.BarsFilter.regular.image(size: .largeIncreased)
+                    .foregroundStyle(.storeOnSurface)
+                    .frame(minWidth: StoreSize.minimumTapTarget,
+                           minHeight: StoreSize.minimumTapTarget,
+                           alignment: .trailing)
+                    .contentShape(.rect)
+            }
+            .disabled(isDisabled)
+            .accessibilityLabel(Localization.filterOptions)
+        }
+        .storeTextStyle(.bodyMedium)
+        .foregroundStyle(.storeOnSurface)
+        .padding(.horizontal, StorePadding.p5)
+    }
+}
+
+struct StoreDashboardOutlinedContent<Content: View>: View {
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        content()
+            .padding(StorePadding.p5)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.storeSurface)
+            .clipShape(.rect(cornerRadius: StoreRadius.medium))
+            .overlay {
+                RoundedRectangle(cornerRadius: StoreRadius.medium)
+                    .stroke(Color.storeOutlineVariant, lineWidth: StoreStrokeWidth.regular)
+            }
+    }
+}
+
 struct StoreDashboardCardOverflowMenu<Actions: View>: View {
     let isDisabled: Bool
     @ViewBuilder let actions: () -> Actions
@@ -96,6 +158,7 @@ struct StoreDashboardCardFooterAction: View {
 struct StoreDashboardDateRangeHeader: View {
     let timeRange: StatsTimeRangeV4
     let dateText: String
+    let customTitle: String
     let isDisabled: Bool
     let accessibilityPrefix: String
     let onSelect: (StatsTimeRangeV4) -> Void
@@ -103,7 +166,7 @@ struct StoreDashboardDateRangeHeader: View {
 
     var body: some View {
         HStack(spacing: StoreSpacing.s3) {
-            Text(timeRange.isCustomTimeRange ? Localization.custom : timeRange.tabTitle)
+            Text(timeRange.isCustomTimeRange ? customTitle : timeRange.tabTitle)
                 .storeTextStyle(.bodyMedium)
                 .foregroundStyle(.storeOnSurface)
                 .accessibilityIdentifier("\(accessibilityPrefix)-\(timeRange.menuAccessibilityIdentifier)")
@@ -175,9 +238,9 @@ struct StoreDashboardDateRangeHeader: View {
 struct StoreDashboardTimestamp: View {
     @Environment(\.colorScheme) private var colorScheme
 
-    let lastUpdatedTimestamp: String
-    let showsScheduledUpdatesDelay: Bool
+    let text: String
     let showsInfoButton: Bool
+    let infoAccessibilityLabel: String
     let onInfoTapped: () -> Void
 
     var body: some View {
@@ -188,7 +251,7 @@ struct StoreDashboardTimestamp: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(text)
-                .accessibilityHint(Localization.scheduledUpdatesInfoAccessibilityLabel)
+                .accessibilityHint(infoAccessibilityLabel)
             } else {
                 content
             }
@@ -211,43 +274,16 @@ struct StoreDashboardTimestamp: View {
         .frame(minHeight: StoreSize.minimumTapTarget)
         .contentShape(.rect)
     }
-
-    private var text: String {
-        showsScheduledUpdatesDelay ?
-        Localization.scheduledUpdatesDelayText :
-        Localization.lastUpdatedText(time: lastUpdatedTimestamp)
-    }
 }
 
 private enum Localization {
     static let moreOptions = NSLocalizedString("More options", comment: "Accessibility label for an overflow menu.")
-    static let custom = NSLocalizedString(
-        "storeDashboardDateRangeHeader.custom",
-        value: "Custom",
-        comment: "Title of the custom time range on a Dashboard card"
+    static let filterOptions = NSLocalizedString(
+        "Filter",
+        comment: "Accessibility label for the filter menu on a Dashboard card."
     )
     static let dateRange = NSLocalizedString(
-        "storeDashboardDateRangeHeader.dateRange",
-        value: "Date Range",
-        comment: "Accessibility label for the date range selection menu on a Dashboard card"
+        "Date Range",
+        comment: "Accessibility label for the date range selection menu on a Dashboard card."
     )
-    static let scheduledUpdatesDelayText = NSLocalizedString(
-        "storeDashboardTimestamp.scheduledUpdatesDelayText",
-        value: "Stats may be up to 12 hours delayed",
-        comment: "Text shown on a Dashboard card instead of the last updated timestamp when analytics updates are scheduled"
-    )
-    static let scheduledUpdatesInfoAccessibilityLabel = NSLocalizedString(
-        "storeDashboardTimestamp.scheduledUpdatesInfoAccessibilityLabel",
-        value: "Analytics update details",
-        comment: "Accessibility hint for analytics update details on a Dashboard card"
-    )
-
-    static func lastUpdatedText(time: String) -> String {
-        let format = NSLocalizedString(
-            "storeDashboardTimestamp.lastUpdatedText",
-            value: "Last Updated: %1$@",
-            comment: "Time when a Dashboard card was last updated"
-        )
-        return String.localizedStringWithFormat(format, time)
-    }
 }

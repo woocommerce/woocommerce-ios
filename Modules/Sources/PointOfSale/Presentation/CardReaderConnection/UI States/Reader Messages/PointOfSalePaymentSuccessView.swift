@@ -95,10 +95,8 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private var successView: some View {
-        ZStack {
+        POSStatusScreenLayout {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
-                Spacer()
-
                 POSSuccessIcon()
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                     .scaleEffect(isViewLoaded ? 1 : 0)
@@ -124,7 +122,6 @@ struct PointOfSalePaymentSuccessView: View {
                             .opacity(isViewLoaded ? 1 : 0)
                     }
                 }
-                .padding(.horizontal, metrics.padding.medium)
 
                 if let customerEmail, customerEmail.isNotEmpty {
                     Spacer().frame(height: metrics.spacing.small)
@@ -132,25 +129,19 @@ struct PointOfSalePaymentSuccessView: View {
                     Text(String(format: Localization.receiptSentFormat, customerEmail))
                         .font(.posBodyLargeRegular())
                         .foregroundStyle(Color.posOnSurface)
-                        .padding(.horizontal, metrics.padding.medium)
                         .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                         .opacity(isViewLoaded ? 1 : 0)
                 }
-
-                Spacer().frame(height: metrics.spacing.xxLarge)
-
-                PaymentsActionButtons(successAction: successAction,
-                                      showsPrintReceipt: posModel.receiptPrinter != nil,
-                                      printButtonState: printButtonState,
-                                      printReceiptAction: handlePrintReceiptTap)
-                    .posStatusButtonsWidth()
-                    .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-                    .opacity(isViewLoaded ? 1 : 0)
-
-                Spacer()
             }
-            .multilineTextAlignment(.center)
+        } buttons: {
+            PaymentsActionButtons(successAction: successAction,
+                                  showsPrintReceipt: posModel.receiptPrinter != nil,
+                                  printButtonState: printButtonState,
+                                  printReceiptAction: handlePrintReceiptTap)
+                .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
+                .opacity(isViewLoaded ? 1 : 0)
         }
+        .multilineTextAlignment(.center)
     }
 }
 

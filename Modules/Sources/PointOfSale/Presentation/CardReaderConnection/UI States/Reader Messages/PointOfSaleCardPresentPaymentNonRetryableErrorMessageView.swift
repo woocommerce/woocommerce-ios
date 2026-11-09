@@ -9,45 +9,38 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     @State private var width: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .center, spacing: metrics.spacing.none) {
-            Spacer()
+        POSStatusScreenLayout {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
+                POSErrorXMark()
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-            POSErrorXMark()
-                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
-
-            Spacer()
-                .frame(height: metrics.spacing.large)
-
-            VStack(alignment: .center, spacing: metrics.spacing.small) {
-                Text(viewModel.title)
-                    .foregroundStyle(Color.posOnSurface)
-                    .font(.posHeadingBold)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityFocused($isTitleFocused)
-                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+                Spacer()
+                    .frame(height: metrics.spacing.large)
 
                 VStack(alignment: .center, spacing: metrics.spacing.small) {
-                    Text(viewModel.message)
-                    Text(viewModel.nextStep)
+                    Text(viewModel.title)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posHeadingBold)
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($isTitleFocused)
+                        .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+
+                    VStack(alignment: .center, spacing: metrics.spacing.small) {
+                        Text(viewModel.message)
+                        Text(viewModel.nextStep)
+                    }
+                    .font(.posBodyLargeRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
                 }
-                .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurface)
-                .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                .dynamicWidthScaling(containerWidth: width)
             }
-            .dynamicWidthScaling(containerWidth: width)
-
-            Spacer()
-                .frame(height: metrics.spacing.xxLarge)
-
+        } buttons: {
             Button(viewModel.tryAnotherPaymentMethodButtonViewModel.title,
                    action: viewModel.tryAnotherPaymentMethodButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .posStatusButtonsWidth()
-
-            Spacer()
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .measureWidth({ containerWidth in
             width = containerWidth
         })

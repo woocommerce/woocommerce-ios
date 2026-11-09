@@ -584,7 +584,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         // When: the view model is built by a background launch (no view ever appears)
         let viewModel = makeViewModel(application: application)
-        await until { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
+        try await assertEventually { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
 
         // Then: no stats sync, so no `dashboard_main_stats_loaded` is tracked on a day the app was never opened
         try await assertNoStatsSync()
@@ -604,7 +604,7 @@ final class DashboardViewModelTests: XCTestCase {
         insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
 
         // Then: they load right away, so the merchant doesn't come back to empty cards
-        await until { self.hasSyncedStats }
+        try await assertEventually { hasSyncedStats }
     }
 
     @MainActor
@@ -616,10 +616,10 @@ final class DashboardViewModelTests: XCTestCase {
 
         // When
         let viewModel = makeViewModel(application: application)
-        await until { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
+        try await assertEventually { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
 
         // Then: the performance card syncs its stats on the first emission
-        await until { self.hasSyncedStats }
+        try await assertEventually { hasSyncedStats }
     }
 
     @MainActor
@@ -636,6 +636,16 @@ final class DashboardViewModelTests: XCTestCase {
 
     private var hasSyncedStats: Bool {
         stores.receivedActions.contains { $0 is StatsActionV4 }
+    }
+
+    // TestKit's `until` leaves the main actor, which strict concurrency flags; this wait stays on it.
+    @MainActor
+    private func assertEventually(file: StaticString = #filePath, line: UInt = #line, _ condition: () -> Bool) async throws {
+        let deadline = Date().addingTimeInterval(2)
+        while !condition(), Date() < deadline {
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertTrue(condition(), file: file, line: line)
     }
 
     // A reload starts its stats sync within a few main-actor hops, so a short wait catches it.

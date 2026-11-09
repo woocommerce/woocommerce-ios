@@ -110,9 +110,6 @@ struct TotalsView: View {
                     // A completed payment replaces the checkout content. Start the new screen at its top.
                     .id(displayPaymentState.isSuccess)
 
-                    // Outside the scroll view so the payment buttons stay on screen when the content above overflows.
-                    // The priority gives the buttons their full height first; otherwise the stack splits the height
-                    // with the scroll view and large text sizes truncate the button titles.
                     bottomControls
                         .layoutPriority(1)
                 }

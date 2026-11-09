@@ -40,6 +40,14 @@ struct PointOfSaleDashboardViewHelper {
     static func shouldAutoOpenCartOnScan(isPhoneLayout: Bool, orderStage: PointOfSaleOrderStage) -> Bool {
         isPhoneLayout && orderStage == .building
     }
+
+    /// Whether the compact-layout cart sheet should close after a cart change.
+    ///
+    /// On phone the products sit behind the cart sheet, so an empty cart left open would make the
+    /// merchant close it by hand before adding anything. The regular layout keeps its empty cart pane.
+    static func shouldDismissCompactCartSheet(isPhoneLayout: Bool, cartIsEmpty: Bool) -> Bool {
+        isPhoneLayout && cartIsEmpty
+    }
 }
 
 extension PointOfSaleDashboardView.ViewState {

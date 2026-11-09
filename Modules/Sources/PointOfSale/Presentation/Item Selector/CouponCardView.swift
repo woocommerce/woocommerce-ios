@@ -50,6 +50,7 @@ struct CouponCardView: View {
         .background(cardBackgroundColor)
         .posItemCardBorderStyles()
         .accessibilityValue(accessibilityValue)
+        .accessibilityHint(accessibilityHint)
     }
 }
 
@@ -68,6 +69,12 @@ private extension CouponCardView {
             value: "Applied",
             comment: "Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart."
         )
+
+        static let appliedAccessibilityHint = NSLocalizedString(
+            "couponCardView.appliedAccessibilityHint",
+            value: "Removes the coupon from the cart",
+            comment: "Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart."
+        )
     }
 
     var imageState: POSCouponImageState {
@@ -79,6 +86,10 @@ private extension CouponCardView {
 
     var accessibilityValue: String {
         imageState == .applied ? Localization.appliedAccessibilityValue : ""
+    }
+
+    var accessibilityHint: String {
+        imageState == .applied ? Localization.appliedAccessibilityHint : ""
     }
 
     func formattedExpirationText(date: Date) -> String {

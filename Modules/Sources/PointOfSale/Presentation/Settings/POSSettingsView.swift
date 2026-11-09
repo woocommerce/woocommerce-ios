@@ -81,7 +81,7 @@ extension POSSettingsView {
                 }
                 .padding(.horizontal, metrics.padding.medium)
             }
-            .background(Color.posSurfaceBright)
+            .background(Color.posSurfaceBright.ignoresSafeArea())
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("pos-settings-view")
         }

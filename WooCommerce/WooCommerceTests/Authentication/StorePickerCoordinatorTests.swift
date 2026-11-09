@@ -93,6 +93,23 @@ final class StorePickerCoordinatorTests: XCTestCase {
     }
 
     @MainActor
+    func test_contact_support_when_unknown_store_error_is_presented_then_shows_ai_support_chat() throws {
+        // Given
+        let storePicker = UIViewController()
+        navigationController.setViewControllers([storePicker], animated: false)
+        let errorController = StorePickerErrorHostingController.createWithActions(presenting: storePicker)
+        storePicker.present(errorController, animated: false)
+        waitUntil { storePicker.presentedViewController === errorController }
+
+        // When
+        errorController.rootView.contactSupportAction()
+
+        // Then
+        waitUntil { self.navigationController.topViewController is SupportChatHostingController }
+        XCTAssertNil(storePicker.presentedViewController)
+    }
+
+    @MainActor
     func test_requirement_failure_when_picker_configuration_changes_then_login_and_listStores_track_after_presentation() throws {
         for (configuration, expectedDetection) in [(StorePickerConfiguration.login, true), (.listStores, true),
                                                    (.standard, false), (.switchingStores, false)] {

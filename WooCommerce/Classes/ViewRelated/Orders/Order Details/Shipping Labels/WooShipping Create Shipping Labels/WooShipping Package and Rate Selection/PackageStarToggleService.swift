@@ -17,6 +17,7 @@ final class PackageStarToggleService {
         self.analytics = analytics
     }
 
+    @MainActor
     func toggle(packageID: String,
                 carrierID: String,
                 isStarred: Bool,
@@ -24,7 +25,7 @@ final class PackageStarToggleService {
         let action: WooShippingAction
         if isStarred {
             let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
-            action = .createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { [weak self] result in
+            let handleResult: @MainActor @Sendable (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void = { [weak self] result in
                 guard let self else { return }
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error starring package: \(error)")
@@ -40,11 +41,11 @@ final class PackageStarToggleService {
                     analytics.track(event: .WooShipping.packageSelectionStep(state: .savingSuccess))
                 }
             }
+            action = .createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { result in
+                Task { @MainActor in handleResult(result) }
+            }
         } else {
-            action = .deletePackage(siteID: siteID,
-                                    packageID: packageID,
-                                    packageType: .predefined,
-                                    completion: { [weak self] result in
+            let handleResult: @MainActor @Sendable (Result<WooShippingCreatePackageResponse, Error>) -> Void = { [weak self] result in
                 guard let self else { return }
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error unstarring package: \(error)")
@@ -59,6 +60,12 @@ final class PackageStarToggleService {
                 } else {
                     analytics.track(event: .WooShipping.packageSelectionStep(state: .removingSuccess))
                 }
+            }
+            action = .deletePackage(siteID: siteID,
+                                    packageID: packageID,
+                                    packageType: .predefined,
+                                    completion: { result in
+                Task { @MainActor in handleResult(result) }
             })
         }
         stores.dispatch(action)

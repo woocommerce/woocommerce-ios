@@ -4,7 +4,7 @@ import Networking
 public enum ShippingLabelAction: Action {
     /// Syncs shipping labels for a given order.
     ///
-    case synchronizeShippingLabels(siteID: Int64, orderID: Int64, completion: (Result<[ShippingLabel], Error>) -> Void)
+    case synchronizeShippingLabels(siteID: Int64, orderID: Int64, completion: @Sendable (Result<[ShippingLabel], Error>) -> Void)
 
     /// Generates a shipping label document for printing.
     ///
@@ -16,7 +16,7 @@ public enum ShippingLabelAction: Action {
     /// Requests a refund for a shipping label.
     ///
     case refundShippingLabel(shippingLabel: ShippingLabel,
-                             completion: (Result<ShippingLabelRefund, Error>) -> Void)
+                             completion: @Sendable (Result<ShippingLabelRefund, Error>) -> Void)
 
     /// Loads the settings for a shipping label.
     ///
@@ -58,13 +58,13 @@ public enum ShippingLabelAction: Action {
     /// Loads account-level shipping label settings for a store.
     ///
     case synchronizeShippingLabelAccountSettings(siteID: Int64,
-                                                 completion: (Result<ShippingLabelAccountSettings, Error>) -> Void)
+                                                 completion: @Sendable (Result<ShippingLabelAccountSettings, Error>) -> Void)
 
     /// Updates account-level shipping label settings for a store.
     ///
     case updateShippingLabelAccountSettings(siteID: Int64,
                                             settings: ShippingLabelAccountSettings,
-                                            completion: (Result<Bool, Error>) -> Void)
+                                            completion: @Sendable (Result<Bool, Error>) -> Void)
 
     /// Purchases a shipping label
     ///
@@ -74,7 +74,7 @@ public enum ShippingLabelAction: Action {
                                destinationAddress: ShippingLabelAddress,
                                packages: [ShippingLabelPackagePurchase],
                                emailCustomerReceipt: Bool,
-                               completion: (Result<[ShippingLabel], Error>) -> Void,
+                               completion: @Sendable (Result<[ShippingLabel], Error>) -> Void,
                                backendProcessingDelay: TimeInterval = 2.0,
                                pollingDelay: TimeInterval = 1.0,
                                pollingMaximumRetries: Int64 = 3)

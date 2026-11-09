@@ -5,24 +5,22 @@ import WordPressShared
 @testable import Networking
 @testable import WooCommerce
 
-// WOOMOB-4469: Disabled because the alert tests pass or fail depending on test order.
-// Re-enable after fixing; `setUp` does not retain the window it creates.
 @MainActor
 final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     private let testURL = "https://test.com"
     private var stores: MockStoresManager!
     private var navigationController: UINavigationController!
+    private var window: UIWindow!
 
     /// Sample Application Password
     ///
     private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
 
     override func setUp() async throws {
-        try XCTSkipIf(true, "WOOMOB-4469")
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         navigationController = UINavigationController()
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
+        window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = UIViewController()
         window.makeKeyAndVisible()
         window.rootViewController = navigationController
@@ -32,6 +30,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     override func tearDown() async throws {
         stores = nil
         navigationController = nil
+        window = nil
         try await super.tearDown()
     }
 
@@ -206,6 +205,23 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertEqual(fixture.password.generationCallCount, 1)
         XCTAssertEqual(fixture.role.syncEligibilityCallCount, 1)
         XCTAssertEqual(fixture.provider.properties(for: WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue)?["result"] as? String, "success")
+    }
+
+    @MainActor
+    func test_checkEligibility_when_site_rejects_saved_credentials_then_shows_unauthorized_alert_without_retry() throws {
+        // Given
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: ApplicationPasswordUseCaseError.siteCredentialsRejected)
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     previousViewController: nil)
+
+        // When
+        checker.checkEligibility(for: testURL, from: navigationController) {}
+        waitUntil { self.navigationController.presentedViewController != nil }
+
+        // Then
+        let alert = try XCTUnwrap(navigationController.presentedViewController as? UIAlertController)
+        XCTAssertEqual(alert.actions.count, 2)
+        XCTAssertEqual(useCase.generationCallCount, 1)
     }
 
     func test_application_password_disabled_error_is_displayed_when_application_password_is_disabled() {

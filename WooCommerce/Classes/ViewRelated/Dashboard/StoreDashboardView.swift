@@ -122,8 +122,8 @@ struct StoreDashboardView: View {
         .sheet(isPresented: $viewModel.showingTapToPayAwarenessMoment) {
             TapToPayAwarenessMomentView()
         }
-        .sheet(isPresented: $viewModel.showingAnalyticsImportUpdateModeInfo) {
-            AnalyticsUpdateModeBottomSheet(viewModel: viewModel.makeAnalyticsUpdateModeBottomSheetViewModel())
+        .storeSheet(isPresented: $viewModel.showingAnalyticsImportUpdateModeInfo, sizing: .fitContent) {
+            StoreAnalyticsUpdateModeSheet(viewModel: viewModel.makeAnalyticsUpdateModeBottomSheetViewModel())
         }
         .onAppear(perform: handleAppearance)
     }
@@ -173,14 +173,14 @@ private extension StoreDashboardView {
     func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.cardSpacing) {
             ForEach(Array(items.enumerated()), id: \.element.hashValue) { _, card in
-                legacyCard(for: card)
+                dashboardCard(for: card)
             }
         }
         .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder
-    func legacyCard(for card: DashboardCard) -> some View {
+    func dashboardCard(for card: DashboardCard) -> some View {
         switch card.type {
         case .onboarding:
             StoreOnboardingView(
@@ -195,18 +195,20 @@ private extension StoreDashboardView {
                 createCampaignTapped: actions.createBlazeCampaignTapped
             )
         case .performance:
-            StorePerformanceView(
+            StorePerformanceDashboardCard(
                 viewModel: viewModel.storePerformanceViewModel,
                 onCustomRangeRedactedViewTap: { actions.customRangeRedactedViewTapped?() },
                 onViewAllAnalytics: { actions.viewAllAnalyticsTapped?($0, $1, $2) },
                 onAnalyticsImportUpdateModeInfoTapped: viewModel.showAnalyticsImportUpdateModeInfo
             )
+            .padding(.horizontal, StorePadding.p5)
         case .topPerformers:
-            TopPerformersDashboardView(
+            StoreTopPerformersDashboardCard(
                 viewModel: viewModel.topPerformersViewModel,
                 onViewAllAnalytics: { actions.viewAllAnalyticsTapped?($0, $1, $2) },
                 onAnalyticsImportUpdateModeInfoTapped: viewModel.showAnalyticsImportUpdateModeInfo
             )
+            .padding(.horizontal, StorePadding.p5)
         case .inbox:
             InboxDashboardCard(
                 viewModel: viewModel.inboxViewModel,
@@ -219,19 +221,22 @@ private extension StoreDashboardView {
                 onViewReviewDetail: { actions.reviewDetailTapped?($0) }
             )
         case .coupons:
-            MostActiveCouponsCard(
+            StoreMostActiveCouponsCard(
                 viewModel: viewModel.mostActiveCouponsViewModel,
                 onViewAllCoupons: { actions.viewAllCouponsTapped?() },
                 onViewCouponDetail: { actions.couponDetailTapped?($0) }
             )
+            .padding(.horizontal, StorePadding.p5)
         case .stock:
-            ProductStockDashboardCard(viewModel: viewModel.productStockCardViewModel)
+            StoreProductStockDashboardCard(viewModel: viewModel.productStockCardViewModel)
+                .padding(.horizontal, StorePadding.p5)
         case .lastOrders:
-            LastOrdersDashboardCard(
+            StoreLastOrdersDashboardCard(
                 viewModel: viewModel.lastOrdersCardViewModel,
                 onViewAllOrders: { actions.viewAllOrdersTapped?() },
                 onViewOrderDetail: { actions.orderDetailTapped?($0) }
             )
+            .padding(.horizontal, StorePadding.p5)
         case .googleAds:
             GoogleAdsDashboardCard(
                 viewModel: viewModel.googleAdsDashboardCardViewModel,
@@ -255,8 +260,8 @@ private extension StoreDashboardView {
     @ViewBuilder
     var aiAssistantCard: some View {
         if let currentSite {
-            AIAssistantDashboardCard(site: currentSite)
-                .padding(.horizontal, LegacyLayout.padding)
+            StoreAIAssistantDashboardCard(site: currentSite)
+                .padding(.horizontal, StorePadding.p5)
         }
     }
 

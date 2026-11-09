@@ -75,7 +75,7 @@ struct MockAppSettingsActionHandler: MockActionHandler {
     }
 
     func loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {
-        onCompletion(.success(true))
+        onCompletion(.success(false))
     }
 
     func setInstallationDateIfNecessary(date: Date, onCompletion: (Result<Bool, Error>) -> Void) {

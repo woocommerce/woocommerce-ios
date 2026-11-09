@@ -25,7 +25,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
     private let connectivityObserver: ConnectivityObserver
 
-    /// Phone POS opens in the remaining POS countries together with Tap to Pay there (WOOMOB-4521).
+    /// NL, IE, FI, LU, NZ and SG stay iPad only until Tap to Pay launches there in 26.2 (WOOMOB-4521).
     static let phoneSupportedCountries: [CountryCode] = [.GB, .US, .PR, .CA, .AU]
 
     init(site: Site,
@@ -46,6 +46,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the initial visibility of the POS tab without dependence on network requests.
     func checkInitialVisibility() -> Bool {
+        if let shouldShowPOS = ProcessConfiguration.shouldShowPOS {
+            return shouldShowPOS
+        }
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }
@@ -58,6 +61,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         for siteID: Int64,
         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()
     ) -> Bool {
+        if let shouldShowPOS = ProcessConfiguration.shouldShowPOS {
+            return shouldShowPOS
+        }
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }
@@ -66,6 +72,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
+        if let shouldShowPOS = ProcessConfiguration.shouldShowPOS {
+            return shouldShowPOS
+        }
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }

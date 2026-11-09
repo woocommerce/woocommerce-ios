@@ -2636,6 +2636,214 @@ final class PushNotificationsManagerTests: XCTestCase {
         )
     }
 
+    func test_handleUserResponseToNotification_when_app_is_inactive_and_storeStock_push_then_resets_storeStock_count_and_clears_badge() async throws {
+        // Given
+        let siteID: Int64 = 606
+        application.applicationState = .inactive
+        application.applicationIconBadgeNumber = AppIconBadgeNumber.hasUnreadPushNotifications
+        storesManager.sessionManager.setStoreId(siteID)
+        var resetCalls: [(siteID: Int64, type: Note.Kind)] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, type, onCompletion):
+                resetCalls.append((siteID, type))
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: siteID)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertEqual(resetCalls.count, 1)
+        XCTAssertEqual(resetCalls.first?.siteID, siteID)
+        XCTAssertEqual(resetCalls.first?.type, .storeStock)
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeOnly)
+    }
+
+    func test_handleUserResponseToNotification_when_storeStock_push_is_from_another_site_then_reloads_badge_for_current_site() async throws {
+        // Given
+        let currentSiteID: Int64 = 100
+        let pushSiteID: Int64 = 606
+        application.applicationState = .inactive
+        storesManager.sessionManager.setStoreId(currentSiteID)
+        var resetSiteIDs: [Int64] = []
+        var loadSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, _, onCompletion):
+                resetSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(siteID, _, onCompletion):
+                loadSiteIDs.append(siteID)
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertEqual(resetSiteIDs, [pushSiteID])
+        XCTAssertEqual(loadSiteIDs, [currentSiteID])
+    }
+
+    func test_handleUserResponseToNotification_when_site_credential_session_and_storeStock_push_then_resets_count_for_placeholder_site() async throws {
+        // Given
+        let pushSiteID: Int64 = 606
+        application.applicationState = .inactive
+        storesManager.sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        var resetSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, _, onCompletion):
+                resetSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertEqual(resetSiteIDs, [WooConstants.placeholderStoreID])
+    }
+
+    func test_handleRemoteNotificationInTheBackground_when_site_credential_session_and_storeStock_push_then_increments_count_for_placeholder_site() async throws {
+        // Given
+        let pushSiteID: Int64 = 606
+        application.applicationState = .background
+        storesManager.sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        var incrementSiteIDs: [Int64] = []
+        var loadSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(siteID, _, _, onCompletion):
+                incrementSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(siteID, _, onCompletion):
+                loadSiteIDs.append(siteID)
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(incrementSiteIDs, [WooConstants.placeholderStoreID])
+        XCTAssertEqual(loadSiteIDs, [WooConstants.placeholderStoreID])
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+    }
+
+    func test_handleRemoteNotificationInTheBackground_when_wpcom_session_and_storeStock_push_then_increments_count_for_push_site() async throws {
+        // Given
+        let pushSiteID: Int64 = 606
+        application.applicationState = .background
+        storesManager.sessionManager.setStoreId(pushSiteID)
+        var incrementSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(siteID, _, _, onCompletion):
+                incrementSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(incrementSiteIDs, [pushSiteID])
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+    }
+
+    func test_handleNotificationInTheForeground_when_storeStock_in_app_notice_is_tapped_then_resets_storeStock_count() async throws {
+        // Given
+        let siteID: Int64 = 606
+        application.applicationState = .active
+        var resetCalls: [(siteID: Int64, type: Note.Kind)] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, type, onCompletion):
+                resetCalls.append((siteID, type))
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: siteID)
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+        let tapInAppNotice = try XCTUnwrap(application.presentInAppActionHandlers.first)
+
+        // When
+        tapInAppNotice()
+
+        // Then
+        XCTAssertEqual(resetCalls.count, 1)
+        XCTAssertEqual(resetCalls.first?.siteID, siteID)
+        XCTAssertEqual(resetCalls.first?.type, .storeStock)
+    }
+
+    func test_handleUserResponseToNotification_when_app_is_inactive_and_storeOrder_push_then_does_not_reset_count() async throws {
+        // Given
+        application.applicationState = .inactive
+        var resetCalls: [(siteID: Int64, type: Note.Kind)] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, type, onCompletion):
+                resetCalls.append((siteID, type))
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: 606)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertTrue(resetCalls.isEmpty)
+    }
+
     func test_registerDeviceToken_when_eligibility_unknown_then_retries_eligibility_check() async {
         // Given — eligibility check does not complete during init
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)

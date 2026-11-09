@@ -21,6 +21,7 @@ final class SiteCredentialLoginHostingViewControllerTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_it_tracks_login_jetpack_site_credential_screen_viewed_when_view_loads() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -34,6 +35,7 @@ final class SiteCredentialLoginHostingViewControllerTests: XCTestCase {
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_screen_viewed" }))
     }
 
+    @MainActor
     func test_it_tracks_login_jetpack_site_credential_screen_dismissed_when_view_is_dismissed() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

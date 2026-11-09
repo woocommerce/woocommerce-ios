@@ -62,9 +62,9 @@ one store instead.
 The runner refuses destructive flows against the shared store. Run them with
 `--store lab`.
 
-`push_no_jetpack.yaml` logs in to the site without Jetpack (`MAESTRO_WOO_NO_JETPACK_*`)
-instead. Its setup connects that site to WordPress.com, so before each attempt the runner
-removes the connection again over SSH.
+`no_jetpack.yaml` and `push_no_jetpack.yaml` log in to the site without Jetpack
+(`MAESTRO_WOO_NO_JETPACK_*`) instead. They install Jetpack or connect that site to
+WordPress.com, so before each attempt the runner removes both again over SSH.
 
 ## Provisioning a lab store
 

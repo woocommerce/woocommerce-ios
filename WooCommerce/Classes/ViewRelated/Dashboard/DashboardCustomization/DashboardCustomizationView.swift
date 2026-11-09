@@ -61,6 +61,11 @@ extension DashboardCustomizationView {
             value: "Unavailable",
             comment: "Text on unavailable dashboard card on the Customize Dashboard screen"
         )
+        static let dismissAccessibilityLabel = NSLocalizedString(
+            "storeNoticeBanner.dismiss.accessibilityLabel",
+            value: "Dismiss",
+            comment: "Accessibility label for dismissing a view."
+        )
     }
 }
 

@@ -60,6 +60,7 @@ struct StoreDashboardCustomizationView: View {
                 closeButtonLabel: {
                     StoreIcon.Xmark.regular.image(size: .largeIncreased)
                         .foregroundStyle(.storeOnSurface)
+                        .accessibilityLabel(Localization.dismissAccessibilityLabel)
                 }
             )
         }

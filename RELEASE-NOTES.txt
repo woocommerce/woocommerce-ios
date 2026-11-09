@@ -11,6 +11,7 @@
 - [*] POS: On iPhone, tapping a selected coupon in the coupon list now removes it from the cart. [https://github.com/woocommerce/woocommerce-ios/pull/18270]
 - [*] POS: On iPhone, Exit POS is now the last item in the menu. [https://github.com/woocommerce/woocommerce-ios/pull/18268]
 - [*] Help & Support: Troubleshooting now checks your payment setup, so you can find and fix card payment problems faster. [https://github.com/woocommerce/woocommerce-ios/pull/18229]
+- [*] POS: On iPhone, settings, orders and checkout now slide between screens with the standard push animation. [https://github.com/woocommerce/woocommerce-ios/pull/18272]
 - [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]
 - [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
 - [*] Products: Preview signs you in to your store when possible, works after logging in with your store username and password, and no longer shows "Page not found" on stores connected without the Jetpack plugin. [https://github.com/woocommerce/woocommerce-ios/pull/18238]

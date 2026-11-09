@@ -51,13 +51,13 @@ public class BottomSheetViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    /// Presents the bottom sheet given an optional anchor and arrow directions for the popover on iPad.
-    /// If no anchors are provided, on iPad it will present a form sheet.
+    /// Presents the bottom sheet given an optional anchor and arrow directions for a regular-width popover.
+    /// If no anchors are provided, a regular-width window presents a form sheet.
     /// - Parameters:
     ///   - presenting: the view controller that presents the bottom sheet.
-    ///   - sourceView: optional anchor view for the popover on iPad.
-    ///   - sourceBarButtonItem: optional anchor bar button item for the popover on iPad. If non-nil, `sourceView` and `arrowDirections` are not used.
-    ///   - arrowDirections: optional arrow directions for the popover on iPad.
+    ///   - sourceView: optional anchor view for the regular-width popover.
+    ///   - sourceBarButtonItem: optional anchor bar button item for the regular-width popover. If non-nil, `sourceView` and `arrowDirections` are not used.
+    ///   - arrowDirections: optional arrow directions for a regular-width popover.
     public func show(from presenting: UIViewController,
                      sourceView: UIView? = nil,
                      sourceBarButtonItem: UIBarButtonItem? = nil,
@@ -70,13 +70,16 @@ public class BottomSheetViewController: UIViewController {
             childViewController?.view.layoutIfNeeded()
         }
 
-        if UIDevice.isPad() {
+        let horizontalSizeClass = presenting.viewIfLoaded?.window?.traitCollection.horizontalSizeClass ?? presenting.traitCollection.horizontalSizeClass
+        if horizontalSizeClass == .regular {
 
             // If the anchor views are not set, or the user is using a larger text option
             // we'll display the content in a sheet
             if (sourceBarButtonItem == nil && sourceView == nil) ||
                 traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
                 modalPresentationStyle = .formSheet
+                // Keep native dismissal available instead of adapting to full screen at compact height.
+                sheetPresentationController?.prefersEdgeAttachedInCompactHeight = true
             } else {
                 modalPresentationStyle = .popover
 
@@ -222,9 +225,9 @@ public class BottomSheetViewController: UIViewController {
         let hSizeClass = presentingViewController?.traitCollection.horizontalSizeClass
         let vSizeClass = presentingViewController?.traitCollection.verticalSizeClass
         let isRegular = hSizeClass == .regular && vSizeClass != .compact
-        // Hide the grip for popover presentations (iPad) and for regular
-        // size class. The grip is only appropriate for drawer-style sheets.
-        if isRegular || modalPresentationStyle == .popover {
+        // Hide the grip for native presentations and regular-size layouts.
+        // The grip is only appropriate for drawer-style sheets.
+        if isRegular || modalPresentationStyle == .popover || modalPresentationStyle == .formSheet {
             gripButton.isHidden = true
             additionalSafeAreaInsets = additionalSafeAreaInsetsRegular
         } else {

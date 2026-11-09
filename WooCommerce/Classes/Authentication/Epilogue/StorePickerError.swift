@@ -8,15 +8,16 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
     /// Creates an `StorePickerErrorHostingController` with preconfigured button actions.
     ///
     static func createWithActions(presenting: UIViewController,
-                                  isPermissionError: Bool = false) -> StorePickerErrorHostingController {
+                                  isPermissionError: Bool = false,
+                                  siteAddress: String? = nil) -> StorePickerErrorHostingController {
         let viewController = StorePickerErrorHostingController(isPermissionError: isPermissionError)
         viewController.setActions(troubleshootingAction: {
             WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: viewController)
         },
         contactSupportAction: {
             presenting.dismiss(animated: true) {
-                let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
-                supportForm.show(from: presenting)
+                let supportChat = SupportChatHostingController.makeForPreLogin(siteAddress: siteAddress)
+                supportChat.show(from: presenting)
             }
         },
         dismissAction: {

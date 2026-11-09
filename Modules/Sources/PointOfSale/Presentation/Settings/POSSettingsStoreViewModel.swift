@@ -71,6 +71,7 @@ final class POSSettingsStoreViewModel: ObservableObject {
         do {
             receiptInformation = try await settingsService.retrievePointOfSaleSettings()
         } catch {
+            guard !Task.isCancelled else { return }
             DDLogError("Failed to load POS settings: \(error)")
         }
     }

@@ -80,7 +80,7 @@ extension POSSettingsView {
                 }
                 .padding(.horizontal, POSPadding.medium)
             }
-            .background(Color.posSurfaceBright)
+            .background(Color.posSurfaceBright.ignoresSafeArea())
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("pos-settings-view")
         }

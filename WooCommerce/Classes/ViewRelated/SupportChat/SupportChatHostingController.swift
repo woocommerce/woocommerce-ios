@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import Yosemite
 
 /// Hosting controller for the AI support chat view.
 ///
@@ -98,6 +99,41 @@ private final class PresentationDismissHandler: NSObject, UIAdaptivePresentation
 // MARK: - Presentation
 //
 extension SupportChatHostingController {
+
+    /// Creates a support chat for login flows, including escalation to human support.
+    static func makeForPreLogin(siteAddress: String? = nil,
+                                initialMessage: String? = nil,
+                                excludeStoreResponseExcerptsFromLogs: Bool = false) -> SupportChatHostingController {
+        weak var viewModel: SupportChatViewModel?
+        var escalationCoordinator: SupportEscalationCoordinator?
+        weak var hostingController: SupportChatHostingController?
+        let chatViewModel = SupportChatViewModel(
+            entryPoint: .preLogin,
+            initialContext: siteAddress.map { ["site_url": .string($0)] },
+            initialMessage: initialMessage,
+            supportSiteAddress: siteAddress,
+            excludeStoreResponseExcerptsFromLogs: excludeStoreResponseExcerptsFromLogs,
+            onContactHumanSupport: { chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
+                escalationCoordinator = SupportEscalationCoordinator(
+                    navigationController: hostingController?.navigationController,
+                    mobileStatusReportProvider: MobileStatusReportProvider(),
+                    onTicketCreated: { [weak viewModel] in viewModel?.markChatTicketCreated() }
+                )
+                escalationCoordinator?.handleEscalation(
+                    chatID: chatID,
+                    transcript: transcript,
+                    supportAreaInfo: supportAreaInfo,
+                    entryPoint: entryPoint,
+                    siteAddress: siteAddress,
+                    hasReceivedBotResponse: hasReceivedBotResponse
+                )
+            }
+        )
+        viewModel = chatViewModel
+        let controller = SupportChatHostingController(viewModel: chatViewModel)
+        hostingController = controller
+        return controller
+    }
 
     /// Shows the support chat from the given view controller.
     ///

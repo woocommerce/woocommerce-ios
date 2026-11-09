@@ -145,19 +145,6 @@ final class ProductsViewController: UIViewController {
 
     private var selectedProductListener: EntityListener<Product>?
 
-    private var sortOrder: ProductsSortOrder = .default {
-        didSet {
-            if sortOrder != oldValue {
-                updateLocalProductSettings(sort: sortOrder,
-                                           filters: filters)
-                resultsController.updateSortOrder(sortOrder)
-
-                /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
-                resyncWithNewSortOrFilters()
-            }
-        }
-    }
-
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
@@ -186,27 +173,6 @@ final class ProductsViewController: UIViewController {
     private let imageUploader = ServiceLocator.productImageUploader
     private let pushNotesManager: PushNotesManager
     private var activeUploadIds: [Int64] = []
-
-    private var filters = FilterProductListViewModel.Filters() {
-        didSet {
-            Task { @MainActor in
-                if filters != oldValue ||
-                    categoryHasChangedRemotely {
-                    updateLocalProductSettings(sort: sortOrder,
-                                               filters: filters)
-                    updateFilterButtonTitle(filters: filters)
-
-                    await updatePredicate(filters: filters)
-
-                    /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-                    resyncWithNewSortOrFilters()
-                }
-            }
-        }
-    }
-
-    /// Set to `true` when a category is applied to the product filters and the value has changed after a remote sync.
-    private var categoryHasChangedRemotely: Bool = false
 
     private let providedResultsController: ResultsController<StorageProduct>?
     private let siteID: Int64
@@ -267,6 +233,7 @@ final class ProductsViewController: UIViewController {
         configureLiquidGlassTabBarUnderlap()
         configureScrollWatcher()
         configurePaginationTracker()
+        configureViewModel()
         registerTableViewCells()
 
         showTopBannerViewIfNeeded()
@@ -984,6 +951,25 @@ private extension ProductsViewController {
         }
     }
 
+    func configureViewModel() {
+        viewModel.onSortOrderChanged = { [weak self] sortOrder in
+            guard let self else { return }
+            resultsController.updateSortOrder(sortOrder)
+
+            /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
+            resyncWithNewSortOrFilters()
+        }
+        viewModel.onFiltersChanged = { [weak self] filters in
+            guard let self else { return }
+            updateFilterButtonTitle(filters: filters)
+
+            await updatePredicate(filters: filters)
+
+            /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+            resyncWithNewSortOrFilters()
+        }
+    }
+
     /// Register table cells.
     ///
     func registerTableViewCells() {
@@ -1005,7 +991,7 @@ private extension ProductsViewController {
             return
         }
 
-        toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
+        toolbar.isHidden = viewModel.filters.numberOfActiveFilters == 0 ? isEmpty : false
         updateLiquidGlassHeaderVisibility()
         updateLiquidGlassHeaderOverlayLayout()
     }
@@ -1077,13 +1063,13 @@ private extension ProductsViewController {
 
     func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
         let predicate = NSPredicate.createProductPredicate(siteID: siteID,
-                                                           stockStatus: filters.stockStatus,
-                                                           productStatus: filters.productStatus,
-                                                           productType: filters.promotableProductType?.productType)
+                                                           stockStatus: viewModel.filters.stockStatus,
+                                                           productStatus: viewModel.filters.productStatus,
+                                                           productType: viewModel.filters.promotableProductType?.productType)
 
         return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager,
                                                  matching: predicate,
-                                                 sortOrder: sortOrder)
+                                                 sortOrder: viewModel.sortOrder)
     }
 
     /// Configure resultController.
@@ -1138,7 +1124,7 @@ private extension ProductsViewController {
 
     /// Only the name sort can differ between the store and the device.
     func presentableProducts(_ products: [ProductListItem]) -> [ProductListItem] {
-        switch sortOrder {
+        switch viewModel.sortOrder {
         case .nameAscending, .nameDescending:
             return productPageOrder.ordered(products)
         case .dateAscending, .dateDescending:
@@ -1195,7 +1181,7 @@ private extension ProductsViewController {
     /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
     ///
     func syncProductsSettings() {
-        syncLocalProductsSettings { [weak self] result in
+        viewModel.syncLocalProductsSettings { [weak self] result in
             guard let self else { return }
 
             if result.isFailure {
@@ -1307,7 +1293,7 @@ private extension ProductsViewController {
             guard let self else { return }
 
             // Reload only if favorite products filter is turned on
-            guard filters.favoriteProduct != nil else {
+            guard viewModel.filters.favoriteProduct != nil else {
                 return
             }
 
@@ -1319,7 +1305,7 @@ private extension ProductsViewController {
                 return
             }
 
-            await updatePredicate(filters: filters)
+            await updatePredicate(filters: viewModel.filters)
 
             /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
             resyncWithNewSortOrFilters()
@@ -1540,7 +1526,7 @@ private extension ProductsViewController {
 
             ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-            await self.updatePredicate(filters: self.filters)
+            await self.updatePredicate(filters: self.viewModel.filters)
 
             self.paginationTracker.resync { [weak self] in
                 self?.refreshUpdates.endRefreshing(sender)
@@ -1553,12 +1539,12 @@ private extension ProductsViewController {
         let title = NSLocalizedString("Sort by",
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
-        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder) { [weak self] selectedSortOrder in
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: viewModel.sortOrder) { [weak self] selectedSortOrder in
             self?.dismiss(animated: true, completion: nil)
             guard let selectedSortOrder = selectedSortOrder as ProductsSortOrder? else {
                     return
                 }
-            self?.sortOrder = selectedSortOrder
+            self?.viewModel.sortOrder = selectedSortOrder
         }
         let sortOrderListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
                                                                       command: command)
@@ -1569,12 +1555,12 @@ private extension ProductsViewController {
     @objc func filterButtonTapped() {
         ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: .productsTab))
         let viewModel = FilterProductListViewModel(
-            filters: filters,
+            filters: self.viewModel.filters,
             siteID: siteID
         )
         let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListShowProductsButtonTapped(source: .productsTab, filters: filters))
-            self?.filters = filters
+            self?.viewModel.filters = filters
         }, onClearAction: {
             ServiceLocator.analytics.track(.productFilterListClearMenuButtonTapped)
         }, onDismissAction: {
@@ -1585,7 +1571,7 @@ private extension ProductsViewController {
 
     func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
         ServiceLocator.analytics.track(.productListClearFiltersTapped)
-        filters = FilterProductListViewModel.Filters()
+        viewModel.filters = FilterProductListViewModel.Filters()
     }
 }
 
@@ -1602,7 +1588,7 @@ private extension ProductsViewController {
     }
 
     func configureEmptyStateView() {
-        if filters.numberOfActiveFilters == 0 {
+        if viewModel.filters.numberOfActiveFilters == 0 {
             configureNoProductsView()
         } else {
             configureNoProductsMatchFilterView()
@@ -1698,12 +1684,12 @@ extension ProductsViewController: PaginationTrackerDelegate {
             .synchronizeProducts(siteID: siteID,
                                  pageNumber: pageNumber,
                                  pageSize: pageSize,
-                                 stockStatus: filters.stockStatus,
-                                 productStatus: filters.productStatus,
-                                 productType: filters.promotableProductType?.productType,
-                                 productCategory: filters.productCategory,
-                                 sortOrder: sortOrder,
-                                 productIDs: (filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
+                                 stockStatus: viewModel.filters.stockStatus,
+                                 productStatus: viewModel.filters.productStatus,
+                                 productType: viewModel.filters.promotableProductType?.productType,
+                                 productCategory: viewModel.filters.productCategory,
+                                 sortOrder: viewModel.sortOrder,
+                                 productIDs: (viewModel.filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
                                     guard let self else {
                                         return
                                     }
@@ -1737,94 +1723,6 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                     }
                                     self.refreshUpdates.perform { self.transitionToResultsUpdatedState() }
                                     onCompletion?(result)
-        }
-
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Update local Products Settings (eg. sort order or filters stored in Products settings)
-    ///
-    private func updateLocalProductSettings(sort: ProductsSortOrder? = nil,
-                                            filters: FilterProductListViewModel.Filters) {
-        let action = AppSettingsAction.upsertProductsSettings(siteID: siteID,
-                                                              sort: sort?.rawValue,
-                                                              stockStatusFilter: filters.stockStatus,
-                                                              productStatusFilter: filters.productStatus,
-                                                              productTypeFilter: filters.promotableProductType?.productType,
-                                                              productCategoryFilter: filters.productCategory,
-                                                              favoriteProduct: filters.favoriteProduct != nil) { _ in
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Fetch local Products Settings (eg. sort order or filters stored in Products settings)
-    ///
-    private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
-        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success(let settings):
-                self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in
-                    guard let self else { return }
-                    if let sort = settings.sort {
-                        sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
-                    }
-
-                    let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
-                    filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
-                                                                 productStatus: settings.productStatusFilter,
-                                                                 promotableProductType: promotableProductType,
-                                                                 productCategory: settings.productCategoryFilter,
-                                                                 favoriteProduct: settings.favoriteProduct ? FavoriteProductsFilter() : nil,
-                                                                 numberOfActiveFilters: settings.numberOfActiveFilters())
-                    onCompletion(result)
-                }
-            case let .failure(error):
-                DDLogError("⛔️ Error loading product settings: \(error)")
-                onCompletion(result)
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Syncs the Product Category filter of settings remotely. This is necessary in case the category information was updated
-    /// or the category itself removed.
-    ///
-    private func syncProductCategoryFilterRemotely(from settings: StoredProductSettings.Setting,
-                                                   onCompletion: @escaping (StoredProductSettings.Setting) -> Void) {
-        categoryHasChangedRemotely = false
-        guard let productCategory = settings.productCategoryFilter else {
-            onCompletion(settings)
-            return
-        }
-
-        let action = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: productCategory.categoryID) { [weak self] result in
-            guard let self else { return }
-            var updatingProductCategory: ProductCategory? = productCategory
-
-            switch result {
-            case .success(let productCategory):
-                updatingProductCategory = productCategory
-            case .failure(let error):
-                if let error = error as? ProductCategoryActionError,
-                   case .categoryDoesNotExistRemotely = error {
-                    // The product category was removed
-                    updatingProductCategory = nil
-                }
-            }
-
-            var completionSettings = settings
-            if updatingProductCategory != productCategory {
-                categoryHasChangedRemotely = true
-                completionSettings = StoredProductSettings.Setting(siteID: settings.siteID,
-                                                                sort: settings.sort,
-                                                                stockStatusFilter: settings.stockStatusFilter,
-                                                                productStatusFilter: settings.productStatusFilter,
-                                                                productTypeFilter: settings.productTypeFilter,
-                                                                productCategoryFilter: updatingProductCategory,
-                                                                favoriteProduct: settings.favoriteProduct)
-            }
-
-            onCompletion(completionSettings)
         }
 
         ServiceLocator.stores.dispatch(action)

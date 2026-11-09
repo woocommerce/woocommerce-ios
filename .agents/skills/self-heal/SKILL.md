@@ -58,7 +58,13 @@ Advance the oldest PR that has a finished Buildkite build on its head commit:
 - Fix commit, build passed → green proven: link the build in the PR, update the issue to `Status: PR #<n> ready for review`.
 - Fix commit, build failed → fix it on the branch.
 
-Soft-failed steps count only if the PR caused them: compare with the same step on a recent trunk build.
+Soft-failed steps count only if the PR caused them: compare with the same step on the latest trunk build, by total and by file.
+
+Then answer the PR's conversation, on every open self-heal PR, not just the one advanced.
+Read comments and reviews (`gh pr view <n> --json comments,reviews` and `gh api repos/{owner}/{repo}/pulls/<n>/comments`), including bot comments that are edited in place.
+Anything updated after your last reply needs either a fix pushed to the branch or one reply saying why no change is needed, with the evidence, such as the trunk build link.
+Replies follow the privacy rules and end with the experiment trailer and the attribution line.
+Never resolve review threads; the reviewer does that.
 
 Then continue to step 2 if fewer than 5 self-heal PRs are open; otherwise log `cap` and stop.
 

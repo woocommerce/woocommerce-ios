@@ -272,12 +272,13 @@ struct POSCardPaymentContentView: View {
     let connectCardReaderAction: () -> Void
     let cancelReconnectionAction: () -> Void
     var showLoadingWhenIdle: Bool = false
+    var messageNamespace: Namespace.ID?
 
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
     @Namespace private var paymentMessageNamespace
     private var paymentMessageAnimation: POSCardPresentPaymentInLineMessageAnimation {
-        .init(namespace: paymentMessageNamespace)
+        .init(namespace: messageNamespace ?? paymentMessageNamespace)
     }
 
     @ViewBuilder

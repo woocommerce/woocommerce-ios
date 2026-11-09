@@ -19,6 +19,7 @@ struct TotalsView: View {
     /// It allows for a simultaneous transition from the shimmering effect to the text fields,
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
+    @Namespace private var paymentMessageNamespace
 
     // The source of truth for whether totals _are_ showing; separate from whether they
     // _should be_ showing, so that we can animate the change.
@@ -56,6 +57,9 @@ struct TotalsView: View {
     var body: some View {
         HStack {
             switch posModel.orderState {
+            case .loaded where isShowingPaymentStatusScreen:
+                paymentViewContent
+                    .id(displayPaymentState.isSuccess)
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
                     Spacer()
@@ -70,7 +74,8 @@ struct TotalsView: View {
                             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                             cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                             connectCardReaderAction: paymentModel.connectCardReader,
-                            cancelReconnectionAction: posModel.cancelReconnection
+                            cancelReconnectionAction: posModel.cancelReconnection,
+                            paymentMessageNamespace: paymentMessageNamespace
                         )
                     } else if useTapToPayHeroLayout {
                         POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
@@ -85,7 +90,8 @@ struct TotalsView: View {
                             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                             cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                             connectCardReaderAction: paymentModel.connectCardReader,
-                            cancelReconnectionAction: posModel.cancelReconnection
+                            cancelReconnectionAction: posModel.cancelReconnection,
+                            paymentMessageNamespace: paymentMessageNamespace
                         )
                     }
 
@@ -285,6 +291,27 @@ private extension TotalsView {
                                                                       paymentState: displayPaymentState)
             }
         }
+    }
+
+    private var paymentViewContent: some View {
+        PaymentViewContent(
+            paymentState: displayPaymentState,
+            cardReaderViewLayout: cardReaderViewLayout,
+            isShowingTotalsFields: isShowingTotalsFields,
+            backgroundColor: backgroundColor,
+            orderState: posModel.orderState,
+            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+            connectCardReaderAction: paymentModel.connectCardReader,
+            cancelReconnectionAction: posModel.cancelReconnection,
+            paymentMessageNamespace: paymentMessageNamespace
+        )
+    }
+
+    private var isShowingPaymentStatusScreen: Bool {
+        totalsViewHelper.showsPaymentStatusScreen(paymentState: displayPaymentState,
+                                                  readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                                  inlineMessage: paymentModel.cardPresentPaymentInlineMessage)
     }
 
     private var primaryLayout: PaymentViewLayout {
@@ -620,7 +647,7 @@ private struct PaymentViewContent: View {
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
     let cancelReconnectionAction: () -> Void
-    @Namespace private var paymentMessageNamespace
+    let paymentMessageNamespace: Namespace.ID
 
     private let viewHelper = POSPaymentViewHelper()
 
@@ -664,7 +691,8 @@ private struct PaymentViewContent: View {
                 paymentState: paymentState,
                 cardPresentPaymentInlineMessage: cardPresentPaymentInlineMessage,
                 connectCardReaderAction: connectCardReaderAction,
-                cancelReconnectionAction: cancelReconnectionAction)
+                cancelReconnectionAction: cancelReconnectionAction,
+                messageNamespace: paymentMessageNamespace)
         }
     }
 }

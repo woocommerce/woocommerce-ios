@@ -272,12 +272,14 @@ struct POSCardPaymentContentView: View {
     let connectCardReaderAction: () -> Void
     let cancelReconnectionAction: () -> Void
     var showLoadingWhenIdle: Bool = false
+    /// Lets a host keep matched geometry between messages when it moves this view to another container.
+    var messageNamespace: Namespace.ID?
 
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
     @Namespace private var paymentMessageNamespace
     private var paymentMessageAnimation: POSCardPresentPaymentInLineMessageAnimation {
-        .init(namespace: paymentMessageNamespace)
+        .init(namespace: messageNamespace ?? paymentMessageNamespace)
     }
 
     @ViewBuilder

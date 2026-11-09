@@ -16,3 +16,28 @@ enum PointOfSaleCardPresentPaymentMessageType: Equatable {
     case cancelledOnReader(viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel)
     case paymentCancellationConfirmation(viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel)
 }
+
+extension PointOfSaleCardPresentPaymentMessageType {
+    /// Messages shown as a status screen, with their buttons pinned to the bottom.
+    /// Order validation and payment intent errors stay inline above the order totals.
+    var isStatusScreen: Bool {
+        switch self {
+        case .paymentSuccess,
+                .paymentError,
+                .paymentErrorNonRetryable,
+                .paymentCaptureError,
+                .cancelledOnReader,
+                .paymentCancellationConfirmation:
+            return true
+        case .validatingOrder,
+                .validatingOrderError,
+                .paymentIntentCreationError,
+                .preparingForPayment,
+                .tapSwipeOrInsertCard,
+                .cardInserted,
+                .processing,
+                .displayReaderMessage:
+            return false
+        }
+    }
+}

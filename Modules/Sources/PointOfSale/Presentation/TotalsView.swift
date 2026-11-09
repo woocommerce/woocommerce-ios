@@ -19,6 +19,9 @@ struct TotalsView: View {
     /// It allows for a simultaneous transition from the shimmering effect to the text fields,
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
+    /// Shared by the payment messages so their matched geometry survives moving between the
+    /// scrolling checkout layout and the standalone status screen.
+    @Namespace private var paymentMessageNamespace
 
     // The source of truth for whether totals _are_ showing; separate from whether they
     // _should be_ showing, so that we can animate the change.
@@ -57,74 +60,61 @@ struct TotalsView: View {
         HStack {
             switch posModel.orderState {
             case .idle, .syncing, .loaded:
-                VStack(alignment: .center) {
-                    Spacer()
-
-                    if shouldPrioritizePaymentViewOverHero {
-                        PaymentViewContent(
-                            paymentState: displayPaymentState,
-                            cardReaderViewLayout: cardReaderViewLayout,
-                            isShowingTotalsFields: isShowingTotalsFields,
-                            backgroundColor: backgroundColor,
-                            orderState: posModel.orderState,
-                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                            connectCardReaderAction: paymentModel.connectCardReader,
-                            cancelReconnectionAction: posModel.cancelReconnection
-                        )
-                    } else if useTapToPayHeroLayout {
-                        POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
-                                            isPayDisabled: isStartingPayment)
-                    } else if isShowingPaymentView {
-                        PaymentViewContent(
-                            paymentState: displayPaymentState,
-                            cardReaderViewLayout: cardReaderViewLayout,
-                            isShowingTotalsFields: isShowingTotalsFields,
-                            backgroundColor: backgroundColor,
-                            orderState: posModel.orderState,
-                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                            connectCardReaderAction: paymentModel.connectCardReader,
-                            cancelReconnectionAction: posModel.cancelReconnection
-                        )
-                    }
-
-                    if (useTapToPayHeroLayout || isShowingPaymentView) && isShowingTotalsFields {
+                if isShowingPaymentStatusScreen {
+                    // Status screens pin their buttons to the bottom, so they take the full height
+                    // instead of sitting in the scroll view with the totals.
+                    paymentViewContent
+                        .id(displayPaymentState.isSuccess)
+                } else {
+                    VStack(alignment: .center) {
                         Spacer()
-                    }
 
-                    if isShowingTotalsFields {
-                        TotalsFieldsContent(
-                            orderState: posModel.orderState,
-                            paymentState: displayPaymentState,
-                            cart: posModel.cart,
-                            totalsFieldAnimation: totalsFieldAnimation
-                        )
-                        .opacity(shouldShowTotalsFields ? 1 : 0)
-                    }
+                        if shouldPrioritizePaymentViewOverHero {
+                            paymentViewContent
+                        } else if useTapToPayHeroLayout {
+                            POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
+                                                isPayDisabled: isStartingPayment)
+                        } else if isShowingPaymentView {
+                            paymentViewContent
+                        }
 
-                    Spacer()
+                        if (useTapToPayHeroLayout || isShowingPaymentView) && isShowingTotalsFields {
+                            Spacer()
+                        }
 
-                    switch bottomControlState {
-                    case .readerAndOtherMethods:
-                        readerAndOtherMethodsBottomStrip
-                    case .cashAndOtherMethods:
-                        cashAndOtherMethodsBottomStrip
-                    case .checkoutMethods(let methods):
-                        POSCheckoutPaymentButtonsRow(
-                            methods: methods,
-                            onSelect: handlePaymentMethodSelection
-                        )
-                    case .hidden:
-                        EmptyView()
+                        if isShowingTotalsFields {
+                            TotalsFieldsContent(
+                                orderState: posModel.orderState,
+                                paymentState: displayPaymentState,
+                                cart: posModel.cart,
+                                totalsFieldAnimation: totalsFieldAnimation
+                            )
+                            .opacity(shouldShowTotalsFields ? 1 : 0)
+                        }
+
+                        Spacer()
+
+                        switch bottomControlState {
+                        case .readerAndOtherMethods:
+                            readerAndOtherMethodsBottomStrip
+                        case .cashAndOtherMethods:
+                            cashAndOtherMethodsBottomStrip
+                        case .checkoutMethods(let methods):
+                            POSCheckoutPaymentButtonsRow(
+                                methods: methods,
+                                onSelect: handlePaymentMethodSelection
+                            )
+                        case .hidden:
+                            EmptyView()
+                        }
                     }
+                    .scrollVerticallyIfNeeded()
+                    // A completed payment replaces the checkout content. Start the new screen at its top.
+                    .id(displayPaymentState.isSuccess)
+                    .animation(.default, value: isShowingPaymentView)
+                    .animation(.default, value: useTapToPayHeroLayout)
+                    .animation(.default, value: bottomControlState)
                 }
-                .scrollVerticallyIfNeeded()
-                // A completed payment replaces the checkout content. Start the new screen at its top.
-                .id(displayPaymentState.isSuccess)
-                .animation(.default, value: isShowingPaymentView)
-                .animation(.default, value: useTapToPayHeroLayout)
-                .animation(.default, value: bottomControlState)
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -285,6 +275,28 @@ private extension TotalsView {
                                                                       paymentState: displayPaymentState)
             }
         }
+    }
+
+    private var paymentViewContent: some View {
+        PaymentViewContent(
+            paymentState: displayPaymentState,
+            cardReaderViewLayout: cardReaderViewLayout,
+            isShowingTotalsFields: isShowingTotalsFields,
+            backgroundColor: backgroundColor,
+            orderState: posModel.orderState,
+            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+            connectCardReaderAction: paymentModel.connectCardReader,
+            cancelReconnectionAction: posModel.cancelReconnection,
+            paymentMessageNamespace: paymentMessageNamespace
+        )
+    }
+
+    private var isShowingPaymentStatusScreen: Bool {
+        posModel.orderState.isLoaded &&
+        totalsViewHelper.showsPaymentStatusScreen(paymentState: displayPaymentState,
+                                                  readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                                  inlineMessage: paymentModel.cardPresentPaymentInlineMessage)
     }
 
     private var primaryLayout: PaymentViewLayout {
@@ -621,7 +633,7 @@ private struct PaymentViewContent: View {
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
     let cancelReconnectionAction: () -> Void
-    @Namespace private var paymentMessageNamespace
+    let paymentMessageNamespace: Namespace.ID
 
     private let viewHelper = POSPaymentViewHelper()
 
@@ -665,7 +677,8 @@ private struct PaymentViewContent: View {
                 paymentState: paymentState,
                 cardPresentPaymentInlineMessage: cardPresentPaymentInlineMessage,
                 connectCardReaderAction: connectCardReaderAction,
-                cancelReconnectionAction: cancelReconnectionAction)
+                cancelReconnectionAction: cancelReconnectionAction,
+                messageNamespace: paymentMessageNamespace)
         }
     }
 }

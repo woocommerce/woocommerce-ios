@@ -10,22 +10,22 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
     @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
-        VStack(alignment: .center, spacing: metrics.spacing.none) {
-            Spacer()
-            POSErrorXMark()
-            Spacer().frame(height: metrics.spacing.medium)
-            VStack(alignment: .center, spacing: metrics.spacing.small) {
-                Text(title)
-                    .foregroundStyle(Color.posOnSurface)
-                    .font(.posHeadingBold)
+        POSStatusScreenLayout {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
+                POSErrorXMark()
+                Spacer().frame(height: metrics.spacing.medium)
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
+                    Text(title)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posHeadingBold)
 
-                Text(subtitle)
-                    .foregroundStyle(Color.posOnSurface)
-                    .font(.posBodyLargeRegular())
-                    .padding([.leading, .trailing])
+                    Text(subtitle)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posBodyLargeRegular())
+                        .padding([.leading, .trailing])
+                }
             }
-            Spacer().frame(height: metrics.spacing.xxLarge)
-
+        } buttons: {
             VStack(spacing: metrics.spacing.medium) {
                 Button(Localization.editOrderTitle, action: {
                     let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
@@ -60,13 +60,8 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
-            .posStatusButtonsWidth()
-            .padding([.bottom], metrics.padding.medium)
-
-            Spacer()
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity)
         .onAppear {
             let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
             analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedScreenShown(

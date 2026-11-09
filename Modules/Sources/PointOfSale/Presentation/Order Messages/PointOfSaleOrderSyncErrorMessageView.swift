@@ -22,29 +22,26 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: metrics.spacing.none) {
-            Spacer()
-            POSErrorExclamationMark(size: .large)
-            Spacer().frame(height: metrics.spacing.large)
-            VStack(alignment: .center, spacing: metrics.spacing.small) {
-                Text(title)
-                    .foregroundStyle(Color.posOnSurface)
-                    .font(.posHeadingBold)
+        POSStatusScreenLayout {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
+                POSErrorExclamationMark(size: .large)
+                Spacer().frame(height: metrics.spacing.large)
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
+                    Text(title)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posHeadingBold)
 
-                Text(message)
-                    .foregroundStyle(Color.posOnSurface)
-                    .font(.posBodyLargeRegular())
-                    .padding([.leading, .trailing])
+                    Text(message)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posBodyLargeRegular())
+                        .padding([.leading, .trailing])
+                }
             }
-            Spacer().frame(height: metrics.spacing.xxLarge)
+        } buttons: {
             Button(actionTitle, action: action)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .posStatusButtonsWidth()
-                .padding([.bottom], metrics.padding.medium)
-            Spacer()
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity)
     }
 }
 

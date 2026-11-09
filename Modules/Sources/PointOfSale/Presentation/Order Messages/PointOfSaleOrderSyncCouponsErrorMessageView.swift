@@ -11,20 +11,20 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
-        VStack(alignment: .center, spacing: metrics.spacing.none) {
-            Spacer()
-            POSErrorXMark()
-            Spacer().frame(height: metrics.spacing.medium)
-            VStack(alignment: .center, spacing: metrics.spacing.small) {
-                Text(Localization.title)
-                    .foregroundStyle(Color.posOnSurface)
-                    .font(.posHeadingBold)
+        POSStatusScreenLayout {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
+                POSErrorXMark()
+                Spacer().frame(height: metrics.spacing.medium)
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
+                    Text(Localization.title)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posHeadingBold)
 
-                Text(attributedMessage)
-                    .padding([.leading, .trailing])
+                    Text(attributedMessage)
+                        .padding([.leading, .trailing])
+                }
             }
-            Spacer().frame(height: metrics.spacing.xxLarge)
-
+        } buttons: {
             VStack(spacing: metrics.spacing.medium) {
                 Button(Localization.editOrderTitle, action: {
                     posModel.addMoreToCart()
@@ -41,13 +41,8 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                 })
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
-            .posStatusButtonsWidth()
-            .padding([.bottom], metrics.padding.medium)
-
-            Spacer()
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity)
         .onAppear {
             // Setting attributed string once in onAppear to prevent a SwiftUI crash
             // Building attributed HTML string within SwiftUI body causes never-ending redraw cycles

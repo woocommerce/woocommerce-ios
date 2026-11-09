@@ -63,6 +63,7 @@ struct AddCustomAmountView: View {
                 .renderedIf(viewModel.shouldShowDeleteButton)
             }
             .listStyle(.plain)
+            .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
             .safeAreaInset(edge: .bottom) {
                 Button(viewModel.doneButtonTitle) {
                     viewModel.doneButtonPressed()
@@ -72,7 +73,7 @@ struct AddCustomAmountView: View {
                 .disabled(!viewModel.shouldEnableDoneButton)
                 .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
                 .padding()
-                .background(Color(.systemBackground))
+                .background(Color(.systemBackground), ignoresSafeAreaEdges: .bottom)
             }
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)

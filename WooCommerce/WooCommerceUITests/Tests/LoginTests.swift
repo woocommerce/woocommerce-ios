@@ -17,15 +17,13 @@ final class LoginTests: XCTestCase {
     }
 
     func test_site_address_login_logout() throws {
-        try XCTSkipIf(true, "This test is flaky in CI and should be improved. See #14314")
-
         // do not test this case if site address login is not available
         guard try PrologueScreen().isSiteAddressLoginAvailable() else {
             return
         }
         try PrologueScreen()
             .tapLogIn()
-            .proceedWith(siteUrl: TestCredentials.siteUrl)
+            .proceedWith(siteUrl: TestCredentials.siteAddressLoginUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .enterValidPassword()
             .enterValidTwoFACode()

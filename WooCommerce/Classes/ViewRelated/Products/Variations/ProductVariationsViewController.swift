@@ -578,7 +578,7 @@ private extension ProductVariationsViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
 
-        syncingCoordinator.synchronizeFirstPage {
+        syncingCoordinator.resynchronize {
             sender.endRefreshing()
         }
     }

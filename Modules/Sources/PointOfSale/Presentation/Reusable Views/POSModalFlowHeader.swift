@@ -48,6 +48,40 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
     }
 }
 
+extension View {
+    /// Offers `action` as the close button of the full-screen flow header, without adding a close button to the content.
+    /// Use it for content that lays itself out, such as a scrolling list; `posModalCloseButton` also centers the content.
+    func posModalFlowCloseAction(enabled: Bool,
+                                 accessibilityLabel: String,
+                                 accessibilityIdentifier: String? = nil,
+                                 action: @escaping () -> Void) -> some View {
+        modifier(POSModalFlowCloseActionModifier(enabled: enabled,
+                                                 accessibilityLabel: accessibilityLabel,
+                                                 accessibilityIdentifier: accessibilityIdentifier,
+                                                 action: action))
+    }
+}
+
+private struct POSModalFlowCloseActionModifier: ViewModifier {
+    let enabled: Bool
+    let accessibilityLabel: String
+    let accessibilityIdentifier: String?
+    let action: () -> Void
+    @State private var flowCloseAction = POSModalFlowCloseAction()
+
+    func body(content: Content) -> some View {
+        content
+            .preference(key: POSModalFlowCloseActionKey.self, value: enabled ? updatedFlowCloseAction : nil)
+    }
+
+    private var updatedFlowCloseAction: POSModalFlowCloseAction {
+        flowCloseAction.action = action
+        flowCloseAction.accessibilityLabel = accessibilityLabel
+        flowCloseAction.accessibilityIdentifier = accessibilityIdentifier
+        return flowCloseAction
+    }
+}
+
 /// The close action that a modal's content offers to `POSModalFlowHeader`, set by `posModalCloseButton`.
 ///
 /// It is a reference type so the header always calls the content's latest action, while the preference value only

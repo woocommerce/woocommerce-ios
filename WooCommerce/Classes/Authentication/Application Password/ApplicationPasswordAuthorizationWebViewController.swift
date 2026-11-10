@@ -194,9 +194,9 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             activityIndicator.startAnimating()
             defer { if authorizationRequestID == id { activityIndicator.stopAnimating() } }
             do {
-                let url = try await viewModel.fetchAuthURL()
+                let authorization = try await viewModel.fetchAuthURL()
                 guard authorizationRequestID == id, !Task.isCancelled else { return }
-                guard let url else {
+                guard let authorization else {
                     onRetryResult?(false)
                     DDLogError("⛔️ No authorization URL found for application passwords")
                     analytics.track(.applicationPasswordAuthorizationURLNotAvailable)
@@ -204,7 +204,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
                     return
                 }
                 onRetryResult?(true)
-                loadAuthorizationPage(url: url)
+                loadAuthorizationPage(url: authorization.url)
             } catch {
                 guard authorizationRequestID == id, !Task.isCancelled else { return }
                 onRetryResult?(false)

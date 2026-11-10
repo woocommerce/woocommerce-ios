@@ -64,8 +64,8 @@ struct ApplicationPasswordAuthorizationViewModelTests {
             fixture.controller.unexpectedResponsePresenter.select(.retry)
             fixture.controller.unexpectedResponsePresenter.select(.retry)
         }
-        fixture.completeFetch?(success ? .success(URL(string: "https://example.com/authorize")) :
-                                 .failure(UnexpectedStoreResponseError(kind: .unexpectedContent)))
+        let authorization = URL(string: "https://example.com/authorize").map { ApplicationPasswordAuthorization(url: $0, approvalSiteURL: nil) }
+        fixture.completeFetch?(success ? .success(authorization) : .failure(UnexpectedStoreResponseError(kind: .unexpectedContent)))
         await fixture.waitForFetchHandling()
 
         // Then
@@ -150,7 +150,7 @@ private final class AuthorizationFixture {
     let form = UIViewController()
     lazy var navigation = AuthorizationNavigationController(rootViewController: form)
     var requestedSites: [String] = []
-    var completeFetch: ((Result<URL?, Error>) -> Void)?
+    var completeFetch: ((Result<ApplicationPasswordAuthorization?, Error>) -> Void)?
     var fetchRequested: (() -> Void)?
     var alert: UIAlertController?
     var presentationCompletion: (() -> Void)?

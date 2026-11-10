@@ -11,10 +11,14 @@ struct POSRefundDetailView: View {
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
-            headerView
+            // In the phone full-screen flow the title and the close button are in the flow header.
+            if !isFullScreenFlow {
+                headerView
+            }
             ScrollView {
                 VStack(spacing: metrics.spacing.medium) {
                     if !refund.items.isEmpty {
@@ -31,6 +35,9 @@ struct POSRefundDetailView: View {
         }
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
+        .posModalFlowCloseAction(enabled: isFullScreenFlow,
+                                 accessibilityLabel: Localization.closeButtonAccessibilityLabel,
+                                 action: onClose)
         // `.posModalFullScreen(horizontalSizeClass == .compact)` removed —
         // `POSRootModalViewModifier` auto-detects compact width. See #17067 review.
     }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Content of a POS modal that asks a question: a title, a message and two buttons.
+/// Content of a POS modal that asks a question: a title, a message, two buttons and an optional lower-emphasis action.
 /// Present it with `posModal(..., compactStyle: .dialog)` so it is a centered card on phone.
 struct POSConfirmationDialog: View {
     @Environment(\.posMetrics) private var metrics
@@ -9,6 +9,7 @@ struct POSConfirmationDialog: View {
     let message: String
     let primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig
     let secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig
+    var tertiaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig? = nil
 
     var body: some View {
         VStack(spacing: metrics.spacing.xLarge) {
@@ -23,7 +24,21 @@ struct POSConfirmationDialog: View {
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)
 
-            POSFlowButtonsView(configuration: .init(primaryButton: primaryButton, secondaryButton: secondaryButton))
+            VStack(spacing: metrics.spacing.small) {
+                POSFlowButtonsView(configuration: .init(primaryButton: primaryButton, secondaryButton: secondaryButton))
+
+                if let tertiaryButton {
+                    Button(action: tertiaryButton.action) {
+                        Text(tertiaryButton.title)
+                            .font(.posBodyLargeBold)
+                            .foregroundStyle(Color.posPrimary)
+                            .padding(.vertical, metrics.padding.medium)
+                            .frame(maxWidth: .infinity)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
         }
         .padding(metrics.padding.xLarge)
     }
@@ -35,6 +50,15 @@ struct POSConfirmationDialog: View {
                           message: "Any orders in progress will be lost.",
                           primaryButton: .init(title: "Exit", action: {}),
                           secondaryButton: .init(title: "Cancel", action: {}))
+    .environment(\.horizontalSizeClass, .compact)
+}
+
+#Preview("Compact, three actions") {
+    POSConfirmationDialog(title: "Can't reach your printer",
+                          message: "Make sure your printer is on and nearby with Bluetooth turned on, then try again.",
+                          primaryButton: .init(title: "Retry", action: {}),
+                          secondaryButton: .init(title: "Email receipt", action: {}),
+                          tertiaryButton: .init(title: "Cancel", action: {}))
     .environment(\.horizontalSizeClass, .compact)
 }
 

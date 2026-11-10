@@ -16,12 +16,13 @@ struct POSPrintReceiptFailureModal: View {
         }
     }
 
-    /// The phone dialog has no close button: a tap outside closes it, like the other POS dialogs.
+    /// The phone dialog has no close button, so Cancel does what the close button does on iPad.
     private var compactBody: some View {
         POSConfirmationDialog(title: failure.title,
                               message: failure.message,
                               primaryButton: retryButton,
-                              secondaryButton: emailButton)
+                              secondaryButton: emailButton,
+                              tertiaryButton: .init(title: Localization.cancelButton, action: close))
     }
 
     private var regularBody: some View {
@@ -70,6 +71,11 @@ private extension POSPrintReceiptFailureModal {
             "pos.printReceiptFailure.emailButton",
             value: "Email receipt",
             comment: "Button to email the receipt instead of printing it, from the POS print failure modal.")
+
+        static let cancelButton = NSLocalizedString(
+            "pos.printReceiptFailure.cancelButton",
+            value: "Cancel",
+            comment: "Button to close the POS print failure dialog on iPhone without retrying or emailing the receipt.")
     }
 }
 

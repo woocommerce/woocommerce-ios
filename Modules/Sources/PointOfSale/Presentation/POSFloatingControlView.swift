@@ -62,7 +62,7 @@ struct POSFloatingControlView: View {
                     .disabled(horizontalSizeClass != .regular)
             }
         }
-        .posModal(isPresented: $showProductRestrictionsModal) {
+        .posModal(isPresented: $showProductRestrictionsModal, compactStyle: .bottomSheet) {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
         .posModal(isPresented: $showBarcodeScanningModal) {

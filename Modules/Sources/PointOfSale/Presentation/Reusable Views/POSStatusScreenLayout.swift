@@ -56,7 +56,7 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
     POSStatusScreenLayout {
         Text(String(repeating: "A long message that does not fit on the screen. ", count: 60))
             .font(.posBodyLargeRegular())
-            .padding(.horizontal)
+            .posPadding(.horizontal, \.medium)
     } buttons: {
         Button("Retry") {}
             .buttonStyle(POSFilledButtonStyle(size: .normal))

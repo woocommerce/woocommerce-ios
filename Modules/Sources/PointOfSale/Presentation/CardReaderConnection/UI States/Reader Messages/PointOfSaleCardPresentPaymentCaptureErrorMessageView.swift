@@ -53,7 +53,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .posModal(isPresented: $viewModel.showsInfoSheet) {
+        .posModal(isPresented: $viewModel.showsInfoSheet, compactStyle: .notMigratedFullScreen) {
             PointOfSaleCardPresentPaymentCaptureFailedView(isPresented: $viewModel.showsInfoSheet)
         }
         .onAppear {

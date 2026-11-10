@@ -42,7 +42,7 @@ struct PointOfSalePaymentSuccessView: View {
                 isTitleFocused = true
             }
         }
-        .posModal(isPresented: $showPrinterSetupModal) {
+        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .notMigratedFullScreen) {
             if let controller = posModel.settingsController.printerConnectionController {
                 POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
             }
@@ -56,7 +56,7 @@ struct PointOfSalePaymentSuccessView: View {
                     isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
-        .posModal(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
+        .posModal(item: $printFailure, compactStyle: .notMigratedFullScreen, onDismiss: handlePrintFailureDismissed) { failure in
             POSPrintReceiptFailureModal(failure: failure,
                                         selectAction: { action in
                                             selectedFailureAction = action

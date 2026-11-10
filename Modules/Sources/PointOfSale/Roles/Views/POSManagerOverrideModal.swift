@@ -16,7 +16,7 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
             .onAppear {
                 handler.configure(session: session)
             }
-            .posModal(item: requestBinding) { request in
+            .posModal(item: requestBinding, compactStyle: .notMigratedFullScreen) { request in
                 modalContent(for: request)
             }
     }

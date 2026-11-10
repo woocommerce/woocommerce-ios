@@ -132,7 +132,7 @@ struct POSOrderDetailsView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
-        .posModal(item: $selectedRefundForDetail) { refund in
+        .posModal(item: $selectedRefundForDetail, compactStyle: .notMigratedFullScreen) { refund in
             let sortedRefunds = order.refunds.sorted(by: { $0.refundID < $1.refundID })
             let index = (sortedRefunds.firstIndex(where: { $0.refundID == refund.refundID }) ?? 0) + 1
             POSRefundDetailView(

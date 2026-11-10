@@ -164,7 +164,7 @@ struct PointOfSaleDashboardView: View {
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea(.posBottomRegionsToIgnore(isCompact: isPhoneLayout,
                                                  isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible), edges: .bottom)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .notMigratedFullScreen, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { factory in
             paymentsOnboardingView(from: factory)

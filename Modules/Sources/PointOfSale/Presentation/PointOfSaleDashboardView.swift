@@ -6,7 +6,6 @@ struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
@@ -140,7 +139,7 @@ struct PointOfSaleDashboardView: View {
         .onChange(of: isPhoneLayout) { _, isPhoneLayout in
             if !isPhoneLayout {
                 // These compact-only cover hosts are removed by the layout change.
-                if phoneShowingBarcodeScannerSetup || posModel.editingCustomAmount != nil {
+                if phoneShowingBarcodeScannerSetup {
                     coverManager.clearPresentation()
                 }
                 phoneShowingCart = false
@@ -194,6 +193,11 @@ struct PointOfSaleDashboardView: View {
         }
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
+        }
+        // Hosted here rather than in either pane so it covers both panes (and the phone cart sheet)
+        // and survives size class changes.
+        .posFullScreenCover(item: $posModel.customAmountFlow) { flow in
+            POSCustomAmountFlowView(flow: flow)
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
@@ -337,11 +341,8 @@ struct PointOfSaleDashboardView: View {
                 .presentationDetents([.medium, .large], selection: $phoneCartPresentationDetent)
                 .presentationDragIndicator(.visible)
         }
-        // Phone-only covers presented at the dashboard level:
-        //  - Barcode scanner setup, triggered from the cart sheet.
-        //  - Edit-custom-amount, hosted here so it sits above the cart sheet (CartView's
-        //    edit cover is gated to iPad, and POSSheet dismissal can tear down covers
-        //    that live inside the sheet's content).
+        // Phone-only cover presented at the dashboard level: barcode scanner setup, triggered
+        // from the cart sheet.
         .if(isPhoneLayout) { view in
             view
                 .posFullScreenCover(isPresented: $phoneShowingBarcodeScannerSetup) {
@@ -350,20 +351,6 @@ struct PointOfSaleDashboardView: View {
                         POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
                             .environment(\.posModalParentSize, proxy.size)
                     }
-                }
-                .posFullScreenCover(item: Binding(
-                    get: { posModel.editingCustomAmount },
-                    set: { posModel.editingCustomAmount = $0 }
-                )) { customAmount in
-                    AddCustomAmountView(
-                        currencySettings: currencyProvider.currencySettings,
-                        editing: customAmount,
-                        backButtonStyle: .close,
-                        onDismiss: { posModel.editingCustomAmount = nil },
-                        onSubmit: { updated in
-                            posModel.upsertCustomAmount(updated, mode: .edit)
-                        }
-                    )
                 }
         }
         .background(Color.posSurface.ignoresSafeArea())

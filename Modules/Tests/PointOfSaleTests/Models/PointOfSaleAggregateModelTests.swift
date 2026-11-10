@@ -277,43 +277,60 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.customAmounts.first?.id == second.id)
         }
 
-        @Test func editingCustomAmount_starts_nil() async throws {
+        @Test func customAmountFlow_starts_nil() async throws {
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
 
-            #expect(sut.editingCustomAmount == nil)
+            #expect(sut.customAmountFlow == nil)
         }
 
-        @Test func editingCustomAmount_set_to_value_then_nil_drives_modal_lifecycle() async throws {
+        @Test func customAmountFlow_set_to_add_then_nil_drives_cover_lifecycle() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+
+            // When set to a value
+            sut.customAmountFlow = .add
+
+            // Then
+            #expect(sut.customAmountFlow == .add)
+
+            // When cleared
+            sut.customAmountFlow = nil
+
+            // Then
+            #expect(sut.customAmountFlow == nil)
+        }
+
+        @Test func customAmountFlow_set_to_edit_then_nil_drives_cover_lifecycle() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
             let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
 
             // When set to a value
-            sut.editingCustomAmount = customAmount
+            sut.customAmountFlow = .edit(customAmount)
 
             // Then
-            #expect(sut.editingCustomAmount == customAmount)
+            #expect(sut.customAmountFlow == .edit(customAmount))
 
             // When cleared
-            sut.editingCustomAmount = nil
+            sut.customAmountFlow = nil
 
             // Then
-            #expect(sut.editingCustomAmount == nil)
+            #expect(sut.customAmountFlow == nil)
         }
 
-        @Test func upsertCustomAmount_does_not_mutate_editingCustomAmount() async throws {
-            // Given - the cart-edit modal is open on one entry
+        @Test func upsertCustomAmount_does_not_mutate_customAmountFlow() async throws {
+            // Given - the edit flow is open on one entry
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
             let original = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
             sut.upsertCustomAmount(original, mode: .add)
-            sut.editingCustomAmount = original
+            sut.customAmountFlow = .edit(original)
 
             // When the merchant submits an updated value
             let updated = POSCustomAmount(id: original.id, name: "Service fee", amount: "12.00", isTaxable: false)
             sut.upsertCustomAmount(updated, mode: .edit)
 
-            // Then upsert leaves editingCustomAmount alone — dismissal is the caller's responsibility
-            #expect(sut.editingCustomAmount == original)
+            // Then upsert leaves the flow alone — dismissal is the caller's responsibility
+            #expect(sut.customAmountFlow == .edit(original))
         }
 
         @Test func removeAllItemsFromCart_clears_custom_amounts_too() async throws {

@@ -2,6 +2,7 @@ import Testing
 @testable import PointOfSale
 import struct Yosemite.POSItemIdentifier
 import struct Yosemite.POSCustomAmount
+import enum Yosemite.CardReaderServiceError
 
 struct TotalsViewHelperTests {
 
@@ -406,10 +407,10 @@ extension TotalsViewHelperTests {
 
     @MainActor
     @Test
-    func test_showsPaymentStatusScreen_when_card_payment_failed_then_returns_true() {
+    func test_showsPaymentStatusScreen_when_payment_is_cancelled_on_reader_then_returns_true() {
         let sut = TotalsViewHelper()
 
-        let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: .paymentError, cash: .idle),
+        let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle),
                                                   readerConnectionStatus: .connected(Self.reader),
                                                   inlineMessage: Self.cancelledOnReaderMessage)
 
@@ -417,13 +418,17 @@ extension TotalsViewHelperTests {
     }
 
     @MainActor
-    @Test(arguments: [PointOfSaleCardPaymentState.validatingOrderError, .paymentIntentCreationError])
-    func test_showsPaymentStatusScreen_when_error_is_shown_with_order_totals_then_returns_false(cardState: PointOfSaleCardPaymentState) {
+    @Test
+    func test_showsPaymentStatusScreen_when_error_is_shown_with_order_totals_then_returns_false() {
         let sut = TotalsViewHelper()
+        let message = PointOfSaleCardPresentPaymentMessageType.paymentIntentCreationError(
+            viewModel: PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel(error: CardReaderServiceError.paymentCapture(),
+                                                                                        tryPaymentAgainButtonAction: {},
+                                                                                        editOrderButtonAction: {}))
 
-        let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: cardState, cash: .idle),
+        let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: .paymentIntentCreationError, cash: .idle),
                                                   readerConnectionStatus: .connected(Self.reader),
-                                                  inlineMessage: Self.cancelledOnReaderMessage)
+                                                  inlineMessage: message)
 
         #expect(!result)
     }
@@ -433,7 +438,7 @@ extension TotalsViewHelperTests {
     func test_showsPaymentStatusScreen_when_reader_is_reconnecting_then_returns_false() {
         let sut = TotalsViewHelper()
 
-        let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: .idle, cash: .idle),
+        let result = sut.showsPaymentStatusScreen(paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle),
                                                   readerConnectionStatus: .reconnecting(Self.reader),
                                                   inlineMessage: Self.cancelledOnReaderMessage)
 

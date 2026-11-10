@@ -44,12 +44,11 @@ struct TotalsViewHelper {
         if paymentState.isSuccess {
             return true
         }
-        guard !paymentViewHelper.shouldShowTotalsFields(for: paymentState),
-              !shouldShowReconnectingMessage(readerConnectionStatus: readerConnectionStatus, paymentState: paymentState),
-              !paymentViewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: readerConnectionStatus, paymentState: paymentState) else {
+        guard inlineMessage?.isStatusScreen == true else {
             return false
         }
-        return inlineMessage?.isStatusScreen == true
+        return !shouldShowReconnectingMessage(readerConnectionStatus: readerConnectionStatus, paymentState: paymentState)
+            && !paymentViewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: readerConnectionStatus, paymentState: paymentState)
     }
 
     /// Cash payment button visibility for the cart flow (adds order state guards on top of the base check).

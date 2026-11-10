@@ -31,10 +31,10 @@
             <viewLayoutGuide key="safeArea" id="uaI-LZ-Fv9"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="dSp-Uj-RsY" secondAttribute="trailing" id="4cD-yg-x8f"/>
+                <constraint firstItem="uaI-LZ-Fv9" firstAttribute="trailing" secondItem="dSp-Uj-RsY" secondAttribute="trailing" id="4cD-yg-x8f"/>
                 <constraint firstItem="uaI-LZ-Fv9" firstAttribute="bottom" secondItem="dSp-Uj-RsY" secondAttribute="bottom" id="4io-nm-d5h"/>
                 <constraint firstItem="dSp-Uj-RsY" firstAttribute="top" secondItem="uaI-LZ-Fv9" secondAttribute="top" id="Dhk-G5-nRQ"/>
-                <constraint firstItem="dSp-Uj-RsY" firstAttribute="leading" secondItem="kIk-QQ-uzp" secondAttribute="leading" id="uiZ-CX-Y5O"/>
+                <constraint firstItem="dSp-Uj-RsY" firstAttribute="leading" secondItem="uaI-LZ-Fv9" secondAttribute="leading" id="uiZ-CX-Y5O"/>
             </constraints>
             <point key="canvasLocation" x="-4" y="154"/>
         </view>

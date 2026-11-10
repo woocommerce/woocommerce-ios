@@ -14,8 +14,9 @@ struct CustomerDetailView: View {
 
     var body: some View {
         List {
-            Section(header: Text(Localization.customerSection)) {
+            Section(header: Text(Localization.customerSection).customerRowHorizontalInsets()) {
                 Text(viewModel.name)
+                    .customerRowHorizontalInsets()
                 HStack {
                     Text(viewModel.email ?? Localization.emailPlaceholder)
                         .style(for: viewModel.email)
@@ -41,6 +42,7 @@ struct CustomerDetailView: View {
                         }
                     }
                 }
+                .customerRowHorizontalInsets()
                 HStack {
                     Text(viewModel.phone ?? Localization.phonePlaceholder)
                         .style(for: viewModel.phone)
@@ -87,6 +89,7 @@ struct CustomerDetailView: View {
                         }
                     }
                 }
+                .customerRowHorizontalInsets()
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
 
@@ -106,16 +109,18 @@ struct CustomerDetailView: View {
                     .accessibilityLabel(Localization.newOrder)
                     .renderedIf(viewModel.canCreateNewOrder)
                 }
+                .customerRowHorizontalInsets()
             }
 
-            Section(header: Text(Localization.registrationSection)) {
+            Section(header: Text(Localization.registrationSection).customerRowHorizontalInsets()) {
                 customerDetailRow(label: Localization.usernameLabel, value: viewModel.username)
                 customerDetailRow(label: Localization.dateRegisteredLabel, value: viewModel.dateRegistered)
             }
 
             if let billing = viewModel.formattedBilling, billing.isNotEmpty {
-                Section(header: Text(Localization.billingSection)) {
+                Section(header: Text(Localization.billingSection).customerRowHorizontalInsets()) {
                     Text(billing)
+                        .customerRowHorizontalInsets()
                         .swipeActions(edge: .leading) {
                             Button {
                                 viewModel.copyBillingAddress()
@@ -133,8 +138,9 @@ struct CustomerDetailView: View {
                 }
             }
             if let shipping = viewModel.formattedShipping, shipping.isNotEmpty {
-                Section(header: Text(Localization.shippingSection)) {
+                Section(header: Text(Localization.shippingSection).customerRowHorizontalInsets()) {
                     Text(shipping)
+                        .customerRowHorizontalInsets()
                         .swipeActions(edge: .leading) {
                             Button {
                                 viewModel.copyShippingAddress()
@@ -152,7 +158,7 @@ struct CustomerDetailView: View {
                 }
             }
             if viewModel.showLocation {
-                Section(header: Text(Localization.locationSection)) {
+                Section(header: Text(Localization.locationSection).customerRowHorizontalInsets()) {
                     customerDetailRow(label: Localization.countryLabel, value: viewModel.country)
                     customerDetailRow(label: Localization.regionLabel, value: viewModel.region)
                     customerDetailRow(label: Localization.cityLabel, value: viewModel.city)
@@ -166,6 +172,7 @@ struct CustomerDetailView: View {
             }
         }
         .listStyle(.plain)
+        .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
         .background(Color(uiColor: .listBackground))
         .navigationTitle(viewModel.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -191,6 +198,17 @@ private extension CustomerDetailView {
             Spacer()
             Text(value ?? Localization.defaultPlaceholder)
                 .style(for: value)
+        }
+        .customerRowHorizontalInsets()
+    }
+}
+
+private extension View {
+    @ViewBuilder func customerRowHorizontalInsets() -> some View {
+        if #available(iOS 26, *) {
+            listRowInsets(.horizontal, 16)
+        } else {
+            self
         }
     }
 }

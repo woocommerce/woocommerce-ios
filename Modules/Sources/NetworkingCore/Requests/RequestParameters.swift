@@ -294,7 +294,7 @@ public extension NSDictionary {
 }
 
 /// Sendable snapshot of JSON-compatible request parameters.
-struct RequestParameters: Sendable {
+struct RequestParameters: Sendable, Equatable {
     private let storage: RequestParameterDictionary?
 
     init(_ parameters: RequestParameterDictionary? = nil) {

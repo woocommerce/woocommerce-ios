@@ -164,6 +164,7 @@ private extension HubMenu {
             switch destination {
             case .settings:
                 ViewControllerContainer(SettingsViewController())
+                    .background(Color(.listBackground).ignoresSafeArea())
                     // SwiftUI would otherwise size the representable to the safe area, hard-clipping
                     // the list above the iOS 26 floating tab bar.
                     .ignoresSafeArea(.container, edges: .bottom)
@@ -184,6 +185,7 @@ private extension HubMenu {
                 Inbox(viewModel: viewModel.inboxViewModel)
             case .reviews:
                 ReviewsView(siteID: viewModel.siteID)
+                    .background(Color(.listBackground).ignoresSafeArea())
                     .navigationBarTitleDisplayMode(.inline)
                     .navigationTitle(Localization.reviews)
             case .coupons:

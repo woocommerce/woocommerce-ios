@@ -6,12 +6,10 @@ struct ShippingLabelCustomPackageForm: View {
     @Environment(\.presentationMode) var presentation
     @ObservedObject var viewModel: ShippingLabelCustomPackageFormViewModel
     @State private var showingPackageTypes = false
-    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         VStack(spacing: Constants.verticalSpacing) {
                 ListHeaderView(text: Localization.customPackageHeader, alignment: .left)
-                    .padding(.horizontal, insets: safeAreaInsets)
 
                 // Package Type & Name
                 VStack(spacing: 0) {
@@ -43,12 +41,10 @@ struct ShippingLabelCustomPackageForm: View {
                                              symbol: nil,
                                              keyboardType: .default)
                     }
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
+                    .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                     Divider()
                     ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.packageName))
                         .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
-                        .padding(.horizontal, insets: safeAreaInsets)
                         .renderedIf(!viewModel.isNameValidated)
                 }
 
@@ -66,15 +62,13 @@ struct ShippingLabelCustomPackageForm: View {
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
                     }
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
+                    .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                     VStack(spacing: 0) {
                         ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.packageLength))
                             .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
                     }
-                    .padding(.horizontal, insets: safeAreaInsets)
                     .renderedIf(!viewModel.isLengthValidated)
 
                     // Package width
@@ -87,15 +81,13 @@ struct ShippingLabelCustomPackageForm: View {
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
                     }
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
+                    .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                     VStack(spacing: 0) {
                         ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.packageWidth))
                             .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
                     }
-                    .padding(.horizontal, insets: safeAreaInsets)
                     .renderedIf(!viewModel.isWidthValidated)
 
                     // Package height
@@ -104,12 +96,10 @@ struct ShippingLabelCustomPackageForm: View {
                                          text: $viewModel.packageHeight,
                                          symbol: viewModel.lengthUnit,
                                          keyboardType: .decimalPad)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
+                        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                     Divider()
                     ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.packageHeight))
                         .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
-                        .padding(.horizontal, insets: safeAreaInsets)
                         .renderedIf(!viewModel.isHeightValidated)
                 }
 
@@ -121,19 +111,15 @@ struct ShippingLabelCustomPackageForm: View {
                                          text: $viewModel.emptyPackageWeight,
                                          symbol: viewModel.weightUnit,
                                          keyboardType: .decimalPad)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
+                        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                     Divider()
                     ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.emptyPackageWeight))
                         .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
-                        .padding(.horizontal, insets: safeAreaInsets)
                         .renderedIf(!viewModel.isWeightValidated)
                     ListHeaderView(text: Localization.weightFooter, alignment: .left)
-                        .padding(.horizontal, insets: safeAreaInsets)
                 }
         }
         .background(Color(.listBackground))
-        .ignoresSafeArea(.container, edges: .horizontal)
     }
 }
 
@@ -194,7 +180,7 @@ struct ShippingLabelAddCustomPackage_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ShippingLabelCustomPackageFormViewModel()
 
-        ShippingLabelCustomPackageForm(viewModel: viewModel, safeAreaInsets: .zero)
+        ShippingLabelCustomPackageForm(viewModel: viewModel)
             .previewLayout(.sizeThatFits)
     }
 }

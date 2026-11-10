@@ -64,7 +64,7 @@ struct CouponDetails: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
+        SafeAreaInsetsReader { _ in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
 
@@ -76,7 +76,6 @@ struct CouponDetails: View {
                                    foregroundColor: viewModel.expiryStatusForegroundColor,
                                    backgroundColor: viewModel.expiryStatusBackgroundColor)
                     }
-                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                     .padding(.horizontal, Constants.margin)
                     .padding(.vertical, Constants.summarySectionVerticalSpacing)
 
@@ -84,17 +83,15 @@ struct CouponDetails: View {
                         .bold()
                         .footnoteStyle()
                         .renderedIf(viewModel.description.isNotEmpty)
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .padding(.horizontal, Constants.margin)
                         .padding(.bottom, Constants.summarySectionVerticalSpacing)
 
                     Divider()
 
                     summarySection
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, Constants.margin)
-                        .background(Color(.listForeground(modal: false)))
+                        .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
                     Divider()
                     Spacer().frame(height: Constants.margin)
@@ -139,15 +136,13 @@ struct CouponDetails: View {
                             }
                         }
                     }
-                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                     .padding(.bottom, Constants.margin)
-                    .background(Color(.listForeground(modal: false)))
+                    .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
                     Divider()
                 }
             }
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal])
             .sheet(isPresented: $showingEnableAnalytics) {
                 EnableAnalyticsView(viewModel: .init(siteID: viewModel.siteID),
                                     presentingController: noticePresenter.presentingViewController,

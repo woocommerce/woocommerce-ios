@@ -6,6 +6,7 @@ import Yosemite
 final class AddCustomAmountPercentageViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let baseAmountForPercentage: Decimal
+    private let fractionDigits: Int
 
     /// Plain number sent as the fee total. Never send the formatted text: "$1,234.50" parses as 1.234.
     @Published private(set) var amount = "0"
@@ -22,9 +23,10 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
 
     @Published var percentage = ""
 
-    init(baseAmountForPercentage: Decimal, currencyFormatter: CurrencyFormatter) {
+    init(baseAmountForPercentage: Decimal, currencyFormatter: CurrencyFormatter, fractionDigits: Int) {
         self.baseAmountForPercentage = baseAmountForPercentage
         self.currencyFormatter = currencyFormatter
+        self.fractionDigits = fractionDigits
     }
 
     func preset(with fee: OrderFeeLine) {
@@ -44,6 +46,7 @@ extension AddCustomAmountPercentageViewModel {
             amount = "0"
             return
         }
-        amount = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
+        let value = baseAmountForPercentage * (decimalInput as Decimal) * 0.01
+        amount = currencyFormatter.localize(value, decimalSeparator: ".", fractionDigits: fractionDigits, groupingSeparator: "") ?? "0"
     }
 }

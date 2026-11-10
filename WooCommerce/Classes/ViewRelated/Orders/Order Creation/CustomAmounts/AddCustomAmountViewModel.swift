@@ -175,7 +175,9 @@ private extension AddCustomAmountViewModel {
         case .fixedAmount:
             formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         case .orderTotalPercentage(let baseAmount):
-            percentageViewModel = AddCustomAmountPercentageViewModel(baseAmountForPercentage: baseAmount, currencyFormatter: currencyFormatter)
+            percentageViewModel = AddCustomAmountPercentageViewModel(baseAmountForPercentage: baseAmount,
+                                                                     currencyFormatter: currencyFormatter,
+                                                                     fractionDigits: storeCurrencySettings.fractionDigits)
         }
     }
 

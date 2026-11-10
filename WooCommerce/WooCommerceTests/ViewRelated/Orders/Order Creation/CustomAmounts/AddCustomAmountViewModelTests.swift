@@ -179,7 +179,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertEqual(CurrencyFormatter(currencySettings: usStoreSettings).convertToDecimal(amount), 1234.5)
     }
 
-    func test_doneButtonPressed_when_store_uses_dot_thousands_separator_then_passes_plain_number() throws {
+    func test_doneButtonPressed_when_store_uses_dot_thousands_separator_then_passes_plain_number_rounded_to_store_decimals() {
         // Given
         let dotThousandsSettings = CurrencySettings(currencyCode: .USD,
                                                     currencyPosition: .left,
@@ -196,9 +196,8 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         viewModel.doneButtonPressed()
 
         // Then
-        // The display text here is "$1.235"; sent as the fee total it is saved as 1 instead of 1235.
-        let amount = try XCTUnwrap(enteredAmount)
-        XCTAssertEqual(CurrencyFormatter(currencySettings: dotThousandsSettings).convertToDecimal(amount), 1234.5)
+        // The sheet shows "$1.235", so the fee total must be 1235, not 1234.5 or 1.
+        XCTAssertEqual(enteredAmount, "1235")
     }
 
     func test_clearInputFocus_when_fixed_amount_then_clears_focused_field() {

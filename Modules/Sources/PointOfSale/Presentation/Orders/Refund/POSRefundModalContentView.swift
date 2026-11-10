@@ -122,7 +122,7 @@ struct POSRefundModalContentView: View {
                 PointOfSaleCardPresentPaymentAlert(alertType: item.alertType)
                     .posInteractiveDismissDisabled(item.alertType.isDismissDisabled)
             }
-            .posModal(item: $cardPresentOnboardingItem, compactStyle: .notMigratedFullScreen, onDismiss: {
+            .posModal(item: $cardPresentOnboardingItem, compactStyle: .cardPaymentsOnboarding, onDismiss: {
                 cardPresentOnboardingItem?.onCancel()
             }) { item in
                 PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(

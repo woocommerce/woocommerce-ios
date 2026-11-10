@@ -3,6 +3,7 @@
 
 26.1
 -----
+- [*] POS: Checkout payment buttons stay on screen with large text sizes, and the content above them scrolls. [https://github.com/woocommerce/woocommerce-ios/pull/18305]
 - [Internal] Track receipt printer setup, connection and print Retry analytics events in POS [https://github.com/woocommerce/woocommerce-ios/pull/18251]
 - [*] Push notifications: The app icon badge no longer stays at 1 after a stock notification. [https://github.com/woocommerce/woocommerce-ios/pull/18250]
 - [*] Push notifications: The app icon badge now clears when the app returns to the Orders or Products tab after a push arrived while that tab was open. [https://github.com/woocommerce/woocommerce-ios/pull/18273]

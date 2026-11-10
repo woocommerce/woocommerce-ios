@@ -16,7 +16,7 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
             .onAppear {
                 handler.configure(session: session)
             }
-            .posModal(item: requestBinding, compactStyle: .notMigratedFullScreen) { request in
+            .posModal(item: requestBinding, compactStyle: .managerApproval) { request in
                 modalContent(for: request)
             }
     }
@@ -38,6 +38,17 @@ private extension POSManagerOverrideModalModifier {
     func modalContent(for request: POSManagerOverrideRequest) -> some View {
         POSManagerOverrideView(handler: handler, request: request)
             .posManagerOverrideModalSizing()
+    }
+}
+
+extension POSModalCompactStyle {
+    /// The PIN pad needs most of the phone screen, so on phone manager approval takes the whole screen.
+    static var managerApproval: POSModalCompactStyle {
+        .fullScreen(title: NSLocalizedString(
+            "pos.managerOverride.modal.title",
+            value: "Manager approval",
+            comment: "Title in the header of the full-screen manager approval PIN screen on phone."
+        ))
     }
 }
 

@@ -18,6 +18,7 @@ final class PriceInputViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_initial_viewModel_state() throws {
         // Given
         let listViewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
@@ -32,6 +33,7 @@ final class PriceInputViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.footerText.isNotEmpty)
     }
 
+    @MainActor
     func test_state_when_price_is_changed_from_empty_to_a_value() {
         // Given
         let listViewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
@@ -48,6 +50,7 @@ final class PriceInputViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.inputValidationError)
     }
 
+    @MainActor
     func test_state_when_price_is_changed_from_a_value_to_empty() {
         // Given
         let listViewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
@@ -64,6 +67,7 @@ final class PriceInputViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.inputValidationError)
     }
 
+    @MainActor
     func test_state_when_selected_regular_price_is_less_than_sale_price() {
         // Given
         let listViewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
@@ -81,6 +85,7 @@ final class PriceInputViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.inputValidationError, .salePriceHigherThanRegularPrice)
     }
 
+    @MainActor
     func test_state_when_selected_valid_price_is_valid_and_action_is_dispatched() {
         // Given
         var callbackValue: String?

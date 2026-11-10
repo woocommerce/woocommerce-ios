@@ -53,23 +53,13 @@ final class ProductListViewModel: ObservableObject {
     @MainActor
     private var productPageOrder = ProductListPageOrder()
 
-    private let providedResultsController: ResultsController<StorageProduct>?
-
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     @MainActor
-    private lazy var resultsController: ResultsController<StorageProduct> = {
-        let resultsController = providedResultsController ?? createResultsController()
-        configureResultsController(resultsController)
-        return resultsController
-    }()
+    private let resultsController: ResultsController<StorageProduct>
 
     @MainActor
-    private lazy var paginationTracker: PaginationTracker = {
-        let paginationTracker = PaginationTracker()
-        paginationTracker.delegate = self
-        return paginationTracker
-    }()
+    private let paginationTracker = PaginationTracker()
 
     @MainActor
     var sortOrder: ProductsSortOrder = .default {
@@ -106,6 +96,7 @@ final class ProductListViewModel: ObservableObject {
     @MainActor
     private var categoryHasChangedRemotely: Bool = false
 
+    @MainActor
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -114,13 +105,16 @@ final class ProductListViewModel: ObservableObject {
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          resultsController: ResultsController<StorageProduct>? = nil) {
         self.siteID = siteID
-        self.providedResultsController = resultsController
+        self.resultsController = resultsController ?? Self.createResultsController(siteID: siteID)
         self.stores = stores
         self.analytics = analytics
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: siteID)
         self.pluginsService = pluginsService
+
+        configureResultsController(self.resultsController)
+        paginationTracker.delegate = self
 
         Task { @MainActor [weak self] in
             await self?.loadFavoriteProductIDs()
@@ -392,7 +386,9 @@ extension ProductListViewModel {
 
 @MainActor
 private extension ProductListViewModel {
-    func createResultsController() -> ResultsController<StorageProduct> {
+    /// Uses the default filters and sort; stored settings are applied once they load.
+    static func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
+        let filters = FilterProductListViewModel.Filters()
         let predicate = NSPredicate.createProductPredicate(siteID: siteID,
                                                            stockStatus: filters.stockStatus,
                                                            productStatus: filters.productStatus,
@@ -400,7 +396,7 @@ private extension ProductListViewModel {
 
         return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager,
                                                  matching: predicate,
-                                                 sortOrder: sortOrder)
+                                                 sortOrder: .default)
     }
 
     /// Configure resultController.

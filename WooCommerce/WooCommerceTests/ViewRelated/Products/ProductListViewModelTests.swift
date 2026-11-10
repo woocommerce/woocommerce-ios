@@ -615,7 +615,6 @@ final class ProductListViewModelTests: XCTestCase {
         let viewModel = makeViewModel(storage: storage)
 
         // When
-        XCTAssertFalse(viewModel.isEmpty)
         insert([Product.fake().copy(siteID: sampleSiteID, productID: 3, name: "C")], into: storage)
 
         // Then

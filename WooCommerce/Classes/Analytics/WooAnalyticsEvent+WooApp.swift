@@ -3130,6 +3130,11 @@ extension WooAnalyticsEvent {
                               properties: [Key.step.rawValue: step.rawValue])
         }
 
+        static func siteMismatch(step: ApplicationPasswordAuthorizationViewModel.SiteMismatchStep) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .applicationPasswordAuthorizationSiteMismatch,
+                              properties: [Key.step.rawValue: step.rawValue])
+        }
+
         static func invalidLoginPageDetected() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginSiteCredentialsInvalidLoginPageDetected, properties: [:])
         }

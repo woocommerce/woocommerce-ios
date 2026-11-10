@@ -1,5 +1,6 @@
 import UIKit
 import Testing
+import WebKit
 import Yosemite
 @testable import WooCommerce
 
@@ -140,6 +141,42 @@ struct ApplicationPasswordAuthorizationViewModelTests {
             #expect(error as? UnexpectedStoreResponseError == failure)
             #expect(LoginUnexpectedResponseFailure(error: error, step: .appPasswordAuthorizationURL)?.step == .appPasswordAuthorizationURL)
         }
+    }
+
+    @Test func test_authorization_when_approval_page_belongs_to_another_site_then_shows_alert_and_tracks_before_approval() async {
+        // Given
+        let fixture = AuthorizationFixture()
+        await fixture.start()
+
+        // When
+        fixture.completeFetch?(.failure(ApplicationPasswordAuthorizationError.siteMismatch))
+        await fixture.waitForFetchHandling()
+
+        // Then
+        let event = WooAnalyticsStat.applicationPasswordAuthorizationSiteMismatch.rawValue
+        #expect(fixture.alert?.message == "This approval page belongs to a different site. For your safety, we stopped the login.")
+        #expect(fixture.alert?.actions.map(\.title) == ["Contact Support", "Cancel"])
+        #expect(fixture.provider.receivedEvents.filter { $0 == event }.count == 1)
+        #expect(fixture.provider.properties(for: event)?["step"] as? String == "before_approval")
+        #expect(!fixture.provider.receivedEvents.contains(WooAnalyticsStat.applicationPasswordAuthorizationURLFetchFailed.rawValue))
+    }
+
+    @Test func test_authorization_when_site_mismatch_happens_twice_then_tracks_and_alerts_once() async throws {
+        // Given
+        let fixture = AuthorizationFixture()
+        await fixture.start()
+        fixture.completeFetch?(.failure(ApplicationPasswordAuthorizationError.siteMismatch))
+        await fixture.waitForFetchHandling()
+        let foreignApprovalPage = try #require(URL(string: "https://other.example/wp-admin/authorize-application.php"))
+
+        // When
+        let policy = await fixture.controller.webView(WKWebView(), decidePolicyFor: URLNavigationAction(url: foreignApprovalPage))
+
+        // Then
+        let event = WooAnalyticsStat.applicationPasswordAuthorizationSiteMismatch.rawValue
+        #expect(policy == .cancel)
+        #expect(fixture.provider.receivedEvents.filter { $0 == event }.count == 1)
+        #expect(fixture.alertCount == 1)
     }
 
     // MARK: - Navigation decisions
@@ -451,5 +488,18 @@ private final class AuthorizationNavigationController: UINavigationController {
     override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
         lastPopToViewControllerAnimated = animated
         return super.popToViewController(viewController, animated: false)
+    }
+}
+
+private final class URLNavigationAction: WKNavigationAction {
+    private let url: URL
+
+    init(url: URL) {
+        self.url = url
+        super.init()
+    }
+
+    override var request: URLRequest {
+        URLRequest(url: url)
     }
 }

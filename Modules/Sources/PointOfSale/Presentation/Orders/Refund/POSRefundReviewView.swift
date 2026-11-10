@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundReviewView: View {
+    @Environment(\.posMetrics) private var metrics
     let onClose: () -> Void
     let itemsCount: Int
     let formattedItemsSubtotal: String
@@ -15,10 +16,10 @@ struct POSRefundReviewView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             headerView
             summarySection
-            Spacer(minLength: POSSpacing.large)
+            Spacer(minLength: metrics.spacing.large)
             buttonsSection
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -38,7 +39,7 @@ private extension POSRefundReviewView {
     }
 
     var summarySection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             itemsAndTaxRows
             Divider()
                 .overlay(Color.posOutlineVariant.opacity(0.5))
@@ -47,12 +48,12 @@ private extension POSRefundReviewView {
                 .overlay(Color.posOutlineVariant.opacity(0.5))
             refundReasonSection
         }
-        .padding(.horizontal, POSPadding.xLarge)
+        .padding(.horizontal, metrics.padding.xLarge)
         .frame(maxWidth: .infinity)
     }
 
     var itemsAndTaxRows: some View {
-        VStack(spacing: POSSpacing.small) {
+        VStack(spacing: metrics.spacing.small) {
             summaryRow(
                 label: POSRefundSubtotalLabel.make(itemsCount),
                 value: formattedItemsSubtotal,
@@ -69,7 +70,7 @@ private extension POSRefundReviewView {
     }
 
     var refundTotalSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             HStack {
                 Text(Localization.refundTotalLabel)
                     .font(.posBodyLargeBold)
@@ -87,7 +88,7 @@ private extension POSRefundReviewView {
 
     var refundReasonSection: some View {
         Button(action: onAddReason) {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 HStack {
                     Text(Localization.refundReasonLabel)
                         .font(.posBodyLargeBold)
@@ -109,7 +110,7 @@ private extension POSRefundReviewView {
     }
 
     var buttonsSection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             Button(Localization.continueButton, action: onContinue)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 

@@ -23,6 +23,7 @@ enum POSRefundModalLayout {
 }
 
 struct POSRefundNavigationHeader: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let title: String?
     let backAction: (() -> Void)?
@@ -37,7 +38,7 @@ struct POSRefundNavigationHeader: View {
     }
 
     var body: some View {
-        HStack(alignment: horizontalSizeClass == .compact ? .center : .top, spacing: POSSpacing.medium) {
+        HStack(alignment: horizontalSizeClass == .compact ? .center : .top, spacing: metrics.spacing.medium) {
             if let backAction {
                 POSPageHeaderBackButton(configuration: .init(state: .enabled, action: backAction))
                     .accessibilityLabel(backAccessibilityLabel)
@@ -55,13 +56,13 @@ struct POSRefundNavigationHeader: View {
                     .multilineTextAlignment(.leading)
             }
 
-            Spacer(minLength: POSSpacing.none)
+            Spacer(minLength: metrics.spacing.none)
         }
         .foregroundColor(Color.posOnSurface)
         .frame(minHeight: horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight : nil)
-        .padding(.horizontal, horizontalSizeClass == .compact ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.xLarge)
-        .padding(.top, horizontalSizeClass == .compact ? POSPadding.medium : POSPadding.xLarge)
-        .padding(.bottom, horizontalSizeClass == .compact ? POSHeaderLayoutConstants.sectionVerticalPadding : POSPadding.xLarge)
+        .padding(.horizontal, horizontalSizeClass == .compact ? metrics.padding.medium : metrics.padding.xLarge)
+        .padding(.top, horizontalSizeClass == .compact ? metrics.padding.medium : metrics.padding.xLarge)
+        .padding(.bottom, horizontalSizeClass == .compact ? metrics.padding.large : metrics.padding.xLarge)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -123,6 +124,7 @@ extension View {
 /// They retain bottom padding inside the safe area; the cart measures its bottom inset separately.
 /// Regular-width sheets keep their existing in-card padding.
 struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     let horizontalSizeClass: UserInterfaceSizeClass?
     let maxWidth: CGFloat
     @Environment(\.posRefundPresentationStyle) private var presentationStyle
@@ -137,9 +139,9 @@ struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
                 }
                 .if(horizontalSizeClass != .compact) {
                     $0
-                        .padding(.horizontal, POSPadding.medium)
-                        .padding(.top, POSPadding.medium)
-                        .padding(.bottom, POSPadding.medium)
+                        .padding(.horizontal, metrics.padding.medium)
+                        .padding(.top, metrics.padding.medium)
+                        .padding(.bottom, metrics.padding.medium)
                 }
                 .frame(maxWidth: .infinity)
         } else if horizontalSizeClass == .compact {
@@ -147,7 +149,7 @@ struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
                 .posPhoneBottomButtonPadding()
         } else {
             content
-                .padding(POSPadding.xLarge)
+                .padding(metrics.padding.xLarge)
         }
     }
 }

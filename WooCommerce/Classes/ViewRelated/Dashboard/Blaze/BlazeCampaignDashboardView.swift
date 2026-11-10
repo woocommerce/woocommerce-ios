@@ -246,7 +246,9 @@ private extension BlazeCampaignDashboardView {
         static let hideIconVerticalPadding: CGFloat = 8
         static let dividerVerticalSpacing: CGFloat = 16
     }
+}
 
+extension BlazeCampaignDashboardView {
     enum Localization {
 
         static let subtitle = NSLocalizedString(
@@ -284,6 +286,12 @@ private extension BlazeCampaignDashboardView {
             value: "Hide Blaze",
             comment: "Button to dismiss the Blaze campaign section on the My Store screen."
         )
+
+        static let suggestedProductLabel = NSLocalizedString(
+            "productInfoView.suggestedProductLabel",
+            value: "Suggested product",
+            comment: "Label for the suggested product on the Blaze dashboard view."
+        )
     }
 }
 
@@ -310,7 +318,7 @@ private struct ProductInfoView: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading) {
-                Text(Localization.suggestedProductLabel)
+                Text(BlazeCampaignDashboardView.Localization.suggestedProductLabel)
                     .foregroundStyle(Color(.textSubtle))
                     .captionStyle()
 
@@ -348,14 +356,6 @@ private struct ProductInfoView: View {
         static let contentPadding: CGFloat = 16
         static let strokeWidth: CGFloat = 1
         static let cornerRadius: CGFloat = 8
-    }
-
-    private enum Localization {
-        static let suggestedProductLabel = NSLocalizedString(
-            "productInfoView.suggestedProductLabel",
-            value: "Suggested product",
-            comment: "Label for the suggested product on the Blaze dashboard view."
-        )
     }
 }
 

@@ -4,6 +4,8 @@
 26.1
 -----
 - [*] POS: Buttons on error, empty and payment result screens now fill the width on iPhone and stay at the bottom of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18310]
+- [*] POS: Checkout payment buttons stay on screen with large text sizes, and the content above them scrolls. [https://github.com/woocommerce/woocommerce-ios/pull/18305]
+- [Internal] Track receipt printer setup, connection and print Retry analytics events in POS [https://github.com/woocommerce/woocommerce-ios/pull/18251]
 - [*] Push notifications: The app icon badge no longer stays at 1 after a stock notification. [https://github.com/woocommerce/woocommerce-ios/pull/18250]
 - [*] Push notifications: The app icon badge now clears when the app returns to the Orders or Products tab after a push arrived while that tab was open. [https://github.com/woocommerce/woocommerce-ios/pull/18273]
 - [**] POS: Point of Sale is now available on iPhone in the US, Canada, Australia and Puerto Rico, and on iOS 18 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
@@ -15,6 +17,7 @@
 - [*] POS: On iPhone, settings, orders and checkout now slide between screens with the standard push animation. [https://github.com/woocommerce/woocommerce-ios/pull/18272]
 - [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]
 - [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
+- [*] POS: On iPhone, Point of Sale uses smaller spacing, paddings and cards, so more products and order details fit on the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18256]
 - [*] Products: Preview signs you in to your store when possible, works after logging in with your store username and password, and no longer shows "Page not found" on stores connected without the Jetpack plugin. [https://github.com/woocommerce/woocommerce-ios/pull/18238]
 - [*] Products: Saving a product with a duplicate SKU now shows a clear error message. [https://github.com/woocommerce/woocommerce-ios/pull/18269]
 - [*] Products: Opening a product that was deleted from the store now says so, for stores connected without Jetpack tunnel. [https://github.com/woocommerce/woocommerce-ios/pull/18269]
@@ -23,6 +26,7 @@
 
 26.0
 -----
+- [Internal] Deletes on stores reached through the Jetpack tunnel are now sent as POST instead of GET. [https://github.com/woocommerce/woocommerce-ios/pull/18276]
 - [*] Push notifications: The "Never miss a new order" card now shows right after logging in to a store without Jetpack. [https://github.com/woocommerce/woocommerce-ios/pull/18216]
 - [*] Shipping labels: Carrier outage notices from WooCommerce Shipping now appear on the label creation screen, and a purchase that fails during an outage explains the incident instead of showing a generic error. [https://github.com/woocommerce/woocommerce-ios/pull/18194]
 - [*] POS: Made product search faster on large catalogs. [https://github.com/woocommerce/woocommerce-ios/pull/18174]

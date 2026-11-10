@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundConfirmationView: View {
+    @Environment(\.posMetrics) private var metrics
     let formattedRefundTotal: String
     let paymentMethodDescription: String
     let isProcessing: Bool
@@ -17,13 +18,13 @@ struct POSRefundConfirmationView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 if isProcessing {
                     processingSection
                 } else {
-                    Spacer(minLength: POSSpacing.large)
+                    Spacer(minLength: metrics.spacing.large)
                     confirmationMessageView
-                    Spacer(minLength: POSSpacing.large)
+                    Spacer(minLength: metrics.spacing.large)
                     buttonsSection
                 }
             }
@@ -127,7 +128,7 @@ private extension POSRefundConfirmationView {
     }
 
     var confirmationMessageView: some View {
-        VStack(spacing: POSSpacing.small) {
+        VStack(spacing: metrics.spacing.small) {
             Text(String(format: Localization.titleFormat, formattedRefundTotal))
                 .font(.posHeadingBold)
                 .foregroundColor(Color.posOnSurface)
@@ -144,7 +145,7 @@ private extension POSRefundConfirmationView {
                 .foregroundColor(Color.posOnSurface)
         }
         .multilineTextAlignment(.center)
-        .padding(.horizontal, POSPadding.xLarge)
+        .padding(.horizontal, metrics.padding.xLarge)
         .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
     }
 
@@ -163,7 +164,7 @@ private extension POSRefundConfirmationView {
             POSPaymentLoadingView(title: Localization.preparingReaderTitle,
                                   message: Localization.preparingReaderMessage,
                                   animation: .init(namespace: paymentMessageNamespace))
-            .padding(POSPadding.xLarge)
+            .padding(metrics.padding.xLarge)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .waitingForCard(let inputMethods, _):
             cardPresentMessageView(.waitingForCard(.init(inputMethods: inputMethods)))
@@ -197,14 +198,14 @@ private extension POSRefundConfirmationView {
                               message: Localization.processingMessage,
                               animation: .init(namespace: paymentMessageNamespace))
         .frame(maxWidth: .infinity)
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     func cardPresentMessageView(_ messageType: POSRefundCardPresentMessageType) -> some View {
         POSRefundCardPresentMessageView(messageType: messageType,
                                         animation: .init(namespace: paymentMessageNamespace))
-        .padding(messageType.isStatusScreen ? POSPadding.none : POSPadding.xLarge)
+        .padding(messageType.isStatusScreen ? metrics.padding.none : metrics.padding.xLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(messageType.usesPrimaryBackground ? Color.posPrimary : Color.clear)
     }
@@ -270,7 +271,7 @@ private extension POSRefundConfirmationView {
     }
 
     var buttonsSection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             Button(Localization.confirmButton, action: onConfirm)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 

@@ -1,13 +1,14 @@
 import SwiftUI
 
 struct POSRefundNothingToRefundView: View {
+    @Environment(\.posMetrics) private var metrics
     let onClose: () -> Void
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             headerView
             POSStatusScreenLayout {
                 contentView
@@ -30,7 +31,7 @@ private extension POSRefundNothingToRefundView {
     }
 
     var contentView: some View {
-        VStack(spacing: POSSpacing.small) {
+        VStack(spacing: metrics.spacing.small) {
             Text(Localization.title)
                 .font(.posHeadingBold)
                 .foregroundColor(Color.posOnSurface)
@@ -41,7 +42,7 @@ private extension POSRefundNothingToRefundView {
                 .foregroundColor(Color.posOnSurface)
         }
         .multilineTextAlignment(.center)
-        .padding(.horizontal, POSPadding.xLarge)
+        .padding(.horizontal, metrics.padding.xLarge)
         .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
     }
 

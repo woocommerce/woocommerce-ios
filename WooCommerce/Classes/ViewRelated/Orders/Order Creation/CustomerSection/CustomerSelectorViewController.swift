@@ -11,6 +11,8 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private var customerSearchCommand: CustomerSearchUICommand?
     private var emptyStateViewController: UIViewController?
     private var customerListErrorHostingController: UIHostingController<CustomerListErrorView>?
+    // Initial loading starts before the search table exists.
+    private let loadingContainerView = UIView()
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
@@ -72,9 +74,11 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "customer-selector-screen"
+        view.backgroundColor = .listBackground
 
         configureNavigation()
-        displayGhostContent()
+        configureLoadingContainer()
+        displayGhostContent(over: loadingContainerView)
         loadCustomersContent()
     }
 }
@@ -111,6 +115,18 @@ extension CustomerSelectorViewController {
 }
 
 private extension CustomerSelectorViewController {
+    func configureLoadingContainer() {
+        loadingContainerView.translatesAutoresizingMaskIntoConstraints = false
+        loadingContainerView.isUserInteractionEnabled = false
+        view.addSubview(loadingContainerView)
+        NSLayoutConstraint.activate([
+            loadingContainerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            loadingContainerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            loadingContainerView.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+
     func loadCustomersContent() {
         if viewModel.isEligibleForAdvancedSearch() {
             viewModel.loadCustomersListData(onCompletion: { [weak self] result in
@@ -346,7 +362,7 @@ private extension CustomerSelectorViewController {
         ) { [weak self] _ in
             guard let self else { return }
             removeEmptyStateViewController()
-            displayGhostContent()
+            displayGhostContent(over: loadingContainerView)
             loadCustomersContent()
         }
     }

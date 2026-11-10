@@ -116,7 +116,7 @@ struct POSOtherPaymentMethodsSheet: View {
 private extension POSOtherPaymentMethodsSheet {
     enum Constants {
         /// Fixed width for the leading icon in each payment method row. Not a
-        /// POSSpacing token — it sizes the icon column, not a semantic gap.
+        /// POSMetrics token — it sizes the icon column, not a semantic gap.
         static let iconFrameWidth: CGFloat = 28
     }
 

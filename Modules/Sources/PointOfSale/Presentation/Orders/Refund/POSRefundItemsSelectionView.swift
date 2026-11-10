@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 
 struct POSRefundItemsSelectionView: View {
+    @Environment(\.posMetrics) private var metrics
     let onClose: () -> Void
     let onContinue: () -> Void
     let onRefreshItems: () -> Void
@@ -52,10 +53,10 @@ struct POSRefundItemsSelectionView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             headerView
 
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 itemsHeaderView
 
                 Divider()
@@ -63,8 +64,8 @@ struct POSRefundItemsSelectionView: View {
 
                 itemsList
             }
-            .padding(.horizontal, POSPadding.xLarge)
-            .padding(.bottom, POSPadding.xLarge)
+            .padding(.horizontal, metrics.padding.xLarge)
+            .padding(.bottom, metrics.padding.xLarge)
             .frame(maxHeight: .infinity)
 
             actionsFooter
@@ -88,7 +89,7 @@ private extension POSRefundItemsSelectionView {
 
     var itemsHeaderView: some View {
         // Top aligned so the checkbox stays level with the first line once the label wraps.
-        HStack(alignment: .top, spacing: POSSpacing.small) {
+        HStack(alignment: .top, spacing: metrics.spacing.small) {
             POSCheckbox(
                 isSelected: allItemsSelected,
                 onToggle: {
@@ -103,12 +104,12 @@ private extension POSRefundItemsSelectionView {
             // inside its own narrow column, which left the two ragged against each other
             // in translations longer than the English this was sized for.
             ViewThatFits(in: .horizontal) {
-                HStack(spacing: POSSpacing.xSmall) {
+                HStack(spacing: metrics.spacing.xSmall) {
                     selectAllLabel
                     selectedCountLabel
                 }
 
-                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                     selectAllLabel
                     selectedCountLabel
                 }
@@ -116,7 +117,7 @@ private extension POSRefundItemsSelectionView {
 
             Spacer()
         }
-        .padding(.bottom, POSPadding.medium)
+        .padding(.bottom, metrics.padding.medium)
     }
 
     private var selectAllLabel: some View {
@@ -137,7 +138,7 @@ private extension POSRefundItemsSelectionView {
 
     var itemsList: some View {
         ScrollView {
-            LazyVStack(spacing: POSSpacing.none) {
+            LazyVStack(spacing: metrics.spacing.none) {
                 ForEach(refundSelectableItems.indices, id: \.self) { index in
                     let item = refundSelectableItems[index]
 
@@ -158,7 +159,7 @@ private extension POSRefundItemsSelectionView {
     }
 
     var actionsFooter: some View {
-        VStack(spacing: POSSpacing.small) {
+        VStack(spacing: metrics.spacing.small) {
             if let previewErrorMessage {
                 Text(previewErrorMessage)
                     .font(.posBodyMediumRegular())

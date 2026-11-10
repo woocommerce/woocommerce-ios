@@ -67,8 +67,8 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="TkB-a6-KpO" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="B4z-ah-7Cu"/>
-                <constraint firstAttribute="trailing" secondItem="TkB-a6-KpO" secondAttribute="trailing" id="Dbp-pD-lgO"/>
-                <constraint firstItem="TkB-a6-KpO" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="NMC-yh-pAE"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="TkB-a6-KpO" secondAttribute="trailing" id="Dbp-pD-lgO"/>
+                <constraint firstItem="TkB-a6-KpO" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="NMC-yh-pAE"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="TkB-a6-KpO" secondAttribute="bottom" id="RRa-t1-YWP"/>
             </constraints>
             <point key="canvasLocation" x="132" y="98"/>

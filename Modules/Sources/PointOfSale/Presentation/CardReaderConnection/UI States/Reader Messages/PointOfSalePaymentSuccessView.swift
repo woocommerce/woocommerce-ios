@@ -42,7 +42,7 @@ struct PointOfSalePaymentSuccessView: View {
                 isTitleFocused = true
             }
         }
-        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .notMigratedFullScreen) {
+        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .receiptPrinterSetup) {
             if let controller = posModel.settingsController.printerConnectionController {
                 POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
             }

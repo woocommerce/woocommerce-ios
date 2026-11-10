@@ -323,7 +323,7 @@ private extension POSSettingsHardwareDetailView {
                                 action: { showPrinterSetupModal = true })
             }
         }
-        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .notMigratedFullScreen) {
+        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .receiptPrinterSetup) {
             POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
         }
     }

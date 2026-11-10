@@ -16,7 +16,6 @@ extension POSListEmptyViewModelProtocol {
 struct POSListEmptyView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let viewModel: any POSListEmptyViewModelProtocol
 
     private let onAction: (() -> Void)?
@@ -29,8 +28,7 @@ struct POSListEmptyView: View {
     }
 
     var body: some View {
-        ScrollableVStack {
-            Spacer()
+        POSStatusScreenLayout {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
                 let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && !keyboard.isFullSizeKeyboardVisible
 
@@ -62,23 +60,18 @@ struct POSListEmptyView: View {
                         .posPadding(.horizontal, \.medium)
                         .multilineTextAlignment(.center)
                 }
-
-                Spacer().frame(height: metrics.spacing.xxLarge)
-
-                if let onAction, let buttonTitle = viewModel.buttonTitle {
-                    Button(action: {
-                        onAction()
-                    }, label: {
-                        Text(buttonTitle)
-                    })
-                    .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .posStatusButtonsWidth(addsHorizontalPadding: false)
-                }
             }
-            Spacer()
+            .multilineTextAlignment(.center)
+        } buttons: {
+            if let onAction, let buttonTitle = viewModel.buttonTitle {
+                Button(action: {
+                    onAction()
+                }, label: {
+                    Text(buttonTitle)
+                })
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+            }
         }
-        .multilineTextAlignment(.center)
-        .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
         .animation(.default, value: keyboard.keyboardHeight)
     }
 

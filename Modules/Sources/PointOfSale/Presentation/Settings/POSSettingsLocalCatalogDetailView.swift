@@ -2,6 +2,7 @@ import SwiftUI
 import enum Yosemite.POSCatalogSyncProgress
 
 struct POSSettingsLocalCatalogDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: POSSettingsLocalCatalogViewModel
     /// Gates an edit action on `editPOSSettings`. Defaults to running it directly (previews / no host gate).
     private let requestEditPermission: POSPermissionRequest
@@ -14,19 +15,19 @@ struct POSSettingsLocalCatalogDetailView: View {
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.localCatalogTitle)
                 .foregroundColor(.posSurface)
 
             ScrollView {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     catalogStatus
                     if viewModel.deviceHasCellularCapability {
                         managingDataUsage
                     }
                     manualCatalogUpdate
                 }
-                .posContentPadding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, metrics.padding.medium)
             }
         }
         .background(Style.backgroundColor)
@@ -43,7 +44,7 @@ private extension POSSettingsLocalCatalogDetailView {
     @ViewBuilder
     var catalogStatus: some View {
         POSInformationCard {
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 POSInformationCardFieldRow(
                     label: Localization.catalogSize,
                     value: viewModel.catalogSize
@@ -65,7 +66,7 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     var managingDataUsage: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSInformationCard {
                 POSInformationCardFieldRowWithToggle(
                     label: Localization.managingDataUsage,
@@ -90,7 +91,7 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     var manualCatalogUpdate: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSInformationCard {
                 POSInformationCardFieldRow(
                     label: Localization.manualCatalogUpdate,
@@ -132,14 +133,14 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     func errorView(errorState: PointOfSaleErrorState) -> some View {
-        VStack(spacing: POSSpacing.xxLarge) {
+        VStack(spacing: metrics.spacing.xxLarge) {
             POSModalCloseButton(accessibilityLabel: Localization.errorCancelButtonTitle) {
                 viewModel.catalogRefreshError = nil
             }
 
             POSErrorView(viewModel: errorViewModel(errorState: errorState))
         }
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
         .frame(maxWidth: Constants.errorModalMaxWidth)
     }
 

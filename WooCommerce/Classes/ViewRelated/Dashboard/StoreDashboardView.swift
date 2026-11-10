@@ -189,11 +189,12 @@ private extension StoreDashboardView {
                 onViewAllTapped: handleViewAllOnboardingTasksTap
             )
         case .blaze:
-            BlazeCampaignDashboardView(
+            StoreBlazeCampaignDashboardView(
                 viewModel: viewModel.blazeCampaignDashboardViewModel,
                 showAllCampaignsTapped: actions.showAllBlazeCampaignsTapped,
                 createCampaignTapped: actions.createBlazeCampaignTapped
             )
+            .padding(.horizontal, StorePadding.p5)
         case .performance:
             StorePerformanceDashboardCard(
                 viewModel: viewModel.storePerformanceViewModel,
@@ -210,16 +211,18 @@ private extension StoreDashboardView {
             )
             .padding(.horizontal, StorePadding.p5)
         case .inbox:
-            InboxDashboardCard(
+            StoreInboxDashboardCard(
                 viewModel: viewModel.inboxViewModel,
                 onShowAllInboxMessages: { actions.showAllInboxMessagesTapped?() }
             )
+            .padding(.horizontal, StorePadding.p5)
         case .reviews:
-            ReviewsDashboardCard(
+            StoreReviewsDashboardCard(
                 viewModel: viewModel.reviewsViewModel,
                 onViewAllReviews: { actions.viewAllReviewsTapped?() },
                 onViewReviewDetail: { actions.reviewDetailTapped?($0) }
             )
+            .padding(.horizontal, StorePadding.p5)
         case .coupons:
             StoreMostActiveCouponsCard(
                 viewModel: viewModel.mostActiveCouponsViewModel,
@@ -238,11 +241,12 @@ private extension StoreDashboardView {
             )
             .padding(.horizontal, StorePadding.p5)
         case .googleAds:
-            GoogleAdsDashboardCard(
+            StoreGoogleAdsDashboardCard(
                 viewModel: viewModel.googleAdsDashboardCardViewModel,
                 onCreateNewCampaign: { actions.createGoogleAdsCampaignTapped?() },
                 onShowAllCampaigns: { actions.showAllGoogleAdsCampaignsTapped?() }
             )
+            .padding(.horizontal, StorePadding.p5)
         case .inAppFeedback:
             InAppFeedbackCardView(viewModel: viewModel.inAppFeedbackCardViewModel)
                 .padding(.horizontal, LegacyLayout.padding)

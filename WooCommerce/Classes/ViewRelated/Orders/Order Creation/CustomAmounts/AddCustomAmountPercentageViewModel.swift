@@ -10,7 +10,7 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
 
     /// Plain number sent as the fee total. Never send the formatted text: "$1,234.50" parses as 1.234.
     @Published private(set) var amount = "0"
-    var percentageCalculatedAmount: String {
+    var formattedAmount: String {
         currencyFormatter.formatAmount(amount) ?? ""
     }
     var baseAmountForPercentageString: String {

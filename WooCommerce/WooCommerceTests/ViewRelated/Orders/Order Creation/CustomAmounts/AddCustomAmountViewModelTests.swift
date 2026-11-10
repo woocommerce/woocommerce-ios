@@ -157,7 +157,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         viewModel.percentageViewModel?.updatePercentageCalculatedAmount("\(percentage)")
 
         // Then
-        XCTAssertEqual(viewModel.percentageViewModel?.percentageCalculatedAmount, currencyFormatter.formatAmount(amountString))
+        XCTAssertEqual(viewModel.percentageViewModel?.formattedAmount, currencyFormatter.formatAmount(amountString))
     }
 
     func test_doneButtonPressed_when_percentage_amount_has_thousands_then_passes_plain_number_not_display_string() throws {

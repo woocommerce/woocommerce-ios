@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSBarcodeScannerSetup: View {
+    @Environment(\.posMetrics) private var metrics
     @Binding var isPresented: Bool
     @State private var flowManager: PointOfSaleBarcodeScannerSetupFlowManager
     @Environment(\.posModalParentSize) var parentSize
@@ -47,7 +48,7 @@ struct POSBarcodeScannerSetup: View {
                 .posModalCloseButton(action: {
                     isPresented = false
                 })
-                .padding(POSPadding.xLarge)
+                .padding(metrics.padding.xLarge)
                 .background(Color.posSurfaceBright)
         }
         // `.posModalFullScreen(isCompactWidth)` is intentionally not called here —
@@ -57,22 +58,22 @@ struct POSBarcodeScannerSetup: View {
     }
 
     private var compactBody: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             closeButton
 
-            Spacer(minLength: POSSpacing.none)
+            Spacer(minLength: metrics.spacing.none)
 
             compactModalContent
 
-            Spacer(minLength: POSSpacing.none)
+            Spacer(minLength: metrics.spacing.none)
         }
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
         .background(Color.posSurfaceBright)
         .frame(width: parentSize.width, height: parentSize.height, alignment: .top)
     }
 
     private var modalContent: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             ScrollView(showsIndicators: false) {
                 HStack {
                     Spacer()
@@ -88,7 +89,7 @@ struct POSBarcodeScannerSetup: View {
 
     private var compactModalContent: some View {
         ViewThatFits(in: .vertical) {
-            VStack(spacing: POSSpacing.xLarge) {
+            VStack(spacing: metrics.spacing.xLarge) {
                 centeredCurrentContent
 
                 flowButtons

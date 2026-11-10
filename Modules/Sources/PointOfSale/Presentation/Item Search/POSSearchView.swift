@@ -24,6 +24,7 @@ protocol POSSearchable {
 
 /// A reusable search field view for POS items
 struct POSSearchField: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAnalytics) private var analytics
 
@@ -44,7 +45,7 @@ struct POSSearchField: View {
     }
 
     var body: some View {
-        HStack(spacing: POSSpacing.small) {
+        HStack(spacing: metrics.spacing.small) {
             POSPageHeaderBackButton(configuration: .init(state: .enabled, action: {
                 searchTerm = ""
                 onBack()

@@ -34,7 +34,7 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                     Text(message)
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posBodyLargeRegular())
-                        .padding([.leading, .trailing])
+                        .posPadding(.horizontal, \.medium)
                 }
             }
         } buttons: {

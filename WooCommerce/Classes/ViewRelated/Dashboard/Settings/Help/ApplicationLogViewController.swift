@@ -51,6 +51,11 @@ class ApplicationLogViewController: UIViewController {
         registerTableViewCells()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     /// Style the back button, add the title to nav bar.
     ///
     func configureNavigation() {

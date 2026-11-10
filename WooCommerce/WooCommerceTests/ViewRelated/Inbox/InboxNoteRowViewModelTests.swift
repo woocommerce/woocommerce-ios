@@ -75,6 +75,19 @@ final class InboxNoteRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.date, "in 2 months")
     }
 
+    func test_equality_when_actioned_state_differs_then_view_models_are_not_equal() {
+        // Given
+        let note = InboxNote.fake()
+        let actionedViewModel = InboxNoteRowViewModel(note: note.copy(status: "actioned"))
+        let unactionedViewModel = InboxNoteRowViewModel(note: note.copy(status: "unactioned"))
+
+        // When
+        let areEqual = actionedViewModel == unactionedViewModel
+
+        // Then
+        XCTAssertFalse(areEqual)
+    }
+
     // MARK: - `InboxNoteRowActionViewModel`
 
     func test_initializing_InboxNoteRowActionViewModel_with_action_with_empty_URL_path_has_nil_URL() {

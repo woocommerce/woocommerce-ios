@@ -56,6 +56,11 @@ final class ManualTrackingViewController: UIViewController {
         table.reloadData()
         activateActionButtonIfNecessary()
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        table.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
 }
 
 

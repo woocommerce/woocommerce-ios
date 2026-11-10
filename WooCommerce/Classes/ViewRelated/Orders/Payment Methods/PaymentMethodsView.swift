@@ -27,8 +27,8 @@ struct PaymentMethodsView: View {
     @State private var showingLearnMore = false
 
     var body: some View {
-        SafeAreaInsetsReader { safeAreaInsets in
-            content(safeAreaInsets: safeAreaInsets)
+        SafeAreaInsetsReader { _ in
+            content(safeAreaInsets: .zero)
         }
     }
 
@@ -117,7 +117,7 @@ struct PaymentMethodsView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .background(Color(.listForeground(modal: false)))
+                    .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
                     if let message = viewModel.cardPaymentUnavailableMessage {
                         FooterNotice(infoText: message)
@@ -143,7 +143,6 @@ struct PaymentMethodsView: View {
                 Spacer()
             }
         }
-        .ignoresSafeArea(edges: .horizontal)
         .disabled(viewModel.disableViewActions)
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(viewModel.title)

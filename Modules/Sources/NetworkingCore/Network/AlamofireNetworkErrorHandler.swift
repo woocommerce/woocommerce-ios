@@ -71,15 +71,9 @@ final class AlamofireNetworkErrorHandler: Sendable {
         originalRequest: URLRequestConvertible,
         failure: Error?
     ) {
-        guard let urlRequest = try? originalRequest.asURLRequest() else { return }
+        guard let request = originalRequest.originalResponseRequest as? JetpackRequest else { return }
         let retriedRequest: RetriedJetpackRequest? = state.withLock { state in
-            let retriedRequestIndex = state.retriedJetpackRequests.firstIndex { retriedRequest in
-                guard let retriedURLRequest = try? retriedRequest.request.asURLRequest() else {
-                    return false
-                }
-                return urlRequest.url == retriedURLRequest.url &&
-                       urlRequest.httpMethod == retriedURLRequest.httpMethod
-            }
+            let retriedRequestIndex = state.retriedJetpackRequests.firstIndex { $0.request == request }
 
             guard let index = retriedRequestIndex else { return nil }
 
@@ -134,17 +128,11 @@ final class AlamofireNetworkErrorHandler: Sendable {
     }
 
     func isRequestRetried(_ request: URLRequestConvertible) -> Bool {
-        guard let urlRequest = try? request.asURLRequest() else {
+        guard let request = request.originalResponseRequest as? JetpackRequest else {
             return false
         }
         let retriedJetpackRequests = state.withLock { $0.retriedJetpackRequests }
-        return retriedJetpackRequests.contains { retriedRequest in
-            guard let currentItem = try? retriedRequest.request.asURLRequest() else {
-                return false
-            }
-            return currentItem.url == urlRequest.url &&
-                   currentItem.httpMethod == urlRequest.httpMethod
-        }
+        return retriedJetpackRequests.contains { $0.request == request }
     }
 
     func flagSiteAsUnsupported(for siteID: Int64, flow: RequestFlow, cause: AppPasswordFlagCause, error: Error) {
@@ -278,6 +266,7 @@ private extension AlamofireNetworkErrorHandler {
     }
 }
 /// Helper type to keep track of retried requests with accompanied error
+/// Matched by comparing `request` itself, because tunneled POST, PUT and DELETE requests all share one URL and HTTP method.
 struct RetriedJetpackRequest {
     let request: JetpackRequest
     let error: Error

@@ -101,12 +101,12 @@ extension View {
 }
 
 #Preview {
-    VStack(alignment: .leading, spacing: POSSpacing.medium) {
+    VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.medium) {
         POSPlaceholderText(.redactedPlaceholder(length: 8), font: .posBodySmallRegular())
         POSPlaceholderText(.redactedPlaceholder(length: 8), font: .posBodyLargeBold)
         POSPlaceholderBar(width: 120, height: 16)
         POSPlaceholderBar(width: 80, height: 24)
         POSPlaceholderBar(width: nil, height: 32, cornerRadius: POSCornerRadiusStyle.medium.value)
     }
-    .padding(POSPadding.medium)
+    .padding(POSMetrics.regular.padding.medium)
 }

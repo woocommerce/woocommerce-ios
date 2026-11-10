@@ -2,12 +2,13 @@ import SwiftUI
 
 // MARK: - Scanner Selection View
 struct PointOfSaleBarcodeScannerSetupSelectionView: View {
+    @Environment(\.posMetrics) private var metrics
     let options: [PointOfSaleBarcodeScannerSetupFlowOption]
     let onSelection: (PointOfSaleBarcodeScannerType) -> Void
 
     var body: some View {
-        VStack(spacing: POSSpacing.large) {
-            VStack(spacing: POSSpacing.small) {
+        VStack(spacing: metrics.spacing.large) {
+            VStack(spacing: metrics.spacing.small) {
                 Text(Localization.setupHeading)
                     .accessibilityAddTraits(.isHeader)
                     .font(.posHeadingBold)
@@ -18,7 +19,7 @@ struct PointOfSaleBarcodeScannerSetupSelectionView: View {
             .multilineTextAlignment(.leading)
             .fixedSize(horizontal: false, vertical: true)
 
-            VStack(spacing: POSSpacing.medium) {
+            VStack(spacing: metrics.spacing.medium) {
                 ForEach(options) { option in
                     Button {
                         onSelection(option.scannerType)

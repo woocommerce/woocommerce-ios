@@ -56,6 +56,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
             TextEditor(text: $viewModel.newNote)
                 .focused()
                 .padding()
+                .background(Color(.systemBackground), ignoresSafeAreaEdges: .bottom)
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .accessibilityIdentifier("edit-note-text-editor")

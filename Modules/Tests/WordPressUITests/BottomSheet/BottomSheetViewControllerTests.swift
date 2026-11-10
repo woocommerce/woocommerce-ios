@@ -22,6 +22,31 @@ class BottomSheetViewControllerTests: XCTestCase {
         XCTAssertTrue(bottomSheet.children.contains(viewController))
     }
 
+    func test_show_when_anchored_in_regular_width_and_compact_height_then_keeps_native_dismissal_available() throws {
+        // Given
+        let presenter = UIViewController()
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 956, height: 440))
+        window.traitOverrides.horizontalSizeClass = .regular
+        window.traitOverrides.verticalSizeClass = .compact
+        window.rootViewController = presenter
+        window.makeKeyAndVisible()
+        self.window = window
+        let anchor = UIButton(frame: CGRect(x: 16, y: 16, width: 80, height: 44))
+        presenter.view.addSubview(anchor)
+        let viewController = BottomSheetPresentableViewController()
+        let bottomSheet = BottomSheetViewController(childViewController: viewController)
+
+        // When
+        bottomSheet.show(from: presenter, sourceView: anchor)
+
+        // Then
+        let popover = try XCTUnwrap(bottomSheet.popoverPresentationController)
+        XCTAssertEqual(bottomSheet.modalPresentationStyle, .popover)
+        XCTAssertTrue(popover.sourceView === anchor)
+        XCTAssertTrue(popover.adaptiveSheetPresentationController.prefersEdgeAttachedInCompactHeight,
+                      "An anchored picker must keep native sheet dismissal available at compact height")
+    }
+
     /// - Add the given ViewController view to the subviews of the Bottom Sheet
     ///
     func testAddGivenVCViewToTheBottomSheetSubviews() {

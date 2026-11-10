@@ -50,7 +50,7 @@ struct POSErrorMessageView: View {
             Text(viewModel.subtitle)
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posBodyLargeRegular())
-                .padding([.leading, .trailing])
+                .posPadding(.horizontal, \.medium)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .multilineTextAlignment(.center)

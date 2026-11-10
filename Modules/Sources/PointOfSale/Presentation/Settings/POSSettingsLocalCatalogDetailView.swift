@@ -3,6 +3,7 @@ import enum Yosemite.POSCatalogSyncProgress
 
 struct POSSettingsLocalCatalogDetailView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let viewModel: POSSettingsLocalCatalogViewModel
     /// Gates an edit action on `editPOSSettings`. Defaults to running it directly (previews / no host gate).
     private let requestEditPermission: POSPermissionRequest
@@ -34,7 +35,7 @@ struct POSSettingsLocalCatalogDetailView: View {
         .task {
             await viewModel.loadCatalogData()
         }
-        .posModal(item: $viewModel.catalogRefreshError, compactStyle: .notMigratedFullScreen) { error in
+        .posModal(item: $viewModel.catalogRefreshError, compactStyle: .dialog) { error in
             errorView(errorState: error.errorState)
         }
     }
@@ -133,6 +134,28 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     func errorView(errorState: PointOfSaleErrorState) -> some View {
+        if horizontalSizeClass == .compact {
+            compactErrorView(errorState: errorState)
+        } else {
+            regularErrorView(errorState: errorState)
+        }
+    }
+
+    /// The phone dialog has no close button: Cancel or a tap outside closes it.
+    func compactErrorView(errorState: PointOfSaleErrorState) -> some View {
+        POSConfirmationDialog(title: errorState.title,
+                              message: errorState.subtitle,
+                              primaryButton: .init(title: Localization.errorRetryButtonTitle, action: {
+                                  Task {
+                                      await viewModel.refreshCatalog()
+                                  }
+                              }),
+                              secondaryButton: .init(title: Localization.errorCancelButtonTitle, action: {
+                                  viewModel.catalogRefreshError = nil
+                              }))
+    }
+
+    func regularErrorView(errorState: PointOfSaleErrorState) -> some View {
         VStack(spacing: metrics.spacing.xxLarge) {
             POSModalCloseButton(accessibilityLabel: Localization.errorCancelButtonTitle) {
                 viewModel.catalogRefreshError = nil

@@ -6,8 +6,25 @@ struct POSPrintReceiptFailureModal: View {
     let failure: POSPrintReceiptFailure
     let selectAction: (POSPrintReceiptFailureAction) -> Void
     let close: () -> Void
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
+        if horizontalSizeClass == .compact {
+            compactBody
+        } else {
+            regularBody
+        }
+    }
+
+    /// The phone dialog has no close button: a tap outside closes it, like the other POS dialogs.
+    private var compactBody: some View {
+        POSConfirmationDialog(title: failure.title,
+                              message: failure.message,
+                              primaryButton: retryButton,
+                              secondaryButton: emailButton)
+    }
+
+    private var regularBody: some View {
         VStack(spacing: metrics.spacing.xLarge) {
             Spacer()
 
@@ -27,12 +44,18 @@ struct POSPrintReceiptFailureModal: View {
 
             Spacer()
 
-            POSFlowButtonsView(configuration: .init(
-                primaryButton: .init(title: Localization.retryButton, action: { selectAction(.retry) }),
-                secondaryButton: .init(title: Localization.emailButton, action: { selectAction(.emailReceipt) })))
+            POSFlowButtonsView(configuration: .init(primaryButton: retryButton, secondaryButton: emailButton))
         }
         .posModalCloseButton(action: close)
-        .posModalSizing(fullScreenWhenCompact: true)
+        .posModalSizing()
+    }
+
+    private var retryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig {
+        .init(title: Localization.retryButton, action: { selectAction(.retry) })
+    }
+
+    private var emailButton: PointOfSaleFlowButtonConfiguration.ButtonConfig {
+        .init(title: Localization.emailButton, action: { selectAction(.emailReceipt) })
     }
 }
 

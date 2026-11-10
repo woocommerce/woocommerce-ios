@@ -1,5 +1,11 @@
 import SwiftUI
 
+/// How a POS modal is shown when the width is compact (phone). Regular width always shows the modal as a centered card.
+enum POSModalCompactStyle: Equatable {
+    /// A centered card as tall as its content, for a question or a confirmation.
+    case dialog
+}
+
 struct POSRootModalViewModifier: ViewModifier {
     @Environment(\.posMetrics) private var metrics
     @EnvironmentObject var modalManager: POSModalManager
@@ -9,10 +15,13 @@ struct POSRootModalViewModifier: ViewModifier {
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
-    /// On phone we standardize the modal experience: every posModal renders as a full-screen
-    /// take-over rather than a centered card, matching the rest of the phone-prototype UI.
+    /// On phone a modal is a full-screen take-over unless its presentation site asks for a dialog.
     private var isFullScreen: Bool {
-        modalManager.isFullScreen || horizontalSizeClass == .compact
+        (modalManager.isFullScreen || horizontalSizeClass == .compact) && !isCompactDialog
+    }
+
+    private var isCompactDialog: Bool {
+        horizontalSizeClass == .compact && modalManager.compactStyle == .dialog && !modalManager.isFullScreen
     }
 
     func body(content: Content) -> some View {
@@ -91,6 +100,7 @@ extension View {
 }
 
 struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
+    let compactStyle: POSModalCompactStyle?
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
@@ -104,7 +114,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 
-                    modalManager.present(onDismiss: {
+                    modalManager.present(compactStyle: compactStyle, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         item = nil
@@ -121,6 +131,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 }
 
 struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
+    let compactStyle: POSModalCompactStyle?
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
@@ -134,7 +145,7 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 
-                    modalManager.present(onDismiss: {
+                    modalManager.present(compactStyle: compactStyle, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         isPresented = false
@@ -160,13 +171,16 @@ extension View {
     ///
     /// - Parameters:
     ///   - isPresented: Binding to control when the modal is shown.
+    ///   - compactStyle: How the modal is shown on phone. `nil` keeps the full-screen take-over.
     ///   - content: Content to show – note this will not update in response to changes outside the scope of the view builder
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<ModalContent: View>(isPresented: Binding<Bool>,
+                                      compactStyle: POSModalCompactStyle? = nil,
                                       onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
         self.modifier(
-            POSModalViewModifierForBool(isPresented: isPresented,
+            POSModalViewModifierForBool(compactStyle: compactStyle,
+                                        isPresented: isPresented,
                                         onDismiss: onDismiss,
                                         modalContent: content))
     }
@@ -180,14 +194,17 @@ extension View {
     ///
     /// - Parameters:
     ///   - item: Binding to control when the modal is shown. When non-nil, the item is used to build the content.
+    ///   - compactStyle: How the modal is shown on phone. `nil` keeps the full-screen take-over.
     ///   - content: Content to show
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
+        compactStyle: POSModalCompactStyle? = nil,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
-            POSModalViewModifier(item: item,
+            POSModalViewModifier(compactStyle: compactStyle,
+                                 item: item,
                                  onDismiss: onDismiss,
                                  modalContent: content))
     }

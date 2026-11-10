@@ -15,7 +15,7 @@ struct CardReaderManualsView: View {
                 ForEach(manuals, id: \.name) { manual in
                     Divider()
                     CardReaderManualRowView(manual: manual)
-                        .background(Color(UIColor.listForeground(modal: false)))
+                        .background(Color(UIColor.listForeground(modal: false)), ignoresSafeAreaEdges: [])
                 }
                 Divider()
             }

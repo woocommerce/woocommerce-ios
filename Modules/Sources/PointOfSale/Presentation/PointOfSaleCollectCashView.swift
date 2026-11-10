@@ -132,7 +132,7 @@ struct PointOfSaleCollectCashView: View {
                         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                         .disabled(!isButtonEnabled)
                     }
-                    .padding([.horizontal])
+                    .posPadding(.horizontal, \.medium)
                     .padding(.bottom, bottomPadding)
                 }
                 .frame(minHeight: geometry.size.height)

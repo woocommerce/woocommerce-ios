@@ -258,7 +258,7 @@ extension UIContentSizeCategory {
 #if DEBUG
 #Preview {
     ScrollView {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.large) {
             Group {
                 Text("Heading Bold")
                     .font(.posHeadingBold)
@@ -302,7 +302,7 @@ extension UIContentSizeCategory {
                     .font(.posButtonSymbolLarge)
             }
         }
-        .padding()
+        .posPadding(\.medium)
     }
 }
 #endif

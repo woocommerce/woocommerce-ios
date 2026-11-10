@@ -38,6 +38,13 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     /// once the connect is genuinely in flight.
     var onConnectSubscribed: (() -> Void)?
 
+    /// When `true`, `discover()` keeps its stream open after emitting `discoveredDevices`, like a
+    /// scan still running, until the consumer cancels it.
+    var keepsDiscoveryOpen = false
+
+    /// Fired when a `discover()` stream terminates, whether it finished or its consumer cancelled it.
+    var onDiscoveryTerminated: (() -> Void)?
+
     // MARK: - Spies
 
     private(set) var discoverCallCount = 0
@@ -71,11 +78,17 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
         discoverCallCount += 1
         let devices = discoveredDevices
         let error = discoverError
+        let keepsOpen = keepsDiscoveryOpen
         return AsyncThrowingStream { continuation in
+            continuation.onTermination = { [weak self] _ in
+                self?.onDiscoveryTerminated?()
+            }
             for device in devices {
                 continuation.yield(device)
             }
-            continuation.finish(throwing: error)
+            if !keepsOpen {
+                continuation.finish(throwing: error)
+            }
         }
     }
 
@@ -115,9 +128,11 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     }
 
     func printReceipt(order: Order,
-                      storeInformation: ReceiptStoreInformation) async throws {
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {
         printedOrder = order
         printedStoreInformation = storeInformation
+        printedCardDetails = cardDetails
         if let printError {
             throw printError
         }

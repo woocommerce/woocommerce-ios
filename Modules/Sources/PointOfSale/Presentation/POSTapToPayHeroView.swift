@@ -91,7 +91,7 @@ private extension POSTapToPayHeroPayButton {
         POSTapToPayHeroView()
         POSTapToPayHeroPayButton(onPayTapped: {})
     }
-    .posPadding(.all, \.medium)
+    .posPadding(\.medium)
 }
 
 #Preview("Tapped (loading)") {
@@ -99,6 +99,6 @@ private extension POSTapToPayHeroPayButton {
         POSTapToPayHeroView()
         POSTapToPayHeroPayButton(onPayTapped: {}, isPayDisabled: true)
     }
-    .posPadding(.all, \.medium)
+    .posPadding(\.medium)
 }
 #endif

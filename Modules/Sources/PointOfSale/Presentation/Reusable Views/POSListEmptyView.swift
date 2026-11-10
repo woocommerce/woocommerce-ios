@@ -14,6 +14,7 @@ extension POSListEmptyViewModelProtocol {
 }
 
 struct POSListEmptyView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let viewModel: any POSListEmptyViewModelProtocol
@@ -32,13 +33,13 @@ struct POSListEmptyView: View {
     var body: some View {
         ScrollableVStack {
             Spacer()
-            VStack(alignment: .center, spacing: POSSpacing.none) {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
                 let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && !keyboard.isFullSizeKeyboardVisible
 
                 if shouldShowIcon {
                     icon
 
-                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
+                    Spacer().frame(height: metrics.spacing.medium)
                 }
 
                 Text(viewModel.title)
@@ -47,24 +48,24 @@ struct POSListEmptyView: View {
                     .font(.posHeadingBold)
                     .multilineTextAlignment(.center)
 
-                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textSpacing)
+                Spacer().frame(height: metrics.spacing.small)
 
                 Text(viewModel.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
-                    .padding([.leading, .trailing])
+                    .posPadding(.horizontal, \.medium)
                     .multilineTextAlignment(.center)
 
                 if let hint = viewModel.hint {
-                    Spacer().frame(height: POSSpacing.small)
+                    Spacer().frame(height: metrics.spacing.small)
                     Text(hint)
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
                         .font(.posBodyLargeRegular())
-                        .padding([.leading, .trailing])
+                        .posPadding(.horizontal, \.medium)
                         .multilineTextAlignment(.center)
                 }
 
-                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
+                Spacer().frame(height: metrics.spacing.xxLarge)
 
                 if let onAction, let buttonTitle = viewModel.buttonTitle {
                     Button(action: {
@@ -74,7 +75,7 @@ struct POSListEmptyView: View {
                     })
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
                     .frame(width: viewWidth / 2)
-                    .padding([.leading, .trailing])
+                    .posPadding(.horizontal, \.medium)
                 }
             }
             Spacer()

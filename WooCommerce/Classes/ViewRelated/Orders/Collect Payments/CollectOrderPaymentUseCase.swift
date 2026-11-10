@@ -25,7 +25,7 @@ protocol CollectOrderPaymentProtocol {
                         channel: PaymentChannel,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
-                        onPaymentCompletion: @escaping () -> Void,
+                        onPaymentCompletion: @escaping (CardPresentReceiptParameters?) -> Void,
                         onCompleted: @escaping () -> Void)
 }
 
@@ -175,7 +175,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         channel: PaymentChannel,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
-                        onPaymentCompletion: @escaping () -> Void,
+                        onPaymentCompletion: @escaping (CardPresentReceiptParameters?) -> Void,
                         onCompleted: @escaping () -> Void) {
         setPaymentFlowCanceled(false)
         preflightController.readerConnection.sink { [weak self] connectionResult in
@@ -209,7 +209,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                             } else {
                                 onCompleted()
                             }
-                            onPaymentCompletion()
+                            onPaymentCompletion(paymentData.receiptParameters)
                         }
                     }
                 })

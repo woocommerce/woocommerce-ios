@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Displays a list of card readers that are found, with a CTA to connect to a reader and a CTA to cancel reader search.
 struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
+    @Environment(\.posMetrics) private var metrics
     private let readerIDs: [String]
     private let connect: (String) -> Void
     private let cancelSearch: () -> Void
@@ -17,7 +18,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
         VStack {
             Text(Localization.headline)
                 .font(.posHeadingBold)
-                .padding(Layout.headerPadding)
+                .padding(headerPadding)
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityFocused($isTitleFocused)
 
@@ -36,9 +37,9 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
                 Text(Localization.cancel)
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            .padding(Layout.buttonPadding)
+            .padding(buttonPadding)
         }
-        .padding(Layout.padding)
+        .padding(contentPadding)
         .accessibilityElement(children: .contain)
         .onAppear {
             isTitleFocused = true
@@ -57,11 +58,11 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
         }
-        .padding(.vertical, Layout.rowVerticalPadding)
+        .padding(.vertical, metrics.padding.xSmall)
     }
 
     @ViewBuilder func scanningText() -> some View {
-        HStack(spacing: Layout.horizontalSpacing) {
+        HStack(spacing: metrics.spacing.medium) {
             Spacer()
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle(size: 20, lineWidth: 4))
@@ -101,21 +102,16 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
 }
 
 private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
-    enum Layout {
-        static let padding: EdgeInsets = .init(top: POSPadding.none,
-                                               leading: POSPadding.medium,
-                                               bottom: POSPadding.none,
-                                               trailing: POSPadding.medium)
-        static let headerPadding: EdgeInsets = .init(top: POSPadding.medium,
-                                                     leading: POSPadding.xSmall,
-                                                     bottom: POSPadding.medium,
-                                                     trailing: POSPadding.xSmall)
-        static let buttonPadding: EdgeInsets = .init(top: POSPadding.medium,
-                                                     leading: POSPadding.none,
-                                                     bottom: POSPadding.medium,
-                                                     trailing: POSPadding.none)
-        static let horizontalSpacing: CGFloat = POSSpacing.medium
-        static let rowVerticalPadding: CGFloat = POSPadding.xSmall
+    var contentPadding: EdgeInsets {
+        .init(top: metrics.padding.none, leading: metrics.padding.medium, bottom: metrics.padding.none, trailing: metrics.padding.medium)
+    }
+
+    var headerPadding: EdgeInsets {
+        .init(top: metrics.padding.medium, leading: metrics.padding.xSmall, bottom: metrics.padding.medium, trailing: metrics.padding.xSmall)
+    }
+
+    var buttonPadding: EdgeInsets {
+        .init(top: metrics.padding.medium, leading: metrics.padding.none, bottom: metrics.padding.medium, trailing: metrics.padding.none)
     }
 }
 

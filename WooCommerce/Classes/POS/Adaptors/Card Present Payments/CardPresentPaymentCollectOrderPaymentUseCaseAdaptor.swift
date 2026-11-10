@@ -9,6 +9,7 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 import protocol Yosemite.StoresManager
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
+import struct Yosemite.CardPresentTransactionDetails
 
 @MainActor
 final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
@@ -95,10 +96,11 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             paymentEventSubject.send(.idle)
                             continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.cancellation)
                         },
-                        onPaymentCompletion: {
+                        onPaymentCompletion: { receiptParameters in
                             guard let continuation = nillableContinuation else { return }
                             nillableContinuation = nil
-                            continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.success)
+                            continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.success(
+                                cardDetails: receiptParameters?.cardDetails))
                         },
                         onCompleted: {
                             // This isn't required for our use case yet.
@@ -120,8 +122,8 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     }
 }
 
-enum CardPresentPaymentAdaptedCollectOrderPaymentResult {
-    case success
+enum CardPresentPaymentAdaptedCollectOrderPaymentResult: Equatable {
+    case success(cardDetails: CardPresentTransactionDetails?)
     case cancellation
 }
 

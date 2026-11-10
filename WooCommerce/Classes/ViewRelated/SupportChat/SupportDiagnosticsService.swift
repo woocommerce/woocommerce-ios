@@ -43,6 +43,7 @@ final class SupportDiagnosticsService {
         case loadingProducts
         case analyticsSetting
         case notifications
+        case paymentConfiguration
 
         var title: String {
             switch self {
@@ -60,6 +61,8 @@ final class SupportDiagnosticsService {
                 return Localization.Test.analyticsSetting
             case .notifications:
                 return Localization.Test.notifications
+            case .paymentConfiguration:
+                return Localization.Test.paymentConfiguration
             }
         }
     }
@@ -75,6 +78,9 @@ final class SupportDiagnosticsService {
         case openNotificationSettings
         case openPushNotificationPreferences
         case retryDiagnostics
+        case openPaymentProvider(CardPresentPaymentsPlugin)
+        case openStoreSettings
+        case openPlugins
 
         var title: String {
             switch self {
@@ -94,6 +100,12 @@ final class SupportDiagnosticsService {
                 return Localization.Action.openPushNotificationPreferences
             case .retryDiagnostics:
                 return Localization.Action.retryDiagnostics
+            case .openPaymentProvider:
+                return Localization.Action.openPaymentSettings
+            case .openStoreSettings:
+                return Localization.Action.openStoreSettings
+            case .openPlugins:
+                return Localization.Action.openPlugins
             }
         }
 
@@ -109,6 +121,8 @@ final class SupportDiagnosticsService {
                 return "gear"
             case .retryDiagnostics:
                 return "arrow.clockwise"
+            case .openPaymentProvider, .openStoreSettings, .openPlugins:
+                return "arrow.up.forward.square"
             }
         }
     }
@@ -119,11 +133,13 @@ final class SupportDiagnosticsService {
         let errorMessage: String
         let technicalDetails: String?
         let suggestedAction: Action?
+        let headline: String?
 
-        init(errorMessage: String, technicalDetails: String? = nil, suggestedAction: Action? = nil) {
+        init(errorMessage: String, technicalDetails: String? = nil, suggestedAction: Action? = nil, headline: String? = nil) {
             self.errorMessage = errorMessage
             self.technicalDetails = technicalDetails
             self.suggestedAction = suggestedAction
+            self.headline = headline
         }
     }
 
@@ -135,12 +151,22 @@ final class SupportDiagnosticsService {
         let errorMessage: String?
         let technicalDetails: String?
         let suggestedAction: Action?
+        var advisoryMessage: String? = nil
+        var isInconclusive: Bool = false
+        /// Short statement of the problem, shown in place of the check name.
+        var headline: String? = nil
+        /// Stable code of the finding for analytics, without store data.
+        var reason: String? = nil
 
         static func == (lhs: Result, rhs: Result) -> Bool {
             lhs.test == rhs.test &&
             lhs.isSuccess == rhs.isSuccess &&
+            lhs.headline == rhs.headline &&
+            lhs.reason == rhs.reason &&
             lhs.errorMessage == rhs.errorMessage &&
-            lhs.suggestedAction == rhs.suggestedAction
+            lhs.suggestedAction == rhs.suggestedAction &&
+            lhs.advisoryMessage == rhs.advisoryMessage &&
+            lhs.isInconclusive == rhs.isInconclusive
         }
 
         static func success(test: Test) -> Result {
@@ -157,14 +183,18 @@ final class SupportDiagnosticsService {
                    isSuccess: false,
                    errorMessage: failure.errorMessage,
                    technicalDetails: failure.technicalDetails,
-                   suggestedAction: failure.suggestedAction)
+                   suggestedAction: failure.suggestedAction,
+                   headline: failure.headline)
         }
 
         func troubleshootingDescription() -> String {
-            let status = isSuccess ? "Success" : (errorMessage ?? "Failed")
+            let status = isSuccess && !isInconclusive ? "Success" : (errorMessage ?? "Failed")
             var lines = [test.title, "Result: \(status)"]
             if let details = technicalDetails {
                 lines.append("Details: \(details)")
+            }
+            if let advisoryMessage {
+                lines.append("Advisory: \(advisoryMessage)")
             }
             return lines.joined(separator: "\n")
         }
@@ -273,6 +303,8 @@ final class SupportDiagnosticsService {
             return await checkAnalyticsSetting()
         case .notifications:
             return result(for: test, failure: await checkNotifications())
+        case .paymentConfiguration:
+            return await PaymentSupportDiagnostics(siteID: siteID, stores: stores).run()
         }
     }
 
@@ -709,9 +741,29 @@ private extension SupportDiagnosticsService {
                 value: "Checking notification settings",
                 comment: "Title for the notification settings diagnostic test"
             )
+            static let paymentConfiguration = NSLocalizedString(
+                "supportDiagnosticsService.test.paymentConfiguration",
+                value: "Checking your store's payment setup",
+                comment: "Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay"
+            )
         }
 
         enum Action {
+            static let openPaymentSettings = NSLocalizedString(
+                "supportDiagnosticsService.action.openPaymentSettings",
+                value: "Open Payment Settings",
+                comment: "Action button that opens the WooPayments or Stripe settings page in the store admin"
+            )
+            static let openStoreSettings = NSLocalizedString(
+                "supportDiagnosticsService.action.openStoreSettings",
+                value: "Open Store Settings",
+                comment: "Action button that opens WooCommerce General settings in the store admin"
+            )
+            static let openPlugins = NSLocalizedString(
+                "supportDiagnosticsService.action.openPlugins",
+                value: "Open Plugins",
+                comment: "Action button that opens the Plugins page in the store admin"
+            )
             static let enableAnalytics = NSLocalizedString(
                 "supportDiagnosticsService.action.enableAnalytics",
                 value: "Enable Analytics",

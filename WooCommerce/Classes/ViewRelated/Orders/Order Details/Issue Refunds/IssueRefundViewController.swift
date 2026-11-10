@@ -40,6 +40,11 @@ final class IssueRefundViewController: UIViewController {
         fatalError("init(coder:) is not supported")
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()
@@ -169,6 +174,7 @@ private extension IssueRefundViewController {
         registerCells()
         tableView.delegate = self
         tableView.dataSource = self
+        view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
         tableView.tableHeaderView = tableHeaderView
         tableView.tableFooterView = tableFooterView

@@ -87,6 +87,47 @@ final class MainTabBarControllerTests: XCTestCase {
     }
 
     @MainActor
+    func test_willEnterForeground_when_orders_tab_is_selected_then_resets_storeOrder_badge() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let tabBarController = try makeTabBarControllerWithHiddenPOSTab(pushNotesManager: pushNotesManager, siteID: 134)
+        tabBarController.selectedIndex = WooTab.orders.visibleIndex(isPOSTabVisible: false)
+
+        // When
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(pushNotesManager.resetBadgeCountKinds, [.storeOrder])
+    }
+
+    @MainActor
+    func test_willEnterForeground_when_products_tab_is_selected_then_resets_storeStock_badge() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let tabBarController = try makeTabBarControllerWithHiddenPOSTab(pushNotesManager: pushNotesManager, siteID: 134)
+        tabBarController.selectedIndex = WooTab.products.visibleIndex(isPOSTabVisible: false)
+
+        // When
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(pushNotesManager.resetBadgeCountKinds, [.storeStock])
+    }
+
+    @MainActor
+    func test_willEnterForeground_when_no_site_is_selected_then_does_not_reset_any_badge() throws {
+        // Given no site, so the tab bar has no tabs and no selected view controller
+        let pushNotesManager = MockPushNotificationsManager()
+        _ = try makeTabBarControllerWithHiddenPOSTab(pushNotesManager: pushNotesManager, siteID: nil)
+
+        // When
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(pushNotesManager.resetBadgeCountKinds, [])
+    }
+
+    @MainActor
     func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_hubMenu_tab() throws {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
@@ -630,7 +671,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual(true, analyticsProvider.receivedProperties[safe: indexOfEvent]?["is_visible"] as? Bool)
     }
 
-    func test_initial_tabs_visibility_on_phone_ignores_cached_pos_visibility() throws {
+    func test_initial_tabs_visibility_on_phone_uses_cached_pos_visibility() throws {
         // Given
         let siteID: Int64 = 1126
         let mockPOSEligibilityService = MockPOSEligibilityService()
@@ -653,8 +694,8 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view) // This triggers viewDidLoad
 
         // Then
-        let expectedTabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
-        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: false, isBookingsTabVisible: false)
+        let expectedTabs: [WooTab] = [.myStore, .orders, .products, .pointOfSale, .hubMenu]
+        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: true, isBookingsTabVisible: false)
         XCTAssertEqual(tabBarController.viewControllers?.count, expectedTabs.count)
         XCTAssertEqual(visibleTabs, expectedTabs)
     }
@@ -677,7 +718,6 @@ final class MainTabBarControllerTests: XCTestCase {
                                  stores: stores,
                                  posTabVisibilityCheckerFactory: { site in
                                      POSTabVisibilityChecker(site: site,
-                                                             userInterfaceIdiom: .pad,
                                                              eligibilityService: mockPOSEligibilityService)
                                  },
                                  posEligibilityService: mockPOSEligibilityService,
@@ -944,5 +984,26 @@ private final class MockAsyncBookingsEligibilityChecker: @preconcurrency Booking
         return await withCheckedContinuation { continuation in
             visibilityContinuation = continuation
         }
+    }
+}
+
+private extension MainTabBarControllerTests {
+    @MainActor
+    func makeTabBarControllerWithHiddenPOSTab(pushNotesManager: PushNotesManager, siteID: Int64?) throws -> MainTabBarController {
+        let posTabVisibilityChecker = MockPOSTabVisibilityChecker()
+        posTabVisibilityChecker.visibility = false
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            MainTabBarController(coder: coder,
+                                 stores: self.stores,
+                                 pushNotesManager: pushNotesManager,
+                                 posTabVisibilityCheckerFactory: { _ in posTabVisibilityChecker })
+        }))
+        // Triggers `viewDidLoad`, which subscribes to foreground notifications.
+        XCTAssertNotNil(tabBarController.view)
+        if let siteID {
+            stores.updateDefaultStore(storeID: siteID)
+            stores.updateDefaultStore(.fake().copy(siteID: siteID))
+        }
+        return tabBarController
     }
 }

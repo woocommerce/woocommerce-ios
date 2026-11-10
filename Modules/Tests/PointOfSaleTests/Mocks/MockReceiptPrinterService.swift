@@ -149,9 +149,11 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     }
 
     func printReceipt(order: Order,
-                      storeInformation: ReceiptStoreInformation) async throws {
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {
         printedOrder = order
         printedStoreInformation = storeInformation
+        printedCardDetails = cardDetails
         if let printError {
             throw printError
         }

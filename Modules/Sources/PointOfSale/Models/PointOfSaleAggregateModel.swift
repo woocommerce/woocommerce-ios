@@ -30,6 +30,7 @@ import protocol Yosemite.ReceiptPrinterServiceProtocol
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
     func addToCart(_ item: POSItem)
+    func remove(cartItem: CartItem)
 
     func saveSearchTerm(_ term: String, for itemType: POSItemType)
 }

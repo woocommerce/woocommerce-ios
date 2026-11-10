@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSOrderDetailsEmptyView: View {
+    @Environment(\.posMetrics) private var metrics
     var body: some View {
         ZStack {
             VStack {
@@ -20,7 +21,7 @@ struct POSOrderDetailsEmptyView: View {
                     .frame(width: Constants.iconSize, height: Constants.iconSize)
                     .foregroundColor(.posOnSurface)
 
-                Spacer().frame(height: POSSpacing.medium)
+                Spacer().frame(height: metrics.spacing.medium)
 
                 Text(Localization.noOrderSelected)
                     .font(.posBodyLargeRegular())

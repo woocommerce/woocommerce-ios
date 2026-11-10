@@ -478,6 +478,9 @@ private extension DashboardView {
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
     }
+}
+
+extension DashboardView {
     enum Localization {
         static let title = NSLocalizedString(
             "dashboardView.title",

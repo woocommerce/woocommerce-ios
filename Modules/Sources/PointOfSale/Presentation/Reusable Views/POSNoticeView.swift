@@ -3,6 +3,7 @@ import SwiftUI
 /// A reusable notice view component that displays information with an icon, title, optional dismiss button, and optional content view.
 /// Design refs: 1qcjzXitBHU7xPnpCOWnNM-fi-67_18935, 1qcjzXitBHU7xPnpCOWnNM-fi-67_18939
 struct POSNoticeView<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
     enum Style {
         case neutral
         case alertLowest
@@ -59,24 +60,24 @@ struct POSNoticeView<Content: View>: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: Constants.padding) {
+        HStack(alignment: .center, spacing: metrics.padding.medium) {
             VStack {
                 Spacer()
                 Text(icon.resizable())
                     .font(.posButtonSymbolLarge)
-                    .padding(.horizontal, Constants.iconHorizontalPadding)
+                    .padding(.horizontal, metrics.padding.small)
                     .foregroundColor(style.foregroundColor)
                     .accessibilityHidden(true)
                 Spacer()
             }
-            VStack(alignment: .leading, spacing: Constants.titleSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.small) {
                 Text(title)
                     .font(Constants.titleFont)
                     .accessibilityAddTraits(.isHeader)
                 if let content {
                     content
                         .font(Constants.contentFont)
-                        .lineSpacing(Constants.textSpacing)
+                        .lineSpacing(metrics.spacing.xSmall)
                         .accessibilityElement(children: .combine)
                 }
             }
@@ -100,7 +101,7 @@ struct POSNoticeView<Content: View>: View {
             }
         }
         .foregroundColor(style.foregroundColor)
-        .padding(Constants.padding)
+        .padding(metrics.padding.medium)
         .frame(maxWidth: .infinity)
         .fixedSize(horizontal: false, vertical: true)
         .background(style.backgroundColor)
@@ -122,11 +123,7 @@ private enum Constants {
     static let titleFont: POSFontStyle = .posBodyLargeBold
     static let contentFont: POSFontStyle = .posBodySmallRegular()
     static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
-    static let textSpacing: CGFloat = POSSpacing.xSmall
-    static let titleSpacing: CGFloat = POSSpacing.small
-    static let iconHorizontalPadding: CGFloat = POSPadding.small
     static let dismissIconPadding: CGFloat = 6
-    static let padding: CGFloat = POSPadding.medium
 }
 
 private enum Localization {
@@ -144,14 +141,14 @@ private enum Localization {
         onDismiss: {},
         onTap: {}
     ) {
-        VStack(alignment: .leading, spacing: Constants.textSpacing) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.xSmall) {
             Text("This is a subtitle that explains more about the notice.")
             Text("Here's a hint about what to do next. Learn More")
                 .font(.posBodySmallBold())
                 .foregroundColor(Color.posPrimary)
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 
 #Preview("Without dismiss") {
@@ -160,14 +157,14 @@ private enum Localization {
         icon: Image(systemName: "bell"),
         onTap: {}
     ) {
-        VStack(alignment: .leading, spacing: Constants.textSpacing) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.xSmall) {
             Text("This is a subtitle that explains more about the notice.")
             Text("Here's a hint about what to do next. Learn More")
                 .font(.posBodySmallBold())
                 .foregroundColor(Color.posPrimary)
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 
 #Preview("Banner that fits to width") {
@@ -176,5 +173,5 @@ private enum Localization {
         icon: Image(systemName: "info.circle")
     )
     .fixedSize(horizontal: true, vertical: true)
-    .padding()
+    .posPadding(\.medium)
 }

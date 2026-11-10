@@ -8,6 +8,7 @@ extension View {
 }
 
 struct POSModalSizing: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -16,7 +17,7 @@ struct POSModalSizing: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .padding(PointOfSaleReaderConnectionModalLayout.contentPadding)
+            .padding(metrics.padding.xxLarge)
             .frame(width: frameWidth, height: frameHeight)
     }
 }
@@ -80,7 +81,7 @@ private extension POSModalSizing {
 
     var maxAvailableFrameHeight: CGFloat {
         // Keep the card's existing width and reserve its outer vertical padding only when needed.
-        max(0, parentSize.height - (horizontalSizeClass == .compact ? 0 : 2 * POSPadding.medium))
+        max(0, parentSize.height - (horizontalSizeClass == .compact ? 0 : 2 * metrics.padding.medium))
     }
 
     var windowBounds: CGRect {

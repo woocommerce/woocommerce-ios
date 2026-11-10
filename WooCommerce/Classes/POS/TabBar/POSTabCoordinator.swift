@@ -325,6 +325,7 @@ private extension POSTabCoordinator {
                 // whether to skip the BT auto-collect on checkout entry.
                 let tapToPayAvailabilityChecker = POSTapToPayAvailabilityChecker(
                     siteID: siteID,
+                    countryCode: SiteAddress(siteSettings: ServiceLocator.selectedSiteSettings.siteSettings).countryCode,
                     eligibilityService: POSEligibilityService()
                 )
                 let preferredConnectionMethod: CardReaderConnectionMethod

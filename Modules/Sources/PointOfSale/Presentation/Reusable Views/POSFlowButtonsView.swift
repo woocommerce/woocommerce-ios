@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSFlowButtonsView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let configuration: PointOfSaleFlowButtonConfiguration
@@ -12,12 +13,12 @@ struct POSFlowButtonsView: View {
     var body: some View {
         Group {
             if Self.usesStackedLayout(horizontalSizeClass: horizontalSizeClass) {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     primaryButton
                     secondaryButton
                 }
             } else {
-                HStack(spacing: POSSpacing.medium) {
+                HStack(spacing: metrics.spacing.medium) {
                     secondaryButton
                     primaryButton
                 }
@@ -99,27 +100,27 @@ private extension PointOfSaleFlowButtonConfiguration {
 }
 
 #Preview("Compact — stacked") {
-    VStack(spacing: POSSpacing.xLarge) {
+    VStack(spacing: POSMetrics.regular.spacing.xLarge) {
         POSFlowButtonsView(configuration: .preview())
         POSFlowButtonsView(configuration: .preview(secondary: nil))
         POSFlowButtonsView(configuration: .preview(primary: nil))
         POSFlowButtonsView(configuration: .preview(primary: "Weiter zur Einrichtung",
                                                            secondary: "Zurück zur Auswahl"))
     }
-    .padding(POSPadding.xLarge)
+    .padding(POSMetrics.regular.padding.xLarge)
     .background(Color.posSurfaceBright)
     .environment(\.horizontalSizeClass, .compact)
 }
 
 #Preview("Regular — side by side") {
-    VStack(spacing: POSSpacing.xLarge) {
+    VStack(spacing: POSMetrics.regular.spacing.xLarge) {
         POSFlowButtonsView(configuration: .preview())
         POSFlowButtonsView(configuration: .preview(secondary: nil))
         POSFlowButtonsView(configuration: .preview(primary: nil))
         POSFlowButtonsView(configuration: .preview(primary: "Weiter zur Einrichtung",
                                                            secondary: "Zurück zur Auswahl"))
     }
-    .padding(POSPadding.xLarge)
+    .padding(POSMetrics.regular.padding.xLarge)
     .background(Color.posSurfaceBright)
     .environment(\.horizontalSizeClass, .regular)
 }

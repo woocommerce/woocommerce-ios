@@ -6,6 +6,7 @@ import SwiftUI
 /// of the methods live in a smaller two-button strip at the bottom of the totals
 /// view (rendered separately by `TotalsView`).
 struct POSTapToPayHeroView: View {
+    @Environment(\.posMetrics) private var metrics
     let onPayTapped: () -> Void
     /// True between the merchant tapping the CTA and the payment state machine
     /// reacting. The button stays tappable on entry (silent pre-connect runs in
@@ -19,13 +20,13 @@ struct POSTapToPayHeroView: View {
     private static let illustrationSize: CGFloat = 96
 
     var body: some View {
-        VStack(spacing: POSSpacing.large) {
+        VStack(spacing: metrics.spacing.large) {
             Image(systemName: "wave.3.right.circle.fill")
                 .font(.system(size: Self.illustrationSize, weight: .regular))
                 .foregroundStyle(Color.posPrimary)
                 .accessibilityHidden(true)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 Text(Localization.title)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -36,14 +37,14 @@ struct POSTapToPayHeroView: View {
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
-            .posContentPadding(.horizontal, POSPadding.medium)
+            .posContentPadding(.horizontal, metrics.padding.medium)
 
             Button(action: onPayTapped) {
                 Text(Localization.payButton)
                     .font(POSFontStyle.posBodyLargeBold)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isPayDisabled))
-            .posContentPadding(.horizontal, POSPadding.medium)
+            .posContentPadding(.horizontal, metrics.padding.medium)
             .disabled(isPayDisabled)
             .accessibilityIdentifier("pos-tap-to-pay-hero-pay-button")
         }
@@ -77,11 +78,11 @@ private extension POSTapToPayHeroView {
 #if DEBUG
 #Preview("Idle") {
     POSTapToPayHeroView(onPayTapped: {})
-        .padding()
+        .posPadding(\.medium)
 }
 
 #Preview("Tapped (loading)") {
     POSTapToPayHeroView(onPayTapped: {}, isPayDisabled: true)
-        .padding()
+        .posPadding(\.medium)
 }
 #endif

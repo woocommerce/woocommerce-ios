@@ -2,6 +2,7 @@ import SwiftUI
 import class WooFoundation.KeyboardObserver
 
 struct POSErrorView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.keyboardObserver) private var keyboard
 
     let viewModel: POSErrorViewModel
@@ -19,7 +20,7 @@ struct POSErrorView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             if !keyboard.isFullSizeKeyboardVisible {
                 if let image = viewModel.imageAsset {
                     image
@@ -30,7 +31,7 @@ struct POSErrorView: View {
                 } else {
                     POSErrorXMark(size: .large)
                 }
-                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
+                Spacer().frame(height: metrics.spacing.medium)
             }
 
             Text(viewModel.title)
@@ -38,17 +39,17 @@ struct POSErrorView: View {
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posHeadingBold)
 
-            Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textSpacing)
+            Spacer().frame(height: metrics.spacing.small)
 
             Text(viewModel.subtitle)
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posBodyLargeRegular())
-                .padding([.leading, .trailing])
+                .posPadding(.horizontal, \.medium)
                 .fixedSize(horizontal: false, vertical: true)
 
             if viewModel.primaryButton != nil || viewModel.secondaryButton != nil {
-                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
-                VStack(spacing: POSSpacing.medium) {
+                Spacer().frame(height: metrics.spacing.xxLarge)
+                VStack(spacing: metrics.spacing.medium) {
                     if let primaryButtonViewModel = viewModel.primaryButton {
                         POSErrorButton(viewModel: primaryButtonViewModel)
                     }

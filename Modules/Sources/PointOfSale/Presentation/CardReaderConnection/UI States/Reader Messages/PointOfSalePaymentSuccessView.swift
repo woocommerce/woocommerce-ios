@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSalePaymentSuccessView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSalePaymentSuccessViewModel
     let customerEmail: String?
     let successAction: PaymentFlowAction
@@ -28,7 +29,7 @@ struct PointOfSalePaymentSuccessView: View {
             successView
             Spacer()
         }
-        .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
+        .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : metrics.padding.small)
         .background(Color.posSurfaceBright)
         .barcodeScanning(enabled: .constant(isBarcodeScanningEnabled)) { barcode in
             onSuccessScreenBarcodeScanned?(barcode)
@@ -100,7 +101,7 @@ struct PointOfSalePaymentSuccessView: View {
 
     private var successView: some View {
         ZStack {
-            VStack(alignment: .center, spacing: POSSpacing.none) {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
                 Spacer()
 
                 POSSuccessIcon()
@@ -108,9 +109,9 @@ struct PointOfSalePaymentSuccessView: View {
                     .scaleEffect(isViewLoaded ? 1 : 0)
                     .opacity(isViewLoaded ? 1 : 0)
 
-                Spacer().frame(height: POSSpacing.xLarge)
+                Spacer().frame(height: metrics.spacing.xLarge)
 
-                VStack(alignment: .center, spacing: Constants.textSpacing) {
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
                     Text(viewModel.title)
                         .font(.posHeadingBold)
                         .foregroundStyle(Color.posOnSurface)
@@ -130,7 +131,7 @@ struct PointOfSalePaymentSuccessView: View {
                 }
 
                 if let customerEmail, customerEmail.isNotEmpty {
-                    Spacer().frame(height: Constants.textSpacing)
+                    Spacer().frame(height: metrics.spacing.small)
 
                     Text(String(format: Localization.receiptSentFormat, customerEmail))
                         .font(.posBodyLargeRegular())
@@ -139,7 +140,7 @@ struct PointOfSalePaymentSuccessView: View {
                         .opacity(isViewLoaded ? 1 : 0)
                 }
 
-                Spacer().frame(height: POSSpacing.xxLarge)
+                Spacer().frame(height: metrics.spacing.xxLarge)
 
                 // iPad: buttons take half the screen width (count:2 span:1).
                 // Phone: half the screen width is ~190pt, too narrow for "New order" /
@@ -149,10 +150,10 @@ struct PointOfSalePaymentSuccessView: View {
                                       printButtonState: printButtonState,
                                       printReceiptAction: handlePrintReceiptTap)
                     .if(horizontalSizeClass != .compact) { view in
-                        view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                        view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: metrics.spacing.none)
                     }
                     .if(horizontalSizeClass == .compact) { view in
-                        view.padding(.horizontal, POSPadding.large)
+                        view.padding(.horizontal, metrics.padding.large)
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                     .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
@@ -167,7 +168,6 @@ struct PointOfSalePaymentSuccessView: View {
 
 private extension PointOfSalePaymentSuccessView {
     enum Constants {
-        static let textSpacing: CGFloat = POSSpacing.small
         static let animationOffset: CGFloat = 100
         static let printConfirmationDuration: Duration = .seconds(2)
     }

@@ -202,7 +202,7 @@ public struct PointOfSaleEntryPointView: View {
             // Keep native compact windows compact; collapse regular windows that cannot fit two panes.
             let isCompactLayout = horizontalSizeClass == .compact || geometry.size.width < Constants.minimumSplitWidth
             content(isCompactLayout: isCompactLayout)
-                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? POSPadding.none : nil)
+                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? 0 : nil)
                 .environment(\.horizontalSizeClass, isCompactLayout ? .compact : .regular)
         }
     }
@@ -282,9 +282,9 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel)
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
-        .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .injectKeyboardObserver()
         .posLockScreenOverlay()
+        .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .environment(\.posAccessSession, accessSession)
         .onChange(of: isCompactLayout) { _, isCompactLayout in
             posModel?.paymentModel.updateCardPaymentSelectionMode(isCompactLayout ? .compact : .large)

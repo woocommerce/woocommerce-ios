@@ -573,6 +573,88 @@ final class DashboardViewModelTests: XCTestCase {
                     viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
+    // MARK: - Background launch
+
+    @MainActor
+    func test_init_when_app_is_in_background_then_newly_enabled_cards_are_not_reloaded() async throws {
+        // Given: a store with orders, so the analytics cards count as newly enabled on the first emission
+        insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
+        let application = MockApplicationAdapter()
+        application.applicationState = .background
+
+        // When: the view model is built by a background launch (no view ever appears)
+        let viewModel = makeViewModel(application: application)
+        try await assertEventually { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
+
+        // Then: no stats sync, so no `dashboard_main_stats_loaded` is tracked on a day the app was never opened
+        try await assertNoStatsSync()
+    }
+
+    @MainActor
+    func test_cards_enabled_in_background_are_reloaded_when_the_view_has_already_loaded() async throws {
+        // Given: the dashboard has been on screen for a store without orders, then the app is backgrounded
+        mockReloadingData(storeHasOrders: false)
+        let application = MockApplicationAdapter()
+        let viewModel = makeViewModel(application: application)
+        await viewModel.onViewAppear()
+        XCTAssertFalse(hasSyncedStats)
+        application.applicationState = .background
+
+        // When: the first order makes the analytics cards available
+        insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
+
+        // Then: they load right away, so the merchant doesn't come back to empty cards
+        try await assertEventually { hasSyncedStats }
+    }
+
+    @MainActor
+    func test_init_when_app_is_in_foreground_then_newly_enabled_cards_are_reloaded() async throws {
+        // Given
+        insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
+        let application = MockApplicationAdapter()
+        application.applicationState = .inactive
+
+        // When
+        let viewModel = makeViewModel(application: application)
+        try await assertEventually { viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled } }
+
+        // Then: the performance card syncs its stats on the first emission
+        try await assertEventually { hasSyncedStats }
+    }
+
+    @MainActor
+    private func makeViewModel(application: ApplicationAdapter) -> DashboardViewModel {
+        DashboardViewModel(siteID: sampleSiteID,
+                           stores: stores,
+                           storageManager: storageManager,
+                           userDefaults: userDefaults,
+                           blazeEligibilityChecker: blazeEligibilityChecker,
+                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false),
+                           application: application)
+    }
+
+    private var hasSyncedStats: Bool {
+        stores.receivedActions.contains { $0 is StatsActionV4 }
+    }
+
+    // TestKit's `until` leaves the main actor, which strict concurrency flags; this wait stays on it.
+    @MainActor
+    private func assertEventually(file: StaticString = #filePath, line: UInt = #line, _ condition: () -> Bool) async throws {
+        let deadline = Date().addingTimeInterval(2)
+        while !condition(), Date() < deadline {
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertTrue(condition(), file: file, line: line)
+    }
+
+    // A reload starts its stats sync within a few main-actor hops, so a short wait catches it.
+    @MainActor
+    private func assertNoStatsSync(file: StaticString = #filePath, line: UInt = #line) async throws {
+        try await Task.sleep(nanoseconds: 300_000_000)
+        XCTAssertFalse(hasSyncedStats, file: file, line: line)
+    }
+
     @MainActor
     func test_dashboard_cards_contain_enabled_last_orders_cards_when_there_is_order() async {
         // Given

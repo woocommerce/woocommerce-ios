@@ -163,6 +163,8 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
     func handleTap(_ item: Yosemite.POSItem, position: Int) { }
+
+    func handleTapOnAppliedCoupon(_ item: Yosemite.POSItem) { }
 }
 
 final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
@@ -844,7 +846,8 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
                       cardDetails: CardPresentTransactionDetails?) async throws {}
 
     func printReceipt(order: Order,
-                      storeInformation: ReceiptStoreInformation) async throws {}
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {}
 }
 
 extension POSPreviewHelpers {

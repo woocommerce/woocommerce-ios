@@ -202,6 +202,7 @@ final class MainTabBarController: UITabBarController {
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager
     private let analytics: Analytics
+    private let pushNotesManager: PushNotesManager
     private let posTabVisibilityCheckerFactory: ((_ site: Site) -> POSTabVisibilityCheckerProtocol)
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: ((_ site: Site) -> BookingsTabEligibilityCheckerProtocol)
@@ -228,6 +229,7 @@ final class MainTabBarController: UITabBarController {
           productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
           analytics: Analytics = ServiceLocator.analytics,
           stores: StoresManager = ServiceLocator.stores,
+          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
           posTabVisibilityCheckerFactory: ((Site) -> POSTabVisibilityCheckerProtocol)? = nil,
           posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
           bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil,
@@ -239,6 +241,7 @@ final class MainTabBarController: UITabBarController {
         self.productImageUploader = productImageUploader
         self.analytics = analytics
         self.stores = stores
+        self.pushNotesManager = pushNotesManager
         self.httpsConfigurationWarningViewModel = HTTPSConfigurationWarningViewModel(stores: stores)
         self.posTabVisibilityCheckerFactory = posTabVisibilityCheckerFactory ?? { site in
             POSTabVisibilityChecker(site: site)
@@ -259,6 +262,7 @@ final class MainTabBarController: UITabBarController {
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
         self.stores = ServiceLocator.stores
+        self.pushNotesManager = ServiceLocator.pushNotesManager
         self.httpsConfigurationWarningViewModel = HTTPSConfigurationWarningViewModel(stores: ServiceLocator.stores)
         self.posTabVisibilityCheckerFactory = { site in
             POSTabVisibilityChecker(site: site)
@@ -477,7 +481,6 @@ final class MainTabBarController: UITabBarController {
     private func setupConditionalTabsInitialVisibility(for siteID: Int64) {
         let isPOSTabVisible = POSTabVisibilityChecker.checkInitialVisibility(
             for: siteID,
-            userInterfaceIdiom: isPad ? .pad : .phone,
             eligibilityService: posEligibilityService
         )
         let isBookingsTabVisible = shouldShowBookingsTab(
@@ -1098,13 +1101,27 @@ private extension MainTabBarController {
         cancellableForeground = NotificationCenter.default
             .publisher(for: UIApplication.willEnterForegroundNotification)
             .sink { [weak self] _ in
-                guard let self, let site = conditionalTabsSite else {
+                guard let self else {
+                    return
+                }
+                resetBadgeCountForSelectedTab()
+                guard let site = conditionalTabsSite else {
                     return
                 }
                 httpsConfigurationWarningViewModel.update(site: site,
                                                           fallbackSiteAddress: stores.sessionManager.defaultCredentials?.siteAddress)
                 observePOSEligibilityForPOSTabVisibility(site: site)
             }
+    }
+
+    /// The tab's `viewWillAppear` does not run on foreground return, so a push counted while it was visible
+    /// would otherwise keep the app icon badge set.
+    func resetBadgeCountForSelectedTab() {
+        if selectedViewController === ordersContainerController {
+            pushNotesManager.resetBadgeCount(type: .storeOrder)
+        } else if selectedViewController === productsContainerController {
+            pushNotesManager.resetBadgeCount(type: .storeStock)
+        }
     }
 
     func observeSiteIDForViewControllers() {

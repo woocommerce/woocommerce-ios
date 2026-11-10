@@ -100,7 +100,9 @@ public final class TwoFAScreen {
 
         for (index, key) in codeKeys.enumerated() {
             let expectedCode = String(twoFACode.prefix(index + 1))
-            key.tap()
+            guard tapKeyboardKeyWhenReady(key) else {
+                return .failed
+            }
             guard waitForTwoFACode(expectedCode, timeout: Constants.digitEntryWaitTimeout) else {
                 // A delayed system prompt can interrupt a keypad tap after the 2FA screen appeared.
                 app.dismissSavePasswordPromptIfNeeded(timeout: 2)
@@ -108,7 +110,9 @@ public final class TwoFAScreen {
                     continue
                 }
                 focusTwoFAFieldIfNeeded()
-                key.tap()
+                guard tapKeyboardKeyWhenReady(key) else {
+                    return .failed
+                }
                 guard waitForTwoFACode(expectedCode, timeout: Constants.digitEntryWaitTimeout) else {
                     return .failed
                 }
@@ -116,6 +120,16 @@ public final class TwoFAScreen {
             }
         }
         return .entered
+    }
+
+    private func tapKeyboardKeyWhenReady(_ key: XCUIElement) -> Bool {
+        guard key.waitForIsHittable(timeout: 2) else {
+            return false
+        }
+
+        // A coordinate tap can be retried if a system prompt appears during the gesture; XCUIElement.tap() fails immediately.
+        key.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        return true
     }
 
     private func waitForTwoFACode(_ expectedCode: String, timeout: TimeInterval) -> Bool {

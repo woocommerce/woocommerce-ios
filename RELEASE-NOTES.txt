@@ -10,6 +10,7 @@
 - [*] POS: Buttons on error, empty and payment result screens now fill the width on iPhone and stay at the bottom of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18310]
 - [*] POS: Wait for the card reader to reconnect if it disconnects while preparing a payment. [https://github.com/woocommerce/woocommerce-ios/pull/18254]
 - [*] Order creation: A custom amount entered as a percentage of the order total is no longer saved with the wrong value on stores that use "." as the thousands separator. [https://github.com/woocommerce/woocommerce-ios/pull/18318]
+- [*] Order creation: A custom amount of 1,000 or more entered as a percentage of the order total no longer briefly shows a much smaller amount after adding it. [https://github.com/woocommerce/woocommerce-ios/pull/18318]
 - [*] POS: Checkout payment buttons stay on screen with large text sizes, and the content above them scrolls. [https://github.com/woocommerce/woocommerce-ios/pull/18305]
 - [Internal] Track receipt printer setup, connection and print Retry analytics events in POS [https://github.com/woocommerce/woocommerce-ios/pull/18251]
 - [*] Push notifications: The app icon badge no longer stays at 1 after a stock notification. [https://github.com/woocommerce/woocommerce-ios/pull/18250]

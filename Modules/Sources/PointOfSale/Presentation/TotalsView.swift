@@ -74,8 +74,7 @@ struct TotalsView: View {
                                 cancelReconnectionAction: posModel.cancelReconnection
                             )
                         } else if useTapToPayHeroLayout {
-                            POSTapToPayHeroView(onPayTapped: handleTapToPayTapped,
-                                                isPayDisabled: isStartingPayment)
+                            POSTapToPayHeroView()
                         } else if isShowingPaymentView {
                             PaymentViewContent(
                                 paymentState: displayPaymentState,
@@ -728,9 +727,18 @@ private extension TotalsView {
     var bottomControls: some View {
         switch bottomControlState {
         case .readerAndOtherMethods:
-            readerAndOtherMethodsBottomStrip
+            bottomStrip {
+                cardReaderButton
+                cashAndOtherPaymentMethodsButtons
+            }
         case .cashAndOtherMethods:
-            cashAndOtherMethodsBottomStrip
+            bottomStrip {
+                if useTapToPayHeroLayout {
+                    POSTapToPayHeroPayButton(onPayTapped: handleTapToPayTapped,
+                                             isPayDisabled: isStartingPayment)
+                }
+                cashAndOtherPaymentMethodsButtons
+            }
         case .checkoutMethods(let methods):
             POSCheckoutPaymentButtonsRow(
                 methods: methods,
@@ -741,26 +749,10 @@ private extension TotalsView {
         }
     }
 
-    /// Cash + Other payment methods buttons shown below the primary card payment UI.
-    @ViewBuilder
-    var cashAndOtherMethodsBottomStrip: some View {
-        cashAndOtherPaymentMethodsButtons
-            .if(horizontalSizeClass == .compact) {
-                $0.posPhoneBottomButtonPadding()
-            }
-            .if(horizontalSizeClass != .compact) {
-                $0
-                    .posContentPadding(.horizontal, metrics.padding.medium)
-                    .padding(.bottom, metrics.padding.small)
-            }
-    }
-
-    /// Reader-first layout used when Tap to Pay is unavailable but secondary methods exist.
-    @ViewBuilder
-    var readerAndOtherMethodsBottomStrip: some View {
+    /// Primary payment button, when there is one, above the Cash and Other payment methods buttons.
+    func bottomStrip(@ViewBuilder content: () -> some View) -> some View {
         VStack(spacing: metrics.spacing.medium) {
-            cardReaderButton
-            cashAndOtherPaymentMethodsButtons
+            content()
         }
         .if(horizontalSizeClass == .compact) {
             $0.posPhoneBottomButtonPadding()

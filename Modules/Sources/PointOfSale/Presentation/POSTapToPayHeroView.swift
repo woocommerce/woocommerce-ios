@@ -4,18 +4,10 @@ import SwiftUI
 /// available. Mirrors the Android phone POS layout (samiuelson / staskus): the
 /// merchant's primary path is the big "Pay with Tap to pay" CTA; cash and the rest
 /// of the methods live in a smaller two-button strip at the bottom of the totals
-/// view (rendered separately by `TotalsView`).
+/// view. `TotalsView` renders `POSTapToPayHeroPayButton` and that strip below the
+/// scrolling content, so the CTA stays on screen with large text sizes.
 struct POSTapToPayHeroView: View {
     @Environment(\.posMetrics) private var metrics
-    let onPayTapped: () -> Void
-    /// True between the merchant tapping the CTA and the payment state machine
-    /// reacting. The button stays tappable on entry (silent pre-connect runs in
-    /// the background — no visible indicator until the merchant taps), so this
-    /// is purely double-tap protection. While true the button renders its
-    /// built-in `isLoading` spinner so the merchant gets immediate feedback
-    /// that their tap landed, even when the pre-connect or PaymentIntent
-    /// creation is still in flight.
-    var isPayDisabled: Bool = false
 
     private static let illustrationSize: CGFloat = 96
 
@@ -38,16 +30,29 @@ struct POSTapToPayHeroView: View {
                     .multilineTextAlignment(.center)
             }
             .posContentPadding(.horizontal, metrics.padding.medium)
-
-            Button(action: onPayTapped) {
-                Text(Localization.payButton)
-                    .font(POSFontStyle.posBodyLargeBold)
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isPayDisabled))
-            .posContentPadding(.horizontal, metrics.padding.medium)
-            .disabled(isPayDisabled)
-            .accessibilityIdentifier("pos-tap-to-pay-hero-pay-button")
         }
+    }
+}
+
+struct POSTapToPayHeroPayButton: View {
+    let onPayTapped: () -> Void
+    /// True between the merchant tapping the CTA and the payment state machine
+    /// reacting. The button stays tappable on entry (silent pre-connect runs in
+    /// the background — no visible indicator until the merchant taps), so this
+    /// is purely double-tap protection. While true the button renders its
+    /// built-in `isLoading` spinner so the merchant gets immediate feedback
+    /// that their tap landed, even when the pre-connect or PaymentIntent
+    /// creation is still in flight.
+    var isPayDisabled: Bool = false
+
+    var body: some View {
+        Button(action: onPayTapped) {
+            Text(Localization.payButton)
+                .font(POSFontStyle.posBodyLargeBold)
+        }
+        .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isPayDisabled))
+        .disabled(isPayDisabled)
+        .accessibilityIdentifier("pos-tap-to-pay-hero-pay-button")
     }
 }
 
@@ -64,6 +69,11 @@ private extension POSTapToPayHeroView {
             value: "Use this device to accept contactless card payments.",
             comment: "Subtitle shown in the Tap to Pay on iPhone hero on the POS checkout."
         )
+    }
+}
+
+private extension POSTapToPayHeroPayButton {
+    enum Localization {
         static let payButton = NSLocalizedString(
             "pos.tapToPay.hero.payButton.v2",
             value: "Pay with Tap to Pay",
@@ -77,12 +87,18 @@ private extension POSTapToPayHeroView {
 
 #if DEBUG
 #Preview("Idle") {
-    POSTapToPayHeroView(onPayTapped: {})
-        .padding()
+    VStack {
+        POSTapToPayHeroView()
+        POSTapToPayHeroPayButton(onPayTapped: {})
+    }
+    .posPadding(.all, \.medium)
 }
 
 #Preview("Tapped (loading)") {
-    POSTapToPayHeroView(onPayTapped: {}, isPayDisabled: true)
-        .padding()
+    VStack {
+        POSTapToPayHeroView()
+        POSTapToPayHeroPayButton(onPayTapped: {}, isPayDisabled: true)
+    }
+    .posPadding(.all, \.medium)
 }
 #endif

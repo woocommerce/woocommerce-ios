@@ -3,14 +3,16 @@ import struct Yosemite.PrinterDevice
 import enum WooFoundation.BluetoothAuthorization
 import protocol WooFoundation.BluetoothAuthorizationProviding
 
-/// Drives the receipt-printer setup flow from a `POSPrinterConnectionController`, presenting
-/// pairing, discovery, connection, and error states. Dismisses itself once a printer connects.
+/// Drives the receipt-printer setup flow from a `POSPrinterConnectionController`, opening on a
+/// printer search and presenting discovery, connection, pairing guidance, and error states.
+/// Dismisses itself once a printer connects.
 struct POSPrinterSetupModal: View {
     @Environment(\.posMetrics) private var metrics
     @Binding var isPresented: Bool
     let controller: POSPrinterConnectionController
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var setupSessionID = UUID()
 
     private var isCompactWidth: Bool {
         horizontalSizeClass == .compact
@@ -28,10 +30,11 @@ struct POSPrinterSetupModal: View {
                     isPresented = false
                 }
             }
+            .onAppear {
+                controller.startSetup(sessionID: setupSessionID)
+            }
             .onDisappear {
-                Task {
-                    await controller.cancelSetup()
-                }
+                controller.cancelSetup(sessionID: setupSessionID)
             }
     }
 
@@ -104,6 +107,10 @@ private struct POSPrinterSetupContent: View {
             deviceList(devices)
         case .connecting(let device):
             progressContent(message: String(format: Localization.connectingFormat, device.name))
+        case .discoveryFailed:
+            messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
+                           title: Localization.discoveryFailedTitle,
+                           message: Localization.discoveryFailedMessage)
         case .error:
             messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
                            title: Localization.errorTitle,
@@ -284,6 +291,17 @@ private extension POSPrinterSetupContent {
                 + "then search again.",
             comment: "Message shown when no receipt printers are discovered in POS settings.")
 
+        static let discoveryFailedTitle = NSLocalizedString(
+            "pos.printerSetup.discoveryFailed.title",
+            value: "Couldn't search for printers",
+            comment: "Title shown when the receipt printer search fails to run in POS settings.")
+
+        static let discoveryFailedMessage = NSLocalizedString(
+            "pos.printerSetup.discoveryFailed.message",
+            value: "Make sure Bluetooth is on, then search again.",
+            comment: "Message shown when the receipt printer search fails to run in POS settings, "
+                + "most often because the device's Bluetooth is switched off.")
+
         static let errorTitle = NSLocalizedString(
             "pos.printerSetup.error.title",
             value: "Something went wrong",
@@ -302,7 +320,7 @@ private extension POSPrinterSetupModal {
         switch controller.discoveryState {
         case .idle:
             return setupButtons(primaryTitle: Localization.connectButton)
-        case .noPrintersFound:
+        case .noPrintersFound, .discoveryFailed:
             return setupButtons(primaryTitle: Localization.searchAgainButton)
         case .error:
             return setupButtons(primaryTitle: Localization.searchAgainButton)
@@ -420,16 +438,16 @@ private extension POSPrinterSetupModal {
     let controller = POSPrinterConnectionController(
         service: POSReceiptPrinterPreviewService(
             devices: [PrinterDevice(id: "1", name: "Star TSP100")],
-            keepDiscovering: true))
-    controller.startDiscovery()
+            keepDiscovering: true),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
 }
 
 #Preview("Discovery error") {
     let controller = POSPrinterConnectionController(
-        service: POSReceiptPrinterPreviewService(failsDiscovery: true))
-    controller.startDiscovery()
+        service: POSReceiptPrinterPreviewService(failsDiscovery: true),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
 }
@@ -438,9 +456,11 @@ private extension POSPrinterSetupModal {
     let device = PrinterDevice(id: "1", name: "Star TSP100")
     let controller = POSPrinterConnectionController(
         service: POSReceiptPrinterPreviewService(devices: [device], failsToConnect: true))
-    controller.connect(to: device)
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
+        .task {
+            controller.connect(to: device)
+        }
 }
 
 #Preview("Several printers found") {
@@ -448,8 +468,8 @@ private extension POSPrinterSetupModal {
         service: POSReceiptPrinterPreviewService(
             devices: [PrinterDevice(id: "1", name: "Star TSP100"),
                       PrinterDevice(id: "2", name: "Star mC-Print3")],
-            keepDiscovering: true))
-    controller.startDiscovery()
+            keepDiscovering: true),
+        bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
         .posPreviewModalParentSize()
 }

@@ -157,6 +157,7 @@ struct TotalsView: View {
         .environment(\.floatingControlAreaSize, posModel.orderState.isError ? .zero : floatingControlAreaSize)
         .posIgnoresHiddenKeyboardSafeArea()
         .animation(.default, value: posModel.orderState.isError)
+        .animation(.default, value: isShowingPaymentStatusScreen)
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
         }
@@ -298,8 +299,10 @@ private extension TotalsView {
     private var paymentViewContent: some View {
         PaymentViewContent(
             paymentState: displayPaymentState,
-            cardReaderViewLayout: cardReaderViewLayout,
-            isShowingTotalsFields: isShowingTotalsFields,
+            cardReaderViewLayout: PaymentViewLayout(topPadding: metrics.padding.none,
+                                                    bottomPadding: metrics.padding.none,
+                                                    sidePadding: metrics.padding.none),
+            isShowingTotalsFields: false,
             backgroundColor: backgroundColor,
             orderState: posModel.orderState,
             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,

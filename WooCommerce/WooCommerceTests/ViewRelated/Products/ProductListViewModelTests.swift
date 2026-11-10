@@ -494,7 +494,7 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertTrue(upserted.favoriteProduct)
     }
 
-    func test_filters_when_set_to_equal_value_then_does_not_persist_or_notify() {
+    func test_filters_when_set_to_equal_value_then_does_not_persist_or_notify() async {
         // Given
         let viewModel = makeViewModel()
         recordProductsSettings()
@@ -504,9 +504,7 @@ final class ProductListViewModelTests: XCTestCase {
         // When
         viewModel.filters = FilterProductListViewModel.Filters()
         // Queued behind the didSet task on the main actor, so it runs once that task has finished.
-        var didSetTaskFinished = false
-        Task { @MainActor in didSetTaskFinished = true }
-        waitUntil { didSetTaskFinished }
+        await Task { @MainActor in }.value
 
         // Then
         XCTAssertFalse(notified, "Re-applying the current filters must not reset the list pages")

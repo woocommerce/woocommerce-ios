@@ -78,11 +78,11 @@ private extension POSTapToPayHeroView {
 #if DEBUG
 #Preview("Idle") {
     POSTapToPayHeroView(onPayTapped: {})
-        .padding()
+        .posPadding(\.medium)
 }
 
 #Preview("Tapped (loading)") {
     POSTapToPayHeroView(onPayTapped: {}, isPayDisabled: true)
-        .padding()
+        .posPadding(\.medium)
 }
 #endif

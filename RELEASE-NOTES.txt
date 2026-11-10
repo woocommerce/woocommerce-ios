@@ -14,6 +14,7 @@
 - [*] POS: On iPhone, settings, orders and checkout now slide between screens with the standard push animation. [https://github.com/woocommerce/woocommerce-ios/pull/18272]
 - [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]
 - [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
+- [*] POS: On iPhone, Point of Sale uses smaller spacing, paddings and cards, so more products and order details fit on the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18256]
 - [*] Products: Preview signs you in to your store when possible, works after logging in with your store username and password, and no longer shows "Page not found" on stores connected without the Jetpack plugin. [https://github.com/woocommerce/woocommerce-ios/pull/18238]
 - [*] Products: Saving a product with a duplicate SKU now shows a clear error message. [https://github.com/woocommerce/woocommerce-ios/pull/18269]
 - [*] Products: Opening a product that was deleted from the store now says so, for stores connected without Jetpack tunnel. [https://github.com/woocommerce/woocommerce-ios/pull/18269]

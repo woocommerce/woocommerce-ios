@@ -112,7 +112,7 @@ struct GhostItemCardViewConfiguration {
 }
 
 #Preview {
-    VStack(spacing: 20) {
+    VStack(spacing: POSMetrics.regular.spacing.large) {
         GhostItemCardView(configuration: .itemList) {
             CartRowRemoveButton {}
         }

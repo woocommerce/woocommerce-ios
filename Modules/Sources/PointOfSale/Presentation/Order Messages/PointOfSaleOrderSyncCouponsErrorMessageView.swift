@@ -24,7 +24,7 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                             .font(.posHeadingBold)
 
                         Text(attributedMessage)
-                            .padding([.leading, .trailing])
+                            .posPadding(.horizontal, \.medium)
                     }
                     Spacer().frame(height: metrics.spacing.xxLarge)
 

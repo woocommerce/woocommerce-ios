@@ -65,7 +65,7 @@ private extension WordPressSiteStore {
                     completion(.success(nil))
                     return
                 }
-                let authorization = try await checkedAuthorization(url: url, siteURL: siteURL, remote: remote)
+                let authorization = try await Self.checkedAuthorization(url: url, siteURL: siteURL, remote: remote)
                 completion(.success(authorization))
             } catch {
                 completion(.failure(error))
@@ -75,7 +75,7 @@ private extension WordPressSiteStore {
 
     /// The store's REST index picks the approval page, so a lookalike store could list another site's page.
     /// A page on another host is accepted only when that host's WordPress reports the store as its home.
-    func checkedAuthorization(url: URL, siteURL: String, remote: WordPressSiteRemote) async throws -> ApplicationPasswordAuthorization {
+    static func checkedAuthorization(url: URL, siteURL: String, remote: WordPressSiteRemote) async throws -> ApplicationPasswordAuthorization {
         guard let approvalSiteURL = ApplicationPasswordSiteMatcher.approvalSiteURL(for: url.absoluteString) else {
             throw ApplicationPasswordAuthorizationError.siteMismatch
         }

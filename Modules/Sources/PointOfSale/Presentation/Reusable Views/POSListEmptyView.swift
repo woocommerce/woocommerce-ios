@@ -21,8 +21,6 @@ struct POSListEmptyView: View {
 
     private let onAction: (() -> Void)?
 
-    @State private var viewWidth: CGFloat = 0
-
     @Environment(\.keyboardObserver) private var keyboard
 
     init(viewModel: any POSListEmptyViewModelProtocol, onAction: (() -> Void)? = nil) {
@@ -74,8 +72,7 @@ struct POSListEmptyView: View {
                         Text(buttonTitle)
                     })
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .frame(width: viewWidth / 2)
-                    .posPadding(.horizontal, \.medium)
+                    .posStatusButtonsWidth(addsHorizontalPadding: false)
                 }
             }
             Spacer()
@@ -83,9 +80,6 @@ struct POSListEmptyView: View {
         .multilineTextAlignment(.center)
         .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
         .animation(.default, value: keyboard.keyboardHeight)
-        .measureWidth { width in
-            viewWidth = width
-        }
     }
 
     @ViewBuilder

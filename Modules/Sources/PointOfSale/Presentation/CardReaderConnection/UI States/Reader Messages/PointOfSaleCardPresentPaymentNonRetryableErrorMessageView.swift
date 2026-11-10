@@ -42,7 +42,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
             Button(viewModel.tryAnotherPaymentMethodButtonViewModel.title,
                    action: viewModel.tryAnotherPaymentMethodButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .dynamicWidthScaling(containerWidth: width)
+            .posStatusButtonsWidth()
 
             Spacer()
         }

@@ -42,6 +42,12 @@ struct StoreDashboardView: View {
                     featureAnnouncementCard
                         .padding(.horizontal, Layout.outerPadding)
                     dashboardCards(availableWidth: proxy.size.width)
+                    StoreDashboardCustomizeButton(
+                        showsNewCardsBadge: viewModel.showNewCardsNotice,
+                        isDisabled: viewModel.isReloadingAllData,
+                        action: showCustomization
+                    )
+                    .padding(.horizontal, Layout.outerPadding)
                 }
                 .padding(.bottom, Layout.outerPadding)
             }
@@ -55,22 +61,6 @@ struct StoreDashboardView: View {
                         Image(systemName: "square.and.arrow.up")
                     }
                 }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: showCustomization) {
-                    Text(Localization.edit)
-                        .overlay(alignment: .topTrailing) {
-                            if viewModel.showNewCardsNotice && !viewModel.isReloadingAllData {
-                                Circle()
-                                    .fill(Color.storePrimary)
-                                    .frame(width: Layout.dotBadgeSize)
-                                    .padding(Layout.dotBadgePadding)
-                                    .offset(Layout.dotBadgeOffset)
-                            }
-                        }
-                }
-                .accessibilityIdentifier("dashboard-edit-button")
-                .disabled(viewModel.isReloadingAllData)
             }
         }
         .toolbarBackground(Color.clear, for: .navigationBar)
@@ -106,7 +96,7 @@ struct StoreDashboardView: View {
             }
         }
         .sheet(isPresented: $viewModel.showingCustomization, onDismiss: viewModel.handleCustomizationDismissal) {
-            DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
+            StoreDashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.availableCards,
                 inactiveCards: viewModel.unavailableCards,
                 onSave: viewModel.didCustomizeDashboardCards
@@ -189,6 +179,7 @@ private extension StoreDashboardView {
             }
         }
         .frame(maxWidth: .infinity)
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder
@@ -365,8 +356,5 @@ private extension StoreDashboardView {
         static let outerPadding = StoreSpacing.s7
         static let cardSpacing = StoreSpacing.s7
         static let columnSpacing = StoreSpacing.s5
-        static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
-        static let dotBadgeSize: CGFloat = 6
-        static let dotBadgeOffset = CGSize(width: 7, height: -7)
     }
 }

@@ -7,7 +7,11 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let baseAmountForPercentage: Decimal
 
-    @Published private(set) var percentageCalculatedAmount: String = ""
+    /// Plain number sent as the fee total. Never send the formatted text: "$1,234.50" parses as 1.234.
+    @Published private(set) var amount = "0"
+    var percentageCalculatedAmount: String {
+        currencyFormatter.formatAmount(amount) ?? ""
+    }
     var baseAmountForPercentageString: String {
         guard let formattedAmount = currencyFormatter.formatAmount(baseAmountForPercentage) else {
             return ""
@@ -21,7 +25,6 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
     init(baseAmountForPercentage: Decimal, currencyFormatter: CurrencyFormatter) {
         self.baseAmountForPercentage = baseAmountForPercentage
         self.currencyFormatter = currencyFormatter
-        percentageCalculatedAmount = "0"
     }
 
     func preset(with fee: OrderFeeLine) {
@@ -30,7 +33,7 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
         }
 
         percentage = currencyFormatter.localize(((totalDecimal as Decimal / baseAmountForPercentage) * 100)) ?? "0"
-        percentageCalculatedAmount = fee.total
+        amount = fee.total
     }
 }
 
@@ -38,10 +41,9 @@ extension AddCustomAmountPercentageViewModel {
     func updatePercentageCalculatedAmount(_ percentage: String) {
         guard percentage.isNotEmpty,
               let decimalInput = currencyFormatter.convertToDecimal(percentage) else {
-            percentageCalculatedAmount = "0"
+            amount = "0"
             return
         }
-        let amountString = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
-        percentageCalculatedAmount = currencyFormatter.formatAmount(amountString) ?? ""
+        amount = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
     }
 }

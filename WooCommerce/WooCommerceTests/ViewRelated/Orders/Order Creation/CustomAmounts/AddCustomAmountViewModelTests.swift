@@ -160,6 +160,47 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.percentageViewModel?.percentageCalculatedAmount, currencyFormatter.formatAmount(amountString))
     }
 
+    func test_doneButtonPressed_when_percentage_amount_has_thousands_then_passes_plain_number_not_display_string() throws {
+        // Given
+        let usStoreSettings = CurrencySettings()
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 12345),
+                                                 storeCurrencySettings: usStoreSettings,
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+        viewModel.percentageViewModel?.updatePercentageCalculatedAmount("10")
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        // The order sync parses "$1,234.50" as 1.234, so the fee total must be a plain number.
+        let amount = try XCTUnwrap(enteredAmount)
+        XCTAssertFalse(amount.contains("$") || amount.contains(","))
+        XCTAssertEqual(CurrencyFormatter(currencySettings: usStoreSettings).convertToDecimal(amount), 1234.5)
+    }
+
+    func test_doneButtonPressed_when_store_uses_dot_thousands_separator_then_passes_plain_number() throws {
+        // Given
+        let dotThousandsSettings = CurrencySettings(currencyCode: .USD,
+                                                    currencyPosition: .left,
+                                                    thousandSeparator: ".",
+                                                    decimalSeparator: ",",
+                                                    numberOfDecimals: 0)
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 12345),
+                                                 storeCurrencySettings: dotThousandsSettings,
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+        viewModel.percentageViewModel?.updatePercentageCalculatedAmount("10")
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        // The display text here is "$1.235"; sent as the fee total it is saved as 1 instead of 1235.
+        let amount = try XCTUnwrap(enteredAmount)
+        XCTAssertEqual(CurrencyFormatter(currencySettings: dotThousandsSettings).convertToDecimal(amount), 1234.5)
+    }
+
     func test_clearInputFocus_when_fixed_amount_then_clears_focused_field() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })

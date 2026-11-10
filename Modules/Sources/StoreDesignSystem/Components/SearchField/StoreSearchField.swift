@@ -6,11 +6,12 @@ import SwiftUI
 ///
 /// - Note: The field owns no search logic. The host binds `text`, debounces and fetches, and
 ///   renders the results and empty states beneath it; a `.onSubmit` on the host catches the Search
-///   key, and `.focused(_:)` / `.autocorrectionDisabled()` apply from outside as on any text
-///   field. A tap anywhere on the field focuses it, as a `UISearchBar` does. The design's Resting
-///   and Active states are driven by the text alone: the clear control appears with the first
-///   character and only empties the query. Text and glyphs scale together under Dynamic Type up
-///   to ``StoreDynamicTypeScaling/chromeMaximum``, the cap the top app bar uses, and the field grows with them.
+///   key, and `.focused(_:)` applies from outside as on any text field. Autocorrection and its
+///   predictive suggestions are disabled to match a `UISearchBar`. A tap anywhere on the field
+///   focuses it. The design's Resting and Active states are driven by the text alone: the clear
+///   control appears with the first character and only empties the query. Text and glyphs scale
+///   together under Dynamic Type up to ``StoreDynamicTypeScaling/chromeMaximum``, the cap the top
+///   app bar uses, and the field grows with them.
 public struct StoreSearchField: View {
     @Environment(\.isEnabled) private var isEnabled
     @FocusState private var isFieldFocused: Bool
@@ -76,6 +77,8 @@ public struct StoreSearchField: View {
             .foregroundStyle(appearance.content)
             .focused(focusBinding)
             .submitLabel(submitLabel)
+            .keyboardType(.alphabet)
+            .autocorrectionDisabled()
             .accessibilityAddTraits(.isSearchField)
             .accessibilityIdentifier(ifPresent: accessibilityIdentifier)
             if !text.isEmpty {

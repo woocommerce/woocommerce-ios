@@ -21,6 +21,7 @@
 - [*] Products: The Variations list now loads the rest of a product's variations right after a pull to refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18252]
 - [Internal] AI support: Include sanitized recent warning and error logs with new chats for login failures. [https://github.com/woocommerce/woocommerce-ios/pull/18189]
 - [*] POS: On iPhone, Exit POS is now a small dialog in the center of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18315]
+- [*] POS: On iPhone, "Why can't I see my products?" and Other payment methods are now bottom sheets as tall as their content. [https://github.com/woocommerce/woocommerce-ios/pull/18316]
 
 26.0
 -----

@@ -201,7 +201,7 @@ public struct PointOfSaleEntryPointView: View {
             // Keep native compact windows compact; collapse regular windows that cannot fit two panes.
             let isCompactLayout = horizontalSizeClass == .compact || geometry.size.width < Constants.minimumSplitWidth
             content(isCompactLayout: isCompactLayout)
-                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? POSPadding.none : nil)
+                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? 0 : nil)
                 .environment(\.horizontalSizeClass, isCompactLayout ? .compact : .regular)
         }
     }

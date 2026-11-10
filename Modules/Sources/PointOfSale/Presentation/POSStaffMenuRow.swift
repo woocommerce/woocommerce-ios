@@ -35,6 +35,6 @@ private extension POSStaffMenuRow {
 #if DEBUG
 #Preview {
     POSStaffMenuRow(staff: POSStaff(userID: 1, displayName: "Thomas", preset: .cashier, capabilities: []))
-        .padding()
+        .posPadding(\.medium)
 }
 #endif

@@ -9,6 +9,7 @@ import WooFoundation
 ///
 /// Consumers provide domain-specific logic for validation, async actions, and analytics
 struct POSSingleFieldInputView: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let placeholder: String
     let buttonTitle: String
@@ -31,7 +32,7 @@ struct POSSingleFieldInputView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+            VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.medium)) {
                 POSPageHeaderView(
                     title: title,
                     backButtonConfiguration: .init(
@@ -45,10 +46,10 @@ struct POSSingleFieldInputView: View {
                     )
                 )
 
-                VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.medium)) {
                     Spacer()
 
-                    VStack(alignment: .center, spacing: POSSpacing.xSmall) {
+                    VStack(alignment: .center, spacing: metrics.spacing.xSmall) {
                         TextField("",
                                   text: $text,
                                   prompt: Text(placeholder).foregroundColor(.posOnDisabledContainer))
@@ -87,7 +88,7 @@ struct POSSingleFieldInputView: View {
                     .frame(maxWidth: .infinity)
                     .disabled(buttonState != .idle || !isButtonEnabled)
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
                 .padding(.bottom, keyboardFrame.height)
             }
             .animation(.easeInOut, value: errorMessage)
@@ -107,13 +108,9 @@ struct POSSingleFieldInputView: View {
 // MARK: - Helpers
 
 private extension POSSingleFieldInputView {
-    enum Constants {
-        static let minimumPadding: CGFloat = POSSpacing.xSmall
-    }
-
     func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if shouldMinimizePadding {
-            return Constants.minimumPadding
+            return metrics.spacing.xSmall
         }
         return padding
     }

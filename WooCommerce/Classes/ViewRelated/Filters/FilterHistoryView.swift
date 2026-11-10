@@ -160,6 +160,9 @@ private extension FilterHistoryView {
             }
         }
         .listStyle(.grouped)
+        // Native list rows can paint beyond the content column beside a vertical system bar.
+        .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
+        .background(Color(uiColor: .systemGroupedBackground))
     }
 
     @ViewBuilder

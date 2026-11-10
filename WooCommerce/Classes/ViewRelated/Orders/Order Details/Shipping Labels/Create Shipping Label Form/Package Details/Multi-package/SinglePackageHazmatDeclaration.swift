@@ -66,7 +66,7 @@ struct SinglePackageHazmatDeclaration: View {
 
                 Divider()
             }
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             Text(Localization.hazmatTooltip)
                 .renderedIf(!viewModel.containsHazmatMaterials)

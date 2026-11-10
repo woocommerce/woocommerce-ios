@@ -71,12 +71,11 @@ The POS module (`Modules/Sources/PointOfSale/`) uses a **different architecture*
 - For leaf views, prefer passing required state directly rather than accessing the full aggregate model
 - Expose state as enums covering all valid possibilities rather than raw model objects
 - POS does NOT use `ServiceLocator` - dependencies come through `POSDependencyProviding` + `@Environment`
-- Use POS design tokens for UI: `POSPadding`, `POSSpacing`, `POSFontStyle`, and `Color+POSColorPalette` - no hardcoded values
+- Use POS design tokens for UI: `POSMetrics`, `POSFontStyle`, and `Color+POSColorPalette` - no hardcoded values
 
 ### POS Design System
 POS has its own design tokens. When building POS UI, use these instead of app-wide or hardcoded values:
-- **`POSPadding`** - padding constants (`.xSmall` through `.xxLarge`)
-- **`POSSpacing`** - spacing constants (`.xSmall` through `.xxLarge`)
+- **`POSMetrics`** - spacing, padding and card sizes that adapt to phone. Read it with `@Environment(\.posMetrics) private var metrics`, then use `metrics.spacing.medium`, `metrics.padding.medium` or `.posPadding(\.medium)`. Previews use `POSMetrics.regular`. The `pos_metrics_spacing` SwiftLint rule fails on numeric or default padding and spacing.
 - **`POSFontStyle`** - typography (`.posHeadingBold`, `.posBodyLargeRegular()`, etc.) applied via `.font(.posBodyMediumBold)`
 - **`Color+POSColorPalette`** - semantic colors (`.posPrimary`, `.posSurface`, `.posError`, etc.) defined in `Colors/Color+POSColorPalette.swift`
 

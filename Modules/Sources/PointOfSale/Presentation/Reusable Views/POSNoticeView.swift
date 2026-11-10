@@ -141,14 +141,14 @@ private enum Localization {
         onDismiss: {},
         onTap: {}
     ) {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.xSmall) {
             Text("This is a subtitle that explains more about the notice.")
             Text("Here's a hint about what to do next. Learn More")
                 .font(.posBodySmallBold())
                 .foregroundColor(Color.posPrimary)
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 
 #Preview("Without dismiss") {
@@ -157,14 +157,14 @@ private enum Localization {
         icon: Image(systemName: "bell"),
         onTap: {}
     ) {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.xSmall) {
             Text("This is a subtitle that explains more about the notice.")
             Text("Here's a hint about what to do next. Learn More")
                 .font(.posBodySmallBold())
                 .foregroundColor(Color.posPrimary)
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 
 #Preview("Banner that fits to width") {
@@ -173,5 +173,5 @@ private enum Localization {
         icon: Image(systemName: "info.circle")
     )
     .fixedSize(horizontal: true, vertical: true)
-    .padding()
+    .posPadding(\.medium)
 }

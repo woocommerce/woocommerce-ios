@@ -51,7 +51,7 @@ struct POSListEmptyView: View {
                 Text(viewModel.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
-                    .padding([.leading, .trailing])
+                    .posPadding(.horizontal, \.medium)
                     .multilineTextAlignment(.center)
 
                 if let hint = viewModel.hint {
@@ -59,7 +59,7 @@ struct POSListEmptyView: View {
                     Text(hint)
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
                         .font(.posBodyLargeRegular())
-                        .padding([.leading, .trailing])
+                        .posPadding(.horizontal, \.medium)
                         .multilineTextAlignment(.center)
                 }
 

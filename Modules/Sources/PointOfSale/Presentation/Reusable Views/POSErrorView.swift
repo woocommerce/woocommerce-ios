@@ -32,7 +32,7 @@ struct POSErrorView: View {
             Text(viewModel.subtitle)
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posBodyLargeRegular())
-                .padding([.leading, .trailing])
+                .posPadding(.horizontal, \.medium)
                 .fixedSize(horizontal: false, vertical: true)
 
             if viewModel.primaryButton != nil || viewModel.secondaryButton != nil {

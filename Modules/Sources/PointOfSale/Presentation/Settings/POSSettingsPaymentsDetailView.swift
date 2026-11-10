@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSSettingsPaymentsDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: POSSettingsPaymentsViewModel
     /// Gates an edit action on `editPOSSettings`. Defaults to running it directly (previews / no host gate).
     private let requestEditPermission: POSPermissionRequest
@@ -12,12 +13,12 @@ struct POSSettingsPaymentsDetailView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.paymentsTitle)
                 .foregroundColor(.posSurface)
 
             ScrollView {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     POSInformationCard {
                         POSInformationCardFieldRowWithToggle(
                             label: Localization.paymentSuccessSoundTitle,
@@ -27,7 +28,7 @@ struct POSSettingsPaymentsDetailView: View {
                         )
                     }
                 }
-                .posContentPadding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, metrics.padding.medium)
             }
         }
         .background(Color.posSurface)

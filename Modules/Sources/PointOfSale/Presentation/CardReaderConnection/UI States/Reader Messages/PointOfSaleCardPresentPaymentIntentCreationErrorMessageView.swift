@@ -27,6 +27,7 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
+            .padding(.horizontal, metrics.padding.xxLarge)
 
             Spacer()
                 .frame(height: metrics.spacing.xxLarge)

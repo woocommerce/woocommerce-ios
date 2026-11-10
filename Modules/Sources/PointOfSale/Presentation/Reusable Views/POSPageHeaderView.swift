@@ -52,6 +52,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
     @Environment(\.posLayoutScale) private var layoutScale
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
@@ -111,7 +112,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+            HStack(alignment: hStackAlignment, spacing: metrics.spacing.medium) {
                 leadingContent
 
                 if shouldShowItemsContent {
@@ -129,9 +130,9 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             bottomContent
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
-        .posContentPadding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-        .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? POSPadding.medium : POSHeaderLayoutConstants.sectionVerticalPadding))
-        .padding(.bottom, POSHeaderLayoutConstants.sectionVerticalPadding)
+        .posContentPadding(.horizontal, metrics.padding.medium)
+        .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? metrics.padding.medium : metrics.padding.large))
+        .padding(.bottom, metrics.padding.large)
     }
 
     /// Try full-size tabs, then smaller tabs, before allowing horizontal scrolling.
@@ -164,15 +165,15 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     }
 
     private func itemsRow(titleFont: Font? = nil) -> some View {
-        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+            HStack(alignment: hStackAlignment, spacing: metrics.spacing.medium) {
                 if showsBackButton {
                     backButton
                         .frame(minHeight: navigationRowMinHeight)
                 }
                 ForEach(0..<items.count, id: \.self) { index in
-                    VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                        HStack(spacing: POSSpacing.small) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+                        HStack(spacing: metrics.spacing.small) {
                             if items[index].title.isNotEmpty {
                                 Button(action: {
                                     items[index].action?()
@@ -248,6 +249,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 }
 
 private struct POSHeaderScrollableTitles<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
     @State private var clippedEdges: Edge.Set = []
     @ViewBuilder let content: Content
 
@@ -269,7 +271,7 @@ private struct POSHeaderScrollableTitles<Content: View>: View {
         }
         .mask {
             GeometryReader { geometry in
-                let fade = min(POSSpacing.medium / max(geometry.size.width, 1), 0.5)
+                let fade = min(metrics.spacing.medium / max(geometry.size.width, 1), 0.5)
                 LinearGradient(stops: [
                     .init(color: clippedEdges.contains(.leading) ? .clear : .black, location: 0),
                     .init(color: .black, location: fade),
@@ -282,8 +284,6 @@ private struct POSHeaderScrollableTitles<Content: View>: View {
 }
 
 private enum Constants {
-    static let horizontalSpacing: CGFloat = POSSpacing.medium
-    static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
     static let subtitleLineLimit: Int = 2
 }
 

@@ -71,7 +71,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
-        network = MockNetwork()
+        network = MockDiagnosticReadNetwork()
         mockCardReaderService = MockCardReaderService()
         mockCardReaderConfigProvider = MockCommonReaderConfigProviding()
         cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
@@ -269,6 +269,85 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         cardPresentStore.onAction(action)
 
         XCTAssertTrue(mockCardReaderService.didHitDisconnect)
+    }
+
+    func test_fetchPaymentGatewayAccount_when_gateway_is_requested_then_returns_only_its_mapped_account() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "stripe-account-complete")
+        let expectedPaths: [CardPresentPaymentsPlugin: String] = [.wcPay: "payments/accounts", .stripe: "wc_stripe/account/summary"]
+
+        for gateway in CardPresentPaymentsPlugin.allCases {
+            // When
+            let result = fetchPaymentGatewayAccount(gateway: gateway)
+
+            // Then
+            XCTAssertEqual(try result.get(), expectedPaymentGatewayAccount(gatewayID: gateway.gatewayID))
+            XCTAssertEqual(requestedPaths().last, expectedPaths[gateway])
+        }
+        XCTAssertEqual(requestedPaths().count, CardPresentPaymentsPlugin.allCases.count)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.PaymentGatewayAccount.self, matching: nil), 0)
+    }
+
+    func test_fetchPaymentGatewayAccount_when_either_gateway_fails_then_forwards_original_error() {
+        // Given
+        let error = NSError(domain: "PaymentGatewayAccountTests", code: 42)
+        network.simulateError(requestUrlSuffix: "payments/accounts", error: error)
+        network.simulateError(requestUrlSuffix: "wc_stripe/account/summary", error: error)
+
+        for gateway in CardPresentPaymentsPlugin.allCases {
+            // When
+            let result = fetchPaymentGatewayAccount(gateway: gateway)
+
+            // Then
+            XCTAssertTrue(result.isFailure)
+            XCTAssertTrue((result.failure as NSError?) === error)
+        }
+        XCTAssertEqual(Set(requestedPaths()), ["payments/accounts", "wc_stripe/account/summary"])
+    }
+
+    @MainActor
+    func test_fetchPaymentGatewayAccount_when_requests_succeed_or_fail_then_preserves_cache_selection_and_reader_context() async throws {
+        // Given
+        let storedWCPay = Yosemite.PaymentGatewayAccount.fake().copy(siteID: sampleSiteID, gatewayID: WCPayAccount.gatewayID, status: "restricted")
+        let storedStripe = Yosemite.PaymentGatewayAccount.fake().copy(siteID: sampleSiteID, gatewayID: StripeAccount.gatewayID, status: "restricted")
+        await storageManager.performAndSaveAsync { storage in
+            storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self).update(with: storedWCPay)
+            storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self).update(with: storedStripe)
+        }
+        cardPresentStore.onAction(CardPresentPaymentAction.use(paymentGatewayAccount: storedStripe))
+        mockCardReaderConfigProvider.setContext(siteID: sampleSiteID, remote: StripeRemote(network: network))
+        mockCardReaderService.didHitDisconnect = false
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-complete")
+        network.simulateResponse(requestUrlSuffix: "wc_stripe/account/summary", filename: "stripe-account-complete")
+
+        for shouldFail in [false, true] {
+            if shouldFail {
+                let error = NSError(domain: "PaymentGatewayAccountTests", code: 42)
+                network.simulateError(requestUrlSuffix: "payments/accounts", error: error)
+                network.simulateError(requestUrlSuffix: "wc_stripe/account/summary", error: error)
+            }
+            for gateway in CardPresentPaymentsPlugin.allCases {
+                // When
+                let result: Result<Yosemite.PaymentGatewayAccount, Error> = await withCheckedContinuation { continuation in
+                    cardPresentStore.onAction(CardPresentPaymentAction.fetchPaymentGatewayAccount(siteID: sampleSiteID, gateway: gateway) {
+                        continuation.resume(returning: $0)
+                    })
+                }
+
+                // Then
+                XCTAssertEqual(result.isFailure, shouldFail)
+                XCTAssertEqual(viewStorage.countObjects(ofType: Storage.PaymentGatewayAccount.self, matching: nil), 2)
+                XCTAssertEqual(viewStorage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: WCPayAccount.gatewayID)?.toReadOnly(), storedWCPay)
+                XCTAssertEqual(viewStorage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: StripeAccount.gatewayID)?.toReadOnly(), storedStripe)
+                cardPresentStore.onAction(CardPresentPaymentAction.selectedPaymentGatewayAccount { account in
+                    XCTAssertEqual(account, storedStripe)
+                })
+                XCTAssertEqual(mockCardReaderConfigProvider.currentSiteID, sampleSiteID)
+                XCTAssertFalse(mockCardReaderService.didHitDisconnect)
+                XCTAssertFalse(mockCardReaderService.didHitStart)
+            }
+        }
     }
 
     /// Verifies that the PaymentGatewayAccountStore hits the network when loading a WCPay Account and places nothing in storage in case of error.
@@ -1295,6 +1374,30 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 }
 
 private extension CardPresentPaymentStoreTests {
+    func fetchPaymentGatewayAccount(gateway: CardPresentPaymentsPlugin) -> Result<Yosemite.PaymentGatewayAccount, Error> {
+        waitFor { promise in
+            self.cardPresentStore.onAction(CardPresentPaymentAction.fetchPaymentGatewayAccount(siteID: self.sampleSiteID,
+                                                                                               gateway: gateway,
+                                                                                               onCompletion: promise))
+        }
+    }
+
+    func expectedPaymentGatewayAccount(gatewayID: String) -> Yosemite.PaymentGatewayAccount {
+        .fake().copy(siteID: sampleSiteID,
+                     gatewayID: gatewayID,
+                     status: "complete",
+                     hasPendingRequirements: false,
+                     hasOverdueRequirements: false,
+                     currentDeadline: nil,
+                     statementDescriptor: "MY.FANCY.US.STORE",
+                     defaultCurrency: "usd",
+                     supportedCurrencies: ["usd"],
+                     country: "US",
+                     isCardPresentEligible: true,
+                     isLive: true,
+                     isInTestMode: false)
+    }
+
     func insertPaymentPlugin(_ plugin: CardPresentPaymentsPlugin, active: Bool) {
         let systemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID,
                                                     plugin: plugin.fileNameWithPathExtension + ".php",
@@ -1309,7 +1412,7 @@ private extension CardPresentPaymentStoreTests {
     }
 
     func requestedPaths() -> [String] {
-        network.requestsForResponseData.compactMap { ($0 as? JetpackRequest)?.path }
+        network.requestsForResponseData.compactMap { ($0.originalResponseRequest as? JetpackRequest)?.path }
     }
 
     func paymentIntent(collectedPaymentMethod: PaymentMethod?) -> PaymentIntent {

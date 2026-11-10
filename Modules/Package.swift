@@ -194,6 +194,7 @@ let package = Package(
             name: "NetworkingCore",
             dependencies: [
                 "Codegen",
+                "WooFoundationCore",
                 .product(name: "Alamofire", package: "Alamofire"),
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "HTMLParser", package: "AztecEditor-iOS"),
@@ -210,7 +211,7 @@ let package = Package(
             ],
             exclude: ["Model/Migrations.md"],
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "TestKit",
@@ -343,7 +344,8 @@ let package = Package(
         .testTarget(
             name: "HardwareTests",
             dependencies: [
-                "Hardware"
+                "Hardware",
+                .product(name: "StarIO10", package: "StarXpand-SDK-iOS")
             ],
             swiftSettings: swift5
         ),
@@ -372,7 +374,7 @@ let package = Package(
         ),
         .testTarget(
             name: "WooFoundationTests",
-            dependencies: ["TestKit", .target(name: "WooFoundation")],
+            dependencies: ["TestKit", .target(name: "WooFoundation"), .target(name: "WooFoundationCore")],
             swiftSettings: swift6
         ),
         .testTarget(

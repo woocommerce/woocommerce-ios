@@ -2,6 +2,7 @@ import SwiftUI
 import class WooFoundation.KeyboardObserver
 
 struct PointOfSaleMarkAsPaidConfirmationView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.keyboardObserver) private var keyboardObserver
 
     let orderTotal: String
@@ -21,7 +22,7 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(alignment: .center, spacing: POSSpacing.medium) {
+                VStack(alignment: .center, spacing: metrics.spacing.medium) {
                     POSPageHeaderView(
                         title: Localization.title,
                         backButtonConfiguration: .init(state: isProcessing ? .disabled : .enabled,
@@ -37,7 +38,7 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
     }
 
     private var content: some View {
-        VStack(alignment: .center, spacing: POSSpacing.medium) {
+        VStack(alignment: .center, spacing: metrics.spacing.medium) {
             Image(systemName: "checkmark.circle")
                 .font(.system(size: 36))
                 .foregroundColor(.posPrimary)
@@ -47,7 +48,7 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
                 .foregroundColor(.posOnSurfaceVariantHighest)
                 .multilineTextAlignment(.center)
 
-            VStack(alignment: .leading, spacing: POSSpacing.small) {
+            VStack(alignment: .leading, spacing: metrics.spacing.small) {
                 Text(Localization.noteFieldLabel)
                     .font(.posBodySmallBold())
                     .foregroundColor(.posOnSurfaceVariantHighest)
@@ -59,7 +60,7 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
                     .focused($isNoteFieldFocused)
                     .textInputAutocapitalization(.sentences)
                     .autocorrectionDisabled(false)
-                    .padding(POSPadding.medium)
+                    .padding(metrics.padding.medium)
                     .background(Color.posSurfaceContainerLow)
                     .cornerRadius(POSCornerRadiusStyle.small.value)
                     .disabled(isProcessing)
@@ -94,7 +95,7 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
             .accessibilityIdentifier("pos-mark-as-paid-confirm-button")
             .frame(maxWidth: .infinity)
         }
-        .padding(POSPadding.large)
+        .padding(metrics.padding.large)
         .frame(maxWidth: 480)
     }
 }

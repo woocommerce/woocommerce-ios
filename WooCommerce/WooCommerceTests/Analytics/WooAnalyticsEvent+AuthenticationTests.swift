@@ -11,6 +11,7 @@ struct WooAnalyticsEvent_AuthenticationTests {
         let cases: [(WooAnalyticsEvent.Authentication.InvoluntaryLogoutReason, String)] = [
             (.invalidToken, "invalid_token"),
             (.applicationPasswordUnauthorized, "application_password_unauthorized"),
+            (.siteCredentialsRejected, "site_credentials_rejected"),
             (.appleIDCredentialRevoked, "apple_id_credential_revoked")
         ]
 

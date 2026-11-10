@@ -163,6 +163,8 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
     func handleTap(_ item: Yosemite.POSItem, position: Int) { }
+
+    func handleTapOnAppliedCoupon(_ item: Yosemite.POSItem) { }
 }
 
 final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {

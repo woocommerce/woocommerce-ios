@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 
 final class WPComMagicLinkRequestViewModelTests: XCTestCase {
+    @MainActor
     func test_givenSuccessMagicLink_when_magicLinkRequested_then_onMagicLinkSent_called() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()
@@ -23,6 +24,7 @@ final class WPComMagicLinkRequestViewModelTests: XCTestCase {
         XCTAssertTrue(isMagicLinkSent)
     }
 
+    @MainActor
     func test_givenFailedMagicLink_when_magicLinkRequested_then_onError_called() async {
         // Given
         let mockAccountService = MockWordPressComAccountService()

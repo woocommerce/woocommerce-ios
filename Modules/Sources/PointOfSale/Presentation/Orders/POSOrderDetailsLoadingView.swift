@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct POSOrderDetailsLoadingView: View {
+    @Environment(\.posMetrics) private var metrics
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(
                 title: "",
                 backButtonConfiguration: nil,
@@ -14,13 +15,13 @@ struct POSOrderDetailsLoadingView: View {
             .accessibilityHidden(true)
 
             ScrollView {
-                VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                VStack(alignment: .leading, spacing: metrics.spacing.medium) {
                     shimmeringProductsSection
                     shimmeringTotalsSection
                 }
-                .padding(.top, POSPadding.xSmall)
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+                .padding(.top, metrics.padding.xSmall)
+                .padding(.horizontal, metrics.padding.medium)
+                .padding(.bottom, metrics.padding.medium)
             }
         }
         .background(Color.posSurface)
@@ -41,32 +42,32 @@ struct POSOrderDetailsLoadingView: View {
             Spacer()
             POSPlaceholderText(.redactedPlaceholder(length: 6), font: .posBodyMediumBold)
                 // Match the Email receipt button's extra-small content padding.
-                .padding(.vertical, POSPadding.small)
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.vertical, metrics.padding.small)
+                .padding(.horizontal, metrics.padding.medium)
         }
     }
 
     private var shimmeringHeaderBottomContent: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             POSPlaceholderText(.redactedPlaceholder(length: 9), font: .posBodyMediumRegular())
             POSPlaceholderText(.redactedPlaceholder(length: 9), font: .posBodyMediumRegular())
 
-            Spacer().frame(height: POSSpacing.xSmall)
+            Spacer().frame(height: metrics.spacing.xSmall)
             POSPlaceholderText(.redactedPlaceholder(length: 6), font: .posCaptionRegular)
-                .padding(.vertical, POSPadding.xSmall)
+                .padding(.vertical, metrics.padding.xSmall)
         }
-        .padding(.top, POSSpacing.xSmall)
+        .padding(.top, metrics.spacing.xSmall)
         .multilineTextAlignment(.leading)
     }
 
     @ViewBuilder
     private var shimmeringProductsSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.itemsTitle)
                 .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(0..<2, id: \.self) { index in
                     shimmeringProductRow
 
@@ -76,21 +77,21 @@ struct POSOrderDetailsLoadingView: View {
                 }
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
 
     @ViewBuilder
     private var shimmeringProductRow: some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
             Rectangle()
                 .fill(Color.posOnSurfaceVariantLowest.opacity(POSLoadingPlaceholderStyle.imageBaseOpacity))
                 .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 .shimmering(gradient: POSLoadingPlaceholderStyle.shimmerGradient)
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 POSPlaceholderText(.redactedPlaceholder(length: 8), font: .posBodyLargeBold)
 
                 POSPlaceholderText(.redactedPlaceholder(length: 6), font: .posBodyMediumRegular())
@@ -104,12 +105,12 @@ struct POSOrderDetailsLoadingView: View {
 
     @ViewBuilder
     private var shimmeringTotalsSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.totalsTitle)
                 .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
 
-            VStack(spacing: POSSpacing.medium) {
+            VStack(spacing: metrics.spacing.medium) {
                 shimmeringTotalsRow()
                 shimmeringTotalsRow()
                 shimmeringTotalsRow()
@@ -121,7 +122,7 @@ struct POSOrderDetailsLoadingView: View {
                 shimmeringTotalsRow(titleFont: .posBodyLargeBold)
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
@@ -141,7 +142,7 @@ struct POSOrderDetailsLoadingView: View {
     private var divider: some View {
         Divider()
             .overlay(Color.posOutlineVariant.opacity(0.5))
-            .padding(.vertical, POSSpacing.small)
+            .padding(.vertical, metrics.spacing.small)
     }
 }
 

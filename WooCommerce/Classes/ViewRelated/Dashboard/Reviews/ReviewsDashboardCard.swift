@@ -258,7 +258,9 @@ private extension ReviewsDashboardCard {
     enum Constants {
         static let starSize: CGFloat = 10
     }
+}
 
+extension ReviewsDashboardCard {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "reviewsDashboardCard.hideCard",

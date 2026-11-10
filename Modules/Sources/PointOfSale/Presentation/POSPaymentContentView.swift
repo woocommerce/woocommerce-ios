@@ -9,6 +9,7 @@ import SwiftUI
 /// The cart flow (TotalsView) uses the shared sub-components directly
 /// because it has additional complexity (shimmering, order errors, layout padding).
 struct POSPaymentContentView: View {
+    @Environment(\.posMetrics) private var metrics
     let formattedSubtotal: String
     let formattedTax: String
     let formattedTotal: String
@@ -40,7 +41,7 @@ struct POSPaymentContentView: View {
     var body: some View {
         @Bindable var paymentModel = paymentModel
 
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             Spacer()
 
             paymentContentView
@@ -92,9 +93,9 @@ struct POSPaymentContentView: View {
                     .font(.posBodyLargeBold)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .foregroundColor(.posOnSurface)
-                    .padding(POSPadding.small)
+                    .padding(metrics.padding.small)
             }
-            .padding(POSPadding.medium)
+            .padding(metrics.padding.medium)
         }
     }
 
@@ -147,24 +148,24 @@ struct POSPaymentContentView: View {
                     title: Localization.subtotal,
                     formattedPrice: formattedSubtotal)
 
-                Spacer().frame(height: POSSpacing.medium)
+                Spacer().frame(height: metrics.spacing.medium)
 
                 subtotalRow(
                     title: Localization.taxes,
                     formattedPrice: formattedTax)
 
-                Spacer().frame(height: POSSpacing.medium)
+                Spacer().frame(height: metrics.spacing.medium)
 
                 Divider()
                     .overlay(Color.posOutlineVariant)
 
-                Spacer().frame(height: POSSpacing.medium)
+                Spacer().frame(height: metrics.spacing.medium)
 
                 HStack(alignment: .top, spacing: .zero) {
                     Text(Localization.total)
                         .font(.posHeadingBold)
                         .fontWeight(.semibold)
-                    Spacer(minLength: POSSpacing.large)
+                    Spacer(minLength: metrics.spacing.large)
                     Text(formattedTotal)
                         .font(.posHeadingBold)
                 }
@@ -173,10 +174,10 @@ struct POSPaymentContentView: View {
                 .foregroundColor(Color.posOnSurface)
             }
             .padding(EdgeInsets(
-                top: POSPadding.medium,
-                leading: POSPadding.large,
-                bottom: POSPadding.medium,
-                trailing: POSPadding.large))
+                top: metrics.padding.medium,
+                leading: metrics.padding.large,
+                bottom: metrics.padding.medium,
+                trailing: metrics.padding.large))
             .if(horizontalSizeClass == .compact) {
                 $0.frame(maxWidth: .infinity)
             }
@@ -220,8 +221,8 @@ struct POSPaymentContentView: View {
                     .font(POSFontStyle.posBodyLargeBold)
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            .padding(.horizontal, POSPadding.medium)
-            .safeAreaPadding(.bottom, POSPadding.medium)
+            .padding(.horizontal, metrics.padding.medium)
+            .safeAreaPadding(.bottom, metrics.padding.medium)
         }
     }
 }
@@ -336,6 +337,7 @@ struct POSCardPaymentContentView: View {
 /// Spinner + text view used for idle-loading, validatingOrder, and preparingForPayment states.
 /// Rendered as a single persistent branch so the ProgressView animation state is preserved.
 struct POSPaymentLoadingView: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let message: String
     let animation: POSCardPresentPaymentInLineMessageAnimation
@@ -343,14 +345,14 @@ struct POSPaymentLoadingView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.xLarge) {
+        VStack(alignment: .center, spacing: metrics.spacing.xLarge) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
                 .frame(width: 160, height: 160)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(title)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(.posBodyLargeRegular())

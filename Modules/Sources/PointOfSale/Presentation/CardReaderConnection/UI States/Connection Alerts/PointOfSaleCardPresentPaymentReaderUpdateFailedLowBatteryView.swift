@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel
     private let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -12,13 +13,13 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+        VStack(spacing: metrics.spacing.large) {
             Spacer()
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 Image(decorative: viewModel.imageName, bundle: .module)
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                VStack(spacing: metrics.spacing.medium) {
                     Text(viewModel.title)
                         .font(POSFontStyle.posHeadingBold)
                         .fixedSize(horizontal: false, vertical: true)
@@ -36,7 +37,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
             .scrollVerticallyIfNeeded()
 
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 Button(viewModel.retrySearchButtonViewModel.title,
                        action: viewModel.retrySearchButtonViewModel.actionHandler)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))

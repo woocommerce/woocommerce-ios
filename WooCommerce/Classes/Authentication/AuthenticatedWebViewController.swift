@@ -513,7 +513,7 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
             loadContent(url: initialURL)
             return .cancel
         }
-        return await viewModel.decidePolicy(for: response)
+        return await viewModel.decidePolicy(for: response, isForMainFrame: navigationResponse.isForMainFrame)
     }
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {

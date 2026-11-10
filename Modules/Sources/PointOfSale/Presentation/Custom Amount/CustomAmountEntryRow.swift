@@ -4,15 +4,16 @@ struct CustomAmountEntryRow: View {
     let onTap: () -> Void
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
     }
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: Constants.cardSpacing) {
+            HStack(spacing: metrics.spacing.none) {
                 ZStack {
                     Color.posSurfaceDim
 
@@ -30,7 +31,7 @@ struct CustomAmountEntryRow: View {
                 }
                 .frame(width: dimension, height: dimension)
 
-                VStack(alignment: .leading, spacing: Constants.textSpacing) {
+                VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                     Text(Localization.title)
                         .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                         .foregroundStyle(Constants.titleColor)
@@ -42,8 +43,8 @@ struct CustomAmountEntryRow: View {
                         .foregroundStyle(Constants.detailColor)
                         .font(Constants.itemDetailFont)
                 }
-                .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
-                .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+                .padding(.horizontal, metrics.padding.medium * (1 / scale))
+                .padding(.vertical, metrics.padding.small * (1 / scale))
                 Spacer()
             }
             .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)

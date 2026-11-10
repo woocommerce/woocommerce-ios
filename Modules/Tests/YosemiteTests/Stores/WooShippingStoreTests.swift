@@ -1,4 +1,5 @@
 import XCTest
+import Synchronization
 import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
@@ -183,7 +184,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `createPackage`
 
-    func test_createPackage_returns_success_response() throws {
+    func test_createPackage_returns_success_response() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let response = WooShippingCreatePackageResponse.fake().copy(customPackages: [WooShippingCustomPackage.fake()])
@@ -191,7 +192,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingCreatePackageResponse, PackageCreationError> = waitFor { promise in
+        let result: Result<WooShippingCreatePackageResponse, PackageCreationError> = try await waitForCompletion { promise in
             let action = WooShippingAction.createPackage(siteID: self.sampleSiteID,
                                                          customPackage: WooShippingCustomPackage.fake(),
                                                          predefinedOption: nil) { result in
@@ -206,7 +207,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualResponse, response)
     }
 
-    func test_createPackage_returns_error_on_failure() throws {
+    func test_createPackage_returns_error_on_failure() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let error = PackageCreationError.duplicateCustomPackageNames
@@ -214,7 +215,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingCreatePackageResponse, PackageCreationError> = waitFor { promise in
+        let result: Result<WooShippingCreatePackageResponse, PackageCreationError> = try await waitForCompletion { promise in
             let action = WooShippingAction.createPackage(siteID: self.sampleSiteID,
                                                          customPackage: WooShippingCustomPackage.fake(),
                                                          predefinedOption: nil) { result in
@@ -227,7 +228,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_createPackage_when_successful_then_upserts_packages_into_storage() throws {
+    func test_createPackage_when_successful_then_upserts_packages_into_storage() async throws {
         // Given
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-create-package-success")
@@ -241,7 +242,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingSavedPredefinedPackage.self), 0)
 
         // When
-        let onSuccess: Bool = waitFor { promise in
+        let onSuccess: Bool = try await waitForCompletion { promise in
             let action = WooShippingAction.createPackage(siteID: self.sampleSiteID,
                                                          customPackage: .fake(),
                                                          predefinedOption: .fake()) { result in
@@ -262,7 +263,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `deletePackage`
 
-    func test_deletePackage_returns_success_response() throws {
+    func test_deletePackage_returns_success_response() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let response = WooShippingCreatePackageResponse.fake().copy(customPackages: [WooShippingCustomPackage.fake()])
@@ -270,7 +271,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingCreatePackageResponse, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
                                                          packageID: WooShippingCustomPackage.fake().id,
                                                          packageType: .custom) { result in
@@ -285,7 +286,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualResponse, response)
     }
 
-    func test_deletePackage_returns_error_on_failure() throws {
+    func test_deletePackage_returns_error_on_failure() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let error = DotcomError.requestFailed()
@@ -293,7 +294,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingCreatePackageResponse, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
                                                          packageID: WooShippingCustomPackage.fake().id,
                                                          packageType: .custom) { result in
@@ -306,7 +307,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_deletePackage_when_successful_then_upserts_packages_into_storage() throws {
+    func test_deletePackage_when_successful_then_upserts_packages_into_storage() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let response = WooShippingCreatePackageResponse.fake().copy(customPackages: [WooShippingCustomPackage.fake().copy(id: "2")],
@@ -335,7 +336,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let onSuccess: Bool = waitFor { promise in
+        let onSuccess: Bool = try await waitForCompletion { promise in
             let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
                                                          packageID: WooShippingCustomPackage.fake().id,
                                                          packageType: .custom) { result in
@@ -498,7 +499,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `loadAccountSettings`
 
-    func test_loadAccountSettings_returns_success_response() throws {
+    func test_loadAccountSettings_returns_success_response() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let expectedSettings = WooShippingAccountSettings.fake()
@@ -506,7 +507,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
+        let result: Result<WooShippingAccountSettings, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.loadAccountSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -519,7 +520,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualSettings, expectedSettings)
     }
 
-    func test_loadAccountSettings_returns_error_on_failure() throws {
+    func test_loadAccountSettings_returns_error_on_failure() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let expectedError = NetworkError.notFound()
@@ -527,7 +528,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
+        let result: Result<WooShippingAccountSettings, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.loadAccountSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -540,7 +541,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
-    func test_loadAccountSettings_when_successful_then_upserts_settings_into_storage() throws {
+    func test_loadAccountSettings_when_successful_then_upserts_settings_into_storage() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let paymentMethod = Yosemite.ShippingLabelPaymentMethod(
@@ -564,7 +565,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageShippingLabelAccountSettings.self), 0)
 
         // When
-        let onSuccess: Bool = waitFor { promise in
+        let onSuccess: Bool = try await waitForCompletion { promise in
             let action = WooShippingAction.loadAccountSettings(siteID: self.sampleSiteID) { result in
                 promise(result.isSuccess)
             }
@@ -582,7 +583,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `loadPackages`
 
-    func test_loadPackages_returns_success_response_with_rates() throws {
+    func test_loadPackages_returns_success_response_with_rates() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let response = WooShippingPackagesResponse.fake().copy(customPackages: [WooShippingCustomPackage.fake()])
@@ -590,7 +591,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -603,7 +604,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualResponse, response)
     }
 
-    func test_loadPackages_when_successful_then_upserts_packages_into_storage() throws {
+    func test_loadPackages_when_successful_then_upserts_packages_into_storage() async throws {
         // Given
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-get-packages-success")
@@ -612,7 +613,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingPackagesResponse.self), 0)
 
         // When
-        let onSuccess: Bool = waitFor { promise in
+        let onSuccess: Bool = try await waitForCompletion { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result.isSuccess)
             }
@@ -638,7 +639,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(storedPackages.savedPredefinedPackages.contains(where: { $0.package.id == "small_flat_box" }))
     }
 
-    func test_loadPackages_returns_error_on_failure() throws {
+    func test_loadPackages_returns_error_on_failure() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let expectedError = NetworkError.notFound()
@@ -646,7 +647,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -661,7 +662,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `purchaseShippingLabel`
 
-    func test_purchaseShippingLabel_returns_shipping_label_on_success_and_persists_label_in_storage() throws {
+    func test_purchaseShippingLabel_returns_shipping_label_on_success_and_persists_label_in_storage() async throws {
         // Given
         let expectedLabel = ShippingLabel.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 13579, shipmentID: "0")
         let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
@@ -676,7 +677,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabel, Error> = waitFor(timeout: 10) { promise in
+        let result: Result<ShippingLabel, Error> = try await waitForCompletion(timeout: 10) { promise in
             let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
@@ -705,7 +706,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storedShipments.first?.shippingLabel?.shippingLabelID, expectedLabel.shippingLabelID)
     }
 
-    func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
+    func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() async throws {
         // Given
         let expectedError = NetworkError.timeout()
         let remote = MockWooShippingRemote()
@@ -713,7 +714,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabel, Error> = waitFor { promise in
+        let result: Result<ShippingLabel, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
@@ -733,7 +734,7 @@ final class WooShippingStoreTests: XCTestCase {
     }
 
     // slow
-    func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
+    func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() async throws {
         // Given
         let expectedError = NetworkError.timeout()
         let remote = MockWooShippingRemote()
@@ -742,7 +743,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabel, Error> = waitFor { promise in
+        let result: Result<ShippingLabel, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
@@ -762,7 +763,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
-    func test_purchaseShippingLabel_returns_error_on_purchase_error() throws {
+    func test_purchaseShippingLabel_returns_error_on_purchase_error() async throws {
         // Given
         let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseError)
         let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
@@ -772,7 +773,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabel, Error> = waitFor { promise in
+        let result: Result<ShippingLabel, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
@@ -799,7 +800,7 @@ final class WooShippingStoreTests: XCTestCase {
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID, thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
         remote.whenCheckLabelStatus(siteID: sampleSiteID, thenReturn: .success(labelStatusResponse))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
-        var purchaseResult: Result<ShippingLabel, Error>? = nil
+        let purchaseResult = Mutex<Result<ShippingLabel, Error>?>(nil)
         let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                              orderID: self.sampleOrderID,
                                                              originAddress: .fake(),
@@ -811,7 +812,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                              // Irrelevant, because it caps retries on error only.
                                                              // Here just for reference.
                                                              pollingMaximumRetries: 3,
-                                                             completion: { purchaseResult = $0 })
+                                                             completion: { result in purchaseResult.withLock { $0 = result } })
 
         // We want to test that purchaseShippingLabel does not call its completion ("return") with
         // an error for the entire duration of the polling it makes under the hood when the status
@@ -819,7 +820,7 @@ final class WooShippingStoreTests: XCTestCase {
         // never be an error.
         let exp = expectation(
             for: NSPredicate(block: { _, _ in
-                switch purchaseResult {
+                switch purchaseResult.withLock({ $0 }) {
                 case .failure: return true
                 default: return false
                 }
@@ -907,7 +908,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
-    func test_loadOriginAddresses_returns_addresses_on_success() {
+    func test_loadOriginAddresses_returns_addresses_on_success() async throws {
         // Given
         let expectedAddresses: [WooShippingOriginAddress] = [WooShippingOriginAddress.fake()]
         let remote = MockWooShippingRemote()
@@ -915,7 +916,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let addresses: [WooShippingOriginAddress] = waitFor { promise in
+        let addresses: [WooShippingOriginAddress] = try await waitForCompletion { promise in
             let action = WooShippingAction.loadOriginAddresses(siteID: self.sampleSiteID) { result in
                 guard let printData = try? result.get() else {
                     XCTFail("Error loading origin addresses for shipping label: \(String(describing: result.failure))")
@@ -930,7 +931,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(addresses, expectedAddresses)
     }
 
-    func test_loadOriginAddresses_returns_error_failure() {
+    func test_loadOriginAddresses_returns_error_failure() async throws {
         // Given
         let expectedError = NetworkError.timeout()
         let remote = MockWooShippingRemote()
@@ -938,7 +939,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let error: Error = waitFor { promise in
+        let error: Error = try await waitForCompletion { promise in
             let action = WooShippingAction.loadOriginAddresses(siteID: self.sampleSiteID) { result in
                 guard let printData = result.failure else {
                     XCTFail("Unexpected result when printing shipping label: \(result)")
@@ -953,7 +954,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
-    func test_loadOriginAddresses_persists_fetched_addresses_to_local_storage_on_success() {
+    func test_loadOriginAddresses_persists_fetched_addresses_to_local_storage_on_success() async throws {
         // Given
         let address1 = WooShippingOriginAddress(
             siteID: sampleSiteID,
@@ -999,7 +1000,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingOriginAddress.self), 0)
 
         // When
-        let onSuccess: Bool = waitFor { promise in
+        let onSuccess: Bool = try await waitForCompletion { promise in
             let action = WooShippingAction.loadOriginAddresses(siteID: self.sampleSiteID) { result in
                 promise(result.isSuccess)
             }
@@ -1289,7 +1290,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `updateShipment`
 
-    func test_updateShipment_returns_success_response_and_persists_shipments() throws {
+    func test_updateShipment_returns_success_response_and_persists_shipments() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let expected = ["0": [WooShippingShipmentItem.fake()]]
@@ -1299,7 +1300,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingShipments, Error> = waitFor { promise in
+        let result: Result<WooShippingShipments, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.updateShipment(siteID: self.sampleSiteID,
                                                           orderID: self.sampleOrderID,
                                                           shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
@@ -1317,7 +1318,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storedShipments.first?.index, "0")
     }
 
-    func test_updateShipment_returns_error_on_failure() throws {
+    func test_updateShipment_returns_error_on_failure() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let expectedError = NetworkError.timeout()
@@ -1325,7 +1326,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingShipments, Error> = waitFor { promise in
+        let result: Result<WooShippingShipments, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.updateShipment(siteID: self.sampleSiteID,
                                                           orderID: self.sampleOrderID,
                                                           shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
@@ -1341,7 +1342,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: - `refundShippingLabel`
 
-    func test_refundShippingLabel_returns_updated_label_and_updates_stored_label_refund_on_success() throws {
+    func test_refundShippingLabel_returns_updated_label_and_updates_stored_label_refund_on_success() async throws {
         // Given
         let sampleOrderID: Int64 = 134
         let remote = MockWooShippingRemote()
@@ -1363,7 +1364,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
 
         // When
-        let result: Result<Yosemite.ShippingLabel, Error> = waitFor { promise in
+        let result: Result<Yosemite.ShippingLabel, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
                 promise(result)
             }
@@ -1387,7 +1388,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertNotNil(storedShipments.first?.shippingLabel?.refund)
     }
 
-    func test_refundShippingLabel_returns_error_on_failure() throws {
+    func test_refundShippingLabel_returns_error_on_failure() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let expectedError = NetworkError.notFound()
@@ -1400,7 +1401,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Yosemite.ShippingLabel, Error> = waitFor { promise in
+        let result: Result<Yosemite.ShippingLabel, Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
                 promise(result)
             }
@@ -1502,7 +1503,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `syncShipments`
 
-    func test_syncShipments_returns_shipments_on_success() throws {
+    func test_syncShipments_returns_shipments_on_success() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let expectedShipments = [WooShippingShipment.fake(), WooShippingShipment.fake()]
@@ -1511,7 +1512,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[WooShippingShipment], Error> = waitFor { promise in
+        let result: Result<[WooShippingShipment], Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.syncShipments(siteID: self.sampleSiteID,
                                                          orderID: self.sampleOrderID) { result in
                 promise(result)
@@ -1524,7 +1525,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualShipments, expectedShipments)
     }
 
-    func test_syncShipments_returns_error_on_failure() throws {
+    func test_syncShipments_returns_error_on_failure() async throws {
         // Given
         let remote = MockWooShippingRemote()
         let expectedError = NetworkError.timeout()
@@ -1532,7 +1533,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[WooShippingShipment], Error> = waitFor { promise in
+        let result: Result<[WooShippingShipment], Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.syncShipments(siteID: self.sampleSiteID,
                                                          orderID: self.sampleOrderID) { result in
                 promise(result)
@@ -1545,7 +1546,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
-    func test_syncShipments_persists_shipments_to_storage_on_success() throws {
+    func test_syncShipments_persists_shipments_to_storage_on_success() async throws {
         // Given
         let remote = MockWooShippingRemote()
         insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
@@ -1572,7 +1573,7 @@ final class WooShippingStoreTests: XCTestCase {
                                      remote: remote)
 
         // When
-        let result: Result<[WooShippingShipment], Error> = waitFor { promise in
+        let result: Result<[WooShippingShipment], Error> = try await waitForCompletion { promise in
             let action = WooShippingAction.syncShipments(siteID: self.sampleSiteID,
                                                          orderID: self.sampleOrderID) { result in
                 promise(result)

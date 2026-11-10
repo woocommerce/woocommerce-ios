@@ -891,7 +891,7 @@ platform :ios do
     )
     sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
-    archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
+    archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xcarchive.zip')
     zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
     version = options[:beta_release] ? build_code_current : release_version_current
@@ -1059,6 +1059,7 @@ platform :ios do
       workspace: WORKSPACE_PATH,
       scheme: SCREENSHOTS_SCHEME,
       build_for_testing: true,
+      xcargs: 'APP_DISPLAY_NAME=Woo',
       derived_data_path: DERIVED_DATA_DIR
     )
   end
@@ -1079,7 +1080,7 @@ platform :ios do
     UI.message("Creating screenshots for #{languages} on #{devices}")
 
     # Erase the simulator between runs in order to get everything back to a default state
-    rebuild_screenshot_devices
+    rebuild_screenshot_devices(devices: devices)
 
     capture_ios_screenshots(
       scheme: SCREENSHOTS_SCHEME,
@@ -1146,17 +1147,20 @@ platform :ios do
   end
 
   desc 'Rebuild Screenshot Devices'
-  lane :rebuild_screenshot_devices do
+  lane :rebuild_screenshot_devices do |options|
+    devices = Array(options.fetch(:devices, SCREENSHOT_DEVICES)).flat_map { |device| device.split(',') }.map(&:strip)
+    devices &= SCREENSHOT_DEVICES
+    UI.user_error!("Unable to run on devices: \"#{devices}\"") if devices.empty?
     runtime = latest_ios_simulator_runtime
 
     SimCtl.list_devices.each do |device|
-      next unless SCREENSHOT_DEVICES.include? device.name
+      next unless devices.include? device.name
 
       puts "Deleting #{device.name} because it already exists."
       device.delete
     end
 
-    SCREENSHOT_DEVICES.each do |device|
+    devices.each do |device|
       devicetype = SimCtl.devicetype(name: device)
 
       SimCtl.create_device(device, devicetype, runtime)

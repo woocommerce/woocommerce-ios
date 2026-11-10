@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSalePaymentSuccessView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSalePaymentSuccessViewModel
     let customerEmail: String?
     let successAction: PaymentFlowAction
@@ -10,6 +11,9 @@ struct PointOfSalePaymentSuccessView: View {
 
     @State private var isViewLoaded: Bool = false
     @State private var showPrinterSetupModal: Bool = false
+    @State private var printButtonState: POSButtonState = .idle
+    @State private var printFailure: POSPrintReceiptFailure?
+    @State private var selectedFailureAction: POSPrintReceiptFailureAction?
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -25,7 +29,7 @@ struct PointOfSalePaymentSuccessView: View {
             successView
             Spacer()
         }
-        .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
+        .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : metrics.padding.small)
         .background(Color.posSurfaceBright)
         .barcodeScanning(enabled: .constant(isBarcodeScanningEnabled)) { barcode in
             onSuccessScreenBarcodeScanned?(barcode)
@@ -52,23 +56,52 @@ struct PointOfSalePaymentSuccessView: View {
                     isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
+        .posModal(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
+            POSPrintReceiptFailureModal(failure: failure,
+                                        selectAction: { action in
+                                            selectedFailureAction = action
+                                            printFailure = nil
+                                        },
+                                        close: { printFailure = nil })
+        }
+        .task(id: printButtonState) {
+            guard printButtonState == .success else { return }
+            try? await Task.sleep(for: Constants.printConfirmationDuration)
+            guard !Task.isCancelled else { return }
+            printButtonState = .idle
+        }
     }
 
     private var printCoordinator: POSPrintReceiptCoordinator {
         POSPrintReceiptCoordinator(analytics: analytics,
                                    printReceipt: { try await posModel.printReceipt() },
-                                   presentPrinterSetup: { showPrinterSetupModal = true })
+                                   presentPrinterSetup: { showPrinterSetupModal = true },
+                                   presentEmailReceipt: { router.pushEmailReceipt() },
+                                   isOnSuccessScreen: { !router.isNavigated },
+                                   presentFailure: { printFailure = $0 },
+                                   updateButtonState: { printButtonState = $0 })
     }
 
     private func handlePrintReceiptTap() {
+        guard printButtonState == .idle else { return }
         Task {
             await printCoordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 
+    /// Acts on the merchant's choice only once the failure modal has closed: `POSModalManager` holds one
+    /// modal, so presenting printer setup alongside this dismissal could lose the new modal.
+    private func handlePrintFailureDismissed() {
+        guard let action = selectedFailureAction else { return }
+        selectedFailureAction = nil
+        Task {
+            await printCoordinator.failureActionSelected(action, isPrinterConnected: posModel.isReceiptPrinterConnected)
+        }
+    }
+
     private var successView: some View {
         ZStack {
-            VStack(alignment: .center, spacing: POSSpacing.none) {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
                 Spacer()
 
                 POSSuccessIcon()
@@ -76,9 +109,9 @@ struct PointOfSalePaymentSuccessView: View {
                     .scaleEffect(isViewLoaded ? 1 : 0)
                     .opacity(isViewLoaded ? 1 : 0)
 
-                Spacer().frame(height: POSSpacing.xLarge)
+                Spacer().frame(height: metrics.spacing.xLarge)
 
-                VStack(alignment: .center, spacing: Constants.textSpacing) {
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
                     Text(viewModel.title)
                         .font(.posHeadingBold)
                         .foregroundStyle(Color.posOnSurface)
@@ -98,7 +131,7 @@ struct PointOfSalePaymentSuccessView: View {
                 }
 
                 if let customerEmail, customerEmail.isNotEmpty {
-                    Spacer().frame(height: Constants.textSpacing)
+                    Spacer().frame(height: metrics.spacing.small)
 
                     Text(String(format: Localization.receiptSentFormat, customerEmail))
                         .font(.posBodyLargeRegular())
@@ -107,19 +140,20 @@ struct PointOfSalePaymentSuccessView: View {
                         .opacity(isViewLoaded ? 1 : 0)
                 }
 
-                Spacer().frame(height: POSSpacing.xxLarge)
+                Spacer().frame(height: metrics.spacing.xxLarge)
 
                 // iPad: buttons take half the screen width (count:2 span:1).
                 // Phone: half the screen width is ~190pt, too narrow for "New order" /
                 // "Email receipt" — let them span the container minus standard insets instead.
                 PaymentsActionButtons(successAction: successAction,
                                       showsPrintReceipt: posModel.receiptPrinter != nil,
+                                      printButtonState: printButtonState,
                                       printReceiptAction: handlePrintReceiptTap)
                     .if(horizontalSizeClass != .compact) { view in
-                        view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                        view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: metrics.spacing.none)
                     }
                     .if(horizontalSizeClass == .compact) { view in
-                        view.padding(.horizontal, POSPadding.large)
+                        view.padding(.horizontal, metrics.padding.large)
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
                     .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
@@ -134,8 +168,8 @@ struct PointOfSalePaymentSuccessView: View {
 
 private extension PointOfSalePaymentSuccessView {
     enum Constants {
-        static let textSpacing: CGFloat = POSSpacing.small
         static let animationOffset: CGFloat = 100
+        static let printConfirmationDuration: Duration = .seconds(2)
     }
 
     enum Localization {

@@ -227,6 +227,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
 
     func parcelFittingDidCancel() {}
 
+    @MainActor
     func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool) {
         if isStarred {
             lastARState?.starredPackageIDs.insert(packageID)
@@ -310,17 +311,20 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
         let destinationAddressWithoutEmail = destinationAddress.copy(email: nil)
 
         let purchasedLabel = try await withCheckedThrowingContinuation { continuation in
-            let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,
-                                                                 orderID: order.orderID,
-                                                                 originAddress: originAddress,
-                                                                 destinationAddress: destinationAddressWithoutEmail,
-                                                                 package: packagePurchase,
-                                                                 markOrderComplete: markOrderComplete) { [weak self] result in
+            let handleResult: @MainActor @Sendable (Result<ShippingLabel, Error>) -> Void = { [weak self] result in
                 // Failures are tracked by the caller, which knows whether a carrier incident was shown.
                 if case .success = result {
                     self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseSuccess))
                 }
                 continuation.resume(with: result)
+            }
+            let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,
+                                                                 orderID: order.orderID,
+                                                                 originAddress: originAddress,
+                                                                 destinationAddress: destinationAddressWithoutEmail,
+                                                                 package: packagePurchase,
+                                                                 markOrderComplete: markOrderComplete) { result in
+                Task { @MainActor in handleResult(result) }
             }
             stores.dispatch(action)
         }

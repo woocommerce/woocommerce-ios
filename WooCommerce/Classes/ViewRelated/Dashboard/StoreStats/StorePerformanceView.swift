@@ -419,7 +419,9 @@ private extension StorePerformanceView {
         static let orderTypeLabelMinScale: CGFloat = 0.7
         static let timestampInfoSpacing: CGFloat = 4
     }
+}
 
+extension StorePerformanceView {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "storePerformanceView.hideCard",

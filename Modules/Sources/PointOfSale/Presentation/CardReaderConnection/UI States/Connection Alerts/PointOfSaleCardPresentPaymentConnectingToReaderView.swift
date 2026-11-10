@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentConnectingToReaderView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel
     private let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -12,11 +13,11 @@ struct PointOfSaleCardPresentPaymentConnectingToReaderView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+        VStack(spacing: metrics.spacing.large) {
             Image(decorative: viewModel.imageName, bundle: .module)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+            VStack(spacing: metrics.spacing.medium) {
                 Text(viewModel.title)
                     .font(POSFontStyle.posHeadingBold)
                     .fixedSize(horizontal: false, vertical: true)

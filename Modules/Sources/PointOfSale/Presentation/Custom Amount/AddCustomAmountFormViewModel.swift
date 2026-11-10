@@ -6,7 +6,7 @@ import struct Yosemite.POSCustomAmount
 final class AddCustomAmountFormViewModel {
     var amount: String = ""
     var name: String = ""
-    var isTaxable: Bool = true
+    var isTaxable: Bool = false
 
     let currencySymbol: String
     private let sanitizer: CurrencyInputSanitizer

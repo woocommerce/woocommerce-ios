@@ -13,8 +13,10 @@
             <connections>
                 <outlet property="bordersView" destination="Ncr-u2-zVd" id="S5W-h1-qR2"/>
                 <outlet property="cancelButton" destination="YBC-g3-0LP" id="rmu-WT-3G1"/>
+                <outlet property="headerTopToSearchBarConstraint" destination="1cN-Hx-OP0" id="VUt-VM-yo4"/>
                 <outlet property="headerView" destination="3D3-Fa-C7n" id="WP4-6d-ICd"/>
                 <outlet property="searchBar" destination="cOC-iR-MJr" id="usQ-SP-NSs"/>
+                <outlet property="searchBarBottomToBordersViewConstraint" destination="A3E-fX-OKH" id="SCv-m8-5Dq"/>
                 <outlet property="searchBarButtonTrailingSpace" destination="nSK-Od-9bp" id="dcC-fw-mYf"/>
                 <outlet property="searchBarSafeAreaTrailingSpace" destination="0Wn-0z-tOF" id="q2Y-p5-NP7"/>
                 <outlet property="tableView" destination="y9n-QI-xEB" id="WSo-bN-Vnv"/>

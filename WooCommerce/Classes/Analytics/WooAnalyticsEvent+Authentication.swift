@@ -13,6 +13,9 @@ extension WooAnalyticsEvent {
             /// WordPress.com reports the access token as invalid.
             case invalidToken = "invalid_token"
 
+            /// The site's login page rejected the saved username or password.
+            case siteCredentialsRejected = "site_credentials_rejected"
+
             /// The stored application password stopped working and could not be recovered,
             /// i.e. the site credentials are no longer valid.
             case applicationPasswordUnauthorized = "application_password_unauthorized"

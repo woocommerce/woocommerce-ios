@@ -2,8 +2,8 @@ import SwiftUI
 
 extension View {
     /// Sets the frame size and applies a padding to a modal in POS.
-    func posModalSizing(fullScreenWhenCompact: Bool = false) -> some View {
-        self.modifier(POSModalSizing(fullScreenWhenCompact: fullScreenWhenCompact))
+    func posModalSizing() -> some View {
+        self.modifier(POSModalSizing())
     }
 }
 
@@ -14,8 +14,6 @@ struct POSModalSizing: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
-
-    let fullScreenWhenCompact: Bool
 
     @ViewBuilder
     func body(content: Content) -> some View {
@@ -34,10 +32,7 @@ struct POSModalSizing: ViewModifier {
 
 private extension POSModalSizing {
     var frameWidth: CGFloat {
-        if shouldUseFullScreenFrame {
-            return parentSize.width
-        }
-        return min(preferredFrameWidth, maxAvailableFrameWidth)
+        min(preferredFrameWidth, maxAvailableFrameWidth)
     }
 
     var preferredFrameWidth: CGFloat {
@@ -64,10 +59,7 @@ private extension POSModalSizing {
     }
 
     var frameHeight: CGFloat {
-        if shouldUseFullScreenFrame {
-            return parentSize.height
-        }
-        return min(preferredFrameHeight, maxAvailableFrameHeight)
+        min(preferredFrameHeight, maxAvailableFrameHeight)
     }
 
     var preferredFrameHeight: CGFloat {
@@ -104,9 +96,5 @@ private extension POSModalSizing {
             .connectedScenes
             .compactMap { ($0 as? UIWindowScene)?.keyWindow }
             .last
-    }
-
-    var shouldUseFullScreenFrame: Bool {
-        fullScreenWhenCompact && horizontalSizeClass == .compact
     }
 }

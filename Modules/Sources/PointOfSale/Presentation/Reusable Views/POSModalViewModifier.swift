@@ -10,9 +10,6 @@ enum POSModalCompactStyle: Equatable {
     /// The whole screen, for a multi-step flow. It looks like a POS page: a header with the title and the content's close button
     /// (see `posModalCloseButton`) at the top leading corner, the content below it.
     case fullScreen(title: String)
-    /// Temporary: today's phone full-screen take-over, without a header, for modals that have not moved to one of the styles
-    /// above yet. Do not use it for new modals.
-    case notMigratedFullScreen
 
     var fullScreenTitle: String? {
         guard case .fullScreen(let title) = self else {

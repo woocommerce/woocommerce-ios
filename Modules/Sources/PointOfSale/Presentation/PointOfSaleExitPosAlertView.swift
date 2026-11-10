@@ -33,28 +33,18 @@ struct PointOfSaleExitPosAlertView: View {
     }
 
     private var compactBody: some View {
-        VStack(spacing: metrics.spacing.none) {
-            compactCloseButton
-
-            Spacer(minLength: metrics.spacing.none)
-
-            messageContent
-
-            Spacer(minLength: metrics.spacing.none)
-
-            buttons
-        }
-        .padding(metrics.padding.xLarge)
-        .background(Color.posSurfaceBright)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        POSConfirmationDialog(title: Localization.exitTitle,
+                              message: Localization.exitBody,
+                              primaryButton: exitButtonConfig,
+                              secondaryButton: .init(title: Localization.cancelButton,
+                                                     accessibilityIdentifier: "pos-exit-cancel-button",
+                                                     action: {
+                                                         isPresented = false
+                                                     }))
     }
 
     private var regularCloseButton: some View {
         closeButton(fontStyle: .posButtonSymbolLarge)
-    }
-
-    private var compactCloseButton: some View {
-        closeButton(fontStyle: .posButtonSymbolMedium)
     }
 
     private func closeButton(fontStyle: POSFontStyle) -> some View {
@@ -67,45 +57,27 @@ struct PointOfSaleExitPosAlertView: View {
 
     private var messageContent: some View {
         VStack(spacing: metrics.spacing.xLarge) {
-            if isCompactWidth {
-                POSErrorXMark(color: .posPrimary)
-            }
-
-            VStack(spacing: isCompactWidth ? metrics.spacing.small : metrics.spacing.xLarge) {
-                Text(Localization.exitTitle)
-                    .font(.posHeadingBold)
-                    .foregroundColor(Color.posOnSurface)
-                Text(Localization.exitBody)
-                    .font(.posBodyLargeRegular())
-                    .foregroundColor(Color.posOnSurface)
-            }
+            Text(Localization.exitTitle)
+                .font(.posHeadingBold)
+                .foregroundColor(Color.posOnSurface)
+            Text(Localization.exitBody)
+                .font(.posBodyLargeRegular())
+                .foregroundColor(Color.posOnSurface)
         }
-    }
-
-    private var buttons: some View {
-        POSFlowButtonsView(
-            configuration: .init(
-                primaryButton: .init(title: Localization.exitButton,
-                                     accessibilityIdentifier: "pos-exit-confirm-button",
-                                     action: {
-                                         analytics.track(.pointOfSaleExitConfirmed)
-                                         dismiss()
-                                     }),
-                secondaryButton: cancelButtonConfig
-            )
-        )
     }
 
     /// Regular width keeps the single-button modal, where the close button in the corner is the way out.
-    private var cancelButtonConfig: PointOfSaleFlowButtonConfiguration.ButtonConfig? {
-        guard isCompactWidth else {
-            return nil
-        }
-        return .init(title: Localization.cancelButton,
-                     accessibilityIdentifier: "pos-exit-cancel-button",
-                     action: {
-                         isPresented = false
-                     })
+    private var buttons: some View {
+        POSFlowButtonsView(configuration: .init(primaryButton: exitButtonConfig, secondaryButton: nil))
+    }
+
+    private var exitButtonConfig: PointOfSaleFlowButtonConfiguration.ButtonConfig {
+        .init(title: Localization.exitButton,
+              accessibilityIdentifier: "pos-exit-confirm-button",
+              action: {
+                  analytics.track(.pointOfSaleExitConfirmed)
+                  dismiss()
+              })
     }
 }
 

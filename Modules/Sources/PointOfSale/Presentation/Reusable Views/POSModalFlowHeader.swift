@@ -17,6 +17,37 @@ struct POSModalFlowHeader: View {
     }
 }
 
+extension View {
+    /// Shows `content` as a full-screen POS flow on phone: a header with `title` and the close button that the content
+    /// sets with `posModalCloseButton`. A `nil` title leaves the view unchanged.
+    ///
+    /// `posModal` applies it for `.fullScreen(title:)`. Apply it directly only inside a presentation that is not a
+    /// `posModal`, such as a full-screen cover.
+    func posFullScreenFlowHeader(title: String?) -> some View {
+        modifier(POSFullScreenFlowHeaderModifier(title: title))
+    }
+}
+
+private struct POSFullScreenFlowHeaderModifier: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
+    let title: String?
+    @State private var closeAction: POSModalFlowCloseAction?
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if let title {
+            content
+                .environment(\.posModalCompactStyle, .fullScreen(title: title))
+                .onPreferenceChange(POSModalFlowCloseActionKey.self) { closeAction = $0 }
+                .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
+                    POSModalFlowHeader(title: title, closeAction: closeAction)
+                }
+        } else {
+            content
+        }
+    }
+}
+
 /// The close action that a modal's content offers to `POSModalFlowHeader`, set by `posModalCloseButton`.
 ///
 /// It is a reference type so the header always calls the content's latest action, while the preference value only

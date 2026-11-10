@@ -10,6 +10,13 @@ enum POSModalCompactStyle: Equatable {
     /// The whole screen, for a multi-step flow. It looks like a POS page: a header with the title and the content's close button
     /// (see `posModalCloseButton`) at the top leading corner, the content below it.
     case fullScreen(title: String)
+
+    var fullScreenTitle: String? {
+        guard case .fullScreen(let title) = self else {
+            return nil
+        }
+        return title
+    }
 }
 
 struct POSRootModalViewModifier: ViewModifier {
@@ -18,7 +25,6 @@ struct POSRootModalViewModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
     @GestureState private var bottomSheetDragOffset: CGFloat = 0
-    @State private var fullScreenFlowCloseAction: POSModalFlowCloseAction?
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -46,10 +52,7 @@ struct POSRootModalViewModifier: ViewModifier {
     }
 
     private var fullScreenFlowTitle: String? {
-        guard case .fullScreen(let title) = activeCompactStyle else {
-            return nil
-        }
-        return title
+        activeCompactStyle?.fullScreenTitle
     }
 
     func body(content: Content) -> some View {
@@ -88,12 +91,7 @@ struct POSRootModalViewModifier: ViewModifier {
                                         .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
                                         .environment(\.posModalDismissAction, { modalManager.dismiss() })
                                         .environment(\.posModalCompactStyle, activeCompactStyle)
-                                        .onPreferenceChange(POSModalFlowCloseActionKey.self) { fullScreenFlowCloseAction = $0 }
-                                        .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
-                                            if let fullScreenFlowTitle {
-                                                POSModalFlowHeader(title: fullScreenFlowTitle, closeAction: fullScreenFlowCloseAction)
-                                            }
-                                        }
+                                        .posFullScreenFlowHeader(title: fullScreenFlowTitle)
                                         .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
                                         .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                                         .posShadow(isFullScreen ? .none : .large,

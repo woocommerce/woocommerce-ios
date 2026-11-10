@@ -78,13 +78,13 @@ private extension CustomAmountEntryRow {
 #if DEBUG
 #Preview("iPad") {
     CustomAmountEntryRow(onTap: {})
-        .padding()
+        .posPadding(\.medium)
         .frame(maxWidth: 320)
 }
 
 #Preview("iPad — Accessibility XL") {
     CustomAmountEntryRow(onTap: {})
-        .padding()
+        .posPadding(\.medium)
         .frame(maxWidth: 320)
         .dynamicTypeSize(.accessibility3)
 }

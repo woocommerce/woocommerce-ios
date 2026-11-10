@@ -73,7 +73,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
             bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
             preflightController: preflight, analyticsTracker: tracker, receiptEligibilityUseCase: receipts)
         useCase.collectPayment(using: .bluetoothScan, channel: .pos, onFailure: { _ in }, onCancel: {},
-                               onPaymentCompletion: {}, onCompleted: {})
+                               onPaymentCompletion: { _ in }, onCompleted: {})
         preflight.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: "stripe")
         for await _ in cancellationRequests.stream { break }
         let heldCancellation = try #require(completeCancellation)
@@ -198,7 +198,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // When
         useCase.collectPayment(using: .bluetoothScan, channel: .pos, onFailure: { _ in }, onCancel: {},
-                               onPaymentCompletion: {}, onCompleted: {})
+                               onPaymentCompletion: { _ in }, onCompleted: {})
         preflight.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: account.gatewayID)
         for await _ in captureCompletions.stream { break }
         withExtendedLifetime(useCase) {}

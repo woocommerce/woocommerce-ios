@@ -4,6 +4,7 @@ import protocol Yosemite.POSOrderableItem
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
@@ -249,16 +250,16 @@ struct ItemListView: View {
                let httpsConfigurationNotice,
                showsHTTPSConfigurationNotice {
                 httpsConfigurationWarningBanner(httpsConfigurationNotice)
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.vertical, POSPadding.medium)
+                    .padding(.horizontal, metrics.padding.medium)
+                    .padding(.vertical, metrics.padding.medium)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
             // Stale sync warning banner
             if posModel.showStaleSyncWarning {
                 staleSyncWarningBanner
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.vertical, POSPadding.small)
+                    .padding(.horizontal, metrics.padding.medium)
+                    .padding(.vertical, metrics.padding.small)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
@@ -315,7 +316,7 @@ struct ItemListView: View {
             },
             onTap: notice.onAction
         ) {
-            VStack(alignment: .leading, spacing: POSSpacing.small) {
+            VStack(alignment: .leading, spacing: metrics.spacing.small) {
                 Text(notice.message)
                     .font(.posBodyMediumRegular())
                 Text(notice.actionTitle)

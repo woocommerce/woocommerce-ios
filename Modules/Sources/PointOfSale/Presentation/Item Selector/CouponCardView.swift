@@ -116,7 +116,7 @@ private extension CouponCardView {
 
 #if DEBUG
 #Preview("Coupon states") {
-    VStack(spacing: 16) {
+    VStack(spacing: POSMetrics.regular.spacing.medium) {
         VStack(alignment: .leading) {
             Text("Active Coupon")
                 .font(.caption)
@@ -151,6 +151,6 @@ private extension CouponCardView {
             ))
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 #endif

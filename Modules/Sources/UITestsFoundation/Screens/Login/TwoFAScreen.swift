@@ -73,7 +73,10 @@ public final class TwoFAScreen {
             XCTFail("2FA field should contain the complete authentication code after typing.")
         case .keyboardUnavailable:
             twoFAField.typeText(twoFACode)
-            XCTAssertTrue(waitForTwoFACode(twoFACode, timeout: 2), "2FA field should contain the complete authentication code after typing.")
+            XCTAssertTrue(
+                waitForTwoFACode(twoFACode, timeout: Constants.completeCodeWaitTimeout),
+                "2FA field should contain the complete authentication code after typing."
+            )
         }
     }
 
@@ -98,15 +101,15 @@ public final class TwoFAScreen {
         for (index, key) in codeKeys.enumerated() {
             let expectedCode = String(twoFACode.prefix(index + 1))
             key.tap()
-            guard waitForTwoFACode(expectedCode, timeout: 1) else {
+            guard waitForTwoFACode(expectedCode, timeout: Constants.digitEntryWaitTimeout) else {
                 // A delayed system prompt can interrupt a keypad tap after the 2FA screen appeared.
                 app.dismissSavePasswordPromptIfNeeded(timeout: 2)
-                if waitForTwoFACode(expectedCode, timeout: 0.2) {
+                if waitForTwoFACode(expectedCode, timeout: Constants.promptRecoveryWaitTimeout) {
                     continue
                 }
                 focusTwoFAFieldIfNeeded()
                 key.tap()
-                guard waitForTwoFACode(expectedCode, timeout: 1) else {
+                guard waitForTwoFACode(expectedCode, timeout: Constants.digitEntryWaitTimeout) else {
                     return .failed
                 }
                 continue
@@ -297,5 +300,11 @@ public final class TwoFAScreen {
         case keyboardUnavailable
         case entered
         case failed
+    }
+
+    private enum Constants {
+        static let digitEntryWaitTimeout: TimeInterval = 3
+        static let promptRecoveryWaitTimeout: TimeInterval = 2
+        static let completeCodeWaitTimeout: TimeInterval = 5
     }
 }

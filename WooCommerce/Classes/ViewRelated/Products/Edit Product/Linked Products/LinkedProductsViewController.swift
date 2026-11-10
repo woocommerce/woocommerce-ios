@@ -37,6 +37,11 @@ final class LinkedProductsViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
 }
 
 // MARK: - View Configuration

@@ -6,13 +6,14 @@ enum POSStatusButtonsLayout {
 
 private struct POSStatusButtonsWidthModifier: ViewModifier {
     @Environment(\.posMetrics) private var metrics
+    @ScaledMetric private var maxWidth = POSStatusButtonsLayout.maxWidth
 
     let addsHorizontalPadding: Bool
 
     func body(content: Content) -> some View {
         content
             .frame(maxWidth: .infinity)
-            .frame(maxWidth: POSStatusButtonsLayout.maxWidth)
+            .frame(maxWidth: maxWidth)
             .padding(.horizontal, addsHorizontalPadding ? metrics.padding.medium : metrics.padding.none)
             .frame(maxWidth: .infinity)
     }

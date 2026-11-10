@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSSettingsStoreDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     @State private var isLoading: Bool = false
     @State private var showingWebView: Bool = false
 
@@ -26,18 +27,18 @@ struct POSSettingsStoreDetailView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.storeTitle)
                 .foregroundColor(.posSurface)
 
             ScrollView {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     storeInformationView
 
                     receiptInformationView
                         .renderedIf(viewModel.shouldShowReceiptInformation)
                 }
-                .posContentPadding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, metrics.padding.medium)
             }
         }
         .background(backgroundColor)
@@ -51,10 +52,10 @@ struct POSSettingsStoreDetailView: View {
     @ViewBuilder
     private var storeInformationView: some View {
         POSInformationCard {
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 sectionHeaderView(title: Localization.storeInformation)
 
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     POSInformationCardFieldRow(label: Localization.storeName, value: viewModel.storeName)
                     POSInformationCardFieldRow(label: Localization.address, value: viewModel.storeAddress, showSeparator: false)
                 }
@@ -65,10 +66,10 @@ struct POSSettingsStoreDetailView: View {
     @ViewBuilder
     private var receiptInformationView: some View {
         POSInformationCard {
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 receiptSectionHeaderView
 
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
                     receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
                     receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
@@ -77,7 +78,7 @@ struct POSSettingsStoreDetailView: View {
                                         value: viewModel.receiptInformation.refundReturnsPolicy,
                                         showSeparator: false)
                 }
-                .padding(.bottom, POSPadding.medium)
+                .padding(.bottom, metrics.padding.medium)
             }
         }
         .posFullScreenCover(isPresented: $showingWebView) {
@@ -119,7 +120,7 @@ struct POSSettingsStoreDetailView: View {
                     .disabled(isLoading)
                 }
             }
-            .padding(.vertical, POSPadding.small)
+            .padding(.vertical, metrics.padding.small)
         }
     }
 
@@ -131,20 +132,20 @@ struct POSSettingsStoreDetailView: View {
                 .font(.posBodyLargeBold)
                 .foregroundColor(.posOnSurface)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, POSPadding.small)
+                .padding(.vertical, metrics.padding.small)
         }
     }
 
     @ViewBuilder
     private func receiptFieldRowView(label: String, value: String?, showSeparator: Bool = true) -> some View {
-        VStack(alignment: .leading, spacing: POSPadding.small) {
+        VStack(alignment: .leading, spacing: metrics.padding.small) {
             Text(label)
                 .font(.posBodyMediumRegular())
             settingValueView(for: value)
 
             if showSeparator {
                 Divider()
-                    .padding(.top, POSPadding.small)
+                    .padding(.top, metrics.padding.small)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

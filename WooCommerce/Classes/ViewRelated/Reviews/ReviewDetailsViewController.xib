@@ -30,8 +30,8 @@
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <constraints>
                 <constraint firstItem="N9g-Ec-Iu1" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="9YG-3M-BWi"/>
-                <constraint firstItem="N9g-Ec-Iu1" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="KfE-6Z-RFy"/>
-                <constraint firstAttribute="trailing" secondItem="N9g-Ec-Iu1" secondAttribute="trailing" id="SL0-kI-NEx"/>
+                <constraint firstItem="N9g-Ec-Iu1" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="KfE-6Z-RFy"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="N9g-Ec-Iu1" secondAttribute="trailing" id="SL0-kI-NEx"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="N9g-Ec-Iu1" secondAttribute="bottom" id="ndn-Up-PKr"/>
             </constraints>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>

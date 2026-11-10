@@ -56,12 +56,12 @@
             <viewLayoutGuide key="safeArea" id="dwF-6Q-Kwo"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="iS0-0M-H91" firstAttribute="bottom" secondItem="dwF-6Q-Kwo" secondAttribute="bottom" id="H0b-Ak-cWG"/>
+                <constraint firstItem="iS0-0M-H91" firstAttribute="bottom" secondItem="b7U-MR-tb4" secondAttribute="bottom" id="H0b-Ak-cWG"/>
                 <constraint firstItem="iS0-0M-H91" firstAttribute="top" secondItem="44b-uH-OdI" secondAttribute="bottom" id="O89-mh-1Zc"/>
-                <constraint firstItem="44b-uH-OdI" firstAttribute="trailing" secondItem="b7U-MR-tb4" secondAttribute="trailing" id="Z9S-6c-YG7"/>
-                <constraint firstItem="iS0-0M-H91" firstAttribute="leading" secondItem="b7U-MR-tb4" secondAttribute="leading" id="cbg-no-4SQ"/>
-                <constraint firstItem="44b-uH-OdI" firstAttribute="leading" secondItem="b7U-MR-tb4" secondAttribute="leading" id="dsw-id-h2L"/>
-                <constraint firstAttribute="trailing" secondItem="iS0-0M-H91" secondAttribute="trailing" id="ncI-n8-jAa"/>
+                <constraint firstItem="44b-uH-OdI" firstAttribute="trailing" secondItem="dwF-6Q-Kwo" secondAttribute="trailing" id="Z9S-6c-YG7"/>
+                <constraint firstItem="iS0-0M-H91" firstAttribute="leading" secondItem="dwF-6Q-Kwo" secondAttribute="leading" id="cbg-no-4SQ"/>
+                <constraint firstItem="44b-uH-OdI" firstAttribute="leading" secondItem="dwF-6Q-Kwo" secondAttribute="leading" id="dsw-id-h2L"/>
+                <constraint firstItem="dwF-6Q-Kwo" firstAttribute="trailing" secondItem="iS0-0M-H91" secondAttribute="trailing" id="ncI-n8-jAa"/>
                 <constraint firstItem="44b-uH-OdI" firstAttribute="top" secondItem="dwF-6Q-Kwo" secondAttribute="top" id="nj2-Nt-ReO"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="128.57142857142856"/>

@@ -41,7 +41,7 @@ struct CollapsibleOrderFormCard<Label: View, Content: View>: View {
                                         content: content)
         .padding(padding)
         .frame(maxWidth: .infinity, alignment: .center)
-        .background(Color(.listForeground(modal: false)))
+        .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
         .overlay {
             CollapsibleOrderFormCardBorder(color: .init(uiColor: .text))
                 .renderedIf(!isCollapsed.wrappedValue)

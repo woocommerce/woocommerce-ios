@@ -78,6 +78,11 @@ final class ProductPriceSettingsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         startListeningToNotifications()
@@ -286,7 +291,8 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
                                                                      noResultsPlaceholderText: noResultsPlaceholderText,
                                                                      noResultsPlaceholderImage: noResultsPlaceholderImage,
                                                                      noResultsPlaceholderImageTintColor: .gray(.shade20),
-                                                                     tableViewStyle: .grouped)
+                                                                     tableViewStyle: .grouped,
+                                                                     loadingSectionHeaderVerticalSpace: .none)
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in

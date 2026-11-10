@@ -280,7 +280,7 @@ struct OrderForm: View {
 
                         Group {
                             OrderStatusSection(viewModel: viewModel,
-                                               safeAreaInsets: safeAreaInsets,
+                                               safeAreaInsets: .zero,
                                                topDivider: !viewModel.shouldShowNonEditableIndicators,
                                                isEditButtonVisible: viewModel.isOrderStatusEditingEnabled)
                             Spacer(minLength: Layout.sectionSpacing)
@@ -293,7 +293,7 @@ struct OrderForm: View {
                                         viewModel: viewModel,
                                         navigationButtonID: $navigationButtonID,
                                         isLoading: isLoading,
-                                        safeAreaInsets: safeAreaInsets)
+                                        safeAreaInsets: .zero)
                         .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Group {
@@ -305,7 +305,7 @@ struct OrderForm: View {
 
                         OrderCustomAmountsSection(viewModel: viewModel,
                                                   sectionViewModel: viewModel.customAmountsSectionViewModel,
-                                                  safeAreaInsets: safeAreaInsets)
+                                                  safeAreaInsets: .zero)
                             .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Divider()
@@ -313,7 +313,7 @@ struct OrderForm: View {
                         Spacer(minLength: Layout.sectionSpacing)
 
                         Group {
-                            OrderShippingSection(viewModel: viewModel.shippingLineViewModel, safeAreaInsets: safeAreaInsets)
+                            OrderShippingSection(viewModel: viewModel.shippingLineViewModel, safeAreaInsets: .zero)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                             Spacer(minLength: Layout.sectionSpacing)
                         }
@@ -322,7 +322,7 @@ struct OrderForm: View {
                         Group {
                             OrderCouponSectionView(viewModel: viewModel,
                                                    couponViewModel: viewModel.couponLineViewModel,
-                                                   safeAreaInsets: safeAreaInsets)
+                                                   safeAreaInsets: .zero)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                             Spacer(minLength: Layout.sectionSpacing)
                         }
@@ -334,7 +334,7 @@ struct OrderForm: View {
                             couponLineViewModel: viewModel.couponLineViewModel,
                             shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
                             shouldShowGiftCardForm: $shouldShowGiftCardForm,
-                            safeAreaInsets: safeAreaInsets)
+                            safeAreaInsets: .zero)
                         .addingTopAndBottomDividers()
                         .disabled(viewModel.shouldShowNonEditableIndicators)
 
@@ -343,7 +343,7 @@ struct OrderForm: View {
 
                     VStack(spacing: Layout.noSpacing) {
                         Group {
-                            NewTaxRateSection(text: viewModel.taxRateRowText, safeAreaInsets: safeAreaInsets) {
+                            NewTaxRateSection(text: viewModel.taxRateRowText, safeAreaInsets: .zero) {
                                 viewModel.onSetNewTaxRateTapped()
                                 switch viewModel.taxRateRowAction {
                                 case .storedTaxRateSheet:
@@ -380,7 +380,7 @@ struct OrderForm: View {
 
                         OrderCustomerSection(viewModel: viewModel,
                                              addressFormViewModel: viewModel.addressFormViewModel,
-                                             safeAreaInsets: safeAreaInsets)
+                                             safeAreaInsets: .zero)
 
                         Group {
                             Divider()
@@ -391,7 +391,7 @@ struct OrderForm: View {
                         }
                         .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
 
-                        CustomerNoteSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets)
+                        CustomerNoteSection(viewModel: viewModel, safeAreaInsets: .zero)
 
                         Divider()
                     }
@@ -400,7 +400,6 @@ struct OrderForm: View {
             }
             .accessibilityIdentifier(Accessibility.orderFormScrollViewIdentifier)
             .background(Color(.listBackground).ignoresSafeArea())
-            .ignoresSafeArea(.container, edges: [.horizontal])
         }
         .onPreferenceChange(WidthPreferenceKey.self) { newWidth in
             bannerWidth = newWidth
@@ -410,7 +409,7 @@ struct OrderForm: View {
                 FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
                                       config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
-                ExpandableBottomSheet(safeAreaInsets: safeAreaInsets,
+                ExpandableBottomSheet(safeAreaInsets: EdgeInsets(top: safeAreaInsets.top, leading: 0, bottom: safeAreaInsets.bottom, trailing: 0),
                                       containerHeight: containerHeight,
                                       onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                     VStack(spacing: .zero) {
@@ -437,7 +436,6 @@ struct OrderForm: View {
                         shouldShowGiftCardForm: $shouldShowGiftCardForm)
                     .disabled(viewModel.shouldShowNonEditableIndicators)
                 }
-                .ignoresSafeArea(edges: .horizontal)
             }
         }
         .accessibilityElement(children: .contain)
@@ -575,7 +573,7 @@ private struct NewTaxRateSection: View {
                         .padding(.horizontal, insets: safeAreaInsets)
                         .frame(maxWidth: .infinity)
         })
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
         .addingTopAndBottomDividers()
     }
 }
@@ -711,7 +709,7 @@ private struct ProductsSection: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .if(viewModel.shouldShowAddProductsButton, transform: { $0.frame(minHeight: Layout.rowHeight) })
-            .background(Color(.listForeground(modal: true)))
+            .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
             }

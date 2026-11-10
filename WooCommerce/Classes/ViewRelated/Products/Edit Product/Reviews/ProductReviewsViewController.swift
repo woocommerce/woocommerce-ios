@@ -84,6 +84,11 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
         configureResultsController()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -240,7 +245,7 @@ private extension ProductReviewsViewController {
         case .results:
             break
         case .placeholder:
-            displayGhostContent()
+            displayGhostContent(over: tableView)
         case .syncing:
             ensureFooterSpinnerIsStarted()
         }

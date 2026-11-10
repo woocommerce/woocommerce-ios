@@ -215,6 +215,16 @@ custom_rules:
     included: Modules/Sources/PointOfSale/.*\.swift
     severity: error
 
+  pos_modal_presentation:
+    name: "POS Modal Presentation"
+    regex: '\.(sheet|fullScreenCover)\('
+    message: "In POS, present with `posModal(compactStyle:)`, `posSheet` or `posFullScreenCover`, so the presentation works with the POS modal hierarchy and picks its phone style."
+    included: Modules/Sources/PointOfSale/.*\.swift
+    excluded:
+      - Modules/Sources/PointOfSale/Presentation/Reusable Views/POSSheet\.swift
+      - Modules/Sources/PointOfSale/Presentation/Reusable Views/POSFullScreenCover\.swift
+    severity: error
+
   swiftui_localization:
     name: "SwiftUI Localization"
     regex: 'LocalizedStringKey'

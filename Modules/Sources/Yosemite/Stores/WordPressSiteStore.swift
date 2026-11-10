@@ -82,13 +82,7 @@ private extension WordPressSiteStore {
         if ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: approvalSiteURL) {
             return ApplicationPasswordAuthorization(url: url, approvalSiteURL: nil)
         }
-        let approvalSiteHome: String?
-        do {
-            approvalSiteHome = try await remote.fetchSiteInfo(for: approvalSiteURL).home
-        } catch {
-            DDLogError("⛔️ Could not confirm the home of the application password approval site: \(error)")
-            throw ApplicationPasswordAuthorizationError.siteMismatch
-        }
+        let approvalSiteHome = try await remote.fetchSiteInfo(for: approvalSiteURL).home
         guard ApplicationPasswordSiteMatcher.isSameSiteAddress(siteURL, approvalSiteHome) else {
             throw ApplicationPasswordAuthorizationError.siteMismatch
         }

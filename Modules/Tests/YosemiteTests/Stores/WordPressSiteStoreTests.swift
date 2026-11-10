@@ -154,7 +154,7 @@ final class WordPressSiteStoreTests: XCTestCase {
     }
 
     @MainActor
-    func test_fetchApplicationPasswordAuthorizationURL_when_other_host_home_fetch_fails_then_fails_with_site_mismatch() async throws {
+    func test_fetchApplicationPasswordAuthorizationURL_when_other_host_home_fetch_fails_then_relays_the_fetch_error() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "//test.com/wp-json/", filename: "wordpress-site-info-with-foreign-auth-url")
         network.simulateError(requestUrlSuffix: "//wp.test.com/wp-json/", error: NetworkError.notFound())
@@ -164,7 +164,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         let result = try await fetchAuthorization(siteURL: sampleSiteURL, store: store)
 
         // Then
-        XCTAssertEqual(result.failure as? ApplicationPasswordAuthorizationError, .siteMismatch)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound())
     }
 
     @MainActor

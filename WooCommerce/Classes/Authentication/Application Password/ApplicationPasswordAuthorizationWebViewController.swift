@@ -251,7 +251,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         let parameters: [URLQueryItem] = [
             URLQueryItem(name: Constants.Query.appName, value: appName),
             URLQueryItem(name: Constants.Query.appID, value: appID),
-            URLQueryItem(name: Constants.Query.successURL, value: Constants.successURL)
+            URLQueryItem(name: Constants.Query.successURL, value: ApplicationPasswordAuthorizationViewModel.successURL)
         ]
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         components?.queryItems = parameters
@@ -319,7 +319,7 @@ extension ApplicationPasswordAuthorizationWebViewController: WKNavigationDelegat
             return .allow
         }
         /// Callback handling
-        guard url.absoluteString.hasPrefix(Constants.successURL) else {
+        guard url.absoluteString.hasPrefix(ApplicationPasswordAuthorizationViewModel.successURL) else {
             return .allow
         }
         let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
@@ -347,7 +347,6 @@ extension ApplicationPasswordAuthorizationWebViewController: WKNavigationDelegat
 
 private extension ApplicationPasswordAuthorizationWebViewController {
     enum Constants {
-        static let successURL = "woocommerce://application-password"
         enum Query {
             static let username = "user_login"
             static let password = "password"

@@ -88,7 +88,7 @@ private struct POSRefundCardPresentProcessingMessageView: View {
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
         }
-        .padding(.bottom)
+        .posPadding(.bottom, \.medium)
         .multilineTextAlignment(.center)
         .onAppear {
             isMessageFocused = true

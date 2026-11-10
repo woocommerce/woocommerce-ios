@@ -297,7 +297,7 @@ struct POSHeaderBackButtonIconKey: EnvironmentKey {
 
 struct POSHeaderBackButtonPaddingKey: EnvironmentKey {
     /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
-    static let defaultValue: CGFloat = POSPadding.large / 2
+    static let defaultValue: CGFloat = POSMetrics.regular.padding.large / 2
 }
 
 extension EnvironmentValues {
@@ -340,7 +340,7 @@ extension View {
 #Preview {
     @Previewable @State var isProductsSelected: Bool = true
 
-    VStack(spacing: 20) {
+    VStack(spacing: POSMetrics.regular.spacing.large) {
         // Header without back button.
         POSPageHeaderView(
             title: "Products",
@@ -369,7 +369,7 @@ extension View {
             title: "Products",
             backButtonConfiguration: .init(state: .enabled, action: {}),
             trailingContent: {
-                HStack(spacing: 16) {
+                HStack(spacing: POSMetrics.regular.spacing.medium) {
                     Button(action: {}) {
                         Text(Image(systemName: "info.circle"))
                             .font(.posButtonSymbolLarge)
@@ -428,7 +428,7 @@ extension View {
                 .init(title: "Coupons", isSelected: !isProductsSelected) { isProductsSelected.toggle() }
             ],
             trailingContent: {
-                HStack(spacing: 16) {
+                HStack(spacing: POSMetrics.regular.spacing.medium) {
                     Button(action: {}) {
                         Text(Image(systemName: "plus"))
                             .font(.posButtonSymbolLarge)
@@ -452,8 +452,8 @@ extension View {
                 Text("Completed")
                     .font(.posBodySmallRegular())
                     .foregroundStyle(Color.posSuccess)
-                    .padding(.horizontal, POSPadding.small)
-                    .padding(.vertical, POSPadding.xSmall)
+                    .padding(.horizontal, POSMetrics.regular.padding.small)
+                    .padding(.vertical, POSMetrics.regular.padding.xSmall)
                     .background(Color.posSuccess.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             },
@@ -465,8 +465,8 @@ extension View {
                     Button("Refund") {}
                         .buttonStyle(.borderedProminent)
                 }
-                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                .padding(.top, POSSpacing.medium)
+                .padding(.horizontal, POSMetrics.regular.padding.medium)
+                .padding(.top, POSMetrics.regular.spacing.medium)
             }
         )
     }

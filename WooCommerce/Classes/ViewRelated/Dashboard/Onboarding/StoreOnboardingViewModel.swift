@@ -4,6 +4,9 @@ import Yosemite
 import Combine
 import Experiments
 import protocol WooFoundation.Analytics
+#if DEBUG
+import class WooFoundation.MockAnalyticsPreview
+#endif
 
 /// View model for `StoreOnboardingView`.
 @MainActor
@@ -256,6 +259,21 @@ private extension StoreOnboardingViewModel {
         tasks.contains(where: { $0.isComplete == false })
     }
 }
+
+#if DEBUG
+extension StoreOnboardingViewModel {
+    static func preview(taskViewModels: [StoreOnboardingTaskViewModel]) -> StoreOnboardingViewModel {
+        let viewModel = StoreOnboardingViewModel(
+            siteID: 0,
+            isExpanded: false,
+            taskViewModels: taskViewModels,
+            analytics: MockAnalyticsPreview()
+        )
+        viewModel.update(state: .loaded(rows: taskViewModels))
+        return viewModel
+    }
+}
+#endif
 
 private extension StoreOnboardingViewModel {
     enum Constants {

@@ -15,5 +15,8 @@ public enum PrinterDiscoveryState: Hashable, Identifiable, Sendable {
     case foundOne(PrinterDevice)
     case foundMultiple([PrinterDevice])
     case connecting(PrinterDevice)
+    /// The search itself failed, for example because Bluetooth is off.
+    case discoveryFailed
+    /// Connecting to the chosen printer failed.
     case error
 }

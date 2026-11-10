@@ -67,6 +67,24 @@ final class DashboardCustomizationViewModel: ObservableObject {
 
         onSave?(updatedCards)
     }
+
+    func isCardSelected(_ card: DashboardCard) -> Bool {
+        selectedCards.contains(card)
+    }
+
+    func canToggleCard(_ card: DashboardCard) -> Bool {
+        !isCardSelected(card) || selectedCards.count > 1
+    }
+
+    func setCard(_ card: DashboardCard, selected: Bool) {
+        guard selected || canToggleCard(card) else { return }
+
+        if selected {
+            selectedCards.insert(card)
+        } else {
+            selectedCards.remove(card)
+        }
+    }
 }
 
 private extension DashboardCustomizationViewModel {

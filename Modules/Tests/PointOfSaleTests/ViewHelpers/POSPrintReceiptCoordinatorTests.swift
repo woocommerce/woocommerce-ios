@@ -142,7 +142,7 @@ struct POSPrintReceiptCoordinatorTests {
         // Then
         #expect(spy.printCallCount == 1)
         #expect(spy.presentSetupCallCount == 0)
-        #expect(analytics.events.map(\.eventName) == ["receipt_print_tapped", "receipt_print_success"])
+        #expect(analytics.events.map(\.eventName) == ["receipt_print_retry_tapped", "receipt_print_success"])
     }
 
     @Test func test_failureActionSelected_when_retry_fails_again_then_presents_failure_again() async {
@@ -155,6 +155,8 @@ struct POSPrintReceiptCoordinatorTests {
 
         // Then
         #expect(spy.failures == [.coverOpen, .coverOpen])
+        #expect(analytics.events.map(\.eventName) == ["receipt_print_tapped", "receipt_print_failed",
+                                                      "receipt_print_retry_tapped", "receipt_print_failed"])
     }
 
     @Test func test_failureActionSelected_when_retry_and_printer_disconnected_then_presents_setup() async {
@@ -167,6 +169,7 @@ struct POSPrintReceiptCoordinatorTests {
         // Then
         #expect(spy.presentSetupCallCount == 1)
         #expect(spy.printCallCount == 0)
+        #expect(analytics.events.map(\.eventName) == ["receipt_print_retry_tapped"])
     }
 
     @Test func test_failureActionSelected_when_emailReceipt_then_presents_email_and_tracks_email_tapped() async {

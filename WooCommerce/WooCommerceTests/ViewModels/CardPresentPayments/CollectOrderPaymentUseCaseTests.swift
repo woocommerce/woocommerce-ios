@@ -93,7 +93,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in }, onCancel: {
                 promise(())
-            }, onPaymentCompletion: {}, onCompleted: {})
+            }, onPaymentCompletion: { _ in }, onCompleted: {})
             self.mockPreflightController.cancelConnection(readerModel: Mocks.cardReaderModel, gatewayID: Mocks.paymentGatewayAccount, source: .foundReader)
         }
 
@@ -122,7 +122,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: { canceled.fulfill() },
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
 
@@ -161,7 +161,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
             cancellationRequested.fulfill()
         }
         useCase.collectPayment(using: .bluetoothScan, channel: .pos,
-                               onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {}, onCompleted: {})
+                               onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in }, onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -229,7 +229,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
         setUpUseCase(order: order, analyticsTracker: tracker)
         useCase.collectPayment(using: .bluetoothScan, channel: .pos,
-                               onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {}, onCompleted: {})
+                               onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in }, onCompleted: {})
         tracker.trackCheckoutTapped()
         tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
         // When
@@ -263,7 +263,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: { canceled.fulfill() },
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
 
@@ -292,7 +292,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: { didCancelFlow = true },
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
@@ -339,7 +339,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: { didCancelFlow = true },
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
@@ -391,7 +391,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: { didCancelFlow = true },
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
@@ -412,7 +412,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -421,6 +421,27 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then
         XCTAssert(mockAnalyticsTracker.didCallTrackSuccessfulPayment)
         assertEqual(interacPaymentMethod, mockAnalyticsTracker.spyTrackSuccessfulPaymentCapturedPaymentData?.paymentMethod)
+    }
+
+    func test_collectPayment_when_payment_completes_then_passes_receipt_parameters_to_onPaymentCompletion() throws {
+        // Given
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
+        let receiptParameters = CardPresentReceiptParameters.fake()
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: paymentMethod,
+                                                                                                    receiptParameters: receiptParameters))
+
+        // When
+        let completionReceiptParameters: CardPresentReceiptParameters? = waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+                promise($0)
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(completionReceiptParameters, receiptParameters)
     }
 
     func test_collectPayment_enables_terminal_payment_preparation_when_route_is_available_for_Canada() throws {
@@ -438,7 +459,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -463,7 +484,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -497,7 +518,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -521,7 +542,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When we make a successful payment
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -559,7 +580,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: { promise(()) },
+                                        onPaymentCompletion: { _ in promise(()) },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -591,7 +612,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: { XCTFail("Payment should not complete") },
+                                        onPaymentCompletion: { _ in XCTFail("Payment should not complete") },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -619,7 +640,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: { XCTFail("Payment should not complete") },
+                                        onPaymentCompletion: { _ in XCTFail("Payment should not complete") },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -653,7 +674,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: {},
+                                        onPaymentCompletion: { _ in },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -707,7 +728,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 channel: .storeManagement,
                 onFailure: { _ in },
                 onCancel: {},
-                onPaymentCompletion: {},
+                onPaymentCompletion: { _ in },
                 onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -832,7 +853,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -865,7 +886,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -901,7 +922,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: {},
+                                        onPaymentCompletion: { _ in },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -935,7 +956,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: {},
+                                        onPaymentCompletion: { _ in },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -970,7 +991,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: {},
+                                        onPaymentCompletion: { _ in },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -989,7 +1010,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: {},
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: reader, gatewayID: Mocks.paymentGatewayAccount)
@@ -1008,7 +1029,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: {},
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: reader, gatewayID: Mocks.paymentGatewayAccount)
@@ -1032,7 +1053,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: {},
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
@@ -1054,7 +1075,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .pos,
                                onFailure: { _ in },
                                onCancel: {},
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -1070,7 +1091,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: {},
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -1106,7 +1127,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 channel: .storeManagement,
                 onFailure: { _ in },
                 onCancel: {},
-                onPaymentCompletion: {
+                onPaymentCompletion: { _ in
                     eventOrder.append(.paymentCompletion)
                     promise(())
                 },
@@ -1137,7 +1158,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 channel: .storeManagement,
                 onFailure: { _ in },
                 onCancel: {},
-                onPaymentCompletion: {
+                onPaymentCompletion: { _ in
                     didCompletePayment = true
                     promise(())
                 },
@@ -1198,7 +1219,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                     XCTFail("Payment should not be canceled")
                     promise(())
                 },
-                onPaymentCompletion: {
+                onPaymentCompletion: { _ in
                     paymentCompleted = true
                     promise(())
                 },
@@ -1262,7 +1283,7 @@ private extension CollectOrderPaymentUseCaseTests {
         var finishCancellation: ((Result<Void, Error>) -> Void)?
         mockPaymentOrchestrator.mockCancelPaymentHandler = { finishCancellation = $0 }
         useCase.collectPayment(using: .bluetoothScan, channel: channel,
-                               onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {}, onCompleted: {})
+                               onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in }, onCompleted: {})
         await waitForPaymentCollection {
             mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -1296,7 +1317,7 @@ private extension CollectOrderPaymentUseCaseTests {
                                         channel: .storeManagement,
                                         onFailure: onFailure,
                                         onCancel: {},
-                                        onPaymentCompletion: {},
+                                        onPaymentCompletion: { _ in },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }

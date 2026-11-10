@@ -7,7 +7,7 @@ struct ShippingLabelPackageList: View {
     @State private var isShowingNewPackageCreation = false
 
     var body: some View {
-        GeometryReader { geometry in
+        SafeAreaInsetsReader { _ in
             VStack(spacing: 0) {
                 ScrollView {
                     LazyVStack(spacing: 0) {
@@ -15,7 +15,6 @@ struct ShippingLabelPackageList: View {
                         ///
                         if viewModel.showCustomPackagesHeader {
                             ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
-                                .padding(.horizontal, insets: geometry.safeAreaInsets)
                             Divider()
                         }
                         ForEach(viewModel.customPackages, id: \.title) { package in
@@ -24,8 +23,7 @@ struct ShippingLabelPackageList: View {
                                 .onTapGesture {
                                     viewModel.didSelectPackage(package.title)
                                 }
-                                .padding(.horizontal, insets: geometry.safeAreaInsets)
-                                .background(Color(.systemBackground))
+                                .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
 
@@ -34,7 +32,6 @@ struct ShippingLabelPackageList: View {
                         ForEach(viewModel.predefinedOptions, id: \.title) { option in
 
                             ListHeaderView(text: option.title.uppercased(), alignment: .left)
-                                .padding(.horizontal, insets: geometry.safeAreaInsets)
                             Divider()
                             ForEach(option.predefinedPackages) { package in
                                 let selected = package == viewModel.selectedPredefinedPackage
@@ -43,15 +40,13 @@ struct ShippingLabelPackageList: View {
                                                   selected: selected).onTapGesture {
                                                     viewModel.didSelectPackage(package.id)
                                                   }
-                                    .padding(.horizontal, insets: geometry.safeAreaInsets)
-                                    .background(Color(.systemBackground))
+                                    .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                                 Divider().padding(.leading, Constants.dividerPadding)
                             }
                         }
                     }
                 }
                 .background(Color(.listBackground))
-                .ignoresSafeArea(.container, edges: .horizontal)
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {

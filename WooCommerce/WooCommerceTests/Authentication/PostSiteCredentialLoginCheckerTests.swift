@@ -10,6 +10,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     private let testURL = "https://test.com"
     private var stores: MockStoresManager!
     private var navigationController: UINavigationController!
+    private var window: UIWindow!
 
     /// Sample Application Password
     ///
@@ -19,7 +20,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         navigationController = UINavigationController()
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
+        window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = UIViewController()
         window.makeKeyAndVisible()
         window.rootViewController = navigationController
@@ -27,6 +28,9 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     }
 
     override func tearDown() async throws {
+        window.isHidden = true
+        window.rootViewController = nil
+        window = nil
         stores = nil
         navigationController = nil
         try await super.tearDown()

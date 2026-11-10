@@ -112,14 +112,26 @@ final class JetpackRequestTests: XCTestCase {
         }
     }
 
-    /// Verifies that a DELETE JetpackRequest will actually become a GET with a `&_method=delete` query string parameter.
+    /// Verifies that a DELETE JetpackRequest will actually become a POST, with `_method=delete` in the tunneled path and its parameters in the body.
     ///
-    func test_delete_request_becomes_get_request() {
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
+    func test_delete_request_becomes_post_request_with_parameters_in_body() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: sampleSiteID, path: sampleRPC, parameters: ["force": true])
 
-        let output = try! request.asURLRequest()
-        XCTAssertEqual(output.httpMethod?.uppercased(), "GET")
-        XCTAssertTrue((output.url?.absoluteString.contains("%26_method%3Ddelete"))!)
+        // When
+        let urlRequest = try request.asURLRequest()
+        let form = try XCTUnwrap(urlRequest.httpBody)
+        let formString = try XCTUnwrap(String(data: form, encoding: .utf8))
+        let formItems = try XCTUnwrap(URLComponents(string: "?\(formString)")?.queryItems)
+        let path = try XCTUnwrap(formItems.first { $0.name == "path" }?.value)
+        let body = try XCTUnwrap(formItems.first { $0.name == "body" }?.value)
+
+        // Then
+        XCTAssertEqual(urlRequest.httpMethod, "POST")
+        XCTAssertNil(urlRequest.url?.query)
+        XCTAssertFalse(formItems.contains { $0.name == "query" })
+        XCTAssertEqual(path, "/wc/v3/\(sampleRPC)&_method=delete")
+        XCTAssertEqual(try JSONSerialization.jsonObject(with: Data(body.utf8)) as? [String: Bool], ["force": true])
     }
 
     /// Verifies that a PUT JetpackRequest will actually become a POST with a `_method=put` param in body
@@ -144,7 +156,7 @@ final class JetpackRequestTests: XCTestCase {
     }
 
     func test_mutation_request_encodes_query_parameters_in_tunneled_path_and_parameters_in_body() throws {
-        for method: HTTPMethod in [.post, .put] {
+        for method: HTTPMethod in [.post, .put, .delete] {
             // Given
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: method,
@@ -222,6 +234,25 @@ final class JetpackRequestTests: XCTestCase {
         XCTAssertEqual(URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false)?
             .queryItems?.first { $0.name == "currency" }?.value, "EUR")
         XCTAssertEqual(restRequest.jsonBodyParameters as? [String: String], ["status": "completed"])
+    }
+
+    func test_converting_into_RESTRequest_when_method_is_delete_then_it_stays_a_delete_with_parameters_in_query() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .delete,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: ["force": true],
+                                     availableAsRESTRequest: true)
+
+        // When
+        let urlRequest = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress)).asURLRequest()
+
+        // Then
+        XCTAssertEqual(urlRequest.httpMethod, "DELETE")
+        XCTAssertEqual(URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false)?
+            .queryItems?.first { $0.name == "force" }?.value, "1")
+        XCTAssertNil(urlRequest.httpBody)
     }
 
     func test_converting_into_RESTRequest_is_nil_when_availableAsRESTRequest_is_false() {

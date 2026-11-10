@@ -31,7 +31,9 @@ struct POSListErrorView: View {
         POSStatusScreenLayout {
             POSErrorMessageView(viewModel: viewModel)
         } buttons: {
-            POSErrorButtonsView(viewModel: viewModel)
+            if viewModel.hasButtons {
+                POSErrorButtonsView(viewModel: viewModel)
+            }
         }
         .onAppear {
             // Track error shown for splash screen errors (initial catalog sync)

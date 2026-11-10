@@ -224,8 +224,7 @@ struct TotalsView: View {
                 isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
                 onMarkOrderAsPaid: handleMarkAsPaidSelected
             )
-            .presentationDetents([.medium])
-            .presentationDragIndicator(.visible)
+            .posSheetFitsContent()
         }
         .onChange(of: session.isLocked) { _, isLocked in
             // POSSheet presents at the UIWindow level, so it sits above the view-level

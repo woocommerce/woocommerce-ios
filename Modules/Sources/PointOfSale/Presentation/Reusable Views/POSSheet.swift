@@ -163,3 +163,36 @@ extension View {
         )
     }
 }
+
+// MARK: - Content-fit height
+
+private struct POSSheetFitsContentModifier: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var contentHeight: CGFloat?
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if horizontalSizeClass == .compact {
+            // The system caps the detent at the available height, so content taller than the screen scrolls.
+            ScrollView {
+                content
+                    .measureHeight { contentHeight = $0 }
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .presentationDetents(contentHeight.map { [.height($0)] } ?? [.medium])
+            .presentationDragIndicator(.visible)
+        } else {
+            content
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
+    }
+}
+
+extension View {
+    /// On phone, makes a bottom sheet as tall as its content, with a grabber. Regular width keeps the medium detent.
+    /// Apply it to the root of the sheet's content.
+    func posSheetFitsContent() -> some View {
+        modifier(POSSheetFitsContentModifier())
+    }
+}

@@ -1,8 +1,7 @@
-import ScreenObject
 import XCTest
 
 @MainActor
-public final class PaymentsScreen: ScreenObject {
+public final class PaymentsScreen {
     private let cardReaderManualsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["card-reader-manuals"]
     }
@@ -49,17 +48,19 @@ public final class PaymentsScreen: ScreenObject {
     private var confirmCustomAmountButton: XCUIElement { confirmCustomAmountGetter(app) }
     private var orderFormCollectPaymentButton: XCUIElement { orderFormCollectPaymentButtonGetter(app) }
 
+    public let app: XCUIApplication
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
-        try super.init(
-            expectedElementGetters: [
-                cardReaderManualsButtonGetter
-            ],
-            app: app
-        )
+        self.app = app
+        // The row can be visible but non-hittable while the universal-link destination settles, so wait by existence.
+        guard cardReaderManualsButton.waitForExistence(timeout: Constants.screenLoadTimeout) else {
+            throw PaymentsScreenError.timedOut
+        }
     }
 
     @discardableResult
     public func tapCardReaderManuals() throws -> CardReaderManualsScreen {
+        XCTAssertTrue(cardReaderManualsButton.waitForIsHittable(timeout: 10), "Card reader manuals button should be tappable.")
         cardReaderManualsButton.tap()
         return try CardReaderManualsScreen()
     }
@@ -80,11 +81,18 @@ public final class PaymentsScreen: ScreenObject {
 
     @discardableResult
     public func verifyPaymentsScreenLoaded() throws -> PaymentsScreen {
-        XCTAssertTrue(cardReaderManualsButton.waitForExistence(timeout: 8))
         return self
     }
 
     public func verifyIPPDocumentationLoadedInWebView() throws {
         XCTAssertTrue(IPPDocumentationHeaderText.waitForExistence(timeout: 30), "IPP Documentation not displayed on WebView!")
+    }
+
+    private enum PaymentsScreenError: Error {
+        case timedOut
+    }
+
+    private enum Constants {
+        static let screenLoadTimeout: TimeInterval = 45
     }
 }

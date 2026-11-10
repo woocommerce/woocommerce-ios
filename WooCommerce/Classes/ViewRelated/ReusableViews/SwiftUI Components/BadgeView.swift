@@ -125,7 +125,7 @@ private extension BadgeView {
     }
 }
 
-private extension BadgeView.BadgeType {
+extension BadgeView.BadgeType {
     enum Localization {
         static let newTitle = NSLocalizedString("New", comment: "Title of the badge shown when advertising a new feature")
         static let tipTitle = NSLocalizedString("Tip", comment: "Title of the badge shown when promoting an existing feature")

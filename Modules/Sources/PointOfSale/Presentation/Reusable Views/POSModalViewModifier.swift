@@ -7,6 +7,9 @@ enum POSModalCompactStyle: Equatable {
     /// A sheet pinned to the bottom, as tall as its content, for text to read or a list to pick from.
     /// It closes by swiping down, tapping outside or the content's own button.
     case bottomSheet
+    /// The whole screen, for a multi-step flow. It looks like a POS page: a header with the title and the content's close button
+    /// (see `posModalCloseButton`) at the top leading corner, the content below it.
+    case fullScreen(title: String)
 }
 
 struct POSRootModalViewModifier: ViewModifier {
@@ -15,6 +18,7 @@ struct POSRootModalViewModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
     @GestureState private var bottomSheetDragOffset: CGFloat = 0
+    @State private var fullScreenFlowCloseAction: POSModalFlowCloseAction?
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -33,7 +37,19 @@ struct POSRootModalViewModifier: ViewModifier {
     }
 
     private func isCompactStyle(_ style: POSModalCompactStyle) -> Bool {
-        horizontalSizeClass == .compact && modalManager.compactStyle == style && !modalManager.isFullScreen
+        activeCompactStyle == style
+    }
+
+    /// The presentation site's style when it applies, i.e. on phone and when the content has not asked for `posModalFullScreen`.
+    private var activeCompactStyle: POSModalCompactStyle? {
+        horizontalSizeClass == .compact && !modalManager.isFullScreen ? modalManager.compactStyle : nil
+    }
+
+    private var fullScreenFlowTitle: String? {
+        guard case .fullScreen(let title) = activeCompactStyle else {
+            return nil
+        }
+        return title
     }
 
     func body(content: Content) -> some View {
@@ -71,6 +87,13 @@ struct POSRootModalViewModifier: ViewModifier {
                                         .environment(\.posModalParentSize, geometry.size)
                                         .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
                                         .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                                        .environment(\.posModalCompactStyle, activeCompactStyle)
+                                        .onPreferenceChange(POSModalFlowCloseActionKey.self) { fullScreenFlowCloseAction = $0 }
+                                        .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
+                                            if let fullScreenFlowTitle {
+                                                POSModalFlowHeader(title: fullScreenFlowTitle, closeAction: fullScreenFlowCloseAction)
+                                            }
+                                        }
                                         .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
                                         .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                                         .posShadow(isFullScreen ? .none : .large,
@@ -112,6 +135,7 @@ private extension POSRootModalViewModifier {
                     .environment(\.posModalParentSize, parentSize)
                     .environment(\.posHeaderTopPadding, nil)
                     .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                    .environment(\.posModalCompactStyle, activeCompactStyle)
             }
             .frame(maxWidth: .infinity)
             .background {
@@ -333,6 +357,27 @@ extension EnvironmentValues {
     var posModalParentSize: CGSize {
         get { self[POSModalParentSizeKey.self] }
         set { self[POSModalParentSizeKey.self] = newValue }
+    }
+}
+
+// MARK: - POS Modal Compact Style Environment
+
+private struct POSModalCompactStyleKey: EnvironmentKey {
+    static let defaultValue: POSModalCompactStyle? = nil
+}
+
+extension EnvironmentValues {
+    /// How the enclosing POS modal is shown, when its presentation style applies (on phone). Set by `POSRootModalViewModifier`.
+    var posModalCompactStyle: POSModalCompactStyle? {
+        get { self[POSModalCompactStyleKey.self] }
+        set { self[POSModalCompactStyleKey.self] = newValue }
+    }
+
+    var isPOSModalFullScreenFlow: Bool {
+        if case .fullScreen = posModalCompactStyle {
+            return true
+        }
+        return false
     }
 }
 

@@ -68,14 +68,19 @@ struct POSModalCloseButtonModifier: ViewModifier {
     let accessibilityIdentifier: String?
     let fontStyle: POSFontStyle
     let foregroundColor: Color
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
+    @State private var flowCloseAction = POSModalFlowCloseAction()
 
     func body(content: Content) -> some View {
         VStack(spacing: 0) {
-            POSModalCloseButton(accessibilityLabel: accessibilityLabel,
-                                accessibilityIdentifier: accessibilityIdentifier,
-                                fontStyle: fontStyle,
-                                foregroundColor: foregroundColor,
-                                closeAction: closeAction)
+            // In a full-screen flow the close button is in the flow header, drawn by the modal root.
+            if !isFullScreenFlow {
+                POSModalCloseButton(accessibilityLabel: accessibilityLabel,
+                                    accessibilityIdentifier: accessibilityIdentifier,
+                                    fontStyle: fontStyle,
+                                    foregroundColor: foregroundColor,
+                                    closeAction: closeAction)
+            }
 
             Spacer()
 
@@ -83,6 +88,14 @@ struct POSModalCloseButtonModifier: ViewModifier {
 
             Spacer()
         }
+        .preference(key: POSModalFlowCloseActionKey.self, value: isFullScreenFlow ? updatedFlowCloseAction : nil)
+    }
+
+    private var updatedFlowCloseAction: POSModalFlowCloseAction {
+        flowCloseAction.action = closeAction
+        flowCloseAction.accessibilityLabel = accessibilityLabel
+        flowCloseAction.accessibilityIdentifier = accessibilityIdentifier
+        return flowCloseAction
     }
 }
 

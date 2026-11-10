@@ -106,7 +106,7 @@ struct POSSettingsHardwareDetailView: View {
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
-        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, compactStyle: .cardReaderConnection, onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }, content: { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)

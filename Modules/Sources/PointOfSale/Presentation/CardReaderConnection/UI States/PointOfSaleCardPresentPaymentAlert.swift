@@ -67,6 +67,17 @@ struct PointOfSaleCardPresentPaymentAlert: View {
     private var animation: POSCardPresentPaymentAlertAnimation { .init(namespace: namespace) }
 }
 
+extension POSModalCompactStyle {
+    /// Card reader connection is a multi-step flow, so on phone it takes the whole screen.
+    static var cardReaderConnection: POSModalCompactStyle {
+        .fullScreen(title: NSLocalizedString(
+            "pos.cardReaderConnection.modal.title",
+            value: "Card reader",
+            comment: "Title in the header of the full-screen card reader connection flow on phone."
+        ))
+    }
+}
+
 struct POSCardPresentPaymentAlertAnimation {
     let namespace: Namespace.ID
     let iconTransitionId: String = "pos_card_present_payment_payment_alert_icon_matched_geometry_id"

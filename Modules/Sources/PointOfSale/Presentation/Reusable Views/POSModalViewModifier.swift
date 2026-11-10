@@ -95,6 +95,7 @@ struct POSRootModalViewModifier: ViewModifier {
                                         .environment(\.posModalDismissAction, { modalManager.dismiss() })
                                         .environment(\.posModalCompactStyle, activeCompactStyle)
                                         .posFullScreenFlowHeader(title: fullScreenFlowTitle)
+                                        .posModalAccessibilityEscape(enabled: isCompactDialog, action: dismissInteractively)
                                         .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
                                         .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                                         .posShadow(isFullScreen ? .none : .large,
@@ -138,6 +139,7 @@ private extension POSRootModalViewModifier {
                     .environment(\.posModalDismissAction, { modalManager.dismiss() })
                     .environment(\.posModalCompactStyle, activeCompactStyle)
             }
+            .posModalAccessibilityEscape(enabled: true, action: dismissInteractively)
             .frame(maxWidth: .infinity)
             .background {
                 UnevenRoundedRectangle(topLeadingRadius: POSCornerRadiusStyle.extraLarge.value,
@@ -150,6 +152,12 @@ private extension POSRootModalViewModifier {
         }
         .zIndex(1)
         .transition(.move(edge: .bottom))
+    }
+
+    /// Closes a dialog or a bottom sheet the same ways as a tap outside, so it also works when the modal has no close button.
+    func dismissInteractively() {
+        guard modalManager.allowsInteractiveDismissal else { return }
+        modalManager.dismiss()
     }
 
     var bottomSheetDismissGesture: some Gesture {
@@ -170,6 +178,19 @@ private extension POSRootModalViewModifier {
         static let scaleTransitionAmount: CGFloat = 0.9
         static let grabberSize = CGSize(width: 36, height: 5)
         static let bottomSheetDismissDistance: CGFloat = 80
+    }
+}
+
+private extension View {
+    /// Lets VoiceOver close the modal with the escape gesture, since dialogs and bottom sheets on phone have no close button.
+    @ViewBuilder
+    func posModalAccessibilityEscape(enabled: Bool, action: @escaping () -> Void) -> some View {
+        if enabled {
+            accessibilityElement(children: .contain)
+                .accessibilityAction(.escape, action)
+        } else {
+            self
+        }
     }
 }
 

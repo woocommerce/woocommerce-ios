@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let message: String
     let retryHandler: () -> Void
     @State private var attributedMessage: AttributedString = ""
@@ -13,11 +14,11 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
         GeometryReader { geometry in
             HStack(alignment: .center) {
                 Spacer()
-                VStack(alignment: .center, spacing: POSSpacing.none) {
+                VStack(alignment: .center, spacing: metrics.spacing.none) {
                     Spacer()
                     POSErrorXMark()
-                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
-                    VStack(alignment: .center, spacing: PointOfSaleEmptyErrorStateViewLayout.textSpacing) {
+                    Spacer().frame(height: metrics.spacing.medium)
+                    VStack(alignment: .center, spacing: metrics.spacing.small) {
                         Text(Localization.title)
                             .foregroundStyle(Color.posOnSurface)
                             .font(.posHeadingBold)
@@ -25,9 +26,9 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                         Text(attributedMessage)
                             .padding([.leading, .trailing])
                     }
-                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
+                    Spacer().frame(height: metrics.spacing.xxLarge)
 
-                    VStack(spacing: PointOfSaleEmptyErrorStateViewLayout.buttonSpacing) {
+                    VStack(spacing: metrics.spacing.medium) {
                         Button(Localization.editOrderTitle, action: {
                             posModel.addMoreToCart()
                         })
@@ -44,8 +45,8 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     }
                     .frame(width: geometry.size.width / 2)
-                    .padding([.leading, .trailing], Constants.buttonSidePadding)
-                    .padding([.bottom], Constants.buttonBottomPadding)
+                    .padding([.leading, .trailing], metrics.padding.xxLarge)
+                    .padding([.bottom], metrics.padding.medium)
 
                     Spacer()
                 }
@@ -66,13 +67,6 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
         } else {
             Localization.retryActionTitlePlural
         }
-    }
-}
-
-private extension PointOfSaleOrderSyncCouponsErrorMessageView {
-    enum Constants {
-        static let buttonSidePadding: CGFloat = POSPadding.xxLarge
-        static let buttonBottomPadding: CGFloat = POSPadding.medium
     }
 }
 

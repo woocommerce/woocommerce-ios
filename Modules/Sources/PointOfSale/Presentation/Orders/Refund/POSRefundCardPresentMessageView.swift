@@ -25,18 +25,19 @@ struct POSRefundCardPresentMessageView: View {
 }
 
 private struct POSRefundCardPresentImageMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: POSRefundCardPresentImageMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isMessageFocused: Bool
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.xLarge) {
+        VStack(alignment: .center, spacing: metrics.spacing.xLarge) {
             POSCardPresentPaymentMessageViewImage(imageName: viewModel.imageName)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(.posBodyLargeRegular())
@@ -59,20 +60,21 @@ private struct POSRefundCardPresentImageMessageView: View {
 }
 
 private struct POSRefundCardPresentProcessingMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: POSRefundCardPresentProcessingMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isMessageFocused: Bool
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing) {
+        VStack(alignment: .center, spacing: metrics.spacing.large) {
             ProgressView()
                 .progressViewStyle(CardWaveProgressViewStyle())
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .accessibilityHidden(true)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(viewModel.title)
                     .foregroundColor(.posOnPrimary)
                     .font(.posBodyLargeRegular())
@@ -121,6 +123,7 @@ private struct POSRefundCardPresentErrorMessageView: View {
 }
 
 private struct POSRefundCardPresentActionContent: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let message: String?
     let primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel?
@@ -131,16 +134,16 @@ private struct POSRefundCardPresentActionContent: View {
     @State private var width: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             Spacer()
 
             POSErrorXMark()
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                .frame(height: metrics.spacing.large)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(title)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
@@ -159,7 +162,7 @@ private struct POSRefundCardPresentActionContent: View {
 
             Spacer()
 
-            VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 if let primaryButtonViewModel {
                     Button(primaryButtonViewModel.title,
                            action: primaryButtonViewModel.actionHandler)

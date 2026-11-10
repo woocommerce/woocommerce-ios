@@ -75,7 +75,8 @@ loaded data.
 **If using mocked environment**, collect launch arguments:
 - `logout-at-launch`, `disable-animations`, `mocked-wpcom-api`, `-ui_testing`, `-mocks-port`, `8282`
 - Append any feature-specific `launchArgs` from `feature-map.json`
-- **Mock credentials**: site `https://yourwoosite.com`, email `t@wp.com`, password `pw`.
+- **Mock credentials**: for site-address login, enter `http://localhost:8282`; the mocked store URL is
+  `https://yourwoosite.com`. Use email `t@wp.com` and password `pw`.
 - Complete “Login (from prologue)” in `.agents/references/screen-identifiers.md`.
 
 For a separate port, omit `mocked-wpcom-api` (it fixes the API port at 8282), set

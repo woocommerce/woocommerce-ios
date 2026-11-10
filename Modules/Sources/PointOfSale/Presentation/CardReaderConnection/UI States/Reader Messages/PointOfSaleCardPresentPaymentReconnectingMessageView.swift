@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel = PointOfSaleCardPresentPaymentReconnectingMessageViewModel()
     private let cancelReconnection: () -> Void
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -13,22 +14,22 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
                 .frame(width: Constants.spinnerDimension, height: Constants.spinnerDimension)
 
             Spacer()
-                .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing))
+                .frame(height: dynamicSpacing(metrics.spacing.large))
 
             Text(viewModel.title)
                 .font(.posHeadingBold)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
-                .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
+                .padding(.horizontal, metrics.padding.xxLarge)
 
             Spacer()
-                .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing))
+                .frame(height: dynamicSpacing(metrics.spacing.xxLarge))
 
             Button {
                 isCancelling = true

@@ -82,10 +82,80 @@ struct POSItemActionHandlerTests {
 
         #expect(aggregateModel.cart.purchasableItems.count == 3)
     }
+
+    @Test func handleTapOnAppliedCoupon_when_coupon_is_in_cart_then_removes_it_and_tracks_removal() async throws {
+        // Given
+        let aggregateModel = makePointOfSaleAggregateModel()
+        let analytics = MockPOSAnalytics()
+        let sut = StandardPOSItemActionHandler(
+            posModel: aggregateModel,
+            sourceView: .coupon,
+            sourceViewType: .list,
+            analytics: analytics
+        )
+        let coupon = makeCouponItem(code: "DISCOUNT!")
+        let otherCoupon = makeCouponItem(code: "OTHER", itemID: 2)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(otherCoupon, position: 1)
+        analytics.events.removeAll()
+
+        // When
+        sut.handleTapOnAppliedCoupon(coupon)
+
+        // Then
+        #expect(aggregateModel.cart.coupons.map(\.code) == ["OTHER"])
+        let event = try #require(analytics.events.first)
+        #expect(analytics.events.count == 1)
+        #expect(event.eventName == "item_removed_from_cart")
+        #expect(event.properties["source"] as? String == "coupon")
+        #expect(event.properties["item_type"] as? String == "coupon")
+    }
+
+    @Test func handleTapOnAppliedCoupon_when_search_result_coupon_is_in_cart_then_removes_it_and_tracks_removal() async throws {
+        // Given
+        let aggregateModel = makePointOfSaleAggregateModel()
+        let analytics = MockPOSAnalytics()
+        let sut = SearchResultItemActionHandler(
+            posModel: aggregateModel,
+            searchTerm: "DIS",
+            itemType: .coupon,
+            sourceView: .coupon,
+            analytics: analytics
+        )
+        let coupon = makeCouponItem(code: "DISCOUNT!")
+        sut.handleTap(coupon, position: 0)
+        analytics.events.removeAll()
+
+        // When
+        sut.handleTapOnAppliedCoupon(coupon)
+
+        // Then
+        #expect(aggregateModel.cart.coupons.isEmpty)
+        #expect(analytics.events.map(\.eventName) == ["item_removed_from_cart"])
+    }
+
+    @Test func handleTapOnAppliedCoupon_when_coupon_is_not_in_cart_then_does_nothing() async throws {
+        // Given
+        let aggregateModel = makePointOfSaleAggregateModel()
+        let analytics = MockPOSAnalytics()
+        let sut = StandardPOSItemActionHandler(
+            posModel: aggregateModel,
+            sourceView: .coupon,
+            sourceViewType: .list,
+            analytics: analytics
+        )
+
+        // When
+        sut.handleTapOnAppliedCoupon(makeCouponItem(code: "DISCOUNT!"))
+
+        // Then
+        #expect(aggregateModel.cart.coupons.isEmpty)
+        #expect(analytics.events.isEmpty)
+    }
 }
 
-private func makeCouponItem(code: String = "") -> POSItem {
-    return .coupon(.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1), code: code))
+private func makeCouponItem(code: String = "", itemID: Int64 = 1) -> POSItem {
+    return .coupon(.init(id: POSItemIdentifier(underlyingType: .product, itemID: itemID), code: code))
 }
 
 private func makeProductItem() -> POSItem {

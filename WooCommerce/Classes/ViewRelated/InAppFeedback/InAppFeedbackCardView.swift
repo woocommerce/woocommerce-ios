@@ -70,7 +70,9 @@ private extension InAppFeedbackCardView {
         static let padding: CGFloat = 16
         static let cornerRadius: CGFloat = 8
     }
+}
 
+extension InAppFeedbackCardView {
     enum Localization {
         static let feedbackTitle = NSLocalizedString(
             "inAppFeedbackCardView.feedbackTitle",

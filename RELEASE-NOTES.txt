@@ -3,8 +3,22 @@
 
 26.1
 -----
+- [*] Push notifications: The app icon badge no longer stays at 1 after a stock notification. [https://github.com/woocommerce/woocommerce-ios/pull/18250]
+- [*] Push notifications: The app icon badge now clears when the app returns to the Orders or Products tab after a push arrived while that tab was open. [https://github.com/woocommerce/woocommerce-ios/pull/18273]
+- [**] POS: Point of Sale is now available on iPhone in the US, Canada, Australia and Puerto Rico, and on iOS 18 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
+- [*] POS: Tap to Pay is no longer offered at checkout for stores in Canada, Australia and Puerto Rico, where it is not supported. [https://github.com/woocommerce/woocommerce-ios/pull/18235]
+- [*] POS: On iPhone, the cart closes when its last item is removed. [https://github.com/woocommerce/woocommerce-ios/pull/18255]
+- [*] POS: On iPhone, tapping a selected coupon in the coupon list now removes it from the cart. [https://github.com/woocommerce/woocommerce-ios/pull/18270]
+- [*] POS: On iPhone, Exit POS is now the last item in the menu. [https://github.com/woocommerce/woocommerce-ios/pull/18268]
+- [*] Help & Support: Troubleshooting now checks your payment setup, so you can find and fix card payment problems faster. [https://github.com/woocommerce/woocommerce-ios/pull/18229]
+- [*] POS: On iPhone, settings, orders and checkout now slide between screens with the standard push animation. [https://github.com/woocommerce/woocommerce-ios/pull/18272]
 - [*] The app no longer tries to create an application password on every request after a failure, and logs you out if your store rejects your saved username or password. [https://github.com/woocommerce/woocommerce-ios/pull/18208]
 - [*] Orders: Shipping Details now show the shipping phone. [https://github.com/woocommerce/woocommerce-ios/pull/18230]
+- [*] Products: Preview signs you in to your store when possible, works after logging in with your store username and password, and no longer shows "Page not found" on stores connected without the Jetpack plugin. [https://github.com/woocommerce/woocommerce-ios/pull/18238]
+- [*] Products: Saving a product with a duplicate SKU now shows a clear error message. [https://github.com/woocommerce/woocommerce-ios/pull/18269]
+- [*] Products: Opening a product that was deleted from the store now says so, for stores connected without Jetpack tunnel. [https://github.com/woocommerce/woocommerce-ios/pull/18269]
+- [*] Products: The Variations list now loads the rest of a product's variations right after a pull to refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18252]
+- [Internal] AI support: Include sanitized recent warning and error logs with new chats for login failures. [https://github.com/woocommerce/woocommerce-ios/pull/18189]
 
 26.0
 -----

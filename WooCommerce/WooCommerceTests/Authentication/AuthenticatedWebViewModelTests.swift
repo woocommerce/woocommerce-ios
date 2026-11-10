@@ -14,6 +14,126 @@ struct AuthenticatedWebViewModelTests {
     ]
     private let siteURL = "http://example.com"
 
+    @Test @MainActor func test_decidePolicy_when_initial_url_main_frame_response_is_http_error_then_calls_handler_with_status_code() async throws {
+        // Given
+        var receivedStatusCodes: [Int] = []
+        let url = try #require(URL(string: siteURL))
+        let response = try #require(HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: nil))
+        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: url, initialURLHTTPErrorHandler: { statusCode in
+            receivedStatusCodes.append(statusCode)
+        })
+
+        // When
+        let policy = await viewModel.decidePolicy(for: response, isForMainFrame: true)
+
+        // Then
+        #expect(policy == .allow)
+        #expect(receivedStatusCodes == [404])
+    }
+
+    @Test @MainActor func test_decidePolicy_when_main_frame_response_succeeds_then_does_not_call_handler() async throws {
+        // Given
+        var handlerWasCalled = false
+        let url = try #require(URL(string: siteURL))
+        let response = try #require(HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil))
+        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: url, initialURLHTTPErrorHandler: { _ in
+            handlerWasCalled = true
+        })
+
+        // When
+        _ = await viewModel.decidePolicy(for: response, isForMainFrame: true)
+
+        // Then
+        #expect(!handlerWasCalled)
+    }
+
+    @Test @MainActor func test_decidePolicy_when_subframe_response_is_http_error_then_does_not_call_handler() async throws {
+        // Given
+        var handlerWasCalled = false
+        let url = try #require(URL(string: siteURL))
+        let response = try #require(HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: nil))
+        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: url, initialURLHTTPErrorHandler: { _ in
+            handlerWasCalled = true
+        })
+
+        // When
+        _ = await viewModel.decidePolicy(for: response, isForMainFrame: false)
+
+        // Then
+        #expect(!handlerWasCalled)
+    }
+
+    @Test @MainActor func test_decidePolicy_when_other_main_frame_response_is_http_error_then_does_not_call_handler() async throws {
+        // Given
+        var handlerWasCalled = false
+        let initialURL = try #require(URL(string: siteURL + "/preview"))
+        let otherURL = try #require(URL(string: siteURL + "/other"))
+        let response = try #require(HTTPURLResponse(url: otherURL, statusCode: 404, httpVersion: nil, headerFields: nil))
+        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: initialURL, initialURLHTTPErrorHandler: { _ in
+            handlerWasCalled = true
+        })
+
+        // When
+        _ = await viewModel.decidePolicy(for: response, isForMainFrame: true)
+
+        // Then
+        #expect(!handlerWasCalled)
+    }
+
+    @Test @MainActor func test_decidePolicy_when_non_preview_responses_precede_initial_url_error_then_calls_handler_once() async throws {
+        // Given
+        var receivedStatusCodes: [Int] = []
+        let initialURL = try #require(URL(string: siteURL))
+        let otherURL = try #require(URL(string: siteURL + "/other"))
+        let subframeResponse = try #require(HTTPURLResponse(url: initialURL,
+                                                           statusCode: 500,
+                                                           httpVersion: nil,
+                                                           headerFields: nil))
+        let otherPageResponse = try #require(HTTPURLResponse(url: otherURL,
+                                                            statusCode: 404,
+                                                            httpVersion: nil,
+                                                            headerFields: nil))
+        let previewResponse = try #require(HTTPURLResponse(url: initialURL,
+                                                          statusCode: 404,
+                                                          httpVersion: nil,
+                                                          headerFields: nil))
+        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: initialURL, initialURLHTTPErrorHandler: { statusCode in
+            receivedStatusCodes.append(statusCode)
+        })
+
+        // When
+        _ = await viewModel.decidePolicy(for: subframeResponse, isForMainFrame: false)
+        _ = await viewModel.decidePolicy(for: otherPageResponse, isForMainFrame: true)
+        _ = await viewModel.decidePolicy(for: previewResponse, isForMainFrame: true)
+
+        // Then
+        #expect(receivedStatusCodes == [404])
+    }
+
+    @Test @MainActor func test_decidePolicy_when_initial_url_response_has_arrived_then_ignores_later_response() async throws {
+        // Given
+        var handlerWasCalled = false
+        let url = try #require(URL(string: siteURL))
+        let successfulResponse = try #require(HTTPURLResponse(url: url,
+                                                             statusCode: 200,
+                                                             httpVersion: nil,
+                                                             headerFields: nil))
+        let errorResponse = try #require(HTTPURLResponse(url: url,
+                                                        statusCode: 404,
+                                                        httpVersion: nil,
+                                                        headerFields: nil))
+        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: url, initialURLHTTPErrorHandler: { _ in
+            handlerWasCalled = true
+        })
+
+        // When
+        _ = await viewModel.decidePolicy(for: successfulResponse, isForMainFrame: true)
+        _ = await viewModel.decidePolicy(for: errorResponse, isForMainFrame: true)
+
+        // Then
+        #expect(!handlerWasCalled)
+    }
+
     @Test(arguments: Self.testURLs)
     func authenticationFlow_for_wpcom_pages_when_wpcom_credentials_are_available(_ initialURL: URL?) throws {
         // Given

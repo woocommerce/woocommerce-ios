@@ -129,7 +129,9 @@ private extension InboxDashboardCard {
         static let noteContentVerticalSpacing: CGFloat = 5
         static let dividerPadding = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0)
     }
+}
 
+extension InboxDashboardCard {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "inboxDashboardCard.hideCard",

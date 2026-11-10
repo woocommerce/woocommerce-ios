@@ -5,6 +5,7 @@ import Yosemite
 import WordPressUI
 
 import class AutomatticTracks.CrashLogging
+import protocol Experiments.FeatureFlagService
 
 
 /// SearchViewController: Displays the Search Interface for A Generic Model
@@ -16,6 +17,10 @@ where Cell.SearchModel == Command.CellViewModel {
     @IBOutlet weak var searchBarSafeAreaTrailingSpace: NSLayoutConstraint!
 
     @IBOutlet weak var searchBarButtonTrailingSpace: NSLayoutConstraint!
+
+    @IBOutlet private var searchBarBottomToBordersViewConstraint: NSLayoutConstraint!
+
+    @IBOutlet private var headerTopToSearchBarConstraint: NSLayoutConstraint!
 
     /// Dismiss Action
     ///
@@ -35,9 +40,11 @@ where Cell.SearchModel == Command.CellViewModel {
 
     @IBOutlet private weak var bordersView: BordersView!
 
-    /// Current query in the search bar
-    ///
-    @Published private var searchQuery = ""
+    /// Current query in the search bar.
+    private var searchQuery: String {
+        get { searchFieldModel.query }
+        set { searchFieldModel.query = newValue }
+    }
 
     /// A reference to the subscription of the search query.
     ///
@@ -76,6 +83,9 @@ where Cell.SearchModel == Command.CellViewModel {
     /// Search Store ID
     ///
     private let storeID: Int64
+    private let usesStoreDesignSystem: Bool
+    private let searchFieldModel = SearchViewControllerSearchFieldModel()
+    private var searchFieldHostingController: SelfSizingHostingController<SearchViewControllerSearchField>?
 
     /// Indicates if there are no results onscreen.
     ///
@@ -116,18 +126,21 @@ where Cell.SearchModel == Command.CellViewModel {
     ///   - cellSeparator: The separator style in the search result cell.
     ///   - selectedObject: Non-nil if the selected object can be triggered outside of cell tap events like split view.
     ///   - isSelectedObject: Required when `selectedObject` is non-nil to compare whether two objects are the same.
+    ///   - featureFlagService: Determines whether the Store Design System search field is used.
     init(storeID: Int64,
          command: Command,
          cellType: Cell.Type,
          cellSeparator: UITableViewCell.SeparatorStyle,
          selectedObject: AnyPublisher<Command.ResultsControllerModel.ReadOnlyType?, Never>? = nil,
-         isSelectedObject: ((_ object: Command.ResultsControllerModel, _ selectedObject: Command.ResultsControllerModel.ReadOnlyType?) -> Bool)? = nil) {
+         isSelectedObject: ((_ object: Command.ResultsControllerModel, _ selectedObject: Command.ResultsControllerModel.ReadOnlyType?) -> Bool)? = nil,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.resultsController = command.createResultsController()
         self.resultsPredicate = resultsController.predicate
         self.searchUICommand = command
         self.storeID = storeID
         self.selectedObject = selectedObject
         self.isSelectedObject = isSelectedObject
+        usesStoreDesignSystem = featureFlagService.usesStoreDesignSystem
         tableViewSeparatorStyle = cellSeparator
         super.init(nibName: "SearchViewController", bundle: nil)
     }
@@ -184,7 +197,11 @@ where Cell.SearchModel == Command.CellViewModel {
         configureSearchBar()
 
         if searchUICommand.makeSearchBarFirstResponderOnStart {
-            searchBar.becomeFirstResponder()
+            if searchFieldHostingController != nil {
+                searchFieldModel.shouldFocus = true
+            } else {
+                searchBar.becomeFirstResponder()
+            }
         }
     }
 
@@ -253,6 +270,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     @IBAction func dismissWasPressed() {
         view.endEditing(true)
+        searchFieldModel.shouldFocus = false
         searchUICommand.cancel(from: self)
     }
 
@@ -314,10 +332,58 @@ private extension SearchViewController {
     /// Setup: Search Bar
     ///
     func configureSearchBar() {
+        if usesStoreDesignSystem {
+            configureStoreSearchField()
+            return
+        }
+
         searchBar.placeholder = searchUICommand.searchBarPlaceholder
         searchBar.accessibilityIdentifier = searchUICommand.searchBarAccessibilityIdentifier
         searchBar.searchTextField.textColor = .text
         searchBar.returnKeyType = searchUICommand.returnKeyType
+    }
+
+    func configureStoreSearchField() {
+        guard searchFieldHostingController == nil else {
+            return
+        }
+
+        searchBar.isHidden = true
+        cancelButton.isHidden = true
+        NSLayoutConstraint.deactivate([
+            searchBarBottomToBordersViewConstraint,
+            headerTopToSearchBarConstraint
+        ])
+
+        let searchField = SearchViewControllerSearchField(
+            model: searchFieldModel,
+            placeholder: searchUICommand.searchBarPlaceholder,
+            returnKeyType: searchUICommand.returnKeyType,
+            hidesAction: searchUICommand.hideCancelButton,
+            searchFieldAccessibilityIdentifier: searchUICommand.searchBarAccessibilityIdentifier,
+            actionAccessibilityIdentifier: searchUICommand.cancelButtonAccessibilityIdentifier,
+            onSubmit: { [weak self] in
+                self?.view.endEditing(true)
+            },
+            onAction: { [weak self] in
+                self?.cancelButton.sendActions(for: .touchUpInside)
+            }
+        )
+        let hostingController = SelfSizingHostingController(rootView: searchField)
+        hostingController.view.backgroundColor = .clear
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        addChild(hostingController)
+        bordersView.addSubview(hostingController.view)
+        NSLayoutConstraint.activate([
+            hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: bordersView.bottomAnchor),
+            headerView.topAnchor.constraint(equalTo: hostingController.view.bottomAnchor)
+        ])
+        hostingController.didMove(toParent: self)
+        searchFieldHostingController = hostingController
     }
 
     /// Setup: Search Bar Borders
@@ -362,6 +428,7 @@ private extension SearchViewController {
     func configureActions() {
         let title = NSLocalizedString("searchViewController.cancelButton.tilet", value: "Cancel", comment: "The title for the cancel button in the search screen.")
         cancelButton.setTitle(title, for: .normal)
+        searchFieldModel.actionTitle = title
     }
 
     /// Setup: Results Controller
@@ -429,9 +496,7 @@ private extension SearchViewController {
     /// Handles debouncing search upon update of search query to optimize search requests.
     ///
     func configureSearchFunctionality() {
-        searchQuerySubscription = $searchQuery
-            .dropFirst() // ignores initial value as it's not user's input
-            .removeDuplicates()
+        searchQuerySubscription = searchFieldModel.queryChanges
             .debounce(for: .milliseconds(Settings.searchDebounceTime), scheduler: DispatchQueue.main)
             .sink { [weak self] query in
                 self?.synchronizeSearchResults(with: query)
@@ -708,6 +773,7 @@ private extension SearchViewController {
             self.searchUICommand.configureActionButton(self.cancelButton, onDismiss: { [weak self] in
                 self?.dismissWasPressed()
             })
+            self.searchFieldModel.actionTitle = self.cancelButton.currentTitle ?? self.searchFieldModel.actionTitle
         })
     }
 }

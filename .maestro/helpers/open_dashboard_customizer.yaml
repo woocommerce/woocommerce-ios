@@ -1,5 +1,10 @@
 appId: ${APP_ID}
 ---
+- scrollUntilVisible:
+    element:
+      id: "dashboard-edit-button"
+    direction: DOWN
+    timeout: 30000
 - extendedWaitUntil:
     visible:
       id: "dashboard-edit-button"
@@ -36,5 +41,6 @@ appId: ${APP_ID}
           enabled: true
           retryTapIfNoChange: true
 - extendedWaitUntil:
-    visible: "Customize"
+    visible:
+      id: "dashboard-customization-save-button"
     timeout: 15000

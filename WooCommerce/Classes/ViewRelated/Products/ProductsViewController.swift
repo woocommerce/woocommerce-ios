@@ -143,7 +143,6 @@ final class ProductsViewController: UIViewController {
 
     /// Supports infinite scroll.
     private let scrollWatcher = ScrollWatcher()
-    private let paginationTracker: PaginationTracker
     private var scrollWatcherSubscription: AnyCancellable?
 
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
@@ -161,10 +160,6 @@ final class ProductsViewController: UIViewController {
     private var activeUploadIds: [Int64] = []
 
     private let siteID: Int64
-
-    /// Set when sync fails, and used to display an error loading data banner
-    ///
-    @Published private var dataLoadingError: Error?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -193,7 +188,6 @@ final class ProductsViewController: UIViewController {
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores, resultsController: resultsController)
         self.selectedProduct = selectedProduct
         self.navigateToContent = navigateToContent
-        self.paginationTracker = PaginationTracker()
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         configureTitle()
@@ -322,7 +316,7 @@ final class ProductsViewController: UIViewController {
     /// Keeps the page order until the first page succeeds, so a failed sync does not reorder the list.
     func resync() {
         reloadProducts()
-        paginationTracker.resync()
+        viewModel.resync()
     }
 }
 
@@ -931,10 +925,9 @@ private extension ProductsViewController {
     }
 
     func configurePaginationTracker() {
-        paginationTracker.delegate = self
         scrollWatcherSubscription = scrollWatcher.trigger.sink { [weak self] _ in
             guard let self, !isShowingLoadingRows else { return }
-            paginationTracker.ensureNextPageIsSynced()
+            viewModel.ensureNextPageIsSynced()
         }
     }
 
@@ -960,9 +953,20 @@ private extension ProductsViewController {
                 self?.updateFilterButtonTitle(filters: filters)
             }
             .store(in: &subscriptions)
-        viewModel.onNeedsResync = { [weak self] in
-            self?.paginationTracker.resync()
-        }
+        viewModel.$syncState
+            .dropFirst()
+            .sink { [weak self] syncState in
+                guard let self else { return }
+                refreshUpdates.perform {
+                    switch syncState {
+                    case .syncing(let pageNumber):
+                        self.transitionToSyncingState(pageNumber: pageNumber)
+                    case .idle:
+                        self.transitionToResultsUpdatedState()
+                    }
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     /// Register table cells.
@@ -1009,7 +1013,7 @@ private extension ProductsViewController {
     /// Displays an error banner if there is an error loading products data.
     ///
     func showTopBannerViewIfNeeded() {
-        if let error = dataLoadingError {
+        if let error = viewModel.dataLoadingError {
             requestAndShowErrorTopBannerView(for: error)
         }
     }
@@ -1108,7 +1112,7 @@ private extension ProductsViewController {
             guard let self else { return }
 
             if result.isFailure {
-                paginationTracker.resync()
+                viewModel.resync()
             } else {
                 // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
                 // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
@@ -1408,9 +1412,7 @@ private extension ProductsViewController {
 
             ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-            await self.viewModel.updatePredicate(filters: self.viewModel.filters)
-
-            self.paginationTracker.resync { [weak self] in
+            await self.viewModel.refresh { [weak self] in
                 self?.refreshUpdates.endRefreshing(sender)
             }
         }
@@ -1551,60 +1553,6 @@ private extension ProductsViewController {
     }
 }
 
-// MARK: - Sync'ing Helpers
-//
-extension ProductsViewController: PaginationTrackerDelegate {
-
-    /// Synchronizes the Products for the Default Store (if any).
-    ///
-    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
-        viewModel.syncingPageNumber = pageNumber
-        refreshUpdates.perform { transitionToSyncingState(pageNumber: pageNumber) }
-        dataLoadingError = nil
-
-        let action = ProductAction
-            .synchronizeProducts(siteID: siteID,
-                                 pageNumber: pageNumber,
-                                 pageSize: pageSize,
-                                 stockStatus: viewModel.filters.stockStatus,
-                                 productStatus: viewModel.filters.productStatus,
-                                 productType: viewModel.filters.promotableProductType?.productType,
-                                 productCategory: viewModel.filters.productCategory,
-                                 sortOrder: viewModel.sortOrder,
-                                 productIDs: (viewModel.filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
-                                    guard let self else {
-                                        return
-                                    }
-
-                                    switch result {
-                                    case .failure(let error):
-                                        ServiceLocator.analytics.track(.productListLoadError, withError: error)
-                                        DDLogError("⛔️ Error synchronizing products: \(error)")
-                                        self.dataLoadingError = error
-                                    case .success:
-                                        ServiceLocator.analytics.track(
-                                            event: .ProductsList.productListLoaded(
-                                                isEligibleForSubscriptions:
-                                                    viewModel.isEligibleForSubscriptions
-                                            )
-                                        )
-                                    }
-
-                                    // Storage changes from this page are recorded before the completion runs.
-                                    if self.viewModel.syncingPageNumber == pageNumber {
-                                        self.viewModel.syncingPageNumber = nil
-                                    }
-                                    if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex, case .success = result {
-                                        self.viewModel.firstPageDidSync()
-                                    }
-                                    self.refreshUpdates.perform { self.transitionToResultsUpdatedState() }
-                                    onCompletion?(result)
-        }
-
-        ServiceLocator.stores.dispatch(action)
-    }
-}
-
 // MARK: - Finite State Machine Management
 //
 private extension ProductsViewController {
@@ -1623,7 +1571,7 @@ private extension ProductsViewController {
                 ensureFooterSpinnerIsStarted()
             }
             // Remove error banner when sync starts
-            if dataLoadingError != nil {
+            if viewModel.dataLoadingError != nil {
                 hideTopBannerView()
             }
         case .results:

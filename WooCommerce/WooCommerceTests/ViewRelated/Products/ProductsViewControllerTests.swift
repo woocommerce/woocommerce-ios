@@ -29,7 +29,7 @@ struct ProductsViewControllerTests {
         let refreshControl = try attachedRefreshControl(in: table)
 
         // When: the first page is loading
-        controller.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
+        controller.viewModel.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
 
         // Then: placeholders are non-interactive rows in the main table
         #expect(table.numberOfSections == 1)
@@ -50,7 +50,7 @@ struct ProductsViewControllerTests {
         #expect(refreshControl.superview === table)
 
         // When: retry completes with an empty result
-        controller.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
+        controller.viewModel.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
         #expect(table.numberOfRows(inSection: 0) == 3)
         #expect(!(table.tableFooterView is ListEmptyView))
         let finishRetry = try #require(completeSync)
@@ -83,7 +83,7 @@ struct ProductsViewControllerTests {
                                                  navigateToContent: { _ in })
         controller.loadViewIfNeeded()
         let table = try #require(controller.tableView)
-        controller.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
+        controller.viewModel.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
         try #require(table.numberOfRows(inSection: 0) == 3)
         let firstRow = IndexPath(row: 0, section: 0)
         let loadingCell = controller.tableView(table, cellForRowAt: firstRow)
@@ -305,7 +305,7 @@ struct ProductsViewControllerTests {
                 guard case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion) = action else { return }
                 completeNextPage = onCompletion
             }
-            controller.sync(pageNumber: 2, pageSize: 1, reason: nil, onCompletion: nil)
+            controller.viewModel.sync(pageNumber: 2, pageSize: 1, reason: nil, onCompletion: nil)
             // `MockStorageManager` writes synchronously, so the page is stored before the refresh renders.
             storage.performAndSave({ storage in
                 let stored = storage.insertNewObject(ofType: StorageProduct.self)
@@ -447,7 +447,7 @@ private extension ProductsViewControllerTests {
             guard case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion) = action else { return }
             completeSync = onCompletion
         }
-        controller.sync(pageNumber: pageNumber, pageSize: names.count, reason: nil, onCompletion: nil)
+        controller.viewModel.sync(pageNumber: pageNumber, pageSize: names.count, reason: nil, onCompletion: nil)
         try await insert(makeProducts(names, firstID: firstID), into: storage)
         let finishPage = try #require(completeSync)
         finishPage(.success(true))

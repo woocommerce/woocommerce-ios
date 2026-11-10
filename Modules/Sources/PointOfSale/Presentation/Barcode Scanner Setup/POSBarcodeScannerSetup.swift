@@ -57,19 +57,21 @@ struct POSBarcodeScannerSetup: View {
         // mechanism for the same outcome. See #17067 review feedback.
     }
 
+    /// Laid out for the phone full-screen flow: the close button is in the flow header, the step is in the middle and
+    /// the buttons stay at the bottom, so they do not move between steps.
     private var compactBody: some View {
-        VStack(spacing: metrics.spacing.none) {
-            closeButton
+        VStack(spacing: metrics.spacing.xLarge) {
+            centeredCurrentContent
+                .scrollVerticallyIfNeeded()
 
-            Spacer(minLength: metrics.spacing.none)
-
-            compactModalContent
-
-            Spacer(minLength: metrics.spacing.none)
+            flowButtons
         }
-        .padding(metrics.padding.xLarge)
+        .posModalCloseButton(action: {
+            isPresented = false
+        }, accessibilityLabel: Localization.closeButtonAccessibilityLabel)
+        .padding([.horizontal, .bottom], metrics.padding.xLarge)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
-        .frame(width: parentSize.width, height: parentSize.height, alignment: .top)
     }
 
     private var modalContent: some View {
@@ -87,18 +89,6 @@ struct POSBarcodeScannerSetup: View {
         }
     }
 
-    private var compactModalContent: some View {
-        ViewThatFits(in: .vertical) {
-            VStack(spacing: metrics.spacing.xLarge) {
-                centeredCurrentContent
-
-                flowButtons
-            }
-
-            modalContent
-        }
-    }
-
     private var centeredCurrentContent: some View {
         HStack {
             Spacer()
@@ -111,21 +101,6 @@ struct POSBarcodeScannerSetup: View {
     private var flowButtons: some View {
         if flowManager.buttonConfiguration.primaryButton != nil || flowManager.buttonConfiguration.secondaryButton != nil {
             POSFlowButtonsView(configuration: flowManager.buttonConfiguration)
-        }
-    }
-
-    private var closeButton: some View {
-        HStack {
-            Spacer()
-            Button {
-                isPresented = false
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolMedium)
-            }
-            .foregroundColor(Color.posOnSurface)
-            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
-            .accessibilitySortPriority(-1)
         }
     }
 
@@ -163,6 +138,16 @@ struct POSBarcodeScannerSetup: View {
                 scannerType: .other
             )
         ]
+    }
+}
+
+extension POSModalCompactStyle {
+    static var barcodeScannerSetup: POSModalCompactStyle {
+        .fullScreen(title: NSLocalizedString(
+            "pos.barcodeScannerSetup.modal.title",
+            value: "Barcode scanner",
+            comment: "Title in the header of the full-screen barcode scanner setup flow on phone."
+        ))
     }
 }
 

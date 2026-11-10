@@ -31,6 +31,8 @@ struct TotalsView: View {
     /// double-tap can't kick off two payment flows.
     @State private var isStartingPayment: Bool = false
 
+    @State private var checkoutHeight: CGFloat = .infinity
+
     /// Payment state with in-progress secondary methods neutralized.
     /// `.collectingCash` (cash), `.showingQRCode` (scan-to-pay), and `.confirming`/`.processing`
     /// (mark-as-paid) all live in their own modal/navigation push, so we hide them from TotalsView.
@@ -110,8 +112,10 @@ struct TotalsView: View {
                     .id(displayPaymentState.isSuccess)
 
                     bottomControls
+                        .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)
                         .layoutPriority(1)
                 }
+                .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { checkoutHeight = $0 }
                 .animation(.default, value: isShowingPaymentView)
                 .animation(.default, value: useTapToPayHeroLayout)
                 .animation(.default, value: bottomControlState)
@@ -357,11 +361,45 @@ fileprivate extension View {
     func paymentViewPadding(layout: TotalsView.PaymentViewLayout) -> some View {
         modifier(TotalsView.PaymentViewPaddingModifier(layout: layout))
     }
+
+    /// Keeps the view at its own height up to `maxHeight`, and scrolls it inside `maxHeight` above that.
+    func scrollVerticallyWhenTaller(than maxHeight: CGFloat) -> some View {
+        MaxHeightProposalLayout(maxHeight: maxHeight) {
+            ViewThatFits(in: .vertical) {
+                self
+                ScrollView(.vertical) {
+                    self
+                }
+            }
+        }
+    }
+}
+
+/// Offers its content `maxHeight` at most and takes the height the content asks for.
+/// `frame(maxHeight:)` would grow to `maxHeight` even when the content is shorter.
+private struct MaxHeightProposalLayout: Layout {
+    let maxHeight: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard let subview = subviews.first else {
+            return .zero
+        }
+        let height = min(proposal.height ?? maxHeight, maxHeight)
+        return subview.sizeThatFits(ProposedViewSize(width: proposal.width, height: height))
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        subviews.first?.place(at: bounds.origin, proposal: ProposedViewSize(bounds.size))
+    }
 }
 
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
+
+        /// With very large text the payment buttons would cover the whole screen.
+        /// Above this share of the checkout height they scroll, so the totals stay visible.
+        static let bottomControlsMaxHeightRatio: CGFloat = 0.5
 
         static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular()
         static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()

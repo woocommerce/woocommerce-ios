@@ -95,7 +95,7 @@ final class TextViewTableViewCell: UITableViewCell {
         self.applyStyle(style: viewModel.style)
 
         // Compensate for line fragment padding and container insets if icon is nil
-        trailingContraint.constant = -(noteTextView.textContainer.lineFragmentPadding + noteTextView.textContainerInset.right)
+        trailingContraint.constant = noteTextView.textContainer.lineFragmentPadding + noteTextView.textContainerInset.right
         if iconImage == nil {
             leadingContraint.constant = -(noteTextView.textContainer.lineFragmentPadding + noteTextView.textContainerInset.left)
         } else {

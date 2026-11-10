@@ -15,19 +15,17 @@ struct ShippingLabelAddNewPackage: View {
                         .frame(height: 44)
                     Divider()
                 }
-                .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                 ScrollView {
                     switch viewModel.selectedView {
                     case .customPackage:
-                        ShippingLabelCustomPackageForm(viewModel: viewModel.customPackageVM, safeAreaInsets: geometry.safeAreaInsets)
+                        ShippingLabelCustomPackageForm(viewModel: viewModel.customPackageVM)
                     case .servicePackage:
                         ShippingLabelServicePackageList(viewModel: viewModel.servicePackageVM, geometry: geometry)
                     }
                 }
                  .background(Color(.listBackground).ignoresSafeArea(.container, edges: .bottom))
             }
-            .ignoresSafeArea(.container, edges: .horizontal)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)

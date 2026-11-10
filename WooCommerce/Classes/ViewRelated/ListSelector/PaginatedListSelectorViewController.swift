@@ -63,9 +63,10 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     private let rowType = Cell.self
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .large,
-                                                                                                cellClass: Cell.self,
-                                                                                                separatorStyle: viewProperties.separatorStyle))
+    lazy var ghostTableViewController = GhostTableViewController(
+        options: GhostTableViewOptions(sectionHeaderVerticalSpace: viewProperties.loadingSectionHeaderVerticalSpace,
+                                       cellClass: Cell.self,
+                                       separatorStyle: viewProperties.separatorStyle))
 
     private lazy var tableView = UITableView(frame: .zero, style: viewProperties.tableViewStyle)
 
@@ -148,6 +149,11 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         configureDragAndDrop()
         configureScrollWatcher()
         configurePaginationTracker()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -301,7 +307,12 @@ private extension PaginatedListSelectorViewController {
 
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(tableView)
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
 
         registerTableViewCells()
     }
@@ -382,7 +393,7 @@ private extension PaginatedListSelectorViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        displayGhostContent()
+        displayGhostContent(over: tableView)
 
         resultsController.stopForwardingEvents()
     }

@@ -35,6 +35,8 @@ Every issue body and PR description carries this trailer, after the content and 
 This is part of an experiment I'm running in building custom tooling for self-healing.
 ```
 
+No commit or PR mentions AI (repo rule), validation PRs included: drop any generated-with footer. Issues and comments carry the attribution.
+
 The `Status:` line in the issue body is the crash's current state.
 Whenever it changes, edit the body in place (`gh issue edit --body-file`); comment only when there is something to explain, such as a diagnosis or a build link.
 On an issue someone else opened (step 2b), the `Status:` line lives in your latest comment instead: change it with `gh issue comment <n> --edit-last`.
@@ -178,6 +180,4 @@ Follow `/pr` for the body template, labels (`type: crash` plus the issue's featu
 - Description says what crashed, why, and links the red build from the validation PR; the green build proves the fix.
 - A **Keep or delete the test** section: the test proved this crash and guards against its return, but if it costs more to maintain than it protects, the reviewer can drop it.
   Name the test and include a ready-to-paste prompt, e.g. ``Remove `<test name>` from `<file>` and any helpers only it uses, then run the tests.``
-- No mention of AI in commits or the description (repo rule); the issue carries the attribution.
-
 Set the issue to `Status: PR #<n> awaiting green build`, log `end`, and stop. Never mark a PR ready or merge it.

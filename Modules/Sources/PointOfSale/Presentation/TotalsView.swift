@@ -64,6 +64,8 @@ struct TotalsView: View {
                 VStack(spacing: 0) {
                     paymentViewContent
                         .id(displayPaymentState.isSuccess)
+                        .environment(\.floatingControlAreaSize,
+                                     bottomControlState == .hidden ? floatingControlAreaSize : .zero)
 
                     bottomControls
                         .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)

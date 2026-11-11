@@ -1,6 +1,7 @@
 #!/bin/bash -eu
 
-if .buildkite/commands/should-skip-job.sh --job-type build; then
+# Trunk prototypes are explicitly requested; always produce the requested binary.
+if [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]] && .buildkite/commands/should-skip-job.sh --job-type build; then
   exit 0
 fi
 

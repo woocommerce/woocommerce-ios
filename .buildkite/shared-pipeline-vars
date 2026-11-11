@@ -12,7 +12,8 @@ if [[ ! -s "$XCODE_VERSION_FILE" ]]; then
 fi
 XCODE_VERSION=$(sed -E 's/^~> *//' "$XCODE_VERSION_FILE")
 
-CI_TOOLKIT_PLUGIN_VERSION="6.3.0"
+# commit_changed_files: Automattic/a8c-ci-toolkit-buildkite-plugin#243; replace with its release before merging.
+CI_TOOLKIT_PLUGIN_VERSION="db3927013ee85618da2c75502a59f05414b12bcb"
 TEST_COLLECTOR_PLUGIN_VERSION="1.11.0"
 
 export IMAGE_ID="xcode-$XCODE_VERSION"

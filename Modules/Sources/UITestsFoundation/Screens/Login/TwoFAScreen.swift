@@ -66,18 +66,7 @@ public final class TwoFAScreen {
         XCTAssertTrue(twoFAField.waitForExistence(timeout: 10), "2FA field should be visible before typing.")
 
         focusTwoFAFieldIfNeeded()
-        switch enterTwoFACodeUsingKeyboardKeysIfAvailable(twoFACode) {
-        case .entered:
-            return
-        case .failed:
-            XCTFail("2FA field should contain the complete authentication code after typing.")
-        case .keyboardUnavailable:
-            twoFAField.typeText(twoFACode)
-            XCTAssertTrue(
-                waitForTwoFACode(twoFACode, timeout: Constants.completeCodeWaitTimeout),
-                "2FA field should contain the complete authentication code after typing."
-            )
-        }
+        enterTwoFACodeUsingFocusedField(twoFACode)
     }
 
     private func focusTwoFAFieldIfNeeded() {
@@ -88,48 +77,25 @@ public final class TwoFAScreen {
         }
     }
 
-    private func enterTwoFACodeUsingKeyboardKeysIfAvailable(_ twoFACode: String) -> KeyboardEntryResult {
-        guard app.keyboards.firstMatch.waitForExistence(timeout: 2) else {
-            return .keyboardUnavailable
-        }
-
-        let codeKeys = twoFACode.map { app.keyboards.keys[String($0)].firstMatch }
-        guard codeKeys.allSatisfy({ $0.waitForIsHittable(timeout: 2) }) else {
-            return .keyboardUnavailable
-        }
-
-        for (index, key) in codeKeys.enumerated() {
+    private func enterTwoFACodeUsingFocusedField(_ twoFACode: String) {
+        for (index, digit) in twoFACode.enumerated() {
             let expectedCode = String(twoFACode.prefix(index + 1))
-            guard tapKeyboardKeyWhenReady(key) else {
-                return .failed
-            }
+            app.typeText(String(digit))
             guard waitForTwoFACode(expectedCode, timeout: Constants.digitEntryWaitTimeout) else {
-                // A delayed system prompt can interrupt a keypad tap after the 2FA screen appeared.
+                // A delayed system prompt can interrupt text entry after the 2FA screen appeared.
                 app.dismissSavePasswordPromptIfNeeded(timeout: 2)
                 if waitForTwoFACode(expectedCode, timeout: Constants.promptRecoveryWaitTimeout) {
                     continue
                 }
                 focusTwoFAFieldIfNeeded()
-                guard tapKeyboardKeyWhenReady(key) else {
-                    return .failed
-                }
+                app.typeText(String(digit))
                 guard waitForTwoFACode(expectedCode, timeout: Constants.digitEntryWaitTimeout) else {
-                    return .failed
+                    XCTFail("2FA field should contain the complete authentication code after typing.")
+                    return
                 }
                 continue
             }
         }
-        return .entered
-    }
-
-    private func tapKeyboardKeyWhenReady(_ key: XCUIElement) -> Bool {
-        guard key.waitForIsHittable(timeout: 2) else {
-            return false
-        }
-
-        // A coordinate tap can be retried if a system prompt appears during the gesture; XCUIElement.tap() fails immediately.
-        key.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        return true
     }
 
     private func waitForTwoFACode(_ expectedCode: String, timeout: TimeInterval) -> Bool {
@@ -310,15 +276,8 @@ public final class TwoFAScreen {
         case timedOut
     }
 
-    private enum KeyboardEntryResult {
-        case keyboardUnavailable
-        case entered
-        case failed
-    }
-
     private enum Constants {
         static let digitEntryWaitTimeout: TimeInterval = 3
         static let promptRecoveryWaitTimeout: TimeInterval = 2
-        static let completeCodeWaitTimeout: TimeInterval = 5
     }
 }

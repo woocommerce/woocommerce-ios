@@ -85,7 +85,8 @@ final class StorePerformanceViewModel: ObservableObject {
     /// pipeline (which combines with `$revenueType`) re-fires from leaked period VMs on every
     /// metric switch and overwrites the current data with empty values.
     private var periodViewModelSubscriptions: Set<AnyCancellable> = []
-    private var currentDate = Date()
+    private let now: () -> Date
+    private var currentDate: Date
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
 
     private var waitingTracker: WaitingTimeTracker?
@@ -136,9 +137,12 @@ final class StorePerformanceViewModel: ObservableObject {
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         now: @escaping () -> Date = Date.init) {
         self.siteID = siteID
         self.stores = stores
+        self.now = now
+        self.currentDate = now()
         self.siteTimezone = siteTimezone
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
@@ -236,7 +240,7 @@ final class StorePerformanceViewModel: ObservableObject {
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .performance))
         do {
-            currentDate = .now // Legacy code from when code was outside of `PerformanceCardDataSyncUseCase`
+            currentDate = now() // Legacy code from when code was outside of `PerformanceCardDataSyncUseCase`
             let syncUseCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange, stores: stores)
             try await syncUseCase.sync()
 

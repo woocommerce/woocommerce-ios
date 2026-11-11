@@ -93,7 +93,7 @@ TEST_SCHEME = 'WooCommerce'
 
 # Naming the device, deployment target and app stops scan from running `xcodebuild -showBuildSettings`, which resolves every Swift package.
 CI_SIMULATOR_DEVICE = 'iPhone 17 Pro'
-CI_DEPLOYMENT_TARGET = Xcodeproj::Config.new(File.join(PROJECT_ROOT_FOLDER, 'config', 'Common.xcconfig')).attributes['IPHONEOS_DEPLOYMENT_TARGET']
+CI_DEPLOYMENT_TARGET = xcconfig_value('Common.xcconfig', 'IPHONEOS_DEPLOYMENT_TARGET')
 
 CONCURRENT_SIMULATORS = 2
 

@@ -20,9 +20,9 @@ struct POSSecuritySettingsView: View {
                             pinEntry(for: role)
                         } else {
                             POSInformationCard {
-                                VStack(spacing: metrics.spacing.medium) {
-                                    pinRow(.admin, roles: roles)
-                                    if roles.contains(.admin) { pinRow(.cashier, roles: roles) }
+                                ViewThatFits(in: .horizontal) {
+                                    pinRows(roles, stacked: false)
+                                    pinRows(roles, stacked: true)
                                 }
                             }
                             if roles == [.admin] {
@@ -42,7 +42,7 @@ struct POSSecuritySettingsView: View {
                 .posPadding(.vertical, \.medium)
             }
         }
-        .background(Color.posSurfaceBright)
+        .background(Color.posSurface)
         .disabled(controller.isSaving)
         .onAppear { controller.load() }
         .onDisappear { firstPIN = nil; editing = nil }
@@ -53,7 +53,18 @@ struct POSSecuritySettingsView: View {
         .accessibilityIdentifier("pos-security-settings")
     }
 
-    private func pinRow(_ role: POSLocalRole, roles: Set<POSLocalRole>) -> some View {
+    private func pinRows(_ roles: Set<POSLocalRole>, stacked: Bool) -> some View {
+        VStack(spacing: metrics.spacing.medium) {
+            pinRow(.admin, roles: roles, stacked: stacked)
+            if roles.contains(.admin) {
+                Divider().padding(.top, metrics.padding.small)
+                pinRow(.cashier, roles: roles, stacked: stacked)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func pinRow(_ role: POSLocalRole, roles: Set<POSLocalRole>, stacked: Bool) -> some View {
         let details = POSInformationCardFieldRow(label: String.localizedStringWithFormat(Localization.rolePIN, role.displayName),
                                                  value: roles.contains(role) ? Localization.pinSet : Localization.noPIN,
                                                  showSeparator: false)
@@ -72,9 +83,10 @@ struct POSSecuritySettingsView: View {
         }
         .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
         .fixedSize(horizontal: true, vertical: false)
-        return ViewThatFits(in: .horizontal) {
-            HStack(spacing: metrics.spacing.medium) { details.fixedSize(); Spacer(); actions }
+        if stacked {
             VStack(alignment: .leading, spacing: metrics.spacing.medium) { details; actions }
+        } else {
+            HStack(spacing: metrics.spacing.medium) { details.fixedSize(); Spacer(); actions }
         }
     }
 
@@ -101,7 +113,6 @@ struct POSSecuritySettingsView: View {
 
     enum Localization {
         static let title = NSLocalizedString("pos.security.title", value: "Security", comment: "POS Security settings title.")
-        static let subtitle = NSLocalizedString("pos.security.subtitle", value: "Manage local PINs", comment: "Security settings subtitle.")
         static let protectionOff = NSLocalizedString("pos.security.protectionOff", value: "PIN protection is off. Set an Admin PIN to enable it.",
                                                     comment: "Protection status before local PIN setup.")
         static let protectionOn = NSLocalizedString("pos.security.protectionOn", value: "PIN protection is on.", comment: "Local PIN protection status.")

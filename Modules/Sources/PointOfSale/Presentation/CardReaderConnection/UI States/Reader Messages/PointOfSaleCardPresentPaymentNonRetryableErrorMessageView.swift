@@ -9,7 +9,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     @State private var width: CGFloat = 0
 
     var body: some View {
-        POSStatusScreenLayout {
+        POSStatusScreenLayout(buttonsWidth: .capped) {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
                 POSErrorXMark()
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)

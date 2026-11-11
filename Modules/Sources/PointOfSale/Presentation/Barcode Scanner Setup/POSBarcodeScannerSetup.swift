@@ -7,6 +7,7 @@ struct POSBarcodeScannerSetup: View {
     @Environment(\.posModalParentSize) var parentSize
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     init(isPresented: Binding<Bool>, analytics: POSAnalyticsProviding) {
         self._isPresented = isPresented
@@ -57,18 +58,21 @@ struct POSBarcodeScannerSetup: View {
         // mechanism for the same outcome. See #17067 review feedback.
     }
 
-    /// Laid out for the phone full-screen flow: the close button is in the flow header, the step is in the middle and
-    /// the buttons stay at the bottom, so they do not move between steps.
+    /// Laid out for the phone full-screen flow: the close button and the back arrow are in the flow header, the step is
+    /// in the middle and the buttons stay at the bottom, so they do not move between steps.
     private var compactBody: some View {
         VStack(spacing: metrics.spacing.xLarge) {
             centeredCurrentContent
                 .scrollVerticallyIfNeeded()
 
-            flowButtons
+            flowButtons(showsBackButton: !isFullScreenFlow)
         }
         .posModalCloseButton(action: {
             isPresented = false
         }, accessibilityLabel: Localization.closeButtonAccessibilityLabel)
+        .posModalFlowBackAction(enabled: isFullScreenFlow) {
+            flowManager.goBack()
+        }
         .padding([.horizontal, .bottom], metrics.padding.xLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
@@ -85,7 +89,7 @@ struct POSBarcodeScannerSetup: View {
             }
             .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
 
-            flowButtons
+            flowButtons()
         }
     }
 
@@ -98,9 +102,10 @@ struct POSBarcodeScannerSetup: View {
     }
 
     @ViewBuilder
-    private var flowButtons: some View {
-        if flowManager.buttonConfiguration.primaryButton != nil || flowManager.buttonConfiguration.secondaryButton != nil {
-            POSFlowButtonsView(configuration: flowManager.buttonConfiguration)
+    private func flowButtons(showsBackButton: Bool = true) -> some View {
+        let configuration = showsBackButton ? flowManager.buttonConfiguration : flowManager.buttonConfiguration.removingBackButtons()
+        if configuration.primaryButton != nil || configuration.secondaryButton != nil {
+            POSFlowButtonsView(configuration: configuration)
         }
     }
 

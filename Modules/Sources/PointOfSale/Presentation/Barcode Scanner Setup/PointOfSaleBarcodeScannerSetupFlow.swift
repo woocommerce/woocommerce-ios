@@ -69,6 +69,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
             ),
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: Localization.backButtonTitle,
+                isBack: true,
                 action: { [weak self] in
                     self?.previousStep()
                 }
@@ -294,7 +295,9 @@ class PointOfSaleBarcodeScannerSetupFlow {
             },
             buttonCustomization: PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization(),
             transitions: [
-                .next: .setupProducts
+                .next: .setupProducts,
+                // Only the phone header's back arrow uses it; the step has no Back button.
+                .back: .test
             ])
     }
 
@@ -315,6 +318,7 @@ struct PointOfSaleBarcodeScannerBackOnlyButtonCustomization: PointOfSaleBarcodeS
             primaryButton: nil,
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: Localization.backButtonTitle,
+                isBack: true,
                 action: { flow.previousStep() }
             )
         )
@@ -338,6 +342,7 @@ struct PointOfSaleBarcodeScannerErrorButtonCustomization: PointOfSaleBarcodeScan
             ),
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: Localization.backButtonTitle,
+                isBack: true,
                 action: { flow.transition(to: .back) }
             )
         )
@@ -386,6 +391,7 @@ struct PointOfSaleBarcodeScannerProductBarcodeSetupInformationButtonCustomizatio
             ),
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: PointOfSaleBarcodeScannerSetupFlow.Localization.backButtonTitle,
+                isBack: true,
                 action: { flow.transition(to: .back) }
             )
         )

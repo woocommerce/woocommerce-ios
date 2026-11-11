@@ -1,27 +1,47 @@
 import Foundation
+import Synchronization
 @testable import PointOfSale
 
-final class InMemoryPOSSecureStorage: POSSecureStorage, @unchecked Sendable {
-    private(set) var values: [String: Data] = [:]
-    var shouldFail = false
+final class InMemoryPOSSecureStorage: POSSecureStorage, Sendable {
+    private struct State {
+        var values: [String: Data] = [:]
+        var shouldFail = false
+    }
+
+    private let state = Mutex(State())
+
+    var values: [String: Data] {
+        state.withLock { $0.values }
+    }
+
+    var shouldFail: Bool {
+        get { state.withLock { $0.shouldFail } }
+        set { state.withLock { $0.shouldFail = newValue } }
+    }
 
     func data(forKey key: String) throws -> Data? {
-        try failIfNeeded()
-        return values[key]
+        try state.withLock { state in
+            try Self.failIfNeeded(state)
+            return state.values[key]
+        }
     }
 
     func setData(_ data: Data?, forKey key: String) throws {
-        try failIfNeeded()
-        values[key] = data
+        try state.withLock { state in
+            try Self.failIfNeeded(state)
+            state.values[key] = data
+        }
     }
 
     func removeAll() throws {
-        try failIfNeeded()
-        values = [:]
+        try state.withLock { state in
+            try Self.failIfNeeded(state)
+            state.values = [:]
+        }
     }
 
-    private func failIfNeeded() throws {
-        if shouldFail {
+    private static func failIfNeeded(_ state: State) throws {
+        if state.shouldFail {
             throw NSError(domain: "InMemoryPOSSecureStorage", code: -1)
         }
     }

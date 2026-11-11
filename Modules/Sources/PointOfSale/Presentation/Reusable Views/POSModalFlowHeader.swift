@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Header of a full-screen POS modal flow on phone: the back arrow at the leading edge when the content offers one,
-/// the title, and the close button at the trailing edge.
+/// Header of a full-screen POS modal flow on phone: the back arrow at the leading edge in a flow with steps, the title,
+/// and the close button at the trailing edge.
 struct POSModalFlowHeader: View {
     @Environment(\.posMetrics) private var metrics
     let title: String
@@ -9,13 +9,19 @@ struct POSModalFlowHeader: View {
     let backAction: POSModalFlowAction?
     let closeAction: POSModalFlowAction?
 
+    /// The step's back button when it has one. Otherwise, in a flow with steps, the arrow closes the flow, as on its first step.
+    private var arrowAction: POSModalFlowAction? {
+        backAction ?? (hasSteps ? closeAction : nil)
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: metrics.spacing.medium) {
-            if let backAction {
+            if hasSteps || backAction != nil {
                 POSModalFlowHeaderButton(systemImage: "chevron.backward",
                                          accessibilityLabel: Localization.backAccessibilityLabel,
-                                         accessibilityIdentifier: backAction.accessibilityIdentifier ?? Constants.backAccessibilityIdentifier,
-                                         action: { backAction.action() })
+                                         accessibilityIdentifier: backAction?.accessibilityIdentifier ?? Constants.backAccessibilityIdentifier,
+                                         isEnabled: arrowAction?.isEnabled ?? false,
+                                         action: { arrowAction?.perform() })
             }
 
             Text(title)
@@ -32,7 +38,8 @@ struct POSModalFlowHeader: View {
                 POSModalFlowHeaderButton(systemImage: "xmark",
                                          accessibilityLabel: closeAction.accessibilityLabel,
                                          accessibilityIdentifier: closeAction.accessibilityIdentifier ?? Constants.closeAccessibilityIdentifier,
-                                         action: { closeAction.action() })
+                                         isEnabled: closeAction.isEnabled,
+                                         action: { closeAction.perform() })
             } else {
                 // A step without a close button keeps its space, so the title wraps the same way on every step.
                 Color.clear
@@ -54,6 +61,7 @@ private struct POSModalFlowHeaderButton: View {
     let systemImage: String
     let accessibilityLabel: String
     let accessibilityIdentifier: String
+    let isEnabled: Bool
     let action: () -> Void
 
     var body: some View {
@@ -61,10 +69,12 @@ private struct POSModalFlowHeaderButton: View {
             Text(Image(systemName: systemImage))
                 .font(.posButtonSymbolLarge)
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                .foregroundColor(isEnabled ? .posOnSurface : .posOnSurfaceVariantLowest)
                 .frame(width: POSHeaderLayoutConstants.compactBackButtonSize,
                        height: POSHeaderLayoutConstants.compactBackButtonSize)
                 .contentShape(Rectangle())
         }
+        .disabled(!isEnabled)
         .accessibilityLabel(accessibilityLabel)
         .accessibilityIdentifier(accessibilityIdentifier)
     }
@@ -128,20 +138,21 @@ extension View {
                                  accessibilityIdentifier: String? = nil,
                                  action: @escaping () -> Void) -> some View {
         modifier(POSModalFlowActionModifier<POSModalFlowCloseActionKey>(enabled: enabled,
+                                                                        actionEnabled: true,
                                                                         accessibilityLabel: accessibilityLabel,
                                                                         accessibilityIdentifier: accessibilityIdentifier,
                                                                         action: action))
     }
 
-    /// Offers `action` as the back arrow of the full-screen flow header on phone, for a flow with steps.
-    ///
-    /// Set it on every step, the first one too, so the title stays in place: on the first step `action` closes the
-    /// flow, on later steps it goes one step back. A flow that never sets it has no back arrow and its title starts at
-    /// the leading edge. The arrow is always read as "Back" by VoiceOver.
+    /// Offers `action` as the back arrow of the full-screen flow header on phone, for the current step of a flow with steps
+    /// (`.fullScreen(title:hasSteps: true)`). `POSFlowButtonsView` sets it for a button marked `isBack`, so a flow does not
+    /// call it directly. On a step that offers none, the arrow closes the flow. The arrow is always read as "Back".
     func posModalFlowBackAction(enabled: Bool,
+                                actionEnabled: Bool = true,
                                 accessibilityIdentifier: String? = nil,
                                 action: @escaping () -> Void) -> some View {
         modifier(POSModalFlowActionModifier<POSModalFlowBackActionKey>(enabled: enabled,
+                                                                       actionEnabled: actionEnabled,
                                                                        accessibilityLabel: "",
                                                                        accessibilityIdentifier: accessibilityIdentifier,
                                                                        action: action))
@@ -150,10 +161,11 @@ extension View {
 
 private struct POSModalFlowActionModifier<Key: PreferenceKey>: ViewModifier where Key.Value == POSModalFlowAction? {
     let enabled: Bool
+    let actionEnabled: Bool
     let accessibilityLabel: String
     let accessibilityIdentifier: String?
     let action: () -> Void
-    @State private var flowAction = POSModalFlowAction()
+    @State private var handler = POSModalFlowAction.Handler()
 
     func body(content: Content) -> some View {
         content
@@ -161,25 +173,38 @@ private struct POSModalFlowActionModifier<Key: PreferenceKey>: ViewModifier wher
     }
 
     private var updatedFlowAction: POSModalFlowAction {
-        flowAction.action = action
-        flowAction.accessibilityLabel = accessibilityLabel
-        flowAction.accessibilityIdentifier = accessibilityIdentifier
-        return flowAction
+        handler.action = action
+        return POSModalFlowAction(handler: handler,
+                                  isEnabled: actionEnabled,
+                                  accessibilityLabel: accessibilityLabel,
+                                  accessibilityIdentifier: accessibilityIdentifier)
     }
 }
 
 /// An action that a modal's content offers to `POSModalFlowHeader`: the close button, set by `posModalCloseButton`,
 /// or the back arrow, set by `posModalFlowBackAction`.
 ///
-/// It is a reference type so the header always calls the content's latest action, while the preference value only
-/// changes when the content itself changes.
-final class POSModalFlowAction: Equatable {
-    var action: () -> Void = {}
-    var accessibilityLabel: String = ""
-    var accessibilityIdentifier: String?
+/// The closure lives in a shared handler, so the header always calls the content's latest action while the preference
+/// value only changes when the handler or the shown state changes.
+struct POSModalFlowAction: Equatable {
+    final class Handler {
+        var action: () -> Void = {}
+    }
+
+    let handler: Handler
+    let isEnabled: Bool
+    let accessibilityLabel: String
+    let accessibilityIdentifier: String?
+
+    func perform() {
+        handler.action()
+    }
 
     static func == (lhs: POSModalFlowAction, rhs: POSModalFlowAction) -> Bool {
-        lhs === rhs
+        lhs.handler === rhs.handler
+            && lhs.isEnabled == rhs.isEnabled
+            && lhs.accessibilityLabel == rhs.accessibilityLabel
+            && lhs.accessibilityIdentifier == rhs.accessibilityIdentifier
     }
 }
 

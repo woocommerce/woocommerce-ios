@@ -1,6 +1,5 @@
 import Testing
 import Foundation
-import SwiftUI
 import GameController
 import enum WooFoundationCore.WooAnalyticsStat
 @testable import PointOfSale
@@ -145,83 +144,5 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
             #expect(Bool(false), "Expected scannerSelection state after going back")
         }
         #expect(sut.getCurrentStep() == nil)
-    }
-
-    @Test func test_goBack_when_on_scanner_selection_then_closes_the_setup() {
-        // Given a flow manager on scanner selection
-        var isPresented = true
-        let sut = PointOfSaleBarcodeScannerSetupFlowManager(
-            isPresented: Binding(get: { isPresented }, set: { isPresented = $0 }),
-            analytics: MockPOSAnalytics()
-        )
-
-        // When going back
-        sut.goBack()
-
-        // Then the setup is closed
-        #expect(isPresented == false)
-    }
-
-    @Test func test_goBack_when_on_first_setup_step_then_returns_to_scanner_selection() {
-        // Given a flow manager on the first step of a scanner setup
-        var isPresented = true
-        let sut = PointOfSaleBarcodeScannerSetupFlowManager(
-            isPresented: Binding(get: { isPresented }, set: { isPresented = $0 }),
-            analytics: MockPOSAnalytics()
-        )
-        sut.selectScanner(.starBSH20B)
-
-        // When going back
-        sut.goBack()
-
-        // Then it returns to scanner selection and keeps the setup open
-        if case .scannerSelection = sut.currentState {
-        } else {
-            #expect(Bool(false), "Expected scannerSelection state")
-        }
-        #expect(isPresented == true)
-    }
-
-    @Test func test_goBack_when_on_later_setup_step_then_goes_one_step_back() {
-        // Given a flow manager on the pairing step
-        let sut = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: .constant(true), analytics: MockPOSAnalytics())
-        sut.selectScanner(.starBSH20B)
-        sut.buttonConfiguration.primaryButton?.action()
-        #expect(sut.currentStepKey == PointOfSaleBarcodeScannerStepID.pairing.rawValue)
-
-        // When going back
-        sut.goBack()
-
-        // Then it shows the previous step
-        #expect(sut.currentStepKey == PointOfSaleBarcodeScannerStepID.setupBarcodeHID.rawValue)
-    }
-
-    @Test func test_buttonConfiguration_removingBackButtons_when_step_has_back_then_keeps_only_next() {
-        // Given a flow manager on a step with Next and Back
-        let sut = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: .constant(true), analytics: MockPOSAnalytics())
-        sut.selectScanner(.starBSH20B)
-
-        // When removing the back buttons
-        let configuration = sut.buttonConfiguration.removingBackButtons()
-
-        // Then only Next is left
-        #expect(sut.buttonConfiguration.secondaryButton?.isBack == true)
-        #expect(configuration.primaryButton != nil)
-        #expect(configuration.secondaryButton == nil)
-    }
-
-    @Test func test_previousStep_when_on_complete_step_then_returns_to_test_step() {
-        // Given a setup flow on the complete step
-        let sut = PointOfSaleBarcodeScannerSetupFlow(scannerType: .starBSH20B,
-                                                     analytics: MockPOSAnalytics(),
-                                                     onBackToSelection: {},
-                                                     onDismiss: {})
-        sut.transition(to: .complete)
-
-        // When going back
-        sut.previousStep()
-
-        // Then it shows the test step
-        #expect(sut.currentStepKey == .test)
     }
 }

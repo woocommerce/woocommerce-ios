@@ -11,3 +11,8 @@ protocol POSPINCredentialProviding: Sendable {
     /// so callers can keep POS locked instead of treating unreadable data as "no PINs".
     func credentials() throws(POSPINStoreError) -> [POSPINCredential]
 }
+
+protocol POSPINManaging: POSPINCredentialProviding {
+    func setPIN(_ pin: String, for role: POSRole) throws(POSPINStoreError)
+    func removePIN(for role: POSRole) throws(POSPINStoreError)
+}

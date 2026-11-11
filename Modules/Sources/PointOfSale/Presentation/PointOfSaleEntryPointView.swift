@@ -42,7 +42,7 @@ public struct PointOfSaleEntryPointView: View {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
     private let orderController: PointOfSaleOrderControllerProtocol
-    private let settingsController: POSSettingsControllerProtocol
+    @State private var settingsController: POSSettingsControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
@@ -94,10 +94,11 @@ public struct PointOfSaleEntryPointView: View {
          registerOnDismiss: @escaping (@escaping () -> Void) -> Bool = { _ in true }) {
         self.registerOnDismiss = registerOnDismiss
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
-        self._accessSession = State(initialValue: POSAccessSessionFactory.make(
+        let accessSession = POSAccessSessionFactory.make(
             siteID: siteID,
             featureFlags: services.featureFlags
-        ))
+        )
+        self._accessSession = State(initialValue: accessSession)
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 
@@ -156,7 +157,10 @@ public struct PointOfSaleEntryPointView: View {
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
                                                                 receiptSettingsAdminURL: receiptSettingsAdminURL,
                                                                 analytics: services.analytics,
-                                                                printerConnectionController: printerConnectionController)
+                                                                printerConnectionController: printerConnectionController,
+                                                                securityController: services.featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) ?
+                                                                    POSSecuritySettingsController(store: POSLocalPINStore(siteID: siteID),
+                                                                                                  session: accessSession) : nil)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(

@@ -10,7 +10,7 @@ enum POSPINStoreError: Error, Equatable {
 }
 
 /// Stores the local Admin and optional Cashier PIN of one store, on this device only.
-final class POSLocalPINStore: POSPINCredentialProviding {
+final class POSLocalPINStore: POSPINManaging {
     private let siteID: Int64
     private let storage: POSSecureStorage
     private let iterations: Int

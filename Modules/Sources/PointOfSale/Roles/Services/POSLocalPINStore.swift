@@ -10,7 +10,7 @@ enum POSPINStoreError: Error, Equatable {
 }
 
 /// Stores the local Admin and optional Cashier PIN of one store, on this device only.
-final class POSLocalPINStore: POSPINManaging {
+final class POSLocalPINStore: POSPINCredentialProviding, POSPINManaging {
     private let siteID: Int64
     private let storage: POSSecureStorage
     private let iterations: Int
@@ -32,6 +32,11 @@ final class POSLocalPINStore: POSPINManaging {
         return POSLocalRole.allCases.compactMap { role in
             pins[role].map { POSPINCredential(staff: role.staff, pinHash: $0) }
         }
+    }
+
+    func configuredRoles() throws(POSPINStoreError) -> Set<POSLocalRole> {
+        let pins = try loadPINs()
+        return pins[.admin] == nil ? [] : Set(pins.keys)
     }
 
     /// Runs up to two PBKDF2 derivations, so call it off the main actor.

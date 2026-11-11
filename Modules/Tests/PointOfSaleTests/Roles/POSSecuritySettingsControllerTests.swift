@@ -22,7 +22,7 @@ struct POSSecuritySettingsControllerTests {
         #expect(saved)
         #expect(controller.roles == [.admin])
         #expect(session.isPINProtectionEnabled)
-        #expect(session.currentStaff?.role == .admin)
+        #expect(session.currentStaff == POSLocalRole.admin.staff)
         #expect(!session.isLocked)
         #expect(controller.isVisible)
     }
@@ -58,7 +58,7 @@ struct POSSecuritySettingsControllerTests {
         #expect(!saved)
         #expect(controller.error == .pinMatchesOtherRole)
         #expect(controller.roles == [.admin, .cashier])
-        #expect(session.currentStaff?.role == .admin)
+        #expect(session.currentStaff == POSLocalRole.admin.staff)
     }
 
     @Test func test_change_when_new_pin_is_saved_then_old_pin_stops_working() async throws {
@@ -74,7 +74,7 @@ struct POSSecuritySettingsControllerTests {
         // Then
         await #expect(throws: POSAuthError.invalidPIN) { try await session.signIn(withPIN: "1234") }
         try await session.signIn(withPIN: "2468")
-        #expect(session.currentStaff?.role == .admin)
+        #expect(session.currentStaff == POSLocalRole.admin.staff)
     }
 
     @Test func test_setup_when_cashier_pin_matches_admin_then_keeps_existing_credentials() async {
@@ -168,19 +168,19 @@ struct POSSecuritySettingsControllerTests {
         #expect(try store.credentials().count == 2)
     }
 
-    @Test(arguments: [POSRole.admin, .cashier])
-    func test_role_display_names_when_local_roles_then_maps_to_current_names(role: POSRole) {
+    @Test(arguments: [POSLocalRole.admin, .cashier])
+    func test_role_display_names_when_local_roles_then_maps_to_current_names(role: POSLocalRole) {
         // Given / When / Then
         #expect(role.displayName == (role == .admin ? "Admin" : "Cashier"))
     }
 
     @Test func test_visibility_when_authority_changes_then_only_unlocked_admin_or_unprotected_can_manage() {
         // Given / When / Then
-        #expect(POSSecuritySettingsViewHelper.canManage(isProtected: false, isLocked: false, role: nil))
-        #expect(POSSecuritySettingsViewHelper.canManage(isProtected: true, isLocked: false, role: .admin))
-        #expect(!POSSecuritySettingsViewHelper.canManage(isProtected: true, isLocked: true, role: .admin))
-        #expect(!POSSecuritySettingsViewHelper.canManage(isProtected: true, isLocked: false, role: .cashier))
-        #expect(!POSSecuritySettingsViewHelper.canManage(isProtected: true, isLocked: false, role: nil))
+        #expect(POSSecuritySettingsViewHelper.canManage(isProtected: false, isLocked: false, canManageSettings: false))
+        #expect(POSSecuritySettingsViewHelper.canManage(isProtected: true, isLocked: false, canManageSettings: true))
+        #expect(!POSSecuritySettingsViewHelper.canManage(isProtected: true, isLocked: true, canManageSettings: true))
+        #expect(!POSSecuritySettingsViewHelper.canManage(isProtected: true, isLocked: false, canManageSettings: false))
+        #expect(!POSSecuritySettingsViewHelper.canManage(isProtected: false, isLocked: true, canManageSettings: true))
     }
 
     private func makeSUT() -> (POSSecuritySettingsController, DefaultPOSAccessSession, POSLocalPINStore) {

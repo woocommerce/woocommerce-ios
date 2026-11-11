@@ -4,7 +4,7 @@ import Observation
 @MainActor
 @Observable
 final class POSSecuritySettingsController {
-    private(set) var roles: Set<POSRole>?
+    private(set) var roles: Set<POSLocalRole>?
     private(set) var isSaving = false
     private(set) var error: POSPINStoreError?
     private let store: POSPINManaging
@@ -16,14 +16,15 @@ final class POSSecuritySettingsController {
     }
 
     var isVisible: Bool {
-        session.allows(.manageStoreSettings) && POSSecuritySettingsViewHelper.canManage(isProtected: session.isPINProtectionEnabled,
-                                               isLocked: session.isLocked, role: session.currentStaff?.role)
+        POSSecuritySettingsViewHelper.canManage(isProtected: session.isPINProtectionEnabled,
+                                               isLocked: session.isLocked,
+                                               canManageSettings: session.currentStaff?.hasCapability(.manageStoreSettings) == true)
     }
 
     func load() {
         do {
             try session.refreshPINProtection()
-            roles = Set(try store.credentials().map { $0.staff.role })
+            roles = try store.configuredRoles()
             error = nil
         } catch {
             roles = nil
@@ -31,7 +32,7 @@ final class POSSecuritySettingsController {
         }
     }
 
-    func save(_ pin: String?, for role: POSRole) async -> Bool {
+    func save(_ pin: String?, for role: POSLocalRole) async -> Bool {
         guard isVisible, !isSaving, roles != nil else { return false }
         isSaving = true
         defer { isSaving = false }

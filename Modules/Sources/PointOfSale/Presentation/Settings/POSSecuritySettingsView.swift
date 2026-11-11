@@ -3,7 +3,7 @@ import SwiftUI
 struct POSSecuritySettingsView: View {
     @Environment(\.posMetrics) private var metrics
     let controller: POSSecuritySettingsController
-    @State private var editing: POSRole?
+    @State private var editing: POSLocalRole?
     @State private var firstPIN: String?
     @State private var mismatch = false
     @State private var confirmRemoval = false
@@ -52,7 +52,7 @@ struct POSSecuritySettingsView: View {
         .accessibilityIdentifier("pos-security-settings")
     }
 
-    private func pinRow(_ role: POSRole, roles: Set<POSRole>) -> some View {
+    private func pinRow(_ role: POSLocalRole, roles: Set<POSLocalRole>) -> some View {
         VStack(alignment: .leading, spacing: metrics.spacing.small) {
             POSInformationCardFieldRow(label: String.localizedStringWithFormat(Localization.rolePIN, role.displayName),
                                        value: roles.contains(role) ? Localization.pinSet : Localization.noPIN,
@@ -70,7 +70,7 @@ struct POSSecuritySettingsView: View {
         }
     }
 
-    private func pinEntry(for role: POSRole) -> some View {
+    private func pinEntry(for role: POSLocalRole) -> some View {
         VStack(spacing: metrics.spacing.medium) {
             Text(String.localizedStringWithFormat(firstPIN == nil ? Localization.enterPIN : Localization.confirmPIN, role.displayName))
                 .font(.posBodyLargeBold)

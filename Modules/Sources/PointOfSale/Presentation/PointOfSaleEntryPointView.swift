@@ -87,9 +87,7 @@ public struct PointOfSaleEntryPointView: View {
          receiptSettingsAdminURL: String,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
-         staffFetcher: POSStaffFetching,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
-         staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
          itemProvider: PointOfSaleItemServiceProtocol? = nil,
@@ -98,8 +96,7 @@ public struct PointOfSaleEntryPointView: View {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
-            featureFlags: services.featureFlags,
-            fetcher: staffFetcher
+            featureFlags: services.featureFlags
         ))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -159,8 +156,7 @@ public struct PointOfSaleEntryPointView: View {
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
                                                                 receiptSettingsAdminURL: receiptSettingsAdminURL,
                                                                 analytics: services.analytics,
-                                                                printerConnectionController: printerConnectionController,
-                                                                staffSettingsService: staffSettingsService)
+                                                                printerConnectionController: printerConnectionController)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -289,12 +285,9 @@ public struct PointOfSaleEntryPointView: View {
         .onChange(of: isCompactLayout) { _, isCompactLayout in
             posModel?.paymentModel.updateCardPaymentSelectionMode(isCompactLayout ? .compact : .large)
         }
-        .task {
-            await accessSession.refreshPINStatus()
-        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             // Active app switch, not idle - lock even mid-payment.
-            guard accessSession.hasAnyPINs, accessSession.currentStaff != nil else { return }
+            guard accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
             accessSession.lock()
         }
     }
@@ -307,8 +300,6 @@ public struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
-import struct Yosemite.POSStaffMember
-
 #Preview {
     PointOfSaleEntryPointView(
         siteID: 1,
@@ -335,13 +326,8 @@ import struct Yosemite.POSStaffMember
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
         receiptSettingsAdminURL: "",
-        staffFetcher: POSPreviewStaffFetcher(),
         services: POSPreviewServices()
     )
-}
-
-private struct POSPreviewStaffFetcher: POSStaffFetching {
-    func fetchStaff(siteID: Int64) async throws(POSStaffFetchError) -> [POSStaffMember] { [] }
 }
 
 #endif

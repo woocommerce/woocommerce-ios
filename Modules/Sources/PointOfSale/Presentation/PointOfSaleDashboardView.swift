@@ -722,9 +722,9 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
-    /// Opens POS settings, gated on `.viewPOSSettings` via manager override.
+    /// Opens POS settings, gated on `.manageStoreSettings` via manager override.
     func requestSettingsPermission() {
-        overrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) { _ in
+        overrideHandler.gate(.manageStoreSettings, reason: Localization.settingsOverrideDescription) { _ in
             showSettings = true
         }
     }

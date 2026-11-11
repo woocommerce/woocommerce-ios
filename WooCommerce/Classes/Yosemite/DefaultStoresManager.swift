@@ -477,10 +477,13 @@ class DefaultStoresManager: StoresManager {
             }
         }
 
-        // Purge all persisted POS roles state (staff caches + lock flags for every site visited this
-        // session) so a different user signing in on this device can't inherit cached staff PINs or
-        // land on a previous store's lock screen.
-        POSRolesPersistence.clearAll()
+        // Purge the local POS PINs and lock flags for every site visited this session, so a different
+        // user signing in on this device can't inherit the PINs or land on a previous store's lock screen.
+        do {
+            try POSRolesPersistence.clearAll()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
 
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()

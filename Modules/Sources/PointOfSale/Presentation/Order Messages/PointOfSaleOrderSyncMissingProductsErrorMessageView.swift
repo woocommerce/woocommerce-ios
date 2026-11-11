@@ -10,69 +10,58 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
     @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
-        GeometryReader { geometry in
-            HStack(alignment: .center) {
-                Spacer()
-                VStack(alignment: .center, spacing: metrics.spacing.none) {
-                    Spacer()
-                    POSErrorXMark()
-                    Spacer().frame(height: metrics.spacing.medium)
-                    VStack(alignment: .center, spacing: metrics.spacing.small) {
-                        Text(title)
-                            .foregroundStyle(Color.posOnSurface)
-                            .font(.posHeadingBold)
+        POSStatusScreenLayout {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
+                POSErrorXMark()
+                Spacer().frame(height: metrics.spacing.medium)
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
+                    Text(title)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posHeadingBold)
 
-                        Text(subtitle)
-                            .foregroundStyle(Color.posOnSurface)
-                            .font(.posBodyLargeRegular())
-                            .posPadding(.horizontal, \.medium)
-                    }
-                    Spacer().frame(height: metrics.spacing.xxLarge)
-
-                    VStack(spacing: metrics.spacing.medium) {
-                        Button(Localization.editOrderTitle, action: {
-                            let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
-                            analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedEditOrderTapped(
-                                reason: "deleted",
-                                syncStrategy: syncStrategy
-                            ))
-                            posModel.addMoreToCart()
-                        })
-                        .buttonStyle(POSFilledButtonStyle(size: .normal))
-
-                        // Only show "Remove product" button if we can identify specific products
-                        if canIdentifySpecificProducts {
-                            Button(removeProductsActionTitle, action: {
-                                let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
-
-                                // Track the new specific event
-                                analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedRemoveTapped(
-                                    reason: "deleted",
-                                    syncStrategy: syncStrategy
-                                ))
-
-                                // Keep existing generic event for backwards compatibility
-                                analytics.track(event: .PointOfSale.itemRemovedFromCart(
-                                    sourceView: .error,
-                                    itemType: .product
-                                ))
-
-                                removeMissingProductsFromCart()
-                                retryHandler()
-                            })
-                            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                        }
-                    }
-                    .frame(width: geometry.size.width / 2)
-                    .padding([.leading, .trailing], metrics.padding.xxLarge)
-                    .padding([.bottom], metrics.padding.medium)
-
-                    Spacer()
+                    Text(subtitle)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posBodyLargeRegular())
+                        .posPadding(.horizontal, \.medium)
                 }
-                .multilineTextAlignment(.center)
-                Spacer()
+            }
+        } buttons: {
+            VStack(spacing: metrics.spacing.medium) {
+                Button(Localization.editOrderTitle, action: {
+                    let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
+                    analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedEditOrderTapped(
+                        reason: "deleted",
+                        syncStrategy: syncStrategy
+                    ))
+                    posModel.addMoreToCart()
+                })
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+
+                // Only show "Remove product" button if we can identify specific products
+                if canIdentifySpecificProducts {
+                    Button(removeProductsActionTitle, action: {
+                        let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
+
+                        // Track the new specific event
+                        analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedRemoveTapped(
+                            reason: "deleted",
+                            syncStrategy: syncStrategy
+                        ))
+
+                        // Keep existing generic event for backwards compatibility
+                        analytics.track(event: .PointOfSale.itemRemovedFromCart(
+                            sourceView: .error,
+                            itemType: .product
+                        ))
+
+                        removeMissingProductsFromCart()
+                        retryHandler()
+                    })
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                }
             }
         }
+        .multilineTextAlignment(.center)
         .onAppear {
             let syncStrategy = posModel.isLocalCatalogEligible ? "local_catalog" : "remote"
             analytics.track(event: .PointOfSale.checkoutOutdatedItemDetectedScreenShown(

@@ -58,8 +58,9 @@ struct POSSecuritySettingsView: View {
                                        value: roles.contains(role) ? Localization.pinSet : Localization.noPIN,
                                        showSeparator: false,
                                        buttonTitle: roles.contains(role) ? Localization.change : Localization.setPIN,
-                                       buttonAction: { controller.load(); firstPIN = nil; mismatch = false; editing = role })
-            .accessibilityElement(children: .combine)
+                                       buttonAction: { controller.load(); firstPIN = nil; mismatch = false; editing = role },
+                                       buttonAccessibilityLabel: String.localizedStringWithFormat(
+                                        roles.contains(role) ? Localization.changeRolePIN : Localization.setRolePIN, role.displayName))
             if roles.contains(role) {
                 Button(Localization.remove, role: .destructive) {
                     if role == .admin { confirmRemoval = true } else { Task { await controller.save(nil, for: role) } }
@@ -104,6 +105,10 @@ struct POSSecuritySettingsView: View {
         static let pinSet = NSLocalizedString("pos.security.pinSet", value: "PIN set", comment: "Local PIN status.")
         static let noPIN = NSLocalizedString("pos.security.noPIN", value: "No PIN", comment: "Local PIN status before setup.")
         static let setPIN = NSLocalizedString("pos.security.setPIN", value: "Set PIN", comment: "Set a local PIN button.")
+        static let setRolePIN = NSLocalizedString("pos.security.setRolePIN", value: "Set %1$@ PIN",
+                                                  comment: "Set PIN accessibility label. %1$@ is the Admin or Cashier role.")
+        static let changeRolePIN = NSLocalizedString("pos.security.changeRolePIN", value: "Change %1$@ PIN",
+                                                     comment: "Change PIN accessibility label. %1$@ is the Admin or Cashier role.")
         static let change = NSLocalizedString("pos.security.change", value: "Change", comment: "Change a local PIN button.")
         static let remove = NSLocalizedString("pos.security.remove", value: "Remove PIN", comment: "Remove a local PIN button.")
         static let removeRolePIN = NSLocalizedString("pos.security.removeRolePIN", value: "Remove %1$@ PIN",

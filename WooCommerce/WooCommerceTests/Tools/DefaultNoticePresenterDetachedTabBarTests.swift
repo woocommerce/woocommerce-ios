@@ -8,7 +8,7 @@ struct DefaultNoticePresenterDetachedTabBarTests {
     @Test
     func test_enqueue_when_tab_bar_is_detached_from_the_view_hierarchy_then_does_not_crash() {
         // Given
-        let presenter: NoticePresenter = DefaultNoticePresenter()
+        var presenter: NoticePresenter = DefaultNoticePresenter()
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [UIViewController()]
         presenter.presentingViewController = tabBarController

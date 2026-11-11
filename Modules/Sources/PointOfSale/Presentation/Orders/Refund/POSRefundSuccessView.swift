@@ -12,7 +12,7 @@ struct POSRefundSuccessView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        POSStatusScreenLayout {
+        POSStatusScreenLayout(buttonsWidth: .capped) {
             contentView
         } buttons: {
             buttonsSection

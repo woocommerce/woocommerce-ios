@@ -12,7 +12,7 @@ struct POSRefundReaderDisconnectedView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            POSStatusScreenLayout {
+            POSStatusScreenLayout(buttonsWidth: .capped) {
                 PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(
                     viewModel: .init(
                         title: Localization.title,

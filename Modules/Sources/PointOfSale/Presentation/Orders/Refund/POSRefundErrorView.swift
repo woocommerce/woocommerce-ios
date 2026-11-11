@@ -34,7 +34,7 @@ struct POSRefundErrorView: View {
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
             headerView
-            POSStatusScreenLayout {
+            POSStatusScreenLayout(buttonsWidth: .capped) {
                 contentView
             } buttons: {
                 buttonsSection

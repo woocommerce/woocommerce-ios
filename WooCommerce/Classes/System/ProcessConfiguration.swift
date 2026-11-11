@@ -99,3 +99,5 @@ struct ProcessConfiguration {
     }
     #endif
 }
+
+// CI verification only: keep this code-path change in the explicit trunk diff range.

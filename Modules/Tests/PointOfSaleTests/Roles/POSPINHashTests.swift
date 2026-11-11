@@ -1,3 +1,4 @@
+import CommonCrypto
 import Foundation
 import Testing
 @testable import PointOfSale
@@ -75,11 +76,54 @@ struct POSPINHashTests {
         #expect(sut.matches("1234") == false)
     }
 
+    @Test func test_matches_when_salt_is_at_the_limit_then_returns_true() throws {
+        // Given
+        let salt = Data(repeating: 1, count: POSPINHash.Constants.maxSaltByteCount)
+        let sut = POSPINHash(algorithm: "pbkdf2-sha256", iterations: 10, salt: salt, hash: try pbkdf2(pin: "1234", salt: salt, iterations: 10))
+
+        // When / Then
+        #expect(sut.matches("1234"))
+    }
+
+    @Test func test_matches_when_salt_is_empty_then_returns_false() throws {
+        // Given
+        let sut = POSPINHash(algorithm: "pbkdf2-sha256", iterations: 10, salt: Data(), hash: try pbkdf2(pin: "1234", salt: Data(), iterations: 10))
+
+        // When / Then
+        #expect(sut.matches("1234") == false)
+    }
+
+    @Test func test_matches_when_salt_is_oversized_then_returns_false() throws {
+        // Given
+        let salt = Data(repeating: 1, count: POSPINHash.Constants.maxSaltByteCount + 1)
+        let sut = POSPINHash(algorithm: "pbkdf2-sha256", iterations: 10, salt: salt, hash: try pbkdf2(pin: "1234", salt: salt, iterations: 10))
+
+        // When / Then
+        #expect(sut.matches("1234") == false)
+    }
+
     @Test func test_matches_when_hash_is_oversized_then_returns_false() {
         // Given
         let sut = POSPINHash(algorithm: "pbkdf2-sha256", iterations: 10, salt: Data([1]), hash: Data(repeating: 0, count: 65))
 
         // When / Then
         #expect(sut.matches("1234") == false)
+    }
+}
+
+private extension POSPINHashTests {
+    func pbkdf2(pin: String, salt: Data, iterations: UInt32) throws -> Data {
+        let pinData = Data(pin.utf8)
+        var derived = [UInt8](repeating: 0, count: 32)
+        let status = salt.withUnsafeBytes { saltBytes in
+            pinData.withUnsafeBytes { pinBytes in
+                CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2),
+                                     pinBytes.baseAddress?.assumingMemoryBound(to: Int8.self), pinData.count,
+                                     saltBytes.baseAddress?.assumingMemoryBound(to: UInt8.self), salt.count,
+                                     CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA256), iterations, &derived, derived.count)
+            }
+        }
+        try #require(status == kCCSuccess)
+        return Data(derived)
     }
 }

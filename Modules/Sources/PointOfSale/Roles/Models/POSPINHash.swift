@@ -31,10 +31,12 @@ struct POSPINHash: Codable, Equatable, Sendable {
     }
 
     func matches(_ pin: String) -> Bool {
-        // An empty hash would match any PIN; an oversized hash or iteration count would stall PBKDF2.
+        // An empty hash would match any PIN; an oversized hash, salt or iteration count would stall PBKDF2.
         guard algorithm == Constants.algorithm,
               !hash.isEmpty,
               hash.count <= Constants.maxHashByteCount,
+              !salt.isEmpty,
+              salt.count <= Constants.maxSaltByteCount,
               iterations <= Constants.maxIterations,
               let derived = Self.derive(pin: pin, salt: salt, iterations: iterations, byteCount: hash.count) else {
             return false
@@ -87,6 +89,7 @@ extension POSPINHash {
         static let saltByteCount = 16
         static let hashByteCount = 32
         static let maxHashByteCount = 64
+        static let maxSaltByteCount = 64
         static let maxIterations = 1_000_000
     }
 }

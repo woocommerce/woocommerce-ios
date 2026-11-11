@@ -30,7 +30,7 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
-    @State private var accessSession: POSAccessSession
+    @State private var accessSession: POSAccessSession = UnrestrictedPOSAccessSession()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -42,7 +42,7 @@ public struct PointOfSaleEntryPointView: View {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
     private let orderController: PointOfSaleOrderControllerProtocol
-    @State private var settingsController: POSSettingsControllerProtocol
+    @State private var settingsController: PointOfSaleSettingsController
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
@@ -94,11 +94,6 @@ public struct PointOfSaleEntryPointView: View {
          registerOnDismiss: @escaping (@escaping () -> Void) -> Bool = { _ in true }) {
         self.registerOnDismiss = registerOnDismiss
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
-        let accessSession = POSAccessSessionFactory.make(
-            siteID: siteID,
-            featureFlags: services.featureFlags
-        )
-        self._accessSession = State(initialValue: accessSession)
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 
@@ -157,10 +152,7 @@ public struct PointOfSaleEntryPointView: View {
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
                                                                 receiptSettingsAdminURL: receiptSettingsAdminURL,
                                                                 analytics: services.analytics,
-                                                                printerConnectionController: printerConnectionController,
-                                                                securityController: services.featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) ?
-                                                                    POSSecuritySettingsController(store: POSLocalPINStore(siteID: siteID),
-                                                                                                  session: accessSession) : nil)
+                                                                printerConnectionController: printerConnectionController)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -228,6 +220,12 @@ public struct PointOfSaleEntryPointView: View {
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
             // Check for nil because returning from the full-screen Tap to Pay payment simulation can restart this task.
             guard posModel == nil else { return }
+            // Session initialization persists lock state, so it must run once, before content is exposed.
+            let session = POSAccessSessionFactory.make(siteID: siteID, featureFlags: services.featureFlags)
+            accessSession = session
+            if services.featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) {
+                settingsController.configureSecurity(store: POSLocalPINStore(siteID: siteID), session: session)
+            }
             posModel = PointOfSaleAggregateModel(
                 entryPointController: posEntryPointController,
                 itemsController: itemsController,

@@ -59,11 +59,13 @@ struct POSSecuritySettingsView: View {
                                        showSeparator: false,
                                        buttonTitle: roles.contains(role) ? Localization.change : Localization.setPIN,
                                        buttonAction: { controller.load(); firstPIN = nil; mismatch = false; editing = role })
+            .accessibilityElement(children: .combine)
             if roles.contains(role) {
                 Button(Localization.remove, role: .destructive) {
                     if role == .admin { confirmRemoval = true } else { Task { await controller.save(nil, for: role) } }
                 }
                 .font(.posBodyMediumBold)
+                .accessibilityLabel(String.localizedStringWithFormat(Localization.removeRolePIN, role.displayName))
             }
         }
     }
@@ -74,15 +76,16 @@ struct POSSecuritySettingsView: View {
                 .font(.posBodyLargeBold)
             if mismatch { Text(Localization.mismatch).foregroundStyle(Color.posError).font(.posBodyMediumRegular()) }
             POSPINEntryView(state: controller.isSaving ? .loading : .idle) { pin in
-                guard let firstPIN else { self.firstPIN = pin; return true }
-                guard firstPIN == pin else { mismatch = true; return false }
-                if await controller.save(pin, for: role) { editing = nil }
+                guard let firstPIN else { mismatch = false; self.firstPIN = pin; return true }
+                guard firstPIN == pin else { self.firstPIN = nil; mismatch = true; return false }
+                let saved = await controller.save(pin, for: role)
+                if saved { editing = nil }
                 self.firstPIN = nil
-                return false
+                return saved
             }
             .id(firstPIN == nil)
             .frame(maxWidth: POSPINEntryView.contentWidth)
-            Button(Localization.cancel) { firstPIN = nil; editing = nil }
+            Button(Localization.cancel) { controller.load(); firstPIN = nil; editing = nil }
                 .font(.posBodyMediumBold)
         }
         .frame(maxWidth: .infinity)
@@ -103,6 +106,8 @@ struct POSSecuritySettingsView: View {
         static let setPIN = NSLocalizedString("pos.security.setPIN", value: "Set PIN", comment: "Set a local PIN button.")
         static let change = NSLocalizedString("pos.security.change", value: "Change", comment: "Change a local PIN button.")
         static let remove = NSLocalizedString("pos.security.remove", value: "Remove PIN", comment: "Remove a local PIN button.")
+        static let removeRolePIN = NSLocalizedString("pos.security.removeRolePIN", value: "Remove %1$@ PIN",
+                                                     comment: "Remove PIN accessibility label. %1$@ is the Admin or Cashier role.")
         static let cancel = NSLocalizedString("pos.security.cancel", value: "Cancel", comment: "Cancel local PIN setup or removal.")
         static let enterPIN = NSLocalizedString("pos.security.enterPIN", value: "Enter a new %1$@ PIN", comment: "%1$@ is the Admin or Cashier role.")
         static let confirmPIN = NSLocalizedString("pos.security.confirmPIN", value: "Confirm the new %1$@ PIN", comment: "%1$@ is the Admin or Cashier role.")

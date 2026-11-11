@@ -34,7 +34,7 @@ extension POSSettingsControllerProtocol {
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
 
-    let securityController: POSSecuritySettingsController?
+    private(set) var securityController: POSSecuritySettingsController?
     let storeViewModel: POSSettingsStoreViewModel
     let paymentsViewModel: POSSettingsPaymentsViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
@@ -52,9 +52,7 @@ extension POSSettingsControllerProtocol {
          isLocalCatalogEligible: Bool,
          receiptSettingsAdminURL: String,
          analytics: POSAnalyticsProviding,
-         printerConnectionController: POSPrinterConnectionController? = nil,
-         securityController: POSSecuritySettingsController? = nil) {
-        self.securityController = securityController
+         printerConnectionController: POSPrinterConnectionController? = nil) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
@@ -77,6 +75,10 @@ extension POSSettingsControllerProtocol {
         self.printerConnectionController = printerConnectionController
 
         observeCardReader(from: cardPresentPaymentService)
+    }
+
+    func configureSecurity(store: POSPINManaging, session: POSAccessSession) {
+        securityController = POSSecuritySettingsController(store: store, session: session)
     }
 
     private func observeCardReader(from service: CardPresentPaymentFacade) {

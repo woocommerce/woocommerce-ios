@@ -27,6 +27,40 @@ struct POSSecuritySettingsControllerTests {
         #expect(controller.isVisible)
     }
 
+    @Test func test_setup_when_first_write_fails_then_stays_unprotected_and_reports_failure() async {
+        // Given
+        let (controller, session, _) = makeSUT()
+        controller.load()
+        storage.shouldFailWrites = true
+
+        // When
+        let saved = await controller.save("1234", for: .admin)
+
+        // Then
+        #expect(!saved)
+        #expect(controller.error == .storageFailure)
+        #expect(controller.roles == [])
+        #expect(!session.isPINProtectionEnabled)
+        #expect(!session.isLocked)
+    }
+
+    @Test func test_change_when_admin_matches_cashier_then_preserves_both_pins() async {
+        // Given
+        let (controller, session, _) = makeSUT()
+        controller.load()
+        #expect(await controller.save("1234", for: .admin))
+        #expect(await controller.save("5678", for: .cashier))
+
+        // When
+        let saved = await controller.save("5678", for: .admin)
+
+        // Then
+        #expect(!saved)
+        #expect(controller.error == .pinMatchesOtherRole)
+        #expect(controller.roles == [.admin, .cashier])
+        #expect(session.currentStaff?.role == .admin)
+    }
+
     @Test func test_change_when_new_pin_is_saved_then_old_pin_stops_working() async throws {
         // Given
         let (controller, session, _) = makeSUT()

@@ -31,7 +31,7 @@ struct POSLocalPINStoreTests {
         #expect(credentials[1].pinHash.matches("5678"))
     }
 
-    @Test func test_setPIN_when_saved_then_storage_does_not_contain_the_plain_pin() throws {
+    @Test func test_setPIN_when_saved_then_storage_holds_only_the_salted_hash() throws {
         // Given
         let sut = makeSUT()
 
@@ -40,7 +40,16 @@ struct POSLocalPINStoreTests {
 
         // Then
         let stored = try #require(storage.values["pins.123"])
-        #expect(String(decoding: stored, as: UTF8.self).contains("1234") == false)
+        let json = try #require(try JSONSerialization.jsonObject(with: stored) as? [String: [String: Any]])
+        let admin = try #require(json["admin"])
+        #expect(Set(json.keys) == ["admin"])
+        #expect(Set(admin.keys) == ["algorithm", "iterations", "salt", "hash"])
+        #expect(admin["algorithm"] as? String == "pbkdf2-sha256")
+        let salt = try #require((admin["salt"] as? String).flatMap { Data(base64Encoded: $0) })
+        let hash = try #require((admin["hash"] as? String).flatMap { Data(base64Encoded: $0) })
+        #expect(salt.count == POSPINHash.Constants.saltByteCount)
+        #expect(hash.count == POSPINHash.Constants.hashByteCount)
+        #expect(try JSONDecoder().decode([String: POSPINHash].self, from: stored)["admin"]?.matches("1234") == true)
     }
 
     @Test func test_setPIN_when_pin_is_changed_then_only_the_new_pin_matches() throws {

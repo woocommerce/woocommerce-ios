@@ -1,6 +1,6 @@
 import CocoaLumberjackSwift
 import Foundation
-@preconcurrency import KeychainAccess
+import KeychainAccess
 
 enum POSPINStoreError: Error, Equatable {
     case invalidPINFormat
@@ -124,11 +124,10 @@ protocol POSSecureStorage: Sendable {
 struct KeychainPOSSecureStorage: POSSecureStorage {
     static let service = "com.automattic.woocommerce.pos.localPINs"
 
-    private let keychain: Keychain
+    private let service: String
 
     init(service: String = KeychainPOSSecureStorage.service) {
-        // This-device-only items are left out of backups and don't move to another device.
-        self.keychain = Keychain(service: service).accessibility(.whenUnlockedThisDeviceOnly)
+        self.service = service
     }
 
     func data(forKey key: String) throws -> Data? {
@@ -145,5 +144,11 @@ struct KeychainPOSSecureStorage: POSSecureStorage {
 
     func removeAll() throws {
         try keychain.removeAll()
+    }
+
+    // `Keychain` isn't `Sendable`, so each call builds its own instead of storing one.
+    // This-device-only items are left out of backups and don't move to another device.
+    private var keychain: Keychain {
+        Keychain(service: service).accessibility(.whenUnlockedThisDeviceOnly)
     }
 }

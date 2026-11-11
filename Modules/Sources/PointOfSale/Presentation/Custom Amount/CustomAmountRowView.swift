@@ -34,12 +34,14 @@ struct CustomAmountRowView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityHint(Localization.editAccessibilityHint)
+                .accessibilityIdentifier("pos-custom-amount-row")
             } else {
                 rowContent
+                    .accessibilityIdentifier("pos-custom-amount-row")
             }
 
             if let onRemove {
-                CartRowRemoveButton(action: onRemove)
+                CartRowRemoveButton(accessibilityIdentifier: "pos-custom-amount-remove-button", action: onRemove)
             }
         }
         .padding(.trailing, metrics.padding.medium)
@@ -47,7 +49,6 @@ struct CustomAmountRowView: View {
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .padding(.horizontal, metrics.padding.medium)
-        .accessibilityIdentifier("pos-custom-amount-row")
     }
 
     private var rowContent: some View {

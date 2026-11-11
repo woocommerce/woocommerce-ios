@@ -14,6 +14,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         let window = UIWindow(windowScene: windowScene)
+        if ProcessConfiguration.shouldDisableAnimations {
+            // AppDelegate runs before the scene creates its window, so configure Core Animation here for UI-test quiescence.
+            window.layer.speed = 100
+        }
         window.makeKeyAndVisible()
         self.window = window
 

@@ -31,6 +31,7 @@ struct POSSecuritySettingsView: View {
                         }
                     } else {
                         Button(Localization.retry) { controller.load() }
+                            .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
                     }
                     if let error = controller.error {
                         Text(error == .pinMatchesOtherRole ? Localization.distinctPINs : Localization.storageError)
@@ -53,7 +54,7 @@ struct POSSecuritySettingsView: View {
     }
 
     private func pinRow(_ role: POSLocalRole, roles: Set<POSLocalRole>) -> some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.small) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
             POSInformationCardFieldRow(label: String.localizedStringWithFormat(Localization.rolePIN, role.displayName),
                                        value: roles.contains(role) ? Localization.pinSet : Localization.noPIN,
                                        showSeparator: false,
@@ -65,7 +66,7 @@ struct POSSecuritySettingsView: View {
                 Button(Localization.remove, role: .destructive) {
                     if role == .admin { confirmRemoval = true } else { Task { await controller.save(nil, for: role) } }
                 }
-                .font(.posBodyMediumBold)
+                .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
                 .accessibilityLabel(String.localizedStringWithFormat(Localization.removeRolePIN, role.displayName))
             }
         }

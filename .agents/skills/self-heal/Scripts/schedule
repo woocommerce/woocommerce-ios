@@ -4,11 +4,11 @@ set -euo pipefail
 
 # Usage: schedule [install|uninstall]
 #
-# Installs a launchd agent that starts `run-once` every SELF_HEAL_INTERVAL seconds (default: 3 hours).
+# Installs a launchd agent that starts `run-once` every SELF_HEAL_INTERVAL seconds (default: 2 hours).
 # launchd plists cannot expand `~` or variables, so the plist is generated with this machine's paths.
 
 readonly LABEL="${SELF_HEAL_LABEL:-com.automattic.self-heal}"
-readonly INTERVAL="${SELF_HEAL_INTERVAL:-10800}"
+readonly INTERVAL="${SELF_HEAL_INTERVAL:-7200}"
 readonly RUN_ONCE="$(cd "$(dirname "$0")" && pwd)/run-once"
 readonly PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 readonly LOGS="$HOME/.self-heal"

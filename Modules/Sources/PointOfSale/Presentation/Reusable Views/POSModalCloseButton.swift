@@ -94,6 +94,30 @@ struct POSModalCloseButtonModifier: ViewModifier {
     }
 }
 
+/// Offers the close action to the phone flow header only, for content that keeps its own bottom Cancel and must not get
+/// a close button in the regular-width card.
+private struct POSModalFlowHeaderCloseModifier: ViewModifier {
+    let closeAction: () -> Void
+    let accessibilityLabel: String
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
+
+    func body(content: Content) -> some View {
+        content
+            .posModalFlowCloseAction(enabled: isFullScreenFlow,
+                                     accessibilityLabel: accessibilityLabel,
+                                     action: closeAction)
+    }
+}
+
+extension View {
+    /// Shows a close button in the header of a phone full-screen flow that runs `action`. Other presentations are unchanged.
+    func posModalFlowHeaderCloseButton(
+        action: @escaping () -> Void,
+        accessibilityLabel: String = POSModalCloseButton.Localization.defaultAccessibilityLabel) -> some View {
+        modifier(POSModalFlowHeaderCloseModifier(closeAction: action, accessibilityLabel: accessibilityLabel))
+    }
+}
+
 private extension POSModalCloseButton {
     enum Localization {
         static let defaultAccessibilityLabel = NSLocalizedString(

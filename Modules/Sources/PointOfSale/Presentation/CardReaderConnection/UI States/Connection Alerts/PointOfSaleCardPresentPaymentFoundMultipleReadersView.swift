@@ -41,6 +41,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
         }
         .padding(contentPadding)
         .accessibilityElement(children: .contain)
+        .posModalFlowHeaderCloseButton(action: cancelSearch)
         .onAppear {
             isTitleFocused = true
         }

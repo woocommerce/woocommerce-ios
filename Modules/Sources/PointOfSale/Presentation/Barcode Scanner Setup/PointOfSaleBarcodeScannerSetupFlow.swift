@@ -295,9 +295,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
             },
             buttonCustomization: PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization(),
             transitions: [
-                .next: .setupProducts,
-                // Only the phone header's back arrow uses it; the step has no Back button.
-                .back: .test
+                .next: .setupProducts
             ])
     }
 

@@ -51,16 +51,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
         currentFlow = nil
     }
 
-    /// The back arrow of the phone flow header: closes the setup on scanner selection, otherwise goes one step back.
-    func goBack() {
-        switch currentState {
-        case .scannerSelection:
-            isPresented = false
-        case .setupFlow:
-            currentFlow?.previousStep()
-        }
-    }
-
     func getCurrentStep() -> PointOfSaleBarcodeScannerSetupStep? {
         currentFlow?.currentStep
     }

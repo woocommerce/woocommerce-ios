@@ -42,7 +42,7 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
-            .dynamicWidthScaling(containerWidth: width)
+            .posStatusButtonsWidth()
 
             Spacer()
         }

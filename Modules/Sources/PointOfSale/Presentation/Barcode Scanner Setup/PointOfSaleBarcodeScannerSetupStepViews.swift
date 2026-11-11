@@ -2,13 +2,14 @@ import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 
 struct PointOfSaleBarcodeScannerBarcodeView: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let instruction: String
     let barcode: PointOfSaleAssets
 
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
-            VStack(alignment: .center, spacing: POSSpacing.small) {
+        VStack(spacing: metrics.spacing.xLarge) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(.posOnSurface)
@@ -24,7 +25,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxHeight: Constants.maxBarcodeSize)
-                .padding(POSPadding.medium)
+                .padding(metrics.padding.medium)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
                 .accessibilityLabel(Localization.barcodeImageAccesibilityLabel)
@@ -47,16 +48,17 @@ extension PointOfSaleBarcodeScannerBarcodeView {
 }
 
 struct PointOfSaleBarcodeScannerPairingView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posAnalytics) private var analytics
     let scanner: PointOfSaleBarcodeScannerType
 
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             PointOfSaleAssets.gears.decorativeImage
                 .resizable()
                 .frame(width: Constants.gearIconSize, height: Constants.gearIconSize)
 
-            VStack(alignment: .center, spacing: POSSpacing.small) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(Localization.title)
                     .font(.posHeadingBold)
                     .foregroundColor(.posOnSurface)
@@ -81,7 +83,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
                     .foregroundColor(.posPrimaryContainer)
                     .underline()
             }
-            .padding(.top, POSSpacing.large)
+            .padding(.top, metrics.spacing.large)
         }
     }
 
@@ -162,13 +164,14 @@ private extension PointOfSaleBarcodeScannerTestBarcodeView {
 }
 
 struct PointOfSaleBarcodeScannerSetupCompleteView: View {
+    @Environment(\.posMetrics) private var metrics
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             // Temporary image until finalised assets are available
             successIcon
                 .accessibilityHidden(true)
 
-            VStack(alignment: .center, spacing: POSSpacing.small) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(Localization.title)
                     .font(.posHeadingBold)
                     .foregroundColor(.posOnSurface)
@@ -212,11 +215,12 @@ private extension PointOfSaleBarcodeScannerSetupCompleteView {
 }
 
 struct PointOfSaleBarcodeScannerErrorView: View {
+    @Environment(\.posMetrics) private var metrics
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             POSErrorXMark()
 
-            VStack(alignment: .center, spacing: POSSpacing.small) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(Localization.title)
                     .font(.posHeadingBold)
                     .foregroundColor(.posOnSurface)
@@ -228,7 +232,7 @@ struct PointOfSaleBarcodeScannerErrorView: View {
                     .multilineTextAlignment(.center)
             }
         }
-        .padding(POSSpacing.xLarge)
+        .padding(metrics.spacing.xLarge)
     }
 
     private enum Localization {

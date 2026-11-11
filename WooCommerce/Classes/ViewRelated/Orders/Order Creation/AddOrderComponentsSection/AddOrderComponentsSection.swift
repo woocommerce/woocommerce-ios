@@ -59,7 +59,7 @@ struct AddOrderComponentsSection: View {
             .frame(minHeight: Constants.rowHeight)
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
     }
 }
 
@@ -98,6 +98,7 @@ private extension AddOrderComponentsSection {
                 }, onCouponSelected: { coupon in
                     viewModel.addNewCouponLineClosure(coupon)
                 })
+                .ignoresSafeArea(.container, edges: .bottom)
                 .navigationTitle(Localization.addCoupon)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {

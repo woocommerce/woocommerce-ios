@@ -629,6 +629,7 @@ public enum WooAnalyticsStat: String {
     case receiptPrintFailed = "receipt_print_failed"
     case receiptPrintCanceled = "receipt_print_canceled"
     case receiptPrintSuccess = "receipt_print_success"
+    case receiptPrintRetryTapped = "receipt_print_retry_tapped"
     case receiptFetchFailed = "receipt_url_fetching_fails"
 
     // MARK: Payment Events
@@ -1369,6 +1370,9 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleBarcodeScannerSetupDismissed = "barcode_scanner_setup_dismissed"
     case pointOfSaleBarcodeScannerSetupRetryTapped = "barcode_scanner_setup_retry_tapped"
     case pointOfSaleBarcodeScannerSetupScannerConnected = "barcode_scanner_setup_scanner_connected"
+    case pointOfSaleReceiptPrinterSetupStarted = "receipt_printer_setup_started"
+    case pointOfSaleReceiptPrinterConnected = "receipt_printer_connected"
+    case pointOfSaleReceiptPrinterDisconnectTapped = "receipt_printer_disconnect_tapped"
     case pointOfSaleSettingsMenuItemTapped = "settings_open"
     case pointOfSaleSettingsCloseButtonTapped = "settings_closed"
     case pointOfSaleSettingsStoreDetailsTapped = "settings_store_details_tapped"

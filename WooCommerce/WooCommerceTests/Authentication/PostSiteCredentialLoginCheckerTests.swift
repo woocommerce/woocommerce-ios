@@ -28,9 +28,11 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     }
 
     override func tearDown() async throws {
+        window.isHidden = true
+        window.rootViewController = nil
+        window = nil
         stores = nil
         navigationController = nil
-        window = nil
         try await super.tearDown()
     }
 

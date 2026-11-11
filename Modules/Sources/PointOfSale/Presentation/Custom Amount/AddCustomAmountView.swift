@@ -3,6 +3,7 @@ import WooFoundation
 import struct Yosemite.POSCustomAmount
 
 struct AddCustomAmountView: View {
+    @Environment(\.posMetrics) private var metrics
     let onDismiss: () -> Void
     let onSubmit: (POSCustomAmount) -> Void
 
@@ -44,10 +45,10 @@ struct AddCustomAmountView: View {
 
             ScrollViewReader { proxy in
                 ScrollView {
-                    VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.xLarge) {
                         amountSection
                             .id(Field.amount)
-                            .padding(.top, POSSpacing.xLarge)
+                            .padding(.top, metrics.spacing.xLarge)
 
                         Divider()
 
@@ -58,9 +59,9 @@ struct AddCustomAmountView: View {
                         nameSection
                             .id(Field.name)
 
-                        Spacer(minLength: POSSpacing.xxLarge)
+                        Spacer(minLength: metrics.spacing.xxLarge)
                     }
-                    .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                    .padding(.horizontal, metrics.padding.medium)
                 }
                 .scrollDismissesKeyboard(.interactively)
                 // The submit button is pinned below the scroll view, so a focused field (especially the
@@ -77,15 +78,15 @@ struct AddCustomAmountView: View {
             }
 
             submitButton
-                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                .padding(.vertical, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
+                .padding(.vertical, metrics.padding.medium)
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .posIgnoresHiddenKeyboardSafeArea()
     }
 
     private var amountSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.small) {
+        VStack(alignment: .leading, spacing: metrics.spacing.small) {
             Text(Localization.amountLabel)
                 .font(.posBodyMediumRegular())
                 .foregroundColor(.posOnSurfaceVariantLowest)
@@ -97,7 +98,7 @@ struct AddCustomAmountView: View {
                     .opacity(0)
                     .accessibilityHidden(true)
 
-                HStack(spacing: POSSpacing.xSmall) {
+                HStack(spacing: metrics.spacing.xSmall) {
                     Text(viewModel.currencySymbol)
                         .font(.posHeadingBold)
                         .foregroundColor(.posOnSurface)
@@ -108,7 +109,7 @@ struct AddCustomAmountView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(POSPadding.large)
+            .padding(metrics.padding.large)
             .background(Color.posSurfaceContainerLowest)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value))
             .contentShape(Rectangle())
@@ -133,7 +134,7 @@ struct AddCustomAmountView: View {
                 .foregroundColor(.posOnSurface)
         }
         .tint(.posPrimary)
-        .padding(.vertical, POSPadding.small)
+        .padding(.vertical, metrics.padding.small)
         .onChange(of: viewModel.isTaxable) { _, _ in
             isAmountFocused = false
             isNameFocused = false
@@ -141,7 +142,7 @@ struct AddCustomAmountView: View {
     }
 
     private var nameSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.small) {
+        VStack(alignment: .leading, spacing: metrics.spacing.small) {
             Text(Localization.nameLabel)
                 .font(.posBodyMediumRegular())
                 .foregroundColor(.posOnSurfaceVariantLowest)
@@ -154,7 +155,7 @@ struct AddCustomAmountView: View {
                 .textInputAutocapitalization(.sentences)
                 .submitLabel(.done)
                 .onSubmit(submit)
-                .padding(.vertical, POSPadding.small)
+                .padding(.vertical, metrics.padding.small)
                 .accessibilityIdentifier("pos-custom-amount-name-field")
         }
     }

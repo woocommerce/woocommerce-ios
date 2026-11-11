@@ -4,6 +4,7 @@ import Combine
 import struct Yosemite.Order
 import struct Yosemite.Address
 import struct Yosemite.ReceiptStoreInformation
+import struct Yosemite.CardPresentTransactionDetails
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 import enum WooFoundationCore.WooAnalyticsStat
@@ -11,6 +12,132 @@ import enum WooFoundationCore.WooAnalyticsStat
 
 @Suite(.timeLimit(.minutes(5)))
 struct POSPaymentModelTests {
+
+    @Test @MainActor
+    func test_start_card_payment_when_large_layout_reader_reconnects_during_cancel_then_preserves_bluetooth() async throws {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .large)
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
+            sut.connectCardReader()
+        }
+        let reader = try #require(service.connectedReader)
+        sut.observeReaderReconnection()
+        service.onCancelPaymentCalled = {
+            service.connectionStatus = .reconnecting(reader)
+        }
+
+        // When
+        await sut.startCardPayment(with: .bluetoothReader)
+        try #require(sut.currentPaymentMethod == .bluetooth)
+        service.onCancelPaymentCalled = nil
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
+            service.connectedReader = reader
+        }
+
+        // Then
+        #expect(service.disconnectReaderCallCount == 0)
+        #expect(service.spyCollectPaymentMethods == [.bluetooth])
+    }
+
+    @Test @MainActor
+    func test_start_payment_when_reader_disconnects_during_cancellation_then_does_not_collect() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .bluetooth,
+                                        cardPaymentSelectionMode: .compact)
+        service.onCancelPaymentCalled = {
+            service.connectedReader = nil
+        }
+
+        // When
+        await sut.startPayment()
+
+        // Then
+        #expect(sut.cardReaderConnectionStatus == .disconnected)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.isPaymentSessionActive == false)
+    }
+
+    @Test @MainActor
+    func test_start_card_payment_when_compact_tap_to_pay_reader_disconnects_during_cancel_then_waits_for_tap() async throws {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .tapToPay,
+                                        cardPaymentSelectionMode: .compact)
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
+            sut.connectTapToPayReader()
+        }
+        let reader = try #require(service.connectedReader)
+        sut.observeReaderReconnection()
+        service.onCancelPaymentCalled = {
+            service.connectedReader = nil
+        }
+        await sut.startCardPayment(with: .tapToPay)
+        service.onCancelPaymentCalled = nil
+
+        // When
+        await updateReaderConnectionStatus(observedBy: sut) {
+            service.connectedReader = reader
+        }
+        for _ in 0..<10 {
+            await Task.yield()
+        }
+
+        // Then
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.currentPaymentMethod == nil)
+    }
+
+    @Test @MainActor
+    func test_start_payment_when_reader_reconnects_after_cancellation_then_resumes_collection() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = Order.fake().copy(total: "10.00")
+        provider.totalDecimalToReturn = 10
+        let reader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        service.connectedReader = reader
+        let sut = makePaymentController(cardPresentPaymentService: service,
+                                        orderProvider: provider,
+                                        preferredConnectionMethod: .bluetooth,
+                                        cardPaymentSelectionMode: .compact)
+        service.onCancelPaymentCalled = {
+            service.connectedReader = nil
+        }
+        await sut.startPayment()
+        service.onCancelPaymentCalled = nil
+
+        // When
+        await withCheckedContinuation { continuation in
+            service.onCollectPaymentCalled = { continuation.resume() }
+            service.connectedReader = reader
+        }
+
+        // Then
+        #expect(service.spyCollectPaymentOrders.count == 1)
+        #expect(service.connectReaderCallCount == 0)
+    }
 
     @Test @MainActor
     func test_start_payment_when_reader_connected_then_prepares_analytics_with_checkout_order() async {
@@ -981,6 +1108,118 @@ struct POSPaymentModelTests {
 
         // When / Then — printing without a configured printer silently no-ops.
         try await sut.printReceipt(storeInformation: .empty)
+    }
+
+    @Test("printReceipt includes the card details of a card payment")
+    @MainActor
+    func test_printReceipt_when_card_payment_succeeded_then_prints_card_details() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let cardDetails = makeCardDetails()
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        service.collectPaymentOverride = { .success(CardPresentPaymentTransaction(cardDetails: cardDetails)) }
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+        await sut.startPayment()
+
+        // When
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedCardDetails == cardDetails)
+    }
+
+    @Test("printReceipt has no card details for a cash payment")
+    @MainActor
+    func test_printReceipt_when_cash_payment_succeeded_then_prints_without_card_details() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+
+        let sut = makePaymentController(
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+        try await sut.collectCashPayment(changeDueAmount: nil)
+
+        // When
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedOrder?.orderID == 123)
+        #expect(printer.printedCardDetails == nil)
+    }
+
+    @Test("printReceipt does not reuse card details from a previous payment")
+    @MainActor
+    func test_printReceipt_when_cash_payment_follows_card_payment_then_prints_without_card_details() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        service.collectPaymentOverride = { .success(CardPresentPaymentTransaction(cardDetails: makeCardDetails())) }
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+        await sut.startPayment()
+        try await sut.printReceipt(storeInformation: .empty)
+        #expect(printer.printedCardDetails != nil)
+
+        // When
+        sut.reset()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 456, total: "5.00")
+        try await sut.collectCashPayment(changeDueAmount: nil)
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedOrder?.orderID == 456)
+        #expect(printer.printedCardDetails == nil)
+    }
+
+    @Test("printReceipt ignores card details from a payment that completes after reset")
+    @MainActor
+    func test_printReceipt_when_card_payment_completes_after_reset_then_next_order_prints_without_card_details() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+        service.collectPaymentOverride = {
+            sut.reset()
+            return .success(CardPresentPaymentTransaction(cardDetails: makeCardDetails()))
+        }
+
+        // When
+        await sut.startPayment()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 456, total: "5.00")
+        try await sut.collectCashPayment(changeDueAmount: nil)
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedOrder?.orderID == 456)
+        #expect(printer.printedCardDetails == nil)
     }
 
     // MARK: - Reset
@@ -3063,6 +3302,19 @@ private func makePaymentController(
         preferredConnectionMethod: preferredConnectionMethod,
         cardPaymentSelectionMode: cardPaymentSelectionMode,
         paymentState: paymentState)
+}
+
+private func makeCardDetails() -> CardPresentTransactionDetails {
+    CardPresentTransactionDetails(last4: "4242",
+                                  expMonth: 12,
+                                  expYear: 2030,
+                                  cardholderName: nil,
+                                  brand: .visa,
+                                  generatedCard: nil,
+                                  receipt: nil,
+                                  emvAuthData: nil,
+                                  wallet: nil,
+                                  network: nil)
 }
 
 @MainActor

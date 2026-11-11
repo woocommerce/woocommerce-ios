@@ -1818,7 +1818,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func isReceiptPrinterConnected_when_printer_disconnected_then_false() async {
             // Given
             let settingsController = MockPOSSettingsController()
-            settingsController.printerConnectionController = POSPrinterConnectionController(service: MockReceiptPrinterService())
+            settingsController.printerConnectionController = POSPrinterConnectionController(service: MockReceiptPrinterService(), analytics: MockPOSAnalytics())
 
             // When
             let sut = makePointOfSaleAggregateModel(settingsController: settingsController)
@@ -1829,7 +1829,7 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func isReceiptPrinterConnected_when_printer_connected_then_true() async {
             // Given
-            let controller = POSPrinterConnectionController(service: MockReceiptPrinterService())
+            let controller = POSPrinterConnectionController(service: MockReceiptPrinterService(), analytics: MockPOSAnalytics())
             controller.connect(to: PrinterDevice(id: "1", name: "Star TSP100"))
             await waitForConnection(of: controller)
             let settingsController = MockPOSSettingsController()

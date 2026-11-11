@@ -22,10 +22,8 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
+        POSStatusScreenLayout {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
-                Spacer()
                 POSErrorExclamationMark(size: .large)
                 Spacer().frame(height: metrics.spacing.large)
                 VStack(alignment: .center, spacing: metrics.spacing.small) {
@@ -36,18 +34,14 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                     Text(message)
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posBodyLargeRegular())
-                        .padding([.leading, .trailing])
+                        .posPadding(.horizontal, \.medium)
                 }
-                Spacer().frame(height: metrics.spacing.xxLarge)
-                Button(actionTitle, action: action)
-                    .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .padding([.leading, .trailing], metrics.padding.xxLarge)
-                    .padding([.bottom], metrics.padding.medium)
-                Spacer()
             }
-            .multilineTextAlignment(.center)
-            Spacer()
+        } buttons: {
+            Button(actionTitle, action: action)
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
+        .multilineTextAlignment(.center)
     }
 }
 

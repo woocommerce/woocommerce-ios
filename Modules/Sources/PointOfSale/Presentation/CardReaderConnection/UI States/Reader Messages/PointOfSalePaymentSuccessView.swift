@@ -7,7 +7,6 @@ struct PointOfSalePaymentSuccessView: View {
     let successAction: PaymentFlowAction
     let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var isViewLoaded: Bool = false
     @State private var showPrinterSetupModal: Bool = false
@@ -24,12 +23,8 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            successView
-            Spacer()
-        }
-        .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : metrics.padding.small)
+        successView
+        .frame(maxWidth: .infinity)
         .background(Color.posSurfaceBright)
         .barcodeScanning(enabled: .constant(isBarcodeScanningEnabled)) { barcode in
             onSuccessScreenBarcodeScanned?(barcode)
@@ -44,7 +39,7 @@ struct PointOfSalePaymentSuccessView: View {
         }
         .posModal(isPresented: $showPrinterSetupModal) {
             if let controller = posModel.settingsController.printerConnectionController {
-                POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
+                POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .printReceipt)
             }
         }
         .onChange(of: showPrinterSetupModal) { _, isShowing in
@@ -129,6 +124,7 @@ struct PointOfSalePaymentSuccessView: View {
                             .opacity(isViewLoaded ? 1 : 0)
                     }
                 }
+                .padding(.horizontal, metrics.padding.medium)
 
                 if let customerEmail, customerEmail.isNotEmpty {
                     Spacer().frame(height: metrics.spacing.small)
@@ -136,26 +132,18 @@ struct PointOfSalePaymentSuccessView: View {
                     Text(String(format: Localization.receiptSentFormat, customerEmail))
                         .font(.posBodyLargeRegular())
                         .foregroundStyle(Color.posOnSurface)
+                        .padding(.horizontal, metrics.padding.medium)
                         .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                         .opacity(isViewLoaded ? 1 : 0)
                 }
 
                 Spacer().frame(height: metrics.spacing.xxLarge)
 
-                // iPad: buttons take half the screen width (count:2 span:1).
-                // Phone: half the screen width is ~190pt, too narrow for "New order" /
-                // "Email receipt" — let them span the container minus standard insets instead.
                 PaymentsActionButtons(successAction: successAction,
                                       showsPrintReceipt: posModel.receiptPrinter != nil,
                                       printButtonState: printButtonState,
                                       printReceiptAction: handlePrintReceiptTap)
-                    .if(horizontalSizeClass != .compact) { view in
-                        view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: metrics.spacing.none)
-                    }
-                    .if(horizontalSizeClass == .compact) { view in
-                        view.padding(.horizontal, metrics.padding.large)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
+                    .posStatusButtonsWidth()
                     .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
                     .opacity(isViewLoaded ? 1 : 0)
 

@@ -4,6 +4,7 @@ import Combine
 
 import struct Yosemite.Order
 import struct Yosemite.ReceiptStoreInformation
+import struct Yosemite.CardPresentTransactionDetails
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import enum Yosemite.CardReaderSoftwareUpdateState
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
@@ -133,6 +134,7 @@ final class POSPaymentModel {
     private var cancellables: Set<AnyCancellable> = []
     private var paymentSessionCancellables: Set<AnyCancellable> = []
     private var currentOrder: Order?
+    private var cardPaymentDetails: (orderID: Int64, cardDetails: CardPresentTransactionDetails)?
     private var formattedOrderTotalPrice: String?
     /// QR-encodeable URL for the active scan-to-pay payment. Populated lazily when the
     /// merchant taps Scan to Pay (after promoting the autoDraft to `.pending`).
@@ -522,6 +524,25 @@ extension POSPaymentModel {
             return
         }
 
+        // The reader can disconnect while cancellation is suspended. Collecting now would
+        // start reader discovery through preflight without an explicit connection request.
+        guard case .connected = cardReaderConnectionStatus else {
+            DDLogInfo("🃏 [CardPayment] reader unavailable after cancel, waiting for reconnection")
+            // Large layouts retain the chosen method so the default Tap to Pay flow cannot take over.
+            if isCompactCardPaymentSelectionEnabled {
+                currentPaymentMethod = nil
+                if selectedCardPaymentRail == .tapToPay {
+                    isAwaitingExplicitPaymentStart = true
+                    startPaymentOnCardReaderConnection?.cancel()
+                    startPaymentOnCardReaderConnection = nil
+                    startPaymentGeneration += 1
+                    return
+                }
+            }
+            await startPaymentFlow(using: method)
+            return
+        }
+
         DDLogInfo("🃏 [CardPayment] startPayment proceeding to collectCardPayment")
         currentPaymentMethod = method
         isAwaitingExplicitPaymentStart = false
@@ -543,7 +564,10 @@ extension POSPaymentModel {
 
     private func collectPayment(for order: Order, using method: CardReaderConnectionMethod) async throws {
         collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(order: order))
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
+        let result = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
+        if case .success(let transaction) = result, let cardDetails = transaction.cardDetails {
+            cardPaymentDetails = (order.orderID, cardDetails)
+        }
     }
 
     func cancelThenCollectPayment() {
@@ -983,7 +1007,8 @@ extension POSPaymentModel {
         guard let receiptPrinter else {
             return
         }
-        try await receiptPrinter.printReceipt(order: order, storeInformation: storeInformation)
+        let cardDetails = cardPaymentDetails?.orderID == order.orderID ? cardPaymentDetails?.cardDetails : nil
+        try await receiptPrinter.printReceipt(order: order, storeInformation: storeInformation, cardDetails: cardDetails)
     }
 }
 
@@ -1037,6 +1062,7 @@ extension POSPaymentModel {
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
         currentOrder = nil
+        cardPaymentDetails = nil
         formattedOrderTotalPrice = nil
         scanToPayURL = nil
         isPreparingScanToPay = false

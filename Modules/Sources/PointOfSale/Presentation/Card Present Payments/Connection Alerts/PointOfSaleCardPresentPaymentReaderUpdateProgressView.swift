@@ -42,9 +42,9 @@ private enum Constants {
 #Preview {
     @Previewable @State var progress: CGFloat = 0.5
 
-    VStack(spacing: 20) {
+    VStack(spacing: POSMetrics.regular.spacing.large) {
         PointOfSaleCardPresentPaymentReaderUpdateProgressView(progress: progress, isComplete: progress >= 1.0)
         Slider(value: $progress, in: 0...1)
     }
-    .padding()
+    .posPadding(\.medium)
 }

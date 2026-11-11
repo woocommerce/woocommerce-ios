@@ -7,8 +7,6 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
 
-    @State private var width: CGFloat = 0
-
     var body: some View {
         VStack(alignment: .center, spacing: metrics.spacing.none) {
             POSErrorExclamationMark(size: .large)
@@ -38,14 +36,11 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
             if let tryAgainButtonViewModel = viewModel.tryAgainButtonViewModel {
                 Button(tryAgainButtonViewModel.title, action: tryAgainButtonViewModel.actionHandler)
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .frame(width: width * 0.5)
+                    .posStatusButtonsWidth()
             }
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
-        .measureWidth({ containerWidth in
-            width = containerWidth
-        })
         .onAppear {
             isTitleFocused = true
         }

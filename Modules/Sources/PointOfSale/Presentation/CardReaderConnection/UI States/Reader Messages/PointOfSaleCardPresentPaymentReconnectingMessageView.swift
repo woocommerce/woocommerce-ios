@@ -6,7 +6,6 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
     private let cancelReconnection: () -> Void
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    @State private var width: CGFloat = 0
     @State private var isCancelling = false
 
     init(cancelReconnection: @escaping () -> Void) {
@@ -39,12 +38,9 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
                     .minimumScaleFactor(1)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isCancelling))
-            .frame(width: width * 0.5)
+            .posStatusButtonsWidth()
         }
         .frame(maxWidth: .infinity)
-        .measureWidth({ containerWidth in
-            width = containerWidth
-        })
         .multilineTextAlignment(.center)
         .onAppear {
             isCancelling = false

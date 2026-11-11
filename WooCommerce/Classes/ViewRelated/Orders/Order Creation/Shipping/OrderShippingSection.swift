@@ -34,7 +34,7 @@ struct OrderShippingSection: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .padding()
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
         .addingTopAndBottomDividers()
         .sheet(item: $viewModel.shippingLineDetails, content: { viewModel in
             ShippingLineSelectionDetails(viewModel: viewModel)

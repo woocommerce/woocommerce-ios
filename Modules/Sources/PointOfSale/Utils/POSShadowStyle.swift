@@ -72,22 +72,22 @@ extension View {
 }
 
 #Preview {
-    VStack(spacing: 40) {
+    VStack(spacing: POSMetrics.regular.spacing.xxLarge) {
         Text("Medium Shadow")
-            .padding()
+            .posPadding(\.medium)
             .frame(width: 200, height: 100)
             .foregroundStyle(Color.posOnSecondaryContainer)
             .background(Color.posOutlineVariant)
             .posShadow(.medium, cornerRadius: 12)
 
         Text("Large Shadow")
-            .padding()
+            .posPadding(\.medium)
             .frame(width: 200, height: 100)
             .foregroundStyle(Color.posOnSecondaryContainer)
             .background(Color.posOutlineVariant)
             .posShadow(.large, cornerRadius: 16)
     }
-    .padding(100)
+    .posPadding(\.xxLarge)
 }
 
 // MARK: - UIKit Implementation (Private)

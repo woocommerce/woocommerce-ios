@@ -49,7 +49,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                 }
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
-            .dynamicWidthScaling(containerWidth: width)
+            .posStatusButtonsWidth()
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

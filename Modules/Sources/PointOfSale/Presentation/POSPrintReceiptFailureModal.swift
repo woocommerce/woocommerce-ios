@@ -2,17 +2,18 @@ import SwiftUI
 
 /// Tells the merchant why a receipt didn't print and offers Retry or Email receipt.
 struct POSPrintReceiptFailureModal: View {
+    @Environment(\.posMetrics) private var metrics
     let failure: POSPrintReceiptFailure
     let selectAction: (POSPrintReceiptFailureAction) -> Void
     let close: () -> Void
 
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             Spacer()
 
             POSErrorExclamationMark(size: .large)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 Text(failure.title)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)

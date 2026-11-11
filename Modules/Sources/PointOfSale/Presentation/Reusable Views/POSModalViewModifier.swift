@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRootModalViewModifier: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
@@ -21,7 +22,7 @@ struct POSRootModalViewModifier: ViewModifier {
             .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
             .overlay {
                 GeometryReader { geometry in
-                    let modalPadding = isFullScreen ? POSPadding.none : POSPadding.medium
+                    let modalPadding = isFullScreen ? metrics.padding.none : metrics.padding.medium
                     ZStack {
                         if modalManager.isPresented {
                             Color.posSurfaceDim.opacity(0.8)

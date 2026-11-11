@@ -3,6 +3,7 @@ import class WooFoundation.CurrencyFormatter
 import struct Yosemite.POSCustomAmount
 
 struct CustomAmountRowView: View {
+    @Environment(\.posMetrics) private var metrics
     private let customAmount: POSCustomAmount
     private let showsDiscountNotAppliedNote: Bool
     private let onEdit: (() -> Void)?
@@ -22,7 +23,7 @@ struct CustomAmountRowView: View {
     }
 
     private var dimension: CGFloat {
-        min(Constants.iconSize * scale, Constants.maximumIconSize)
+        min(metrics.cartRowSize * scale, metrics.cartRowSize * Constants.maximumCardSizeMultiplier)
     }
 
     var body: some View {
@@ -33,28 +34,29 @@ struct CustomAmountRowView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityHint(Localization.editAccessibilityHint)
+                .accessibilityIdentifier("pos-custom-amount-row")
             } else {
                 rowContent
+                    .accessibilityIdentifier("pos-custom-amount-row")
             }
 
             if let onRemove {
-                CartRowRemoveButton(action: onRemove)
+                CartRowRemoveButton(accessibilityIdentifier: "pos-custom-amount-remove-button", action: onRemove)
             }
         }
-        .padding(.trailing, Constants.cardContentHorizontalPadding)
-        .frame(maxWidth: .infinity, idealHeight: Constants.iconSize * scale)
+        .padding(.trailing, metrics.padding.medium)
+        .frame(maxWidth: .infinity, idealHeight: metrics.cartRowSize * scale)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .padding(.horizontal, Constants.horizontalPadding)
-        .accessibilityIdentifier("pos-custom-amount-row")
+        .padding(.horizontal, metrics.padding.medium)
     }
 
     private var rowContent: some View {
-        HStack(spacing: Constants.horizontalElementSpacing) {
+        HStack(spacing: metrics.spacing.medium) {
             CustomAmountAvatar(name: customAmount.name)
                 .frame(width: dimension, height: dimension)
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall * (1 / scale)) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall * (1 / scale)) {
                 Text(customAmount.name)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.titleFont)
@@ -74,8 +76,8 @@ struct CustomAmountRowView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .multilineTextAlignment(.leading)
-        .padding(.trailing, onRemove != nil ? Constants.horizontalElementSpacing : 0)
-        .frame(maxWidth: .infinity, idealHeight: Constants.iconSize * scale)
+        .padding(.trailing, onRemove != nil ? metrics.spacing.medium : 0)
+        .frame(maxWidth: .infinity, idealHeight: metrics.cartRowSize * scale)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }
@@ -101,11 +103,7 @@ private extension CustomAmountRowView {
     }
 
     enum Constants {
-        static let iconSize: CGFloat = 96
-        static let maximumIconSize: CGFloat = Self.iconSize * 1.5
-        static let horizontalPadding: CGFloat = POSPadding.medium
-        static let horizontalElementSpacing: CGFloat = POSSpacing.medium
-        static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
+        static let maximumCardSizeMultiplier: CGFloat = 1.5
         static let titleFont: POSFontStyle = .posBodySmallBold()
         static let amountFont: POSFontStyle = .posBodySmallRegular()
     }

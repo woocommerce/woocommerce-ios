@@ -16,12 +16,9 @@ extension POSListEmptyViewModelProtocol {
 struct POSListEmptyView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let viewModel: any POSListEmptyViewModelProtocol
 
     private let onAction: (() -> Void)?
-
-    @State private var viewWidth: CGFloat = 0
 
     @Environment(\.keyboardObserver) private var keyboard
 
@@ -31,8 +28,7 @@ struct POSListEmptyView: View {
     }
 
     var body: some View {
-        ScrollableVStack {
-            Spacer()
+        POSStatusScreenLayout {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
                 let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && !keyboard.isFullSizeKeyboardVisible
 
@@ -53,7 +49,7 @@ struct POSListEmptyView: View {
                 Text(viewModel.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
-                    .padding([.leading, .trailing])
+                    .posPadding(.horizontal, \.medium)
                     .multilineTextAlignment(.center)
 
                 if let hint = viewModel.hint {
@@ -61,31 +57,22 @@ struct POSListEmptyView: View {
                     Text(hint)
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
                         .font(.posBodyLargeRegular())
-                        .padding([.leading, .trailing])
+                        .posPadding(.horizontal, \.medium)
                         .multilineTextAlignment(.center)
                 }
-
-                Spacer().frame(height: metrics.spacing.xxLarge)
-
-                if let onAction, let buttonTitle = viewModel.buttonTitle {
-                    Button(action: {
-                        onAction()
-                    }, label: {
-                        Text(buttonTitle)
-                    })
-                    .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .frame(width: viewWidth / 2)
-                    .padding([.leading, .trailing])
-                }
             }
-            Spacer()
+            .multilineTextAlignment(.center)
+        } buttons: {
+            if let onAction, let buttonTitle = viewModel.buttonTitle {
+                Button(action: {
+                    onAction()
+                }, label: {
+                    Text(buttonTitle)
+                })
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+            }
         }
-        .multilineTextAlignment(.center)
-        .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
         .animation(.default, value: keyboard.keyboardHeight)
-        .measureWidth { width in
-            viewWidth = width
-        }
     }
 
     @ViewBuilder

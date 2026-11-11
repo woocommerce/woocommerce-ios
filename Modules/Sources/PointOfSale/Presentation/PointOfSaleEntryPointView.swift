@@ -210,6 +210,7 @@ public struct PointOfSaleEntryPointView: View {
                         paymentModel: posModel.paymentModel,
                         aggregateModel: posModel
                     )
+                    .posLockScreenOverlay()
             } else {
                 PointOfSaleLoadingView()
             }
@@ -281,7 +282,6 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
         .injectKeyboardObserver()
-        .posLockScreenOverlay()
         .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .environment(\.posAccessSession, accessSession)
         .onChange(of: isCompactLayout) { _, isCompactLayout in

@@ -4,6 +4,11 @@ enum POSStatusButtonsLayout {
     static let maxWidth: CGFloat = 520
 }
 
+enum POSStatusButtonsWidth {
+    case capped
+    case fullWidth
+}
+
 private struct POSStatusButtonsWidthModifier: ViewModifier {
     @Environment(\.posMetrics) private var metrics
     @ScaledMetric private var maxWidth = POSStatusButtonsLayout.maxWidth

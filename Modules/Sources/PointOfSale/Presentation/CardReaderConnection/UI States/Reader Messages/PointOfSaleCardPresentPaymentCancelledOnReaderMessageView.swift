@@ -8,7 +8,7 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
     @State private var width: CGFloat = 0
 
     var body: some View {
-        POSStatusScreenLayout {
+        POSStatusScreenLayout(buttonsWidth: .fullWidth) {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
                 POSErrorXMark()
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)

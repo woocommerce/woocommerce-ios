@@ -95,7 +95,7 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private var successView: some View {
-        POSStatusScreenLayout {
+        POSStatusScreenLayout(buttonsWidth: .capped) {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
                 POSSuccessIcon()
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)

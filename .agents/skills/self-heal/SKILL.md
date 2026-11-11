@@ -1,6 +1,6 @@
 ---
 name: self-heal
-description: Pick one unhandled production crash from Sentry, claim it with a GitHub issue, prove it with a red validation PR on Buildkite, and fix it in a draft PR that turns the test green. Use when asked to "self-heal", "fix a production crash", or when run on a loop.
+description: Pick one unhandled production crash from Sentry (or, when none qualify, a reported GitHub bug), prove it with a red validation PR on Buildkite, and fix it in a draft PR that turns the test green. Use when asked to "self-heal", "fix a production crash", or when run on a loop.
 user-invocable: true
 allowed-tools: "Bash, Read, Edit, Write, Grep, Glob"
 ---
@@ -37,6 +37,7 @@ This is part of an experiment I'm running in building custom tooling for self-he
 
 The `Status:` line in the issue body is the crash's current state.
 Whenever it changes, edit the body in place (`gh issue edit --body-file`); comment only when there is something to explain, such as a diagnosis or a build link.
+On an issue someone else opened (step 2b), the `Status:` line lives in your latest comment instead: change it with `gh issue comment <n> --edit-last`.
 
 ## Privacy
 
@@ -100,8 +101,27 @@ Never run `$CAP reset`: it is the operator's way to stop the fix PRs open now co
 8. Skip a candidate trunk has likely fixed. For each in-app file in the crashed thread, read `git log <release-tag>..origin/trunk -- <file>` in `$RUNNER`, and read any commit that touches the crashing function.
    Skip, logging `fixed-on-trunk` with the commit, if one guards the crashing path, especially when Sentry has no events for the crash from releases that include that commit.
 
-No candidate left: log `dry` and stop.
+No candidate left: log `dry` and look for a reported bug instead (step 2b).
 Do not widen to older releases or lower the threshold: older releases only add crashes that stopped, and smaller ones are not worth a reviewer's time.
+
+## 2b. Pick a reported bug
+
+List open issues someone else opened, oldest first, skipping `type: crash` and feature requests (`Enhancement`, `type: enhancement`):
+
+```bash
+gh issue list --state open --limit 500 --json number,title,author,labels,createdAt,comments
+```
+
+Skip an issue that already has a comment from you, an open PR referencing it, or a line in `$LOG` naming it (`#<n>`).
+Read the report and its comments, and the code it points at on trunk.
+Skip, logging `unverifiable #<n>` with the reason, if a unit test cannot reproduce it: it needs a device, a specific store's data, a server bug, or only UI rendering.
+
+No issue left: log `dry` and stop.
+
+Take the first that can be reproduced to step 4, using `<n>` as the ID: branches `self-heal/issue-<n>-red` and `self-heal/issue-<n>`, titles `Validate #<n>: ...` and `Fix #<n>: ...`.
+Do not open a new issue (step 3).
+The claim is the comment the validation PR leads to: post it once the red build is proven, never before, so a failed attempt leaves nothing on someone else's issue.
+It says what the test reproduces, links the red build, and ends with `Status: red proven, fix PR pending`, the experiment trailer, and the attribution line.
 
 ## 3. Claim it
 
@@ -117,6 +137,7 @@ Body: Sentry permalink, event and user counts, release range, the redacted excep
 ## 4. Diagnose
 
 In `$RUNNER`: `git fetch origin && git switch -c self-heal/<shortId-lowercased>-red origin/trunk`.
+For a reported bug, skip what is crash-specific below (the stack, the release tag) and read the report instead.
 
 Read the whole crashed thread (`$CRASHES event <id>`), not just its top frames or Sentry's culprit.
 Stack overflows and watchdog kills blame whatever frame was running last; the cause is the repeating pattern further down.
@@ -138,9 +159,9 @@ Comment the diagnosis and which path it would touch on the issue, set `Status: n
    Write it in Swift Testing (`@Test`, `#expect`). When the code under test only has an XCTest class, put the test in a new Swift Testing file next to it rather than adding to that class.
    Keep it fast and deterministic: no sleeps, and no stress loops beyond what reproduces the crash.
 3. Run it locally and confirm it fails for the crash's reason. Do not push a red proof you have not seen fail.
-4. Push and open the validation PR: draft, assigned to @mokagio, label `type: crash`, title `Validate crash <shortId>: <short description>`.
+4. Push and open the validation PR: draft, assigned to @mokagio, label `type: crash` (`type: bug` for a reported bug), title `Validate crash <shortId>: <short description>`.
    Body: a link to the issue (`Part of #<n>`, never `Fixes`), what the test reproduces, that the PR exists only for the red build and will be closed without merging, and the experiment trailer.
-5. Set the issue to `Status: validation PR #<n> awaiting red build`, log `end`, and stop.
+5. Set the issue to `Status: validation PR #<n> awaiting red build` (for a reported bug, leave the issue alone until red is proven), log `end`, and stop.
 
 If you cannot write a reproducing test: add instrumentation that would confirm the cause, or a testable refactor, with a prediction to check on a later run.
 If neither is possible, comment the diagnosis on the issue, leave it open with `Status: needs human`, and stop.

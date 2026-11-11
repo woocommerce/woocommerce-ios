@@ -6,7 +6,9 @@ allowed-tools: "Bash, Read, Edit, Write, Grep, Glob"
 ---
 
 Each crash moves through three artifacts: an issue (the claim), a validation PR (the red proof, closed once Buildkite confirms it), and a fix PR (the test plus the fix, green).
-One run tends open work, then claims at most one new crash.
+An issue with a red proof and no fix PR yet is a brief: everything a fix needs, waiting for a fix slot.
+Fix PRs are capped because they ask reviewers for time; briefs have their own cap, so research continues while the fix slots are full.
+One run tends open work, then either turns one brief into a fix PR or claims at most one new crash.
 Runs start with no memory of earlier runs: GitHub, Buildkite and `$LOG` are the only state.
 Work in the runner worktree, never in the checkout that holds this skill:
 
@@ -15,6 +17,7 @@ SELF_HEAL=~/Developer/git-worktrees/wcios/self-heal-prototype/.agents/skills/sel
 RUNNER=~/Developer/git-worktrees/wcios/self-heal-runner
 CRASHES="$SELF_HEAL/Scripts/sentry-crashes"
 CLAIMS="$SELF_HEAL/Scripts/claim-check"
+CAP="$SELF_HEAL/Scripts/cap"
 LOG=~/.self-heal/runs.log
 ```
 
@@ -57,7 +60,8 @@ Validation PRs have branches ending in `-red`; every other `self-heal/` branch i
 For each PR with a finished Buildkite build on its head commit:
 
 - Validation PR, build failed on the new test → red proven.
-  Comment the build link on the issue, set `Status: red proven, fix PR pending`, close the validation PR with a one-line comment linking the issue, and open the fix PR (step 6).
+  Comment the build link on the issue, set `Status: red proven, fix PR pending`, and close the validation PR with a one-line comment linking the issue.
+  The issue is now a brief.
 - Validation PR, build failed elsewhere or the new test passed → the proof is wrong: fix the test on the branch, or close the PR and fall back (step 5).
 - Fix PR, build passed → green proven: link the build in the PR, set the issue to `Status: PR #<n> ready for review`.
 - Fix PR, build failed → fix it on the branch.
@@ -73,7 +77,13 @@ Anything updated after your last reply needs a fix (push to the branch, add the 
 Replies follow the privacy rules and end with the experiment trailer and the attribution line.
 Never resolve review threads; the reviewer does that.
 
-Then continue to step 2 if fewer than 5 self-heal PRs are open; otherwise log `cap` and stop.
+Then run `$CAP status` and take the first that applies:
+
+1. `fix-slot free` and a brief is at `Status: red proven, fix PR pending` → fix the oldest one (step 6).
+2. `brief-slot free` → research a new one (step 2).
+3. Otherwise log `cap` and stop.
+
+Never run `$CAP reset`: it is the operator's way to stop the fix PRs open now counting toward the cap, without closing them.
 
 ## 2. Pick a crash
 

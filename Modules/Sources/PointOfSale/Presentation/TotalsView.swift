@@ -61,8 +61,15 @@ struct TotalsView: View {
         HStack {
             switch posModel.orderState {
             case .loaded where isShowingPaymentStatusScreen:
-                paymentViewContent
-                    .id(displayPaymentState.isSuccess)
+                VStack(spacing: 0) {
+                    paymentViewContent
+                        .id(displayPaymentState.isSuccess)
+
+                    bottomControls
+                        .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)
+                        .layoutPriority(1)
+                }
+                .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { checkoutHeight = $0 }
             case .idle, .syncing, .loaded:
                 VStack(spacing: 0) {
                     VStack(alignment: .center) {

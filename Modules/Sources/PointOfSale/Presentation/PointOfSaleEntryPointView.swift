@@ -205,6 +205,7 @@ public struct PointOfSaleEntryPointView: View {
                 PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
                     .environment(posModel)
                     .environment(posModel.paymentModel)
+                    // Lock modifiers capture their session once; keep this branch gated on the model created after accessSession is set.
                     .posAutoLockActivityTracking(
                         session: accessSession,
                         paymentModel: posModel.paymentModel,

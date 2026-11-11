@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let message: String
     let animation: POSCardPresentPaymentInLineMessageAnimation
@@ -8,14 +9,14 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: Constants.imageAndTextSpacing) {
+        VStack(alignment: .center, spacing: metrics.spacing.xLarge) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
                 .frame(width: Constants.headerDimension,
                        height: Constants.headerDimension)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: metrics.spacing.small) {
                 Text(title)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(.posBodyLargeRegular())
@@ -39,7 +40,6 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
 private extension PointOfSaleCardPresentPaymentActivityIndicatingMessageView {
     enum Constants {
         static let headerDimension: CGFloat = 160
-        static let imageAndTextSpacing: CGFloat = POSSpacing.xLarge
     }
 }
 

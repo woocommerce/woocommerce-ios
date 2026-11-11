@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleExitPosAlertView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -23,27 +24,27 @@ struct PointOfSaleExitPosAlertView: View {
     }
 
     private var regularBody: some View {
-        VStack(spacing: Constants.verticalSpacing) {
+        VStack(spacing: metrics.spacing.xLarge) {
             regularCloseButton
             messageContent
             buttons
         }
-        .padding(Constants.padding)
+        .padding(metrics.padding.medium)
     }
 
     private var compactBody: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             compactCloseButton
 
-            Spacer(minLength: POSSpacing.none)
+            Spacer(minLength: metrics.spacing.none)
 
             messageContent
 
-            Spacer(minLength: POSSpacing.none)
+            Spacer(minLength: metrics.spacing.none)
 
             buttons
         }
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
         .background(Color.posSurfaceBright)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -65,12 +66,12 @@ struct PointOfSaleExitPosAlertView: View {
     }
 
     private var messageContent: some View {
-        VStack(spacing: Constants.verticalSpacing) {
+        VStack(spacing: metrics.spacing.xLarge) {
             if isCompactWidth {
                 POSErrorXMark(color: .posPrimary)
             }
 
-            VStack(spacing: isCompactWidth ? Constants.compactTitleSpacing : Constants.verticalSpacing) {
+            VStack(spacing: isCompactWidth ? metrics.spacing.small : metrics.spacing.xLarge) {
                 Text(Localization.exitTitle)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
@@ -109,12 +110,6 @@ struct PointOfSaleExitPosAlertView: View {
 }
 
 private extension PointOfSaleExitPosAlertView {
-    enum Constants {
-        static let verticalSpacing: CGFloat = POSSpacing.xLarge
-        static let compactTitleSpacing: CGFloat = POSSpacing.small
-        static let padding: CGFloat = POSPadding.medium
-    }
-
     enum Localization {
         static let exitTitle = NSLocalizedString(
             "pos.exitPOSModal.exitTitle",

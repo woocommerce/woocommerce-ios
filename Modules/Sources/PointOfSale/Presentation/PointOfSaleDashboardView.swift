@@ -2,6 +2,7 @@ import SwiftUI
 import WooFoundation
 
 struct PointOfSaleDashboardView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
@@ -124,8 +125,8 @@ struct PointOfSaleDashboardView: View {
                                    showDocumentation: $showDocumentation,
                                    onSettingsSelected: requestSettingsPermission,
                                    onOrdersSelected: presentOrders)
-            .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
-            .padding(.bottom, Constants.floatingControlBottomPadding)
+            .offset(x: metrics.padding.medium, y: -Constants.floatingControlVerticalOffset)
+            .padding(.bottom, metrics.padding.medium)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
             .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
@@ -134,7 +135,7 @@ struct PointOfSaleDashboardView: View {
             POSConnectivityView()
         }
         .environment(\.floatingControlAreaSize,
-                      CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
+                      CGSizeMake(floatingSize.width + metrics.padding.medium,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .onChange(of: isPhoneLayout) { _, isPhoneLayout in
             if !isPhoneLayout {
@@ -255,7 +256,7 @@ struct PointOfSaleDashboardView: View {
             onBack: { posModel.addMoreToCart() }
         ) {
             GeometryReader { geometry in
-                VStack(spacing: POSSpacing.none) {
+                VStack(spacing: metrics.spacing.none) {
                     ItemListView(
                         selectedItemListType: $viewStateCoordinator.selectedItemListType,
                         searchTerm: $viewStateCoordinator.searchTerm,
@@ -485,7 +486,7 @@ struct PointOfSaleDashboardView: View {
                 .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .posPhoneBottomButtonPadding(bottom: POSCompactFooterLayout.bottomPadding(safeAreaInset: bottomSafeAreaInset))
+        .posPhoneBottomButtonPadding(bottom: POSCompactFooterLayout.bottomPadding(safeAreaInset: bottomSafeAreaInset, metrics: metrics))
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
@@ -767,8 +768,6 @@ private extension PointOfSaleDashboardView {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
-        static let floatingControlBottomPadding: CGFloat = POSPadding.medium
-        static let floatingControlHorizontalOffset: CGFloat = POSPadding.medium
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         // Slightly longer than the 0.25s POS modal transition so the override modal fully dismisses

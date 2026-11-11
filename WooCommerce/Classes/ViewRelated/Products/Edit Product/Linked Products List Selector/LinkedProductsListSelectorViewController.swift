@@ -142,7 +142,7 @@ private extension LinkedProductsListSelectorViewController {
 //
 private extension LinkedProductsListSelectorViewController {
     func configureMainView() {
-        view.backgroundColor = .basicBackground
+        view.backgroundColor = .listBackground
     }
 
     func configureNavigation() {

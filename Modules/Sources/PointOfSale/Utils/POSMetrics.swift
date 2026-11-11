@@ -52,7 +52,11 @@ private struct POSPaddingModifier: ViewModifier {
 }
 
 extension View {
-    func posPadding(_ edges: Edge.Set = .all, _ token: KeyPath<POSMetrics.Scale, CGFloat>) -> some View {
+    func posPadding(_ token: KeyPath<POSMetrics.Scale, CGFloat>) -> some View {
+        posPadding(.all, token)
+    }
+
+    func posPadding(_ edges: Edge.Set, _ token: KeyPath<POSMetrics.Scale, CGFloat>) -> some View {
         modifier(POSPaddingModifier(edges: edges, token: token))
     }
 }

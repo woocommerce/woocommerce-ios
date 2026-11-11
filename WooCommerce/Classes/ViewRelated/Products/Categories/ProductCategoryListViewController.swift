@@ -66,6 +66,11 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
         // Note: configuring the search bar text color does not work in `viewDidLoad` and `viewWillAppear`.
         configureSearchBar()
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
 }
 
 // MARK: - Configuration to customize the list
@@ -86,7 +91,8 @@ private extension ProductCategoryListViewController {
     }
 
     func configureTableView() {
-        view.backgroundColor = .listForeground(modal: false)
+        view.backgroundColor = .listBackground
+        contentStackView.backgroundColor = .listForeground(modal: false)
         tableView.backgroundColor = .listBackground
         tableView.dataSource = self
         tableView.delegate = self
@@ -151,7 +157,7 @@ private extension ProductCategoryListViewController {
                     break
                 case .syncing:
                     if models.isEmpty {
-                        self.displayGhostContent()
+                        self.displayGhostContent(over: self.tableView)
                     }
                 case let .failed(retryToken):
                     self.removeGhostContent()

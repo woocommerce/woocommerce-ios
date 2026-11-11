@@ -4,14 +4,10 @@ import struct WooFoundationCore.WooAnalyticsEvent
 
 /// A view that displays an error message with a retry CTA when the list of POS items fails to load.
 struct POSListErrorView: View {
-    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.posAnalytics) private var analytics
 
     private let error: PointOfSaleErrorState
-    @State private var buttonWidth: CGFloat? = nil
     private let viewModel: POSErrorViewModel
-
-    @Environment(\.keyboardObserver) private var keyboard
 
     init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil, onExit: (() -> Void)? = nil) {
         self.error = error
@@ -32,14 +28,12 @@ struct POSListErrorView: View {
     }
 
     var body: some View {
-        ScrollableVStack {
-            Spacer()
-            POSErrorView(viewModel: viewModel, buttonWidth: $buttonWidth)
-            Spacer()
-        }
-        .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
-        .measureWidth { width in
-            buttonWidth = width / 2
+        POSStatusScreenLayout {
+            POSErrorMessageView(viewModel: viewModel)
+        } buttons: {
+            if viewModel.hasButtons {
+                POSErrorButtonsView(viewModel: viewModel)
+            }
         }
         .onAppear {
             // Track error shown for splash screen errors (initial catalog sync)

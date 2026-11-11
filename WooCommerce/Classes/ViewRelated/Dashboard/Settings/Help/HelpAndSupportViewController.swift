@@ -126,6 +126,11 @@ final class HelpAndSupportViewController: UIViewController {
         warnDeveloperIfNeeded()
         refreshViewContent()
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
 }
 
 // MARK: - View Configuration

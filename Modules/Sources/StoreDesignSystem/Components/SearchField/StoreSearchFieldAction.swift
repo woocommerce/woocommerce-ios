@@ -9,15 +9,21 @@ import Foundation
 public struct StoreSearchFieldAction {
     let title: String
     let isEnabled: Bool
+    let accessibilityIdentifier: String?
     let action: () -> Void
 
     /// - Parameters:
     ///   - title: The visible, localized label, e.g. "Cancel". Single line.
     ///   - isEnabled: `false` dims the action and blocks it while the field stays usable.
+    ///   - accessibilityIdentifier: An optional identifier for UI automation.
     ///   - action: Runs on tap.
-    public init(_ title: String, isEnabled: Bool = true, action: @escaping () -> Void) {
+    public init(_ title: String,
+                isEnabled: Bool = true,
+                accessibilityIdentifier: String? = nil,
+                action: @escaping () -> Void) {
         self.title = title
         self.isEnabled = isEnabled
+        self.accessibilityIdentifier = accessibilityIdentifier
         self.action = action
     }
 }

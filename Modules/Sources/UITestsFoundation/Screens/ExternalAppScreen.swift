@@ -12,7 +12,7 @@ public final class ExternalAppScreen {
         ),
         "orders": UniversalLink(
             url: "https://www.woocommerce.com/mobile/orders/details?blog_id=161477129&order_id=3337",
-            destinationElement: { $0.staticTexts["summary-table-view-cell-title-label"] }
+            destinationElement: { $0.tables["order-details-table-view"] }
         )
     ]
 
@@ -28,13 +28,13 @@ public final class ExternalAppScreen {
         for attempt in 1...Constants.maximumOpenAttempts {
             XCUIDevice.shared.system.open(url)
             let destinationElement = universalLink.destinationElement(app)
-            if destinationElement.waitForIsHittable(timeout: Constants.destinationWaitTimeout) {
+            if destinationElement.waitForExistence(timeout: Constants.destinationWaitTimeout) {
                 return
             }
 
             // Once Woo handled the link, keep waiting for its destination instead of stacking the same route again.
             if app.state == .runningForeground || destinationElement.exists {
-                if destinationElement.waitForIsHittable(timeout: Constants.routedDestinationWaitTimeout) {
+                if destinationElement.waitForExistence(timeout: Constants.routedDestinationWaitTimeout) {
                     return
                 }
                 break

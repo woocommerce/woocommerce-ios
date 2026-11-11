@@ -31,6 +31,7 @@
 - [*] POS: On iPhone, the close button of full screen pages is now at the top right. [https://github.com/woocommerce/woocommerce-ios/pull/18335]
 - [*] POS: On iPhone, barcode scanner setup has a back arrow at the top left instead of the Back button at the bottom. [https://github.com/woocommerce/woocommerce-ios/pull/18336]
 - [*] POS: The cancel refund confirmation on iPad is now a POS dialog instead of a system alert. [https://github.com/woocommerce/woocommerce-ios/pull/18338]
+- [*] POS: On iPhone, card reader screens with a Cancel button now also have the close button at the top right. [https://github.com/woocommerce/woocommerce-ios/pull/18339]
 
 26.0
 -----

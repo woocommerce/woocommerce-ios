@@ -524,6 +524,25 @@ extension POSPaymentModel {
             return
         }
 
+        // The reader can disconnect while cancellation is suspended. Collecting now would
+        // start reader discovery through preflight without an explicit connection request.
+        guard case .connected = cardReaderConnectionStatus else {
+            DDLogInfo("🃏 [CardPayment] reader unavailable after cancel, waiting for reconnection")
+            // Large layouts retain the chosen method so the default Tap to Pay flow cannot take over.
+            if isCompactCardPaymentSelectionEnabled {
+                currentPaymentMethod = nil
+                if selectedCardPaymentRail == .tapToPay {
+                    isAwaitingExplicitPaymentStart = true
+                    startPaymentOnCardReaderConnection?.cancel()
+                    startPaymentOnCardReaderConnection = nil
+                    startPaymentGeneration += 1
+                    return
+                }
+            }
+            await startPaymentFlow(using: method)
+            return
+        }
+
         DDLogInfo("🃏 [CardPayment] startPayment proceeding to collectCardPayment")
         currentPaymentMethod = method
         isAwaitingExplicitPaymentStart = false

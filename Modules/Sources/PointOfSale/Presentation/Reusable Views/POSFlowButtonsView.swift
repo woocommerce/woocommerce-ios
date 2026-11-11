@@ -67,19 +67,29 @@ struct PointOfSaleFlowButtonConfiguration {
         let title: String
         let isEnabled: Bool
         let accessibilityIdentifier: String?
+        /// A button that goes one step back. On phone the back arrow in the flow header replaces it.
+        let isBack: Bool
         let action: () -> Void
 
         init(
             title: String,
             isEnabled: Bool = true,
             accessibilityIdentifier: String? = nil,
+            isBack: Bool = false,
             action: @escaping () -> Void,
         ) {
             self.title = title
             self.isEnabled = isEnabled
             self.accessibilityIdentifier = accessibilityIdentifier
+            self.isBack = isBack
             self.action = action
         }
+    }
+
+    /// The same buttons without the ones that go one step back.
+    func removingBackButtons() -> PointOfSaleFlowButtonConfiguration {
+        .init(primaryButton: primaryButton?.isBack == true ? nil : primaryButton,
+              secondaryButton: secondaryButton?.isBack == true ? nil : secondaryButton)
     }
 
     // MARK: - Convenience Initializers

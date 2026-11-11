@@ -224,6 +224,6 @@ struct POSLockScreenModelTests {
     }
 
     private func makeStaff() -> POSStaff {
-        POSStaff(role: .admin)
+        POSLocalRole.admin.staff
     }
 }

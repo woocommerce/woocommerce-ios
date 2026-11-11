@@ -205,7 +205,7 @@ private extension POSAutoLockActivityControllerTests {
     }
 
     func makeStaff() -> POSStaff {
-        POSStaff(role: .admin)
+        POSLocalRole.admin.staff
     }
 }
 

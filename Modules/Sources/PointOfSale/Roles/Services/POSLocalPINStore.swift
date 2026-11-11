@@ -29,13 +29,13 @@ final class POSLocalPINStore: POSPINCredentialProviding {
         guard pins[.admin] != nil else {
             return []
         }
-        return POSRole.allCases.compactMap { role in
-            pins[role].map { POSPINCredential(staff: POSStaff(role: role), pinHash: $0) }
+        return POSLocalRole.allCases.compactMap { role in
+            pins[role].map { POSPINCredential(staff: role.staff, pinHash: $0) }
         }
     }
 
     /// Runs up to two PBKDF2 derivations, so call it off the main actor.
-    func setPIN(_ pin: String, for role: POSRole) throws(POSPINStoreError) {
+    func setPIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) {
         guard Self.isValidPIN(pin) else {
             throw .invalidPINFormat
         }
@@ -55,7 +55,7 @@ final class POSLocalPINStore: POSPINCredentialProviding {
     }
 
     /// Removing the Admin PIN also removes the Cashier PIN, which turns protection off.
-    func removePIN(for role: POSRole) throws(POSPINStoreError) {
+    func removePIN(for role: POSLocalRole) throws(POSPINStoreError) {
         guard role != .admin else {
             try savePINs([:])
             return
@@ -80,14 +80,14 @@ private extension POSLocalPINStore {
         pin.count == Constants.pinLength && pin.allSatisfy { $0.isASCII && $0.isNumber }
     }
 
-    func loadPINs() throws(POSPINStoreError) -> [POSRole: POSPINHash] {
+    func loadPINs() throws(POSPINStoreError) -> [POSLocalRole: POSPINHash] {
         do {
             guard let data = try storage.data(forKey: key) else {
                 return [:]
             }
             let stored = try JSONDecoder().decode([String: POSPINHash].self, from: data)
             return Dictionary(uniqueKeysWithValues: stored.compactMap { rawRole, hash in
-                POSRole(rawValue: rawRole).map { ($0, hash) }
+                POSLocalRole(rawValue: rawRole).map { ($0, hash) }
             })
         } catch {
             DDLogError("⛔️ POS local PINs: reading failed for site \(siteID): \(error)")
@@ -95,7 +95,7 @@ private extension POSLocalPINStore {
         }
     }
 
-    func savePINs(_ pins: [POSRole: POSPINHash]) throws(POSPINStoreError) {
+    func savePINs(_ pins: [POSLocalRole: POSPINHash]) throws(POSPINStoreError) {
         do {
             guard !pins.isEmpty else {
                 try storage.setData(nil, forKey: key)

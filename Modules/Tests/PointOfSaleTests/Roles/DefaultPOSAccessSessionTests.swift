@@ -147,7 +147,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_currentStaff_has_capability_then_returns_true() async throws {
         // Given
-        let staff = makeStaff(role: .cashier, capabilities: [.issueRefunds])
+        let staff = makeStaff(capabilities: [.issueRefunds])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -157,7 +157,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_currentStaff_lacks_capability_then_returns_false() async throws {
         // Given
-        let staff = makeStaff(role: .cashier)
+        let staff = makeStaff(capabilities: POSLocalRole.cashier.capabilities)
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -272,7 +272,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_cashier_is_signed_in_then_allows_only_cashier_capabilities() async throws {
         // Given
-        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(POSStaff(role: .cashier))))
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(POSLocalRole.cashier.staff)))
 
         // When
         try await sut.session.signIn(withPIN: "5678")
@@ -307,12 +307,12 @@ private extension DefaultPOSAccessSessionTests {
     }
 
     func makeAdminCredential() -> POSPINCredential {
-        POSPINCredential(staff: POSStaff(role: .admin),
+        POSPINCredential(staff: POSLocalRole.admin.staff,
                          pinHash: POSPINHash(algorithm: "pbkdf2-sha256", iterations: 1, salt: Data([1]), hash: Data([2])))
     }
 
-    func makeStaff(role: POSRole = .admin, capabilities: Set<POSCapability>? = nil) -> POSStaff {
-        POSStaff(role: role, capabilities: capabilities)
+    func makeStaff(capabilities: Set<POSCapability> = Set(POSCapability.allCases)) -> POSStaff {
+        POSStaff(displayName: "Staff", capabilities: capabilities)
     }
 }
 

@@ -9,7 +9,7 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
     private(set) var authenticatedPINs: [String] = []
     private(set) var verifyCallCount: Int = 0
 
-    init(authenticateResult: Result<POSStaff, POSAuthError> = .success(POSStaff(role: .admin)),
+    init(authenticateResult: Result<POSStaff, POSAuthError> = .success(POSLocalRole.admin.staff),
          verifyResult: Result<Void, POSAuthError> = .success(())) {
         self.authenticateResult = authenticateResult
         self.verifyResult = verifyResult

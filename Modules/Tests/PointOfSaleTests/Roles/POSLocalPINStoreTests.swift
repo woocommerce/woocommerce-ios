@@ -26,7 +26,7 @@ struct POSLocalPINStoreTests {
 
         // Then
         let credentials = try sut.credentials()
-        #expect(credentials.map(\.staff) == [POSStaff(role: .admin), POSStaff(role: .cashier)])
+        #expect(credentials.map(\.staff) == [POSLocalRole.admin.staff, POSLocalRole.cashier.staff])
         #expect(credentials[0].pinHash.matches("1234"))
         #expect(credentials[1].pinHash.matches("5678"))
     }
@@ -134,7 +134,7 @@ struct POSLocalPINStoreTests {
         try sut.removePIN(for: .cashier)
 
         // Then
-        #expect(try sut.credentials().map(\.staff.role) == [.admin])
+        #expect(try sut.credentials().map(\.staff) == [POSLocalRole.admin.staff])
     }
 
     @Test func test_credentials_when_only_a_cashier_pin_is_stored_then_returns_empty_list() throws {

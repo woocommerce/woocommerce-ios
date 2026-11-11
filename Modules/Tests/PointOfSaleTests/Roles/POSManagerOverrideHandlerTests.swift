@@ -25,7 +25,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_gate_when_session_grants_capability_then_performs_immediately_without_override() {
         // Given an operator who already holds the capability
-        let manager = POSStaff(role: .admin)
+        let manager = POSLocalRole.admin.staff
         let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: manager))
         var performCount = 0
         var capturedViaOverride: Bool?
@@ -44,7 +44,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_gate_when_session_denies_capability_then_presents_override_and_performs_on_approval() async {
         // Given an operator who lacks the capability
-        let cashier = POSStaff(role: .cashier)
+        let cashier = POSLocalRole.cashier.staff
         let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: cashier))
         var performCount = 0
         var capturedViaOverride: Bool?

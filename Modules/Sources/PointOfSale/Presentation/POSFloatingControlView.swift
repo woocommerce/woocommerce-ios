@@ -251,7 +251,7 @@ private extension POSFloatingControlView {
 
 #Preview("Signed-in Operator") {
     let session = MockPOSAccessSession(
-        currentStaff: POSStaff(role: .cashier)
+        currentStaff: POSLocalRole.cashier.staff
     )
     return POSFloatingControlView(onExitSelected: {},
                                   showSupport: .constant(false),

@@ -21,7 +21,7 @@ final class MockPOSAccessSession: POSAccessSession {
     init(currentStaff: POSStaff? = nil,
          isLocked: Bool = false,
          isPINProtectionEnabled: Bool = true,
-         signInResult: Result<POSStaff, POSAuthError> = .success(POSStaff(role: .admin)),
+         signInResult: Result<POSStaff, POSAuthError> = .success(POSLocalRole.admin.staff),
          managerApprovalResult: Result<Void, POSAuthError> = .success(()),
          checkLockoutResult: Result<Void, POSAuthError> = .success(())) {
         self.currentStaff = currentStaff

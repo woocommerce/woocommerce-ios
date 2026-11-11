@@ -1,9 +1,13 @@
 import Foundation
 
-/// The M1 local permission sets. Each role has its own local PIN.
-enum POSRole: String, CaseIterable, Codable, Sendable {
+/// The local PIN slots and their permission sets. Each role has its own PIN on this device.
+enum POSLocalRole: String, CaseIterable, Codable, Sendable {
     case admin
     case cashier
+
+    var staff: POSStaff {
+        POSStaff(displayName: displayName, capabilities: capabilities)
+    }
 
     var capabilities: Set<POSCapability> {
         switch self {
@@ -24,7 +28,7 @@ enum POSRole: String, CaseIterable, Codable, Sendable {
     }
 }
 
-private extension POSRole {
+private extension POSLocalRole {
     enum Localization {
         static let admin = NSLocalizedString(
             "pos.staffPreset.admin",

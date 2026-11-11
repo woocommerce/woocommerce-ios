@@ -1,18 +1,19 @@
 import Testing
 @testable import PointOfSale
 
-struct POSStaffTests {
-    @Test func test_capabilities_when_role_is_admin_then_has_every_capability() {
+struct POSLocalRoleTests {
+    @Test func test_staff_when_role_is_admin_then_has_every_capability() {
         // Given
-        let sut = POSStaff(role: .admin)
+        let sut = POSLocalRole.admin.staff
 
         // When / Then
         #expect(sut.capabilities == Set(POSCapability.allCases))
+        #expect(sut.displayName == POSLocalRole.admin.displayName)
     }
 
-    @Test func test_capabilities_when_role_is_cashier_then_can_sell_but_not_run_restricted_actions() {
+    @Test func test_staff_when_role_is_cashier_then_can_sell_but_not_run_restricted_actions() {
         // Given
-        let sut = POSStaff(role: .cashier)
+        let sut = POSLocalRole.cashier.staff
 
         // When / Then
         #expect(sut.capabilities == [.processSales, .viewOrders, .applyCoupons])
@@ -22,9 +23,9 @@ struct POSStaffTests {
         #expect(sut.hasCapability(.manageStoreSettings) == false)
     }
 
-    @Test func test_hasCapability_when_capabilities_are_given_then_they_replace_the_role_set() {
+    @Test func test_hasCapability_when_staff_has_a_custom_set_then_checks_only_that_set() {
         // Given
-        let sut = POSStaff(role: .cashier, capabilities: [.issueRefunds])
+        let sut = POSStaff(displayName: "Maya", capabilities: [.issueRefunds])
 
         // When / Then
         #expect(sut.hasCapability(.issueRefunds))

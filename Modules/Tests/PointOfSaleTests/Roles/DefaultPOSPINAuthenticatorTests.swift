@@ -11,7 +11,7 @@ struct DefaultPOSPINAuthenticatorTests {
         let staff = try await sut.authenticate(withPIN: "1234")
 
         // Then
-        #expect(staff == POSStaff(role: .admin))
+        #expect(staff == POSLocalRole.admin.staff)
     }
 
     @Test func test_authenticate_when_pin_matches_cashier_then_returns_cashier_staff() async throws {
@@ -22,7 +22,7 @@ struct DefaultPOSPINAuthenticatorTests {
         let staff = try await sut.authenticate(withPIN: "5678")
 
         // Then
-        #expect(staff.role == .cashier)
+        #expect(staff == POSLocalRole.cashier.staff)
         #expect(staff.hasCapability(.issueRefunds) == false)
     }
 

@@ -69,8 +69,7 @@ struct POSPINHashTests {
 
     @Test func test_matches_when_iterations_exceed_the_limit_then_returns_false() throws {
         // Given
-        let valid = try #require(POSPINHash(pin: "1234", iterations: 10))
-        let sut = POSPINHash(algorithm: valid.algorithm, iterations: 1_000_001, salt: valid.salt, hash: valid.hash)
+        let sut = try #require(POSPINHash(pin: "1234", iterations: POSPINHash.Constants.maxIterations + 1))
 
         // When / Then
         #expect(sut.matches("1234") == false)

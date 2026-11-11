@@ -4,6 +4,7 @@ import SwiftUI
 /// Present it with `posModal(..., compactStyle: .dialog)` so it is a centered card on phone.
 struct POSConfirmationDialog: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let title: String
     let message: String
@@ -41,6 +42,14 @@ struct POSConfirmationDialog: View {
             }
         }
         .padding(metrics.padding.xLarge)
+        // A centered card at regular width would otherwise stretch across the whole screen.
+        .frame(maxWidth: horizontalSizeClass == .regular ? Constants.regularMaxWidth : nil)
+    }
+}
+
+private extension POSConfirmationDialog {
+    enum Constants {
+        static let regularMaxWidth: CGFloat = 560
     }
 }
 

@@ -108,7 +108,6 @@ struct POSOrdersView: View {
                                   isCancelRefundConfirmationPresented = false
                                   pendingOrderSelection = nil
                               }))
-        .frame(maxWidth: Constants.cancelRefundDialogMaxWidth)
     }
 
     @ViewBuilder
@@ -197,11 +196,6 @@ private extension POSOrdersView {
         }
         orderListModel.selectOrder(order)
     }
-}
-
-private enum Constants {
-    /// Keeps the dialog card narrow on iPad, where the modal would otherwise stretch across the screen.
-    static let cancelRefundDialogMaxWidth: CGFloat = 560
 }
 
 private enum Localization {

@@ -25,9 +25,7 @@ struct POSSecuritySettingsView: View {
                                     pinRows(roles, stacked: true)
                                 }
                             }
-                            if roles == [.admin] {
-                                Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular())
-                            }
+                            if roles == [.admin] { Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular()) }
                         }
                     } else {
                         Button(Localization.retry) { controller.load() }
@@ -113,6 +111,7 @@ struct POSSecuritySettingsView: View {
 
     enum Localization {
         static let title = NSLocalizedString("pos.security.title", value: "Security", comment: "POS Security settings title.")
+        static let subtitle = NSLocalizedString("pos.security.subtitle", value: "Manage local PINs", comment: "Security settings subtitle.")
         static let protectionOff = NSLocalizedString("pos.security.protectionOff", value: "PIN protection is off. Set an Admin PIN to enable it.",
                                                     comment: "Protection status before local PIN setup.")
         static let protectionOn = NSLocalizedString("pos.security.protectionOn", value: "PIN protection is on.", comment: "Local PIN protection status.")

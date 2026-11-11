@@ -5,6 +5,7 @@ import SwiftUI
 struct POSModalFlowHeader: View {
     @Environment(\.posMetrics) private var metrics
     let title: String
+    let hasSteps: Bool
     let backAction: POSModalFlowAction?
     let closeAction: POSModalFlowAction?
 
@@ -86,32 +87,32 @@ private extension POSModalFlowHeader {
 }
 
 extension View {
-    /// Shows `content` as a full-screen POS flow on phone: a header with `title`, the close button that the content
-    /// sets with `posModalCloseButton`, and the back arrow that the content sets with `posModalFlowBackAction`.
-    /// A `nil` title leaves the view unchanged.
+    /// Shows `content` as a full-screen POS flow on phone when `style` is `.fullScreen`: a header with its title, the close
+    /// button that the content sets with `posModalCloseButton`, and the back arrow that the content sets with
+    /// `posModalFlowBackAction`. Any other style leaves the view unchanged.
     ///
-    /// `posModal` applies it for `.fullScreen(title:)`. Apply it directly only inside a presentation that is not a
-    /// `posModal`, such as a full-screen cover.
-    func posFullScreenFlowHeader(title: String?) -> some View {
-        modifier(POSFullScreenFlowHeaderModifier(title: title))
+    /// `posModal` applies it for `.fullScreen`. Apply it directly only inside a presentation that is not a `posModal`,
+    /// such as a full-screen cover.
+    func posFullScreenFlowHeader(style: POSModalCompactStyle?) -> some View {
+        modifier(POSFullScreenFlowHeaderModifier(style: style))
     }
 }
 
 private struct POSFullScreenFlowHeaderModifier: ViewModifier {
     @Environment(\.posMetrics) private var metrics
-    let title: String?
+    let style: POSModalCompactStyle?
     @State private var closeAction: POSModalFlowAction?
     @State private var backAction: POSModalFlowAction?
 
     @ViewBuilder
     func body(content: Content) -> some View {
-        if let title {
+        if let style, let title = style.fullScreenTitle {
             content
-                .environment(\.posModalCompactStyle, .fullScreen(title: title))
+                .environment(\.posModalCompactStyle, style)
                 .onPreferenceChange(POSModalFlowCloseActionKey.self) { closeAction = $0 }
                 .onPreferenceChange(POSModalFlowBackActionKey.self) { backAction = $0 }
                 .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
-                    POSModalFlowHeader(title: title, backAction: backAction, closeAction: closeAction)
+                    POSModalFlowHeader(title: title, hasSteps: style.hasSteps, backAction: backAction, closeAction: closeAction)
                 }
         } else {
             content

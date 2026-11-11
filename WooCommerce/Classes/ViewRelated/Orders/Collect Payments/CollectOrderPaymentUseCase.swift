@@ -506,7 +506,7 @@ private extension CollectOrderPaymentUseCase {
     }
 
     func checkTerminalPaymentPreparationRoute(completion: @escaping (Bool) -> Void) {
-        let action = SettingAction.retrieveSiteAPI(siteID: siteID) { result in
+        let action = SettingAction.retrieveSiteAPIIncludingRoutes(siteID: siteID) { result in
             switch result {
             case .success(let siteAPI):
                 completion(siteAPI.hasTerminalPaymentPreparationRoute)

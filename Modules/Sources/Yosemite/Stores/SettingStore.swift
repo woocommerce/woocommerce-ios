@@ -40,7 +40,9 @@ public class SettingStore: Store {
         case .synchronizeProductSiteSettings(let siteID, let onCompletion):
             methods.synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let detectUnexpectedResponses, let onCompletion):
-            methods.retrieveSiteAPI(siteID: siteID, detectUnexpectedResponses: detectUnexpectedResponses, onCompletion: onCompletion)
+            methods.retrieveSiteAPI(siteID: siteID, detectUnexpectedResponses: detectUnexpectedResponses, includeRoutes: false, onCompletion: onCompletion)
+        case let .retrieveSiteAPIIncludingRoutes(siteID, onCompletion):
+            methods.retrieveSiteAPI(siteID: siteID, detectUnexpectedResponses: false, includeRoutes: true, onCompletion: onCompletion)
         case let .retrievePointOfSaleSettings(siteID, onCompletion):
             Task { @MainActor in
                 do {

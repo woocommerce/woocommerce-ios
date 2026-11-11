@@ -17,7 +17,7 @@ public struct SiteAPI: Decodable, Equatable, Sendable, GeneratedFakeable {
     ///
     public let applicationPasswordAvailable: Bool
 
-    /// Available REST API routes.
+    /// Available REST API routes. Empty unless the request asked for routes.
     ///
     public let routes: [String]
 

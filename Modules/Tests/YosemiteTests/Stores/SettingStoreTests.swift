@@ -560,6 +560,43 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(siteAPI, sampleSiteAPIWithWoo())
     }
 
+    /// `routes` is a large payload, so launch-time `retrieveSiteAPI` calls must not request it.
+    @MainActor
+    func test_retrieveSiteAPI_when_dispatched_then_does_not_request_routes() async throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "", filename: "site-api")
+
+        // When
+        let _: Result<SiteAPI, Error> = try await waitForCompletion { completion in
+            store.onAction(SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID, onCompletion: completion))
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+        let fields = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("routes"))
+    }
+
+    /// `SiteAPI.routes` silently defaults to empty, so the routes check must request the field.
+    @MainActor
+    func test_retrieveSiteAPIIncludingRoutes_when_dispatched_then_requests_routes_and_parses_them() async throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "", filename: "site-api")
+
+        // When
+        let result: Result<SiteAPI, Error> = try await waitForCompletion { completion in
+            store.onAction(SettingAction.retrieveSiteAPIIncludingRoutes(siteID: self.sampleSiteID, onCompletion: completion))
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+        let fields = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertTrue(fields.split(separator: ",").contains("routes"))
+        XCTAssertFalse(try result.get().routes.isEmpty)
+    }
+
     /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
     ///
     @MainActor

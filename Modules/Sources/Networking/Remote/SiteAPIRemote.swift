@@ -12,9 +12,15 @@ public class SiteAPIRemote: Remote, @unchecked Sendable {
     ///   - siteID: Site for which we'll fetch the API settings.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadAPIInformation(for siteID: Int64, detectUnexpectedResponses: Bool = false, completion: @escaping (Result<SiteAPI, Error>) -> Void) {
+    public func loadAPIInformation(for siteID: Int64,
+                                   detectUnexpectedResponses: Bool = false,
+                                   includeRoutes: Bool = false,
+                                   completion: @escaping (Result<SiteAPI, Error>) -> Void) {
         let path = String()
-        let parameters = [ParameterKeys.fields: ParameterValues.fieldValues]
+        var parameters = [ParameterKeys.fields: ParameterValues.fieldValues]
+        if includeRoutes {
+            parameters[ParameterKeys.fields] = ParameterValues.fieldValuesIncludingRoutes
+        }
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
                                      siteID: siteID,
@@ -37,6 +43,7 @@ private extension SiteAPIRemote {
     }
 
     enum ParameterValues {
-        static let fieldValues: String = "authentication,namespaces,routes"
+        static let fieldValues: String = "authentication,namespaces"
+        static let fieldValuesIncludingRoutes: String = fieldValues + ",routes"
     }
 }

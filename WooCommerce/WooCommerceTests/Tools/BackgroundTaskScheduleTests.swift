@@ -195,6 +195,32 @@ struct BackgroundTaskScheduleTests {
         let newDate = sut.preferredRunDate(for: .ordersAndDashboardSync)
         #expect(newDate == startTime.addingTimeInterval((45 + 30) * 60))
     }
+
+    @Test func schedule_updates_from_concurrent_threads_leave_consistent_dates() throws {
+        // Given - The app sets default dates on the main thread while BGTaskScheduler runs task handlers on its own queue.
+        // `InMemoryUserDefaults` is not thread-safe, so this test uses a real, isolated suite.
+        let suiteName = "BackgroundTaskScheduleTests.\(UUID().uuidString)"
+        let userDefaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { userDefaults.removePersistentDomain(forName: suiteName) }
+        let startTime = Date(timeIntervalSince1970: 0)
+        let sut = BackgroundTaskSchedule(timeProvider: MockTimeProvider(startTime: startTime), userDefaults: userDefaults)
+
+        // When
+        DispatchQueue.concurrentPerform(iterations: 2_000) { iteration in
+            switch iteration % 3 {
+            case 0:
+                sut.setDefaultPreferredTaskDates()
+            case 1:
+                sut.setNextPreferredRunDate(for: .ordersAndDashboardSync)
+            default:
+                sut.setNextPreferredRunDate(for: .posCatalogSync)
+            }
+        }
+
+        // Then
+        #expect(sut.preferredRunDate(for: .ordersAndDashboardSync) == startTime.addingTimeInterval(30 * 60))
+        #expect(sut.preferredRunDate(for: .posCatalogSync) == startTime.addingTimeInterval(60 * 60))
+    }
 }
 
 // MARK: - Mocks

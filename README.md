@@ -165,3 +165,5 @@ WooCommerce for iOS is an Open Source project covered by the [GNU General Public
     Made with 💜 by <a href="https://woocommerce.com/">WooCommerce</a>.<br/>
     <a href="https://woocommerce.com/careers/">We're hiring</a>! Come work with us!
 </p>
+
+<!-- CI verification only: docs trunk skip probe. Do not merge. -->

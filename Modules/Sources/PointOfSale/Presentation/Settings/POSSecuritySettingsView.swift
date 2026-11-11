@@ -54,21 +54,27 @@ struct POSSecuritySettingsView: View {
     }
 
     private func pinRow(_ role: POSLocalRole, roles: Set<POSLocalRole>) -> some View {
-        HStack(alignment: .center, spacing: metrics.spacing.medium) {
-            POSInformationCardFieldRow(label: String.localizedStringWithFormat(Localization.rolePIN, role.displayName),
-                                       value: roles.contains(role) ? Localization.pinSet : Localization.noPIN,
-                                       showSeparator: false,
-                                       buttonTitle: roles.contains(role) ? Localization.change : Localization.setPIN,
-                                       buttonAction: { controller.load(); firstPIN = nil; mismatch = false; editing = role },
-                                       buttonAccessibilityLabel: String.localizedStringWithFormat(
-                                        roles.contains(role) ? Localization.changeRolePIN : Localization.setRolePIN, role.displayName))
+        let details = POSInformationCardFieldRow(label: String.localizedStringWithFormat(Localization.rolePIN, role.displayName),
+                                                 value: roles.contains(role) ? Localization.pinSet : Localization.noPIN,
+                                                 showSeparator: false)
+        let actions = HStack(spacing: metrics.spacing.medium) {
+            Button(roles.contains(role) ? Localization.change : Localization.setPIN) {
+                controller.load(); firstPIN = nil; mismatch = false; editing = role
+            }
+            .accessibilityLabel(String.localizedStringWithFormat(
+                roles.contains(role) ? Localization.changeRolePIN : Localization.setRolePIN, role.displayName))
             if roles.contains(role) {
                 Button(Localization.remove, role: .destructive) {
                     if role == .admin { confirmRemoval = true } else { Task { await controller.save(nil, for: role) } }
                 }
-                .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
                 .accessibilityLabel(String.localizedStringWithFormat(Localization.removeRolePIN, role.displayName))
             }
+        }
+        .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
+        .fixedSize(horizontal: true, vertical: false)
+        return ViewThatFits(in: .horizontal) {
+            HStack(spacing: metrics.spacing.medium) { details.fixedSize(); Spacer(); actions }
+            VStack(alignment: .leading, spacing: metrics.spacing.medium) { details; actions }
         }
     }
 

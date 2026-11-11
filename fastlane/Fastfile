@@ -72,15 +72,15 @@ ALPHA_BUNDLE_IDENTIFIERS = MAIN_BUNDLE_IDENTIFIERS.map do |id|
   id.gsub(APP_STORE_VERSION_BUNDLE_IDENTIFIER, ALPHA_VERSION_BUNDLE_IDENTIFIER)
 end.freeze
 
-def xcconfig_development_team(filename)
+def xcconfig_value(filename, key)
   path = File.join(PROJECT_ROOT_FOLDER, 'config', filename)
   UI.user_error!("xcconfig not found: #{path}") unless File.readable?(path)
-  Xcodeproj::Config.new(path).attributes['DEVELOPMENT_TEAM'] ||
-    UI.user_error!("Could not find DEVELOPMENT_TEAM in #{path}")
+  Xcodeproj::Config.new(path).attributes[key] ||
+    UI.user_error!("Could not find #{key} in #{path}")
 end
 
-ENTERPRISE_TEAM_ID = xcconfig_development_team('WooCommerce.release-alpha.xcconfig')
-APP_STORE_TEAM_ID = xcconfig_development_team('WooCommerce.common.xcconfig')
+ENTERPRISE_TEAM_ID = xcconfig_value('WooCommerce.release-alpha.xcconfig', 'DEVELOPMENT_TEAM')
+APP_STORE_TEAM_ID = xcconfig_value('WooCommerce.common.xcconfig', 'DEVELOPMENT_TEAM')
 
 # Shared options to use when invoking `gym` / `build_app`.
 #

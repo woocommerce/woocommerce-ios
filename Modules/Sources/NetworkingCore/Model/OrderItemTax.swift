@@ -30,7 +30,10 @@ public struct OrderItemTax: Codable, Equatable, Hashable, Sendable, GeneratedFak
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let taxID = try container.decode(Int64.self, forKey: .taxID)
+        // Tax plugins (AvaTax, Stripe Tax) can emit a non-numeric string id here.
+        let taxID = container.failsafeDecodeIfPresent(targetType: Int64.self,
+                                                       forKey: .taxID,
+                                                       alternativeTypes: [.string(transform: { Int64($0) ?? 0 })]) ?? 0
         let subtotal = try container.decode(String.self, forKey: .subtotal)
         let total = try container.decode(String.self, forKey: .total)
 

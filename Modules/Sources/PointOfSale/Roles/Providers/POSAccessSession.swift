@@ -1,15 +1,10 @@
-import struct Yosemite.POSStaffMember
-
 @MainActor
 protocol POSAccessSession: AnyObject {
     var currentStaff: POSStaff? { get }
     var isLocked: Bool { get }
-    /// Whether the cached staff list has at least one member with a PIN — i.e. POS access is
-    /// PIN-gated. Gating is cache-driven, not connection-driven: an existing cache still locks while
-    /// offline. Reports `false` whenever no cached member has a PIN — whether the cache is empty
-    /// (never fetched, or cleared on logout / when roles are disabled server-side) or it holds staff
-    /// who simply have no PINs — meaning no gating and no lock screen.
-    var hasAnyPINs: Bool { get }
+    /// Whether an Admin PIN protects POS for this store on this device. Stays `true` when the stored
+    /// PINs can't be read, so POS remains locked instead of opening with every action allowed.
+    var isPINProtectionEnabled: Bool { get }
 
     func allows(_ capability: POSCapability) -> Bool
     func signIn(withPIN pin: String) async throws(POSAuthError)
@@ -18,13 +13,4 @@ protocol POSAccessSession: AnyObject {
     func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError)
     func lock()
     func checkLockoutState() throws(POSAuthError)
-    func refreshPINStatus() async
-    /// Refreshes PIN gating from an already-loaded staff list, so a caller that just fetched staff
-    /// (e.g. the staff settings screen) can sync the session without hitting the staff endpoint again.
-    func refreshPINStatus(using staff: [POSStaffMember]) async
-
-    /// Clears the staff cache for the current site on a live session, dropping any in-flight
-    /// refresh's write so a clear that lands mid-fetch can't resurrect stale staff. Logout — where
-    /// no session is alive — wipes the persisted cache through `POSRolesPersistence` instead.
-    func clearStaffCache()
 }

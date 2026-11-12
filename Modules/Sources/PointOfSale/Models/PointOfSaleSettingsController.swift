@@ -22,8 +22,6 @@ protocol POSSettingsControllerProtocol {
     /// Owns receipt-printer discovery and connection. `nil` when the printer feature flag is off,
     /// which also hides the Receipt printers section in hardware settings.
     var printerConnectionController: POSPrinterConnectionController? { get }
-
-    var staffSettingsService: POSStaffSettingsService? { get }
 }
 
 @MainActor
@@ -36,7 +34,6 @@ protocol POSSettingsControllerProtocol {
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     let isLocalCatalogEligible: Bool
     let printerConnectionController: POSPrinterConnectionController?
-    let staffSettingsService: POSStaffSettingsService?
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
@@ -49,9 +46,7 @@ protocol POSSettingsControllerProtocol {
          isLocalCatalogEligible: Bool,
          receiptSettingsAdminURL: String,
          analytics: POSAnalyticsProviding,
-         printerConnectionController: POSPrinterConnectionController? = nil,
-         staffSettingsService: POSStaffSettingsService? = nil) {
-        self.staffSettingsService = staffSettingsService
+         printerConnectionController: POSPrinterConnectionController? = nil) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
@@ -118,8 +113,6 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
     var isLocalCatalogEligible: Bool {
         localCatalogViewModel != nil
     }
-
-    var staffSettingsService: POSStaffSettingsService?
 
     static func withPrinter() -> POSSettingsPreviewController {
         let controller = POSSettingsPreviewController()

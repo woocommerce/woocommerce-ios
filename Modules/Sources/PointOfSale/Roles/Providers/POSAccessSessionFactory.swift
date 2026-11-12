@@ -3,18 +3,16 @@ import enum Experiments.FeatureFlag
 @MainActor
 enum POSAccessSessionFactory {
     static func make(siteID: Int64,
-                     featureFlags: POSFeatureFlagProviding,
-                     fetcher: POSStaffFetching) -> POSAccessSession {
+                     featureFlags: POSFeatureFlagProviding) -> POSAccessSession {
         guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) else {
             return UnrestrictedPOSAccessSession()
         }
-        let cache = POSStaffCache()
+        let credentialProvider = POSLocalPINStore(siteID: siteID)
         return DefaultPOSAccessSession(
             siteID: siteID,
-            authenticator: DefaultPOSPINAuthenticator(cache: cache, siteID: siteID),
+            authenticator: DefaultPOSPINAuthenticator(credentialProvider: credentialProvider),
             rateLimiter: POSLocalRateLimiter(siteID: siteID),
-            cache: cache,
-            fetcher: fetcher
+            credentialProvider: credentialProvider
         )
     }
 }

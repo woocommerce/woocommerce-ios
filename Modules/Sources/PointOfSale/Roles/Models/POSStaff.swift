@@ -1,12 +1,10 @@
-import enum Yosemite.POSStaffPreset
-
+/// The operator a PIN unlocks POS as. Permission checks read only `capabilities`, so a synced staff
+/// record can carry its own set.
 struct POSStaff: Equatable, Sendable {
-    let userID: Int64
     let displayName: String
-    let preset: POSStaffPreset
-    let capabilities: Set<String>
+    let capabilities: Set<POSCapability>
 
     func hasCapability(_ capability: POSCapability) -> Bool {
-        capabilities.contains(capability.rawValue)
+        capabilities.contains(capability)
     }
 }

@@ -1,47 +1,45 @@
 import Foundation
 import Testing
-import struct Yosemite.POSStaffMember
 @testable import PointOfSale
 
 @MainActor
 struct POSRolesPersistenceTests {
-    @Test func test_clearAll_wipes_staff_cache_for_every_site() {
-        // Given staff cached with PINs for several sites
-        let storage = InMemoryStaffStorage()
-        let cache = POSStaffCache(storage: storage)
-        cache.save([makeStaffMemberWithPIN()], siteID: 123)
-        cache.save([makeStaffMemberWithPIN()], siteID: 456)
+    @Test func test_clearAll_removes_local_pins_for_every_site() throws {
+        // Given
+        let storage = InMemoryPOSSecureStorage()
+        try POSLocalPINStore(siteID: 123, storage: storage, iterations: 1).setPIN("1234", for: .admin)
+        try POSLocalPINStore(siteID: 456, storage: storage, iterations: 1).setPIN("1234", for: .admin)
 
         // When
-        POSRolesPersistence.clearAll(staffStorage: storage, userDefaults: UserDefaultsTestScope().defaults)
+        try POSRolesPersistence.clearAll(pinStorage: storage, userDefaults: UserDefaultsTestScope().defaults)
 
-        // Then every site's cached staff is gone
-        #expect(cache.load(siteID: 123) == nil)
-        #expect(cache.load(siteID: 456) == nil)
+        // Then
+        #expect(try POSLocalPINStore(siteID: 123, storage: storage).credentials().isEmpty)
+        #expect(try POSLocalPINStore(siteID: 456, storage: storage).credentials().isEmpty)
     }
 
-    @Test func test_clearAll_clears_lock_flags_for_every_site() {
+    @Test func test_clearAll_clears_lock_flags_for_every_site() throws {
         // Given lock flags persisted for several sites
         let scope = UserDefaultsTestScope()
         scope.defaults.set(true, forKey: POSLockStateKey.key(for: 123))
         scope.defaults.set(true, forKey: POSLockStateKey.key(for: 456))
 
         // When
-        POSRolesPersistence.clearAll(staffStorage: InMemoryStaffStorage(), userDefaults: scope.defaults)
+        try POSRolesPersistence.clearAll(pinStorage: InMemoryPOSSecureStorage(), userDefaults: scope.defaults)
 
         // Then no site's lock flag reads as locked
         #expect(scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
         #expect(scope.defaults.bool(forKey: POSLockStateKey.key(for: 456)) == false)
     }
 
-    @Test func test_clearAll_leaves_unrelated_user_defaults_keys_untouched() {
+    @Test func test_clearAll_leaves_unrelated_user_defaults_keys_untouched() throws {
         // Given a POS lock flag alongside an unrelated app preference
         let scope = UserDefaultsTestScope()
         scope.defaults.set(true, forKey: POSLockStateKey.key(for: 123))
         scope.defaults.set("keep", forKey: "com.woocommerce.someOtherSetting")
 
         // When
-        POSRolesPersistence.clearAll(staffStorage: InMemoryStaffStorage(), userDefaults: scope.defaults)
+        try POSRolesPersistence.clearAll(pinStorage: InMemoryPOSSecureStorage(), userDefaults: scope.defaults)
 
         // Then the lock-state prefix scan removes only the POS lock flag
         #expect(scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
@@ -49,14 +47,19 @@ struct POSRolesPersistenceTests {
     }
 }
 
-private extension POSRolesPersistenceTests {
-    func makeStaffMemberWithPIN() -> POSStaffMember {
-        POSStaffMember(userID: 1,
-                       displayName: "Staff",
-                       preset: .cashier,
-                       capabilities: ["woocommerce_pos_issue_refunds": true],
-                       pin: .init(algorithm: "pbkdf2-sha256", iterations: 1,
-                                  salt: "c2FsdA==", hash: "aGFzaA=="))
+extension POSRolesPersistenceTests {
+    @Test func test_clearAll_when_pin_removal_fails_then_throws_and_still_clears_lock_flags() {
+        // Given
+        let scope = UserDefaultsTestScope()
+        scope.defaults.set(true, forKey: POSLockStateKey.key(for: 123))
+        let storage = InMemoryPOSSecureStorage()
+        storage.shouldFail = true
+
+        // When / Then
+        #expect(throws: (any Error).self) {
+            try POSRolesPersistence.clearAll(pinStorage: storage, userDefaults: scope.defaults)
+        }
+        #expect(scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
     }
 }
 

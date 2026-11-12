@@ -69,7 +69,6 @@ struct POSModalCloseButtonModifier: ViewModifier {
     let fontStyle: POSFontStyle
     let foregroundColor: Color
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
-    @State private var flowCloseAction = POSModalFlowCloseAction()
 
     func body(content: Content) -> some View {
         VStack(spacing: 0) {
@@ -88,14 +87,33 @@ struct POSModalCloseButtonModifier: ViewModifier {
 
             Spacer()
         }
-        .preference(key: POSModalFlowCloseActionKey.self, value: isFullScreenFlow ? updatedFlowCloseAction : nil)
+        .posModalFlowCloseAction(enabled: isFullScreenFlow,
+                                 accessibilityLabel: accessibilityLabel,
+                                 accessibilityIdentifier: accessibilityIdentifier,
+                                 action: closeAction)
     }
+}
 
-    private var updatedFlowCloseAction: POSModalFlowCloseAction {
-        flowCloseAction.action = closeAction
-        flowCloseAction.accessibilityLabel = accessibilityLabel
-        flowCloseAction.accessibilityIdentifier = accessibilityIdentifier
-        return flowCloseAction
+extension View {
+    /// Shows a close button in the header of a phone full-screen flow that runs `action`, for content that keeps its own
+    /// Cancel button and has no close button in the regular-width card. Other presentations are unchanged.
+    func posModalFlowHeaderCloseButton(
+        action: @escaping () -> Void,
+        accessibilityLabel: String = POSModalCloseButton.Localization.defaultAccessibilityLabel) -> some View {
+        modifier(POSModalFlowHeaderCloseModifier(closeAction: action, accessibilityLabel: accessibilityLabel))
+    }
+}
+
+private struct POSModalFlowHeaderCloseModifier: ViewModifier {
+    let closeAction: () -> Void
+    let accessibilityLabel: String
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
+
+    func body(content: Content) -> some View {
+        content
+            .posModalFlowCloseAction(enabled: isFullScreenFlow,
+                                     accessibilityLabel: accessibilityLabel,
+                                     action: closeAction)
     }
 }
 

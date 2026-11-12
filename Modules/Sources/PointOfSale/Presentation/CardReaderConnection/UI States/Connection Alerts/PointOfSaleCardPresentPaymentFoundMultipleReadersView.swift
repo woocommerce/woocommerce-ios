@@ -3,6 +3,7 @@ import SwiftUI
 /// Displays a list of card readers that are found, with a CTA to connect to a reader and a CTA to cancel reader search.
 struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     private let readerIDs: [String]
     private let connect: (String) -> Void
     private let cancelSearch: () -> Void
@@ -16,20 +17,26 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
 
     var body: some View {
         VStack {
-            Text(Localization.headline)
-                .font(.posHeadingBold)
-                .padding(headerPadding)
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityFocused($isTitleFocused)
+            if isFullScreenFlow {
+                // The phone flow header shows the title, so the readers sit in the middle of the screen.
+                centeredReaders
+                    .scrollVerticallyIfNeeded()
+            } else {
+                Text(Localization.headline)
+                    .font(.posHeadingBold)
+                    .padding(headerPadding)
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($isTitleFocused)
 
-            scanningText()
+                scanningText()
 
-            List(readerIDs, id: \.self) { readerID in
-                readerRow(readerID: readerID)
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.posSurface)
+                List(readerIDs, id: \.self) { readerID in
+                    readerRow(readerID: readerID)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.posSurface)
+                }
+                .listStyle(.plain)
             }
-            .listStyle(.plain)
 
             Button(action: {
                 cancelSearch()
@@ -41,6 +48,8 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
         }
         .padding(contentPadding)
         .accessibilityElement(children: .contain)
+        .posModalFlowHeaderTitle(Localization.headline)
+        .posModalFlowHeaderCloseButton(action: cancelSearch)
         .onAppear {
             isTitleFocused = true
         }
@@ -59,6 +68,21 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
             .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
         }
         .padding(.vertical, metrics.padding.xSmall)
+    }
+
+    var centeredReaders: some View {
+        VStack(spacing: metrics.spacing.small) {
+            Spacer(minLength: metrics.spacing.none)
+
+            scanningText()
+                .padding(.bottom, metrics.padding.small)
+
+            ForEach(readerIDs, id: \.self) { readerID in
+                readerRow(readerID: readerID)
+            }
+
+            Spacer(minLength: metrics.spacing.none)
+        }
     }
 
     @ViewBuilder func scanningText() -> some View {
@@ -102,8 +126,10 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
 }
 
 private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
+    /// The phone flow already pads its content, like every other step.
     var contentPadding: EdgeInsets {
-        .init(top: metrics.padding.none, leading: metrics.padding.medium, bottom: metrics.padding.none, trailing: metrics.padding.medium)
+        let horizontal = isFullScreenFlow ? metrics.padding.none : metrics.padding.medium
+        return .init(top: metrics.padding.none, leading: horizontal, bottom: metrics.padding.none, trailing: horizontal)
     }
 
     var headerPadding: EdgeInsets {

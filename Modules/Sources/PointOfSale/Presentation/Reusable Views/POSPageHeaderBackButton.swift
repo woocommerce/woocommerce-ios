@@ -27,6 +27,9 @@ struct POSPageHeaderBackButton: View {
         }
         .disabled(configuration.state == .disabled || configuration.state == .shimmering)
         .accessibilityIdentifier(configuration.accessibilityIdentifier ?? Constants.defaultAccessibilityIdentifier)
+        .if(configuration.accessibilityLabel != nil) { view in
+            view.accessibilityLabel(configuration.accessibilityLabel ?? "")
+        }
         .if(configuration.state == .shimmering) { view in
             view.shimmering()
         }

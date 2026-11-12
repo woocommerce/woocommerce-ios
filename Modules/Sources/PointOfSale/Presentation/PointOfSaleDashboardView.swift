@@ -111,8 +111,17 @@ struct PointOfSaleDashboardView: View {
                     dismiss()
                 } : nil)
             case .content:
-                contentView
-                    .accessibilitySortPriority(2)
+                POSPushTransitionContainer(
+                    item: posModel.customAmountFlow,
+                    onBack: { posModel.customAmountFlow = nil }
+                ) {
+                    contentView
+                } pushed: { flow in
+                    if let flow {
+                        POSCustomAmountFlowView(flow: flow)
+                    }
+                }
+                .accessibilitySortPriority(2)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -128,7 +137,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, metrics.padding.medium)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
+            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed && posModel.customAmountFlow == nil)
         }
         .overlay {
             POSConnectivityView()
@@ -194,10 +203,11 @@ struct PointOfSaleDashboardView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
-        // Hosted here rather than in either pane so it covers both panes (and the phone cart sheet)
-        // and survives size class changes.
-        .posFullScreenCover(item: $posModel.customAmountFlow) { flow in
-            POSCustomAmountFlowView(flow: flow)
+        .onChange(of: posModel.customAmountFlow) { _, flow in
+            // Editing starts from the phone cart sheet, which would otherwise stay over the form.
+            if flow != nil {
+                phoneShowingCart = false
+            }
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
@@ -214,6 +224,7 @@ struct PointOfSaleDashboardView: View {
             showDocumentation = false
             showSettings = false
             showOrders = false
+            posModel.customAmountFlow = nil
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }

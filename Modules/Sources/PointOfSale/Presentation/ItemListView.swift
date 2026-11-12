@@ -83,6 +83,7 @@ struct ItemListView: View {
                 && !modalManager.isPresented
                 && !sheetManager.isPresented
                 && !coverManager.isPresented
+                && posModel.customAmountFlow == nil
             },
             set: { _ in }
         )

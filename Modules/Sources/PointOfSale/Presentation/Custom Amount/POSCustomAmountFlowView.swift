@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Full-screen host for the custom amount flow, presented over both panes for add and edit.
+/// Host for the custom amount flow, pushed over both panes for add and edit.
 struct POSCustomAmountFlowView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posCurrencyProvider) private var currencyProvider
@@ -16,7 +16,6 @@ struct POSCustomAmountFlowView: View {
                 posModel.upsertCustomAmount(customAmount, mode: flow.analyticsMode)
             }
         )
-        .posEdgeSwipeBackAction(onBack: dismiss)
     }
 
     private func dismiss() {

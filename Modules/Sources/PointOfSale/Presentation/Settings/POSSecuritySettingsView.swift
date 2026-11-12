@@ -4,8 +4,6 @@ struct POSSecuritySettingsView: View {
     @Environment(\.posMetrics) private var metrics
     let controller: POSSecuritySettingsController
     @State private var editing: POSLocalRole?
-    @State private var firstPIN: String?
-    @State private var mismatch = false
     @State private var confirmRemoval = false
 
     var body: some View {
@@ -16,17 +14,13 @@ struct POSSecuritySettingsView: View {
                     if let roles = controller.roles {
                         Text(roles.contains(.admin) ? Localization.protectionOn : Localization.protectionOff)
                             .font(.posBodyMediumRegular())
-                        if let role = editing {
-                            pinEntry(for: role)
-                        } else {
-                            POSInformationCard {
-                                ViewThatFits(in: .horizontal) {
-                                    pinRows(roles, stacked: false)
-                                    pinRows(roles, stacked: true)
-                                }
+                        POSInformationCard {
+                            ViewThatFits(in: .horizontal) {
+                                pinRows(roles, stacked: false)
+                                pinRows(roles, stacked: true)
                             }
-                            if roles == [.admin] { Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular()) }
                         }
+                        if roles == [.admin] { Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular()) }
                     } else {
                         Button(Localization.retry) { controller.load() }
                             .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
@@ -43,7 +37,12 @@ struct POSSecuritySettingsView: View {
         .background(Color.posSurface)
         .disabled(controller.isSaving)
         .onAppear { controller.load() }
-        .onDisappear { firstPIN = nil; editing = nil }
+        .onDisappear { editing = nil }
+        .posModal(isPresented: Binding(get: { editing != nil }, set: { if !$0 { editing = nil } }), onDismiss: { controller.load() }) {
+            if let role = editing {
+                POSSecurityPINEntryModal(role: role, controller: controller, close: { editing = nil })
+            }
+        }
         .alert(Localization.removeAdmin, isPresented: $confirmRemoval) {
             Button(Localization.remove, role: .destructive) { Task { await controller.save(nil, for: .admin) } }
             Button(Localization.cancel, role: .cancel) {}
@@ -68,7 +67,7 @@ struct POSSecuritySettingsView: View {
                                                  showSeparator: false)
         let actions = HStack(spacing: metrics.spacing.medium) {
             Button(roles.contains(role) ? Localization.change : Localization.setPIN) {
-                controller.load(); firstPIN = nil; mismatch = false; editing = role
+                controller.load(); editing = role
             }
             .accessibilityLabel(String.localizedStringWithFormat(
                 roles.contains(role) ? Localization.changeRolePIN : Localization.setRolePIN, role.displayName))
@@ -87,27 +86,6 @@ struct POSSecuritySettingsView: View {
         } else {
             HStack(spacing: metrics.spacing.medium) { details.fixedSize(); Spacer(); actions }
         }
-    }
-
-    private func pinEntry(for role: POSLocalRole) -> some View {
-        VStack(spacing: metrics.spacing.medium) {
-            Text(String.localizedStringWithFormat(firstPIN == nil ? Localization.enterPIN : Localization.confirmPIN, role.displayName))
-                .font(.posBodyLargeBold)
-            if mismatch { Text(Localization.mismatch).foregroundStyle(Color.posError).font(.posBodyMediumRegular()) }
-            POSPINEntryView(state: controller.isSaving ? .loading : .idle) { pin in
-                guard let firstPIN else { mismatch = false; self.firstPIN = pin; return true }
-                guard firstPIN == pin else { self.firstPIN = nil; mismatch = true; return false }
-                let saved = await controller.save(pin, for: role)
-                if saved { editing = nil }
-                self.firstPIN = nil
-                return saved
-            }
-            .id(firstPIN == nil)
-            .frame(maxWidth: POSPINEntryView.contentWidth)
-            Button(Localization.cancel) { controller.load(); firstPIN = nil; editing = nil }
-                .font(.posBodyMediumBold)
-        }
-        .frame(maxWidth: .infinity)
     }
 
     enum Localization {
@@ -144,6 +122,53 @@ struct POSSecuritySettingsView: View {
         static let removalMessage = NSLocalizedString("pos.security.removalMessage",
                                                      value: "This removes both local PINs and turns off PIN protection on this device.",
                                                      comment: "Explains Admin PIN removal.")
+    }
+}
+
+private struct POSSecurityPINEntryModal: View {
+    @Environment(\.posMetrics) private var metrics
+    @State private var firstPIN: String?
+    @State private var mismatch = false
+
+    let role: POSLocalRole
+    let controller: POSSecuritySettingsController
+    let close: () -> Void
+
+    private typealias Localization = POSSecuritySettingsView.Localization
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: metrics.spacing.medium) {
+                Text(String.localizedStringWithFormat(firstPIN == nil ? Localization.enterPIN : Localization.confirmPIN, role.displayName))
+                    .font(.posBodyLargeBold)
+                    .accessibilityAddTraits(.isHeader)
+                if mismatch { Text(Localization.mismatch).foregroundStyle(Color.posError).font(.posBodyMediumRegular()) }
+                POSPINEntryView(state: controller.isSaving ? .loading : .idle) { pin in
+                    guard let firstPIN else { mismatch = false; self.firstPIN = pin; return true }
+                    guard firstPIN == pin else { self.firstPIN = nil; mismatch = true; return false }
+                    let saved = await controller.save(pin, for: role)
+                    if saved { close() }
+                    self.firstPIN = nil
+                    return saved
+                }
+                .id(firstPIN == nil)
+                if let error = controller.error {
+                    Text(error == .pinMatchesOtherRole ? Localization.distinctPINs : Localization.storageError)
+                        .foregroundStyle(Color.posError).font(.posBodyMediumRegular())
+                }
+            }
+            .frame(maxWidth: POSPINEntryView.contentWidth)
+            .frame(maxWidth: .infinity)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .posModalCloseButton(action: {
+            guard !controller.isSaving else { return }
+            close()
+        }, accessibilityLabel: Localization.cancel)
+        .posModalSizing(fullScreenWhenCompact: true)
+        .posInteractiveDismissDisabled(controller.isSaving)
+        .disabled(controller.isSaving)
+        .accessibilityIdentifier("pos-security-pin-entry")
     }
 }
 

@@ -41,11 +41,15 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
     private var connectReaderTask: Task<CardPresentPaymentReaderConnectionResult, Error>?
+    private let connectionPreflight: (any CardPresentPaymentPreflightControllerFacade)?
 
     @MainActor
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) async {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
+         connectionPreflight: (any CardPresentPaymentPreflightControllerFacade)? = nil,
+         onboardingAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor? = nil) async {
         self.siteID = siteID
-        let onboardingAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor()
+        self.connectionPreflight = connectionPreflight
+        let onboardingAdaptor = onboardingAdaptor ?? CardPresentPaymentsOnboardingPresenterAdaptor()
         self.onboardingAdaptor = onboardingAdaptor
         let paymentAlertsPresenterAdaptor = CardPresentPaymentsAlertPresenterAdaptor()
         self.paymentAlertsPresenterAdaptor = paymentAlertsPresenterAdaptor
@@ -107,7 +111,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             guard let self else { return .canceled }
             defer { self.connectReaderTask = nil }
 
-            let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: self.createPreflightController())
+            let preflightControllerAdaptor = self.connectionPreflight ?? CardPresentPaymentPreflightAdaptor(preflightController: self.createPreflightController())
             do {
                 let preflightResult = try await preflightControllerAdaptor.attemptConnection(discoveryMethod: connectionMethod.discoveryMethod)
                 switch preflightResult {
@@ -136,7 +140,11 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         }
 
         connectReaderTask = task
-        return try await task.value
+        return try await withTaskCancellationHandler {
+            try await task.value
+        } onCancel: {
+            task.cancel()
+        }
     }
 
     @MainActor
@@ -235,6 +243,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     private func cancelReaderConnectionAttempt() async {
+        discardOnboardingPresentation()
         paymentAlertsPresenterAdaptor.dismiss()
 
         await withCheckedContinuation { continuation in
@@ -247,6 +256,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             stores.dispatch(action)
         }
     }
+
+    func discardOnboardingPresentation() { onboardingAdaptor.cancelOnboarding() }
 
     func cancelReconnection() async {
         await withCheckedContinuation { continuation in

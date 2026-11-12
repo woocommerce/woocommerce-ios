@@ -91,6 +91,7 @@ extension View {
 }
 
 struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
+    @Environment(\.posAccessSession) private var session
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
@@ -99,7 +100,12 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 
     func body(content: Content) -> some View {
         content
+            .modifier(POSDismissPresentationOnLock(value: $item, dismissedValue: nil))
             .onChange(of: item) { _, newItem in
+                guard !session.isLocked else {
+                    modalManager.dismissForLock()
+                    return
+                }
                 if let newItem {
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
@@ -121,6 +127,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 }
 
 struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
+    @Environment(\.posAccessSession) private var session
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
@@ -129,7 +136,12 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            .modifier(POSDismissPresentationOnLock(value: $isPresented, dismissedValue: false))
             .onChange(of: isPresented) { _, newValue in
+                guard !session.isLocked else {
+                    modalManager.dismissForLock()
+                    return
+                }
                 if newValue {
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }

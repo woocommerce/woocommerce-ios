@@ -4,7 +4,8 @@ extension POSDialog {
     static func printReceiptFailure(_ failure: POSPrintReceiptFailure,
                                     selectAction: @escaping (POSPrintReceiptFailureAction) -> Void,
                                     close: @escaping () -> Void) -> POSDialog {
-        POSDialog(title: failure.title,
+        POSDialog(icon: .exclamationMark,
+                  title: failure.title,
                   message: failure.message,
                   primaryAction: .init(title: Localization.retryButton, action: { selectAction(.retry) }),
                   secondaryAction: .init(title: Localization.emailButton, action: { selectAction(.emailReceipt) }),

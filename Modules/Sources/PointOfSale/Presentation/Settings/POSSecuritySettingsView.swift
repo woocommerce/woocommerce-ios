@@ -127,6 +127,7 @@ struct POSSecuritySettingsView: View {
 
 private struct POSSecurityPINEntryModal: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.posModalDismissAction) private var dismissModal
     @State private var firstPIN: String?
     @State private var mismatch = false
 
@@ -168,6 +169,9 @@ private struct POSSecurityPINEntryModal: View {
         .posModalSizing(fullScreenWhenCompact: true)
         .posInteractiveDismissDisabled(controller.isSaving)
         .disabled(controller.isSaving)
+        .onChange(of: controller.isVisible) { _, isVisible in
+            if !isVisible { dismissModal?() }
+        }
         .accessibilityIdentifier("pos-security-pin-entry")
     }
 }

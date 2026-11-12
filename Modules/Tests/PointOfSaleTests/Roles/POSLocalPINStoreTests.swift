@@ -1,4 +1,6 @@
 import Foundation
+import Dispatch
+import Synchronization
 import Testing
 @testable import PointOfSale
 
@@ -207,6 +209,111 @@ struct POSLocalPINStoreTests {
         #expect(try makeSUT(siteID: 123).credentials().isEmpty)
         #expect(try makeSUT(siteID: 456).credentials().isEmpty)
     }
+
+    @Test(arguments: ["set", "removeAdmin", "removeCashier"])
+    func test_retired_store_when_logout_has_completed_then_cannot_change_new_credentials(operation: String) throws {
+        // Given
+        let retired = makeSUT()
+        try retired.setPIN("1234", for: .admin)
+        try POSPINAttemptContext.clearAll(scopeID: storage.scopeID) { try storage.removeAll() }
+        let current = makeSUT()
+        try current.setPIN("2468", for: .admin)
+        let before = storage.values
+
+        // When / Then
+        #expect(throws: POSPINStoreError.storageFailure) {
+            switch operation {
+            case "set": try retired.setPIN("1357", for: .admin)
+            case "removeAdmin": try retired.removePIN(for: .admin)
+            default: try retired.removePIN(for: .cashier)
+            }
+        }
+        #expect(storage.values == before)
+        #expect(try current.credentials().first?.pinHash.matches("2468") == true)
+    }
+
+    @MainActor
+    @Test func test_logout_when_pin_write_has_entered_then_clear_completes_last() async throws {
+        // Given
+        let storage = BlockingPINWriteStorage()
+        let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
+        let epoch = POSPINAttemptContext.logoutEpoch(scopeID: storage.scopeID)
+        let write = Task.detached { try store.setPIN("1234", for: .admin) }
+        defer { storage.releaseWrite() }
+        // When
+        do {
+            let _: Void = try await withCheckedThrowingContinuation { continuation in
+                DispatchQueue.global().async {
+                    guard storage.waitUntilWriteEntered() else {
+                        storage.releaseWrite()
+                        continuation.resume(throwing: PINWriteRaceFailure.writeDidNotEnter)
+                        return
+                    }
+                    let result = Mutex<Result<Void, POSPINStoreError>?>(nil)
+                    let finished = DispatchSemaphore(value: 0)
+                    DispatchQueue.global().async {
+                        do {
+                            try POSPINAttemptContext.clearAll(scopeID: storage.scopeID) { try storage.removeAll() }
+                            result.withLock { $0 = .success(()) }
+                        } catch {
+                            result.withLock { $0 = .failure(.storageFailure) }
+                        }
+                        finished.signal()
+                    }
+                    // Other tests can synchronously wait on writes from MainActor. Release from an independent executor.
+                    let deadline = ContinuousClock.now.advanced(by: .seconds(2))
+                    while POSPINAttemptContext.logoutEpoch(scopeID: storage.scopeID) == epoch, ContinuousClock.now < deadline {
+                        Thread.sleep(forTimeInterval: 0.001)
+                    }
+                    let invalidated = POSPINAttemptContext.logoutEpoch(scopeID: storage.scopeID) != epoch
+                    storage.releaseWrite()
+                    guard finished.wait(timeout: .now() + 2) == .success else {
+                        continuation.resume(throwing: PINWriteRaceFailure.clearDidNotFinish)
+                        return
+                    }
+                    guard invalidated else {
+                        continuation.resume(throwing: PINWriteRaceFailure.logoutDidNotInvalidate)
+                        return
+                    }
+                    continuation.resume(with: result.withLock { $0 ?? .failure(.storageFailure) }.mapError { $0 as Error })
+                }
+            }
+        } catch {
+            storage.releaseWrite()
+            _ = await write.result
+            throw error
+        }
+        try await write.value
+
+        // Then
+        #expect(try storage.data(forKey: "pins.123") == nil)
+    }
+}
+
+private final class BlockingPINWriteStorage: POSSecureStorage, Sendable {
+    private let storage = InMemoryPOSSecureStorage()
+    private let entered = DispatchSemaphore(value: 0)
+    private let release = DispatchSemaphore(value: 0)
+    var scopeID: String { storage.scopeID }
+
+    func data(forKey key: String) throws -> Data? { try storage.data(forKey: key) }
+    func removeAll() throws { try storage.removeAll() }
+
+    func setData(_ data: Data?, forKey key: String) throws {
+        entered.signal()
+        guard release.wait(timeout: .now() + 5) == .success else { throw POSPINStoreError.storageFailure }
+        try storage.setData(data, forKey: key)
+    }
+
+    func waitUntilWriteEntered() -> Bool { entered.wait(timeout: .now() + 2) == .success }
+
+    func releaseWrite() { release.signal() }
+}
+
+private enum PINWriteRaceFailure: Error {
+    case writeDidNotEnter
+    case logoutDidNotInvalidate
+    case clearDidNotFinish
 }
 
 private extension POSLocalPINStoreTests {

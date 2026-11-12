@@ -26,7 +26,7 @@ struct POSPINEntryViewHelper {
         switch state {
         case .idle, .error:
             return true
-        case .lockout, .loading:
+        case .lockout, .waiting, .unavailable, .loading:
             return false
         }
     }

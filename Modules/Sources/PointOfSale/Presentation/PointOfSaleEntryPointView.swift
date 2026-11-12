@@ -223,7 +223,18 @@ public struct PointOfSaleEntryPointView: View {
             // Check for nil because returning from the full-screen Tap to Pay payment simulation can restart this task.
             guard posModel == nil else { return }
             // Session initialization persists lock state, so it must run once, before content is exposed.
-            let session = POSAccessSessionFactory.make(siteID: siteID, featureFlags: services.featureFlags)
+            let session: POSAccessSession
+            do {
+                session = try await POSAccessSessionFactory.make(siteID: siteID, featureFlags: services.featureFlags,
+                                                                 shouldCreate: { posModel == nil })
+            } catch {
+                // Cancellation or a superseding entry must not mount another session.
+                return
+            }
+            guard !Task.isCancelled, posModel == nil else {
+                session.endSession()
+                return
+            }
             accessSession = session
             if services.featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) {
                 settingsController.configureSecurity(store: POSLocalPINStore(siteID: siteID), session: session)

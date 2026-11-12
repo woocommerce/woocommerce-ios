@@ -61,6 +61,10 @@ private extension POSPINEntryView {
         switch state {
         case .lockout(let until):
             lockoutCountdown(until: until)
+        case .waiting(let seconds):
+            lockoutMessage(helper.lockoutMessage(remainingSeconds: seconds))
+        case .unavailable:
+            lockoutMessage(Localization.message(for: .generic))
         case .idle, .loading, .error:
             dotsRow
         }

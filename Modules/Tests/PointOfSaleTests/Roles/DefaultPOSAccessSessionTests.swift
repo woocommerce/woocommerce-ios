@@ -9,7 +9,7 @@ struct DefaultPOSAccessSessionTests {
         // Given
         let staff = makeStaff()
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
-        sut.limiter.recordFailure()
+        await seedFailures(1, sut: sut)
 
         // When
         try await sut.session.signIn(withPIN: "1234")
@@ -17,7 +17,7 @@ struct DefaultPOSAccessSessionTests {
         // Then
         #expect(sut.session.currentStaff == staff)
         #expect(sut.session.isLocked == false)
-        try sut.limiter.checkAllowed()
+        try await sut.limiter.checkAllowed(token: sut.limiter.context.current())
     }
 
     @Test func test_signIn_when_pin_is_invalid_then_throws_invalidPIN_and_records_failure() async {
@@ -35,11 +35,10 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_signIn_when_failure_crosses_30_second_threshold_then_throws_rateLimited() async {
         // Given
-        let nowValue = Date(timeIntervalSinceReferenceDate: 1000)
         let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))
-        let sut = makeSUT(authenticator: authenticator, now: { nowValue })
+        let sut = makeSUT(authenticator: authenticator)
         for _ in 0..<4 {
-            sut.limiter.recordFailure()
+            await seedFailures(1, sut: sut)
         }
 
         // When
@@ -51,32 +50,15 @@ struct DefaultPOSAccessSessionTests {
         }
 
         // Then
-        #expect(thrown == .rateLimited(until: nowValue.addingTimeInterval(30)))
-    }
-
-    @Test func test_signIn_when_failure_crosses_permanent_threshold_then_throws_permanentlyLocked() async {
-        // Given
-        var nowValue = Date(timeIntervalSinceReferenceDate: 1000)
-        let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))
-        let sut = makeSUT(authenticator: authenticator, now: { nowValue })
-        for _ in 0..<14 {
-            sut.limiter.recordFailure()
-        }
-        nowValue = nowValue.addingTimeInterval(301)
-
-        // When / Then
-        await #expect(throws: POSAuthError.permanentlyLocked) {
-            try await sut.session.signIn(withPIN: "0000")
-        }
+        #expect(thrown == .rateLimited(remainingSeconds: 30))
     }
 
     @Test func test_signIn_when_already_rate_limited_then_throws_without_calling_authenticator() async {
         // Given
-        let nowValue = Date(timeIntervalSinceReferenceDate: 1000)
         let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))
-        let sut = makeSUT(authenticator: authenticator, now: { nowValue })
+        let sut = makeSUT(authenticator: authenticator)
         for _ in 0..<5 {
-            sut.limiter.recordFailure()
+            await seedFailures(1, sut: sut)
         }
 
         // When
@@ -88,22 +70,7 @@ struct DefaultPOSAccessSessionTests {
         }
 
         // Then
-        #expect(thrown == .rateLimited(until: nowValue.addingTimeInterval(30)))
-        #expect(authenticator.authenticatedPINs.isEmpty)
-    }
-
-    @Test func test_signIn_when_permanently_locked_then_throws_without_calling_authenticator() async {
-        // Given
-        let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))
-        let sut = makeSUT(authenticator: authenticator)
-        for _ in 0..<15 {
-            sut.limiter.recordFailure()
-        }
-
-        // When / Then
-        await #expect(throws: POSAuthError.permanentlyLocked) {
-            try await sut.session.signIn(withPIN: "0000")
-        }
+        #expect(thrown == .rateLimited(remainingSeconds: 30))
         #expect(authenticator.authenticatedPINs.isEmpty)
     }
 
@@ -117,10 +84,10 @@ struct DefaultPOSAccessSessionTests {
             try await sut.session.signIn(withPIN: "0000")
         }
 
-        try sut.limiter.checkAllowed()
+        try await sut.limiter.checkAllowed(token: sut.limiter.context.current())
     }
 
-    @Test func test_lock_when_called_then_sets_isLocked_true_and_keeps_currentStaff() async throws {
+    @Test func test_lock_when_called_then_removes_currentStaff_and_denies_access() async throws {
         // Given
         let staff = makeStaff()
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
@@ -131,12 +98,13 @@ struct DefaultPOSAccessSessionTests {
 
         // Then
         #expect(sut.session.isLocked == true)
-        #expect(sut.session.currentStaff == staff)
+        #expect(sut.session.currentStaff == nil)
+        #expect(sut.session.allows(.processSales) == false)
     }
 
     @Test func test_requestManagerApproval_when_authenticator_fails_then_throws_unknown() async {
         // Given
-        let authenticator = MockPOSPINAuthenticator(verifyResult: .failure(.unknown))
+        let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.unknown))
         let sut = makeSUT(authenticator: authenticator)
 
         // When / Then
@@ -282,6 +250,170 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.allows(.issueRefunds) == false)
         #expect(sut.session.allows(.manageStoreSettings) == false)
     }
+    @Test func test_lock_when_comparison_is_pending_then_late_admin_result_cannot_unlock_or_reset_budget() async {
+        // Given
+        let authenticator = MockPOSPINAuthenticator()
+        let sut = makeSUT(authenticator: authenticator)
+        authenticator.onAuthenticate = { sut.session.lock() }
+
+        // When / Then
+        await #expect(throws: POSAuthError.unknown) { try await sut.session.signIn(withPIN: "1234") }
+        #expect(sut.session.isLocked)
+        #expect(sut.session.currentStaff == nil)
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)))
+    }
+
+    @Test func test_endSession_when_comparison_is_pending_then_late_result_cannot_clear_the_lock_marker() async {
+        // Given
+        let authenticator = MockPOSPINAuthenticator()
+        let sut = makeSUT(authenticator: authenticator)
+        authenticator.onAuthenticate = { sut.session.endSession() }
+
+        // When / Then
+        await #expect(throws: POSAuthError.unknown) { try await sut.session.signIn(withPIN: "1234") }
+        #expect(sut.session.currentStaff == nil)
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)))
+    }
+
+    @Test func test_replacement_session_when_old_comparison_completes_then_only_current_session_can_write_authority() async {
+        // Given
+        let authenticator = MockPOSPINAuthenticator()
+        let sut = makeSUT(authenticator: authenticator)
+        var replacement: DefaultPOSAccessSession?
+        authenticator.onAuthenticate = {
+            replacement = DefaultPOSAccessSession(siteID: 123, authenticator: authenticator, rateLimiter: sut.limiter,
+                                                  credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
+                                                  userDefaults: sut.scope.defaults)
+        }
+
+        // When / Then
+        await #expect(throws: POSAuthError.unknown) { try await sut.session.signIn(withPIN: "1234") }
+        #expect(replacement?.isLocked == true)
+        #expect(replacement?.currentStaff == nil)
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)))
+    }
+
+    @Test(arguments: ["end", "lock", "refresh", "endThenRefresh"], [false, true])
+    func test_old_session_when_callbacks_arrive_after_replacement_then_cannot_invalidate_new_owner(operation: String, unlockFirst: Bool) async throws {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
+        try await sut.session.signIn(withPIN: "1234")
+        let replacement = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(), rateLimiter: sut.limiter,
+                                                  credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
+                                                  userDefaults: sut.scope.defaults)
+        if unlockFirst { try await replacement.signIn(withPIN: "1234") }
+        let token = sut.limiter.context.current()
+        #expect(sut.session.allows(.manageStoreSettings) == false)
+
+        // When
+        switch operation {
+        case "end":
+            sut.session.endSession()
+            sut.session.endSession()
+        case "lock": sut.session.lock()
+        case "refresh": #expect(throws: POSPINStoreError.storageFailure) { try sut.session.refreshPINProtection() }
+        default:
+            sut.session.endSession()
+            #expect(throws: POSPINStoreError.storageFailure) { try sut.session.refreshPINProtection() }
+        }
+
+        // Then
+        #expect(sut.limiter.context.isCurrent(token))
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == !unlockFirst)
+        try await replacement.checkLockoutState()
+        try await replacement.signIn(withPIN: "1234")
+        #expect(replacement.isLocked == false)
+    }
+
+    @Test func test_refresh_when_unprotected_session_is_replaced_then_fails_closed_locally_without_changing_new_owner() async throws {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), credentials: .success([]))
+        #expect(sut.session.allows(.processSales))
+        let replacement = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(), rateLimiter: sut.limiter,
+                                                  credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
+                                                  userDefaults: sut.scope.defaults)
+        try await replacement.signIn(withPIN: "1234")
+        let token = sut.limiter.context.current()
+
+        // When / Then
+        #expect(sut.session.allows(.processSales) == false)
+        #expect(throws: POSPINStoreError.storageFailure) { try sut.session.refreshPINProtection() }
+        #expect(sut.session.isLocked)
+        #expect(sut.session.isPINProtectionEnabled)
+        #expect(sut.limiter.context.isCurrent(token))
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
+        #expect(replacement.allows(.manageStoreSettings))
+    }
+
+    @Test func test_logout_when_visible_session_is_invalidated_then_late_callbacks_deny_local_access_without_recreating_marker() async throws {
+        // Given
+        let storage = InMemoryPOSSecureStorage()
+        let limiter = POSLocalRateLimiter(siteID: 123, storage: storage, clock: MockPOSPINClock())
+        let scope = UserDefaultsTestScope()
+        let session = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(), rateLimiter: limiter,
+                                              credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
+                                              userDefaults: scope.defaults)
+        try await session.signIn(withPIN: "1234")
+        try POSPINAttemptContext.clearAll(scopeID: storage.scopeID) { try storage.removeAll() }
+        scope.defaults.removeObject(forKey: POSLockStateKey.key(for: 123))
+        let token = limiter.context.current()
+
+        // When / Then
+        #expect(session.allows(.manageStoreSettings) == false)
+        session.lock()
+        #expect(session.isLocked)
+        #expect(session.currentStaff == nil)
+        #expect(throws: POSPINStoreError.storageFailure) { try session.refreshPINProtection() }
+        session.endSession()
+        session.lock()
+        #expect(limiter.context.isCurrent(token))
+        #expect(scope.defaults.object(forKey: POSLockStateKey.key(for: 123)) == nil)
+    }
+
+    @Test func test_init_when_known_locked_marker_exists_and_credentials_fail_then_preserves_marker() {
+        // Given
+        let scope = UserDefaultsTestScope()
+        scope.defaults.set(true, forKey: POSLockStateKey.key(for: 123))
+
+        // When
+        let session = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(),
+                                              rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
+                                              credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .failure(.storageFailure)),
+                                              userDefaults: scope.defaults)
+
+        // Then
+        #expect(session.isLocked)
+        #expect(scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)))
+    }
+
+    @Test(arguments: [false, true])
+    func test_refresh_when_credentials_fail_then_only_known_protection_creates_a_restart_marker(wasProtected: Bool) async throws {
+        // Given
+        let scope = UserDefaultsTestScope()
+        let provider = MockPOSPINCredentialProvider(credentialsResult: .success(wasProtected ? [makeAdminCredential()] : []))
+        let session = DefaultPOSAccessSession(siteID: 123, authenticator: MockPOSPINAuthenticator(),
+                                              rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
+                                              credentialProvider: provider, userDefaults: scope.defaults)
+        if wasProtected { try await session.signIn(withPIN: "1234") }
+        #expect(scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
+        provider.credentialsResult = .failure(.storageFailure)
+
+        // When / Then
+        #expect(throws: POSPINStoreError.storageFailure) { try session.refreshPINProtection() }
+        #expect(session.isLocked)
+        #expect(session.currentStaff == nil)
+        #expect(scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == wasProtected)
+    }
+
+    @Test func test_refresh_when_initial_read_was_unknown_then_further_read_failure_does_not_invent_restart_marker() {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), credentials: .failure(.storageFailure))
+
+        // When / Then
+        #expect(throws: POSPINStoreError.storageFailure) { try sut.session.refreshPINProtection() }
+        #expect(sut.session.isLocked)
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
+    }
 }
 
 private extension DefaultPOSAccessSessionTests {
@@ -292,10 +424,9 @@ private extension DefaultPOSAccessSessionTests {
     }
 
     func makeSUT(authenticator: POSPINAuthenticating,
-                 credentials: Result<[POSPINCredential], POSPINStoreError>? = nil,
-                 now: @escaping () -> Date = { Date() }) -> SUT {
+                 credentials: Result<[POSPINCredential], POSPINStoreError>? = nil) -> SUT {
         let scope = UserDefaultsTestScope()
-        let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
+        let limiter = POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
         let session = DefaultPOSAccessSession(
             siteID: 123,
             authenticator: authenticator,
@@ -304,6 +435,13 @@ private extension DefaultPOSAccessSessionTests {
             userDefaults: scope.defaults
         )
         return SUT(session: session, limiter: limiter, scope: scope)
+    }
+
+    func seedFailures(_ count: Int, sut: SUT) async {
+        let token = sut.limiter.context.current()
+        let wrong = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))
+        for _ in 0..<count { _ = try? await sut.limiter.authenticate(pin: "0000", using: wrong, token: token) }
+        try? sut.session.refreshPINProtection()
     }
 
     func makeAdminCredential() -> POSPINCredential {

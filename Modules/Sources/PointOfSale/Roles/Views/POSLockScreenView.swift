@@ -28,14 +28,14 @@ struct POSLockScreenView: View {
                     state: model.pinEntryState,
                     onComplete: { pin in
                         await model.signIn(withPIN: pin)
-                    },
-                    onLockoutExpired: { model.lockoutExpired() }
+                    }
                 )
                 .frame(height: POSPINEntryView.preferredHeight)
             }
             .frame(maxWidth: POSPINEntryView.contentWidth)
             .padding(metrics.padding.xxLarge)
         }
+        .task { await model.observeWait() }
     }
 }
 

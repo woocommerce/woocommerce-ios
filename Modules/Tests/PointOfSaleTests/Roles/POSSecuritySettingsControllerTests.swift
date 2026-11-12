@@ -174,6 +174,38 @@ struct POSSecuritySettingsControllerTests {
         #expect(role.displayName == (role == .admin ? "Admin" : "Cashier"))
     }
 
+    @Test(arguments: [false, true], [false, true])
+    func test_save_when_session_is_replaced_or_ended_then_cannot_mutate_pins(wasProtected: Bool, endOnly: Bool) async throws {
+        // Given
+        let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
+        let limiter = POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
+        let session = DefaultPOSAccessSession(siteID: 123, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
+                                              rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
+        let controller = POSSecuritySettingsController(store: store, session: session)
+        controller.load()
+        if wasProtected { #expect(await controller.save("1234", for: .admin)) }
+        let before = storage.values
+        let replacement: DefaultPOSAccessSession?
+
+        // When
+        if endOnly {
+            session.endSession()
+            replacement = nil
+        } else {
+            replacement = DefaultPOSAccessSession(siteID: 123, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
+                                                  rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
+        }
+
+        // Then
+        #expect(controller.isVisible == false)
+        #expect(await controller.save("2468", for: .admin) == false)
+        #expect(storage.values == before)
+        if let replacement {
+            if wasProtected { try await replacement.signIn(withPIN: "1234") }
+            #expect(replacement.allows(.manageStoreSettings))
+        }
+    }
+
     @Test func test_visibility_when_authority_changes_then_only_unlocked_admin_or_unprotected_can_manage() {
         // Given / When / Then
         #expect(POSSecuritySettingsViewHelper.canManage(isProtected: false, isLocked: false, canManageSettings: false))
@@ -188,7 +220,7 @@ struct POSSecuritySettingsControllerTests {
         let defaults = defaultsScope.defaults
         let session = DefaultPOSAccessSession(siteID: 123,
                                              authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
-                                             rateLimiter: POSLocalRateLimiter(siteID: 123, userDefaults: defaults),
+                                             rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                              credentialProvider: store,
                                              userDefaults: defaults)
         return (POSSecuritySettingsController(store: store, session: session), session, store)

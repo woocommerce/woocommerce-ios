@@ -3,10 +3,23 @@ import Testing
 @testable import Yosemite
 
 struct ApplicationPasswordSiteMatcherTests {
-    @Test func test_isWithinSite_when_candidate_is_the_same_URL_then_returns_true() {
+    // MARK: - `isWithinSite(siteURL:candidateURL:)`
+
+    @Test(arguments: [
+        (Constants.siteURL, Constants.siteURL), // same URL
+        (Constants.siteURL, "http://site.example"), // different scheme
+        (Constants.siteURL, "https://site.example:8443"), // port
+        (Constants.siteURL, "https://site.example/wp/wp-admin/authorize-application.php?app_name=woo"), // path
+        (Constants.siteURL, "https://www.site.example"), // candidate has a www prefix
+        ("https://www.site.example", Constants.siteURL), // site address has a www prefix
+        (Constants.siteURL, "https://WWW.Site.EXAMPLE"), // uppercase host
+        ("site.example", Constants.siteURL), // site address has no scheme
+        ("  https://site.example  ", Constants.siteURL), // site address has surrounding whitespace
+        ("https://network.example/shop/", "https://network.example/Shop/wp-admin/authorize-application.php") // below the site path
+    ])
+    func test_isWithinSite_when_candidate_is_within_the_site_then_returns_true(siteURL: String, candidateURL: String) {
         // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = Constants.siteURL
+        // siteURL and candidateURL from the arguments
 
         // When
         let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
@@ -15,106 +28,29 @@ struct ApplicationPasswordSiteMatcherTests {
         #expect(result)
     }
 
-    @Test func test_isWithinSite_when_candidate_has_a_different_scheme_then_returns_true() {
+    @Test(arguments: [
+        (Constants.siteURL, "https://other.example"), // another host
+        (Constants.siteURL, "https://site.example.evil.test"), // lookalike host
+        (Constants.siteURL, "https://shop.site.example"), // subdomain
+        (Constants.siteURL, "https://www.www.site.example"), // doubled www prefix
+        (Constants.siteURL, nil), // nil candidate
+        (Constants.siteURL, "   "), // blank candidate
+        ("", Constants.siteURL), // blank site address
+        (Constants.siteURL, "ftp://site.example"), // non-http scheme
+        (Constants.siteURL, "https://merchant@site.example"), // user name in URL
+        (Constants.siteURL, "https://merchant:secret@site.example"), // user name and password in URL
+        (Constants.siteURL, "https://site.example@other.example"), // user info hides another host
+        (Constants.siteURL, "https://"), // unparseable
+        (Constants.siteURL, "https://site example"), // invalid host
+        ("https://network.example/shop", "https://network.example/evil"), // sibling site on the same host
+        ("https://network.example/shop", "https://network.example"), // parent of the site path
+        ("https://network.example/shop", "https://network.example/shopper"), // path only shares a prefix
+        ("https://network.example/evil", "https://network.example/evil%2F..%2Fshop/wp-admin/authorize-application.php"), // encoded dot segments
+        ("https://network.example/evil", "https://network.example/evil%5C..%5Cshop/wp-admin/authorize-application.php") // backslash
+    ] as [(String, String?)])
+    func test_isWithinSite_when_candidate_is_outside_the_site_then_returns_false(siteURL: String, candidateURL: String?) {
         // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "http://site.example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_has_a_port_then_returns_true() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://site.example:8443"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_has_a_path_then_returns_true() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://site.example/wp/wp-admin/authorize-application.php?app_name=woo"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_has_a_www_prefix_then_returns_true() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://www.site.example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_site_address_has_a_www_prefix_then_returns_true() {
-        // Given
-        let siteURL = "https://www.site.example"
-        let candidateURL = Constants.siteURL
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_has_an_uppercase_host_then_returns_true() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://WWW.Site.EXAMPLE"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_site_address_has_no_scheme_then_returns_true() {
-        // Given
-        let siteURL = "site.example"
-        let candidateURL = Constants.siteURL
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_site_address_has_surrounding_whitespace_then_returns_true() {
-        // Given
-        let siteURL = "  https://site.example  "
-        let candidateURL = Constants.siteURL
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_is_on_another_host_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://other.example"
+        // siteURL and candidateURL from the arguments
 
         // When
         let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
@@ -123,186 +59,36 @@ struct ApplicationPasswordSiteMatcherTests {
         #expect(!result)
     }
 
-    @Test func test_isWithinSite_when_candidate_host_is_a_lookalike_then_returns_false() {
+    // MARK: - `approvalSiteURL(for:)`
+
+    @Test(arguments: [
+        ("https://wp.site.example/wp-admin/authorize-application.php?app_name=woo&success_url=woocommerce://login",
+         "https://wp.site.example"), // approval page at the site root
+        ("https://site.example/wp/wp-admin/authorize-application.php", "https://site.example/wp"), // subfolder install
+        ("https://site.example/private-admin/authorize-application.php", Constants.siteURL), // renamed admin directory
+        ("https://site.example/wp-admin/authorize-application.php/x/y", Constants.siteURL), // extra path after the approval page
+        ("https://site.example/shop/wp-admin%2Fauthorize-application.php", "https://site.example/shop") // encoded slash before the approval page
+    ])
+    func test_approvalSiteURL_when_URL_is_an_approval_page_then_returns_the_site_address(authorizationURL: String, expectedSiteURL: String) {
         // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://site.example.evil.test"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_is_on_a_subdomain_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://shop.site.example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_has_a_doubled_www_prefix_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://www.www.site.example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_is_nil_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL: String? = nil
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_is_blank_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "   "
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_site_address_is_blank_then_returns_false() {
-        // Given
-        let siteURL = ""
-        let candidateURL = Constants.siteURL
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_has_a_non_http_scheme_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "ftp://site.example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_has_a_username_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://merchant@site.example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_has_a_username_and_password_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://merchant:secret@site.example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_user_info_hides_another_host_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://site.example@other.example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_is_unparseable_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_has_an_invalid_host_then_returns_false() {
-        // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://site example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_approvalSiteURL_when_approval_page_is_at_the_site_root_then_returns_the_site_address() {
-        // Given
-        let authorizationURL = "https://wp.site.example/wp-admin/authorize-application.php?app_name=woo&success_url=woocommerce://login"
+        // authorizationURL and expectedSiteURL from the arguments
 
         // When
         let result = ApplicationPasswordSiteMatcher.approvalSiteURL(for: authorizationURL)
 
         // Then
-        #expect(result == "https://wp.site.example")
+        #expect(result == expectedSiteURL)
     }
 
-    @Test func test_approvalSiteURL_when_approval_page_is_in_a_subfolder_install_then_keeps_the_subfolder() {
+    @Test(arguments: [
+        "https://site.example/ea-authorize/", // not the approval page
+        "https://x@site.example/wp-admin/authorize-application.php", // user name in URL
+        "https://site.example/authorize-application.php", // no admin directory
+        nil // nil URL
+    ] as [String?])
+    func test_approvalSiteURL_when_URL_is_not_a_usable_approval_page_then_returns_nil(authorizationURL: String?) {
         // Given
-        let authorizationURL = "https://site.example/wp/wp-admin/authorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.approvalSiteURL(for: authorizationURL)
-
-        // Then
-        #expect(result == "https://site.example/wp")
-    }
-
-    @Test func test_approvalSiteURL_when_admin_directory_is_renamed_then_drops_it() {
-        // Given
-        let authorizationURL = "https://site.example/private-admin/authorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.approvalSiteURL(for: authorizationURL)
-
-        // Then
-        #expect(result == Constants.siteURL)
-    }
-
-    @Test func test_approvalSiteURL_when_URL_is_not_the_approval_page_then_returns_nil() {
-        // Given
-        let authorizationURL = "https://site.example/ea-authorize/"
+        // authorizationURL from the arguments
 
         // When
         let result = ApplicationPasswordSiteMatcher.approvalSiteURL(for: authorizationURL)
@@ -311,125 +97,39 @@ struct ApplicationPasswordSiteMatcherTests {
         #expect(result == nil)
     }
 
-    @Test func test_approvalSiteURL_when_authorization_URL_has_a_user_name_then_returns_nil() {
+    // MARK: - `isSameSiteAddress(_:_:)`
+
+    @Test(arguments: [
+        ("https://site.example/shop", "http://www.site.example/shop/", true), // differs by trailing slash and www
+        (Constants.siteURL, "https://site.example/wp", false) // candidate has a deeper path
+    ])
+    func test_isSameSiteAddress_when_addresses_are_compared_then_returns_whether_they_match(siteURL: String,
+                                                                                            candidateURL: String,
+                                                                                            expected: Bool) {
         // Given
-        let authorizationURL = "https://x@site.example/wp-admin/authorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.approvalSiteURL(for: authorizationURL)
-
-        // Then
-        #expect(result == nil)
-    }
-
-    @Test func test_approvalSiteURL_when_approval_page_has_no_admin_directory_then_returns_nil() {
-        // Given
-        let authorizationURL = "https://site.example/authorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.approvalSiteURL(for: authorizationURL)
-
-        // Then
-        #expect(result == nil)
-    }
-
-    @Test func test_approvalSiteURL_when_URL_is_nil_then_returns_nil() {
-        // Given
-        let authorizationURL: String? = nil
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.approvalSiteURL(for: authorizationURL)
-
-        // Then
-        #expect(result == nil)
-    }
-
-    @Test func test_isWithinSite_when_candidate_is_a_sibling_site_on_the_same_host_then_returns_false() {
-        // Given
-        let siteURL = "https://network.example/shop"
-        let candidateURL = "https://network.example/evil"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_is_the_parent_of_the_site_path_then_returns_false() {
-        // Given
-        let siteURL = "https://network.example/shop"
-        let candidateURL = "https://network.example"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_is_below_the_site_path_then_returns_true() {
-        // Given
-        let siteURL = "https://network.example/shop/"
-        let candidateURL = "https://network.example/Shop/wp-admin/authorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_candidate_path_only_shares_a_prefix_then_returns_false() {
-        // Given
-        let siteURL = "https://network.example/shop"
-        let candidateURL = "https://network.example/shopper"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isSameSiteAddress_when_address_differs_by_trailing_slash_and_www_then_returns_true() {
-        // Given
-        let siteURL = "https://site.example/shop"
-        let candidateURL = "http://www.site.example/shop/"
+        // siteURL, candidateURL and expected from the arguments
 
         // When
         let result = ApplicationPasswordSiteMatcher.isSameSiteAddress(siteURL, candidateURL)
 
         // Then
-        #expect(result)
+        #expect(result == expected)
     }
 
-    @Test func test_isSameSiteAddress_when_candidate_has_a_deeper_path_then_returns_false() {
+    // MARK: - `isApprovalPage(_:)`
+
+    @Test(arguments: [
+        "https://site.example/wp-admin/authorize-application.php/x", // extra path after the approval page
+        "https://site.example/wp-admin/authorize-application%2Ephp", // encoded approval page name
+        "https://x@site.example/wp-admin/authorize-application.php", // user name in URL
+        "https://x:y@site.example/wp-admin/authorize-application.php", // user name and password in URL
+        "https://site.example/wp-admin%2Fauthorize-application.php", // encoded slash before the approval page
+        "https://site.example/wp-admin/authorize-application.php%2Fx", // encoded slash after the approval page
+        "https://site.example/wp-admin/authorize-application.php%2F..%2Fx" // dot segments after the approval page
+    ])
+    func test_isApprovalPage_when_URL_points_to_the_approval_page_then_returns_true(url: String) {
         // Given
-        let siteURL = Constants.siteURL
-        let candidateURL = "https://site.example/wp"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isSameSiteAddress(siteURL, candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isApprovalPage_when_extra_path_follows_the_approval_page_then_returns_true() {
-        // Given
-        let url = "https://site.example/wp-admin/authorize-application.php/x"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isApprovalPage(url)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isApprovalPage_when_approval_page_name_is_encoded_then_returns_true() {
-        // Given
-        let url = "https://site.example/wp-admin/authorize-application%2Ephp"
+        // url from the arguments
 
         // When
         let result = ApplicationPasswordSiteMatcher.isApprovalPage(url)
@@ -438,116 +138,18 @@ struct ApplicationPasswordSiteMatcherTests {
         #expect(result)
     }
 
-    @Test func test_isApprovalPage_when_user_name_precedes_the_host_then_returns_true() {
+    @Test(arguments: [
+        "https://site.example/wp-login.php?redirect_to=x" // login page
+    ])
+    func test_isApprovalPage_when_URL_is_another_page_then_returns_false(url: String) {
         // Given
-        let url = "https://x@site.example/wp-admin/authorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isApprovalPage(url)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isApprovalPage_when_user_name_and_password_precede_the_host_then_returns_true() {
-        // Given
-        let url = "https://x:y@site.example/wp-admin/authorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isApprovalPage(url)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isApprovalPage_when_URL_is_a_login_page_then_returns_false() {
-        // Given
-        let url = "https://site.example/wp-login.php?redirect_to=x"
+        // url from the arguments
 
         // When
         let result = ApplicationPasswordSiteMatcher.isApprovalPage(url)
 
         // Then
         #expect(!result)
-    }
-
-    @Test func test_approvalSiteURL_when_extra_path_follows_the_approval_page_then_returns_the_site_address() {
-        // Given
-        let authorizationURL = "https://site.example/wp-admin/authorize-application.php/x/y"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.approvalSiteURL(for: authorizationURL)
-
-        // Then
-        #expect(result == Constants.siteURL)
-    }
-
-    @Test func test_isApprovalPage_when_encoded_slash_precedes_the_approval_page_then_returns_true() {
-        // Given
-        let url = "https://site.example/wp-admin%2Fauthorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isApprovalPage(url)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isApprovalPage_when_encoded_slash_follows_the_approval_page_then_returns_true() {
-        // Given
-        let url = "https://site.example/wp-admin/authorize-application.php%2Fx"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isApprovalPage(url)
-
-        // Then
-        #expect(result)
-    }
-
-    @Test func test_isWithinSite_when_encoded_dot_segments_leave_the_site_path_then_returns_false() {
-        // Given
-        let siteURL = "https://network.example/evil"
-        let candidateURL = "https://network.example/evil%2F..%2Fshop/wp-admin/authorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_isWithinSite_when_backslash_leaves_the_site_path_then_returns_false() {
-        // Given
-        let siteURL = "https://network.example/evil"
-        let candidateURL = "https://network.example/evil%5C..%5Cshop/wp-admin/authorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: candidateURL)
-
-        // Then
-        #expect(!result)
-    }
-
-    @Test func test_approvalSiteURL_when_encoded_slash_precedes_the_approval_page_then_returns_the_site_address() {
-        // Given
-        let authorizationURL = "https://site.example/shop/wp-admin%2Fauthorize-application.php"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.approvalSiteURL(for: authorizationURL)
-
-        // Then
-        #expect(result == "https://site.example/shop")
-    }
-
-    @Test func test_isApprovalPage_when_dot_segments_follow_the_approval_page_then_returns_true() {
-        // Given
-        let url = "https://site.example/wp-admin/authorize-application.php%2F..%2Fx"
-
-        // When
-        let result = ApplicationPasswordSiteMatcher.isApprovalPage(url)
-
-        // Then
-        #expect(result)
     }
 }
 

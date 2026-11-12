@@ -54,6 +54,7 @@ private extension POSPINEntryView {
                 .frame(maxWidth: .infinity, alignment: .center)
         }
         .frame(maxWidth: .infinity)
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder

@@ -166,23 +166,43 @@ extension View {
 
 // MARK: - Content-fit height
 
+extension POSMetrics {
+    /// Space around the content of every POS bottom sheet.
+    /// On phone the top inset is measured from the top edge of the sheet, so the title clears the grabber.
+    func bottomSheetContentInsets(horizontalSizeClass: UserInterfaceSizeClass?) -> EdgeInsets {
+        if horizontalSizeClass == .compact {
+            EdgeInsets(top: padding.xxLarge + padding.large,
+                       leading: padding.xxLarge,
+                       bottom: padding.none,
+                       trailing: padding.xxLarge)
+        } else {
+            EdgeInsets(top: padding.large,
+                       leading: padding.medium,
+                       bottom: padding.none,
+                       trailing: padding.medium)
+        }
+    }
+}
+
 private struct POSSheetFitsContentModifier: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var contentHeight: CGFloat?
 
     @ViewBuilder
     func body(content: Content) -> some View {
+        let paddedContent = content.padding(metrics.bottomSheetContentInsets(horizontalSizeClass: horizontalSizeClass))
         if horizontalSizeClass == .compact {
             // The system caps the detent at the available height, so content taller than the screen scrolls.
             ScrollView {
-                content
+                paddedContent
                     .measureHeight { contentHeight = $0 }
             }
             .scrollBounceBehavior(.basedOnSize)
             .presentationDetents(contentHeight.map { [.height($0)] } ?? [.medium])
             .presentationDragIndicator(.visible)
         } else {
-            content
+            paddedContent
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
         }
@@ -191,6 +211,7 @@ private struct POSSheetFitsContentModifier: ViewModifier {
 
 extension View {
     /// On phone, makes a bottom sheet as tall as its content, with a grabber. Regular width keeps the medium detent.
+    /// Adds the shared bottom sheet insets, so the content brings no outer padding of its own.
     /// Apply it to the root of the sheet's content.
     func posSheetFitsContent() -> some View {
         modifier(POSSheetFitsContentModifier())

@@ -4,7 +4,6 @@ import SwiftUI
 /// Lists secondary payment methods, keeping Card reader visible but disabled while Bluetooth is active.
 struct POSOtherPaymentMethodsSheet: View {
     @Environment(\.posMetrics) private var metrics
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     var isTapToPayAvailable: Bool = false
     var isTapToPayEnabled: Bool = true
     var onTapToPay: (() -> Void)?
@@ -24,8 +23,6 @@ struct POSOtherPaymentMethodsSheet: View {
             Text(Localization.title)
                 .font(.posHeadingBold)
                 .foregroundStyle(Color.posOnSurface)
-                .padding(.horizontal, metrics.padding.medium)
-                .padding(.top, metrics.padding.large)
                 .padding(.bottom, metrics.padding.medium)
 
             if isTapToPayAvailable, let onTapToPay {
@@ -72,11 +69,10 @@ struct POSOtherPaymentMethodsSheet: View {
 
             Spacer(minLength: 0)
         }
-        .padding(.bottom, metrics.padding.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.posSurface)
-        // On phone the sheet fits its content, so the sheet background would show below the last row.
-        .if(horizontalSizeClass == .compact) { $0.presentationBackground(Color.posSurface) }
+        // The sheet container pads the content, so the sheet itself carries the background.
+        .presentationBackground(Color.posSurface)
     }
 
     @ViewBuilder
@@ -105,7 +101,7 @@ struct POSOtherPaymentMethodsSheet: View {
 
                 Spacer(minLength: metrics.spacing.small)
             }
-            .padding(metrics.padding.medium)
+            .padding(.vertical, metrics.padding.medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
         }

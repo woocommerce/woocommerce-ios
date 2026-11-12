@@ -1,17 +1,11 @@
 import SwiftUI
 
-/// How a POS modal is shown when the width is compact (phone). Regular width always shows the modal as a centered card.
+/// How a POS modal is shown on phone. Regular width always shows a centered card.
 enum POSModalCompactStyle: Equatable {
-    /// A centered card as tall as its content, for a question or a confirmation.
     case dialog
-    /// A sheet pinned to the bottom, as tall as its content, for text to read or a list to pick from.
-    /// It closes by swiping down, tapping outside or the content's own button.
     case bottomSheet
-    /// The whole screen, for a flow. It looks like a POS page: `POSPageHeaderView` with the title, the content below it.
-    /// See `posFullScreenFlowHeader` for where the header buttons go.
     case fullScreen(title: String, hasSteps: Bool)
 
-    /// A full-screen flow without steps: the close button, when the content offers one, sits before the title.
     static func fullScreen(title: String) -> POSModalCompactStyle {
         .fullScreen(title: title, hasSteps: false)
     }
@@ -41,7 +35,6 @@ struct POSRootModalViewModifier: ViewModifier {
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
-    /// On phone a modal is a full-screen take-over unless its presentation site asks for a dialog or a bottom sheet.
     private var isFullScreen: Bool {
         (modalManager.isFullScreen || horizontalSizeClass == .compact) && !isCompactDialog && !isCompactBottomSheet
     }
@@ -58,7 +51,6 @@ struct POSRootModalViewModifier: ViewModifier {
         activeCompactStyle == style
     }
 
-    /// The presentation site's style when it applies, i.e. on phone and when the content has not asked for `posModalFullScreen`.
     private var activeCompactStyle: POSModalCompactStyle? {
         horizontalSizeClass == .compact && !modalManager.isFullScreen ? modalManager.compactStyle : nil
     }
@@ -135,7 +127,7 @@ private extension POSRootModalViewModifier {
                 .environment(\.posHeaderTopPadding, nil)
                 .environment(\.posModalDismissAction, { modalManager.dismiss() })
                 .environment(\.posModalCompactStyle, activeCompactStyle)
-                .padding(metrics.bottomSheetContentInsets(horizontalSizeClass: .compact))
+                .padding(metrics.bottomSheetContentInsets)
                 // The home indicator area is already enough space under the content.
                 .padding(.bottom, bottomSafeArea > 0 ? metrics.padding.none : metrics.padding.xxLarge)
                 .frame(maxWidth: .infinity)
@@ -383,7 +375,6 @@ private struct POSModalCompactStyleKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// How the enclosing POS modal is shown, when its presentation style applies (on phone). Set by `POSRootModalViewModifier`.
     var posModalCompactStyle: POSModalCompactStyle? {
         get { self[POSModalCompactStyleKey.self] }
         set { self[POSModalCompactStyleKey.self] = newValue }
@@ -393,7 +384,6 @@ extension EnvironmentValues {
         posModalCompactStyle?.fullScreenTitle != nil
     }
 
-    /// Whether the content is shown as a phone full-screen flow with steps, where the header has the back arrow.
     var isPOSModalStepFlow: Bool {
         posModalCompactStyle?.hasSteps ?? false
     }
@@ -465,3 +455,13 @@ extension EnvironmentValues {
     .environmentObject(coverManager)
 }
 #endif
+
+extension POSMetrics {
+    /// The top inset is measured from the top edge of the sheet, so the title clears the grabber.
+    var bottomSheetContentInsets: EdgeInsets {
+        EdgeInsets(top: padding.xxLarge + padding.large,
+                   leading: padding.xxLarge,
+                   bottom: padding.none,
+                   trailing: padding.xxLarge)
+    }
+}

@@ -215,6 +215,17 @@ custom_rules:
     included: Modules/Sources/PointOfSale/.*\.swift
     severity: error
 
+  pos_modal_presentation:
+    name: "POS Modal Presentation"
+    # `.alert(` counts only as a modifier at the start of a line; enum cases such as `.alert(.foundReader(...))` are not presentations.
+    regex: '\.(sheet|fullScreenCover)\(|^\s*\.alert\((?!\.)'
+    message: "In POS, present with `posModal(compactStyle:)`, `posSheet` or `posFullScreenCover`, so the presentation works with the POS modal hierarchy and picks its phone style. For a question, use `posModal(compactStyle: .dialog)` with `POSConfirmationDialog`, not a system alert."
+    included: Modules/Sources/PointOfSale/.*\.swift
+    excluded:
+      - Modules/Sources/PointOfSale/Presentation/Reusable Views/POSSheet\.swift
+      - Modules/Sources/PointOfSale/Presentation/Reusable Views/POSFullScreenCover\.swift
+    severity: error
+
   swiftui_localization:
     name: "SwiftUI Localization"
     regex: 'LocalizedStringKey'

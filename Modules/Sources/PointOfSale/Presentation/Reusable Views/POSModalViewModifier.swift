@@ -91,7 +91,7 @@ struct POSRootModalViewModifier: ViewModifier {
                                     .animation(nil, value: modalManager.isPresented)
                             }
                             if isCompactBottomSheet {
-                                bottomSheet(parentSize: geometry.size)
+                                bottomSheet(parentSize: geometry.size, bottomSafeArea: geometry.safeAreaInsets.bottom)
                             } else {
                                 ZStack {
                                     modalManager.getContent()
@@ -126,24 +126,26 @@ struct POSRootModalViewModifier: ViewModifier {
 }
 
 private extension POSRootModalViewModifier {
-    func bottomSheet(parentSize: CGSize) -> some View {
+    func bottomSheet(parentSize: CGSize, bottomSafeArea: CGFloat) -> some View {
         VStack(spacing: metrics.spacing.none) {
             Spacer(minLength: metrics.spacing.xxLarge)
 
-            VStack(spacing: metrics.spacing.none) {
-                Capsule()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: Constants.grabberSize.width, height: Constants.grabberSize.height)
-                    .padding(.top, metrics.padding.small)
-                    .accessibilityHidden(true)
-
-                modalManager.getContent()
-                    .environment(\.posModalParentSize, parentSize)
-                    .environment(\.posHeaderTopPadding, nil)
-                    .environment(\.posModalDismissAction, { modalManager.dismiss() })
-                    .environment(\.posModalCompactStyle, activeCompactStyle)
-            }
-            .frame(maxWidth: .infinity)
+            modalManager.getContent()
+                .environment(\.posModalParentSize, parentSize)
+                .environment(\.posHeaderTopPadding, nil)
+                .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                .environment(\.posModalCompactStyle, activeCompactStyle)
+                .padding(metrics.bottomSheetContentInsets(horizontalSizeClass: .compact))
+                // The home indicator area is already enough space under the content.
+                .padding(.bottom, bottomSafeArea > 0 ? metrics.padding.none : metrics.padding.xxLarge)
+                .frame(maxWidth: .infinity)
+                .overlay(alignment: .top) {
+                    Capsule()
+                        .fill(Color.posOnSurfaceVariantLowest)
+                        .frame(width: Constants.grabberSize.width, height: Constants.grabberSize.height)
+                        .padding(.top, metrics.padding.small)
+                        .accessibilityHidden(true)
+                }
             .background {
                 UnevenRoundedRectangle(topLeadingRadius: POSCornerRadiusStyle.extraLarge.value,
                                        topTrailingRadius: POSCornerRadiusStyle.extraLarge.value)

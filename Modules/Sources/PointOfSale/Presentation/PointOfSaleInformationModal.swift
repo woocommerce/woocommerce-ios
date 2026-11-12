@@ -54,7 +54,7 @@ struct PointOfSaleInformationModal<Content: View>: View {
         .frame(width: modalFrameWidth)
     }
 
-    /// Laid out for the phone bottom sheet: as tall as the content, closed by the OK button, a swipe or a tap outside.
+    /// Laid out for the phone bottom sheet, which adds the padding: as tall as the content, closed by the OK button, a swipe or a tap outside.
     private var compactBody: some View {
         VStack(alignment: .leading, spacing: metrics.spacing.xLarge) {
             Text(title)
@@ -73,7 +73,6 @@ struct PointOfSaleInformationModal<Content: View>: View {
 
             okButton
         }
-        .padding(contentPadding)
         .frame(maxWidth: .infinity)
     }
 
@@ -159,7 +158,7 @@ private extension PointOfSaleInformationModal {
     }
 
     var contentPadding: CGFloat {
-        isCompactWidth ? metrics.padding.xLarge : metrics.padding.xxLarge
+        metrics.padding.xxLarge
     }
 
     var modalFrameWidth: CGFloat {

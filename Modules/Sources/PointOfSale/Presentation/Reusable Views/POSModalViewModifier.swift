@@ -4,11 +4,8 @@ import SwiftUI
 enum POSModalCompactStyle: Equatable {
     case dialog
     case bottomSheet
-    /// The whole screen, for a flow. It looks like a POS page: `POSPageHeaderView` with the title, the content below it.
-    /// See `posFullScreenFlowHeader` for where the header buttons go.
     case fullScreen(title: String, hasSteps: Bool)
 
-    /// A full-screen flow without steps: the close button, when the content offers one, sits before the title.
     static func fullScreen(title: String) -> POSModalCompactStyle {
         .fullScreen(title: title, hasSteps: false)
     }
@@ -54,7 +51,6 @@ struct POSRootModalViewModifier: ViewModifier {
         activeCompactStyle == style
     }
 
-    /// The presentation site's style when it applies, i.e. on phone and when the content has not asked for `posModalFullScreen`.
     private var activeCompactStyle: POSModalCompactStyle? {
         horizontalSizeClass == .compact && !modalManager.isFullScreen ? modalManager.compactStyle : nil
     }
@@ -371,7 +367,6 @@ private struct POSModalCompactStyleKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    /// How the enclosing POS modal is shown, when its presentation style applies (on phone). Set by `POSRootModalViewModifier`.
     var posModalCompactStyle: POSModalCompactStyle? {
         get { self[POSModalCompactStyleKey.self] }
         set { self[POSModalCompactStyleKey.self] = newValue }

@@ -35,7 +35,7 @@ private extension POSManagerOverrideView {
             ScrollView {
                 VStack(spacing: metrics.spacing.large) {
                     header(spacing: isCompactWidth ? metrics.spacing.small : metrics.spacing.medium)
-                    pinEntry.frame(minHeight: POSPINEntryView.preferredHeight)
+                    pinEntry
                 }
             }
             .scrollBounceBehavior(.basedOnSize)
@@ -49,7 +49,6 @@ private extension POSManagerOverrideView {
             header(spacing: metrics.spacing.medium)
 
             pinEntry
-                .frame(minHeight: POSPINEntryView.preferredHeight)
         }
         .frame(maxWidth: POSPINEntryView.contentWidth)
         .padding(.top, metrics.padding.large)
@@ -62,7 +61,6 @@ private extension POSManagerOverrideView {
             header(spacing: metrics.spacing.small)
 
             pinEntry
-                .frame(minHeight: POSPINEntryView.preferredHeight)
         }
         .frame(maxWidth: POSPINEntryView.contentWidth)
         .padding(.horizontal, metrics.padding.large)

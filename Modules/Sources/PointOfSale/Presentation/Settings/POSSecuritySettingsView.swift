@@ -37,7 +37,8 @@ struct POSSecuritySettingsView: View {
         .disabled(controller.isSaving)
         .onAppear { controller.load() }
         .onDisappear { editing = nil; controller.cancelRemoval() }
-        .posModal(isPresented: Binding(get: { editing != nil }, set: { if !$0 { editing = nil } }), onDismiss: { controller.load() }) {
+        .posModal(isPresented: Binding(get: { editing != nil }, set: { if !$0 { editing = nil } }),
+                  presentationStyle: .card, onDismiss: { controller.load() }) {
             if let role = editing {
                 POSSecurityPINEntryModal(role: role, controller: controller, close: { editing = nil })
             }
@@ -169,7 +170,7 @@ private struct POSSecurityPINEntryModal: View {
         .posModalCloseButton(action: {
             if setup.cancel() { close() }
         }, accessibilityLabel: Localization.cancel)
-        .posModalSizing(fullScreenWhenCompact: true)
+        .posModalSizing()
         .posInteractiveDismissDisabled(setup.isSaving)
         .disabled(setup.isSaving)
         .onChange(of: controller.isVisible) { _, isVisible in

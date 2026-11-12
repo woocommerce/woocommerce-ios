@@ -53,7 +53,7 @@ private extension POSPINEntryView {
             numpad
                 .frame(maxWidth: .infinity, alignment: .center)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, minHeight: Self.preferredHeight)
         .fixedSize(horizontal: false, vertical: true)
     }
 

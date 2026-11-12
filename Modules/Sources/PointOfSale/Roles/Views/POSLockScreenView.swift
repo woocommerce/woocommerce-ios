@@ -29,7 +29,6 @@ struct POSLockScreenView: View {
                             onComplete: { pin in await model.signIn(withPIN: pin) },
                             onLockoutExpired: { model.lockoutExpired() }
                         )
-                        .frame(minHeight: POSPINEntryView.preferredHeight)
                     }
                     .frame(maxWidth: POSPINEntryView.contentWidth)
                     .padding(metrics.padding.xxLarge)

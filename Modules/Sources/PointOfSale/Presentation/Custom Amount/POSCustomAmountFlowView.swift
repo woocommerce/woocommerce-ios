@@ -8,8 +8,6 @@ struct POSCustomAmountFlowView: View {
     let flow: POSCustomAmountFlow
 
     var body: some View {
-        // The dashboard ignores the keyboard safe area, so without a navigation host of its own
-        // the form's pinned submit button stays under the keyboard.
         NavigationStack {
             AddCustomAmountView(
                 currencySettings: currencyProvider.currencySettings,

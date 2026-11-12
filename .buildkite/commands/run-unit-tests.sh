@@ -12,7 +12,9 @@ tar -xf build-products.tar
 
 echo "--- 🧪 Testing"
 set +e
-bundle exec fastlane test_without_building name:UnitTests
+# Without a device, fastlane picks `iPhone 17 Pro`, which on the `xcode-27.2` image exists only
+# on the iOS 26.5 runtime. `iPhone 18 Pro` is on iOS 27.2.
+bundle exec fastlane test_without_building name:UnitTests device:"iPhone 18 Pro"
 TESTS_EXIT_STATUS=$?
 set -e
 

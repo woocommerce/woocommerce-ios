@@ -13,7 +13,7 @@ struct POSFloatingControlView: View {
     /// Invoked when the Exit POS menu item is tapped. The host gates it on `.exitPOS` before
     /// presenting the exit confirmation.
     private let onExitSelected: () -> Void
-    /// Invoked when the Settings menu item is tapped. The host gates it on `.viewPOSSettings` before
+    /// Invoked when the Settings menu item is tapped. The host gates it on `.manageStoreSettings` before
     /// presenting the settings screen.
     private let onSettingsSelected: () -> Void
     /// Invoked when the Orders menu item is tapped.
@@ -146,11 +146,9 @@ private extension POSFloatingControlView {
         featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles)
     }
 
-    /// Only offer Lock POS when access is actually PIN-gated — i.e. some staff member has a PIN to
-    /// unlock with. Without this, locking a session that has no PINs (roles on, but `/staff` returned
-    /// nobody PIN-backed) would strand the operator on a lock screen that no PIN can dismiss.
+    /// Only offer Lock POS when an Admin PIN protects POS, so the lock screen always has a PIN to unlock with.
     private var canLockPOS: Bool {
-        isRolesEnabled && session.hasAnyPINs
+        isRolesEnabled && session.isPINProtectionEnabled
     }
 }
 
@@ -253,10 +251,7 @@ private extension POSFloatingControlView {
 
 #Preview("Signed-in Operator") {
     let session = MockPOSAccessSession(
-        currentStaff: POSStaff(userID: 1,
-                               displayName: "Thomas",
-                               preset: .cashier,
-                               capabilities: [])
+        currentStaff: POSLocalRole.cashier.staff
     )
     return POSFloatingControlView(onExitSelected: {},
                                   showSupport: .constant(false),

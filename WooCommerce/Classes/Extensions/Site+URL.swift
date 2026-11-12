@@ -58,11 +58,6 @@ extension Site {
         adminURL + "admin.php?page=wc-settings&tab=point-of-sale"
     }
 
-    /// Constructs the admin URL for managing POS staff.
-    var posStaffManagementAdminURL: String {
-        adminURL + "admin.php?page=wc-settings&tab=point-of-sale&section=staff"
-    }
-
     /// Returns the WooCommerce admin URL, or attempts to construct it from the site URL.
     ///
     func adminURLWithFallback() -> URL? {

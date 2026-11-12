@@ -12,7 +12,7 @@ public final class ExternalAppScreen {
         ),
         "orders": UniversalLink(
             url: "https://www.woocommerce.com/mobile/orders/details?blog_id=161477129&order_id=3337",
-            destinationElement: { $0.staticTexts["summary-table-view-cell-title-label"] }
+            destinationElement: { $0.tables["order-details-table-view"] }
         )
     ]
 

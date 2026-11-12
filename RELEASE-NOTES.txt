@@ -3,6 +3,8 @@
 
 26.1
 -----
+- [*] POS: Buttons on error, empty and payment result screens now fill the width on iPhone and stay at the bottom of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18310]
+- [*] POS: Wait for the card reader to reconnect if it disconnects while preparing a payment. [https://github.com/woocommerce/woocommerce-ios/pull/18254]
 - [*] POS: Checkout payment buttons stay on screen with large text sizes, and the content above them scrolls. [https://github.com/woocommerce/woocommerce-ios/pull/18305]
 - [Internal] Track receipt printer setup, connection and print Retry analytics events in POS [https://github.com/woocommerce/woocommerce-ios/pull/18251]
 - [*] Push notifications: The app icon badge no longer stays at 1 after a stock notification. [https://github.com/woocommerce/woocommerce-ios/pull/18250]
@@ -23,6 +25,7 @@
 - [*] Products: The Variations list now loads the rest of a product's variations right after a pull to refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18252]
 - [Internal] AI support: Include sanitized recent warning and error logs with new chats for login failures. [https://github.com/woocommerce/woocommerce-ios/pull/18189]
 - [*] Login: Browser sign-in for site credentials now only saves a password approved on the store you're logging into. [https://github.com/woocommerce/woocommerce-ios/pull/18321]
+- [Internal] The app no longer requests the list of REST API routes at launch and on store switch, which reduces launch CPU. [https://github.com/woocommerce/woocommerce-ios/pull/18341]
 
 26.0
 -----

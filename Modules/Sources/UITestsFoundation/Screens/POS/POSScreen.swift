@@ -191,7 +191,9 @@ public final class POSScreen: ScreenObject {
         showCompactCartIfNeeded()
         let customAmountRow = app.descendants(matching: .any).matching(identifier: "pos-custom-amount-row").firstMatch
         XCTAssertTrue(waitForVisibleElement(customAmountRow, timeout: 10), "Custom amount row should be visible.")
-        tapTrailingRemoveAffordance(in: customAmountRow)
+        let removeButton = app.buttons["pos-custom-amount-remove-button"]
+        XCTAssertTrue(waitForVisibleElement(removeButton, timeout: 10), "Custom amount remove button should be visible.")
+        removeButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         customAmountRow.waitForElementToNotExist(element: customAmountRow, timeout: 10)
         return self
     }

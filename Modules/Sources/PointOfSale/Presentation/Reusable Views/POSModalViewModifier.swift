@@ -41,7 +41,7 @@ struct POSRootModalViewModifier: ViewModifier {
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
-    /// On phone a modal is a full-screen take-over unless its presentation site asks for a dialog or a bottom sheet.
+    /// On phone a modal fills the screen unless its presentation site asks for a dialog or a bottom sheet.
     private var isFullScreen: Bool {
         (modalManager.isFullScreen || horizontalSizeClass == .compact) && !isCompactDialog && !isCompactBottomSheet
     }
@@ -201,7 +201,7 @@ extension View {
 }
 
 struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
-    let compactStyle: POSModalCompactStyle?
+    let compactStyle: POSModalCompactStyle
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
@@ -232,7 +232,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 }
 
 struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
-    let compactStyle: POSModalCompactStyle?
+    let compactStyle: POSModalCompactStyle
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
@@ -272,11 +272,11 @@ extension View {
     ///
     /// - Parameters:
     ///   - isPresented: Binding to control when the modal is shown.
-    ///   - compactStyle: How the modal is shown on phone. `nil` keeps the full-screen take-over.
+    ///   - compactStyle: How the modal is shown on phone. Regular width always shows a centered card.
     ///   - content: Content to show – note this will not update in response to changes outside the scope of the view builder
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<ModalContent: View>(isPresented: Binding<Bool>,
-                                      compactStyle: POSModalCompactStyle? = nil,
+                                      compactStyle: POSModalCompactStyle,
                                       onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
         self.modifier(
@@ -295,12 +295,12 @@ extension View {
     ///
     /// - Parameters:
     ///   - item: Binding to control when the modal is shown. When non-nil, the item is used to build the content.
-    ///   - compactStyle: How the modal is shown on phone. `nil` keeps the full-screen take-over.
+    ///   - compactStyle: How the modal is shown on phone. Regular width always shows a centered card.
     ///   - content: Content to show
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
-        compactStyle: POSModalCompactStyle? = nil,
+        compactStyle: POSModalCompactStyle,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
@@ -434,7 +434,7 @@ extension EnvironmentValues {
             showModal = true
         }
     }
-    .posModal(isPresented: $showModal) {
+    .posModal(isPresented: $showModal, compactStyle: .cardReaderConnection) {
         PointOfSaleCardPresentPaymentAlert(alertType: .connectionSuccess(
             viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(doneAction: {
             })
@@ -457,7 +457,7 @@ extension EnvironmentValues {
             showModal = true
         }
     }
-    .posModal(isPresented: $showModal) {
+    .posModal(isPresented: $showModal, compactStyle: .barcodeScannerSetup) {
         POSBarcodeScannerSetup(isPresented: $showModal, analytics: EmptyPOSAnalytics())
     }
     .posRootModal()

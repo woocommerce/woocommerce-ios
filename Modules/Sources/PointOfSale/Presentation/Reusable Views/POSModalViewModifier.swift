@@ -139,6 +139,9 @@ private extension POSRootModalViewModifier {
                 // The home indicator area is already enough space under the content.
                 .padding(.bottom, bottomSafeArea > 0 ? metrics.padding.none : metrics.padding.xxLarge)
                 .frame(maxWidth: .infinity)
+                // The sheet has no close button, so VoiceOver closes it with the escape gesture, like a tap outside.
+                .accessibilityElement(children: .contain)
+                .accessibilityAction(.escape, dismissInteractively)
                 .overlay(alignment: .top) {
                     Capsule()
                         .fill(Color.posOnSurfaceVariantLowest)
@@ -157,6 +160,11 @@ private extension POSRootModalViewModifier {
         }
         .zIndex(1)
         .transition(.move(edge: .bottom))
+    }
+
+    func dismissInteractively() {
+        guard modalManager.allowsInteractiveDismissal else { return }
+        modalManager.dismiss()
     }
 
     var bottomSheetDismissGesture: some Gesture {

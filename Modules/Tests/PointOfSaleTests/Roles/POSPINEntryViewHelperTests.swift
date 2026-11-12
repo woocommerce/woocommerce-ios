@@ -164,4 +164,13 @@ struct POSPINEntryViewHelperTests {
         // Then
         #expect(message.contains("30"))
     }
+
+    @Test(arguments: [(-1, "0:00"), (0, "0:00"), (30, "0:30"), (300, "5:00"), (1800, "30:00"), (3600, "60:00")])
+    func test_lockoutMessage_when_wait_changes_then_uses_minute_second_copy(seconds: Int, duration: String) {
+        // Given / When
+        let message = helper.lockoutMessage(remainingSeconds: seconds)
+
+        // Then
+        #expect(message == "Too many incorrect attempts.\nTry again in \(duration).")
+    }
 }

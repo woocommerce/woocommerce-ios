@@ -66,6 +66,9 @@ private extension POSPINEntryView {
             lockoutMessage(helper.lockoutMessage(remainingSeconds: seconds))
         case .unavailable:
             lockoutMessage(Localization.message(for: .generic))
+        case .error(kind: .invalidPIN) where enteredPIN.isEmpty:
+            lockoutMessage(Localization.message(for: .invalidPIN))
+                .modifier(ShakeEffect(animatableData: shakeAmount))
         case .idle, .loading, .error:
             dotsRow
         }
@@ -287,7 +290,7 @@ private extension POSPINEntryView {
         static let invalidPINMessage = NSLocalizedString(
             "pos.pinEntry.error.invalidPIN",
             value: "Incorrect PIN. Try again.",
-            comment: "VoiceOver announcement when an entered POS PIN is incorrect."
+            comment: "Error message and VoiceOver announcement when an entered POS PIN is incorrect."
         )
         static let genericErrorMessage = NSLocalizedString(
             "pos.pinEntry.error.generic",

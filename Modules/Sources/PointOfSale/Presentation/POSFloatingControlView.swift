@@ -103,6 +103,18 @@ private extension POSFloatingControlView {
         }
         .accessibilityIdentifier("pos-exit-menu-item")
         if horizontalSizeClass == .regular || isPhoneLayout {
+            if canLockPOS {
+                Button {
+                    session.lock()
+                } label: {
+                    Label(
+                        title: { Text(Localization.lockPOS) },
+                        icon: { Image(systemName: "lock") }
+                    )
+                }
+                .accessibilityIdentifier("pos-lock-menu-item")
+            }
+
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 onSettingsSelected()
@@ -122,18 +134,6 @@ private extension POSFloatingControlView {
                     title: { Text(Localization.orders) },
                     icon: { Image(systemName: "text.document") }
                 )
-            }
-
-            if canLockPOS {
-                Button {
-                    session.lock()
-                } label: {
-                    Label(
-                        title: { Text(Localization.lockPOS) },
-                        icon: { Image(systemName: "lock") }
-                    )
-                }
-                .accessibilityIdentifier("pos-lock-menu-item")
             }
         }
     }

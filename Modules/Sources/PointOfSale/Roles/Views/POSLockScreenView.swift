@@ -60,8 +60,8 @@ private extension POSLockScreenView {
             comment: "Temporary message until POS account recovery is implemented.")
         static let ok = NSLocalizedString("pos.lockScreen.recoveryUnavailable.ok", value: "OK", comment: "Dismisses the POS PIN recovery unavailable message.")
         static let title = NSLocalizedString(
-            "pos.lockScreen.enterYourPIN.title",
-            value: "Enter your PIN",
+            "pos.lockScreen.unlockPOS.title",
+            value: "Enter your PIN to unlock POS",
             comment: "Title shown on the POS lock screen."
         )
     }

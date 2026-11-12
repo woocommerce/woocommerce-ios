@@ -49,7 +49,6 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
         .padding(contentPadding)
         .accessibilityElement(children: .contain)
         .posModalFlowHeaderTitle(Localization.headline)
-        .posModalFlowHeaderCloseButton(action: cancelSearch)
         .onAppear {
             isTitleFocused = true
         }
@@ -77,9 +76,13 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
             scanningText()
                 .padding(.bottom, metrics.padding.small)
 
-            ForEach(readerIDs, id: \.self) { readerID in
-                readerRow(readerID: readerID)
+            VStack(spacing: metrics.spacing.small) {
+                ForEach(readerIDs, id: \.self) { readerID in
+                    readerRow(readerID: readerID)
+                }
             }
+            .padding(metrics.padding.medium)
+            .background(Color.posSurface)
 
             Spacer(minLength: metrics.spacing.none)
         }

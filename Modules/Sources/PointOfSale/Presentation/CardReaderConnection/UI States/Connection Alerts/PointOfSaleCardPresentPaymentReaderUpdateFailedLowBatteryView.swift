@@ -49,7 +49,6 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
-        .posModalFlowHeaderCloseButton(action: viewModel.cancelButtonViewModel.actionHandler)
         .onAppear {
             isTitleFocused = true
         }

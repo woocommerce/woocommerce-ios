@@ -34,8 +34,8 @@ struct POSSettingsLocalCatalogDetailView: View {
         .task {
             await viewModel.loadCatalogData()
         }
-        .posModal(item: $viewModel.catalogRefreshError, compactStyle: .dialog) { error in
-            errorView(errorState: error.errorState)
+        .posDialog(item: $viewModel.catalogRefreshError) { error in
+            errorDialog(errorState: error.errorState)
         }
     }
 }
@@ -131,29 +131,20 @@ private extension POSSettingsLocalCatalogDetailView {
         }
     }
 
-    @ViewBuilder
-    func errorView(errorState: PointOfSaleErrorState) -> some View {
-        POSDialogCard(closeButton: .init(accessibilityLabel: Localization.errorCancelButtonTitle,
-                                         accessibilityIdentifier: nil,
-                                         action: { viewModel.catalogRefreshError = nil })) {
-            POSErrorView(viewModel: errorViewModel(errorState: errorState))
-                .padding([.horizontal, .bottom], metrics.padding.medium)
-        }
-        .frame(maxWidth: Constants.errorModalMaxWidth)
-    }
-
-    func errorViewModel(errorState: PointOfSaleErrorState) -> POSErrorViewModel {
-        let retryButton = POSErrorButtonViewModel(title: Localization.errorRetryButtonTitle,
-                                                  buttonStyle: POSFilledButtonStyle(size: .normal)) {
-            Task {
-                await viewModel.refreshCatalog()
-            }
-        }
-        let cancelButton = POSErrorButtonViewModel(title: Localization.errorCancelButtonTitle,
-                                                   buttonStyle: POSOutlinedButtonStyle(size: .normal)) {
-            viewModel.catalogRefreshError = nil
-        }
-        return POSErrorViewModel(error: errorState, primaryButton: retryButton, secondaryButton: cancelButton)
+    func errorDialog(errorState: PointOfSaleErrorState) -> POSDialog {
+        POSDialog(title: errorState.title,
+                  message: errorState.subtitle,
+                  primaryAction: .init(title: Localization.errorRetryButtonTitle, action: {
+                      Task {
+                          await viewModel.refreshCatalog()
+                      }
+                  }),
+                  secondaryAction: .init(title: Localization.errorCancelButtonTitle, action: {
+                      viewModel.catalogRefreshError = nil
+                  }),
+                  closeAction: .init(accessibilityLabel: Localization.errorCancelButtonTitle, action: {
+                      viewModel.catalogRefreshError = nil
+                  }))
     }
 }
 
@@ -248,10 +239,6 @@ private extension POSSettingsLocalCatalogDetailView {
             value: "Cancel",
             comment: "Button text for closing an error after a refresh fails"
         )
-    }
-
-    enum Constants {
-        static let errorModalMaxWidth: CGFloat = 832
     }
 }
 

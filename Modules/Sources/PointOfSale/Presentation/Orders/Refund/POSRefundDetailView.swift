@@ -34,9 +34,6 @@ struct POSRefundDetailView: View {
         }
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
-        .posModalFlowCloseAction(enabled: isFullScreenFlow,
-                                 accessibilityLabel: Localization.closeButtonAccessibilityLabel,
-                                 action: onClose)
         // `.posModalFullScreen(horizontalSizeClass == .compact)` removed —
         // `POSRootModalViewModifier` auto-detects compact width. See #17067 review.
     }

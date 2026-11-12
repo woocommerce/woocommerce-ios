@@ -56,7 +56,7 @@ struct PointOfSalePaymentSuccessView: View {
                     isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
-        .posModal(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
+        .posModal(item: $printFailure, compactStyle: .dialog, onDismiss: handlePrintFailureDismissed) { failure in
             POSPrintReceiptFailureModal(failure: failure,
                                         selectAction: { action in
                                             selectedFailureAction = action

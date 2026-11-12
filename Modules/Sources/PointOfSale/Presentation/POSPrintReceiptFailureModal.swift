@@ -6,8 +6,28 @@ struct POSPrintReceiptFailureModal: View {
     let failure: POSPrintReceiptFailure
     let selectAction: (POSPrintReceiptFailureAction) -> Void
     let close: () -> Void
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
+        if horizontalSizeClass == .compact {
+            compactBody
+        } else {
+            regularBody
+        }
+    }
+
+    /// The phone center dialog, with the close button in the corner like the iPad card.
+    private var compactBody: some View {
+        POSConfirmationDialog(title: failure.title,
+                              message: failure.message,
+                              primaryButton: retryButton,
+                              secondaryButton: emailButton,
+                              closeButton: .init(accessibilityLabel: Localization.closeButtonAccessibilityLabel,
+                                                 accessibilityIdentifier: nil,
+                                                 action: close))
+    }
+
+    private var regularBody: some View {
         VStack(spacing: metrics.spacing.xLarge) {
             Spacer()
 
@@ -27,12 +47,18 @@ struct POSPrintReceiptFailureModal: View {
 
             Spacer()
 
-            POSFlowButtonsView(configuration: .init(
-                primaryButton: .init(title: Localization.retryButton, action: { selectAction(.retry) }),
-                secondaryButton: .init(title: Localization.emailButton, action: { selectAction(.emailReceipt) })))
+            POSFlowButtonsView(configuration: .init(primaryButton: retryButton, secondaryButton: emailButton))
         }
         .posModalCloseButton(action: close)
-        .posModalSizing(fullScreenWhenCompact: true)
+        .posModalSizing()
+    }
+
+    private var retryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig {
+        .init(title: Localization.retryButton, action: { selectAction(.retry) })
+    }
+
+    private var emailButton: PointOfSaleFlowButtonConfiguration.ButtonConfig {
+        .init(title: Localization.emailButton, action: { selectAction(.emailReceipt) })
     }
 }
 
@@ -47,6 +73,11 @@ private extension POSPrintReceiptFailureModal {
             "pos.printReceiptFailure.emailButton",
             value: "Email receipt",
             comment: "Button to email the receipt instead of printing it, from the POS print failure modal.")
+
+        static let closeButtonAccessibilityLabel = NSLocalizedString(
+            "pos.printReceiptFailure.closeButton.accessibilityLabel",
+            value: "Close",
+            comment: "Accessibility label of the button that closes the POS print failure dialog on iPhone.")
     }
 }
 
@@ -54,6 +85,11 @@ private extension POSPrintReceiptFailureModal {
 #Preview("Paper empty") {
     POSPrintReceiptFailureModal(failure: .paperEmpty, selectAction: { _ in }, close: {})
         .posPreviewModalParentSize()
+}
+
+#Preview("Paper empty, compact") {
+    POSPrintReceiptFailureModal(failure: .paperEmpty, selectAction: { _ in }, close: {})
+        .environment(\.horizontalSizeClass, .compact)
 }
 
 #Preview("Printer offline") {

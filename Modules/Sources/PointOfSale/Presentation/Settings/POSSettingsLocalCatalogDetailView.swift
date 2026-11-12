@@ -34,7 +34,7 @@ struct POSSettingsLocalCatalogDetailView: View {
         .task {
             await viewModel.loadCatalogData()
         }
-        .posModal(item: $viewModel.catalogRefreshError) { error in
+        .posModal(item: $viewModel.catalogRefreshError, compactStyle: .dialog) { error in
             errorView(errorState: error.errorState)
         }
     }

@@ -55,6 +55,13 @@ struct POSRootModalViewModifier: ViewModifier {
         horizontalSizeClass == .compact && !modalManager.isFullScreen ? modalManager.compactStyle : nil
     }
 
+    private var dismissActionIfAllowed: (() -> Void)? {
+        guard modalManager.allowsInteractiveDismissal else {
+            return nil
+        }
+        return { modalManager.dismiss() }
+    }
+
     func body(content: Content) -> some View {
         content
             .blur(radius: modalManager.isPresented ? 8 : 0)
@@ -91,7 +98,7 @@ struct POSRootModalViewModifier: ViewModifier {
                                         .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
                                         .environment(\.posModalDismissAction, { modalManager.dismiss() })
                                         .environment(\.posModalCompactStyle, activeCompactStyle)
-                                        .posFullScreenFlowHeader(style: activeCompactStyle)
+                                        .posFullScreenFlowHeader(style: activeCompactStyle, dismissAction: dismissActionIfAllowed)
                                         .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
                                         .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                                         .posShadow(isFullScreen ? .none : .large,

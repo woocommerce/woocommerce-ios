@@ -18,7 +18,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
     var body: some View {
         VStack {
             if isFullScreenFlow {
-                // The phone flow header shows the title, so the readers sit in the middle of the screen.
+                // The flow header already shows the title.
                 centeredReaders
                     .scrollVerticallyIfNeeded()
             } else {
@@ -126,7 +126,6 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
 }
 
 private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
-    /// The phone flow already pads its content, like every other step.
     var contentPadding: EdgeInsets {
         let horizontal = isFullScreenFlow ? metrics.padding.none : metrics.padding.medium
         return .init(top: metrics.padding.none, leading: horizontal, bottom: metrics.padding.none, trailing: horizontal)

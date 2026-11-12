@@ -36,8 +36,8 @@ final class DefaultPOSAccessSession: POSAccessSession {
     func refreshPINProtection() throws(POSPINStoreError) {
         do {
             let isProtected = try !credentialProvider.credentials().isEmpty
-            // First setup keeps the merchant in Admin mode so optional Cashier setup can finish.
-            if isProtected && !isPINProtectionEnabled && !isLocked {
+            let isEnablingPINProtection = isProtected && !isPINProtectionEnabled
+            if isEnablingPINProtection && !isLocked {
                 currentStaff = POSLocalRole.admin.staff
             } else if !isProtected {
                 currentStaff = nil

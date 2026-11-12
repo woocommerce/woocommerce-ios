@@ -80,6 +80,7 @@ struct POSSecuritySettingsView: View {
             }
         }
         .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .fixedSize(horizontal: true, vertical: false)
         if stacked {
             VStack(alignment: .leading, spacing: metrics.spacing.medium) { details; actions }

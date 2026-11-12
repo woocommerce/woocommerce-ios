@@ -3,8 +3,6 @@ import SwiftUI
 /// How a POS modal is shown on phone. Regular width always shows a centered card.
 enum POSModalCompactStyle: Equatable {
     case dialog
-    /// A sheet pinned to the bottom, as tall as its content, for text to read or a list to pick from.
-    /// It closes by swiping down, tapping outside or the content's own button.
     case bottomSheet
 }
 

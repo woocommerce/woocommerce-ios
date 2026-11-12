@@ -8,14 +8,17 @@ struct POSCustomAmountFlowView: View {
     let flow: POSCustomAmountFlow
 
     var body: some View {
-        AddCustomAmountView(
-            currencySettings: currencyProvider.currencySettings,
-            editing: flow.editingCustomAmount,
-            onDismiss: dismiss,
-            onSubmit: { customAmount in
-                posModel.upsertCustomAmount(customAmount, mode: flow.analyticsMode)
-            }
-        )
+        NavigationStack {
+            AddCustomAmountView(
+                currencySettings: currencyProvider.currencySettings,
+                editing: flow.editingCustomAmount,
+                onDismiss: dismiss,
+                onSubmit: { customAmount in
+                    posModel.upsertCustomAmount(customAmount, mode: flow.analyticsMode)
+                }
+            )
+            .toolbar(.hidden, for: .navigationBar)
+        }
     }
 
     private func dismiss() {

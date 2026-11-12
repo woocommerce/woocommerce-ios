@@ -57,7 +57,7 @@ struct POSBarcodeScannerSetup: View {
         // mechanism for the same outcome. See #17067 review feedback.
     }
 
-    /// Laid out for the phone full-screen flow: the close button is in the flow header, the step is in the middle and
+    /// Laid out for the phone full-screen flow: the header buttons are in the flow header, the step is in the middle and
     /// the buttons stay at the bottom, so they do not move between steps.
     private var compactBody: some View {
         VStack(spacing: metrics.spacing.xLarge) {
@@ -69,8 +69,7 @@ struct POSBarcodeScannerSetup: View {
         .posModalCloseButton(action: {
             isPresented = false
         }, accessibilityLabel: Localization.closeButtonAccessibilityLabel)
-        .padding([.horizontal, .bottom], metrics.padding.xLarge)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .posModalSizing()
         .background(Color.posSurfaceBright)
     }
 

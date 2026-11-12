@@ -19,7 +19,8 @@ struct MockSettingActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .retrieveSiteAPI(let siteID, _, let onCompletion):
+        case .retrieveSiteAPI(let siteID, _, let onCompletion),
+             .retrieveSiteAPIIncludingRoutes(let siteID, let onCompletion):
             retrieveSiteAPI(siteId: siteID, onCompletion: onCompletion)
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):
             synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)

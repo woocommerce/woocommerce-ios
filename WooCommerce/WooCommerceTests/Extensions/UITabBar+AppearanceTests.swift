@@ -46,6 +46,7 @@ struct UITabBarAppearanceTests {
     @Test func test_woo_appearance_when_item_titles_are_not_colored_then_keeps_store_design_system_icon_color_only() {
         // Given
         let expectedItemColor = UIColor(Color.storeOnSurface)
+        let defaultItemAppearance = UITabBarAppearance().stackedLayoutAppearance.normal
 
         // When
         let appearance = UITabBar.wooAppearance(usesStoreDesignSystem: true, colorsItemTitles: false)
@@ -62,7 +63,8 @@ struct UITabBarAppearanceTests {
                 itemAppearance.focused
             ] {
                 #expect(stateAppearance.iconColor == expectedItemColor)
-                #expect(stateAppearance.titleTextAttributes[.foregroundColor] as? UIColor != expectedItemColor)
+                #expect(stateAppearance.titleTextAttributes[.foregroundColor] as? UIColor ==
+                        defaultItemAppearance.titleTextAttributes[.foregroundColor] as? UIColor)
             }
         }
     }

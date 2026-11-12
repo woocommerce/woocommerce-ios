@@ -371,10 +371,6 @@ extension EnvironmentValues {
     var isPOSModalFullScreenFlow: Bool {
         posModalCompactStyle?.fullScreenTitle != nil
     }
-
-    var isPOSModalStepFlow: Bool {
-        posModalCompactStyle?.hasSteps ?? false
-    }
 }
 
 // MARK: - POS Modal Dismiss Action Environment

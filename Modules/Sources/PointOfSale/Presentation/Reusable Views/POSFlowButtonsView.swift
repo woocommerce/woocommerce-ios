@@ -3,17 +3,17 @@ import SwiftUI
 struct POSFlowButtonsView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.isPOSModalStepFlow) private var isStepFlow
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     let configuration: PointOfSaleFlowButtonConfiguration
 
     static func visibleConfiguration(for configuration: PointOfSaleFlowButtonConfiguration,
-                                     isStepFlow: Bool) -> PointOfSaleFlowButtonConfiguration {
-        isStepFlow ? configuration.removingBackButtons() : configuration
+                                     isFullScreenFlow: Bool) -> PointOfSaleFlowButtonConfiguration {
+        isFullScreenFlow ? configuration.removingBackButtons() : configuration
     }
 
     private var visibleConfiguration: PointOfSaleFlowButtonConfiguration {
-        Self.visibleConfiguration(for: configuration, isStepFlow: isStepFlow)
+        Self.visibleConfiguration(for: configuration, isFullScreenFlow: isFullScreenFlow)
     }
 
     static func usesStackedLayout(horizontalSizeClass: UserInterfaceSizeClass?) -> Bool {
@@ -35,7 +35,7 @@ struct POSFlowButtonsView: View {
             }
         }
         .geometryGroup()
-        .posModalFlowBackAction(enabled: isStepFlow && configuration.backButton != nil,
+        .posModalFlowBackAction(enabled: isFullScreenFlow && configuration.backButton != nil,
                                 actionEnabled: configuration.backButton?.isEnabled ?? true,
                                 accessibilityIdentifier: configuration.backButton?.accessibilityIdentifier) {
             configuration.backButton?.action()
@@ -82,7 +82,7 @@ struct PointOfSaleFlowButtonConfiguration {
         let title: String
         let isEnabled: Bool
         let accessibilityIdentifier: String?
-        /// In a phone flow with steps, the header back arrow replaces it.
+        /// In a phone full screen flow, the header back arrow replaces it.
         let isBack: Bool
         let action: () -> Void
 

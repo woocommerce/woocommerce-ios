@@ -29,6 +29,11 @@ public enum SettingAction: Action {
     ///
     case retrieveSiteAPI(siteID: Int64, detectUnexpectedResponses: Bool = false, onCompletion: @Sendable (Result<SiteAPI, Error>) -> Void)
 
+    /// Retrieves the site API details including `routes`. Costly: `routes` is about 2 MB on a typical
+    /// store, so use this only where the routes are read, and never at launch.
+    ///
+    case retrieveSiteAPIIncludingRoutes(siteID: Int64, onCompletion: @Sendable (Result<SiteAPI, Error>) -> Void)
+
     /// Retrieves the site settings specific of Point of Sale
     ///
     case retrievePointOfSaleSettings(siteID: Int64, onCompletion: @Sendable (Result<[SiteSetting], Error>) -> Void)

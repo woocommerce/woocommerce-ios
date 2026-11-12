@@ -67,7 +67,7 @@ struct POSPaymentContentView: View {
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posModal(item: $paymentModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $paymentModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
             paymentModel.cancelCardPaymentsOnboarding()
         }) { factory in
             PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(

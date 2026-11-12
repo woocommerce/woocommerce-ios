@@ -13,7 +13,7 @@ struct UITabBarAppearanceTests {
         let expectedBadgeTextColor = UIColor(Color.storeOnError)
 
         // When
-        let appearance = UITabBar.wooAppearance(usesStoreDesignSystem: true)
+        let appearance = UITabBar.wooAppearance(usesStoreDesignSystem: true, colorsItemTitles: true)
 
         // Then
         #expect(appearance.backgroundColor == nil)
@@ -39,6 +39,30 @@ struct UITabBarAppearanceTests {
             ] {
                 #expect(stateAppearance.badgeBackgroundColor == expectedBadgeBackgroundColor)
                 #expect(stateAppearance.badgeTextAttributes[.foregroundColor] as? UIColor == expectedBadgeTextColor)
+            }
+        }
+    }
+
+    @Test func test_woo_appearance_when_item_titles_are_not_colored_then_keeps_store_design_system_icon_color_only() {
+        // Given
+        let expectedItemColor = UIColor(Color.storeOnSurface)
+
+        // When
+        let appearance = UITabBar.wooAppearance(usesStoreDesignSystem: true, colorsItemTitles: false)
+
+        // Then
+        for itemAppearance in [
+            appearance.inlineLayoutAppearance,
+            appearance.stackedLayoutAppearance,
+            appearance.compactInlineLayoutAppearance
+        ] {
+            for stateAppearance in [
+                itemAppearance.normal,
+                itemAppearance.selected,
+                itemAppearance.focused
+            ] {
+                #expect(stateAppearance.iconColor == expectedItemColor)
+                #expect(stateAppearance.titleTextAttributes.isEmpty)
             }
         }
     }

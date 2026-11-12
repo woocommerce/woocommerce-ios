@@ -147,7 +147,7 @@ extension POSModalCompactStyle {
             "pos.barcodeScannerSetup.modal.title",
             value: "Barcode scanner",
             comment: "Title in the header of the full-screen barcode scanner setup flow on phone."
-        ))
+        ), hasSteps: true)
     }
 }
 

@@ -382,6 +382,11 @@ extension EnvironmentValues {
     var isPOSModalFullScreenFlow: Bool {
         posModalCompactStyle?.fullScreenTitle != nil
     }
+
+    /// Whether the content is shown as a phone full-screen flow with steps, where the header has the back arrow.
+    var isPOSModalStepFlow: Bool {
+        posModalCompactStyle?.hasSteps ?? false
+    }
 }
 
 // MARK: - POS Modal Dismiss Action Environment

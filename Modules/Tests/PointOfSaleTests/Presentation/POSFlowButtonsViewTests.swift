@@ -36,4 +36,66 @@ struct POSFlowButtonsViewTests {
         // Then
         #expect(result == false)
     }
+
+    @Test func test_visibleConfiguration_when_step_flow_then_leaves_out_the_back_button() {
+        // Given
+        let configuration = PointOfSaleFlowButtonConfiguration(
+            primaryButton: .init(title: "Next", action: {}),
+            secondaryButton: .init(title: "Back", isBack: true, action: {}))
+
+        // When
+        let visible = POSFlowButtonsView.visibleConfiguration(for: configuration, isStepFlow: true)
+
+        // Then
+        #expect(visible.primaryButton?.title == "Next")
+        #expect(visible.secondaryButton == nil)
+    }
+
+    @Test func test_visibleConfiguration_when_not_step_flow_then_keeps_the_back_button() {
+        // Given
+        let configuration = PointOfSaleFlowButtonConfiguration(
+            primaryButton: .init(title: "Next", action: {}),
+            secondaryButton: .init(title: "Back", isBack: true, action: {}))
+
+        // When
+        let visible = POSFlowButtonsView.visibleConfiguration(for: configuration, isStepFlow: false)
+
+        // Then
+        #expect(visible.primaryButton?.title == "Next")
+        #expect(visible.secondaryButton?.title == "Back")
+    }
+
+    @Test func test_visibleConfiguration_when_step_flow_and_no_back_button_then_keeps_all_buttons() {
+        // Given
+        let configuration = PointOfSaleFlowButtonConfiguration(
+            primaryButton: .init(title: "Retry", action: {}),
+            secondaryButton: .init(title: "Keep searching", action: {}))
+
+        // When
+        let visible = POSFlowButtonsView.visibleConfiguration(for: configuration, isStepFlow: true)
+
+        // Then
+        #expect(visible.primaryButton?.title == "Retry")
+        #expect(visible.secondaryButton?.title == "Keep searching")
+    }
+
+    @Test func test_backButton_when_secondary_button_is_back_then_returns_it() {
+        // Given
+        let configuration = PointOfSaleFlowButtonConfiguration(
+            primaryButton: .init(title: "Next", action: {}),
+            secondaryButton: .init(title: "Back", isBack: true, action: {}))
+
+        // Then
+        #expect(configuration.backButton?.title == "Back")
+    }
+
+    @Test func test_backButton_when_no_button_is_back_then_returns_nil() {
+        // Given
+        let configuration = PointOfSaleFlowButtonConfiguration(
+            primaryButton: nil,
+            secondaryButton: .init(title: "How to set up barcodes on products", action: {}))
+
+        // Then
+        #expect(configuration.backButton == nil)
+    }
 }

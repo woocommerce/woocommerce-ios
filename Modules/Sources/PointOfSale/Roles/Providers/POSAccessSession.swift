@@ -6,6 +6,8 @@ protocol POSAccessSession: AnyObject {
     /// PINs can't be read, so POS remains locked instead of opening with every action allowed.
     var isPINProtectionEnabled: Bool { get }
 
+    func refreshPINProtection() throws(POSPINStoreError)
+
     func allows(_ capability: POSCapability) -> Bool
     func signIn(withPIN pin: String) async throws(POSAuthError)
     /// Verifies the manager PIN and confirms the approver holds `capability`; throws if the PIN is

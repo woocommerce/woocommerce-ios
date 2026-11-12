@@ -32,6 +32,8 @@ final class MockPOSAccessSession: POSAccessSession {
         self.checkLockoutResult = checkLockoutResult
     }
 
+    func refreshPINProtection() throws(POSPINStoreError) {}
+
     func allows(_ capability: POSCapability) -> Bool {
         currentStaff?.hasCapability(capability) == true
     }

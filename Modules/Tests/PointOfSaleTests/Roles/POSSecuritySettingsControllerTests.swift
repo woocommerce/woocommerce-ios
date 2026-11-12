@@ -44,6 +44,30 @@ struct POSSecuritySettingsControllerTests {
         #expect(!session.isLocked)
     }
 
+    @Test func test_cashier_setup_when_admin_pin_changes_then_only_offered_after_admin_setup() async {
+        // Given
+        let (controller, _, _) = makeSUT()
+        controller.load()
+        #expect(!controller.offersCashierPINSetup)
+        #expect(!controller.hasOnlyAdminPIN)
+        #expect(!controller.isPINProtectionEnabled)
+
+        // When
+        #expect(await controller.save("1234", for: .admin))
+
+        // Then
+        #expect(controller.offersCashierPINSetup)
+        #expect(controller.hasOnlyAdminPIN)
+        #expect(controller.isPINProtectionEnabled)
+        #expect(await controller.save("5678", for: .cashier))
+        #expect(controller.offersCashierPINSetup)
+        #expect(!controller.hasOnlyAdminPIN)
+        #expect(await controller.save(nil, for: .admin))
+        #expect(!controller.offersCashierPINSetup)
+        #expect(!controller.hasOnlyAdminPIN)
+        #expect(!controller.isPINProtectionEnabled)
+    }
+
     @Test func test_change_when_admin_matches_cashier_then_preserves_both_pins() async {
         // Given
         let (controller, session, _) = makeSUT()

@@ -22,6 +22,12 @@ final class POSSecuritySettingsController {
                                                canManageSettings: session.currentStaff?.hasCapability(.manageStoreSettings) == true)
     }
 
+    var isPINProtectionEnabled: Bool { session.isPINProtectionEnabled }
+
+    var offersCashierPINSetup: Bool { roles?.contains(.admin) == true }
+
+    var hasOnlyAdminPIN: Bool { roles == [.admin] }
+
     func load() {
         do {
             try session.refreshPINProtection()

@@ -11,7 +11,7 @@ struct POSSecuritySettingsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: metrics.spacing.medium) {
                     if let roles = controller.roles {
-                        Text(roles.contains(.admin) ? Localization.protectionOn : Localization.protectionOff)
+                        Text(controller.isPINProtectionEnabled ? Localization.protectionOn : Localization.protectionOff)
                             .font(.posBodyMediumRegular())
                         POSInformationCard {
                             ViewThatFits(in: .horizontal) {
@@ -19,7 +19,7 @@ struct POSSecuritySettingsView: View {
                                 pinRows(roles, stacked: true)
                             }
                         }
-                        if roles == [.admin] { Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular()) }
+                        if controller.hasOnlyAdminPIN { Text(Localization.adminOnlyExplanation).font(.posBodyMediumRegular()) }
                     } else {
                         Button(Localization.retry) { controller.load() }
                             .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
@@ -52,7 +52,7 @@ struct POSSecuritySettingsView: View {
     private func pinRows(_ roles: Set<POSLocalRole>, stacked: Bool) -> some View {
         VStack(spacing: metrics.spacing.medium) {
             pinRow(.admin, roles: roles, stacked: stacked)
-            if roles.contains(.admin) {
+            if controller.offersCashierPINSetup {
                 Divider().padding(.top, metrics.padding.small)
                 pinRow(.cashier, roles: roles, stacked: stacked)
             }

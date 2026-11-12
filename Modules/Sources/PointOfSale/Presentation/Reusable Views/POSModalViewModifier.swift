@@ -4,24 +4,13 @@ import SwiftUI
 enum POSModalCompactStyle: Equatable {
     case dialog
     case bottomSheet
-    case fullScreen(title: String, hasSteps: Bool)
-
-    static func fullScreen(title: String) -> POSModalCompactStyle {
-        .fullScreen(title: title, hasSteps: false)
-    }
+    case fullScreen(title: String)
 
     var fullScreenTitle: String? {
-        guard case .fullScreen(let title, _) = self else {
+        guard case .fullScreen(let title) = self else {
             return nil
         }
         return title
-    }
-
-    var hasSteps: Bool {
-        guard case .fullScreen(_, let hasSteps) = self else {
-            return false
-        }
-        return hasSteps
     }
 }
 
@@ -389,10 +378,6 @@ extension EnvironmentValues {
 
     var isPOSModalFullScreenFlow: Bool {
         posModalCompactStyle?.fullScreenTitle != nil
-    }
-
-    var isPOSModalStepFlow: Bool {
-        posModalCompactStyle?.hasSteps ?? false
     }
 }
 

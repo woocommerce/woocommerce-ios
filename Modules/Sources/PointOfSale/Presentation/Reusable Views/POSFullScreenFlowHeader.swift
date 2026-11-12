@@ -39,7 +39,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
                 .onPreferenceChange(POSModalFlowHeaderTitleKey.self) { contentTitle = $0 }
                 .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
                     POSFullScreenFlowHeader(title: contentTitle ?? title,
-                                            buttons: .init(hasSteps: style.hasSteps, backAction: backAction, closeAction: closeAction))
+                                            buttons: .init(backAction: backAction, closeAction: closeAction))
                 }
         } else {
             content
@@ -60,17 +60,30 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
 
 struct POSFullScreenFlowHeaderButtons: Equatable {
     enum Leading: Equatable {
-        case back(POSModalFlowAction?)
+        enum Kind {
+            case back
+            case close
+        }
+
+        case back(POSModalFlowAction)
         case close(POSModalFlowAction)
+
+        var kind: Kind {
+            switch self {
+            case .back:
+                return .back
+            case .close:
+                return .close
+            }
+        }
     }
 
     let leading: Leading?
     let trailingClose: POSModalFlowAction?
 
-    init(hasSteps: Bool, backAction: POSModalFlowAction?, closeAction: POSModalFlowAction?) {
-        if hasSteps {
-            // On the first step the arrow closes the flow.
-            leading = .back(backAction ?? closeAction)
+    init(backAction: POSModalFlowAction?, closeAction: POSModalFlowAction?) {
+        if let backAction {
+            leading = .back(backAction)
             trailingClose = closeAction
         } else {
             leading = closeAction.map { .close($0) }
@@ -86,11 +99,26 @@ private struct POSFullScreenFlowHeader: View {
 
     var body: some View {
         POSPageHeaderView(title: title,
-                          backButtonConfiguration: leadingButtonConfiguration,
-                          trailingContent: {
-            if let closeAction = buttons.trailingClose {
-                POSPageHeaderBackButton(configuration: closeConfiguration(for: closeAction))
+                          leadingContent: {
+            // Both leading buttons share one slot, so the title stays in place while they crossfade.
+            ZStack {
+                if let leading = buttons.leading {
+                    POSPageHeaderBackButton(configuration: leadingButtonConfiguration(for: leading))
+                        .id(leading.kind)
+                        .transition(.opacity)
+                }
             }
+            .frame(minHeight: POSHeaderLayoutConstants.minHeight)
+            .animation(.default, value: buttons.leading?.kind)
+        },
+                          trailingContent: {
+            ZStack {
+                if let closeAction = buttons.trailingClose {
+                    POSPageHeaderBackButton(configuration: closeConfiguration(for: closeAction))
+                        .transition(.opacity)
+                }
+            }
+            .animation(.default, value: buttons.trailingClose != nil)
         })
         // Ignore the back button set by the page under the modal.
         .environment(\.posHeaderBackButtonConfiguration, nil)
@@ -99,17 +127,15 @@ private struct POSFullScreenFlowHeader: View {
         .padding(.leading, buttons.leading == nil ? metrics.padding.xxLarge - metrics.padding.medium : metrics.padding.none)
     }
 
-    private var leadingButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
-        switch buttons.leading {
+    private func leadingButtonConfiguration(for leading: POSFullScreenFlowHeaderButtons.Leading) -> POSPageHeaderBackButtonConfiguration {
+        switch leading {
         case .back(let backAction):
-            return .init(state: backAction?.isEnabled == true ? .enabled : .disabled,
-                         action: { backAction?.perform() },
-                         accessibilityIdentifier: backAction?.accessibilityIdentifier ?? Constants.backAccessibilityIdentifier,
+            return .init(state: backAction.isEnabled ? .enabled : .disabled,
+                         action: { backAction.perform() },
+                         accessibilityIdentifier: backAction.accessibilityIdentifier ?? Constants.backAccessibilityIdentifier,
                          accessibilityLabel: POSFullScreenFlowHeaderLocalization.backAccessibilityLabel)
         case .close(let closeAction):
             return closeConfiguration(for: closeAction)
-        case .none:
-            return nil
         }
     }
 
@@ -134,8 +160,7 @@ private enum POSFullScreenFlowHeaderLocalization {
     static let backAccessibilityLabel = NSLocalizedString(
         "pos.modalFlowHeader.backButton.accessibilityLabel",
         value: "Back",
-        comment: "Accessibility label of the back arrow in the header of a full-screen POS flow on phone. "
-        + "On the first step of the flow it closes the flow.")
+        comment: "Accessibility label of the back arrow in the header of a full-screen POS flow on phone.")
 
     static let closeAccessibilityLabel = NSLocalizedString(
         "pos.modalFlowHeader.closeButton.accessibilityLabel",

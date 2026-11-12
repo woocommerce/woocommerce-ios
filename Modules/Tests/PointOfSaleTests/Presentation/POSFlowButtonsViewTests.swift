@@ -37,42 +37,42 @@ struct POSFlowButtonsViewTests {
         #expect(result == false)
     }
 
-    @Test func test_visibleConfiguration_when_step_flow_then_leaves_out_the_back_button() {
+    @Test func test_visibleConfiguration_when_full_screen_flow_then_leaves_out_the_back_button() {
         // Given
         let configuration = PointOfSaleFlowButtonConfiguration(
             primaryButton: .init(title: "Next", action: {}),
             secondaryButton: .init(title: "Back", isBack: true, action: {}))
 
         // When
-        let visible = POSFlowButtonsView.visibleConfiguration(for: configuration, isStepFlow: true)
+        let visible = POSFlowButtonsView.visibleConfiguration(for: configuration, isFullScreenFlow: true)
 
         // Then
         #expect(visible.primaryButton?.title == "Next")
         #expect(visible.secondaryButton == nil)
     }
 
-    @Test func test_visibleConfiguration_when_not_step_flow_then_keeps_the_back_button() {
+    @Test func test_visibleConfiguration_when_not_full_screen_flow_then_keeps_the_back_button() {
         // Given
         let configuration = PointOfSaleFlowButtonConfiguration(
             primaryButton: .init(title: "Next", action: {}),
             secondaryButton: .init(title: "Back", isBack: true, action: {}))
 
         // When
-        let visible = POSFlowButtonsView.visibleConfiguration(for: configuration, isStepFlow: false)
+        let visible = POSFlowButtonsView.visibleConfiguration(for: configuration, isFullScreenFlow: false)
 
         // Then
         #expect(visible.primaryButton?.title == "Next")
         #expect(visible.secondaryButton?.title == "Back")
     }
 
-    @Test func test_visibleConfiguration_when_step_flow_and_no_back_button_then_keeps_all_buttons() {
+    @Test func test_visibleConfiguration_when_full_screen_flow_and_no_back_button_then_keeps_all_buttons() {
         // Given
         let configuration = PointOfSaleFlowButtonConfiguration(
             primaryButton: .init(title: "Retry", action: {}),
             secondaryButton: .init(title: "Keep searching", action: {}))
 
         // When
-        let visible = POSFlowButtonsView.visibleConfiguration(for: configuration, isStepFlow: true)
+        let visible = POSFlowButtonsView.visibleConfiguration(for: configuration, isFullScreenFlow: true)
 
         // Then
         #expect(visible.primaryButton?.title == "Retry")

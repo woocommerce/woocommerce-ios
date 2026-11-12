@@ -16,7 +16,6 @@ struct POSPrintReceiptFailureModal: View {
         }
     }
 
-    /// The phone center dialog, with the close button in the corner like the iPad card.
     private var compactBody: some View {
         POSConfirmationDialog(title: failure.title,
                               message: failure.message,

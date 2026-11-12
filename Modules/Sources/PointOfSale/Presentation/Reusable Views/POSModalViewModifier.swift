@@ -9,10 +9,8 @@ struct POSRootModalViewModifier: ViewModifier {
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
-    /// On phone we standardize the modal experience: every posModal renders as a full-screen
-    /// take-over rather than a centered card, matching the rest of the phone-prototype UI.
     private var isFullScreen: Bool {
-        modalManager.isFullScreen || horizontalSizeClass == .compact
+        modalManager.isFullScreen || (horizontalSizeClass == .compact && modalManager.presentationStyle == .automatic)
     }
 
     func body(content: Content) -> some View {
@@ -23,6 +21,10 @@ struct POSRootModalViewModifier: ViewModifier {
             .overlay {
                 GeometryReader { geometry in
                     let modalPadding = isFullScreen ? metrics.padding.none : metrics.padding.medium
+                    let parentSize = modalManager.presentationStyle == .card && !isFullScreen
+                        ? CGSize(width: max(0, geometry.size.width - 2 * modalPadding),
+                                 height: max(0, geometry.size.height - 2 * modalPadding))
+                        : geometry.size
                     ZStack {
                         if modalManager.isPresented {
                             Color.posSurfaceDim.opacity(0.8)
@@ -44,7 +46,7 @@ struct POSRootModalViewModifier: ViewModifier {
                             }
                             ZStack {
                                 modalManager.getContent()
-                                    .environment(\.posModalParentSize, geometry.size)
+                                    .environment(\.posModalParentSize, parentSize)
                                     .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
                                     .environment(\.posModalDismissAction, { modalManager.dismiss() })
                                     .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
@@ -94,6 +96,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
+    let presentationStyle: POSModalPresentationStyle
     let onDismiss: (() -> Void)?
     let modalContent: (Item) -> ModalContent
 
@@ -104,7 +107,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 
-                    modalManager.present(onDismiss: {
+                    modalManager.present(presentationStyle: presentationStyle, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         item = nil
@@ -124,6 +127,7 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
+    let presentationStyle: POSModalPresentationStyle
     let onDismiss: (() -> Void)?
     let modalContent: () -> ModalContent
 
@@ -134,7 +138,7 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 
-                    modalManager.present(onDismiss: {
+                    modalManager.present(presentationStyle: presentationStyle, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         isPresented = false
@@ -163,10 +167,12 @@ extension View {
     ///   - content: Content to show – note this will not update in response to changes outside the scope of the view builder
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<ModalContent: View>(isPresented: Binding<Bool>,
+                                      presentationStyle: POSModalPresentationStyle = .automatic,
                                       onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifierForBool(isPresented: isPresented,
+                                        presentationStyle: presentationStyle,
                                         onDismiss: onDismiss,
                                         modalContent: content))
     }
@@ -184,10 +190,12 @@ extension View {
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
+        presentationStyle: POSModalPresentationStyle = .automatic,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifier(item: item,
+                                 presentationStyle: presentationStyle,
                                  onDismiss: onDismiss,
                                  modalContent: content))
     }

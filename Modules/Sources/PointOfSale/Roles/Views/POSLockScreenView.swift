@@ -27,7 +27,6 @@ struct POSLockScreenView: View {
                         POSPINEntryView(state: model.pinEntryState, onComplete: { pin in
                             await model.signIn(withPIN: pin)
                         })
-                        .frame(minHeight: POSPINEntryView.preferredHeight)
 
                         Button(Localization.forgotPIN) { Task { await model.forgotPIN() } }
                             .buttonStyle(POSOutlinedButtonStyle(size: .normal))

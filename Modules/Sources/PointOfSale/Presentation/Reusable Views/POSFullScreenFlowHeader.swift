@@ -60,8 +60,22 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
 
 struct POSFullScreenFlowHeaderButtons: Equatable {
     enum Leading: Equatable {
+        enum Kind {
+            case back
+            case close
+        }
+
         case back(POSModalFlowAction)
         case close(POSModalFlowAction)
+
+        var kind: Kind {
+            switch self {
+            case .back:
+                return .back
+            case .close:
+                return .close
+            }
+        }
     }
 
     let leading: Leading?
@@ -85,11 +99,26 @@ private struct POSFullScreenFlowHeader: View {
 
     var body: some View {
         POSPageHeaderView(title: title,
-                          backButtonConfiguration: leadingButtonConfiguration,
-                          trailingContent: {
-            if let closeAction = buttons.trailingClose {
-                POSPageHeaderBackButton(configuration: closeConfiguration(for: closeAction))
+                          leadingContent: {
+            // Both leading buttons share one slot, so the title stays in place while they crossfade.
+            ZStack {
+                if let leading = buttons.leading {
+                    POSPageHeaderBackButton(configuration: leadingButtonConfiguration(for: leading))
+                        .id(leading.kind)
+                        .transition(.opacity)
+                }
             }
+            .frame(minHeight: POSHeaderLayoutConstants.minHeight)
+            .animation(.default, value: buttons.leading?.kind)
+        },
+                          trailingContent: {
+            ZStack {
+                if let closeAction = buttons.trailingClose {
+                    POSPageHeaderBackButton(configuration: closeConfiguration(for: closeAction))
+                        .transition(.opacity)
+                }
+            }
+            .animation(.default, value: buttons.trailingClose != nil)
         })
         // Ignore the back button set by the page under the modal.
         .environment(\.posHeaderBackButtonConfiguration, nil)
@@ -98,8 +127,8 @@ private struct POSFullScreenFlowHeader: View {
         .padding(.leading, buttons.leading == nil ? metrics.padding.xxLarge - metrics.padding.medium : metrics.padding.none)
     }
 
-    private var leadingButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
-        switch buttons.leading {
+    private func leadingButtonConfiguration(for leading: POSFullScreenFlowHeaderButtons.Leading) -> POSPageHeaderBackButtonConfiguration {
+        switch leading {
         case .back(let backAction):
             return .init(state: backAction.isEnabled ? .enabled : .disabled,
                          action: { backAction.perform() },
@@ -107,8 +136,6 @@ private struct POSFullScreenFlowHeader: View {
                          accessibilityLabel: POSFullScreenFlowHeaderLocalization.backAccessibilityLabel)
         case .close(let closeAction):
             return closeConfiguration(for: closeAction)
-        case .none:
-            return nil
         }
     }
 

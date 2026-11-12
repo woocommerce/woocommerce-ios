@@ -14,7 +14,7 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
         .posModalCloseButton(action: viewModel.cancelOnboarding,
                              accessibilityLabel: Localization.cancelOnboarding)
         .safariSheet(url: $viewModel.onboardingURL)
-        .posModalSizing(fullScreenWhenCompact: true)
+        .posModalSizing()
     }
 }
 

@@ -3,6 +3,7 @@ import SwiftUI
 struct POSManagerOverrideView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     let handler: POSManagerOverrideHandler
     let request: POSManagerOverrideRequest
@@ -39,7 +40,12 @@ private extension POSManagerOverrideView {
 
     var compactContent: some View {
         VStack(spacing: metrics.spacing.large) {
-            header(spacing: metrics.spacing.small)
+            // In the phone full-screen flow the header names the screen, so the title would repeat it.
+            if isFullScreenFlow {
+                reason
+            } else {
+                header(spacing: metrics.spacing.small)
+            }
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
@@ -48,9 +54,10 @@ private extension POSManagerOverrideView {
         .padding(.horizontal, metrics.padding.large)
         .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
         .padding(metrics.padding.large)
-        // Size to content and let the modal center it, like the lock screen and the iPad layout. Filling
-        // the screen pushed the close button under the status bar (status-bar overlap, untappable).
-        .fixedSize(horizontal: false, vertical: true)
+        // In the full-screen flow the content fills the space under the header, so the PIN pad stays centered.
+        // Otherwise size to content and let the modal center it, like the lock screen and the iPad layout.
+        .frame(maxHeight: isFullScreenFlow ? .infinity : nil)
+        .fixedSize(horizontal: false, vertical: !isFullScreenFlow)
     }
 
     func header(spacing: CGFloat) -> some View {

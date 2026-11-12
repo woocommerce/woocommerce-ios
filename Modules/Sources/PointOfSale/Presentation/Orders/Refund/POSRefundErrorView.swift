@@ -34,10 +34,11 @@ struct POSRefundErrorView: View {
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
             headerView
-            Spacer(minLength: metrics.spacing.large)
-            contentView
-            Spacer(minLength: metrics.spacing.large)
-            buttonsSection
+            POSStatusScreenLayout(buttonsWidth: .capped) {
+                contentView
+            } buttons: {
+                buttonsSection
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
@@ -86,7 +87,6 @@ private extension POSRefundErrorView {
             Button(cancelButtonTitle ?? Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

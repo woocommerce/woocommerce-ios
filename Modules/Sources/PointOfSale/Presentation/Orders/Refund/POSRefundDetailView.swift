@@ -15,7 +15,6 @@ struct POSRefundDetailView: View {
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
-            // In the phone full-screen flow the title and the close button are in the flow header.
             if !isFullScreenFlow {
                 headerView
             }

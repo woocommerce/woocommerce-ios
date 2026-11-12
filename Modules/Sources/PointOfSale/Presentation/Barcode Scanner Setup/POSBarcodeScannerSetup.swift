@@ -57,8 +57,7 @@ struct POSBarcodeScannerSetup: View {
         // mechanism for the same outcome. See #17067 review feedback.
     }
 
-    /// Laid out for the phone full-screen flow: the header buttons are in the flow header, the step is in the middle and
-    /// the buttons stay at the bottom, so they do not move between steps.
+    /// The buttons stay at the bottom, so they don't move between steps.
     private var compactBody: some View {
         VStack(spacing: metrics.spacing.xLarge) {
             centeredCurrentContent

@@ -18,7 +18,7 @@ struct POSModalSizing: ViewModifier {
     @ViewBuilder
     func body(content: Content) -> some View {
         if isFullScreenFlow {
-            // Fills the space under the flow header, which brings its own top spacing.
+            // The flow header brings its own top spacing.
             content
                 .padding([.horizontal, .bottom], metrics.padding.xxLarge)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -3,7 +3,6 @@ import SwiftUI
 struct POSFlowButtonsView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    // In a phone full-screen flow with steps the back button is the arrow in the flow header.
     @Environment(\.isPOSModalStepFlow) private var isStepFlow
 
     let configuration: PointOfSaleFlowButtonConfiguration
@@ -83,8 +82,7 @@ struct PointOfSaleFlowButtonConfiguration {
         let title: String
         let isEnabled: Bool
         let accessibilityIdentifier: String?
-        /// A button that goes one step back. In a phone full-screen flow with steps the back arrow in the flow header
-        /// replaces it.
+        /// In a phone flow with steps, the header back arrow replaces it.
         let isBack: Bool
         let action: () -> Void
 
@@ -103,12 +101,10 @@ struct PointOfSaleFlowButtonConfiguration {
         }
     }
 
-    /// The button that goes one step back, if the step has one.
     var backButton: ButtonConfig? {
         [primaryButton, secondaryButton].compactMap { $0 }.first { $0.isBack }
     }
 
-    /// The same buttons without the ones that go one step back.
     func removingBackButtons() -> PointOfSaleFlowButtonConfiguration {
         .init(primaryButton: primaryButton?.isBack == true ? nil : primaryButton,
               secondaryButton: secondaryButton?.isBack == true ? nil : secondaryButton)

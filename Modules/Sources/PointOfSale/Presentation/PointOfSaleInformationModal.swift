@@ -54,7 +54,7 @@ struct PointOfSaleInformationModal<Content: View>: View {
         .frame(width: modalFrameWidth)
     }
 
-    /// Laid out for the phone bottom sheet, which adds the padding: as tall as the content, closed by the OK button, a swipe or a tap outside.
+    /// The phone bottom sheet adds the padding.
     private var compactBody: some View {
         VStack(alignment: .leading, spacing: metrics.spacing.xLarge) {
             Text(title)

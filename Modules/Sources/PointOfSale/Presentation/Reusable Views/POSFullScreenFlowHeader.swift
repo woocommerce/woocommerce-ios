@@ -1,20 +1,12 @@
 import SwiftUI
 
 extension View {
-    /// Shows `content` as a full-screen POS flow on phone when `style` is `.fullScreen`: a POS page header with the title,
-    /// the content below it. Any other style leaves the view unchanged.
-    ///
-    /// The header buttons come from the content: the close button from `posModalCloseButton` or
-    /// `posModalFlowHeaderCloseButton`, the back arrow of a flow with steps from `posModalFlowBackAction`.
-    ///
-    /// `posModal` applies it for `.fullScreen`. Apply it directly only inside a presentation that is not a `posModal`,
-    /// such as a full-screen cover.
+    /// `posModal` applies it already. Apply it directly only outside a `posModal`, such as in a full-screen cover.
     func posFullScreenFlowHeader(style: POSModalCompactStyle?) -> some View {
         modifier(POSFullScreenFlowHeaderModifier(style: style))
     }
 
-    /// Offers `action` as the close button of the full-screen flow header, without adding a close button to the content.
-    /// Use it for content that lays itself out, such as a scrolling list; `posModalCloseButton` also centers the content.
+    /// Unlike `posModalCloseButton`, adds no close button to the content and leaves its layout alone.
     func posModalFlowCloseAction(enabled: Bool,
                                  accessibilityLabel: String,
                                  accessibilityIdentifier: String? = nil,
@@ -26,8 +18,6 @@ extension View {
                                                                         action: action))
     }
 
-    /// Offers `action` as the back arrow of the full-screen flow header on phone, for the current step of a flow with steps
-    /// (`.fullScreen(title:hasSteps: true)`). On a step that offers none, the arrow closes the flow.
     func posModalFlowBackAction(enabled: Bool,
                                 actionEnabled: Bool = true,
                                 accessibilityIdentifier: String? = nil,
@@ -39,8 +29,6 @@ extension View {
                                                                        action: action))
     }
 
-    /// Replaces the title of the full-screen flow header on phone while this content is shown, for a step that would
-    /// otherwise repeat its own title under the flow title. `nil` keeps the flow title.
     func posModalFlowHeaderTitle(_ title: String?) -> some View {
         preference(key: POSModalFlowHeaderTitleKey.self, value: title)
     }
@@ -71,11 +59,6 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
     }
 }
 
-/// Which buttons the header of a full-screen flow shows.
-///
-/// A flow with steps has the back arrow at the leading edge and the close button at the trailing edge.
-/// A flow without steps has the close button at the leading edge, where other POS pages have theirs.
-/// When the content offers no close action the header has the title only.
 struct POSFullScreenFlowHeaderButtons: Equatable {
     enum Leading: Equatable {
         case back(POSModalFlowAction?)
@@ -87,7 +70,7 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
 
     init(hasSteps: Bool, backAction: POSModalFlowAction?, closeAction: POSModalFlowAction?) {
         if hasSteps {
-            // A step without its own back button, such as the first one, closes the flow with the arrow.
+            // On the first step the arrow closes the flow.
             leading = .back(backAction ?? closeAction)
             trailingClose = closeAction
         } else {
@@ -109,7 +92,7 @@ private struct POSFullScreenFlowHeader: View {
                 POSPageHeaderBackButton(configuration: closeConfiguration(for: closeAction))
             }
         })
-        // The header belongs to the flow, so it ignores the back button that the page under the modal set for its own header.
+        // Ignore the back button set by the page under the modal.
         .environment(\.posHeaderBackButtonConfiguration, nil)
         .environment(\.posHeaderBackButtonIcon, nil)
     }
@@ -175,10 +158,7 @@ private struct POSModalFlowActionModifier<Key: PreferenceKey>: ViewModifier wher
     }
 }
 
-/// An action that a modal's content offers to the full-screen flow header: the close button or the back arrow.
-///
-/// The closure lives in a shared handler, so the header always calls the content's latest action while the preference
-/// value only changes when the handler or the shown state changes.
+/// The closure lives in a shared handler, so the preference value doesn't change on every render.
 struct POSModalFlowAction: Equatable {
     final class Handler {
         var action: () -> Void = {}

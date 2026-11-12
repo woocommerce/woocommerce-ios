@@ -19,7 +19,6 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
 }
 
 extension POSModalCompactStyle {
-    /// Card payments onboarding can take several screens of reading and actions, so on phone it takes the whole screen.
     static var cardPaymentsOnboarding: POSModalCompactStyle {
         .fullScreen(title: NSLocalizedString(
             "pos.cardPaymentsOnboarding.modal.title",

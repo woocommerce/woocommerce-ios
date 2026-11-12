@@ -72,7 +72,6 @@ struct POSModalCloseButtonModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         VStack(spacing: 0) {
-            // In a full-screen flow the close button is in the flow header, drawn by the modal root.
             if !isFullScreenFlow {
                 POSModalCloseButton(accessibilityLabel: accessibilityLabel,
                                     accessibilityIdentifier: accessibilityIdentifier,
@@ -95,8 +94,7 @@ struct POSModalCloseButtonModifier: ViewModifier {
 }
 
 extension View {
-    /// Shows a close button in the header of a phone full-screen flow that runs `action`, for content that keeps its own
-    /// Cancel button and has no close button in the regular-width card. Other presentations are unchanged.
+    /// For content that keeps its own Cancel button and has no close button on iPad.
     func posModalFlowHeaderCloseButton(
         action: @escaping () -> Void,
         accessibilityLabel: String = POSModalCloseButton.Localization.defaultAccessibilityLabel) -> some View {

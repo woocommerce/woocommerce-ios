@@ -68,7 +68,6 @@ struct PointOfSaleCardPresentPaymentAlert: View {
 }
 
 extension POSModalCompactStyle {
-    /// Card reader connection is a multi-step flow, so on phone it takes the whole screen.
     static var cardReaderConnection: POSModalCompactStyle {
         .fullScreen(title: NSLocalizedString(
             "pos.cardReaderConnection.modal.title",

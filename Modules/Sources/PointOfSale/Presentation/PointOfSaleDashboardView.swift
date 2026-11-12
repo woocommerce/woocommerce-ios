@@ -23,7 +23,6 @@ struct PointOfSaleDashboardView: View {
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
-    @State private var itemListBackgroundColor: Color = .posSurface
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
@@ -162,9 +161,6 @@ struct PointOfSaleDashboardView: View {
         }
         .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
             floatingControlSuppressed = hides
-        }
-        .onPreferenceChange(POSItemListBackgroundPreferenceKey.self) { color in
-            itemListBackgroundColor = color ?? .posSurface
         }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
@@ -622,7 +618,7 @@ struct PointOfSaleDashboardView: View {
             if posModel.orderStage == .building {
                 Color.clear
                     .frame(width: layout.backgroundLeadingWidth)
-                    .background(itemListBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
+                    .background(Color.posSurface.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                 Color.clear
                     .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
             } else {

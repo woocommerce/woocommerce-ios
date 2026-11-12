@@ -36,6 +36,31 @@ class CountryListMapperTests: XCTestCase {
         XCTAssertEqual(countries[1].states.count, 18)
         XCTAssertEqual(countries[1].states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
     }
+
+    func test_map_when_country_names_contain_HTML_entities_then_names_are_decoded() throws {
+        // Given
+        let response = Data("""
+        [
+            {"code": "CW", "name": "Cura&ccedil;ao", "states": []},
+            {"code": "BL", "name": "Saint Barth&eacute;lemy", "states": []},
+            {"code": "ST", "name": "S&atilde;o Tom&eacute; and Pr&iacute;ncipe", "states": []},
+            {"code": "US", "name": "United States (US)", "states": []},
+            {"code": "XX", "name": "Trinidad & Tobago", "states": []}
+        ]
+        """.utf8)
+
+        // When
+        let countries = try CountryListMapper().map(response: response)
+
+        // Then
+        XCTAssertEqual(countries.map(\.name), [
+            "Curaçao",
+            "Saint Barthélemy",
+            "São Tomé and Príncipe",
+            "United States (US)",
+            "Trinidad & Tobago"
+        ])
+    }
 }
 
 /// Private Helpers

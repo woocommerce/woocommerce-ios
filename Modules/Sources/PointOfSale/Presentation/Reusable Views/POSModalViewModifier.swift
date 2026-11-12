@@ -7,9 +7,28 @@ enum POSModalCompactStyle: Equatable {
     /// A sheet pinned to the bottom, as tall as its content, for text to read or a list to pick from.
     /// It closes by swiping down, tapping outside or the content's own button.
     case bottomSheet
-    /// The whole screen, for a multi-step flow. It looks like a POS page: a header with the title and the content's close button
-    /// (see `posModalCloseButton`) at the top leading corner, the content below it.
-    case fullScreen(title: String)
+    /// The whole screen, for a flow. It looks like a POS page: `POSPageHeaderView` with the title, the content below it.
+    /// See `posFullScreenFlowHeader` for where the header buttons go.
+    case fullScreen(title: String, hasSteps: Bool)
+
+    /// A full-screen flow without steps: the close button, when the content offers one, sits before the title.
+    static func fullScreen(title: String) -> POSModalCompactStyle {
+        .fullScreen(title: title, hasSteps: false)
+    }
+
+    var fullScreenTitle: String? {
+        guard case .fullScreen(let title, _) = self else {
+            return nil
+        }
+        return title
+    }
+
+    var hasSteps: Bool {
+        guard case .fullScreen(_, let hasSteps) = self else {
+            return false
+        }
+        return hasSteps
+    }
 }
 
 struct POSRootModalViewModifier: ViewModifier {
@@ -18,7 +37,6 @@ struct POSRootModalViewModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
     @GestureState private var bottomSheetDragOffset: CGFloat = 0
-    @State private var fullScreenFlowCloseAction: POSModalFlowCloseAction?
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -43,13 +61,6 @@ struct POSRootModalViewModifier: ViewModifier {
     /// The presentation site's style when it applies, i.e. on phone and when the content has not asked for `posModalFullScreen`.
     private var activeCompactStyle: POSModalCompactStyle? {
         horizontalSizeClass == .compact && !modalManager.isFullScreen ? modalManager.compactStyle : nil
-    }
-
-    private var fullScreenFlowTitle: String? {
-        guard case .fullScreen(let title) = activeCompactStyle else {
-            return nil
-        }
-        return title
     }
 
     func body(content: Content) -> some View {
@@ -88,12 +99,7 @@ struct POSRootModalViewModifier: ViewModifier {
                                         .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
                                         .environment(\.posModalDismissAction, { modalManager.dismiss() })
                                         .environment(\.posModalCompactStyle, activeCompactStyle)
-                                        .onPreferenceChange(POSModalFlowCloseActionKey.self) { fullScreenFlowCloseAction = $0 }
-                                        .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
-                                            if let fullScreenFlowTitle {
-                                                POSModalFlowHeader(title: fullScreenFlowTitle, closeAction: fullScreenFlowCloseAction)
-                                            }
-                                        }
+                                        .posFullScreenFlowHeader(style: activeCompactStyle)
                                         .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
                                         .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                                         .posShadow(isFullScreen ? .none : .large,
@@ -374,10 +380,7 @@ extension EnvironmentValues {
     }
 
     var isPOSModalFullScreenFlow: Bool {
-        if case .fullScreen = posModalCompactStyle {
-            return true
-        }
-        return false
+        posModalCompactStyle?.fullScreenTitle != nil
     }
 }
 

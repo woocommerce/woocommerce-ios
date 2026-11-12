@@ -16,17 +16,25 @@ struct POSDialog {
         }
     }
 
+    enum Icon {
+        case exclamationMark
+        case errorXMark
+    }
+
+    let icon: Icon?
     let title: String
     let message: String
     let primaryAction: Action
     let secondaryAction: Action?
     let closeAction: CloseAction?
 
-    init(title: String,
+    init(icon: Icon? = nil,
+         title: String,
          message: String,
          primaryAction: Action,
          secondaryAction: Action? = nil,
          closeAction: CloseAction? = nil) {
+        self.icon = icon
         self.title = title
         self.message = message
         self.primaryAction = primaryAction
@@ -67,6 +75,15 @@ struct POSDialogView: View {
                 .padding([.top, .trailing], metrics.padding.small)
             }
 
+            switch dialog.icon {
+            case .exclamationMark:
+                POSErrorExclamationMark(size: .large)
+            case .errorXMark:
+                POSErrorXMark(size: .large)
+            case nil:
+                EmptyView()
+            }
+
             VStack(spacing: metrics.spacing.xLarge) {
                 Text(dialog.title)
                     .font(.posHeadingBold)
@@ -98,6 +115,15 @@ extension POSMetrics {
                                 primaryAction: .init(title: "Exit", action: {}),
                                 closeAction: .init(accessibilityLabel: "Close", action: {})))
     .environment(\.horizontalSizeClass, .compact)
+}
+
+#Preview("With icon") {
+    POSDialogView(dialog: .init(icon: .exclamationMark,
+                                title: "Receipt didn't print",
+                                message: "The printer is out of paper.",
+                                primaryAction: .init(title: "Retry", action: {}),
+                                secondaryAction: .init(title: "Email receipt", action: {}),
+                                closeAction: .init(accessibilityLabel: "Close", action: {})))
 }
 
 #Preview("Regular") {

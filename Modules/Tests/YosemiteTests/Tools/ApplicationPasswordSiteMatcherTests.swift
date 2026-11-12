@@ -139,7 +139,9 @@ struct ApplicationPasswordSiteMatcherTests {
     }
 
     @Test(arguments: [
-        "https://site.example/wp-login.php?redirect_to=x" // login page
+        "https://site.example/wp-login.php?redirect_to=x", // login page
+        "https://site.example/wp-admin/index.php", // other admin page
+        "https://site.example/wp-admin/authorize-application.phpx" // lookalike file name
     ])
     func test_isApprovalPage_when_URL_is_another_page_then_returns_false(url: String) {
         // Given

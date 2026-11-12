@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// Bottom sheet shown when the merchant taps "Other payment methods" on phone POS checkout.
 /// Lists secondary payment methods, keeping Card reader visible but disabled while Bluetooth is active.
 struct POSOtherPaymentMethodsSheet: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posModalDismissAction) private var dismissModal
     var isTapToPayAvailable: Bool = false
     var isTapToPayEnabled: Bool = true
     var onTapToPay: (() -> Void)?
@@ -15,8 +16,6 @@ struct POSOtherPaymentMethodsSheet: View {
     var onScanToPay: (() -> Void)?
     var isMarkOrderAsPaidAvailable: Bool = false
     var onMarkOrderAsPaid: (() -> Void)?
-
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack(alignment: .leading, spacing: metrics.spacing.none) {
@@ -66,13 +65,17 @@ struct POSOtherPaymentMethodsSheet: View {
                     onMarkOrderAsPaid()
                 }
             }
-
-            Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.posSurface)
-        // The sheet container pads the content, so the sheet itself carries the background.
-        .presentationBackground(Color.posSurface)
+        .if(horizontalSizeClass != .compact) {
+            $0
+                .frame(maxHeight: .infinity, alignment: .top)
+                .posModalSizing()
+        }
+    }
+
+    private func dismiss() {
+        dismissModal?()
     }
 
     @ViewBuilder

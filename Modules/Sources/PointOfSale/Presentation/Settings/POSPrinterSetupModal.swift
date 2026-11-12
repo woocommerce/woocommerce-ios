@@ -39,8 +39,7 @@ struct POSPrinterSetupModal: View {
             }
     }
 
-    // In the phone full-screen flow the modal fills the space under the flow header. Otherwise in compact
-    // width its bounds are pinned to the parent, and in regular width it hugs its content up to a share of the parent.
+    // In regular width the modal hugs its content up to a share of the parent.
     private var modalMinWidth: CGFloat? {
         isCompactWidth && !isFullScreenFlow ? parentSize.width : nil
     }
@@ -77,7 +76,7 @@ struct POSPrinterSetupModal: View {
         })
 
         if isFullScreenFlow {
-            // Shares the padding of the other phone flows, so the buttons line up with theirs.
+            // Same padding as the other phone flows, so the buttons line up.
             core
                 .posModalSizing()
                 .background(Color.posSurfaceBright)
@@ -88,8 +87,6 @@ struct POSPrinterSetupModal: View {
         }
     }
 
-    /// In the phone full-screen flow the step is centered between the header and the buttons, like the other
-    /// POS setup flows, and scrolls only when it is taller than the space.
     @ViewBuilder
     private var stepContent: some View {
         let step = HStack {
@@ -381,7 +378,6 @@ private extension POSPrinterSetupModal {
             }),
                          secondaryButton: nil)
         }
-        // The close button, in the corner on iPad and in the flow header on phone, is the way out.
         return .init(primaryButton: .init(title: primaryTitle, action: {
             controller.startDiscovery()
         }),
@@ -397,8 +393,6 @@ private extension POSPrinterSetupModal {
 }
 
 extension POSModalCompactStyle {
-    /// Printer setup goes through search, results and pairing guidance, so on phone it takes the whole screen.
-    /// It has no step to go back to: every state offers its way forward, and the close button ends the setup.
     static var receiptPrinterSetup: POSModalCompactStyle {
         .fullScreen(title: NSLocalizedString(
             "pos.printerSetup.modal.title",

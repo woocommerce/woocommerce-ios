@@ -354,7 +354,7 @@ struct PointOfSaleDashboardView: View {
                     GeometryReader { proxy in
                         POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
                             .environment(\.posModalParentSize, proxy.size)
-                            .posFullScreenFlowHeader(style: .barcodeScannerSetup)
+                            .posFullScreenFlowHeader(style: .barcodeScannerSetup, dismissAction: { phoneShowingBarcodeScannerSetup = false })
                     }
                 }
                 .posFullScreenCover(item: Binding(

@@ -124,7 +124,7 @@ extension View {
     ///
     /// - Parameters:
     ///   - isPresented: Binding to control when the sheet is shown.
-    ///   - onDismiss: Optional closure executed when the sheet is dismissed.
+    ///   - onDismiss: Called on dismissal, including lock cleanup. Keep payment cancellation with the operation owner.
     ///   - content: Content to show in the sheet
     /// - Returns: a modified view which can show the sheet content specified, when applicable.
     func posSheet<SheetContent: View>(
@@ -150,7 +150,7 @@ extension View {
     ///
     /// - Parameters:
     ///   - item: Binding to control when the sheet is shown. When non-nil, the item is used to build the content.
-    ///   - onDismiss: Optional closure executed when the sheet is dismissed.
+    ///   - onDismiss: Called on dismissal, including lock cleanup. Keep payment cancellation with the operation owner.
     ///   - content: Content to show in the sheet
     /// - Returns: a modified view which can show the sheet content specified, when applicable.
     func posSheet<Item: Identifiable & Equatable, SheetContent: View>(

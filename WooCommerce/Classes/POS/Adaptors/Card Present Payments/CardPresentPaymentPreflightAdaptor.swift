@@ -3,7 +3,6 @@ import Combine
 import enum Yosemite.CardReaderDiscoveryMethod
 
 protocol CardPresentPaymentPreflightControllerFacade {
-    @MainActor
     func attemptConnection(discoveryMethod: CardReaderDiscoveryMethod) async throws -> CardReaderPreflightResult
 }
 

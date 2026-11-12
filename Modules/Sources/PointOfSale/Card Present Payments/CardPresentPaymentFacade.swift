@@ -60,10 +60,4 @@ public protocol CardPresentPaymentFacade: Sendable {
     /// Use this when the user wants to manually connect a different reader
     /// or cancel the automatic reconnection process.
     @MainActor func cancelReconnection() async
-    @MainActor func discardOnboardingPresentation()
-}
-
-public extension CardPresentPaymentFacade {
-    /// Override when retaining onboarding readiness; stateless preview/test services have no ownership to discard.
-    @MainActor func discardOnboardingPresentation() {}
 }

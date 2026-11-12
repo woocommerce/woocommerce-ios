@@ -1,7 +1,6 @@
 import SwiftUI
 
-@MainActor
-final class POSModalManager: ObservableObject {
+class POSModalManager: ObservableObject {
     @Published private(set) var isPresented: Bool = false
     @Published private(set) var allowsInteractiveDismissal: Bool = true
     @Published private(set) var isFullScreen: Bool = false
@@ -20,12 +19,6 @@ final class POSModalManager: ObservableObject {
 
     func dismiss() {
         onDismiss?()
-        isPresented = false
-        reset()
-    }
-
-    /// Lock removes presentation only; user-dismiss callbacks can cancel an active payment flow.
-    func dismissForLock() {
         isPresented = false
         reset()
     }

@@ -17,10 +17,7 @@ public class SiteAPIRemote: Remote, @unchecked Sendable {
                                    includeRoutes: Bool = false,
                                    completion: @escaping (Result<SiteAPI, Error>) -> Void) {
         let path = String()
-        var parameters = [ParameterKeys.fields: ParameterValues.fieldValues]
-        if includeRoutes {
-            parameters[ParameterKeys.fields] = ParameterValues.fieldValuesIncludingRoutes
-        }
+        let parameters = [ParameterKeys.fields: includeRoutes ? ParameterValues.fieldValuesIncludingRoutes : ParameterValues.fieldValues]
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
                                      siteID: siteID,

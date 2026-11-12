@@ -111,6 +111,91 @@ struct POSSecuritySettingsControllerTests {
         #expect(session.allows(.manageStoreSettings))
     }
 
+    @Test func test_admin_removal_when_cancelled_then_preserves_both_pins() async {
+        // Given
+        let (controller, session, _) = makeSUT()
+        controller.load()
+        #expect(await controller.save("1234", for: .admin))
+        #expect(await controller.save("5678", for: .cashier))
+
+        // When
+        await controller.requestRemoval(for: .admin)
+        #expect(controller.isConfirmingAdminRemoval)
+        #expect(controller.roles == [.admin, .cashier])
+        controller.cancelRemoval()
+
+        // Then
+        #expect(!controller.isConfirmingAdminRemoval)
+        #expect(controller.roles == [.admin, .cashier])
+        #expect(session.isPINProtectionEnabled)
+    }
+
+    @Test func test_admin_removal_when_confirmed_before_alert_dismisses_then_removes_both_pins() async throws {
+        // Given
+        let (controller, session, _) = makeSUT()
+        controller.load()
+        #expect(await controller.save("1234", for: .admin))
+        #expect(await controller.save("5678", for: .cashier))
+        await controller.requestRemoval(for: .admin)
+
+        // When
+        let removal = try #require(controller.confirmAdminRemoval())
+        controller.cancelRemoval()
+
+        // Then
+        #expect(await removal.value)
+        #expect(controller.roles == [])
+        #expect(!session.isPINProtectionEnabled)
+    }
+
+    @Test func test_admin_removal_when_not_requested_then_does_not_start_a_save() {
+        // Given
+        let (controller, _, _) = makeSUT()
+        controller.load()
+
+        // When
+        let removal = controller.confirmAdminRemoval()
+
+        // Then
+        #expect(removal == nil)
+        #expect(!controller.isSaving)
+    }
+
+    @Test func test_cashier_removal_when_requested_then_removes_only_cashier_without_confirmation() async {
+        // Given
+        let (controller, session, _) = makeSUT()
+        controller.load()
+        #expect(await controller.save("1234", for: .admin))
+        #expect(await controller.save("5678", for: .cashier))
+
+        // When
+        await controller.requestRemoval(for: .cashier)
+
+        // Then
+        #expect(!controller.isConfirmingAdminRemoval)
+        #expect(controller.roles == [.admin])
+        #expect(session.isPINProtectionEnabled)
+    }
+
+    @Test func test_setup_flow_when_cashier_pin_duplicates_admin_then_rejects_until_distinct_pin_is_confirmed() async {
+        // Given
+        let (controller, _, _) = makeSUT()
+        controller.load()
+        #expect(await controller.save("1234", for: .admin))
+        let setup = controller.makePINSetupController(for: .cashier)
+        #expect(await setup.submit("1234") == .confirmationRequired)
+
+        // When
+        #expect(await setup.submit("1234") == .rejected)
+
+        // Then
+        #expect(controller.error == .pinMatchesOtherRole)
+        #expect(controller.roles == [.admin])
+        #expect(await setup.submit("5678") == .confirmationRequired)
+        #expect(await setup.submit("5678") == .saved)
+        #expect(controller.roles == [.admin, .cashier])
+    }
+
     @Test func test_load_when_storage_is_unreadable_then_fails_closed() async {
         // Given
         let (controller, session, _) = makeSUT()

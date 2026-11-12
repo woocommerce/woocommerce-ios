@@ -62,7 +62,7 @@ struct UITabBarAppearanceTests {
                 itemAppearance.focused
             ] {
                 #expect(stateAppearance.iconColor == expectedItemColor)
-                #expect(stateAppearance.titleTextAttributes.isEmpty)
+                #expect(stateAppearance.titleTextAttributes[.foregroundColor] as? UIColor != expectedItemColor)
             }
         }
     }

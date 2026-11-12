@@ -3,18 +3,19 @@ import SwiftUI
 struct POSManagerOverrideView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posModalParentSize) private var parentSize
 
     let handler: POSManagerOverrideHandler
     let request: POSManagerOverrideRequest
 
     var body: some View {
-        Group {
-            if isCompactWidth {
-                compactContent
-            } else {
-                modalContent
+        ViewThatFits(in: .vertical) {
+            Group {
+                if isCompactWidth { compactContent } else { modalContent }
             }
+            scrollingContent
         }
+        .frame(maxHeight: max(0, parentSize.height - verticalInsets))
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     }
 }
@@ -24,12 +25,30 @@ private extension POSManagerOverrideView {
         horizontalSizeClass == .compact
     }
 
+    var verticalInsets: CGFloat {
+        isCompactWidth ? 0 : 2 * (metrics.padding.xxLarge + metrics.padding.medium)
+    }
+
+    var scrollingContent: some View {
+        VStack(spacing: metrics.spacing.large) {
+            POSModalCloseButton(accessibilityLabel: Localization.close, closeAction: { handler.cancel() })
+            ScrollView {
+                VStack(spacing: metrics.spacing.large) {
+                    header(spacing: isCompactWidth ? metrics.spacing.small : metrics.spacing.medium)
+                    pinEntry
+                }
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+        .frame(maxWidth: POSPINEntryView.contentWidth)
+        .padding(isCompactWidth ? metrics.padding.large : metrics.padding.none)
+    }
+
     var modalContent: some View {
         VStack(spacing: metrics.spacing.large) {
             header(spacing: metrics.spacing.medium)
 
             pinEntry
-                .frame(height: POSPINEntryView.preferredHeight)
         }
         .frame(maxWidth: POSPINEntryView.contentWidth)
         .padding(.top, metrics.padding.large)
@@ -42,7 +61,6 @@ private extension POSManagerOverrideView {
             header(spacing: metrics.spacing.small)
 
             pinEntry
-                .frame(height: POSPINEntryView.preferredHeight)
         }
         .frame(maxWidth: POSPINEntryView.contentWidth)
         .padding(.horizontal, metrics.padding.large)

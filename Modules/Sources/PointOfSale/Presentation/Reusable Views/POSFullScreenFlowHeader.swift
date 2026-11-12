@@ -1,21 +1,9 @@
 import SwiftUI
 
 extension View {
-    /// `posModal` applies it already. Apply it directly only outside a `posModal`, such as in a full-screen cover.
-    func posFullScreenFlowHeader(style: POSModalCompactStyle?) -> some View {
-        modifier(POSFullScreenFlowHeaderModifier(style: style))
-    }
-
-    /// Unlike `posModalCloseButton`, adds no close button to the content and leaves its layout alone.
-    func posModalFlowCloseAction(enabled: Bool,
-                                 accessibilityLabel: String,
-                                 accessibilityIdentifier: String? = nil,
-                                 action: @escaping () -> Void) -> some View {
-        modifier(POSModalFlowActionModifier<POSModalFlowCloseActionKey>(enabled: enabled,
-                                                                        actionEnabled: true,
-                                                                        accessibilityLabel: accessibilityLabel,
-                                                                        accessibilityIdentifier: accessibilityIdentifier,
-                                                                        action: action))
+    /// The header X shows exactly when the modal can be dismissed by a tap outside on iPad, and runs the same dismissal.
+    func posFullScreenFlowHeader(style: POSModalCompactStyle?, dismissAction: (() -> Void)?) -> some View {
+        modifier(POSFullScreenFlowHeaderModifier(style: style, dismissAction: dismissAction))
     }
 
     func posModalFlowBackAction(enabled: Bool,
@@ -37,7 +25,8 @@ extension View {
 private struct POSFullScreenFlowHeaderModifier: ViewModifier {
     @Environment(\.posMetrics) private var metrics
     let style: POSModalCompactStyle?
-    @State private var closeAction: POSModalFlowAction?
+    let dismissAction: (() -> Void)?
+    @State private var dismissHandler = POSModalFlowAction.Handler()
     @State private var backAction: POSModalFlowAction?
     @State private var contentTitle: String?
 
@@ -46,7 +35,6 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
         if let style, let title = style.fullScreenTitle {
             content
                 .environment(\.posModalCompactStyle, style)
-                .onPreferenceChange(POSModalFlowCloseActionKey.self) { closeAction = $0 }
                 .onPreferenceChange(POSModalFlowBackActionKey.self) { backAction = $0 }
                 .onPreferenceChange(POSModalFlowHeaderTitleKey.self) { contentTitle = $0 }
                 .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
@@ -56,6 +44,17 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
         } else {
             content
         }
+    }
+
+    private var closeAction: POSModalFlowAction? {
+        guard let dismissAction else {
+            return nil
+        }
+        dismissHandler.action = dismissAction
+        return POSModalFlowAction(handler: dismissHandler,
+                                  isEnabled: true,
+                                  accessibilityLabel: POSFullScreenFlowHeaderLocalization.closeAccessibilityLabel,
+                                  accessibilityIdentifier: nil)
     }
 }
 
@@ -81,6 +80,7 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
 }
 
 private struct POSFullScreenFlowHeader: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let buttons: POSFullScreenFlowHeaderButtons
 
@@ -95,6 +95,8 @@ private struct POSFullScreenFlowHeader: View {
         // Ignore the back button set by the page under the modal.
         .environment(\.posHeaderBackButtonConfiguration, nil)
         .environment(\.posHeaderBackButtonIcon, nil)
+        // Without a leading button, line the title up with the content and buttons below.
+        .padding(.leading, buttons.leading == nil ? metrics.padding.xxLarge - metrics.padding.medium : metrics.padding.none)
     }
 
     private var leadingButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
@@ -134,6 +136,11 @@ private enum POSFullScreenFlowHeaderLocalization {
         value: "Back",
         comment: "Accessibility label of the back arrow in the header of a full-screen POS flow on phone. "
         + "On the first step of the flow it closes the flow.")
+
+    static let closeAccessibilityLabel = NSLocalizedString(
+        "pos.modalFlowHeader.closeButton.accessibilityLabel",
+        value: "Close",
+        comment: "Accessibility label of the X in the header of a full-screen POS flow on phone.")
 }
 
 private struct POSModalFlowActionModifier<Key: PreferenceKey>: ViewModifier where Key.Value == POSModalFlowAction? {
@@ -178,14 +185,6 @@ struct POSModalFlowAction: Equatable {
             && lhs.isEnabled == rhs.isEnabled
             && lhs.accessibilityLabel == rhs.accessibilityLabel
             && lhs.accessibilityIdentifier == rhs.accessibilityIdentifier
-    }
-}
-
-struct POSModalFlowCloseActionKey: PreferenceKey {
-    static let defaultValue: POSModalFlowAction? = nil
-
-    static func reduce(value: inout POSModalFlowAction?, nextValue: () -> POSModalFlowAction?) {
-        value = value ?? nextValue()
     }
 }
 

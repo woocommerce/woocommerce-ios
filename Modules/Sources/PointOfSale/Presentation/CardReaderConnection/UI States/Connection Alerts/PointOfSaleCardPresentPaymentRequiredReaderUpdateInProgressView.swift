@@ -58,7 +58,6 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
-        .posModalFlowHeaderCloseButton(action: { viewModel.cancelReaderUpdate?() })
         .onAppear {
             isTitleFocused = true
         }

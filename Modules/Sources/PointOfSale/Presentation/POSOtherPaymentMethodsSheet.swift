@@ -19,10 +19,18 @@ struct POSOtherPaymentMethodsSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: metrics.spacing.none) {
-            Text(Localization.title)
-                .font(.posHeadingBold)
-                .foregroundStyle(Color.posOnSurface)
-                .padding(.bottom, metrics.padding.medium)
+            HStack(alignment: .top, spacing: metrics.spacing.medium) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+
+                // The phone bottom sheet closes with the grabber instead.
+                if horizontalSizeClass != .compact {
+                    POSModalCloseButton(closeAction: dismiss)
+                }
+            }
+            .padding(.bottom, metrics.padding.medium)
 
             if isTapToPayAvailable, let onTapToPay {
                 row(systemImage: "wave.3.right.circle",
@@ -68,9 +76,7 @@ struct POSOtherPaymentMethodsSheet: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .if(horizontalSizeClass != .compact) {
-            $0
-                .frame(maxHeight: .infinity, alignment: .top)
-                .posModalSizing()
+            $0.posModalSizing(fitsContentHeight: true)
         }
     }
 

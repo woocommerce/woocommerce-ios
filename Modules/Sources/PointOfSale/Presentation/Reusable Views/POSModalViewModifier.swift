@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// How a POS modal is shown when the width is compact (phone). Regular width always shows the modal as a centered card.
+/// How a POS modal is shown on phone. Regular width always shows a centered card.
 enum POSModalCompactStyle: Equatable {
-    /// A centered card as tall as its content, for a question or a confirmation.
     case dialog
     /// A sheet pinned to the bottom, as tall as its content, for text to read or a list to pick from.
     /// It closes by swiping down, tapping outside or the content's own button.
@@ -19,7 +18,6 @@ struct POSRootModalViewModifier: ViewModifier {
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
-    /// On phone a modal is a full-screen take-over unless its presentation site asks for a dialog or a bottom sheet.
     private var isFullScreen: Bool {
         (modalManager.isFullScreen || horizontalSizeClass == .compact) && !isCompactDialog && !isCompactBottomSheet
     }

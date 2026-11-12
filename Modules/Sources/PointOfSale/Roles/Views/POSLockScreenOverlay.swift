@@ -2,24 +2,23 @@ import SwiftUI
 
 struct POSLockScreenOverlay<Content: View>: View {
     private let content: Content
-    @State private var model: POSLockScreenModel
+    private let session: POSAccessSession
 
     init(session: POSAccessSession, @ViewBuilder content: () -> Content) {
         self.content = content()
-        self._model = State(initialValue: POSLockScreenModel(session: session))
+        self.session = session
     }
 
     var body: some View {
         content
-            .disabled(model.isLocked)
-            .accessibilityHidden(model.isLocked)
+            .disabled(session.isLocked)
+            .accessibilityHidden(session.isLocked)
+            .background(POSLockPrivacyCover(session: session))
             .overlay {
-                if model.isLocked {
-                    POSLockScreenView(model: model)
-                        .transition(.opacity)
+                if session.isLocked {
+                    POSLockScreenView(session: session)
                 }
             }
-            .animation(.easeInOut(duration: POSLockScreenOverlayConstants.animationDuration), value: model.isLocked)
     }
 }
 
@@ -37,10 +36,6 @@ extension View {
     func posLockScreenOverlay() -> some View {
         modifier(POSLockScreenOverlayModifier())
     }
-}
-
-private enum POSLockScreenOverlayConstants {
-    static let animationDuration: TimeInterval = 0.2
 }
 
 #if DEBUG

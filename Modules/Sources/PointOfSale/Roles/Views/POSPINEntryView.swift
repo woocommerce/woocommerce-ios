@@ -51,6 +51,7 @@ private extension POSPINEntryView {
             statusRow
                 .frame(maxWidth: .infinity, alignment: .center)
             numpad
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                 .frame(maxWidth: .infinity, alignment: .center)
         }
         .frame(maxWidth: .infinity)

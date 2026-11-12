@@ -13,29 +13,38 @@ struct POSLockScreenView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color.posSurfaceContainerLow
-                .ignoresSafeArea()
+        GeometryReader { geometry in
+            ZStack {
+                Color.posSurfaceContainerLow.ignoresSafeArea()
+                ScrollView {
+                    VStack(spacing: metrics.spacing.large) {
+                        Text(Localization.title)
+                            .font(.posHeadingBold)
+                            .foregroundStyle(Color.posOnSurface)
+                            .multilineTextAlignment(.center)
+                            .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: metrics.spacing.large) {
-                Text(Localization.title)
-                    .font(.posHeadingBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
+                        POSPINEntryView(state: model.pinEntryState, onComplete: { pin in
+                            await model.signIn(withPIN: pin)
+                        })
+                        .frame(minHeight: POSPINEntryView.preferredHeight)
 
-                POSPINEntryView(
-                    state: model.pinEntryState,
-                    onComplete: { pin in
-                        await model.signIn(withPIN: pin)
+                        Button(Localization.forgotPIN) { Task { await model.forgotPIN() } }
+                            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                            .disabled(model.isRecovering)
+                            .accessibilityIdentifier("pos-forgot-pin-button")
                     }
-                )
-                .frame(height: POSPINEntryView.preferredHeight)
+                    .frame(maxWidth: POSPINEntryView.contentWidth)
+                    .padding(metrics.padding.xxLarge)
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                }
+                .scrollBounceBehavior(.basedOnSize)
             }
-            .frame(maxWidth: POSPINEntryView.contentWidth)
-            .padding(metrics.padding.xxLarge)
         }
         .task { await model.observeWait() }
+        .alert(Localization.recoveryUnavailable, isPresented: $model.showsRecoveryUnavailable) {
+            Button(Localization.ok, role: .cancel) {}
+        }
     }
 }
 
@@ -43,6 +52,13 @@ struct POSLockScreenView: View {
 
 private extension POSLockScreenView {
     enum Localization {
+        static let forgotPIN = NSLocalizedString(
+            "pos.lockScreen.forgotPIN.button", value: "Forgot PIN?", comment: "Recovery entry on the POS lock screen, also available during a wait.")
+        static let recoveryUnavailable = NSLocalizedString(
+            "pos.lockScreen.recoveryUnavailable.message",
+            value: "PIN recovery is not available yet.",
+            comment: "Temporary message until POS account recovery is implemented.")
+        static let ok = NSLocalizedString("pos.lockScreen.recoveryUnavailable.ok", value: "OK", comment: "Dismisses the POS PIN recovery unavailable message.")
         static let title = NSLocalizedString(
             "pos.lockScreen.enterYourPIN.title",
             value: "Enter your PIN",

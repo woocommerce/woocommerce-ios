@@ -266,7 +266,8 @@ public struct PointOfSaleEntryPointView: View {
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
-            let cleanup = { [posModel, posModalManager, onPointOfSaleModeActiveStateChange] in
+            let cleanup = { [posModel, posModalManager, session, onPointOfSaleModeActiveStateChange] in
+                session.endSession()
                 onPointOfSaleModeActiveStateChange(false)
                 posModalManager.onDisappear()
                 posModel?.pointOfSaleClosed()
@@ -303,6 +304,10 @@ public struct PointOfSaleEntryPointView: View {
             // Active app switch, not idle - lock even mid-payment.
             guard accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
             accessSession.lock()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            let session = accessSession
+            Task { await session.checkpoint() }
         }
     }
 

@@ -38,6 +38,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
         .frame(maxHeight: .infinity)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
+        .posModalFlowHeaderCloseButton(action: viewModel.cancelButtonViewModel.actionHandler)
         .onAppear {
             isTitleFocused = true
         }

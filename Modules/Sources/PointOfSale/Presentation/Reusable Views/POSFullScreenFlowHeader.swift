@@ -93,7 +93,6 @@ struct POSFullScreenFlowHeaderButtons: Equatable {
 }
 
 private struct POSFullScreenFlowHeader: View {
-    @Environment(\.posMetrics) private var metrics
     let title: String
     let buttons: POSFullScreenFlowHeaderButtons
 
@@ -123,8 +122,6 @@ private struct POSFullScreenFlowHeader: View {
         // Ignore the back button set by the page under the modal.
         .environment(\.posHeaderBackButtonConfiguration, nil)
         .environment(\.posHeaderBackButtonIcon, nil)
-        // Without a leading button, line the title up with the content and buttons below.
-        .padding(.leading, buttons.leading == nil ? metrics.padding.xxLarge - metrics.padding.medium : metrics.padding.none)
     }
 
     private func leadingButtonConfiguration(for leading: POSFullScreenFlowHeaderButtons.Leading) -> POSPageHeaderBackButtonConfiguration {

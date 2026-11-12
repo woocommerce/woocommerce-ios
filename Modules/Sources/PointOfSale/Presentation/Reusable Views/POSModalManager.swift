@@ -4,10 +4,14 @@ class POSModalManager: ObservableObject {
     @Published private(set) var isPresented: Bool = false
     @Published private(set) var allowsInteractiveDismissal: Bool = true
     @Published private(set) var isFullScreen: Bool = false
+    @Published private(set) var compactStyle: POSModalCompactStyle?
     private var contentBuilder: (() -> AnyView)?
     private var onDismiss: (() -> Void)?
 
-    func present<Content: View>(onDismiss: @escaping () -> Void, content: @escaping () -> Content) {
+    func present<Content: View>(compactStyle: POSModalCompactStyle?,
+                                onDismiss: @escaping () -> Void,
+                                content: @escaping () -> Content) {
+        self.compactStyle = compactStyle
         contentBuilder = { AnyView(content()) }
         self.onDismiss = onDismiss
         isPresented = true
@@ -39,6 +43,7 @@ class POSModalManager: ObservableObject {
         onDismiss = nil
         allowsInteractiveDismissal = true
         isFullScreen = false
+        compactStyle = nil
         contentBuilder = nil
     }
 }

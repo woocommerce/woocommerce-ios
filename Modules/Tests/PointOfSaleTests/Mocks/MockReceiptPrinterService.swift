@@ -47,8 +47,13 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     /// scan still running, until the consumer cancels it.
     var keepsDiscoveryOpen = false
 
-    /// Fired when a `discover()` stream terminates, whether it finished or its consumer cancelled it.
-    var onDiscoveryTerminated: (() -> Void)?
+    /// Emits each time a `discover()` stream terminates, whether it finished or its consumer cancelled it.
+    let discoveryTerminations: AsyncStream<Void>
+    private let discoveryTerminationsContinuation: AsyncStream<Void>.Continuation
+
+    init() {
+        (discoveryTerminations, discoveryTerminationsContinuation) = AsyncStream.makeStream()
+    }
 
     // MARK: - Spies
 
@@ -84,9 +89,10 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
         let devices = discoveredDevices
         let error = discoverError
         let keepsOpen = keepsDiscoveryOpen
+        let terminations = discoveryTerminationsContinuation
         return AsyncThrowingStream { continuation in
-            continuation.onTermination = { [weak self] _ in
-                self?.onDiscoveryTerminated?()
+            continuation.onTermination = { _ in
+                terminations.yield()
             }
             for device in devices {
                 continuation.yield(device)

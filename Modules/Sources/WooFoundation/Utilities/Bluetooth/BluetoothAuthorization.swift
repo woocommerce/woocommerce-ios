@@ -2,7 +2,7 @@
 ///
 /// Mirrors the small surface of `ConnectivityObserver`: a generic device-capability read that
 /// features can consult without importing CoreBluetooth.
-public enum BluetoothAuthorization: Equatable {
+public enum BluetoothAuthorization: Equatable, Sendable {
     /// The merchant hasn't been asked for Bluetooth permission yet.
     case notDetermined
     /// Bluetooth permission is off (denied or restricted), so peripherals are unreachable.

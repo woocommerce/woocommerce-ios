@@ -86,19 +86,31 @@ struct POSOrdersView: View {
                 activeRefundSelectionOrderID = nil
                 selectOrder(nil)
             }
-            .alert(Localization.cancelRefundAlertTitle,
-                   isPresented: $isCancelRefundConfirmationPresented,
-                   presenting: pendingOrderSelection) { order in
-                Button(Localization.keepEditingRefundButton, role: .cancel) {
-                    pendingOrderSelection = nil
-                }
-                Button(Localization.cancelRefundButton, role: .destructive) {
-                    cancelActiveRefundSelectionAndSelect(order)
-                }
-            } message: { _ in
-                Text(Localization.cancelRefundAlertMessage)
+            .posModal(isPresented: $isCancelRefundConfirmationPresented,
+                      compactStyle: .dialog,
+                      onDismiss: { pendingOrderSelection = nil }) {
+                cancelRefundConfirmationDialog
             }
         }
+    }
+
+    /// The close button and a tap outside keep editing the refund.
+    private var cancelRefundConfirmationDialog: some View {
+        POSConfirmationDialog(title: Localization.cancelRefundAlertTitle,
+                              message: Localization.cancelRefundAlertMessage,
+                              primaryButton: .init(title: Localization.cancelRefundButton, action: {
+                                  let order = pendingOrderSelection
+                                  isCancelRefundConfirmationPresented = false
+                                  if let order {
+                                      cancelActiveRefundSelectionAndSelect(order)
+                                  }
+                              }),
+                              closeButton: .init(accessibilityLabel: Localization.keepEditingRefundButton,
+                                                 accessibilityIdentifier: nil,
+                                                 action: {
+                                                     isCancelRefundConfirmationPresented = false
+                                                     pendingOrderSelection = nil
+                                                 }))
     }
 
     @ViewBuilder

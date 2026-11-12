@@ -10,7 +10,7 @@ struct PointOfSaleOrderSyncMissingProductsErrorMessageView: View {
     @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
-        POSStatusScreenLayout {
+        POSStatusScreenLayout(buttonsWidth: .capped) {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
                 POSErrorXMark()
                 Spacer().frame(height: metrics.spacing.medium)

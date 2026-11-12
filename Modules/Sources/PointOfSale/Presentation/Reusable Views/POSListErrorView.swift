@@ -28,7 +28,7 @@ struct POSListErrorView: View {
     }
 
     var body: some View {
-        POSStatusScreenLayout {
+        POSStatusScreenLayout(buttonsWidth: .capped) {
             POSErrorMessageView(viewModel: viewModel)
         } buttons: {
             if viewModel.hasButtons {

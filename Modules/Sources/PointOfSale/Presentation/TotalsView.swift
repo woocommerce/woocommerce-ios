@@ -20,6 +20,7 @@ struct TotalsView: View {
     /// It allows for a simultaneous transition from the shimmering effect to the text fields,
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
+    @Namespace private var paymentMessageNamespace
 
     // The source of truth for whether totals _are_ showing; separate from whether they
     // _should be_ showing, so that we can animate the change.
@@ -59,6 +60,18 @@ struct TotalsView: View {
     var body: some View {
         HStack {
             switch posModel.orderState {
+            case .loaded where isShowingPaymentStatusScreen:
+                VStack(spacing: 0) {
+                    paymentViewContent
+                        .id(displayPaymentState.isSuccess)
+                        .environment(\.floatingControlAreaSize,
+                                     bottomControlState == .hidden ? floatingControlAreaSize : .zero)
+
+                    bottomControls
+                        .scrollVerticallyWhenTaller(than: checkoutHeight * Constants.bottomControlsMaxHeightRatio)
+                        .layoutPriority(1)
+                }
+                .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { checkoutHeight = $0 }
             case .idle, .syncing, .loaded:
                 VStack(spacing: 0) {
                     VStack(alignment: .center) {
@@ -74,7 +87,8 @@ struct TotalsView: View {
                                 cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                 cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                                 connectCardReaderAction: paymentModel.connectCardReader,
-                                cancelReconnectionAction: posModel.cancelReconnection
+                                cancelReconnectionAction: posModel.cancelReconnection,
+                                paymentMessageNamespace: paymentMessageNamespace
                             )
                         } else if useTapToPayHeroLayout {
                             POSTapToPayHeroView()
@@ -88,7 +102,8 @@ struct TotalsView: View {
                                 cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                 cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                                 connectCardReaderAction: paymentModel.connectCardReader,
-                                cancelReconnectionAction: posModel.cancelReconnection
+                                cancelReconnectionAction: posModel.cancelReconnection,
+                                paymentMessageNamespace: paymentMessageNamespace
                             )
                         }
 
@@ -145,6 +160,7 @@ struct TotalsView: View {
         .environment(\.floatingControlAreaSize, posModel.orderState.isError ? .zero : floatingControlAreaSize)
         .posIgnoresHiddenKeyboardSafeArea()
         .animation(.default, value: posModel.orderState.isError)
+        .animation(.default, value: isShowingPaymentStatusScreen)
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
         }
@@ -281,6 +297,29 @@ private extension TotalsView {
                                                                       paymentState: displayPaymentState)
             }
         }
+    }
+
+    private var paymentViewContent: some View {
+        PaymentViewContent(
+            paymentState: displayPaymentState,
+            cardReaderViewLayout: PaymentViewLayout(topPadding: metrics.padding.none,
+                                                    bottomPadding: metrics.padding.none,
+                                                    sidePadding: metrics.padding.none),
+            isShowingTotalsFields: false,
+            backgroundColor: backgroundColor,
+            orderState: posModel.orderState,
+            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+            connectCardReaderAction: paymentModel.connectCardReader,
+            cancelReconnectionAction: posModel.cancelReconnection,
+            paymentMessageNamespace: paymentMessageNamespace
+        )
+    }
+
+    private var isShowingPaymentStatusScreen: Bool {
+        totalsViewHelper.showsPaymentStatusScreen(paymentState: displayPaymentState,
+                                                  readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                                  inlineMessage: paymentModel.cardPresentPaymentInlineMessage)
     }
 
     private var primaryLayout: PaymentViewLayout {
@@ -650,7 +689,7 @@ private struct PaymentViewContent: View {
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
     let cancelReconnectionAction: () -> Void
-    @Namespace private var paymentMessageNamespace
+    let paymentMessageNamespace: Namespace.ID
 
     private let viewHelper = POSPaymentViewHelper()
 
@@ -694,7 +733,8 @@ private struct PaymentViewContent: View {
                 paymentState: paymentState,
                 cardPresentPaymentInlineMessage: cardPresentPaymentInlineMessage,
                 connectCardReaderAction: connectCardReaderAction,
-                cancelReconnectionAction: cancelReconnectionAction)
+                cancelReconnectionAction: cancelReconnectionAction,
+                messageNamespace: paymentMessageNamespace)
         }
     }
 }

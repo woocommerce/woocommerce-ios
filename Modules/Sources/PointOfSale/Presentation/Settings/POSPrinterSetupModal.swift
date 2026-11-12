@@ -12,6 +12,7 @@ struct POSPrinterSetupModal: View {
     let controller: POSPrinterConnectionController
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     @State private var setupSessionID = UUID()
 
     private var isCompactWidth: Bool {
@@ -38,34 +39,34 @@ struct POSPrinterSetupModal: View {
             }
     }
 
-    // In compact width the modal fills the screen to avoid the cramped iPad-tuned card, so its bounds
-    // are pinned to the parent. In regular width it hugs its content up to a share of the parent.
+    // In the phone full-screen flow the modal fills the space under the flow header. Otherwise in compact
+    // width its bounds are pinned to the parent, and in regular width it hugs its content up to a share of the parent.
     private var modalMinWidth: CGFloat? {
-        isCompactWidth ? parentSize.width : nil
+        isCompactWidth && !isFullScreenFlow ? parentSize.width : nil
     }
 
     private var modalMaxWidth: CGFloat {
-        isCompactWidth ? parentSize.width : parentSize.width * Constants.parentWidthRatio
+        if isFullScreenFlow {
+            return .infinity
+        }
+        return isCompactWidth ? parentSize.width : parentSize.width * Constants.parentWidthRatio
     }
 
     private var modalMinHeight: CGFloat? {
-        isCompactWidth ? parentSize.height : nil
+        isCompactWidth && !isFullScreenFlow ? parentSize.height : nil
     }
 
     private var modalMaxHeight: CGFloat {
-        isCompactWidth ? parentSize.height : parentSize.height * Constants.maxParentHeightRatio
+        if isFullScreenFlow {
+            return .infinity
+        }
+        return isCompactWidth ? parentSize.height : parentSize.height * Constants.maxParentHeightRatio
     }
 
+    @ViewBuilder
     private var modalCore: some View {
-        VStack(spacing: metrics.spacing.xLarge) {
-            ScrollView(showsIndicators: false) {
-                HStack {
-                    Spacer()
-                    POSPrinterSetupContent(controller: controller)
-                    Spacer()
-                }
-            }
-            .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
+        let core = VStack(spacing: metrics.spacing.xLarge) {
+            stepContent
 
             if let buttonConfiguration {
                 POSFlowButtonsView(configuration: buttonConfiguration)
@@ -74,8 +75,36 @@ struct POSPrinterSetupModal: View {
         .posModalCloseButton(action: {
             isPresented = false
         })
-        .padding(metrics.padding.xLarge)
-        .background(Color.posSurfaceBright)
+
+        if isFullScreenFlow {
+            // Shares the padding of the other phone flows, so the buttons line up with theirs.
+            core
+                .posModalSizing()
+                .background(Color.posSurfaceBright)
+        } else {
+            core
+                .padding(metrics.padding.xLarge)
+                .background(Color.posSurfaceBright)
+        }
+    }
+
+    /// In the phone full-screen flow the step is centered between the header and the buttons, like the other
+    /// POS setup flows, and scrolls only when it is taller than the space.
+    @ViewBuilder
+    private var stepContent: some View {
+        let step = HStack {
+            Spacer()
+            POSPrinterSetupContent(controller: controller)
+            Spacer()
+        }
+        if isFullScreenFlow {
+            step.scrollVerticallyIfNeeded()
+        } else {
+            ScrollView(showsIndicators: false) {
+                step
+            }
+            .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
+        }
     }
 }
 
@@ -350,23 +379,13 @@ private extension POSPrinterSetupModal {
             return .init(primaryButton: .init(title: Localization.settingsButton, action: {
                 openDeviceSettings()
             }),
-                         secondaryButton: cancelButton)
+                         secondaryButton: nil)
         }
+        // The close button, in the corner on iPad and in the flow header on phone, is the way out.
         return .init(primaryButton: .init(title: primaryTitle, action: {
             controller.startDiscovery()
         }),
-                     secondaryButton: cancelButton)
-    }
-
-    /// Compact width pairs the primary action with a stacked Cancel. Regular width keeps the
-    /// single-button modal, where the close button in the corner is the way out.
-    var cancelButton: PointOfSaleFlowButtonConfiguration.ButtonConfig? {
-        guard isCompactWidth else {
-            return nil
-        }
-        return .init(title: Localization.cancelButton, action: {
-            isPresented = false
-        })
+                     secondaryButton: nil)
     }
 
     func openDeviceSettings() {
@@ -374,6 +393,18 @@ private extension POSPrinterSetupModal {
             return
         }
         UIApplication.shared.open(url)
+    }
+}
+
+extension POSModalCompactStyle {
+    /// Printer setup goes through search, results and pairing guidance, so on phone it takes the whole screen.
+    /// It has no step to go back to: every state offers its way forward, and the close button ends the setup.
+    static var receiptPrinterSetup: POSModalCompactStyle {
+        .fullScreen(title: NSLocalizedString(
+            "pos.printerSetup.modal.title",
+            value: "Receipt printer",
+            comment: "Title in the header of the full-screen receipt printer setup flow on phone."
+        ))
     }
 }
 

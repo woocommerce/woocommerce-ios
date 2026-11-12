@@ -578,7 +578,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertFalse(fields.contains("routes"))
     }
 
-    /// `SiteAPI.routes` silently defaults to empty, so the routes check must request the field.
+    /// `SiteAPI.routes` is nil unless requested, so the routes check must request the field.
     @MainActor
     func test_retrieveSiteAPIIncludingRoutes_when_dispatched_then_requests_routes_and_parses_them() async throws {
         // Given
@@ -594,7 +594,7 @@ final class SettingStoreTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
         let fields = try XCTUnwrap(request.parameters["_fields"] as? String)
         XCTAssertTrue(fields.split(separator: ",").contains("routes"))
-        XCTAssertFalse(try result.get().routes.isEmpty)
+        XCTAssertEqual(try result.get().routes?.isEmpty, false)
     }
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.

@@ -1240,7 +1240,7 @@ protocol CardPaymentErrorProtocol: Error {
 
 private extension SiteAPI {
     var hasTerminalPaymentPreparationRoute: Bool {
-        routes.contains { route in
+        (routes ?? []).contains { route in
             route.hasPrefix(Constants.prepareTerminalPaymentRoutePrefix) &&
             route.hasSuffix(Constants.prepareTerminalPaymentRouteSuffix)
         }

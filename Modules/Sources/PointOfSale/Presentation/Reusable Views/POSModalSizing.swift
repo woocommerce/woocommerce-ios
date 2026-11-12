@@ -23,7 +23,8 @@ struct POSModalSizing: ViewModifier {
         if isFullScreenFlow {
             // The flow header brings its own top spacing.
             content
-                .padding([.horizontal, .bottom], metrics.padding.xxLarge)
+                .padding(.horizontal, metrics.padding.xxLarge)
+                .padding(.bottom, metrics.padding.medium)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             content

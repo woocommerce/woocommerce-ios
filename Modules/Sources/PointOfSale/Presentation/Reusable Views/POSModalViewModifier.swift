@@ -103,7 +103,7 @@ private extension POSRootModalViewModifier {
                 .environment(\.posModalParentSize, parentSize)
                 .environment(\.posHeaderTopPadding, nil)
                 .environment(\.posModalDismissAction, { modalManager.dismiss() })
-                .padding(metrics.bottomSheetContentInsets(horizontalSizeClass: .compact))
+                .padding(metrics.bottomSheetContentInsets)
                 // The home indicator area is already enough space under the content.
                 .padding(.bottom, bottomSafeArea > 0 ? metrics.padding.none : metrics.padding.xxLarge)
                 .frame(maxWidth: .infinity)
@@ -402,3 +402,13 @@ extension EnvironmentValues {
     .environmentObject(coverManager)
 }
 #endif
+
+extension POSMetrics {
+    /// The top inset is measured from the top edge of the sheet, so the title clears the grabber.
+    var bottomSheetContentInsets: EdgeInsets {
+        EdgeInsets(top: padding.xxLarge + padding.large,
+                   leading: padding.xxLarge,
+                   bottom: padding.none,
+                   trailing: padding.xxLarge)
+    }
+}

@@ -1052,6 +1052,34 @@ final class POSRefundControllerTests {
 
     // MARK: - Process Refund Tests
 
+    @Test func test_process_refund_when_presentation_resets_selection_then_preserves_started_submission() async throws {
+        // Given
+        let order = POSOrderTestFactory.makeOrder(id: 123, lineItems: [
+            POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ])
+        _ = await sut.startRefundFlow(for: order)
+        let selectedItems = sut.selectableItems
+        refundSubmissionProcessor.stateModel.state = .submittingCardPresent
+        refundSubmissionProcessor.onSubmitRefundStarted = { [sut, refundSubmissionProcessor] in
+            // Closing Orders on lock resets the UI selection, not the submitted payment.
+            sut.reset()
+            #expect(!Task.isCancelled)
+            guard case .submittingCardPresent = refundSubmissionProcessor.stateModel.state else {
+                Issue.record("Presentation dismissal reset an active refund")
+                return
+            }
+        }
+
+        // When
+        let result = try await sut.processRefund(reason: "Test refund")
+
+        // Then
+        #expect(result.refundedOrderID == order.id)
+        #expect(refundSubmissionProcessor.spySubmitRefundItems == selectedItems)
+        #expect(refundSubmissionProcessor.spySubmitRefundReason == "Test refund")
+        #expect(refundSubmissionProcessor.submitRefundCalled)
+    }
+
     @Test func processRefund_then_submits_refund_with_correct_order_id() async throws {
         // Given
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(

@@ -45,10 +45,12 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     var onConnectReaderCalled: (() -> Void)?
+    var connectReaderOverride: (@MainActor () async throws -> CardPresentPaymentReaderConnectionResult)?
 
     @MainActor
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         connectReaderCallCount += 1
+        if let connectReaderOverride { return try await connectReaderOverride() }
         switch connectReaderResult {
         case .connected(let reader):
             connectedReader = reader
@@ -107,6 +109,8 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     var cancelReconnectionCalled = false
+    var discardOnboardingPresentationCalls = 0
+    func discardOnboardingPresentation() { discardOnboardingPresentationCalls += 1 }
     var onCancelReconnectionCalled: (() async -> Void)?
     func cancelReconnection() async {
         cancelReconnectionCalled = true

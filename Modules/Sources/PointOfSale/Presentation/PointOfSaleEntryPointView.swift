@@ -211,7 +211,10 @@ public struct PointOfSaleEntryPointView: View {
                         paymentModel: posModel.paymentModel,
                         aggregateModel: posModel
                     )
-                    .posLockScreenOverlay()
+                    .posLockScreenOverlay {
+                        posModalManager.dismissForLock()
+                        posModel.paymentModel.discardPresentationsForLock()
+                    }
             } else {
                 PointOfSaleLoadingView()
             }
@@ -264,6 +267,7 @@ public struct PointOfSaleEntryPointView: View {
                 receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
+            posModel?.paymentModel.presentationSession = session
 
             let cleanup = { [posModel, posModalManager, session, onPointOfSaleModeActiveStateChange] in
                 session.endSession()

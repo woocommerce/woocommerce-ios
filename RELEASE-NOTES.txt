@@ -27,6 +27,7 @@
 - [*] POS: On iPhone, the catalog refresh error and the receipt print failure are now dialogs in the center of the screen, and the payment capture error info is a bottom sheet. [https://github.com/woocommerce/woocommerce-ios/pull/18323]
 - [*] POS: On iPhone, refund detail now opens as a full screen page with the close button at the top left and the refund number in the header. [https://github.com/woocommerce/woocommerce-ios/pull/18324]
 - [*] POS: On iPhone, card payments onboarding now opens as a full screen page with a header and the close button at the top left. [https://github.com/woocommerce/woocommerce-ios/pull/18325]
+- [*] POS: On iPhone, manager approval PIN now opens as a full screen page with a header and the close button at the top left. [https://github.com/woocommerce/woocommerce-ios/pull/18326]
 
 26.0
 -----

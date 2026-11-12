@@ -86,32 +86,6 @@ struct POSModalCloseButtonModifier: ViewModifier {
 
             Spacer()
         }
-        .posModalFlowCloseAction(enabled: isFullScreenFlow,
-                                 accessibilityLabel: accessibilityLabel,
-                                 accessibilityIdentifier: accessibilityIdentifier,
-                                 action: closeAction)
-    }
-}
-
-extension View {
-    /// For content that keeps its own Cancel button and has no close button on iPad.
-    func posModalFlowHeaderCloseButton(
-        action: @escaping () -> Void,
-        accessibilityLabel: String = POSModalCloseButton.Localization.defaultAccessibilityLabel) -> some View {
-        modifier(POSModalFlowHeaderCloseModifier(closeAction: action, accessibilityLabel: accessibilityLabel))
-    }
-}
-
-private struct POSModalFlowHeaderCloseModifier: ViewModifier {
-    let closeAction: () -> Void
-    let accessibilityLabel: String
-    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
-
-    func body(content: Content) -> some View {
-        content
-            .posModalFlowCloseAction(enabled: isFullScreenFlow,
-                                     accessibilityLabel: accessibilityLabel,
-                                     action: closeAction)
     }
 }
 

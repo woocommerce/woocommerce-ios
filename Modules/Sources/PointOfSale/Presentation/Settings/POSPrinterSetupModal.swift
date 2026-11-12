@@ -111,6 +111,7 @@ struct POSPrinterSetupModal: View {
 /// to present pairing guidance, progress, results, or errors.
 private struct POSPrinterSetupContent: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
     let controller: POSPrinterConnectionController
 
     var body: some View {
@@ -192,10 +193,12 @@ private struct POSPrinterSetupContent: View {
 
     private func deviceList(_ devices: [PrinterDevice]) -> some View {
         VStack(spacing: metrics.spacing.large) {
-            Text(Localization.severalPrintersTitle)
-                .font(.posHeadingBold)
-                .foregroundColor(.posOnSurface)
-                .accessibilityAddTraits(.isHeader)
+            if !isFullScreenFlow {
+                Text(Localization.severalPrintersTitle)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+            }
 
             if controller.isDiscovering {
                 scanningIndicator
@@ -218,6 +221,7 @@ private struct POSPrinterSetupContent: View {
                 }
             }
         }
+        .posModalFlowHeaderTitle(Localization.severalPrintersTitle)
     }
 
     private var scanningIndicator: some View {

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Preference key used by deep child views (e.g. the pushed custom amount form)
+/// Preference key used by deep child views (e.g. pushed checkout screens)
 /// to ask the POS dashboard to hide its floating control overlay.
 ///
 /// The reducer takes the OR of nested values so any view in the hierarchy that

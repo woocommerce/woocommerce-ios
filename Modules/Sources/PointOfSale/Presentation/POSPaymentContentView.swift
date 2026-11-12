@@ -61,13 +61,17 @@ struct POSPaymentContentView: View {
         .overlay(alignment: .topTrailing) {
             closeButton
         }
-        .posModal(item: $paymentModel.cardPresentPaymentAlertViewModel, onDismiss: {
+        .posModal(item: $paymentModel.cardPresentPaymentAlertViewModel,
+                  dismissOnLock: false,
+                  onDismiss: {
             paymentModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posModal(item: $paymentModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $paymentModel.cardPresentPaymentOnboardingViewContainer,
+                  dismissOnLock: false,
+                  onDismiss: {
             paymentModel.cancelCardPaymentsOnboarding()
         }) { factory in
             PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(

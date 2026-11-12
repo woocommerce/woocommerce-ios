@@ -106,13 +106,17 @@ struct POSSettingsHardwareDetailView: View {
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
-        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+                  dismissOnLock: false,
+                  onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }, content: { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         })
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer,
+                  dismissOnLock: false,
+                  onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }, content: { viewContainer in
             paymentsOnboardingView(from: viewContainer)

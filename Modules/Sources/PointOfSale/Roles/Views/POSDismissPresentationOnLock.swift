@@ -5,6 +5,7 @@ struct POSDismissPresentationOnLock<Value: Equatable>: ViewModifier {
     @Environment(\.posAccessSession) private var session
     @Binding var value: Value
     let dismissedValue: Value
+    var enabled = true
 
     func body(content: Content) -> some View {
         content
@@ -13,6 +14,6 @@ struct POSDismissPresentationOnLock<Value: Equatable>: ViewModifier {
     }
 
     private func dismissIfLocked() {
-        if session.isLocked, value != dismissedValue { value = dismissedValue }
+        if enabled, session.isLocked, value != dismissedValue { value = dismissedValue }
     }
 }

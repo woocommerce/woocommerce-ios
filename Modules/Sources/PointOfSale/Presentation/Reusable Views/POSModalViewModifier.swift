@@ -95,14 +95,15 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
+    var dismissOnLock = true
     let onDismiss: (() -> Void)?
     let modalContent: (Item) -> ModalContent
 
     func body(content: Content) -> some View {
         content
-            .modifier(POSDismissPresentationOnLock(value: $item, dismissedValue: nil))
+            .modifier(POSDismissPresentationOnLock(value: $item, dismissedValue: nil, enabled: dismissOnLock))
             .onChange(of: item) { _, newItem in
-                guard !session.isLocked else {
+                guard !dismissOnLock || !session.isLocked else {
                     modalManager.dismissForLock()
                     return
                 }
@@ -110,7 +111,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 
-                    modalManager.present(onDismiss: {
+                    modalManager.present(dismissOnLock: dismissOnLock, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         item = nil
@@ -123,6 +124,14 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
                     modalManager.dismiss()
                 }
             }
+            .onChange(of: coverManager.isPresented) { _, isPresented in
+                // A closing ordinary cover can expose the current payment prompt in the root host.
+                if !isPresented, !dismissOnLock, let item {
+                    modalManager.present(dismissOnLock: false, onDismiss: { onDismiss?(); self.item = nil }) {
+                        modalContent(item)
+                    }
+                }
+            }
     }
 }
 
@@ -131,14 +140,15 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
+    var dismissOnLock = true
     let onDismiss: (() -> Void)?
     let modalContent: () -> ModalContent
 
     func body(content: Content) -> some View {
         content
-            .modifier(POSDismissPresentationOnLock(value: $isPresented, dismissedValue: false))
+            .modifier(POSDismissPresentationOnLock(value: $isPresented, dismissedValue: false, enabled: dismissOnLock))
             .onChange(of: isPresented) { _, newValue in
-                guard !session.isLocked else {
+                guard !dismissOnLock || !session.isLocked else {
                     modalManager.dismissForLock()
                     return
                 }
@@ -146,7 +156,7 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
                     // Don't show a modal if a full screen overlay is presented on top
                     guard !coverManager.isPresented else { return }
 
-                    modalManager.present(onDismiss: {
+                    modalManager.present(dismissOnLock: dismissOnLock, onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
                         isPresented = false
@@ -175,10 +185,12 @@ extension View {
     ///   - content: Content to show – note this will not update in response to changes outside the scope of the view builder
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<ModalContent: View>(isPresented: Binding<Bool>,
+                                      dismissOnLock: Bool = true,
                                       onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifierForBool(isPresented: isPresented,
+                                        dismissOnLock: dismissOnLock,
                                         onDismiss: onDismiss,
                                         modalContent: content))
     }
@@ -196,10 +208,12 @@ extension View {
     /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
+        dismissOnLock: Bool = true,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifier(item: item,
+                                 dismissOnLock: dismissOnLock,
                                  onDismiss: onDismiss,
                                  modalContent: content))
     }

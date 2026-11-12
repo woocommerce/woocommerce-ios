@@ -1,7 +1,6 @@
 import Testing
 import Foundation
 import Combine
-import SwiftUI
 import struct Yosemite.Order
 import struct Yosemite.Address
 import struct Yosemite.ReceiptStoreInformation
@@ -13,119 +12,6 @@ import enum WooFoundationCore.WooAnalyticsStat
 
 @Suite(.timeLimit(.minutes(5)))
 struct POSPaymentModelTests {
-
-    @Test @MainActor
-    func test_payment_prompts_when_arriving_after_lock_cleanup_then_discards_readiness_and_allows_new_unlocked_request() {
-        // Given
-        let service = MockCardPresentPaymentService()
-        let sut = makePaymentController(cardPresentPaymentService: service)
-        let session = MockPOSAccessSession(isLocked: true)
-        sut.presentationSession = session
-        sut.discardPresentationsForLock()
-        let cleanupCalls = service.discardOnboardingPresentationCalls
-        var cancelCalls = 0
-        let onboarding = CardPresentPaymentOnboardingViewContainer(configuration: MockOnboardingViewContainerConfiguration())
-
-        // When - no SwiftUI view is mounted to normalize these late bindings.
-        service.paymentEvent = .showOnboarding(factory: onboarding, onCancel: { cancelCalls += 1 })
-        service.paymentEvent = .show(eventDetails: .scanningFailed(error: NSError(domain: "test", code: 1), endSearch: { cancelCalls += 1 }))
-
-        // Then
-        #expect(sut.cardPresentPaymentOnboardingViewContainer == nil)
-        #expect(sut.cardPresentPaymentAlertViewModel == nil)
-        #expect(service.discardOnboardingPresentationCalls == cleanupCalls + 1)
-        #expect(cancelCalls == 0)
-        #expect(!service.cancelPaymentCalled)
-        session.isLocked = false
-        #expect(sut.cardPresentPaymentOnboardingViewContainer == nil)
-        service.paymentEvent = .showOnboarding(factory: onboarding, onCancel: { cancelCalls += 1 })
-        #expect(sut.cardPresentPaymentOnboardingViewContainer != nil)
-    }
-
-    @Test @MainActor
-    func test_lock_cleanup_when_reader_setup_is_pending_then_cancels_only_discovery_and_allows_next_connect() async throws {
-        // Given
-        let service = MockCardPresentPaymentService()
-        let sut = makePaymentController(cardPresentPaymentService: service)
-        var releaseCancellation: CheckedContinuation<Void, Never>?
-        var started = false
-        var onboardingCancelCalls = 0
-        service.connectReaderOverride = {
-            started = true
-            service.paymentEvent = .showOnboarding(factory: .init(configuration: MockOnboardingViewContainerConfiguration(),
-                                                                   view: EmptyView()), onCancel: { onboardingCancelCalls += 1 })
-            do {
-                try await Task.sleep(for: .seconds(60))
-            } catch {
-                await withCheckedContinuation { releaseCancellation = $0 }
-                throw error
-            }
-            return .canceled
-        }
-        sut.connectCardReader()
-        for _ in 0..<200 where !started { try await Task.sleep(for: .milliseconds(10)) }
-        try #require(started && sut.cardPresentPaymentOnboardingViewContainer != nil)
-
-        // When
-        sut.discardPresentationsForLock()
-        for _ in 0..<200 where releaseCancellation == nil { try await Task.sleep(for: .milliseconds(10)) }
-        let release = try #require(releaseCancellation)
-        sut.connectCardReader()
-
-        // Then - canceled work retains ownership until it finishes; it cannot clear a replacement task.
-        #expect(service.connectReaderCallCount == 1)
-        #expect(sut.cardPresentPaymentOnboardingViewContainer == nil)
-        #expect(sut.lastConnectedMethod == nil)
-        #expect(onboardingCancelCalls == 0)
-        #expect(service.discardOnboardingPresentationCalls == 1)
-        #expect(!service.cancelPaymentCalled)
-        service.connectReaderOverride = nil
-        release.resume()
-        for _ in 0..<200 where service.connectReaderCallCount < 2 {
-            sut.connectCardReader()
-            try await Task.sleep(for: .milliseconds(10))
-        }
-        #expect(service.connectReaderCallCount == 2)
-        #expect(sut.lastConnectedMethod == .bluetooth)
-        #expect(!service.cancelPaymentCalled)
-    }
-
-    @Test @MainActor
-    func test_lock_cleanup_when_card_collection_is_in_flight_then_preserves_payment_and_order() async throws {
-        // Given
-        let service = MockCardPresentPaymentService()
-        service.connectedReader = .init(name: "Reader", batteryLevel: 1)
-        let provider = MockPOSPaymentOrderProvider()
-        provider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
-        provider.totalDecimalToReturn = 10
-        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider)
-        var onboardingCancelCalls = 0
-        var finish: CheckedContinuation<CardPresentPaymentResult, Never>?
-        service.collectPaymentOverride = { await withCheckedContinuation { finish = $0 } }
-        let payment = Task { await sut.startPayment() }
-        for _ in 0..<200 where finish == nil { try await Task.sleep(for: .milliseconds(10)) }
-        let completion = try #require(finish)
-        let state = sut.paymentState
-        let method = sut.currentPaymentMethod
-        let cancelledBeforeLock = service.cancelPaymentCalled
-        service.paymentEvent = .showOnboarding(factory: .init(configuration: MockOnboardingViewContainerConfiguration()),
-                                               onCancel: { onboardingCancelCalls += 1 })
-        try #require(sut.cardPresentPaymentOnboardingViewContainer != nil)
-
-        // When
-        sut.discardPresentationsForLock()
-
-        // Then
-        #expect(sut.paymentState == state)
-        #expect(sut.currentPaymentMethod == method)
-        #expect(service.cancelPaymentCalled == cancelledBeforeLock)
-        #expect(service.spyCollectPaymentOrders.map(\.orderID) == [123])
-        #expect(service.discardOnboardingPresentationCalls == 1)
-        #expect(sut.cardPresentPaymentOnboardingViewContainer == nil)
-        #expect(onboardingCancelCalls == 0)
-        completion.resume(returning: .success(CardPresentPaymentTransaction()))
-        await payment.value
-    }
 
     @Test @MainActor
     func test_start_card_payment_when_large_layout_reader_reconnects_during_cancel_then_preserves_bluetooth() async throws {

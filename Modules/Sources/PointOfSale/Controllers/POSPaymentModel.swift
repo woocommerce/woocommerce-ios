@@ -13,7 +13,6 @@ import protocol Yosemite.PaymentCaptureCelebrationProtocol
 @MainActor
 @Observable
 final class POSPaymentModel {
-    @ObservationIgnored weak var presentationSession: POSAccessSession?
     // MARK: - State (read by views)
     private(set) var paymentState: PointOfSalePaymentState
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
@@ -608,7 +607,6 @@ extension POSPaymentModel {
             defer { self?.connectCardReaderTask = nil }
             do {
                 _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
-                try Task.checkCancellation()
                 self?.lastConnectedMethod = .bluetooth
                 if self?.isCompactCardPaymentSelectionEnabled == true {
                     self?.selectedCardPaymentRail = .bluetoothReader
@@ -617,14 +615,6 @@ extension POSPaymentModel {
                 DDLogWarn("🃏 [CardPayment] BT connect failed: \(error)")
             }
         }
-    }
-
-    func discardPresentationsForLock() {
-        // Stop explicit reader setup whose prompts were discarded, without cancelling collection.
-        connectCardReaderTask?.cancel()
-        cardPresentPaymentService.discardOnboardingPresentation()
-        cardPresentPaymentAlertViewModel = nil
-        cardPresentPaymentOnboardingViewContainer = nil
     }
 
     func cancelReconnection() {
@@ -1227,7 +1217,6 @@ private extension POSPaymentModel {
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard let self else { return nil }
-                guard presentationSession?.isLocked != true else { return nil }
                 guard case let .show(eventDetails) = event,
                       case let .alert(alertType) = presentationStyle(for: eventDetails)
                 else {
@@ -1307,10 +1296,6 @@ private extension POSPaymentModel {
             .map { [weak self] event -> CardPresentPaymentOnboardingViewContainer? in
                 guard let self else { return nil }
                 guard case let .showOnboarding(factory, onCancel) = event else {
-                    return nil
-                }
-                guard presentationSession?.isLocked != true else {
-                    cardPresentPaymentService.discardOnboardingPresentation()
                     return nil
                 }
                 onOnboardingCancellation = onCancel

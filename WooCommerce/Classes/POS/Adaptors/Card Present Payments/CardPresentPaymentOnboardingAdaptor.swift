@@ -49,7 +49,15 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
 
     private func showOnboarding(readyToCollectPayment completion: @escaping () -> Void) {
         let onboardingViewModel = self.onboardingViewModel
-        // A subscriber can discard onboarding synchronously; retain readiness before publishing its UI.
+        onboardingScreenViewModelSubject.send(.showOnboarding(
+            factory: .init(
+                configuration: onboardingViewModel,
+                view: CardPresentPaymentsOnboardingView(viewModel: onboardingViewModel)),
+            onCancel: { [weak self] in
+                self?.readinessSubscription = nil
+            })
+        )
+
         readinessSubscription = readinessUseCase.$readiness
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] readiness in
@@ -64,21 +72,11 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
 
                 readinessSubscription = nil
             })
-        onboardingScreenViewModelSubject.send(.showOnboarding(
-            factory: .init(
-                configuration: onboardingViewModel,
-                view: CardPresentPaymentsOnboardingView(viewModel: onboardingViewModel)),
-            onCancel: { [weak self] in
-                self?.readinessSubscription = nil
-            })
-        )
     }
 
     func refresh() {
         onboardingUseCase.refreshIfNecessary()
     }
-
-    func cancelOnboarding() { readinessSubscription = nil }
 }
 
 extension CardPresentPaymentsOnboardingViewModel: CardPresentPaymentsOnboardingViewConfiguration {}

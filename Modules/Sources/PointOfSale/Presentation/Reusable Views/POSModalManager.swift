@@ -7,9 +7,11 @@ final class POSModalManager: ObservableObject {
     @Published private(set) var isFullScreen: Bool = false
     private var contentBuilder: (() -> AnyView)?
     private var onDismiss: (() -> Void)?
+    private var dismissesOnLock = true
 
-    func present<Content: View>(onDismiss: @escaping () -> Void, content: @escaping () -> Content) {
+    func present<Content: View>(dismissOnLock: Bool = true, onDismiss: @escaping () -> Void, content: @escaping () -> Content) {
         contentBuilder = { AnyView(content()) }
+        dismissesOnLock = dismissOnLock
         self.onDismiss = onDismiss
         isPresented = true
     }
@@ -22,6 +24,7 @@ final class POSModalManager: ObservableObject {
 
     /// Lock removes presentation only; user-dismiss callbacks can cancel an active payment flow.
     func dismissForLock() {
+        guard dismissesOnLock else { return }
         isPresented = false
         reset()
     }
@@ -39,10 +42,12 @@ final class POSModalManager: ObservableObject {
     }
 
     func onDisappear() {
+        isPresented = false
         reset()
     }
 
     private func reset() {
+        dismissesOnLock = true
         onDismiss = nil
         allowsInteractiveDismissal = true
         isFullScreen = false

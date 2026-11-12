@@ -164,12 +164,15 @@ struct PointOfSaleDashboardView: View {
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea(.posBottomRegionsToIgnore(isCompact: isPhoneLayout,
                                                  isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible), edges: .bottom)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer,
+                  dismissOnLock: false,
+                  onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { factory in
             paymentsOnboardingView(from: factory)
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+                  dismissOnLock: false,
                   onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in

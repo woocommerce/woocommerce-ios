@@ -42,7 +42,6 @@ private extension POSManagerOverrideModalModifier {
 }
 
 extension POSModalCompactStyle {
-    /// The PIN pad needs most of the phone screen, so on phone manager approval takes the whole screen.
     static var managerApproval: POSModalCompactStyle {
         .fullScreen(title: NSLocalizedString(
             "pos.managerOverride.modal.title",

@@ -132,7 +132,8 @@ private extension POSSettingsLocalCatalogDetailView {
     }
 
     func errorDialog(errorState: PointOfSaleErrorState) -> POSDialog {
-        POSDialog(title: errorState.title,
+        POSDialog(icon: .errorXMark,
+                  title: errorState.title,
                   message: errorState.subtitle,
                   primaryAction: .init(title: Localization.errorRetryButtonTitle, action: {
                       Task {

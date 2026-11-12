@@ -19,6 +19,9 @@ final class DashboardViewModelTests: XCTestCase {
 
     private let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: false)
 
+    // The production default reads `ServiceLocator.stores`, which can trigger a real remote feature flag fetch.
+    private let pushNotificationEligibilityChecker = MockWooPushNotificationEligibilityChecker()
+
     /// Mock Storage: InMemory
     private var storageManager: MockStorageManager!
 
@@ -134,7 +137,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)
@@ -149,7 +153,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -166,7 +171,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -189,7 +195,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            analytics: analytics,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -218,7 +225,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            analytics: analytics,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -235,7 +243,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -257,7 +266,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -280,7 +290,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         await viewModel.reloadAllData()
 
         // When
@@ -306,7 +317,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            analytics: analytics,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -333,7 +345,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            analytics: analytics,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         viewModel.announcementViewModel = JustInTimeMessageViewModel(
             justInTimeMessage: .fake(),
             screenName: "my_store",
@@ -355,7 +368,8 @@ final class DashboardViewModelTests: XCTestCase {
         setUpBasicMocks(for: localStores)
         let viewModel = DashboardViewModel(siteID: 123,
                                            stores: localStores,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         let siteURLToShare = viewModel.siteURLToShare
@@ -374,7 +388,8 @@ final class DashboardViewModelTests: XCTestCase {
         setUpBasicMocks(for: localStores)
         let viewModel = DashboardViewModel(siteID: 123,
                                            stores: localStores,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         let siteURLToShare = viewModel.siteURLToShare
@@ -391,7 +406,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            analytics: analytics,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
@@ -415,7 +431,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            analytics: analytics,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
@@ -439,7 +456,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            analytics: analytics,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
@@ -458,7 +476,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            userDefaults: defaults,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         var setDashboardCardsActionCalled = false
 
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -480,7 +499,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            analytics: analytics,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         let cards: [DashboardCard] = [DashboardCard(type: .onboarding, availability: .show, enabled: false),
                                       DashboardCard(type: .performance, availability: .show, enabled: true),
                                       DashboardCard(type: .blaze, availability: .show, enabled: true),
@@ -509,7 +529,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false),
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
@@ -550,7 +571,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false),
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         mockReloadingData(storeHasOrders: true)
 
@@ -664,7 +686,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         mockReloadingData()
 
         // Last orders cards need to be set with availability: .show and enabled: false to make them available.
@@ -687,7 +710,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         mockReloadingData()
 
@@ -714,7 +738,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false),
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
                            DashboardCard(type: .performance, availability: .show, enabled: true),
@@ -752,7 +777,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false),
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         mockReloadingData()
 
@@ -781,7 +807,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         mockReloadingData()
 
@@ -804,7 +831,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         mockReloadingData(storeHasOrders: false)
 
@@ -824,7 +852,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         let completeCardsSet: [DashboardCard] = [
             .init(type: .inbox, availability: .show, enabled: true),
             .init(type: .reviews, availability: .show, enabled: true),
@@ -849,7 +878,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         let incompleteNewCardsSet: [DashboardCard] = []
         mockReloadingData(storedDashboardCards: incompleteNewCardsSet)
 
@@ -872,7 +902,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         mockReloadingData(storedDashboardCards: incompleteNewCardsSet)
 
         // When
@@ -897,7 +928,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         mockReloadingData(shouldShowInAppFeedback: false)
 
         // When
@@ -917,7 +949,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
+                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false),
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         mockReloadingData(shouldShowInAppFeedback: true)
 
         // When
@@ -940,7 +973,8 @@ final class DashboardViewModelTests: XCTestCase {
                                storageManager: storageManager,
                                blazeEligibilityChecker: blazeEligibilityChecker,
                                googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                               localNotificationScheduler: scheduler)
+                               localNotificationScheduler: scheduler,
+                               pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // Then
         XCTAssertTrue(scheduler.observeNotificationUserResponseCalled)
@@ -955,7 +989,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           localNotificationScheduler: scheduler)
+                                           localNotificationScheduler: scheduler,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
         mockReloadingData()
 
         // When
@@ -978,7 +1013,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -999,7 +1035,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1021,7 +1058,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1043,7 +1081,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1066,7 +1105,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1183,7 +1223,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1206,7 +1247,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1257,7 +1299,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         viewModel.hideWPComConnectionSuggestion()
@@ -1279,7 +1322,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: checker)
+                                           aiAssistantEligibilityChecker: checker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1303,7 +1347,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: checker)
+                                           aiAssistantEligibilityChecker: checker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1329,7 +1374,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: checker)
+                                           aiAssistantEligibilityChecker: checker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -1383,7 +1429,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: checker)
+                                           aiAssistantEligibilityChecker: checker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.onViewAppear()
@@ -1443,7 +1490,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: checker)
+                                           aiAssistantEligibilityChecker: checker,
+                                           pushNotificationEligibilityChecker: pushNotificationEligibilityChecker)
 
         // When
         await viewModel.onViewAppear()

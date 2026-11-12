@@ -121,13 +121,17 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
                 XCTFail("Unexpected action: \(action)")
             }
         }
-        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(), stores: stores)
+        var presentedPrintData: Data?
+        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(),
+                                                         stores: stores,
+                                                         printDialogPresenter: { presentedPrintData = $0 })
 
         // When
         try await viewModel.printLabel()
 
         // Then
         XCTAssertNotNil(printData)
+        XCTAssertEqual(presentedPrintData, printData?.data)
     }
 
     func test_selectedLabelSize_defaults_to_label() {

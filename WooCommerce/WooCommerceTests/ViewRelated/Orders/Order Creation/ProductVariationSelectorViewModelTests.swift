@@ -13,16 +13,18 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
     private var storage: StorageType {
         storageManager.viewStorage
     }
-    private let stores = MockStoresManager(sessionManager: .testingInstance)
+    private var stores: MockStoresManager!
 
     override func setUp() async throws {
         try await super.setUp()
+        stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         stores.reset()
     }
 
     override func tearDown() async throws {
         storageManager = nil
+        stores = nil
         try await super.tearDown()
     }
 

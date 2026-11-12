@@ -212,8 +212,11 @@ struct OrderListViewControllerTests {
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Then
-        // The resynchronization is debounced, so give the scheduler a chance to deliver it.
-        try await Task.sleep(for: .milliseconds(200))
+        // The resynchronization is debounced, so wait for the scheduler to deliver it instead of sleeping a fixed time.
+        let deadline = ContinuousClock.now + .seconds(5)
+        while synchronizedSiteID != siteID, ContinuousClock.now < deadline {
+            try await Task.sleep(for: .milliseconds(1))
+        }
         #expect(viewController.view.window == nil)
         #expect(synchronizedSiteID == siteID)
     }

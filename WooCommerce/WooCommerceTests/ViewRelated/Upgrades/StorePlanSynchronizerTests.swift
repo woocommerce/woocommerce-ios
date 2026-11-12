@@ -5,10 +5,10 @@ import XCTest
 final class StorePlanSynchronizerTests: XCTestCase {
 
     // Mocked stores manager
-    var stores = MockStoresManager(sessionManager: .testingInstance)
+    var stores: MockStoresManager!
 
     // Mocked session
-    var session = SessionManager.makeForTesting()
+    var session: SessionManager!
 
     // Site ID
     let sampleSiteID: Int64 = 123
@@ -19,6 +19,12 @@ final class StorePlanSynchronizerTests: XCTestCase {
         stores = MockStoresManager(sessionManager: session)
 
         super.setUp()
+    }
+
+    override func tearDown() {
+        stores = nil
+        session = nil
+        super.tearDown()
     }
 
     func test_synchronizer_has_not_loaded_state_if_there_is_not_a_site() {

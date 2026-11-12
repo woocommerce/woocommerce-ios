@@ -14,9 +14,9 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
     private var viewStorage: StorageType {
         return storageManager.viewStorage
     }
-    private lazy var sampleNotes: [Yosemite.Note] = {
-        return try! mapNotes(from: "notifications-load-all")
-    }()
+    // Decoded once per class: the fixture is large and `Note` is an immutable value type.
+    nonisolated(unsafe) private static let sampleNotesResult = Result { try MarkOrderAsReadUseCaseTests.mapNotes(from: "notifications-load-all") }
+    private var sampleNotes: [Yosemite.Note] = []
 
     private func sampleNote(read: Bool) -> Yosemite.Note? {
         return sampleNotes.first { note in
@@ -24,8 +24,9 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
         }
     }
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        sampleNotes = try Self.sampleNotesResult.get()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         storesManager = MockStoresManager(sessionManager: .makeForTesting())
@@ -222,8 +223,8 @@ private extension MarkOrderAsReadUseCaseTests {
 
     /// Returns the NoteListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapNotes(from filename: String) throws -> [Yosemite.Note] {
-        let response = Loader.contentsOf(filename)!
+    static func mapNotes(from filename: String) throws -> [Yosemite.Note] {
+        let response = try XCTUnwrap(Loader.contentsOf(filename))
         return try NoteListMapper().map(response: response)
     }
 }

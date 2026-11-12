@@ -2,6 +2,9 @@ import Synchronization
 import XCTest
 import Nimble
 
+/// Nimble checks only after each poll interval, and its 10 ms default makes every wait cost at least 10 ms.
+private let pollInterval = NimbleTimeInterval.milliseconds(1)
+
 extension XCTestCase {
     /// Creates an XCTestExpectation and waits for `block` to call `fulfill()`.
     ///
@@ -45,7 +48,7 @@ extension XCTestCase {
                           timeout: TimeInterval = 5.0,
                           _ expression: @escaping () throws -> Bool) {
         _ = expect(fileID: fileID, file: file, line: line, column: column, expression)
-            .toEventually(beTrue(), timeout: .seconds(Int(timeout)))
+            .toEventually(beTrue(), timeout: .seconds(Int(timeout)), pollInterval: pollInterval)
     }
 
     /// Waits until `condition` returns `true` in async conext.
@@ -67,7 +70,7 @@ extension XCTestCase {
                       timeout: TimeInterval = 5.0,
                       _ expression: @escaping () throws -> Bool) async {
         _ = await expect(fileID: fileID, file: file, line: line, column: column, expression)
-            .toEventually(beTrue(), timeout: .seconds(Int(timeout)))
+            .toEventually(beTrue(), timeout: .seconds(Int(timeout)), pollInterval: pollInterval)
     }
 
     /// Waits until a value is provided by a promise (block) and returns that value.

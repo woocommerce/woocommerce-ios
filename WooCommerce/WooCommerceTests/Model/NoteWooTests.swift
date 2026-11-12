@@ -9,11 +9,18 @@ import Foundation
 ///
 class NoteWooTests: XCTestCase {
 
+    /// Decoded once per class: the fixture is large and `Note` is an immutable value type.
+    ///
+    nonisolated(unsafe) private static let sampleNotesResult = Result { try NoteWooTests.mapNotes(from: "notifications-load-all") }
+
     /// Sample Notes
     ///
-    private lazy var sampleNotes: [Note] = {
-        return try! mapNotes(from: "notifications-load-all")
-    }()
+    private var sampleNotes: [Note] = []
+
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        sampleNotes = try Self.sampleNotesResult.get()
+    }
 
 
     /// Verifies that `blockForSubject` returns the first block in the `.subject` collection.
@@ -81,8 +88,8 @@ private extension NoteWooTests {
 
     /// Returns the NoteListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapNotes(from filename: String) throws -> [Note] {
-        let response = Loader.contentsOf(filename)!
+    static func mapNotes(from filename: String) throws -> [Note] {
+        let response = try XCTUnwrap(Loader.contentsOf(filename))
         return try NoteListMapper().map(response: response)
     }
 }

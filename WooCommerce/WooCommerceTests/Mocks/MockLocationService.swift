@@ -6,8 +6,11 @@ final class MockLocationService: LocationServiceProtocol {
     private var currentStatus: LocationAuthorizationStatus
     var requestPermissionStatus: LocationAuthorizationStatus = .notDetermined
 
-    init(status: LocationAuthorizationStatus = .authorized) {
+    private let permissionResponseDelay: TimeInterval
+
+    init(status: LocationAuthorizationStatus = .authorized, permissionResponseDelay: TimeInterval = 0.1) {
         self.currentStatus = status
+        self.permissionResponseDelay = permissionResponseDelay
     }
 
     var authorizationStatus: LocationAuthorizationStatus {
@@ -15,7 +18,7 @@ final class MockLocationService: LocationServiceProtocol {
     }
 
     func requestPermission() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + permissionResponseDelay) {
             self.currentStatus = self.requestPermissionStatus
             self.notifyObservers()
         }

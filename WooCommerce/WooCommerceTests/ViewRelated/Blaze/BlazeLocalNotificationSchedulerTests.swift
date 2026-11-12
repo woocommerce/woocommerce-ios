@@ -208,7 +208,8 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
             exp.fulfill()
         }
-        await fulfillment(of: [exp], timeout: 0.5)
+        // The expectation is only fulfilled by the synchronous check above, so waiting adds no coverage.
+        await fulfillment(of: [exp], timeout: 0)
     }
 
     @MainActor
@@ -240,7 +241,8 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
             exp.fulfill()
         }
-        await fulfillment(of: [exp], timeout: 0.5)
+        // The expectation is only fulfilled by the synchronous check above, so waiting adds no coverage.
+        await fulfillment(of: [exp], timeout: 0)
     }
 
     @MainActor
@@ -314,7 +316,8 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
             exp.fulfill()
         }
-        await fulfillment(of: [exp], timeout: 0.5)
+        // The expectation is only fulfilled by the synchronous check above, so waiting adds no coverage.
+        await fulfillment(of: [exp], timeout: 0)
     }
 
     @MainActor
@@ -361,7 +364,8 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
             exp.fulfill()
         }
-        await fulfillment(of: [exp], timeout: 0.5)
+        // The expectation is only fulfilled by the synchronous check above, so waiting adds no coverage.
+        await fulfillment(of: [exp], timeout: 0)
     }
 
     // MARK: User response

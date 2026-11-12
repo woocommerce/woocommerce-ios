@@ -231,12 +231,14 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         // Given
         let window = UIWindow()
         window.rootViewController = UIViewController()
+        // The fake completes via `asyncAfter`, so even a zero delay keeps the flow in progress while
+        // the synchronous triggers below land.
         let service = FakeAgeRangeService(
             result: .eligible(
                 significantAppChangeApprovalRequired: false,
                 isMinor: false
             ),
-            delay: 0.05
+            delay: 0
         )
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,

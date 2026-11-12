@@ -8,14 +8,19 @@ struct POSCustomAmountFlowView: View {
     let flow: POSCustomAmountFlow
 
     var body: some View {
-        AddCustomAmountView(
-            currencySettings: currencyProvider.currencySettings,
-            editing: flow.editingCustomAmount,
-            onDismiss: dismiss,
-            onSubmit: { customAmount in
-                posModel.upsertCustomAmount(customAmount, mode: flow.analyticsMode)
-            }
-        )
+        // The dashboard ignores the keyboard safe area, so without a navigation host of its own
+        // the form's pinned submit button stays under the keyboard.
+        NavigationStack {
+            AddCustomAmountView(
+                currencySettings: currencyProvider.currencySettings,
+                editing: flow.editingCustomAmount,
+                onDismiss: dismiss,
+                onSubmit: { customAmount in
+                    posModel.upsertCustomAmount(customAmount, mode: flow.analyticsMode)
+                }
+            )
+            .toolbar(.hidden, for: .navigationBar)
+        }
     }
 
     private func dismiss() {

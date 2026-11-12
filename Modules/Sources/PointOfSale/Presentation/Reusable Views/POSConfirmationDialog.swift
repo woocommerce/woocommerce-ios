@@ -1,10 +1,8 @@
 import SwiftUI
 
-/// Content of a POS modal that asks a question: a close button in the top corner, a title, a message and the buttons.
-/// Present it with `posModal(..., compactStyle: .dialog)` so phone shows the same centered card as iPad.
+/// Present with `posModal(..., compactStyle: .dialog)` so phone shows the same centered card as iPad.
 struct POSConfirmationDialog: View {
     @Environment(\.posMetrics) private var metrics
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let title: String
     let message: String
@@ -31,12 +29,7 @@ struct POSConfirmationDialog: View {
     }
 
     var body: some View {
-        VStack(spacing: metrics.spacing.xLarge) {
-            POSModalCloseButton(accessibilityLabel: closeButton.accessibilityLabel,
-                                accessibilityIdentifier: closeButton.accessibilityIdentifier,
-                                fontStyle: horizontalSizeClass == .compact ? .posButtonSymbolMedium : .posButtonSymbolLarge,
-                                closeAction: closeButton.action)
-
+        POSDialogCard(closeButton: closeButton) {
             VStack(spacing: metrics.spacing.xLarge) {
                 Text(title)
                     .font(.posHeadingBold)
@@ -49,6 +42,25 @@ struct POSConfirmationDialog: View {
             .fixedSize(horizontal: false, vertical: true)
 
             POSFlowButtonsView(configuration: .init(primaryButton: primaryButton, secondaryButton: secondaryButton))
+        }
+    }
+}
+
+struct POSDialogCard<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
+
+    let closeButton: POSConfirmationDialog.CloseButton
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(spacing: metrics.spacing.xLarge) {
+            POSModalCloseButton(accessibilityLabel: closeButton.accessibilityLabel,
+                                accessibilityIdentifier: closeButton.accessibilityIdentifier,
+                                fontStyle: .posButtonSymbolLarge,
+                                closeAction: closeButton.action)
+            .padding([.top, .trailing], metrics.padding.small)
+
+            content()
         }
         .padding(metrics.padding.medium)
     }

@@ -133,14 +133,12 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     func errorView(errorState: PointOfSaleErrorState) -> some View {
-        VStack(spacing: metrics.spacing.xxLarge) {
-            POSModalCloseButton(accessibilityLabel: Localization.errorCancelButtonTitle) {
-                viewModel.catalogRefreshError = nil
-            }
-
+        POSDialogCard(closeButton: .init(accessibilityLabel: Localization.errorCancelButtonTitle,
+                                         accessibilityIdentifier: nil,
+                                         action: { viewModel.catalogRefreshError = nil })) {
             POSErrorView(viewModel: errorViewModel(errorState: errorState))
+                .padding([.horizontal, .bottom], metrics.padding.medium)
         }
-        .padding(metrics.padding.xLarge)
         .frame(maxWidth: Constants.errorModalMaxWidth)
     }
 

@@ -40,7 +40,7 @@ private extension POSManagerOverrideView {
 
     var compactContent: some View {
         VStack(spacing: metrics.spacing.large) {
-            // In the phone full-screen flow the header names the screen, so the title would repeat it.
+            // The flow header already shows the title.
             if isFullScreenFlow {
                 reason
             } else {
@@ -54,8 +54,7 @@ private extension POSManagerOverrideView {
         .padding(.horizontal, metrics.padding.large)
         .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
         .padding(metrics.padding.large)
-        // In the full-screen flow the content fills the space under the header, so the PIN pad stays centered.
-        // Otherwise size to content and let the modal center it, like the lock screen and the iPad layout.
+        // Outside the full-screen flow, size to content and let the modal center it.
         .frame(maxHeight: isFullScreenFlow ? .infinity : nil)
         .fixedSize(horizontal: false, vertical: !isFullScreenFlow)
     }

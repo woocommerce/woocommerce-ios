@@ -199,7 +199,7 @@ struct TotalsView: View {
                 isStartingPayment = false
             }
         }
-        .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
+        .posModal(isPresented: $isShowingOtherPaymentMethodsSheet, compactStyle: .bottomSheet) {
             POSOtherPaymentMethodsSheet(
                 isTapToPayAvailable: isTapToPayRowAvailableInOtherMethodsSheet,
                 isTapToPayEnabled: isTapToPayRowEnabledInOtherMethodsSheet,
@@ -224,11 +224,8 @@ struct TotalsView: View {
                 isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
                 onMarkOrderAsPaid: handleMarkAsPaidSelected
             )
-            .posSheetFitsContent()
         }
         .onChange(of: session.isLocked) { _, isLocked in
-            // POSSheet presents at the UIWindow level, so it sits above the view-level
-            // lock overlay. Dismiss on lock so the PIN screen isn't obscured.
             guard isLocked else { return }
             isShowingOtherPaymentMethodsSheet = false
         }

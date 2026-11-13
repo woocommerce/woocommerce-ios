@@ -172,6 +172,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
 
+    private var isAddingHardwareScannedProduct = false
+
     @Published private(set) var collectPaymentDisabled: Bool = false
 
     /// Defines if the non editable indicators (banners, locks, fields) should be shown.
@@ -1653,18 +1655,19 @@ private extension EditableOrderViewModel {
 
     /// Updates the Order with the given product from SKU scanning
     ///
-    func updateOrderWithBaseItem(_ item: OrderBaseItem) {
+    @discardableResult
+    func updateOrderWithBaseItem(_ item: OrderBaseItem) -> Task<Void, Never>? {
         if case .product(let product) = item,
            product.variations.isNotEmpty {
             autodismissableNotice = Notice(title: Localization.parentProductScannedNoticeTitle,
                                            subtitle: Localization.parentProductScannedNoticeSubtitle)
-            return
+            return nil
         }
 
         // The selector greys these products out, but a scan never passes through it.
         if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
             autodismissableNotice = Notice(title: restriction.reason)
-            return
+            return nil
         }
 
         // A scanned bundle opens its configuration screen, but only once it's known to be sellable:
@@ -1672,7 +1675,7 @@ private extension EditableOrderViewModel {
         if case let .product(product) = item, product.productType == .bundle {
             autodismissableNotice = Notice(title: Localization.checkingBundledProductsNoticeTitle)
 
-            Task { @MainActor [weak self] in
+            return Task { @MainActor [weak self] in
                 guard let self else { return }
 
                 switch await bundleChecker.check(bundle: product) {
@@ -1685,7 +1688,6 @@ private extension EditableOrderViewModel {
                     autodismissableNotice = Notice(title: Localization.cannotCheckBundledProductsNoticeTitle)
                 }
             }
-            return
         }
 
         guard currentOrderItems.contains(where: { $0.productOrVariationID == item.itemID }) else {
@@ -1701,11 +1703,12 @@ private extension EditableOrderViewModel {
                 orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
             }
 
-            return
+            return nil
         }
         // Increase quantity if exists
         let match = productRows.first(where: { $0.productRow.productOrVariationID == item.itemID })
         match?.productRow.stepperViewModel.incrementQuantity()
+        return nil
     }
 
     func showBundleConfiguration(for product: Product) {
@@ -2409,6 +2412,27 @@ extension EditableOrderViewModel {
     @MainActor
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
         analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderCreation))
+        addProductToOrder(scannedBarcode: barcode, onCompletion: onCompletion, onRetryRequested: onRetryRequested)
+    }
+
+    var canAddHardwareScannedProduct: Bool {
+        !disabled && !shouldShowNonEditableIndicators && !isAddingHardwareScannedProduct && configurableScannedProductViewModel == nil
+    }
+
+    func addHardwareScannedProductToOrder(barcode: ScannedBarcode) {
+        guard canAddHardwareScannedProduct else { return }
+        isAddingHardwareScannedProduct = true
+        addProductToOrder(scannedBarcode: barcode, onCompletion: { _ in }, onRetryRequested: { [weak self] in
+            self?.addHardwareScannedProductToOrder(barcode: barcode)
+        }, onItemHandled: { [weak self] in
+            self?.isAddingHardwareScannedProduct = false
+        })
+    }
+
+    private func addProductToOrder(scannedBarcode barcode: ScannedBarcode,
+                                   onCompletion: @escaping (Result<Void, Error>) -> Void,
+                                   onRetryRequested: @escaping () -> Void,
+                                   onItemHandled: @escaping () -> Void = {}) {
         mapScannedBarcodetoBaseItem(barcode: barcode) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -2418,13 +2442,18 @@ extension EditableOrderViewModel {
                                                                                          source: .orderCreation,
                                                                                          addedVia: .scanning,
                                                                                          includesBundleProductConfiguration: false))
-                    self.updateOrderWithBaseItem(result)
+                    let bundleCheck = self.updateOrderWithBaseItem(result)
                     onCompletion(.success(()))
+                    if let bundleCheck {
+                        await bundleCheck.value
+                    }
+                    onItemHandled()
                 }
             case let .failure(error):
                 Task { @MainActor [weak self] in
                     guard let self else { return }
                     onCompletion(.failure(ScannerError.productNotFound))
+                    onItemHandled()
                     self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(for: error,
                                                                                                                 code: barcode,
                                                                                                                 withRetryAction: { [weak self] in

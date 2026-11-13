@@ -9,9 +9,12 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
     ///
     private var subscriptions: Set<AnyCancellable> = []
     private let viewModel: EditableOrderViewModel
+    private let hardwareBarcodeScanner: HardwareBarcodeScanner
+    private var hardwareBarcodeScannerToken: HardwareBarcodeScanner.ListenerToken?
 
-    init(viewModel: EditableOrderViewModel) {
+    init(viewModel: EditableOrderViewModel, hardwareBarcodeScanner: HardwareBarcodeScanner = .shared) {
         self.viewModel = viewModel
+        self.hardwareBarcodeScanner = hardwareBarcodeScanner
         let flow: WooAnalyticsEvent.Orders.Flow = {
             switch viewModel.flow {
                 case .creation:
@@ -47,6 +50,38 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
         } else {
             presentationController?.delegate = self
         }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        startListeningForHardwareBarcodes()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        stopListeningForHardwareBarcodes()
+    }
+}
+
+private extension OrderFormHostingController {
+    func startListeningForHardwareBarcodes() {
+        guard hardwareBarcodeScannerToken == nil else { return }
+        hardwareBarcodeScannerToken = hardwareBarcodeScanner.startListening(source: .orderCreation, isEnabled: { [weak self] in
+            guard let self else { return false }
+            // SwiftUI sheets on the form, like the bundle configuration, present from this controller.
+            return presentedViewController == nil
+                && navigationController?.presentedViewController == nil
+                && view.window != nil
+                && viewModel.canAddHardwareScannedProduct
+        }, onScan: { [weak self] scannedBarcode in
+            self?.viewModel.addHardwareScannedProductToOrder(barcode: scannedBarcode)
+        })
+    }
+
+    func stopListeningForHardwareBarcodes() {
+        guard let hardwareBarcodeScannerToken else { return }
+        hardwareBarcodeScanner.stopListening(hardwareBarcodeScannerToken)
+        self.hardwareBarcodeScannerToken = nil
     }
 }
 

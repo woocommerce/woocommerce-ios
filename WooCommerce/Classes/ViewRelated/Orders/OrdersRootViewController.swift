@@ -82,6 +82,11 @@ final class OrdersRootViewController: UIViewController {
 
     private var barcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
+    private let hardwareBarcodeScanner: HardwareBarcodeScanner
+    private var hardwareBarcodeScannerToken: HardwareBarcodeScanner.ListenerToken?
+
+    private var isLookingUpScannedBarcode = false
+
     private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
 
 
@@ -91,12 +96,14 @@ final class OrdersRootViewController: UIViewController {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
+         hardwareBarcodeScanner: HardwareBarcodeScanner = .shared,
          switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
+        self.hardwareBarcodeScanner = hardwareBarcodeScanner
         self.switchDetailsHandler = switchDetailsHandler
         super.init(nibName: Self.nibName, bundle: nil)
 
@@ -155,6 +162,16 @@ final class OrdersRootViewController: UIViewController {
         // Clears application icon badge
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
         updateTimeoutText()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        startListeningForHardwareBarcodes()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        stopListeningForHardwareBarcodes()
     }
 
     /// Shows `SearchViewController`.
@@ -282,28 +299,7 @@ final class OrdersRootViewController: UIViewController {
         let productSKUBarcodeScannerCoordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                   onBarcodeScanned: { [weak self] scannedBarcode in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningSuccess(from: .orderList))
-
-            self?.navigationItem.configureLeftBarButtonItemAsLoader()
-            self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case let .success(item):
-                    // The scanner never passes through the selector, so refuse restricted products
-                    // here and explain why on the order list, rather than opening an empty order.
-                    if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
-                        self.displayRestrictedScannedProductNotice(restriction)
-                    } else {
-                        self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
-                                                                            source: .orderList,
-                                                                            addedVia: .scanning,
-                                                                            includesBundleProductConfiguration: false))
-                        self.presentOrderCreationFlowWithScannedProduct(item)
-                    }
-                case let .failure(error):
-                    self.displayScannedProductErrorNotice(error, code: scannedBarcode)
-                }
-                navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
-            }
+            self?.presentOrderCreationFlowWithScannedBarcode(scannedBarcode)
         }, onPermissionsDenied: { [weak self] reason in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: reason))
         }, onSettingsTapped: { [weak self] reason in
@@ -313,6 +309,47 @@ final class OrdersRootViewController: UIViewController {
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
+    }
+
+    private func presentOrderCreationFlowWithScannedBarcode(_ scannedBarcode: ScannedBarcode) {
+        isLookingUpScannedBarcode = true
+        navigationItem.configureLeftBarButtonItemAsLoader()
+        handleScannedBarcode(scannedBarcode) { [weak self] result in
+            guard let self else { return }
+            isLookingUpScannedBarcode = false
+            switch result {
+            case let .success(item):
+                // The scanner skips the product selector, so restricted products are refused here.
+                if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
+                    displayRestrictedScannedProductNotice(restriction)
+                } else {
+                    analytics.track(event: .Orders.orderProductAdd(flow: .creation,
+                                                                   source: .orderList,
+                                                                   addedVia: .scanning,
+                                                                   includesBundleProductConfiguration: false))
+                    presentOrderCreationFlowWithScannedProduct(item)
+                }
+            case let .failure(error):
+                displayScannedProductErrorNotice(error, code: scannedBarcode)
+            }
+            navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+        }
+    }
+
+    private func startListeningForHardwareBarcodes() {
+        guard hardwareBarcodeScannerToken == nil else { return }
+        hardwareBarcodeScannerToken = hardwareBarcodeScanner.startListening(source: .orderList, isEnabled: { [weak self] in
+            guard let self else { return false }
+            return !isLookingUpScannedBarcode && presentedViewController == nil && view.window != nil
+        }, onScan: { [weak self] scannedBarcode in
+            self?.presentOrderCreationFlowWithScannedBarcode(scannedBarcode)
+        })
+    }
+
+    private func stopListeningForHardwareBarcodes() {
+        guard let hardwareBarcodeScannerToken else { return }
+        hardwareBarcodeScanner.stopListening(hardwareBarcodeScannerToken)
+        self.hardwareBarcodeScannerToken = nil
     }
 
     /// Handles the result of scanning a barcode

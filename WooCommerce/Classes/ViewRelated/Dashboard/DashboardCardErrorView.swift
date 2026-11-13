@@ -69,7 +69,7 @@ struct DashboardCardErrorView: View {
 /// Lays out a dashboard card's time range bar above its content, or above the error view when loading fails.
 /// The bar stays visible on errors so merchants can recover by switching to another range.
 struct DashboardCardRangedContent<RangeBar: View, Content: View>: View {
-    private let cardType: DashboardCard.CardType
+    private let retryEvent: WooAnalyticsEvent
     private let hasError: Bool
     private let reload: @MainActor () async -> Void
     private let analytics: Analytics
@@ -82,7 +82,7 @@ struct DashboardCardRangedContent<RangeBar: View, Content: View>: View {
          analytics: Analytics = ServiceLocator.analytics,
          @ViewBuilder rangeBar: () -> RangeBar,
          @ViewBuilder content: () -> Content) {
-        self.cardType = cardType
+        self.retryEvent = .DynamicDashboard.cardRetryTapped(type: cardType)
         self.hasError = hasError
         self.reload = reload
         self.analytics = analytics
@@ -105,7 +105,7 @@ struct DashboardCardRangedContent<RangeBar: View, Content: View>: View {
     }
 
     private func retry() {
-        analytics.track(event: .DynamicDashboard.cardRetryTapped(type: cardType))
+        analytics.track(event: retryEvent)
         Task { await reload() }
     }
 }

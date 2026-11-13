@@ -58,7 +58,7 @@ struct StoreDashboardCardErrorView: View {
 /// Lays out a dashboard card's date range header above its content, or above the error state when loading fails.
 /// The header stays visible on errors so merchants can recover by switching to another range.
 struct StoreDashboardRangedCardContent<RangeHeader: View, Content: View>: View {
-    private let cardType: DashboardCard.CardType
+    private let retryEvent: WooAnalyticsEvent
     private let hasError: Bool
     private let reload: @MainActor () async -> Void
     private let analytics: Analytics
@@ -71,7 +71,7 @@ struct StoreDashboardRangedCardContent<RangeHeader: View, Content: View>: View {
          analytics: Analytics = ServiceLocator.analytics,
          @ViewBuilder rangeHeader: () -> RangeHeader,
          @ViewBuilder content: () -> Content) {
-        self.cardType = cardType
+        self.retryEvent = .DynamicDashboard.cardRetryTapped(type: cardType)
         self.hasError = hasError
         self.reload = reload
         self.analytics = analytics
@@ -92,7 +92,7 @@ struct StoreDashboardRangedCardContent<RangeHeader: View, Content: View>: View {
     }
 
     private func retry() {
-        analytics.track(event: .DynamicDashboard.cardRetryTapped(type: cardType))
+        analytics.track(event: retryEvent)
         Task { await reload() }
     }
 }

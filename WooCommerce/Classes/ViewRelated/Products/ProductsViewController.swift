@@ -789,6 +789,9 @@ private extension ProductsViewController {
     }
 
     private func installRefreshControl() {
+        guard let tableView else {
+            return
+        }
         if #available(iOS 26.0, *) {
             tableView.refreshControl = refreshControl
         } else {
@@ -797,6 +800,9 @@ private extension ProductsViewController {
     }
 
     private func uninstallRefreshControl() {
+        guard let tableView else {
+            return
+        }
         if #available(iOS 26.0, *) {
             tableView.refreshControl = nil
         } else {

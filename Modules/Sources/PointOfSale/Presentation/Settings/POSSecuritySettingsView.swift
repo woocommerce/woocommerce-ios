@@ -4,6 +4,8 @@ struct POSSecuritySettingsView: View {
     @Environment(\.posMetrics) private var metrics
     let controller: POSSecuritySettingsController
     @State private var editing: POSLocalRole?
+    @State private var removalApproval = POSManagerOverrideHandler()
+    @State private var removalApprovalTask: Task<Void, Never>?
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
@@ -11,8 +13,16 @@ struct POSSecuritySettingsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: metrics.spacing.medium) {
                     if let roles = controller.roles {
-                        Text(controller.isPINProtectionEnabled ? Localization.protectionOn : Localization.protectionOff)
-                            .font(.posBodyMediumRegular())
+                        if controller.isPINProtectionEnabled {
+                            POSInformationCard {
+                                POSInformationCardFieldRowWithToggle(label: Localization.pinProtection,
+                                                                     value: Localization.protectionOn,
+                                                                     showSeparator: false,
+                                                                     isOn: protectionBinding)
+                            }
+                        } else {
+                            Text(Localization.protectionOff).font(.posBodyMediumRegular())
+                        }
                         POSInformationCard {
                             ViewThatFits(in: .horizontal) {
                                 pinRows(roles, stacked: false)
@@ -36,18 +46,35 @@ struct POSSecuritySettingsView: View {
         .background(Color.posSurface)
         .disabled(controller.isSaving)
         .onAppear { controller.load() }
-        .onDisappear { editing = nil; controller.cancelRemoval() }
+        .onDisappear { editing = nil; dismissRemovalApproval() }
+        .onChange(of: controller.isVisible) { _, isVisible in
+            if !isVisible { dismissRemovalApproval() }
+        }
         .posModal(isPresented: Binding(get: { editing != nil }, set: { if !$0 { editing = nil } }),
-                  presentationStyle: .card, onDismiss: { controller.load() }) {
+                  onDismiss: { controller.load() }) {
             if let role = editing {
                 POSSecurityPINEntryModal(role: role, controller: controller, close: { editing = nil })
             }
         }
-        .alert(Localization.removeAdmin, isPresented: Binding(get: { controller.isConfirmingAdminRemoval }, set: { if !$0 { controller.cancelRemoval() } })) {
-            Button(Localization.remove, role: .destructive) { controller.confirmAdminRemoval() }
-            Button(Localization.cancel, role: .cancel) { controller.cancelRemoval() }
-        } message: { Text(Localization.removalMessage) }
+        .posManagerOverrideModal(handler: removalApproval)
         .accessibilityIdentifier("pos-security-settings")
+    }
+
+    private var protectionBinding: Binding<Bool> {
+        Binding(get: { controller.isPINProtectionEnabled }, set: { isEnabled in
+            if !isEnabled {
+                removalApprovalTask?.cancel()
+                removalApprovalTask = Task {
+                    _ = await controller.requestProtectionRemoval(using: removalApproval, reason: Localization.disableProtectionReason)
+                }
+            }
+        })
+    }
+
+    private func dismissRemovalApproval() {
+        removalApprovalTask?.cancel()
+        removalApprovalTask = nil
+        removalApproval.cancel()
     }
 
     private func pinRows(_ roles: Set<POSLocalRole>, stacked: Bool) -> some View {
@@ -71,7 +98,7 @@ struct POSSecuritySettingsView: View {
             }
             .accessibilityLabel(String.localizedStringWithFormat(
                 roles.contains(role) ? Localization.changeRolePIN : Localization.setRolePIN, role.displayName))
-            if roles.contains(role) {
+            if role != .admin, roles.contains(role) {
                 Button(Localization.remove, role: .destructive) {
                     Task { await controller.requestRemoval(for: role) }
                 }
@@ -90,6 +117,8 @@ struct POSSecuritySettingsView: View {
 
     enum Localization {
         static let title = NSLocalizedString("pos.security.title", value: "Security", comment: "POS Security settings title.")
+        static let pinProtection = NSLocalizedString("pos.security.pinProtection", value: "PIN protection",
+                                                     comment: "Label of the switch that turns off PIN protection.")
         static let subtitle = NSLocalizedString("pos.security.pinManagementSubtitle", value: "Manage PINs", comment: "Security settings subtitle.")
         static let protectionOff = NSLocalizedString("pos.security.protectionOff", value: "PIN protection is off. Set an Admin PIN to enable it.",
                                                     comment: "Protection status before a PIN has been set.")
@@ -120,10 +149,9 @@ struct POSSecuritySettingsView: View {
         static let storageError = NSLocalizedString("pos.security.updatePINsError", value: "Couldn't update PINs. Try again.",
                                                    comment: "Error shown when PIN settings cannot be read or saved.")
         static let retry = NSLocalizedString("pos.security.retry", value: "Try again", comment: "Button to retry loading PIN settings.")
-        static let removeAdmin = NSLocalizedString("pos.security.removeAdmin", value: "Remove Admin PIN?", comment: "Confirm Admin PIN removal title.")
-        static let removalMessage = NSLocalizedString("pos.security.removeAdminMessage",
-                                                     value: "This removes both PINs and turns off PIN protection on this device.",
-                                                     comment: "Explains Admin PIN removal.")
+        static let disableProtectionReason = NSLocalizedString("pos.security.disableProtectionReason",
+                                                                value: "Turning off PIN protection removes both PINs. POS will no longer ask for a PIN.",
+                                                                comment: "Explains the action requiring Admin approval before PIN protection is turned off.")
     }
 }
 
@@ -158,7 +186,7 @@ private struct POSSecurityPINEntryModal: View {
                     return result != .rejected
                 }
                 .id(setup.isConfirmingPIN)
-                if let error = controller.error {
+                if let error = setup.error ?? controller.error {
                     Text(error == .pinMatchesOtherRole ? Localization.distinctPINs : Localization.storageError)
                         .foregroundStyle(Color.posError).font(.posBodyMediumRegular())
                 }
@@ -170,7 +198,7 @@ private struct POSSecurityPINEntryModal: View {
         .posModalCloseButton(action: {
             if setup.cancel() { close() }
         }, accessibilityLabel: Localization.cancel)
-        .posModalSizing()
+        .posModalSizing(fullScreenWhenCompact: true)
         .posInteractiveDismissDisabled(setup.isSaving)
         .disabled(setup.isSaving)
         .onChange(of: controller.isVisible) { _, isVisible in

@@ -53,8 +53,7 @@ private extension POSPINEntryView {
             numpad
                 .frame(maxWidth: .infinity, alignment: .center)
         }
-        .frame(maxWidth: .infinity, minHeight: Self.preferredHeight)
-        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder
@@ -131,66 +130,50 @@ private extension POSPINEntryView {
     }
 
     var numpad: some View {
-        Keypad(isInputEnabled: isInputEnabled, hasDigits: !enteredPIN.isEmpty,
-               onDigit: handleDigit, onDelete: handleDelete)
-            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-            .opacity(isInputEnabled ? 1 : Constants.disabledOpacity)
-            .animation(.default, value: isInputEnabled)
-    }
-
-    struct Keypad: View {
-        @Environment(\.posMetrics) private var metrics
-        @ScaledMetric private var scaledKeySize: CGFloat = Constants.keySize
-
-        let isInputEnabled: Bool
-        let hasDigits: Bool
-        let onDigit: (String) -> Void
-        let onDelete: () -> Void
-
-        private var preferredKeySize: CGFloat {
-            max(Constants.keySize, min(scaledKeySize, Constants.keySize * Constants.maximumKeyScale))
-        }
-
-        var body: some View {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: Constants.minimumKeySize, maximum: preferredKeySize),
-                                                         spacing: Constants.keySpacing), count: 3), spacing: Constants.keySpacing) {
-                ForEach(Constants.rows.flatMap { $0 }, id: \.self) { key in
-                    keyButton(for: key)
+        VStack(spacing: Constants.keySpacing) {
+            ForEach(Constants.rows, id: \.self) { row in
+                HStack(spacing: Constants.keySpacing) {
+                    ForEach(row, id: \.self) { key in
+                        keyButton(for: key)
+                    }
                 }
             }
-            .frame(maxWidth: preferredKeySize * 3 + Constants.keySpacing * 2)
         }
+        .opacity(isInputEnabled ? 1 : Constants.disabledOpacity)
+        .animation(.default, value: isInputEnabled)
+    }
 
-        @ViewBuilder
-        private func keyButton(for key: String) -> some View {
-            switch key {
-            case Constants.emptyKey:
-                Color.clear.aspectRatio(1, contentMode: .fit).accessibilityHidden(true)
-            case Constants.deleteKey:
-                keyContainer(action: onDelete) { Text(Image(systemName: "delete.backward")) }
-                    .accessibilityLabel(Localization.deleteAccessibilityLabel)
-                    .disabled(!isInputEnabled || !hasDigits)
-            default:
-                keyContainer(action: { onDigit(key) }) { Text(key) }
-                    .disabled(!isInputEnabled)
-            }
-        }
-
-        private func keyContainer<Label: View>(action: @escaping () -> Void, @ViewBuilder label: () -> Label) -> some View {
-            Button(action: action) {
-                label()
+    @ViewBuilder
+    func keyButton(for key: String) -> some View {
+        switch key {
+        case Constants.emptyKey:
+            Color.clear.frame(width: Constants.keySize, height: Constants.keySize)
+        case Constants.deleteKey:
+            keyContainer(action: handleDelete) {
+                Image(systemName: "delete.backward")
                     .font(.posHeadingBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-                    .padding(metrics.padding.small)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .aspectRatio(1, contentMode: .fit)
-                    .background(Color.posSurface)
-                    .cornerRadius(POSCornerRadiusStyle.medium.value)
+                    .foregroundColor(.posOnSurface)
             }
-            .buttonStyle(.plain)
+            .accessibilityLabel(Localization.deleteAccessibilityLabel)
+            .disabled(!isInputEnabled || enteredPIN.isEmpty)
+        default:
+            keyContainer(action: { handleDigit(key) }) {
+                Text(key)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+            }
+            .disabled(!isInputEnabled)
         }
+    }
+
+    func keyContainer<Label: View>(action: @escaping () -> Void, @ViewBuilder label: () -> Label) -> some View {
+        Button(action: action) {
+            label()
+                .frame(width: Constants.keySize, height: Constants.keySize)
+                .background(Color.posSurface)
+                .cornerRadius(POSCornerRadiusStyle.medium.value)
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -263,8 +246,6 @@ private extension POSPINEntryView {
         static let statusRowHeight = dotSize
         static let dotBorderWidth: CGFloat = 2
         static let keySize: CGFloat = 72
-        static let minimumKeySize: CGFloat = 44
-        static let maximumKeyScale: CGFloat = 1.5
         static let keySpacing: CGFloat = POSMetrics.Scale.regular.medium
         static let keypadHeight = keySize * CGFloat(rows.count) + keySpacing * CGFloat(rows.count - 1)
         static let disabledOpacity: Double = 0.4

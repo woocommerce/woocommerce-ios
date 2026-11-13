@@ -30,7 +30,7 @@ public struct OrderItemTax: Codable, Equatable, Hashable, Sendable, GeneratedFak
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let taxID = try container.decode(Int64.self, forKey: .taxID)
+        let taxID = container.failsafeDecodeInt64(forKey: .taxID)
         let subtotal = try container.decode(String.self, forKey: .subtotal)
         let total = try container.decode(String.self, forKey: .total)
 

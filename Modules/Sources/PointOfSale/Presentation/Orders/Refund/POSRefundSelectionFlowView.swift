@@ -43,6 +43,7 @@ struct POSRefundSelectionFlowView: View {
     var body: some View {
         content
             .environment(\.posRefundPresentationStyle, .fullScreen)
+            .environment(\.floatingControlAreaSize, .zero)
             .toolbar(.hidden, for: .navigationBar)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.posSurfaceBright)

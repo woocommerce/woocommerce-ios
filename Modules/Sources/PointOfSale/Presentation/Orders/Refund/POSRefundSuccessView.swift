@@ -12,15 +12,10 @@ struct POSRefundSuccessView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        VStack(spacing: metrics.spacing.none) {
-            Spacer(minLength: metrics.spacing.large)
-
-            VStack(spacing: metrics.spacing.xxLarge) {
-                contentView
-                buttonsSection
-            }
-
-            Spacer(minLength: metrics.spacing.large)
+        POSStatusScreenLayout(buttonsWidth: .capped) {
+            contentView
+        } buttons: {
+            buttonsSection
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
@@ -66,8 +61,6 @@ private extension POSRefundSuccessView {
             Button(Localization.emailReceiptButton, action: onEmailReceipt)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .padding(.horizontal, metrics.padding.large)
-        .frame(maxWidth: POSRefundModalLayout.fullScreenCompletionActionMaxWidth)
     }
 }
 

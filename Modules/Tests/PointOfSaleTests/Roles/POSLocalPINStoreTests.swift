@@ -7,6 +7,36 @@ import Testing
 struct POSLocalPINStoreTests {
     private let storage = InMemoryPOSSecureStorage()
 
+    @Test func test_validatePIN_when_new_or_existing_role_is_valid_then_does_not_write() throws {
+        // Given
+        let sut = makeSUT()
+
+        // When
+        try sut.validatePIN("1234", for: .admin)
+
+        // Then
+        #expect(storage.values.isEmpty)
+        try sut.setPIN("1234", for: .admin)
+        let original = storage.values
+        try sut.validatePIN("1234", for: .admin)
+        try sut.validatePIN("5678", for: .cashier)
+        #expect(storage.values == original)
+    }
+
+    @Test(arguments: [POSLocalRole.admin, .cashier])
+    func test_validatePIN_when_matching_other_role_then_rejects_without_writing(role: POSLocalRole) throws {
+        // Given
+        let sut = makeSUT()
+        try sut.setPIN("1234", for: .admin)
+        try sut.setPIN("5678", for: .cashier)
+        let original = storage.values
+        let duplicate = role == .admin ? "5678" : "1234"
+
+        // When / Then
+        #expect(throws: POSPINStoreError.pinMatchesOtherRole) { try sut.validatePIN(duplicate, for: role) }
+        #expect(storage.values == original)
+    }
+
     @Test func test_credentials_when_nothing_is_stored_then_returns_empty_list() throws {
         // Given
         let sut = makeSUT()

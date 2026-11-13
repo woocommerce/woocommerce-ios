@@ -13,7 +13,8 @@ echo "--- 📦 Downloading Build Artifacts"
 download_artifact build-products.tar
 tar -xf build-products.tar
 
-"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
+echo "--- :rubygems: Setting up Gems"
+install_gems
 
 echo "--- :keyboard: Connecting Hardware Keyboard"
 defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true

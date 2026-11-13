@@ -348,12 +348,9 @@ struct POSPrinterConnectionControllerTests {
         await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
 
         // When
-        await withCheckedContinuation { continuation in
-            service.onDiscoveryTerminated = {
-                continuation.resume()
-            }
-            sut.cancelSetup(sessionID: sessionID)
-        }
+        sut.cancelSetup(sessionID: sessionID)
+        var terminations = service.discoveryTerminations.makeAsyncIterator()
+        await terminations.next()
 
         // Then
         #expect(sut.discoveryState == .idle)

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-11-03 15:57:57+0000 */
+/* Translation-Revision-Date: 2026-11-10 14:55:59+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -17148,6 +17148,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Note of the payment method sheet in the Shipping Label purchase flow. Placeholders are the name and username of an associated WordPress account. Please keep the `@` in front of the second placeholder. */
 "wooShippingPaymentMethodsView.noteWithUsername" = "Creditcards worden opgehaald uit het volgende WordPress.com-account: %1$@. <@%2$@>";
+
+/* Note for users without permission to manage payment methods for shipping label purchase. The placeholders are the store owner name and username respectively. */
+"wooShippingPaymentMethodsView.paymentMethodsNotEditableNote" = "Alleen de site-eigenaar kan de betalingsmethoden voor verzendlabels beheren. Neem contact op met winkeleigenaar %1$@ (%2$@) om betalingsmethoden te beheren";
 
 /* Title of the error alert when refresh payment methods for purchasing shipping label fails */
 "wooShippingPaymentMethodsView.refreshErrorTitle" = "Vernieuwen van je betalingsmethoden niet mogelijk";

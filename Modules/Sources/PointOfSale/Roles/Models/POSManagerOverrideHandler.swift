@@ -4,8 +4,23 @@ import Observation
 @Observable
 @MainActor
 final class POSManagerOverrideHandler {
+    enum ApprovalResult: Equatable, Sendable {
+        case completed
+        case cancelled
+    }
+
+    typealias PINOperation = @MainActor (String) async throws(POSAuthError) -> Bool
+
+    private struct RequestHandle: Sendable {
+        let id: UUID
+        let task: Task<ApprovalResult, Never>
+    }
+
     @ObservationIgnored private var session: POSAccessSession?
-    @ObservationIgnored private var onApproved: (() -> Void)?
+    @ObservationIgnored private var requestTask: Task<ApprovalResult, Never>?
+    @ObservationIgnored private var pinInput: AsyncStream<String>.Continuation?
+    @ObservationIgnored private var pendingSubmission: CheckedContinuation<Bool, Never>?
+    @ObservationIgnored private var latestRequestID: UUID?
 
     private(set) var request: POSManagerOverrideRequest?
     private(set) var pinEntryState: POSPINEntryState = .idle
@@ -25,76 +40,180 @@ final class POSManagerOverrideHandler {
     #endif
 
     func configure(session: POSAccessSession) {
-        self.session = session
-    }
-
-    func requestApproval(for capability: POSCapability, reason: String, onApproved: (() -> Void)? = nil) {
-        request = POSManagerOverrideRequest(capability: capability, reason: reason)
-        pinEntryState = .idle
-        self.onApproved = onApproved
-    }
-
-    /// Gates `capability`: runs `perform` immediately when the configured session already grants it —
-    /// including when POS roles are off, where an unrestricted session grants everything — otherwise
-    /// presents the override modal and runs `perform` once an authorized staff member approves.
-    /// `viaOverride` is `true` only on the approval path, so a caller can defer work that must wait for
-    /// the override modal to dismiss. No-ops until the handler has been configured with a session (the
-    /// override modal configures it on appear).
-    func gate(_ capability: POSCapability, reason: String, perform: @escaping (_ viaOverride: Bool) -> Void) {
-        guard let session else {
-            return
+        if let previous = self.session, previous !== session {
+            cancel()
         }
+        self.session = session
+        if let request, pinEntryState == .idle || pinEntryState == .unavailable {
+            pinEntryState = .loading
+            Task { await refreshLockoutState(for: request.id) }
+        }
+    }
+
+    func requestApproval(for capability: POSCapability,
+                         reason: String,
+                         operation: PINOperation? = nil) async -> ApprovalResult {
+        guard !Task.isCancelled else { return .cancelled }
+        let handle = startRequest(for: capability, reason: reason, operation: operation)
+        let result = await withTaskCancellationHandler {
+            await handle.task.value
+        } onCancel: {
+            handle.task.cancel()
+        }
+        guard latestRequestID == handle.id, !Task.isCancelled else { return .cancelled }
+        return result
+    }
+
+    /// Runs immediately when the session grants the capability; otherwise waits for one approval.
+    /// `viaOverride` lets callers defer presentation until the approval modal has closed.
+    func gate(_ capability: POSCapability, reason: String, perform: @escaping (_ viaOverride: Bool) -> Void) {
+        guard let session else { return }
         if session.allows(capability) {
             perform(false)
         } else {
-            requestApproval(for: capability, reason: reason) {
+            // Publish before returning so an immediate cancel cannot miss a queued presentation.
+            _ = startRequest(for: capability, reason: reason, onSuccess: {
+                guard self.session === session, !session.isLocked else { return }
                 perform(true)
-            }
+            })
         }
     }
 
     @discardableResult
     func submit(pin: String) async -> Bool {
-        guard let request, let session else {
+        guard pendingSubmission == nil else { return false }
+        guard let request, let task = requestTask, let pinInput else {
             pinEntryState = .error(kind: .generic)
             return false
         }
-
-        // Pin the in-flight request so a cancel or replacement mid-await can't leak into the resolving submit.
-        let activeRequestID = request.id
-        let activeOnApproved = onApproved
-        pinEntryState = .loading
-
-        do {
-            try await session.requestManagerApproval(withPIN: pin, for: request.capability)
-            guard self.request?.id == activeRequestID else { return true }
-            dismiss()
-            activeOnApproved?()
-            return true
-        } catch {
-            guard self.request?.id == activeRequestID else { return true }
-            pinEntryState = state(for: error)
-            return false
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                guard self.request?.id == request.id, !task.isCancelled, !Task.isCancelled else {
+                    continuation.resume(returning: true)
+                    return
+                }
+                pendingSubmission = continuation
+                pinEntryState = .loading
+                pinInput.yield(pin)
+            }
+        } onCancel: {
+            task.cancel()
         }
     }
 
     func cancel() {
+        requestTask?.cancel()
+        latestRequestID = nil
         dismiss()
+    }
+
+    func lockoutExpired() async {
+        guard let request else { return }
+        switch pinEntryState {
+        case .waiting, .unavailable, .lockout: await refreshLockoutState(for: request.id)
+        case .idle, .loading, .error: break
+        }
+    }
+
+    func observeWait() async {
+        guard let request else { return }
+        while self.request?.id == request.id, !Task.isCancelled {
+            let interval: Duration = pinEntryState == .unavailable ? .seconds(5) : .seconds(1)
+            do { try await Task.sleep(for: interval) } catch { return }
+            guard self.request?.id == request.id, !Task.isCancelled else { return }
+            await lockoutExpired()
+        }
     }
 }
 
 private extension POSManagerOverrideHandler {
-    func dismiss() {
-        request = nil
-        pinEntryState = .idle
-        onApproved = nil
+    private func startRequest(for capability: POSCapability,
+                      reason: String,
+                      operation: PINOperation? = nil,
+                      onSuccess: (() -> Void)? = nil) -> RequestHandle {
+        cancel()
+        let request = POSManagerOverrideRequest(capability: capability, reason: reason)
+        latestRequestID = request.id
+        self.request = request
+        pinEntryState = .loading
+        let (pins, input) = AsyncStream.makeStream(of: String.self, bufferingPolicy: .bufferingOldest(1))
+        pinInput = input
+        let submitPIN: PINOperation
+        if let operation {
+            submitPIN = operation
+        } else {
+            submitPIN = { pin throws(POSAuthError) in
+                guard let session = self.session else { throw .unknown }
+                try await session.requestManagerApproval(withPIN: pin, for: capability)
+                return true
+            }
+        }
+        let task = Task {
+            defer {
+                if self.request?.id == request.id { dismiss() }
+            }
+            await refreshLockoutState(for: request.id)
+            for await pin in pins {
+                guard self.request?.id == request.id, !Task.isCancelled else { return ApprovalResult.cancelled }
+                do {
+                    let succeeded = try await submitPIN(pin)
+                    guard self.request?.id == request.id, !Task.isCancelled else { return .cancelled }
+                    if succeeded {
+                        dismiss()
+                        // Keep legacy effects contiguous with the session's final ownership check.
+                        onSuccess?()
+                        return .completed
+                    }
+                    pinEntryState = .error(kind: .generic)
+                } catch {
+                    guard self.request?.id == request.id, !Task.isCancelled else { return .cancelled }
+                    pinEntryState = state(for: (error as? POSAuthError) ?? .unknown)
+                }
+                resolveSubmission(false)
+            }
+            return .cancelled
+        }
+        requestTask = task
+        return RequestHandle(id: request.id, task: task)
     }
 
-    // TODO: route .rateLimited(until:) to a lockout state when the manager override flow is wired in.
+    func resolveSubmission(_ result: Bool) {
+        let continuation = pendingSubmission
+        pendingSubmission = nil
+        continuation?.resume(returning: result)
+    }
+
+    func dismiss() {
+        pinInput?.finish()
+        pinInput = nil
+        requestTask = nil
+        request = nil
+        pinEntryState = .idle
+        // Cancellation is not a rejected PIN and must not trigger keypad failure feedback.
+        resolveSubmission(true)
+    }
+
+    func refreshLockoutState(for requestID: UUID) async {
+        guard request?.id == requestID, pendingSubmission == nil, !Task.isCancelled else { return }
+        guard let session else {
+            pinEntryState = .unavailable
+            return
+        }
+        do {
+            try await session.checkLockoutState()
+            guard request?.id == requestID, pendingSubmission == nil, !Task.isCancelled else { return }
+            pinEntryState = .idle
+        } catch {
+            guard request?.id == requestID, pendingSubmission == nil, !Task.isCancelled else { return }
+            pinEntryState = state(for: error)
+        }
+    }
+
     func state(for error: POSAuthError) -> POSPINEntryState {
         switch error {
         case .invalidPIN: .error(kind: .invalidPIN)
-        case .rateLimited, .permanentlyLocked, .unknown: .error(kind: .generic)
+        case .rateLimited(let seconds): .waiting(remainingSeconds: seconds)
+        case .permanentlyLocked, .unknown: .unavailable
         }
     }
 }

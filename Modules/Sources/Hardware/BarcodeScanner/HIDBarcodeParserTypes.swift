@@ -1,8 +1,8 @@
-enum HIDBarcodeParserError: Error {
+public enum HIDBarcodeParserError: Error {
     case scanTooShort(barcode: String)
     case timedOut(barcode: String)
 
-    var analyticsReason: String {
+    public var analyticsReason: String {
         switch self {
         case .scanTooShort:
             return "too_short"
@@ -11,7 +11,7 @@ enum HIDBarcodeParserError: Error {
         }
     }
 
-    var barcode: String {
+    public var barcode: String {
         switch self {
         case .scanTooShort(let barcode), .timedOut(let barcode):
             return barcode
@@ -19,11 +19,11 @@ enum HIDBarcodeParserError: Error {
     }
 }
 
-enum HIDBarcodeParserResult {
+public enum HIDBarcodeParserResult {
     case success(barcode: String, scanDurationMs: Int)
     case failure(error: HIDBarcodeParserError, scanDurationMs: Int)
 
-    var asResult: Result<String, HIDBarcodeParserError> {
+    public var asResult: Result<String, HIDBarcodeParserError> {
         switch self {
         case .success(let barcode, _):
             return .success(barcode)

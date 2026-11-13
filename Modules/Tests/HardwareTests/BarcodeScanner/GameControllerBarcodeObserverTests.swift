@@ -1,6 +1,6 @@
 import Testing
 import GameController
-@testable import PointOfSale
+@testable import Hardware
 
 @MainActor
 struct GameControllerBarcodeObserverTests {
@@ -21,13 +21,11 @@ struct GameControllerBarcodeObserverTests {
 
         // Given — two observers created in sequence (simulating overlapping barcode scanners)
         var observerA: GameControllerBarcodeObserver? = GameControllerBarcodeObserver(
-            analytics: MockPOSAnalytics(),
             onScan: { _ in }
         )
         _ = observerA // suppress unused warning
 
         let observerB = GameControllerBarcodeObserver(
-            analytics: MockPOSAnalytics(),
             onScan: { _ in }
         )
 
@@ -53,7 +51,6 @@ struct GameControllerBarcodeObserverTests {
 
         // Given — a single observer
         var observer: GameControllerBarcodeObserver? = GameControllerBarcodeObserver(
-            analytics: MockPOSAnalytics(),
             onScan: { _ in }
         )
 

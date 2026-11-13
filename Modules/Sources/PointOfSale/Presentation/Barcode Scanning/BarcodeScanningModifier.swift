@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Hardware.HIDBarcodeParserError
 
 /// A view modifier that adds barcode scanning capability to a view.
 /// The barcode scanner is added in a ZStack below the content view.

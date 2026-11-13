@@ -2,6 +2,9 @@ import Foundation
 import GameController
 import UIKit
 import WooFoundation
+import class Hardware.GameControllerBarcodeParser
+import struct Hardware.HIDBarcodeParserConfiguration
+import enum Hardware.HIDBarcodeParserError
 
 /// An observer that processes UIKit UIPress events for barcode scanner input.
 /// This class serves as a fallback for VoiceOver scenarios where GameController framework

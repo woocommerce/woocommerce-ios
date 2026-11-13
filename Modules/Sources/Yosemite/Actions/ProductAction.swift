@@ -70,7 +70,9 @@ public enum ProductAction: Action {
                                               sortOrder: ProductsSortOrder,
                                               additionalProductIDs: [Int64],
                                               shouldDeleteStoredProductsOnFirstPage: Bool = true,
-                                              onCompletion: @MainActor @Sendable (Result<(products: [Product], hasNextPage: Bool, missingProductIDs: [Int64]), Error>) -> Void)
+                                              onCompletion: @MainActor @Sendable (Result<(products: [Product],
+                                                                                          hasNextPage: Bool,
+                                                                                          missingProductIDs: [Int64]), Error>) -> Void)
 
     /// Retrieves a currency-scoped page of products without writing the results to local storage.
     ///
@@ -130,7 +132,8 @@ public enum ProductAction: Action {
     ///
     case retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
                                                          identifier: String,
-                                                         onCompletion: @MainActor @Sendable (Result<(ItemIdentifierSearchResult, ItemIdentifierSearchResultSource), Error>) -> Void)
+                                                         onCompletion: @MainActor @Sendable (Result<(ItemIdentifierSearchResult,
+                                                                                                     ItemIdentifierSearchResultSource), Error>) -> Void)
 
     /// Deletes all of the cached products.
     ///
@@ -158,7 +161,10 @@ public enum ProductAction: Action {
 
     /// Updates a specified Product's images.
     ///
-    case updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], onCompletion: @MainActor @Sendable (Result<Product, ProductUpdateError>) -> Void)
+    case updateProductImages(siteID: Int64,
+                             productID: Int64,
+                             images: [ProductImage],
+                             onCompletion: @MainActor @Sendable (Result<Product, ProductUpdateError>) -> Void)
 
     /// Updates specified Products.
     ///

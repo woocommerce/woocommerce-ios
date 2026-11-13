@@ -3,20 +3,25 @@ import SwiftUI
 struct POSLockScreenOverlay<Content: View>: View {
     private let content: Content
     private let session: POSAccessSession
+    private let onLock: @MainActor () -> Void
 
-    init(session: POSAccessSession, @ViewBuilder content: () -> Content) {
+    init(session: POSAccessSession, onLock: @escaping @MainActor () -> Void = {}, @ViewBuilder content: () -> Content) {
         self.content = content()
         self.session = session
+        self.onLock = onLock
     }
 
     var body: some View {
         content
             .disabled(session.isLocked)
             .accessibilityHidden(session.isLocked)
-            .background(POSLockPrivacyCover(session: session))
+            .background(POSLockPrivacyCover(session: session).id(ObjectIdentifier(session)))
+            .background(POSLockPresentationHost(session: session,
+                                                 lockContent: POSLockScreenView(session: session).id(ObjectIdentifier(session)), onLock: onLock))
             .overlay {
                 if session.isLocked {
-                    POSLockScreenView(session: session)
+                    // Keep the source opaque before its scene window is attached.
+                    Color.posSurfaceContainerLow.ignoresSafeArea()
                 }
             }
     }
@@ -24,17 +29,18 @@ struct POSLockScreenOverlay<Content: View>: View {
 
 private struct POSLockScreenOverlayModifier: ViewModifier {
     @Environment(\.posAccessSession) private var session
+    let onLock: @MainActor () -> Void
 
     func body(content: Content) -> some View {
-        POSLockScreenOverlay(session: session) {
+        POSLockScreenOverlay(session: session, onLock: onLock) {
             content
         }
     }
 }
 
 extension View {
-    func posLockScreenOverlay() -> some View {
-        modifier(POSLockScreenOverlayModifier())
+    func posLockScreenOverlay(onLock: @escaping @MainActor () -> Void = {}) -> some View {
+        modifier(POSLockScreenOverlayModifier(onLock: onLock))
     }
 }
 

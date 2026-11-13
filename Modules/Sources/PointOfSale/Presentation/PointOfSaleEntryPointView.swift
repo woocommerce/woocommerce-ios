@@ -211,7 +211,9 @@ public struct PointOfSaleEntryPointView: View {
                         paymentModel: posModel.paymentModel,
                         aggregateModel: posModel
                     )
-                    .posLockScreenOverlay()
+                    .posLockScreenOverlay {
+                        posModalManager.dismissForLock()
+                    }
             } else {
                 PointOfSaleLoadingView()
             }

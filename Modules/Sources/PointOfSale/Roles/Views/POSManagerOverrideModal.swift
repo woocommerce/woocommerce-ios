@@ -41,16 +41,6 @@ private extension POSManagerOverrideModalModifier {
     }
 }
 
-extension POSModalCompactStyle {
-    static var managerApproval: POSModalCompactStyle {
-        .fullScreen(title: NSLocalizedString(
-            "pos.managerOverride.modal.title",
-            value: "Manager approval",
-            comment: "Title in the header of the full-screen manager approval PIN screen on phone."
-        ))
-    }
-}
-
 extension View {
     func posManagerOverrideModal(handler: POSManagerOverrideHandler) -> some View {
         modifier(POSManagerOverrideModalModifier(handler: handler))

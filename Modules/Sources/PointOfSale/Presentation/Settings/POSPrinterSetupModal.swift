@@ -20,8 +20,8 @@ struct POSPrinterSetupModal: View {
     }
 
     var body: some View {
-        // Size a single `modalCore` via these bounds so it keeps one view identity across size-class
-        // changes on iPad, preserving any state internal to the modal.
+        // Size `modalCore` via these bounds so the outer frame and the setup session hooks keep one view
+        // identity across size-class changes on iPad. `modalCore` itself is rebuilt when the flow style flips.
         modalCore
             .frame(minWidth: modalMinWidth, maxWidth: modalMaxWidth,
                    minHeight: modalMinHeight, maxHeight: modalMaxHeight)

@@ -5,6 +5,7 @@ struct POSSecuritySettingsView: View {
     let controller: POSSecuritySettingsController
     @State private var editing: POSLocalRole?
     @State private var removalApproval = POSManagerOverrideHandler()
+    @State private var removalApprovalTask: Task<Void, Never>?
 
     var body: some View {
         VStack(spacing: metrics.spacing.none) {
@@ -45,9 +46,9 @@ struct POSSecuritySettingsView: View {
         .background(Color.posSurface)
         .disabled(controller.isSaving)
         .onAppear { controller.load() }
-        .onDisappear { editing = nil; removalApproval.cancel() }
+        .onDisappear { editing = nil; dismissRemovalApproval() }
         .onChange(of: controller.isVisible) { _, isVisible in
-            if !isVisible { removalApproval.cancel() }
+            if !isVisible { dismissRemovalApproval() }
         }
         .posModal(isPresented: Binding(get: { editing != nil }, set: { if !$0 { editing = nil } }),
                   onDismiss: { controller.load() }) {
@@ -62,9 +63,18 @@ struct POSSecuritySettingsView: View {
     private var protectionBinding: Binding<Bool> {
         Binding(get: { controller.isPINProtectionEnabled }, set: { isEnabled in
             if !isEnabled {
-                controller.requestProtectionRemoval(using: removalApproval, reason: Localization.disableProtectionReason)
+                removalApprovalTask?.cancel()
+                removalApprovalTask = Task {
+                    _ = await controller.requestProtectionRemoval(using: removalApproval, reason: Localization.disableProtectionReason)
+                }
             }
         })
+    }
+
+    private func dismissRemovalApproval() {
+        removalApprovalTask?.cancel()
+        removalApprovalTask = nil
+        removalApproval.cancel()
     }
 
     private func pinRows(_ roles: Set<POSLocalRole>, stacked: Bool) -> some View {

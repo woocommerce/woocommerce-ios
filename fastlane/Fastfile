@@ -92,14 +92,15 @@ COMMON_EXPORT_OPTIONS = { manageAppVersionAndBuildNumber: false }.freeze
 TEST_SCHEME = 'WooCommerce'
 
 # Naming the device, deployment target and app stops scan from running `xcodebuild -showBuildSettings`, which resolves every Swift package.
-# CI only: a developer's Mac may not have this simulator, so locally scan keeps picking one itself.
-def ci_scan_settings
-  return {} unless is_ci
+# The default device is CI only: a developer's Mac may not have it, and without a device scan needs the lookup to pick one.
+def scan_settings(device: nil, deployment_target_version: nil)
+  device ||= 'iPhone 17 Pro' if is_ci
+  return {} if device.nil?
 
   {
     app_name: TEST_SCHEME,
-    device: 'iPhone 17 Pro',
-    deployment_target_version: xcconfig_value('Common.xcconfig', 'IPHONEOS_DEPLOYMENT_TARGET'),
+    device: device,
+    deployment_target_version: deployment_target_version || xcconfig_value('Common.xcconfig', 'IPHONEOS_DEPLOYMENT_TARGET'),
     disallow_xcodebuild_settings_lookup: true
   }
 end
@@ -1029,8 +1030,7 @@ platform :ios do
       derived_data_path: DERIVED_DATA_DIR,
       buildlog_path: File.join(FASTLANE_DIR, 'logs'),
       build_for_testing: true,
-      **ci_scan_settings,
-      **{ device: device, deployment_target_version: ios_version }.compact
+      **scan_settings(device: device, deployment_target_version: ios_version)
     )
   end
 
@@ -1574,8 +1574,7 @@ lane :test_without_building do |options|
     workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
     derived_data_path: DERIVED_DATA_DIR,
-    **ci_scan_settings,
-    **{ device: options[:device] }.compact,
+    **scan_settings(device: options[:device]),
     skip_package_dependencies_resolution: true,
     ensure_devices_found: true,
     force_quit_simulator: true,

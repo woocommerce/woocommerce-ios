@@ -38,4 +38,29 @@ final class BarcodeScannerErrorNoticeFactoryTests: XCTestCase {
 
         XCTAssertTrue(actionHandlerIsCalled)
     }
+
+    func test_notice_when_custom_title_and_product_not_found_error_are_passed_then_uses_custom_title_and_not_found_message() {
+        // Given
+        let customTitle = "Custom title"
+
+        // When
+        let result = BarcodeScannerErrorNoticeFactory.notice(for: ProductLoadError.notFound, code: barcode, title: customTitle, actionHandler: {})
+
+        // Then
+        XCTAssertEqual(result.title, customTitle)
+        XCTAssertEqual(result.message, NSLocalizedString("Product with Identifier \"\(barcode.payloadStringValue)\" not found.", comment: ""))
+    }
+
+    func test_notice_when_custom_title_and_generic_error_are_passed_then_uses_custom_title_as_title_and_message() {
+        // Given
+        let customTitle = "Custom title"
+        let error = NSError(domain: "disconnect", code: 134)
+
+        // When
+        let result = BarcodeScannerErrorNoticeFactory.notice(for: error, code: barcode, title: customTitle, actionHandler: {})
+
+        // Then
+        XCTAssertEqual(result.title, customTitle)
+        XCTAssertEqual(result.message, customTitle)
+    }
 }

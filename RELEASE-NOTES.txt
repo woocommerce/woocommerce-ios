@@ -8,6 +8,7 @@
 - [*] Orders: Country names like Curaçao no longer show HTML codes in the address country picker. [https://github.com/woocommerce/woocommerce-ios/pull/18359]
 - [*] Products: The error shown when a scanned barcode can't be matched no longer mentions orders. [https://github.com/woocommerce/woocommerce-ios/pull/18360]
 
+- [**] Orders and Products: Bluetooth and USB barcode scanners now work outside POS. Scan on the Orders or Products screen, while creating an order, or on the camera scanner screen. [https://github.com/woocommerce/woocommerce-ios/pull/18378]
 
 26.1
 -----

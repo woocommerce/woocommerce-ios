@@ -188,6 +188,53 @@ struct ScannerContainerViewControllerTests {
         #expect(scannedBarcodes == [barcode])
     }
 
+    @Test
+    func test_hardware_scan_when_received_then_delivers_without_waiting_for_repeated_detections() {
+        // Given
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
+
+        // When
+        sut.handleHardwareScannedBarcode(barcode)
+
+        // Then
+        #expect(scannedBarcodes == [barcode])
+    }
+
+    @Test
+    func test_camera_detection_when_hardware_scan_was_delivered_then_is_ignored() {
+        // Given
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
+        let cameraBarcode = ScannedBarcode(payloadStringValue: "DEF456", symbology: .code128)
+        sut.handleHardwareScannedBarcode(barcode)
+
+        // When
+        for _ in 0..<3 {
+            sut.handleBarcodeDetectionResult(.success([cameraBarcode]))
+        }
+        sut.handleHardwareScannedBarcode(cameraBarcode)
+
+        // Then
+        #expect(scannedBarcodes == [barcode])
+    }
+
+    @Test
+    func test_hardware_scan_when_camera_already_delivered_then_is_ignored() {
+        // Given
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
+        for _ in 0..<3 {
+            sut.handleBarcodeDetectionResult(.success([barcode]))
+        }
+
+        // When
+        sut.handleHardwareScannedBarcode(ScannedBarcode(payloadStringValue: "DEF456", symbology: .code128))
+
+        // Then
+        #expect(scannedBarcodes == [barcode])
+    }
+
     private enum DetectionError: Error {
         case failed
     }

@@ -3,9 +3,11 @@ import Foundation
 /// Provides a `ScannerContainerViewController` customized to find Product Barcode strings
 ///
 class ProductBarcodeScannerProvider {
-    static func barcodeScanner(onBarcodeScanned: @escaping (ScannedBarcode) -> Void) -> ScannerContainerViewController {
+    static func barcodeScanner(offersHardwareScanner: Bool = false,
+                               onBarcodeScanned: @escaping (ScannedBarcode) -> Void) -> ScannerContainerViewController {
         ScannerContainerViewController(navigationTitle: Localization.title,
                                        instructionText: Localization.instructionText,
+                                       offersHardwareScanner: offersHardwareScanner,
                                        onBarcodeScanned: onBarcodeScanned)
     }
 }

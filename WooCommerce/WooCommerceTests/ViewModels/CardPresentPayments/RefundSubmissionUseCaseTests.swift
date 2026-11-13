@@ -77,6 +77,32 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     }
 
     @MainActor
+    func test_submitRefund_when_server_amount_is_pinned_then_sends_amount_override_and_server_flow() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "40"),
+                                    charge: nil,
+                                    amount: "36.3",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 1)],
+                                    pinsServerAmount: true)
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .success(.fake())
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), "36.3")
+        let createIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create"))
+        XCTAssertEqual(analyticsProvider.receivedProperties[createIndex]["refund_flow"] as? String, "server_computed")
+    }
+
+    @MainActor
     func test_submitRefund_with_server_line_items_creates_computed_refund_with_restock_instead_of_classic_create() throws {
         // Given
         let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),

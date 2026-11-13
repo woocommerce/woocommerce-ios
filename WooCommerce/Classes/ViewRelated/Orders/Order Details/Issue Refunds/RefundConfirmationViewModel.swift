@@ -26,6 +26,9 @@ final class RefundConfirmationViewModel {
     ///
     private let actionProcessor: StoresManager
 
+    /// Submits the `compute_totals` create when `details.serverLineItems` is set.
+    private let refundService: RefundServiceProtocol?
+
     /// Contains the current value of the Reason for Refund text field.
     ///
     private let reasonForRefundCellViewModel =
@@ -62,9 +65,11 @@ final class RefundConfirmationViewModel {
     init(details: Details,
          actionProcessor: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         refundService: RefundServiceProtocol? = nil) {
         self.details = details
         self.actionProcessor = actionProcessor
+        self.refundService = refundService
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.numberOfDecimals = currencySettings.fractionDigits
         self.analytics = analytics
@@ -98,7 +103,9 @@ final class RefundConfirmationViewModel {
             details: .init(order: details.order,
                            charge: details.charge,
                            amount: details.amount,
-                           paymentGatewayAccount: details.paymentGatewayAccount),
+                           paymentGatewayAccount: details.paymentGatewayAccount,
+                           serverLineItems: details.serverLineItems,
+                           pinsServerAmount: details.serverLineItems != nil),
             rootViewController: rootViewController,
             alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
                                               presentingController: rootViewController),
@@ -109,7 +116,8 @@ final class RefundConfirmationViewModel {
                 currencyFormatter: currencyFormatter,
                 cardPresentPaymentsOnboardingPresenter: cardPresentPaymentsOnboardingPresenter,
                 stores: actionProcessor,
-                analytics: analytics))
+                analytics: analytics,
+                refundService: refundService))
 
         self.submissionUseCase = submissionUseCase
         submissionUseCase.submitRefund(refund,
@@ -189,6 +197,10 @@ extension RefundConfirmationViewModel {
         ///
         let paymentGatewayAccount: PaymentGatewayAccount?
 
+        /// Set when `amount` is a server preview total: the refund is then created with
+        /// `compute_totals` from these lines instead of the locally calculated ones.
+        let serverLineItems: [ComputedRefundLineItem]?
+
         init(order: Order,
              charge: WCPayCharge?,
              amount: String,
@@ -198,7 +210,8 @@ extension RefundConfirmationViewModel {
              paymentGateway: PaymentGateway?,
              paymentGatewayAccount: PaymentGatewayAccount?,
              shippingLines: [ShippingLine]? = nil,
-             fees: [OrderFeeLine]? = nil) {
+             fees: [OrderFeeLine]? = nil,
+             serverLineItems: [ComputedRefundLineItem]? = nil) {
             self.order = order
             self.charge = charge
             self.amount = amount
@@ -209,6 +222,7 @@ extension RefundConfirmationViewModel {
             self.items = items
             self.paymentGateway = paymentGateway
             self.paymentGatewayAccount = paymentGatewayAccount
+            self.serverLineItems = serverLineItems
         }
     }
 }

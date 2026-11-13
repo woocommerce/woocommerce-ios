@@ -134,7 +134,7 @@ gh issue create --title "Crash: <shortId> <redacted title>" --label "type: crash
 ```
 
 Pick the feature label from `gh label list --search "feature:"` by the code the crash runs through; Danger asks for one.
-Body: Sentry permalink, event and user counts, release range, the redacted exception and top in-app frames, `Status: investigating`, the experiment trailer, and the closing line `*Posted by Claude Code (<model>) on behalf of @mokagio with approval.*`
+Body: Sentry permalink, event and user counts, release range, the redacted exception and top in-app frames, `Status: investigating`, the experiment trailer, and the closing line `*Posted by Claude Code (<model>) on behalf of @mokagio.*`
 
 ## 4. Diagnose
 

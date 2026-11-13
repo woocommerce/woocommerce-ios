@@ -44,8 +44,9 @@ final class POSManagerOverrideHandler {
             cancel()
         }
         self.session = session
-        if request != nil, pinEntryState == .idle {
-            refreshLockoutState()
+        if let request, pinEntryState == .idle || pinEntryState == .unavailable {
+            pinEntryState = .loading
+            Task { await refreshLockoutState(for: request.id) }
         }
     }
 
@@ -106,9 +107,22 @@ final class POSManagerOverrideHandler {
         dismiss()
     }
 
-    func lockoutExpired() {
-        guard case .lockout = pinEntryState else { return }
-        refreshLockoutState()
+    func lockoutExpired() async {
+        guard let request else { return }
+        switch pinEntryState {
+        case .waiting, .unavailable, .lockout: await refreshLockoutState(for: request.id)
+        case .idle, .loading, .error: break
+        }
+    }
+
+    func observeWait() async {
+        guard let request else { return }
+        while self.request?.id == request.id, !Task.isCancelled {
+            let interval: Duration = pinEntryState == .unavailable ? .seconds(5) : .seconds(1)
+            do { try await Task.sleep(for: interval) } catch { return }
+            guard self.request?.id == request.id, !Task.isCancelled else { return }
+            await lockoutExpired()
+        }
     }
 }
 
@@ -121,18 +135,24 @@ private extension POSManagerOverrideHandler {
         let request = POSManagerOverrideRequest(capability: capability, reason: reason)
         latestRequestID = request.id
         self.request = request
-        refreshLockoutState()
+        pinEntryState = .loading
         let (pins, input) = AsyncStream.makeStream(of: String.self, bufferingPolicy: .bufferingOldest(1))
         pinInput = input
-        let submitPIN: PINOperation = operation ?? { pin throws(POSAuthError) in
-            guard let session = self.session else { throw .unknown }
-            try await session.requestManagerApproval(withPIN: pin, for: capability)
-            return true
+        let submitPIN: PINOperation
+        if let operation {
+            submitPIN = operation
+        } else {
+            submitPIN = { pin throws(POSAuthError) in
+                guard let session = self.session else { throw .unknown }
+                try await session.requestManagerApproval(withPIN: pin, for: capability)
+                return true
+            }
         }
         let task = Task {
             defer {
                 if self.request?.id == request.id { dismiss() }
             }
+            await refreshLockoutState(for: request.id)
             for await pin in pins {
                 guard self.request?.id == request.id, !Task.isCancelled else { return ApprovalResult.cancelled }
                 do {
@@ -173,11 +193,18 @@ private extension POSManagerOverrideHandler {
         resolveSubmission(true)
     }
 
-    func refreshLockoutState() {
+    func refreshLockoutState(for requestID: UUID) async {
+        guard request?.id == requestID, pendingSubmission == nil, !Task.isCancelled else { return }
+        guard let session else {
+            pinEntryState = .unavailable
+            return
+        }
         do {
-            try session?.checkLockoutState()
+            try await session.checkLockoutState()
+            guard request?.id == requestID, pendingSubmission == nil, !Task.isCancelled else { return }
             pinEntryState = .idle
         } catch {
+            guard request?.id == requestID, pendingSubmission == nil, !Task.isCancelled else { return }
             pinEntryState = state(for: error)
         }
     }
@@ -185,8 +212,8 @@ private extension POSManagerOverrideHandler {
     func state(for error: POSAuthError) -> POSPINEntryState {
         switch error {
         case .invalidPIN: .error(kind: .invalidPIN)
-        case .rateLimited(let until): .lockout(until: until)
-        case .permanentlyLocked, .unknown: .error(kind: .generic)
+        case .rateLimited(let seconds): .waiting(remainingSeconds: seconds)
+        case .permanentlyLocked, .unknown: .unavailable
         }
     }
 }

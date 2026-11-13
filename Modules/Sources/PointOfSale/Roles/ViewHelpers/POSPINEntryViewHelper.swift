@@ -26,7 +26,7 @@ struct POSPINEntryViewHelper {
         switch state {
         case .idle, .error:
             return true
-        case .lockout, .loading:
+        case .lockout, .waiting, .unavailable, .loading:
             return false
         }
     }
@@ -36,25 +36,29 @@ struct POSPINEntryViewHelper {
     }
 
     func lockoutMessage(remainingSeconds: Int) -> String {
-        let duration = Self.durationFormatter.string(from: TimeInterval(max(0, remainingSeconds))) ?? ""
+        let seconds = max(0, remainingSeconds)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.usesGroupingSeparator = false
+        let minutes = formatter.string(from: NSNumber(value: seconds / 60)) ?? String(seconds / 60)
+        formatter.minimumIntegerDigits = 2
+        let remainder = formatter.string(from: NSNumber(value: seconds % 60)) ?? String(format: "%02ld", seconds % 60)
+        let duration = String.localizedStringWithFormat(Localization.durationFormat, minutes, remainder)
         return String.localizedStringWithFormat(Localization.lockoutFormat, duration)
     }
-
-    private static let durationFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute, .second]
-        formatter.unitsStyle = .abbreviated
-        formatter.zeroFormattingBehavior = .dropLeading
-        return formatter
-    }()
 }
 
 private extension POSPINEntryViewHelper {
     enum Localization {
+        static let durationFormat = NSLocalizedString(
+            "pos.pinEntry.lockout.minutesSecondsFormat",
+            value: "%1$@:%2$@",
+            comment: "Countdown duration. %1$@ is localized minutes; %2$@ is localized seconds padded to two digits, such as 0:30."
+        )
         static let lockoutFormat = NSLocalizedString(
-            "pos.pinEntry.lockout.countdown",
-            value: "Too many attempts. Try again in %1$@.",
-            comment: "Lock-out message on the POS PIN numpad. %1$@ is a localized duration such as 30s or 1m 30s."
+            "pos.pinEntry.lockout.incorrectAttemptsCountdown",
+            value: "Too many incorrect attempts.\nTry again in %1$@.",
+            comment: "Lock-out message on the POS PIN numpad. %1$@ is a localized minute-and-second duration such as 0:30 or 5:00."
         )
     }
 }

@@ -103,6 +103,18 @@ private extension POSFloatingControlView {
         }
         .accessibilityIdentifier("pos-exit-menu-item")
         if horizontalSizeClass == .regular || isPhoneLayout {
+            if canLockPOS {
+                Button {
+                    session.lock()
+                } label: {
+                    Label(
+                        title: { Text(Localization.lockPOS) },
+                        icon: { Image(systemName: "lock") }
+                    )
+                }
+                .accessibilityIdentifier("pos-lock-menu-item")
+            }
+
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 onSettingsSelected()
@@ -122,18 +134,6 @@ private extension POSFloatingControlView {
                     title: { Text(Localization.orders) },
                     icon: { Image(systemName: "text.document") }
                 )
-            }
-
-            if canLockPOS {
-                Button {
-                    session.lock()
-                } label: {
-                    Label(
-                        title: { Text(Localization.lockPOS) },
-                        icon: { Image(systemName: "lock") }
-                    )
-                }
-                .accessibilityIdentifier("pos-lock-menu-item")
             }
         }
     }
@@ -183,28 +183,30 @@ private extension POSFloatingControlView {
         static let size: CGFloat = 80
         static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
     }
+}
 
+extension POSFloatingControlView {
     enum Localization {
-        static let orders = NSLocalizedString(
-            "pointOfSale.floatingButtons.orders.button.title",
-            value: "Orders",
-            comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
-        )
-
         static let lockPOS = NSLocalizedString(
             "pointOfSale.floatingButtons.lock.button.title",
             value: "Lock POS",
             comment: "The title of the menu button to lock Point of Sale, requiring PIN entry to continue."
         )
 
-        static let exitPointOfSale = NSLocalizedString(
+        fileprivate static let orders = NSLocalizedString(
+            "pointOfSale.floatingButtons.orders.button.title",
+            value: "Orders",
+            comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
+        )
+
+        fileprivate static let exitPointOfSale = NSLocalizedString(
             "pointOfSale.floatingButtons.exit.button.title",
             value: "Exit POS",
             comment: "The title of the menu button to exit Point of Sale, shown in a popover menu." +
             "The action is confirmed in a modal."
         )
 
-        static let settings = NSLocalizedString(
+        fileprivate static let settings = NSLocalizedString(
             "pointOfSale.floatingButtons.settings.button.title",
             value: "Settings",
             comment: "The title of the menu button to access Point of Sale settings."

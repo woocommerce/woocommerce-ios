@@ -6,6 +6,21 @@ import Testing
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct POSManagerOverrideHandlerTests {
+    @Test func test_requestApproval_when_attempt_state_is_unreadable_then_keeps_input_disabled_without_comparison() async {
+        // Given
+        let session = MockPOSAccessSession(checkLockoutResult: .failure(.unknown))
+        let sut = POSManagerOverrideHandler(session: session)
+
+        // When
+        let approval = await present(sut)
+
+        // Then
+        #expect(sut.pinEntryState == .unavailable)
+        #expect(!POSPINEntryViewHelper().isInputEnabled(for: sut.pinEntryState))
+        #expect(session.managerApprovalPINs.isEmpty)
+        await cancel(sut, approval)
+    }
+
     @Test func test_requestApproval_when_called_then_presents_request_and_resets_pin_state() async {
         // Given
         let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(), initialPINEntryState: .error(kind: .invalidPIN))
@@ -161,7 +176,7 @@ struct POSManagerOverrideHandlerTests {
         #expect(await approval.value == .completed)
     }
 
-    @Test func test_submit_when_error_is_unknown_then_shows_generic_error() async {
+    @Test func test_submit_when_error_is_unknown_then_keeps_input_unavailable() async {
         // Given
         let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(managerApprovalResult: .failure(.unknown)))
         let approval = await present(sut)
@@ -170,11 +185,11 @@ struct POSManagerOverrideHandlerTests {
         #expect(await sut.submit(pin: "1234") == false)
 
         // Then
-        #expect(sut.pinEntryState == .error(kind: .generic))
+        #expect(sut.pinEntryState == .unavailable)
         await cancel(sut, approval)
     }
 
-    @Test func test_submit_when_session_is_missing_then_keeps_request_with_generic_error() async {
+    @Test func test_submit_when_session_is_missing_then_keeps_input_unavailable() async {
         // Given
         let sut = POSManagerOverrideHandler()
         let approval = await present(sut)
@@ -183,7 +198,7 @@ struct POSManagerOverrideHandlerTests {
         #expect(await sut.submit(pin: "1234") == false)
 
         // Then
-        #expect(sut.pinEntryState == .error(kind: .generic))
+        #expect(sut.pinEntryState == .unavailable)
         await cancel(sut, approval)
     }
 
@@ -343,11 +358,11 @@ struct POSManagerOverrideHandlerTests {
     @Test(arguments: [false, true])
     func test_submit_when_rate_limited_then_preserves_deadline_and_disables_input(custom: Bool) async {
         // Given
-        let until = Date().addingTimeInterval(30)
-        let session = MockPOSAccessSession(managerApprovalResult: .failure(.rateLimited(until: until)))
+        let seconds = 30
+        let session = MockPOSAccessSession(managerApprovalResult: .failure(.rateLimited(remainingSeconds: seconds)))
         let sut = POSManagerOverrideHandler(session: session)
         let operation: POSManagerOverrideHandler.PINOperation? = custom ? { _ throws(POSAuthError) in
-            throw .rateLimited(until: until)
+            throw .rateLimited(remainingSeconds: seconds)
         } : nil
         let approval = await present(sut, operation: operation)
 
@@ -355,38 +370,39 @@ struct POSManagerOverrideHandlerTests {
         #expect(await sut.submit(pin: "0000") == false)
 
         // Then
-        #expect(sut.pinEntryState == .lockout(until: until))
+        #expect(sut.pinEntryState == .waiting(remainingSeconds: seconds))
         #expect(POSPINEntryViewHelper().isInputEnabled(for: sut.pinEntryState) == false)
         await cancel(sut, approval)
     }
 
     @Test func test_requestApproval_when_shared_wait_is_active_then_shows_countdown_without_pin_submission() async {
         // Given
-        let until = Date().addingTimeInterval(30)
-        let session = MockPOSAccessSession(checkLockoutResult: .failure(.rateLimited(until: until)))
+        let seconds = 30
+        let session = MockPOSAccessSession(checkLockoutResult: .failure(.rateLimited(remainingSeconds: seconds)))
         let sut = POSManagerOverrideHandler(session: session)
 
         // When
         let approval = await present(sut)
 
         // Then
-        #expect(sut.pinEntryState == .lockout(until: until))
+        #expect(sut.pinEntryState == .waiting(remainingSeconds: seconds))
         #expect(session.managerApprovalPINs.isEmpty)
         await cancel(sut, approval)
     }
 
     @Test func test_configure_when_request_precedes_session_then_restores_shared_wait() async {
         // Given
-        let until = Date().addingTimeInterval(30)
-        let session = MockPOSAccessSession(checkLockoutResult: .failure(.rateLimited(until: until)))
+        let seconds = 30
+        let session = MockPOSAccessSession(checkLockoutResult: .failure(.rateLimited(remainingSeconds: seconds)))
         let sut = POSManagerOverrideHandler()
         let approval = await present(sut)
 
         // When
         sut.configure(session: session)
+        await waitUntilReady(sut)
 
         // Then
-        #expect(sut.pinEntryState == .lockout(until: until))
+        #expect(sut.pinEntryState == .waiting(remainingSeconds: seconds))
         await cancel(sut, approval)
     }
 
@@ -407,18 +423,18 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_lockoutExpired_when_wait_remains_then_rechecks_before_enabling_input() async {
         // Given
-        let until = Date().addingTimeInterval(30)
-        let session = MockPOSAccessSession(checkLockoutResult: .failure(.rateLimited(until: until)))
+        let seconds = 30
+        let session = MockPOSAccessSession(checkLockoutResult: .failure(.rateLimited(remainingSeconds: seconds)))
         let sut = POSManagerOverrideHandler(session: session)
         let approval = await present(sut)
 
         // When
-        sut.lockoutExpired()
+        await sut.lockoutExpired()
 
         // Then
-        #expect(sut.pinEntryState == .lockout(until: until))
+        #expect(sut.pinEntryState == .waiting(remainingSeconds: seconds))
         session.checkLockoutResult = .success(())
-        sut.lockoutExpired()
+        await sut.lockoutExpired()
         #expect(sut.pinEntryState == .idle)
         await cancel(sut, approval)
     }
@@ -430,7 +446,7 @@ struct POSManagerOverrideHandlerTests {
         let approval = await present(sut)
         session.onManagerApproval = {
             // When
-            sut.lockoutExpired()
+            await sut.lockoutExpired()
             // Then
             #expect(sut.pinEntryState == .loading)
         }
@@ -448,7 +464,17 @@ struct POSManagerOverrideHandlerTests {
                 Task { @MainActor in ready.resume() }
             }
         }
+        await waitUntilReady(sut)
         return approval
+    }
+
+    private func waitUntilReady(_ sut: POSManagerOverrideHandler) async {
+        guard sut.pinEntryState == .loading else { return }
+        await withCheckedContinuation { ready in
+            withObservationTracking { _ = sut.pinEntryState } onChange: {
+                Task { @MainActor in ready.resume() }
+            }
+        }
     }
 
     private func cancel(_ sut: POSManagerOverrideHandler, _ approval: Task<POSManagerOverrideHandler.ApprovalResult, Never>) async {

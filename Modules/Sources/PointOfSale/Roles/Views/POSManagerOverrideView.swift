@@ -16,6 +16,7 @@ struct POSManagerOverrideView: View {
             }
         }
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        .task(id: request.id) { await handler.observeWait() }
     }
 }
 
@@ -84,7 +85,7 @@ private extension POSManagerOverrideView {
     var pinEntry: some View {
         POSPINEntryView(state: handler.pinEntryState,
                         onComplete: { pin in await handler.submit(pin: pin) },
-                        onLockoutExpired: { handler.lockoutExpired() })
+                        onLockoutExpired: { Task { await handler.lockoutExpired() } })
     }
 
     enum Localization {

@@ -2,7 +2,7 @@ import Foundation
 
 enum POSAuthError: Error, Equatable {
     case invalidPIN
-    case rateLimited(until: Date)
+    case rateLimited(remainingSeconds: Int)
     case permanentlyLocked
     case unknown
 }

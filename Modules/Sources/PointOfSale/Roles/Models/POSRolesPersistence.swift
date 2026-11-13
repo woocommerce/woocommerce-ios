@@ -14,6 +14,8 @@ public enum POSRolesPersistence {
 
     static func clearAll(pinStorage: POSSecureStorage, userDefaults: UserDefaults) throws {
         defer { POSLockStateKey.clearAll(in: userDefaults) }
-        try POSLocalPINStore.removeAll(storage: pinStorage)
+        try POSPINAttemptContext.clearAll(scopeID: pinStorage.scopeID) {
+            try POSLocalPINStore.removeAll(storage: pinStorage)
+        }
     }
 }

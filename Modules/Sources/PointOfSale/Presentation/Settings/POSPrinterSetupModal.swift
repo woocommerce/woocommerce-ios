@@ -173,8 +173,8 @@ private struct POSPrinterSetupContent: View {
                 Text(message)
                     .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurface)
-                    .multilineTextAlignment(.center)
             }
+            .multilineTextAlignment(.center)
         }
     }
 
@@ -197,6 +197,7 @@ private struct POSPrinterSetupContent: View {
                 Text(Localization.severalPrintersTitle)
                     .font(.posHeadingBold)
                     .foregroundColor(.posOnSurface)
+                    .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
             }
 

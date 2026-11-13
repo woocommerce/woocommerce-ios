@@ -1,0 +1,21 @@
+{
+    "name": "My WordPress Site",
+    "description": "Just another WordPress site",
+    "url": "https://test.com/shop",
+    "home": "https://test.com/shop",
+    "gmt_offset": "0",
+    "timezone_string": "",
+    "authentication": {
+        "application-passwords": {
+          "endpoints": {
+            "authorization": "https://test.com/shop/wp-admin/authorize-application.php"
+          }
+        }
+      },
+    "namespaces": [
+        "oembed/1.0",
+        "wp/v2",
+        "wp-site-health/v1",
+        "wp-block-editor/v1"
+      ]
+}

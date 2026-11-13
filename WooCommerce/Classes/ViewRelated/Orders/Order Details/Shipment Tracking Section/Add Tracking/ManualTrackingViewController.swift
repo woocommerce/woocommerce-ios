@@ -279,8 +279,11 @@ extension ManualTrackingViewController: UITableViewDataSource {
         let actionButton = UIButton(type: .detailDisclosure)
         actionButton.applyIconButtonStyle(icon: .scanImage)
         actionButton.on(.touchUpInside) { [weak self, weak cell] _ in
+            // The external scanner is ignored while a text field has focus.
+            self?.view.endEditing(true)
             self?.present(ScannerContainerViewController(navigationTitle: Localization.title,
                                                          instructionText: Localization.instructionText,
+                                                         offersHardwareScanner: true,
                                                          onBarcodeScanned: { barcode in
                 cell?.updateValue(with: barcode.payloadStringValue)
                 self?.dismiss()

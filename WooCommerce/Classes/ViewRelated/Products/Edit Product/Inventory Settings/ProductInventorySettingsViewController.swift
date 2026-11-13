@@ -407,9 +407,9 @@ private extension ProductInventorySettingsViewController {
             return
         }
 
-        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController) { barcode in
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController, onBarcodeScanned: { barcode in
             onCompletion(barcode.payloadStringValue)
-        }
+        }, offersHardwareScanner: true)
 
         view.endEditing(true)
         skuBarcodeScannerCoordinator = coordinator

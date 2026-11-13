@@ -1,8 +1,9 @@
 import Foundation
+import os
 
 /// Async/await version of `PaginationTracker`, consider renaming `PaginationTracker` as deprecated and this class to `PaginationTracker`.
 /// Keeps track of the pagination for API syncing to support infinite scroll and pull-to-refresh.
-public final class AsyncPaginationTracker {
+public final class AsyncPaginationTracker: Sendable {
     public typealias SyncFunction = (_ pageNumber: Int) async throws -> Bool
 
     /// State of loading the next page in `ensureNextPageIsSynced`.
@@ -20,18 +21,23 @@ public final class AsyncPaginationTracker {
     /// The index of the first page in the API. So far, both Woo and WP.com API have the first page index at 1.
     private let pageFirstIndex: Int
 
-    /// Indexes of the pages that have been successfully synced.
-    private var pagesSynced = IndexSet()
+    private struct State {
+        /// Indexes of the pages that have been successfully synced.
+        var pagesSynced = IndexSet()
 
-    /// Indexes of the pages being currently synced.
-    private var pagesBeingSynced = IndexSet()
+        /// Indexes of the pages being currently synced.
+        var pagesBeingSynced = IndexSet()
+
+        /// Whether there might be more pages to fetch from the API, set by the sync function.
+        var hasNextPage = true
+    }
+
+    /// Callers on the main actor still run these nonisolated async methods on the global executor, so overlapping calls mutate state from several threads.
+    private let state = OSAllocatedUnfairLock(initialState: State())
 
     /// Whether there might be more pages to fetch from the API, set by the sync function.
-    public private(set) var hasNextPage: Bool = true
-
-    /// Returns the highest page number that has been successfully synced, if any.
-    private var highestPageSynced: Int? {
-        pagesSynced.max()
+    public var hasNextPage: Bool {
+        state.withLock { $0.hasNextPage }
     }
 
     /// Designated Initializer
@@ -45,19 +51,27 @@ public final class AsyncPaginationTracker {
     ///     2. Verify if the next page isn't currently being synced.
     ///     3. Proceed syncing the next page.
     public func ensureNextPageIsSynced(syncFunction: @escaping SyncFunction) async throws -> NextPageSyncState {
-        guard hasNextPage else {
-            return .noNextPage
+        let pageFirstIndex = pageFirstIndex
+        let claim: NextPageClaim = state.withLock { state in
+            guard state.hasNextPage else {
+                return .noNextPage
+            }
+            let nextPage = (state.pagesSynced.max() ?? pageFirstIndex - 1) + 1
+            guard !state.pagesBeingSynced.contains(nextPage) else {
+                return .alreadySyncing
+            }
+            state.pagesBeingSynced.insert(nextPage)
+            return .claimed(nextPage)
         }
 
-        let nextPage = (highestPageSynced ?? pageFirstIndex - 1) + 1
-        guard !isPageBeingSynced(pageNumber: nextPage) else {
+        switch claim {
+        case .noNextPage:
+            return .noNextPage
+        case .alreadySyncing:
             return .syncing
-        }
-        do {
-            try await sync(pageNumber: nextPage, syncFunction: syncFunction)
+        case .claimed(let nextPage):
+            try await syncClaimedPage(pageNumber: nextPage, syncFunction: syncFunction)
             return .synced
-        } catch {
-            throw error
         }
     }
 
@@ -78,19 +92,27 @@ public final class AsyncPaginationTracker {
 // MARK: - Syncing Core
 //
 private extension AsyncPaginationTracker {
+    enum NextPageClaim {
+        case noNextPage
+        case alreadySyncing
+        case claimed(Int)
+    }
+
     /// Syncs a given page number.
     func sync(pageNumber: Int, syncFunction: @escaping SyncFunction) async throws {
-        markAsBeingSynced(pageNumber: pageNumber)
+        state.withLock { _ = $0.pagesBeingSynced.insert(pageNumber) }
+        try await syncClaimedPage(pageNumber: pageNumber, syncFunction: syncFunction)
+    }
 
-        do {
-            defer {
-                unmarkAsBeingSynced(pageNumber: pageNumber)
-            }
-            let hasNextPage = try await syncFunction(pageNumber)
-            self.hasNextPage = hasNextPage
-            markAsSynced(pageNumber: pageNumber)
-        } catch {
-            throw error
+    /// Syncs a page number already marked as being synced.
+    func syncClaimedPage(pageNumber: Int, syncFunction: @escaping SyncFunction) async throws {
+        defer {
+            state.withLock { _ = $0.pagesBeingSynced.remove(pageNumber) }
+        }
+        let hasNextPage = try await syncFunction(pageNumber)
+        state.withLock { state in
+            state.hasNextPage = hasNextPage
+            state.pagesSynced.insert(pageNumber)
         }
     }
 }
@@ -100,28 +122,6 @@ private extension AsyncPaginationTracker {
 private extension AsyncPaginationTracker {
     /// Resets all of the internal structures.
     func resetInternalState() {
-        pagesBeingSynced.removeAll()
-        pagesSynced.removeAll()
-        hasNextPage = true
-    }
-
-    /// Indicates if a given page number is currently being synced.
-    func isPageBeingSynced(pageNumber: Int) -> Bool {
-        return pagesBeingSynced.contains(pageNumber)
-    }
-
-    /// Marks the specified page number as synced with the current date.
-    func markAsSynced(pageNumber: Int) {
-        pagesSynced.insert(pageNumber)
-    }
-
-    /// Marks the specified page number as being synced.
-    func markAsBeingSynced(pageNumber: Int) {
-        pagesBeingSynced.insert(pageNumber)
-    }
-
-    /// Removes the specified page number from the "In Sync" collection.
-    func unmarkAsBeingSynced(pageNumber: Int) {
-        pagesBeingSynced.remove(pageNumber)
+        state.withLock { $0 = State() }
     }
 }

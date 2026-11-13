@@ -3,6 +3,7 @@ import SwiftUI
 /// How a POS modal is shown on phone. Regular width always shows a centered card.
 enum POSModalCompactStyle: Equatable {
     case dialog
+    case bottomSheet
 }
 
 struct POSRootModalViewModifier: ViewModifier {
@@ -10,16 +11,25 @@ struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
+    @GestureState(resetTransaction: Transaction(animation: .interactiveSpring())) private var bottomSheetDragOffset: CGFloat = 0
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
     private var isFullScreen: Bool {
-        (modalManager.isFullScreen || horizontalSizeClass == .compact) && !isCompactDialog
+        (modalManager.isFullScreen || horizontalSizeClass == .compact) && !isCompactDialog && !isCompactBottomSheet
     }
 
     private var isCompactDialog: Bool {
-        horizontalSizeClass == .compact && modalManager.compactStyle == .dialog && !modalManager.isFullScreen
+        isCompactStyle(.dialog)
+    }
+
+    private var isCompactBottomSheet: Bool {
+        isCompactStyle(.bottomSheet)
+    }
+
+    private func isCompactStyle(_ style: POSModalCompactStyle) -> Bool {
+        horizontalSizeClass == .compact && modalManager.compactStyle == style && !modalManager.isFullScreen
     }
 
     func body(content: Content) -> some View {
@@ -49,29 +59,33 @@ struct POSRootModalViewModifier: ViewModifier {
                                     .edgesIgnoringSafeArea(.all)
                                     .animation(nil, value: modalManager.isPresented)
                             }
-                            ZStack {
-                                modalManager.getContent()
-                                    .environment(\.posModalParentSize, geometry.size)
-                                    .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
-                                    .environment(\.posModalDismissAction, { modalManager.dismiss() })
-                                    .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
-                                    .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                                    .posShadow(isFullScreen ? .none : .large,
-                                               cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                                    .padding(modalPadding)
+                            if isCompactBottomSheet {
+                                bottomSheet(parentSize: geometry.size, bottomSafeArea: geometry.safeAreaInsets.bottom)
+                            } else {
+                                ZStack {
+                                    modalManager.getContent()
+                                        .environment(\.posModalParentSize, geometry.size)
+                                        .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
+                                        .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                                        .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
+                                        .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                                        .posShadow(isFullScreen ? .none : .large,
+                                                   cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                                        .padding(modalPadding)
+                                }
+                                .zIndex(1)
+                                // Scale the modal container in and out, fading appropriately.
+                                // Unfortunately combined doesn't work on removal.
+                                // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
+                                // consistent even when animating out, which it wouldn't be if unspecified.
+                                .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
                             }
-                            .zIndex(1)
-                            // Scale the modal container in and out, fading appropriately.
-                            // Unfortunately combined doesn't work on removal.
-                            // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
-                            // consistent even when animating out, which it wouldn't be if unspecified.
-                            .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
                         }
                     }
                     .frame(width: geometry.size.width, height: geometry.size.height)
                 }
-                // Center cards across the bottom system inset; full-screen content keeps its safe area.
-                .ignoresSafeArea(.container, edges: isFullScreen ? [] : .bottom)
+                // Center cards across the bottom system inset; full-screen content and bottom sheets keep the safe area.
+                .ignoresSafeArea(.container, edges: isFullScreen || isCompactBottomSheet ? [] : .bottom)
             }
             .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
             .posIgnoresHiddenKeyboardSafeArea()
@@ -79,9 +93,74 @@ struct POSRootModalViewModifier: ViewModifier {
 }
 
 private extension POSRootModalViewModifier {
+    func bottomSheet(parentSize: CGSize, bottomSafeArea: CGFloat) -> some View {
+        VStack(spacing: metrics.spacing.none) {
+            Spacer(minLength: metrics.spacing.xxLarge)
+
+            modalManager.getContent()
+                .environment(\.posModalParentSize, parentSize)
+                .environment(\.posHeaderTopPadding, nil)
+                .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                .padding(metrics.bottomSheetContentInsets)
+                // The home indicator area is already enough space under the content.
+                .padding(.bottom, bottomSafeArea > 0 ? metrics.padding.none : metrics.padding.xxLarge)
+                .frame(maxWidth: .infinity)
+                .overlay(alignment: .top) {
+                    Capsule()
+                        .fill(Color.posOnSurfaceVariantLowest)
+                        .frame(width: Constants.grabberSize.width, height: Constants.grabberSize.height)
+                        .padding(.top, metrics.padding.small)
+                        .accessibilityElement()
+                        .accessibilityLabel(Localization.grabberAccessibilityLabel)
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityAction { dismissBottomSheetIfAllowed() }
+                        .accessibilityHidden(!modalManager.allowsInteractiveDismissal)
+                }
+            .background {
+                UnevenRoundedRectangle(topLeadingRadius: POSCornerRadiusStyle.extraLarge.value,
+                                       topTrailingRadius: POSCornerRadiusStyle.extraLarge.value)
+                .fill(Color.posSurfaceBright)
+                .ignoresSafeArea(edges: .bottom)
+            }
+            .offset(y: bottomSheetDragOffset)
+            .gesture(bottomSheetDismissGesture)
+            .accessibilityAction(.escape) { dismissBottomSheetIfAllowed() }
+        }
+        .zIndex(1)
+        .transition(.move(edge: .bottom))
+    }
+
+    func dismissBottomSheetIfAllowed() {
+        guard modalManager.allowsInteractiveDismissal else { return }
+        modalManager.dismiss()
+    }
+
+    var bottomSheetDismissGesture: some Gesture {
+        DragGesture()
+            .updating($bottomSheetDragOffset) { value, offset, _ in
+                guard modalManager.allowsInteractiveDismissal else { return }
+                offset = max(0, value.translation.height)
+            }
+            .onEnded { value in
+                guard modalManager.allowsInteractiveDismissal,
+                      value.translation.height > Constants.bottomSheetDismissDistance else { return }
+                modalManager.dismiss()
+            }
+    }
+
     enum Constants {
         static let animationDuration: CGFloat = 0.25
         static let scaleTransitionAmount: CGFloat = 0.9
+        static let grabberSize = CGSize(width: 36, height: 5)
+        static let bottomSheetDismissDistance: CGFloat = 80
+    }
+
+    enum Localization {
+        static let grabberAccessibilityLabel = NSLocalizedString(
+            "pos.modal.bottomSheet.grabber.accessibilityLabel",
+            value: "Close",
+            comment: "Accessibility label for the grabber at the top of a POS bottom sheet on phone. Activating it closes the sheet."
+        )
     }
 }
 
@@ -339,3 +418,13 @@ extension EnvironmentValues {
     .environmentObject(coverManager)
 }
 #endif
+
+extension POSMetrics {
+    /// The top inset is measured from the top edge of the sheet, so the title clears the grabber.
+    var bottomSheetContentInsets: EdgeInsets {
+        EdgeInsets(top: padding.xxLarge + padding.large,
+                   leading: padding.xxLarge,
+                   bottom: padding.none,
+                   trailing: padding.xxLarge)
+    }
+}

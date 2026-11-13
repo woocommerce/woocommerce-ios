@@ -48,7 +48,7 @@ struct POSSettingsHelpDetailView: View {
             }
         }
         .background(backgroundColor)
-        .posModal(isPresented: $showProductRestrictions) {
+        .posModal(isPresented: $showProductRestrictions, compactStyle: .bottomSheet) {
             // TODO: Remove copy on POSFloatingControlView.documentationView
             // WOOMOB-1168
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictions)

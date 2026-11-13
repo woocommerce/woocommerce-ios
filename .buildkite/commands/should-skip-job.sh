@@ -22,7 +22,10 @@ COMMON_PATTERNS=(
   ".gitignore"
   "config/Version.Public.xcconfig"
   "docs/**"
-  "fastlane/**"
+  "fastlane/appstoreres/*"
+  "fastlane/helpers/*_test.rb"
+  "fastlane/metadata/*"
+  "fastlane/screenshots.json"
   "Gemfile"
   "Gemfile.lock"
 )

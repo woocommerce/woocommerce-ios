@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import Yosemite
 
-/// View model for `ProductsViewController`. Has stores logic related to Bulk Editing and Woo Subscriptions.
+/// View model for `ProductsViewController`: sort, filters, saved settings, bulk editing and subscriptions.
 ///
 final class ProductListViewModel {
 
@@ -22,6 +22,38 @@ final class ProductListViewModel {
 
     private let favoriteProductsUseCase: FavoriteProductsUseCase
     private(set) var favoriteProductIDs: [Int64] = []
+
+    var onSortOrderChanged: (@MainActor (ProductsSortOrder) -> Void)?
+    var onFiltersChanged: (@MainActor (FilterProductListViewModel.Filters) async -> Void)?
+
+    @MainActor
+    var sortOrder: ProductsSortOrder = .default {
+        didSet {
+            if sortOrder != oldValue {
+                updateLocalProductSettings(sort: sortOrder,
+                                           filters: filters)
+                onSortOrderChanged?(sortOrder)
+            }
+        }
+    }
+
+    @MainActor
+    var filters = FilterProductListViewModel.Filters() {
+        didSet {
+            Task { @MainActor in
+                if filters != oldValue ||
+                    categoryHasChangedRemotely {
+                    updateLocalProductSettings(sort: sortOrder,
+                                               filters: filters)
+                    await onFiltersChanged?(filters)
+                }
+            }
+        }
+    }
+
+    /// Set to `true` when a category is applied to the product filters and the value has changed after a remote sync.
+    @MainActor
+    private var categoryHasChangedRemotely: Bool = false
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -223,5 +255,98 @@ final class ProductListViewModel {
     @MainActor
     private func isPluginActive(_ plugin: Plugin) -> Bool {
         pluginsService.isPluginActiveInStorage(siteID: siteID, plugin: plugin)
+    }
+}
+
+// MARK: - Products settings
+//
+@MainActor
+extension ProductListViewModel {
+    /// Update local Products Settings (eg. sort order or filters stored in Products settings)
+    ///
+    private func updateLocalProductSettings(sort: ProductsSortOrder? = nil,
+                                            filters: FilterProductListViewModel.Filters) {
+        let action = AppSettingsAction.upsertProductsSettings(siteID: siteID,
+                                                              sort: sort?.rawValue,
+                                                              stockStatusFilter: filters.stockStatus,
+                                                              productStatusFilter: filters.productStatus,
+                                                              productTypeFilter: filters.promotableProductType?.productType,
+                                                              productCategoryFilter: filters.productCategory,
+                                                              favoriteProduct: filters.favoriteProduct != nil) { _ in
+        }
+        stores.dispatch(action)
+    }
+
+    /// Fetch local Products Settings (eg. sort order or filters stored in Products settings)
+    ///
+    func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
+        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] result in
+            switch result {
+            case .success(let settings):
+                self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in
+                    guard let self else { return }
+                    if let sort = settings.sort {
+                        sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                    }
+
+                    let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
+                    filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                 productStatus: settings.productStatusFilter,
+                                                                 promotableProductType: promotableProductType,
+                                                                 productCategory: settings.productCategoryFilter,
+                                                                 favoriteProduct: settings.favoriteProduct ? FavoriteProductsFilter() : nil,
+                                                                 numberOfActiveFilters: settings.numberOfActiveFilters())
+                    onCompletion(result)
+                }
+            case let .failure(error):
+                DDLogError("⛔️ Error loading product settings: \(error)")
+                onCompletion(result)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Syncs the Product Category filter of settings remotely. This is necessary in case the category information was updated
+    /// or the category itself removed.
+    ///
+    private func syncProductCategoryFilterRemotely(from settings: StoredProductSettings.Setting,
+                                                   onCompletion: @escaping (StoredProductSettings.Setting) -> Void) {
+        categoryHasChangedRemotely = false
+        guard let productCategory = settings.productCategoryFilter else {
+            onCompletion(settings)
+            return
+        }
+
+        let action = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: productCategory.categoryID) { [weak self] result in
+            guard let self else { return }
+            var updatingProductCategory: ProductCategory? = productCategory
+
+            switch result {
+            case .success(let productCategory):
+                updatingProductCategory = productCategory
+            case .failure(let error):
+                if let error = error as? ProductCategoryActionError,
+                   case .categoryDoesNotExistRemotely = error {
+                    // The product category was removed
+                    updatingProductCategory = nil
+                }
+            }
+
+            var completionSettings = settings
+            if updatingProductCategory != productCategory {
+                categoryHasChangedRemotely = true
+                completionSettings = StoredProductSettings.Setting(siteID: settings.siteID,
+                                                                sort: settings.sort,
+                                                                stockStatusFilter: settings.stockStatusFilter,
+                                                                productStatusFilter: settings.productStatusFilter,
+                                                                productTypeFilter: settings.productTypeFilter,
+                                                                productCategoryFilter: updatingProductCategory,
+                                                                favoriteProduct: settings.favoriteProduct)
+            }
+
+            onCompletion(completionSettings)
+        }
+
+        stores.dispatch(action)
     }
 }

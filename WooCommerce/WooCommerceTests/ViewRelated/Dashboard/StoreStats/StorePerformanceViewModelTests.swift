@@ -977,6 +977,25 @@ final class StorePerformanceViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_reloadDataIfNeeded_when_data_is_fresh_after_a_failed_sync_then_clears_loadingError() async {
+        // Given — a previous sync failed, and the range now has fresh cached data.
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        mockSyncAllStats(with: stores, retrieveStatsError: NetworkError.timeout())
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
+        XCTAssertNotNil(viewModel.loadingError)
+        DashboardTimestampStore.saveTimestamp(.now, for: .performance, at: viewModel.timeRange.timestampRange)
+
+        // When — non-forced reload serves the cached data.
+        await viewModel.reloadDataIfNeeded(forceRefresh: false)
+
+        // Then
+        XCTAssertNil(viewModel.loadingError)
+
+        DashboardTimestampStore.removeTimestamp(for: .performance, at: viewModel.timeRange.timestampRange)
+    }
+
+    @MainActor
     func test_handleOrderTypeSelection_when_save_succeeds_then_clears_chart_selection() async {
         // Given — a chart point is selected before the merchant changes the order type.
         let stores = MockStoresManager(sessionManager: .makeForTesting())

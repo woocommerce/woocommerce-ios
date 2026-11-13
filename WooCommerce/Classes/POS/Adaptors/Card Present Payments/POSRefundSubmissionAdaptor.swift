@@ -8,7 +8,7 @@ import WooFoundation
 
 /// Prepares, previews and submits POS refunds.
 ///
-/// Holds the second of the two checks a `compute_totals` create needs. `POSRefundFlowResolver`
+/// Holds the second of the two checks a `compute_totals` create needs. `RefundFlowResolver`
 /// checks the site's WooCommerce version, which decides whether a preview runs at all. A successful
 /// preview stores its total under the selection it was calculated for. `submitRefund` sends
 /// computed line items only when a total exists for the selection being submitted. Every other case
@@ -32,7 +32,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     private let refundMapping: POSRefundSubmissionMapping
     private let analytics: Analytics
     private let refundOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
-    private let serverRefundPreviewUseCase: POSServerRefundPreviewUseCase
+    private let serverRefundPreviewUseCase: ServerRefundPreviewUseCase
 
     private var preloadedRefundSnapshots: [Int64: PreparedRefundSnapshot] = [:]
     private var preloadTasks: [Int64: (id: UUID, task: Task<PreparedRefundSnapshot, Error>)] = [:]
@@ -66,7 +66,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          refundOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
-         serverRefundPreviewUseCase: POSServerRefundPreviewUseCase) {
+         serverRefundPreviewUseCase: ServerRefundPreviewUseCase) {
         self.orderService = orderService
         self.refundService = refundService
         self.stores = stores

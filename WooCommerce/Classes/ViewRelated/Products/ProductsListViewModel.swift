@@ -1,17 +1,25 @@
+import Combine
 import Foundation
 import UIKit
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `ProductsViewController`: sort, filters, saved settings, bulk editing and subscriptions.
 ///
-final class ProductListViewModel {
+final class ProductListViewModel: ObservableObject {
 
     enum BulkEditError: Error {
         case noProductsSelected
     }
 
+    enum SyncState: Equatable {
+        case idle
+        case syncing(pageNumber: Int)
+    }
+
     let siteID: Int64
     private let stores: StoresManager
+    private let analytics: Analytics
     private let pluginsService: PluginsServiceProtocol
 
     private(set) var selectedProducts: Set<Product> = .init()
@@ -23,8 +31,35 @@ final class ProductListViewModel {
     private let favoriteProductsUseCase: FavoriteProductsUseCase
     private(set) var favoriteProductIDs: [Int64] = []
 
-    var onSortOrderChanged: (@MainActor (ProductsSortOrder) -> Void)?
-    var onFiltersChanged: (@MainActor (FilterProductListViewModel.Filters) async -> Void)?
+    /// Latest presentable products, recomputed on every storage, sort or filter change.
+    @MainActor
+    @Published private(set) var products: [ProductListItem] = []
+
+    /// Sent only when a storage change recomputes `products`.
+    let storageDidChange = PassthroughSubject<Void, Never>()
+
+    @MainActor
+    @Published private(set) var syncState: SyncState = .idle
+
+    /// Set when sync fails, and used to display an error loading data banner
+    ///
+    @MainActor
+    @Published private(set) var dataLoadingError: Error?
+
+    @MainActor
+    private(set) var syncingPageNumber: Int?
+
+    // The store's name sort can differ from the local sort, so keep products from later pages below earlier pages.
+    @MainActor
+    private var productPageOrder = ProductListPageOrder()
+
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
+    ///
+    @MainActor
+    private let resultsController: ResultsController<StorageProduct>
+
+    @MainActor
+    private let paginationTracker = PaginationTracker()
 
     @MainActor
     var sortOrder: ProductsSortOrder = .default {
@@ -32,20 +67,26 @@ final class ProductListViewModel {
             if sortOrder != oldValue {
                 updateLocalProductSettings(sort: sortOrder,
                                            filters: filters)
-                onSortOrderChanged?(sortOrder)
+                resultsController.updateSortOrder(sortOrder)
+
+                /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
+                resyncWithNewSortOrFilters()
             }
         }
     }
 
     @MainActor
-    var filters = FilterProductListViewModel.Filters() {
+    @Published var filters = FilterProductListViewModel.Filters() {
         didSet {
             Task { @MainActor in
                 if filters != oldValue ||
                     categoryHasChangedRemotely {
                     updateLocalProductSettings(sort: sortOrder,
                                                filters: filters)
-                    await onFiltersChanged?(filters)
+                    await updatePredicate(filters: filters)
+
+                    /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+                    resyncWithNewSortOrFilters()
                 }
             }
         }
@@ -55,17 +96,25 @@ final class ProductListViewModel {
     @MainActor
     private var categoryHasChangedRemotely: Bool = false
 
+    @MainActor
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
-         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager)) {
+         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
+         resultsController: ResultsController<StorageProduct>? = nil) {
         self.siteID = siteID
+        self.resultsController = resultsController ?? Self.createResultsController(siteID: siteID)
         self.stores = stores
+        self.analytics = analytics
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: siteID)
         self.pluginsService = pluginsService
+
+        configureResultsController(self.resultsController)
+        paginationTracker.delegate = self
 
         Task { @MainActor [weak self] in
             await self?.loadFavoriteProductIDs()
@@ -255,6 +304,206 @@ final class ProductListViewModel {
     @MainActor
     private func isPluginActive(_ plugin: Plugin) -> Bool {
         pluginsService.isPluginActiveInStorage(siteID: siteID, plugin: plugin)
+    }
+}
+
+// MARK: - Products data
+//
+@MainActor
+extension ProductListViewModel {
+    var isEmpty: Bool {
+        resultsController.isEmpty
+    }
+
+    var fetchedProducts: [Product] {
+        resultsController.fetchedObjects
+    }
+
+    func product(withID productID: Int64) -> Product? {
+        guard let indexPath = resultsController.indexPath(forObjectMatching: { $0.productID == productID }) else {
+            return nil
+        }
+        return resultsController.safeObject(at: indexPath)
+    }
+
+    func resync() {
+        paginationTracker.resync()
+    }
+
+    func ensureNextPageIsSynced() {
+        paginationTracker.ensureNextPageIsSynced()
+    }
+
+    func refresh(onCompletion: @escaping () -> Void) async {
+        await updatePredicate(filters: filters)
+        paginationTracker.resync(onCompletion: onCompletion)
+    }
+
+    /// Recorded pages belong to the previous sort or filters.
+    func resyncWithNewSortOrFilters() {
+        productPageOrder.reset()
+        products = presentableProducts(resultsController.listItems)
+        paginationTracker.resync()
+    }
+
+    func reloadFavoriteProductsIfNeeded() async {
+        // Reload only if favorite products filter is turned on
+        guard filters.favoriteProduct != nil else {
+            return
+        }
+
+        let previousFavoriteProductIDs = favoriteProductIDs
+        await loadFavoriteProductIDs()
+
+        // Reload only if favorite product IDs changed
+        guard favoriteProductIDs != previousFavoriteProductIDs else {
+            return
+        }
+
+        await updatePredicate(filters: filters)
+
+        /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+        resyncWithNewSortOrFilters()
+    }
+
+    func updatePredicate(filters: FilterProductListViewModel.Filters) async {
+        let productIDs: [Int64]? = await {
+            guard filters.favoriteProduct != nil else {
+                return nil
+            }
+
+            await loadFavoriteProductIDs()
+            return favoriteProductIDs
+        }()
+
+        resultsController.updatePredicate(siteID: siteID,
+                                          stockStatus: filters.stockStatus,
+                                          productStatus: filters.productStatus,
+                                          productType: filters.promotableProductType?.productType,
+                                          productIDs: productIDs)
+    }
+}
+
+@MainActor
+private extension ProductListViewModel {
+    /// Uses the default filters and sort; stored settings are applied once they load.
+    static func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
+        let filters = FilterProductListViewModel.Filters()
+        let predicate = NSPredicate.createProductPredicate(siteID: siteID,
+                                                           stockStatus: filters.stockStatus,
+                                                           productStatus: filters.productStatus,
+                                                           productType: filters.promotableProductType?.productType)
+
+        return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager,
+                                                 matching: predicate,
+                                                 sortOrder: .default)
+    }
+
+    /// Configure resultController.
+    /// Assign closures and start performBatch
+    ///
+    func configureResultsController(_ resultsController: ResultsController<StorageProduct>) {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.didChangeStoredProducts()
+        }
+
+        resultsController.onDidResetContent = { [weak self] in
+            self?.didChangeStoredProducts()
+        }
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+
+        products = presentableProducts(resultsController.listItems)
+    }
+
+    /// Records pages on every storage change, even while a refresh defers presentation.
+    func didChangeStoredProducts() {
+        recordProductPages()
+        products = presentableProducts(resultsController.listItems)
+        storageDidChange.send(())
+    }
+
+    /// A successful first page replaces the stored products (`shouldDeleteStoredProductsOnFirstPage`).
+    func firstPageDidSync() {
+        productPageOrder.reset()
+        recordProductPages()
+        let syncedProducts = presentableProducts(resultsController.listItems)
+        if syncedProducts.map(\.productID) != products.map(\.productID) {
+            products = syncedProducts
+        }
+    }
+
+    func recordProductPages() {
+        productPageOrder.record(resultsController.productNames, syncingPageNumber: syncingPageNumber)
+    }
+
+    /// Only the name sort can differ between the store and the device.
+    func presentableProducts(_ products: [ProductListItem]) -> [ProductListItem] {
+        switch sortOrder {
+        case .nameAscending, .nameDescending:
+            return productPageOrder.ordered(products)
+        case .dateAscending, .dateDescending:
+            return products
+        }
+    }
+}
+
+// MARK: - Sync'ing Helpers
+//
+extension ProductListViewModel: @MainActor PaginationTrackerDelegate {
+
+    /// Synchronizes the Products for the Default Store (if any).
+    ///
+    @MainActor
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
+        syncingPageNumber = pageNumber
+        syncState = .syncing(pageNumber: pageNumber)
+        dataLoadingError = nil
+
+        let action = ProductAction
+            .synchronizeProducts(siteID: siteID,
+                                 pageNumber: pageNumber,
+                                 pageSize: pageSize,
+                                 stockStatus: filters.stockStatus,
+                                 productStatus: filters.productStatus,
+                                 productType: filters.promotableProductType?.productType,
+                                 productCategory: filters.productCategory,
+                                 sortOrder: sortOrder,
+                                 productIDs: (filters.favoriteProduct != nil) ? favoriteProductIDs : []) { [weak self] result in
+                                    guard let self else {
+                                        return
+                                    }
+
+                                    switch result {
+                                    case .failure(let error):
+                                        analytics.track(.productListLoadError, withError: error)
+                                        DDLogError("⛔️ Error synchronizing products: \(error)")
+                                        dataLoadingError = error
+                                    case .success:
+                                        analytics.track(
+                                            event: .ProductsList.productListLoaded(
+                                                isEligibleForSubscriptions:
+                                                    isEligibleForSubscriptions
+                                            )
+                                        )
+                                    }
+
+                                    // Storage changes from this page are recorded before the completion runs.
+                                    if syncingPageNumber == pageNumber {
+                                        syncingPageNumber = nil
+                                    }
+                                    if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex, case .success = result {
+                                        firstPageDidSync()
+                                    }
+                                    syncState = .idle
+                                    onCompletion?(result)
+        }
+
+        stores.dispatch(action)
     }
 }
 

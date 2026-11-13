@@ -1,13 +1,17 @@
 import XCTest
 import Yosemite
 import Fakes
+import YosemiteTestHelpers
+import protocol WooFoundation.Analytics
 @testable import WooCommerce
 
 @MainActor
 final class ProductListViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
+    private let sampleCategory = ProductCategory.fake().copy(categoryID: 7)
     private var storesManager: MockStoresManager!
     private var upsertedSettings: [UpsertedSettings] = []
+    private var productSyncs: [ProductSync] = []
 
     override func setUp() {
         super.setUp()
@@ -16,7 +20,6 @@ final class ProductListViewModelTests: XCTestCase {
 
     override func tearDown() {
         storesManager = nil
-        upsertedSettings = []
         super.tearDown()
     }
 
@@ -423,83 +426,58 @@ final class ProductListViewModelTests: XCTestCase {
     func test_sortOrder_when_changed_then_persists_sort_with_current_filters_and_notifies() throws {
         // Given
         let viewModel = makeViewModel()
-        recordProductsSettings()
-        var filtersApplied = false
-        viewModel.onFiltersChanged = { _ in filtersApplied = true }
-        let category = ProductCategory.fake().copy(categoryID: 7)
-        viewModel.filters = FilterProductListViewModel.Filters(stockStatus: .outOfStock,
-                                                               productStatus: nil,
-                                                               promotableProductType: nil,
-                                                               productCategory: category,
-                                                               favoriteProduct: nil,
-                                                               numberOfActiveFilters: 2)
-        waitUntil { filtersApplied }
+        viewModel.filters = makeFilters(stockStatus: .outOfStock, category: sampleCategory)
+        waitUntil { self.productSyncs.isNotEmpty }
         upsertedSettings = []
-        var notifiedSortOrder: ProductsSortOrder?
-        viewModel.onSortOrderChanged = { notifiedSortOrder = $0 }
+        productSyncs = []
 
         // When
         viewModel.sortOrder = .dateDescending
 
         // Then
-        XCTAssertEqual(notifiedSortOrder, .dateDescending)
+        XCTAssertEqual(productSyncs.map(\.sortOrder), [.dateDescending])
         let upserted = try XCTUnwrap(upsertedSettings.last)
         XCTAssertEqual(upsertedSettings.count, 1)
         XCTAssertEqual(upserted.sort, ProductsSortOrder.dateDescending.rawValue)
         XCTAssertEqual(upserted.stockStatus, .outOfStock, "Saving a new sort must not drop the saved filters")
-        XCTAssertEqual(upserted.category, category)
+        XCTAssertEqual(upserted.category, sampleCategory)
     }
 
     func test_sortOrder_when_set_to_same_value_then_does_not_persist_or_notify() {
         // Given
         let viewModel = makeViewModel()
-        recordProductsSettings()
-        var notified = false
-        viewModel.onSortOrderChanged = { _ in notified = true }
 
         // When
         viewModel.sortOrder = .default
 
         // Then
-        XCTAssertFalse(notified, "Re-picking the current sort must not reset the list pages")
+        XCTAssertTrue(productSyncs.isEmpty, "Re-picking the current sort must not reset the list pages")
         XCTAssertTrue(upsertedSettings.isEmpty)
     }
 
     func test_filters_when_changed_then_persists_and_notifies_after_main_actor_hop() throws {
         // Given
         let viewModel = makeViewModel()
-        recordProductsSettings()
-        var notifiedFilters: FilterProductListViewModel.Filters?
-        viewModel.onFiltersChanged = { notifiedFilters = $0 }
-        let category = ProductCategory.fake().copy(categoryID: 7)
-        let filters = FilterProductListViewModel.Filters(stockStatus: .outOfStock,
-                                                         productStatus: .draft,
-                                                         promotableProductType: nil,
-                                                         productCategory: category,
-                                                         favoriteProduct: FavoriteProductsFilter(),
-                                                         numberOfActiveFilters: 4)
+        let filters = makeFilters(stockStatus: .outOfStock, productStatus: .draft, category: sampleCategory, favorite: true)
 
         // When
         viewModel.filters = filters
 
         // Then
-        XCTAssertNil(notifiedFilters, "Restoring settings relies on `onDataReloaded` being sent before the filters side effects run")
+        XCTAssertTrue(productSyncs.isEmpty, "Restoring settings relies on `onDataReloaded` being sent before the filters side effects run")
         XCTAssertTrue(upsertedSettings.isEmpty)
-        waitUntil { notifiedFilters != nil }
-        XCTAssertEqual(notifiedFilters, filters)
+        waitUntil { self.productSyncs.isNotEmpty }
+        XCTAssertEqual(productSyncs.map(\.filters), [filters])
         let upserted = try XCTUnwrap(upsertedSettings.last)
         XCTAssertEqual(upserted.stockStatus, .outOfStock)
         XCTAssertEqual(upserted.productStatus, .draft)
-        XCTAssertEqual(upserted.category, category)
+        XCTAssertEqual(upserted.category, sampleCategory)
         XCTAssertTrue(upserted.favoriteProduct)
     }
 
     func test_filters_when_set_to_equal_value_then_does_not_persist_or_notify() async {
         // Given
         let viewModel = makeViewModel()
-        recordProductsSettings()
-        var notified = false
-        viewModel.onFiltersChanged = { _ in notified = true }
 
         // When
         viewModel.filters = FilterProductListViewModel.Filters()
@@ -507,7 +485,7 @@ final class ProductListViewModelTests: XCTestCase {
         await Task { @MainActor in }.value
 
         // Then
-        XCTAssertFalse(notified, "Re-applying the current filters must not reset the list pages")
+        XCTAssertTrue(productSyncs.isEmpty, "Re-applying the current filters must not reset the list pages")
         XCTAssertTrue(upsertedSettings.isEmpty)
     }
 
@@ -515,20 +493,18 @@ final class ProductListViewModelTests: XCTestCase {
         // Given
         let viewModel = makeViewModel()
         recordProductsSettings(loading: .success(storedSettings(sort: ProductsSortOrder.dateAscending.rawValue, stockStatus: .inStock)))
-        var notifiedSortOrder: ProductsSortOrder?
-        viewModel.onSortOrderChanged = { notifiedSortOrder = $0 }
 
         // When
-        let (result, sortOrder, filters) = waitFor { promise in
+        let (result, sortOrder, filters, resyncedSortOrders) = waitFor { promise in
             viewModel.syncLocalProductsSettings { result in
-                promise((result, viewModel.sortOrder, viewModel.filters))
+                promise((result, viewModel.sortOrder, viewModel.filters, self.productSyncs.map(\.sortOrder)))
             }
         }
 
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(sortOrder, .dateAscending)
-        XCTAssertEqual(notifiedSortOrder, .dateAscending, "The list must be re-sorted before it reports the settings as loaded")
+        XCTAssertEqual(resyncedSortOrders, [.dateAscending], "The list must be re-sorted before it reports the settings as loaded")
         XCTAssertEqual(filters.stockStatus, .inStock)
         XCTAssertEqual(filters.numberOfActiveFilters, 1)
     }
@@ -536,19 +512,16 @@ final class ProductListViewModelTests: XCTestCase {
     func test_syncLocalProductsSettings_when_stored_category_was_deleted_remotely_then_clears_category_and_notifies() {
         // Given
         let viewModel = makeViewModel()
-        let category = ProductCategory.fake().copy(categoryID: 7)
-        recordProductsSettings(loading: .success(storedSettings(category: category)))
+        recordProductsSettings(loading: .success(storedSettings(category: sampleCategory)))
         stubCategorySync(result: .failure(ProductCategoryActionError.categoryDoesNotExistRemotely))
-        var notifiedFilters: FilterProductListViewModel.Filters?
-        viewModel.onFiltersChanged = { notifiedFilters = $0 }
 
         // When
         viewModel.syncLocalProductsSettings { _ in }
 
         // Then
-        waitUntil { notifiedFilters != nil }
+        waitUntil { self.productSyncs.isNotEmpty }
         XCTAssertNil(viewModel.filters.productCategory)
-        XCTAssertEqual(notifiedFilters, FilterProductListViewModel.Filters(), "Restored filters equal the defaults, so only the remote change reloads")
+        XCTAssertEqual(productSyncs.map(\.filters), [makeFilters()], "Restored filters equal the defaults, so only the remote change reloads")
         XCTAssertEqual(upsertedSettings.count, 1)
         XCTAssertNil(upsertedSettings.first?.category, "A deleted category must not stay saved and pin the list to no results")
     }
@@ -560,24 +533,21 @@ final class ProductListViewModelTests: XCTestCase {
         let renamedCategory = category.copy(name: "Sneakers")
         recordProductsSettings(loading: .success(storedSettings(category: category)))
         stubCategorySync(result: .success(renamedCategory))
-        var notifiedFilters: FilterProductListViewModel.Filters?
-        viewModel.onFiltersChanged = { notifiedFilters = $0 }
 
         // When
         viewModel.syncLocalProductsSettings { _ in }
 
         // Then
-        waitUntil { notifiedFilters != nil }
+        waitUntil { self.productSyncs.isNotEmpty }
         XCTAssertEqual(viewModel.filters.productCategory, renamedCategory, "The filter must show the category's current name")
-        XCTAssertEqual(notifiedFilters?.productCategory, renamedCategory)
+        XCTAssertEqual(productSyncs.last?.filters.productCategory, renamedCategory)
         XCTAssertEqual(upsertedSettings.last?.category, renamedCategory, "The saved filter must not keep the old name")
     }
 
     func test_syncLocalProductsSettings_when_category_sync_fails_for_other_reasons_then_keeps_stored_category() {
         // Given
         let viewModel = makeViewModel()
-        let category = ProductCategory.fake().copy(categoryID: 7)
-        recordProductsSettings(loading: .success(storedSettings(category: category)))
+        recordProductsSettings(loading: .success(storedSettings(category: sampleCategory)))
         stubCategorySync(result: .failure(NSError(domain: "network", code: 0)))
 
         // When
@@ -588,15 +558,13 @@ final class ProductListViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(filters.productCategory, category, "Being offline must not drop the user's category filter")
+        XCTAssertEqual(filters.productCategory, sampleCategory, "Being offline must not drop the user's category filter")
     }
 
     func test_syncLocalProductsSettings_when_loading_fails_then_completes_with_failure_and_keeps_defaults() {
         // Given
         let viewModel = makeViewModel()
         recordProductsSettings(loading: .failure(NSError(domain: "storage", code: 0)))
-        var notified = false
-        viewModel.onSortOrderChanged = { _ in notified = true }
 
         // When
         let result = waitFor { promise in
@@ -607,8 +575,191 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(viewModel.sortOrder, .default)
         XCTAssertEqual(viewModel.filters, FilterProductListViewModel.Filters())
-        XCTAssertFalse(notified)
+        XCTAssertTrue(productSyncs.isEmpty)
         XCTAssertTrue(upsertedSettings.isEmpty)
+    }
+
+    // MARK: - Products data
+
+    func test_products_when_storage_changes_after_load_then_lists_stored_products_in_local_order() {
+        // Given
+        let storage = MockStorageManager()
+        insert(makeProducts(["B", "A"]), into: storage)
+        let viewModel = makeViewModel(storage: storage)
+
+        // When
+        insert([Product.fake().copy(siteID: sampleSiteID, productID: 3, name: "C")], into: storage)
+
+        // Then
+        XCTAssertEqual(viewModel.products.map(\.name), ["A", "B", "C"], "The list must show what search or other flows store")
+    }
+
+    func test_sortOrder_when_changed_then_reorders_products() {
+        // Given
+        let storage = MockStorageManager()
+        insert([
+            Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "A", date: Date(timeIntervalSince1970: 1)),
+            Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "B", date: Date(timeIntervalSince1970: 2))
+        ], into: storage)
+        let viewModel = makeViewModel(storage: storage)
+
+        // When
+        viewModel.sortOrder = .dateDescending
+
+        // Then
+        XCTAssertEqual(viewModel.products.map(\.productID), [2, 1])
+    }
+
+    func test_filters_when_favorite_filter_is_applied_then_lists_only_favorite_products() {
+        // Given
+        let storage = MockStorageManager()
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        favoriteProductsUseCase.favoriteProductIDsValue = [2]
+        let viewModel = makeViewModel(storage: storage, favoriteProductsUseCase: favoriteProductsUseCase)
+        insert(makeProducts(["A", "B"]), into: storage)
+
+        // When
+        viewModel.filters = makeFilters(favorite: true)
+
+        // Then
+        waitUntil { viewModel.products.map(\.productID) == [2] }
+    }
+
+    func test_sync_when_sort_and_filters_are_set_then_requests_them_with_favorite_product_IDs() throws {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        favoriteProductsUseCase.favoriteProductIDsValue = [5]
+        let viewModel = makeViewModel(favoriteProductsUseCase: favoriteProductsUseCase)
+
+        // When
+        viewModel.sortOrder = .dateAscending
+        viewModel.filters = makeFilters(stockStatus: .inStock, category: sampleCategory, favorite: true)
+
+        // Then
+        waitUntil { self.productSyncs.count == 2 }
+        let sync = try XCTUnwrap(productSyncs.last)
+        XCTAssertEqual(sync.pageNumber, 1)
+        XCTAssertEqual(sync.sortOrder, .dateAscending)
+        XCTAssertEqual(sync.stockStatus, .inStock)
+        XCTAssertEqual(sync.productCategory, sampleCategory)
+        XCTAssertEqual(sync.productIDs, [5], "The favorites filter is applied remotely by product IDs")
+    }
+
+    func test_sync_when_request_fails_then_sets_dataLoadingError_until_the_next_sync() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = makeViewModel(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
+        XCTAssertEqual(viewModel.syncState, .syncing(pageNumber: 1))
+        try XCTUnwrap(productSyncs.last).onCompletion(.failure(NSError(domain: "network", code: 0)))
+
+        // Then
+        XCTAssertNotNil(viewModel.dataLoadingError, "The error banner is shown from this error")
+        XCTAssertEqual(viewModel.syncState, .idle)
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_list_load_error"])
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
+
+        // Then
+        XCTAssertNil(viewModel.dataLoadingError, "Retrying hides the error banner")
+    }
+
+    func test_sync_when_next_page_sorts_before_loaded_products_by_name_then_lists_it_after_them() throws {
+        // Given
+        let storage = MockStorageManager()
+        let viewModel = makeViewModel(storage: storage)
+        try loadPage(1, [Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "B")], viewModel: viewModel, storage: storage)
+
+        // When
+        try loadPage(2, [Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "A")], viewModel: viewModel, storage: storage)
+
+        // Then
+        XCTAssertEqual(viewModel.products.map(\.name), ["B", "A"], "The store's collation can sort a later page before the loaded products")
+        XCTAssertNil(viewModel.syncingPageNumber)
+    }
+
+    func test_sync_when_next_page_sorts_before_loaded_products_by_date_then_lists_it_before_them() throws {
+        // Given
+        let storage = MockStorageManager()
+        let viewModel = makeViewModel(storage: storage)
+        viewModel.sortOrder = .dateAscending
+        try loadPage(1, [Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "B", date: Date(timeIntervalSince1970: 2))],
+                     viewModel: viewModel, storage: storage)
+
+        // When
+        try loadPage(2, [Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "A", date: Date(timeIntervalSince1970: 1))],
+                     viewModel: viewModel, storage: storage)
+
+        // Then
+        XCTAssertEqual(viewModel.products.map(\.name), ["A", "B"], "Dates sort the same in the store and on the device")
+    }
+
+    func test_sync_when_first_page_succeeds_after_later_pages_then_publishes_products_in_local_order() throws {
+        // Given
+        let storage = MockStorageManager()
+        let viewModel = makeViewModel(storage: storage)
+        try loadPage(1, [Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "B")], viewModel: viewModel, storage: storage)
+        try loadPage(2, [Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "A")], viewModel: viewModel, storage: storage)
+
+        // When
+        try loadPage(1, [], viewModel: viewModel, storage: storage)
+
+        // Then
+        XCTAssertEqual(viewModel.products.map(\.name), ["A", "B"], "The first page replaces the stored products, so earlier pages no longer apply")
+    }
+
+    func test_sync_when_first_page_succeeds_without_changing_the_order_then_does_not_publish_products() throws {
+        // Given
+        let storage = MockStorageManager()
+        let viewModel = makeViewModel(storage: storage)
+        try loadPage(1, makeProducts(["A", "B"]), viewModel: viewModel, storage: storage)
+        var publishedProducts: [[ProductListItem]] = []
+        let subscription = viewModel.$products.dropFirst().sink { publishedProducts.append($0) }
+
+        // When
+        try loadPage(1, [], viewModel: viewModel, storage: storage)
+
+        // Then
+        XCTAssertTrue(publishedProducts.isEmpty, "Reloading unchanged rows would reset the table during a refresh")
+        subscription.cancel()
+    }
+
+    func test_reloadFavoriteProductsIfNeeded_when_favorite_filter_is_on_and_IDs_changed_then_resyncs_with_new_IDs() throws {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        favoriteProductsUseCase.favoriteProductIDsValue = [5]
+        let viewModel = makeViewModel(favoriteProductsUseCase: favoriteProductsUseCase)
+        viewModel.filters = makeFilters(favorite: true)
+        waitUntil { self.productSyncs.count == 1 }
+
+        // When
+        favoriteProductsUseCase.favoriteProductIDsValue = [9]
+        reloadFavoriteProducts(viewModel)
+
+        // Then
+        XCTAssertEqual(productSyncs.map(\.productIDs), [[5], [9]])
+
+        // When
+        reloadFavoriteProducts(viewModel)
+
+        // Then
+        XCTAssertEqual(productSyncs.count, 2, "Unchanged favorites must not reset the list pages")
+    }
+
+    func test_reloadFavoriteProductsIfNeeded_when_favorite_filter_is_off_then_does_not_resync() {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        let viewModel = makeViewModel(favoriteProductsUseCase: favoriteProductsUseCase)
+
+        // When
+        favoriteProductsUseCase.favoriteProductIDsValue = [9]
+        reloadFavoriteProducts(viewModel)
+
+        // Then
+        XCTAssertTrue(productSyncs.isEmpty)
     }
 }
 
@@ -621,8 +772,91 @@ private extension ProductListViewModelTests {
         let favoriteProduct: Bool
     }
 
-    func makeViewModel() -> ProductListViewModel {
-        ProductListViewModel(siteID: sampleSiteID, stores: storesManager, favoriteProductsUseCase: MockFavoriteProductsUseCase())
+    struct ProductSync {
+        let pageNumber: Int
+        let stockStatus: ProductStockStatus?
+        let productCategory: ProductCategory?
+        let sortOrder: ProductsSortOrder
+        let filters: FilterProductListViewModel.Filters
+        let productIDs: [Int64]
+        let onCompletion: (Result<Bool, Error>) -> Void
+    }
+
+    func makeViewModel(storage: MockStorageManager = MockStorageManager(),
+                       favoriteProductsUseCase: MockFavoriteProductsUseCase = MockFavoriteProductsUseCase(),
+                       analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())) -> ProductListViewModel {
+        let resultsController = ResultsController<StorageProduct>(storageManager: storage,
+                                                                  matching: NSPredicate(format: "siteID == %lld", sampleSiteID),
+                                                                  sortOrder: .nameAscending)
+        let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: storesManager,
+                                             analytics: analytics,
+                                             favoriteProductsUseCase: favoriteProductsUseCase,
+                                             resultsController: resultsController)
+        recordProductsSettings()
+        recordProductSyncs(of: viewModel)
+        return viewModel
+    }
+
+    /// Counts each set argument as an active filter, like the filter screen.
+    func makeFilters(stockStatus: ProductStockStatus? = nil,
+                     productStatus: ProductStatus? = nil,
+                     category: ProductCategory? = nil,
+                     favorite: Bool = false) -> FilterProductListViewModel.Filters {
+        let numberOfActiveFilters = [stockStatus != nil, productStatus != nil, category != nil, favorite].filter { $0 }.count
+        return FilterProductListViewModel.Filters(stockStatus: stockStatus,
+                                                  productStatus: productStatus,
+                                                  promotableProductType: nil,
+                                                  productCategory: category,
+                                                  favoriteProduct: favorite ? FavoriteProductsFilter() : nil,
+                                                  numberOfActiveFilters: numberOfActiveFilters)
+    }
+
+    func makeProducts(_ names: [String]) -> [Product] {
+        names.enumerated().map { index, name in
+            Product.fake().copy(siteID: sampleSiteID, productID: Int64(index + 1), name: name)
+        }
+    }
+
+    /// `MockStorageManager` saves synchronously on the main queue.
+    func insert(_ products: [Product], into storageManager: MockStorageManager) {
+        storageManager.performAndSave({ storage in
+            for product in products {
+                storage.insertNewObject(ofType: StorageProduct.self).update(with: product)
+            }
+        }, completion: nil, on: .main)
+    }
+
+    func recordProductSyncs(of viewModel: ProductListViewModel) {
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { [weak self, weak viewModel] action in
+            guard let viewModel,
+                  case let .synchronizeProducts(_, pageNumber, _, stockStatus, _, _, productCategory, sortOrder, productIDs, _, _, onCompletion) = action else {
+                return
+            }
+            self?.productSyncs.append(.init(pageNumber: pageNumber,
+                                            stockStatus: stockStatus,
+                                            productCategory: productCategory,
+                                            sortOrder: sortOrder,
+                                            filters: viewModel.filters,
+                                            productIDs: productIDs,
+                                            onCompletion: onCompletion))
+        }
+    }
+
+    /// Stores the page while it syncs and then completes it, like `ProductStore` does.
+    func loadPage(_ pageNumber: Int, _ products: [Product], viewModel: ProductListViewModel, storage: MockStorageManager) throws {
+        viewModel.sync(pageNumber: pageNumber, pageSize: 25, reason: nil, onCompletion: nil)
+        insert(products, into: storage)
+        try XCTUnwrap(productSyncs.last).onCompletion(.success(true))
+    }
+
+    func reloadFavoriteProducts(_ viewModel: ProductListViewModel) {
+        waitForExpectation { expectation in
+            Task {
+                await viewModel.reloadFavoriteProductsIfNeeded()
+                expectation.fulfill()
+            }
+        }
     }
 
     func recordProductsSettings(loading loadResult: Result<StoredProductSettings.Setting, Error>? = nil) {

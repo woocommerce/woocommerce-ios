@@ -32,9 +32,6 @@ final class ProductsViewController: UIViewController {
     private let refreshUpdates = ListRefreshUpdates()
     // Match UITableView's installed rows even while refresh updates change the backing store.
     private var presentedProducts: [ProductListItem] = []
-    // The store's name sort can differ from the local sort, so keep products from later pages below earlier pages.
-    private var productPageOrder = ProductListPageOrder()
-    private var syncingPageNumber: Int?
     private var isShowingLoadingRows = false
     private lazy var emptyStateView = ListEmptyView()
 
@@ -132,17 +129,6 @@ final class ProductsViewController: UIViewController {
     ///
     private var topBannerView: TopBannerView?
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
-    ///
-    private lazy var resultsController: ResultsController<StorageProduct> = {
-        let resultsController = providedResultsController ?? createResultsController(siteID: siteID)
-        configureResultsController(resultsController, onReload: { [weak self] in
-            guard let self else { return }
-            refreshUpdates.perform { self.reloadTableAndView() }
-        })
-        return resultsController
-    }()
-
     private var selectedProductListener: EntityListener<Product>?
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
@@ -152,12 +138,11 @@ final class ProductsViewController: UIViewController {
     /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
-        resultsController.isEmpty
+        viewModel.isEmpty
     }
 
     /// Supports infinite scroll.
     private let scrollWatcher = ScrollWatcher()
-    private let paginationTracker: PaginationTracker
     private var scrollWatcherSubscription: AnyCancellable?
 
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
@@ -174,12 +159,7 @@ final class ProductsViewController: UIViewController {
     private let pushNotesManager: PushNotesManager
     private var activeUploadIds: [Int64] = []
 
-    private let providedResultsController: ResultsController<StorageProduct>?
     private let siteID: Int64
-
-    /// Set when sync fails, and used to display an error loading data banner
-    ///
-    @Published private var dataLoadingError: Error?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -204,12 +184,10 @@ final class ProductsViewController: UIViewController {
          navigateToContent: @escaping (NavigationContentType) -> Void,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
-        self.providedResultsController = resultsController
         self.pushNotesManager = pushNotesManager
-        self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
+        self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores, resultsController: resultsController)
         self.selectedProduct = selectedProduct
         self.navigateToContent = navigateToContent
-        self.paginationTracker = PaginationTracker()
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         configureTitle()
@@ -264,7 +242,9 @@ final class ProductsViewController: UIViewController {
             navigationController?.navigationBar.removeShadow()
         }
 
-        reloadFavoriteProductsIfNeeded()
+        Task { [weak self] in
+            await self?.viewModel.reloadFavoriteProductsIfNeeded()
+        }
     }
 
     override func viewIsAppearing(_ animated: Bool) {
@@ -336,7 +316,7 @@ final class ProductsViewController: UIViewController {
     /// Keeps the page order until the first page succeeds, so a failed sync does not reorder the list.
     func resync() {
         reloadProducts()
-        paginationTracker.resync()
+        viewModel.resync()
     }
 }
 
@@ -474,7 +454,7 @@ private extension ProductsViewController {
         ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateSelectAllTapped())
 
         let displayedIDs = Set(presentedProducts.map(\.productID))
-        viewModel.selectProducts(resultsController.fetchedObjects.filter { displayedIDs.contains($0.productID) })
+        viewModel.selectProducts(viewModel.fetchedProducts.filter { displayedIDs.contains($0.productID) })
         updatedSelectedItems()
         tableView.reloadRows(at: tableView.indexPathsForVisibleRows ?? [], with: .none)
     }
@@ -945,30 +925,48 @@ private extension ProductsViewController {
     }
 
     func configurePaginationTracker() {
-        paginationTracker.delegate = self
         scrollWatcherSubscription = scrollWatcher.trigger.sink { [weak self] _ in
             guard let self, !isShowingLoadingRows else { return }
-            paginationTracker.ensureNextPageIsSynced()
+            viewModel.ensureNextPageIsSynced()
         }
     }
 
     func configureViewModel() {
-        viewModel.onSortOrderChanged = { [weak self] sortOrder in
-            guard let self else { return }
-            resultsController.updateSortOrder(sortOrder)
-
-            /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
-            resyncWithNewSortOrFilters()
-        }
-        viewModel.onFiltersChanged = { [weak self] filters in
-            guard let self else { return }
-            updateFilterButtonTitle(filters: filters)
-
-            await updatePredicate(filters: filters)
-
-            /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-            resyncWithNewSortOrFilters()
-        }
+        // `@Published` emits before the new value is stored, so use the emitted products.
+        viewModel.$products
+            .sink { [weak self] products in
+                guard let self else { return }
+                refreshUpdates.perform {
+                    self.presentedProducts = products
+                    self.tableView?.reloadData()
+                }
+            }
+            .store(in: &subscriptions)
+        viewModel.storageDidChange
+            .sink { [weak self] in
+                guard let self else { return }
+                refreshUpdates.perform { self.reloadTableAndView() }
+            }
+            .store(in: &subscriptions)
+        viewModel.$filters
+            .sink { [weak self] filters in
+                self?.updateFilterButtonTitle(filters: filters)
+            }
+            .store(in: &subscriptions)
+        viewModel.$syncState
+            .dropFirst()
+            .sink { [weak self] syncState in
+                guard let self else { return }
+                refreshUpdates.perform {
+                    switch syncState {
+                    case .syncing(let pageNumber):
+                        self.transitionToSyncingState(pageNumber: pageNumber)
+                    case .idle:
+                        self.transitionToResultsUpdatedState()
+                    }
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     /// Register table cells.
@@ -1015,7 +1013,7 @@ private extension ProductsViewController {
     /// Displays an error banner if there is an error loading products data.
     ///
     func showTopBannerViewIfNeeded() {
-        if let error = dataLoadingError {
+        if let error = viewModel.dataLoadingError {
             requestAndShowErrorTopBannerView(for: error)
         }
     }
@@ -1062,74 +1060,10 @@ private extension ProductsViewController {
         updateEmptyStateHeight()
     }
 
-    func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
-        let predicate = NSPredicate.createProductPredicate(siteID: siteID,
-                                                           stockStatus: viewModel.filters.stockStatus,
-                                                           productStatus: viewModel.filters.productStatus,
-                                                           productType: viewModel.filters.promotableProductType?.productType)
-
-        return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager,
-                                                 matching: predicate,
-                                                 sortOrder: viewModel.sortOrder)
-    }
-
-    /// Configure resultController.
-    /// Assign closures and start performBatch
-    ///
-    func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
-        setClosuresToResultController(resultsController, onReload: onReload)
-
-        do {
-            try resultsController.performFetch()
-        } catch {
-            ServiceLocator.crashLogging.logError(error)
-        }
-
-        refreshUpdates.perform {
-            presentedProducts = presentableProducts(resultsController.listItems)
-            tableView?.reloadData()
-        }
-    }
-
-    /// Set closure  to methods `onDidChangeContent` and `onDidResetContent
-    ///
-    func setClosuresToResultController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
-        resultsController.onDidChangeContent = { [weak self] in
-            self?.recordProductPages()
-            onReload()
-        }
-
-        resultsController.onDidResetContent = { [weak self] in
-            self?.recordProductPages()
-            onReload()
-        }
-    }
-
     func reloadProducts() {
         refreshUpdates.perform {
-            presentedProducts = presentableProducts(resultsController.listItems)
+            presentedProducts = viewModel.products
             tableView.reloadData()
-        }
-    }
-
-    /// Recorded pages belong to the previous sort or filters.
-    func resyncWithNewSortOrFilters() {
-        productPageOrder.reset()
-        resync()
-    }
-
-    /// Records pages on every storage change, even while a refresh defers presentation.
-    func recordProductPages() {
-        productPageOrder.record(resultsController.productNames, syncingPageNumber: syncingPageNumber)
-    }
-
-    /// Only the name sort can differ between the store and the device.
-    func presentableProducts(_ products: [ProductListItem]) -> [ProductListItem] {
-        switch viewModel.sortOrder {
-        case .nameAscending, .nameDescending:
-            return productPageOrder.ordered(products)
-        case .dateAscending, .dateDescending:
-            return products
         }
     }
 
@@ -1138,15 +1072,7 @@ private extension ProductsViewController {
         guard presentedProducts.indices.contains(indexPath.row) else {
             return nil
         }
-        let productID = presentedProducts[indexPath.row].productID
-        if indexPath.row < resultsController.numberOfObjects,
-           resultsController.listItem(at: indexPath).productID == productID {
-            return resultsController.safeObject(at: indexPath)
-        }
-        guard let currentIndex = resultsController.indexPath(forObjectMatching: { $0.productID == productID }) else {
-            return nil
-        }
-        return resultsController.safeObject(at: currentIndex)
+        return viewModel.product(withID: presentedProducts[indexPath.row].productID)
     }
 
     /// Manages view components and reload tableview
@@ -1157,7 +1083,7 @@ private extension ProductsViewController {
         }
         // Search can populate the shared cache while the initial sync is still running.
         // Install real rows before publishing updates that select or reload product indexes.
-        if !resultsController.isEmpty {
+        if !isEmpty {
             isShowingLoadingRows = false
         }
         showOrHideToolbar()
@@ -1186,7 +1112,7 @@ private extension ProductsViewController {
             guard let self else { return }
 
             if result.isFailure {
-                paginationTracker.resync()
+                viewModel.resync()
             } else {
                 // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
                 // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
@@ -1287,47 +1213,6 @@ private extension ProductsViewController {
             return false
         }
         return indexPathsForVisibleRows.contains(indexPath)
-    }
-
-    func reloadFavoriteProductsIfNeeded() {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-
-            // Reload only if favorite products filter is turned on
-            guard viewModel.filters.favoriteProduct != nil else {
-                return
-            }
-
-            let previousFavoriteProductIDs = viewModel.favoriteProductIDs
-            await viewModel.loadFavoriteProductIDs()
-
-            // Reload only if favorite product IDs changed
-            guard viewModel.favoriteProductIDs != previousFavoriteProductIDs else {
-                return
-            }
-
-            await updatePredicate(filters: viewModel.filters)
-
-            /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-            resyncWithNewSortOrFilters()
-        }
-    }
-
-    func updatePredicate(filters: FilterProductListViewModel.Filters) async {
-        let productIDs: [Int64]? = await {
-            guard filters.favoriteProduct != nil else {
-                return nil
-            }
-
-            await viewModel.loadFavoriteProductIDs()
-            return viewModel.favoriteProductIDs
-        }()
-
-        resultsController.updatePredicate(siteID: siteID,
-                                          stockStatus: filters.stockStatus,
-                                          productStatus: filters.productStatus,
-                                          productType: filters.promotableProductType?.productType,
-                                          productIDs: productIDs)
     }
 }
 
@@ -1527,9 +1412,7 @@ private extension ProductsViewController {
 
             ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-            await self.updatePredicate(filters: self.viewModel.filters)
-
-            self.paginationTracker.resync { [weak self] in
+            await self.viewModel.refresh { [weak self] in
                 self?.refreshUpdates.endRefreshing(sender)
             }
         }
@@ -1670,66 +1553,6 @@ private extension ProductsViewController {
     }
 }
 
-// MARK: - Sync'ing Helpers
-//
-extension ProductsViewController: PaginationTrackerDelegate {
-
-    /// Synchronizes the Products for the Default Store (if any).
-    ///
-    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
-        syncingPageNumber = pageNumber
-        refreshUpdates.perform { transitionToSyncingState(pageNumber: pageNumber) }
-        dataLoadingError = nil
-
-        let action = ProductAction
-            .synchronizeProducts(siteID: siteID,
-                                 pageNumber: pageNumber,
-                                 pageSize: pageSize,
-                                 stockStatus: viewModel.filters.stockStatus,
-                                 productStatus: viewModel.filters.productStatus,
-                                 productType: viewModel.filters.promotableProductType?.productType,
-                                 productCategory: viewModel.filters.productCategory,
-                                 sortOrder: viewModel.sortOrder,
-                                 productIDs: (viewModel.filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
-                                    guard let self else {
-                                        return
-                                    }
-
-                                    switch result {
-                                    case .failure(let error):
-                                        ServiceLocator.analytics.track(.productListLoadError, withError: error)
-                                        DDLogError("⛔️ Error synchronizing products: \(error)")
-                                        self.dataLoadingError = error
-                                    case .success:
-                                        ServiceLocator.analytics.track(
-                                            event: .ProductsList.productListLoaded(
-                                                isEligibleForSubscriptions:
-                                                    viewModel.isEligibleForSubscriptions
-                                            )
-                                        )
-                                    }
-
-                                    // Storage changes from this page are recorded before the completion runs.
-                                    if self.syncingPageNumber == pageNumber {
-                                        self.syncingPageNumber = nil
-                                    }
-                                    // A successful first page replaces the stored products (`shouldDeleteStoredProductsOnFirstPage`).
-                                    if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex, case .success = result {
-                                        let presentedProductIDs = self.presentedProducts.map(\.productID)
-                                        self.productPageOrder.reset()
-                                        self.recordProductPages()
-                                        if self.presentableProducts(self.resultsController.listItems).map(\.productID) != presentedProductIDs {
-                                            self.reloadProducts()
-                                        }
-                                    }
-                                    self.refreshUpdates.perform { self.transitionToResultsUpdatedState() }
-                                    onCompletion?(result)
-        }
-
-        ServiceLocator.stores.dispatch(action)
-    }
-}
-
 // MARK: - Finite State Machine Management
 //
 private extension ProductsViewController {
@@ -1740,7 +1563,7 @@ private extension ProductsViewController {
             displayEmptyState()
         case .syncing(let pageNumber):
             let isFirstPage = pageNumber == SyncingCoordinator.Defaults.pageFirstIndex
-            if isFirstPage && resultsController.isEmpty {
+            if isFirstPage && isEmpty {
                 removeEmptyState()
                 isShowingLoadingRows = true
                 reloadProducts()
@@ -1748,7 +1571,7 @@ private extension ProductsViewController {
                 ensureFooterSpinnerIsStarted()
             }
             // Remove error banner when sync starts
-            if dataLoadingError != nil {
+            if viewModel.dataLoadingError != nil {
                 hideTopBannerView()
             }
         case .results:
@@ -1904,10 +1727,5 @@ extension ResultsController<StorageProduct> {
     /// Product IDs and names, without building full list items.
     var productNames: [(productID: Int64, name: String)] {
         controller.fetchedObjects?.map { ($0.productID, $0.name) } ?? []
-    }
-
-    func listItem(at indexPath: IndexPath) -> ProductListItem {
-        let mutableObject = controller.object(at: indexPath)
-        return ProductListItem(storageProduct: mutableObject)
     }
 }

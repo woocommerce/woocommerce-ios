@@ -16,6 +16,7 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
             .onAppear {
                 handler.configure(session: session)
             }
+            .onDisappear { handler.cancel() }
             .posModal(item: requestBinding) { request in
                 modalContent(for: request)
             }
@@ -25,7 +26,7 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
         Binding(
             get: { handler.request },
             set: { newValue in
-                if newValue == nil {
+                if newValue == nil, handler.request != nil {
                     handler.cancel()
                 }
             }

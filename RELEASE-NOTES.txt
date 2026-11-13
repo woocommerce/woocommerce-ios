@@ -7,6 +7,7 @@
 - [*] Order creation: A custom amount of 1,000 or more entered as a percentage of the order total no longer briefly shows a much smaller amount after adding it. [https://github.com/woocommerce/woocommerce-ios/pull/18318]
 - [*] Orders: Country names like Curaçao no longer show HTML codes in the address country picker. [https://github.com/woocommerce/woocommerce-ios/pull/18359]
 - [*] Products: The error shown when a scanned barcode can't be matched no longer mentions orders. [https://github.com/woocommerce/woocommerce-ios/pull/18360]
+- [*] Dashboard: The Performance and Top Performers cards no longer get stuck after failing to load. The time range picker now stays visible, so another range can be picked to recover. [https://github.com/woocommerce/woocommerce-ios/pull/17355]
 
 
 26.1
@@ -267,7 +268,6 @@
 
 25.1
 -----
-- [*] Fixed dashboard Performance and Top Performers cards getting stuck in their error state — the time-range picker now stays visible when a card fails to load, so a shorter range can be picked without logging out. [WOOMOB-3254]
 - [Internal] Track Woo push token deletion results (woo_push_token_delete_success/error). [https://github.com/woocommerce/woocommerce-ios/pull/17477]
 - [Internal] Push notifications: migrate stores back to WordPress.com notifications when the self-driven push feature is turned off. [https://github.com/woocommerce/woocommerce-ios/pull/17472]
 - [*] Order creation product search: the Products/SKU filter now appears below the search bar while you're searching, making SKU search easier to find. [https://github.com/woocommerce/woocommerce-ios/pull/17375]

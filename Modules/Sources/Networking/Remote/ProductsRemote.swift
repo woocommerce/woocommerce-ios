@@ -4,11 +4,11 @@ import Foundation
 ///
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
-public protocol ProductsRemoteProtocol {
-    func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
-    func duplicateProduct(siteID: Int64, productID: Int64, completion: @escaping (Result<Int64, Error>) -> Void)
-    func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
-    func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
+public protocol ProductsRemoteProtocol: Sendable {
+    func addProduct(product: Product, completion: @escaping @Sendable (Result<Product, Error>) -> Void)
+    func duplicateProduct(siteID: Int64, productID: Int64, completion: @escaping @Sendable (Result<Int64, Error>) -> Void)
+    func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping @Sendable (Result<Product, Error>) -> Void)
+    func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping @Sendable (Result<Product, Error>) -> Void)
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int) async throws -> [Product]
     func loadAllProducts(for siteID: Int64,
                          context: String?,
@@ -47,16 +47,16 @@ public protocol ProductsRemoteProtocol {
                              pageSize: Int) async throws -> [Product]
     func searchSku(for siteID: Int64,
                    sku: String,
-                   completion: @escaping (Result<String, Error>) -> Void)
-    func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
-    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
-    func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void)
+                   completion: @escaping @Sendable (Result<String, Error>) -> Void)
+    func updateProduct(product: Product, completion: @escaping @Sendable (Result<Product, Error>) -> Void)
+    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping @Sendable (Result<Product, Error>) -> Void)
+    func updateProducts(siteID: Int64, products: [Product], completion: @escaping @Sendable (Result<[Product], Error>) -> Void)
     func loadProductIDs(for siteID: Int64,
                         pageNumber: Int,
                         pageSize: Int,
                         productStatus: ProductStatus?,
                         productType: ProductType?,
-                        completion: @escaping (Result<[Int64], Error>) -> Void)
+                        completion: @escaping @Sendable (Result<[Int64], Error>) -> Void)
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64
 
     func loadStock(for siteID: Int64,
@@ -771,7 +771,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol, @unchecked Se
 // MARK: - Constants
 //
 public extension ProductsRemote {
-    enum OrderKey {
+    enum OrderKey: Sendable {
         case date
         case name
         case popularity
@@ -779,7 +779,7 @@ public extension ProductsRemote {
         case itemsSold
     }
 
-    enum Order {
+    enum Order: Sendable {
         case ascending
         case descending
     }

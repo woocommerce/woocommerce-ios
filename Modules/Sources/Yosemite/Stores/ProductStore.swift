@@ -5,9 +5,7 @@ import Storage
 // MARK: - ProductStore
 //
 public class ProductStore: Store {
-    private let remote: ProductsRemoteProtocol
-    private let generativeContentRemote: GenerativeContentRemoteProtocol
-    private let productVariationStorageManager: ProductVariationStorageManager
+    private let requestHandler: ProductStoreRequestHandler
 
     override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
@@ -20,9 +18,7 @@ public class ProductStore: Store {
                 network: Network,
                 remote: ProductsRemoteProtocol,
                 generativeContentRemote: GenerativeContentRemoteProtocol) {
-        productVariationStorageManager = ProductVariationStorageManager(storageManager: storageManager)
-        self.remote = remote
-        self.generativeContentRemote = generativeContentRemote
+        requestHandler = ProductStoreRequestHandler(storageManager: storageManager, remote: remote, generativeContentRemote: generativeContentRemote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -35,6 +31,41 @@ public class ProductStore: Store {
     /// Receives and executes Actions.
     ///
     override public func onAction(_ action: Action) {
+        requestHandler.onAction(action)
+    }
+}
+
+extension ProductStore {
+    /// Updates (OR Inserts) the specified ReadOnly Product Entities into the Storage Layer.
+    ///
+    func upsertStoredProducts(readOnlyProducts: [Networking.Product], in storage: StorageType) {
+        requestHandler.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: storage)
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly Product Entity into the Storage Layer.
+    ///
+    func upsertStoredProduct(readOnlyProduct: Networking.Product, in storage: StorageType) {
+        requestHandler.upsertStoredProduct(readOnlyProduct: readOnlyProduct, in: storage)
+    }
+}
+
+// Keeps request handling separate from the non-Sendable dispatcher.
+private final class ProductStoreRequestHandler: Sendable {
+    let storageManager: StorageManagerType
+    let remote: ProductsRemoteProtocol
+    let generativeContentRemote: GenerativeContentRemoteProtocol
+    let productVariationStorageManager: ProductVariationStorageManager
+
+    init(storageManager: StorageManagerType, remote: ProductsRemoteProtocol, generativeContentRemote: GenerativeContentRemoteProtocol) {
+        self.storageManager = storageManager
+        self.remote = remote
+        self.generativeContentRemote = generativeContentRemote
+        productVariationStorageManager = ProductVariationStorageManager(storageManager: storageManager)
+    }
+
+    /// Receives and executes Actions.
+    ///
+    func onAction(_ action: Action) {
         guard let action = action as? ProductAction else {
             assertionFailure("ProductStore received an unsupported action")
             return
@@ -260,7 +291,7 @@ public class ProductStore: Store {
 
 // MARK: - Services!
 //
-private extension ProductStore {
+private extension ProductStoreRequestHandler {
 
     func retrieveProductsTransiently(siteID: Int64,
                                      currency: String,
@@ -273,7 +304,7 @@ private extension ProductStore {
                                      sortOrder: ProductsSortOrder,
                                      productIDs: [Int64],
                                      excludedProductIDs: [Int64],
-                                     onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
+                                     onCompletion: @escaping @Sendable (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
         Task { @MainActor in
             do {
                 let products = try await remote.loadAllProducts(for: siteID,
@@ -308,7 +339,7 @@ private extension ProductStore {
                                    productCategory: ProductCategory?,
                                    productIDs: [Int64],
                                    excludedProductIDs: [Int64],
-                                   onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
+                                   onCompletion: @escaping @Sendable (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
         Task { @MainActor in
             do {
                 let products: [Product]
@@ -343,7 +374,7 @@ private extension ProductStore {
 
     /// Deletes all of the Stored Products.
     ///
-    func resetStoredProducts(onCompletion: @escaping () -> Void) {
+    func resetStoredProducts(onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ storage in
             storage.deleteAllObjects(ofType: Storage.Product.self)
         }, completion: {
@@ -364,7 +395,7 @@ private extension ProductStore {
                         productType: ProductType?,
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
-                        onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+                        onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void) {
         /// internal helper search method
         func searchProductsByKeyword(searchFields: [ProductSearchField]) async throws -> [Product] {
             try await remote.searchProducts(for: siteID,
@@ -405,7 +436,7 @@ private extension ProductStore {
         }
     }
 
-    func searchInCache(siteID: Int64, keyword: String, pageSize: Int, onCompletion: @escaping (Bool) -> Void) {
+    func searchInCache(siteID: Int64, keyword: String, pageSize: Int, onCompletion: @escaping @Sendable (Bool) -> Void) {
         let namePredicate = NSPredicate(format: "name CONTAINS[c] %@", keyword)
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
@@ -414,12 +445,13 @@ private extension ProductStore {
                                                             matching: predicate,
                                                             sortedBy: nil)
 
+        let hasResults = !results.isEmpty
         handleSearchResults(siteID: siteID,
                             keyword: keyword,
                             filter: .all,
                             pageSize: pageSize,
                             result: Result.success(results.prefix(pageSize).map { $0.toReadOnly() }),
-                            onCompletion: { _ in onCompletion(!results.isEmpty) })
+                            onCompletion: { _ in onCompletion(hasResults) })
     }
 
     /// Synchronizes the products associated with a given Site ID, sorted by ascending name.
@@ -450,7 +482,7 @@ private extension ProductStore {
                                                             excludedProductIDs: excludedProductIDs,
                                                             currency: nil)
 
-            let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
+            let shouldDeleteExistingProducts = pageNumber == Store.Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
             await upsertStoredProductsInBackground(readOnlyProducts: products,
                                                    siteID: siteID,
                                                    shouldDeleteExistingProducts: shouldDeleteExistingProducts)
@@ -520,7 +552,7 @@ private extension ProductStore {
         var mergedProductIDs = Set(pageProducts.map(\.productID))
         mergedProducts.append(contentsOf: additionalProducts.filter { mergedProductIDs.insert($0.productID).inserted })
 
-        let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
+        let shouldDeleteExistingProducts = pageNumber == Store.Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
         await upsertStoredProductsInBackground(readOnlyProducts: mergedProducts,
                                                siteID: siteID,
                                                shouldDeleteExistingProducts: shouldDeleteExistingProducts)
@@ -542,7 +574,7 @@ private extension ProductStore {
 
     /// Synchronizes the Products found in a specified Order.
     ///
-    func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
+    func requestMissingProducts(for order: Order, onCompletion: @escaping @Sendable (Error?) -> Void) {
         let itemIDs = order.items.map { $0.productID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
@@ -569,7 +601,7 @@ private extension ProductStore {
     /// Retrieves multiple products with a given siteID + productIDs.
     /// - Note: This is NOT a wrapper for retrieving a single product.
     ///
-    func retrieveProductsIfNeeded(siteID: Int64, productIDs: [Int64], onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+    func retrieveProductsIfNeeded(siteID: Int64, productIDs: [Int64], onCompletion: @escaping @Sendable (Result<[Product], Error>) -> Void) {
         let storedProducts = storageManager.viewStorage.loadProducts(siteID: siteID, productsIDs: productIDs).map { $0.toReadOnly() }
         let storedProductIDs = storedProducts.map { $0.productID }
         let missingIDs = productIDs.filter { storedProductIDs.contains($0) == false }
@@ -592,7 +624,7 @@ private extension ProductStore {
                                      productIDs: [Int64],
                                      pageNumber: Int,
                                      retrievedProducts: [Product],
-                                     onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+                                     onCompletion: @escaping @Sendable (Result<[Product], Error>) -> Void) {
         retrieveProducts(siteID: siteID,
                          productIDs: productIDs,
                          pageNumber: pageNumber,
@@ -618,7 +650,7 @@ private extension ProductStore {
                           productIDs: [Int64],
                           pageNumber: Int,
                           pageSize: Int,
-                          onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
+                          onCompletion: @escaping @Sendable (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
         guard productIDs.isEmpty == false else {
             onCompletion(.success((products: [], hasNextPage: false)))
             return
@@ -638,7 +670,7 @@ private extension ProductStore {
 
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
-    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping @Sendable (Result<Product, Error>) -> Void) {
         remote.loadProduct(for: siteID, productID: productID) { [weak self] result in
             guard let self else {
                 return
@@ -670,7 +702,7 @@ private extension ProductStore {
     ///
     func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
                                                          identifier: String,
-                                                         onCompletion: @escaping (Result<(ItemIdentifierSearchResult,
+                                                         onCompletion: @escaping @Sendable (Result<(ItemIdentifierSearchResult,
                                                                                           ItemIdentifierSearchResultSource), Error>) -> Void) {
 
         guard !identifier.isEmpty else {
@@ -711,7 +743,7 @@ private extension ProductStore {
 
     /// Adds a product.
     ///
-    func addProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+    func addProduct(product: Product, onCompletion: @escaping @Sendable (Result<Product, ProductUpdateError>) -> Void) {
         remote.addProduct(product: product) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -729,7 +761,7 @@ private extension ProductStore {
     }
 
     /// Duplicates a product using the WooCommerce core endpoint.
-    func duplicateProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Int64, ProductDuplicateError>) -> Void) {
+    func duplicateProduct(siteID: Int64, productID: Int64, onCompletion: @escaping @Sendable (Result<Int64, ProductDuplicateError>) -> Void) {
         remote.duplicateProduct(siteID: siteID, productID: productID) { result in
             onCompletion(result.mapError(ProductDuplicateError.init))
         }
@@ -737,7 +769,7 @@ private extension ProductStore {
 
     /// Delete an existing product.
     ///
-    func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+    func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping @Sendable (Result<Product, ProductUpdateError>) -> Void) {
         remote.deleteProduct(for: siteID, productID: productID) { result in
             switch result {
             case .failure(let error):
@@ -752,7 +784,7 @@ private extension ProductStore {
 
     /// Updates the product.
     ///
-    func updateProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+    func updateProduct(product: Product, onCompletion: @escaping @Sendable (Result<Product, ProductUpdateError>) -> Void) {
         remote.updateProduct(product: product) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -769,7 +801,7 @@ private extension ProductStore {
         }
     }
 
-    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], onCompletion: @escaping @Sendable (Result<Product, ProductUpdateError>) -> Void) {
         remote.updateProductImages(siteID: siteID, productID: productID, images: images) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -785,7 +817,7 @@ private extension ProductStore {
         }
     }
 
-    func updateProducts(siteID: Int64, products: [Product], onCompletion: @escaping (Result<[Product], ProductUpdateError>) -> Void) {
+    func updateProducts(siteID: Int64, products: [Product], onCompletion: @escaping @Sendable (Result<[Product], ProductUpdateError>) -> Void) {
         remote.updateProducts(siteID: siteID, products: products) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -805,7 +837,7 @@ private extension ProductStore {
 
     /// Validates the Product SKU against other Products in storage.
     ///
-    func validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
+    func validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: @escaping @Sendable (Bool) -> Void) {
         guard let sku, sku.isEmpty == false else {
             // It is valid to not have a sku.
             onCompletion(true)
@@ -825,7 +857,7 @@ private extension ProductStore {
 
     /// Upserts a product in our local storage
     ///
-    func replaceProductLocally(product: Product, onCompletion: @escaping () -> Void) {
+    func replaceProductLocally(product: Product, onCompletion: @escaping @Sendable () -> Void) {
         upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
     }
 
@@ -835,7 +867,7 @@ private extension ProductStore {
     func checkIfStoreHasProducts(siteID: Int64,
                                  status: ProductStatus?,
                                  productType: ProductType?,
-                                 onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+                                 onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
         if storage.hasProducts(siteID: siteID, status: status?.rawValue, type: productType?.rawValue) {
@@ -856,7 +888,7 @@ private extension ProductStore {
     func identifyLanguage(siteID: Int64,
                           string: String,
                           feature: GenerativeContentRemoteFeature,
-                          completion: @escaping (Result<String, Error>) -> Void) {
+                          completion: @escaping @Sendable (Result<String, Error>) -> Void) {
         Task { @MainActor in
             let result = await Result {
                 try await generativeContentRemote.identifyLanguage(siteID: siteID,
@@ -871,7 +903,7 @@ private extension ProductStore {
                                     name: String,
                                     features: String,
                                     language: String,
-                                    completion: @escaping (Result<String, Error>) -> Void) {
+                                    completion: @escaping @Sendable (Result<String, Error>) -> Void) {
         let prompt = [
             "Write a description for a product with title ```\(name)``` and features: ```\(features)```.",
             "Your response should be in language \(language).",
@@ -895,7 +927,7 @@ private extension ProductStore {
                                        name: String,
                                        description: String,
                                        language: String,
-                                       completion: @escaping (Result<String, Error>) -> Void) {
+                                       completion: @escaping @Sendable (Result<String, Error>) -> Void) {
         let prompt = [
             // swiftlint:disable:next line_length
             "Your task is to help a merchant create a message to share with their customers a product named ```\(name)```. More information about the product:",
@@ -922,7 +954,7 @@ private extension ProductStore {
                                 productName: String?,
                                 scannedTexts: [String],
                                 language: String,
-                                completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
+                                completion: @escaping @Sendable (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
         let keywords: [String] = {
             guard let productName else {
                 return scannedTexts
@@ -960,7 +992,7 @@ private extension ProductStore {
     func generateProductName(siteID: Int64,
                              keywords: String,
                              language: String,
-                             completion: @escaping (Result<String, Error>) -> Void) {
+                             completion: @escaping @Sendable (Result<String, Error>) -> Void) {
         let prompt = [
             "You are a WooCommerce SEO and marketing expert.",
             "Provide a product title to enhance the store's SEO performance and sales " +
@@ -978,7 +1010,7 @@ private extension ProductStore {
         }
     }
 
-    func fetchNumberOfProducts(siteID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
+    func fetchNumberOfProducts(siteID: Int64, completion: @escaping @Sendable (Result<Int64, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let numberOfProducts = try await remote.loadNumberOfProducts(siteID: siteID)
@@ -999,7 +1031,7 @@ private extension ProductStore {
                            weightUnit: String?,
                            categories: [ProductCategory],
                            tags: [ProductTag],
-                           completion: @escaping (Result<AIProduct, Error>) -> Void) {
+                           completion: @escaping @Sendable (Result<AIProduct, Error>) -> Void) {
         Task { @MainActor in
             let result = await Result {
                 let product = try await generativeContentRemote.generateAIProduct(siteID: siteID,
@@ -1023,7 +1055,7 @@ private extension ProductStore {
                           pageNumber: Int,
                           pageSize: Int,
                           order: ProductsRemote.Order,
-                          completion: @escaping (Result<[ProductStock], Error>) -> Void) {
+                          completion: @escaping @Sendable (Result<[ProductStock], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let stock = try await remote.loadStock(for: siteID,
@@ -1047,7 +1079,7 @@ private extension ProductStore {
                              pageNumber: Int,
                              orderBy: ProductsRemote.OrderKey,
                              order: ProductsRemote.Order,
-                             completion: @escaping (Result<[ProductReport], Error>) -> Void) {
+                             completion: @escaping @Sendable (Result<[ProductReport], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let reports = try await remote.loadProductReports(for: siteID,
@@ -1076,7 +1108,7 @@ private extension ProductStore {
                                pageNumber: Int,
                                orderBy: ProductsRemote.OrderKey,
                                order: ProductsRemote.Order,
-                               completion: @escaping (Result<[ProductReport], Error>) -> Void) {
+                               completion: @escaping @Sendable (Result<[ProductReport], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let reports = try await remote.loadVariationReports(for: siteID,
@@ -1100,11 +1132,11 @@ private extension ProductStore {
 
 // MARK: - Storage: Product
 //
-extension ProductStore {
+extension ProductStoreRequestHandler {
 
     /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///
-    func deleteStoredProduct(siteID: Int64, productID: Int64, onCompletion: @escaping () -> Void) {
+    func deleteStoredProduct(siteID: Int64, productID: Int64, onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ storage in
             guard let product = storage.loadProduct(siteID: siteID, productID: productID) else {
                 return
@@ -1137,7 +1169,7 @@ extension ProductStore {
     func upsertStoredProductsInBackground(readOnlyProducts: [Networking.Product],
                                           siteID: Int64,
                                           shouldDeleteExistingProducts: Bool = false,
-                                          onCompletion: @escaping () -> Void) {
+                                          onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else {
                 return onCompletion()
@@ -1462,7 +1494,7 @@ extension ProductStore {
 
 // MARK: - Storage: Product Downloadable Files
 //
-private extension ProductStore {
+private extension ProductStoreRequestHandler {
 
     /// Updates, inserts, or prunes the provided StorageProduct's downloadable files using the provided read-only Product's downloadable files
     ///
@@ -1499,13 +1531,13 @@ private extension ProductStore {
 
 // MARK: - Storage: Search Results
 //
-private extension ProductStore {
+private extension ProductStoreRequestHandler {
     func handleSearchResults(siteID: Int64,
                              keyword: String,
                              filter: ProductSearchFilter,
                              pageSize: Int,
                              result: Result<[Product], Error>,
-                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+                             onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void) {
         switch result {
         case .success(let products):
             upsertSearchResultsInBackground(siteID: siteID,
@@ -1526,7 +1558,7 @@ private extension ProductStore {
                                                  keyword: String,
                                                  filter: ProductSearchFilter,
                                                  readOnlyProducts: [Networking.Product],
-                                                 onCompletion: @escaping () -> Void) {
+                                                 onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave ({ [weak self] storage in
             guard let self else { return }
             upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: storage)
@@ -1574,7 +1606,7 @@ private extension ProductStore {
     }
 }
 
-private extension ProductStore {
+private extension ProductStoreRequestHandler {
     func searchProductsByIdentifier(for siteID: Int64, keyword: String) async throws -> ([Product], ItemIdentifierSearchResultSource) {
         async let skuProducts = searchProductsBySKU(for: siteID, keyword: keyword)
         async let globalUniqueIdentifierProducts = searchProductsByGlobalUniqueIdentifier(for: siteID, keyword: keyword)
@@ -1617,7 +1649,7 @@ private extension ProductStore {
 
 // MARK: - Unit Testing Helpers
 //
-extension ProductStore {
+extension ProductStoreRequestHandler {
 
     /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Product in a given Storage Layer.
     ///

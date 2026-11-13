@@ -2,7 +2,7 @@ import Foundation
 import Networking
 import Storage
 
-final class ProductVariationStorageManager {
+final class ProductVariationStorageManager: Sendable {
     private let storageManager: StorageManagerType
 
     init(storageManager: StorageManagerType) {

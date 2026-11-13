@@ -76,6 +76,11 @@ final class DashboardViewHostingController: UIHostingController<DashboardRootVie
             await viewModel.reloadAllData()
         }
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        DashboardLaunchSpinAnimator.spinIfNeeded(navigationController?.view ?? view)
+    }
 }
 
 // MARK: Private helpers

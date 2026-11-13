@@ -49,8 +49,6 @@ final class IssueRefundViewModel {
         ///
         var fetchChargeError: FetchChargeError?
 
-        /// Whether a server refund preview is running for the current selection.
-        ///
         var isPreviewingRefund = false
     }
 
@@ -80,8 +78,6 @@ final class IssueRefundViewModel {
 
     var showFetchRefundsErrorNotice: ((@escaping () -> Void) -> Void)?
 
-    /// Called with a message when the server could not price the selected refund.
-    ///
     var showRefundPreviewErrorNotice: ((String) -> Void)?
 
     var hasRefundFetchError: Bool { state.refundFetchFailed }
@@ -154,7 +150,6 @@ final class IssueRefundViewModel {
 
     private let storage: StorageManagerType
 
-    /// Nil keeps every refund on the local calculation.
     private let serverRefunds: ServerRefundDependencies?
 
     init(order: Order,
@@ -189,10 +184,6 @@ final class IssueRefundViewModel {
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
-    ///
-    /// On stores with the server-calculated refund endpoints, the amount comes from a server preview of the
-    /// selection. The selection is captured before the preview runs and the confirmation is built from that
-    /// capture; if the merchant changes the selection while the preview runs, the result is dropped.
     func createRefundConfirmationViewModel(onCompletion: @escaping ((RefundConfirmationViewModel) -> Void)) {
         let selection = currentSelection()
         let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { [weak self] paymentGatewayAccount in
@@ -227,7 +218,6 @@ final class IssueRefundViewModel {
 
 // MARK: Server-calculated refunds
 extension IssueRefundViewModel {
-    /// What the merchant selected when they tapped Next, with the local total for that selection.
     struct RefundSelection: Equatable {
         let items: [RefundableOrderItem]
         let refundsShipping: Bool
@@ -243,10 +233,7 @@ extension IssueRefundViewModel {
         case failed(message: String)
     }
 
-    /// Preview and create lines for a selection, built together so the create sends exactly what was previewed.
-    /// Products go by quantity. Shipping and fee lines go by `quantity: 1`, which the server reads as
-    /// "the rest of this line". Nil when a selected product is free: the server rejects a line with
-    /// nothing left to refund, so that selection stays on the local calculation.
+    /// A free product keeps the selection local: the server rejects a line with nothing left to refund.
     static func serverLineItems(for selection: RefundSelection,
                                 currencyFormatter: CurrencyFormatter) -> (preview: [RefundPreviewLineItem], create: [ComputedRefundLineItem])? {
         func gross(_ total: String, _ tax: String) -> Decimal {
@@ -258,6 +245,7 @@ extension IssueRefundViewModel {
             return nil
         }
 
+        // For shipping and fee lines the server reads `quantity: 1` as the rest of the line.
         let wholeLineIDs = selection.shippingLines
             .filter { gross($0.total, $0.totalTax) != .zero }
             .map(\.shippingID)

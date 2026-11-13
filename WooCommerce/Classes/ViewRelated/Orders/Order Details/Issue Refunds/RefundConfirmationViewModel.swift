@@ -26,7 +26,6 @@ final class RefundConfirmationViewModel {
     ///
     private let actionProcessor: StoresManager
 
-    /// Submits the `compute_totals` create when `details.serverLineItems` is set.
     private let refundService: RefundServiceProtocol?
 
     /// Contains the current value of the Reason for Refund text field.
@@ -197,8 +196,6 @@ extension RefundConfirmationViewModel {
         ///
         let paymentGatewayAccount: PaymentGatewayAccount?
 
-        /// Set when `amount` is a server preview total: the refund is then created with
-        /// `compute_totals` from these lines instead of the locally calculated ones.
         let serverLineItems: [ComputedRefundLineItem]?
 
         init(order: Order,

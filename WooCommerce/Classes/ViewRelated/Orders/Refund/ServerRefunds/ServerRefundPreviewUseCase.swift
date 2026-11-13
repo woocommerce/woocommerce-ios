@@ -34,7 +34,6 @@ final class ServerRefundPreviewUseCase {
     private let flowResolver: RefundFlowResolver
     private let availabilityCache: ServerRefundAvailabilityCache
     private let analytics: Analytics
-    /// Tracked when the preview route is missing. Each refund flow reports its own event, or none.
     private let serverFlowUnavailableEvent: WooAnalyticsEvent?
 
     init(refundService: RefundServiceProtocol,

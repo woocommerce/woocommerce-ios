@@ -151,7 +151,6 @@ struct IssueRefundViewModelServerRefundTests {
 // MARK: - Helpers
 
 private extension IssueRefundViewModelServerRefundTests {
-    /// Order with one taxed product (2 × $18 + 10% tax) and taxed shipping ($10 + $1).
     func makeSUT(service: RefundServiceProtocol, wooVersion: String = "11.3.0") -> (IssueRefundViewModel, MockStoresManager) {
         let session = SessionManager.testingInstance
         session.cachedWooCommerceVersion = wooVersion

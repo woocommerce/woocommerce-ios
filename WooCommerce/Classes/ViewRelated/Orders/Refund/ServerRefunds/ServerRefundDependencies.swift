@@ -5,7 +5,6 @@ import protocol Storage.StorageManagerType
 import struct NetworkingCore.JetpackSite
 import protocol WooFoundation.Analytics
 
-/// The services the order details refund flow needs to preview and create server-calculated refunds.
 struct ServerRefundDependencies {
     let previewUseCase: ServerRefundPreviewUseCase
     let refundService: RefundServiceProtocol
@@ -21,8 +20,6 @@ struct ServerRefundDependencies {
         self.appPasswordSupportState = appPasswordSupportState
     }
 
-    /// Builds the services for the current session the same way the POS tab does.
-    /// Returns nil without credentials; the flow then keeps the local calculation.
     @MainActor
     static func make(stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -42,7 +39,7 @@ struct ServerRefundDependencies {
         let flowResolver = RefundFlowResolver(stores: stores,
                                               availabilityCache: .shared,
                                               minimumWooVersion: RefundFlowResolver.Constants.minimumWooVersionForServerRefunds)
-        // No unavailable event here: `refund_flow` on the refund create events already reports which path ran.
+        // No unavailable event: `refund_flow` on the create events already reports the path.
         let previewUseCase = ServerRefundPreviewUseCase(refundService: refundService,
                                                         flowResolver: flowResolver,
                                                         availabilityCache: .shared,

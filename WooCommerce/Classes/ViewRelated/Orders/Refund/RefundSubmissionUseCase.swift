@@ -236,8 +236,7 @@ extension RefundSubmissionUseCase {
         /// instead of the classic `RefundAction.createRefund` path.
         let serverLineItems: [ComputedRefundLineItem]?
 
-        /// When true, the `compute_totals` create sends `amount` as the refund total, so the server
-        /// refunds exactly the previewed amount the merchant confirmed or rejects the request.
+        /// Pins the confirmed preview total: the store rejects the create if the lines now total more.
         let pinsServerAmount: Bool
 
         init(order: Order,

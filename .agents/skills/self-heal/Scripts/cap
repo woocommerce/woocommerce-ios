@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Usage: cap [status|reset]
+#
+# status: prints the fix-PR and brief counts against their caps, then one verdict line each:
+#   fix-slot free|full
+#   brief-slot free|full
+# reset: stops the fix PRs open right now counting toward the cap, without closing them.
+
+readonly REPO="${SELF_HEAL_REPO:-woocommerce/woocommerce-ios}"
+readonly MARK="${SELF_HEAL_CAP_MARK:-$HOME/.self-heal/cap-reset}"
+readonly MAX_FIX_PRS="${SELF_HEAL_MAX_FIX_PRS:-5}"
+readonly MAX_BRIEFS="${SELF_HEAL_MAX_BRIEFS:-5}"
+
+die() { echo "error: $*" >&2; exit 1; }
+
+case "${1:-status}" in
+  reset)
+    mkdir -p "$(dirname "$MARK")"
+    date -u +%Y-%m-%dT%H:%M:%SZ > "$MARK"
+    echo "cap reset at $(cat "$MARK")"
+    ;;
+  status)
+    since=""
+    [[ -f "$MARK" ]] && since="$(cat "$MARK")"
+
+    fix_prs=$(gh pr list --repo "$REPO" --author @me --state open --json number,headRefName,createdAt \
+      | jq --arg since "$since" '[.[]
+          | select(.headRefName | startswith("self-heal/"))
+          | select(.headRefName | endswith("-red") | not)
+          | select(.createdAt > $since)
+          | .number]')
+
+    # A brief is an issue whose status the run owns, not yet handed to a fix PR nor parked for a human.
+    # The status lives in the body of a crash issue the run opened, or in the run's last comment on anyone else's issue.
+    me="${SELF_HEAL_GH_USER:-$(gh api user --jq .login)}"
+    briefs=$(gh issue list --repo "$REPO" --state open --limit 500 --json number,author,body,labels,comments \
+      | jq --arg me "$me" '[.[]
+          | (if .author.login == $me and any(.labels[]; .name == "type: crash") then .body
+             else [.comments[] | select(.author.login == $me and (.body | contains("Status: ")))] | last | .body?
+             end) as $status
+          | select($status != null and ($status | test("Status: (PR #|needs human)") | not))
+          | .number]')
+
+    fix_count=$(jq length <<< "$fix_prs")
+    brief_count=$(jq length <<< "$briefs")
+
+    echo "fix PRs counted: $fix_count/$MAX_FIX_PRS $(jq -c . <<< "$fix_prs")${since:+ (opened after reset $since)}"
+    echo "briefs: $brief_count/$MAX_BRIEFS $(jq -c . <<< "$briefs")"
+    (( fix_count < MAX_FIX_PRS )) && echo "fix-slot free" || echo "fix-slot full"
+    (( brief_count < MAX_BRIEFS )) && echo "brief-slot free" || echo "brief-slot full"
+    ;;
+  *)
+    die "usage: cap [status|reset]"
+    ;;
+esac

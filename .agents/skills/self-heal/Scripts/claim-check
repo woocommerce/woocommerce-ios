@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Usage: claim-check <sentry-issue-id> <short-id>
+#
+# Prints one line per GitHub issue/PR or Linear issue that already names the crash.
+# No output means the crash is unclaimed.
+
+readonly REPO="${SELF_HEAL_REPO:-woocommerce/woocommerce-ios}"
+
+die() { echo "error: $*" >&2; exit 1; }
+
+[[ $# -eq 2 ]] || die "usage: claim-check <sentry-issue-id> <short-id>"
+readonly ISSUE_ID="$1" SHORT_ID="$2"
+[[ -n "${LINEAR_API_KEY:-}" ]] || die "LINEAR_API_KEY is not set"
+
+gh search issues "$SHORT_ID" --repo "$REPO" --include-prs --json number,title,state \
+  --jq '.[] | "github #\(.number) \(.state): \(.title)"'
+
+# Linear's Sentry integration links crashes as attachments; people also paste the short ID into descriptions.
+query=$(jq -n --arg id "$ISSUE_ID" --arg short "$SHORT_ID" '{
+  query: "query($id: String!, $short: String!) {
+    attachments(filter: {url: {contains: $id}}) { nodes { issue { identifier title state { name } } } }
+    issues(filter: {or: [{title: {containsIgnoreCase: $short}}, {description: {containsIgnoreCase: $short}}]}) { nodes { identifier title state { name } } }
+  }",
+  variables: {id: ("/issues/" + $id), short: $short}
+}')
+
+curl -sSf https://api.linear.app/graphql -H "Authorization: $LINEAR_API_KEY" -H 'Content-Type: application/json' -d "$query" \
+  | jq -r '
+      if .errors then error(.errors[0].message) else . end
+      | [.data.attachments.nodes[].issue, .data.issues.nodes[]]
+      | unique_by(.identifier)[]
+      | "linear \(.identifier) \(.state.name): \(.title)"'

@@ -356,6 +356,7 @@ struct PointOfSaleDashboardView: View {
                             .environment(\.posModalParentSize, proxy.size)
                             .posFullScreenFlowHeader(style: .barcodeScannerSetup, dismissAction: { phoneShowingBarcodeScannerSetup = false })
                     }
+                    .background(Color.posSurfaceBright.ignoresSafeArea())
                 }
                 .posFullScreenCover(item: Binding(
                     get: { posModel.editingCustomAmount },

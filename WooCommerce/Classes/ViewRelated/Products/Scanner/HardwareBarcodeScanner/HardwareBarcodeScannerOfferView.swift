@@ -34,17 +34,40 @@ struct HardwareBarcodeScannerOfferView: View {
                 isShowingInfo = true
             }
             .accessibilityIdentifier("hardware-barcode-scanner-info-button")
+            // On iPad the camera is a form sheet, which reports compact width, and a sheet on top of it looks embedded in it.
+            .popover(isPresented: isShowingInfoPopover, arrowEdge: .bottom) {
+                infoView
+                    .frame(width: Layout.popoverWidth)
+                    .presentationCompactAdaptation(.popover)
+                    .presentationBackground(Color.storeSurfaceBright)
+            }
         }
         .padding(.horizontal, StorePadding.p5)
         .padding(.bottom, StorePadding.p5)
         .onChange(of: isShowingInfo) { _, isShowing in
             onInfoVisibilityChange(isShowing)
         }
-        .storeSheet(isPresented: $isShowingInfo) {
-            HardwareBarcodeScannerInfoView(viewModel: HardwareBarcodeScannerInfoViewModel(source: source, onDismiss: {
-                isShowingInfo = false
-            }))
+        .storeSheet(isPresented: isShowingInfoSheet) {
+            infoView
         }
+    }
+
+    private var showsInfoAsPopover: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
+
+    private var isShowingInfoSheet: Binding<Bool> {
+        Binding(get: { isShowingInfo && !showsInfoAsPopover }, set: { isShowingInfo = $0 })
+    }
+
+    private var isShowingInfoPopover: Binding<Bool> {
+        Binding(get: { isShowingInfo && showsInfoAsPopover }, set: { isShowingInfo = $0 })
+    }
+
+    private var infoView: some View {
+        HardwareBarcodeScannerInfoView(viewModel: HardwareBarcodeScannerInfoViewModel(source: source, onDismiss: {
+            isShowingInfo = false
+        }))
     }
 
     private var divider: some View {
@@ -55,6 +78,10 @@ struct HardwareBarcodeScannerOfferView: View {
 }
 
 private extension HardwareBarcodeScannerOfferView {
+    enum Layout {
+        static let popoverWidth: CGFloat = 420
+    }
+
     enum Localization {
         static let or = NSLocalizedString(
             "hardwareBarcodeScannerOffer.or",

@@ -449,8 +449,9 @@ struct POSSecuritySettingsControllerTests {
     }
 
     private func removalRequest(for controller: POSSecuritySettingsController,
-                                using handler: POSManagerOverrideHandler = POSManagerOverrideHandler()) async
+                                using suppliedHandler: POSManagerOverrideHandler? = nil) async
         -> (POSManagerOverrideHandler, Task<POSManagerOverrideHandler.ApprovalResult, Never>) {
+        let handler = suppliedHandler ?? POSManagerOverrideHandler()
         let (ready, input) = AsyncStream.makeStream(of: Void.self, bufferingPolicy: .bufferingNewest(1))
         withObservationTracking { _ = handler.request } onChange: { input.yield(()) }
         let approval = Task {

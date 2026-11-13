@@ -3,6 +3,7 @@ import XCTest
 
 /// Mock for `GenerativeContentRemote`.
 ///
+@MainActor
 final class MockGenerativeContentRemote {
     private(set) var generateTextBase: String?
     private(set) var generateTextFeature: GenerativeContentRemoteFeature?

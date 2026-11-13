@@ -37,7 +37,7 @@ struct MockProductActionHandler: MockActionHandler {
         }
     }
 
-    func synchronizeProducts(siteID: Int64, excludedProductIDs: [Int64], onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func synchronizeProducts(siteID: Int64, excludedProductIDs: [Int64], onCompletion: @escaping @MainActor @Sendable (Result<Bool, Error>) -> Void) {
         let products = objectGraph.products(forSiteId: siteID, without: excludedProductIDs)
         upsert(products: products) {
             /// Indicate that no more products are coming
@@ -48,7 +48,7 @@ struct MockProductActionHandler: MockActionHandler {
     func retrieveProducts(
         siteId: Int64,
         productIds: [Int64],
-        onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void
+        onCompletion: @escaping @MainActor @Sendable (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void
     ) {
         let products = objectGraph.products(forSiteId: siteId, productIds: productIds)
         upsert(products: products) {
@@ -56,16 +56,17 @@ struct MockProductActionHandler: MockActionHandler {
         }
     }
 
-    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping @MainActor @Sendable (Result<Product, Error>) -> Void) {
         guard let product = objectGraph.products(forSiteId: siteID, productIds: [productID]).first else {
-            return onCompletion(.failure(ProductLoadError.notFound))
+            // Mock actions are dispatched on the main thread, like `Dispatcher` actions.
+            return MainActor.assumeIsolated { onCompletion(.failure(ProductLoadError.notFound)) }
         }
         upsert(products: [product]) {
             onCompletion(.success(product))
         }
     }
 
-    func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
+    func requestMissingProducts(for order: Order, onCompletion: @escaping @MainActor @Sendable (Error?) -> Void) {
         let productIds = order.items.map { $0.productID }.uniqued()
         let products = objectGraph.products(forSiteId: order.siteID, productIds: productIds)
 
@@ -74,9 +75,11 @@ struct MockProductActionHandler: MockActionHandler {
         }
     }
 
-    func upsert(products: [Product], onCompletion: @escaping () -> ()) {
+    func upsert(products: [Product], onCompletion: @escaping @MainActor @Sendable () -> ()) {
         storageManager.performAndSave({ storage in
             self.productStore.upsertStoredProducts(readOnlyProducts: products, in: storage)
-        }, completion: onCompletion, on: .main)
+        }, completion: {
+            MainActor.assumeIsolated { onCompletion() }
+        }, on: .main)
     }
 }

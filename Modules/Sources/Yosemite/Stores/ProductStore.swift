@@ -73,19 +73,19 @@ private final class ProductStoreRequestHandler: Sendable {
 
         switch action {
         case .addProduct(let product, let onCompletion):
-            addProduct(product: product, onCompletion: onCompletion)
+            addProduct(product: product, onCompletion: onMain(onCompletion))
         case .duplicateProduct(let siteID, let productID, let onCompletion):
-            duplicateProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
+            duplicateProduct(siteID: siteID, productID: productID, onCompletion: onMain(onCompletion))
         case .deleteProduct(let siteID, let productID, let onCompletion):
-            deleteProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
+            deleteProduct(siteID: siteID, productID: productID, onCompletion: onMain(onCompletion))
         case .resetStoredProducts(let onCompletion):
-            resetStoredProducts(onCompletion: onCompletion)
+            resetStoredProducts(onCompletion: onMain(onCompletion))
         case .retrieveProduct(let siteID, let productID, let onCompletion):
-            retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
+            retrieveProduct(siteID: siteID, productID: productID, onCompletion: onMain(onCompletion))
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
-            retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+            retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onMain(onCompletion))
         case .retrieveProductsIfNeeded(let siteID, let productIDs, let onCompletion):
-            retrieveProductsIfNeeded(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
+            retrieveProductsIfNeeded(siteID: siteID, productIDs: productIDs, onCompletion: onMain(onCompletion))
         case let .retrieveProductsTransiently(siteID, currency, pageNumber, pageSize, stockStatus, productStatus, productType,
                                               productCategory, sortOrder, productIDs, excludedProductIDs, onCompletion):
             retrieveProductsTransiently(siteID: siteID,
@@ -99,11 +99,11 @@ private final class ProductStoreRequestHandler: Sendable {
                                         sortOrder: sortOrder,
                                         productIDs: productIDs,
                                         excludedProductIDs: excludedProductIDs,
-                                        onCompletion: onCompletion)
+                                        onCompletion: onMain(onCompletion))
         case .retrieveFirstPurchasableItemMatchFromIdentifier(siteID: let siteID, identifier: let identifier, onCompletion: let onCompletion):
-            retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID, identifier: identifier, onCompletion: onCompletion)
+            retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID, identifier: identifier, onCompletion: onMain(onCompletion))
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
-            searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
+            searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onMain(onCompletion))
         case let .searchProducts(siteID,
                                  keyword,
                                  filter,
@@ -126,7 +126,7 @@ private final class ProductStoreRequestHandler: Sendable {
                            productType: productType,
                            productCategory: productCategory,
                            excludedProductIDs: excludedProductIDs,
-                           onCompletion: onCompletion)
+                           onCompletion: onMain(onCompletion))
         case let .searchProductsTransiently(siteID, currency, keyword, filter, pageNumber, pageSize, stockStatus, productStatus,
                                             productType, productCategory, productIDs, excludedProductIDs, onCompletion):
             searchProductsTransiently(siteID: siteID,
@@ -141,7 +141,7 @@ private final class ProductStoreRequestHandler: Sendable {
                                       productCategory: productCategory,
                                       productIDs: productIDs,
                                       excludedProductIDs: excludedProductIDs,
-                                      onCompletion: onCompletion)
+                                      onCompletion: onMain(onCompletion))
         case .synchronizeProducts(let siteID,
                                   let pageNumber,
                                   let pageSize,
@@ -195,33 +195,33 @@ private final class ProductStoreRequestHandler: Sendable {
                 }
             }
         case .requestMissingProducts(let order, let onCompletion):
-            requestMissingProducts(for: order, onCompletion: onCompletion)
+            requestMissingProducts(for: order, onCompletion: onMain(onCompletion))
         case .updateProduct(let product, let onCompletion):
-            updateProduct(product: product, onCompletion: onCompletion)
+            updateProduct(product: product, onCompletion: onMain(onCompletion))
         case .updateProductImages(let siteID, let productID, let images, let onCompletion):
-            updateProductImages(siteID: siteID, productID: productID, images: images, onCompletion: onCompletion)
+            updateProductImages(siteID: siteID, productID: productID, images: images, onCompletion: onMain(onCompletion))
         case .updateProducts(let siteID, let products, let onCompletion):
-            updateProducts(siteID: siteID, products: products, onCompletion: onCompletion)
+            updateProducts(siteID: siteID, products: products, onCompletion: onMain(onCompletion))
         case .validateProductSKU(let sku, let siteID, let onCompletion):
-            validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
+            validateProductSKU(sku, siteID: siteID, onCompletion: onMain(onCompletion))
         case let .replaceProductLocally(product, onCompletion):
-            replaceProductLocally(product: product, onCompletion: onCompletion)
+            replaceProductLocally(product: product, onCompletion: onMain(onCompletion))
         case let .checkIfStoreHasProducts(siteID, status, productType, onCompletion):
-            checkIfStoreHasProducts(siteID: siteID, status: status, productType: productType, onCompletion: onCompletion)
+            checkIfStoreHasProducts(siteID: siteID, status: status, productType: productType, onCompletion: onMain(onCompletion))
         case let .identifyLanguage(siteID, string, feature, completion):
             identifyLanguage(siteID: siteID,
                              string: string, feature: feature,
-                             completion: completion)
+                             completion: onMain(completion))
         case let .generateProductDescription(siteID, name, features, language, completion):
-            generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: completion)
+            generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: onMain(completion))
         case let .generateProductSharingMessage(siteID, url, name, description, language, completion):
-            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
+            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: onMain(completion))
         case let .generateProductName(siteID, keywords, language, completion):
-            generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
+            generateProductName(siteID: siteID, keywords: keywords, language: language, completion: onMain(completion))
         case let .generateProductDetails(siteID, productName, scannedTexts, language, completion):
-            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, language: language, completion: completion)
+            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, language: language, completion: onMain(completion))
         case let .fetchNumberOfProducts(siteID, completion):
-            fetchNumberOfProducts(siteID: siteID, completion: completion)
+            fetchNumberOfProducts(siteID: siteID, completion: onMain(completion))
         case let .generateAIProduct(siteID,
                                     productName,
                                     keywords,
@@ -243,14 +243,14 @@ private final class ProductStoreRequestHandler: Sendable {
                               weightUnit: weightUnit,
                               categories: categories,
                               tags: tags,
-                              completion: completion)
+                              completion: onMain(completion))
         case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, order, completion):
             fetchStockReport(siteID: siteID,
                              stockType: stockType,
                              pageNumber: pageNumber,
                              pageSize: pageSize,
                              order: order,
-                             completion: completion)
+                             completion: onMain(completion))
         case let .fetchProductReports(siteID, productIDs, timeZone, earliestDateToInclude, latestDateToInclude, pageSize, pageNumber, orderBy, order, completion):
             fetchProductReports(siteID: siteID,
                                 productIDs: productIDs,
@@ -261,7 +261,7 @@ private final class ProductStoreRequestHandler: Sendable {
                                 pageNumber: pageNumber,
                                 orderBy: orderBy,
                                 order: order,
-                                completion: completion)
+                                completion: onMain(completion))
         case let .fetchVariationReports(siteID,
                                         productIDs,
                                         variationIDs,
@@ -283,11 +283,26 @@ private final class ProductStoreRequestHandler: Sendable {
                                   pageNumber: pageNumber,
                                   orderBy: orderBy,
                                   order: order,
-                                  completion: completion)
+                                  completion: onMain(completion))
         }
     }
 }
 
+
+// MARK: - Completion delivery
+//
+private extension ProductStoreRequestHandler {
+    /// Bridges a main-actor Action completion to the handlers' nonisolated closures.
+    /// Every path already runs on the main thread: `Dispatcher` delivers actions there, storage completions
+    /// are queued on `.main`, and the network layer responds on Alamofire's default main queue.
+    func onMain(_ completion: @escaping @MainActor @Sendable () -> Void) -> @Sendable () -> Void {
+        { MainActor.assumeIsolated { completion() } }
+    }
+
+    func onMain<T: Sendable>(_ completion: @escaping @MainActor @Sendable (T) -> Void) -> @Sendable (T) -> Void {
+        { value in MainActor.assumeIsolated { completion(value) } }
+    }
+}
 
 // MARK: - Services!
 //
@@ -1836,7 +1851,7 @@ public enum ProductLoadError: Error, Equatable {
 }
 
 /// Product details that can be generated by AI with a list of scanned texts from a product image.
-public struct ProductDetailsFromScannedTexts: Equatable, Decodable {
+public struct ProductDetailsFromScannedTexts: Equatable, Decodable, Sendable {
     /// Product name.
     public let name: String
     /// Product description.

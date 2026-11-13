@@ -418,7 +418,7 @@ final class ProductStoreTests: XCTestCase {
                                                                            pageSize: 25,
                                                                            sortOrder: .nameAscending,
                                                                            additionalProductIDs: additionalProductIDs,
-                                                                           onCompletion: promise)
+                                                                           onCompletion: { promise($0) })
             productStore.onAction(action)
         }
 
@@ -454,7 +454,7 @@ final class ProductStoreTests: XCTestCase {
                                                                            pageSize: 25,
                                                                            sortOrder: .nameAscending,
                                                                            additionalProductIDs: [cachedAdditionalProduct.productID],
-                                                                           onCompletion: promise)
+                                                                           onCompletion: { promise($0) })
             productStore.onAction(action)
         }
 
@@ -487,7 +487,7 @@ final class ProductStoreTests: XCTestCase {
                                                                            pageSize: 25,
                                                                            sortOrder: .nameAscending,
                                                                            additionalProductIDs: [cachedAdditionalProduct.productID],
-                                                                           onCompletion: promise)
+                                                                           onCompletion: { promise($0) })
             productStore.onAction(action)
         }
 
@@ -519,7 +519,7 @@ final class ProductStoreTests: XCTestCase {
                                                                            pageSize: 25,
                                                                            sortOrder: .nameAscending,
                                                                            additionalProductIDs: [additionalProduct.productID],
-                                                                           onCompletion: promise)
+                                                                           onCompletion: { promise($0) })
             productStore.onAction(action)
         }
 

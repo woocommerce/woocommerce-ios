@@ -56,13 +56,13 @@ struct PointOfSalePaymentSuccessView: View {
                     isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
-        .posModal(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
-            POSPrintReceiptFailureModal(failure: failure,
-                                        selectAction: { action in
-                                            selectedFailureAction = action
-                                            printFailure = nil
-                                        },
-                                        close: { printFailure = nil })
+        .posDialog(item: $printFailure, onDismiss: handlePrintFailureDismissed) { failure in
+            .printReceiptFailure(failure,
+                                 selectAction: { action in
+                                     selectedFailureAction = action
+                                     printFailure = nil
+                                 },
+                                 close: { printFailure = nil })
         }
         .task(id: printButtonState) {
             guard printButtonState == .success else { return }

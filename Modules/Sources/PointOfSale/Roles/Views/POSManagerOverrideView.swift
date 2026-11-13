@@ -20,6 +20,12 @@ struct POSManagerOverrideView: View {
     }
 }
 
+extension POSModalCompactStyle {
+    static var managerApproval: POSModalCompactStyle {
+        .fullScreen(title: POSManagerOverrideView.Localization.title)
+    }
+}
+
 private extension POSManagerOverrideView {
     var isCompactWidth: Bool {
         horizontalSizeClass == .compact

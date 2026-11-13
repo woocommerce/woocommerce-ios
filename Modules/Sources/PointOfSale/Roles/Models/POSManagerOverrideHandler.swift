@@ -6,11 +6,15 @@ import Observation
 final class POSManagerOverrideHandler {
     enum ApprovalResult: Equatable, Sendable {
         case completed
-        /// Ending the request does not roll back an operation already admitted to persistence.
         case cancelled
     }
 
     typealias PINOperation = @MainActor (String) async throws(POSAuthError) -> Bool
+
+    private struct RequestHandle: Sendable {
+        let id: UUID
+        let task: Task<ApprovalResult, Never>
+    }
 
     @ObservationIgnored private var session: POSAccessSession?
     @ObservationIgnored private var requestTask: Task<ApprovalResult, Never>?
@@ -45,18 +49,17 @@ final class POSManagerOverrideHandler {
         }
     }
 
-    /// Keep protected side effects inside `operation`; the returned result is not an authorization grant.
     func requestApproval(for capability: POSCapability,
                          reason: String,
                          operation: PINOperation? = nil) async -> ApprovalResult {
         guard !Task.isCancelled else { return .cancelled }
-        let (requestID, task) = startRequest(for: capability, reason: reason, operation: operation)
+        let handle = startRequest(for: capability, reason: reason, operation: operation)
         let result = await withTaskCancellationHandler {
-            await task.value
+            await handle.task.value
         } onCancel: {
-            task.cancel()
+            handle.task.cancel()
         }
-        guard latestRequestID == requestID, !Task.isCancelled else { return .cancelled }
+        guard latestRequestID == handle.id, !Task.isCancelled else { return .cancelled }
         return result
     }
 
@@ -110,10 +113,10 @@ final class POSManagerOverrideHandler {
 }
 
 private extension POSManagerOverrideHandler {
-    func startRequest(for capability: POSCapability,
+    private func startRequest(for capability: POSCapability,
                       reason: String,
                       operation: PINOperation? = nil,
-                      onSuccess: (() -> Void)? = nil) -> (UUID, Task<ApprovalResult, Never>) {
+                      onSuccess: (() -> Void)? = nil) -> RequestHandle {
         cancel()
         let request = POSManagerOverrideRequest(capability: capability, reason: reason)
         latestRequestID = request.id
@@ -151,7 +154,7 @@ private extension POSManagerOverrideHandler {
             return .cancelled
         }
         requestTask = task
-        return (request.id, task)
+        return RequestHandle(id: request.id, task: task)
     }
 
     func resolveSubmission(_ result: Bool) {

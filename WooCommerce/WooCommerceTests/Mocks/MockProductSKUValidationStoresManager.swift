@@ -20,11 +20,10 @@ final class MockProductSKUValidationStoresManager: DefaultStoresManager {
     private func handleProductVariationAction(_ action: ProductAction) {
         switch action {
         case let .validateProductSKU(sku, _, onCompletion):
-            guard let sku else {
-                onCompletion(true)
-                return
+            let isValid = sku.map { existingSKUs.contains($0) == false } ?? true
+            MainActor.assumeIsolated {
+                onCompletion(isValid)
             }
-            onCompletion(existingSKUs.contains(sku) == false)
         default:
             fatalError("Not implemented yet")
         }

@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class AddAttributeOptionsViewModelTests: XCTestCase {
 
     private let sampleAttributeName = "attr"

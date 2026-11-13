@@ -938,6 +938,7 @@ private extension BlazeCampaignDashboardViewModelTests {
         }, completion: {}, on: .main)
     }
 
+    @MainActor
     func mockSynchronizeProducts(insertProductToStorage product: Networking.Product? = nil) {
         stores.whenReceivingAction(ofType: ProductAction.self) { [weak self] action in
             switch action {

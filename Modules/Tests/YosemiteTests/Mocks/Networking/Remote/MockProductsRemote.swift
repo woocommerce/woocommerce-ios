@@ -199,8 +199,8 @@ final class MockProductsRemote {
 
 // MARK: - ProductsEndpointsProviding
 
-extension MockProductsRemote: @MainActor ProductsRemoteProtocol {
-    func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
+extension MockProductsRemote: ProductsRemoteProtocol {
+    nonisolated func addProduct(product: Product, completion: @escaping @Sendable (Result<Product, Error>) -> Void) {
         Task { @MainActor [weak self] in
             guard let self else {
                 return
@@ -214,7 +214,7 @@ extension MockProductsRemote: @MainActor ProductsRemoteProtocol {
         }
     }
 
-    func duplicateProduct(siteID: Int64, productID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
+    nonisolated func duplicateProduct(siteID: Int64, productID: Int64, completion: @escaping @Sendable (Result<Int64, Error>) -> Void) {
         Task { @MainActor [weak self] in
             guard let self else {
                 return
@@ -230,7 +230,7 @@ extension MockProductsRemote: @MainActor ProductsRemoteProtocol {
         }
     }
 
-    func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
+    nonisolated func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping @Sendable (Result<Product, Error>) -> Void) {
         Task { @MainActor [weak self] in
             guard let self else {
                 return
@@ -244,9 +244,9 @@ extension MockProductsRemote: @MainActor ProductsRemoteProtocol {
         }
     }
 
-    func loadProduct(for siteID: Int64,
-                     productID: Int64,
-                     completion: @escaping (Result<Product, Error>) -> Void) {
+    nonisolated func loadProduct(for siteID: Int64,
+                                 productID: Int64,
+                                 completion: @escaping @Sendable (Result<Product, Error>) -> Void) {
         Task { @MainActor [weak self] in
             guard let self else {
                 return
@@ -377,15 +377,18 @@ extension MockProductsRemote: @MainActor ProductsRemoteProtocol {
         }
     }
 
-    func searchSku(for siteID: Int64, sku: String, completion: @escaping (Result<String, Error>) -> Void) {
+    nonisolated func searchSku(for siteID: Int64, sku: String, completion: @escaping @Sendable (Result<String, Error>) -> Void) {
         // no-op
     }
 
-    func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
+    nonisolated func updateProduct(product: Product, completion: @escaping @Sendable (Result<Product, Error>) -> Void) {
         // no-op
     }
 
-    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void) {
+    nonisolated func updateProductImages(siteID: Int64,
+                                         productID: Int64,
+                                         images: [ProductImage],
+                                         completion: @escaping @Sendable (Result<Product, Error>) -> Void) {
         Task { @MainActor [weak self] in
             guard let self else { return }
 
@@ -398,16 +401,16 @@ extension MockProductsRemote: @MainActor ProductsRemoteProtocol {
         }
     }
 
-    func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void) {
+    nonisolated func updateProducts(siteID: Int64, products: [Product], completion: @escaping @Sendable (Result<[Product], Error>) -> Void) {
         // no-op
     }
 
-    func loadProductIDs(for siteID: Int64,
-                        pageNumber: Int,
-                        pageSize: Int,
-                        productStatus: ProductStatus?,
-                        productType: ProductType?,
-                        completion: @escaping (Result<[Int64], Error>) -> Void) {
+    nonisolated func loadProductIDs(for siteID: Int64,
+                                    pageNumber: Int,
+                                    pageSize: Int,
+                                    productStatus: ProductStatus?,
+                                    productType: ProductType?,
+                                    completion: @escaping @Sendable (Result<[Int64], Error>) -> Void) {
         // no-op
     }
 

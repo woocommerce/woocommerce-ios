@@ -139,6 +139,68 @@ struct AddCustomAmountFormViewModelTests {
         #expect(sut.amount == "12.34")
     }
 
+    @Test(arguments: [("1234", "12.34"), ("123456", "1234.56"), ("5", "0.05")])
+    func test_setAmount_digits_when_currency_has_two_fraction_digits_then_fills_from_the_right(
+        digits: String, expected: String
+    ) async throws {
+        // Given
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
+
+        // When
+        sut.setAmount(digits: digits)
+
+        // Then
+        #expect(sut.amount == expected)
+        #expect(sut.isAddEnabled == true)
+    }
+
+    @Test func test_setAmount_digits_when_store_uses_comma_and_no_fraction_digits_then_has_no_separators() async throws {
+        // Given
+        let settings = CurrencySettings(currencyCode: .JPY,
+                                        currencyPosition: .left,
+                                        thousandSeparator: ".",
+                                        decimalSeparator: ",",
+                                        numberOfDecimals: 0)
+        let sut = AddCustomAmountFormViewModel(currencySettings: settings)
+
+        // When
+        sut.setAmount(digits: "1500")
+
+        // Then
+        #expect(sut.amount == "1500")
+        #expect(sut.resolvedCustomAmount()?.amount == "1500")
+    }
+
+    @Test func test_setAmount_digits_when_store_uses_comma_decimal_separator_then_uses_it() async throws {
+        // Given
+        let settings = CurrencySettings(currencyCode: .EUR,
+                                        currencyPosition: .right,
+                                        thousandSeparator: ".",
+                                        decimalSeparator: ",",
+                                        numberOfDecimals: 2)
+        let sut = AddCustomAmountFormViewModel(currencySettings: settings)
+
+        // When
+        sut.setAmount(digits: "123450")
+
+        // Then
+        #expect(sut.amount == "1234,50")
+        #expect(sut.isAddEnabled == true)
+    }
+
+    @Test func test_setAmount_digits_when_digits_are_cleared_then_amount_is_empty_and_add_is_disabled() async throws {
+        // Given
+        let sut = AddCustomAmountFormViewModel(currencySettings: currencySettings)
+        sut.setAmount(digits: "1234")
+
+        // When
+        sut.setAmount(digits: "")
+
+        // Then
+        #expect(sut.amount.isEmpty)
+        #expect(sut.isAddEnabled == false)
+    }
+
     @Test(arguments: [true, false])
     func test_init_when_editing_existing_then_prefills_fields(isTaxable: Bool) async throws {
         // Given

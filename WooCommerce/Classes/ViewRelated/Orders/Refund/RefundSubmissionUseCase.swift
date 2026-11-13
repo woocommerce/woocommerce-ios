@@ -236,16 +236,26 @@ extension RefundSubmissionUseCase {
         /// instead of the classic `RefundAction.createRefund` path.
         let serverLineItems: [ComputedRefundLineItem]?
 
+        /// When true, the `compute_totals` create sends `amount` as the refund total, so the server
+        /// refunds exactly the previewed amount the merchant confirmed or rejects the request.
+        let pinsServerAmount: Bool
+
         init(order: Order,
              charge: WCPayCharge?,
              amount: String,
              paymentGatewayAccount: PaymentGatewayAccount?,
-             serverLineItems: [ComputedRefundLineItem]? = nil) {
+             serverLineItems: [ComputedRefundLineItem]? = nil,
+             pinsServerAmount: Bool = false) {
             self.order = order
             self.charge = charge
             self.amount = amount
             self.paymentGatewayAccount = paymentGatewayAccount
             self.serverLineItems = serverLineItems
+            self.pinsServerAmount = pinsServerAmount
+        }
+
+        var calculationFlow: RefundFlow {
+            serverLineItems != nil ? .serverComputed : .localComputed
         }
     }
 }
@@ -478,7 +488,7 @@ private extension RefundSubmissionUseCase {
                                                      reason: refund.reason,
                                                      automaticRefund: refund.createAutomated ?? false,
                                                      restockItems: true,
-                                                     amountOverride: nil,
+                                                     amountOverride: details.pinsServerAmount ? details.amount : nil,
                                                      lineItems: lineItems)
             onCompletion(.success(()))
             trackCreateRefundRequestSuccess()
@@ -503,17 +513,20 @@ private extension RefundSubmissionUseCase {
                                                                           fullyRefunded: details.amount == details.order.total,
                                                                           method: .items,
                                                                           gateway: details.order.paymentMethodID,
-                                                                          amount: details.amount))
+                                                                          amount: details.amount,
+                                                                          flow: details.calculationFlow))
     }
 
     /// Tracks when the create refund request succeeds.
     func trackCreateRefundRequestSuccess() {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID))
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID, flow: details.calculationFlow))
     }
 
     /// Tracks when the create refund request fails.
     func trackCreateRefundRequestFailed(error: Error) {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error))
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID,
+                                                                                error: error,
+                                                                                flow: details.calculationFlow))
     }
 
     /// Tracks when the refund request succeeds on the client-side before submitting to the site.

@@ -350,13 +350,14 @@ private extension POSTabCoordinator {
                     return
                 }
 
-                let refundFlowResolver = POSRefundFlowResolver(stores: storesManager,
-                                                               availabilityCache: .shared,
-                                                               minimumWooVersion: POSRefundFlowResolver.Constants.minimumWooVersionForServerRefunds)
-                let serverRefundPreviewUseCase = POSServerRefundPreviewUseCase(refundService: refundService,
-                                                                               flowResolver: refundFlowResolver,
-                                                                               availabilityCache: .shared,
-                                                                               analytics: ServiceLocator.analytics)
+                let refundFlowResolver = RefundFlowResolver(stores: storesManager,
+                                                            availabilityCache: .shared,
+                                                            minimumWooVersion: RefundFlowResolver.Constants.minimumWooVersionForServerRefunds)
+                let serverRefundPreviewUseCase = ServerRefundPreviewUseCase(refundService: refundService,
+                                                                            flowResolver: refundFlowResolver,
+                                                                            availabilityCache: .shared,
+                                                                            analytics: ServiceLocator.analytics,
+                                                                            serverFlowUnavailableEvent: .PointOfSale.refundServerFlowUnavailable())
                 let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
                                                                            refundService: refundService,
                                                                            stores: storesManager,

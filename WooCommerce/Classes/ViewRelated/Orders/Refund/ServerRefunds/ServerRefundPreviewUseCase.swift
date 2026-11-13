@@ -15,7 +15,7 @@ import enum NetworkingCore.NetworkError
 /// `rest_no_route` marks the site unavailable and falls back without surfacing an error.
 ///
 @MainActor
-final class POSServerRefundPreviewUseCase {
+final class ServerRefundPreviewUseCase {
 
     enum Result {
         case serverCalculated(RefundPreview)
@@ -31,18 +31,22 @@ final class POSServerRefundPreviewUseCase {
     }
 
     private let refundService: RefundServiceProtocol
-    private let flowResolver: POSRefundFlowResolver
+    private let flowResolver: RefundFlowResolver
     private let availabilityCache: ServerRefundAvailabilityCache
     private let analytics: Analytics
+    /// Tracked when the preview route is missing. Each refund flow reports its own event, or none.
+    private let serverFlowUnavailableEvent: WooAnalyticsEvent?
 
     init(refundService: RefundServiceProtocol,
-         flowResolver: POSRefundFlowResolver,
+         flowResolver: RefundFlowResolver,
          availabilityCache: ServerRefundAvailabilityCache,
-         analytics: Analytics) {
+         analytics: Analytics,
+         serverFlowUnavailableEvent: WooAnalyticsEvent?) {
         self.refundService = refundService
         self.flowResolver = flowResolver
         self.availabilityCache = availabilityCache
         self.analytics = analytics
+        self.serverFlowUnavailableEvent = serverFlowUnavailableEvent
     }
 
     func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundPreviewLineItem]) async -> Result {
@@ -50,7 +54,7 @@ final class POSServerRefundPreviewUseCase {
             return .fallbackToLocal
         }
         guard flowResolver.resolveFlow(siteID: siteID) == .serverComputed else {
-            DDLogInfo("ℹ️ POS refund preview: site \(siteID) not eligible for the server flow; using local calculation")
+            DDLogInfo("ℹ️ Refund preview: site \(siteID) not eligible for the server flow; using local calculation")
             return .fallbackToLocal
         }
 
@@ -60,19 +64,21 @@ final class POSServerRefundPreviewUseCase {
             return .serverCalculated(preview)
         } catch {
             if isRouteNotRegistered(error) {
-                DDLogInfo("ℹ️ POS refund preview route not registered on site \(siteID); falling back to local calculation")
+                DDLogInfo("ℹ️ Refund preview route not registered on site \(siteID); falling back to local calculation")
                 availabilityCache.markUnavailable(siteID: siteID)
                 // Reported once per site per app session, not once per refund: the cache
                 // short-circuits the resolver for the rest of the session, so this counts stores
                 // that fell back rather than the refunds they made afterwards.
-                analytics.track(event: .PointOfSale.refundServerFlowUnavailable())
+                if let serverFlowUnavailableEvent {
+                    analytics.track(event: serverFlowUnavailableEvent)
+                }
                 return .fallbackToLocal
             }
             if let rejection = RefundAPIError(error) {
-                DDLogWarn("POS refund preview rejected for order \(orderID): \(rejection)")
+                DDLogWarn("Refund preview rejected for order \(orderID): \(rejection)")
                 return .rejected(rejection)
             }
-            DDLogError("⛔️ POS refund preview failed for order \(orderID): \(error)")
+            DDLogError("⛔️ Refund preview failed for order \(orderID): \(error)")
             return .error(error)
         }
     }
@@ -88,7 +94,7 @@ final class POSServerRefundPreviewUseCase {
     }
 }
 
-extension POSServerRefundPreviewUseCase.Result: Equatable {
+extension ServerRefundPreviewUseCase.Result: Equatable {
     /// Two failures compare equal regardless of the underlying error: the payload is carried for
     /// logging, not to distinguish one failure from another.
     static func == (lhs: Self, rhs: Self) -> Bool {

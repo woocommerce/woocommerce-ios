@@ -48,6 +48,10 @@ final class IssueRefundViewModel {
         /// Error from fetching refund charge.
         ///
         var fetchChargeError: FetchChargeError?
+
+        /// Whether a server refund preview is running for the current selection.
+        ///
+        var isPreviewingRefund = false
     }
 
     /// Current ViewModel state
@@ -75,6 +79,10 @@ final class IssueRefundViewModel {
     var showFetchChargeErrorNotice: ((@escaping (() -> Void)) -> (Void))?
 
     var showFetchRefundsErrorNotice: ((@escaping () -> Void) -> Void)?
+
+    /// Called with a message when the server could not price the selected refund.
+    ///
+    var showRefundPreviewErrorNotice: ((String) -> Void)?
 
     var hasRefundFetchError: Bool { state.refundFetchFailed }
 
@@ -146,17 +154,22 @@ final class IssueRefundViewModel {
 
     private let storage: StorageManagerType
 
+    /// Nil keeps every refund on the local calculation.
+    private let serverRefunds: ServerRefundDependencies?
+
     init(order: Order,
          refunds: [Refund],
          currencySettings: CurrencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
+         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
+         serverRefunds: ServerRefundDependencies? = nil) {
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
         self.analytics = analytics
         self.stores = stores
         self.storage = storage
+        self.serverRefunds = serverRefunds
         let items = refundableOrderItemsDeterminer.determineRefundableOrderItems(from: order, with: refunds)
         state = State(order: order,
                       refunds: refunds,
@@ -176,24 +189,147 @@ final class IssueRefundViewModel {
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
+    ///
+    /// On stores with the server-calculated refund endpoints, the amount comes from a server preview of the
+    /// selection. The selection is captured before the preview runs and the confirmation is built from that
+    /// capture; if the merchant changes the selection while the preview runs, the result is dropped.
     func createRefundConfirmationViewModel(onCompletion: @escaping ((RefundConfirmationViewModel) -> Void)) {
+        let selection = currentSelection()
         let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { [weak self] paymentGatewayAccount in
             guard let self else { return }
-            let details = RefundConfirmationViewModel.Details(order: self.state.order,
-                                                              charge: self.state.charge,
-                                                              amount: "\(self.calculateRefundTotal())",
-                                                              refundsShipping: self.state.shouldRefundShipping,
-                                                              refundsFees: self.state.shouldRefundCustomAmounts,
-                                                              items: self.selectedItems(),
-                                                              paymentGateway: self.paymentGateway,
-                                                              paymentGatewayAccount: paymentGatewayAccount,
-                                                              shippingLines: self.shippingLinesToRefund(),
-                                                              fees: self.refundableFees())
-
-            onCompletion(RefundConfirmationViewModel(details: details, actionProcessor: self.stores, currencySettings: self.state.currencySettings))
+            guard self.serverRefunds != nil else {
+                return onCompletion(self.makeConfirmationViewModel(selection: selection,
+                                                                   pricing: .local,
+                                                                   paymentGatewayAccount: paymentGatewayAccount))
+            }
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.state.isPreviewingRefund = true
+                let pricing = await self.price(selection)
+                self.state.isPreviewingRefund = false
+                guard selection == self.currentSelection() else {
+                    DDLogInfo("ℹ️ Refund selection changed during the preview; dropping the result")
+                    return
+                }
+                if case .failed(let message) = pricing {
+                    self.showRefundPreviewErrorNotice?(message)
+                    return
+                }
+                onCompletion(self.makeConfirmationViewModel(selection: selection,
+                                                            pricing: pricing,
+                                                            paymentGatewayAccount: paymentGatewayAccount))
+            }
         }
 
         stores.dispatch(action)
+    }
+}
+
+// MARK: Server-calculated refunds
+extension IssueRefundViewModel {
+    /// What the merchant selected when they tapped Next, with the local total for that selection.
+    struct RefundSelection: Equatable {
+        let items: [RefundableOrderItem]
+        let refundsShipping: Bool
+        let shippingLines: [ShippingLine]
+        let refundsFees: Bool
+        let fees: [OrderFeeLine]
+        let localTotal: Decimal
+    }
+
+    enum RefundPricing: Equatable {
+        case server(total: Decimal, lineItems: [ComputedRefundLineItem])
+        case local
+        case failed(message: String)
+    }
+
+    /// Preview and create lines for a selection, built together so the create sends exactly what was previewed.
+    /// Products go by quantity. Shipping and fee lines go by `quantity: 1`, which the server reads as
+    /// "the rest of this line". Nil when a selected product is free: the server rejects a line with
+    /// nothing left to refund, so that selection stays on the local calculation.
+    static func serverLineItems(for selection: RefundSelection,
+                                currencyFormatter: CurrencyFormatter) -> (preview: [RefundPreviewLineItem], create: [ComputedRefundLineItem])? {
+        func gross(_ total: String, _ tax: String) -> Decimal {
+            (currencyFormatter.convertToDecimal(total) as Decimal? ?? .zero) + (currencyFormatter.convertToDecimal(tax) as Decimal? ?? .zero)
+        }
+
+        let products = selection.items.filter { $0.quantity > 0 }
+        guard products.allSatisfy({ gross($0.item.total, $0.item.totalTax) != .zero }) else {
+            return nil
+        }
+
+        let wholeLineIDs = selection.shippingLines
+            .filter { gross($0.total, $0.totalTax) != .zero }
+            .map(\.shippingID)
+            + selection.fees
+            .filter { gross($0.total, $0.totalTax) != .zero }
+            .map(\.feeID)
+
+        let quantities = products.map { ($0.item.itemID, $0.quantity) } + wholeLineIDs.map { ($0, 1) }
+        return (quantities.map { RefundPreviewLineItem.quantityBased(lineItemID: $0.0, quantity: $0.1) },
+                quantities.map { ComputedRefundLineItem.quantityBased(lineItemID: $0.0, quantity: $0.1) })
+    }
+
+    private func currentSelection() -> RefundSelection {
+        RefundSelection(items: selectedItems(),
+                        refundsShipping: state.shouldRefundShipping,
+                        shippingLines: shippingLinesToRefund(),
+                        refundsFees: state.shouldRefundCustomAmounts,
+                        fees: state.shouldRefundCustomAmounts ? refundableFees() : [],
+                        localTotal: calculateRefundTotal())
+    }
+
+    private func makeConfirmationViewModel(selection: RefundSelection,
+                                           pricing: RefundPricing,
+                                           paymentGatewayAccount: PaymentGatewayAccount?) -> RefundConfirmationViewModel {
+        let amount: String
+        let serverLineItems: [ComputedRefundLineItem]?
+        switch pricing {
+        case .server(let total, let lineItems):
+            amount = NSDecimalNumber(decimal: total).stringValue
+            serverLineItems = lineItems
+        case .local, .failed:
+            amount = "\(selection.localTotal)"
+            serverLineItems = nil
+        }
+
+        let details = RefundConfirmationViewModel.Details(order: state.order,
+                                                          charge: state.charge,
+                                                          amount: amount,
+                                                          refundsShipping: selection.refundsShipping,
+                                                          refundsFees: selection.refundsFees,
+                                                          items: selection.items,
+                                                          paymentGateway: paymentGateway,
+                                                          paymentGatewayAccount: paymentGatewayAccount,
+                                                          shippingLines: selection.shippingLines,
+                                                          fees: selection.fees,
+                                                          serverLineItems: serverLineItems)
+        return RefundConfirmationViewModel(details: details,
+                                           actionProcessor: stores,
+                                           currencySettings: state.currencySettings,
+                                           refundService: serverRefunds?.refundService)
+    }
+
+    @MainActor
+    private func price(_ selection: RefundSelection) async -> RefundPricing {
+        let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
+        guard let serverRefunds,
+              let lineItems = Self.serverLineItems(for: selection, currencyFormatter: formatter) else {
+            return .local
+        }
+
+        switch await serverRefunds.previewUseCase.previewRefund(siteID: state.order.siteID,
+                                                                orderID: state.order.orderID,
+                                                                lineItems: lineItems.preview) {
+        case .serverCalculated(let preview):
+            return .server(total: preview.total, lineItems: lineItems.create)
+        case .fallbackToLocal:
+            return .local
+        case .rejected(let rejection):
+            return .failed(message: rejection.localizedDescription)
+        case .error:
+            return .failed(message: Localization.refundPreviewFailed)
+        }
     }
 }
 
@@ -405,6 +541,9 @@ extension IssueRefundViewModel {
                                                                 comment: "Title of the switch in the IssueRefund screen to refund customAmounts")
         static let itemSingular = NSLocalizedString("1 item selected", comment: "Title of the label indicating that there is 1 item to refund.")
         static let itemsPlural = NSLocalizedString("%d items selected", comment: "Title of the label indicating that there are multiple items to refund.")
+        static let refundPreviewFailed = NSLocalizedString("issueRefund.preview.failed",
+                                                           value: "Couldn't calculate the refund. Please try again.",
+                                                           comment: "Error shown on the Issue Refund screen when the store could not calculate the refund amount.")
     }
 }
 
@@ -591,7 +730,7 @@ extension IssueRefundViewModel {
     /// Calculates whether the next button should be enabled or not
     ///
     private func calculateNextButtonEnableState() -> Bool {
-        guard !state.isLoadingRefunds, !state.refundFetchFailed, calculatePendingChangesState() else {
+        guard !state.isLoadingRefunds, !state.isPreviewingRefund, !state.refundFetchFailed, calculatePendingChangesState() else {
             return false
         }
         let total = calculateRefundTotal()
@@ -615,7 +754,7 @@ extension IssueRefundViewModel {
     ///
     private func calculateNextButtonAnimatingState() -> Bool {
         // When we have a chargeID, we need to wait until we fetch the charge unless there is an error fetching the charge.
-        state.isLoadingRefunds || (state.charge == nil && !state.order.chargeID.isNilOrEmpty && state.fetchChargeError == nil)
+        state.isLoadingRefunds || state.isPreviewingRefund || (state.charge == nil && !state.order.chargeID.isNilOrEmpty && state.fetchChargeError == nil)
     }
 
     /// Calculates whether there are pending changes to commit

@@ -633,12 +633,13 @@ private extension POSRefundSubmissionAdaptorTests {
         }
 
         let availabilityCache = ServerRefundAvailabilityCache()
-        let previewUseCase = POSServerRefundPreviewUseCase(refundService: service,
-                                                           flowResolver: POSRefundFlowResolver(stores: stores,
-                                                                                               availabilityCache: availabilityCache,
-                                                                                               minimumWooVersion: "11.1.0"),
-                                                           availabilityCache: availabilityCache,
-                                                           analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
+        let previewUseCase = ServerRefundPreviewUseCase(refundService: service,
+                                                        flowResolver: RefundFlowResolver(stores: stores,
+                                                                                         availabilityCache: availabilityCache,
+                                                                                         minimumWooVersion: "11.1.0"),
+                                                        availabilityCache: availabilityCache,
+                                                        analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                        serverFlowUnavailableEvent: .PointOfSale.refundServerFlowUnavailable())
 
         let orderService = MockPOSOrderService()
         orderService.orderToReturn = suppliedOrder ?? order(quantity: orderQuantity)

@@ -6,7 +6,7 @@ import Foundation
 /// Call `markAvailable` only after a successful preview, and `markUnavailable` only when the
 /// preview route is missing (`rest_no_route`). The cache stops a site with no preview route from
 /// being probed again. An unknown site is not blocked, and an available site is not cleared to send
-/// a computed create: that needs the version check in `POSRefundFlowResolver` and a preview for the
+/// a computed create: that needs the version check in `RefundFlowResolver` and a preview for the
 /// selection being submitted (`POSRefundSubmissionAdaptor`).
 ///
 @MainActor

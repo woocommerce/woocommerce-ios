@@ -7,7 +7,7 @@ import enum NetworkingCore.NetworkError
 
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
-struct POSServerRefundPreviewUseCaseTests {
+struct ServerRefundPreviewUseCaseTests {
 
     private let siteID: Int64 = 123
     private let orderID: Int64 = 456
@@ -260,7 +260,7 @@ struct POSServerRefundPreviewUseCaseTests {
     }
 }
 
-private extension POSServerRefundPreviewUseCaseTests {
+private extension ServerRefundPreviewUseCaseTests {
 
     /// Store version fixtures relative to `Versions.minimum`, the earliest release with the
     /// server-calculated refund endpoints (also passed to the SUT's resolver as `minimumWooVersion`).
@@ -274,7 +274,7 @@ private extension POSServerRefundPreviewUseCaseTests {
                  cache: ServerRefundAvailabilityCache? = nil,
                  previewResult: Swift.Result<RefundPreview, Error>? = nil,
                  analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider())
-    -> (POSServerRefundPreviewUseCase, MockRefundService, MockStoresManager) {
+    -> (ServerRefundPreviewUseCase, MockRefundService, MockStoresManager) {
         // Resolved in the (main-actor) test body rather than as a default argument: the cache's
         // initializer is main-actor-isolated, and default arguments are evaluated nonisolated.
         let cache = cache ?? ServerRefundAvailabilityCache()
@@ -283,12 +283,13 @@ private extension POSServerRefundPreviewUseCaseTests {
         let stores = MockStoresManager(sessionManager: session)
         let service = MockRefundService()
         service.previewRefundResult = previewResult
-        let sut = POSServerRefundPreviewUseCase(refundService: service,
-                                                flowResolver: POSRefundFlowResolver(stores: stores,
-                                                                                    availabilityCache: cache,
-                                                                                    minimumWooVersion: Versions.minimum),
-                                                availabilityCache: cache,
-                                                analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let sut = ServerRefundPreviewUseCase(refundService: service,
+                                             flowResolver: RefundFlowResolver(stores: stores,
+                                                                              availabilityCache: cache,
+                                                                              minimumWooVersion: Versions.minimum),
+                                             availabilityCache: cache,
+                                             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
+                                             serverFlowUnavailableEvent: .PointOfSale.refundServerFlowUnavailable())
         return (sut, service, stores)
     }
 
@@ -297,7 +298,7 @@ private extension POSServerRefundPreviewUseCaseTests {
     }
 
     /// `.error` carries the underlying error for logging, so match on the case rather than a value.
-    func isError(_ result: POSServerRefundPreviewUseCase.Result) -> Bool {
+    func isError(_ result: ServerRefundPreviewUseCase.Result) -> Bool {
         if case .error = result {
             return true
         }

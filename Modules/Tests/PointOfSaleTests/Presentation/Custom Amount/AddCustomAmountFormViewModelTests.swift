@@ -197,7 +197,7 @@ struct AddCustomAmountFormViewModelTests {
         sut.setAmount(digits: "")
 
         // Then
-        #expect(sut.amount == "")
+        #expect(sut.amount.isEmpty)
         #expect(sut.isAddEnabled == false)
     }
 

@@ -108,23 +108,150 @@ struct StarPrinterServiceTests {
     }
 
     @Test func test_connect_when_cancelled_during_open_then_closes_the_late_connection_without_reporting_it() async throws {
-        try await assertCancelledConnectClosesLateConnection(on: StarPrinterCoordinator())
+        try await onCoordinator { coordinator in
+            // Given
+            let (statuses, statusContinuation) = observeStatuses(of: coordinator)
+            let printer = MockStarPrinterConnection()
+            let (opening, releaseOpen) = holdOpen(of: printer)
+            let connect = Task {
+                try await coordinator.connect(to: Self.device, using: printer)
+            }
+            await firstValue(of: opening)
+
+            // When
+            connect.cancel()
+            releaseOpen.finish()
+
+            // Then
+            await #expect(throws: CancellationError.self) {
+                try await connect.value
+            }
+            statusContinuation.finish()
+            #expect(await collect(statuses) == [.idle, .connecting, .disconnected])
+            #expect(printer.closeCallCount == 1)
+            #expect(printer.printerDelegate == nil)
+            await #expect(throws: PrinterError.printerNotConnected) {
+                try await coordinator.printReceipt(text: "Receipt")
+            }
+        }
     }
 
     @Test func test_connect_when_retried_while_a_cancelled_open_is_in_flight_then_waits_and_connects_the_retried_printer() async throws {
-        try await assertRetryWaitsForCancelledConnect(on: StarPrinterCoordinator())
+        try await onCoordinator { coordinator in
+            // Given
+            let (statuses, statusContinuation) = observeStatuses(of: coordinator)
+            let cancelledPrinter = MockStarPrinterConnection()
+            let retriedPrinter = MockStarPrinterConnection()
+            let (opening, releaseOpen) = holdOpen(of: cancelledPrinter)
+            let cancelledConnect = Task {
+                try await coordinator.connect(to: Self.device, using: cancelledPrinter)
+            }
+            await firstValue(of: opening)
+
+            // When
+            cancelledConnect.cancel()
+            let (retryStarted, retryStartedContinuation) = AsyncStream.makeStream(of: Void.self)
+            let retry = Task {
+                retryStartedContinuation.yield()
+                try await coordinator.connect(to: Self.retriedDevice, using: retriedPrinter)
+            }
+            // Resumes only once the retry suspends, i.e. while it waits for the open that is still held.
+            await firstValue(of: retryStarted)
+            releaseOpen.finish()
+
+            // Then
+            await #expect(throws: CancellationError.self) {
+                try await cancelledConnect.value
+            }
+            try await retry.value
+            statusContinuation.finish()
+            #expect(await collect(statuses) == [.idle, .connecting, .connecting, .connected(Self.retriedDevice)])
+            #expect(cancelledPrinter.closeCallCount == 1)
+            #expect(cancelledPrinter.printerDelegate == nil)
+            #expect(retriedPrinter.closeCallCount == 0)
+        }
     }
 
     @Test(arguments: [true, false], [true, false])
     func test_connect_when_the_waiting_retry_is_cancelled_then_reports_disconnected(cancelledOpenSucceeds: Bool,
                                                                                      disconnectsWhileWaiting: Bool) async throws {
-        try await assertCancelledRetryReportsDisconnected(cancelledOpenSucceeds: cancelledOpenSucceeds,
-                                                          disconnectsWhileWaiting: disconnectsWhileWaiting,
-                                                          on: StarPrinterCoordinator())
+        try await onCoordinator { coordinator in
+            // Given
+            let (statuses, statusContinuation) = observeStatuses(of: coordinator)
+            let cancelledPrinter = MockStarPrinterConnection()
+            if !cancelledOpenSucceeds {
+                cancelledPrinter.openError = StarIO10Error.communication(message: "Communication failed.")
+            }
+            let retriedPrinter = MockStarPrinterConnection()
+            let (opening, releaseOpen) = holdOpen(of: cancelledPrinter)
+            let cancelledConnect = Task {
+                try await coordinator.connect(to: Self.device, using: cancelledPrinter)
+            }
+            await firstValue(of: opening)
+            cancelledConnect.cancel()
+            let (retryStarted, retryStartedContinuation) = AsyncStream.makeStream(of: Void.self)
+            let retry = Task {
+                retryStartedContinuation.yield()
+                try await coordinator.connect(to: Self.retriedDevice, using: retriedPrinter)
+            }
+            await firstValue(of: retryStarted)
+
+            // When
+            retry.cancel()
+            if disconnectsWhileWaiting {
+                await coordinator.disconnect()
+            }
+            releaseOpen.finish()
+
+            // Then
+            _ = await cancelledConnect.result
+            await #expect(throws: CancellationError.self) {
+                try await retry.value
+            }
+            statusContinuation.finish()
+            let expectedStatuses: [PrinterConnectionStatus] = disconnectsWhileWaiting
+                ? [.idle, .connecting, .disconnecting, .disconnected]
+                : [.idle, .connecting, .disconnected]
+            #expect(await collect(statuses) == expectedStatuses)
+            #expect(cancelledPrinter.closeCallCount == (cancelledOpenSucceeds ? 1 : 0))
+            #expect(cancelledPrinter.printerDelegate == nil)
+            #expect(retriedPrinter.printerDelegate == nil)
+        }
     }
 
     @Test func test_connect_when_called_already_cancelled_then_leaves_the_in_flight_connect_untouched() async throws {
-        try await assertAlreadyCancelledConnectDoesNotSupersede(on: StarPrinterCoordinator())
+        try await onCoordinator { coordinator in
+            // Given
+            let (statuses, statusContinuation) = observeStatuses(of: coordinator)
+            let printer = MockStarPrinterConnection()
+            let latePrinter = MockStarPrinterConnection()
+            let (opening, releaseOpen) = holdOpen(of: printer)
+            let connect = Task {
+                try await coordinator.connect(to: Self.device, using: printer)
+            }
+            await firstValue(of: opening)
+
+            // When
+            let (lateStarted, lateStartedContinuation) = AsyncStream.makeStream(of: Void.self)
+            let late = Task {
+                lateStartedContinuation.yield()
+                try await coordinator.connect(to: Self.retriedDevice, using: latePrinter)
+            }
+            // Cancelled before it runs, since the test holds the coordinator until it suspends.
+            late.cancel()
+            await firstValue(of: lateStarted)
+            releaseOpen.finish()
+
+            // Then
+            try await connect.value
+            await #expect(throws: CancellationError.self) {
+                try await late.value
+            }
+            statusContinuation.finish()
+            #expect(await collect(statuses) == [.idle, .connecting, .connected(Self.device)])
+            #expect(printer.closeCallCount == 0)
+            #expect(latePrinter.printerDelegate == nil)
+        }
     }
 }
 
@@ -136,146 +263,10 @@ private extension StarPrinterServiceTests {
         StarConnectionDelegate { _, _ in }
     }
 
-    // The lifecycle tests run on the coordinator, so the mocks and the connect tasks share its isolation. A connect task
-    // calls into the coordinator synchronously, so it holds the actor until its first suspension inside `connect`.
-
-    func assertCancelledConnectClosesLateConnection(on coordinator: isolated StarPrinterCoordinator) async throws {
-        // Given
-        let (statuses, statusContinuation) = observeStatuses(of: coordinator)
-        let printer = MockStarPrinterConnection()
-        let (opening, releaseOpen) = holdOpen(of: printer)
-        let connect = Task {
-            try await coordinator.connect(to: Self.device, using: printer)
-        }
-        await firstValue(of: opening)
-
-        // When
-        connect.cancel()
-        releaseOpen.finish()
-
-        // Then
-        await #expect(throws: CancellationError.self) {
-            try await connect.value
-        }
-        statusContinuation.finish()
-        #expect(await collect(statuses) == [.idle, .connecting, .disconnected])
-        #expect(printer.closeCallCount == 1)
-        #expect(printer.printerDelegate == nil)
-        await #expect(throws: PrinterError.printerNotConnected) {
-            try await coordinator.printReceipt(text: "Receipt")
-        }
-    }
-
-    func assertRetryWaitsForCancelledConnect(on coordinator: isolated StarPrinterCoordinator) async throws {
-        // Given
-        let (statuses, statusContinuation) = observeStatuses(of: coordinator)
-        let cancelledPrinter = MockStarPrinterConnection()
-        let retriedPrinter = MockStarPrinterConnection()
-        let (opening, releaseOpen) = holdOpen(of: cancelledPrinter)
-        let cancelledConnect = Task {
-            try await coordinator.connect(to: Self.device, using: cancelledPrinter)
-        }
-        await firstValue(of: opening)
-
-        // When
-        cancelledConnect.cancel()
-        let (retryStarted, retryStartedContinuation) = AsyncStream.makeStream(of: Void.self)
-        let retry = Task {
-            retryStartedContinuation.yield()
-            try await coordinator.connect(to: Self.retriedDevice, using: retriedPrinter)
-        }
-        // Resumes only once the retry suspends, i.e. while it waits for the open that is still held.
-        await firstValue(of: retryStarted)
-        releaseOpen.finish()
-
-        // Then
-        await #expect(throws: CancellationError.self) {
-            try await cancelledConnect.value
-        }
-        try await retry.value
-        statusContinuation.finish()
-        #expect(await collect(statuses) == [.idle, .connecting, .connecting, .connected(Self.retriedDevice)])
-        #expect(cancelledPrinter.closeCallCount == 1)
-        #expect(cancelledPrinter.printerDelegate == nil)
-        #expect(retriedPrinter.closeCallCount == 0)
-    }
-
-    func assertCancelledRetryReportsDisconnected(cancelledOpenSucceeds: Bool,
-                                                 disconnectsWhileWaiting: Bool,
-                                                 on coordinator: isolated StarPrinterCoordinator) async throws {
-        // Given
-        let (statuses, statusContinuation) = observeStatuses(of: coordinator)
-        let cancelledPrinter = MockStarPrinterConnection()
-        if !cancelledOpenSucceeds {
-            cancelledPrinter.openError = StarIO10Error.communication(message: "Communication failed.")
-        }
-        let retriedPrinter = MockStarPrinterConnection()
-        let (opening, releaseOpen) = holdOpen(of: cancelledPrinter)
-        let cancelledConnect = Task {
-            try await coordinator.connect(to: Self.device, using: cancelledPrinter)
-        }
-        await firstValue(of: opening)
-        cancelledConnect.cancel()
-        let (retryStarted, retryStartedContinuation) = AsyncStream.makeStream(of: Void.self)
-        let retry = Task {
-            retryStartedContinuation.yield()
-            try await coordinator.connect(to: Self.retriedDevice, using: retriedPrinter)
-        }
-        await firstValue(of: retryStarted)
-
-        // When
-        retry.cancel()
-        if disconnectsWhileWaiting {
-            await coordinator.disconnect()
-        }
-        releaseOpen.finish()
-
-        // Then
-        _ = await cancelledConnect.result
-        await #expect(throws: CancellationError.self) {
-            try await retry.value
-        }
-        statusContinuation.finish()
-        let expectedStatuses: [PrinterConnectionStatus] = disconnectsWhileWaiting
-            ? [.idle, .connecting, .disconnecting, .disconnected]
-            : [.idle, .connecting, .disconnected]
-        #expect(await collect(statuses) == expectedStatuses)
-        #expect(cancelledPrinter.closeCallCount == (cancelledOpenSucceeds ? 1 : 0))
-        #expect(cancelledPrinter.printerDelegate == nil)
-        #expect(retriedPrinter.printerDelegate == nil)
-    }
-
-    func assertAlreadyCancelledConnectDoesNotSupersede(on coordinator: isolated StarPrinterCoordinator) async throws {
-        // Given
-        let (statuses, statusContinuation) = observeStatuses(of: coordinator)
-        let printer = MockStarPrinterConnection()
-        let latePrinter = MockStarPrinterConnection()
-        let (opening, releaseOpen) = holdOpen(of: printer)
-        let connect = Task {
-            try await coordinator.connect(to: Self.device, using: printer)
-        }
-        await firstValue(of: opening)
-
-        // When
-        let (lateStarted, lateStartedContinuation) = AsyncStream.makeStream(of: Void.self)
-        let late = Task {
-            lateStartedContinuation.yield()
-            try await coordinator.connect(to: Self.retriedDevice, using: latePrinter)
-        }
-        // Cancelled before it runs, since the test holds the coordinator until it suspends.
-        late.cancel()
-        await firstValue(of: lateStarted)
-        releaseOpen.finish()
-
-        // Then
-        try await connect.value
-        await #expect(throws: CancellationError.self) {
-            try await late.value
-        }
-        statusContinuation.finish()
-        #expect(await collect(statuses) == [.idle, .connecting, .connected(Self.device)])
-        #expect(printer.closeCallCount == 0)
-        #expect(latePrinter.printerDelegate == nil)
+    /// Runs a lifecycle test on a new coordinator, so the mocks and the connect tasks share its isolation. A connect task
+    /// calls into the coordinator synchronously, so it holds the actor until its first suspension inside `connect`.
+    func onCoordinator(_ test: (isolated StarPrinterCoordinator) async throws -> Void) async throws {
+        try await test(StarPrinterCoordinator())
     }
 
     func observeStatuses(of coordinator: isolated StarPrinterCoordinator)

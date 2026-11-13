@@ -129,6 +129,15 @@ final class RefundMapperTests: XCTestCase {
         XCTAssertEqual(fee.name, "Discount Fee")
         XCTAssertEqual(fee.total, "-5.00")
         XCTAssertEqual(fee.totalTax, "-0.50")
+        XCTAssertEqual(fee.taxes.first?.taxID, 1)
+    }
+
+    func test_refund_item_tax_with_string_id_is_parsed_as_zero() throws {
+        // Given
+        let refund = try XCTUnwrap(mapRefund(from: "refund-with-fee-lines"))
+
+        // Then
+        XCTAssertEqual(refund.items.first?.taxes.first?.taxID, 0)
     }
 
     func test_refund_fee_lines_default_to_empty_when_response_omits_them() {

@@ -160,6 +160,17 @@ public extension KeyedDecodingContainer {
             return []
         }
     }
+
+    /// Decodes an Int64 that some plugins send as a string. Missing, null or non-numeric values decode as 0.
+    func failsafeDecodeInt64(forKey key: KeyedDecodingContainer<K>.Key) -> Int64 {
+        if let number = failsafeDecodeIfPresent(Int64.self, forKey: key) {
+            return number
+        }
+        if let string = failsafeDecodeIfPresent(stringForKey: key), let number = Int64(string) {
+            return number
+        }
+        return 0
+    }
 }
 
 

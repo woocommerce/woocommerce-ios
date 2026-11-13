@@ -8,46 +8,39 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
     @State private var width: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .center, spacing: metrics.spacing.none) {
-            Spacer()
+        POSStatusScreenLayout(buttonsWidth: .fullWidth) {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
+                POSErrorXMark()
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-            POSErrorXMark()
-                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                Spacer()
+                    .frame(height: metrics.spacing.large)
 
-            Spacer()
-                .frame(height: metrics.spacing.large)
-
-            VStack(alignment: .center, spacing: metrics.spacing.small) {
-                Text(viewModel.title)
-                    .font(.posHeadingBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityFocused($isTitleFocused)
-                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
-
-                if let message = viewModel.message {
-                    Text(message)
-                        .font(.posBodyLargeRegular())
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
+                    Text(viewModel.title)
+                        .font(.posHeadingBold)
                         .foregroundStyle(Color.posOnSurface)
-                        .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($isTitleFocused)
+                        .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+
+                    if let message = viewModel.message {
+                        Text(message)
+                            .font(.posBodyLargeRegular())
+                            .foregroundStyle(Color.posOnSurface)
+                            .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                    }
                 }
+                .dynamicWidthScaling(containerWidth: width)
             }
-            .dynamicWidthScaling(containerWidth: width)
-
-            Spacer()
-                .frame(height: metrics.spacing.xxLarge)
-
+        } buttons: {
             VStack(spacing: metrics.spacing.large) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
-            .posStatusButtonsWidth()
-
-            Spacer()
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .measureWidth({ containerWidth in
             width = containerWidth
         })

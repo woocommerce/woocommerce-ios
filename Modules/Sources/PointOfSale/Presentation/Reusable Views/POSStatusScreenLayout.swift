@@ -7,10 +7,12 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.keyboardObserver) private var keyboard
 
+    private let buttonsWidth: POSStatusButtonsWidth
     private let message: Message
     private let buttons: Buttons
 
-    init(@ViewBuilder message: () -> Message, @ViewBuilder buttons: () -> Buttons) {
+    init(buttonsWidth: POSStatusButtonsWidth, @ViewBuilder message: () -> Message, @ViewBuilder buttons: () -> Buttons) {
+        self.buttonsWidth = buttonsWidth
         self.message = message()
         self.buttons = buttons()
     }
@@ -26,11 +28,23 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
             .padding(metrics.padding.medium)
             .scrollVerticallyIfNeeded()
 
-            buttons
-                .posStatusButtonsWidth()
+            sizedButtons
                 .padding(.bottom, metrics.padding.medium)
         }
         .padding(.bottom, floatingControlBottomPadding)
+    }
+
+    @ViewBuilder
+    private var sizedButtons: some View {
+        switch buttonsWidth {
+        case .capped:
+            buttons
+                .posStatusButtonsWidth()
+        case .fullWidth:
+            buttons
+                .frame(maxWidth: .infinity)
+                .posContentPadding(.horizontal, metrics.padding.medium)
+        }
     }
 
     private var floatingControlBottomPadding: CGFloat {
@@ -43,7 +57,7 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
 
 #if DEBUG
 #Preview("Short message") {
-    POSStatusScreenLayout {
+    POSStatusScreenLayout(buttonsWidth: .capped) {
         Text("Unable to load coupons")
             .font(.posHeadingBold)
     } buttons: {
@@ -53,7 +67,7 @@ struct POSStatusScreenLayout<Message: View, Buttons: View>: View {
 }
 
 #Preview("Long message") {
-    POSStatusScreenLayout {
+    POSStatusScreenLayout(buttonsWidth: .capped) {
         Text(String(repeating: "A long message that does not fit on the screen. ", count: 60))
             .font(.posBodyLargeRegular())
             .posPadding(.horizontal, \.medium)

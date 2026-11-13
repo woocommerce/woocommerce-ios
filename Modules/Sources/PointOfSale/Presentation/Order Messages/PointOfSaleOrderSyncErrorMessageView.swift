@@ -22,7 +22,7 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
     }
 
     var body: some View {
-        POSStatusScreenLayout {
+        POSStatusScreenLayout(buttonsWidth: .capped) {
             VStack(alignment: .center, spacing: metrics.spacing.none) {
                 POSErrorExclamationMark(size: .large)
                 Spacer().frame(height: metrics.spacing.large)

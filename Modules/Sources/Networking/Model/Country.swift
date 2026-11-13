@@ -17,6 +17,17 @@ public struct Country: Decodable, Equatable, Hashable, GeneratedFakeable, Sendab
         self.name = name
         self.states = states
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let code = try container.decode(String.self, forKey: .code)
+        // WooCommerce core sends some names HTML-encoded, e.g. `Cura&ccedil;ao`.
+        let name = try container.decode(String.self, forKey: .name).strippedHTML
+        let states = try container.decode([StateOfACountry].self, forKey: .states)
+
+        self.init(code: code, name: name, states: states)
+    }
 }
 
 

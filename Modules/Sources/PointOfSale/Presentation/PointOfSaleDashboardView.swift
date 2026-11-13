@@ -6,7 +6,6 @@ struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
@@ -24,7 +23,6 @@ struct PointOfSaleDashboardView: View {
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
-    @State private var itemListBackgroundColor: Color = .posSurface
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
@@ -112,8 +110,17 @@ struct PointOfSaleDashboardView: View {
                     dismiss()
                 } : nil)
             case .content:
-                contentView
-                    .accessibilitySortPriority(2)
+                POSPushTransitionContainer(
+                    item: posModel.customAmountFlow,
+                    onBack: { posModel.customAmountFlow = nil }
+                ) {
+                    contentView
+                } pushed: { flow in
+                    if let flow {
+                        POSCustomAmountFlowView(flow: flow)
+                    }
+                }
+                .accessibilitySortPriority(2)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -129,7 +136,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, metrics.padding.medium)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
+            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed && posModel.customAmountFlow == nil)
         }
         .overlay {
             POSConnectivityView()
@@ -140,7 +147,7 @@ struct PointOfSaleDashboardView: View {
         .onChange(of: isPhoneLayout) { _, isPhoneLayout in
             if !isPhoneLayout {
                 // These compact-only cover hosts are removed by the layout change.
-                if phoneShowingBarcodeScannerSetup || posModel.editingCustomAmount != nil {
+                if phoneShowingBarcodeScannerSetup {
                     coverManager.clearPresentation()
                 }
                 phoneShowingCart = false
@@ -154,9 +161,6 @@ struct PointOfSaleDashboardView: View {
         }
         .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
             floatingControlSuppressed = hides
-        }
-        .onPreferenceChange(POSItemListBackgroundPreferenceKey.self) { color in
-            itemListBackgroundColor = color ?? .posSurface
         }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
@@ -195,6 +199,12 @@ struct PointOfSaleDashboardView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
+        .onChange(of: posModel.customAmountFlow) { _, flow in
+            // Editing starts from the phone cart sheet, which would otherwise stay over the form.
+            if flow != nil {
+                phoneShowingCart = false
+            }
+        }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
             Task {
@@ -210,6 +220,7 @@ struct PointOfSaleDashboardView: View {
             showDocumentation = false
             showSettings = false
             showOrders = false
+            posModel.customAmountFlow = nil
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }
@@ -337,11 +348,8 @@ struct PointOfSaleDashboardView: View {
                 .presentationDetents([.medium, .large], selection: $phoneCartPresentationDetent)
                 .presentationDragIndicator(.visible)
         }
-        // Phone-only covers presented at the dashboard level:
-        //  - Barcode scanner setup, triggered from the cart sheet.
-        //  - Edit-custom-amount, hosted here so it sits above the cart sheet (CartView's
-        //    edit cover is gated to iPad, and POSSheet dismissal can tear down covers
-        //    that live inside the sheet's content).
+        // Phone-only cover presented at the dashboard level: barcode scanner setup, triggered
+        // from the cart sheet.
         .if(isPhoneLayout) { view in
             view
                 .posFullScreenCover(isPresented: $phoneShowingBarcodeScannerSetup) {
@@ -350,20 +358,6 @@ struct PointOfSaleDashboardView: View {
                         POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
                             .environment(\.posModalParentSize, proxy.size)
                     }
-                }
-                .posFullScreenCover(item: Binding(
-                    get: { posModel.editingCustomAmount },
-                    set: { posModel.editingCustomAmount = $0 }
-                )) { customAmount in
-                    AddCustomAmountView(
-                        currencySettings: currencyProvider.currencySettings,
-                        editing: customAmount,
-                        backButtonStyle: .close,
-                        onDismiss: { posModel.editingCustomAmount = nil },
-                        onSubmit: { updated in
-                            posModel.upsertCustomAmount(updated, mode: .edit)
-                        }
-                    )
                 }
         }
         .background(Color.posSurface.ignoresSafeArea())
@@ -624,7 +618,7 @@ struct PointOfSaleDashboardView: View {
             if posModel.orderStage == .building {
                 Color.clear
                     .frame(width: layout.backgroundLeadingWidth)
-                    .background(itemListBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
+                    .background(Color.posSurface.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                 Color.clear
                     .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
             } else {

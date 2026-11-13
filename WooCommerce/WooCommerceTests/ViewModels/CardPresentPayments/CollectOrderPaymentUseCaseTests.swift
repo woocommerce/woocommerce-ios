@@ -1326,7 +1326,7 @@ private extension CollectOrderPaymentUseCaseTests {
     func mockTerminalPaymentPreparationRoute(isAvailable: Bool) {
         stores.whenReceivingAction(ofType: SettingAction.self) { [defaultSiteID] action in
             switch action {
-            case let .retrieveSiteAPI(siteID, _, completion):
+            case let .retrieveSiteAPIIncludingRoutes(siteID, completion):
                 XCTAssertEqual(siteID, defaultSiteID)
                 completion(.success(SiteAPI(siteID: siteID,
                                             namespaces: [],
@@ -1341,7 +1341,7 @@ private extension CollectOrderPaymentUseCaseTests {
     func mockUnexpectedTerminalPaymentPreparationRouteCheck() {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
-            case let .retrieveSiteAPI(siteID, _, completion):
+            case let .retrieveSiteAPIIncludingRoutes(siteID, completion):
                 XCTFail("AU terminal payment preparation should not depend on the site route list.")
                 completion(.success(SiteAPI(siteID: siteID,
                                             namespaces: [],

@@ -117,6 +117,25 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_reloadDataIfNeeded_when_data_is_fresh_after_a_failed_sync_then_clears_syncingError() async {
+        // Given — a previous sync failed, and the range now has fresh cached data.
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        mockTopPerformersStats(with: stores, error: NetworkError.timeout())
+        let viewModel = TopPerformersDashboardViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
+        XCTAssertNotNil(viewModel.syncingError)
+        DashboardTimestampStore.saveTimestamp(.now, for: .topPerformers, at: viewModel.timeRange.timestampRange)
+
+        // When — non-forced reload serves the cached data.
+        await viewModel.reloadDataIfNeeded(forceRefresh: false)
+
+        // Then
+        XCTAssertNil(viewModel.syncingError)
+
+        DashboardTimestampStore.removeTimestamp(for: .topPerformers, at: viewModel.timeRange.timestampRange)
+    }
+
+    @MainActor
     func test_dismissTopPerformers_triggers_onDismiss() {
         // Given
         let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())

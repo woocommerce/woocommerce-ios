@@ -221,6 +221,8 @@ final class StorePerformanceViewModel: ObservableObject {
         if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
 
             // We can show the cached data since we know it's available from the timestamp.
+            // Clear any error left by a previous range so switching ranges recovers from it.
+            loadingError = nil
             updateSiteVisitStatMode()
 
             return
@@ -451,7 +453,7 @@ private extension StorePerformanceViewModel {
 
     func observeData() {
         $timeRange
-            .compactMap { [weak self] timeRange -> StoreStatsPeriodViewModel? in
+            .compactMap { [weak self] timeRange -> (StatsTimeRangeV4, StoreStatsPeriodViewModel)? in
                 guard let self else {
                     return nil
                 }
@@ -465,10 +467,15 @@ private extension StorePerformanceViewModel {
                 // Carry the current revenue metric over to the freshly created period VM so the
                 // revenue text reflects the merchant's choice immediately on time-range switches.
                 viewModel.revenueType = revenueType
-                return viewModel
+                return (timeRange, viewModel)
             }
-            .sink { [weak self] viewModel in
+            .sink { [weak self] timeRange, viewModel in
                 guard let self else { return }
+                // The period view model only publishes range text once the range has stats intervals.
+                // Start from the range's own dates so a range that fails to load doesn't keep showing
+                // the previous range's dates above the error state.
+                timeRangeText = StatsTimeRangeBarViewModel(timeRange: timeRange, timezone: siteTimezone)?.timeRangeText ?? ""
+                selectedDateText = nil
                 periodViewModel = viewModel
                 observePeriodViewModel()
             }

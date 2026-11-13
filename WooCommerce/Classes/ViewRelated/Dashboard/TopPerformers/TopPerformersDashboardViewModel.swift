@@ -117,6 +117,8 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         // Preemptively show any cached content
         // Stop if data is relatively new
         if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .topPerformers, at: timeRange.timestampRange) {
+            // Clear any error left by a previous range so switching ranges recovers from it.
+            syncingError = nil
             return updateUIInLoadedState()
         }
 

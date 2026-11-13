@@ -19,7 +19,7 @@ struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
-    @GestureState private var bottomSheetDragOffset: CGFloat = 0
+    @GestureState(resetTransaction: Transaction(animation: .interactiveSpring())) private var bottomSheetDragOffset: CGFloat = 0
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -135,7 +135,11 @@ private extension POSRootModalViewModifier {
                         .fill(Color.posOnSurfaceVariantLowest)
                         .frame(width: Constants.grabberSize.width, height: Constants.grabberSize.height)
                         .padding(.top, metrics.padding.small)
-                        .accessibilityHidden(true)
+                        .accessibilityElement()
+                        .accessibilityLabel(Localization.grabberAccessibilityLabel)
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityAction { dismissInteractively() }
+                        .accessibilityHidden(!modalManager.allowsInteractiveDismissal)
                 }
             .background {
                 UnevenRoundedRectangle(topLeadingRadius: POSCornerRadiusStyle.extraLarge.value,
@@ -173,6 +177,14 @@ private extension POSRootModalViewModifier {
         static let scaleTransitionAmount: CGFloat = 0.9
         static let grabberSize = CGSize(width: 36, height: 5)
         static let bottomSheetDismissDistance: CGFloat = 80
+    }
+
+    enum Localization {
+        static let grabberAccessibilityLabel = NSLocalizedString(
+            "pos.modal.bottomSheet.grabber.accessibilityLabel",
+            value: "Close",
+            comment: "Accessibility label for the grabber at the top of a POS bottom sheet on phone. Activating it closes the sheet."
+        )
     }
 }
 

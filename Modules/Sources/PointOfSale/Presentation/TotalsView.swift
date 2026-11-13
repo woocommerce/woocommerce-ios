@@ -123,7 +123,7 @@ struct TotalsView: View {
 
                         Spacer()
                     }
-                    .scrollVerticallyIfNeeded()
+                    .posScaleToFitHeight()
                     // A completed payment replaces the checkout content. Start the new screen at its top.
                     .id(displayPaymentState.isSuccess)
 

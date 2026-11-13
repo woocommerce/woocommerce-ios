@@ -481,7 +481,7 @@ struct POSPrinterConnectionControllerTests {
         sut.cancelSetup(sessionID: settingsSessionID)
         sut.startSetup(sessionID: UUID(), source: .printReceipt)
         service.holdsConnect = false
-        service.connectError = PrinterError.connectionInProgress
+        service.connectError = PrinterError.printerNotFound
         sut.connect(to: device)
         await wait(on: sut, until: { sut.discoveryState == .error })
 

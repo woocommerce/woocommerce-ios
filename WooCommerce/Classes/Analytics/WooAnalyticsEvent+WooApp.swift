@@ -3280,6 +3280,12 @@ extension WooAnalyticsEvent {
             case orderList = "order_list"
             case productList = "product_list"
             case scanToUpdateInventory = "scan_to_update_inventory"
+            case barcodeScanner = "barcode_scanner"
+        }
+
+        enum HardwareScannerTestFailure: String {
+            case missingEnterSuffix = "missing_enter_suffix"
+            case wrongValue = "wrong_value"
         }
 
         enum BarcodeScanningFailureReason: String {
@@ -3321,6 +3327,16 @@ extension WooAnalyticsEvent {
 
         static func hardwareBarcodeScanningSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .hardwareBarcodeScanningSuccess, properties: [Keys.source: source.rawValue])
+        }
+
+        static func hardwareBarcodeScannerTestScanSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hardwareBarcodeScannerTestScanSuccess, properties: [Keys.source: source.rawValue])
+        }
+
+        static func hardwareBarcodeScannerTestScanFailed(from source: BarcodeScanning.Source,
+                                                         failure: HardwareScannerTestFailure) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hardwareBarcodeScannerTestScanFailed, properties: [Keys.source: source.rawValue,
+                                                                                            Keys.reason: failure.rawValue])
         }
 
         static func productSearchViaSKUSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {

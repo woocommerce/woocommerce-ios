@@ -567,6 +567,8 @@ public enum WooAnalyticsStat: String {
     case barcodeScanningPermissionSettingsOpened = "barcode_scanning_permission_settings_opened"
     case barcodeScanningPermissionSettingsTapped = "barcode_scanning_permission_settings_tapped"
     case hardwareBarcodeScanningSuccess = "hardware_barcode_scanning_success"
+    case hardwareBarcodeScannerTestScanSuccess = "hardware_barcode_scanner_test_scan_success"
+    case hardwareBarcodeScannerTestScanFailed = "hardware_barcode_scanner_test_scan_failed"
     case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
     case orderProductSearchViaGlobalUniqueIdentifierSuccess = "product_search_via_global_unique_identifier_success"
     case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"

@@ -8,10 +8,8 @@ import Synchronization
 /// This class handles the low-level details of observing keyboard connections, processing raw `GCKeyCode` inputs,
 /// and using the `GameControllerBarcodeParser` to produce a final barcode.
 ///
-final class GameControllerBarcodeObserver {
-    /// A closure that is called when a barcode scan is completed.
-    /// The result will be a `success` with the barcode string or a `failure` with an HIDBarcodeParserError.
-    let onScan: (Result<String, HIDBarcodeParserError>) -> Void
+public final class GameControllerBarcodeObserver {
+    let onScan: (HIDBarcodeParserResult) -> Void
 
     /// Track the coalesced keyboard and its parser
     /// According to Apple's documentation, all connected keyboards are coalesced into one keyboard object
@@ -20,7 +18,6 @@ final class GameControllerBarcodeObserver {
     private var coalescedKeyboard: GCKeyboard?
     private(set) var barcodeParser: GameControllerBarcodeParser?
     private let configuration: HIDBarcodeParserConfiguration
-    private let analyticsTracker: BarcodeAnalyticsTracker
     private let isScanningEnabled: () -> Bool
 
     /// Tracks current shift state to be applied to the next character key
@@ -39,17 +36,14 @@ final class GameControllerBarcodeObserver {
     /// Initializes a new barcode scanner observer.
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
-    ///   - analytics: The analytics service for tracking events.
     ///   - isScanningEnabled: A live check that controls whether input and scan results are accepted. Defaults to true.
     ///   - onScan: The closure to be called when a scan is completed.
-    init(configuration: HIDBarcodeParserConfiguration = .default,
-         analytics: POSAnalyticsProviding,
-         isScanningEnabled: @escaping () -> Bool = { true },
-         onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void) {
+    public init(configuration: HIDBarcodeParserConfiguration = .default,
+                isScanningEnabled: @escaping () -> Bool = { true },
+                onScan: @escaping (HIDBarcodeParserResult) -> Void) {
         self.onScan = onScan
         self.isScanningEnabled = isScanningEnabled
         self.configuration = configuration
-        self.analyticsTracker = BarcodeAnalyticsTracker(analytics: analytics)
         addObservers()
         setupCoalescedKeyboard()
     }
@@ -154,9 +148,8 @@ final class GameControllerBarcodeObserver {
     }
 
     private func handleScanResult(_ result: HIDBarcodeParserResult) {
-        // SwiftUI can remove the scanner after the model has already entered checkout.
+        // The owner can disable scanning while the parser still holds input, e.g. after POS enters checkout.
         guard isScanningEnabled() else { return }
-        analyticsTracker.track(result: result)
-        onScan(result.asResult)
+        onScan(result)
     }
 }

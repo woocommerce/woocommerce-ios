@@ -1,5 +1,6 @@
 import Testing
 @testable import PointOfSale
+import enum Hardware.HIDBarcodeParserError
 
 @Suite(.timeLimit(.minutes(5)))
 @MainActor

@@ -5,7 +5,7 @@ import WooFoundation
 /// Parses GameController keyboard input into barcode scans.
 /// This class handles the core logic for interpreting GameController GCKeyCode input as barcode data,
 /// providing language-independent barcode scanning by bypassing iOS keyboard layout processing.
-final class GameControllerBarcodeParser {
+public final class GameControllerBarcodeParser {
     /// Configuration for the barcode scanner
     let configuration: HIDBarcodeParserConfiguration
     /// Callback that is triggered when a barcode scan completes (success or failure)
@@ -18,9 +18,9 @@ final class GameControllerBarcodeParser {
     private var scanStartTime: Date?
     private var timeoutTimer: Timer?
 
-    init(configuration: HIDBarcodeParserConfiguration,
-         onScan: @escaping (HIDBarcodeParserResult) -> Void,
-         timeProvider: TimeProvider = DefaultTimeProvider()) {
+    public init(configuration: HIDBarcodeParserConfiguration,
+                onScan: @escaping (HIDBarcodeParserResult) -> Void,
+                timeProvider: TimeProvider = DefaultTimeProvider()) {
         self.configuration = configuration
         self.onScan = onScan
         self.timeProvider = timeProvider
@@ -30,7 +30,7 @@ final class GameControllerBarcodeParser {
     /// - Parameters:
     ///   - keyCode: The GameController key code that was pressed
     ///   - isShiftPressed: Whether shift key is currently pressed
-    func processKeyPress(_ keyCode: GCKeyCode, isShiftPressed: Bool = false) {
+    public func processKeyPress(_ keyCode: GCKeyCode, isShiftPressed: Bool = false) {
         guard shouldRecogniseAsScanKeystroke(keyCode, isShiftPressed: isShiftPressed) else {
             return
         }
@@ -56,7 +56,7 @@ final class GameControllerBarcodeParser {
     }
 
     private func shouldRecogniseAsScanKeystroke(_ keyCode: GCKeyCode, isShiftPressed: Bool) -> Bool {
-        guard let character = characterForKeyCode(keyCode, isShiftPressed: isShiftPressed), character.isNotEmpty else {
+        guard let character = characterForKeyCode(keyCode, isShiftPressed: isShiftPressed), !character.isEmpty else {
             // This prevents a double-trigger-pull on a Star scanner from adding an error row –
             // Star use this as a shortcut to switch to the software keyboard. They send keycode 174 0xAE, which is
             // undefined and reserved in UIKeyboardHIDUsage. The scanner doesn't send a character with the code.
@@ -184,7 +184,7 @@ final class GameControllerBarcodeParser {
     ]
 
     /// Cancel the current scan and clear the buffer
-    func cancel() {
+    public func cancel() {
         resetScan()
     }
 
@@ -247,19 +247,25 @@ final class GameControllerBarcodeParser {
 }
 
 /// Configuration options for the HID barcode parser
-struct HIDBarcodeParserConfiguration {
+public struct HIDBarcodeParserConfiguration {
     /// Strings that indicate the end of a barcode scan
-    let terminatingStrings: Set<String>
+    public let terminatingStrings: Set<String>
 
     /// Minimum length to consider scanned input complete
-    let minimumBarcodeLength: Int
+    public let minimumBarcodeLength: Int
 
     /// Maximum time between scanned keystrokes
     /// After this time elapses, any further keystrokes result in the scan being rejected
-    let maximumInterCharacterTime: TimeInterval
+    public let maximumInterCharacterTime: TimeInterval
+
+    public init(terminatingStrings: Set<String>, minimumBarcodeLength: Int, maximumInterCharacterTime: TimeInterval) {
+        self.terminatingStrings = terminatingStrings
+        self.minimumBarcodeLength = minimumBarcodeLength
+        self.maximumInterCharacterTime = maximumInterCharacterTime
+    }
 
     /// Default configuration suitable for most barcode scanners
-    static let `default` = HIDBarcodeParserConfiguration(
+    public static let `default` = HIDBarcodeParserConfiguration(
         terminatingStrings: ["\r", "\n"],
         minimumBarcodeLength: 6,
         maximumInterCharacterTime: 0.2

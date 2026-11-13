@@ -3,6 +3,8 @@ import GameController
 import UIKit
 @testable import PointOfSale
 import WooFoundation
+import enum Hardware.HIDBarcodeParserError
+import struct Hardware.HIDBarcodeParserConfiguration
 
 @MainActor
 struct UIKitBarcodeObserverTests {

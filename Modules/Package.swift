@@ -169,6 +169,7 @@ let package = Package(
             name: "Hardware",
             dependencies: [
                 "Codegen",
+                "WooFoundation",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
                 .product(name: "StarIO10", package: "StarXpand-SDK-iOS")
@@ -304,6 +305,7 @@ let package = Package(
             name: "PointOfSale",
             dependencies: [
                 "Experiments",
+                "Hardware",
                 "WooFoundation",
                 "Yosemite",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
@@ -345,6 +347,7 @@ let package = Package(
             name: "HardwareTests",
             dependencies: [
                 "Hardware",
+                "WooFoundation",
                 .product(name: "StarIO10", package: "StarXpand-SDK-iOS")
             ],
             swiftSettings: swift5
@@ -416,6 +419,7 @@ let package = Package(
                 .target(name: "PointOfSale"),
                 "Codegen",
                 "Fakes",
+                "Hardware",
                 "Storage",
                 "TestKit",
                 "WooFoundation"

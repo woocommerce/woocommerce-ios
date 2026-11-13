@@ -9,10 +9,12 @@ final class PushNotificationBackgroundSynchronizerTests: XCTestCase {
 
     var stores: MockStoresManager!
     var storage: MockStorageManager!
+    var sessionManager: SessionManager!
 
     @MainActor
     override func setUp() async throws {
-        stores = MockStoresManager(sessionManager: .testingInstance)
+        sessionManager = .testingInstance
+        stores = MockStoresManager(sessionManager: sessionManager)
         storage = MockStorageManager()
     }
 
@@ -49,7 +51,8 @@ final class PushNotificationBackgroundSynchronizerTests: XCTestCase {
     @MainActor
     func test_synchronizer_stores_order_notification_when_order_comes_inside_notification() async {
         // Given
-        mockOrderNotInOrdersForSampleWithNoteFullData()
+        sessionManager.defaultStoreID = Self.sampleSiteIDFromNotificationWithNoteFullData
+        mockOrderNotInOrdersForSampleWithNoteFullData(order: Self.sampleOrderWithNoteFullDataOrderID)
 
         // When
         let synchronizer = PushNotificationBackgroundSynchronizer(userInfo: Self.sampleUserInfoWithNoteFullData, stores: stores, storage: storage.viewStorage)
@@ -62,6 +65,29 @@ final class PushNotificationBackgroundSynchronizerTests: XCTestCase {
         XCTAssertEqual(syncResult, .newData)
         XCTAssertEqual(storedOrder?.orderID, Self.sampleOrderIDFromNotificationWithNoteFullData)
         XCTAssertEqual(storedOrder?.siteID, Self.sampleSiteIDFromNotificationWithNoteFullData)
+    }
+
+    @MainActor
+    func test_synchronizer_stores_order_under_placeholder_site_when_using_site_credentials() async {
+        // Given
+        sessionManager.defaultStoreID = WooConstants.placeholderStoreID
+        let order = Self.sampleOrderWithNoteFullDataOrderID.copy(siteID: WooConstants.placeholderStoreID)
+        mockOrderNotInOrdersForSampleWithNoteFullData(order: order)
+
+        // When
+        let synchronizer = PushNotificationBackgroundSynchronizer(userInfo: Self.sampleUserInfoWithNoteFullData,
+                                                                   stores: stores,
+                                                                   storage: storage.viewStorage)
+        let syncResult = await synchronizer.sync()
+
+        // Then
+        let storedOrder = storage.viewStorage.loadOrder(siteID: WooConstants.placeholderStoreID,
+                                                        orderID: Self.sampleOrderIDFromNotificationWithNoteFullData)
+        XCTAssertNotNil(storedOrder)
+        XCTAssertNil(storage.viewStorage.loadOrder(siteID: Self.sampleSiteIDFromNotificationWithNoteFullData,
+                                                    orderID: Self.sampleOrderIDFromNotificationWithNoteFullData))
+        XCTAssertEqual(syncResult, .newData)
+        XCTAssertEqual(storedOrder?.siteID, WooConstants.placeholderStoreID)
     }
 }
 
@@ -86,7 +112,8 @@ private extension PushNotificationBackgroundSynchronizerTests {
         // Mock fetch order filters
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .loadOrdersSettings(_, onCompletion):
+            case let .loadOrdersSettings(siteID, onCompletion):
+                XCTAssertEqual(siteID, order.siteID)
                 onCompletion(.success(.init(siteID: order.siteID,
                                             orderStatusesFilter: nil,
                                             dateRangeFilter: nil,
@@ -129,17 +156,20 @@ private extension PushNotificationBackgroundSynchronizerTests {
         }
     }
 
-    func mockOrderNotInOrdersForSampleWithNoteFullData() {
-        mockOrderInOrderListResponses(order: Self.sampleOrderWithNoteFullDataOrderID, synchronizeNotifications: false)
+    func mockOrderNotInOrdersForSampleWithNoteFullData(order: Networking.Order) {
+        mockOrderInOrderListResponses(order: order, synchronizeNotifications: false)
 
         // Mock sync order list & single order
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, onCompletion):
+            case let .fetchFilteredOrders(siteID, _, _, _, _, _, _, _, _, _, onCompletion):
+                XCTAssertEqual(siteID, order.siteID)
                 onCompletion(0, .success([]))
-            case let .retrieveOrderRemotely(_, _, onCompletion):
-                self.storage.insertSampleOrder(readOnlyOrder: Self.sampleOrderWithNoteFullDataOrderID)
-                onCompletion(.success(Self.sampleOrderWithNoteFullDataOrderID))
+            case let .retrieveOrderRemotely(siteID, orderID, onCompletion):
+                XCTAssertEqual(siteID, order.siteID)
+                XCTAssertEqual(orderID, order.orderID)
+                self.storage.insertSampleOrder(readOnlyOrder: order)
+                onCompletion(.success(order))
             default:
                 break
             }

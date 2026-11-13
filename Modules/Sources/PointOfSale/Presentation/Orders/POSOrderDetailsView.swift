@@ -13,6 +13,7 @@ private enum POSOrderDetailsNavigationDestination: Hashable {
 }
 
 struct POSOrderDetailsView: View {
+    @Environment(\.posMetrics) private var metrics
     let order: POSOrder
     let onBack: () -> Void
     @Binding private var detailNavigationPath: NavigationPath
@@ -22,10 +23,10 @@ struct POSOrderDetailsView: View {
     var onRefundFailure: ((Error) -> Void)? = nil
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posHeaderBackButtonPadding) private var backButtonPadding
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @State private var isShowingEmailReceiptView = false
     @State private var refundSelectionState: RefundSelectionState?
@@ -33,13 +34,22 @@ struct POSOrderDetailsView: View {
     @State private var refundFlowPreparationID: UUID?
     @State private var currentRefundReason: String?
     @State private var selectedRefundForDetail: POSOrderRefund?
+    @State private var refundOverrideHandler = POSManagerOverrideHandler()
+    /// Items last shown for a selected order. On a phone this screen keeps sliding away after its order
+    /// is deselected, and the controller has no items for a `nil` selection.
+    @State private var lastItemsState: POSOrderDetailsItemsState?
+    @State private var lastSelectedOrder: POSOrder?
+
+    private var itemsState: POSOrderDetailsItemsState {
+        let controller = orderListModel.ordersController
+        guard controller.selectedOrder == nil, let lastItemsState else {
+            return controller.orderDetailsItemsState
+        }
+        return lastItemsState
+    }
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
-    }
-
-    private var shouldShowDedicatedRefundsSection: Bool {
-        featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
     }
 
     private var dateFormatter: DateFormatter {
@@ -68,8 +78,8 @@ struct POSOrderDetailsView: View {
         // The `order` prop is captured at navigation time and goes stale once the controller
         // refreshes refund details. Prefer the controller's live `selectedOrder` so the view
         // re-renders when refunds are loaded or the order is refetched after a refund.
-        let order = orderListModel.ordersController.selectedOrder ?? self.order
-        VStack(spacing: POSSpacing.none) {
+        let order = orderListModel.ordersController.selectedOrder ?? lastSelectedOrder ?? self.order
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(
                 title: POSOrderListView.Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
@@ -80,26 +90,22 @@ struct POSOrderDetailsView: View {
                     headerBottomContent(for: order)
                 }
             )
-            .posHeaderBackButtonPadding(POSPadding.none)
+            .posHeaderBackButtonPadding(horizontalSizeClass == .compact ? backButtonPadding : metrics.padding.none)
             .fixedSize(horizontal: false, vertical: true)
             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             ScrollView {
-                VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    let isLoadingOrderRefunds = orderListModel.ordersController.isLoadingOrderRefunds
-                    if shouldShowDedicatedRefundsSection && isLoadingOrderRefunds {
-                        // Render skeletons for both sections while refund details load so
-                        // the items don't get rearranged when filtering kicks in.
-                        ghostItemsSection(rowCount: order.lineItems.count + order.customAmounts.count)
+                VStack(alignment: .leading, spacing: metrics.spacing.medium) {
+                    switch itemsState {
+                    case .loading(let rowCount):
+                        ghostItemsSection(rowCount: rowCount)
                         ghostRefundedProductsSection
-                    } else {
-                        let displayedLineItems = orderListModel.ordersController.displayedLineItems
-                        let displayedCustomAmounts = orderListModel.ordersController.displayedCustomAmounts
-                        if !displayedLineItems.isEmpty || !displayedCustomAmounts.isEmpty {
-                            itemsSection(products: displayedLineItems, customAmounts: displayedCustomAmounts)
+
+                    case .loaded(let lineItems, let customAmounts, let refundedItems):
+                        if !lineItems.isEmpty || !customAmounts.isEmpty {
+                            itemsSection(products: lineItems, customAmounts: customAmounts)
                         }
-                        let refundedItems = order.refunds.flatMap { $0.items }
-                        if shouldShowDedicatedRefundsSection && !refundedItems.isEmpty {
+                        if !refundedItems.isEmpty {
                             refundedProductsSection(refundedItems)
                         }
                     }
@@ -119,9 +125,9 @@ struct POSOrderDetailsView: View {
                         selectedRefundForDetail: $selectedRefundForDetail
                     )
                 }
-                .padding(.top, POSPadding.xSmall)
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+                .padding(.top, metrics.padding.xSmall)
+                .posContentPadding(.horizontal, metrics.padding.medium)
+                .padding(.bottom, metrics.padding.medium)
             }
         }
         .background(Color.posSurface)
@@ -144,11 +150,18 @@ struct POSOrderDetailsView: View {
                         state: refundSelectionState,
                         errorStrings: refundErrorStrings,
                         onDismiss: { dismissRefundFlow() },
-                        onRetryLoading: { initiateRefundFlow() },
+                        onRetryLoading: {
+                            if orderListModel.hasLoadedRefundableItems {
+                                refreshRefundSelection()
+                            } else {
+                                initiateRefundFlow()
+                            }
+                        },
                         onRetryPreparation: {
                             self.refundSelectionState = .itemSelection
                         },
-                        onContinue: { navigateToRefundReview() }
+                        onContinue: { navigateToRefundReview() },
+                        onRefreshItems: { refreshRefundSelection() }
                     )
                 }
             }
@@ -161,6 +174,12 @@ struct POSOrderDetailsView: View {
                     order: order,
                     onDismiss: { dismissRefundFlow() },
                     onReturnToSelection: { returnToRefundSelection() },
+                    onRefreshSelection: { refreshRefundSelection() },
+                    onNothingToRefund: {
+                        refundModalState = nil
+                        refundSelectionState = .nothingToRefund
+                        presentRefundSelection()
+                    },
                     initialRefundReason: currentRefundReason,
                     onRefundReasonChanged: { currentRefundReason = $0 },
                     onRefundSuccess: onRefundSuccess,
@@ -175,12 +194,20 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
+        .posManagerOverrideModal(handler: refundOverrideHandler)
+        .onChange(of: orderListModel.ordersController.orderDetailsItemsState, initial: true) { _, newValue in
+            guard orderListModel.ordersController.selectedOrder != nil else { return }
+            lastItemsState = newValue
+        }
+        .onChange(of: orderListModel.ordersController.selectedOrder, initial: true) { _, newValue in
+            guard let newValue else { return }
+            lastSelectedOrder = newValue
+        }
         .task {
-            guard shouldShowDedicatedRefundsSection else { return }
             await orderListModel.ordersController.loadOrderRefunds()
         }
         .task {
-            await orderListModel.ordersController.preloadRefundDetails()
+            await orderListModel.preloadRefund()
         }
         .onAppear {
             if autoStartNextRefundFlow {
@@ -209,13 +236,13 @@ private struct POSRefundNothingToRefundError: LocalizedError {
 private extension POSOrderDetailsView {
     @ViewBuilder
     func itemsSection(products: [POSOrderItem], customAmounts: [POSOrderCustomAmount]) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.itemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(Array(products.enumerated()), id: \.element.itemID) { index, item in
                     productRow(item: item)
 
@@ -233,14 +260,14 @@ private extension POSOrderDetailsView {
                 }
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
 
     @ViewBuilder
     func customAmountRow(customAmount: POSOrderCustomAmount) -> some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
             CustomAmountAvatar(name: customAmount.name)
                 .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
@@ -266,13 +293,13 @@ private extension POSOrderDetailsView {
         // so render exactly that many placeholder rows. The layout doesn't shrink/grow when the
         // refund details finish loading and the real rows replace the skeleton.
         let count = max(1, rowCount)
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.itemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(0..<count, id: \.self) { index in
                     ghostRefundedProductRow
 
@@ -282,15 +309,16 @@ private extension POSOrderDetailsView {
                 }
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Localization.loadingItemsAccessibilityLabel)
     }
 
     @ViewBuilder
     var ghostRefundedProductsSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.refundedItemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
@@ -298,45 +326,42 @@ private extension POSOrderDetailsView {
 
             ghostRefundedProductRow
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Localization.loadingRefundedItemsAccessibilityLabel)
     }
 
     @ViewBuilder
     var ghostRefundedProductRow: some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            ghostLine(width: Constants.productImageSize, height: Constants.productImageSize)
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest.opacity(POSLoadingPlaceholderStyle.imageBaseOpacity))
+                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering(gradient: POSLoadingPlaceholderStyle.shimmerGradient)
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
-                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+                POSPlaceholderText(.redactedPlaceholder(length: 8), font: .posBodyLargeBold)
+                POSPlaceholderText(.redactedPlaceholder(length: 6), font: .posBodyMediumRegular())
             }
 
             Spacer()
 
-            ghostLine(width: Constants.extraShortWidth, height: Constants.rowHeight)
+            POSPlaceholderText(.redactedPlaceholder(length: 4), font: .posBodyMediumRegular())
         }
-    }
-
-    func ghostLine(width: CGFloat, height: CGFloat) -> some View {
-        Rectangle()
-            .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: width, height: height)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .shimmering()
     }
 
     @ViewBuilder
     func refundedProductsSection(_ items: [POSRefundItem]) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(Localization.refundedItemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(items) { item in
                     refundedProductRow(item: item)
 
@@ -346,7 +371,7 @@ private extension POSOrderDetailsView {
                 }
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
@@ -358,7 +383,7 @@ private extension POSOrderDetailsView {
 private extension POSOrderDetailsView {
     @ViewBuilder
     func headerBottomContent(for order: POSOrder) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             Text(dateFormatter.string(from: order.dateCreated))
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
@@ -371,10 +396,10 @@ private extension POSOrderDetailsView {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            Spacer().frame(height: POSSpacing.xSmall)
+            Spacer().frame(height: metrics.spacing.xSmall)
             POSOrderBadgeView(order: order)
         }
-        .padding(.top, POSSpacing.xSmall)
+        .padding(.top, metrics.spacing.xSmall)
         .multilineTextAlignment(.leading)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(headerBottomContentAccessibilityLabel(for: order))
@@ -398,7 +423,7 @@ private extension POSOrderDetailsView {
 private extension POSOrderDetailsView {
     @ViewBuilder
     func productRow(item: POSOrderItem) -> some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
             productImageView(item: item)
             productDetailsView(item: item)
             Spacer()
@@ -429,7 +454,7 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func productDetailsView(item: POSOrderItem) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             Text(item.name)
                 .font(.posBodyLargeBold)
                 .foregroundStyle(Color.posOnSurface)
@@ -508,7 +533,16 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return { initiateRefundFlow() }
+            return { requestRefundPermission() }
+        }
+    }
+
+    /// Gates the refund flow on `.issueRefunds`. When the operator already holds it the flow starts
+    /// immediately; otherwise the manager-override modal is presented and the flow starts once an
+    /// authorized staff member approves.
+    func requestRefundPermission() {
+        refundOverrideHandler.gate(.issueRefunds, reason: Localization.refundOverrideDescription(order.number)) { _ in
+            initiateRefundFlow()
         }
     }
 
@@ -524,19 +558,12 @@ private extension POSOrderDetailsView {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
-            guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
-                return .init(primary: email, secondary: [])
-            }
-
-            switch orderListModel.ordersController.refundActionAvailability {
+            switch orderListModel.refundActionAvailability {
             case .available:
                 return .init(primary: .issueRefund, secondary: [email])
 
             case .unavailable:
                 return .init(primary: email, secondary: [])
-
-            case .unknown:
-                return .init(primary: nil, secondary: [email])
             }
         default:
             return .init(primary: nil, secondary: [])
@@ -546,7 +573,7 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func actionsSection(setup: OrderDetailsActionsSetup) -> some View {
         if let primary = setup.primary {
-            HStack(spacing: POSSpacing.large) {
+            HStack(spacing: metrics.spacing.large) {
                 Button(action: handler(for: primary)) {
                     Text(primary.title)
                         .lineLimit(1)
@@ -568,7 +595,7 @@ private extension POSOrderDetailsView {
                     .font(.posBodyLargeBold)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .foregroundColor(.posOnSurface)
-                    .padding(POSPadding.small)
+                    .padding(metrics.padding.small)
             }
             .menuIndicator(.hidden)
         }
@@ -579,7 +606,7 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     var divider: some View {
         POSDivider()
-            .padding(.vertical, POSSpacing.small)
+            .padding(.vertical, metrics.spacing.small)
     }
 }
 
@@ -608,7 +635,7 @@ private extension POSOrderDetailsView {
         refundSelectionState = .loading
         presentRefundSelection()
         Task { @MainActor in
-            let result = await orderListModel.ordersController.startRefundFlow()
+            let result = await orderListModel.startRefundFlow()
             guard refundFlowPreparationID == preparationID else {
                 return
             }
@@ -618,6 +645,8 @@ private extension POSOrderDetailsView {
                 refundSelectionState = .itemSelection
             case .nothingToRefund:
                 refundSelectionState = .nothingToRefund
+            case .ineligible(let eligibilityFailure):
+                refundSelectionState = .ineligible(eligibilityFailure)
             case .failed:
                 refundSelectionState = .loadingError
             }
@@ -625,17 +654,54 @@ private extension POSOrderDetailsView {
     }
 
     func navigateToRefundReview() {
-        guard var reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
-            refundSelectionState = .preparationError
-            return
+        Task { @MainActor in
+            switch await orderListModel.prepareRefundReview() {
+            case .ready(var reviewData):
+                reviewData.refundReason = currentRefundReason
+                refundModalState = .review(reviewData)
+            case .preparationError:
+                refundSelectionState = .preparationError
+            case .nothingToRefund:
+                refundModalState = nil
+                refundSelectionState = .nothingToRefund
+            case .previewError, .superseded:
+                break
+            }
         }
-        reviewData.refundReason = currentRefundReason
-        refundModalState = .review(reviewData)
     }
 
     func returnToRefundSelection() {
         refundSelectionState = .itemSelection
         refundModalState = nil
+    }
+
+    /// Reloads the refundable items after the store rejected the preview or the create because the
+    /// order changed since the flow was opened, then returns to the selection with the remaining
+    /// quantities. The flow is already running, so unlike `initiateRefundFlow()` this does not
+    /// report a refund flow start.
+    func refreshRefundSelection() {
+        let preparationID = UUID()
+        refundFlowPreparationID = preparationID
+        refundModalState = nil
+        refundSelectionState = .loading
+        presentRefundSelection()
+        Task { @MainActor in
+            let result = await orderListModel.refreshRefundableItems()
+            guard refundFlowPreparationID == preparationID else {
+                return
+            }
+            refundFlowPreparationID = nil
+            switch result {
+            case .hasItemsToRefund:
+                refundSelectionState = .itemSelection
+            case .nothingToRefund:
+                refundSelectionState = .nothingToRefund
+            case .ineligible(let eligibilityFailure):
+                refundSelectionState = .ineligible(eligibilityFailure)
+            case .failed:
+                refundSelectionState = .loadingError
+            }
+        }
     }
 
     func dismissRefundFlow() {
@@ -653,7 +719,7 @@ private extension POSOrderDetailsView {
         refundSelectionState = nil
         refundModalState = nil
         currentRefundReason = nil
-        orderListModel.ordersController.clearRefundSelection()
+        orderListModel.clearRefundSelection()
         dismissRefundSelectionIfNeeded()
     }
 
@@ -692,10 +758,6 @@ private extension POSOrderDetailsView {
 
 private enum Constants {
     static let productImageSize: CGFloat = 56
-    static let longWidth: CGFloat = 120
-    static let shortWidth: CGFloat = 80
-    static let extraShortWidth: CGFloat = 60
-    static let rowHeight: CGFloat = 16
 }
 
 // MARK: - Localization
@@ -711,6 +773,18 @@ private enum Localization {
         "pos.orderDetailsView.refundedItemsTitle",
         value: "Refunded items",
         comment: "Section title for the refunded items list (products and custom amounts) in order details"
+    )
+
+    static let loadingItemsAccessibilityLabel = NSLocalizedString(
+        "pos.orderDetailsView.loadingItems.accessibilityLabel",
+        value: "Loading items",
+        comment: "Accessibility label for the order items section while refund details are loading."
+    )
+
+    static let loadingRefundedItemsAccessibilityLabel = NSLocalizedString(
+        "pos.orderDetailsView.loadingRefundedItems.accessibilityLabel",
+        value: "Loading refunded items",
+        comment: "Accessibility label for the refunded items section while refund details are loading."
     )
 
     static func customAmountRowAccessibilityLabel(name: String, total: String) -> String {
@@ -778,6 +852,16 @@ private enum Localization {
             value: "Issue refund",
             comment: "Primary action button to start issuing a refund on the order details view"
         )
+
+    static func refundOverrideDescription(_ orderNumber: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.refundOverride.description",
+            value: "Refunding Order #%1$@ requires approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "issue-refunds permission tries to start a refund. %1$@ is the order number."
+        )
+        return String(format: format, orderNumber)
+    }
 
     static let issueRefundAccessibilityHint = NSLocalizedString(
         "pos.orderDetailsView.issueRefundAction.accessibilityHint",

@@ -39,6 +39,7 @@ public protocol POSConnectivityProviding {
 
 /// Protocol that provides main app navigation capabilities for POS
 public protocol POSExternalNavigationProviding {
+    @MainActor
     func navigateToCreateOrder()
 }
 
@@ -47,16 +48,20 @@ public protocol POSExternalNavigationProviding {
 /// This is used as a workaround to enable POS modularization without requiring a larger refactoring effort
 ///
 public protocol POSExternalViewProviding {
+    @MainActor
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
+    @MainActor
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,
                                   dismissHandler: @escaping () -> Void,
                                   onDisappear: @escaping () -> Void) -> AnyView
+    @MainActor
     func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,
                                           title: String,
                                           cancelButtonTitle: String,
                                           onSelection: @escaping (CouponDiscountType) -> Void) -> AnyView
+    @MainActor
     func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView
 }
 
@@ -67,6 +72,6 @@ public protocol POSDependencyProviding {
     var currency: POSCurrencySettingsProviding { get }
     var featureFlags: POSFeatureFlagProviding { get }
     var connectivity: POSConnectivityProviding { get }
-    var externalNavigation: POSExternalNavigationProviding { get }
-    var externalViews: POSExternalViewProviding { get }
+    @MainActor var externalNavigation: POSExternalNavigationProviding { get }
+    @MainActor var externalViews: POSExternalViewProviding { get }
 }

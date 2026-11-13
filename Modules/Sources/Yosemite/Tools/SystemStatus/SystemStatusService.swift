@@ -1,7 +1,9 @@
 import Foundation
 
 public protocol SystemStatusServiceProtocol {
+    @MainActor
     func synchronizeSystemInformation(siteID: Int64) async throws -> SystemInformation
+    @MainActor
     func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String) async -> SystemPlugin?
 }
 

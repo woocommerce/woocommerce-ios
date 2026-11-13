@@ -14,13 +14,11 @@ extension POSListEmptyViewModelProtocol {
 }
 
 struct POSListEmptyView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let viewModel: any POSListEmptyViewModelProtocol
 
     private let onAction: (() -> Void)?
-
-    @State private var viewWidth: CGFloat = 0
 
     @Environment(\.keyboardObserver) private var keyboard
 
@@ -30,15 +28,14 @@ struct POSListEmptyView: View {
     }
 
     var body: some View {
-        ScrollableVStack {
-            Spacer()
-            VStack(alignment: .center, spacing: POSSpacing.none) {
+        POSStatusScreenLayout(buttonsWidth: .capped) {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
                 let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && !keyboard.isFullSizeKeyboardVisible
 
                 if shouldShowIcon {
                     icon
 
-                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
+                    Spacer().frame(height: metrics.spacing.medium)
                 }
 
                 Text(viewModel.title)
@@ -47,44 +44,35 @@ struct POSListEmptyView: View {
                     .font(.posHeadingBold)
                     .multilineTextAlignment(.center)
 
-                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textSpacing)
+                Spacer().frame(height: metrics.spacing.small)
 
                 Text(viewModel.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
-                    .padding([.leading, .trailing])
+                    .posPadding(.horizontal, \.medium)
                     .multilineTextAlignment(.center)
 
                 if let hint = viewModel.hint {
-                    Spacer().frame(height: POSSpacing.small)
+                    Spacer().frame(height: metrics.spacing.small)
                     Text(hint)
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
                         .font(.posBodyLargeRegular())
-                        .padding([.leading, .trailing])
+                        .posPadding(.horizontal, \.medium)
                         .multilineTextAlignment(.center)
                 }
-
-                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
-
-                if let onAction, let buttonTitle = viewModel.buttonTitle {
-                    Button(action: {
-                        onAction()
-                    }, label: {
-                        Text(buttonTitle)
-                    })
-                    .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .frame(width: viewWidth / 2)
-                    .padding([.leading, .trailing])
-                }
             }
-            Spacer()
+            .multilineTextAlignment(.center)
+        } buttons: {
+            if let onAction, let buttonTitle = viewModel.buttonTitle {
+                Button(action: {
+                    onAction()
+                }, label: {
+                    Text(buttonTitle)
+                })
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+            }
         }
-        .multilineTextAlignment(.center)
-        .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
         .animation(.default, value: keyboard.keyboardHeight)
-        .measureWidth { width in
-            viewWidth = width
-        }
     }
 
     @ViewBuilder
@@ -173,7 +161,7 @@ struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
     var icon: Image {
         switch itemListType {
         case .coupons(search: false):
-            SharedImageAsset.coupons.decorativeImage
+            PointOfSaleAssets.coupons.decorativeImage
         default:
             PointOfSaleAssets.magnifierNotFound.decorativeImage
         }

@@ -45,9 +45,10 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
                 return
             }
 
-            let newTaxRate = storageManager.viewStorage.insertNewObject(ofType: StorageTaxRate.self)
-            newTaxRate.update(with: taxRate)
-            storageManager.viewStorage.saveIfNeeded()
+            storageManager.performAndSave({ storage in
+                let newTaxRate = storage.insertNewObject(ofType: StorageTaxRate.self)
+                newTaxRate.update(with: taxRate)
+            }, completion: {}, on: .main)
             completion(.success([taxRate]))
         }
 
@@ -76,9 +77,10 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
                 return
             }
 
-            let newTaxRate = storageManager.viewStorage.insertNewObject(ofType: StorageTaxRate.self)
-            newTaxRate.update(with: taxRate)
-            storageManager.viewStorage.saveIfNeeded()
+            storageManager.performAndSave({ storage in
+                let newTaxRate = storage.insertNewObject(ofType: StorageTaxRate.self)
+                newTaxRate.update(with: taxRate)
+            }, completion: {}, on: .main)
             completion(.success([taxRate]))
         }
 
@@ -101,9 +103,10 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
                 return
             }
 
-            let newTaxRate = storageManager.viewStorage.insertNewObject(ofType: StorageTaxRate.self)
-            newTaxRate.update(with: taxRate)
-            storageManager.viewStorage.saveIfNeeded()
+            storageManager.performAndSave({ storage in
+                let newTaxRate = storage.insertNewObject(ofType: StorageTaxRate.self)
+                newTaxRate.update(with: taxRate)
+            }, completion: {}, on: .main)
             completion(.success([taxRate]))
         }
 
@@ -190,9 +193,10 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
                 return
             }
 
-            let newTaxRate = storageManager.viewStorage.insertNewObject(ofType: StorageTaxRate.self)
-            newTaxRate.update(with: taxRate)
-            storageManager.viewStorage.saveIfNeeded()
+            storageManager.performAndSave({ storage in
+                let newTaxRate = storage.insertNewObject(ofType: StorageTaxRate.self)
+                newTaxRate.update(with: taxRate)
+            }, completion: {}, on: .main)
             completion(.success([taxRate]))
         }
 

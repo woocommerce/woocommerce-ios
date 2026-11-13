@@ -7,6 +7,7 @@ import struct Yosemite.SystemPlugin
 import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
 
+@MainActor
 struct POSReceiptSenderTests {
     private let mockOrderService = MockPOSOrderService()
     private let mockReceiptService = MockReceiptService()

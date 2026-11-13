@@ -3,7 +3,7 @@ import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import typealias Yosemite.OrderItemAttribute
 
-public struct POSRefundSelectableItem: Identifiable, Equatable {
+public struct POSRefundSelectableItem: Identifiable, Equatable, Sendable {
     public let itemID: Int64
     let name: String
     let imageSrc: String?

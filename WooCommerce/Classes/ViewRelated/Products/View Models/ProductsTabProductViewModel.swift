@@ -23,6 +23,7 @@ private extension ProductStatus {
 struct ProductsTabProductViewModel {
     let imageUrl: String?
     let name: String
+    let stockStatusKey: String
     let productVariation: ProductVariation?
     let detailsAttributedString: NSAttributedString
     let isSelected: Bool
@@ -38,15 +39,20 @@ struct ProductsTabProductViewModel {
          isSelected: Bool = false,
          isDraggable: Bool = false,
          isSKUShown: Bool = false,
+         isPriceShown: Bool = false,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          imageService: ImageService = ServiceLocator.imageService) {
 
+        stockStatusKey = product.stockStatusKey
         imageUrl = product.imageURL?.absoluteString
         name = product.name.isEmpty ? Localization.noTitle : product.name
         self.productVariation = productVariation
         self.isSelected = isSelected
         self.isDraggable = isDraggable
         self.hasPendingUploads = hasPendingUploads
-        detailsAttributedString = product.createDetailsAttributedString(isSKUShown: isSKUShown)
+        detailsAttributedString = product.createDetailsAttributedString(isSKUShown: isSKUShown,
+                                                                        isPriceShown: isPriceShown,
+                                                                        currencySettings: currencySettings)
 
         self.imageService = imageService
     }
@@ -65,7 +71,9 @@ struct ProductsTabProductViewModel {
 }
 
 private extension ProductListItem {
-    func createDetailsAttributedString(isSKUShown: Bool) -> NSAttributedString {
+    func createDetailsAttributedString(isSKUShown: Bool,
+                                       isPriceShown: Bool,
+                                       currencySettings: CurrencySettings) -> NSAttributedString {
         let statusText = createStatusText()
         let stockText = String.createStockText(productType: productType,
                                                manageStock: manageStock,
@@ -73,9 +81,10 @@ private extension ProductListItem {
                                                stockQuantity: stockQuantity,
                                                bundleStockStatus: bundleStockStatus,
                                                bundleStockQuantity: bundleStockQuantity)
+        let priceText = isPriceShown ? createPriceText(currencySettings: currencySettings): nil
         let variationsText = createVariationsText()
 
-        let detailsText = [statusText, stockText, variationsText]
+        let detailsText = [statusText, stockText, priceText, variationsText]
             .compactMap({ $0 })
             .joined(separator: " • ")
         let skuText = isSKUShown ? createSKUText(): nil
@@ -118,6 +127,13 @@ private extension ProductListItem {
             return nil
         }
         return String.localizedStringWithFormat(EditableProductModel.Localization.skuFormat, sku)
+    }
+
+    func createPriceText(currencySettings: CurrencySettings) -> String? {
+        guard price.isNotEmpty else {
+            return nil
+        }
+        return CurrencyFormatter(currencySettings: currencySettings).formatAmount(price)
     }
 }
 

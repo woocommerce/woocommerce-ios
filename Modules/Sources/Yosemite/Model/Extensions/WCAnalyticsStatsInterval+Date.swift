@@ -1,21 +1,14 @@
 import Foundation
-import WooFoundation
 
 extension WCAnalyticsStatsInterval {
     /// Returns the interval start date by parsing the `dateStart` string.
-    public func dateStart(timeZone: TimeZone) -> Date {
-        guard let date = createDateFormatter(timeZone: timeZone).date(from: dateStart) else {
-            logErrorAndExit("Failed to parse date: \(dateStart)")
-        }
-        return date
+    public func dateStart(timeZone: TimeZone) -> Date? {
+        createDateFormatter(timeZone: timeZone).date(from: dateStart)
     }
 
     /// Returns the interval end date by parsing the `dateEnd` string.
-    public func dateEnd(timeZone: TimeZone) -> Date {
-        guard let date = createDateFormatter(timeZone: timeZone).date(from: dateEnd) else {
-            logErrorAndExit("Failed to parse date: \(dateEnd)")
-        }
-        return date
+    public func dateEnd(timeZone: TimeZone) -> Date? {
+        createDateFormatter(timeZone: timeZone).date(from: dateEnd)
     }
 }
 

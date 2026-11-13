@@ -60,7 +60,7 @@ struct LastOrdersDashboardCard: View {
 private extension LastOrdersDashboardCard {
     var emptyView: some View {
         VStack(spacing: 0) {
-            LastOrdersDashboardEmptyView(orderStatus: viewModel.selectedOrderStatus)
+            LastOrdersDashboardEmptyView(statusName: viewModel.selectedOrderStatusDisplayName)
                 .frame(maxWidth: .infinity)
 
             Divider()
@@ -124,7 +124,7 @@ private extension LastOrdersDashboardCard {
                             await viewModel.updateOrderStatus(status)
                         }
                     } label: {
-                        SelectableItemRow(title: status.description, selected: status.status == viewModel.selectedOrderStatus)
+                        SelectableItemRow(title: viewModel.title(for: status), selected: status.status == viewModel.selectedOrderStatus)
                     }
                 }
             } label: {
@@ -155,7 +155,9 @@ private extension LastOrdersDashboardCard {
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
     }
+}
 
+extension LastOrdersDashboardCard {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "lastOrdersDashboardCard.hideCard",

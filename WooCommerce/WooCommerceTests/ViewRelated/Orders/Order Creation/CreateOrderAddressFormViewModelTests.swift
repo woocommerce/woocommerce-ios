@@ -5,6 +5,7 @@ import Combine
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 final class CreateOrderAddressFormViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
@@ -15,8 +16,13 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
 
     var subscriptions = Set<AnyCancellable>()
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
+        setUpFixtures()
+    }
+
+    @MainActor
+    private func setUpFixtures() {
 
         testingStorage.reset()
         testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
@@ -395,7 +401,7 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showEmailField)
     }
 
-    func test_view_model_fires_error_notice_when_providing_an_invalid_email() {
+    func test_view_model_fires_error_notice_when_providing_an_invalid_email() async throws {
         // Given
         let address1 = sampleAddress().copy(email: "invalid")
         let viewModel = CreateOrderAddressFormViewModel(siteID: sampleSiteID,
@@ -403,11 +409,10 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
                                                         onAddressUpdate: { _ in })
 
         // When
-        let notice: Notice? = waitFor { promise in
-            viewModel.saveAddress { _ in
-                promise(viewModel.notice)
-            }
+        let _: Bool = try await waitForCompletion { completion in
+            viewModel.saveAddress(onFinish: completion)
         }
+        let notice = viewModel.notice
 
         // Then
         XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())
@@ -432,7 +437,7 @@ private extension CreateOrderAddressFormViewModelTests {
 
 private extension CreateOrderAddressFormViewModelTests {
     static let sampleCountries: [Country] = {
-        return Locale.isoRegionCodes.map { regionCode in
+        return Locale.Region.isoRegions.map(\.identifier).filter { $0.count == 2 }.map { regionCode in
             let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""
             let states = regionCode == "US" ? [StateOfACountry(code: "NY", name: "New York")] : []
             return Country(code: regionCode, name: name, states: states)

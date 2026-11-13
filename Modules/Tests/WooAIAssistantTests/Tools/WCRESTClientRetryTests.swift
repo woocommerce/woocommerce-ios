@@ -15,7 +15,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "GET",
@@ -37,7 +37,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "GET",
@@ -82,7 +82,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "GET",
@@ -104,7 +104,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "POST",
@@ -128,7 +128,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "GET",

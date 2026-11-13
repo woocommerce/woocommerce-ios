@@ -26,11 +26,13 @@ struct PaymentMethodsView: View {
 
     @State private var showingLearnMore = false
 
-    ///   Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     var body: some View {
+        SafeAreaInsetsReader { _ in
+            content(safeAreaInsets: .zero)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.noSpacing) {
 
@@ -47,14 +49,19 @@ struct PaymentMethodsView: View {
                         if viewModel.showTapToPayRow {
                             MethodRow(icon: Image(systemName: "wave.3.right.circle"),
                                       title: Localization.tapToPay,
-                                      accessibilityID: Accessibility.tapToPayMethod) {
+                                      accessibilityID: Accessibility.tapToPayMethod,
+                                      safeAreaInsets: safeAreaInsets,
+                                      isLoading: viewModel.isCheckingCardPaymentEligibility) {
                                 viewModel.collectPayment(using: .tapToPay, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
 
                             Divider()
                         }
 
-                        MethodRow(icon: Image.gridicon(.money), title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
+                        MethodRow(icon: Image.gridicon(.money),
+                                  title: Localization.cash,
+                                  accessibilityID: Accessibility.cashMethod,
+                                  safeAreaInsets: safeAreaInsets) {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
                         }
@@ -65,7 +72,9 @@ struct PaymentMethodsView: View {
                             MethodRow(
                                 icon: Image.gridicon(.creditCard),
                                 title: Localization.card,
-                                accessibilityID: Accessibility.cardMethod
+                                accessibilityID: Accessibility.cardMethod,
+                                safeAreaInsets: safeAreaInsets,
+                                isLoading: viewModel.isCheckingCardPaymentEligibility
                             ) {
                                 viewModel.collectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
@@ -74,9 +83,22 @@ struct PaymentMethodsView: View {
                         if viewModel.showPaymentLinkRow {
                             Divider()
 
-                            MethodRow(icon: Image.gridicon(.link), title: Localization.link, accessibilityID: Accessibility.paymentLink) {
+                            MethodRow(icon: Image.gridicon(.link),
+                                      title: Localization.link,
+                                      accessibilityID: Accessibility.paymentLink,
+                                      safeAreaInsets: safeAreaInsets) {
                                 sharingPaymentLink = true
                                 viewModel.trackCollectByPaymentLink()
+                            }
+                            .shareView(isPresented: $sharingPaymentLink) {
+                                // If paymentLink is available it already contains a valid URL.
+                                // CompactMap is required due to Swift URL APIs.
+                                ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
+                                    if completed {
+                                        dismiss()
+                                        viewModel.performLinkSharedTasks()
+                                    }
+                                }
                             }
                         }
 
@@ -86,7 +108,8 @@ struct PaymentMethodsView: View {
                             MethodRow(
                                 icon: Image(systemName: "qrcode.viewfinder"),
                                 title: Localization.scanToPay,
-                                accessibilityID: Accessibility.scanToPayMethod
+                                accessibilityID: Accessibility.scanToPayMethod,
+                                safeAreaInsets: safeAreaInsets
                             ) {
                                 showingScanToPayView = true
                                 viewModel.trackCollectByScanToPay()
@@ -94,7 +117,17 @@ struct PaymentMethodsView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .background(Color(.listForeground(modal: false)))
+                    .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
+
+                    if let message = viewModel.cardPaymentUnavailableMessage {
+                        FooterNotice(infoText: message)
+                    }
+                    if viewModel.countryRecovery.isLoading {
+                        LoadingNoticeView(message: CardPresentPaymentCountryRecovery.Localization.loading)
+                    }
+                    if let notice = viewModel.countryRecovery.notice {
+                        PermanentNoticeView(notice: notice)
+                    }
 
                     Button {
                         showingLearnMore = true
@@ -110,7 +143,6 @@ struct PaymentMethodsView: View {
                 Spacer()
             }
         }
-        .ignoresSafeArea(edges: .horizontal)
         .disabled(viewModel.disableViewActions)
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(viewModel.title)
@@ -118,16 +150,6 @@ struct PaymentMethodsView: View {
             ToolbarItem(placement: .confirmationAction) {
                 ProgressView()
                     .renderedIf(viewModel.showLoadingIndicator)
-            }
-        }
-        .shareSheet(isPresented: $sharingPaymentLink) {
-            // If paymentLink is available it already contains a valid URL.
-            // CompactMap is required due to Swift URL APIs.
-            ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
-                if completed {
-                    dismiss()
-                    viewModel.performLinkSharedTasks()
-                }
             }
         }
         .sheet(isPresented: $showingScanToPayView) {
@@ -152,6 +174,7 @@ struct PaymentMethodsView: View {
             })
         }
         .onAppear {
+            viewModel.countryRecovery.recoverIfNeeded()
             guard rootViewController != nil else {
                 return viewModel.logNoRootViewControllerError()
             }
@@ -174,6 +197,10 @@ private struct MethodRow: View {
     ///
     private let accessibilityID: String
 
+    /// Shows a progress indicator and disables the row while its availability is being confirmed
+    ///
+    private let isLoading: Bool
+
     /// Action when the row is selected
     ///
     private let action: () -> ()
@@ -182,21 +209,20 @@ private struct MethodRow: View {
     ///
     @ScaledMetric private var scale = 1
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    private let safeAreaInsets: EdgeInsets
 
-    init(icon: UIImage, title: String, accessibilityID: String = "", action: @escaping () -> ()) {
-        self.icon = Image(uiImage: icon)
-        self.title = title
-        self.accessibilityID = accessibilityID
-        self.action = action
+    init(icon: UIImage, title: String, accessibilityID: String = "", safeAreaInsets: EdgeInsets, isLoading: Bool = false, action: @escaping () -> ()) {
+        self.init(icon: Image(uiImage: icon), title: title, accessibilityID: accessibilityID, safeAreaInsets: safeAreaInsets, isLoading: isLoading, action: action)
     }
 
-    init(icon: Image, title: String, accessibilityID: String = "", action: @escaping () -> ()) {
+    init(icon: Image, title: String, accessibilityID: String = "", safeAreaInsets: EdgeInsets, isLoading: Bool = false, action: @escaping () -> ()) {
         self.icon = icon
         self.title = title
         self.accessibilityID = accessibilityID
+        self.safeAreaInsets = safeAreaInsets
+        self.isLoading = isLoading
         self.action = action
     }
 
@@ -216,11 +242,16 @@ private struct MethodRow: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
 
-                DisclosureIndicator()
+                if isLoading {
+                    ProgressView()
+                } else {
+                    DisclosureIndicator()
+                }
             }
             .padding(.vertical, PaymentMethodsView.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
         }
+        .disabled(isLoading)
         .accessibilityIdentifier(accessibilityID)
     }
 }

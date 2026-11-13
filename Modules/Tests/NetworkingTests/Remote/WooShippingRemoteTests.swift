@@ -914,6 +914,122 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertNotNil(result.failure)
     }
 
+    // MARK: - EU Product Identifiers
+
+    func test_loadCustomsRequirements_sends_post_params_and_parses_required_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/customs-requirements",
+                                 filename: "wooshipping-customs-requirements-required")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.loadCustomsRequirements(siteID: self.sampleSiteID,
+                                           orderID: self.sampleOrderID,
+                                           originID: "store_details") { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.method, .post)
+        XCTAssertEqual(request.path, "label/customs-requirements")
+        XCTAssertEqual(request.parameters["order_id"] as? Int64, sampleOrderID)
+        XCTAssertEqual(request.parameters["origin_id"] as? String, "store_details")
+        XCTAssertTrue(try XCTUnwrap(result.get()))
+    }
+
+    func test_loadCustomsRequirements_omits_originID_when_nil() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/customs-requirements",
+                                 filename: "wooshipping-customs-requirements-required")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.loadCustomsRequirements(siteID: self.sampleSiteID,
+                                           orderID: self.sampleOrderID,
+                                           originID: nil) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.parameters["order_id"] as? Int64, sampleOrderID)
+        XCTAssertFalse(request.parameters.keys.contains("origin_id"))
+        XCTAssertTrue(try XCTUnwrap(result.get()))
+    }
+
+    func test_loadEUProductIdentifiers_sends_config_fields_and_decodes_line_items() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)",
+                                 filename: "wooshipping-eu-product-identifiers-success")
+
+        // When
+        let result: Result<[WooShippingEUProductIdentifiers], Error> = waitFor { promise in
+            remote.loadEUProductIdentifiers(siteID: self.sampleSiteID,
+                                            orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.method, .get)
+        XCTAssertEqual(request.path, "config/label-purchase/\(sampleOrderID)")
+        XCTAssertEqual(request.parameters["_fields"] as? String, "config.order.line_items")
+
+        let identifiers = try XCTUnwrap(result.get())
+        XCTAssertEqual(identifiers.count, 4)
+        XCTAssertEqual(identifiers[0].productID, 101)
+        XCTAssertEqual(identifiers[0].sku, "TEE-101")
+        XCTAssertEqual(identifiers[0].manufacturerProductID, "MPN-101")
+        XCTAssertEqual(identifiers[0].standardizedProductID, "4006381333931")
+        XCTAssertEqual(identifiers[1].productID, 303)
+        XCTAssertEqual(identifiers[1].standardizedProductID, "Y081")
+        XCTAssertEqual(identifiers[2].manufacturerProductID, "")
+        XCTAssertEqual(identifiers[2].standardizedProductID, "")
+        XCTAssertEqual(identifiers[3].sku, "")
+        XCTAssertEqual(identifiers[3].manufacturerProductID, "")
+        XCTAssertEqual(identifiers[3].standardizedProductID, "")
+    }
+
+    func test_customsItem_encodes_set_identifiers_and_omits_nil_identifiers() throws {
+        // Given
+        let item = ShippingLabelCustomsForm.Item(description: "T-shirt",
+                                                 quantity: 1,
+                                                 value: 12.5,
+                                                 weight: 0.2,
+                                                 hsTariffNumber: "6109.10",
+                                                 originCountry: "US",
+                                                 productID: 101,
+                                                 code: "TEE-101",
+                                                 manufacturerProductID: "MPN-101",
+                                                 standardizedProductID: "4006381333931")
+        let itemWithoutIdentifiers = ShippingLabelCustomsForm.Item(description: "T-shirt",
+                                                                   quantity: 1,
+                                                                   value: 12.5,
+                                                                   weight: 0.2,
+                                                                   hsTariffNumber: "6109.10",
+                                                                   originCountry: "US",
+                                                                   productID: 101)
+
+        // When
+        let encodedItem = try item.toJSONObjectDictionary()
+        let encodedItemWithoutIdentifiers = try itemWithoutIdentifiers.toJSONObjectDictionary()
+
+        // Then
+        XCTAssertEqual(encodedItem["code"] as? String, "TEE-101")
+        XCTAssertEqual(encodedItem["manufacturer_product_id"] as? String, "MPN-101")
+        XCTAssertEqual(encodedItem["standardized_product_id"] as? String, "4006381333931")
+        XCTAssertFalse(encodedItemWithoutIdentifiers.keys.contains("code"))
+        XCTAssertFalse(encodedItemWithoutIdentifiers.keys.contains("manufacturer_product_id"))
+        XCTAssertFalse(encodedItemWithoutIdentifiers.keys.contains("standardized_product_id"))
+    }
+
     // MARK: - Load Config With Destinations
 
     func test_load_config_with_addresses_parses_success_response() throws {
@@ -1091,6 +1207,60 @@ final class WooShippingRemoteTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(result.failure)
+    }
+
+    // MARK: Load service status notices
+
+    func test_loadServiceStatusNotices_sends_get_request_to_service_status_path() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "service-status", filename: "wooshipping-service-status-success")
+
+        // When
+        let _: Result<[WooShippingServiceStatusNotice], Error> = waitFor { promise in
+            remote.loadServiceStatusNotices(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.method, .get)
+        XCTAssertEqual(request.path, "service-status")
+    }
+
+    func test_loadServiceStatusNotices_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "service-status", filename: "wooshipping-service-status-success")
+
+        // When
+        let result: Result<[WooShippingServiceStatusNotice], Error> = waitFor { promise in
+            remote.loadServiceStatusNotices(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let notices = try XCTUnwrap(result.get())
+        XCTAssertEqual(notices.map(\.severity), [.error, .warning, .info])
+        XCTAssertEqual(notices.first?.message, "USPS: API Outage | Status: Investigating")
+    }
+
+    func test_loadServiceStatusNotices_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateError(requestUrlSuffix: "service-status", error: NetworkError.notFound(response: nil))
+
+        // When
+        let result: Result<[WooShippingServiceStatusNotice], Error> = waitFor { promise in
+            remote.loadServiceStatusNotices(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, .notFound(response: nil))
     }
 }
 

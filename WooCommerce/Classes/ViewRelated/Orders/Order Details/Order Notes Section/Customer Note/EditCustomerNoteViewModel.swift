@@ -6,7 +6,8 @@ import protocol WooFoundation.Analytics
 
 /// View Model for the Edit Customer Note screen
 ///
-final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
+@MainActor
+final class EditCustomerNoteViewModel: @MainActor EditCustomerNoteViewModelProtocol {
 
     /// Binding property modified at the view level.
     ///
@@ -152,11 +153,16 @@ private extension EditCustomerNoteViewModel {
 
     /// Returns the update action based on the value of the `updateOrderOptimistically` feature flag.
     ///
-    func makeUpdateAction(order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) -> Action {
+    func makeUpdateAction(order: Order, onCompletion: @escaping @MainActor @Sendable (Result<Order, Error>) -> Void) -> Action {
+        let finish: @Sendable (Result<Order, Error>) -> Void = { result in
+            Task { @MainActor in
+                onCompletion(result)
+            }
+        }
         if areOptimisticUpdatesEnabled {
-            return OrderAction.updateOrderOptimistically(siteID: order.siteID, order: order, fields: [.customerNote], onCompletion: onCompletion)
+            return OrderAction.updateOrderOptimistically(siteID: order.siteID, order: order, fields: [.customerNote], onCompletion: finish)
         } else {
-            return OrderAction.updateOrder(siteID: order.siteID, order: order, giftCard: nil, fields: [.customerNote], onCompletion: onCompletion)
+            return OrderAction.updateOrder(siteID: order.siteID, order: order, giftCard: nil, fields: [.customerNote], onCompletion: finish)
         }
     }
 

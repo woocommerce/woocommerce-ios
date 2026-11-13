@@ -5,11 +5,13 @@ import Yosemite
 final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String?
 
+    nonisolated init() {}
+
     func preflightResultReceived(_ result: CardReaderPreflightResult?) {
         // no-op
     }
 
-    func trackProcessingCompletion(intent: PaymentIntent) {
+    func trackProcessingCompletion(intent: PaymentIntent, recordPaymentConfirmation: Bool) {
         // no-op
     }
 
@@ -32,25 +34,5 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
         didCallTrackPaymentCancelation = true
         spyPaymentCancelationSource = cancelationSource
-    }
-
-    func trackEmailTapped() {
-        // no-op
-    }
-
-    func trackReceiptPrintTapped() {
-        // no-op
-    }
-
-    func trackReceiptPrintSuccess() {
-        // no-op
-    }
-
-    func trackReceiptPrintCanceled() {
-        // no-op
-    }
-
-    func trackReceiptPrintFailed(error: Error) {
-        // no-op
     }
 }

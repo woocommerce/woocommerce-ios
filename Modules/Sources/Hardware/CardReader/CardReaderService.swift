@@ -64,6 +64,9 @@ public protocol CardReaderService {
     /// If the payment cannot be retried, an appropriate error will immediately return.
     func retryActivePaymentIntent(beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>) -> AnyPublisher<PaymentIntent, Error>
 
+    /// Retrieves the latest state of a PaymentIntent from Stripe using its client secret.
+    func retrievePaymentIntent(clientSecret: String) -> AnyPublisher<PaymentIntent, Error>
+
     /// Cancels a PaymentIntent
     func cancelPaymentIntent() -> Future<Void, Error>
 

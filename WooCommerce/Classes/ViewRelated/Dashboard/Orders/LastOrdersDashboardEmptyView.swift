@@ -1,11 +1,11 @@
 import SwiftUI
-import enum Yosemite.OrderStatusEnum
 
 /// Shown when the site doesn't have any orders for the given order status.
 /// Contains a placeholder image and text.
 ///
 struct LastOrdersDashboardEmptyView: View {
-    let orderStatus: OrderStatusEnum?
+    /// Server-provided display name of the selected status, or `nil` when no status is selected.
+    let statusName: String?
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.defaultSpacing) {
@@ -20,12 +20,18 @@ struct LastOrdersDashboardEmptyView: View {
 
 private extension LastOrdersDashboardEmptyView {
     var message: String {
-        guard let orderStatus else {
+        guard let statusName else {
             return Localization.noOrders
         }
-        return String.localizedStringWithFormat(Localization.noOrdersWithStatus, orderStatus.description.lowercased())
+        return String.localizedStringWithFormat(Localization.noOrdersWithStatus, statusName.lowercased())
     }
 
+    enum Layout {
+        static let defaultSpacing: CGFloat = 16
+    }
+}
+
+extension LastOrdersDashboardEmptyView {
     enum Localization {
         static let noOrders = NSLocalizedString(
             "lastOrdersDashboardEmptyView.noOrders",
@@ -38,14 +44,10 @@ private extension LastOrdersDashboardEmptyView {
             comment: "Message when there are no orders found for a selected order status. The %@ is a placeholder for the order status selected by the user."
         )
     }
-
-    enum Layout {
-        static let defaultSpacing: CGFloat = 16
-    }
 }
 
 struct LastOrdersDashboardEmptyView_Previews: PreviewProvider {
     static var previews: some View {
-        LastOrdersDashboardEmptyView(orderStatus: .pending)
+        LastOrdersDashboardEmptyView(statusName: "Pending payment")
     }
 }

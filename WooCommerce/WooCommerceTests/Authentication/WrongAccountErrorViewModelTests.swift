@@ -1,10 +1,19 @@
 import XCTest
 import Yosemite
-import WordPressAuthenticator
+@testable import WordPressAuthenticator
+import WordPressShared
 import WordPressUI
 @testable import WooCommerce
 
+@MainActor
 final class WrongAccountErrorViewModelTests: XCTestCase {
+
+    override func setUp() {
+        super.setUp()
+        // The view model's default tracker is a process-wide singleton that reads its enabled
+        // flag from the authenticator on first access, so the authenticator has to exist first.
+        WordPressAuthenticator.initializeAuthenticator()
+    }
 
     func test_viewmodel_provides_expected_image() {
         // Given
@@ -149,72 +158,151 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertTrue(MockAuthenticator.fetchSiteInfoTriggered)
     }
 
-    func test_error_view_is_tracked_with_selfhosted_site_if_credentials_are_present() throws {
+    func test_viewDidLoad_tracks_wrong_wordpress_account_step_with_url_and_connected_stores() {
         // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let credentials = WordPressOrgCredentials(username: "test", password: "pwd", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
         let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
-                                                   showsConnectedStores: false,
-                                                   siteCredentials: credentials,
-                                                   analytics: analytics,
+                                                   showsConnectedStores: true,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   reportsLoginStep: true,
+                                                   tracker: tracker,
                                                    onJetpackSetupCompletion: { _, _ in })
 
         // When
         viewModel.viewDidLoad(nil)
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, true)
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.properties["step"], "wrong_wordpress_account")
+        XCTAssertEqual(events.first?.properties["url"], "woocommerce.com")
+        XCTAssertEqual(events.first?.properties["has_connected_stores"], "true")
     }
 
-    func test_error_view_is_tracked_with_selfhosted_site_if_siteInfo_returns_selfhosted() throws {
-        // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    func test_tapping_connect_jetpack_reports_jetpack_not_connected_on_a_self_hosted_site() {
+        // Given a self-hosted site, the only branch that starts a Jetpack connection
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: Expectations.siteCredentials,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   reportsLoginStep: true,
+                                                   tracker: tracker,
+                                                   onJetpackSetupCompletion: { _, _ in })
+        viewModel.viewDidLoad(nil)
 
-        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": false])
-        MockAuthenticator.setMockSiteInfo(siteInfo)
+        // When
+        viewModel.didTapPrimaryButton(in: UIViewController())
 
+        // Then
+        let jetpackSteps = events.filter { $0.properties["step"] == "jetpack_not_connected" }
+        XCTAssertEqual(jetpackSteps.count, 1)
+        XCTAssertEqual(jetpackSteps.first?.properties["url"], "woocommerce.com")
+    }
+
+    func test_tapping_connect_jetpack_twice_reports_jetpack_not_connected_once() {
+        // Given the merchant can come back to this screen and tap again
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: Expectations.siteCredentials,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   reportsLoginStep: true,
+                                                   tracker: tracker,
+                                                   onJetpackSetupCompletion: { _, _ in })
+        viewModel.viewDidLoad(nil)
+
+        // When
+        viewModel.didTapPrimaryButton(in: UIViewController())
+        viewModel.didTapPrimaryButton(in: UIViewController())
+
+        // Then
+        XCTAssertEqual(events.filter { $0.properties["step"] == "jetpack_not_connected" }.count, 1)
+    }
+
+    func test_tapping_connect_jetpack_omits_url_when_the_site_address_is_missing() {
+        // Given no site address, so the UI falls back to a localized placeholder
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = WrongAccountErrorViewModel(siteURL: nil,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: Expectations.siteCredentials,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   reportsLoginStep: true,
+                                                   tracker: tracker,
+                                                   onJetpackSetupCompletion: { _, _ in })
+        viewModel.viewDidLoad(nil)
+
+        // When
+        viewModel.didTapPrimaryButton(in: UIViewController())
+
+        // Then the placeholder must not land in the analytics column
+        let jetpackStep = events.first { $0.properties["step"] == "jetpack_not_connected" }
+        XCTAssertNotNil(jetpackStep)
+        XCTAssertNil(jetpackStep?.properties["url"])
+    }
+
+    func test_tapping_connect_jetpack_reports_nothing_when_the_site_belongs_to_another_account() {
+        // Given a WP.com site, where the button only tells the merchant to ask the site owner
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
         let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
                                                    showsConnectedStores: false,
                                                    siteCredentials: nil,
                                                    authenticatorType: MockAuthenticator.self,
-                                                   analytics: analytics,
+                                                   reportsLoginStep: true,
+                                                   tracker: tracker,
+                                                   onJetpackSetupCompletion: { _, _ in })
+
+        // When
+        viewModel.didTapPrimaryButton(in: UIViewController())
+
+        // Then no Jetpack connection was started, so no Jetpack step is reported
+        XCTAssertTrue(events.allSatisfy { $0.properties["step"] != "jetpack_not_connected" })
+    }
+
+    func test_viewDidLoad_reports_no_step_outside_a_login_journey() {
+        // Given the screen was reached from an in-app store switch
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: true,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   reportsLoginStep: false,
+                                                   tracker: tracker,
                                                    onJetpackSetupCompletion: { _, _ in })
 
         // When
         viewModel.viewDidLoad(nil)
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, true)
+        XCTAssertTrue(events.isEmpty)
     }
 
-    func test_error_view_is_tracked_without_selfhosted_site_if_siteInfo_returns_wpcom_site() throws {
+    func test_viewDidLoad_omits_url_when_the_site_address_is_missing() {
         // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-
-        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": true])
-        MockAuthenticator.setMockSiteInfo(siteInfo)
-
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = WrongAccountErrorViewModel(siteURL: nil,
                                                    showsConnectedStores: false,
                                                    siteCredentials: nil,
                                                    authenticatorType: MockAuthenticator.self,
-                                                   analytics: analytics,
+                                                   reportsLoginStep: true,
+                                                   tracker: tracker,
                                                    onJetpackSetupCompletion: { _, _ in })
 
         // When
         viewModel.viewDidLoad(nil)
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, false)
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.properties["step"], "wrong_wordpress_account")
+        XCTAssertNil(events.first?.properties["url"])
+        XCTAssertEqual(events.first?.properties["has_connected_stores"], "false")
     }
 
     func test_primary_button_tap_is_tracked() {
@@ -242,6 +330,13 @@ private extension WrongAccountErrorViewModelTests {
     private enum Expectations {
         static let url = "https://woocommerce.com"
         static let image = UIImage.productErrorImage
+
+        static var siteCredentials: WordPressOrgCredentials {
+            WordPressOrgCredentials(username: "merchant",
+                                    password: "secret",
+                                    xmlrpc: "https://woocommerce.com/xmlrpc.php",
+                                    options: [:])
+        }
 
         static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",
                                                           comment: "Action button to handle connecting the logged-in account to a given site."

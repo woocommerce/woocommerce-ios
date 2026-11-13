@@ -53,6 +53,12 @@ struct WooShippingCreateLabelsView: View {
         viewModel.isPurchaseButtonEnabled
     }
 
+    /// Safe-area insets of the screen's container, for the bottom sheet.
+    @State private var safeAreaInsets: EdgeInsets = .zero
+
+    /// Height of that container inside its safe area, for the bottom sheet.
+    @State private var containerHeight: CGFloat = 0
+
     var body: some View {
         NavigationStack {
             Group {
@@ -72,11 +78,13 @@ struct WooShippingCreateLabelsView: View {
                     missingDataState
                 }
             }
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaInset(edge: .bottom, spacing: .zero) {
                 if viewModel.state == .ready && viewModel.hazmatNotice == nil {
                     expandableBottomSheet
                 }
             }
+            .onGeometryChange(for: EdgeInsets.self, of: { $0.safeAreaInsets }, action: { safeAreaInsets = $0 })
+            .onGeometryChange(for: CGFloat.self, of: { $0.size.height }, action: { containerHeight = $0 })
             .shippingWeightUnit(viewModel.weightUnit)
             .shippingDimensionsUnit(viewModel.dimensionsUnit)
             .navigationTitle(viewModel.canViewLabel ? Localization.viewLabelTitle : Localization.title)
@@ -97,11 +105,13 @@ struct WooShippingCreateLabelsView: View {
             .sheet(item: $viewModel.addressToEdit) { addressToEdit in
                 NavigationStack {
                     WooShippingEditAddressView(viewModel: addressToEdit)
-                        .navigationTitle(Localization.BottomSheet.editDestination)
+                        .navigationTitle(addressToEdit.title)
                         .navigationBarTitleDisplayMode(.inline)
                 }
             }
-            .sheet(isPresented: $showingCustomsForm) {
+            .sheet(isPresented: $showingCustomsForm, onDismiss: {
+                viewModel.currentShipmentDetailsViewModel?.customsFormViewModel.onDismiss()
+            }) {
                 if let currentShipmentDetailsViewModel = viewModel.currentShipmentDetailsViewModel {
                     WooShippingCustomsForm(viewModel: currentShipmentDetailsViewModel.customsFormViewModel)
                 }
@@ -128,6 +138,7 @@ struct WooShippingCreateLabelsView: View {
             .sheet(isPresented: $viewModel.shouldShowUPSTermsAndConditions) {
                 if let termsViewModel = viewModel.upsTermsViewModel {
                     UPSTermsView(viewModel: termsViewModel, onConfirmation: {
+                        viewModel.trackCarrierTermsAccepted(.upsdap)
                         viewModel.shouldShowUPSTermsAndConditions = false
                         Task { @MainActor in
                             await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
@@ -139,6 +150,7 @@ struct WooShippingCreateLabelsView: View {
             }
             .sheet(isPresented: $viewModel.shouldShowFedExTermsAndConditions) {
                 FedExTermsView(viewModel: viewModel.fedExTermsViewModel, onConfirmation: {
+                    viewModel.trackCarrierTermsAccepted(.fedex)
                     viewModel.shouldShowFedExTermsAndConditions = false
                     Task { @MainActor in
                         await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
@@ -210,7 +222,9 @@ private extension WooShippingCreateLabelsView {
                     })
                 }
                 if let currentShipmentDetailsViewModel = viewModel.currentShipmentDetailsViewModel {
-                    WooShippingShipmentDetailsView(viewModel: currentShipmentDetailsViewModel)
+                    WooShippingShipmentDetailsView(viewModel: currentShipmentDetailsViewModel,
+                                                   serviceStatusNotices: viewModel.serviceStatusNotices,
+                                                   onDismissServiceStatusNotice: { viewModel.dismissServiceStatusNotice(id: $0) })
                         .disabled(viewModel.isPurchasingLabel)
                 }
             }
@@ -219,7 +233,7 @@ private extension WooShippingCreateLabelsView {
     }
 
     var expandableBottomSheet: some View {
-        ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
+        ExpandableBottomSheet(safeAreaInsets: safeAreaInsets, containerHeight: containerHeight, onChangeOfExpansion: { isExpanded in
             isShipmentDetailsExpanded = isExpanded
         }) {
             VStack {
@@ -304,13 +318,13 @@ private extension WooShippingCreateLabelsView {
                 .minimumScaleFactor(0.5)
 
             if viewModel.shouldShowNotices {
-                if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
-                    // Unverified notice for origin address
-                    verificationNotice(with: originAddressUnverifiedNoticeLabel,
+                if let originAddressNoticeLabel = viewModel.originAddressNoticeLabel {
+                    // Notice for origin address status (missing phone/email or unverified)
+                    verificationNotice(with: originAddressNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {
                         withAnimation {
-                            viewModel.originAddressUnverifiedNoticeLabel = nil
+                            viewModel.originAddressNoticeLabel = nil
                         }
                     },
                                        onTap: {
@@ -797,9 +811,6 @@ private extension WooShippingCreateLabelsView {
                                                           value: "Purchase Label · %1$@",
                                                           comment: "Label for button to purchase the shipping label on the shipping label creation screen, " +
                                                           "including the label price. Reads like: 'Purchase Label · $7.63'")
-            static let editDestination = NSLocalizedString("wooShipping.createLabels.bottomSheet.editDestination",
-                                                          value: "Edit Destination",
-                                                          comment: "Title for the edit destination address screen in the shipping label creation flow")
         }
 
         enum AddressVerification {

@@ -46,12 +46,19 @@ extension Color {
     static var posOnSuccess: Color { Color("posOnSuccess", bundle: .module) }
     static var posAlert: Color { Color("posAlert", bundle: .module) }
     static var posOnAlert: Color { Color("posOnAlert", bundle: .module) }
+    static var posAlertLowest: Color { Color("posAlertLowest", bundle: .module) }
+    static var posOnAlertLowest: Color { Color("posOnAlertLowest", bundle: .module) }
     static var posErrorLowest: Color { Color("posErrorLowest", bundle: .module) }
     static var posOnErrorLowest: Color { Color("posOnErrorLowest", bundle: .module) }
     static var posInfoLowest: Color { Color("posInfoLowest", bundle: .module) }
     static var posOnInfoLowest: Color { Color("posOnInfoLowest", bundle: .module) }
     static var posDefault: Color { Color("posDefault", bundle: .module) }
     static var posOnDefault: Color { Color("posOnDefault", bundle: .module) }
+
+    // MARK: - Link Colors
+    /// Text link color: WooCommercePurple-40 in light mode and WooCommercePurple-30 in dark mode,
+    /// matching the app-wide `UIColor.textLink` semantic color.
+    static var posLink: Color { Color("posLink", bundle: .module) }
 
     // MARK: - Other
     static var posShadow: Color { Color("posShadow", bundle: .module) }

@@ -4,7 +4,7 @@ import WooFoundation
 
 /// Represents a custom package in Shipping Labels for the WooCommerce Shipping extension.
 ///
-public struct WooShippingCustomPackage: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingCustomPackage: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     /// The ID of the custom package.
     public let id: String
@@ -21,7 +21,7 @@ public struct WooShippingCustomPackage: Equatable, GeneratedFakeable, GeneratedC
     /// Weight of the empty package.
     public let boxWeight: Double
 
-    public enum PackageType: String {
+    public enum PackageType: String, Sendable {
         case box
         case envelope
     }

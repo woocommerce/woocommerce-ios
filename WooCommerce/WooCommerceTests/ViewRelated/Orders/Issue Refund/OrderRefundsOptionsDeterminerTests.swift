@@ -137,7 +137,9 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
         let newQuantity = partiallyRefundedItem.quantity + (refund.items.first?.quantity ?? 0)
 
         // When
-        let expectedResult = [RefundableOrderItem(item: partiallyRefundedItem, quantity: newQuantity)]
+        var expectedItem = RefundableOrderItem(item: partiallyRefundedItem, quantity: newQuantity)
+        expectedItem.refundedItems = refund.items
+        let expectedResult = [expectedItem]
         let result = sut.determineRefundableOrderItems(from: order, with: [refund])
 
         // Then
@@ -198,5 +200,42 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result)
+    }
+    func test_remaining_fees_when_partially_refunded_then_preserves_remaining_net_tax_and_sign() throws {
+        for sign in ["", "-"] {
+            // Given
+            let fee = OrderFeeLine.fake().copy(feeID: 1, total: sign + "2.00", totalTax: sign + "0.10",
+                                               taxes: [.init(taxID: 3, subtotal: "", total: sign + "0.10")])
+            let refundSign = sign.isEmpty ? "-" : ""
+            let refunded = fee.copy(feeID: 99, total: refundSign + "0.50", totalTax: refundSign + "0.02",
+                                     taxes: [.init(taxID: 3, subtotal: "", total: refundSign + "0.02")], refundedItemID: .some(1))
+            let order = Order.fake().copy(fees: [fee])
+            // When
+            let remaining = try XCTUnwrap(OrderRefundsOptionsDeterminer.remainingFees(in: order, refunds: [Refund.fake().copy(feeLines: [refunded])]).first)
+            // Then
+            XCTAssertEqual(remaining.total, sign + "1.5")
+            XCTAssertEqual(remaining.totalTax, sign + "0.08")
+            XCTAssertEqual(remaining.taxes.first?.total, sign + "0.08")
+        }
+    }
+
+    func test_remaining_shipping_when_partially_refunded_then_uses_original_id_and_remaining_rates() throws {
+        for sign in ["", "-"] {
+            // Given
+            let line = ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: sign + "5", totalTax: sign + "0.25",
+                                    taxes: [.init(taxID: 3, subtotal: "", total: sign + "0.25")])
+            let refundSign = sign.isEmpty ? "-" : ""
+            let refunded = line.copy(shippingID: 99, total: refundSign + "2", totalTax: refundSign + "0.10",
+                                     taxes: [.init(taxID: 3, subtotal: "", total: refundSign + "0.10")], refundedItemID: .some(1))
+            let order = Order.fake().copy(shippingLines: [line])
+            // When
+            let remaining = try XCTUnwrap(OrderRefundsOptionsDeterminer.remainingShipping(in: order,
+                                                          refunds: [Refund.fake().copy(shippingLines: [refunded])])?.first)
+            // Then
+            XCTAssertEqual(remaining.shippingID, 1)
+            XCTAssertEqual(remaining.total, sign + "3")
+            XCTAssertEqual(remaining.totalTax, sign + "0.15")
+            XCTAssertEqual(remaining.taxes.first?.total, sign + "0.15")
+        }
     }
 }

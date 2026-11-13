@@ -4,7 +4,7 @@ import WooFoundation
 
 /// Represents a predefined Shipping Label Packages for the WooCommerce Shipping extension.
 ///
-public struct WooShippingPredefinedPackage: Equatable, GeneratedFakeable, Identifiable {
+public struct WooShippingPredefinedPackage: Equatable, GeneratedFakeable, Identifiable, Sendable {
 
     /// The id of the predefined package
     public let id: String

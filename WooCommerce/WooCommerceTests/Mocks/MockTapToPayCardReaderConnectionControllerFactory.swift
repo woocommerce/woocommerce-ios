@@ -2,7 +2,7 @@ import Foundation
 @testable import WooCommerce
 import Yosemite
 
-class MockTapToPayCardReaderConnectionControllerFactory: TapToPayCardReaderConnectionControllerBuilding {
+nonisolated class MockTapToPayCardReaderConnectionControllerFactory: TapToPayCardReaderConnectionControllerBuilding {
     typealias AlertProvider = TapToPayReaderConnectionAlertsProvider
     typealias AlertPresenter = SilenceablePassthroughCardPresentPaymentAlertsPresenter<CardPresentPaymentAlertsPresenter>
 
@@ -16,6 +16,7 @@ class MockTapToPayCardReaderConnectionControllerFactory: TapToPayCardReaderConne
 
     var mockConnectionController: MockTapToPayCardReaderConnectionController? = nil
 
+    @MainActor
     func createConnectionController(forSiteID siteID: Int64,
                                     alertPresenter: AlertPresenter,
                                     configuration: CardPresentPaymentsConfiguration,

@@ -66,8 +66,11 @@ private struct CardWaveProgressView: View {
         }
 
         animationTimer = Timer.scheduledTimer(withTimeInterval: animationDuration, repeats: true) { _ in
-            withAnimation(.easeInOut(duration: animationDuration)) {
-                activeArcIndex = (activeArcIndex + 1) % waveCount
+            // Scheduled from the main actor, so the timer fires on the main run loop.
+            MainActor.assumeIsolated {
+                withAnimation(.easeInOut(duration: animationDuration)) {
+                    activeArcIndex = (activeArcIndex + 1) % waveCount
+                }
             }
         }
     }

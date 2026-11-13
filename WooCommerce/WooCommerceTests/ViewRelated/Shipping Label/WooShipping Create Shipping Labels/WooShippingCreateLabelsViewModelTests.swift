@@ -59,6 +59,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.failure(error))
             case .loadPackages, .verifyDestinationAddress:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -88,6 +90,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadAccountSettings(_, let completion):
                 completion(.failure(error))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -135,6 +139,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -172,8 +178,54 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel2.isOrderCompleted)
     }
 
-    func test_origin_unverified_state_is_correct() {
+    @MainActor
+    func test_isCheckingEUProductIdentifiers_when_check_starts_and_finishes_then_mirrors_current_shipment_state() {
         // Given
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "origin-1",
+                                                                 country: "US",
+                                                                 defaultAddress: true)
+        let destinationAddress = WooShippingNormalizedAddress.fake().copy(country: "GB", state: "LD")
+        let order = Order.fake().copy(shippingAddress: Address.fake().copy(state: "LD", country: "GB"))
+        var requirementCompletion: ((WooShippingEUProductIdentifiersRequirement) -> Void)?
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .checkEUProductIdentifiersRequirement(_, _, _, let completion):
+                requirementCompletion = completion
+            case .verifyDestinationAddress(_, _, let completion):
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: destinationAddress,
+                                                                               isTrivialNormalization: nil,
+                                                                               isVerified: true)))
+            case .loadPackages, .loadConfig:
+                break
+            case .loadServiceStatusNotices:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+
+        // When
+        waitUntil { viewModel.isCheckingEUProductIdentifiers }
+        XCTAssertNotNil(requirementCompletion)
+        requirementCompletion?(.notRequired)
+
+        // Then
+        waitUntil { !viewModel.isCheckingEUProductIdentifiers }
+        XCTAssertFalse(viewModel.isCheckingEUProductIdentifiers)
+    }
+
+    /// Builds a view model whose store returns a single origin address with the given phone/email/verification state.
+    private func makeViewModelLoadingOriginAddress(phone: String,
+                                                   email: String,
+                                                   isVerified: Bool = false) -> WooShippingCreateLabelsViewModel {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let originAddress = WooShippingOriginAddress(siteID: 123,
                                                      id: "default_address",
@@ -184,12 +236,12 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                      state: "NY",
                                                      postcode: "12883-1487",
                                                      country: "US",
-                                                     phone: "223-456-7890",
+                                                     phone: phone,
                                                      firstName: "JANE",
                                                      lastName: "DOE",
-                                                     email: "TEST@EXAMPLE.COM",
+                                                     email: email,
                                                      defaultAddress: true,
-                                                     isVerified: false)
+                                                     isVerified: isVerified)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .loadOriginAddresses(_, let completion):
@@ -198,25 +250,74 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
         }
-        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+        return WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                shippingSettingsService: MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil),
+                                                stores: stores)
+    }
 
-        // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
-                                                         shippingSettingsService: shippingSettingsService,
-                                                         stores: stores)
+    func test_origin_unverified_state_is_correct() {
+        // Given
+        let viewModel = makeViewModelLoadingOriginAddress(phone: "223-456-7890", email: "TEST@EXAMPLE.COM")
         XCTAssertFalse(viewModel.isOriginAddressUnverified)
-        XCTAssertNil(viewModel.originAddressUnverifiedNoticeLabel)
+        XCTAssertNil(viewModel.originAddressNoticeLabel)
 
         // Then
         waitUntil {
             viewModel.originAddress.isNotEmpty
         }
         XCTAssertTrue(viewModel.isOriginAddressUnverified)
-        XCTAssertNotNil(viewModel.originAddressUnverifiedNoticeLabel)
+        XCTAssertNotNil(viewModel.originAddressNoticeLabel)
+    }
+
+    func test_origin_notice_shows_missing_phone_when_origin_phone_is_empty() {
+        // Given
+        // A missing origin phone is surfaced specifically rather than the generic unverified notice.
+        let viewModel = makeViewModelLoadingOriginAddress(phone: "", email: "TEST@EXAMPLE.COM")
+
+        // Then
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingPhone",
+                                         value: "Phone number is missing for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
+    }
+
+    func test_origin_notice_shows_missing_phone_when_origin_phone_has_no_digits() {
+        // Given
+        // A phone with no digits (whitespace/punctuation only) is rejected by the backend as empty.
+        let viewModel = makeViewModelLoadingOriginAddress(phone: " - ", email: "TEST@EXAMPLE.COM")
+
+        // Then
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingPhone",
+                                         value: "Phone number is missing for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
+    }
+
+    func test_origin_notice_shows_missing_email_when_origin_email_is_empty() {
+        // Given
+        // A present phone with a missing email surfaces the email notice (phone check takes precedence).
+        let viewModel = makeViewModelLoadingOriginAddress(phone: "223-456-7890", email: "")
+
+        // Then
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingEmail",
+                                         value: "Email is missing for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
     }
 
     func test_editSelectedOriginAddress_sets_addressToEdit_view_model() throws {
@@ -245,6 +346,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -271,6 +374,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressToEdit?.name.value, originAddress.fullName)
         XCTAssertEqual(viewModel.addressToEdit?.email.value, originAddress.email)
         XCTAssertEqual(viewModel.addressToEdit?.isDefaultAddress, originAddress.defaultAddress)
+        XCTAssertEqual(viewModel.addressToEdit?.title, "Edit Origin")
     }
 
     func test_origin_addresses_fetched_and_converted_to_originAddresses_view_model() {
@@ -310,6 +414,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -358,6 +464,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -403,6 +511,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -431,6 +541,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -458,6 +570,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -480,6 +594,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.addressToEdit)
+        XCTAssertEqual(viewModel.addressToEdit?.title, "Edit Destination")
     }
 
     func test_shouldShowNotices_is_updated_correctly_for_unfulfilled_shipment() {
@@ -496,6 +611,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadOriginAddresses(_, let completion):
                 let originAddress = WooShippingOriginAddress.fake().copy(address1: "123 Main Street", defaultAddress: true)
                 completion(.success([originAddress]))
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -647,24 +764,60 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentShipment?.index, 1)
     }
 
-    func test_destinationPhoneNumberNoticeLabel_is_missing_when_phone_is_empty() {
+    func test_destinationPhoneNumberNoticeLabel_when_international_and_phone_empty_then_is_missing() {
         // Given
-        let labelDestinationAddress = ShippingLabelAddress.fake().copy(phone: "", country: "US")
-        let shippingLabel = ShippingLabel.fake().copy(destinationAddress: labelDestinationAddress)
-        let order = Order.fake().copy(shippingLabels: [shippingLabel])
+        let viewModel = makeViewModelShippingWithoutPhone(to: "CA")
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(
-            order: order,
-            preselection: .shippingLabel(
-                label: shippingLabel
-            )
-        )
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
 
         // Then
         let expected = NSLocalizedString("wooShipping.createLabels.destinationPhoneNumber.missing",
                                          value: "Phone number is required for the destination address.",
                                          comment: "")
+        waitUntil {
+            viewModel.destinationPhoneNumberNoticeLabel != nil
+        }
+        XCTAssertEqual(viewModel.destinationPhoneNumberNoticeLabel, expected)
+    }
+
+    func test_destinationPhoneNumberNoticeLabel_when_domestic_and_phone_empty_then_is_nil() {
+        // Given
+        let viewModel = makeViewModelShippingWithoutPhone(to: "US")
+
+        // When
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+
+        // Then
+        XCTAssertNil(viewModel.destinationPhoneNumberNoticeLabel)
+    }
+
+    func test_destinationPhoneNumberNoticeLabel_when_FedEx_rate_and_phone_empty_then_names_the_service() {
+        // Given
+        let viewModel = makeViewModelShippingWithoutPhone(to: "US")
+        let fedExRate = WooShippingSelectedRate(rate: ShippingLabelCarrierRate.fake().copy(title: "FedEx Ground Economy",
+                                                                                            carrierID: "fedex"))
+
+        // When
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        waitUntil {
+            viewModel.currentShipmentDetailsViewModel?.shippingService != nil
+        }
+        viewModel.currentShipmentDetailsViewModel?.shippingService?.onSelectRate?(fedExRate)
+
+        // Then
+        let expected = String.localizedStringWithFormat(
+            NSLocalizedString("wooShipping.createLabels.destinationPhoneNumber.requiredByService",
+                              value: "%1$@ requires a recipient phone number.",
+                              comment: ""),
+            "FedEx Ground Economy"
+        )
         waitUntil {
             viewModel.destinationPhoneNumberNoticeLabel != nil
         }
@@ -763,10 +916,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let viewModel = WooShippingCreateLabelsViewModel(order: order,
                                                          stores: stores,
                                                          storageManager: storageManager)
-        await until {
+        await waitOnMainActor {
             viewModel.state == .ready
         }
-        await until {
+        await waitOnMainActor {
             viewModel.currentShipmentDetailsViewModel?.shippingService != nil
         }
         viewModel.didUpdateAccountSettings(accountSettings)
@@ -1007,6 +1160,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1048,6 +1203,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -1115,6 +1272,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 didLoadAccountSettings = true
                 completion(.success(settings))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -1196,6 +1355,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 self.insert(accountSettings: accountSettings)
                 completion(.success(settings))
             case .loadPackages, .verifyDestinationAddress:
+                break
+            case .loadServiceStatusNotices:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -1309,6 +1470,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress, .loadOriginAddresses:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1363,6 +1526,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadPackages, .verifyDestinationAddress, .loadAccountSettings:
                 break
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1403,78 +1568,18 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadOriginAddresses(_, let completion):
                 let originAddress = WooShippingOriginAddress.fake().copy(address1: "123 Main Street", defaultAddress: true)
                 completion(.success([originAddress]))
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
         }
     }
 
-    func test_splitShipmentsRowVisible_is_false_when_split_shipments_feature_is_unavailable() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Is CIAB site with the `.splitShipments` disabled
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABDisabledFeatures: [.splitShipments]
-        )
-
-        /// Multiple products
-        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
-        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
-
-        storageManager.insertSampleProduct(readOnlyProduct: product1)
-        storageManager.insertSampleProduct(readOnlyProduct: product2)
-
-        let order = Order.fake().copy(
-            siteID: siteID,
-            orderID: orderID,
-            items: [
-                OrderItem.fake().copy(productID: product1.productID, quantity: 1),
-                OrderItem.fake().copy(productID: product2.productID, quantity: 1)
-            ])
-
-        /// Single unfulfilled shipment
-        let shipments = [
-            WooShippingShipment.fake().copy(
-                siteID: siteID,
-                orderID: orderID,
-                index: "shipment_0",
-                items: [
-                    .fake().copy(id: product1.productID),
-                    .fake().copy(id: product2.productID)
-                ])
-        ]
-        insert(shipments: shipments, order: order)
-
-        // When
-        let viewModel = WooShippingCreateLabelsViewModel(
-            order: order,
-            stores: stores,
-            storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
-            initialNoticeDelay: .seconds(0)
-        )
-
-        waitUntil {
-            viewModel.state == .ready
-        }
-
-        // Then
-        XCTAssertFalse(viewModel.splitShipmentsRowVisible)
-    }
-
     func test_splitShipmentsRowVisible_is_false_when_only_single_product_item_exists() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Single product
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1504,7 +1609,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1520,12 +1624,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Multiple products
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1566,7 +1664,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1583,12 +1680,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
 
-        /// Non-CIAB site (feature available)
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
-
         /// Multiple products
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
         let product2 = Product.fake().copy(siteID: siteID, productID: 2)
@@ -1622,7 +1713,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1634,72 +1724,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.splitShipmentsRowVisible)
     }
 
-    func test_editSplitShipmentsOptionVisible_is_false_when_split_shipments_feature_is_unavailable() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Is CIAB site with the `.splitShipments` disabled
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABDisabledFeatures: [.splitShipments]
-        )
-
-        /// Multiple products
-        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
-        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
-
-        storageManager.insertSampleProduct(readOnlyProduct: product1)
-        storageManager.insertSampleProduct(readOnlyProduct: product2)
-
-        let order = Order.fake().copy(
-            siteID: siteID,
-            orderID: orderID,
-            items: [
-                OrderItem.fake().copy(productID: product1.productID, quantity: 1),
-                OrderItem.fake().copy(productID: product2.productID, quantity: 1)
-            ])
-
-        /// Single unfulfilled shipment
-        let shipments = [
-            WooShippingShipment.fake().copy(
-                siteID: siteID,
-                orderID: orderID,
-                index: "shipment_0",
-                items: [
-                    .fake().copy(id: product1.productID),
-                    .fake().copy(id: product2.productID)
-                ])
-        ]
-        insert(shipments: shipments, order: order)
-
-        // When
-        let viewModel = WooShippingCreateLabelsViewModel(
-            order: order,
-            stores: stores,
-            storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
-            initialNoticeDelay: .seconds(0)
-        )
-
-        waitUntil {
-            viewModel.state == .ready
-        }
-
-        // Then
-        XCTAssertFalse(viewModel.editSplitShipmentsOptionVisible)
-    }
-
     func test_editSplitShipmentsOptionVisible_is_false_when_only_single_product_item_exists() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site (split shipments available)
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Single product
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1729,7 +1757,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1745,12 +1772,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site (split shipments available)
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Multiple products
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1799,7 +1820,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1815,12 +1835,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site (split shipments available)
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Multiple products
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1855,7 +1869,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1898,6 +1911,8 @@ private extension WooShippingCreateLabelsViewModelTests {
                 completion(accountSettingsResult)
             case .loadPackages, .verifyDestinationAddress:
                 break // Ignored for these tests
+            case .loadServiceStatusNotices:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -1945,10 +1960,35 @@ private extension WooShippingCreateLabelsViewModelTests {
         storageSettings.update(with: accountSettings)
     }
 
+    /// Builds a view model whose store loads a US origin address, for an order shipping to `destinationCountry` without a phone.
+    func makeViewModelShippingWithoutPhone(to destinationCountry: String) -> WooShippingCreateLabelsViewModel {
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", address1: "15 ALGONKIN ST", city: "TICONDEROGA", state: "NY",
+                                                                 postcode: "12883-1487", country: "US", phone: "223-456-7890", defaultAddress: true)
+        let shippingAddress = Address.fake().copy(address1: "1 Main Street", city: "City", postcode: "12345", country: destinationCountry, phone: "")
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, shippingAddress: shippingAddress)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            default:
+                break // verifyDestinationAddress stays pending, so the order's shipping address remains the destination.
+            }
+        }
+        return WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager)
+    }
+
     /// Creates a `WooShippingCreateLabelsViewModel` configured with a mock store that returns
     /// the given `purchaseError` when a shipping label purchase is attempted.
     @MainActor
-    func makePurchaseLabelViewModel(purchaseError: Error) async -> WooShippingCreateLabelsViewModel {
+    func makePurchaseLabelViewModel(purchaseError: Error,
+                                    rateLoadingError: Error? = nil,
+                                    serviceStatus: ServiceStatusResponses = ServiceStatusResponses(),
+                                    serviceStatusRefreshTimeout: Duration = .seconds(5),
+                                    analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
+    async -> WooShippingCreateLabelsViewModel {
         let originAddress = WooShippingOriginAddress.fake().copy(id: "default", country: "US", defaultAddress: true)
         insert(originAddress: originAddress)
 
@@ -1974,14 +2014,24 @@ private extension WooShippingCreateLabelsViewModelTests {
                                                                                isVerified: true)))
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
                 completion(.failure(purchaseError))
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                if let rateLoadingError {
+                    completion(packages, .failure(rateLoadingError))
+                }
+            case let .loadServiceStatusNotices(_, completion):
+                serviceStatus.respond(completion)
             default:
                 break
             }
         }
 
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager)
-        await until { viewModel.state == .ready }
-        await until { viewModel.currentShipmentDetailsViewModel?.shippingService != nil }
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         analytics: analytics,
+                                                         serviceStatusRefreshTimeout: serviceStatusRefreshTimeout)
+        await waitOnMainActor { viewModel.state == .ready }
+        await waitOnMainActor { viewModel.currentShipmentDetailsViewModel?.shippingService != nil }
         viewModel.didUpdateAccountSettings(accountSettings)
 
         let package = WooShippingPackageData(id: "box", name: "Box", length: "10", width: "10", height: "5",
@@ -2003,9 +2053,492 @@ private extension WooShippingCreateLabelsViewModelTests {
     }
 }
 
+// MARK: - Carrier Terms of Service tracking
+extension WooShippingCreateLabelsViewModelTests {
+    func test_carrier_tos_shown_event_is_tracked_when_UPS_terms_are_shown() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.shouldShowUPSTermsAndConditions = true
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "upsdap", "state": "shown"])
+    }
+
+    func test_carrier_tos_shown_event_is_tracked_when_FedEx_terms_are_shown() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.shouldShowFedExTermsAndConditions = true
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "fedex", "state": "shown"])
+    }
+
+    func test_carrier_tos_shown_event_is_not_tracked_when_terms_are_dismissed() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        viewModel.shouldShowUPSTermsAndConditions = true
+        analyticsProvider.clearEvents()
+
+        // When
+        viewModel.shouldShowUPSTermsAndConditions = false
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("wcs_carrier_tos"))
+    }
+
+    func test_carrier_tos_accepted_event_is_tracked_for_UPS() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.trackCarrierTermsAccepted(.upsdap)
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "upsdap", "state": "accepted"])
+    }
+
+    func test_carrier_tos_accepted_event_is_tracked_for_FedEx() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.trackCarrierTermsAccepted(.fedex)
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "fedex", "state": "accepted"])
+    }
+}
+
 private extension WooShippingAccountSettings {
     static func fake() -> WooShippingAccountSettings {
         .init(storeOptions: .init(currencySymbol: "$", dimensionUnit: "in", weightUnit: "lbs", originCountry: "US"),
               accountSettings: .fake())
+    }
+}
+
+// MARK: - Service status notices
+extension WooShippingCreateLabelsViewModelTests {
+    @MainActor
+    func test_init_when_service_status_loads_then_exposes_notices_in_order() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice, upsWarningNotice, dhlInfoNotice])])
+
+        // When
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // Then
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice, upsWarningNotice, dhlInfoNotice])
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+    }
+
+    @MainActor
+    func test_init_when_service_status_fails_then_exposes_no_notices() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.failure(NetworkError.notFound(response: nil))])
+
+        // When
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // Then
+        XCTAssertEqual(viewModel.state, .ready)
+        XCTAssertTrue(viewModel.serviceStatusNotices.isEmpty)
+    }
+
+    @MainActor
+    func test_dismissServiceStatusNotice_removes_only_that_notice() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice, upsWarningNotice, dhlInfoNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // When
+        viewModel.dismissServiceStatusNotice(id: upsWarningNotice.id)
+
+        // Then
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice, dhlInfoNotice])
+    }
+
+    @MainActor
+    func test_dismissServiceStatusNotice_when_notices_are_refetched_then_keeps_notice_hidden() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice, upsWarningNotice, dhlInfoNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+        viewModel.dismissServiceStatusNotice(id: upsWarningNotice.id)
+
+        // When
+        await viewModel.refreshServiceStatusNotices().value
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice, dhlInfoNotice])
+    }
+
+    @MainActor
+    func test_refreshServiceStatusNotices_when_refresh_is_in_flight_then_reuses_it() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([nil])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // When
+        viewModel.refreshServiceStatusNotices()
+        viewModel.refreshServiceStatusNotices()
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+    }
+
+    @MainActor
+    func test_rates_failure_when_error_is_an_outage_then_refetches_service_status() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([]), .success([uspsErrorNotice])])
+
+        // When
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError,
+                                                         rateLoadingError: connectServerRateError,
+                                                         serviceStatus: serviceStatus)
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice])
+        XCTAssertEqual(viewModel.currentShipmentDetailsViewModel?.shippingService?.loadingState, .error(.failedLoadingLabelRates))
+    }
+
+    @MainActor
+    func test_rates_failure_when_error_is_not_an_outage_then_does_not_refetch_service_status() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([])])
+
+        // When
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError,
+                                                         rateLoadingError: NetworkError.timeout(response: nil),
+                                                         serviceStatus: serviceStatus)
+        await waitOnMainActor { viewModel.currentShipmentDetailsViewModel?.shippingService?.loadingState == .error(.failedLoadingLabelRates) }
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_outage_and_incidents_are_active_then_shows_most_severe_incident() async {
+        // Given
+        let notices = [dhlInfoNotice, upsWarningNotice, uspsErrorNotice]
+        let serviceStatus = ServiceStatusResponses([.success(notices), .success(notices)])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError, serviceStatus: serviceStatus)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: USPS: API Outage | Status: Investigating")
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.actionTitle, "Retry")
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_incident_started_after_screen_opened_then_shows_incident_and_banners() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([]), .success([upsWarningNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError, serviceStatus: serviceStatus)
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(viewModel.serviceStatusNotices, [upsWarningNotice])
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: UPS: Label creation delays | Status: Monitoring")
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_incident_banner_was_dismissed_then_still_shows_incident() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let serviceStatus = ServiceStatusResponses([.success([upsWarningNotice, dhlInfoNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError,
+                                                         serviceStatus: serviceStatus,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+        viewModel.dismissServiceStatusNotice(id: upsWarningNotice.id)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(viewModel.serviceStatusNotices, [dhlInfoNotice])
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: UPS: Label creation delays | Status: Monitoring")
+        XCTAssertEqual(purchaseFailedProperties(in: analyticsProvider)?["service_status_notice_shown"] as? Bool, true)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_only_info_notice_is_active_then_shows_generic_message() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([dhlInfoNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError, serviceStatus: serviceStatus)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message, genericPurchaseErrorMessage)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_outage_then_keeps_loading_until_service_status_is_refetched() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([]), nil])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError, serviceStatus: serviceStatus)
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // When
+        let purchase = Task { await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false) }
+        await waitOnMainActor { serviceStatus.requestCount == 2 }
+
+        // Then
+        XCTAssertTrue(viewModel.isPurchasingLabel)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
+
+        // When
+        serviceStatus.completePendingRequest(with: .success([uspsErrorNotice]))
+        await purchase.value
+
+        // Then
+        XCTAssertFalse(viewModel.isPurchasingLabel)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: USPS: API Outage | Status: Investigating")
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_service_status_refetch_times_out_then_stops_loading_with_current_notices() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([upsWarningNotice]), nil])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError,
+                                                         serviceStatus: serviceStatus,
+                                                         serviceStatusRefreshTimeout: .milliseconds(100))
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 2)
+        XCTAssertFalse(viewModel.isPurchasingLabel)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message,
+                       "We are unable to purchase the shipping label due to a carrier service issue: UPS: Label creation delays | Status: Monitoring")
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_error_is_not_an_outage_then_shows_generic_message_without_refetch() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError, serviceStatus: serviceStatus)
+        await waitOnMainActor { viewModel.serviceStatusNotices.isNotEmpty }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+        XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message, genericPurchaseErrorMessage)
+        XCTAssertEqual(viewModel.serviceStatusNotices, [uspsErrorNotice])
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_terms_of_service_error_then_does_not_refetch_service_status() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: DotcomError.unknown(code: "missing_upsdap_terms_of_service_acceptance",
+                                               message: "UPS Terms of Service have not been accepted.",
+                                               data: nil),
+            serviceStatus: serviceStatus
+        )
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+        XCTAssertTrue(viewModel.shouldShowUPSTermsAndConditions)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_phone_error_then_does_not_refetch_service_status() async {
+        // Given
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: DotcomError.unknown(code: "wcc_server_error_response",
+                                               message: "Error: The WooCommerce Shipping server returned: Bad Request Invalid phone number ( 400 )",
+                                               data: nil),
+            serviceStatus: serviceStatus
+        )
+        await waitOnMainActor { serviceStatus.requestCount == 1 }
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertEqual(serviceStatus.requestCount, 1)
+        XCTAssertNotEqual(viewModel.labelPurchaseErrorNotice?.message, genericPurchaseErrorMessage)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_incident_is_shown_then_tracks_service_status_notice_shown() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: connectServerOutageError,
+                                                         serviceStatus: serviceStatus,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        let properties = purchaseFailedProperties(in: analyticsProvider)
+        XCTAssertEqual(properties?["service_status_notice_shown"] as? Bool, true)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_incident_is_not_shown_then_does_not_track_service_status_notice_shown() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let serviceStatus = ServiceStatusResponses([.success([uspsErrorNotice])])
+        let viewModel = await makePurchaseLabelViewModel(purchaseError: cardDeclinedError,
+                                                         serviceStatus: serviceStatus,
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        let properties = purchaseFailedProperties(in: analyticsProvider)
+        XCTAssertNotNil(properties)
+        XCTAssertNil(properties?["service_status_notice_shown"])
+    }
+}
+
+/// Replies to `loadServiceStatusNotices` in order, repeating the last reply. A `nil` reply never completes.
+private final class ServiceStatusResponses {
+    private let replies: [Result<[WooShippingServiceStatusNotice], Error>?]
+    private var pendingCompletion: ((Result<[WooShippingServiceStatusNotice], Error>) -> Void)?
+    private(set) var requestCount = 0
+
+    init(_ replies: [Result<[WooShippingServiceStatusNotice], Error>?] = [nil]) {
+        self.replies = replies
+    }
+
+    func respond(_ completion: @escaping (Result<[WooShippingServiceStatusNotice], Error>) -> Void) {
+        let reply = replies[min(requestCount, replies.count - 1)]
+        requestCount += 1
+        guard let reply else {
+            pendingCompletion = completion
+            return
+        }
+        completion(reply)
+    }
+
+    func completePendingRequest(with result: Result<[WooShippingServiceStatusNotice], Error>) {
+        pendingCompletion?(result)
+        pendingCompletion = nil
+    }
+}
+
+private extension WooShippingCreateLabelsViewModelTests {
+    /// Polls `condition` on the main actor, so main actor tests don't hand it to the nonisolated `until`.
+    @MainActor
+    func waitOnMainActor(timeout: Duration = .seconds(5), until condition: () -> Bool) async {
+        let deadline = ContinuousClock.now + timeout
+        while !condition() && ContinuousClock.now < deadline {
+            do {
+                try await Task.sleep(for: .milliseconds(10))
+            } catch {
+                break
+            }
+        }
+        XCTAssertTrue(condition())
+    }
+
+    func purchaseFailedProperties(in analyticsProvider: MockAnalyticsProvider) -> [AnyHashable: Any]? {
+        zip(analyticsProvider.receivedEvents, analyticsProvider.receivedProperties)
+            .first { $0.0 == "wcs_purchase_step" && $0.1["state"] as? String == "purchase_failed" }?
+            .1
+    }
+
+    var genericPurchaseErrorMessage: String {
+        "We are unable to purchase the shipping label. Please try again."
+    }
+
+    var uspsErrorNotice: WooShippingServiceStatusNotice {
+        WooShippingServiceStatusNotice(id: "service-status-easypost-usps",
+                                       severity: .error,
+                                       message: "USPS: API Outage | Status: Investigating",
+                                       isDismissible: false,
+                                       actionURL: URL(string: "https://www.easypoststatus.com"))
+    }
+
+    var upsWarningNotice: WooShippingServiceStatusNotice {
+        WooShippingServiceStatusNotice(id: "service-status-easypost-ups",
+                                       severity: .warning,
+                                       message: "UPS: Label creation delays | Status: Monitoring",
+                                       isDismissible: true,
+                                       actionURL: nil)
+    }
+
+    var dhlInfoNotice: WooShippingServiceStatusNotice {
+        WooShippingServiceStatusNotice(id: "service-status-easypost-dhl",
+                                       severity: .info,
+                                       message: "DHL Express: Scheduled maintenance tonight",
+                                       isDismissible: true,
+                                       actionURL: URL(string: "https://www.easypoststatus.com"))
+    }
+
+    /// A Connect Server 500, as wrapped by WooCommerce Shipping.
+    var connectServerOutageError: Error {
+        DotcomError.unknown(code: "wcc_server_error_response",
+                            message: "Error: The WooCommerce Shipping server returned: Internal Server Error An internal server error occurred ( 500 )",
+                            data: ["response_status_code": AnyDecodable(500)])
+    }
+
+    /// Rate failures lose the upstream status, so only the code identifies the outage.
+    var connectServerRateError: Error {
+        DotcomError.unknown(code: "wcc_server_error",
+                            message: "Error: The WooCommerce Shipping server returned HTTP code: 503",
+                            data: ["message": AnyDecodable("Error: The WooCommerce Shipping server returned HTTP code: 503")])
+    }
+
+    /// A Connect Server 402, which the app also receives as HTTP 500.
+    var cardDeclinedError: Error {
+        DotcomError.unknown(code: "wcc_server_error_response",
+                            message: "Error: The WooCommerce Shipping server returned: Payment Required Your card was declined. ( 402 )",
+                            data: ["response_status_code": AnyDecodable(402)])
     }
 }

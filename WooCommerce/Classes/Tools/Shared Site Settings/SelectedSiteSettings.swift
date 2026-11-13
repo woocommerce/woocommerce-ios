@@ -23,6 +23,10 @@ enum SettingsUpdateSource {
 protocol SelectedSiteSettingsProtocol {
     var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> { get }
     var siteSettings: [SiteSetting] { get }
+
+    /// `true` when the store currency isn't available from synced site settings, so currency formatting
+    /// is falling back to defaults (USD). See WOOMOB-3897.
+    var isUsingFallbackCurrency: Bool { get }
     func refresh()
 }
 
@@ -46,6 +50,10 @@ final class SelectedSiteSettings: NSObject, SelectedSiteSettingsProtocol {
     }()
 
     public private(set) var siteSettings: [Yosemite.SiteSetting] = []
+
+    var isUsingFallbackCurrency: Bool {
+        !siteSettings.contains { $0.settingID == CurrencySettings.Constants.currencyCodeKey }
+    }
 
     init(stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores

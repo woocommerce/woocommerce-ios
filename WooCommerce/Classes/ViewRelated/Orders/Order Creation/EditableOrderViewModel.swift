@@ -1,3 +1,4 @@
+import AVFoundation
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
@@ -12,13 +13,14 @@ typealias OrderBaseItem = ItemIdentifierSearchResult
 
 /// View model used in Order Creation and Editing flows.
 ///
+@MainActor
 final class EditableOrderViewModel: ObservableObject {
     let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let orderCurrencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
     private let permissionChecker: CaptureDevicePermissionChecker
     private let posNotificationScheduler: POSNotificationScheduling
 
@@ -90,16 +92,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {
-        let shouldShowSelector = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) &&
-        // If there are no addresses added
-        orderSynchronizer.order.billingAddress?.isEmpty ?? true &&
-        orderSynchronizer.order.shippingAddress?.isEmpty ?? true
+        let hasNoBillingAddress = orderSynchronizer.order.billingAddress?.isEmpty ?? true
+        let hasNoShippingAddress = orderSynchronizer.order.shippingAddress?.isEmpty ?? true
 
-        return shouldShowSelector ? .selector : .form
-    }
-
-    var shouldShowSearchButtonInOrderAddressForm: Bool {
-        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
+        return hasNoBillingAddress && hasNoShippingAddress ? .selector : .form
     }
 
     var orderIsNotEmpty: Bool {
@@ -170,7 +166,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Whether manual order status editing is supported for the current site.
     ///
     var isOrderStatusEditingEnabled: Bool {
-        ciabEligibilityChecker.isFeatureSupportedForCurrentSite(.manualOrderStatusUpdate)
+        true
     }
 
     /// Defines if the view should be disabled.
@@ -211,6 +207,9 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var editingFee: OrderFeeLine? = nil
+    private var activeAddCustomAmountViewModel: AddCustomAmountViewModel?
+    private var isCustomAmountFlowActive = false
+
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
     }
@@ -229,10 +228,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var shouldSplitCustomerAndNoteSections: Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
-            return customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
-        }
-        return true
+        customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
     }
 
     var shouldShowProductsSectionHeader: Bool {
@@ -368,10 +364,6 @@ final class EditableOrderViewModel: ObservableObject {
 
     // MARK: Customer data properties
 
-    /// View model for the customer section.
-    ///
-    @Published private(set) var customerSectionViewModel: OrderCustomerSectionViewModel
-
     /// Representation of customer data display properties.
     ///
     @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
@@ -456,7 +448,11 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let barcodeScannerItemFinder: BarcodeScannerItemFinder
 
+    private let bundleChecker: UnsupportedBundledProductChecker
+
     private let quantityDebounceDuration: Double
+
+    private let requestCurrency: String?
 
     @MainActor
     init(siteID: Int64,
@@ -464,32 +460,49 @@ final class EditableOrderViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         requestCurrency: String? = nil,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         posNotificationScheduler: POSNotificationScheduling = POSNotificationScheduler(),
+         posNotificationScheduler: POSNotificationScheduling? = nil,
          initialItem: OrderBaseItem? = nil,
          initialCustomer: (id: Int64, billing: Address?, shipping: Address?)? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
+        let orderCurrencySettings: CurrencySettings = {
+            guard let requestCurrency,
+                  let currencyCode = CurrencyCode(caseInsensitiveRawValue: requestCurrency) else {
+                return currencySettings
+            }
+            return CurrencySettings(currencyCode: currencyCode,
+                                    currencyPosition: currencySettings.currencyPosition,
+                                    thousandSeparator: currencySettings.groupingSeparator,
+                                    decimalSeparator: currencySettings.decimalSeparator,
+                                    numberOfDecimals: currencySettings.fractionDigits)
+        }()
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
         self.storageManager = storageManager
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.requestCurrency = requestCurrency
+        self.orderCurrencySettings = orderCurrencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: orderCurrencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID,
+                                                         flow: flow,
+                                                         stores: stores,
+                                                         currencySettings: orderCurrencySettings,
+                                                         requestCurrency: requestCurrency)
         self.featureFlagService = featureFlagService
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
-        self.posNotificationScheduler = posNotificationScheduler
+        self.posNotificationScheduler = posNotificationScheduler ?? POSNotificationScheduler()
         self.initialItem = initialItem
         self.initialCustomer = initialCustomer
         self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
+        self.bundleChecker = UnsupportedBundledProductChecker(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
-        self.customAmountsSectionViewModel = OrderCustomAmountsSectionViewModel(currencySettings: currencySettings)
+        self.customAmountsSectionViewModel = OrderCustomAmountsSectionViewModel(currencySettings: orderCurrencySettings)
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -498,22 +511,10 @@ final class EditableOrderViewModel: ObservableObject {
                                                                    onAddressUpdate: nil)
         self.addressFormViewModel = addressFormViewModel
 
-        // A temporary initial value is set here to avoid being an optional, and it will be reset in `configureCustomerDataViewModel`.
-        self.customerSectionViewModel = .init(
-            siteID: siteID,
-            addressFormViewModel: addressFormViewModel,
-            customerData: .init(customerID: nil,
-                                email: nil,
-                                fullName: nil,
-                                billingAddressFormatted: nil,
-                                shippingAddressFormatted: nil),
-            isCustomerAccountRequired: false,
-            isEditable: true,
-            updateCustomer: { _ in },
-            resetAddressForm: {}
-        )
-
-        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
+        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID,
+                                                                        flow: flow,
+                                                                        orderSynchronizer: orderSynchronizer,
+                                                                        currencySettings: orderCurrencySettings)
         self.couponLineViewModel = EditableOrderCouponLineViewModel(orderSynchronizer: orderSynchronizer)
 
         configureDisabledState()
@@ -543,14 +544,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Observes and keeps track of changes within the Customer Details
     ///
     private func observeChangesInCustomerDetails() {
-        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
-            addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
-                self?.latestAddressFormFields = newValue
-            }
-            .store(in: &cancellables)
-            return
-        }
-        customerSectionViewModel.addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
+        addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
             self?.latestAddressFormFields = newValue
         }
         .store(in: &cancellables)
@@ -621,7 +615,8 @@ final class EditableOrderViewModel: ObservableObject {
                                   name: rowViewModel.productRow.name,
                                   totalPricePreDiscount: orderItem.subtotal,
                                   priceSummary: rowViewModel.productRow.priceSummaryViewModel,
-                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem))
+                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem),
+                                  currencySettings: orderCurrencySettings)
     }
 
     /// Removes an item from the order.
@@ -680,13 +675,12 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
-        let itemDiscount = currentDiscount(on: item)
-        let passingDiscountValue = itemDiscount > 0 ? itemDiscount : nil
+        let passingDiscountValue = currentProductDiscount(on: item)
 
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let variableProduct = allProducts.first(where: { $0.productID == item.productID })
-            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributesForVariations ?? [])
             let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
                                                            name: item.name,
                                                            quantityUpdatedCallback: { [weak self] _ in
@@ -704,13 +698,14 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   sku: variation.sku,
                                                                   price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
-                                                                  discount: passingDiscountValue,
+                                                                  productDiscount: passingDiscountValue,
                                                                   productTypeDescription: ProductType.variable.description,
                                                                   attributes: attributes,
                                                                   stockStatus: variation.stockStatus,
                                                                   stockQuantity: variation.stockQuantity,
                                                                   manageStock: variation.manageStock,
                                                                   stepperViewModel: stepperViewModel,
+                                                                  currencyFormatter: currencyFormatter,
                                                                   analytics: analytics)
             return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
@@ -741,19 +736,20 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   isConfigurable: isProductConfigurable,
-                                                                  productSubscriptionDetails: product.subscription,
+                                                                  productSubscriptionDetails: product.productType.isSubscription ? product.subscription : nil,
                                                                   imageURL: product.imageURL,
                                                                   name: product.name,
                                                                   sku: product.sku,
                                                                   price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
-                                                                  discount: passingDiscountValue,
+                                                                  productDiscount: passingDiscountValue,
                                                                   productTypeDescription: product.productType.description,
                                                                   attributes: [],
                                                                   stockStatus: product.productStockStatus,
                                                                   stockQuantity: product.stockQuantity,
                                                                   manageStock: product.manageStock,
                                                                   stepperViewModel: stepperViewModel,
+                                                                  currencyFormatter: currencyFormatter,
                                                                   analytics: analytics,
                                                                   configure: { [weak self] in
                 guard let self else { return }
@@ -782,28 +778,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Can be used to configure the address form for first use or discard pending changes.
     ///
     func resetAddressForm() {
-        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
-            addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
-                                                                   addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
-                                                                                      shippingAddress: orderSynchronizer.order.shippingAddress),
-                                                                   onAddressUpdate: { [weak self] updatedAddressData in
-                let input = Self.createAddressesInputIfPossible(billingAddress: updatedAddressData.billingAddress,
-                                                                shippingAddress: updatedAddressData.shippingAddress)
-                self?.orderSynchronizer.setAddresses.send(input)
-                self?.trackCustomerDetailsAdded()
-            })
-            // Since the form is recreated the original reference is lost. This is a problem if we update the form more than once
-            // while keeping the Order open, since new published values won't be observed anymore.
-            // This is resolved by hooking the publisher again to the new object
-            observeChangesInCustomerDetails()
-            return
-        }
-
-        customerSectionViewModel.addressFormViewModel = .init(siteID: siteID,
-                                                              showEmailField: false,
-                                                              addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
-                                                                                 shippingAddress: orderSynchronizer.order.shippingAddress),
-                                                              onAddressUpdate: { [weak self] updatedAddressData in
+        addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
+                                                               addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                                                  shippingAddress: orderSynchronizer.order.shippingAddress),
+                                                               onAddressUpdate: { [weak self] updatedAddressData in
             let input = Self.createAddressesInputIfPossible(billingAddress: updatedAddressData.billingAddress,
                                                             shippingAddress: updatedAddressData.shippingAddress)
             self?.orderSynchronizer.setAddresses.send(input)
@@ -1015,6 +993,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     func onDismissAddCustomAmountView() {
         editingFee = nil
+        endAddCustomAmountFlow()
     }
 
     func onAddCustomAmountButtonTapped() {
@@ -1028,6 +1007,7 @@ final class EditableOrderViewModel: ObservableObject {
         if orderIsNotEmpty {
             customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
         } else {
+            beginAddCustomAmountFlow()
             customAmountsSectionViewModel.showCustomAmountView = true
         }
     }
@@ -1069,7 +1049,13 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
+        if isCustomAmountFlowActive,
+           let activeAddCustomAmountViewModel {
+            return activeAddCustomAmountViewModel
+        }
+
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
+                                                 storeCurrencySettings: orderCurrencySettings,
                                                  onCustomAmountDeleted: { [weak self] feeID in
             self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
 
@@ -1093,7 +1079,20 @@ final class EditableOrderViewModel: ObservableObject {
             self.editingFee = nil
         }
 
+        if isCustomAmountFlowActive {
+            activeAddCustomAmountViewModel = viewModel
+        }
+
         return viewModel
+    }
+
+    func beginAddCustomAmountFlow() {
+        isCustomAmountFlowActive = true
+    }
+
+    func endAddCustomAmountFlow() {
+        isCustomAmountFlowActive = false
+        activeAddCustomAmountViewModel = nil
     }
 }
 
@@ -1173,7 +1172,7 @@ extension EditableOrderViewModel {
                       hasEmail: billingAddress?.hasEmailAddress == true,
                       hasPhone: billingAddress?.hasPhoneNumber == true || shippingAddress?.hasPhoneNumber == true,
                       billingAddressFormatted: billingAddress?.fullNameWithCompanyAndAddress,
-                      shippingAddressFormatted: shippingAddress?.fullNameWithCompanyAndAddress)
+                      shippingAddressFormatted: shippingAddress?.fullNameWithCompanyAddressAndPhone)
         }
     }
 
@@ -1283,7 +1282,7 @@ extension EditableOrderViewModel {
             self.taxLineViewModels = taxLineViewModels
             self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
             self.couponCode = couponCode
-            self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
+            self.discountTotal = currencyFormatter.formatAmount(discountTotal, isNegative: true) ?? "-0.00"
             self.shouldShowDiscountTotal = shouldShowDiscountTotal
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
@@ -1455,21 +1454,26 @@ private extension EditableOrderViewModel {
     /// - Parameters:
     ///   - products: Selected products
     ///   - variations: Selected product variations
+    ///   - consumingPendingBundleConfigurations: When `true`, clears the pending bundle configuration queue after building the inputs.
+    ///     Keep this `false` for preview checks like `isSyncRequired`, otherwise evaluating the Recalculate state can discard the configuration before sync.
     /// - Returns: [OrderSyncProductInput]
     ///
-    func productInputAdditionsToSync(products: [Product], variations: [ProductVariation]) -> [OrderSyncProductInput] {
+    func productInputAdditionsToSync(products: [Product],
+                                     variations: [ProductVariation],
+                                     consumingPendingBundleConfigurations: Bool = false) -> [OrderSyncProductInput] {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
+        var pendingBundleConfigurationsByProductID = productSelectorBundleConfigurationsByProductID
 
         let itemsInOrder = syncExistingSelectedProductsInOrder()
 
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
             if !itemsInOrder.contains(where: { $0.productID == product.productID && $0.parent == nil })
-                || productSelectorBundleConfigurationsByProductID[product.productID]?.isNotEmpty == true {
+                || pendingBundleConfigurationsByProductID[product.productID]?.isNotEmpty == true {
                 switch product.productType {
                     case .bundle:
-                        if let bundleConfiguration = productSelectorBundleConfigurationsByProductID[product.productID]?.popFirst() {
+                        if let bundleConfiguration = pendingBundleConfigurationsByProductID[product.productID]?.popFirst() {
                             productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1, bundleConfiguration: bundleConfiguration))
                         } else {
                             productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
@@ -1479,7 +1483,9 @@ private extension EditableOrderViewModel {
                 }
             }
         }
-        productSelectorBundleConfigurationsByProductID = [:]
+        if consumingPendingBundleConfigurations {
+            productSelectorBundleConfigurationsByProductID = [:]
+        }
 
         for variation in variations {
             // Only perform the operation if the variation has not been already added to the existing Order
@@ -1531,7 +1537,9 @@ private extension EditableOrderViewModel {
     func syncOrderItems(products: [Product], variations: [ProductVariation]) {
         // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
         // otherwise may ignore the subsequent values that are sent
-        let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
+        let addedItemsToSync = productInputAdditionsToSync(products: products,
+                                                           variations: variations,
+                                                           consumingPendingBundleConfigurations: true)
         let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
 
         guard (addedItemsToSync + removedItemsToSync).isNotEmpty else {
@@ -1625,6 +1633,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
+                        self.beginAddCustomAmountFlow()
                         self.customAmountsSectionViewModel.showCustomAmountView = true
                     })
                 }
@@ -1652,17 +1661,30 @@ private extension EditableOrderViewModel {
             return
         }
 
-        // When a scanned product is a bundle product, the bundle configuration view is shown first.
+        // The selector greys these products out, but a scan never passes through it.
+        if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
+            autodismissableNotice = Notice(title: restriction.reason)
+            return
+        }
+
+        // A scanned bundle opens its configuration screen, but only once it's known to be sellable:
+        // opening a form the merchant could never submit is worse than refusing up front.
         if case let .product(product) = item, product.productType == .bundle {
-            configurableScannedProductViewModel = .init(product: product,
-                                                 orderItem: nil,
-                                                 childItems: [],
-                                                 onConfigure: { [weak self] configuration in
+            autodismissableNotice = Notice(title: Localization.checkingBundledProductsNoticeTitle)
+
+            Task { @MainActor [weak self] in
                 guard let self else { return }
-                self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
-                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
-                self.configurableScannedProductViewModel = nil
-            })
+
+                switch await bundleChecker.check(bundle: product) {
+                case .supported:
+                    autodismissableNotice = nil
+                    showBundleConfiguration(for: product)
+                case let .unsupported(restriction):
+                    autodismissableNotice = Notice(title: restriction.bundleReason)
+                case .unknown:
+                    autodismissableNotice = Notice(title: Localization.cannotCheckBundledProductsNoticeTitle)
+                }
+            }
             return
         }
 
@@ -1686,6 +1708,18 @@ private extension EditableOrderViewModel {
         match?.productRow.stepperViewModel.incrementQuantity()
     }
 
+    func showBundleConfiguration(for product: Product) {
+        configurableScannedProductViewModel = .init(product: product,
+                                                    orderItem: nil,
+                                                    childItems: [],
+                                                    onConfigure: { [weak self] configuration in
+            guard let self else { return }
+            self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+            self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+            self.configurableScannedProductViewModel = nil
+        })
+    }
+
     /// If given initial customer data on initialization, updates the Order with the customer data.
     ///
     func configureOrderWithInitialCustomerIfNeeded(_ customerID: Int64?, billing: Address?, shipping: Address?) {
@@ -1700,52 +1734,11 @@ private extension EditableOrderViewModel {
     /// Updates customer data viewmodel based on order addresses.
     ///
     func configureCustomerDataViewModel() {
-        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
-            // Legacy customer section UI.
-            orderSynchronizer.orderPublisher
-                .map {
-                    CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
-                }
-                .assign(to: &$customerDataViewModel)
-            configureOrderWithInitialCustomerIfNeeded(initialCustomer?.id, billing: initialCustomer?.billing, shipping: initialCustomer?.shipping)
-            return
-        }
-
-        customerSectionViewModel = .init(
-            siteID: siteID,
-            addressFormViewModel: addressFormViewModel,
-            customerData: .init(
-                customerID: nil,
-                email: nil,
-                fullName: nil,
-                billingAddressFormatted: nil,
-                shippingAddressFormatted: nil
-            ),
-            isCustomerAccountRequired: false,
-            isEditable: true,
-            updateCustomer: { [weak self] customer in
-                guard let self else { return }
-                if let customer {
-                    addCustomerAddressToOrder(customer: customer)
-                } else {
-                    removeCustomerFromOrder()
-                }
-            },
-            resetAddressForm: resetAddressForm
-        )
-
         orderSynchronizer.orderPublisher
             .map {
-                CollapsibleCustomerCardViewModel.CustomerData(
-                    customerID: $0.customerID,
-                    email: $0.billingAddress?.email ?? $0.shippingAddress?.email,
-                    fullName: $0.billingAddress?.fullName ?? $0.shippingAddress?.fullName,
-                    billingAddressFormatted: $0.billingAddress?.formattedPostalAddress,
-                    shippingAddressFormatted: $0.shippingAddress?.formattedPostalAddress
-                )
+                CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
             }
-            .assign(to: &customerSectionViewModel.$customerData)
-
+            .assign(to: &$customerDataViewModel)
         configureOrderWithInitialCustomerIfNeeded(initialCustomer?.id, billing: initialCustomer?.billing, shipping: initialCustomer?.shipping)
     }
 
@@ -1903,11 +1896,10 @@ private extension EditableOrderViewModel {
 
             switch result {
                 case .success(let setting):
-                self.taxBasedOnSetting = setting
-
-                let canApplyTaxRates = setting == .customerBillingAddress || setting == .customerShippingAddress
-                if canApplyTaxRates {
-                    Task { @MainActor in
+                Task { @MainActor in
+                    self.taxBasedOnSetting = setting
+                    let canApplyTaxRates = setting == .customerBillingAddress || setting == .customerShippingAddress
+                    if canApplyTaxRates {
                         if self.flow == .creation {
                             await self.applySelectedStoredTaxRateIfAny()
                         }
@@ -1939,9 +1931,6 @@ private extension EditableOrderViewModel {
 
     @MainActor
     func checkIfGiftCardsPluginIsActive() async -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.giftCardInOrderForm) else {
-            return false
-        }
         return await withCheckedContinuation { continuation in
             stores.dispatch(SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: SystemPluginPaths.giftCards) { plugin in
                 continuation.resume(returning: plugin?.active == true)
@@ -1969,6 +1958,7 @@ private extension EditableOrderViewModel {
                 return ProductSelectorViewModel(
                     siteID: siteID,
                     source: .orderForm(flow: flow.analyticsFlow),
+                    currency: requestCurrency,
                     selectedItemIDs: selectedProductsAndVariationsIDs,
                     purchasableItemsOnly: true,
                     storageManager: storageManager,
@@ -2090,8 +2080,7 @@ private extension EditableOrderViewModel {
             hasCustomerDetails: hasCustomerDetails,
             hasFees: orderSynchronizer.order.fees.isNotEmpty,
             hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-            products: Array(allProducts),
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            products: Array(allProducts)))
     }
 
     func trackCollectPaymentTapped() {
@@ -2104,8 +2093,7 @@ private extension EditableOrderViewModel {
             hasCustomerDetails: hasCustomerDetails,
             hasFees: orderSynchronizer.order.fees.isNotEmpty,
             hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-            products: Array(allProducts),
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            products: Array(allProducts)))
     }
 
     /// Tracks an order creation success
@@ -2161,7 +2149,7 @@ private extension EditableOrderViewModel {
                                                          bundleConfiguration: bundleConfiguration,
                                                          allProducts: Array(allProducts),
                                                          allProductVariations: allProductVariations,
-                                                         defaultDiscount: currentDiscount(on: item))
+                                                         defaultDiscount: currentProductDiscount(on: item))
     }
 
     /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
@@ -2174,7 +2162,7 @@ private extension EditableOrderViewModel {
         }
 
         return .init(
-            addedDiscount: currentDiscount(on: orderItem),
+            addedDiscount: currentProductDiscount(on: orderItem),
             baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
             onSave: { [weak self] discount in
                 guard let discount else {
@@ -2196,6 +2184,16 @@ private extension EditableOrderViewModel {
         }
 
         return subtotal.subtracting(total) as Decimal
+    }
+
+    /// Calculates the product discount on an order item, excluding coupon effects.
+    ///
+    func currentProductDiscount(on item: OrderItem) -> Decimal {
+        guard orderSynchronizer.order.coupons.isEmpty else {
+            return 0
+        }
+
+        return currentDiscount(on: item)
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.
@@ -2312,7 +2310,7 @@ private extension EditableOrderViewModel {
     func couponLineViewModels(from couponLines: [OrderCouponLine]) -> [CouponLineViewModel] {
         couponLines.map {
             CouponLineViewModel(code: $0.code,
-                                discount: "-" + (currencyFormatter.formatAmount($0.discount) ?? "0.00"),
+                                discount: currencyFormatter.formatAmount($0.discount, isNegative: true) ?? "-0.00",
                                 detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                              siteID: siteID,
                                                                              didSelectSave: saveCouponLine))
@@ -2377,9 +2375,9 @@ private extension EditableOrderViewModel {
 
 extension EditableOrderViewModel {
 
-    enum CapturePermissionStatus {
+    enum CapturePermissionStatus: Equatable {
         case permitted
-        case notPermitted
+        case notPermitted(AVAuthorizationStatus)
         case notDetermined
     }
 
@@ -2396,7 +2394,7 @@ extension EditableOrderViewModel {
         case .authorized:
             return .permitted
         case .denied, .restricted:
-            return .notPermitted
+            return .notPermitted(authStatus)
         default:
             return .notDetermined
         }
@@ -2408,6 +2406,7 @@ extension EditableOrderViewModel {
 
     /// Attempts to add a Product to the current Order by SKU search
     ///
+    @MainActor
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
         analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderCreation))
         mapScannedBarcodetoBaseItem(barcode: barcode) { [weak self] result in
@@ -2423,7 +2422,8 @@ extension EditableOrderViewModel {
                     onCompletion(.success(()))
                 }
             case let .failure(error):
-                Task { @MainActor in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
                     onCompletion(.failure(ScannerError.productNotFound))
                     self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(for: error,
                                                                                                                 code: barcode,
@@ -2440,12 +2440,22 @@ extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.productAddNewFromBarcodeScanningTapped())
     }
 
-    func trackBarcodeScanningNotPermitted() {
-        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderCreation, reason: .cameraAccessNotPermitted))
+    func trackBarcodeScanningNotPermitted(reason: WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason) {
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderCreation, reason: reason))
+    }
+
+    func trackBarcodeScanningPermissionSettingsTapped(reason: WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason) {
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningPermissionSettingsTapped(from: .orderCreation,
+                                                                                                          reason: reason))
+    }
+
+    func trackBarcodeScanningPermissionSettingsOpened() {
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .orderCreation))
     }
 
     /// Attempts to map SKU to Product
     ///
+    @MainActor
     private func mapScannedBarcodetoBaseItem(barcode: ScannedBarcode, onCompletion: @escaping (Result<OrderBaseItem, Error>) -> Void) {
         Task {
             do {
@@ -2484,6 +2494,7 @@ extension EditableOrderViewModel {
 
         /// Returns an order sync error notice.
         ///
+        @MainActor
         static func syncOrderErrorNotice(_ error: Error, flow: Flow, with orderSynchronizer: OrderSynchronizer) -> Notice {
             guard !isEmailError(error, order: orderSynchronizer.order) else {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
@@ -2594,6 +2605,14 @@ private extension EditableOrderViewModel {
         static let customAmountDefaultName = NSLocalizedString("editableOrderViewModel.customAmountDefaultName",
                                                                value: "Custom Amount",
                                                                comment: "Default name when the custom amount does not have a name in order creation.")
+        static let checkingBundledProductsNoticeTitle = NSLocalizedString(
+            "order.bundle.checkingBundledProducts.notice.title",
+            value: "Checking the bundled products…",
+            comment: "Title of a notice shown while the products inside a scanned bundle are loaded.")
+        static let cannotCheckBundledProductsNoticeTitle = NSLocalizedString(
+            "order.bundle.cannotCheckBundledProducts.notice.title",
+            value: "Cannot check the bundled products. Please try again.",
+            comment: "Shown when a bundle's products could not be loaded, so the app cannot tell whether it can be added.")
         static let parentProductScannedNoticeTitle = NSLocalizedString(
             "order.barcode.scan.parent.product.notice.title",
             value: "You cannot add a variable product directly.",

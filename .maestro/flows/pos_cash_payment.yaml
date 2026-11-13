@@ -1,0 +1,71 @@
+# p2: pos.add-products, pos.pay-cash
+# Prerequisites: an authenticated, genuinely POS-eligible store on an iPad
+# with cash payments available, and the product seeding creates for this run.
+appId: ${APP_ID}
+name: "POS - Cash payment and new order"
+tags:
+  - destructive
+  - pos_ipad
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+# The POS tab appears only after the store's eligibility check finishes, and
+# right after login it has no accessibility id, so match its title.
+- extendedWaitUntil:
+    visible: "POS"
+    timeout: 30000
+- tapOn: "POS"
+- extendedWaitUntil:
+    visible:
+      id: "pos-product-card-.*|pos-ineligible-view"
+    timeout: 90000
+- assertNotVisible:
+    id: pos-ineligible-view
+# POS lists products from a local copy of the catalog that syncs hourly. Pull to
+# refresh so it includes the product seeded for this run, whose name carries the
+# run id so cleanup finds the POS order.
+- swipe:
+    from:
+      id: "pos-product-card-.*"
+      index: 0
+    direction: DOWN
+- scrollUntilVisible:
+    element: Maestro POS ${SUITE_RUN_ID}
+    direction: DOWN
+    timeout: 60000
+    centerElement: true
+- tapOn: Maestro POS ${SUITE_RUN_ID}
+- extendedWaitUntil:
+    visible:
+      id: "pos-cart-item-product-.*|pos-cart-item-variation-.*"
+    timeout: 30000
+- tapOn:
+    id: pos-checkout-button
+- extendedWaitUntil:
+    visible:
+      id: pos-total-field
+    timeout: 30000
+- assertVisible:
+    id: pos-cash-payment-button
+- tapOn:
+    id: pos-cash-payment-button
+- assertVisible:
+    id: pos-mark-payment-complete-button
+- tapOn:
+    id: pos-mark-payment-complete-button
+- extendedWaitUntil:
+    visible:
+      id: pos-payment-success-view
+    timeout: 45000
+- assertVisible:
+    id: pos-email-receipt-button
+- assertVisible:
+    id: pos-new-order-button
+- takeScreenshot: pos_cash_payment_success
+- tapOn:
+    id: pos-new-order-button
+- extendedWaitUntil:
+    visible:
+      id: "pos-product-card-.*"
+    timeout: 30000
+- assertNotVisible:
+    id: "pos-cart-item-product-.*|pos-cart-item-variation-.*"

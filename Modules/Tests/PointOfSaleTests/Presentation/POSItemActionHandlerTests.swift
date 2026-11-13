@@ -82,10 +82,80 @@ struct POSItemActionHandlerTests {
 
         #expect(aggregateModel.cart.purchasableItems.count == 3)
     }
+
+    @Test func handleTapOnAppliedCoupon_when_coupon_is_in_cart_then_removes_it_and_tracks_removal() async throws {
+        // Given
+        let aggregateModel = makePointOfSaleAggregateModel()
+        let analytics = MockPOSAnalytics()
+        let sut = StandardPOSItemActionHandler(
+            posModel: aggregateModel,
+            sourceView: .coupon,
+            sourceViewType: .list,
+            analytics: analytics
+        )
+        let coupon = makeCouponItem(code: "DISCOUNT!")
+        let otherCoupon = makeCouponItem(code: "OTHER", itemID: 2)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(otherCoupon, position: 1)
+        analytics.events.removeAll()
+
+        // When
+        sut.handleTapOnAppliedCoupon(coupon)
+
+        // Then
+        #expect(aggregateModel.cart.coupons.map(\.code) == ["OTHER"])
+        let event = try #require(analytics.events.first)
+        #expect(analytics.events.count == 1)
+        #expect(event.eventName == "item_removed_from_cart")
+        #expect(event.properties["source"] as? String == "coupon")
+        #expect(event.properties["item_type"] as? String == "coupon")
+    }
+
+    @Test func handleTapOnAppliedCoupon_when_search_result_coupon_is_in_cart_then_removes_it_and_tracks_removal() async throws {
+        // Given
+        let aggregateModel = makePointOfSaleAggregateModel()
+        let analytics = MockPOSAnalytics()
+        let sut = SearchResultItemActionHandler(
+            posModel: aggregateModel,
+            searchTerm: "DIS",
+            itemType: .coupon,
+            sourceView: .coupon,
+            analytics: analytics
+        )
+        let coupon = makeCouponItem(code: "DISCOUNT!")
+        sut.handleTap(coupon, position: 0)
+        analytics.events.removeAll()
+
+        // When
+        sut.handleTapOnAppliedCoupon(coupon)
+
+        // Then
+        #expect(aggregateModel.cart.coupons.isEmpty)
+        #expect(analytics.events.map(\.eventName) == ["item_removed_from_cart"])
+    }
+
+    @Test func handleTapOnAppliedCoupon_when_coupon_is_not_in_cart_then_does_nothing() async throws {
+        // Given
+        let aggregateModel = makePointOfSaleAggregateModel()
+        let analytics = MockPOSAnalytics()
+        let sut = StandardPOSItemActionHandler(
+            posModel: aggregateModel,
+            sourceView: .coupon,
+            sourceViewType: .list,
+            analytics: analytics
+        )
+
+        // When
+        sut.handleTapOnAppliedCoupon(makeCouponItem(code: "DISCOUNT!"))
+
+        // Then
+        #expect(aggregateModel.cart.coupons.isEmpty)
+        #expect(analytics.events.isEmpty)
+    }
 }
 
-private func makeCouponItem(code: String = "") -> POSItem {
-    return .coupon(.init(id: POSItemIdentifier(underlyingType: .product, itemID: 1), code: code))
+private func makeCouponItem(code: String = "", itemID: Int64 = 1) -> POSItem {
+    return .coupon(.init(id: POSItemIdentifier(underlyingType: .product, itemID: itemID), code: code))
 }
 
 private func makeProductItem() -> POSItem {
@@ -101,34 +171,36 @@ private func makeProductItem() -> POSItem {
 
 @MainActor
 private func makePointOfSaleAggregateModel(
-    entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
-    itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
-    purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
-    couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
-    couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
-    cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
-    orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
-    settingsController: POSSettingsControllerProtocol = MockPOSSettingsController(),
+    entryPointController: POSEntryPointController? = nil,
+    itemsController: PointOfSaleItemsControllerProtocol? = nil,
+    purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
+    couponsController: PointOfSaleCouponsControllerProtocol? = nil,
+    couponsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
+    cardPresentPaymentService: CardPresentPaymentFacade? = nil,
+    orderController: PointOfSaleOrderControllerProtocol? = nil,
+    settingsController: POSSettingsControllerProtocol? = nil,
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
-    popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
-    barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = MockPointOfSaleBarcodeScanService()
+    popularPurchasableItemsController: PointOfSaleItemsControllerProtocol? = nil,
+    barcodeScanService: PointOfSaleBarcodeScanServiceProtocol? = nil
 ) -> PointOfSaleAggregateModel {
-    PointOfSaleAggregateModel(
-        entryPointController: entryPointController,
-        itemsController: itemsController,
-        purchasableItemsSearchController: purchasableItemsSearchController,
-        couponsController: couponsController,
-        couponsSearchController: couponsSearchController,
+    let cardPresentPaymentService = cardPresentPaymentService ?? MockCardPresentPaymentService()
+
+    return PointOfSaleAggregateModel(
+        entryPointController: entryPointController ?? POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+        itemsController: itemsController ?? MockPointOfSaleItemsController(),
+        purchasableItemsSearchController: purchasableItemsSearchController ?? MockPointOfSalePurchasableItemsSearchController(),
+        couponsController: couponsController ?? MockPointOfSaleCouponsController(),
+        couponsSearchController: couponsSearchController ?? MockPointOfSaleCouponsController(),
         cardPresentPaymentService: cardPresentPaymentService,
-        orderController: orderController,
-        settingsController: settingsController,
+        orderController: orderController ?? MockPointOfSaleOrderController(),
+        settingsController: settingsController ?? MockPOSSettingsController(),
         analytics: analytics,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         searchHistoryService: searchHistoryService,
-        popularPurchasableItemsController: popularPurchasableItemsController,
-        barcodeScanService: barcodeScanService,
+        popularPurchasableItemsController: popularPurchasableItemsController ?? MockPointOfSaleItemsController(),
+        barcodeScanService: barcodeScanService ?? MockPointOfSaleBarcodeScanService(),
         receiptSender: MockPOSReceiptSender(),
         siteID: 0
     )

@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class FailedProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet var imageView: UIImageView!
@@ -8,10 +9,12 @@ final class FailedProductImageCollectionViewCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureImageView()
-        configureErrorImageView()
-        configureCellAppearance()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureImageView()
+            configureErrorImageView()
+            configureCellAppearance()
+        }
     }
 }
 

@@ -8,6 +8,7 @@ fastlane_require 'git'
 # normally pulled in transitively by Fastlane actions, but requiring it
 # explicitly here avoids load-order surprises.
 fastlane_require 'octokit'
+fastlane_require 'xcodeproj'
 
 require_relative 'helpers/release_notes_pr_helper'
 require_relative 'helpers/release_notes_ai_helper'
@@ -15,8 +16,6 @@ require_relative 'helpers/release_notes_ai_helper'
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
 USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
-SECRETS_DIR = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets')
-PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
 GITHUB_REPO = 'woocommerce/woocommerce-ios'
 DEFAULT_BRANCH = 'trunk'
@@ -43,7 +42,6 @@ pull_request_number = ENV['BUILDKITE_PULL_REQUEST']&.then { |n| n == 'false' ? n
 
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
 IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '26.1' # For screenshots
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 17 Pro Max',
@@ -74,6 +72,16 @@ ALPHA_BUNDLE_IDENTIFIERS = MAIN_BUNDLE_IDENTIFIERS.map do |id|
   id.gsub(APP_STORE_VERSION_BUNDLE_IDENTIFIER, ALPHA_VERSION_BUNDLE_IDENTIFIER)
 end.freeze
 
+def xcconfig_value(filename, key)
+  path = File.join(PROJECT_ROOT_FOLDER, 'config', filename)
+  UI.user_error!("xcconfig not found: #{path}") unless File.readable?(path)
+  Xcodeproj::Config.new(path).attributes[key] ||
+    UI.user_error!("Could not find #{key} in #{path}")
+end
+
+ENTERPRISE_TEAM_ID = xcconfig_value('WooCommerce.release-alpha.xcconfig', 'DEVELOPMENT_TEAM')
+APP_STORE_TEAM_ID = xcconfig_value('WooCommerce.common.xcconfig', 'DEVELOPMENT_TEAM')
+
 # Shared options to use when invoking `gym` / `build_app`.
 #
 # - `manageAppVersionAndBuildNumber: false` prevents `xcodebuild` from bumping
@@ -82,6 +90,10 @@ end.freeze
 COMMON_EXPORT_OPTIONS = { manageAppVersionAndBuildNumber: false }.freeze
 
 TEST_SCHEME = 'WooCommerce'
+
+# Naming the device, deployment target and app stops scan from running `xcodebuild -showBuildSettings`, which resolves every Swift package.
+CI_SIMULATOR_DEVICE = 'iPhone 17 Pro'
+CI_DEPLOYMENT_TARGET = xcconfig_value('Common.xcconfig', 'IPHONEOS_DEPLOYMENT_TARGET')
 
 CONCURRENT_SIMULATORS = 2
 
@@ -152,8 +164,6 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
   'zh-tw' => 'zh-Hant'
 }.freeze
 
-ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
-
 CODE_SIGNING_STORAGE_OPTIONS = {
   storage_mode: 's3',
   s3_bucket: 'a8c-fastlane-match',
@@ -182,9 +192,8 @@ before_all do |lane|
   # Check for Release Toolkit updates
   check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
 
-  # Check that the env files exist
+  # Check that the env file exists
   UI.user_error!("~/.wcios-env.default not found: Please copy env/user.env-example to #{USER_ENV_FILE_PATH} and fill in the values") unless is_ci || File.file?(USER_ENV_FILE_PATH)
-  UI.user_error!('project.env not found: Make sure your configuration is up to date with `rake dependencies`') unless File.file?(PROJECT_ENV_FILE_PATH)
 
   setup_ci
 end
@@ -194,7 +203,6 @@ platform :ios do
   # Environment
   ########################################################################
   Dotenv.load(USER_ENV_FILE_PATH)
-  Dotenv.load(PROJECT_ENV_FILE_PATH)
 
   ########################################################################
   # Release Lanes
@@ -711,7 +719,7 @@ platform :ios do
     UI.success("Successfully downloaded and committed latest translations for #{release_version_current}")
   end
 
-  # Finalizes a release by bumping version number, removing branch protection, closing milestone,
+  # Finalizes a release by bumping version number, closing milestone,
   # and triggering the final release build on CI
   #
   # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
@@ -745,11 +753,6 @@ platform :ios do
     trigger_release_build(branch_to_build: "release/#{version}")
 
     create_backmerge_pr
-
-    remove_branch_protection(
-      repository: GITHUB_REPO,
-      branch: "release/#{version}"
-    )
 
     # Close milestone
     begin
@@ -872,13 +875,8 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads for distribution to the App Store'
   lane :build_and_upload_to_app_store_connect do |options|
-    unless options[:skip_prechecks]
-      # Verify that there's nothing in progress in the working copy
-      ensure_git_status_clean unless is_ci
-
-      ios_build_preflight(derived_data_path: DERIVED_DATA_DIR)
-      xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    end
+    # Verify that there's nothing in progress in the working copy
+    ensure_git_status_clean unless is_ci
 
     ensure_sentry_installed
 
@@ -889,15 +887,15 @@ platform :ios do
 
     build_for_app_store_connect
 
-    sentry_upload_dsym(
+    sentry_debug_files_upload(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
       org_slug: 'a8c',
       project_slug: 'woocommerce-ios',
-      dsym_path: File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.app.dSYM.zip')
+      path: [File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.app.dSYM.zip')]
     )
     sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
-    archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
+    archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xcarchive.zip')
     zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
     version = options[:beta_release] ? build_code_current : release_version_current
@@ -912,7 +910,7 @@ platform :ios do
     sh("rm #{archive_zip_path}")
 
     upload_to_testflight(
-      api_key_path: ASC_KEY_PATH,
+      api_key: app_store_connect_api_key,
       # Wait 2 hours for the build to process then time out
       wait_processing_timeout_duration: 7200,
       changelog: File.read(RELEASE_NOTES_PATH),
@@ -932,7 +930,7 @@ platform :ios do
       scheme: 'WooCommerce',
       workspace: WORKSPACE_PATH,
       clean: true,
-      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      export_team_id: APP_STORE_TEAM_ID,
       export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
     )
   end
@@ -952,7 +950,6 @@ platform :ios do
   desc 'Builds and uploads a prototype build (Enterprise distribution)'
   lane :build_and_upload_prototype_build do
     ensure_sentry_installed
-    xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
     build_for_prototype_build
 
@@ -969,11 +966,11 @@ platform :ios do
       groups: FIREBASE_TESTERS_GROUP
     )
 
-    sentry_upload_dsym(
+    sentry_debug_files_upload(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
       org_slug: 'a8c',
-      project_slug: 'woocommerce-ios',
-      dsym_path: './build/WooCommerce.app.dSYM.zip'
+      project_slug: 'woocommerce-ios-alpha',
+      path: ['./build/WooCommerce.app.dSYM.zip']
     )
 
     next if pull_request_number.nil?
@@ -1006,7 +1003,7 @@ platform :ios do
       # so we need to keep it unchanged; we still update the `VERSION_LONG` (build number) to make it easy to associate it with the right PR and commit in Firebase.
       xcargs: { BUILD_CODE_KEY => build_number }.compact,
       output_directory: 'build',
-      export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),
+      export_team_id: ENTERPRISE_TEAM_ID,
       export_options: {
         **COMMON_EXPORT_OPTIONS,
         method: 'enterprise',
@@ -1017,15 +1014,16 @@ platform :ios do
 
   desc 'Build for Testing'
   lane :build_for_testing do |device: nil, ios_version: nil| # with nil, Fastlane will find the first best compatible match
-    xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-
     run_tests(
       workspace: WORKSPACE_PATH,
       scheme: TEST_SCHEME,
       derived_data_path: DERIVED_DATA_DIR,
+      buildlog_path: File.join(FASTLANE_DIR, 'logs'),
       build_for_testing: true,
-      device: device,
-      deployment_target_version: ios_version
+      app_name: TEST_SCHEME,
+      device: device || CI_SIMULATOR_DEVICE,
+      deployment_target_version: ios_version || CI_DEPLOYMENT_TARGET,
+      disallow_xcodebuild_settings_lookup: true
     )
   end
 
@@ -1052,7 +1050,7 @@ platform :ios do
       overwrite_screenshots: true, # won't have effect if `skip_screenshots` is true
       phased_release: true,
       precheck_include_in_app_purchases: false,
-      api_key_path: ASC_KEY_PATH,
+      api_key: app_store_connect_api_key,
       force: options[:skip_confirm],
       copyright: "© #{Time.now.year} WooCommerce"
     )
@@ -1063,22 +1061,17 @@ platform :ios do
   ########################################################################
   desc 'Build Screenshots'
   lane :build_screenshots do
-    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    xcversion
-
     scan(
       workspace: WORKSPACE_PATH,
       scheme: SCREENSHOTS_SCHEME,
       build_for_testing: true,
+      xcargs: 'APP_DISPLAY_NAME=Woo',
       derived_data_path: DERIVED_DATA_DIR
     )
   end
 
   desc 'Take Screenshots'
   lane :take_screenshots do |options|
-    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    xcversion
-
     # By default, clear previous screenshots
     languages = IOS_LOCALES
 
@@ -1093,7 +1086,7 @@ platform :ios do
     UI.message("Creating screenshots for #{languages} on #{devices}")
 
     # Erase the simulator between runs in order to get everything back to a default state
-    rebuild_screenshot_devices
+    rebuild_screenshot_devices(devices: devices)
 
     capture_ios_screenshots(
       scheme: SCREENSHOTS_SCHEME,
@@ -1113,21 +1106,33 @@ platform :ios do
       # Output the simulator logs for debugging
       buildlog_path: File.join(FASTLANE_DIR, 'logs'),
       output_simulator_logs: true,
-      result_bundle: true,
       namespace_log_files: true,
 
-      concurrent_simulators: true,
+      # The xcodebuild log records only that the app "crashed in <external symbol>"; the crash
+      # report itself lives in the result bundle. Written to
+      # `fastlane/screenshots/test_output/<language>/<scheme>.xcresult`.
+      result_bundle: true,
+
+      # Boot one simulator at a time so the Accessibility subsystem has enough
+      # headroom to come up — under concurrent boots it times out ("Timed out
+      # waiting for AX loaded notification") and the test runner fails to init.
+      concurrent_simulators: false,
 
       # Explicitly set the iOS version to ensure we match the created simulators
-      ios_version: SIMULATOR_VERSION,
+      ios_version: latest_ios_simulator_runtime.version,
 
       # Erase the simulator prior to booting the app
       erase_simulator: true,
 
-      # Retry a few times if something is a little flaky
-      number_of_retries: 3,
+      # Retry a few times if something is a little flaky. The known flake here is a slow
+      # "snapshot of accessibility hierarchy" on the iOS 26.x simulator, where WebKit and
+      # WebCore both register `UIAccessibilityLoaderWebShared` — the duplicate class makes AX
+      # queries intermittently time out. The app itself is fine; the retries usually absorb it,
+      # but a locale can still occasionally fail. Xcode 26.6 (#17484) did not fix it, so retry
+      # generously — a re-run is otherwise needed whenever a single locale trips the timeout.
+      number_of_retries: 6,
 
-      # But fail completely after those 3 retries
+      # But fail completely after those retries
       stop_after_first_error: true,
 
       # Allow the caller to invoke dark mode
@@ -1148,18 +1153,20 @@ platform :ios do
   end
 
   desc 'Rebuild Screenshot Devices'
-  lane :rebuild_screenshot_devices do
-    require 'simctl'
+  lane :rebuild_screenshot_devices do |options|
+    devices = Array(options.fetch(:devices, SCREENSHOT_DEVICES)).flat_map { |device| device.split(',') }.map(&:strip)
+    devices &= SCREENSHOT_DEVICES
+    UI.user_error!("Unable to run on devices: \"#{devices}\"") if devices.empty?
+    runtime = latest_ios_simulator_runtime
 
     SimCtl.list_devices.each do |device|
-      next unless SCREENSHOT_DEVICES.include? device.name
+      next unless devices.include? device.name
 
       puts "Deleting #{device.name} because it already exists."
       device.delete
     end
 
-    SCREENSHOT_DEVICES.each do |device|
-      runtime = SimCtl.runtime(name: "iOS #{SIMULATOR_VERSION}")
+    devices.each do |device|
       devicetype = SimCtl.devicetype(name: device)
 
       SimCtl.create_device(device, devicetype, runtime)
@@ -1168,8 +1175,6 @@ platform :ios do
 
   desc 'Create Screenshot Summary'
   lane :create_screenshot_summary do
-    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    xcversion
     fastlane_require 'snapshot'
 
     # Provide enough information to bootstrap the configuration and generate the HTML report
@@ -1393,24 +1398,18 @@ platform :ios do
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
   lane :update_certs_and_profiles_enterprise do |readonly: true|
-    if readonly
-      # In readonly mode, we can use the API key
-      api_key_path = ASC_KEY_PATH
-    else
+    unless readonly
       # The Enterprise account APIs do not support authentication via API key.
       # If we want to modify data (readonly = false) we need to authenticate manually.
       prompt_user_for_app_store_connect_credentials
-      # We also need to pass no API key path, otherwise Fastlane will give
-      # precedence to that authentication mode.
-      api_key_path = nil
     end
 
     sync_code_signing(
       type: 'enterprise',
-      team_id: get_required_env('INT_EXPORT_TEAM_ID'),
+      team_id: ENTERPRISE_TEAM_ID,
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: api_key_path,
+      api_key: nil,
       **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
@@ -1422,10 +1421,10 @@ platform :ios do
   lane :update_certs_and_profiles_app_store do |readonly: true|
     sync_code_signing(
       type: 'appstore',
-      team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      team_id: APP_STORE_TEAM_ID,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: ASC_KEY_PATH,
+      api_key: app_store_connect_api_key,
       **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
@@ -1433,11 +1432,6 @@ platform :ios do
   ########################################################################
   # Helper Lanes
   ########################################################################
-  desc 'Run release preflight checks'
-  lane :release_preflight do
-    configure_validate
-  end
-
   # Generates the `.strings` file to be imported by GlotPress, by parsing source code (using `genstrings` under the hood).
   #
   #
@@ -1451,6 +1445,7 @@ platform :ios do
     ios_generate_strings_file_from_code(
       paths: [
         'WooCommerce/',
+        'Modules/Sources/StoreDesignSystem/',
         'Modules/Sources/WordPress*/',
         'Modules/Sources/PointOfSale/',
         'Modules/Sources/WPMediaPicker/',
@@ -1564,10 +1559,19 @@ lane :test_without_building do |options|
   # At the time of writing with Xcode 14.3, we need to explicitly set this value despite using test plans that configure parallelism.
   parallel_testing_value = options[:name] == 'UITests'
 
+  # On Xcode 27 CI images, simulator diagnostics collection after a test run hangs until
+  # its 600 s timeout, even when all tests pass.
+  xcargs = '-collect-test-diagnostics never'
+
   run_tests(
     workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
-    device: options[:device],
+    app_name: TEST_SCHEME,
+    derived_data_path: DERIVED_DATA_DIR,
+    device: options[:device] || CI_SIMULATOR_DEVICE,
+    deployment_target_version: CI_DEPLOYMENT_TARGET,
+    skip_package_dependencies_resolution: true,
+    disallow_xcodebuild_settings_lookup: true,
     ensure_devices_found: true,
     force_quit_simulator: true,
     parallel_testing: parallel_testing_value,
@@ -1576,7 +1580,8 @@ lane :test_without_building do |options|
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,
-    output_types: 'junit'
+    output_types: 'junit',
+    xcargs: xcargs
   )
 end
 
@@ -1880,4 +1885,15 @@ def report_milestone_error(error_title:)
   UI.error(error_message)
 
   buildkite_annotate(style: 'warning', context: 'error-with-milestone', message: error_message) if is_ci
+end
+
+# The newest iOS simulator runtime available on the machine, used to build and target the
+# screenshot devices. Resolved dynamically so it tracks whatever Xcode CI runs on, rather than
+# a hardcoded version that silently breaks screenshots whenever `.xcode-version` moves.
+def latest_ios_simulator_runtime
+  require 'simctl'
+
+  SimCtl::Runtime.latest(:ios).tap do |runtime|
+    UI.user_error!('No iOS simulator runtime is available on this machine.') if runtime.nil?
+  end
 end

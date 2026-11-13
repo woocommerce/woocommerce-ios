@@ -1,4 +1,4 @@
-
+import Synchronization
 import XCTest
 import Nimble
 
@@ -84,7 +84,7 @@ extension XCTestCase {
     /// XCTAssertEquals("expected_value", value)
     /// ```
     ///
-    public func waitFor<ValueType>(file: StaticString = #file,
+    public func waitFor<ValueType>(file: StaticString = #filePath,
                                    line: UInt = #line,
                                    timeout: TimeInterval = 5.0,
                                    awaiting: @escaping (_ promise: (@escaping (ValueType) -> Void)) throws -> Void) rethrows -> ValueType {
@@ -110,10 +110,11 @@ extension XCTestCase {
     }
 
     /// Async/await version of `waitFor`, as `XCTWaiter.wait(for:timeout:)` does not support concurrency in `waitFor`.
-    public func waitForAsync<ValueType>(file: StaticString = #file,
+    @MainActor
+    public func waitForAsync<ValueType>(file: StaticString = #filePath,
                                         line: UInt = #line,
                                         timeout: TimeInterval = 5.0,
-                                        awaiting: @escaping (_ promise: (@escaping (ValueType) -> Void)) async throws -> Void)
+                                        awaiting: @escaping @MainActor (_ promise: (@escaping (ValueType) -> Void)) async throws -> Void)
     async rethrows -> ValueType {
         let exp = expectation(description: "Expect promise to be called.")
 
@@ -126,10 +127,42 @@ extension XCTestCase {
         // `awaiting` is executed in a task closure so that the function can return whenever the expectation
         // is fulfilled before `awaiting` completes.
         Task { @MainActor in
-            try await awaiting(promise)
+            do {
+                try await awaiting(promise)
+            } catch {
+                XCTFail("`awaiting` threw an error: \(error)", file: file, line: line)
+            }
         }
 
         await fulfillment(of: [exp], timeout: timeout)
         return receivedValue!
+    }
+
+    /// Calls `body` with a `@Sendable` completion and returns the value passed to it.
+    /// Fails the test if the completion is not called within `timeout`.
+    ///
+    /// Example usage:
+    ///
+    /// ```
+    /// let result: Result<Site, Error> = try await waitForCompletion { completion in
+    ///     store.onAction(WordPressSiteAction.fetchSiteInfo(siteURL: siteURL, completion: completion))
+    /// }
+    /// ```
+    ///
+    @MainActor
+    public func waitForCompletion<ValueType: Sendable>(file: StaticString = #filePath,
+                                                     line: UInt = #line,
+                                                     timeout: TimeInterval = 5.0,
+                                                     _ body: (_ completion: @escaping @Sendable (ValueType) -> Void) -> Void) async throws -> ValueType {
+        let exp = expectation(description: "Expect completion to be called.")
+
+        let receivedValue = Mutex<ValueType?>(nil)
+        body { value in
+            receivedValue.withLock { $0 = value }
+            exp.fulfill()
+        }
+
+        await fulfillment(of: [exp], timeout: timeout)
+        return try XCTUnwrap(receivedValue.withLock { $0 }, file: file, line: line)
     }
 }

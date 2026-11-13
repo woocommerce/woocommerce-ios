@@ -113,9 +113,9 @@ extension POSFontStyle {
     // these helpers directly without going through the SwiftUI View modifier path.
     func baseSize(for scale: POSLayoutScale) -> CGFloat {
         switch scale {
-        case .tablet:
+        case .regular:
             return tabletBaseSize
-        case .phone:
+        case .compact:
             return phoneBaseSize
         }
     }
@@ -258,7 +258,7 @@ extension UIContentSizeCategory {
 #if DEBUG
 #Preview {
     ScrollView {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.large) {
             Group {
                 Text("Heading Bold")
                     .font(.posHeadingBold)
@@ -302,7 +302,7 @@ extension UIContentSizeCategory {
                     .font(.posButtonSymbolLarge)
             }
         }
-        .padding()
+        .posPadding(\.medium)
     }
 }
 #endif

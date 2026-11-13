@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel = PointOfSaleCardPresentPaymentReconnectingMessageViewModel()
     private let cancelReconnection: () -> Void
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    @State private var width: CGFloat = 0
     @State private var isCancelling = false
 
     init(cancelReconnection: @escaping () -> Void) {
@@ -13,22 +13,22 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
                 .frame(width: Constants.spinnerDimension, height: Constants.spinnerDimension)
 
             Spacer()
-                .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing))
+                .frame(height: dynamicSpacing(metrics.spacing.large))
 
             Text(viewModel.title)
                 .font(.posHeadingBold)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
-                .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
+                .padding(.horizontal, metrics.padding.xxLarge)
 
             Spacer()
-                .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing))
+                .frame(height: dynamicSpacing(metrics.spacing.xxLarge))
 
             Button {
                 isCancelling = true
@@ -38,12 +38,9 @@ struct PointOfSaleCardPresentPaymentReconnectingMessageView: View {
                     .minimumScaleFactor(1)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isCancelling))
-            .frame(width: width * 0.5)
+            .posStatusButtonsWidth()
         }
         .frame(maxWidth: .infinity)
-        .measureWidth({ containerWidth in
-            width = containerWidth
-        })
         .multilineTextAlignment(.center)
         .onAppear {
             isCancelling = false

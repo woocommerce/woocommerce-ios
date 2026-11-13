@@ -21,10 +21,6 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        rootView.onContactSupportTapped = { [weak self] in
-            self?.showContactSupportForm()
-        }
-
         rootView.onChatWithSupportTapped = { [weak self] in
             self?.showSupportChat()
         }
@@ -34,15 +30,8 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func showContactSupportForm() {
-        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(
-            attachments: buildTroubleshootingAttachment()
-        ))
-        supportController.show(from: self)
-    }
-
     private func showSupportChat() {
-        var viewModelHolder: SupportChatViewModel?
+        weak var viewModelHolder: SupportChatViewModel?
         let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
             self?.navigationController?.popViewController(animated: true)
             self?.handleContactHumanSupport(chatID: chatID,
@@ -50,7 +39,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
                                             supportAreaInfo: supportAreaInfo,
                                             entryPoint: entryPoint,
                                             hasReceivedBotResponse: hasReceivedBotResponse,
-                                            onTicketCreated: { [weak viewModelHolder] in
+                                            onTicketCreated: {
                                                 viewModelHolder?.markChatTicketCreated()
                                             })
         }
@@ -71,6 +60,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
             additionalAttachmentsProvider: { [weak self] in
                 self?.buildTroubleshootingAttachment() ?? []
             },
+            mobileStatusReportProvider: MobileStatusReportProvider(),
             onTicketCreated: onTicketCreated
         )
         supportEscalationCoordinator?.handleEscalation(chatID: chatID,
@@ -100,9 +90,6 @@ struct PreLoginConnectivityToolView: View {
 
     @ObservedObject var viewModel: PreLoginConnectivityToolViewModel
 
-    /// Closure invoked when the "Contact Support" button is tapped.
-    var onContactSupportTapped: (() -> Void)?
-
     /// Closure invoked when the AI-backed "Contact Support" button is tapped.
     var onChatWithSupportTapped: (() -> Void)?
 
@@ -127,12 +114,6 @@ struct PreLoginConnectivityToolView: View {
             if viewModel.showChatButton {
                 Button(Localization.contactSupport) {
                     onChatWithSupportTapped?()
-                }
-                .buttonStyle(SecondaryButtonStyle())
-                .padding()
-            } else if viewModel.showContactSupportButton {
-                Button(Localization.contactSupport) {
-                    onContactSupportTapped?()
                 }
                 .buttonStyle(SecondaryButtonStyle())
                 .padding()

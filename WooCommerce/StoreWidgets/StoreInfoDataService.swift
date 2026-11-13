@@ -10,6 +10,7 @@ import WooFoundationCore
 
 /// Orchestrator class that fetches store stats for the widget and the Watch app.
 ///
+@MainActor
 final class StoreInfoDataService {
 
     /// Date-range parameters required to fetch a snapshot of store stats.
@@ -19,7 +20,7 @@ final class StoreInfoDataService {
     /// for the widget's user-facing options live below; the Watch app uses `today()` directly
     /// via `fetchTodayStats(for:)`.
     ///
-    struct DateRange {
+    struct DateRange: Sendable {
         let orderStatsGranularity: StatsGranularityV4
         let orderStatsQuantity: Int
         let earliestDateToInclude: Date
@@ -30,7 +31,7 @@ final class StoreInfoDataService {
         /// preceding" — week-to-date / month-to-date use a calendar-aligned previous window.
         let previousPeriodOverride: PreviousPeriodOverride?
 
-        struct PreviousPeriodOverride {
+        struct PreviousPeriodOverride: Sendable {
             let earliestDateToInclude: Date
             let latestDateToInclude: Date
         }
@@ -54,7 +55,7 @@ final class StoreInfoDataService {
 
     /// Data extracted from networking types.
     ///
-    struct Stats {
+    struct Stats: Sendable {
         let revenue: Decimal
         let netRevenue: Decimal
         let averageOrderValue: Decimal
@@ -71,7 +72,7 @@ final class StoreInfoDataService {
         var ordersSeries: [IntervalPoint] = []
         var itemsSoldSeries: [IntervalPoint] = []
 
-        struct IntervalPoint: Equatable {
+        struct IntervalPoint: Equatable, Sendable {
             let date: Date
             let value: Double
         }
@@ -85,7 +86,7 @@ final class StoreInfoDataService {
     /// widget render. When the previous-period fetch fails, `previous` is `nil` and the
     /// metric cells fall back to rendering without the trend badge.
     ///
-    struct StatsPeriod {
+    struct StatsPeriod: Sendable {
         let current: Stats
         let previous: Stats?
     }
@@ -151,7 +152,7 @@ final class StoreInfoDataService {
 #if canImport(Networking)
     /// Fetches the store's general settings and extracts currency formatting settings.
     ///
-    func fetchGeneralSettings(siteID: Int64) async throws -> CurrencySettings {
+    func fetchGeneralSettings(siteID: Int64) async throws -> sending CurrencySettings {
         let siteSettings = try await fetchGeneralSiteSettings(for: siteID)
         guard let currencySettings = CurrencySettings.completeSettings(siteSettings: siteSettings) else {
             throw GeneralSettingsError.incompleteCurrencySettings
@@ -491,7 +492,7 @@ private extension StoreInfoDataService {
     func fetchGeneralSiteSettings(for siteID: Int64) async throws -> [SiteSetting] {
         try await withCheckedThrowingContinuation { continuation in
             let siteSettingsRemote = SiteSettingsRemote(network: network)
-            siteSettingsRemote.loadGeneralSettings(for: siteID) { settings, error in
+            siteSettingsRemote.loadGeneralSettings(for: siteID) { @Sendable settings, error in
                 if let settings {
                     continuation.resume(returning: settings)
                     return
@@ -507,17 +508,14 @@ private extension StoreInfoDataService {
     ///
     func fetchRevenueAndOrders(for storeID: Int64, dateRange: DateRange) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in
-            // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
-            Task { @MainActor in
-                orderStatsRemoteV4.loadOrderStats(for: storeID,
-                                                  unit: dateRange.orderStatsGranularity,
-                                                  timeZone: dateRange.timezone,
-                                                  earliestDateToInclude: dateRange.earliestDateToInclude,
-                                                  latestDateToInclude: dateRange.latestDateToInclude,
-                                                  quantity: dateRange.orderStatsQuantity,
-                                                  forceRefresh: true) { result in
-                    continuation.resume(with: result)
-                }
+            orderStatsRemoteV4.loadOrderStats(for: storeID,
+                                              unit: dateRange.orderStatsGranularity,
+                                              timeZone: dateRange.timezone,
+                                              earliestDateToInclude: dateRange.earliestDateToInclude,
+                                              latestDateToInclude: dateRange.latestDateToInclude,
+                                              quantity: dateRange.orderStatsQuantity,
+                                              forceRefresh: true) { @Sendable result in
+                continuation.resume(with: result)
             }
         }
     }
@@ -526,13 +524,10 @@ private extension StoreInfoDataService {
     ///
     func fetchVisitors(for storeID: Int64, dateRange: DateRange) async throws -> SiteSummaryStats {
         try await withCheckedThrowingContinuation { continuation in
-            // `WKWebView` is accessed internally, we are forced to dispatch the call in the main thread.
-            Task { @MainActor in
-                siteStatsRemote.loadSiteSummaryStats(for: storeID,
-                                                     period: dateRange.summaryStatsPeriod,
-                                                     includingDate: dateRange.latestDateToInclude) { result in
-                    continuation.resume(with: result)
-                }
+            siteStatsRemote.loadSiteSummaryStats(for: storeID,
+                                                 period: dateRange.summaryStatsPeriod,
+                                                 includingDate: dateRange.latestDateToInclude) { @Sendable result in
+                continuation.resume(with: result)
             }
         }
     }

@@ -22,9 +22,7 @@ public struct DotcomRequest: Request, RESTRequestConvertible {
     ///
     public let path: String
 
-    /// Parameters
-    ///
-    let parameters: [String: Any]?
+    let requestParameters: RequestParameters
 
     /// HTTP Headers
     let headers: [String: String]
@@ -35,6 +33,22 @@ public struct DotcomRequest: Request, RESTRequestConvertible {
     /// Whether this request should be transformed to a REST request if application password is available.
     ///
     private let availableAsRESTRequest: Bool
+
+    private init(wordpressApiVersion: WordPressAPIVersion,
+                 method: HTTPMethod,
+                 path: String,
+                 requestParameters: RequestParameters,
+                 headers: [String: String]? = nil,
+                 encoding: ParameterEncoding = URLEncoding.default,
+                 availableAsRESTRequest: Bool) {
+        self.wordpressApiVersion = wordpressApiVersion
+        self.method = method
+        self.path = path
+        self.requestParameters = requestParameters
+        self.headers = headers ?? [:]
+        self.encoding = encoding
+        self.availableAsRESTRequest = availableAsRESTRequest
+    }
 
     /// Initializer.
     ///
@@ -49,16 +63,46 @@ public struct DotcomRequest: Request, RESTRequestConvertible {
     public init(wordpressApiVersion: WordPressAPIVersion,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any]? = nil,
+         parameters: RequestParameterDictionary? = nil,
          headers: [String: String]? = nil,
          encoding: ParameterEncoding = URLEncoding.default) {
-        self.wordpressApiVersion = wordpressApiVersion
-        self.method = method
-        self.path = path
-        self.parameters = parameters
-        self.headers = headers ?? [:]
-        self.encoding = encoding
-        self.availableAsRESTRequest = false
+        self.init(wordpressApiVersion: wordpressApiVersion,
+                  method: method,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  headers: headers,
+                  encoding: encoding,
+                  availableAsRESTRequest: false)
+    }
+
+    public init<Value: RequestParameterValueConvertible>(wordpressApiVersion: WordPressAPIVersion,
+         method: HTTPMethod,
+         path: String,
+         parameters: [String: Value],
+         headers: [String: String]? = nil,
+         encoding: ParameterEncoding = URLEncoding.default) {
+        self.init(wordpressApiVersion: wordpressApiVersion,
+                  method: method,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  headers: headers,
+                  encoding: encoding,
+                  availableAsRESTRequest: false)
+    }
+
+    public init(wordpressApiVersion: WordPressAPIVersion,
+         method: HTTPMethod,
+         path: String,
+         parameters: RequestParameterConvertibleDictionary,
+         headers: [String: String]? = nil,
+         encoding: ParameterEncoding = URLEncoding.default) {
+        self.init(wordpressApiVersion: wordpressApiVersion,
+                  method: method,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  headers: headers,
+                  encoding: encoding,
+                  availableAsRESTRequest: false)
     }
 
     /// Initializer.
@@ -75,7 +119,7 @@ public struct DotcomRequest: Request, RESTRequestConvertible {
     public init(wordpressApiVersion: WordPressAPIVersion,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any]? = nil,
+         parameters: RequestParameterDictionary? = nil,
          headers: [String: String]? = nil,
          encoding: ParameterEncoding = URLEncoding.default,
          availableAsRESTRequest: Bool) throws {
@@ -83,13 +127,53 @@ public struct DotcomRequest: Request, RESTRequestConvertible {
             throw DotcomRequestError.apiVersionCannotBeAccessedUsingRESTAPI
         }
 
-        self.wordpressApiVersion = wordpressApiVersion
-        self.method = method
-        self.path = path
-        self.parameters = parameters
-        self.headers = headers ?? [:]
-        self.encoding = encoding
-        self.availableAsRESTRequest = availableAsRESTRequest
+        self.init(wordpressApiVersion: wordpressApiVersion,
+                  method: method,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  headers: headers,
+                  encoding: encoding,
+                  availableAsRESTRequest: availableAsRESTRequest)
+    }
+
+    public init<Value: RequestParameterValueConvertible>(wordpressApiVersion: WordPressAPIVersion,
+         method: HTTPMethod,
+         path: String,
+         parameters: [String: Value],
+         headers: [String: String]? = nil,
+         encoding: ParameterEncoding = URLEncoding.default,
+         availableAsRESTRequest: Bool) throws {
+        if availableAsRESTRequest && !wordpressApiVersion.isWPOrgEndpoint {
+            throw DotcomRequestError.apiVersionCannotBeAccessedUsingRESTAPI
+        }
+
+        self.init(wordpressApiVersion: wordpressApiVersion,
+                  method: method,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  headers: headers,
+                  encoding: encoding,
+                  availableAsRESTRequest: availableAsRESTRequest)
+    }
+
+    public init(wordpressApiVersion: WordPressAPIVersion,
+         method: HTTPMethod,
+         path: String,
+         parameters: RequestParameterConvertibleDictionary,
+         headers: [String: String]? = nil,
+         encoding: ParameterEncoding = URLEncoding.default,
+         availableAsRESTRequest: Bool) throws {
+        if availableAsRESTRequest && !wordpressApiVersion.isWPOrgEndpoint {
+            throw DotcomRequestError.apiVersionCannotBeAccessedUsingRESTAPI
+        }
+
+        self.init(wordpressApiVersion: wordpressApiVersion,
+                  method: method,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  headers: headers,
+                  encoding: encoding,
+                  availableAsRESTRequest: availableAsRESTRequest)
     }
 
     /// Returns a URLRequest instance representing the current WordPress.com Request.
@@ -97,7 +181,7 @@ public struct DotcomRequest: Request, RESTRequestConvertible {
     public func asURLRequest() throws -> URLRequest {
         let dotcomURL = URL(string: Settings.wordpressApiBaseURL + wordpressApiVersion.path + path)!
         let dotcomRequest = try URLRequest(url: dotcomURL, method: method, headers: .init(headers))
-        return try encoding.encode(dotcomRequest, with: parameters)
+        return try encoding.encode(dotcomRequest, with: requestParameters.validatedAlamofireParameters())
     }
 
     public func responseDataValidator() -> ResponseDataValidator {
@@ -127,7 +211,7 @@ public struct DotcomRequest: Request, RESTRequestConvertible {
                            wooApiVersion: .none,
                            method: method,
                            path: wordpressApiVersion.path + pathWithoutSiteInfo,
-                           parameters: parameters)
+                           parameters: requestParameters.dictionary)
     }
 }
 

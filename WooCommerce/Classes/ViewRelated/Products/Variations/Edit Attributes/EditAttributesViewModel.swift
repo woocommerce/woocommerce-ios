@@ -19,6 +19,19 @@ final class EditAttributesViewModel {
     ///
     private let stores: StoresManager
 
+    /// True when the screen was opened from the variations screen, where only the attributes used for variations are listed.
+    /// The variations screen is the only one that allows variation creation.
+    ///
+    var isVariationsFlow: Bool {
+        allowVariationCreation
+    }
+
+    /// Attributes listed on the screen
+    ///
+    private var listedAttributes: [ProductAttribute] {
+        isVariationsFlow ? product.attributesForVariations : product.attributes
+    }
+
     /// Datasource for the product attributes table view
     ///
     var attributes: [ImageAndTitleAndTextTableViewCell.ViewModel] = []
@@ -29,7 +42,9 @@ final class EditAttributesViewModel {
         allowVariationCreation
     }
 
-    init(product: Product, allowVariationCreation: Bool, stores: StoresManager = ServiceLocator.stores) {
+    init(product: Product,
+         allowVariationCreation: Bool,
+         stores: StoresManager = ServiceLocator.stores) {
         self.product = product
         self.allowVariationCreation = allowVariationCreation
         self.stores = stores
@@ -56,7 +71,7 @@ extension EditAttributesViewModel {
     /// Returns the underlying `ProductAttribute` that fuels an `attributes` type  at the given index.
     ///
     func productAttributeAtIndex(_ index: Int) -> ProductAttribute {
-        return product.attributesForVariations[index]
+        return listedAttributes[index]
     }
 
     /// Generates all missing variations for a product. Up to 100 variations.
@@ -74,11 +89,39 @@ private extension EditAttributesViewModel {
 
     /// Creates an array of `ImageAndTitleAndTextTableViewCell.ViewModel` based on the `product.attributes`
     func createAttributeViewModels() -> [ImageAndTitleAndTextTableViewCell.ViewModel] {
-        product.attributesForVariations.map { attribute in
-            ImageAndTitleAndTextTableViewCell.ViewModel(title: attribute.name,
-                                                        text: attribute.options.joined(separator: ", "),
-                                                        numberOfLinesForTitle: 0,
-                                                        numberOfLinesForText: 0)
+        listedAttributes.map { attribute in
+            let text = [attribute.options.joined(separator: ", "), labels(for: attribute)]
+                .filter { $0.isNotEmpty }
+                .joined(separator: "\n")
+            return ImageAndTitleAndTextTableViewCell.ViewModel(title: attribute.name,
+                                                               text: text,
+                                                               numberOfLinesForTitle: 0,
+                                                               numberOfLinesForText: 0)
         }
+    }
+
+    /// "Used for variations" and "Hidden" labels of an attribute, shown outside the variations flow.
+    /// Only variable products use attributes for variations.
+    ///
+    func labels(for attribute: ProductAttribute) -> String {
+        guard !isVariationsFlow else {
+            return ""
+        }
+        let labels = [
+            product.productType.isVariable && attribute.variation ? Localization.usedForVariations : nil,
+            attribute.visible ? nil : Localization.hidden
+        ]
+        return labels.compactMap { $0 }.joined(separator: " · ")
+    }
+}
+
+private extension EditAttributesViewModel {
+    enum Localization {
+        static let usedForVariations = NSLocalizedString("editAttributesViewModel.usedForVariations",
+                                                         value: "Used for variations",
+                                                         comment: "Label of a product attribute that is used for variations")
+        static let hidden = NSLocalizedString("editAttributesViewModel.hidden",
+                                              value: "Hidden",
+                                              comment: "Label of a product attribute that is not visible on the product page")
     }
 }

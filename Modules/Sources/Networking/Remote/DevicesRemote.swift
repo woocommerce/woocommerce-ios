@@ -3,7 +3,7 @@ import Foundation
 
 /// Devices: Remote Endpoints (Push Notifications Registration / Unregistration!)
 ///
-public class DevicesRemote: Remote {
+public class DevicesRemote: Remote, @unchecked Sendable {
 
     /// Registers a device for Push Notifications Delivery.
     ///
@@ -82,16 +82,16 @@ public class DevicesRemote: Remote {
                                                        deviceLocale: String,
                                                        appVersion: String,
                                                        availableAsRESTRequest: Bool = false) async throws -> Int64 {
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.origin: applicationID,
             ParameterKeys.token: device.token,
             ParameterKeys.platform: Values.platform,
             ParameterKeys.deviceLocale: deviceLocale,
-            ParameterKeys.metadata: [
+            ParameterKeys.metadata: RequestParameterValue.dictionary([
                 ParameterKeys.applicationVersion: appVersion,
                 ParameterKeys.deviceModel: device.model,
                 ParameterKeys.deviceOSVersion: device.iOSVersion
-            ]
+            ])
         ]
 
         if let deviceUUID = device.identifierForVendor {

@@ -2,7 +2,7 @@ import Foundation
 
 /// Authenticated Requests Credentials
 ///
-public enum Credentials: Codable, Equatable {
+public enum Credentials: Codable, Equatable, Sendable {
 
     // Keys
     private static let wpcomType = "AuthenticationType.wpcom"

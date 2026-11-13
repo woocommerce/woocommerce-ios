@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 
 /// Main View Model for the Analytics Hub.
 ///
+@MainActor
 final class AnalyticsHubViewModel: ObservableObject {
 
     let siteID: Int64
@@ -309,7 +310,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Request stats data from network
     /// - Parameter cards: Optionally limit the request to only the stats needed for a given set of cards.
     ///
-    @MainActor
     func updateData(for cards: [AnalyticsCard.CardType]? = nil) async {
         let cardsNeedingData = cards ?? enabledCards
         do {
@@ -336,7 +336,6 @@ final class AnalyticsHubViewModel: ObservableObject {
 // MARK: Networking
 private extension AnalyticsHubViewModel {
 
-    @MainActor
     func retrieveData(for cards: [AnalyticsCard.CardType]) async throws {
         let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
@@ -381,7 +380,6 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    @MainActor
     func retrieveOrderStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
         isLoadingOrderStats = true
         defer {
@@ -403,7 +401,6 @@ private extension AnalyticsHubViewModel {
         self.previousOrderStats = allStats?.previousPeriodStats
     }
 
-    @MainActor
     func retrieveItemsSoldStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async {
         isLoadingItemsSoldStats = true
         defer {
@@ -417,7 +414,6 @@ private extension AnalyticsHubViewModel {
         self.itemsSoldStats = try? await itemsSoldRequest
     }
 
-    @MainActor
     func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async {
         isJetpackStatsDisabled = false // Reset optimistically in case stats were enabled
         isLoadingSiteStats = true
@@ -439,7 +435,6 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    @MainActor
     func retrieveBundleStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
         isLoadingBundleStats = true
         defer {
@@ -465,7 +460,6 @@ private extension AnalyticsHubViewModel {
         self.bundlesSoldStats = allStats?.bundlesSold
     }
 
-    @MainActor
     func retrieveGiftCardStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
         isLoadingGiftCardStats = true
         defer {
@@ -487,7 +481,6 @@ private extension AnalyticsHubViewModel {
         self.previousGiftCardStats = allStats?.previousPeriodStats
     }
 
-    @MainActor
     func retrieveStats(timeZone: TimeZone,
                        earliestDateToInclude: Date,
                        latestDateToInclude: Date,
@@ -506,7 +499,6 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    @MainActor
     /// Retrieves top ItemsSold stats using the `retrieveTopEarnerStats` action but without saving results into storage.
     ///
     func retrieveTopItemsSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> TopEarnerStats? {
@@ -526,7 +518,6 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    @MainActor
     /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
     ///
     func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
@@ -547,7 +538,6 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    @MainActor
     /// Retrieves product bundle stats using the `retrieveProductBundleStats` action.
     ///
     func retrieveBundleStats(timeZone: TimeZone,
@@ -568,7 +558,6 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    @MainActor
     /// Retrieves top bundles sold stats using the `retrieveTopProductBundles` action.
     ///
     func retrieveTopBundlesSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> [ProductsReportItem] {
@@ -584,7 +573,6 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    @MainActor
     /// Retrieves gift card stats using the `retrieveUsedGiftCardStats` action.
     ///
     func retrieveGiftCardStats(timeZone: TimeZone,
@@ -616,7 +604,6 @@ private extension AnalyticsHubViewModel {
 // MARK: Data - UI mapping
 private extension AnalyticsHubViewModel {
 
-    @MainActor
     func switchToErrorState() {
         self.currentOrderStats = nil
         self.previousOrderStats = nil
@@ -688,7 +675,6 @@ extension AnalyticsHubViewModel {
     /// Load analytics card settings from storage
     /// Defaults to all enabled cards in default order if no customized settings are stored.
     ///
-    @MainActor
     func loadAnalyticsCardSettings() async {
         // In focused-card mode we render a single card and don't touch persisted customisation.
         guard focusedCard == nil else { return }

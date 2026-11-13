@@ -4,6 +4,7 @@ import Yosemite
 
 /// SyncingCoordinatorDelegate: Delegate that's expected to provide Sync'ing Services per Page.
 ///
+@MainActor
 protocol SyncingCoordinatorDelegate: AnyObject {
 
     /// The receiver is expected to synchronize the pageNumber. On completion, it should indicate if the sync was
@@ -18,6 +19,7 @@ protocol SyncingCoordinatorDelegate: AnyObject {
 
 /// SyncingCoordinatorProtocol: Used for providing mocks in testing
 ///
+@MainActor
 protocol SyncingCoordinatorProtocol: AnyObject {
     func ensureNextPageIsSynchronized(lastVisibleIndex: Int)
     func resynchronize(reason: String?, onCompletion: (() -> Void)?)
@@ -31,6 +33,7 @@ protocol SyncingCoordinatorProtocol: AnyObject {
 /// Sync'ing of first page isn't really handled. Reason is: the first page of each collection must always be fresh,
 /// and the Sync OP is (usually) explicitly made in `viewWillAppear`. This may change in a future update, though!
 ///
+@MainActor
 class SyncingCoordinator: SyncingCoordinatorProtocol {
 
     /// Default Settings

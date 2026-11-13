@@ -7,12 +7,22 @@ struct CartViewHelper {
             return nil
         }
         return String.pluralize(itemsCount,
-                                singular: "%1$d item",
-                                plural: "%1$d items")
+                                singular: Localization.itemCountSingular,
+                                plural: Localization.itemCountPlural)
     }
 
-    func shouldPreventCartEditing(orderState: PointOfSaleOrderState,
-                                  paymentState: PointOfSalePaymentState) -> Bool {
+    private enum Localization {
+        static let itemCountSingular = NSLocalizedString(
+            "pos.cart.itemCount.singular", value: "%1$d item",
+            comment: "Number of items in the cart when there is one item. %1$d is the number of items."
+        )
+        static let itemCountPlural = NSLocalizedString(
+            "pos.cart.itemCount.plural", value: "%1$d items",
+            comment: "Number of items in the cart when there are multiple items. %1$d is the number of items."
+        )
+    }
+
+    func shouldPreventCartEditing(paymentState: PointOfSalePaymentState) -> Bool {
         guard paymentState.card.allowsCartEditing else {
             return true
         }
@@ -24,8 +34,7 @@ struct CartViewHelper {
         // re-edit an order that's already been paid.
         if paymentState.cash != .idle { return true }
         if paymentState.scanToPay != .idle { return true }
-        if paymentState.markAsPaid != .idle { return true }
-        return orderState.isSyncing
+        return paymentState.markAsPaid != .idle
     }
 
     func shouldShowClearCartButton(cart: Cart, orderStage: PointOfSaleOrderStage) -> Bool {
@@ -56,13 +65,13 @@ private extension PointOfSaleCardPaymentState {
         case .processingPayment,
                 .paymentError,
                 .cardPaymentSuccessful,
-                .validatingOrder,
-                .preparingReader,
                 .cardInserted:
             return false
         case .idle,
+                .validatingOrder,
                 .validatingOrderError,
                 .paymentIntentCreationError,
+                .preparingReader,
                 .acceptingCard:
             return true
         }
@@ -79,6 +88,45 @@ enum CouponRowState: Equatable {
 }
 
 extension CartViewHelper {
+    /// Coupons never discount custom amounts (order fees), so the custom amount rows warn
+    /// about it at checkout — but only for whole-cart coupons ("x% off" / "$x off cart"),
+    /// where a merchant could expect the custom amount to be included, and only once the
+    /// order response shows the coupon actually produced a discount.
+    func shouldShowCustomAmountDiscountNotAppliedNote(
+        orderStage: PointOfSaleOrderStage,
+        orderState: PointOfSaleOrderState,
+        cart: Cart
+    ) -> Bool {
+        guard orderStage == .finalizing,
+              case .loaded(let totals) = orderState else {
+            return false
+        }
+
+        let discountingCoupons = totals.couponsTotals.filter(\.hasDiscount)
+        guard discountingCoupons.isNotEmpty else {
+            return false
+        }
+
+        return cart.coupons.contains { coupon in
+            coupon.appliesToWholeCart && discountingCoupons.contains { $0.matches(code: coupon.code) }
+        }
+    }
+
+    /// Positively marks the cart rows the order response shows as discounted, whatever the
+    /// discount's source — a product-restricted coupon, a whole-cart coupon, or a plugin.
+    func shouldShowItemDiscountedNote(
+        orderStage: PointOfSaleOrderStage,
+        orderState: PointOfSaleOrderState,
+        cartItem: Cart.PurchasableItem
+    ) -> Bool {
+        guard orderStage == .finalizing,
+              case .loaded(let totals) = orderState else {
+            return false
+        }
+
+        return totals.discountedCartItemIDs.contains(cartItem.id)
+    }
+
     func couponRowState(
         orderStage: PointOfSaleOrderStage,
         orderState: PointOfSaleOrderState,
@@ -93,7 +141,7 @@ extension CartViewHelper {
             return .validating
         case .loaded(let totals):
             if let couponTotal = totals.couponsTotals
-                .first(where: { $0.code == couponItem.code }) {
+                .first(where: { $0.matches(code: couponItem.code) }) {
                     return .valid(couponTotal)
                 } else {
                     return .idle
@@ -103,5 +151,13 @@ extension CartViewHelper {
         default:
             return .idle
         }
+    }
+}
+
+private extension PointOfSaleCouponTotal {
+    /// WooCommerce treats coupon codes as case-insensitive, and the code in the order
+    /// response may be cased differently from the one the merchant added to the cart.
+    func matches(code: String) -> Bool {
+        self.code.caseInsensitiveCompare(code) == .orderedSame
     }
 }

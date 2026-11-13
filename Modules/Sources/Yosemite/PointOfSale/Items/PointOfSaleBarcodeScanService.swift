@@ -8,7 +8,8 @@ import enum Networking.NetworkError
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
-public protocol PointOfSaleBarcodeScanServiceProtocol {
+@MainActor
+public protocol PointOfSaleBarcodeScanServiceProtocol: Sendable {
     func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem
 }
 
@@ -27,6 +28,7 @@ public enum PointOfSaleBarcodeScanError: Error {
 }
 
 /// Service for handling barcode scanning in Point of Sale
+@MainActor
 public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
     private let productsRemote: ProductsRemoteProtocol
     private let siteID: Int64

@@ -4,6 +4,7 @@ import enum WooFoundationCore.WooAnalyticsStat
 
 /// Delegate track events to the paired counterpart using the `WCSession`
 ///
+@MainActor
 final class WatchTracksProvider: NSObject, ObservableObject {
 
     /// Store events that could not be sent when the because was not active

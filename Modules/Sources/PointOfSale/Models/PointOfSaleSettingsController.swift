@@ -11,20 +11,29 @@ import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSettingsService
 
+@MainActor
 protocol POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
+    var paymentsViewModel: POSSettingsPaymentsViewModel { get }
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel? { get }
     var isLocalCatalogEligible: Bool { get }
+
+    /// Owns receipt-printer discovery and connection. `nil` when the printer feature flag is off,
+    /// which also hides the Receipt printers section in hardware settings.
+    var printerConnectionController: POSPrinterConnectionController? { get }
 }
 
+@MainActor
 @Observable final class PointOfSaleSettingsController: POSSettingsControllerProtocol {
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
 
     let storeViewModel: POSSettingsStoreViewModel
+    let paymentsViewModel: POSSettingsPaymentsViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     let isLocalCatalogEligible: Bool
+    let printerConnectionController: POSPrinterConnectionController?
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
@@ -35,13 +44,16 @@ protocol POSSettingsControllerProtocol {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
-         receiptSettingsAdminURL: String) {
+         receiptSettingsAdminURL: String,
+         analytics: POSAnalyticsProviding,
+         printerConnectionController: POSPrinterConnectionController? = nil) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
                                                         defaultSiteName: defaultSiteName,
                                                         siteSettings: siteSettings,
                                                         receiptSettingsAdminURL: receiptSettingsAdminURL)
+        self.paymentsViewModel = POSSettingsPaymentsViewModel(analytics: analytics)
         self.isLocalCatalogEligible = isLocalCatalogEligible
 
         if let catalogSyncCoordinator, let grdbManager {
@@ -53,6 +65,8 @@ protocol POSSettingsControllerProtocol {
         } else {
             self.localCatalogViewModel = nil
         }
+
+        self.printerConnectionController = printerConnectionController
 
         observeCardReader(from: cardPresentPaymentService)
     }
@@ -74,6 +88,7 @@ protocol POSSettingsControllerProtocol {
 }
 
 #if DEBUG
+@MainActor
 final class POSSettingsPreviewController: POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? = CardPresentPaymentCardReader(
         name: "WisePad 3",
@@ -88,16 +103,36 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
                                                                               siteSettings: [],
                                                                               receiptSettingsAdminURL: "")
 
+    var paymentsViewModel = POSSettingsPaymentsViewModel(paymentSettings: POSPaymentSettingsPreviewService(),
+                                                         analytics: EmptyPOSAnalytics())
+
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
+
+    var printerConnectionController: POSPrinterConnectionController?
 
     var isLocalCatalogEligible: Bool {
         localCatalogViewModel != nil
+    }
+
+    static func withPrinter() -> POSSettingsPreviewController {
+        let controller = POSSettingsPreviewController()
+        controller.printerConnectionController = POSPrinterConnectionController(service: POSReceiptPrinterPreviewService(), analytics: EmptyPOSAnalytics())
+        return controller
     }
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
         return .empty
+    }
+}
+
+/// Keeps the setting in memory so previews don't write to the device's app settings.
+final class POSPaymentSettingsPreviewService: POSPaymentSettingsServiceProtocol {
+    private(set) var isPaymentSuccessSoundEnabled = true
+
+    func setPaymentSuccessSoundEnabled(_ isEnabled: Bool) {
+        isPaymentSuccessSoundEnabled = isEnabled
     }
 }
 

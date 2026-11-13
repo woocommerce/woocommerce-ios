@@ -158,24 +158,21 @@ extension AnalyticsItemsSoldViewModel {
 ///
 extension AnalyticsTopPerformersCard {
     init(statsViewModel: AnalyticsProductsStatsCardViewModel, itemsViewModel: AnalyticsItemsSoldViewModel) {
-        // Header with stats
-        self.title = statsViewModel.title
-        self.statTitle = statsViewModel.itemsSoldTitle
-        self.statValue = statsViewModel.itemsSold
-        self.delta = statsViewModel.delta.string
-        self.deltaBackgroundColor = statsViewModel.delta.direction.deltaBackgroundColor
-        self.deltaTextColor = statsViewModel.delta.direction.deltaTextColor
-        self.isStatsRedacted = statsViewModel.isRedacted
-        self.showStatsError = statsViewModel.showStatsError
-        self.statsErrorMessage = statsViewModel.statsErrorMessage
-        self.reportViewModel = statsViewModel.reportViewModel
-
-        // Top performers list
-        self.topPerformersTitle = statsViewModel.title
-        self.topPerformersData = itemsViewModel.itemsSoldData
-        self.isTopPerformersRedacted = itemsViewModel.isRedacted
-        self.showTopPerformersError = itemsViewModel.showItemsSoldError
-        self.topPerformersErrorMessage = itemsViewModel.itemsSoldErrorMessage
+        self.init(title: statsViewModel.title,
+                  statTitle: statsViewModel.itemsSoldTitle,
+                  statValue: statsViewModel.itemsSold,
+                  delta: statsViewModel.delta.string,
+                  deltaBackgroundColor: statsViewModel.delta.direction.deltaBackgroundColor,
+                  deltaTextColor: statsViewModel.delta.direction.deltaTextColor,
+                  isStatsRedacted: statsViewModel.isRedacted,
+                  showStatsError: statsViewModel.showStatsError,
+                  statsErrorMessage: statsViewModel.statsErrorMessage,
+                  topPerformersTitle: statsViewModel.title,
+                  topPerformersData: itemsViewModel.itemsSoldData,
+                  isTopPerformersRedacted: itemsViewModel.isRedacted,
+                  showTopPerformersError: itemsViewModel.showItemsSoldError,
+                  topPerformersErrorMessage: itemsViewModel.itemsSoldErrorMessage,
+                  reportViewModel: statsViewModel.reportViewModel)
     }
 }
 

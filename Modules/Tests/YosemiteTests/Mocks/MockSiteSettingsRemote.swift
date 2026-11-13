@@ -18,6 +18,7 @@ final class MockSiteSettingsRemote: SiteSettingsRemoteProtocol {
     var spyUpdateAnalyticsScheduledImportSiteID: Int64?
     var spyUpdateAnalyticsScheduledImportValue: String?
 
+    @MainActor
     func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool {
         setFeatureCalled = true
         spySetFeatureSiteID = siteID

@@ -35,7 +35,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="sS9-NB-PXk" secondAttribute="bottom" id="JkO-0b-Jzs"/>
                 <constraint firstItem="sS9-NB-PXk" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="fXW-b1-HLm"/>
                 <constraint firstItem="sS9-NB-PXk" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" priority="750" id="nga-3k-xEb"/>
-                <constraint firstItem="sS9-NB-PXk" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="vF6-rm-FG5"/>
+                <constraint firstItem="sS9-NB-PXk" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="vF6-rm-FG5"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="84.375"/>
         </view>

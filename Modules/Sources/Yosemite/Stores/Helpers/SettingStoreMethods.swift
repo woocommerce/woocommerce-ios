@@ -5,17 +5,20 @@ import Storage
 /// SettingStoreMethods extracts functionality of SettingStore that needs be reused within Yosemite
 /// SettingStoreMethods is intentionally internal not to be exposed outside the module
 ///
-internal protocol SettingStoreMethodsProtocol {
-    func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void)
-    func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void)
-    func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void)
+internal protocol SettingStoreMethodsProtocol: Sendable {
+    func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping @Sendable (Error?) -> Void)
+    func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping @Sendable (Error?) -> Void)
+    func retrieveSiteAPI(siteID: Int64,
+                         detectUnexpectedResponses: Bool,
+                         includeRoutes: Bool,
+                         onCompletion: @escaping @Sendable (Result<SiteAPI, Error>) -> Void)
     // periphery:ignore
     func retrievePointOfSaleSettings(siteID: Int64) async throws -> [SiteSetting]
-    func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void)
-    func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void)
-    func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void)
-    func enableAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void)
-    func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void)
+    func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void)
+    func enableCouponSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void)
+    func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void)
+    func enableAnalyticsSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void)
+    func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<TaxBasedOnSetting, Error>) -> Void)
     func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool
     func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType
     func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws
@@ -23,7 +26,9 @@ internal protocol SettingStoreMethodsProtocol {
     func updateAnalyticsImportUpdateMode(siteID: Int64, value: AnalyticsImportUpdateMode) async throws
 }
 
-internal class SettingStoreMethods: SettingStoreMethodsProtocol {
+/// The remote completions capture `self` strongly on purpose. Callers wait for these completions in continuations,
+/// so each completion must be called even if the store is released during a request.
+internal final class SettingStoreMethods: SettingStoreMethodsProtocol {
     private let siteSettingsRemote: SiteSettingsRemote
     private let siteAPIRemote: SiteAPIRemote
     private let storageManager: StorageManagerType
@@ -38,14 +43,14 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
 
     /// Synchronizes the general site settings associated with the provided Site ID (if any!).
     ///
-    func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] settings, error in
+    func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping @Sendable (Error?) -> Void) {
+        siteSettingsRemote.loadGeneralSettings(for: siteID) { settings, error in
             guard let settings else {
                 onCompletion(error)
                 return
             }
 
-            self?.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+            self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
                 onCompletion(nil)
             }
         }
@@ -53,14 +58,14 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
 
     /// Synchronizes the product site settings associated with the provided Site ID (if any!).
     ///
-    func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] settings, error in
+    func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping @Sendable (Error?) -> Void) {
+        siteSettingsRemote.loadProductSettings(for: siteID) { settings, error in
             guard let settings else {
                 onCompletion(error)
                 return
             }
 
-            self?.upsertStoredProductSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+            self.upsertStoredProductSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
                 onCompletion(nil)
             }
         }
@@ -69,8 +74,13 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Retrieves the site API information associated with the provided Site ID (if any!).
     /// This call does NOT persist returned data into the Storage layer.
     ///
-    func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
-        siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
+    func retrieveSiteAPI(siteID: Int64,
+                         detectUnexpectedResponses: Bool = false,
+                         includeRoutes: Bool = false,
+                         onCompletion: @escaping @Sendable (Result<SiteAPI, Error>) -> Void) {
+        siteAPIRemote.loadAPIInformation(for: siteID, detectUnexpectedResponses: detectUnexpectedResponses,
+                                         includeRoutes: includeRoutes,
+                                         completion: onCompletion)
     }
 
     /// Retrieves Point of Sale settings
@@ -82,9 +92,8 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
 
     /// Retrieves the setting for whether coupons are enabled for the specified store
     ///
-    func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons) { [weak self] result in
-            guard let self else { return }
+    func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void) {
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -99,9 +108,8 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
 
     /// Enables coupons for the specified store
     ///
-    func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        siteSettingsRemote.updateSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons, value: SettingValue.yes) { [weak self] result in
-            guard let self else { return }
+    func enableCouponSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        siteSettingsRemote.updateSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons, value: SettingValue.yes) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -115,9 +123,8 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
 
     /// Retrieves the setting for whether WC Analytics are enabled for the specified store
     ///
-    func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .advanced, settingID: SettingKeys.analytics) { [weak self] result in
-            guard let self else { return }
+    func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void) {
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .advanced, settingID: SettingKeys.analytics) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -125,35 +132,33 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
                     onCompletion(.success(isEnabled))
                 }
             case .failure(let error):
-                onCompletion(.failure(error))
+                onCompletion(.failure(Self.mapUnexposedSettingError(error)))
             }
         }
     }
 
     /// Enables WC Analytics for the specified store
     ///
-    func enableAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func enableAnalyticsSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
         siteSettingsRemote.updateSetting(for: siteID,
                                             settingGroup: .advanced,
                                             settingID: SettingKeys.analytics,
-                                            value: SettingValue.yes) { [weak self] result in
-            guard let self else { return }
+                                            value: SettingValue.yes) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
                     onCompletion(.success(Void()))
                 }
             case .failure(let error):
-                onCompletion(.failure(error))
+                onCompletion(.failure(Self.mapUnexposedSettingError(error)))
             }
         }
     }
 
     /// Retrieves the used address to calculate the tax
     ///
-    func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void) {
-        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .custom("tax"), settingID: SettingKeys.taxBasedOn) { [weak self] result in
-            guard let self else { return }
+    func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping @Sendable (Result<TaxBasedOnSetting, Error>) -> Void) {
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .custom("tax"), settingID: SettingKeys.taxBasedOn) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -240,7 +245,7 @@ private extension SettingStoreMethods {
     /// Updates (OR Inserts) the specified **general** ReadOnly `SiteSetting` Entities **in a background thread**. `onCompletion` will be called
     /// on the main thread!
     ///
-    func upsertStoredGeneralSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+    func upsertStoredGeneralSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             self?.upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.general)
         }, completion: onCompletion, on: .main)
@@ -249,7 +254,7 @@ private extension SettingStoreMethods {
     /// Updates (OR Inserts) the specified **product** ReadOnly `SiteSetting` entities **in a background thread**. `onCompletion` will be called
     /// on the main thread!
     ///
-    func upsertStoredProductSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+    func upsertStoredProductSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             self?.upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.product)
         }, completion: onCompletion, on: .main)
@@ -258,7 +263,7 @@ private extension SettingStoreMethods {
     /// Updates (OR Inserts) the specified **advanced** ReadOnly `SiteSetting` entities **in a background thread**. `onCompletion` will be called
     /// on the main thread!
     ///
-    func upsertStoredAdvancedSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+    func upsertStoredAdvancedSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             self?.upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.advanced)
         }, completion: onCompletion, on: .main)
@@ -291,7 +296,7 @@ private extension SettingStoreMethods {
     ///
     /// Doesn't remove other settings
     ///
-    func upsertSingleStoredSettingInBackground(siteID: Int64, readOnlySiteSetting: Networking.SiteSetting, onCompletion: @escaping () -> Void) {
+    func upsertSingleStoredSettingInBackground(siteID: Int64, readOnlySiteSetting: Networking.SiteSetting, onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             self?.upsertSingleSetting(readOnlySiteSetting, in: storage, siteID: siteID)
         }, completion: onCompletion, on: .main)
@@ -346,5 +351,24 @@ extension SettingStoreMethods {
 
     private enum SettingValue {
         static let yes = "yes"
+    }
+
+    private enum ErrorCode {
+        static let settingInvalid = "rest_setting_setting_invalid"
+    }
+
+    /// Maps the 404 a site returns for a setting missing from its REST settings API to `SettingError.settingNotExposed`.
+    /// The Jetpack tunnel surfaces it as an unknown `DotcomError`; direct REST as `NetworkError.notFound`.
+    ///
+    private static func mapUnexposedSettingError(_ error: Error) -> Error {
+        if case let .unknown(code, _, _)? = error as? DotcomError, code == ErrorCode.settingInvalid {
+            return SettingError.settingNotExposed
+        }
+        if let networkError = error as? NetworkError,
+           case .notFound = networkError,
+           networkError.errorCode == ErrorCode.settingInvalid {
+            return SettingError.settingNotExposed
+        }
+        return error
     }
 }

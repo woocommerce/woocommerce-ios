@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a component in a Composite Product
 ///
-public struct ProductCompositeComponent: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductCompositeComponent: Codable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     /// Component ID.
     public let componentID: String
 
@@ -53,7 +53,7 @@ public struct ProductCompositeComponent: Codable, Equatable, GeneratedCopiable, 
         let description = try container.decode(String.self, forKey: .description)
         let imageURL = try container.decode(String.self, forKey: .imageURL)
         let optionType = try container.decode(CompositeComponentOptionType.self, forKey: .optionType)
-        let optionIDs = try container.decode([Int64].self, forKey: .optionIDs)
+        let optionIDs = try container.decodeIfPresent([Int64].self, forKey: .optionIDs) ?? []
 
         // Default option ID can be Int or String.
         // The field value is an empty string if no default option is set.
@@ -86,7 +86,7 @@ private extension ProductCompositeComponent {
 
 /// Represents all query types for component options in a Composite product
 ///
-public enum CompositeComponentOptionType: String, Codable, GeneratedFakeable {
+public enum CompositeComponentOptionType: String, Codable, GeneratedFakeable, Sendable {
     case productIDs     = "product_ids"
     case categoryIDs    = "category_ids"
 }

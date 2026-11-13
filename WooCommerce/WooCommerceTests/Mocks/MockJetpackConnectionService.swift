@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class MockJetpackConnectionService: JetpackConnectionServiceProtocol {
     var establishSiteConnectionResult: Result<Void, Error> = .success(())
     private(set) var establishSiteConnectionCallCount = 0
@@ -18,6 +19,9 @@ final class MockJetpackConnectionService: JetpackConnectionServiceProtocol {
 
     var fetchConnectionDataResult: Result<JetpackConnectionData, Error>?
     private(set) var fetchConnectionDataCallCount = 0
+
+    var isJetpackInOfflineModeResult: Bool = false
+    private(set) var isJetpackInOfflineModeCallCount = 0
 
     func establishSiteConnection(siteURL: String) async throws {
         establishSiteConnectionCallCount += 1
@@ -46,5 +50,10 @@ final class MockJetpackConnectionService: JetpackConnectionServiceProtocol {
             throw NSError(domain: "MockJetpackConnectionService", code: 0, userInfo: [NSLocalizedDescriptionKey: "fetchConnectionDataResult not set"])
         }
         return try result.get()
+    }
+
+    func isJetpackInOfflineMode() async -> Bool {
+        isJetpackInOfflineModeCallCount += 1
+        return isJetpackInOfflineModeResult
     }
 }

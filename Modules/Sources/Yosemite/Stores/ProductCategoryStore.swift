@@ -116,7 +116,14 @@ private extension ProductCategoryStore {
                     onCompletion(.success(productCategory))
                 }
             case .failure(let error):
-                onCompletion(.failure(error))
+                switch error {
+                case DotcomError.unknown(code: Constants.termExistsErrorCode, message: _, data: _):
+                    onCompletion(.failure(ProductCategoryActionError.duplicateName))
+                case let networkError as NetworkError where networkError.errorCode == Constants.termExistsErrorCode:
+                    onCompletion(.failure(ProductCategoryActionError.duplicateName))
+                default:
+                    onCompletion(.failure(error))
+                }
             }
         }
     }
@@ -250,6 +257,8 @@ private extension ProductCategoryStore {
 //
 private extension ProductCategoryStore {
     enum Constants {
+        static let termExistsErrorCode = "term_exists"
+
         /// Max number allowed by the API to maximize our chances on getting all item in one request.
         ///
         static let defaultMaxPageSize = 100

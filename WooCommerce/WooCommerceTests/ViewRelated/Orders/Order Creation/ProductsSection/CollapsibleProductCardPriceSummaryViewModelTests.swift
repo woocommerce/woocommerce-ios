@@ -89,4 +89,19 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
         // Then
         assertEqual("$0.00", viewModel.priceBeforeDiscountsLabel)
     }
+
+    func test_priceBeforeDiscountsLabel_when_price_is_non_numeric_then_returns_dash() {
+        // Given
+        let price = "not-a-number"
+        let quantity: Decimal = 8
+
+        // When
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true,
+                                                                    isSubscriptionProduct: false,
+                                                                    quantity: quantity,
+                                                                    price: price)
+
+        // Then
+        assertEqual("-", viewModel.priceBeforeDiscountsLabel)
+    }
 }

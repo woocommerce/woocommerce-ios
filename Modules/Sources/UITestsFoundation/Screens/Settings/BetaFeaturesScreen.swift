@@ -4,6 +4,7 @@ import XCTest
 // This screen is currently unused. Given the purpose of UITestsFoundation is to provide developers
 // with an easy to use API to write tests, I'm going to keep the screen in the framework anyway, so
 // it'll be already available if someone needs to work with it or on it in the future.
+@MainActor
 public class BetaFeaturesScreen: ScreenObject {
 
     private let orderCreationGetter: (XCUIApplication) -> XCUIElement = {

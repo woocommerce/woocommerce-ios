@@ -165,6 +165,104 @@ struct QRLoginCoordinatorTests {
         #expect(nav.viewControllers.count == 2)
         #expect(spy.finishedCount == 0)
     }
+
+    @Test func camera_scan_installQR_then_drops_scanner_so_back_returns_to_prologue() {
+        // Given — a camera scanner on top of the prologue.
+        let (nav, spy, coordinator, scanner) = makeCameraCoordinatorWithScanner()
+
+        // When — an install-app QR is scanned, routing to the error screen.
+        coordinator.presentDeepLink(payload: .installQR)
+
+        // Then — the consumed scanner is dropped and the error sits on the
+        // prologue, so Back returns to the prologue, not a frozen scanner. (WOOMOB-3136)
+        #expect(nav.viewControllers.count == 2)
+        #expect(nav.viewControllers.contains { $0 === scanner } == false)
+        #expect(spy.analytics.steps.last == .qrError)
+    }
+
+    @Test func camera_scan_validQR_then_drops_scanner_so_cancel_returns_to_prologue() {
+        // Given — a camera scanner on top of the prologue.
+        let (nav, _, coordinator, scanner) = makeCameraCoordinatorWithScanner()
+
+        // When — a valid self-hosted QR is scanned, routing to the number-match host.
+        coordinator.presentDeepLink(payload: .selfHosted(token: Self.selfHostedToken,
+                                                         siteURL: URL(string: "https://example.com")!))
+
+        // Then — the consumed scanner is dropped, so cancelling the host returns
+        // to the prologue, not a frozen scanner. (WOOMOB-3136)
+        #expect(nav.viewControllers.count == 2)
+        #expect(nav.viewControllers.contains { $0 === scanner } == false)
+    }
+
+    @Test func prologue_when_reappears_then_reasserts_loginQR_flow_and_step_without_tracking() {
+        // Given — the prologue is shown, and a screen pushed on top of it (e.g. the
+        // site-address fallback) has since switched the shared flow to its own.
+        let nav = UINavigationController()
+        let spy = Spies()
+        let coordinator = makeCoordinator(mode: .camera, navigationController: nav, spies: spy)
+        coordinator.start()
+        let prologue = nav.viewControllers.first
+
+        // When — the merchant goes back and the prologue appears again.
+        prologue?.viewDidAppear(false)
+
+        // Then — `login_qr` + `qr_prologue` are re-set as state, with no extra step event.
+        #expect(spy.analytics.flows == [.loginQR, .loginQR])
+        #expect(spy.analytics.setSteps == [.qrPrologue])
+        #expect(spy.analytics.steps == [.qrPrologue])
+    }
+
+    @Test func error_screen_when_reappears_then_reasserts_loginQR_flow_and_qrError_step() {
+        // Given — the scan-error screen, which also offers the site-address fallback.
+        let nav = UINavigationController()
+        let spy = Spies()
+        let coordinator = makeCoordinator(mode: .deepLink(payload: .invalid), navigationController: nav, spies: spy)
+        coordinator.start()
+        let errorScreen = nav.viewControllers.last
+
+        // When
+        errorScreen?.viewDidAppear(false)
+
+        // Then
+        #expect(spy.analytics.flows == [.loginQR, .loginQR])
+        #expect(spy.analytics.setSteps == [.qrError])
+    }
+
+    @Test func magicLinkCallback_when_camera_mode_and_url_unhandled_then_returns_to_prologue_and_stays_alive() {
+        // Given — the prologue with the live flow's screen on top.
+        let nav = UINavigationController()
+        let spy = Spies()
+        let coordinator = makeCoordinator(mode: .camera, navigationController: nav, spies: spy)
+        coordinator.start()
+        let prologue = nav.viewControllers.first
+        nav.pushViewController(UIViewController(), animated: false)
+
+        // When — a callback without a token can't be handed off.
+        coordinator.handleMagicLinkCallback(URL(string: "woocommerce://magic-login?flow=login")!)
+
+        // Then — the merchant can retry from the prologue instead of being stranded.
+        #expect(nav.viewControllers.count == 1)
+        #expect(nav.viewControllers.first === prologue)
+        #expect(spy.finishedCount == 0)
+    }
+
+    @Test func magicLinkCallback_when_deepLink_mode_and_url_unhandled_then_exits_qr_surface_and_finishes() {
+        // Given — a deep-link host pushed on the existing login stack.
+        let loginRoot = UIViewController()
+        let nav = UINavigationController(rootViewController: loginRoot)
+        let spy = Spies()
+        let payload = QRLoginPayload.wpCom(token: "abc:def", encrypted: "blob")
+        let coordinator = makeCoordinator(mode: .deepLink(payload: payload), navigationController: nav, spies: spy)
+        coordinator.start()
+        #expect(nav.viewControllers.count == 2)
+
+        // When
+        coordinator.handleMagicLinkCallback(URL(string: "woocommerce://magic-login?flow=login")!)
+
+        // Then
+        #expect(nav.viewControllers == [loginRoot])
+        #expect(spy.finishedCount == 1)
+    }
 }
 
 // MARK: - Helpers
@@ -173,6 +271,19 @@ private extension QRLoginCoordinatorTests {
 
     /// A 64-char alphanumeric token, the minimum the self-hosted parser accepts.
     static let selfHostedToken = String(repeating: "a", count: 64)
+
+    /// Camera-mode coordinator with the prologue and a live scanner already
+    /// pushed — the starting point for the "drop the consumed scanner" tests.
+    func makeCameraCoordinatorWithScanner()
+    -> (nav: UINavigationController, spy: Spies, coordinator: QRLoginCoordinator, scanner: UIViewController?) {
+        let nav = UINavigationController()
+        let spy = Spies()
+        let coordinator = makeCoordinator(mode: .camera, navigationController: nav, spies: spy)
+        coordinator.start()
+        coordinator.showScanner()
+        #expect(nav.viewControllers.count == 2)
+        return (nav, spy, coordinator, nav.viewControllers.last)
+    }
 
     /// Bundles the injected coordinator callbacks + analytics so tests can spy
     /// on lifecycle and tracking without reaching into the coordinator.
@@ -209,10 +320,12 @@ private extension QRLoginCoordinatorTests {
 final class SpyQRLoginAnalytics: QRLoginAnalyticsTracking {
     private(set) var flows: [AuthenticatorAnalyticsTracker.Flow] = []
     private(set) var steps: [AuthenticatorAnalyticsTracker.Step] = []
+    private(set) var setSteps: [AuthenticatorAnalyticsTracker.Step] = []
     private(set) var clicks: [AuthenticatorAnalyticsTracker.ClickTarget] = []
     private(set) var failures: [String] = []
 
     func setFlow(_ flow: AuthenticatorAnalyticsTracker.Flow) { flows.append(flow) }
+    func setStep(_ step: AuthenticatorAnalyticsTracker.Step) { setSteps.append(step) }
     func trackStep(_ step: AuthenticatorAnalyticsTracker.Step) { steps.append(step) }
     func trackClick(_ click: AuthenticatorAnalyticsTracker.ClickTarget) { clicks.append(click) }
     func trackFailure(_ failure: String) { failures.append(failure) }

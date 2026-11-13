@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents Account Settings for Shipping Labels.
 ///
-public struct WooShippingAccountSettings: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingAccountSettings: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     public let storeOptions: ShippingLabelStoreOptions
     public let accountSettings: ShippingLabelAccountSettings
 

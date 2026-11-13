@@ -20,6 +20,11 @@ final class PaymentMethodsViewModel: ObservableObject {
     @Published private(set) var showPayWithCardRow = false
 
     @Published private(set) var showTapToPayRow = false
+    @Published private(set) var cardPaymentUnavailableMessage: String?
+
+    /// Defines if the card payment rows should be shown as loading while the order is checked for subscriptions.
+    ///
+    @Published private(set) var isCheckingCardPaymentEligibility = false
 
     /// Allows the onboarding flow to be presented before a card present payment when required
     ///
@@ -123,7 +128,9 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
-    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+    private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+    let countryRecovery: CardPresentPaymentCountryRecovery
+    private var countrySubscriptions = Set<AnyCancellable>()
 
     struct Dependencies {
         let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never>
@@ -135,6 +142,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         let orderDurationRecorder: OrderDurationRecorderProtocol
         let featureFlagService: FeatureFlagService
         let currencySettings: CurrencySettings
+        let siteSettings: SelectedSiteSettingsProtocol
 
         init(presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
@@ -144,17 +152,19 @@ final class PaymentMethodsViewModel: ObservableObject {
              cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil,
              orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
              featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-             currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+             currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+             siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings) {
             self.presentNoticeSubject = presentNoticeSubject
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
             self.stores = stores
             self.storage = storage
             self.analytics = analytics
-            let configuration = cardPresentPaymentsConfiguration ?? CardPresentConfigurationLoader(stores: stores).configuration
+            let configuration = cardPresentPaymentsConfiguration ?? CardPresentConfigurationLoader().configuration
             self.cardPresentPaymentsConfiguration = configuration
             self.orderDurationRecorder = orderDurationRecorder
             self.featureFlagService = featureFlagService
             self.currencySettings = currencySettings
+            self.siteSettings = siteSettings
         }
     }
 
@@ -179,12 +189,23 @@ final class PaymentMethodsViewModel: ObservableObject {
         stores = dependencies.stores
         storage = dependencies.storage
         analytics = dependencies.analytics
-        cardPresentPaymentsConfiguration = dependencies.cardPresentPaymentsConfiguration
+        countryRecovery = CardPresentPaymentCountryRecovery(siteID: siteID,
+                                                            configuration: dependencies.cardPresentPaymentsConfiguration,
+                                                            stores: dependencies.stores,
+                                                            settings: dependencies.siteSettings)
+        cardPresentPaymentsConfiguration = countryRecovery.configuration
         featureFlagService = dependencies.featureFlagService
         currencySettings = dependencies.currencySettings
         title = String(format: Localization.title, formattedTotal)
         cardPaymentGateway = nil
 
+        countryRecovery.objectWillChange.sink { [weak self] in
+            self?.objectWillChange.send()
+        }.store(in: &countrySubscriptions)
+        countryRecovery.$configuration.dropFirst().sink { [weak self] configuration in
+            self?.cardPresentPaymentsConfiguration = configuration
+            self?.updateCardPaymentVisibility()
+        }.store(in: &countrySubscriptions)
         bindStoreCPPState()
         updateCardPaymentVisibility()
         logOrderAndStoreCurrencyMismatch()
@@ -209,6 +230,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// Starts the collect payment flow in the provided `rootViewController`
     /// - parameter useCase: Assign a custom useCase object for testing purposes. If not provided `CollectOrderPaymentUseCase` will be used.
     ///
+    @MainActor
     func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
                         on rootViewController: UIViewController?,
                         useCase: CollectOrderPaymentProtocol? = nil,
@@ -290,7 +312,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             onCancel: {
                 // No tracking required because the flow remains on screen to choose other payment methods.
             },
-            onPaymentCompletion: {
+            onPaymentCompletion: { _ in
                 // No tracking required at present because it's handled internally.
             },
             onCompleted: { [weak self] in
@@ -451,6 +473,7 @@ private extension PaymentMethodsViewModel {
     }
 
     func updateCardPaymentVisibility() {
+        cardPaymentUnavailableMessage = nil
         guard cardPresentPaymentsConfiguration.isSupportedCountry else {
             showPayWithCardRow = false
             showTapToPayRow = false
@@ -460,9 +483,16 @@ private extension PaymentMethodsViewModel {
 
         tapToPayReaderSupported { [weak self] tapToPaySupportedByDevice in
             let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.tapToPay) ?? false
+            let updateCardPaymentRows: (Bool) -> Void = { [weak self] isEligible in
+                self?.showPayWithCardRow = isEligible
+                self?.showTapToPayRow = isEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
+            }
             self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
-                self?.showPayWithCardRow = orderIsEligible
-                self?.showTapToPayRow = orderIsEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
+                updateCardPaymentRows(orderIsEligible)
+                guard orderIsEligible else {
+                    return
+                }
+                self?.orderIsFreeOfSubscriptions(onCompletion: updateCardPaymentRows)
             }
         }
     }
@@ -479,13 +509,36 @@ private extension PaymentMethodsViewModel {
 
     private func orderIsEligibleForCardPresentPayment(onCompletion: @escaping (Bool) -> Void) {
         let action = OrderCardPresentPaymentEligibilityAction
-            .orderIsEligibleForCardPresentPayment(orderID: orderID,
-                                                  siteID: siteID,
-                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { result in
+            .checkEligibility(orderID: orderID,
+                              siteID: siteID,
+                              cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { [weak self] result in
                 switch result {
                 case .success(let eligibility):
-                    onCompletion(eligibility)
+                    if case let .unsupportedCurrency(currency) = eligibility {
+                        self?.cardPaymentUnavailableMessage = String(format: Localization.unsupportedOrderCurrency, currency)
+                    }
+                    onCompletion(eligibility == .eligible)
                 case .failure:
+                    onCompletion(false)
+                }
+            }
+
+        stores.dispatch(action)
+    }
+
+    /// Checks that the order wasn't sold as a subscription. Shows the card payment rows as loading meanwhile, and hides them
+    /// with an explanation when the check fails.
+    ///
+    private func orderIsFreeOfSubscriptions(onCompletion: @escaping (Bool) -> Void) {
+        isCheckingCardPaymentEligibility = true
+        let action = OrderCardPresentPaymentEligibilityAction
+            .checkOrderContainsSubscription(orderID: orderID, siteID: siteID) { [weak self] result in
+                self?.isCheckingCardPaymentEligibility = false
+                switch result {
+                case .success(let containsSubscription):
+                    onCompletion(!containsSubscription)
+                case .failure:
+                    self?.cardPaymentUnavailableMessage = Localization.subscriptionCheckFailed
                     onCompletion(false)
                 }
             }
@@ -587,6 +640,15 @@ private extension PaymentMethodsViewModel {
 
 private extension PaymentMethodsViewModel {
     enum Localization {
+        static let unsupportedOrderCurrency = NSLocalizedString(
+            "paymentMethods.cardPaymentsUnavailableForOrderCurrency",
+            value: "Card payments aren’t available for this order’s currency (%1$@).",
+            comment: "Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD.")
+        static let subscriptionCheckFailed = NSLocalizedString(
+            "paymentMethods.cardPaymentsSubscriptionCheckFailed",
+            value: "Couldn’t check whether this order can be paid by card. Please try again.",
+            comment: "Explains why card payment methods are hidden when checking whether the order contains a subscription failed.")
+
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for during payment.")
 

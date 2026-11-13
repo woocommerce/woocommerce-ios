@@ -5,15 +5,11 @@ struct SimpleProductCardView: View {
     private let product: POSSimpleProduct
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(\.posFeatureFlags) private var featureFlags
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
-    }
-
-    private var shouldShowProductLabels: Bool {
-        featureFlags.isFeatureFlagEnabled(.inventoryProductLabelsInPOS)
+        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
     }
 
     init(product: POSSimpleProduct) {
@@ -21,13 +17,13 @@ struct SimpleProductCardView: View {
     }
 
     var body: some View {
-        HStack(spacing: Constants.cardSpacing) {
+        HStack(spacing: metrics.spacing.none) {
             POSItemImageView(imageSource: product.productImageSource,
                              imageSize: dimension,
                              scale: 1)
             .frame(width: dimension, height: dimension)
 
-            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(product.name)
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .foregroundStyle(Constants.titleColor)
@@ -38,14 +34,9 @@ struct SimpleProductCardView: View {
                 Text(product.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
-
-                Text(POSStockFormatter.stockStatusLabel(for: product))
-                    .foregroundStyle(Constants.detailColor)
-                    .font(Constants.itemDetailFont)
-                    .renderedIf(shouldShowProductLabels)
             }
-            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            .padding(.horizontal, metrics.padding.medium * (1 / scale))
+            .padding(.vertical, metrics.padding.small * (1 / scale))
             Spacer()
         }
         .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)

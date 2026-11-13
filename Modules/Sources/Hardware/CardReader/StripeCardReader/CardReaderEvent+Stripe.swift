@@ -15,8 +15,10 @@ extension CardReaderEvent {
         switch displayMessage {
         case .removeCard:
             return .removeCardRequested(displayMessage.localizedMessage)
+        case .multipleContactlessCardsDetected:
+            return .displayMessage(.multipleContactlessCardsDetected(displayMessage.localizedMessage))
         default:
-            return .displayMessage(displayMessage.localizedMessage)
+            return .displayMessage(.generic(displayMessage.localizedMessage))
         }
     }
 }

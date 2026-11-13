@@ -2,7 +2,7 @@ import Foundation
 
 /// Used to filter orders by customer
 ///
-public struct CustomerFilter: Codable, Hashable {
+public struct CustomerFilter: Codable, Hashable, Sendable {
     public let id: Int64
     public let firstName: String?
     public let lastName: String?

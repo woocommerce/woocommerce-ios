@@ -9,6 +9,11 @@ struct SupportChatView: View {
 
     var body: some View {
         chatView
+            .sheet(item: $viewModel.storeAdminURL, onDismiss: {
+                Task { await viewModel.executeAction(.retryDiagnostics) }
+            }) { url in
+                AuthenticatableWebView(url: url)
+            }
             .background(Color(.listBackground))
             .navigationTitle(Localization.contactSupport)
             .navigationBarTitleDisplayMode(.inline)
@@ -80,6 +85,10 @@ struct SupportChatView: View {
 
     private var chatView: some View {
         VStack(spacing: 0) {
+            aiDisclosure
+
+            Divider()
+
             messageList
 
             if viewModel.hasCreatedTicket {
@@ -94,15 +103,33 @@ struct SupportChatView: View {
                 inputArea
             }
         }
-        .onAppear {
-            viewModel.showGreeting()
-            viewModel.resumeIfNeeded()
+        .task {
+            await viewModel.startIfNeeded()
         }
+    }
+
+    // MARK: - AI Disclosure
+
+    private var aiDisclosure: some View {
+        Text(Localization.aiDisclosure)
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(Color(.text))
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal)
+            .padding(.vertical, Layout.disclosureVerticalPadding)
+            .background(Color(.systemBackground))
     }
 
     // MARK: - Message List
 
     private var messageList: some View {
+        GeometryReader { geometry in
+            messageList(containerWidth: geometry.size.width)
+        }
+    }
+
+    private func messageList(containerWidth: CGFloat) -> some View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: SupportChatLayout.messageSpacing) {
@@ -110,7 +137,7 @@ struct SupportChatView: View {
                         resumedChatHeader
                     }
                     ForEach(viewModel.messages) { message in
-                        messageRow(for: message)
+                        messageRow(for: message, containerWidth: containerWidth)
                             .id(message.id)
                     }
 
@@ -122,7 +149,8 @@ struct SupportChatView: View {
                 .padding()
             }
             .scrollDismissesKeyboard(.immediately)
-            .onChange(of: viewModel.messages.count) { _, _ in
+            // Diagnostics results replace the progress message in place, so the count alone misses them.
+            .onChange(of: viewModel.messages.last) { _, _ in
                 scrollToBottom(proxy: proxy)
             }
             .onChange(of: viewModel.state) { _, newState in
@@ -136,12 +164,14 @@ struct SupportChatView: View {
         }
     }
 
+    /// - Parameter containerWidth: Width of the message list, which bubble widths are relative to.
     @ViewBuilder
-    private func messageRow(for message: SupportChatViewModel.ChatMessage) -> some View {
+    private func messageRow(for message: SupportChatViewModel.ChatMessage, containerWidth: CGFloat) -> some View {
+        let maxBubbleWidth = SupportChatLayout.maxBubbleWidth(in: containerWidth)
         switch message.content {
         case .text(let text):
             VStack(alignment: .leading, spacing: 4) {
-                SupportChatMessageRow(role: message.role, text: text, failed: message.failed)
+                SupportChatMessageRow(role: message.role, text: text, failed: message.failed, containerWidth: containerWidth)
 
                 if message.shouldShowFeedbackButtons, let messageID = message.messageID {
                     SupportChatFeedbackRow(
@@ -155,19 +185,23 @@ struct SupportChatView: View {
             }
 
         case .resolvedPrompt:
-            SupportChatMessageRow(role: message.role, text: message.content.text ?? "", failed: false)
+            SupportChatMessageRow(role: message.role, text: message.content.text ?? "", failed: false, containerWidth: containerWidth)
 
         case .issuePicker(let issues):
             issuePickerBubble(issues: issues)
+                .frame(maxWidth: maxBubbleWidth)
 
         case .diagnosticsProgress(let steps):
             diagnosticsProgressBubble(steps: steps)
+                .frame(maxWidth: maxBubbleWidth)
 
         case .diagnosticsSuccess:
             diagnosticsSuccessBubble()
+                .frame(maxWidth: maxBubbleWidth)
 
         case .diagnosticsFailure(let result):
             diagnosticsFailureBubble(result: result)
+                .frame(maxWidth: maxBubbleWidth)
         }
     }
 
@@ -192,7 +226,6 @@ struct SupportChatView: View {
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
-        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
 
     // MARK: - Diagnostics Progress Bubble
@@ -214,7 +247,6 @@ struct SupportChatView: View {
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
-        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
 
     // MARK: - Diagnostics Success Bubble
@@ -222,22 +254,40 @@ struct SupportChatView: View {
     private func diagnosticsSuccessBubble() -> some View {
         VStack(alignment: .leading, spacing: Layout.resultsSpacing) {
             HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color.green)
+                Image(systemName: viewModel.paymentDiagnosticsAreInconclusive ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                    .foregroundStyle(viewModel.paymentDiagnosticsAreInconclusive ? Color.orange : Color.green)
 
-                Text(Localization.allChecksPassed)
+                if let headline = viewModel.paymentDiagnosticHeadline {
+                    Text(headline)
+                        .font(.body.weight(.semibold))
+                        .accessibilityAddTraits(.isHeader)
+                } else {
+                    Text(Localization.allChecksPassed)
+                        .font(.body)
+                }
+            }
+
+            if let message = viewModel.paymentDiagnosticCompletionMessage {
+                Text(message)
                     .font(.body)
+                    .foregroundStyle(Color(.secondaryLabel))
             }
 
-            Button(Localization.continueToChat) {
-                viewModel.proceedToChat()
+            if let advisory = viewModel.paymentAdvisoryMessage {
+                Text(advisory)
+                    .font(.body)
+                    .foregroundStyle(Color(.secondaryLabel))
             }
-            .buttonStyle(SecondaryButtonStyle())
+
+            ForEach(viewModel.paymentResultActions, id: \.title) { action in
+                suggestedActionButton(action)
+            }
+
+            diagnosticContinuation
         }
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
-        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
 
     // MARK: - Diagnostics Failure Bubble
@@ -247,9 +297,11 @@ struct SupportChatView: View {
             HStack(alignment: .top, spacing: Layout.resultIconSpacing) {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundStyle(Color.red)
+                    .accessibilityHidden(true)
 
-                Text(result.test.title)
+                Text(result.headline ?? result.test.title)
                     .font(.body.weight(.semibold))
+                    .accessibilityAddTraits(.isHeader)
             }
 
             if let errorMessage = result.errorMessage {
@@ -259,25 +311,32 @@ struct SupportChatView: View {
             }
 
             if let action = result.suggestedAction {
-                Button {
-                    Task {
-                        await viewModel.executeAction(action)
-                    }
-                } label: {
-                    Label(action.title, systemImage: action.systemImage)
-                }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
+                suggestedActionButton(action)
             }
 
-            Button(Localization.continueToChat) {
-                viewModel.proceedToChat()
-            }
-            .buttonStyle(SecondaryButtonStyle())
+            diagnosticContinuation
         }
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
-        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
+    }
+
+    private func suggestedActionButton(_ action: SupportDiagnosticsService.Action) -> some View {
+        Button {
+            Task {
+                await viewModel.executeAction(action)
+            }
+        } label: {
+            Label(action.title, systemImage: action.systemImage)
+        }
+        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isExecutingAction))
+    }
+
+    private var diagnosticContinuation: some View {
+        Button(Localization.continueToChat) {
+            viewModel.proceedToChat()
+        }
+        .buttonStyle(SecondaryButtonStyle())
     }
 
     private func scrollToBottom(proxy: ScrollViewProxy) {
@@ -384,7 +443,9 @@ struct SupportChatView: View {
     private func sendMessageIfPossible() {
         guard canSendMessage else { return }
         isInputFocused = false
-        viewModel.sendMessage()
+        Task {
+            await viewModel.sendMessage()
+        }
     }
 }
 
@@ -396,6 +457,7 @@ private extension SupportChatView {
         static let progressSpacing: CGFloat = 8
         static let resultsSpacing: CGFloat = 12
         static let resultIconSpacing: CGFloat = 6
+        static let disclosureVerticalPadding: CGFloat = 8
     }
 
     enum Colors {
@@ -407,6 +469,11 @@ private extension SupportChatView {
 
 private extension SupportChatView {
     enum Localization {
+        static let aiDisclosure = NSLocalizedString(
+            "supportChatView.aiDisclosure",
+            value: "You’re chatting with AI from Woo Support.",
+            comment: "Line fixed at the top of the AI support chat that tells the merchant the replies come from an AI acting for Woo Support"
+        )
         static let placeholder = NSLocalizedString(
             "supportChatView.placeholder",
             value: "Type a message...",

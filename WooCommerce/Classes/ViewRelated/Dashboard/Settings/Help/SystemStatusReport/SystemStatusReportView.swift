@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Hosting controller wrapper for `SystemStatusReportView`
 ///
-final class SystemStatusReportHostingController: UIHostingController<SystemStatusReportView> {
+final class SystemStatusReportHostingController: TabBarHidingHostingController<SystemStatusReportView> {
 
     init(siteID: Int64) {
         let viewModel = SystemStatusReportViewModel(siteID: siteID)

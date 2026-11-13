@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents Shipping Label Destination Address that has been verified by the WooCommerce Shipping extension.
 ///
-public struct WooShippingVerifyDestinationAddressSuccess: Equatable {
+public struct WooShippingVerifyDestinationAddressSuccess: Equatable, Sendable {
     public let normalizedAddress: WooShippingNormalizedAddress
 
     /// Optional property -  We will receive this property in response only when the address is not already verified.

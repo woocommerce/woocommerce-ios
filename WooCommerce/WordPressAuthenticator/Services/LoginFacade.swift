@@ -94,16 +94,10 @@ public extension LoginFacade {
                                                                     userHandle: userHandle,
                                                                     success: { [weak self] accessToken in
             self?.delegate?.finishedLogin?(withNonceAuthToken: accessToken)
-            self?.trackSuccess()
         }, failure: { [weak self] error in
             WPAuthenticatorLogError("Failed to verify webauthn signature \(error)")
             WordPressAuthenticator.track(.loginFailed, error: error)
             self?.delegate?.displayRemoteError?(error)
         })
-    }
-
-    @objc
-    func trackSuccess() {
-        tracker.track(step: .success)
     }
 }

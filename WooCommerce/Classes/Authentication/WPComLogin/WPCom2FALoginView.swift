@@ -64,7 +64,7 @@ struct WPCom2FALoginView: View {
                     Text(title)
                         .largeTitleStyle()
                         .bold()
-                    Text(Localization.subtitleString)
+                    Text(viewModel.instructions ?? Localization.subtitleString)
                         .bodyStyle()
                 }
 
@@ -80,9 +80,11 @@ struct WPCom2FALoginView: View {
                     autocapitalization: .none
                 ))
                 .focused($isFieldFocused)
+                .renderedIf(!viewModel.isSecurityKeyMode)
 
                 Text(Localization.anotherFormText)
                     .bodyStyle()
+                    .renderedIf(viewModel.shouldShowOtherOptionsText)
 
                 // Text me a code button
                 Button(action: {
@@ -91,12 +93,28 @@ struct WPCom2FALoginView: View {
                     if viewModel.isRequestingOTP {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
-                        Label(Localization.textMeACode, systemImage: "platter.filled.top.iphone")
+                        Label(viewModel.textCodeButtonTitle(defaultTitle: Localization.textMeACode), systemImage: "platter.filled.top.iphone")
                             .linkStyle()
                     }
                 })
+                .disabled(viewModel.isLoggingIn)
+                .renderedIf(viewModel.shouldShowTextCodeOption)
 
-                if #available(iOS 16, *), viewModel.shouldEnableSecurityKeyOption {
+                if viewModel.shouldShowBackupCodeOption {
+                    Button {
+                        viewModel.useBackupCode()
+                        // In security key mode the code field only appears with this update, so focus it on the next run loop.
+                        DispatchQueue.main.async {
+                            isFieldFocused = true
+                        }
+                    } label: {
+                        Label(Localization.useBackupCode, systemImage: "number")
+                            .linkStyle()
+                    }
+                    .disabled(viewModel.isLoggingIn)
+                }
+
+                if viewModel.shouldShowSecurityKeyOption {
                     // Security key button
                     Button {
                         viewModel.loginWithSecurityKey()
@@ -104,6 +122,7 @@ struct WPCom2FALoginView: View {
                         Label(Localization.securityKey, systemImage: "key.horizontal")
                             .linkStyle()
                     }
+                    .disabled(viewModel.isLoggingIn)
                 }
 
                 Spacer()
@@ -113,14 +132,18 @@ struct WPCom2FALoginView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 // Primary CTA
-                Button(title) {
-                    if case .jetpackSetup = flow {
-                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, tap: .submit))
+                Button(viewModel.isSecurityKeyMode ? Localization.securityKey : title) {
+                    if viewModel.isSecurityKeyMode {
+                        viewModel.loginWithSecurityKey()
+                    } else {
+                        if case .jetpackSetup = flow {
+                            ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, tap: .submit))
+                        }
+                        viewModel.handleLogin()
                     }
-                    viewModel.handleLogin()
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
-                .disabled(!viewModel.isValidCode)
+                .disabled(!viewModel.isSecurityKeyMode && !viewModel.isValidCode)
             }
             .padding(Constants.contentPadding)
             .background(Color(uiColor: .systemBackground))
@@ -159,6 +182,11 @@ private extension WPCom2FALoginView {
             "wpCom2FALoginView.anotherFormText",
             value: "Or choose another form of authentication.",
             comment: "Text to suggest another form of 2FA authentication"
+        )
+        static let useBackupCode = NSLocalizedString(
+            "wpCom2FALoginView.useBackupCodeButton",
+            value: "Use a backup code instead",
+            comment: "Button to enter a backup code on the WPCom 2FA login screen"
         )
     }
 }

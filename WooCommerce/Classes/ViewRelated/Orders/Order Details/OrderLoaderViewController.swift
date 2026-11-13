@@ -25,6 +25,10 @@ class OrderLoaderViewController: UIViewController {
     ///
     private let siteID: Int64
 
+    /// Called after the loaded Order's details are rendered.
+    ///
+    private let onOrderLoaded: ((Order) -> Void)?
+
     /// UI Active State
     ///
     private var state: State = .loading {
@@ -59,10 +63,11 @@ class OrderLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(orderID: Int64, siteID: Int64, note: Note? = nil) {
+    init(orderID: Int64, siteID: Int64, note: Note? = nil, onOrderLoaded: ((Order) -> Void)? = nil) {
         self.orderID = orderID
         self.siteID = siteID
         self.note = note
+        self.onOrderLoaded = onOrderLoaded
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -105,13 +110,15 @@ private extension OrderLoaderViewController {
                 return
             }
 
-            guard let order else {
-                DDLogError("## Error loading Order \(self.siteID).\(self.orderID): \(error.debugDescription)")
-                self.state = .failure
-                return
-            }
+            Task { @MainActor in
+                guard let order else {
+                    DDLogError("## Error loading Order \(self.siteID).\(self.orderID): \(error.debugDescription)")
+                    self.state = .failure
+                    return
+                }
 
-            self.state = .success(order: order)
+                self.state = .success(order: order)
+            }
         }
 
         state = .loading
@@ -291,6 +298,7 @@ private extension OrderLoaderViewController {
             if let note {
                 markNotificationAsReadIfNeeded(note: note)
             }
+            onOrderLoaded?(order)
         case .failure:
             displayFailureOverlay()
         }

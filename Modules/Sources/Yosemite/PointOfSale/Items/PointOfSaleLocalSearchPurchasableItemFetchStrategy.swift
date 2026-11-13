@@ -7,7 +7,8 @@ import struct Storage.PersistedProductVariation
 import protocol Networking.ProductVariationsRemoteProtocol
 
 /// Fetch strategy for searching products in the local GRDB catalog.
-/// Uses FTS5 full-text search when enabled, otherwise falls back to LIKE-based queries.
+/// Uses FTS5 full-text search.
+@MainActor
 struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
     private let searchTerm: String
@@ -17,7 +18,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     private let itemMapper: PointOfSaleItemMapperProtocol
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
-    private let isFTSSearchEnabled: Bool
+    nonisolated static let searchCountLimit = 1_000
 
     init(siteID: Int64,
          searchTerm: String,
@@ -25,8 +26,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
          variationsRemote: ProductVariationsRemoteProtocol,
          itemMapper: PointOfSaleItemMapperProtocol,
          analytics: POSItemFetchAnalyticsTracking,
-         pageSize: Int = 25,
-         isFTSSearchEnabled: Bool = true) {
+         pageSize: Int = 25) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.grdbManager = grdbManager
@@ -34,7 +34,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         self.itemMapper = itemMapper
         self.analytics = analytics
         self.pageSize = pageSize
-        self.isFTSSearchEnabled = isFTSSearchEnabled
     }
 
     var debounceStrategy: SearchDebounceStrategy {
@@ -44,46 +43,21 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         .simple(duration: 150 * NSEC_PER_MSEC, loadingDelayThreshold: 300 * NSEC_PER_MSEC)
     }
 
+    /// Local search answers through `fetchMixedItems`, so the service never asks this strategy for products only.
+    /// Goes away with the rest of the two-path contract in WOOMOB-3967.
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        let startTime = Date()
-
-        // Get total count and persisted products in one transaction
-        let (persistedProducts, totalCount) = try await grdbManager.databaseConnection.read { db in
-            let totalCount = try PersistedProduct
-                .posProductSearch(siteID: siteID, searchTerm: searchTerm)
-                .fetchCount(db)
-
-            let offset = (pageNumber - 1) * pageSize
-            let persistedProducts = try PersistedProduct
-                .posProductSearch(siteID: siteID, searchTerm: searchTerm)
-                .limit(pageSize, offset: offset)
-                .fetchAll(db)
-
-            return (persistedProducts, totalCount)
-        }
-
-        // Convert to POSProduct outside the read transaction
-        // toPOSProduct(db:) starts its own transaction, so we can't call it inside another transaction
-        let products = try persistedProducts.map { persistedProduct in
-            try persistedProduct.toPOSProduct(db: grdbManager.databaseConnection)
-        }
-
-        let hasMorePages = (pageNumber * pageSize) < totalCount
-
-        if pageNumber == 1 {
-            let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
-            analytics.trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
-                                                           totalItems: totalCount,
-                                                           searchMethod: .like,
-                                                           source: .product)
-        }
-
-        return PagedItems(items: products,
-                         hasMorePages: hasMorePages,
-                         totalItems: totalCount)
+        PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
+        try await Self.loadVariations(parentProductID: parentProductID, pageNumber: pageNumber,
+                                       siteID: siteID, pageSize: pageSize, grdbManager: grdbManager)
+    }
+
+    @concurrent
+    nonisolated private static func loadVariations(parentProductID: Int64, pageNumber: Int,
+                                                   siteID: Int64, pageSize: Int,
+                                                   grdbManager: GRDBManagerProtocol) async throws -> PagedItems<POSProductVariation> {
         // Get total count and persisted variations in one transaction
         let (persistedVariations, totalCount) = try await grdbManager.databaseConnection.read { db in
             let totalCount = try PersistedProductVariation
@@ -112,26 +86,28 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     }
 
     func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>? {
-        // When FTS is disabled, return nil to fall back to LIKE-based fetchProducts()
-        guard isFTSSearchEnabled else { return nil }
-
+        let siteID = siteID
+        let searchTerm = searchTerm
+        let pageSize = pageSize
         let startTime = Date()
         let offset = (pageNumber - 1) * pageSize
 
-        let (searchResults, totalCount) = try await grdbManager.databaseConnection.read { db in
+        let countLimit = Self.searchCountLimit
+        let (pageResults, totalCount) = try await grdbManager.databaseConnection.read { db in
             let results = try POSSearchIndexBuilder.search(
                 siteID: siteID,
                 term: searchTerm,
-                limit: pageSize,
+                limit: pageSize + 1,
                 offset: offset,
                 in: db
             )
-            let count = try POSSearchIndexBuilder.searchCount(siteID: siteID, term: searchTerm, in: db)
+            let count = try POSSearchIndexBuilder.searchCount(siteID: siteID, term: searchTerm, limit: countLimit, in: db)
             return (results, count)
         }
 
+        let hasMorePages = pageResults.count > pageSize
+        let searchResults = Array(pageResults.prefix(pageSize))
         let items = try await hydrateSearchResults(searchResults)
-        let hasMorePages = (pageNumber * pageSize) < totalCount
 
         if pageNumber == 1 {
             let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
@@ -167,12 +143,31 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
                         underlyingType: index.itemType == .variation ? .variation : .product,
                         itemID: index.itemID
                     )
-                } ?? nil
+                }.flatMap { $0 }
             }
         }
     }
 
+    private enum HydratedSearchResult: Sendable {
+        case product(POSProduct)
+        case variation(POSProductVariation, parentProduct: POSProduct)
+    }
+
     private func hydrateSearchResult(_ index: POSSearchIndex) async throws -> POSItem? {
+        switch try await Self.loadSearchResult(index, grdbManager: grdbManager) {
+        case .product(let product):
+            return itemMapper.mapProductToPOSItem(product: product)
+        case .variation(let variation, let parentProduct):
+            return itemMapper.mapVariationToSearchResultPOSItem(variation: variation, parentProduct: parentProduct)
+        case nil:
+            return nil
+        }
+    }
+
+    // Database hydration stays off the UI actor; only formatting uses the live currency settings on MainActor.
+    @concurrent
+    nonisolated private static func loadSearchResult(_ index: POSSearchIndex,
+                                                     grdbManager: GRDBManagerProtocol) async throws -> HydratedSearchResult? {
         switch index.itemType {
         case .product:
             guard let product = try await grdbManager.databaseConnection.read({ db in
@@ -181,7 +176,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
                 return nil
             }
             let posProduct = try product.toPOSProduct(db: grdbManager.databaseConnection)
-            return itemMapper.mapProductToPOSItem(product: posProduct)
+            return .product(posProduct)
 
         case .variation:
             guard let parentProductID = index.parentProductID else { return nil }
@@ -201,7 +196,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
             let posVariation = try variation.toPOSProductVariation(db: grdbManager.databaseConnection)
             let posParentProduct = try parentProduct.toPOSProduct(db: grdbManager.databaseConnection)
 
-            return itemMapper.mapVariationToSearchResultPOSItem(variation: posVariation, parentProduct: posParentProduct)
+            return .variation(posVariation, parentProduct: posParentProduct)
         }
     }
 }

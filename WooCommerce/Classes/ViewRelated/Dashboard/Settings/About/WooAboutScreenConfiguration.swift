@@ -3,7 +3,8 @@ import AutomatticAbout
 import SafariServices
 import WordPressShared
 
-final class WooAboutScreenConfiguration: AboutScreenConfiguration {
+@MainActor
+final class WooAboutScreenConfiguration: @MainActor AboutScreenConfiguration {
     var sections: [AboutScreenSection] {
         [
             [
@@ -94,7 +95,19 @@ private extension WooAboutScreenConfiguration {
         ]
 
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        activityViewController.popoverPresentationController?.sourceView = sourceView
+        activityViewController.modalPresentationStyle = .popover
+        if let popoverController = activityViewController.popoverPresentationController {
+            viewController.loadViewIfNeeded()
+            guard let anchorView = sourceView ?? viewController.view else {
+                return
+            }
+
+            popoverController.sourceItem = anchorView
+
+            if sourceView == nil {
+                popoverController.permittedArrowDirections = []
+            }
+        }
         viewController.present(activityViewController, animated: true, completion: nil)
     }
 
@@ -164,7 +177,8 @@ private extension WooAboutScreenConfiguration {
 
 // MARK: - Legal and More submenu
 
-final class WooLegalAndMoreSubmenuConfiguration: AboutScreenConfiguration {
+@MainActor
+final class WooLegalAndMoreSubmenuConfiguration: @MainActor AboutScreenConfiguration {
     lazy var sections: [[AboutItem]] = {
         [
             [

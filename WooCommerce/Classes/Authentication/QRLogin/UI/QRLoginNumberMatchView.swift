@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 
 /// Number-matching overlay. Shown after `/scan` returns successfully.

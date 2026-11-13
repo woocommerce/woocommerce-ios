@@ -2,21 +2,25 @@ import SwiftUI
 
 struct ItemRowView: View {
     private let cartItem: Cart.PurchasableItem
+    private let showsDiscountedNote: Bool
     private let onItemRemoveTapped: (() -> Void)?
     private let onCancelLoading: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.posMetrics) private var metrics
     @Binding private var showProductImage: Bool
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        min(metrics.cartRowSize * scale, metrics.cartRowSize * Constants.maximumCardSizeMultiplier)
     }
 
     init(cartItem: Cart.PurchasableItem,
+         showsDiscountedNote: Bool = false,
          showImage: Binding<Bool> = .constant(true),
          onItemRemoveTapped: (() -> Void)? = nil,
          onCancelLoading: (() -> Void)? = nil) {
         self.cartItem = cartItem
+        self.showsDiscountedNote = showsDiscountedNote
         self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
         self.onCancelLoading = onCancelLoading
@@ -24,7 +28,7 @@ struct ItemRowView: View {
 
     var body: some View {
         itemRow
-            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.horizontal, metrics.padding.medium)
             .geometryGroup()
             .accessibilityLabel(accessibilityLabel)
             .accessibilityIdentifier(accessibilityIdentifier)
@@ -49,12 +53,12 @@ struct ItemRowView: View {
 
     @ViewBuilder
     private var productRow: some View {
-        HStack(spacing: Constants.horizontalElementSpacing) {
+        HStack(spacing: metrics.spacing.medium) {
             productImage
                 .frame(width: dimension)
                 .frame(minHeight: dimension)
 
-            VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall * (1 / scale)) {
                 Text(cartItem.title)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)
@@ -69,19 +73,26 @@ struct ItemRowView: View {
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                         .font(Constants.itemPriceFont)
                 }
+
+                if showsDiscountedNote {
+                    Text(Localization.discountApplied)
+                        .foregroundColor(.posSuccess)
+                        .font(Constants.itemPriceFont)
+                }
             }
+            .animation(.default, value: showsDiscountedNote)
             .multilineTextAlignment(.leading)
             .lineLimit(Constants.titleSubtitleLineLimit)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalPadding * (1 / scale))
+            .padding(.leading, showProductImage ? 0 : metrics.padding.medium * (1 / scale))
+            .padding(.vertical, metrics.padding.small * (1 / scale))
             if let onItemRemoveTapped {
                 CartRowRemoveButton {
                     onItemRemoveTapped()
                 }
             }
         }
-        .padding(.trailing, Constants.cardContentHorizontalPadding)
+        .padding(.trailing, metrics.padding.medium)
         .frame(maxWidth: .infinity, minHeight: dimension, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
@@ -116,7 +127,7 @@ struct ItemRowView: View {
         if let accessibilityLabel = cartItem.accessibilityLabel {
             accessibilityLabel
         } else {
-            [cartItem.title, cartItem.subtitle, cartItem.formattedPrice]
+            [cartItem.title, cartItem.subtitle, cartItem.formattedPrice, showsDiscountedNote ? Localization.discountApplied : nil]
                 .compactMap { $0 }
                 .joined(separator: ",")
         }
@@ -136,25 +147,27 @@ struct ItemRowView: View {
 }
 
 private extension ItemRowView {
+    enum Localization {
+        static let discountApplied = NSLocalizedString(
+            "pointOfSale.itemRow.discountApplied",
+            value: "Discount applied",
+            comment: "Note shown on a product row in the Point of Sale cart at checkout when the "
+                + "order response shows the line item received a discount, from a coupon or another source.")
+    }
+
     enum Constants {
-        static let productCardSize: CGFloat = 96
-        static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
-        static let horizontalPadding: CGFloat = POSPadding.medium
-        static let verticalPadding: CGFloat = POSPadding.small
-        static let horizontalElementSpacing: CGFloat = POSSpacing.medium
-        static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
-        static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall
+        static let maximumCardSizeMultiplier: CGFloat = 1.5
         static let itemTitleFont: POSFontStyle = .posBodySmallBold()
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
         static let titleSubtitleLineLimit: Int = 4
 
         static let cartConfiguration = GhostItemCardViewConfiguration(
-            placeholderHeight: 24,
-            cardSize: Constants.productCardSize,
-            maximumCardSize: Constants.maximumProductCardSize,
-            topPlaceholderWidthMultiplier: 0.4,
-            bottomPlaceholderWidthMultiplier: 0.35,
+            titleFont: Constants.itemTitleFont,
+            detailFont: Constants.itemPriceFont,
+            detailPlaceholderLength: (regular: 25, accessibility: 4),
+            cardSize: .cartRow,
+            maximumCardSizeMultiplier: Constants.maximumCardSizeMultiplier,
             backgroundColor: Color.posSurfaceContainerLowest
         )
     }
@@ -193,6 +206,18 @@ private extension ItemRowView {
                 subtitle: nil,
                 quantity: 2
             ),
+            onItemRemoveTapped: { }
+        )
+
+        ItemRowView(
+            cartItem: Cart.PurchasableItem(
+                id: UUID(),
+                item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                title: "Discounted Item",
+                subtitle: "Item Subtitle",
+                quantity: 2
+            ),
+            showsDiscountedNote: true,
             onItemRemoveTapped: { }
         )
 

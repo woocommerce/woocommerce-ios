@@ -95,11 +95,12 @@ class CustomerInfoTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
-        configureEditButton()
-        configureAddButton()
-        configureLayout()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureEditButton()
+            configureAddButton()
+            configureLayout()
+        }
     }
 
     override func prepareForReuse() {

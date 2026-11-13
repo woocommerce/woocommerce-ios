@@ -3,7 +3,7 @@ import Foundation
 
 /// TopEarnersStats: Remote Endpoints
 ///
-public class TopEarnersStatsRemote: Remote {
+public class TopEarnersStatsRemote: Remote, @unchecked Sendable {
 
     /// Fetch the top earner (aka Top Performer) stats for a given site for the current day, week, month, or year
     /// (depends on the given granularity of the `unit` parameter).

@@ -3,7 +3,7 @@ import Foundation
 public extension SystemStatusReport {
     /// Subtype for details about environment in system status.
     ///
-    struct Environment: Decodable {
+    struct Environment: Decodable, Sendable {
         public let homeURL: String
         public let siteURL: String
         public let storeID: String?

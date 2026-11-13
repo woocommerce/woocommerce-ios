@@ -26,7 +26,7 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         await onSyncOrderCalled?()
 
         guard let orderStateToReturn else {
-            orderState = .syncing
+            orderState = .syncing()
             return syncOrderResultToReturn
         }
 
@@ -66,6 +66,11 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         if let confirmScanToPayPaymentErrorToThrow {
             throw confirmScanToPayPaymentErrorToThrow
         }
+    }
+
+    var recordScanToPayPaymentMethodWasCalled = false
+    func recordScanToPayPaymentMethod() async {
+        recordScanToPayPaymentMethodWasCalled = true
     }
 
     var reloadCurrentOrderWasCalled = false

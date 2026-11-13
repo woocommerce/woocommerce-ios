@@ -1,0 +1,194 @@
+#!/usr/bin/env python3
+"""Inspect iOS Maestro prerequisites without printing secret values."""
+
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import json
+import os
+import shutil
+import subprocess
+import sys
+import urllib.request
+from pathlib import Path
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+RUNNER_PATH = SCRIPT_DIR / "run-smoke-tests.py"
+CHECK_TOOLCHAIN = SCRIPT_DIR / "check-toolchain.py"
+DEVICE_LOCALE = SCRIPT_DIR / "device_locale.py"
+SPEC = importlib.util.spec_from_file_location("woo_maestro_runner", RUNNER_PATH)
+if SPEC is None or SPEC.loader is None:
+    raise RuntimeError(f"Cannot load {RUNNER_PATH}")
+RUNNER = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = RUNNER
+SPEC.loader.exec_module(RUNNER)
+
+
+def check_toolchain() -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(CHECK_TOOLCHAIN)],
+        cwd=RUNNER.REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode == 0:
+        return True, "toolchain matches the repository pin"
+    details = [line.strip() for line in result.stderr.splitlines() if line.strip()]
+    reason = details[-1] if details else "toolchain check failed"
+    return False, f"toolchain: {reason}"
+
+
+def check_simulator_locale(device: str) -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(DEVICE_LOCALE), "--device", device],
+        cwd=RUNNER.REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode == 0:
+        details = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        return True, details[-1] if details else "simulator primary language is English"
+    details = [line.strip() for line in result.stderr.splitlines() if line.strip()]
+    reason = details[-1] if details else "simulator language check failed"
+    return False, f"simulator language: {reason}"
+
+
+def check_lab_store(url: str) -> tuple[bool, str]:
+    """An expired Jurassic Ninja store stops answering, and only the setup skill can replace it."""
+    try:
+        with urllib.request.urlopen(f"{url.rstrip('/')}/?rest_route=/", timeout=15) as response:
+            if "namespaces" in json.load(response):
+                return True, "the lab store responds"
+    except (OSError, ValueError):
+        pass
+    return False, "the lab store doesn't respond; run the /setup-test-stores skill"
+
+
+def missing_environment(flows: list[Path], environment: dict[str, str], args: argparse.Namespace) -> list[str]:
+    store_values = {store: RUNNER.select_store_environment(environment, store) for store in RUNNER.STORES}
+    missing = set()
+    for flow in flows:
+        store = RUNNER.flow_store(flow, args.store)
+        missing.update(
+            RUNNER.scoped_store_name(name, store)
+            for name in RUNNER.required_environment([flow], seed=False)
+            if not store_values[store].get(name)
+        )
+    if args.seed:
+        store = args.store or "lab"
+        missing.update(
+            RUNNER.scoped_store_name(name, store)
+            for name in RUNNER.required_environment([], seed=True)
+            if not store_values[store].get(name)
+        )
+    return sorted(missing)
+
+
+def selection_problems(flows: list[Path], args: argparse.Namespace) -> list[str]:
+    """Return the reasons the runner would refuse this selection before running any flow."""
+    checks = [
+        lambda: RUNNER.validate_destructive_cleanup(flows, seed=args.seed),
+        lambda: RUNNER.validate_shared_destructive(flows, store=args.store),
+    ]
+    problems = []
+    for check in checks:
+        try:
+            check()
+        except SystemExit as error:
+            problems.append(str(error).splitlines()[0])
+    return problems
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--app", required=True, type=Path)
+    parser.add_argument("--profile", choices=sorted(RUNNER.PROFILES), default="core")
+    parser.add_argument("--device")
+    parser.add_argument("--pos-device")
+    parser.add_argument("--store", choices=RUNNER.STORES)
+    parser.add_argument("--include-tags")
+    parser.add_argument("--exclude-tags")
+    parser.add_argument("--seed", action="store_true", default=None)
+    parser.add_argument("--no-seed", dest="seed", action="store_false")
+    args = parser.parse_args()
+    if args.seed is None:
+        args.seed = args.profile in RUNNER.SEEDING_PROFILES
+
+    checks: list[tuple[bool, str]] = []
+    for command in ("bash", "python3", "maestro", "xcrun", "plutil"):
+        path = shutil.which(command)
+        checks.append((path is not None, f"{command}: {path or 'not found'}"))
+    checks.append(check_toolchain())
+
+    try:
+        environment = RUNNER.load_environment()
+        checks.append((True, "local environment syntax is valid"))
+    except SystemExit:
+        environment = dict(os.environ)
+        checks.append((False, "local environment syntax is invalid"))
+
+    try:
+        app_id = RUNNER.app_identifier(args.app)
+        checks.append((True, f"app bundle identifier: {app_id}"))
+    except (SystemExit, subprocess.SubprocessError) as error:
+        checks.append((False, f"app bundle: {error}"))
+
+    family = RUNNER.PROFILES[args.profile][2]
+    include = RUNNER.csv(args.include_tags)
+    if include is None:
+        include = RUNNER.PROFILES[args.profile][0]
+    exclude = RUNNER.csv(args.exclude_tags)
+    if exclude is None:
+        exclude = RUNNER.PROFILES[args.profile][1]
+    namespace = argparse.Namespace(flows=[], rerun_failed=None)
+    try:
+        flows = RUNNER.select_flows(namespace, include, exclude)
+        checks.append((True, f"selected flows: {len(flows)}"))
+        if not any("destructive" in RUNNER.flow_tags(flow) for flow in flows):
+            args.seed = False
+    except SystemExit as error:
+        checks.append((False, f"flow selection: {error}"))
+
+    if 'flows' not in locals() or not RUNNER.runs_only_on_pos_device(flows, family):
+        try:
+            device = args.device or (args.pos_device if family == "ipad" else None)
+            simulator = RUNNER.resolve_simulator(device, family, boot=False)
+            checks.append((True, f"simulator: {simulator['name']} ({simulator['udid']})"))
+            checks.append(check_simulator_locale(simulator["udid"]))
+        except (SystemExit, subprocess.SubprocessError) as error:
+            checks.append((False, f"simulator: {error}"))
+
+    if 'flows' in locals() and RUNNER.needs_pos_device(flows, family):
+        try:
+            pos_device = args.pos_device
+            if not pos_device and RUNNER.runs_only_on_pos_device(flows, family):
+                pos_device = args.device
+            pos_simulator = RUNNER.resolve_simulator(pos_device, "ipad", boot=False, option="--pos-device")
+            checks.append((True, f"POS simulator: {pos_simulator['name']} ({pos_simulator['udid']})"))
+            checks.append(check_simulator_locale(pos_simulator["udid"]))
+        except (SystemExit, subprocess.SubprocessError) as error:
+            checks.append((False, f"POS simulator: {error}"))
+
+    missing = missing_environment(flows if 'flows' in locals() else [], environment, args)
+    checks.append((not missing, "required credentials are present" if not missing else "missing variables: " + ", ".join(missing)))
+    lab_url = RUNNER.select_store_environment(environment, "lab").get("MAESTRO_WOO_JETPACK_STORE_URL", "")
+    if lab_url and any(RUNNER.flow_store(flow, args.store) == "lab" for flow in (flows if 'flows' in locals() else [])):
+        checks.append(check_lab_store(lab_url))
+    checks.extend((False, problem) for problem in selection_problems(flows if 'flows' in locals() else [], args))
+
+    print("WooCommerce iOS Maestro doctor")
+    print(f"profile: {args.profile}")
+    print(f"store: {args.store or 'per flow'}")
+    failures = 0
+    for passed, message in checks:
+        print(f"[{'OK' if passed else 'FAIL'}] {message}")
+        failures += int(not passed)
+    return 1 if failures else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

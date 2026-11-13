@@ -58,6 +58,9 @@
 
     This command installs the required build tools and dependencies.
 
+    Automattic contributors should first install and set up [`a8c-secrets`](https://github.com/Automattic/a8c-secrets); the command above then decrypts the project secrets.
+    Re-run it, or `a8c-secrets decrypt`, whenever the secrets are rotated.
+
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 
 ### Credentials for External Contributors
@@ -105,6 +108,7 @@ Please, remember to not add this information on your commits and PRs.
     - [Tracking Events](docs/tracking-events.md)
         - [Custom Properties](docs/tracking-events.md#custom-properties)
 - Quality & Testing
+    - [AI dev and testing tools](docs/ai-tools.md)
     - [UI Tests](WooCommerce/WooCommerceUITests/README.md)
     - [Testing Card Present Payments](docs/stripe-tests.md)
     - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
@@ -119,6 +123,10 @@ Please, remember to not add this information on your commits and PRs.
 Read our [Contributing Guide](CONTRIBUTING.md) to learn about reporting issues, contributing code, and more ways to contribute.
 
 ## 🤖 Automation
+
+### Screenshot generation
+
+Prefer local generation through agents using the [App Store screenshots skill](.agents/skills/app-store-screenshots/SKILL.md) for reliability and speed. The `generate screenshots` CI workflow cannot compose the complete set because its capture jobs exclude Duo.
 
 ### Peril
 

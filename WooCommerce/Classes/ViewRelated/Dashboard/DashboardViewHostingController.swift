@@ -3,9 +3,9 @@ import SwiftUI
 import WordPressUI
 import struct Yosemite.Site
 
-/// Hosting view for `DashboardView`
+/// Hosting controller for the dashboard feature-flag boundary.
 ///
-final class DashboardViewHostingController: UIHostingController<DashboardView> {
+final class DashboardViewHostingController: UIHostingController<DashboardRootView> {
 
     private let viewModel: DashboardViewModel
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
@@ -42,7 +42,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         self.viewModel = viewModel
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
-        super.init(rootView: DashboardView(viewModel: viewModel))
+        super.init(rootView: DashboardRootView(viewModel: viewModel))
 
         configureTabBarItem()
         configureStoreOnboarding()
@@ -376,10 +376,14 @@ private extension DashboardViewHostingController {
     func configureConnectWPComCard() {
         rootView.onConnectWPComSetup = { [weak self] in
             guard let self else { return }
+            guard let site = viewModel.stores.sessionManager.defaultSite,
+                  site.siteID == viewModel.siteID else {
+                return
+            }
             self.viewModel.onConnectWPComCardTapped()
             let benefitsViewModel = WPComPushNotificationsBenefitsViewModel(
-                siteID: viewModel.siteID,
-                siteURL: viewModel.stores.sessionManager.defaultSite?.url ?? "",
+                siteID: site.siteID,
+                siteURL: site.url,
                 onDismiss: {
                     self.dismiss(animated: true)
                 }
@@ -407,7 +411,7 @@ private extension DashboardViewHostingController {
 }
 
 // MARK: - SearchableActivity Conformance
-extension DashboardViewHostingController: SearchableActivityConvertible {
+extension DashboardViewHostingController: @MainActor SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.dashboard.rawValue
     }

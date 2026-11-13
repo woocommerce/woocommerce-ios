@@ -563,13 +563,16 @@ final class ShipmentStoreTests: XCTestCase {
         let mockTrackingID = "f2e7783b40837b9e1ec503a149dab4a1"
         let mockDateShipped = "2019-04-01"
 
+        let addExpectation = self.expectation(description: "Add shipment tracking")
         shipmentStore.addTracking(siteID: sampleSiteID,
                                   orderID: sampleOrderID,
                                   providerGroupName: mockGroupName,
                                   providerName: mockProviderName,
                                   trackingNumber: mockTrackingNumber, dateShipped: mockDateShipped) { error in
                                     XCTAssertNil(error)
+                                    addExpectation.fulfill()
         }
+        wait(for: [addExpectation], timeout: Constants.expectationTimeout)
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
 

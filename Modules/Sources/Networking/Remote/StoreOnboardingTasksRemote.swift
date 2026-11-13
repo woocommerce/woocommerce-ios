@@ -4,7 +4,7 @@ public protocol StoreOnboardingTasksRemoteProtocol {
     func loadOnboardingTasks(siteID: Int64) async throws -> [StoreOnboardingTask]
 }
 
-public class StoreOnboardingTasksRemote: Remote, StoreOnboardingTasksRemoteProtocol {
+public class StoreOnboardingTasksRemote: Remote, StoreOnboardingTasksRemoteProtocol, @unchecked Sendable {
     /// Loads store onboarding tasks
     /// - Parameter siteID: Site ID
     /// - Returns: An array of store onboarding tasks

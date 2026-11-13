@@ -2,7 +2,8 @@
 import Foundation
 
 /// Protocol for observable data sources that provide POS items with automatic updates
-public protocol POSObservableDataSourceProtocol {
+@MainActor
+public protocol POSObservableDataSourceProtocol: Sendable {
     /// Current products mapped to POSItems
     var productItems: [POSItem] { get }
 

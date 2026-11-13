@@ -32,6 +32,22 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     ///
     case jetpackNotConnected(data: [String: AnyDecodable]? = nil)
 
+    /// WordPress.com no longer recognises the site ID sent by the app.
+    ///
+    /// Caused by stale selected-site state, a Jetpack disconnect, or site deletion.
+    /// Every subsequent request for the same site fails the same way until the
+    /// selected site is reset.
+    ///
+    case unknownBlog(data: [String: AnyDecodable]? = nil)
+
+    /// Signature verification failed on the merchant's WordPress site.
+    ///
+    /// Jetpack signs the requests it relays to the site; when the site rejects that signature it
+    /// answers with `rest_invalid_signature`. The cause is always server side — a broken Jetpack
+    /// connection, a security plugin, or an outdated Jetpack — so the app cannot recover by retrying.
+    ///
+    case invalidSignature(data: [String: AnyDecodable]? = nil)
+
     /// Unknown: Represents an unmapped remote error. Capisce?
     ///
     case unknown(code: String, message: String?, data: [String: AnyDecodable]?)
@@ -53,7 +69,25 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let error = try container.decode(String.self, forKey: .error)
+
+        /// The identifier is read before anything else so that a body without one costs nothing. A
+        /// successful tunneled response carries the whole payload under `data`, and decoding it up here
+        /// would build a dictionary out of every product and order the app fetches, only to throw it away.
+        ///
+        guard let error = try container.decodeIfPresent(String.self, forKey: .error) else {
+            /// WordPress REST errors name the identifier `code` rather than `error`. Only the invalid
+            /// signature identifier is read from it, on purpose: mapping every `code`-shaped body here
+            /// would start throwing `DotcomError` for responses this validator has always ignored.
+            ///
+            guard try container.decodeIfPresent(String.self, forKey: .code) == Constants.invalidSignature else {
+                throw DecodingError.keyNotFound(CodingKeys.error, .init(codingPath: container.codingPath,
+                                                                       debugDescription: "No WordPress.com error identifier found"))
+            }
+            let data = try container.decodeIfPresent([String: AnyDecodable].self, forKey: .data)
+            self = .invalidSignature(data: data)
+            return
+        }
+
         let message = try container.decodeIfPresent(String.self, forKey: .message)
         let data = try container.decodeIfPresent([String: AnyDecodable].self, forKey: .data)
 
@@ -75,6 +109,10 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         case Constants.unknownToken,
             Constants.invalidBlog where message == ErrorMessages.jetpackNotConnected:
             self = .jetpackNotConnected(data: data)
+        case Constants.unknownBlog:
+            self = .unknownBlog(data: data)
+        case Constants.invalidSignature:
+            self = .invalidSignature(data: data)
         default:
             self = .unknown(code: error, message: message, data: data)
         }
@@ -90,12 +128,21 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         static let noRestRoute      = "rest_no_route"
         static let restTermInvalid  = "woocommerce_rest_term_invalid"
         static let unknownToken     = "unknown_token"
+        static let unknownBlog      = "unknown_blog"
+        static let invalidSignature = "rest_invalid_signature"
     }
+
+    /// The identifier Jetpack returns when signature verification fails, exposed so the networking layer
+    /// can key on the same string when the error reaches it as a status code failure rather than as a
+    /// parsed `DotcomError`.
+    ///
+    static let invalidSignatureCode = Constants.invalidSignature
 
     /// Coding Keys
     ///
     private enum CodingKeys: String, CodingKey {
         case error
+        case code
         case message
         case data
     }
@@ -135,6 +182,12 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Resource does not exist", comment: "WordPress.com error thrown when a requested resource does not exist remotely.")
         case .jetpackNotConnected:
             return NSLocalizedString("Jetpack Not Connected", comment: "WordPress.com error thrown when Jetpack is not connected.")
+        case .unknownBlog:
+            return NSLocalizedString("Dotcom Unknown Blog", comment: "WordPress.com error thrown when the site ID is no longer recognized.")
+        case .invalidSignature:
+            return NSLocalizedString("dotcomError.invalidSignature.description",
+                                     value: "Dotcom Invalid Signature",
+                                     comment: "WordPress.com error thrown when the store rejects the signature of a Jetpack request.")
         case .unknown(let code, let message, _):
             let theMessage = message ?? String()
             let messageFormat = NSLocalizedString(
@@ -157,6 +210,8 @@ public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
         (.requestFailed, .requestFailed),
         (.noRestRoute, .noRestRoute),
         (.jetpackNotConnected, .jetpackNotConnected),
+        (.unknownBlog, .unknownBlog),
+        (.invalidSignature, .invalidSignature),
         (.noStatsPermission, .noStatsPermission),
         (.statsModuleDisabled, .statsModuleDisabled),
         (.resourceDoesNotExist, .resourceDoesNotExist):

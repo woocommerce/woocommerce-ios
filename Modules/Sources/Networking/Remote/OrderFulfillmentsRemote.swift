@@ -3,7 +3,7 @@ import Foundation
 
 /// OrderFulfillmentsRemote: Remote Endpoints
 ///
-public final class OrderFulfillmentsRemote: Remote {
+public final class OrderFulfillmentsRemote: Remote, @unchecked Sendable {
 
     /// Retrieves all fulfillments for a given order.
     ///

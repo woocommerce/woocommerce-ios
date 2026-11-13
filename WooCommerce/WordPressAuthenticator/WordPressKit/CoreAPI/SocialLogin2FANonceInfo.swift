@@ -21,6 +21,8 @@ public class SocialLogin2FANonceInfo: NSObject {
         case authenticator = 6
         case sms = 7
         case backup = 8
+        /// Account-lock verification codes sent by email during password login.
+        case email = 9
     }
 
     public func authTypeAndNonce(for code: String) -> (String, String) {
@@ -28,15 +30,21 @@ public class SocialLogin2FANonceInfo: NSObject {
         switch code.count {
         case TwoFactorTypeLengths.sms.rawValue:
             typeNoncePair = ("sms", nonceSMS)
-            nonceSMS = Constants.lastUsedPlaceholder
+            if !nonceSMS.isEmpty {
+                nonceSMS = Constants.lastUsedPlaceholder
+            }
         case TwoFactorTypeLengths.backup.rawValue:
             typeNoncePair = ("backup", nonceBackup)
-            nonceBackup = Constants.lastUsedPlaceholder
+            if !nonceBackup.isEmpty {
+                nonceBackup = Constants.lastUsedPlaceholder
+            }
         case TwoFactorTypeLengths.authenticator.rawValue:
             fallthrough
         default:
             typeNoncePair = ("authenticator", nonceAuthenticator)
-            nonceAuthenticator = Constants.lastUsedPlaceholder
+            if !nonceAuthenticator.isEmpty {
+                nonceAuthenticator = Constants.lastUsedPlaceholder
+            }
         }
         return typeNoncePair
     }

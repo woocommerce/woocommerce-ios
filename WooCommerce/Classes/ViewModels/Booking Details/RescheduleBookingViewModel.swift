@@ -7,7 +7,7 @@ import protocol WooFoundation.Analytics
 /// Uses `Calendar` to compute end dates, correctly handling DST and varying month lengths.
 struct BookingDuration {
     let value: Int
-    let unit: Booking.DurationUnit
+    let unit: BookingDurationUnit
 
     /// Computes the end date by adding this duration to the given start date using `Calendar`.
     func endDate(from startDate: Date, calendar: Calendar = .current) -> Date? {

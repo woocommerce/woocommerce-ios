@@ -69,16 +69,19 @@ final class ApplicationPasswordsExperimentState {
 
 protocol ApplicationPasswordsExperimentAvailabilityCheckerProtocol {
     var isAvailable: Bool { get }
+    @MainActor
     func fetchAvailability() async -> Bool
 }
 
 final class ApplicationPasswordsExperimentAvailabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol {
     private let userDefaults: UserDefaults
     private let stores: StoresManager
+    private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
 
     init(userDefaults: UserDefaults = .standard, stores: StoresManager = ServiceLocator.stores) {
         self.userDefaults = userDefaults
         self.stores = stores
+        self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
     }
 
     var isAvailable: Bool {
@@ -97,14 +100,7 @@ final class ApplicationPasswordsExperimentAvailabilityChecker: ApplicationPasswo
 
     @MainActor
     func fetchAvailability() async -> Bool {
-        let isEnabled = await withCheckedContinuation { continuation in
-            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
-                .appPasswordsForJetpackSites,
-                defaultValue: false
-            ) { isEnabled in
-                continuation.resume(returning: isEnabled)
-            })
-        }
+        let isEnabled = await remoteFeatureFlagService.isEnabled(.appPasswordsForJetpackSites, defaultValue: false)
         cachedRemoteFFValue = isEnabled
         return isEnabled
     }

@@ -24,7 +24,7 @@ public protocol WordPressThemeRemoteProtocol {
 
 /// WordPressThemes: Remote Endpoints
 ///
-public final class WordPressThemeRemote: Remote, WordPressThemeRemoteProtocol {
+public final class WordPressThemeRemote: Remote, WordPressThemeRemoteProtocol, @unchecked Sendable {
 
     public func loadSuggestedThemes() async throws -> [WordPressTheme] {
         let path = Paths.suggestedThemes

@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class PeriodStatsTable: ScreenObject {
 
     private let todayTabGetter: (XCUIApplication) -> XCUIElement = {

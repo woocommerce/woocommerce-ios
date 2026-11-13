@@ -18,6 +18,10 @@ final class UpdateAnalyticsSettingUseCase {
     ///
     private let userDefaults: UserDefaults
 
+    /// The most recently scheduled update. New updates wait for it so account-setting requests finish in the order the user made them.
+    ///
+    private var pendingUpdate: Task<Void, Error>?
+
     init(stores: StoresManager = ServiceLocator.stores, analytics: Analytics = ServiceLocator.analytics, userDefaults: UserDefaults = .standard) {
         self.stores = stores
         self.analytics = analytics
@@ -29,6 +33,23 @@ final class UpdateAnalyticsSettingUseCase {
     /// For NON-WPCOM stores: Updates locally.
     ///
     @MainActor func update(optOut: Bool) async throws {
+        try await enqueueUpdate(optOut: optOut).value
+    }
+
+    /// Schedules an analytics setting update synchronously, preserving the order of rapid user interactions.
+    ///
+    @MainActor func enqueueUpdate(optOut: Bool) -> Task<Void, Error> {
+        let precedingUpdate = pendingUpdate
+        let update = Task { @MainActor [self] in
+            // A failed earlier choice must not prevent the user's newer choice from being saved.
+            _ = await precedingUpdate?.result
+            try await performUpdate(optOut: optOut)
+        }
+        pendingUpdate = update
+        return update
+    }
+
+    @MainActor private func performUpdate(optOut: Bool) async throws {
         // There is no need to perform any request if the user hasn't changed the current analytic setting.
         guard analytics.userHasOptedIn == optOut else {
             return updateLocally(optOut: optOut)

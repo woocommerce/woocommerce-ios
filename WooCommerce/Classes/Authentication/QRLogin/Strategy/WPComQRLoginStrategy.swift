@@ -119,8 +119,8 @@ final class WPComQRLoginStrategy: QRLoginStrategy {
 // MARK: - Dispatch helpers
 
 private extension WPComQRLoginStrategy {
-    static func dispatch<T>(stores: StoresManager,
-                             _ build: (@escaping (Result<T, QRLoginNetworkError>) -> Void) -> Action) async throws -> T {
+    static func dispatch<T: Sendable>(stores: StoresManager,
+                                       _ build: (@escaping @Sendable (Result<T, QRLoginNetworkError>) -> Void) -> Action) async throws -> T {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<T, Error>) in
             let action = build { result in
                 continuation.resume(with: result)

@@ -5,6 +5,7 @@ import UserNotifications
 import AutomatticTracks
 import Yosemite
 import WooFoundation
+import enum NetworkingCore.DotcomError
 import enum NetworkingCore.NetworkError
 import struct NetworkingCore.MetaContainer
 import struct NetworkingCore.Note
@@ -14,6 +15,14 @@ import protocol Storage.StorageManagerType
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
 final class PushNotificationsManager: PushNotesManager {
+
+    @MainActor private lazy var paidOrderNoticeSuppressor = PaidOrderNoticeSuppressor(stores: stores,
+                                                                                   currentDate: currentDate)
+
+    @MainActor
+    func suppressNewOrderNotice(for order: Order) {
+        paidOrderNoticeSuppressor.recordPayment(for: order)
+    }
 
     private var inAppNotices: Bool = true
 
@@ -92,6 +101,12 @@ final class PushNotificationsManager: PushNotesManager {
         registrationState.deviceID
     }
 
+    /// Apple's Push Notification device token, as last received from APNs.
+    ///
+    var deviceToken: String? {
+        registrationState.deviceToken
+    }
+
     var wooPushNotificationToken: String? {
         registrationState.wooPushNotificationToken
     }
@@ -130,6 +145,12 @@ final class PushNotificationsManager: PushNotesManager {
     private let pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol
     private var selfDrivenPushNotificationEnabled: Bool?
     private var pendingTokenData: Data?
+    private var selfDrivenPushEligibilityCheck: Task<Void, Never>?
+    private var loggedInStateSubscription: AnyCancellable?
+    private let currentDate: () -> Date
+    /// The latest automatic Woo push refresh. A refresh waits for the previous one only when both started with the
+    /// same credentials, so concurrent triggers never register a store twice per session.
+    private var wooPushRefreshTask: (credentials: Credentials?, task: Task<Void, Never>)?
 
     /// Holds the latest device token result, delivered asynchronously via `registerDeviceToken(with:)` or `registrationDidFail(with:)`.
     /// Starts as `nil` (no result yet). `waitForDeviceToken()` reads `.value` for an immediate result
@@ -150,18 +171,20 @@ final class PushNotificationsManager: PushNotesManager {
          analytics: Analytics = ServiceLocator.analytics,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol = PluginVersionCheckerFactory()) {
+         pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol = PluginVersionCheckerFactory(),
+         currentDate: @escaping () -> Date = Date.init) {
         self.configuration = configuration
         self.registrationState = PushNotificationRegistrationState(defaults: configuration.defaults, log: { DDLogInfo($0) })
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
         self.storageManager = storageManager
         self.pluginVersionCheckerFactory = pluginVersionCheckerFactory
+        self.currentDate = currentDate
         self.selfDriventPNEligiblityChecker = WooPushNotificationEligibilityCheck(
             featureFlagService: featureFlagService,
             stores: configuration.storesManager
         )
-        checkSelfDrivenPushNotificationsEligibility()
+        observeLoggedInStateForSelfDrivenPushEligibility()
     }
 }
 
@@ -280,6 +303,8 @@ extension PushNotificationsManager {
     ///
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
         DDLogInfo("📱 Unregistering For Remote Notifications...")
+        registrationState.clearWooPushNextChecks()
+        wooPushRefreshTask = nil
 
         let group = DispatchGroup()
 
@@ -315,6 +340,35 @@ extension PushNotificationsManager {
         }
     }
 
+    /// Unregisters the currently selected site's self-driven push token, tracking the deletion result.
+    ///
+    func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let siteID,
+              let tokenID = registrationState.wooPushNotificationToken,
+              let tokenIDInt = Int64(tokenID) else {
+            return completion(.success(()))
+        }
+        stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
+            siteID: siteID,
+            tokenID: tokenIDInt,
+            // The target siteID is the currently selected site, so REST fallback via
+            // `RequestConverter` is safe and preserved for site-credentials users who have no
+            // Jetpack tunnel available.
+            availableAsRESTRequest: true,
+            onCompletion: { [weak self] result in
+                if let self {
+                    switch result {
+                    case .success:
+                        analytics.track(event: .PushNotifications.wooPushTokenDeleteSuccess(targetSite: loadTargetSite(siteID: siteID)))
+                    case .failure(let error):
+                        analytics.track(event: .PushNotifications.wooPushTokenDeleteError(targetSite: loadTargetSite(siteID: siteID), error: error))
+                    }
+                }
+                completion(result)
+            }
+        ))
+    }
+
 
     /// Resets the Badge Count.
     ///
@@ -322,8 +376,14 @@ extension PushNotificationsManager {
         guard let siteID else {
             return
         }
+        resetBadgeCount(type: type, siteID: siteID)
+    }
+
+    private func resetBadgeCount(type: Note.Kind, siteID: Int64) {
         let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
-            self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: false)
+            // The badge shows the selected store's count, which may differ from the reset store.
+            guard let self, let currentSiteID = self.siteID else { return }
+            loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: currentSiteID, type: type, postNotifications: false)
         }
         stores.dispatch(action)
     }
@@ -345,7 +405,7 @@ extension PushNotificationsManager {
         loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: nil, postNotifications: true)
     }
 
-    /// Registers a specific site for self-driven push notifications.
+    /// Registers a specific site for self-driven push notifications when it is not already registered and its next check is due.
     /// - Parameter siteID: The site ID to register.
     /// - Throws: If registration fails or device token is not available.
     @MainActor
@@ -357,11 +417,27 @@ extension PushNotificationsManager {
         guard let deviceToken = registrationState.deviceToken else {
             throw PushNotificationError.missingDeviceToken
         }
-        guard !registrationState.isSiteRegisteredForWooPNs(siteID) else {
-            DDLogDebug("📱 Site \(siteID) is already registered for self-driven push notifications")
+        guard !registrationState.isSiteRegisteredForWooPNs(siteID), isWooPushRefreshDue(for: siteID) else {
+            DDLogDebug("📱 Site \(siteID) is registered or its next check is not due — skipping registration")
             return
         }
         try await registerSelfDrivenPushNotification(with: deviceToken, siteID: siteID)
+    }
+
+    /// Re-registers the device token with every visible store whose next check is due.
+    @MainActor
+    func refreshWooPushRegistrationsIfNeeded() async {
+        let refreshCredentials = stores.sessionManager.defaultCredentials
+        let previousRefresh = wooPushRefreshTask
+        let refresh = Task { @MainActor [weak self] in
+            guard let self else { return }
+            if previousRefresh?.credentials == refreshCredentials {
+                await previousRefresh?.task.value
+            }
+            await self.performWooPushRefresh()
+        }
+        wooPushRefreshTask = (credentials: refreshCredentials, task: refresh)
+        await refresh.value
     }
 
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
@@ -376,20 +452,33 @@ extension PushNotificationsManager {
         deviceTokenResult.send(.success(tokenData.hexString))
 
         guard let selfDrivenPushNotificationEnabled else {
-            DDLogDebug("📱 Self-driven eligibility not yet determined — storing token and re-checking")
             pendingTokenData = tokenData
+            DDLogDebug("📱 Self-driven eligibility not yet determined — storing token and re-checking")
             checkSelfDrivenPushNotificationsEligibility()
             return
         }
         let newToken = tokenData.hexString
+        let deviceTokenChanged: Bool = {
+            guard let existingToken = registrationState.deviceToken else {
+                return false
+            }
+            return existingToken != newToken
+        }()
 
-        // When the device token changes, clear registered site IDs so all sites
-        // re-register with the new token.
-        if let existingToken = registrationState.deviceToken, existingToken != newToken {
+        // When the device token changes while self-driven push is ON, clear registered site IDs so
+        // all sites re-register with the new token.
+        if selfDrivenPushNotificationEnabled, deviceTokenChanged {
             DDLogDebug("📱 Device token changed — clearing registered site IDs for re-registration")
             for siteID in registrationState.siteIDsRegisteredForWooPNs {
                 registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
             }
+        }
+
+        // A new token makes every store due again, and WPCom needs it too: dropping the device ID
+        // re-registers the device on this and later callbacks until it succeeds.
+        if deviceTokenChanged {
+            registrationState.clearWooPushNextChecks()
+            registrationState.deviceID = nil
         }
 
         registrationState.applyNewDeviceToken(newToken)
@@ -400,7 +489,7 @@ extension PushNotificationsManager {
             return
         }
 
-        func registerForWPComPushNotificationsIfPossible() {
+        func registerForWPComPushNotificationsIfPossible(onRegistered: ((String) -> Void)? = nil) {
             if stores.isAuthenticatedWithoutWPCom { return }
             // Register in the Dotcom's Infrastructure
             registerDotcomDevice(with: newToken) { device, error in
@@ -411,32 +500,53 @@ extension PushNotificationsManager {
 
                 DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
                 self.registrationState.deviceID = deviceID
-                self.disableWPComPushNotificationsIfNeeded(siteIDs: self.registrationState.siteIDsRegisteredForWooPNs, deviceID: deviceID)
+                onRegistered?(deviceID)
+            }
+        }
+
+        // Disables WPCom PNs for the sites registered for Woo-driven PNs (self-driven ON).
+        func disableWPComForRegisteredWooSites(deviceID: String) {
+            disableWPComPushNotificationsIfNeeded(siteIDs: registrationState.siteIDsRegisteredForWooPNs, deviceID: deviceID)
+        }
+
+        // Self-driven OFF: migrates prior Woo push registrations back to WPCom. Sites with a
+        // working WPCom fallback (visible + full Jetpack) are re-enabled on WPCom first and
+        // unregistered from their store only once that succeeds — a failure leaves them on Woo
+        // push and the migration retries on the next launch. Sites without a fallback (hidden,
+        // Jetpack CP, or a site-credentials session) are unregistered unconditionally.
+        func migrateWooPushRegistrationsToWPComIfNeeded() {
+            let wooRegisteredSites = registrationState.siteIDsRegisteredForWooPNs
+            guard wooRegisteredSites.isNotEmpty else {
+                registerForWPComPushNotificationsIfPossible()
+                return
+            }
+            let fallbackSites = wooRegisteredSites.filter { hasWPComNotificationsFallback(siteID: $0) }
+            deleteWooPushRegistrations(for: wooRegisteredSites.filter { !fallbackSites.contains($0) })
+            guard fallbackSites.isNotEmpty else {
+                registerForWPComPushNotificationsIfPossible()
+                return
+            }
+            registerForWPComPushNotificationsIfPossible { [weak self] deviceID in
+                guard let self else { return }
+                self.enableWPComPushNotifications(siteIDs: fallbackSites, deviceID: deviceID) { success in
+                    if success {
+                        self.deleteWooPushRegistrations(for: fallbackSites)
+                    }
+                }
             }
         }
 
         if selfDrivenPushNotificationEnabled {
-            DDLogInfo("📱 Self Registering Push Notifications for all sites")
-            Task { @MainActor [weak self] in
-                guard let self else { return }
-                do {
-                    try await registerSelfDrivenPushNotificationsForAllSites(with: newToken)
-                    // Disable WPCom PNs for successfully registered sites
-                    if let deviceID = registrationState.deviceID {
-                        disableWPComPushNotificationsIfNeeded(
-                            siteIDs: registrationState.siteIDsRegisteredForWooPNs,
-                            deviceID: deviceID
-                        )
-                    } else {
-                        // Register with WPCom to get deviceID for disabling
-                        registerForWPComPushNotificationsIfPossible()
-                    }
-                } catch {
-                    registerForWPComPushNotificationsIfPossible()
-                }
+            // WPCom only needs the device when it has none; new devices start with every site enabled,
+            // so sites already on Woo push are disabled again once it's registered.
+            if registrationState.deviceID == nil {
+                registerForWPComPushNotificationsIfPossible(onRegistered: disableWPComForRegisteredWooSites)
             }
         } else {
-            registerForWPComPushNotificationsIfPossible()
+            migrateWooPushRegistrationsToWPComIfNeeded()
+        }
+        Task { @MainActor [weak self] in
+            await self?.refreshWooPushRegistrationsIfNeeded()
         }
     }
 
@@ -487,6 +597,10 @@ extension PushNotificationsManager {
             return UNNotificationPresentationOptions(rawValue: 0)
         }
 
+        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: content.userInfo) == false else {
+            return []
+        }
+
         handleRemoteNotificationInAllAppStates(content.userInfo)
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
@@ -495,17 +609,19 @@ extension PushNotificationsManager {
                 // Ignore WPCom PNs if site is registered for Woo PNs
                 return []
             }
-            configuration.application
-                .presentInAppNotification(title: foregroundNotification.title,
-                                          subtitle: foregroundNotification.subtitle,
-                                          message: foregroundNotification.message,
-                                          actionTitle: Localization.viewInAppNotification) { [weak self] in
-                    guard let self else { return }
-                    self.presentDetails(for: foregroundNotification)
-                    self.foregroundNotificationsToViewSubject.send(foregroundNotification)
-                    self.analytics.track(.viewInAppPushNotificationPressed,
-                                                   withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
-                }
+            if !paidOrderNoticeSuppressor.shouldSuppress(foregroundNotification) {
+                configuration.application
+                    .presentInAppNotification(title: foregroundNotification.title,
+                                              subtitle: foregroundNotification.subtitle,
+                                              message: foregroundNotification.message,
+                                              actionTitle: Localization.viewInAppNotification) { [weak self] in
+                        guard let self else { return }
+                        self.presentDetails(for: foregroundNotification)
+                        self.foregroundNotificationsToViewSubject.send(foregroundNotification)
+                        self.analytics.track(.viewInAppPushNotificationPressed,
+                                                       withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
+                    }
+            }
 
             foregroundNotificationsSubject.send(foregroundNotification)
 
@@ -534,6 +650,9 @@ extension PushNotificationsManager {
 
         // Remote notification response is handled separately.
         if let notification = PushNotification.from(userInfo: userInfo) {
+            guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false else {
+                return
+            }
             handleRemoteNotificationInAllAppStates(userInfo)
             await handleInactiveRemoteNotification(notification: notification)
         } else {
@@ -548,13 +667,17 @@ extension PushNotificationsManager {
     @MainActor
     func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
         guard applicationState == .background, // Proceeds only if the app is in background.
-              let _ = userInfo[APNSKey.identifier] // Ensures that we are only processing a remote notification.
+              userInfo[APNSKey.type] != nil // Ensures that we are only processing a remote notification.
         else {
             return .noData
         }
 
         guard PushNotificationSharedConstants.isKnownNotificationType(in: userInfo) else {
             DDLogVerbose("📱 Discarding background push notification with unknown type")
+            return .noData
+        }
+
+        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false else {
             return .noData
         }
 
@@ -726,8 +849,9 @@ private extension PushNotificationsManager {
            let type = Note.Kind(rawValue: typeString),
            let siteID,
            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
-            // Badge: Update
-            incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
+            // Badge: Update. Site-credential sessions read the badge from the placeholder ID, not the push's blog ID.
+            let countSiteID = PushNotification.resolvedSiteID(notificationSiteID, stores: stores)
+            incrementNotificationCount(siteID: countSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: type, postNotifications: true)
             }
 
@@ -782,6 +906,10 @@ private extension PushNotificationsManager {
         if notification.kind != .comment {
             configuration.application.presentNotificationDetails(notification: notification)
         }
+        // The Products tab clears this on appear, but it may already be visible when the push is opened.
+        if notification.kind == .storeStock {
+            resetBadgeCount(type: .storeStock, siteID: notification.resolvedSiteID(stores: stores))
+        }
     }
 }
 
@@ -790,9 +918,102 @@ private extension PushNotificationsManager {
 //
 private extension PushNotificationsManager {
 
+    /// Re-registers the stored token with every visible store whose next check is due.
+    @MainActor
+    func performWooPushRefresh() async {
+        guard stores.isAuthenticated, let deviceToken = registrationState.deviceToken else {
+            return
+        }
+        guard selfDrivenPushNotificationEnabled == true else {
+            return
+        }
+        do {
+            try await registerSelfDrivenPushNotificationsForAllSites(with: deviceToken)
+        } catch {
+            DDLogError("⛔️ Woo push registration failed for some sites: \(error)")
+        }
+    }
+
+    /// A store is due when it has no scheduled check, the check has been reached, or the check is
+    /// more than a day ahead because the device clock moved backwards.
+    func isWooPushRefreshDue(for siteID: Int64) -> Bool {
+        guard let nextCheck = registrationState.wooPushNextCheck(for: siteID) else {
+            return true
+        }
+        let remaining = nextCheck.timeIntervalSince(currentDate())
+        return remaining <= 0 || remaining > Self.wooPushRefreshInterval
+    }
+
+    static let wooPushRefreshInterval: TimeInterval = 24 * 60 * 60
+    static let wooPushRetryInterval: TimeInterval = 4 * 60 * 60
+
+    private func scheduleNextWooPushCheck(for siteID: Int64, after interval: TimeInterval) {
+        registrationState.setWooPushNextCheck(currentDate().addingTimeInterval(interval), for: siteID)
+    }
+
+    /// Woo Core answers `rest_no_route` when push notifications are turned off on the store:
+    /// through the Jetpack tunnel as `DotcomError.noRestRoute`, over REST as a 404 with that code.
+    func isWooPushRouteMissing(_ error: Error) -> Bool {
+        if let dotcomError = error as? DotcomError, case .noRestRoute = dotcomError {
+            return true
+        }
+        if let networkError = error as? NetworkError, case .notFound = networkError, networkError.errorCode == "rest_no_route" {
+            return true
+        }
+        return false
+    }
+
+    /// Woo push is off on the store (or WooCommerce is too old for it): drops the local registration and
+    /// schedules the next check according to whether WPCom notifications can be restored.
+    private func handleWooPushUnavailable(siteID: Int64,
+                                          deviceToken: String) {
+        guard stores.isAuthenticated, registrationState.deviceToken == deviceToken else { return }
+        registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+        let hasFallback = hasWPComNotificationsFallback(siteID: siteID)
+        let interval = hasFallback ? Self.wooPushRetryInterval : Self.wooPushRefreshInterval
+        scheduleNextWooPushCheck(for: siteID, after: interval)
+        guard hasFallback else {
+            return
+        }
+        enableWPComPushNotifications(siteIDs: [siteID], deviceID: registrationState.deviceID) { [weak self] enabled in
+            guard enabled, let self,
+                  self.stores.isAuthenticated,
+                  self.registrationState.deviceToken == deviceToken else {
+                return
+            }
+            self.scheduleNextWooPushCheck(for: siteID, after: Self.wooPushRefreshInterval)
+        }
+    }
+
+    /// Whether WPCom can deliver the site's notifications: a WPCom session and a visible, fully Jetpack-connected
+    /// site. Jetpack CP sites have no WPCom notifications.
+    func hasWPComNotificationsFallback(siteID: Int64) -> Bool {
+        guard !stores.isAuthenticatedWithoutWPCom,
+              !UserDefaults.standard.hiddenStoreIDs.contains(siteID),
+              let site = loadTargetSite(siteID: siteID) else {
+            return false
+        }
+        return site.isJetpackConnected && site.isJetpackThePluginInstalled
+    }
+
+    /// Self-driven push eligibility depends on the logged-in account, so it is unknown at the start of every session
+    /// until it's checked. Device tokens received before the check completes wait for its result. A token still
+    /// waiting from the previous session is dropped, as iOS delivers it again once the app registers for push.
+    func observeLoggedInStateForSelfDrivenPushEligibility() {
+        loggedInStateSubscription = stores.isLoggedInPublisher.sink { [weak self] _ in
+            guard let self else { return }
+            selfDrivenPushNotificationEnabled = nil
+            pendingTokenData = nil
+            checkSelfDrivenPushNotificationsEligibility()
+        }
+    }
+
     func checkSelfDrivenPushNotificationsEligibility() {
-        Task { @MainActor in
+        selfDrivenPushEligibilityCheck?.cancel()
+        selfDrivenPushEligibilityCheck = Task { @MainActor in
             let isEnabled = await selfDriventPNEligiblityChecker.checkEligibility()
+            // A newer check replaced this one, for example after a login or logout.
+            guard !Task.isCancelled else { return }
             if selfDrivenPushNotificationEnabled != isEnabled {
                 selfDrivenPushNotificationEnabled = isEnabled
                 if let pendingTokenData {
@@ -818,21 +1039,22 @@ private extension PushNotificationsManager {
     /// Throws if any site fails to register.
     @MainActor
     func registerSelfDrivenPushNotificationsForAllSites(with deviceToken: String) async throws {
+        let hiddenSiteIDs = UserDefaults.standard.hiddenStoreIDs
         var allSiteIDs = storageManager.viewStorage.loadAllSites()
-            .filter { $0.isWooCommerceActive?.boolValue == true }
+            .filter { $0.isWooCommerceActive?.boolValue == true && !hiddenSiteIDs.contains($0.siteID) }
             .map(\.siteID)
         if allSiteIDs.isEmpty, let siteID {
             allSiteIDs = [siteID]
         }
 
-        let siteIDsToRegister = allSiteIDs.filter { !registrationState.isSiteRegisteredForWooPNs($0) }
+        let siteIDsToRegister = allSiteIDs.filter { isWooPushRefreshDue(for: $0) }
         guard siteIDsToRegister.isNotEmpty else {
-            DDLogDebug("📱 All \(allSiteIDs.count) site(s) already registered for push notifications")
+            DDLogDebug("📱 All \(allSiteIDs.count) site(s) have a next check that is not due")
             return
         }
 
         DDLogDebug("📱 Registering push token for \(siteIDsToRegister.count) site(s): \(siteIDsToRegister) " +
-                   "(skipping \(allSiteIDs.count - siteIDsToRegister.count) already registered)")
+                   "(skipping \(allSiteIDs.count - siteIDsToRegister.count) site(s) whose next check is not due)")
 
         var failedSiteIDs: [Int64] = []
         await withTaskGroup(of: (Int64, Bool).self) { group in
@@ -887,10 +1109,10 @@ private extension PushNotificationsManager {
             analytics.track(event: .PushNotifications.wooPushTokenRegisterSuccess(targetSite: loadTargetSite(siteID: siteID)))
         } catch {
             DDLogDebug("📱 Push token registration failed for site \(siteID): \(error)")
-            analytics.track(event: .PushNotifications.wooPushTokenRegisterError(targetSite: loadTargetSite(siteID: siteID), error: error))
-            if case .notFound = error as? NetworkError {
-                registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+            if case PushNotificationError.notAuthenticated = error {
+                throw error
             }
+            analytics.track(event: .PushNotifications.wooPushTokenRegisterError(targetSite: loadTargetSite(siteID: siteID), error: error))
             throw error
         }
     }
@@ -903,6 +1125,10 @@ private extension PushNotificationsManager {
         // Check plugin version before attempting registration
         Task { @MainActor [weak self] in
             guard let self else { return }
+            guard stores.isAuthenticated else {
+                onCompletion(.failure(PushNotificationError.notAuthenticated))
+                return
+            }
             let minimumVersion = WooPluginRequirements.minimumVersion
             let pluginVersionChecker = pluginVersionCheckerFactory.makeChecker(
                 siteID: siteID,
@@ -911,9 +1137,13 @@ private extension PushNotificationsManager {
             )
             do {
                 let result = try await pluginVersionChecker.checkCompatibility()
+                guard stores.isAuthenticated else {
+                    onCompletion(.failure(PushNotificationError.notAuthenticated))
+                    return
+                }
                 if case .incompatible(let currentVersion, _) = result {
                     DDLogError("⛔️ Unable to register self-driven push token: WooCommerce plugin version \(currentVersion) is below required \(minimumVersion)")
-                    registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+                    handleWooPushUnavailable(siteID: siteID, deviceToken: deviceToken)
                     onCompletion(.failure(PushNotificationError.pluginVersionIncompatible(
                         currentVersion: currentVersion,
                         requiredVersion: minimumVersion
@@ -931,6 +1161,10 @@ private extension PushNotificationsManager {
     }
 
     private func performDeviceRegistration(siteID: Int64, deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        guard stores.isAuthenticated else {
+            onCompletion(.failure(PushNotificationError.notAuthenticated))
+            return
+        }
         let device = APNSDevice(deviceToken: deviceToken)
         // REST fallback via `RequestConverter` routes to the currently selected site's URL, dropping
         // the target `siteID` from the original `JetpackRequest`. It's only safe when the target is
@@ -949,10 +1183,17 @@ private extension PushNotificationsManager {
 
             switch result {
             case .success(let tokenID):
-                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, siteID: siteID, onCompletion: onCompletion)
+                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, siteID: siteID, deviceToken: deviceToken, onCompletion: onCompletion)
 
             case .failure(let error):
                 DDLogError("⛔️ Unable to register self-driven push token for site \(siteID): \(error)")
+                if self.stores.isAuthenticated && self.registrationState.deviceToken == deviceToken {
+                    if self.isWooPushRouteMissing(error) {
+                        self.handleWooPushUnavailable(siteID: siteID, deviceToken: deviceToken)
+                    } else {
+                        self.scheduleNextWooPushCheck(for: siteID, after: Self.wooPushRetryInterval)
+                    }
+                }
                 onCompletion(.failure(error))
             }
         }
@@ -960,11 +1201,22 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func handleSelfDrivenRegistrationSuccess(tokenID: Int64,
-                                             siteID: Int64,
-                                             onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+    private func handleSelfDrivenRegistrationSuccess(tokenID: Int64,
+                                                     siteID: Int64,
+                                                     deviceToken: String,
+                                                     onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        guard stores.isAuthenticated, registrationState.deviceToken == deviceToken else {
+            onCompletion(.success(tokenID))
+            return
+        }
         registrationState.setWooPushNotificationTokenID(tokenID)
+        let wasRegistered = registrationState.isSiteRegisteredForWooPNs(siteID)
         registrationState.markSiteAsRegisteredForWooPNs(siteID)
+        scheduleNextWooPushCheck(for: siteID, after: Self.wooPushRefreshInterval)
+        // WPCom is already disabled for registered stores; a new device disables every registered store through the existing onRegistered path.
+        if !wasRegistered {
+            disableWPComPushNotificationsIfNeeded(siteIDs: [siteID], deviceID: registrationState.deviceID)
+        }
         onCompletion(.success(tokenID))
     }
 
@@ -1011,21 +1263,113 @@ private extension PushNotificationsManager {
         }))
     }
 
-    func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let siteID,
-              let tokenID = registrationState.wooPushNotificationToken,
-              let tokenIDInt = Int64(tokenID) else {
-            return completion(.success(()))
+    /// Re-enables mobile push notifications for the given site IDs, when falling back to
+    /// WPCom-driven notifications after self-driven push is turned off.
+    ///
+    /// - Note: re-enables both `newComment` and `storeOrder` — any custom WPCom preference was
+    ///   already lost when we disabled them on Woo registration.
+    ///
+    func enableWPComPushNotifications(siteIDs: [Int64], deviceID: String?, onCompletion: @escaping (Bool) -> Void) {
+        guard let deviceID, let deviceIDInt = Int64(deviceID),
+              siteIDs.isNotEmpty,
+              !configuration.storesManager.isAuthenticatedWithoutWPCom else {
+            return onCompletion(false)
         }
-        stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
-            siteID: siteID,
-            tokenID: tokenIDInt,
-            // The target siteID is the currently selected site, so REST fallback via
-            // `RequestConverter` is safe and preserved for site-credentials users who have no
-            // Jetpack tunnel available.
-            availableAsRESTRequest: true,
-            onCompletion: completion
-        ))
+        let updatedBlogs = siteIDs.map {
+            NotificationSettings.Blog(blogID: $0, devices: [
+                .init(deviceID: deviceIDInt, newComment: true, storeOrder: true)
+            ])
+        }
+        let siteSettings = NotificationSettings(blogs: updatedBlogs)
+        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [weak self] result in
+            // `AccountStore` invokes this completion off the main thread; hop back before touching
+            // state and dispatching the follow-up teardown action (the Dispatcher is main-thread only).
+            let handleResult = {
+                guard let self else { return onCompletion(false) }
+                switch result {
+                case .success:
+                    self.analytics.track(.wpcomDeviceEnablePushNotificationsSuccess)
+                    onCompletion(true)
+                case .failure(let error):
+                    self.analytics.track(.wpcomDeviceEnablePushNotificationsError, withError: error)
+                    onCompletion(false)
+                }
+            }
+            if Thread.isMainThread {
+                handleResult()
+            } else {
+                DispatchQueue.main.async(execute: handleResult)
+            }
+        }))
+    }
+
+    /// Deletes the store-side Woo push token records for the given sites, unmarking each site
+    /// only after its delete succeeds so a failed site retries on the next launch.
+    ///
+    /// Registration returns a per-site record ID but only the last one is kept locally. The
+    /// store's create endpoint upserts by device UUID/token and returns the existing record's
+    /// ID, so re-registering first recovers the ID to delete.
+    func deleteWooPushRegistrations(for siteIDs: [Int64]) {
+        guard siteIDs.isNotEmpty else { return }
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            for siteID in siteIDs {
+                do {
+                    let tokenID = try await upsertWooPushTokenRecord(siteID: siteID)
+                    try await deleteWooPushTokenRecord(siteID: siteID, tokenID: tokenID)
+                    registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+                    analytics.track(event: .PushNotifications.wooPushTokenDeleteSuccess(targetSite: loadTargetSite(siteID: siteID)))
+                    DDLogInfo("📱 Woo push token deleted for site \(siteID)")
+                } catch {
+                    if case .notFound = error as? NetworkError {
+                        // The route or record is gone (plugin downgraded or feature disabled) —
+                        // there is nothing left to delete.
+                        registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+                    }
+                    analytics.track(event: .PushNotifications.wooPushTokenDeleteError(targetSite: loadTargetSite(siteID: siteID), error: error))
+                    DDLogError("⛔️ Unable to delete Woo push token for site \(siteID): \(error)")
+                }
+            }
+            if registrationState.siteIDsRegisteredForWooPNs.isEmpty {
+                registrationState.clearWooRegistration()
+            }
+        }
+    }
+
+    /// Dispatched directly rather than through the registration flow so the upsert doesn't
+    /// re-mark the site or overwrite the stored record ID.
+    @MainActor
+    private func upsertWooPushTokenRecord(siteID: Int64) async throws -> Int64 {
+        guard let deviceToken = registrationState.deviceToken else {
+            throw PushNotificationError.missingDeviceToken
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(NotificationAction.registerDeviceForSelfDrivenPushNotifications(
+                siteID: siteID,
+                device: APNSDevice(deviceToken: deviceToken),
+                applicationID: WooConstants.pushApplicationID,
+                deviceLocale: Locale.current.languageRegionIdentifier ?? Locale.current.identifier,
+                appVersion: Bundle.main.version,
+                // REST fallback routes to the selected site's URL, so it is only safe when the
+                // target is the selected site; cross-site calls go through the Jetpack tunnel.
+                availableAsRESTRequest: siteID == self.siteID
+            ) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    private func deleteWooPushTokenRecord(siteID: Int64, tokenID: Int64) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
+                siteID: siteID,
+                tokenID: tokenID,
+                availableAsRESTRequest: siteID == self.siteID
+            ) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }
 
@@ -1037,10 +1381,12 @@ private extension PushNotificationsManager {
     /// Tracks the specified Notification's Payload.
     ///
     func trackNotification(with userInfo: [AnyHashable: Any]) {
-        var properties = [String: Any]()
+        var properties = [String: WooAnalyticsEventPropertyType]()
 
-        // Determine notification source - Woo driven PNs don't have `note_id` in the payload
-        let isWooDriven = userInfo[APNSKey.identifier] == nil
+        // Determine notification source - Woo driven PNs don't have `note_id` in the payload.
+        // The value may be absent, Swift `nil`, or `NSNull`, so resolve it via `string(forKey:)`,
+        // which normalizes all of those to `nil`.
+        let isWooDriven = userInfo.string(forKey: APNSKey.identifier) == nil
         properties[AnalyticKey.source] = isWooDriven ? NotificationSource.wooDriven : NotificationSource.wpcom
 
         // Set identifier based on source
@@ -1061,19 +1407,33 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.token] = theToken
         }
 
-        let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
+        // Attribute the event to the notification's origin site, not the currently selected one.
+        let notificationSiteID = userInfo.integer(forKey: APNSKey.siteID)
+        let originSiteID: Int64?
+        let originSite: Yosemite.Site?
         if stores.isAuthenticatedWithoutWPCom {
+            // Application-password sessions are single-site and the payload site ID is unreliable, so use the selected site.
             properties[AnalyticKey.fromSelectedSite] = true
-        } else if let siteID, let notificationSiteID {
-            properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
+            originSiteID = siteID
+            originSite = stores.sessionManager.defaultSite
+        } else {
+            originSiteID = notificationSiteID
+            originSite = notificationSiteID.flatMap { loadTargetSite(siteID: $0) }
+            if let siteID, let notificationSiteID {
+                properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
+            }
         }
 
         switch applicationState {
         case .inactive:
-            analytics.track(.pushNotificationAlertPressed, withProperties: properties)
+            analytics.track(event: .PushNotifications.pushNotificationAlertPressed(originSiteID: originSiteID,
+                                                                                  originSite: originSite,
+                                                                                  properties: properties))
         default:
             properties[AnalyticKey.appState] = applicationState.rawValue
-            analytics.track(.pushNotificationReceived, withProperties: properties)
+            analytics.track(event: .PushNotifications.pushNotificationReceived(originSiteID: originSiteID,
+                                                                              originSite: originSite,
+                                                                              properties: properties))
         }
     }
 
@@ -1168,6 +1528,7 @@ private enum PushNotificationError: Error {
     case missingDeviceToken
     case siteRegistrationFailed(siteIDs: [Int64])
     case pluginVersionIncompatible(currentVersion: String, requiredVersion: String)
+    case notAuthenticated
 }
 
 private enum PushType {

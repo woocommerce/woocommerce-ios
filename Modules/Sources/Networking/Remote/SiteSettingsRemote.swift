@@ -2,6 +2,7 @@ import Foundation
 
 /// Protocol for SiteSettingsRemote to enable testing.
 public protocol SiteSettingsRemoteProtocol {
+    @MainActor
     func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool
     func loadAnalyticsOrderDateType(for siteID: Int64) async throws -> SiteSetting
     func updateAnalyticsOrderDateType(for siteID: Int64, value: String) async throws -> SiteSetting
@@ -10,13 +11,13 @@ public protocol SiteSettingsRemoteProtocol {
 }
 
 /// Features that can be enabled/disabled in core, under WC Settings > Advanced > Features.
-public enum SiteSettingsFeature {
+public enum SiteSettingsFeature: Sendable {
     case pointOfSale
 }
 
 /// SiteSettings: Remote Endpoints
 ///
-public class SiteSettingsRemote: Remote {
+public class SiteSettingsRemote: Remote, @unchecked Sendable {
 
     /// Retrieves all of the general `SiteSetting`s for a given site.
     ///
@@ -25,16 +26,16 @@ public class SiteSettingsRemote: Remote {
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadGeneralSettings(for siteID: Int64, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
-        let path = Constants.siteSettingsPath + Constants.generalSettingsGroup
-        let request = JetpackRequest(wooApiVersion: .mark3,
-                                     method: .get,
-                                     siteID: siteID,
-                                     path: path,
-                                     parameters: nil,
-                                     availableAsRESTRequest: true)
-        let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
+        enqueue(generalSettingsRequest(for: siteID), mapper: generalSettingsMapper(for: siteID), completion: completion)
+    }
 
-        enqueue(request, mapper: mapper, completion: completion)
+    public func loadGeneralSettings(for siteID: Int64,
+                                    detectUnexpectedResponses: Bool,
+                                    completion: @escaping (Result<[SiteSetting], Error>) -> Void) {
+        enqueue(generalSettingsRequest(for: siteID),
+                mapper: generalSettingsMapper(for: siteID),
+                detectUnexpectedResponses: detectUnexpectedResponses,
+                completion: completion)
     }
 
     /// Retrieves all of the product `SiteSetting`s for a given site.
@@ -111,7 +112,7 @@ public class SiteSettingsRemote: Remote {
                               settingID: String,
                               value: String,
                               completion: @escaping (Result<SiteSetting, Error>) -> Void) {
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + settingGroup.rawValue + "/" + settingID
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
@@ -161,9 +162,10 @@ public class SiteSettingsRemote: Remote {
     /// - Returns: A boolean indicating the updated feature status.
     /// - Throws: Error if the request fails.
     ///
+    @MainActor
     public func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool {
         let value = enabled ? Constants.featureEnabledValue : Constants.featureDisabledValue
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + Constants.advancedSettingsGroup + "/woocommerce_feature_\(feature.rawValue)_enabled"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
@@ -210,7 +212,7 @@ public class SiteSettingsRemote: Remote {
     /// - Throws: An error if the request fails or the response cannot be parsed.
     ///
     public func updateAnalyticsOrderDateType(for siteID: Int64, value: String) async throws -> SiteSetting {
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsOrderDateTypeSettingID
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
@@ -249,7 +251,7 @@ public class SiteSettingsRemote: Remote {
     /// - Throws: An error if the request fails or the response cannot be parsed.
     ///
     public func updateAnalyticsScheduledImport(for siteID: Int64, value: String) async throws -> SiteSetting {
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsScheduledImportSettingID
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
@@ -270,6 +272,21 @@ public extension SiteSettingsFeature {
         case .pointOfSale:
             return "point_of_sale"
         }
+    }
+}
+
+private extension SiteSettingsRemote {
+    func generalSettingsRequest(for siteID: Int64) -> JetpackRequest {
+        JetpackRequest(wooApiVersion: .mark3,
+                       method: .get,
+                       siteID: siteID,
+                       path: Constants.siteSettingsPath + Constants.generalSettingsGroup,
+                       parameters: nil,
+                       availableAsRESTRequest: true)
+    }
+
+    func generalSettingsMapper(for siteID: Int64) -> SiteSettingsMapper {
+        SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
     }
 }
 

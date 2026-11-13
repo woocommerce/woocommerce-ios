@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 /// Used by backend to track AI-generation usage and measure costs
 public enum GenerativeContentRemoteFeature: String {
@@ -66,12 +67,18 @@ public protocol GenerativeContentRemoteProtocol {
 
 /// Product: Remote Endpoints
 ///
-public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProtocol {
+public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProtocol, @unchecked Sendable {
     private enum GenerativeContentRemoteError: Error {
         case tokenNotFound
     }
 
-    private var token: JWToken?
+    /// Cached between calls, which can run concurrently.
+    private let cachedToken = OSAllocatedUnfairLock<JWToken?>(initialState: nil)
+
+    private var token: JWToken? {
+        get { cachedToken.withLock { $0 } }
+        set { cachedToken.withLock { $0 = newValue } }
+    }
 
     public func generateText(siteID: Int64,
                              base: String,
@@ -164,8 +171,8 @@ private extension GenerativeContentRemote {
                       feature: GenerativeContentRemoteFeature,
                       responseFormat: GenerativeContentRemoteResponseFormat?,
                       token: JWToken) async throws -> String {
-        let parameters: [String: Any] = {
-            var params = [String: Any]()
+        let parameters: RequestParameterConvertibleDictionary = {
+            var params = RequestParameterConvertibleDictionary()
             params[ParameterKey.token] = token.token
             params[ParameterKey.question] = base
             params[ParameterKey.stream] = ParameterValue.stream
@@ -194,12 +201,12 @@ private extension GenerativeContentRemote {
             "Do not include any explanations and only provide the ISO language code in your response.",
             "Text: ```\(string)```"
         ].joined(separator: "\n")
-        let parameters: [String: Any] = [ParameterKey.token: token.token,
-                                         ParameterKey.question: prompt,
-                                         ParameterKey.stream: ParameterValue.stream,
-                                         ParameterKey.gptModel: ParameterValue.gptModel,
-                                         ParameterKey.feature: feature.rawValue,
-                                         ParameterKey.fields: ParameterValue.choices]
+        let parameters: RequestParameterConvertibleDictionary = [ParameterKey.token: token.token,
+                                                                 ParameterKey.question: prompt,
+                                                                 ParameterKey.stream: ParameterValue.stream,
+                                                                 ParameterKey.gptModel: ParameterValue.gptModel,
+                                                                 ParameterKey.feature: feature.rawValue,
+                                                                 ParameterKey.fields: ParameterValue.choices]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
                                     path: Path.jetpackAIQuery,
@@ -289,14 +296,14 @@ private extension GenerativeContentRemote {
 
         let prompt = input + "\n" + expectedJsonFormat
 
-        let parameters: [String: Any] = [ParameterKey.token: token.token,
-                                         ParameterKey.question: prompt,
-                                         ParameterKey.stream: ParameterValue.stream,
-                                         ParameterKey.gptModel: ParameterValue.gptModel,
-                                         ParameterKey.responseFormat: GenerativeContentRemoteResponseFormat.json.rawValue,
-                                         ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
-                                         ParameterKey.fields: ParameterValue.choices,
-                                         ParameterKey.maxTokens: ParameterValue.maxTokens]
+        let parameters: RequestParameterConvertibleDictionary = [ParameterKey.token: token.token,
+                                                                 ParameterKey.question: prompt,
+                                                                 ParameterKey.stream: ParameterValue.stream,
+                                                                 ParameterKey.gptModel: ParameterValue.gptModel,
+                                                                 ParameterKey.responseFormat: GenerativeContentRemoteResponseFormat.json.rawValue,
+                                                                 ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
+                                                                 ParameterKey.fields: ParameterValue.choices,
+                                                                 ParameterKey.maxTokens: ParameterValue.maxTokens]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
                                     path: Path.jetpackAIQuery,

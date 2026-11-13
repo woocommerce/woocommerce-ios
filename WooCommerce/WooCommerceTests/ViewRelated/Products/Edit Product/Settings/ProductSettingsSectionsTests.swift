@@ -4,6 +4,7 @@ import Yosemite
 
 /// Test cases for `ProductSettingsSections`.
 ///
+@MainActor
 final class ProductSettingsSectionsTests: XCTestCase {
 
     // MARK: Simple product

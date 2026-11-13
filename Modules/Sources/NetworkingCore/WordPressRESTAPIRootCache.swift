@@ -1,31 +1,40 @@
 import Foundation
+import os
 
-/// Protocol for reading the discovered WordPress REST API root URL for a given site.
+/// Protocol for accessing the discovered WordPress REST API root URL for a given site.
 ///
-public protocol RESTAPIRootCaching {
+public protocol RESTAPIRootCaching: Sendable {
     func root(for siteURL: String) -> String?
+    func removeRoot(_ root: String, for siteURL: String)
 }
 
 /// Thread-safe in-memory cache for discovered WordPress REST API root URLs.
 /// Not persisted — fresh per app session.
 ///
-public final class WordPressRESTAPIRootCache: RESTAPIRootCaching {
+public final class WordPressRESTAPIRootCache: RESTAPIRootCaching, Sendable {
     public static let shared = WordPressRESTAPIRootCache()
 
-    private var cache: [String: String] = [:]
-    private let queue = DispatchQueue(label: "WordPressRESTAPIRootCache", attributes: .concurrent)
+    private let cache = OSAllocatedUnfairLock<[String: String]>(initialState: [:])
 
     init() {}
 
     public func root(for siteURL: String) -> String? {
-        queue.sync { cache[siteURL.trimSlashes().lowercased()] }
+        cache.withLock { $0[siteURL.trimSlashes().lowercased()] }
     }
 
     public func setRoot(_ root: String, for siteURL: String) {
-        queue.async(flags: .barrier) { self.cache[siteURL.trimSlashes().lowercased()] = root }
+        cache.withLock { $0[siteURL.trimSlashes().lowercased()] = root }
+    }
+
+    public func removeRoot(_ root: String, for siteURL: String) {
+        cache.withLock { cache in
+            let key = siteURL.trimSlashes().lowercased()
+            guard cache[key] == root else { return }
+            cache[key] = nil
+        }
     }
 
     public func reset() {
-        queue.async(flags: .barrier) { self.cache.removeAll() }
+        cache.withLock { $0.removeAll() }
     }
 }

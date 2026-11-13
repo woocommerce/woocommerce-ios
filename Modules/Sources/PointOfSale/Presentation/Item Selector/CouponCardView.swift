@@ -3,27 +3,29 @@ import SwiftUI
 
 struct CouponCardView: View {
     private let coupon: POSCoupon
+    private let isApplied: Bool
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumCardSizeMultiplier)
     }
 
-    init(coupon: POSCoupon) {
+    init(coupon: POSCoupon, isApplied: Bool = false) {
         self.coupon = coupon
+        self.isApplied = isApplied
     }
 
     var body: some View {
-        HStack(spacing: Constants.cardSpacing) {
+        HStack(spacing: metrics.spacing.none) {
             POSCouponImageView(size: dimension,
-                               state: coupon.isExpired ? .expired : .normal)
+                               state: imageState)
 
-            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
                 Text(coupon.code)
                     .foregroundStyle(titleColor)
-                    .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
                 Text(coupon.summary)
@@ -39,13 +41,16 @@ struct CouponCardView: View {
                         .lineLimit(1)
                 }
             }
-            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            .multilineTextAlignment(.leading)
+            .padding(.horizontal, metrics.padding.medium * (1 / scale))
+            .padding(.vertical, metrics.padding.small * (1 / scale))
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(cardBackgroundColor)
         .posItemCardBorderStyles()
+        .accessibilityValue(accessibilityValue)
+        .accessibilityHint(accessibilityHint)
     }
 }
 
@@ -58,6 +63,33 @@ private extension CouponCardView {
             value: "Expired on %@",
             comment: "Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'."
         )
+
+        static let appliedAccessibilityValue = NSLocalizedString(
+            "couponCardView.appliedAccessibilityValue",
+            value: "Applied",
+            comment: "Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart."
+        )
+
+        static let appliedAccessibilityHint = NSLocalizedString(
+            "couponCardView.appliedAccessibilityHint",
+            value: "Removes the coupon from the cart",
+            comment: "Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart."
+        )
+    }
+
+    var imageState: POSCouponImageState {
+        if coupon.isExpired {
+            return .expired
+        }
+        return isApplied ? .applied : .normal
+    }
+
+    var accessibilityValue: String {
+        imageState == .applied ? Localization.appliedAccessibilityValue : ""
+    }
+
+    var accessibilityHint: String {
+        imageState == .applied ? Localization.appliedAccessibilityHint : ""
     }
 
     func formattedExpirationText(date: Date) -> String {
@@ -84,7 +116,7 @@ private extension CouponCardView {
 
 #if DEBUG
 #Preview("Coupon states") {
-    VStack(spacing: 16) {
+    VStack(spacing: POSMetrics.regular.spacing.medium) {
         VStack(alignment: .leading) {
             Text("Active Coupon")
                 .font(.caption)
@@ -94,6 +126,17 @@ private extension CouponCardView {
                 code: "Coupon-123",
                 summary: "10% off - All Products"
             ))
+        }
+
+        VStack(alignment: .leading) {
+            Text("Applied Coupon")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            CouponCardView(coupon: .init(
+                id: .init(underlyingType: .coupon, itemID: 3),
+                code: "Applied-Coupon-123",
+                summary: "10% off - All Products"
+            ), isApplied: true)
         }
 
         VStack(alignment: .leading) {
@@ -108,6 +151,6 @@ private extension CouponCardView {
             ))
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 #endif

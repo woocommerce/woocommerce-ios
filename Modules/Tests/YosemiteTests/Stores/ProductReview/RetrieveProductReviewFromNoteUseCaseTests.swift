@@ -10,6 +10,7 @@ private typealias ProductReviewFromNoteRetrieveError = RetrieveProductReviewFrom
 
 /// Test cases for `RetrieveProductReviewFromNoteUseCase`.
 ///
+@MainActor
 final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     private var notificationsRemote: MockNotificationsRemote!
@@ -21,8 +22,8 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         storageManager.viewStorage
     }
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         notificationsRemote = MockNotificationsRemote()
         productReviewsRemote = MockProductReviewsRemote()
@@ -30,13 +31,13 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         storageManager = MockStorageManager()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
         productsRemote = nil
         productReviewsRemote = nil
         notificationsRemote = nil
 
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_it_fetches_all_entities_and_returns_the_Parcel() throws {
@@ -311,8 +312,8 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
 private extension RetrieveProductReviewFromNoteUseCaseTests {
     enum TestData {
         static let siteID: Int64 = 398
-        static let product = Product.fake().copy(siteID: siteID, productID: 756_611)
-        static let productReview = MockProductReview().make(siteID: siteID, reviewID: 1_981_157, productID: product.productID)
-        static let note = MockNote().make(noteID: 9_981, metaSiteID: siteID, metaReviewID: productReview.reviewID)
+        static var product: Yosemite.Product { Product.fake().copy(siteID: siteID, productID: 756_611) }
+        static let productReview = MockProductReview().make(siteID: siteID, reviewID: 1_981_157, productID: 756_611)
+        static var note: Yosemite.Note { MockNote().make(noteID: 9_981, metaSiteID: siteID, metaReviewID: productReview.reviewID) }
     }
 }

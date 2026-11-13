@@ -3,6 +3,7 @@ import AuthenticationServices
 import SwiftUI
 import UIKit
 import WordPressAuthenticator
+import protocol WooFoundationCore.CrashLogger
 
 /// Drives the QR-login UI flow end-to-end.
 ///
@@ -29,6 +30,7 @@ final class QRLoginCoordinator {
     private let parser: QRLoginPayloadParser
     private let cameraPermissionChecker: QRLoginCameraPermissionCheckerProtocol
     private let analytics: QRLoginAnalyticsTracking
+    private let crashLogging: CrashLogger
     private let onEnterSiteURL: () -> Void
     private let onShowHelp: () -> Void
     private let onSuccess: () -> Void
@@ -55,11 +57,18 @@ final class QRLoginCoordinator {
     /// deliver a second result — it must be replaced, not reused.
     private weak var prologueViewController: UIViewController?
 
+    /// Held weakly so `dropConsumedScanner()` can remove this scanner from the
+    /// stack once it has delivered a payload. (WOOMOB-3136)
+    private weak var scannerViewController: UIViewController?
+
+    private weak var rootViewController: UIViewController?
+
     init(mode: Mode = .camera,
          navigationController: UINavigationController,
          parser: QRLoginPayloadParser = QRLoginPayloadParser(),
          cameraPermissionChecker: QRLoginCameraPermissionCheckerProtocol = DefaultQRLoginCameraPermissionChecker(),
          analytics: QRLoginAnalyticsTracking? = nil,
+         crashLogging: CrashLogger = ServiceLocator.crashLogging,
          onEnterSiteURL: @escaping () -> Void,
          onShowHelp: @escaping () -> Void,
          onSuccess: @escaping () -> Void,
@@ -72,6 +81,7 @@ final class QRLoginCoordinator {
         // a default parameter expression. The coordinator is @MainActor so
         // constructing it in the body is fine.
         self.analytics = analytics ?? DefaultQRLoginAnalyticsTracking()
+        self.crashLogging = crashLogging
         self.onEnterSiteURL = onEnterSiteURL
         self.onShowHelp = onShowHelp
         self.onSuccess = onSuccess
@@ -96,6 +106,14 @@ final class QRLoginCoordinator {
     func presentDeepLink(payload: QRLoginPayload) {
         handleScanned(payload: payload)
     }
+
+    /// Whether this flow's own screens are still on the navigation stack.
+    var isNavigationStackShowingQRFlow: Bool {
+        guard let rootViewController else {
+            return false
+        }
+        return navigationController.viewControllers.contains(rootViewController)
+    }
 }
 
 // MARK: - Prologue + scanner
@@ -108,12 +126,13 @@ private extension QRLoginCoordinator {
             onBackTapped: { [weak self] in self?.handlePrologueBack() },
             onHelpTapped: { [weak self] in self?.showHelp() },
             onScanTapped: { [weak self] in self?.handleScanCTA() },
-            onSiteAddressTapped: { [weak self] in self?.fallbackToSiteAddress() },
+            onSiteAddressTapped: { [weak self] in self?.handleEnterSiteURL() },
             onURLTapped: { Self.copyLoginURL() }
         )
         // The dark prologue hides the shared navigation bar and draws its own
         // light Back / Help controls over the bubble background.
         prologueViewController = pushScreen(view,
+                                            analyticsStep: .qrPrologue,
                                             navigationBarStyle: .hidden,
                                             prefersLightStatusBar: true,
                                             showsHelpButton: false)
@@ -162,6 +181,25 @@ private extension QRLoginCoordinator {
         }
     }
 
+    func popScanner() {
+        navigationController.popViewController(animated: true)
+    }
+
+    static func copyLoginURL() {
+        UIPasteboard.general.string = WooConstants.qrLoginInstructionsURL
+        // Snackbar / toast is owned by the prologue view — for now a Notice via
+        // NoticePresenter would belong, but presenting it requires a host
+        // controller. Left as a follow-up — the clipboard side is the
+        // load-bearing part.
+    }
+}
+
+// MARK: - Scanner presentation
+
+extension QRLoginCoordinator {
+    /// Pushes the QR scanner and records it for `dropConsumedScanner()`. Internal
+    /// (not private) so navigation tests can place a scanner on the stack without
+    /// the async camera-permission flow. (WOOMOB-3136)
     func showScanner() {
         analytics.trackStep(.qrScan)
         let view = QRLoginScannerView(
@@ -174,24 +212,35 @@ private extension QRLoginCoordinator {
         )
         // The scanner is full-bleed camera UI with its own in-view chrome, so it
         // keeps the navigation bar hidden and does not use the toolbar Help item.
-        pushScreen(view, navigationBarStyle: .hidden, showsHelpButton: false)
+        scannerViewController = pushScreen(view, analyticsStep: .qrScan, navigationBarStyle: .hidden, showsHelpButton: false)
     }
+}
 
-    func popScanner() {
-        navigationController.popViewController(animated: true)
-    }
+// MARK: - Magic-link callback
 
-    func fallbackToSiteAddress() {
-        analytics.trackClick(.qrLoginFallback)
-        handleEnterSiteURL()
-    }
-
-    static func copyLoginURL() {
-        UIPasteboard.general.string = WooConstants.qrLoginInstructionsURL
-        // Snackbar / toast is owned by the prologue view — for now a Notice via
-        // NoticePresenter would belong, but presenting it requires a host
-        // controller. Left as a follow-up — the clipboard side is the
-        // load-bearing part.
+extension QRLoginCoordinator {
+    /// Hands the captured magic-link callback to `WordPressAuthenticator`. Internal
+    /// (not private) so tests can drive it without an auth session.
+    func handleMagicLinkCallback(_ callbackURL: URL) {
+        // Push, don't present: the auth-session sheet is still dismissing here, and a modal
+        // presented over it can be dropped, leaving "Signing you in…" up. (WOOMOB-4262)
+        // QR login shares the magic-link `.login` case but never saved a site address,
+        // so it must not restore one (would leak a stale address from an abandoned
+        // email magic-link request into this account — wrong-store error).
+        let handled = WordPressAuthenticator.shared.handleWordPressAuthUrl(callbackURL,
+                                                                           pushingOnto: navigationController,
+                                                                           restoresSiteAddress: false)
+        guard handled else {
+            // Unwind so the merchant can retry instead of being stranded on "Signing you in…".
+            // The URL carries the auth token, so it is never logged.
+            DDLogError("⛔️ QR login: the magic-link callback could not be handled.")
+            crashLogging.logMessage("QR login magic-link callback could not be handled", properties: nil, level: .error)
+            handleMagicLinkCancelled()
+            return
+        }
+        // Sign-in proceeds through WordPressAuthenticator from here —
+        // release the coordinator; the login UI is about to be replaced.
+        finish()
     }
 }
 
@@ -200,6 +249,9 @@ private extension QRLoginCoordinator {
 private extension QRLoginCoordinator {
 
     func handleScanned(payload: QRLoginPayload) {
+        // Drop the consumed scanner so no Back/Cancel can return to it. (WOOMOB-3136)
+        dropConsumedScanner()
+
         switch payload {
         case let .selfHosted(token, siteURL):
             let strategy = SelfHostedQRLoginStrategy(token: token, siteURL: siteURL)
@@ -268,9 +320,9 @@ private extension QRLoginCoordinator {
     /// system prompt on the redirect back. The QR "signing in" screen stays
     /// visible underneath the sheet.
     ///
-    /// On a captured callback the auth sheet is dismissed and the URL then runs
-    /// through the existing `WordPressAuthenticator` handler — sign-in completes
-    /// and the app swaps to the logged-in UI — and the coordinator finishes. If
+    /// On a captured callback the URL runs through the existing
+    /// `WordPressAuthenticator` handler, pushed onto the QR navigation stack —
+    /// sign-in completes and the store picker follows — and the coordinator finishes. If
     /// the merchant dismisses the sheet instead, `handleMagicLinkCancelled`
     /// unwinds the QR surface so they can retry.
     func openMagicLink(_ url: URL) {
@@ -278,26 +330,7 @@ private extension QRLoginCoordinator {
         let runner = QRLoginMagicLinkAuthRunner(
             anchor: window,
             onCallback: { [weak self] callbackURL in
-                guard let rootViewController = window?.rootViewController else {
-                    self?.finish()
-                    return
-                }
-                // `WordPressAuthenticator.openAuthenticationURL` presents the
-                // magic-link sign-in controller on whatever is topmost. The
-                // ASWebAuthenticationSession sheet is still being torn down when
-                // this callback fires, so handing the URL over right away would
-                // present that controller on the dismissing sheet — it would
-                // never reach the window and its navigation controller would
-                // deallocate before the login epilogue runs, tripping the
-                // `showLoginEpilogue` assertion. Dismiss the sheet first, then
-                // hand off from the now-stable root.
-                rootViewController.dismiss(animated: false) {
-                    _ = WordPressAuthenticator.shared.handleWordPressAuthUrl(callbackURL,
-                                                                             rootViewController: rootViewController)
-                }
-                // Sign-in proceeds through WordPressAuthenticator from here —
-                // release the coordinator; the login UI is about to be replaced.
-                self?.finish()
+                self?.handleMagicLinkCallback(callbackURL)
             },
             onCancel: { [weak self] in
                 self?.handleMagicLinkCancelled()
@@ -318,9 +351,9 @@ private extension QRLoginCoordinator {
         pushScreen(host)
     }
 
-    /// Merchant cancelled from the number-match screen. In camera mode the
-    /// merchant gets the scanner back; in deep-link mode there's no scanner to
-    /// fall back to, so popping the host view exits the QR-login surface.
+    /// Merchant cancelled from the number-match screen. In camera mode popping the
+    /// host lands on the prologue (the consumed scanner was already dropped); in
+    /// deep-link mode there's no scanner, so it exits the QR-login surface.
     func handleHostCancelled() {
         navigationController.popViewController(animated: true)
         finishIfDeepLink()
@@ -358,7 +391,13 @@ private extension QRLoginCoordinator {
     /// screen underneath stays on the stack and is reachable by going back, so
     /// its controls must keep working. It is released later, when the QR screens
     /// are popped (`handlePrologueBack`) or replaced on a successful sign-in.
+    ///
+    /// Shared by every "Log in with site address" entry point — the prologue, the
+    /// number-match host, and the scan-error screen — so all of them record the
+    /// `login_qr_fallback` click under the QR flow, preserving the "came from QR"
+    /// signal before the site-address screen switches to `login_site_address`.
     func handleEnterSiteURL() {
+        analytics.trackClick(.qrLoginFallback)
         onEnterSiteURL()
     }
 
@@ -372,10 +411,8 @@ private extension QRLoginCoordinator {
     /// The merchant dismissed the magic-link auth sheet without finishing
     /// sign-in. Unwind the QR surface so they can retry.
     ///
-    /// In camera mode this unwinds to the prologue rather than the scanner: the
-    /// scanner keeps the camera live (the merchant may still be pointing at a
-    /// QR code, so it could capture another) and landing there re-enters the
-    /// scan step. Deep-link mode has no prologue, so it pops the host view and
+    /// In camera mode this pops to the prologue (the consumed scanner was already
+    /// dropped). Deep-link mode has no prologue, so it pops the host view and
     /// exits the QR surface.
     func handleMagicLinkCancelled() {
         if let prologueViewController {
@@ -384,6 +421,20 @@ private extension QRLoginCoordinator {
             navigationController.popViewController(animated: false)
         }
         finishIfDeepLink()
+    }
+
+    /// Removes the consumed scanner from the navigation stack so Back/Cancel can't
+    /// return to it — a scanner is single-use and won't deliver again. Camera mode
+    /// only; deep-link mode never pushes a scanner. (WOOMOB-3136)
+    func dropConsumedScanner() {
+        guard case .camera = mode, let scanner = scannerViewController else {
+            return
+        }
+        let remaining = navigationController.viewControllers.filter { $0 !== scanner }
+        if remaining.count != navigationController.viewControllers.count {
+            navigationController.setViewControllers(remaining, animated: false)
+        }
+        scannerViewController = nil
     }
 
     /// Fires `onFinished` exactly once so the owner can release this coordinator.
@@ -413,7 +464,7 @@ private extension QRLoginCoordinator {
             onPrimaryTapped: { [weak self] in self?.handleScanAgain() },
             onEnterSiteURLTapped: { [weak self] in self?.handleEnterSiteURL() }
         )
-        pushScreen(view)
+        pushScreen(view, analyticsStep: .qrError)
     }
 }
 
@@ -422,19 +473,35 @@ private extension QRLoginCoordinator {
 private extension QRLoginCoordinator {
     /// Wraps `view` in a `QRLoginHostingController` and pushes it onto the login
     /// navigation stack, showing the navigation bar with a "Help" item by default.
+    ///
+    /// Every appearance re-asserts `flow: login_qr` (and `analyticsStep`, when
+    /// given) as tracker state without tracking an event. A screen pushed on top —
+    /// e.g. the site-address fallback — switches the shared flow to its own, so
+    /// without this, events from a QR screen the merchant went back to would be
+    /// attributed to that other flow.
     @discardableResult
     func pushScreen<Content: View>(_ view: Content,
+                                   analyticsStep: AuthenticatorAnalyticsTracker.Step? = nil,
                                    navigationBarStyle: QRLoginNavigationBarStyle = .inherited,
                                    prefersLightStatusBar: Bool = false,
                                    showsHelpButton: Bool = true) -> QRLoginHostingController<Content> {
         let hosting = QRLoginHostingController(rootView: view)
         hosting.navigationBarStyle = navigationBarStyle
         hosting.prefersLightStatusBar = prefersLightStatusBar
+        hosting.onViewDidAppear = { [weak self] in
+            self?.analytics.setFlow(.loginQR)
+            if let analyticsStep {
+                self?.analytics.setStep(analyticsStep)
+            }
+        }
         if showsHelpButton {
             hosting.navigationItem.rightBarButtonItem = UIBarButtonItem(
                 title: Localization.help,
                 primaryAction: UIAction { [weak self] _ in self?.showHelp() }
             )
+        }
+        if rootViewController == nil {
+            rootViewController = hosting
         }
         navigationController.pushViewController(hosting, animated: true)
         return hosting

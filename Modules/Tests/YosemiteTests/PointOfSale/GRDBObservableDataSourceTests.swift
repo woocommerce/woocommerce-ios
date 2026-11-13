@@ -6,6 +6,7 @@ import WooFoundation
 @testable import Yosemite
 
 @Suite("GRDBObservableDataSource Tests")
+@MainActor
 struct GRDBObservableDataSourceTests {
     private let siteID: Int64 = 123
     private var grdbManager: GRDBManager!
@@ -230,6 +231,35 @@ struct GRDBObservableDataSourceTests {
 
         // Then: Items automatically updated
         #expect(sut.productItems.count == 3)
+    }
+
+    @Test("Releasing the data source with active observations deallocates it")
+    func test_release_when_observations_are_active_then_data_source_is_deallocated() async throws {
+        // Given: A data source with product, variation and statistics observations running
+        let parentProduct = createPersistedProduct(id: 100, name: "Parent", type: "variable")
+        try await insertProducts([parentProduct])
+        try await insertTestVariations(parentID: 100, count: 2)
+        var dataSource: GRDBObservableDataSource? = GRDBObservableDataSource(
+            siteID: siteID,
+            grdbManager: grdbManager,
+            currencySettings: CurrencySettings(),
+            pageSize: 5
+        )
+        dataSource?.loadProducts()
+        dataSource?.loadVariations(for: POSVariableParentProduct(
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+            name: "Parent",
+            productImageSource: nil,
+            productID: 100,
+            allAttributes: []
+        ))
+        weak var weakDataSource = dataSource
+
+        // When
+        dataSource = nil
+
+        // Then: No observation retains the data source, so releasing it also releases its cancellables
+        #expect(weakDataSource == nil)
     }
 
     @Test("Load more products guards against concurrent loads")
@@ -633,6 +663,70 @@ struct GRDBObservableDataSourceTests {
         #expect(variation2.name.contains("Large"), "Variation name should include 'Large' from attributes loaded via .including()")
     }
 
+    @Test("Variation names use only the parent attributes used for variations")
+    func test_variation_names_skip_parent_attributes_not_used_for_variations() async throws {
+        // Given: A variable product with a variation attribute and a display-only attribute
+        let parent = createPersistedProduct(id: 100, name: "Variable Hoodie", type: "variable")
+        try await insertProducts([parent])
+
+        try await grdbManager.databaseConnection.write { db in
+            let variation = PersistedProductVariation(
+                id: 1001,
+                siteID: siteID,
+                productID: 100,
+                sku: "VAR-RED",
+                globalUniqueID: nil,
+                price: "29.99",
+                downloadable: false,
+                fullDescription: nil,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            try variation.insert(db)
+        }
+
+        try await insertProductAttribute(
+            productID: 100,
+            remoteAttributeID: 1,
+            name: "Color",
+            position: 0,
+            variation: true,
+            options: ["Red", "Blue"]
+        )
+        try await insertProductAttribute(
+            productID: 100,
+            remoteAttributeID: 0,
+            name: "Material",
+            position: 1,
+            variation: false,
+            options: ["Cotton"]
+        )
+        try await insertVariationAttribute(variationID: 1001, remoteAttributeID: 1, name: "Color", option: "Red")
+
+        await waitForProductLoad(expectedCount: 1) {
+            sut.loadProducts()
+        }
+
+        guard case .variableParentProduct(let loadedParent) = sut.productItems.first else {
+            Issue.record("Expected variable parent product")
+            return
+        }
+
+        // When: Load variations
+        await waitForVariationLoad {
+            sut.loadVariations(for: loadedParent)
+        }
+
+        // Then: The name has the variation attribute only
+        guard case .variation(let variation) = sut.variationItems.first else {
+            Issue.record("Expected a variation")
+            return
+        }
+        #expect(variation.name.contains("Red"))
+        #expect(!variation.name.contains("Material"))
+    }
+
     // MARK: - Helper Methods
 
     private func waitForProductLoad(expectedCount: Int? = nil, action: () -> Void) async {
@@ -680,7 +774,7 @@ struct GRDBObservableDataSourceTests {
                 }
             }
 
-            @MainActor func observe() {
+            @Sendable @MainActor func observe() async {
                 let conditionMet = withObservationTracking {
                     // Access the observable properties and check condition
                     _ = sut.productItems
@@ -694,7 +788,7 @@ struct GRDBObservableDataSourceTests {
                 } onChange: {
                     // Re-observe on the main actor when changes occur
                     Task { @MainActor in
-                        observe()
+                        await observe()
                     }
                 }
 
@@ -705,7 +799,7 @@ struct GRDBObservableDataSourceTests {
             }
 
             Task { @MainActor in
-                observe()
+                await observe()
             }
         }
     }

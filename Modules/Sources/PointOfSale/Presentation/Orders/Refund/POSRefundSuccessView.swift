@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundSuccessView: View {
+    @Environment(\.posMetrics) private var metrics
     let formattedRefundTotal: String
     let paymentMethodDescription: String
     let customerEmail: String?
@@ -11,15 +12,10 @@ struct POSRefundSuccessView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
-            Spacer(minLength: POSSpacing.large)
-
-            VStack(spacing: POSSpacing.xxLarge) {
-                contentView
-                buttonsSection
-            }
-
-            Spacer(minLength: POSSpacing.large)
+        POSStatusScreenLayout(buttonsWidth: .capped) {
+            contentView
+        } buttons: {
+            buttonsSection
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
@@ -31,10 +27,10 @@ struct POSRefundSuccessView: View {
 
 private extension POSRefundSuccessView {
     var contentView: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             POSSuccessIcon()
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 Text(Localization.title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
@@ -52,21 +48,19 @@ private extension POSRefundSuccessView {
             }
             .multilineTextAlignment(.center)
         }
-        .padding(.horizontal, POSPadding.xLarge)
+        .padding(.horizontal, metrics.padding.xLarge)
         .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
     }
 
 
     var buttonsSection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             Button(Localization.doneButton, action: onDone)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
             Button(Localization.emailReceiptButton, action: onEmailReceipt)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .padding(.horizontal, POSPadding.large)
-        .frame(maxWidth: POSRefundModalLayout.fullScreenCompletionActionMaxWidth)
     }
 }
 
@@ -116,6 +110,6 @@ private extension POSRefundSuccessView {
         onDone: {},
         onEmailReceipt: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

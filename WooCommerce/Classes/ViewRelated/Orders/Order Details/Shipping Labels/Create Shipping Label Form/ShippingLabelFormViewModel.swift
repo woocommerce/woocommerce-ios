@@ -3,9 +3,6 @@ import Yosemite
 import Combine
 import WooFoundation
 import protocol Storage.StorageManagerType
-import protocol Experiments.FeatureFlagService
-
-
 /// Provides view data for Create Shipping Label, and handles init/UI/navigation actions needed.
 ///
 final class ShippingLabelFormViewModel {
@@ -177,18 +174,14 @@ final class ShippingLabelFormViewModel {
     ///
     @Published private(set) var shouldPresentEUShippingNotice: Bool = false
 
-    /// Flag to indicate if the `.euShippingNotification` feature is activated.
-    ///
-    private let isEUShippingNotificationEnabled: Bool
-
     var subscriptions = Set<AnyCancellable>()
 
+    @MainActor
     init(order: Order,
          originAddress: Address?,
          destinationAddress: Address?,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userDefaults: UserDefaults) {
 
         self.siteID = order.siteID
@@ -209,8 +202,6 @@ final class ShippingLabelFormViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
-        self.isEUShippingNotificationEnabled = featureFlagService.isFeatureFlagEnabled(.euShippingNotification)
-
         state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()
         syncPackageDetails()
@@ -454,7 +445,7 @@ final class ShippingLabelFormViewModel {
         }
 
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        let discount = currencyFormatter.formatAmount(Decimal(discountValue)) ?? nil
+        let discount = currencyFormatter.formatAmount(Decimal(discountValue))
 
         return discount
     }
@@ -481,7 +472,7 @@ final class ShippingLabelFormViewModel {
     func filteredCountries(for type: ShipType) -> [Country] {
         switch type {
         case .origin:
-            return countries.filter { Constants.acceptedUSPSCountries.contains($0.code) }
+            return countries.filter { USPSDomesticMailCountries.rawCountryCodes.contains($0.code) }
         case .destination:
             return countries
         }
@@ -799,8 +790,9 @@ extension ShippingLabelFormViewModel {
 
     /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
     ///
+    @MainActor
     func syncShippingLabelAccountSettings() {
-        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { [weak self] result in
+        let handleResult: @MainActor @Sendable (Result<ShippingLabelAccountSettings, Error>) -> Void = { [weak self] result in
             guard let self else { return }
 
             switch result {
@@ -809,6 +801,9 @@ extension ShippingLabelFormViewModel {
             case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
             }
+        }
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { result in
+            Task { @MainActor in handleResult(result) }
         }
         stores.dispatch(action)
     }
@@ -836,6 +831,7 @@ extension ShippingLabelFormViewModel {
     /// Purchases a shipping label with the origin and destination address, package, and rate selected in the Shipping Label Form.
     /// - Parameter onCompletion: Closure to be executed on completion with the success/failure result of the purchase.
     ///
+    @MainActor
     func purchaseLabel(onCompletion: @escaping ((Result<TimeInterval, Error>) -> Void)) {
         guard let originAddress,
               let destinationAddress,
@@ -872,12 +868,7 @@ extension ShippingLabelFormViewModel {
         }
 
         let startTime = Date()
-        let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
-                                                               orderID: order.orderID,
-                                                               originAddress: originAddress,
-                                                               destinationAddress: destinationAddress,
-                                                               packages: packages,
-                                                               emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { [weak self] result in
+        let handleResult: @MainActor @Sendable (Result<[ShippingLabel], Error>) -> Void = { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let labels):
@@ -886,6 +877,14 @@ extension ShippingLabelFormViewModel {
             case .failure(let error):
                 onCompletion(.failure(error))
             }
+        }
+        let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
+                                                               orderID: order.orderID,
+                                                               originAddress: originAddress,
+                                                               destinationAddress: destinationAddress,
+                                                               packages: packages,
+                                                               emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { result in
+            Task { @MainActor in handleResult(result) }
         }
         stores.dispatch(action)
     }
@@ -926,10 +925,6 @@ extension ShippingLabelFormViewModel {
     }
 
     private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
-        guard isEUShippingNotificationEnabled else {
-            return onCompletion(false)
-        }
-
         let action = AppSettingsAction.loadEUShippingNoticeDismissState { result in
             switch result {
             case .success(let dismissed):
@@ -973,21 +968,6 @@ private extension ShippingLabelFormViewModel {
     }
 
     enum Constants {
-        /// This is hardcoded for now based on: https://git.io/JBuja.
-        /// It would be great if this can be fetched remotely.
-        ///
-        static let acceptedUSPSCountries = [
-            "US", // United States
-            "PR", // Puerto Rico
-            "VI", // Virgin Islands
-            "GU", // Guam
-            "AS", // American Samoa
-            "UM", // United States Minor Outlying Islands
-            "MH", // Marshall Islands
-            "FM", // Micronesia
-            "MP" // Northern Mariana Islands
-        ]
-
         /// Country code for US - to check for international shipment
         ///
         static let usCountryCode = "US"

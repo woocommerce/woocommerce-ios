@@ -1,6 +1,6 @@
 RELEASE-NOTES.txt merge=union
 
-.configure-files/*.enc binary
+.a8c-secrets/*.age binary
 
 # Track large binary assets via Git LFS
 fastlane/appstoreres/assets/** filter=lfs diff=lfs merge=lfs -text

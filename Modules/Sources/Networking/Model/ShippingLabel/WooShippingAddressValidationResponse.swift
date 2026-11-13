@@ -6,7 +6,7 @@ import Foundation
 /// For public consumption, we'll convert those to a `WooShippingAddressValidationError`, and expose
 /// a `WooShippingAddressValidationSuccess` instead if there were no errors.
 ///
-internal struct WooShippingAddressValidationResponse: Equatable {
+internal struct WooShippingAddressValidationResponse: Equatable, Sendable {
     let result: Result<WooShippingAddressValidationSuccess, WooShippingAddressValidationError>
 
     init(normalizedAddress: WooShippingNormalizedAddress?,

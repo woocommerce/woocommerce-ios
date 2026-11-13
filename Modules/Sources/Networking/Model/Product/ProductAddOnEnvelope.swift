@@ -74,7 +74,7 @@ internal struct ProductAddOnEnvelope: Decodable {
         // It appears to be unexpected crashes when parsing some JSON objects that are not handled inside subsequent `try JSONSerialization.data` call.
         // https://github.com/woocommerce/woocommerce-ios/issues/4205
         guard JSONSerialization.isValidJSONObject(addOnJsonObject) else {
-            throw ProductAddOnEnvelopeError.invalidJsonObject(addOnJsonObject)
+            throw ProductAddOnEnvelopeError.invalidJsonObject(String(describing: addOnJsonObject))
         }
 
         let jsonData = try JSONSerialization.data(withJSONObject: addOnJsonObject, options: .fragmentsAllowed)
@@ -87,5 +87,5 @@ internal struct ProductAddOnEnvelope: Decodable {
 public enum ProductAddOnEnvelopeError: Error {
     /// Represents an error when a `add-on JSON object` can't be converted to `JSON data`.
     ///
-    case invalidJsonObject([String: Any])
+    case invalidJsonObject(String)
 }

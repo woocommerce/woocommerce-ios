@@ -3,6 +3,7 @@ import Yosemite
 
 /// View model for `ThemeSettingView`
 ///
+@MainActor
 final class ThemeSettingViewModel: ObservableObject {
 
     @Published private(set) var currentThemeName: String = ""
@@ -32,7 +33,6 @@ final class ThemeSettingViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func updateCurrentThemeName() async {
         loadingCurrentTheme = true
         let theme = await loadCurrentTheme()
@@ -71,7 +71,6 @@ private extension ThemeSettingViewModel {
         }
     }
 
-    @MainActor
     func loadCurrentTheme() async -> WordPressTheme? {
         await withCheckedContinuation { continuation in
             stores.dispatch(WordPressThemeAction.loadCurrentTheme(siteID: siteID) { result in

@@ -3,6 +3,7 @@ import XCTest
 
 final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase {
 
+    @MainActor
     func test_presentationStyle_for_paymentError_tryAnotherPaymentMethod_is_message_paymentError_with_correctActions() {
         // Given
         var spyRetryCalled = false
@@ -28,6 +29,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         XCTAssertNil(viewModel.backToCheckoutButtonViewModel)
     }
 
+    @MainActor
     func test_presentationStyle_for_paymentError_tryPaymentAgain_is_message_paymentError_with_correctActions() {
         // Given
         var spyRetryCalled = false
@@ -55,6 +57,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         XCTAssertTrue(spyBackToCheckoutCalled)
     }
 
+    @MainActor
     func test_presentationStyle_for_paymentError_dontRetry_is_message_paymentErrorNonRetryable_with_correctActions() {
         // Given
         let eventDetails = CardPresentPaymentEventDetails.paymentError(
@@ -78,6 +81,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         XCTAssertTrue(spyTryAnotherPaymentMethod)
     }
 
+    @MainActor
     func test_presentationStyle_for_paymentSuccess_is_message_paymentSuccess_with_order_total() {
         // Given
         let eventDetails = CardPresentPaymentEventDetails.paymentSuccess(done: {})
@@ -96,6 +100,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         XCTAssertEqual(viewModel.message, "A card payment of $200.50 was successfully made.")
     }
 
+    @MainActor
     func test_presentationStyle_for_paymentCaptureError_is_message_paymentCaptureError_with_correctActions() {
         // Given
         let eventDetails = CardPresentPaymentEventDetails.paymentCaptureError(cancelPayment: {})
@@ -126,6 +131,33 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         XCTAssertTrue(spyPaymentCaptureErrorNewOrderCalled)
     }
 
+    @MainActor
+    func test_presentationStyle_for_paymentCancellationConfirmation_is_message_with_dismiss_action() {
+        // Given
+        var spyDismissCalled = false
+        let eventDetails = CardPresentPaymentEventDetails.paymentCancellationConfirmation {
+            spyDismissCalled = true
+        }
+        let dependencies = createPresentationStyleDependencies()
+
+        // When
+        let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
+            for: eventDetails,
+            dependencies: dependencies)
+
+        // Then
+        guard case .message(.paymentCancellationConfirmation(let viewModel)) = presentationStyle else {
+            return XCTFail("Expected payment cancellation confirmation message not found")
+        }
+        XCTAssertEqual(viewModel.title, "Payment canceled")
+        XCTAssertEqual(viewModel.message,
+                       "No payment was taken. The Tap to Pay checkmark and sound only confirmed that the card was read.")
+
+        viewModel.tryAgainButtonViewModel.actionHandler()
+        XCTAssertTrue(spyDismissCalled)
+    }
+
+    @MainActor
     func test_presentationStyle_for_scanningForReader_is_alert_scanningForReader_with_correctActions() {
         // Given
         let eventDetails = CardPresentPaymentEventDetails.scanningForReaders(endSearch: {})

@@ -1,0 +1,13 @@
+{
+  "aps": {
+    "alert": {
+      "title": "You have a new order! 🎉",
+      "body": "New order for $12.00 on Your WooCommerce Store"
+    },
+    "category": "store_order",
+    "mutable-content": 1
+  },
+  "type": "store_order",
+  "blog": 123456789,
+  "note_id": 987654321
+}

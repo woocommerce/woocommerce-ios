@@ -44,7 +44,7 @@ struct ChildItemList: View {
                 emptyView
             }
         }
-        .background(Color.posSurface)
+        .background(Color.posSurface.ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)
         .task {
             guard state.items.isEmpty else {

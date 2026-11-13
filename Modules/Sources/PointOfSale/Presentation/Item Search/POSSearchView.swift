@@ -1,9 +1,11 @@
 import SwiftUI
+import class WooFoundation.KeyboardObserver
 import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
 import enum Yosemite.SearchDebounceStrategy
 
 /// Protocol defining search capabilities for POS items
+@MainActor
 protocol POSSearchable {
     var searchFieldPlaceholder: String { get }
     /// Recent search history for the current item type
@@ -22,6 +24,7 @@ protocol POSSearchable {
 
 /// A reusable search field view for POS items
 struct POSSearchField: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAnalytics) private var analytics
 
@@ -42,7 +45,7 @@ struct POSSearchField: View {
     }
 
     var body: some View {
-        HStack(spacing: POSSpacing.small) {
+        HStack(spacing: metrics.spacing.small) {
             POSPageHeaderBackButton(configuration: .init(state: .enabled, action: {
                 searchTerm = ""
                 onBack()
@@ -61,6 +64,7 @@ struct POSSearchField: View {
             .onChange(of: searchTerm) { _, newValue in
                 handleSearchTermChange(newValue)
             }
+            .accessibilityIdentifier("pos-search-field")
         }
         .frame(maxWidth: .infinity)
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in

@@ -123,10 +123,7 @@ struct ProductSharingMessageGenerationView: View {
                 viewModel.didTapShare()
             }
             .buttonStyle(PrimaryButtonStyle())
-            .sharePopover(isPresented: $viewModel.isSharePopoverPresented) {
-                viewModel.shareSheet
-            }
-            .shareSheet(isPresented: $viewModel.isShareSheetPresented) {
+            .shareView(isPresented: $viewModel.isShareViewPresented) {
                 viewModel.shareSheet
             }
             .safariSheet(isPresented: $isShowingLegalPage, url: legalURL)

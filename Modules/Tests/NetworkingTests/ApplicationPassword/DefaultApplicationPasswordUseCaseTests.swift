@@ -30,6 +30,68 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
+    func test_generation_when_opted_in_and_payload_is_malformed_then_returns_typed_failure() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: URLSuffix.applicationPassword, filename: "order")
+        let useCase = try DefaultApplicationPasswordUseCase(username: "demo", password: "secret", siteAddress: "https://test.com",
+                                                            network: network,
+                                                            rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"),
+                                                            detectUnexpectedResponses: true)
+        // When
+        do {
+            _ = try await useCase.generateNewPassword()
+            XCTFail("Expected malformed response")
+        } catch {
+            // Then
+            XCTAssertEqual((error as? UnexpectedStoreResponseError)?.kind, .unexpectedContent)
+        }
+    }
+
+    @MainActor
+    func test_generation_when_opted_in_and_endpoint_is_unavailable_then_returns_application_passwords_disabled() async throws {
+        for statusCode in [404, 501] {
+            // Given: errors remaining after the network policy has classified unexpected responses.
+            let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: statusCode))
+            network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: error)
+            let useCase = try DefaultApplicationPasswordUseCase(username: "demo", password: "secret", siteAddress: "https://test.com",
+                                                                network: network,
+                                                                rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"),
+                                                                detectUnexpectedResponses: true)
+
+            // When
+            do {
+                _ = try await useCase.generateNewPassword()
+                XCTFail("Expected unavailable endpoint failure for status \(statusCode)")
+            } catch {
+                // Then
+                XCTAssertEqual(error as? ApplicationPasswordUseCaseError, .applicationPasswordsDisabled)
+            }
+        }
+    }
+
+    @MainActor
+    func test_generation_when_opted_in_and_network_classifies_unexpected_response_then_preserves_typed_failure() async throws {
+        for statusCode in [404, 501] {
+            // Given
+            let failure = UnexpectedStoreResponseError(kind: .unacceptableStatusCode, statusCode: statusCode)
+            network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: failure)
+            let useCase = try DefaultApplicationPasswordUseCase(username: "demo", password: "secret", siteAddress: "https://test.com",
+                                                                network: network,
+                                                                rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"),
+                                                                detectUnexpectedResponses: true)
+
+            // When
+            do {
+                _ = try await useCase.generateNewPassword()
+                XCTFail("Expected unexpected response failure for status \(statusCode)")
+            } catch {
+                // Then
+                XCTAssertEqual(error as? UnexpectedStoreResponseError, failure)
+            }
+        }
+    }
+
     func test_password_is_generated_with_correct_values_upon_success_response() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: URLSuffix.applicationPassword,
@@ -96,6 +158,33 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(failure == .unauthorizedRequest)
+    }
+
+    @MainActor
+    func test_generateNewPassword_when_site_rejects_saved_credentials_then_throws_siteCredentialsRejected() async throws {
+        // Given
+        let originalError = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+        let error = AFError.requestRetryFailed(
+            retryError: CookieNonceAuthenticator.Error.authenticationFailed(.invalidCredentials),
+            originalError: originalError
+        )
+        network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: error)
+        let sut = try DefaultApplicationPasswordUseCase(username: "demo",
+                                                        password: "qeWOhQ5RUV8W",
+                                                        siteAddress: "https://test.com",
+                                                        network: network,
+                                                        rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
+
+        // When
+        var failure: ApplicationPasswordUseCaseError?
+        do {
+            _ = try await sut.generateNewPassword()
+        } catch {
+            failure = error as? ApplicationPasswordUseCaseError
+        }
+
+        // Then
+        XCTAssertTrue(failure == .siteCredentialsRejected)
     }
 
     func test_password_is_generated_with_correct_values_upon_success_response_when_authenticated_with_wpcom() async throws {
@@ -199,5 +288,27 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertNil(storage.applicationPassword)
+    }
+
+    func test_wporg_initializer_with_mismatched_endpoint_site_throws() throws {
+        // Given
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://other.example"))
+        )
+
+        // When / Then
+        XCTAssertThrowsError(
+            try DefaultApplicationPasswordUseCase(
+                username: "demo",
+                password: "password",
+                siteAddress: "https://test.com",
+                authenticationEndpoints: endpoints,
+                network: network
+            )
+        ) { error in
+            guard case ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
     }
 }

@@ -18,6 +18,37 @@ public class LoginFields: NSObject {
     /// The site address if logging in via the self-hosted flow.
     @objc public var siteAddress = ""
 
+    /// The `siteAddress` value that marks a login as a WP.com login.
+    ///
+    /// `SiteCredentialsViewController` keys its WP.com mode off this exact string.
+    @objc public static let wpComSiteAddress = "https://wordpress.com"
+
+    /// The store address the merchant typed, kept so the epilogue can still match it once
+    /// `siteAddress` has been overwritten with `wpComSiteAddress`.
+    @objc public var siteAddressForEpilogue = ""
+
+    /// The address the login epilogue should match against.
+    ///
+    /// The stash only stands in while `siteAddress` holds the marker. Going back and entering a
+    /// different store address replaces `siteAddress`, and that address then wins, so changing
+    /// your mind after taking the fallback still matches the store last asked for.
+    @objc public var effectiveSiteAddress: String {
+        guard siteAddress == Self.wpComSiteAddress, siteAddressForEpilogue.isEmpty == false else {
+            return siteAddress
+        }
+        return siteAddressForEpilogue
+    }
+
+    /// Undoes the `wpComSiteAddress` marker written for the WP.com fallback, so the screens
+    /// behind it stop showing `https://wordpress.com` in place of the typed store address.
+    @objc public func restoreSiteAddressAfterWPComFallback() {
+        guard siteAddress == Self.wpComSiteAddress, siteAddressForEpilogue.isEmpty == false else {
+            return
+        }
+        siteAddress = siteAddressForEpilogue
+        siteAddressForEpilogue = ""
+    }
+
     /// The two factor code entered by a user.
     @objc public var multifactorCode = "" // 2fa code
 
@@ -26,6 +57,9 @@ public class LoginFields: NSObject {
 
     /// User ID for use with the nonce for social login
     @objc public var nonceUserID: Int = 0
+
+    /// 2FA methods WordPress.com listed for the last password login that needed a code.
+    @objc public var supportedAuthTypes = [String]()
 
     /// Used to restrict login to WordPress.com
     public var restrictToWPCom = false
@@ -77,9 +111,11 @@ public class LoginFields: NSObject {
     convenience init(username: String,
                      password: String,
                      siteAddress: String,
+                     siteAddressForEpilogue: String = "",
                      multifactorCode: String,
                      nonceInfo: SocialLogin2FANonceInfo?,
                      nonceUserID: Int,
+                     supportedAuthTypes: [String] = [],
                      restrictToWPCom: Bool,
                      emailAddress: String,
                      meta: LoginFieldsMeta,
@@ -88,9 +124,11 @@ public class LoginFields: NSObject {
         self.username = username
         self.password = password
         self.siteAddress = siteAddress
+        self.siteAddressForEpilogue = siteAddressForEpilogue
         self.multifactorCode = multifactorCode
         self.nonceInfo = nonceInfo
         self.nonceUserID = nonceUserID
+        self.supportedAuthTypes = supportedAuthTypes
         self.restrictToWPCom = restrictToWPCom
         self.emailAddress = emailAddress
         self.meta = meta
@@ -103,9 +141,11 @@ extension LoginFields {
         .init(username: username,
               password: password,
               siteAddress: siteAddress,
+              siteAddressForEpilogue: siteAddressForEpilogue,
               multifactorCode: multifactorCode,
               nonceInfo: nonceInfo,
               nonceUserID: nonceUserID,
+              supportedAuthTypes: supportedAuthTypes,
               restrictToWPCom: restrictToWPCom,
               emailAddress: emailAddress,
               meta: meta.copy(),

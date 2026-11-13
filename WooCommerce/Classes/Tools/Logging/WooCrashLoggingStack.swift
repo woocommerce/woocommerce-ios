@@ -97,6 +97,8 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     let featureFlagService: FeatureFlagService
 
+    private let buildConfiguration: BuildConfiguration
+
     let enableAppHangTracking = false
     let enableCaptureFailedRequests = false
 
@@ -104,8 +106,9 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
     ///
     private var hasBeenInitialized = false
 
-    init(featureFlagService: FeatureFlagService) {
+    init(featureFlagService: FeatureFlagService, buildConfiguration: BuildConfiguration = .current) {
         self.featureFlagService = featureFlagService
+        self.buildConfiguration = buildConfiguration
 
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .defaultAccountWasUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .logOutEventReceived, object: nil)
@@ -164,12 +167,17 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
         return TracksUser(userID: "\(account.userID)", email: account.email, username: account.username)
     }
 
+    /// Non-production builds report to a separate Sentry project.
+    ///
+    /// A different Sentry project for non-production builds avoids workflow issues due to how Sentry
+    /// computes latest and next releases when an automation marks an issue as solved there.
+    ///
     var sentryDSN: String {
-        return ApiCredentials.sentryDSN
+        return buildConfiguration.isProduction ? ApiCredentials.sentryDSN : ApiCredentials.sentryDSNInternal
     }
 
     var buildType: String {
-        return BuildConfiguration.current.rawValue
+        return buildConfiguration.rawValue
     }
 
     var shouldEnableAutomaticSessionTracking: Bool {
@@ -208,19 +216,22 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
 struct CrashLoggingSettings {
     static var didOptIn: Bool {
-        get {
-            // By default, opt the user into crash reporting
-            return UserDefaults.standard.object(forKey: .userOptedInCrashLogging) ?? true
-        }
-        set {
-            if newValue {
-                DDLogInfo("🔵 Crash Logging reporting restored.")
-            }
-            else {
-                DDLogInfo("🔴 Crash Logging opt-out complete.")
-            }
+        didOptIn(in: .standard)
+    }
 
-            UserDefaults.standard.set(newValue, forKey: .userOptedInCrashLogging)
+    static func didOptIn(in userDefaults: UserDefaults) -> Bool {
+        // By default, opt the user into crash reporting
+        return userDefaults.object(forKey: .userOptedInCrashLogging) ?? true
+    }
+
+    static func setDidOptIn(_ newValue: Bool, in userDefaults: UserDefaults) {
+        if newValue {
+            DDLogInfo("🔵 Crash Logging reporting restored.")
         }
+        else {
+            DDLogInfo("🔴 Crash Logging opt-out complete.")
+        }
+
+        userDefaults.set(newValue, forKey: .userOptedInCrashLogging)
     }
 }

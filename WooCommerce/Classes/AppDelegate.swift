@@ -150,7 +150,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// This is required for background catalog downloads in POS to complete successfully.
     func application(_ application: UIApplication,
                      handleEventsForBackgroundURLSession identifier: String,
-                     completionHandler: @escaping () -> Void) {
+                     completionHandler: @escaping @Sendable () -> Void) {
         DDLogInfo("🟣 Handling background URLSession events for identifier: \(identifier)")
 
         if identifier.hasPrefix("com.woocommerce.pos.catalog.download") {
@@ -160,13 +160,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 await downloadCoordinator.handleBackgroundSessionEvent(
                     sessionIdentifier: identifier,
                     completionHandler: completionHandler,
-                    parseHandler: { fileURL, siteID in
+                    parseHandler: { fileURL, siteID, snapshotDate in
                         // Use the POS catalog sync coordinator to parse and persist
                         guard let coordinator = ServiceLocator.stores.posCatalogSyncCoordinator else {
                             throw NSError(domain: "com.woocommerce.pos", code: -1,
                                          userInfo: [NSLocalizedDescriptionKey: "POS catalog coordinator not available"])
                         }
-                        try await coordinator.processBackgroundDownload(fileURL: fileURL, siteID: siteID)
+                        try await coordinator.processBackgroundDownload(fileURL: fileURL, siteID: siteID, snapshotDate: snapshotDate)
                     }
                 )
             }
@@ -253,6 +253,7 @@ extension AppDelegate {
         }
         DDLog.add(DDOSLogger.sharedInstance)
         DDLog.add(logger)
+        DDLog.add(ServiceLocator.recentApplicationLogProvider, with: .warning)
     }
 
     /// Sets up loggers for WordPress libraries
@@ -347,6 +348,13 @@ extension AppDelegate {
         if ProcessConfiguration.shouldSimulatePushNotification {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { _, _ in }
         }
+
+        #if DEBUG
+        if let credentials = ProcessConfiguration.debugAutoLoginCredentials {
+            ServiceLocator.stores.authenticate(credentials: credentials)
+            ServiceLocator.stores.updateDefaultStore(storeID: ProcessConfiguration.debugAutoLoginStoreID)
+        }
+        #endif
     }
 
     func disableAnimationsIfNeeded() {
@@ -355,15 +363,6 @@ extension AppDelegate {
         }
 
         UIView.setAnimationsEnabled(false)
-
-        /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
-        UIApplication
-            .shared
-            .connectedScenes
-            .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
-            .forEach {
-                $0.layer.speed = 100
-            }
     }
 
     func refreshCardPresentPaymentsOnboardingIfNeeded() {
@@ -419,6 +418,7 @@ extension AppDelegate {
         let stores = ServiceLocator.stores
         if stores.isAuthenticatedWithoutWPCom == false {
             stores.listenToWPCOMInvalidWPCOMTokenNotification()
+            stores.listenToUnknownBlogNotification()
         }
     }
 

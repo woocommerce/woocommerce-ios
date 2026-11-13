@@ -13,16 +13,29 @@ import protocol Storage.StorageManagerType
     ///
     /// - Parameters:
     ///     - cardPresentPaymentsConfiguration: The current configuration for the card payment. Use to check the validity of the order currency.
-    ///     - products: A list of products linked to the store. Used to check whether the order contains any product of type subscription.
+    ///     - products: A list of products linked to the store. Used to check whether the order contains any legacy subscription product type.
     ///
-    func isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-                                         products: [Product]) -> Bool {
-        isAmountEligibleForCardPayment &&
-        isStatusEligibleForCardPayment &&
-        isPaymentMethodEligibleForCardPayment &&
-        isCurrencyEligibleForCardPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) &&
-        !containsAnySubscription(from: products)
+    func cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
+                                       products: [Product]) -> OrderCardPresentPaymentEligibility {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry,
+              isAmountEligibleForCardPayment,
+              isStatusEligibleForCardPayment,
+              isPaymentMethodEligibleForCardPayment,
+              !containsAnySubscription(from: products) else {
+            return .ineligible
+        }
+        guard let orderCurrency = CurrencyCode(caseInsensitiveRawValue: currency) else {
+            DDLogWarn("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=currency_unrecognized")
+            return .ineligible
+        }
+        guard cardPresentPaymentsConfiguration.currencies.contains(orderCurrency) else {
+            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=currency_not_supported " +
+                      "country=\(cardPresentPaymentsConfiguration.countryCode.rawValue) currency=\(orderCurrency.rawValue)")
+            return .unsupportedCurrency(orderCurrency.rawValue)
+        }
+        return .eligible
     }
+
 
     private var isAmountEligibleForCardPayment: Bool {
         // If the order is paid, it is not eligible.
@@ -30,7 +43,11 @@ import protocol Storage.StorageManagerType
             return false
         }
 
-        guard let totalAmount = currencyFormatter.convertToDecimal(total), totalAmount.decimalValue > 0 else {
+        guard let totalAmount = currencyFormatter.convertToDecimal(total) else {
+            DDLogWarn("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=invalid_total")
+            return false
+        }
+        guard totalAmount.decimalValue > 0 else {
             return false
         }
 
@@ -58,14 +75,7 @@ import protocol Storage.StorageManagerType
         }
     }
 
-    private func isCurrencyEligibleForCardPayment(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration) -> Bool {
-        guard let currency = CurrencyCode(caseInsensitiveRawValue: currency) else {
-            return false
-        }
-        return cardPresentPaymentsConfiguration.currencies.contains(currency)
-    }
-
     private func containsAnySubscription(from products: [Product]) -> Bool {
-        products.contains { $0.productType == .subscription }
+        products.contains { $0.productType.isSubscription }
     }
 }

@@ -24,26 +24,31 @@ struct SimplePaymentsSummary: View {
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
     var body: some View {
+        SafeAreaInsetsReader { _ in
+            content(safeAreaInsets: .zero)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
 
-                    CustomAmountSection(viewModel: viewModel)
+                    CustomAmountSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets)
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    EmailSection(viewModel: viewModel)
+                    EmailSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets)
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    PaymentsSection(viewModel: viewModel)
+                    PaymentsSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets)
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    NoteSection(viewModel: viewModel, showEditNote: $showEditNote)
+                    NoteSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets, showEditNote: $showEditNote)
                 }
             }
-            .ignoresSafeArea(edges: .horizontal)
 
             TakePaymentSection(viewModel: viewModel)
         }
@@ -82,9 +87,9 @@ private struct CustomAmountSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
 
     var body: some View {
@@ -108,7 +113,7 @@ private struct CustomAmountSection: View {
             .bodyStyle()
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
             .accessibilityElement(children: .combine)
 
             Divider()
@@ -125,9 +130,9 @@ private struct EmailSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         Group {
@@ -139,7 +144,7 @@ private struct EmailSection: View {
                                  keyboardType: .emailAddress)
                 .autocapitalization(.none)
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground(modal: false)))
+                .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             Divider()
         }
@@ -155,9 +160,9 @@ private struct PaymentsSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         Group {
@@ -191,7 +196,7 @@ private struct PaymentsSection: View {
                 TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content(viewModel.total), bold: true, selectionStyle: .none) {}
             }
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             Divider()
         }
@@ -207,9 +212,9 @@ private struct NoteSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     /// Defines if the order note screen should be shown or not.
     ///
@@ -238,7 +243,7 @@ private struct NoteSection: View {
             }
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             Divider()
         }

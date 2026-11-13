@@ -5,13 +5,13 @@ import Storage
 /// Handles `ShippingMethodAction` actions
 ///
 public final class ShippingMethodStore: Store {
-    private let remote: ShippingMethodsRemote
+    private let requestHandler: ShippingMethodStoreRequestHandler
 
     public init(remote: ShippingMethodsRemote,
                 dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
                 network: Network) {
-        self.remote = remote
+        self.requestHandler = ShippingMethodStoreRequestHandler(remote: remote, storageManager: storageManager)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -41,17 +41,27 @@ public final class ShippingMethodStore: Store {
 
         switch action {
         case let .synchronizeShippingMethods(siteID, completion):
-            synchronizeShippingMethods(siteID: siteID, completion: completion)
+            requestHandler.synchronizeShippingMethods(siteID: siteID, completion: completion)
         }
+    }
+}
+
+private final class ShippingMethodStoreRequestHandler: Sendable {
+    let remote: ShippingMethodsRemote
+    let storageManager: StorageManagerType
+
+    init(remote: ShippingMethodsRemote, storageManager: StorageManagerType) {
+        self.remote = remote
+        self.storageManager = storageManager
     }
 }
 
 // MARK: - Network request
 //
-private extension ShippingMethodStore {
+private extension ShippingMethodStoreRequestHandler {
     /// Fetches all the shipping methods associated with the provided `siteID` and saves them in the Storage layer.
     ///
-    func synchronizeShippingMethods(siteID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeShippingMethods(siteID: Int64, completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let shippingMethods = try await remote.loadShippingMethods(for: siteID)
@@ -67,12 +77,12 @@ private extension ShippingMethodStore {
 
 // MARK: - Storage
 //
-private extension ShippingMethodStore {
+private extension ShippingMethodStoreRequestHandler {
 
     /// Updates or inserts Readonly `ShippingMethod` entities in background.
     /// Triggers `completion` on main thread.
     ///
-    func upsertShippingMethodsInBackground(siteID: Int64, readOnlyMethods: [ShippingMethod], completion: @escaping () -> Void) {
+    func upsertShippingMethodsInBackground(siteID: Int64, readOnlyMethods: [ShippingMethod], completion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             self.upsertShippingMethods(siteID: siteID, readOnlyMethods: readOnlyMethods, in: storage)

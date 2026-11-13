@@ -44,6 +44,7 @@ struct BlazeCreateCampaignIntroView: View {
                 Image(uiImage: .closeButton)
                     .secondaryBodyStyle()
             })
+            .accessibilityIdentifier("blaze-intro-close-button")
             .padding(Layout.closeButtonPadding)
 
             ScrollView {

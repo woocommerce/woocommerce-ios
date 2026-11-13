@@ -148,8 +148,7 @@ private extension BillingInformationViewController {
             self?.tableView.reloadData()
         }
         let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
-        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
-        present(navigationController, animated: true, completion: nil)
+        present(editAddressViewController, animated: true, completion: nil)
     }
 }
 

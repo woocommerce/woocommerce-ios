@@ -2,20 +2,15 @@ import Foundation
 import enum Yosemite.OrderStatusEnum
 @testable import WooCommerce
 
+@MainActor
 final class MockReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     var isEligibleForBackendReceipts: Bool = true
     var isEligibleForSuccessfulPaymentEmailReceipts: Bool = false
     var isEligibleForFailedPaymentEmailReceipts: Bool = false
     var isEligibleForReceipt: Bool = true
 
-    var mockIsEligibleForBackendReceiptsHandler: ((@escaping (Bool) -> Void) -> Void)?
-
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void) {
-        if let handler = mockIsEligibleForBackendReceiptsHandler {
-            handler(onCompletion)
-        } else {
-            onCompletion(isEligibleForBackendReceipts)
-        }
+        onCompletion(isEligibleForBackendReceipts)
     }
 
     func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void) {

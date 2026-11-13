@@ -2,6 +2,16 @@
 
 WooCommerce iOS is the official mobile client for WooCommerce stores, developed by Automattic. Large-scale Swift app using MVVM + Coordinators, SwiftUI and UIKit, Combine, and a Flux/Redux-inspired business logic layer (Yosemite).
 
+## AI dev and testing tools
+
+For simulator testing, task delegation, or AI tool setup, check [docs/ai-tools.md](docs/ai-tools.md) for helpers, MCP servers, and availability. Use relevant repository skills from `.agents/skills/`.
+
+After adding a testing helper, read `docs/ai-tools.md` and add a linked row to its table before reporting completion. Check that the link points to the new file.
+Update or remove rows in the same change when changing helpers, agents, MCP servers, AI CI workflows, or agent configuration.
+Keep skill descriptions in `SKILL.md`; update the index discovery guidance when skill locations or availability change.
+
+For agent builds and evidence capture, follow [local output paths](.agents/rules/verification.md#local-output-paths).
+
 ## Repository Layout
 
 ```
@@ -59,39 +69,45 @@ Use the `bootstrap` skill to set up the environment from a clean checkout. It wi
 ContextA8C is an Automattic MCP server that gives AI tools access to Slack, P2s, Linear, Field Guide, GitHub Enterprise, and other internal resources. It is optional — the agent works without it but provides richer context when available.
 
 - **Setup and usage**: See `.agents/rules/context-a8c.md`
-- **Claude Code setup skill**: `/setup-context-a8c`
+- **MCP setup skill**: `/setup-context-a8c`
 
 ## Build Commands
 
 ```bash
 # Build
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator build
+  -derivedDataPath "$PWD/DerivedData" \
+  -destination 'platform=iOS Simulator,name=iPhone 16' build
 
 # Run all unit tests
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator build test
+  -derivedDataPath "$PWD/DerivedData" \
+  -destination 'platform=iOS Simulator,name=iPhone 16' build test
 
 # Run single test class
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -derivedDataPath "$PWD/DerivedData" \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"WooCommerceTests/SomeTestClass"
 
 # Run single test method
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -derivedDataPath "$PWD/DerivedData" \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"WooCommerceTests/SomeTestClass/test_method_name"
 
 # Run module tests - use the module's own scheme for faster builds
 # When changes only affect a specific module (e.g. Yosemite, PointOfSale),
 # use that module's scheme instead of WooCommerce. Available schemes: Yosemite, PointOfSale, etc.
 xcodebuild -workspace WooCommerce.xcworkspace -scheme Yosemite \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -derivedDataPath "$PWD/DerivedData" \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"YosemiteTests/SomeTestClass"
 
 # Only use the WooCommerce scheme when changes span the main app target
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -derivedDataPath "$PWD/DerivedData" \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"WooCommerceTests"
 
 # Lint (SwiftLint via BuildTools plugin)
@@ -104,13 +120,21 @@ pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
   swift package plugin --allow-writing-to-directory .. \
   --allow-writing-to-package-directory swiftlint --working-directory .. --quiet --fix && popd
 
-# Code generation (Sourcery for Copiable/Fakeable)
+# Code generation (Sourcery for Copiable/Fakeable and the Design System demo token catalogs
+# — run after changing StoreDesignSystem tokens). Release build (`-c release`) is required until
+# Sourcery handles specifiers like `isolated`; its debug build crashes on them.
 pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
-  swift package plugin --allow-writing-to-directory .. \
+  swift package -c release plugin --allow-writing-to-directory .. \
   --allow-writing-to-package-directory sourcery-command --disableCache && popd
 ```
 
 If the simulator `iPhone 16` is not available, discover what's installed: `xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5`
+
+Do not add `-sdk iphonesimulator` to these commands.
+It overrides the SDK for *every* target in the `WooCommerce` scheme — including the watchOS `WatchWidgetsExtension` —
+which then compiles the wrong `#if os(watchOS)` branch of `WooCommerce/StoreWidgets/StoreWidgetTheme.swift`
+and fails with `reference to member 'accent' cannot be resolved`.
+`-destination` already selects the platform per target, so it is sufficient on its own.
 
 ## Architecture
 
@@ -160,11 +184,11 @@ ServiceLocator.stores.dispatch(action)
 - For existing `ObservableObject` view models, expose state via `@Published` properties or Combine publishers
 - Dispatch Yosemite actions and handle results
 - Should be testable without UI dependencies
-- See `Modules/Tests/CLAUDE.md` for `@Observable` testing patterns using `withObservationTracking`
+- See `Modules/Tests/AGENTS.md` for `@Observable` testing patterns using `withObservationTracking`
 
 ## Point of Sale (POS) Module
 
-The POS module (`Modules/Sources/PointOfSale/`) is a **self-contained SwiftUI module** with its own architecture, distinct from the main app. It is reachable as a dedicated tab via `POSTabCoordinator`. See `Modules/Sources/PointOfSale/README.md` for full architectural documentation and `.claude/rules/architecture.md` for POS-specific rules.
+The POS module (`Modules/Sources/PointOfSale/`) is a **self-contained SwiftUI module** with its own architecture, distinct from the main app. It is reachable as a dedicated tab via `POSTabCoordinator`. See `Modules/Sources/PointOfSale/README.md` for full architectural documentation and `.agents/rules/architecture.md` for POS-specific rules.
 
 **Key differences from the main app:**
 
@@ -180,18 +204,21 @@ The POS module (`Modules/Sources/PointOfSale/`) is a **self-contained SwiftUI mo
 When working on POS, you can build and test the module in isolation for faster feedback:
 ```bash
 # Build PointOfSale module only
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+xcodebuild -workspace WooCommerce.xcworkspace -scheme PointOfSale \
+  -derivedDataPath "$PWD/DerivedData" \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   build-for-testing -only-testing:"PointOfSaleTests"
 
 # Run POS tests only
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+xcodebuild -workspace WooCommerce.xcworkspace -scheme PointOfSale \
+  -derivedDataPath "$PWD/DerivedData" \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"PointOfSaleTests"
 
 # Run a specific POS test class
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+xcodebuild -workspace WooCommerce.xcworkspace -scheme PointOfSale \
+  -derivedDataPath "$PWD/DerivedData" \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"PointOfSaleTests/SomeTestClass"
 ```
 
@@ -211,9 +238,23 @@ Modules/Tests/PointOfSaleTests/  # POS unit tests
 WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator, adaptors)
 ```
 
+## Design System (StoreDesignSystem)
+
+`Modules/Sources/StoreDesignSystem/` is the Woo Mobile Design System module: tokens (`Tokens/` — color, typography, icons, spacing, padding, radius, size, stroke, motion) and `Store*` components (`Components/<Name>/`). Figma source: the "Mobile Design System" file. The in-app gallery lives in Debug Panel → Design System (`WooCommerce/Classes/ViewRelated/DesignSystemDemo/`).
+
+- **New SwiftUI views use `StoreDesignSystem`**: `Store*` components, `.storeTextStyle(_:)`, `Color.store*`, `StoreSpacing`/`StorePadding`/`StoreRadius`/`StoreIcon`. No hardcoded sizes, colors, or system fonts alongside them.
+- **Do not mix legacy styling with DS tokens** in one view: a view is either legacy (`Color(.text)`, `.headline`, `.withColorStudio`) or design-system, never both.
+- **Migrating existing UI**: reuse the existing localized strings. Keep their existing constants `internal` when the migrated implementation needs access; do not duplicate localization keys or values. Rerun the affected UI tests with the Design System feature flag both enabled and disabled while the legacy UI remains available.
+- **Adding a component**: `Components/<Name>/Store<Name>.swift` plus closed variant/tone types, tokens only, a demo view in `DesignSystemDemo/` registered in `DesignSystemDemoView`, `#Preview` blocks, and Swift Testing coverage in `Modules/Tests/StoreDesignSystemTests/`. Before implementing, read the component spec through the Figma MCP connection: take the Figma node link from the ticket or issue description when present, otherwise ask the user for it. Figma links are not committed to this repository.
+
 ## WooAIAssistant Module
 
 The WooAIAssistant module (`Modules/Sources/WooAIAssistant/`) is a self-contained feature module that ships an in-app conversational agent for merchants. The architecture is designed to be flexible: it can integrate REST tools, MCP tools, or both, and the chat endpoint is swappable without touching the agentic loop. The module renders rich entity cards that integrate with existing app views and screens. See `Modules/Sources/WooAIAssistant/AGENTS.md` for architecture, decisions, and anti-patterns. Live evaluation runs through the `/woo-ai-smoke` skill.
+
+## Code Comments
+
+- Comment only what the code can't say: the reason behind a non-obvious choice, an external constraint, or an edge case that is hard to infer.
+- Don't restate what the code, its name or its type already says, and don't document each property or method by default.
 
 ## Git Conventions
 
@@ -224,6 +265,7 @@ The WooAIAssistant module (`Modules/Sources/WooAIAssistant/`) is a self-containe
   - `Fix product type filters issue`
   - `Update Stripe SDK to 5.1.1`
   - `Remove redundant MainActor annotation`
+- **AI attribution**: MUST NOT include `Co-Authored-By` in commit messages. MUST NOT mention that code was generated by AI or any AI tool, in commits or PR descriptions
 - **PR creation**: Always use the `/pr` skill when creating pull requests
 - **PR merge policy**: Merge commits (not squash). 1 reviewer required. PR author merges own PR.
 - **PR size**: Keep non-test diff under 300 lines (enforced by Danger)
@@ -241,14 +283,15 @@ Stars indicate priority. `[Internal]` for changes not visible to users.
 
 ## Testing
 
-- **Prefer Swift Testing** (`@Test`, `#expect()`) for new test files
+- **New test files should only use Swift Testing** (`@Test`, `#expect()`). If this is not possible for any reason, share explicitly what the limitation is.
 - When adding to existing XCTest classes, follow that class's framework
 - **Naming**: snake_case — `test_<operation>_when_<condition>_then_<expected_result>()`
 - **Structure**: Given / When / Then blocks with comments
 - **Mocks**: Hand-written, named `Mock<ServiceName>`, in `Mocks/` subdirectories
 - **Test data**: Use `.fake()` from Fakes module and `.copy()` from Copiable
+- **UIKit presentation tests**: Retain the `UIWindow` in a test-case property for the full test lifetime and release it in `tearDown`; a local window can be deallocated before presentation completes and make tests order-dependent
 - **Test plan**: `WooCommerce/WooCommerceTests/UnitTests.xctestplan`
-- See `Modules/Tests/CLAUDE.md` for detailed async testing patterns
+- See `Modules/Tests/AGENTS.md` for detailed async testing patterns
 - UI tests require a local mock server: run `rake mocks` and use the `WooCommerceUITests` scheme
 
 ## Localization
@@ -284,11 +327,13 @@ See `Modules/Package.swift` for the definitive list of supported platforms, inte
 
 ## Agent Verification
 
+For simulator work that needs a logged-in store, read `.agents/skills/auto-login/SKILL.md` (`/auto-login`). It preserves live-store DEBUG login, supports explicit WireMock mocks, and covers optional Jurassic Ninja provisioning.
+
 Agents can verify their changes work from a user's perspective using two complementary loops:
 
-- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/references/feature-map.json`. Environment-aware — uses existing session during development, sets up WireMock mocked environment only when needed.
-- **`/snapshot`** — Fast UI iteration: uses `swift-snapshot-testing` to render SwiftUI views to PNG (~25s/cycle). Agent reads images, compares against design goals, iterates. Temporary — artifacts are never committed.
+- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.agents/references/feature-map.json`. Follows `/auto-login` for session setup.
+- **`/snapshot`** — Fast UI iteration: uses `swift-snapshot-testing` to render SwiftUI views to PNG. Reuse existing tests or temporary fixtures, compare images against design goals, and keep task captures out of commits.
 
 **Prerequisites**: Node.js (see `.nvmrc`), Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json`.
 
-See `.claude/rules/verification.md` for full details on tools, mock server setup, and launch arguments.
+See `.agents/rules/verification.md` for full details on tools, mock server setup, and launch arguments.

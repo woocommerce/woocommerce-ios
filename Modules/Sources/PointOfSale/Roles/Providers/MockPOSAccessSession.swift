@@ -7,7 +7,7 @@ import Observation
 final class MockPOSAccessSession: POSAccessSession {
     var currentStaff: POSStaff?
     var isLocked: Bool
-    var hasAnyPINs: Bool
+    var isPINProtectionEnabled: Bool
     var signInResult: Result<POSStaff, POSAuthError>
     var managerApprovalResult: Result<Void, POSAuthError>
     var checkLockoutResult: Result<Void, POSAuthError>
@@ -20,15 +20,13 @@ final class MockPOSAccessSession: POSAccessSession {
 
     init(currentStaff: POSStaff? = nil,
          isLocked: Bool = false,
-         hasAnyPINs: Bool = true,
-         signInResult: Result<POSStaff, POSAuthError> = .success(
-            POSStaff(userID: 1, displayName: "Maya", preset: "pos_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
-         ),
+         isPINProtectionEnabled: Bool = true,
+         signInResult: Result<POSStaff, POSAuthError> = .success(POSLocalRole.admin.staff),
          managerApprovalResult: Result<Void, POSAuthError> = .success(()),
          checkLockoutResult: Result<Void, POSAuthError> = .success(())) {
         self.currentStaff = currentStaff
         self.isLocked = isLocked
-        self.hasAnyPINs = hasAnyPINs
+        self.isPINProtectionEnabled = isPINProtectionEnabled
         self.signInResult = signInResult
         self.managerApprovalResult = managerApprovalResult
         self.checkLockoutResult = checkLockoutResult
@@ -77,8 +75,6 @@ final class MockPOSAccessSession: POSAccessSession {
             throw error
         }
     }
-
-    func refreshPINStatus() async {}
 }
 
 #endif

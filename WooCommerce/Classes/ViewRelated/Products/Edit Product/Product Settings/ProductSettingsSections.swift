@@ -4,6 +4,7 @@ import Yosemite
 // MARK: - Mediators Protocols
 //
 /// Encapsulates configuration and interaction of a UITableView section header.
+@MainActor
 protocol ProductSettingsSectionMediator {
     var title: String { get }
     var rows: [ProductSettingsRowMediator] { get }

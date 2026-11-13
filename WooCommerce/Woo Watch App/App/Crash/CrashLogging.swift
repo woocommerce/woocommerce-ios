@@ -9,11 +9,6 @@ import CocoaLumberjack
 /// A class that provides support for logging crashes. Not compatible with Objective-C.
 public class CrashLogging {
 
-    /// We haven't fully evicted global state from all of Tracks yet, so we keep a global reference around for now
-    struct Internals {
-        static var crashLogging: CrashLogging?
-    }
-
     private let dataProvider: CrashLoggingDataProvider
 
     /// If you set this key to `true` in UserDefaults, crash logging will be
@@ -79,8 +74,6 @@ public class CrashLogging {
                 options.enableUIViewControllerTracing = self.dataProvider.enableUIViewControllerTracking
             #endif
         }
-
-        Internals.crashLogging = self
 
         return self
     }

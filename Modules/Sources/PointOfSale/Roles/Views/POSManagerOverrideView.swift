@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSManagerOverrideView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let handler: POSManagerOverrideHandler
@@ -24,30 +25,32 @@ private extension POSManagerOverrideView {
     }
 
     var modalContent: some View {
-        VStack(spacing: POSPINEntryView.titleToPINSpacing) {
-            header(spacing: POSSpacing.medium)
+        VStack(spacing: metrics.spacing.large) {
+            header(spacing: metrics.spacing.medium)
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
         }
         .frame(maxWidth: POSPINEntryView.contentWidth)
-        .padding(.top, Constants.modalTopInset)
+        .padding(.top, metrics.padding.large)
         .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
         .fixedSize(horizontal: false, vertical: true)
     }
 
     var compactContent: some View {
-        VStack(spacing: POSPINEntryView.titleToPINSpacing) {
-            header(spacing: POSSpacing.small)
+        VStack(spacing: metrics.spacing.large) {
+            header(spacing: metrics.spacing.small)
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
         }
         .frame(maxWidth: POSPINEntryView.contentWidth)
-        .padding(.horizontal, POSPadding.large)
+        .padding(.horizontal, metrics.padding.large)
         .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
-        .padding(POSPadding.large)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(metrics.padding.large)
+        // Size to content and let the modal center it, like the lock screen and the iPad layout. Filling
+        // the screen pushed the close button under the status bar (status-bar overlap, untappable).
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     func header(spacing: CGFloat) -> some View {
@@ -100,6 +103,5 @@ private extension POSManagerOverrideView {
     enum Constants {
         static let titleMinimumScaleFactor: CGFloat = 0.75
         static let compactReasonMinimumScaleFactor: CGFloat = 0.9
-        static let modalTopInset: CGFloat = POSPadding.large
     }
 }

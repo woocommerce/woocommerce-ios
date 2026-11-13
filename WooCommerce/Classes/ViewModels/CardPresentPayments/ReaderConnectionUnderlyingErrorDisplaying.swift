@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 
+@MainActor
 protocol ReaderConnectionUnderlyingErrorDisplaying {
     func errorDescription(underlyingError: CardReaderServiceUnderlyingError) -> String?
 }

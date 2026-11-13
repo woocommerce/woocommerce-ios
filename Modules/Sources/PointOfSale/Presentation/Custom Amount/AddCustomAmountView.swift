@@ -3,25 +3,9 @@ import WooFoundation
 import struct Yosemite.POSCustomAmount
 
 struct AddCustomAmountView: View {
-    /// Glyph for the form's leading back button. The actual dismissal mechanism is
-    /// always provided by `onDismiss`; this only chooses how the back button looks.
-    /// - `.close` shows an `xmark` (typical for modal/sheet/full-screen-cover presentations).
-    /// - `.back` shows a chevron-back (typical for navigation-stack pushes).
-    enum BackButtonStyle {
-        case close
-        case back
-
-        var iconName: String {
-            switch self {
-            case .close: return "xmark"
-            case .back: return "chevron.backward"
-            }
-        }
-    }
-
+    @Environment(\.posMetrics) private var metrics
     let onDismiss: () -> Void
     let onSubmit: (POSCustomAmount) -> Void
-    private let backButtonStyle: BackButtonStyle
 
     @State private var viewModel: AddCustomAmountFormViewModel
     @FocusState private var isAmountFocused: Bool
@@ -36,10 +20,8 @@ struct AddCustomAmountView: View {
 
     init(currencySettings: CurrencySettings,
          editing: POSCustomAmount? = nil,
-         backButtonStyle: BackButtonStyle = .close,
          onDismiss: @escaping () -> Void,
          onSubmit: @escaping (POSCustomAmount) -> Void) {
-        self.backButtonStyle = backButtonStyle
         self.onDismiss = onDismiss
         self.onSubmit = onSubmit
         self._viewModel = State(wrappedValue: AddCustomAmountFormViewModel(
@@ -57,17 +39,16 @@ struct AddCustomAmountView: View {
                     action: {
                         clearFocus()
                         onDismiss()
-                    },
-                    buttonIcon: backButtonStyle.iconName
+                    }
                 )
             )
 
             ScrollViewReader { proxy in
                 ScrollView {
-                    VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.xLarge) {
                         amountSection
                             .id(Field.amount)
-                            .padding(.top, POSSpacing.xLarge)
+                            .padding(.top, metrics.spacing.xLarge)
 
                         Divider()
 
@@ -78,9 +59,9 @@ struct AddCustomAmountView: View {
                         nameSection
                             .id(Field.name)
 
-                        Spacer(minLength: POSSpacing.xxLarge)
+                        Spacer(minLength: metrics.spacing.xxLarge)
                     }
-                    .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                    .padding(.horizontal, metrics.padding.medium)
                 }
                 .scrollDismissesKeyboard(.interactively)
                 // The submit button is pinned below the scroll view, so a focused field (especially the
@@ -97,15 +78,15 @@ struct AddCustomAmountView: View {
             }
 
             submitButton
-                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                .padding(.vertical, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
+                .padding(.vertical, metrics.padding.medium)
         }
-        .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
         .background(Color.posSurfaceBright.ignoresSafeArea())
+        .posIgnoresHiddenKeyboardSafeArea()
     }
 
     private var amountSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.small) {
+        VStack(alignment: .leading, spacing: metrics.spacing.small) {
             Text(Localization.amountLabel)
                 .font(.posBodyMediumRegular())
                 .foregroundColor(.posOnSurfaceVariantLowest)
@@ -117,7 +98,7 @@ struct AddCustomAmountView: View {
                     .opacity(0)
                     .accessibilityHidden(true)
 
-                HStack(spacing: POSSpacing.xSmall) {
+                HStack(spacing: metrics.spacing.xSmall) {
                     Text(viewModel.currencySymbol)
                         .font(.posHeadingBold)
                         .foregroundColor(.posOnSurface)
@@ -128,11 +109,13 @@ struct AddCustomAmountView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(POSPadding.large)
+            .padding(metrics.padding.large)
             .background(Color.posSurfaceContainerLowest)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value))
             .contentShape(Rectangle())
             .onTapGesture { focusAmountField() }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("pos-custom-amount-amount-field")
         }
     }
 
@@ -151,7 +134,7 @@ struct AddCustomAmountView: View {
                 .foregroundColor(.posOnSurface)
         }
         .tint(.posPrimary)
-        .padding(.vertical, POSPadding.small)
+        .padding(.vertical, metrics.padding.small)
         .onChange(of: viewModel.isTaxable) { _, _ in
             isAmountFocused = false
             isNameFocused = false
@@ -159,7 +142,7 @@ struct AddCustomAmountView: View {
     }
 
     private var nameSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.small) {
+        VStack(alignment: .leading, spacing: metrics.spacing.small) {
             Text(Localization.nameLabel)
                 .font(.posBodyMediumRegular())
                 .foregroundColor(.posOnSurfaceVariantLowest)
@@ -172,7 +155,8 @@ struct AddCustomAmountView: View {
                 .textInputAutocapitalization(.sentences)
                 .submitLabel(.done)
                 .onSubmit(submit)
-                .padding(.vertical, POSPadding.small)
+                .padding(.vertical, metrics.padding.small)
+                .accessibilityIdentifier("pos-custom-amount-name-field")
         }
     }
 
@@ -255,33 +239,20 @@ private extension AddCustomAmountView {
 }
 
 #if DEBUG
-#Preview("Modal") {
+#Preview("Adding") {
     AddCustomAmountView(
         currencySettings: CurrencySettings(),
-        backButtonStyle: .close,
         onDismiss: {},
         onSubmit: { _ in }
     )
 }
 
-#Preview("Editing — Modal") {
+#Preview("Editing") {
     AddCustomAmountView(
         currencySettings: CurrencySettings(),
         editing: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: false),
-        backButtonStyle: .close,
         onDismiss: {},
         onSubmit: { _ in }
     )
-}
-
-#Preview("Push") {
-    NavigationStack {
-        AddCustomAmountView(
-            currencySettings: CurrencySettings(),
-            backButtonStyle: .back,
-            onDismiss: {},
-            onSubmit: { _ in }
-        )
-    }
 }
 #endif

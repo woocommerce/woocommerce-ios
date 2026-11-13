@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 
 /// Presents a screen to confirm the refund with the user.
 ///
@@ -42,6 +43,11 @@ final class RefundConfirmationViewController: UIViewController {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
     }
 
     override func viewDidLoad() {
@@ -114,7 +120,12 @@ private extension RefundConfirmationViewController {
         // Add to view
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(tableView)
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
     }
 
     func configureButtonTableFooterView() {
@@ -201,7 +212,7 @@ private extension RefundConfirmationViewController {
     /// Displays a refund error notice.
     ///
     func displayNotice(with error: Error) {
-        contextNoticePresenter.enqueue(notice: .init(title: Localization.refundError))
+        contextNoticePresenter.enqueue(notice: .init(title: (error as? RefundAPIError)?.errorDescription ?? Localization.refundError))
     }
 }
 

@@ -29,8 +29,8 @@ public final class UserStore: Store {
         }
 
         switch action {
-        case .retrieveUser(let siteID, let onCompletion):
-            retrieveUser(siteID: siteID, completionHandler: onCompletion)
+        case .retrieveUser(let siteID, let detectUnexpectedResponses, let onCompletion):
+            retrieveUser(siteID: siteID, detectUnexpectedResponses: detectUnexpectedResponses, completionHandler: onCompletion)
         case .fetchUserIPCountryCode(let onCompletion):
             fetchUserIPCountryCode(onCompletion: onCompletion)
         }
@@ -40,8 +40,8 @@ public final class UserStore: Store {
 // MARK: - Network request
 //
 private extension UserStore {
-    func retrieveUser(siteID: Int64, completionHandler: @escaping (Result<User, Error>) -> Void) {
-        remote.loadUserInfo(for: siteID, completion: completionHandler)
+    func retrieveUser(siteID: Int64, detectUnexpectedResponses: Bool, completionHandler: @escaping (Result<User, Error>) -> Void) {
+        remote.loadUserInfo(for: siteID, detectUnexpectedResponses: detectUnexpectedResponses, completion: completionHandler)
     }
 
     func fetchUserIPCountryCode(onCompletion: @escaping (Result<String, Error>) -> Void) {

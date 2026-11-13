@@ -6,7 +6,7 @@ import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 import enum Alamofire.AFError
 
-public protocol POSOrderServiceProtocol {
+public protocol POSOrderServiceProtocol: Sendable {
     /// Syncs order based on the cart.
     /// - Parameters:
     ///   - cart: Cart with different types of items and quantities.
@@ -28,6 +28,10 @@ public protocol POSOrderServiceProtocol {
     /// Adds a note to the order. Used to record an audit trail when the merchant confirms a
     /// scan-to-pay payment was received.
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws
+    /// Records the Scan to Pay flow as the order's visible payment method title.
+    /// This does not change status or gateway identity; the gateway/webhook remains
+    /// responsible for the actual paid state.
+    func recordScanToPayPaymentMethod(order: Order) async throws
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -156,6 +160,20 @@ public final class POSOrderService: POSOrderServiceProtocol {
         }
     }
 
+    public func recordScanToPayPaymentMethod(order: Order) async throws {
+        let updatedOrder = order.copy(paymentMethodTitle: Localization.scanToPayPaymentMethodTitle)
+        do {
+            _ = try await ordersRemote.updatePOSOrder(
+                siteID: siteID,
+                order: updatedOrder,
+                cashPaymentChangeDueAmount: nil,
+                fields: [.paymentMethodTitle]
+            )
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+    }
+
     public func markOrderAsCompletedManually(order: Order) async throws {
         let fieldsToUpdate: [OrderUpdateField] = [
             .status,
@@ -163,7 +181,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
             .paymentMethodTitle
         ]
         let updatedOrder = order.copy(status: .completed,
-                                      paymentMethodID: Constants.manualPaymentMethodID,
+                                      paymentMethodID: PaymentGateway.Constants.manualPaymentMethodID,
                                       paymentMethodTitle: Localization.manualPaymentMethodTitle)
         do {
             _ = try await ordersRemote.updatePOSOrder(
@@ -203,7 +221,7 @@ private extension Order {
     func addItems(_ cartItems: [POSCartItem]) -> Order {
         let itemsToAdd = Array(cartItems.createGroupedOrderSyncProductInputs().values)
         return ProductInputTransformer
-            .updateMultipleItems(with: itemsToAdd, on: self, shouldUpdateOrDeleteZeroQuantities: .update)
+            .updateMultipleItems(with: itemsToAdd, on: self)
             .sanitizingLocalItems()
     }
 
@@ -376,21 +394,19 @@ private extension POSOrderService {
             comment: "Title for the payment method used when collecting cash payment in Point of Sale."
         )
         static let manualPaymentMethodTitle = NSLocalizedString(
-            "pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle",
-            value: "Other",
+            "pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle.1",
+            value: "Order marked as paid",
             comment: "Title for the payment method used when manually marking an order as paid in Point of Sale."
+        )
+        static let scanToPayPaymentMethodTitle = NSLocalizedString(
+            "pointOfSaleOrderController.scanToPay.paymentMethodTitle",
+            value: "Scan to Pay",
+            comment: "Title for the payment method used when a Point of Sale order is paid through Scan to Pay."
         )
         static let unknownProductName = NSLocalizedString(
             "pointOfSale.orderController.unknownProduct",
             value: "One or more products",
             comment: "Fallback name for a product that couldn't be identified in error handling."
         )
-    }
-
-    enum Constants {
-        /// Payment method slug used when the merchant marks an order as paid manually,
-        /// e.g. for an external reader, account credit, gift card, or any out-of-band collection.
-        /// Distinct from `cashOnDeliveryGatewayID` so reporting can separate the two flows.
-        static let manualPaymentMethodID = "other"
     }
 }

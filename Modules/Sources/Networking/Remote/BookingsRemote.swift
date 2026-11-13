@@ -5,7 +5,7 @@ import Foundation
 ///
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
-public protocol BookingsRemoteProtocol {
+public protocol BookingsRemoteProtocol: Sendable {
     func loadAllBookings(for siteID: Int64,
                          pageNumber: Int,
                          pageSize: Int,
@@ -43,7 +43,7 @@ public protocol BookingsRemoteProtocol {
 }
 
 /// Filters for booking queries
-public struct BookingFilters {
+public struct BookingFilters: Sendable {
     public let productIDs: [Int64]
     public let customerIDs: [Int64]
     public let resourceIDs: [Int64]
@@ -111,7 +111,7 @@ public struct BookingFilters {
 
 /// Booking: Remote Endpoints
 ///
-public final class BookingsRemote: Remote, BookingsRemoteProtocol {
+public final class BookingsRemote: Remote, BookingsRemoteProtocol, @unchecked Sendable {
 
     // MARK: - Bookings
 
@@ -131,7 +131,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
                                 filters: BookingFilters? = nil,
                                 searchQuery: String? = nil,
                                 order: Order) async throws -> [Booking] {
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order.rawValue,
@@ -313,7 +313,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         resourceID: Int64?
     ) async throws -> Booking? {
         let path = "\(Path.bookings)/\(bookingID)"
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.start: Int64(startDate.timeIntervalSince1970),
             ParameterKey.end: Int64(endDate.timeIntervalSince1970)
         ]
@@ -366,7 +366,7 @@ public extension BookingsRemote {
         public static let pageNumber: Int = Remote.Default.firstPageNumber
     }
 
-    enum Order: String {
+    enum Order: String, Sendable {
         case ascending = "asc"
         case descending = "desc"
     }

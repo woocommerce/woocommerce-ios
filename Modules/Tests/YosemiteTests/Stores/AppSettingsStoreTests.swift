@@ -23,6 +23,7 @@ private struct TestConstants {
 
 /// AppSettingsStore unit tests
 ///
+@MainActor
 final class AppSettingsStoreTests: XCTestCase {
     /// Mock Dispatcher!
     ///
@@ -48,8 +49,8 @@ final class AppSettingsStoreTests: XCTestCase {
 
     private var mockSiteSpecificAppSettingsStoreMethods: MockSiteSpecificAppSettingsStoreMethods!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
@@ -65,17 +66,17 @@ final class AppSettingsStoreTests: XCTestCase {
         subject?.customSelectedProvidersURL = TestConstants.customFileURL!
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         dispatcher = nil
         storageManager = nil
         fileStorage = nil
         generalAppSettings = nil
         subject = nil
         mockSiteSpecificAppSettingsStoreMethods = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
-    func testFileStorageIsRequestedToWriteWhenAddingANewShipmentProvider() {
+    func testFileStorageIsRequestedToWriteWhenAddingANewShipmentProvider() async {
         let expectation = self.expectation(description: "A write is requested")
 
         let action = AppSettingsAction.addTrackingProvider(siteID: TestConstants.newSiteID,
@@ -89,10 +90,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testFileStorageIsRequestedToWriteWhenAddingANewCustomShipmentProvider() {
+    func testFileStorageIsRequestedToWriteWhenAddingANewCustomShipmentProvider() async {
         let expectation = self.expectation(description: "A write is requested")
 
         let action = AppSettingsAction.addCustomTrackingProvider(siteID: TestConstants.newSiteID,
@@ -107,10 +108,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testFileStorageIsRequestedToWriteWhenAddingAShipmentProviderForExistingSite() {
+    func testFileStorageIsRequestedToWriteWhenAddingAShipmentProviderForExistingSite() async {
         let expectation = self.expectation(description: "A write is requested")
 
         let action = AppSettingsAction.addTrackingProvider(siteID: TestConstants.siteID,
@@ -124,10 +125,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testFileStorageIsRequestedToWriteWhenAddingACustomShipmentProviderForExistingSite() {
+    func testFileStorageIsRequestedToWriteWhenAddingACustomShipmentProviderForExistingSite() async {
         let expectation = self.expectation(description: "A write is requested")
 
         let action = AppSettingsAction.addCustomTrackingProvider(siteID: TestConstants.siteID,
@@ -142,10 +143,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testAddingNewProviderToExistingSiteUpdatesFile() {
+    func testAddingNewProviderToExistingSiteUpdatesFile() async {
         let expectation = self.expectation(description: "File is updated")
 
         let action = AppSettingsAction
@@ -162,10 +163,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testAddingNewCustomProviderToExistingSiteUpdatesFile() {
+    func testAddingNewCustomProviderToExistingSiteUpdatesFile() async {
         let expectation = self.expectation(description: "File is updated")
 
         let action = AppSettingsAction
@@ -183,10 +184,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
-    func testRestoreResetProvidersHitsClearFile() {
+    func testRestoreResetProvidersHitsClearFile() async {
         let expectation = self.expectation(description: "File is updated")
 
         let action = AppSettingsAction.resetStoredProviders { error in
@@ -199,7 +200,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         subject?.onAction(action)
 
-        waitForExpectations(timeout: 2, handler: nil)
+        await fulfillment(of: [expectation], timeout: 2)
     }
 
     // MARK: - General App Settings
@@ -1815,6 +1816,38 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(isAllowed)
     }
 
+    // MARK: - POS Catalog File Blocked Tests
+
+    func test_getPOSCatalogFileBlockedByHost_when_no_block_is_recorded_then_returns_false() throws {
+        // When
+        let isBlocked: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSCatalogFileBlockedByHost(siteID: TestConstants.siteID) { isBlocked in
+                promise(isBlocked)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(isBlocked)
+    }
+
+    func test_getPOSCatalogFileBlockedByHost_when_a_block_is_recorded_then_returns_true() throws {
+        // Given
+        mockSiteSpecificAppSettingsStoreMethods.mockPOSCatalogFileBlockedByHostAt = Date()
+
+        // When
+        let isBlocked: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSCatalogFileBlockedByHost(siteID: TestConstants.siteID) { isBlocked in
+                promise(isBlocked)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.isPOSCatalogFileBlockedByHostCalled)
+        XCTAssertTrue(isBlocked)
+    }
+
     func test_setPOSLocalCatalogCellularDataAllowed_saves_value_successfully() throws {
         // When
         waitFor { promise in
@@ -1844,6 +1877,44 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.setPOSLocalCatalogCellularDataAllowedCalled)
         XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed, false)
+    }
+
+    func test_setHTTPSConfigurationUpdateRequired_persists_requirement() {
+        // When
+        subject?.onAction(AppSettingsAction.setHTTPSConfigurationUpdateRequired(siteID: TestConstants.siteID, required: true))
+
+        // Then
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.storeSettings.requiresHTTPSConfigurationUpdate, true)
+    }
+
+    func test_dismissHTTPSConfigurationWarning_persists_dismissal_date() {
+        // Given
+        let date = Date(timeIntervalSince1970: 123)
+
+        // When
+        subject?.onAction(AppSettingsAction.dismissHTTPSConfigurationWarning(siteID: TestConstants.siteID, time: date))
+
+        // Then
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.storeSettings.lastHTTPSConfigurationWarningDismissedDate, date)
+    }
+
+    func test_getHTTPSConfigurationWarningState_returns_persisted_state() {
+        // Given
+        let date = Date(timeIntervalSince1970: 123)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(requiresHTTPSConfigurationUpdate: true,
+                                                                                     lastHTTPSConfigurationWarningDismissedDate: date)
+        var returnedRequirement: Bool?
+        var returnedDate: Date?
+
+        // When
+        subject?.onAction(AppSettingsAction.getHTTPSConfigurationWarningState(siteID: TestConstants.siteID) { requirement, dismissalDate in
+            returnedRequirement = requirement
+            returnedDate = dismissalDate
+        })
+
+        // Then
+        XCTAssertEqual(returnedRequirement, true)
+        XCTAssertEqual(returnedDate, date)
     }
 }
 

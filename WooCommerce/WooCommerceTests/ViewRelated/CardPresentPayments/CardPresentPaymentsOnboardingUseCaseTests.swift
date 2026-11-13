@@ -1,10 +1,12 @@
 import XCTest
 import Fakes
+import TestKit
 import Yosemite
 import enum Alamofire.AFError
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     /// Mock Storage: InMemory
     ///
@@ -31,8 +33,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     private var skippedCodOnboardingStep = true
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() async throws {
+        try await super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         onboardingStateCache = CardPresentPaymentOnboardingStateCache()
@@ -59,7 +61,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         }
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() async throws {
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
         storageManager.reset()
         onboardingStateCache = nil
@@ -68,7 +70,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         analyticsProvider = nil
         analytics = nil
         preferredInPersonPaymentGatewayBySite.removeAll()
-        try super.tearDownWithError()
+        try await super.tearDown()
     }
 
     // MARK: - Country checks
@@ -666,6 +668,25 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: .stripeOnly))
     }
 
+    func test_onboarding_when_stripe_active_wcpay_inactive_and_wcpay_was_preferred_then_returns_stripe_complete() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        setupPreferredPaymentGateway(.wcPay)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .completed(plugin: .stripeOnly))
+    }
+
     func test_onboarding_returns_complete_when_wcpay_plugin_active() {
         // Given
         setupCountry(country: .us)
@@ -890,6 +911,25 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
     }
 
+    func test_onboarding_when_account_is_restricted_with_pending_requirements_skipped_for_wcpay_plugin_returns_complete() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .restricted, hasPendingRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        useCase.skipPendingRequirements()
+        useCase.updateState()
+
+        let state = useCase.state
+        // Then
+        XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
+    }
+
     func test_onboarding_returns_complete_when_account_status_is_enabled_using_wcpay_plugin() {
         // Given
         let accountStatus: WCPayAccountStatusEnum = .enabled
@@ -974,6 +1014,50 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertEqual(state, .stripeAccountOverdueRequirement(plugin: .wcPay))
+    }
+
+    func test_onboarding_when_account_is_restricted_with_overdue_requirements_skipped_for_wcpay_plugin_returns_complete() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .restricted, hasOverdueRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        useCase.skipOverdueRequirements()
+        useCase.updateState()
+
+        let state = useCase.state
+        // Then
+        XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
+    }
+
+    func test_onboarding_when_account_has_both_overdue_and_pending_requirements_skipped_once_for_wcpay_plugin_returns_complete() {
+        // Given
+        // An account can report the same item as both pending and overdue at once (e.g. a payout requirement
+        // moves from currently_due to past_due while remaining in both lists). Skipping overdue should be
+        // enough on its own; the merchant shouldn't have to skip a second time for the pending screen.
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self,
+                                   status: .restricted,
+                                   hasPendingRequirements: true,
+                                   hasOverdueRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        useCase.skipOverdueRequirements()
+        useCase.updateState()
+
+        let state = useCase.state
+        // Then
+        XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
     }
 
     func test_onboarding_returns_review_when_account_is_restricted_with_no_requirements_for_wcpay_plugin() {
@@ -1143,6 +1227,140 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
     }
 
+    @MainActor
+    func test_menu_country_change_when_cached_stripe_becomes_unsupported_then_disables_card_readers() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        onboardingStateCache.update(.completed(plugin: .stripeOnly))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let menu = makeMenu(useCase: useCase)
+
+        // When: the same retained menu receives synchronized settings for Canada.
+        try changeCountry(to: "CA")
+
+        // Then
+        XCTAssertEqual(menu.cardPresentPaymentsConfiguration.countryCode, .CA)
+        XCTAssertTrue(menu.shouldDisableManageCardReaders)
+        XCTAssertNotNil(menu.cardPresentPaymentsOnboardingNotice)
+        XCTAssertFalse(useCase.state.isCompleted)
+        XCTAssertNil(onboardingStateCache.value)
+
+        // A subsequent appearance must not restore the old completed state.
+        useCase.refreshIfNecessary()
+        XCTAssertFalse(useCase.state.isCompleted)
+    }
+
+    @MainActor
+    func test_menu_country_change_when_preferred_provider_becomes_unavailable_then_hides_provider_selection() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionUK)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        setupPreferredPaymentGateway(.stripe)
+        onboardingStateCache.update(.completed(plugin: .stripePreferred))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let menu = makeMenu(useCase: useCase)
+        // Apply a completed state without relying on the debounced initial publication.
+        try changeCountry(to: "US")
+        XCTAssertTrue(menu.shouldShowManagePaymentGatewaysRow)
+        XCTAssertTrue(menu.shouldShowPaymentOptionsSection)
+
+        // When: Canada requires WooPayments, whose account is not set up.
+        try changeCountry(to: "CA")
+
+        // Then
+        XCTAssertFalse(menu.shouldShowManagePaymentGatewaysRow)
+        XCTAssertFalse(menu.shouldShowPaymentOptionsSection)
+        XCTAssertTrue(menu.shouldDisableManageCardReaders)
+        XCTAssertNotNil(menu.cardPresentPaymentsOnboardingNotice)
+        XCTAssertFalse(useCase.state.isCompleted)
+    }
+
+    func test_revalidateAfterCountryChange_when_country_support_returns_then_restores_valid_onboarding() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        onboardingStateCache.update(.completed(plugin: .stripeOnly))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        try changeCountry(to: "LT")
+        useCase.revalidateAfterCountryChange()
+
+        // Then
+        XCTAssertEqual(useCase.state, .countryNotSupported(countryCode: .LT))
+        XCTAssertNil(onboardingStateCache.value)
+
+        // When
+        try changeCountry(to: "GB")
+        useCase.revalidateAfterCountryChange()
+
+        // Then
+        XCTAssertEqual(useCase.state, .completed(plugin: .stripeOnly))
+    }
+
+    func test_revalidateAfterCountryChange_when_no_completed_cache_then_still_synchronizes_settings() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        var settingsRequested = false
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case .synchronizeGeneralSiteSettings = action {
+                settingsRequested = true
+            }
+        }
+
+        // When
+        try changeCountry(to: "US")
+        useCase.revalidateAfterCountryChange()
+        useCase.refreshIfNecessary()
+
+        // Then
+        XCTAssertTrue(settingsRequested)
+        XCTAssertNil(onboardingStateCache.value)
+    }
+
+    func test_revalidateAfterCountryChange_when_cached_provider_remains_supported_then_does_not_synchronize_settings() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        onboardingStateCache.update(.completed(plugin: .stripeOnly))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        var settingsRequested = false
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case .synchronizeGeneralSiteSettings = action {
+                settingsRequested = true
+            }
+        }
+
+        // When
+        try changeCountry(to: "US")
+        useCase.revalidateAfterCountryChange()
+        useCase.refreshIfNecessary()
+
+        // Then
+        XCTAssertFalse(settingsRequested)
+        XCTAssertEqual(useCase.state, .completed(plugin: .stripeOnly))
+        XCTAssertEqual(onboardingStateCache.value, useCase.state)
+    }
+
     func test_refreshIfNecessary_when_there_is_a_completed_cached_value_then_returns_cached_value() {
         onboardingStateCache.update(.completed(plugin: .stripeOnly))
 
@@ -1154,7 +1372,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.state, onboardingStateCache.value)
     }
 
-    func test_installCardPresentPlugin_when_failure_to_install_plugin_then_event_is_tracked_with_correct_properties() throws {
+    func test_installCardPresentPlugin_when_failure_to_install_plugin_then_event_is_tracked_with_correct_properties() async throws {
         // Given
         setupCountry(country: .us)
         let expectedEvent = "card_present_onboarding_cta_failed"
@@ -1176,6 +1394,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         useCase.installCardPresentPlugin()
 
         // Then
+        // The completion hops to the main actor, so the event is tracked asynchronously.
+        await until { self.analyticsProvider.receivedEvents.isNotEmpty }
         XCTAssertEqual(analyticsProvider.receivedEvents, [expectedEvent])
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent }))
@@ -1186,7 +1406,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["error_description"] as? String, expectedError.description)
     }
 
-    func test_activateCardPresentPlugin_when_failure_to_activate_plugin_then_event_is_tracked_with_correct_properties() throws {
+    func test_activateCardPresentPlugin_when_failure_to_activate_plugin_then_event_is_tracked_with_correct_properties() async throws {
         // Given
         setupCountry(country: .us)
         let expectedEvent = "card_present_onboarding_cta_failed"
@@ -1208,6 +1428,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         useCase.activateCardPresentPlugin()
 
         // Then
+        // The completion hops to the main actor, so the event is tracked asynchronously.
+        await until { self.analyticsProvider.receivedEvents.isNotEmpty }
         XCTAssertEqual(analyticsProvider.receivedEvents, [expectedEvent])
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent }))
@@ -1240,7 +1462,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let networkError = AFError.sessionTaskFailed(error: urlError)
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             switch action {
-            case let .loadAccounts(_, onCompletion):
+            case let .loadAccounts(_, _, onCompletion):
                 onCompletion(.failure(networkError))
             default:
                 break
@@ -1251,7 +1473,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
                                                            stores: stores,
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then - Should show no connection error
         XCTAssertEqual(useCase.state, .noConnectionError)
@@ -1266,7 +1488,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let genericError = NSError(domain: "test.error", code: 500, userInfo: nil)
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             switch action {
-            case let .loadAccounts(_, onCompletion):
+            case let .loadAccounts(_, _, onCompletion):
                 // Both accounts fail to load
                 onCompletion(.failure(genericError))
             default:
@@ -1278,10 +1500,241 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
                                                            stores: stores,
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then - Should show generic error
         XCTAssertEqual(useCase.state, .genericError)
+    }
+
+    func test_updateAccounts_when_no_plugins_installed_and_accounts_fail_to_load_then_returns_plugin_not_installed() {
+        // Given
+        setupCountry(country: .us)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 404, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginNotInstalled)
+    }
+
+    func test_updateAccounts_when_wcpay_not_activated_and_accounts_fail_to_load_then_returns_plugin_not_activated() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 404, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginNotActivated(plugin: .wcPay))
+    }
+
+    func test_updateAccounts_when_both_plugins_active_in_wcpay_only_country_with_unsupported_wcpay_and_accounts_fail_then_returns_unsupported_version() {
+        // Given
+        setupCountry(country: .ca)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.unsupportedVersionCanada)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginUnsupportedVersion(plugin: .wcPay))
+    }
+
+    func test_updateAccounts_when_both_plugins_active_with_wcpay_preferred_and_unsupported_and_accounts_fail_then_returns_unsupported_version() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.unsupportedVersionWithPatch)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPreferredPaymentGateway(.wcPay)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginUnsupportedVersion(plugin: .wcPay))
+    }
+
+    func test_updateAccounts_when_wcpay_active_with_stored_account_and_accounts_fail_to_load_then_returns_generic_error() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .genericError)
+    }
+
+    func test_updateAccounts_when_accounts_load_after_a_failure_then_returns_account_state() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .complete)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        useCase.updateAccounts(storeDataSynced: true)
+        XCTAssertEqual(useCase.state, .genericError)
+
+        // When
+        whenLoadingAccounts(thenReturn: .success(()))
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .completed(plugin: .wcPayOnly))
+    }
+
+    func test_refresh_when_no_plugins_installed_and_accounts_fail_to_load_then_returns_plugin_not_installed() {
+        // Given
+        setupCountry(country: .us)
+        whenSynchronizingStoreData(systemInformationResult: .success(.fake()))
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 404, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            useCase.state == .pluginNotInstalled
+        }
+    }
+
+    func test_refresh_when_plugins_and_accounts_fail_to_sync_then_returns_generic_error() {
+        // Given
+        setupCountry(country: .us)
+        whenSynchronizingStoreData(systemInformationResult: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            useCase.state == .genericError
+        }
+    }
+
+    func test_refresh_when_plugins_sync_and_only_stripe_is_active_then_loads_only_stripe_account() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        whenSynchronizingStoreData(systemInformationResult: .success(.fake()))
+        var requestedGateways: [CardPresentPaymentsPlugin]?
+        whenLoadingAccounts(thenReturn: .success(())) { requestedGateways = $0 }
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            requestedGateways != nil
+        }
+        XCTAssertEqual(requestedGateways, [.stripe])
+    }
+
+    func test_refresh_when_plugin_sync_fails_and_stored_plugins_show_only_stripe_then_loads_both_accounts() {
+        // Given the stored plugins may be stale: the store could have switched to WooPayments.
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .inactive, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        whenSynchronizingStoreData(systemInformationResult: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        var requestedGateways: [CardPresentPaymentsPlugin]?
+        whenLoadingAccounts(thenReturn: .success(())) { requestedGateways = $0 }
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            requestedGateways != nil
+        }
+        XCTAssertEqual(requestedGateways, CardPresentPaymentsPlugin.allCases)
+    }
+
+    func test_refresh_when_plugins_sync_and_both_are_active_then_loads_both_accounts() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        whenSynchronizingStoreData(systemInformationResult: .success(.fake()))
+        var requestedGateways: [CardPresentPaymentsPlugin]?
+        whenLoadingAccounts(thenReturn: .success(())) { requestedGateways = $0 }
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.refresh()
+
+        // Then
+        waitUntil {
+            requestedGateways != nil
+        }
+        XCTAssertEqual(requestedGateways, CardPresentPaymentsPlugin.allCases)
+    }
+}
+
+// MARK: - Store sync helpers
+private extension CardPresentPaymentsOnboardingUseCaseTests {
+    func whenSynchronizingStoreData(systemInformationResult: Result<SystemInformation, Error>) {
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .synchronizeGeneralSiteSettings(_, onCompletion) = action {
+                onCompletion(nil)
+            }
+        }
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            if case let .synchronizeSystemInformation(_, onCompletion) = action {
+                onCompletion(systemInformationResult)
+            }
+        }
+    }
+
+    func whenLoadingAccounts(thenReturn result: Result<Void, Error>,
+                             onRequestedGateways: (([CardPresentPaymentsPlugin]) -> Void)? = nil) {
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .loadAccounts(_, gateways, onCompletion) = action {
+                onRequestedGateways?(gateways)
+                onCompletion(result)
+            }
+        }
     }
 }
 
@@ -1295,6 +1748,27 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
 
 // MARK: - Country helpers
 private extension CardPresentPaymentsOnboardingUseCaseTests {
+    @MainActor
+    func makeMenu(useCase: CardPresentPaymentsOnboardingUseCase) -> InPersonPaymentsMenuViewModel {
+        InPersonPaymentsMenuViewModel(
+            siteID: sampleSiteID,
+            dependencies: .init(cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
+                                onboardingUseCase: useCase,
+                                cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                wooPaymentsPayoutService: nil,
+                                systemStatusService: MockSystemStatusService(),
+                                stores: stores,
+                                siteSettings: ServiceLocator.selectedSiteSettings),
+            payInPersonToggleViewModel: MockInPersonPaymentsCashOnDeliveryToggleRowViewModel())
+    }
+
+    func changeCountry(to country: String) throws {
+        let setting = try XCTUnwrap(storageManager.viewStorage.loadSiteSetting(siteID: sampleSiteID,
+                                                                               settingID: "woocommerce_default_country"))
+        setting.value = country
+        ServiceLocator.selectedSiteSettings.refresh()
+    }
+
     func setupCountry(country: Country) {
         let setting = SiteSetting.fake()
             .copy(

@@ -9,6 +9,8 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
+    private var foregroundRetrySubscription: AnyCancellable?
+
     let textMode: PaymentsModalTextMode = .reducedTopInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
 
@@ -41,11 +43,21 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
          wcSettingsAdminURL: URL?,
          openWCSettings: (() -> Void)?,
          retrySearch: @escaping () -> Void,
-         cancelSearch: @escaping () -> Void) {
+         cancelSearch: @escaping () -> Void,
+         notificationCenter: NotificationCenter = .default) {
         self.image = image
         self.openWCSettingsAction = openWCSettings
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
+
+        if openWCSettings == nil {
+            foregroundRetrySubscription = notificationCenter
+                .publisher(for: UIApplication.willEnterForegroundNotification)
+                .first()
+                .sink { _ in
+                    retrySearch()
+                }
+        }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {

@@ -13,35 +13,24 @@ struct RefundItemsValuesCalculationUseCase {
     /// Formatter to convert string values to decimal values
     ///
     let currencyFormatter: CurrencyFormatter
+    let numberOfDecimals: Int
 
     /// Calculates the values(subtotal, total and tax) to be refunded.
     ///
     func calculateRefundValues() -> RefundValues {
-        let zero = RefundValues(subtotal: 0, tax: 0)
-        return refundItems.reduce(zero) { previousValues, refundItem -> RefundValues in
-
-            // Figure out `itemTotal` by dividing `item.total` by the purchased `quantity`.
-            // Using price is not safe right now.
-            // See: https://github.com/woocommerce/woocommerce-ios/issues/6885
-            let itemTotal: Decimal = {
-                let refundItemTotal = currencyFormatter.convertToDecimal(refundItem.item.total) ?? 0
-                return (refundItemTotal as Decimal) / refundItem.item.quantity
-            }()
-
-            // Figure out `itemTax` by dividing `totalTax` by the purchased `quantity`.
-            let itemTax: Decimal = {
-                let totalTax = currencyFormatter.convertToDecimal(refundItem.item.totalTax) ?? 0
-                return (totalTax as Decimal) / refundItem.item.quantity
-            }()
-
-            let quantityToRefund = Decimal(refundItem.quantity)
-
-            // Accumulate the evaluated item values
-            let subtotal = previousValues.subtotal + (itemTotal * quantityToRefund)
-            let tax = previousValues.tax + (itemTax * quantityToRefund)
-
-            return RefundValues(subtotal: subtotal, tax: tax)
+        let lines = refundItems.filter { $0.quantity > 0 }.map {
+            RefundCreationUseCase.productLine(for: $0, currencyFormatter: currencyFormatter, numberOfDecimals: numberOfDecimals)
         }
+        let subtotal = lines.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
+        let tax = lines.reduce(Decimal.zero) { total, line in
+            total + line.taxes.reduce(.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
+        }
+        // Older order responses can omit the tax breakdown. Keep the display fallback;
+        // a request cannot allocate these taxes without their rate IDs.
+        let unallocatedTax = refundItems.filter { $0.item.taxes.isEmpty && $0.item.quantity > 0 }.reduce(Decimal.zero) {
+            $0 + (currencyFormatter.convertToDecimal($1.item.totalTax) as Decimal? ?? .zero) / $1.item.quantity * $1.decimalQuantity
+        }
+        return RefundValues(subtotal: subtotal, tax: tax + unallocatedTax)
     }
 }
 

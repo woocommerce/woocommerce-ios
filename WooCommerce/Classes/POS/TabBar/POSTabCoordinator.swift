@@ -11,6 +11,7 @@ import struct NetworkingCore.JetpackSite
 import struct NetworkingCore.OrderItem
 import PointOfSale
 
+@MainActor
 protocol POSTabVisibilityCheckerProtocol {
     /// Checks the initial visibility of the POS tab.
     func checkInitialVisibility() -> Bool
@@ -32,6 +33,7 @@ final class POSTabViewController: UIViewController {
 
 /// Coordinator for the Point of Sale tab.
 ///
+@MainActor
 final class POSTabCoordinator {
     private let siteID: Int64
     private let tabContainerController: TabContainerController
@@ -42,23 +44,26 @@ final class POSTabCoordinator {
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
+    private let httpsConfigurationNoticeProvider: () -> POSHTTPSConfigurationNotice?
 
     private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
     /// Local catalog eligibility service - created asynchronously during init
-    private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+    private let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+
+    /// Main-actor service for the authenticated session. It is attached to the local catalog
+    /// actor before that actor evaluates eligibility or starts a sync.
+    private let localCatalogSystemStatusService: POSSystemStatusServiceProtocol?
 
     /// Creates item fetch strategy factory with current local catalog eligibility
     private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
-        let isFTSSearchEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleFTSSearch)
         return PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                                    credentials: credentials,
                                                    selectedSite: defaultSitePublisher,
                                                    appPasswordSupportState: isAppPasswordSupported,
                                                    grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
                                                    currencySettings: currencySettings,
-                                                   isLocalCatalogEnabled: isLocalCatalogEnabled,
-                                                   isFTSSearchEnabled: isFTSSearchEnabled)
+                                                   isLocalCatalogEnabled: isLocalCatalogEnabled)
     }
 
     /// Creates popular item fetch strategy factory with current local catalog eligibility
@@ -119,7 +124,8 @@ final class POSTabCoordinator {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?) {
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?,
+         httpsConfigurationNoticeProvider: @escaping () -> POSHTTPSConfigurationNotice? = { nil }) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
@@ -137,6 +143,19 @@ final class POSTabCoordinator {
         self.pushNotesManager = pushNotesManager
         self.eligibilityChecker = eligibilityChecker
         self.localCatalogEligibilityService = localCatalogEligibilityService
+        self.httpsConfigurationNoticeProvider = httpsConfigurationNoticeProvider
+
+        if localCatalogEligibilityService != nil {
+            self.localCatalogSystemStatusService = POSSystemStatusService(
+                credentials: credentials,
+                selectedSite: defaultSitePublisher,
+                appPasswordSupportState: isAppPasswordSupported,
+                storageManager: storageManager,
+                appPasswordSupportStateOwner: appPasswordSupportState
+            )
+        } else {
+            self.localCatalogSystemStatusService = nil
+        }
 
         tabContainerController.wrappedController = POSTabViewController()
     }
@@ -146,17 +165,25 @@ final class POSTabCoordinator {
     func updatePOSEligibility(isPOSTabVisible: Bool) {
         Task { @MainActor [weak self] in
             guard let self, let catalogEligibilityService = self.localCatalogEligibilityService else { return }
+            await configureLocalCatalogSystemStatusService()
 
             // If POS tab is not visible, mark as ineligible
             guard isPOSTabVisible else {
-                try await catalogEligibilityService.updatePOSEligibility(isEligible: false,
-                                                                         for: siteID)
+                do {
+                    try await catalogEligibilityService.updatePOSEligibility(isEligible: false,
+                                                                             for: siteID)
+                } catch {
+                    DDLogError("⛔️ Failed to mark POS as ineligible: \(error)")
+                    return
+                }
                 await posSyncDispatcher.stop()
                 return
             }
 
-            // Check actual POS eligibility using the eligibility checker
-            let eligibilityState = await eligibilityChecker.checkEligibility()
+            // Check actual POS eligibility using the eligibility checker. This is the background
+            // re-validation checkpoint (site load and app resume), so it forces a remote check
+            // instead of the local state that POS entry can rely on.
+            let eligibilityState = await eligibilityChecker.checkEligibility(forceRemoteCheck: true)
             let isPOSEligible = eligibilityState == .eligible
             do {
                 try await catalogEligibilityService.updatePOSEligibility(isEligible: isPOSEligible,
@@ -169,7 +196,8 @@ final class POSTabCoordinator {
         }
     }
 
-    func onTabSelected() {
+    func openPOS(entryPoint: POSAnalyticsEntryPoint) {
+        TracksProvider.setPOSEntryPoint(entryPoint)
         setPOSHasBeenOpened()
         presentPOSView(siteID: siteID)
     }
@@ -188,7 +216,8 @@ private extension POSTabCoordinator {
     }
 
     func presentPOSView(siteID: Int64) {
-        let hostingController = UIHostingController(
+        let httpsConfigurationNotice = httpsConfigurationNoticeProvider()
+        let hostingController = POSHostingController(
             rootView: POSPresentationRootView(posView: nil)
         )
         hostingController.modalPresentationStyle = .fullScreen
@@ -196,36 +225,40 @@ private extension POSTabCoordinator {
 
         Task { @MainActor [weak self, weak hostingController] in
             guard let self, let hostingController else { return }
+            await configureLocalCatalogSystemStatusService()
 
             // Get local catalog eligibility as bool from service
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Resolve POS eligibility before deciding the fetch strategy
-                let posState = await eligibilityChecker.checkEligibility()
+                let posState = await eligibilityChecker.checkEligibility(forceRemoteCheck: false)
                 try? await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
 
                 // Retry transient failures before using the value
-                let state = try await service.catalogEligibility(for: siteID)
-                if case .ineligible(reason: .catalogSizeCheckFailed) = state {
-                    try await service.refreshEligibilityState(for: siteID)
+                do {
+                    let state = try await service.catalogEligibility(for: siteID)
+                    if case .ineligible(reason: .versionCheckFailed) = state {
+                        try await service.refreshEligibilityState(for: siteID)
+                    }
+                    isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible
+                } catch {
+                    DDLogError("⛔️ Failed to resolve local catalog eligibility: \(error)")
+                    return
                 }
-                isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible
             } else {
                 // Service not ready yet (rare race condition), assume ineligible
                 isLocalCatalogEligible = false
             }
 
-            let sunsetWarningChecker = POSSunsetWarningChecker(
-                systemStatusService: POSSystemStatusService(
-                    credentials: credentials,
-                    selectedSite: defaultSitePublisher,
-                    appPasswordSupportState: isAppPasswordSupported,
-                    storageManager: storageManager
-                )
-            )
+            let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil
+            let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = isLocalCatalogEligible ? ServiceLocator.posCatalogSyncCoordinator : nil
 
+            let catalogSyncStrategy = POSCheckoutCatalogStrategy(isLocalCatalogEligible: isLocalCatalogEligible,
+                                                                hasDatabase: grdbManager != nil,
+                                                                hasSyncCoordinator: catalogSyncCoordinator != nil)
             let serviceAdaptor = POSServiceLocatorAdaptor()
-            let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
+            let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics,
+                                                                                      catalogSyncStrategy: catalogSyncStrategy)
 
             let cardPresentPaymentService: CardPresentPaymentFacade
             if ProcessConfiguration.shouldUseMockCardPresentPayment {
@@ -250,10 +283,6 @@ private extension POSTabCoordinator {
                                                              storage: storageManager)
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
-
-            // Only initialize local catalog infrastructure if eligible
-            let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil
-            let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = isLocalCatalogEligible ? ServiceLocator.posCatalogSyncCoordinator : nil
 
             // Create appropriate barcode scan service based on local catalog eligibility
             // Will use local GRDB-based scanning if eligible and infrastructure is available,
@@ -296,6 +325,7 @@ private extension POSTabCoordinator {
                 // whether to skip the BT auto-collect on checkout entry.
                 let tapToPayAvailabilityChecker = POSTapToPayAvailabilityChecker(
                     siteID: siteID,
+                    countryCode: SiteAddress(siteSettings: ServiceLocator.selectedSiteSettings.siteSettings).countryCode,
                     eligibilityService: POSEligibilityService()
                 )
                 let preferredConnectionMethod: CardReaderConnectionMethod
@@ -306,10 +336,36 @@ private extension POSTabCoordinator {
                     preferredConnectionMethod = .bluetooth
                 }
 
+                let refundService: RefundServiceProtocol
+                if let mockRefundService = makeMockPOSRefundService(orderService: orderService) {
+                    refundService = mockRefundService
+                } else if let posRefundService = RefundService(credentials: credentials,
+                                                              selectedSite: defaultSitePublisher,
+                                                              appPasswordSupportState: isAppPasswordSupported,
+                                                              storageManager: storageManager) {
+                    refundService = posRefundService
+                } else {
+                    DDLogError("RefundService not provided")
+                    await hostingController.dismiss(animated: true)
+                    return
+                }
+
+                let refundFlowResolver = POSRefundFlowResolver(stores: storesManager,
+                                                               availabilityCache: .shared,
+                                                               minimumWooVersion: POSRefundFlowResolver.Constants.minimumWooVersionForServerRefunds)
+                let serverRefundPreviewUseCase = POSServerRefundPreviewUseCase(refundService: refundService,
+                                                                               flowResolver: refundFlowResolver,
+                                                                               availabilityCache: .shared,
+                                                                               analytics: ServiceLocator.analytics)
                 let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
+                                                                           refundService: refundService,
                                                                            stores: storesManager,
                                                                            storageManager: storageManager,
-                                                                           currencySettings: currencySettings)
+                                                                           currencySettings: currencySettings,
+                                                                           serverRefundPreviewUseCase: serverRefundPreviewUseCase)
+
+                let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
+                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService : nil
 
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
@@ -346,11 +402,19 @@ private extension POSTabCoordinator {
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     receiptSettingsAdminURL: receiptSettingsAdminURL,
-                    sunsetWarningChecker: sunsetWarningChecker,
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
+                    receiptPrinter: receiptPrinter,
                     services: serviceAdaptor,
-                    itemProvider: itemProvider
+                    httpsConfigurationNotice: httpsConfigurationNotice,
+                    itemProvider: itemProvider,
+                    registerOnDismiss: { [weak hostingController] cleanup in
+                        guard let hostingController,
+                              !hostingController.isBeingDismissed,
+                              hostingController.presentingViewController != nil else { return false }
+                        hostingController.onDismiss = cleanup
+                        return true
+                    }
                 )
 
                 guard hostingController.presentingViewController != nil else {
@@ -361,6 +425,20 @@ private extension POSTabCoordinator {
                 await hostingController.dismiss(animated: true)
             }
         }
+    }
+}
+
+
+/// Temporary payment coverage must not end the POS presentation.
+private final class POSHostingController: UIHostingController<POSPresentationRootView> {
+    var onDismiss: (() -> Void)?
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        guard isBeingDismissed || presentingViewController == nil else { return }
+        let cleanup = onDismiss
+        onDismiss = nil
+        cleanup?()
     }
 }
 
@@ -379,6 +457,14 @@ struct POSPresentationRootView: View {
 
 
 private extension POSTabCoordinator {
+    func configureLocalCatalogSystemStatusService() async {
+        guard let localCatalogEligibilityService,
+              let localCatalogSystemStatusService else {
+            return
+        }
+        await localCatalogEligibilityService.configure(systemStatusService: localCatalogSystemStatusService)
+    }
+
     func makeMockPOSOrderService(currency: String) -> POSOrderServiceProtocol? {
         #if DEBUG
         if ProcessConfiguration.shouldUsePOSUITestMocks {
@@ -388,6 +474,20 @@ private extension POSTabCoordinator {
 
         if ProcessConfiguration.shouldBypassPOSOrderSyncing {
             return POSOrderServiceScreenshotMock(currency: currency)
+        }
+
+        return nil
+    }
+
+    func makeMockPOSRefundService(orderService: POSOrderServiceProtocol) -> RefundServiceProtocol? {
+        #if DEBUG
+        if ProcessConfiguration.shouldUsePOSUITestMocks {
+            return POSRefundServiceMock(orderService: orderService)
+        }
+        #endif
+
+        if ProcessConfiguration.shouldBypassPOSOrderSyncing {
+            return POSRefundServiceMock(orderService: orderService)
         }
 
         return nil

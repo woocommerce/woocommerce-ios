@@ -1,8 +1,10 @@
 import Combine
 import Experiments
+import TestKit
 import XCTest
 import Yosemite
 import YosemiteTestHelpers
+import enum NetworkingCore.DotcomError
 import enum NetworkingCore.NetworkError
 import protocol WooFoundation.Analytics
 @testable import WooCommerce
@@ -28,6 +30,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Mock: Stores Manager
     ///
     private var storesManager: MockStoresManager!
+    private var sessionManager: SessionManager!
 
     /// Mock: UserNotificationCenter
     ///
@@ -44,6 +47,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Mock: Analytics Provider
     ///
     private var analyticsProvider: MockAnalyticsProvider!
+    private var now = Date(timeIntervalSince1970: 1_750_000_000)
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -54,6 +58,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         super.setUp()
 
         subscriptions = []
+        now = Date(timeIntervalSince1970: 1_750_000_000)
 
         application = MockApplicationAdapter()
 
@@ -61,7 +66,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
 
         // Most of the test cases expect a nil site ID, otherwise the dispatched actions would not match.
-        storesManager = MockStoresManager(sessionManager: .testingInstance)
+        sessionManager = .testingInstance
+        storesManager = MockStoresManager(sessionManager: sessionManager)
         storesManager.sessionManager.setStoreId(nil)
         mockSynchronizeNotificationsAction()
 
@@ -76,17 +82,21 @@ final class PushNotificationsManagerTests: XCTestCase {
     @MainActor
     override func tearDown() {
         manager.resetBadgeCountForAllStores {}
+        sessionManager?.defaultCredentials = SessionSettings.wpcomCredentials
+        sessionManager?.setStoreId(nil)
         manager = nil
         userNotificationCenter = nil
         backgroundSynchronizerFactory = nil
         storageManager = nil
         storesManager = nil
+        sessionManager = nil
         analyticsProvider = nil
 
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
         defaults = nil
 
         application = nil
+        UserDefaults.standard.saveHiddenStoreIDs([])
         super.tearDown()
     }
 
@@ -365,19 +375,29 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertNil(application.presentInAppMessages.first?.message)
     }
 
-    func test_handleNotification_does_not_display_inApp_notice_if_no_noteID_in_payload_and_site_registered_with_Woo() async throws {
+    func test_handleNotificationInTheForeground_when_connected_wpcom_notification_duplicates_woo_push_then_tracks_and_updates_badge_without_banner() async throws {
         // Given
         let siteID: Int64 = 132
-        let payload = notificationPayload(siteID: siteID, title: Sample.defaultTitle, message: nil)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: siteID, title: Sample.defaultTitle, message: nil)
         defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
-        manager = {
-            let configuration = PushNotificationsConfiguration(application: self.application,
-                                                               defaults: self.defaults,
-                                                               storesManager: self.storesManager,
-                                                               userNotificationsCenter: self.userNotificationCenter)
+        defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        storesManager.sessionManager.setStoreId(siteID)
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(_, _, _, onCompletion):
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager(analytics: analytics)
 
-            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
-        }()
+        var emittedNotifications: [WooCommerce.PushNotification] = []
+        manager.foregroundNotifications.sink { emittedNotifications.append($0) }.store(in: &subscriptions)
 
         // When
         application.applicationState = .active
@@ -386,9 +406,145 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Then
         XCTAssertNil(application.presentInAppMessages.first)
+        XCTAssertTrue(emittedNotifications.isEmpty)
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "wpcom",
+                "push_notification_note_id": "1234",
+                "push_notification_type": "store_order"
+            ]
+        )
     }
 
     // MARK: - Foreground Notification Observable
+
+    func test_foreground_order_push_when_payment_was_collected_then_skips_notice_and_keeps_refresh_event() async throws {
+        // Given
+        let siteID: Int64 = 132
+        let orderID: Int64 = 306
+        application.applicationState = .active
+        storesManager.sessionManager.setStoreId(siteID)
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, currency: "USD")
+        let intent = PaymentIntent.fake().copy(status: .succeeded,
+                                               charges: [],
+                                               collectedPaymentMethod: .cardPresent(details: .fake()))
+        var completeCapture: ((Result<PaymentIntent, Error>) -> Void)?
+        storesManager.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .collectPayment(_, _, _, _, _, _, onProcessingCompletion, onCompletion) = action {
+                onProcessingCompletion(intent)
+                completeCapture = onCompletion
+            }
+        }
+        let orchestrator = PaymentCaptureOrchestrator(stores: storesManager,
+                                                     paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
+                                                     celebration: MockPaymentCaptureCelebration(),
+                                                     pushNotesManager: manager)
+        var paymentCompleted = false
+        var refreshCount = 0
+        manager.foregroundNotifications.sink { _ in refreshCount += 1 }.store(in: &subscriptions)
+
+        // When
+        orchestrator.collectPayment(for: order,
+                                    orderTotal: 2,
+                                    paymentGatewayAccount: .fake(),
+                                    readerType: .stripeM2,
+                                    paymentMethodTypes: [.cardPresent],
+                                    stripeSmallestCurrencyUnitMultiplier: 100,
+                                    countryCode: .US,
+                                    terminalPaymentPreparationEnabled: false,
+                                    channel: .storeManagement,
+                                    onPreparingReader: {},
+                                    onWaitingForInput: { _ in },
+                                    onCardInserted: {},
+                                    onProcessingMessage: {},
+                                    onDisplayMessage: { _ in },
+                                    onProcessingCompletion: { _ in },
+                                    onCompletion: { result in
+            if case .success = result {
+                paymentCompleted = true
+            }
+        })
+        let payload = try wooDrivenNotificationPayload(siteID: siteID, orderID: Int(orderID), title: "You have a new order!")
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        XCTAssertFalse(paymentCompleted)
+        _ = await manager.handleNotificationInTheForeground(notification)
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+        completeCapture?(.success(intent))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        XCTAssertTrue(paymentCompleted)
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+        XCTAssertEqual(refreshCount, 2)
+    }
+
+    func test_foreground_order_push_when_paid_locally_then_keeps_badge_and_analytics() async throws {
+        // Given
+        storesManager.sessionManager.setStoreId(132)
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(_, _, _, onCompletion):
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        application.applicationState = .active
+        manager.suppressNewOrderNotice(for: .fake().copy(siteID: 132, orderID: 306))
+        let payload = try wooDrivenNotificationPayload(siteID: 132, orderID: 306, title: Sample.defaultTitle)
+
+        // When
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: payload)))
+
+        // Then
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        analyticsProvider.assertReceived(event: "push_notification_received",
+                                         with: ["push_notification_source": "woo_driven", "push_notification_type": "store_order"])
+    }
+
+    func test_foreground_order_push_when_clean_site_credentials_match_paid_order_then_hides_only_matching_notice() async throws {
+        // Given
+        application.applicationState = .active
+        sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        sessionManager.defaultSite = .fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://first.example")
+        XCTAssertNil(storageManager.viewStorage.loadSite(siteID: 132))
+        manager.suppressNewOrderNotice(for: .fake().copy(siteID: WooConstants.placeholderStoreID, orderID: 306))
+        var refreshCount = 0
+        manager.foregroundNotifications.sink { _ in refreshCount += 1 }.store(in: &subscriptions)
+
+        // When
+        let matchingPayload = try wooDrivenNotificationPayload(siteID: 132, orderID: 306, title: Sample.defaultTitle)
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: matchingPayload)))
+        let matchingNoticeCount = application.presentInAppMessages.count
+        let otherOrderPayload = try wooDrivenNotificationPayload(siteID: 132, orderID: 307, title: Sample.defaultTitle)
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: otherOrderPayload)))
+
+        // Then
+        XCTAssertEqual(matchingNoticeCount, 0)
+        XCTAssertEqual(application.presentInAppMessages.count, 1)
+        XCTAssertEqual(refreshCount, 2)
+        XCTAssertFalse(storesManager.receivedActions.contains { $0 is JetpackConnectionAction || $0 is SiteAction })
+    }
+
+    func test_foreground_order_push_when_wpcom_store_differs_then_shows_notice_for_same_order_id() async throws {
+        // Given
+        application.applicationState = .active
+        sessionManager.setStoreId(132)
+        manager.suppressNewOrderNotice(for: .fake().copy(siteID: 132, orderID: 306))
+        let payload = try wooDrivenNotificationPayload(siteID: 133, orderID: 306, title: Sample.defaultTitle)
+
+        // When
+        _ = await manager.handleNotificationInTheForeground(try XCTUnwrap(MockNotification(userInfo: payload)))
+
+        // Then
+        XCTAssertEqual(application.presentInAppMessages.count, 1)
+    }
 
     func test_it_emits_foreground_notifications_when_it_receives_a_notification_while_app_is_active() async throws {
         // Given
@@ -752,7 +908,129 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
-    func test_registerDeviceToken_when_self_driven_gate_enabled_and_self_driven_token_registration_fails_falls_back_to_wpcom() async {
+    // MARK: - Self-driven OFF: migrate Woo push registrations back to WPCom
+    //
+    // Sites with a WPCom fallback (visible + full Jetpack) are re-enabled on WPCom first and
+    // unregistered from their store only once that succeeds; sites without one (hidden,
+    // Jetpack CP, site-credentials) are unregistered unconditionally. The store-side record ID
+    // is recovered by re-registering (the create endpoint upserts) before deleting.
+
+    func test_registerDeviceToken_when_FF_off_with_prior_woo_registration_then_reenables_wpcom_and_deletes_woo_registration() async {
+        // Given — a fallback-capable site registered while the FF was ON; the device token is
+        // unchanged, so the migration must not wait for a rotation.
+        manager = await makeMigrationScenario(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        seedStoredDeviceToken(sampleTokenData.hexString)
+        stubUpdateNotificationSettings(result: .success(()))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await until { self.manager.siteIDsRegisteredForWooPNs.isEmpty }
+
+        // Then — WPCom re-enabled first, then the Woo record deleted and the local state cleared.
+        assertReenabledWPComPushNotifications()
+        assertDeletedWooPushToken(siteID: 99)
+        assertWooRegistrationCleared()
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("wpcom_device_enable_push_notifications_success"))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("woo_push_token_delete_success"))
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_reenable_fails_then_keeps_fallback_site_on_woo_push() async {
+        // Given
+        manager = await makeMigrationScenario(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        stubUpdateNotificationSettings(result: .failure(NSError(domain: "test", code: 1)))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — WPCom did not take over: the site stays on Woo push (which still delivers) and
+        // its store-side record is kept, so the next launch retries the migration.
+        XCTAssertFalse(dispatchedUnregisterWooPushToken)
+        XCTAssertEqual(manager.siteIDsRegisteredForWooPNs, [99])
+        XCTAssertEqual(manager.wooPushNotificationToken, "555")
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("wpcom_device_enable_push_notifications_error"))
+    }
+
+    func test_registerDeviceToken_when_FF_off_with_no_prior_woo_registration_then_registers_wpcom_without_settings_changes() async {
+        // Given — never used Woo-driven PNs.
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff()
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — plain WPCom registration, no settings writes, no Woo deletes.
+        XCTAssertTrue(dispatchedRegisterDotcomDevice)
+        XCTAssertTrue(blogIDsWithWPComSettingsWrites.isEmpty)
+        XCTAssertFalse(dispatchedUnregisterWooPushToken)
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_site_credentials_user_then_deletes_woo_registration_without_wpcom_calls() async {
+        // Given
+        manager = await makeMigrationScenario(credentials: SessionSettings.applicationPasswordCredentials)
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await until { self.manager.siteIDsRegisteredForWooPNs.isEmpty }
+
+        // Then — no WPCom fallback exists: the Woo registration is deleted unconditionally and
+        // no WPCom call is made.
+        assertDeletedWooPushToken(siteID: 99)
+        assertWooRegistrationCleared()
+        XCTAssertFalse(dispatchedRegisterDotcomDevice)
+        XCTAssertTrue(blogIDsWithWPComSettingsWrites.isEmpty)
+    }
+
+    func test_registerDeviceToken_when_FF_off_then_hidden_and_jetpack_cp_sites_are_deleted_without_wpcom_reenable() async {
+        // Given — 99 is fallback-capable, 100 is hidden, 101 is Jetpack CP (no Jetpack plugin,
+        // WPCom can't deliver to it).
+        manager = await makeMigrationScenario(registeredSiteIDs: "99,100,101", sites: [
+            (99, "https://example.com", true, true, true),
+            (100, "https://hidden.example.com", true, true, true),
+            (101, "https://jcp.example.com", false, false, true)
+        ])
+        UserDefaults.standard.saveHiddenStoreIDs([100])
+        addTeardownBlock {
+            UserDefaults.standard.saveHiddenStoreIDs([])
+        }
+        stubUpdateNotificationSettings(result: .success(()))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await until { self.manager.siteIDsRegisteredForWooPNs.isEmpty }
+
+        // Then — only the fallback-capable site gets a WPCom settings write; all three Woo
+        // records are deleted and the local state is cleared.
+        assertReenabledWPComPushNotifications(blogID: 99)
+        XCTAssertEqual(blogIDsWithWPComSettingsWrites, [99])
+        [Int64(99), 100, 101].forEach { assertDeletedWooPushToken(siteID: $0) }
+        assertWooRegistrationCleared()
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_woo_delete_fails_then_keeps_site_marked_for_retry() async {
+        // Given
+        manager = await makeMigrationScenario(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        stubUpdateNotificationSettings(result: .success(()))
+        stubFallbackWooActions(unregisterResult: .failure(NSError(domain: "test", code: 1)))
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await until { self.dispatchedUnregisterWooPushToken }
+
+        // Then — the store still holds a live registration: the site stays marked so the delete
+        // retries on the next launch, and the failure is visible in Tracks.
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        XCTAssertEqual(manager.siteIDsRegisteredForWooPNs, [99])
+        XCTAssertEqual(manager.wooPushNotificationToken, "555")
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
+    }
+
+    func test_registerDeviceToken_when_wpcom_device_is_missing_then_registers_wpcom_device() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(99)
@@ -773,12 +1051,15 @@ final class PushNotificationsManagerTests: XCTestCase {
             return
         }
 
-        let fallbackExpectation = expectation(description: "WPCom fallback triggered")
+        let fallbackExpectation = expectation(description: "WPCom device registration attempted")
         fallbackExpectation.assertForOverFulfill = false
+        let registrationExpectation = expectation(description: "Woo registration attempted")
+        registrationExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
             case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Failure", code: 404)))
+                registrationExpectation.fulfill()
             case .registerDevice:
                 fallbackExpectation.fulfill()
             default:
@@ -788,7 +1069,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // When
         manager.registerDeviceToken(with: tokenAsData)
-        await fulfillment(of: [fallbackExpectation], timeout: 1.0)
+        await fulfillment(of: [fallbackExpectation, registrationExpectation], timeout: 1.0)
 
         // Then
         // It dispatches the WPCom device registration request
@@ -799,9 +1080,10 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
-    func test_registerDeviceToken_when_self_driven_registration_fails_with_404_unmarks_registered_site() async {
+    func test_registerDeviceToken_when_rest_returns_rest_no_route_then_unmarks_site_and_saves_next_check() async {
         // Given
         let siteID: Int64 = 99
+        seedPriorWooRegistration(siteIDs: "99")
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(siteID)
         let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
@@ -819,7 +1101,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         registrationExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
-                onCompletion(.failure(NetworkError.notFound()))
+                onCompletion(.failure(NetworkError.notFound(response: Data(#"{"code":"rest_no_route"}"#.utf8))))
                 registrationExpectation.fulfill()
             }
         }
@@ -837,56 +1119,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
         ) ?? ""
         XCTAssertFalse(storedSiteIDs.contains("\(siteID)"), "Site ID should be unmarked after 404 error")
-    }
-
-    func test_registerDeviceToken_when_plugin_version_is_incompatible_then_unmarks_site_and_skips_registration() async {
-        // Given
-        let siteID: Int64 = 99
-        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
-        storesManager.sessionManager.setStoreId(siteID)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
-
-        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
-        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
-            eligibilityCheckExpectation.fulfill()
-        })
-
-        // Set up mock plugin version checker to return incompatible version
-        let mockChecker = MockPluginVersionChecker()
-        mockChecker.result = .success(.incompatible(currentVersion: "10.5.0", requiredVersion: "10.8.0"))
-        let mockCheckerFactory = MockPluginVersionCheckerFactory(checker: mockChecker)
-
-        let versionCheckExpectation = expectation(description: "Version check completed")
-        mockChecker.onCheckCompatibility = {
-            versionCheckExpectation.fulfill()
-        }
-
-        manager = makeManager(featureFlagService: featureFlagService, pluginVersionCheckerFactory: mockCheckerFactory)
-
-        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
-
-        // No registration action should be dispatched since version check fails
-        var registrationAttempted = false
-        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case .registerDeviceForSelfDrivenPushNotifications = action {
-                registrationAttempted = true
-            }
-        }
-
-        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
-        }
-
-        // When
-        manager.registerDeviceToken(with: tokenAsData)
-        await fulfillment(of: [versionCheckExpectation], timeout: 1.0)
-
-        // Then
-        XCTAssertFalse(registrationAttempted, "Registration should not be attempted when plugin version is incompatible")
-        let storedSiteIDs = defaults.string(
-            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
-        ) ?? ""
-        XCTAssertFalse(storedSiteIDs.contains("\(siteID)"), "Site ID should be unmarked when plugin version is incompatible")
+        XCTAssertEqual(nextCheck(for: siteID), now.addingTimeInterval(24 * 60 * 60))
     }
 
     func test_registerDeviceToken_when_plugin_version_is_compatible_then_proceeds_with_registration() async {
@@ -998,14 +1231,15 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
 
-        // Wait for the WPCom fallback (last action in the Task) to ensure the full
-        // async registration completes before tearDown nils test properties.
-        let fallbackExpectation = expectation(description: "WPCom fallback triggered")
+        // Wait for both the WPCom device registration and the automatic Woo refresh to complete.
+        let fallbackExpectation = expectation(description: "WPCom device registration attempted")
         fallbackExpectation.assertForOverFulfill = false
+        let registrationExpectation = expectation(description: "Woo registration attempted")
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
             case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+                registrationExpectation.fulfill()
             case .registerDevice:
                 fallbackExpectation.fulfill()
             default:
@@ -1019,7 +1253,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // When — new token arrives, clearing previously registered sites
         manager.registerDeviceToken(with: tokenAsData)
-        await fulfillment(of: [fallbackExpectation], timeout: 1.0)
+        await fulfillment(of: [fallbackExpectation, registrationExpectation], timeout: 1.0)
 
         // Then — site was cleared from registered list due to token change, and re-registration failed
         let storedSiteIDs = defaults.string(
@@ -1122,7 +1356,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(storedSiteIDs.contains("300"), "Site 300 should be registered")
     }
 
-    func test_registerDeviceToken_skips_already_registered_sites() async {
+    func test_registerDeviceToken_when_registered_sites_have_no_next_check_then_registers_them_again() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
@@ -1140,7 +1374,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
 
         var registeredSiteIDs = Set<Int64>()
-        let registrationExpectation = expectation(description: "Only unregistered site attempted")
+        let registrationExpectation = expectation(description: "All visible sites attempted")
+        registrationExpectation.expectedFulfillmentCount = 3
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
                 registeredSiteIDs.insert(siteID)
@@ -1157,57 +1392,9 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager.registerDeviceToken(with: tokenAsData)
         await fulfillment(of: [registrationExpectation], timeout: 1.0)
 
-        // Then — only site 300 should have been registered (100 and 200 were already registered)
-        XCTAssertEqual(registeredSiteIDs, [300])
-    }
-
-    func test_registerDeviceToken_falls_back_to_wpcom_when_any_site_fails() async {
-        // Given
-        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
-        storesManager.sessionManager.setStoreId(100)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
-
-        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
-        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
-            eligibilityCheckExpectation.fulfill()
-        })
-
-        await insertSitesIntoStorage(siteIDs: [100, 200])
-
-        manager = makeManager(featureFlagService: featureFlagService)
-        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
-
-        let fallbackExpectation = expectation(description: "WPCom fallback triggered")
-        fallbackExpectation.assertForOverFulfill = false
-        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            switch action {
-            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
-                if siteID == 200 {
-                    onCompletion(.failure(NSError(domain: "test", code: 500)))
-                } else {
-                    onCompletion(.success(Int64(siteID + 1000)))
-                }
-            case .registerDevice:
-                fallbackExpectation.fulfill()
-            default:
-                break
-            }
-        }
-
-        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
-        }
-
-        // When
-        manager.registerDeviceToken(with: tokenAsData)
-        await fulfillment(of: [fallbackExpectation], timeout: 2.0)
-
-        // Then — WPCom fallback was triggered even though site 100 succeeded, because site 200 failed
-        let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
-        XCTAssertTrue(notificationActions.contains(where: {
-            if case .registerDevice = $0 { return true }
-            return false
-        }))
+        // Then — every visible Woo site is refreshed, including sites already registered.
+        XCTAssertEqual(registeredSiteIDs, [100, 200, 300])
+        [100, 200, 300].forEach { XCTAssertEqual(nextCheck(for: $0), now.addingTimeInterval(24 * 60 * 60)) }
     }
 
     func test_registerDeviceToken_when_multiple_sites_then_token_register_events_carry_target_site_properties() async throws {
@@ -1231,9 +1418,11 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager = makeManager(featureFlagService: featureFlagService, analytics: analytics)
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
 
-        // Site 100 succeeds; site 200 fails, which triggers the WPCom fallback we use to sync on flow completion.
-        let fallbackExpectation = expectation(description: "WPCom fallback triggered")
+        // Site 100 succeeds and site 200 fails; the shared action stub handles both results.
+        let fallbackExpectation = expectation(description: "WPCom device registration attempted")
         fallbackExpectation.assertForOverFulfill = false
+        let registrationExpectation = expectation(description: "Woo registrations completed")
+        registrationExpectation.expectedFulfillmentCount = 2
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
             case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
@@ -1242,6 +1431,7 @@ final class PushNotificationsManagerTests: XCTestCase {
                 } else {
                     onCompletion(.success(Int64(siteID + 1000)))
                 }
+                registrationExpectation.fulfill()
             case .registerDevice:
                 fallbackExpectation.fulfill()
             default:
@@ -1253,7 +1443,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // When
         manager.registerDeviceToken(with: tokenAsData)
-        await fulfillment(of: [fallbackExpectation], timeout: 2.0)
+        await fulfillment(of: [fallbackExpectation, registrationExpectation], timeout: 2.0)
 
         // Then — each event carries the target site's identifiers and capability flags, not the selected site's.
         let successIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_register_success"),
@@ -1365,49 +1555,105 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(successProperties["is_jetpack_connected"] as? Bool, false)
     }
 
-    func test_registerDeviceToken_when_site_returns_notFound_then_unmarks_that_site() async {
-        // Given
+    // MARK: - Self-driven push token deletion analytics
+
+    func test_unregisterFromWooPushNotificationsIfPossible_when_unregistration_succeeds_then_tracks_delete_success_with_target_site_properties() async throws {
+        // Given — selected site 100 is stored with distinct properties and a Woo push token is registered.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        defaults.set("1100", forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
 
-        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
-        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
-            eligibilityCheckExpectation.fulfill()
-        })
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: 100, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true)
+        ])
 
-        await insertSitesIntoStorage(siteIDs: [100, 200])
+        manager = makeManager(analytics: analytics)
 
-        manager = makeManager(featureFlagService: featureFlagService)
-        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
-
-        let allAttemptedExpectation = expectation(description: "All sites attempted")
-        allAttemptedExpectation.expectedFulfillmentCount = 2
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
-                if siteID == 200 {
-                    onCompletion(.failure(NetworkError.notFound()))
-                } else {
-                    onCompletion(.success(Int64(siteID + 1000)))
-                }
-                allAttemptedExpectation.fulfill()
+            if case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion) = action {
+                onCompletion(.success(()))
             }
         }
 
-        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+        // When
+        let completionExpectation = expectation(description: "Unregistration completed")
+        manager.unregisterFromWooPushNotificationsIfPossible { _ in
+            completionExpectation.fulfill()
+        }
+        await fulfillment(of: [completionExpectation], timeout: 1.0)
+
+        // Then — the event carries the target site's identifiers and capability flags.
+        let successIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_delete_success"),
+                                         "Expected a woo_push_token_delete_success event")
+        let successProperties = analyticsProvider.receivedProperties[successIndex]
+        XCTAssertEqual(successProperties["blog_id"] as? Int64, 100)
+        XCTAssertEqual(successProperties["site_url"] as? String, "https://alpha.example")
+        XCTAssertEqual(successProperties["is_wpcom_store"] as? Bool, true)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
+    }
+
+    func test_unregisterFromWooPushNotificationsIfPossible_when_unregistration_fails_then_tracks_delete_error_with_error_properties() async throws {
+        // Given — same setup as the success case, but the unregistration action fails.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        defaults.set("1100", forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: 100, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true)
+        ])
+
+        manager = makeManager(analytics: analytics)
+
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion) = action {
+                onCompletion(.failure(NSError(domain: "test", code: 500)))
+            }
         }
 
         // When
-        manager.registerDeviceToken(with: tokenAsData)
-        await fulfillment(of: [allAttemptedExpectation], timeout: 2.0)
+        let completionExpectation = expectation(description: "Unregistration completed")
+        manager.unregisterFromWooPushNotificationsIfPossible { _ in
+            completionExpectation.fulfill()
+        }
+        await fulfillment(of: [completionExpectation], timeout: 1.0)
 
-        // Then
-        let storedSiteIDs = defaults.string(
-            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
-        ) ?? ""
-        XCTAssertTrue(storedSiteIDs.contains("100"), "Site 100 should be registered")
-        XCTAssertFalse(storedSiteIDs.contains("200"), "Site 200 should be unmarked after notFound error")
+        // Then — the event carries the target site's identifiers plus the generic error fields.
+        let errorIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_delete_error"),
+                                       "Expected a woo_push_token_delete_error event")
+        let errorProperties = analyticsProvider.receivedProperties[errorIndex]
+        XCTAssertEqual(errorProperties["blog_id"] as? Int64, 100)
+        XCTAssertEqual(errorProperties["site_url"] as? String, "https://alpha.example")
+        XCTAssertEqual(errorProperties["error_domain"] as? String, "test")
+        XCTAssertEqual(errorProperties["error_code"] as? String, "500")
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_success"))
+    }
+
+    func test_unregisterFromWooPushNotificationsIfPossible_when_no_token_is_stored_then_completes_without_tracking() async {
+        // Given — a selected site but no Woo push token, so there is nothing to delete.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let completionExpectation = expectation(description: "Unregistration completed")
+        manager.unregisterFromWooPushNotificationsIfPossible { result in
+            if case .failure = result {
+                XCTFail("Expected success when there is no token to delete")
+            }
+            completionExpectation.fulfill()
+        }
+        await fulfillment(of: [completionExpectation], timeout: 1.0)
+
+        // Then — no deletion happened, so no delete events should be tracked.
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_success"))
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
     }
 
     func test_registerDeviceToken_when_storage_is_empty_then_falls_back_to_current_siteID() async {
@@ -1447,45 +1693,553 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(registeredSiteIDs, [99])
     }
 
-    func test_registerDeviceToken_when_all_sites_already_registered_then_skips_registration() async {
-        // Given — all sites already registered
-        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
-        storesManager.sessionManager.setStoreId(100)
-        defaults.set("100,200", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
-        // Set the same device token so token-change logic doesn't clear sites
-        defaults.set(Sample.deviceToken.data(using: .utf8)!.hexString,
-                     forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+    func test_refreshWooPushRegistrationsIfNeeded_when_all_stores_have_future_next_checks_then_makes_no_network_calls() async {
+        // Given
+        let checker = MockPluginVersionChecker()
+        var checkerCalls = 0
+        checker.onCheckCompatibility = { checkerCalls += 1 }
+        manager = await makeSelfDrivenManager(
+            siteIDs: [100, 200],
+            pluginVersionCheckerFactory: MockPluginVersionCheckerFactory(checker: checker)
+        )
+        seedNextCheck(now.addingTimeInterval(60 * 60), siteID: 100)
+        seedNextCheck(now.addingTimeInterval(60 * 60), siteID: 200)
+        stubWooPushActions()
+        let actionCount = pushNetworkActionCount
 
-        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
-        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
-            eligibilityCheckExpectation.fulfill()
-        })
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await manager.refreshWooPushRegistrationsIfNeeded()
 
-        await insertSitesIntoStorage(siteIDs: [100, 200])
+        // Then
+        XCTAssertEqual(pushNetworkActionCount, actionCount)
+        XCTAssertEqual(checkerCalls, 0)
+        XCTAssertTrue(registrationAttempts.isEmpty)
+        XCTAssertFalse(dispatchedRegisterDotcomDevice)
+    }
 
-        manager = makeManager(featureFlagService: featureFlagService)
-        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+    func test_refreshWooPushRegistrationsIfNeeded_when_next_check_is_due_or_too_far_ahead_then_registers_store_again() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100, 200, 300, 400], registeredSiteIDs: "100")
+        seedNextCheck(now, siteID: 100)
+        seedNextCheck(now.addingTimeInterval(25 * 60 * 60), siteID: 200)
+        seedNextCheck(now.addingTimeInterval(23 * 60 * 60), siteID: 300)
+        stubWooPushActions()
 
-        var registrationAttempted = false
+        // When
+        await manager.refreshWooPushRegistrationsIfNeeded()
+
+        // Then
+        XCTAssertEqual(Set(registrationAttempts), Set([100, 200, 400]))
+        XCTAssertEqual(nextCheck(for: 100), now.addingTimeInterval(24 * 60 * 60))
+        XCTAssertEqual(nextCheck(for: 200), now.addingTimeInterval(24 * 60 * 60))
+        XCTAssertEqual(nextCheck(for: 300), now.addingTimeInterval(23 * 60 * 60))
+        XCTAssertEqual(nextCheck(for: 400), now.addingTimeInterval(24 * 60 * 60))
+        XCTAssertFalse(blogIDsWithWPComSettingsWrites.contains(100))
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_a_store_fails_then_retries_after_four_hours() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100, 200])
+        let firstPassExpectation = expectation(description: "APNs refresh attempted both stores")
+        firstPassExpectation.expectedFulfillmentCount = 2
+        firstPassExpectation.assertForOverFulfill = false
+        var firstPassAttempts = 0
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case .registerDeviceForSelfDrivenPushNotifications = action {
-                registrationAttempted = true
+            switch action {
+            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
+                firstPassAttempts += 1
+                if siteID == 200 {
+                    onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+                } else {
+                    onCompletion(.success(siteID + 1000))
+                }
+                if firstPassAttempts <= 2 {
+                    firstPassExpectation.fulfill()
+                }
+            case .registerDevice:
+                XCTFail("The existing WPCom device should not be registered again")
+            default:
+                break
             }
         }
 
-        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            return XCTFail("Invalid sample token")
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await fulfillment(of: [firstPassExpectation], timeout: 2.0)
+        let firstCheck = now
+        await manager.refreshWooPushRegistrationsIfNeeded()
+
+        // The failed store is not retried before the retry interval.
+        now.addTimeInterval(60 * 60)
+        await manager.refreshWooPushRegistrationsIfNeeded()
+        XCTAssertEqual(registrationAttempts.filter { $0 == 100 }.count, 1)
+        XCTAssertEqual(registrationAttempts.filter { $0 == 200 }.count, 1)
+
+        // The failed store is retried after the retry interval.
+        now.addTimeInterval(3 * 60 * 60)
+        await manager.refreshWooPushRegistrationsIfNeeded()
+
+        // Then
+        XCTAssertEqual(registrationAttempts.filter { $0 == 100 }.count, 1)
+        XCTAssertEqual(registrationAttempts.filter { $0 == 200 }.count, 2)
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertFalse(manager.siteIDsRegisteredForWooPNs.contains(200))
+        XCTAssertEqual(nextCheck(for: 100), firstCheck.addingTimeInterval(24 * 60 * 60))
+        XCTAssertEqual(nextCheck(for: 200), firstCheck.addingTimeInterval(8 * 60 * 60))
+        XCTAssertFalse(dispatchedRegisterDotcomDevice)
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_stores_are_hidden_or_not_woo_then_registers_only_visible_woo_stores() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100, 200, 300], inactiveSiteIDs: [300])
+        UserDefaults.standard.saveHiddenStoreIDs([200])
+        stubWooPushActions()
+
+        // When
+        await manager.refreshWooPushRegistrationsIfNeeded()
+
+        // Then
+        XCTAssertEqual(registrationAttempts, [100])
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_store_returns_noRestRoute_then_restores_wpcom_and_skips_store_until_next_check() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100, 200], registeredSiteIDs: "100,200", jetpackCPSiteIDs: [200])
+        stubWooPushActions(results: [
+            100: .failure(DotcomError.noRestRoute()),
+            200: .failure(DotcomError.noRestRoute())
+        ])
+        stubUpdateNotificationSettings(result: .success(()))
+
+        // When
+        let firstCheck = now
+        await manager.refreshWooPushRegistrationsIfNeeded()
+        now.addTimeInterval(60 * 60)
+        await manager.refreshWooPushRegistrationsIfNeeded()
+
+        // Then
+        XCTAssertFalse(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertFalse(manager.siteIDsRegisteredForWooPNs.contains(200))
+        XCTAssertEqual(nextCheck(for: 100), firstCheck.addingTimeInterval(24 * 60 * 60))
+        XCTAssertEqual(nextCheck(for: 200), firstCheck.addingTimeInterval(24 * 60 * 60))
+        assertReenabledWPComPushNotifications(blogID: 100, deviceID: 456)
+        XCTAssertEqual(Set(registrationAttempts), Set([100, 200]))
+        XCTAssertEqual(blogIDsWithWPComSettingsWrites, [100])
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_store_returns_other_404_then_keeps_registration_and_retries_after_four_hours() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100], registeredSiteIDs: "100")
+        stubWooPushActions(results: [100: .failure(NetworkError.notFound())])
+
+        // When
+        await manager.refreshWooPushRegistrationsIfNeeded()
+        now.addTimeInterval(4 * 60 * 60)
+        await manager.refreshWooPushRegistrationsIfNeeded()
+
+        // Then
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertEqual(nextCheck(for: 100), now.addingTimeInterval(4 * 60 * 60))
+        XCTAssertEqual(registrationAttempts, [100, 100])
+        XCTAssertTrue(blogIDsWithWPComSettingsWrites.isEmpty)
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_wpcom_enable_fails_then_retries_after_four_hours_and_upgrades_after_success() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100], registeredSiteIDs: "100")
+        stubUpdateNotificationSettings(result: .failure(NSError(domain: "test", code: 1)))
+        stubWooPushActions(results: [100: .failure(DotcomError.noRestRoute())])
+
+        // When
+        let firstCheck = now
+        await manager.refreshWooPushRegistrationsIfNeeded()
+        XCTAssertEqual(nextCheck(for: 100), firstCheck.addingTimeInterval(4 * 60 * 60))
+
+        now.addTimeInterval(4 * 60 * 60)
+        stubUpdateNotificationSettings(result: .success(()))
+        await manager.refreshWooPushRegistrationsIfNeeded()
+
+        // Then
+        XCTAssertEqual(registrationAttempts, [100, 100])
+        XCTAssertEqual(blogIDsWithWPComSettingsWrites.filter { $0 == 100 }.count, 2)
+        XCTAssertEqual(nextCheck(for: 100), firstCheck.addingTimeInterval(4 * 60 * 60 + 24 * 60 * 60))
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_unavailable_store_is_available_again_then_registers_and_disables_wpcom() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100])
+        seedNextCheck(now.addingTimeInterval(-25 * 60 * 60), siteID: 100)
+        stubWooPushActions()
+        stubUpdateNotificationSettings(result: .failure(NSError(domain: "test", code: 1)))
+
+        // When
+        await manager.refreshWooPushRegistrationsIfNeeded()
+
+        // Then
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertEqual(nextCheck(for: 100), now.addingTimeInterval(24 * 60 * 60))
+        let settingsWrites = storesManager.receivedActions.compactMap { $0 as? AccountAction }.compactMap { action -> NotificationSettings? in
+            guard case let .updateNotificationSettings(settings, _) = action else { return nil }
+            return settings
+        }
+        guard let lastSettings = settingsWrites.last,
+              let device = lastSettings.blogs.first?.devices.first else {
+            return XCTFail("Expected a WPCom settings write")
+        }
+        XCTAssertEqual(device.newComment, false)
+        XCTAssertEqual(device.storeOrder, false)
+        XCTAssertEqual(device.deviceID, 456)
+    }
+
+    func test_registerSiteForSelfDrivenPushNotifications_when_logged_out_then_skips_plugin_check_and_registration() async throws {
+        // Given
+        let checker = MockPluginVersionChecker()
+        var checkerCalls = 0
+        checker.onCheckCompatibility = { checkerCalls += 1 }
+        manager = await makeSelfDrivenManager(
+            siteIDs: [100, 200],
+            pluginVersionCheckerFactory: MockPluginVersionCheckerFactory(checker: checker)
+        )
+        storesManager.deauthenticate()
+
+        // When
+        try await manager.registerSiteForSelfDrivenPushNotifications(200)
+
+        // Then
+        XCTAssertEqual(checkerCalls, 0)
+        XCTAssertTrue(registrationAttempts.isEmpty)
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_plugin_is_incompatible_then_restores_wpcom_and_checks_again_next_day() async {
+        // Given
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.incompatible(currentVersion: "10.5.0", requiredVersion: "10.9.2"))
+        var checkerCalls = 0
+        checker.onCheckCompatibility = { checkerCalls += 1 }
+        manager = await makeSelfDrivenManager(
+            siteIDs: [100],
+            registeredSiteIDs: "100",
+            pluginVersionCheckerFactory: MockPluginVersionCheckerFactory(checker: checker)
+        )
+        stubWooPushActions()
+        stubUpdateNotificationSettings(result: .success(()))
+
+        // When
+        let firstCheck = now
+        await manager.refreshWooPushRegistrationsIfNeeded()
+        now.addTimeInterval(60 * 60)
+        await manager.refreshWooPushRegistrationsIfNeeded()
+        XCTAssertEqual(checkerCalls, 1)
+        now.addTimeInterval(24 * 60 * 60)
+        await manager.refreshWooPushRegistrationsIfNeeded()
+
+        // Then
+        XCTAssertTrue(registrationAttempts.isEmpty)
+        XCTAssertEqual(checkerCalls, 2)
+        XCTAssertFalse(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertEqual(nextCheck(for: 100), firstCheck.addingTimeInterval(25 * 60 * 60 + 24 * 60 * 60))
+        assertReenabledWPComPushNotifications(blogID: 100, deviceID: 456)
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_called_during_a_refresh_then_registers_each_store_once() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100])
+        var heldCompletions: [(Result<Int64, Error>) -> Void] = []
+        let firstRegistrationStarted = expectation(description: "First registration started")
+        firstRegistrationStarted.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
+                if heldCompletions.isEmpty {
+                    heldCompletions.append(onCompletion)
+                    firstRegistrationStarted.fulfill()
+                } else {
+                    onCompletion(.failure(NSError(domain: "test", code: 1)))
+                }
+            }
+        }
+        let first = Task { await self.manager.refreshWooPushRegistrationsIfNeeded() }
+        await fulfillment(of: [firstRegistrationStarted], timeout: 1.0)
+
+        // When
+        let secondRefreshStarted = expectation(description: "Second refresh started")
+        let secondRefreshCompleted = expectation(description: "Second refresh completed")
+        secondRefreshCompleted.isInverted = true
+        let second = Task {
+            secondRefreshStarted.fulfill()
+            await self.manager.refreshWooPushRegistrationsIfNeeded()
+            secondRefreshCompleted.fulfill()
+        }
+        await fulfillment(of: [secondRefreshStarted], timeout: 1.0)
+        await fulfillment(of: [secondRefreshCompleted], timeout: 0.25)
+        guard let firstCompletion = heldCompletions.first else {
+            XCTFail("Expected one held registration completion")
+            heldCompletions.forEach { $0(.failure(NSError(domain: "test", code: 1))) }
+            first.cancel()
+            second.cancel()
+            return
+        }
+        firstCompletion(.success(1100))
+        await first.value
+        await second.value
+
+        // Then
+        XCTAssertEqual(registrationAttempts, [100])
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_logout_clears_previous_refresh_then_registers_after_login() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100])
+        seedNextCheck(now, siteID: 100)
+        var heldCompletions: [(Result<Int64, Error>) -> Void] = []
+        let previousRegistrationStarted = expectation(description: "Previous registration started")
+        previousRegistrationStarted.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
+                heldCompletions.append(onCompletion)
+                previousRegistrationStarted.fulfill()
+            }
+        }
+        let previousRefresh = Task { await self.manager.refreshWooPushRegistrationsIfNeeded() }
+        await fulfillment(of: [previousRegistrationStarted], timeout: 1.0)
+
+        guard heldCompletions.count == 1 else {
+            XCTFail("Expected one held registration completion")
+            heldCompletions.forEach { $0(.failure(NSError(domain: "test", code: 1))) }
+            previousRefresh.cancel()
+            return
+        }
+        let previousCompletion = heldCompletions.removeFirst()
+
+        // When
+        manager.unregisterForRemoteNotifications {}
+        XCTAssertNil(nextCheck(for: 100))
+        storesManager.deauthenticate()
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        var currentCompletions: [(Result<Int64, Error>) -> Void] = []
+        let currentRegistrationStarted = expectation(description: "Current registration started")
+        currentRegistrationStarted.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
+                currentCompletions.append(onCompletion)
+                currentRegistrationStarted.fulfill()
+            }
+        }
+        let nextRefresh = Task { @MainActor in await self.manager.refreshWooPushRegistrationsIfNeeded() }
+        await fulfillment(of: [currentRegistrationStarted], timeout: 1.0)
+
+        previousCompletion(.success(1100))
+        guard let currentCompletion = currentCompletions.first else {
+            XCTFail("Expected the new session registration to be held")
+            nextRefresh.cancel()
+            await nextRefresh.value
+            return
+        }
+        currentCompletion(.success(2200))
+        currentCompletions.dropFirst().forEach { $0(.failure(NSError(domain: "test", code: 1))) }
+        await previousRefresh.value
+        await nextRefresh.value
+
+        // Then
+        XCTAssertEqual(registrationAttempts, [100, 100])
+        XCTAssertEqual(manager.wooPushNotificationToken, "2200")
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertEqual(nextCheck(for: 100), now.addingTimeInterval(24 * 60 * 60))
+    }
+
+    func test_refreshWooPushRegistrationsIfNeeded_when_results_arrive_after_logout_then_does_not_update_push_state() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100, 200], registeredSiteIDs: "100,200")
+        defaults.set("777", forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+        let originalNextCheck = now.addingTimeInterval(-60 * 60)
+        seedNextCheck(originalNextCheck, siteID: 100)
+        seedNextCheck(originalNextCheck, siteID: 200)
+        var heldCompletions: [(siteID: Int64, completion: (Result<Int64, Error>) -> Void)] = []
+        let registrationsStarted = expectation(description: "Both registrations started")
+        registrationsStarted.expectedFulfillmentCount = 2
+        registrationsStarted.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
+                heldCompletions.append((siteID: siteID, completion: onCompletion))
+                registrationsStarted.fulfill()
+            }
+        }
+        let refresh = Task { await self.manager.refreshWooPushRegistrationsIfNeeded() }
+        await fulfillment(of: [registrationsStarted], timeout: 1.0)
+
+        guard heldCompletions.count >= 2 else {
+            XCTFail("Expected held registrations for both stores")
+            heldCompletions.forEach { $0.completion(.failure(NSError(domain: "test", code: 1))) }
+            refresh.cancel()
+            await refresh.value
+            return
         }
 
         // When
-        manager.registerDeviceToken(with: tokenAsData)
+        storesManager.deauthenticate()
+        heldCompletions.forEach { held in
+            if held.siteID == 100 {
+                held.completion(.success(1100))
+            } else {
+                held.completion(.failure(DotcomError.noRestRoute()))
+            }
+        }
+        await refresh.value
 
-        // Give time for any async work to run
-        try? await Task.sleep(for: .milliseconds(100))
+        // Then
+        XCTAssertEqual(Set(registrationAttempts), Set([100, 200]))
+        XCTAssertEqual(manager.wooPushNotificationToken, "777")
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.contains(200))
+        XCTAssertEqual(nextCheck(for: 100), originalNextCheck)
+        XCTAssertEqual(nextCheck(for: 200), originalNextCheck)
+        XCTAssertTrue(blogIDsWithWPComSettingsWrites.isEmpty)
+    }
 
-        // Then — no registration action dispatched (all sites already registered)
-        XCTAssertFalse(registrationAttempted, "Should not attempt registration when all sites are already registered")
+    func test_registerDeviceToken_when_token_changes_during_registration_then_ignores_old_failure_and_schedules_current_failure() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100])
+        seedStoredDeviceToken("old-token")
+        var heldCompletions: [(Result<Int64, Error>) -> Void] = []
+        var tokens: [String] = []
+        let firstRegistrationStarted = expectation(description: "First token registration started")
+        firstRegistrationStarted.assertForOverFulfill = false
+        let secondRegistrationStarted = expectation(description: "Second token registration started")
+        secondRegistrationStarted.assertForOverFulfill = false
+        let secondRegistrationCompleted = expectation(description: "Second token registration completed")
+        secondRegistrationCompleted.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .registerDeviceForSelfDrivenPushNotifications(_, device, _, _, _, _, onCompletion):
+                tokens.append(device.token)
+                let isSecondRegistration = tokens.count == 2
+                heldCompletions.append { result in
+                    onCompletion(result)
+                    if isSecondRegistration {
+                        secondRegistrationCompleted.fulfill()
+                    }
+                }
+                if isSecondRegistration {
+                    secondRegistrationStarted.fulfill()
+                } else {
+                    firstRegistrationStarted.fulfill()
+                }
+            case let .registerDevice(_, _, _, onCompletion):
+                onCompletion(nil, nil)
+            default:
+                break
+            }
+        }
+        let first = Task { await self.manager.refreshWooPushRegistrationsIfNeeded() }
+        await fulfillment(of: [firstRegistrationStarted], timeout: 1.0)
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        guard let firstCompletion = heldCompletions.first else {
+            XCTFail("Expected one held registration completion")
+            heldCompletions.forEach { $0(.failure(NSError(domain: "test", code: 1))) }
+            first.cancel()
+            return
+        }
+        firstCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+        await fulfillment(of: [secondRegistrationStarted], timeout: 1.0)
+        guard heldCompletions.count >= 2 else {
+            XCTFail("Expected a second registration completion after the token changed")
+            heldCompletions.dropFirst().forEach { $0(.failure(NSError(domain: "test", code: 1))) }
+            await fulfillment(of: [secondRegistrationCompleted], timeout: 1.0)
+            return
+        }
+        XCTAssertNil(manager.wooPushNotificationToken)
+        XCTAssertFalse(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertTrue(blogIDsWithWPComSettingsWrites.isEmpty)
+        XCTAssertNil(nextCheck(for: 100))
+
+        heldCompletions[1](.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+        await fulfillment(of: [secondRegistrationCompleted], timeout: 1.0)
+        await first.value
+
+        // Then
+        XCTAssertEqual(tokens, ["old-token", sampleTokenData.hexString])
+        XCTAssertNil(manager.wooPushNotificationToken)
+        XCTAssertFalse(manager.siteIDsRegisteredForWooPNs.contains(100))
+        XCTAssertEqual(nextCheck(for: 100), now.addingTimeInterval(4 * 60 * 60))
+        XCTAssertTrue(blogIDsWithWPComSettingsWrites.isEmpty)
+    }
+
+    func test_registerDeviceToken_when_token_changes_then_registers_every_store_and_wpcom_device_again() async {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100, 200], registeredSiteIDs: "100")
+        seedStoredDeviceToken("old-token")
+        seedNextCheck(now.addingTimeInterval(-60 * 60), siteID: 100)
+        seedNextCheck(now.addingTimeInterval(-60 * 60), siteID: 200)
+        let registrationsStarted = expectation(description: "Both token registrations started")
+        registrationsStarted.expectedFulfillmentCount = 2
+        registrationsStarted.assertForOverFulfill = false
+        stubWooPushActions(onRegistration: { registrationsStarted.fulfill() })
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await fulfillment(of: [registrationsStarted], timeout: 1.0)
+
+        // Then
+        XCTAssertEqual(Set(registrationAttempts), Set([100, 200]))
+        XCTAssertTrue(dispatchedRegisterDotcomDevice)
+    }
+
+    func test_registerDeviceAndWaitForTokenAcceptance_when_store_has_a_future_next_check_then_still_registers_selected_store() async throws {
+        // Given
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: 100, url: "https://example.com/100", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true)
+        ])
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        manager = makeManager()
+        seedNextCheck(now.addingTimeInterval(2 * 60 * 60), siteID: 100)
+        now.addTimeInterval(60 * 60)
+        userNotificationCenter.authorizationStatus = .authorized
+        let applicationRegistrationExpectation = expectation(description: "Remote notification registration requested")
+        application.onRegisterForRemoteNotifications = { applicationRegistrationExpectation.fulfill() }
+        let registrationExpectation = expectation(description: "Registration completed")
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
+                onCompletion(.success(1100))
+                registrationExpectation.fulfill()
+            }
+        }
+        let task = Task { try await self.manager.registerDeviceAndWaitForTokenAcceptance() }
+        await fulfillment(of: [applicationRegistrationExpectation], timeout: 1.0)
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        let tokenID = try await task.value
+        await fulfillment(of: [registrationExpectation], timeout: 1.0)
+
+        // Then
+        XCTAssertEqual(tokenID, 1100)
+        XCTAssertEqual(registrationAttempts, [100])
+        XCTAssertEqual(nextCheck(for: 100), now.addingTimeInterval(24 * 60 * 60))
+    }
+
+    func test_registerSiteForSelfDrivenPushNotifications_when_next_check_is_in_the_future_then_skips_until_it_expires() async throws {
+        // Given
+        manager = await makeSelfDrivenManager(siteIDs: [100, 200], registeredSiteIDs: "100")
+        seedNextCheck(now.addingTimeInterval(60 * 60), siteID: 200)
+        stubWooPushActions()
+
+        // When
+        try await manager.registerSiteForSelfDrivenPushNotifications(200)
+
+        // Then
+        XCTAssertTrue(registrationAttempts.isEmpty)
+
+        // When
+        now.addTimeInterval(2 * 60 * 60)
+        try await manager.registerSiteForSelfDrivenPushNotifications(200)
+
+        // Then
+        XCTAssertEqual(registrationAttempts, [200])
+        XCTAssertEqual(nextCheck(for: 200), now.addingTimeInterval(24 * 60 * 60))
     }
 
     // MARK: - Notification Tracking Tests
@@ -1520,6 +2274,29 @@ final class PushNotificationsManagerTests: XCTestCase {
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         application.applicationState = .active
         let payload = notificationPayload(noteID: nil, type: .storeOrder, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "woo_driven",
+                "push_notification_type": "store_order"
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_note_id_is_NSNull_then_tracks_with_woo_driven_source() async throws {
+        // Given — the backend sends `note_id` as NSNull (not omitted) for Woo-driven notifications,
+        // which must still be classified as woo_driven rather than wpcom.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(nullNoteID: true, type: .storeOrder, title: Sample.defaultTitle)
         manager = makeManager(analytics: analytics)
 
         // When
@@ -1633,6 +2410,440 @@ final class PushNotificationsManagerTests: XCTestCase {
         )
     }
 
+    func test_handleNotificationInTheForeground_when_notification_from_different_site_then_tracks_origin_site_properties() async throws {
+        // Given — selected site is 100; the notification comes from stored site 200.
+        let selectedSiteID: Int64 = 100
+        let originSiteID: Int64 = 200
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(selectedSiteID)
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: selectedSiteID, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true),
+            (siteID: originSiteID, url: "https://beta.example", isWPCom: false, isJetpackInstalled: false, isJetpackConnected: false)
+        ])
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: originSiteID, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then — the event carries the origin site's identifiers, not the selected site's.
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "blog_id": originSiteID,
+                "site_url": "https://beta.example",
+                "is_wpcom_store": false,
+                "is_from_selected_site": false
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_origin_site_not_in_storage_then_tracks_origin_blog_id_from_payload() async throws {
+        // Given — selected site 100 is stored; the notification comes from site 300, which is not stored.
+        let selectedSiteID: Int64 = 100
+        let originSiteID: Int64 = 300
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(selectedSiteID)
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: selectedSiteID, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true)
+        ])
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: originSiteID, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then — `blog_id` still identifies the origin; no selected-site URL leaks in.
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "push_notification_received"))
+        let properties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(properties["blog_id"] as? Int64, originSiteID)
+        XCTAssertNil(properties["site_url"])
+        XCTAssertEqual(properties["is_from_selected_site"] as? Bool, false)
+    }
+
+    func test_handleNotificationInTheForeground_when_blog_is_a_string_then_tracks_origin_blog_id_from_payload() async throws {
+        // Given — the payload encodes `blog` as a string rather than a number.
+        let selectedSiteID: Int64 = 100
+        let originSiteID: Int64 = 300
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(selectedSiteID)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        var payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: originSiteID, title: Sample.defaultTitle)
+        payload["blog"] = "\(originSiteID)"
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "push_notification_received"))
+        let properties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(properties["blog_id"] as? Int64, originSiteID)
+        XCTAssertEqual(properties["is_from_selected_site"] as? Bool, false)
+    }
+
+    func test_handleNotificationInTheForeground_when_woo_driven_store_stock_notification_then_tracks_origin_blog_id() async throws {
+        // Given — `store_stock` has no local identifier, so the origin must come from the site properties.
+        let selectedSiteID: Int64 = 100
+        let originSiteID: Int64 = 200
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(selectedSiteID)
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: selectedSiteID, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true),
+            (siteID: originSiteID, url: "https://beta.example", isWPCom: false, isJetpackInstalled: false, isJetpackConnected: false)
+        ])
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: nil, type: .storeStock, siteID: originSiteID, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "push_notification_received"))
+        let properties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(properties["blog_id"] as? Int64, originSiteID)
+        XCTAssertEqual(properties["site_url"] as? String, "https://beta.example")
+        XCTAssertEqual(properties["push_notification_type"] as? String, "store_stock")
+        XCTAssertEqual(properties["push_notification_source"] as? String, "woo_driven")
+        XCTAssertNil(properties["push_notification_note_id"])
+    }
+
+    func test_handleNotificationInTheForeground_when_authenticated_without_wpcom_then_tracks_session_default_site_properties() async throws {
+        // Given — application-password login: the payload site ID is unreliable, so the selected site is the origin.
+        storesManager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        storesManager.sessionManager.setStoreId(500)
+        storesManager.updateDefaultStore(Yosemite.Site.fake().copy(
+            siteID: 500,
+            url: "https://gamma.example",
+            isJetpackThePluginInstalled: true,
+            isJetpackConnected: false,
+            isWordPressComStore: false
+        ))
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: nil, type: .storeOrder, siteID: 999, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "blog_id": Int64(500),
+                "site_url": "https://gamma.example",
+                "is_jetpack_installed": true,
+                "is_jetpack_connected": false,
+                "is_from_selected_site": true
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_authenticated_without_wpcom_and_no_default_site_then_tracks_selected_site_id() async throws {
+        // Given — application-password login before the site is synced: no `defaultSite`, only the selected store ID.
+        storesManager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        storesManager.sessionManager.setStoreId(500)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: nil, type: .storeOrder, siteID: 999, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then — the unreliable payload site ID must not leak into `blog_id`.
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "push_notification_received"))
+        let properties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(properties["blog_id"] as? Int64, 500)
+        XCTAssertEqual(properties["is_from_selected_site"] as? Bool, true)
+    }
+
+    func test_handleNotificationInTheForeground_when_payload_has_no_site_id_then_tracks_without_site_properties() async throws {
+        // Given — WPCom session; the payload carries no `blog` key.
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: 100, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true)
+        ])
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        var payload = notificationPayload(noteID: 1234, type: .storeOrder, title: Sample.defaultTitle)
+        payload.removeValue(forKey: "blog")
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then — no site attribution at all, rather than the selected site's.
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "push_notification_received"))
+        let properties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(properties["push_notification_type"] as? String, "store_order")
+        XCTAssertNil(properties["blog_id"])
+        XCTAssertNil(properties["site_url"])
+        XCTAssertNil(properties["is_from_selected_site"])
+    }
+
+    func test_handleUserResponseToNotification_when_app_is_inactive_then_alert_pressed_event_carries_origin_site_properties() async throws {
+        // Given — selected site is 100; the tapped notification comes from stored site 200.
+        let selectedSiteID: Int64 = 100
+        let originSiteID: Int64 = 200
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(selectedSiteID)
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: selectedSiteID, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true),
+            (siteID: originSiteID, url: "https://beta.example", isWPCom: false, isJetpackInstalled: false, isJetpackConnected: false)
+        ])
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .inactive
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: originSiteID, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_alert_pressed",
+            with: [
+                "blog_id": originSiteID,
+                "site_url": "https://beta.example",
+                "is_from_selected_site": false
+            ]
+        )
+    }
+
+    func test_handleUserResponseToNotification_when_app_is_inactive_and_storeStock_push_then_resets_storeStock_count_and_clears_badge() async throws {
+        // Given
+        let siteID: Int64 = 606
+        application.applicationState = .inactive
+        application.applicationIconBadgeNumber = AppIconBadgeNumber.hasUnreadPushNotifications
+        storesManager.sessionManager.setStoreId(siteID)
+        var resetCalls: [(siteID: Int64, type: Note.Kind)] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, type, onCompletion):
+                resetCalls.append((siteID, type))
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: siteID)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertEqual(resetCalls.count, 1)
+        XCTAssertEqual(resetCalls.first?.siteID, siteID)
+        XCTAssertEqual(resetCalls.first?.type, .storeStock)
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeOnly)
+    }
+
+    func test_handleUserResponseToNotification_when_storeStock_push_is_from_another_site_then_reloads_badge_for_current_site() async throws {
+        // Given
+        let currentSiteID: Int64 = 100
+        let pushSiteID: Int64 = 606
+        application.applicationState = .inactive
+        storesManager.sessionManager.setStoreId(currentSiteID)
+        var resetSiteIDs: [Int64] = []
+        var loadSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, _, onCompletion):
+                resetSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(siteID, _, onCompletion):
+                loadSiteIDs.append(siteID)
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertEqual(resetSiteIDs, [pushSiteID])
+        XCTAssertEqual(loadSiteIDs, [currentSiteID])
+    }
+
+    func test_handleUserResponseToNotification_when_site_credential_session_and_storeStock_push_then_resets_count_for_placeholder_site() async throws {
+        // Given
+        let pushSiteID: Int64 = 606
+        application.applicationState = .inactive
+        storesManager.sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        var resetSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, _, onCompletion):
+                resetSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertEqual(resetSiteIDs, [WooConstants.placeholderStoreID])
+    }
+
+    func test_handleRemoteNotificationInTheBackground_when_site_credential_session_and_storeStock_push_then_increments_count_for_placeholder_site() async throws {
+        // Given
+        let pushSiteID: Int64 = 606
+        application.applicationState = .background
+        storesManager.sessionManager.setStoreId(WooConstants.placeholderStoreID)
+        var incrementSiteIDs: [Int64] = []
+        var loadSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(siteID, _, _, onCompletion):
+                incrementSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(siteID, _, onCompletion):
+                loadSiteIDs.append(siteID)
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(incrementSiteIDs, [WooConstants.placeholderStoreID])
+        XCTAssertEqual(loadSiteIDs, [WooConstants.placeholderStoreID])
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+    }
+
+    func test_handleRemoteNotificationInTheBackground_when_wpcom_session_and_storeStock_push_then_increments_count_for_push_site() async throws {
+        // Given
+        let pushSiteID: Int64 = 606
+        application.applicationState = .background
+        storesManager.sessionManager.setStoreId(pushSiteID)
+        var incrementSiteIDs: [Int64] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(siteID, _, _, onCompletion):
+                incrementSiteIDs.append(siteID)
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: pushSiteID)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(incrementSiteIDs, [pushSiteID])
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+    }
+
+    func test_handleNotificationInTheForeground_when_storeStock_in_app_notice_is_tapped_then_resets_storeStock_count() async throws {
+        // Given
+        let siteID: Int64 = 606
+        application.applicationState = .active
+        var resetCalls: [(siteID: Int64, type: Note.Kind)] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, type, onCompletion):
+                resetCalls.append((siteID, type))
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeStock, siteID: siteID)
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+        let tapInAppNotice = try XCTUnwrap(application.presentInAppActionHandlers.first)
+
+        // When
+        tapInAppNotice()
+
+        // Then
+        XCTAssertEqual(resetCalls.count, 1)
+        XCTAssertEqual(resetCalls.first?.siteID, siteID)
+        XCTAssertEqual(resetCalls.first?.type, .storeStock)
+    }
+
+    func test_handleUserResponseToNotification_when_app_is_inactive_and_storeOrder_push_then_does_not_reset_count() async throws {
+        // Given
+        application.applicationState = .inactive
+        var resetCalls: [(siteID: Int64, type: Note.Kind)] = []
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .reset(siteID, type, onCompletion):
+                resetCalls.append((siteID, type))
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(0)
+            default:
+                break
+            }
+        }
+        manager = makeManager()
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: 606)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: payload))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertTrue(resetCalls.isEmpty)
+    }
+
     func test_registerDeviceToken_when_eligibility_unknown_then_retries_eligibility_check() async {
         // Given — eligibility check does not complete during init
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1670,6 +2881,52 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
+    func test_registerDeviceToken_when_token_arrives_after_login_before_eligibility_check_then_registers_for_self_driven_push() async {
+        // Given — self-driven push is off for the account logged in at launch, which then logs out
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        let launchCheckExpectation = expectation(description: "Eligibility check at launch completed")
+        mockRemoteFeatureFlagAction(isEnabled: false, onCompletion: {
+            launchCheckExpectation.fulfill()
+        })
+        manager = makeManager()
+        await fulfillment(of: [launchCheckExpectation], timeout: 1.0)
+        storesManager.deauthenticate()
+
+        // Checks in the next session find self-driven push on, once the test lets them complete.
+        var completesEligibilityChecks = false
+        var pendingEligibilityChecks: [(Bool) -> Void] = []
+        storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            guard case let .isRemoteFeatureFlagEnabled(_, _, _, completion) = action else { return }
+            if completesEligibilityChecks {
+                completion(true)
+            } else {
+                pendingEligibilityChecks.append(completion)
+            }
+        }
+        let registrationExpectation = expectation(description: "Self-driven push registration dispatched")
+        registrationExpectation.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
+                onCompletion(.success(42))
+                registrationExpectation.fulfill()
+            }
+        }
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When — the user logs in and the token arrives before the eligibility check completes
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager.registerDeviceToken(with: tokenAsData)
+        completesEligibilityChecks = true
+        pendingEligibilityChecks.forEach { $0(true) }
+
+        // Then
+        await fulfillment(of: [registrationExpectation], timeout: 2.0)
+    }
+
     func test_registerDeviceToken_when_self_driven_succeeds_and_deviceID_is_nil_then_registers_dotcom_and_disables_WPCom() async throws {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1686,7 +2943,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager = makeManager(featureFlagService: featureFlagService)
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
 
-        // Decode a DotcomDevice with a fresh deviceID to return from the fallback Dotcom registration
+        // Decode a DotcomDevice with a fresh deviceID to return from Dotcom registration
         let dotcomDeviceJSON = #"{"ID": "789"}"#.data(using: .utf8)!
         let freshDotcomDevice = try JSONDecoder().decode(DotcomDevice.self, from: dotcomDeviceJSON)
 
@@ -1717,7 +2974,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         await fulfillment(of: [dotcomExpectation, disableExpectation], timeout: 2.0)
 
         // Then
-        // It falls back to Dotcom registration to obtain a deviceID
+        // It registers with Dotcom to obtain a deviceID
         let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
         XCTAssertTrue(notificationActions.contains(where: {
             if case .registerDevice = $0 { return true }
@@ -1914,12 +3171,298 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(emittedBackgroundNotifications.count, 1)
         XCTAssertEqual(emittedBackgroundNotifications.first?.kind, .storeOrder)
     }
+
+    func test_handleRemoteNotificationInTheBackground_when_woo_driven_notification_without_note_id_then_emits_notification() async throws {
+        // Given — the background handler must classify a notification as remote from its `type` key,
+        // not the presence of `note_id`. A Woo-driven notification whose `note_id` is missing must
+        // still be processed, not dropped.
+        application.applicationState = .background
+        manager = makeManager()
+
+        var emittedBackgroundNotifications: [WooCommerce.PushNotification] = []
+        manager.backgroundNotifications.sink { emittedBackgroundNotifications.append($0) }.store(in: &subscriptions)
+
+        let payload = notificationPayload(noteID: nil, type: .storeOrder, title: Sample.defaultTitle)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(emittedBackgroundNotifications.count, 1)
+        XCTAssertEqual(emittedBackgroundNotifications.first?.kind, .storeOrder)
+    }
+
+    func test_handleNotificationInTheForeground_when_site_is_disconnected_then_does_not_emit_or_present() async throws {
+        // Given
+        defaults.set("", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        manager = makeManager()
+        application.applicationState = .active
+        var emittedNotifications: [WooCommerce.PushNotification] = []
+        manager.foregroundNotifications.sink { emittedNotifications.append($0) }.store(in: &subscriptions)
+        let notification = try XCTUnwrap(MockNotification(userInfo: notificationPayload(type: .storeOrder, siteID: 42)))
+
+        // When
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        XCTAssertTrue(emittedNotifications.isEmpty)
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+    }
+
+    func test_handleRemoteNotificationInTheBackground_when_site_is_disconnected_then_returns_no_data_and_does_not_emit() async {
+        // Given
+        defaults.set("1", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        manager = makeManager()
+        application.applicationState = .background
+        var emittedNotifications: [WooCommerce.PushNotification] = []
+        manager.backgroundNotifications.sink { emittedNotifications.append($0) }.store(in: &subscriptions)
+
+        // When
+        let result = await manager.handleRemoteNotificationInTheBackground(userInfo: notificationPayload(type: .storeOrder, siteID: 42))
+
+        // Then
+        XCTAssertEqual(result, .noData)
+        XCTAssertTrue(emittedNotifications.isEmpty)
+    }
+
+    func test_handleUserResponseToNotification_when_site_is_disconnected_then_does_not_present_details() async throws {
+        // Given
+        defaults.set("1", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        manager = makeManager()
+        application.applicationState = .inactive
+        var emittedNotifications: [WooCommerce.PushNotification] = []
+        manager.inactiveNotifications.sink { emittedNotifications.append($0) }.store(in: &subscriptions)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: notificationPayload(type: .storeOrder, siteID: 42)))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertTrue(application.presentDetailsNoteIDs.isEmpty)
+        XCTAssertTrue(emittedNotifications.isEmpty)
+    }
 }
 
 
 // MARK: - Private Methods
 //
 private extension PushNotificationsManagerTests {
+    /// Seeds the local state left behind by a prior Woo-driven (FF ON) registration.
+    func seedPriorWooRegistration(siteIDs: String = "99", tokenID: String = "555", deviceID: String = "456") {
+        defaults.set(siteIDs, forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        defaults.set(tokenID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+        defaults.set(deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+    }
+
+    /// Seeds the persisted APNS device token — differing from `sampleTokenData` to simulate a rotation.
+    func seedStoredDeviceToken(_ token: String) {
+        defaults.set(token, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
+    }
+
+    /// Sets up an FF-off migration scenario: a prior Woo registration for `registeredSiteIDs`,
+    /// the given sites in storage, an authenticated session on store 99, and an FF-off manager.
+    func makeMigrationScenario(
+        registeredSiteIDs: String = "99",
+        sites: [(siteID: Int64, url: String, isWPCom: Bool, isJetpackInstalled: Bool, isJetpackConnected: Bool)] = [(99, "https://example.com", true, true, true)],
+        credentials: Credentials = SessionSettings.wpcomCredentials,
+        analytics: Analytics = ServiceLocator.analytics,
+        pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil
+    ) async -> PushNotificationsManager {
+        seedPriorWooRegistration(siteIDs: registeredSiteIDs)
+        await insertSitesIntoStorageWithCapabilities(sites)
+        storesManager.authenticate(credentials: credentials)
+        storesManager.sessionManager.setStoreId(99)
+        return await makeFallbackManagerWithFFOff(
+            analytics: analytics,
+            pluginVersionCheckerFactory: pluginVersionCheckerFactory
+        )
+    }
+
+    func makeSelfDrivenManager(
+        siteIDs: [Int64] = [100],
+        registeredSiteIDs: String = "",
+        pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil,
+        inactiveSiteIDs: Set<Int64> = [],
+        isJetpackInstalled: Bool = true,
+        isJetpackConnected: Bool = true,
+        jetpackCPSiteIDs: Set<Int64> = []
+    ) async -> PushNotificationsManager {
+        if registeredSiteIDs.isEmpty == false {
+            defaults.set(registeredSiteIDs, forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        }
+        seedStoredDeviceToken(sampleTokenData.hexString)
+        defaults.set("456", forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+        let sites = siteIDs.map {
+            (siteID: $0,
+             url: "https://example.com/\($0)",
+             isWPCom: true,
+             isJetpackInstalled: isJetpackInstalled && !jetpackCPSiteIDs.contains($0),
+             isJetpackConnected: isJetpackConnected && !jetpackCPSiteIDs.contains($0))
+        }
+        await insertSitesIntoStorageWithCapabilities(sites, inactiveSiteIDs: inactiveSiteIDs)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteIDs.first)
+
+        let eligibilityExpectation = expectation(description: "Eligibility check completed")
+        eligibilityExpectation.assertForOverFulfill = false
+        mockRemoteFeatureFlagAction(isEnabled: true) {
+            eligibilityExpectation.fulfill()
+        }
+        let manager = makeManager(
+            featureFlagService: MockFeatureFlagService(selfDrivenPushToken: true),
+            pluginVersionCheckerFactory: pluginVersionCheckerFactory
+        )
+        await fulfillment(of: [eligibilityExpectation], timeout: 1.0)
+        return manager
+    }
+
+    func seedNextCheck(_ date: Date, siteID: Int64) {
+        let state = PushNotificationRegistrationState(defaults: defaults)
+        state.setWooPushNextCheck(date, for: siteID)
+    }
+
+    func nextCheck(for siteID: Int64) -> Date? {
+        PushNotificationRegistrationState(defaults: defaults).wooPushNextCheck(for: siteID)
+    }
+
+    /// Creates a manager whose self-driven eligibility resolves to `false`, awaiting the resolution.
+    /// Seed any prior Woo state via `seedPriorWooRegistration()` before calling this.
+    func makeFallbackManagerWithFFOff(
+        analytics: Analytics = ServiceLocator.analytics,
+        pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil
+    ) async -> PushNotificationsManager {
+        let eligibilityExpectation = expectation(description: "Eligibility check completed")
+        eligibilityExpectation.assertForOverFulfill = false
+        mockRemoteFeatureFlagAction(isEnabled: false, onCompletion: { eligibilityExpectation.fulfill() })
+        let manager = makeManager(
+            featureFlagService: MockFeatureFlagService(selfDrivenPushToken: false),
+            pluginVersionCheckerFactory: pluginVersionCheckerFactory,
+            analytics: analytics
+        )
+        await fulfillment(of: [eligibilityExpectation], timeout: 1.0)
+        return manager
+    }
+
+    func stubUpdateNotificationSettings(result: Result<Void, Error> = .success(())) {
+        storesManager.whenReceivingAction(ofType: AccountAction.self) { action in
+            if case let .updateNotificationSettings(_, onCompletion) = action {
+                onCompletion(result)
+            }
+        }
+    }
+
+    func stubWooPushActions(results: [Int64: Result<Int64, Error>] = [:], onRegistration: (() -> Void)? = nil) {
+        guard let device = try? JSONDecoder().decode(DotcomDevice.self, from: Data(#"{"ID": "789"}"#.utf8)) else {
+            return XCTFail("Failed to decode DotcomDevice")
+        }
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
+                onRegistration?()
+                onCompletion(results[siteID] ?? .success(siteID + 1000))
+            case let .registerDevice(_, _, _, onCompletion):
+                onCompletion(device, nil)
+            default:
+                break
+            }
+        }
+    }
+
+    /// Stubs the migration's NotificationActions: WPCom device registration succeeds with
+    /// deviceID "456", the Woo upsert returns record ID `siteID + 1000`, and the store-side
+    /// delete completes with `unregisterResult`.
+    func stubFallbackWooActions(unregisterResult: Result<Void, Error> = .success(())) {
+        guard let device = try? JSONDecoder().decode(DotcomDevice.self, from: Data(#"{"ID": "456"}"#.utf8)) else {
+            return XCTFail("Failed to decode DotcomDevice")
+        }
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .registerDevice(_, _, _, onCompletion):
+                onCompletion(device, nil)
+            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
+                onCompletion(.success(siteID + 1000))
+            case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion):
+                onCompletion(unregisterResult)
+            default:
+                break
+            }
+        }
+    }
+
+    var sampleTokenData: Data {
+        Data(Sample.deviceToken.utf8)
+    }
+
+    var dispatchedRegisterDotcomDevice: Bool {
+        storesManager.receivedActions.compactMap { $0 as? NotificationAction }.contains {
+            if case .registerDevice = $0 { return true }
+            return false
+        }
+    }
+
+    var dispatchedUnregisterWooPushToken: Bool {
+        storesManager.receivedActions.compactMap { $0 as? NotificationAction }.contains {
+            if case .unregisterFromSelfDrivenPushNotifications = $0 { return true }
+            return false
+        }
+    }
+
+    var registrationAttempts: [Int64] {
+        storesManager.receivedActions.compactMap { action in
+            guard let action = action as? NotificationAction,
+                  case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, _) = action else {
+                return nil
+            }
+            return siteID
+        }
+    }
+
+    var pushNetworkActionCount: Int {
+        storesManager.receivedActions.filter { $0 is NotificationAction || $0 is AccountAction }.count
+    }
+
+    /// Blog IDs touched by any `updateNotificationSettings` action.
+    var blogIDsWithWPComSettingsWrites: [Int64] {
+        storesManager.receivedActions.compactMap { $0 as? AccountAction }.flatMap { action -> [Int64] in
+            guard case let .updateNotificationSettings(settings, _) = action else { return [] }
+            return settings.blogs.map(\.blogID)
+        }
+    }
+
+    /// Asserts the store-side Woo record was deleted for the site, with the record ID recovered
+    /// through the upsert (which `stubFallbackWooActions` answers with `siteID + 1000`).
+    func assertDeletedWooPushToken(siteID: Int64, file: StaticString = #filePath, line: UInt = #line) {
+        let deleted = storesManager.receivedActions.compactMap { $0 as? NotificationAction }.contains {
+            if case let .unregisterFromSelfDrivenPushNotifications(actionSiteID, tokenID, _, _) = $0 {
+                return actionSiteID == siteID && tokenID == siteID + 1000
+            }
+            return false
+        }
+        XCTAssertTrue(deleted, "Expected Woo push token delete for site \(siteID)", file: file, line: line)
+    }
+
+    /// Asserts an `updateNotificationSettings` action re-enabled WPCom PNs (newComment/storeOrder true).
+    func assertReenabledWPComPushNotifications(blogID: Int64 = 99,
+                                               deviceID: Int64 = 456,
+                                               file: StaticString = #filePath,
+                                               line: UInt = #line) {
+        let reenabled = storesManager.receivedActions.compactMap { $0 as? AccountAction }.contains {
+            guard case let .updateNotificationSettings(settings, _) = $0,
+                  let device = settings.blogs.first(where: { $0.blogID == blogID })?
+                      .devices.first(where: { $0.deviceID == deviceID }) else {
+                return false
+            }
+            return device.newComment == true && device.storeOrder == true
+        }
+        XCTAssertTrue(reenabled, "Expected WPCom PNs re-enabled for blog \(blogID)", file: file, line: line)
+    }
+
+    /// Asserts the local Woo registration state was cleared.
+    func assertWooRegistrationCleared(file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertNil(manager.wooPushNotificationToken, file: file, line: line)
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.isEmpty, file: file, line: line)
+    }
+
     func makeManager(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      storageManager: MockStorageManager? = nil,
                      pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil,
@@ -1942,7 +3485,8 @@ private extension PushNotificationsManagerTests {
                                         analytics: analytics,
                                         storageManager: storageManager ?? self.storageManager,
                                         featureFlagService: featureFlagService,
-                                        pluginVersionCheckerFactory: pluginVersionCheckerFactory ?? MockPluginVersionCheckerFactory())
+                                        pluginVersionCheckerFactory: pluginVersionCheckerFactory ?? MockPluginVersionCheckerFactory(),
+                                        currentDate: { [weak self] in self?.now ?? Date() })
     }
 
 
@@ -1976,8 +3520,12 @@ private extension PushNotificationsManagerTests {
 
     /// Returns a Sample Notification Payload
     ///
+    /// - Parameter nullNoteID: When `true`, includes `note_id` as `NSNull` to mimic the Woo-driven
+    ///   payload shape sent by the backend (key present with a null value, not omitted).
+    ///
     func notificationPayload(badgeCount: Int = 0,
                              noteID: Int64? = 1234,
+                             nullNoteID: Bool = false,
                              type: Note.Kind = .comment,
                              siteID: Int64 = 134,
                              title: String = Sample.defaultTitle,
@@ -1995,7 +3543,9 @@ private extension PushNotificationsManagerTests {
             "type": type.rawValue,
             "blog": siteID
         ]
-        if let noteID {
+        if nullNoteID {
+            payload["note_id"] = NSNull()
+        } else if let noteID {
             payload["note_id"] = noteID
         }
         return payload
@@ -2035,6 +3585,8 @@ private extension PushNotificationsManagerTests {
             case .isRemoteFeatureFlagEnabled(_, _, _, let completion):
                 completion(isEnabled)
                 onCompletion?()
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
     }
@@ -2062,6 +3614,8 @@ private extension PushNotificationsManagerTests {
         return [
             "blog": siteID,
             "note_full_data": base64Encoded,
+            // The backend sends `note_id` as null (not omitted) for Woo-driven notifications.
+            "note_id": NSNull(),
             "aps": [
                 "category": "store_order",
                 "badge": 1,
@@ -2084,14 +3638,15 @@ private extension PushNotificationsManagerTests {
     }
 
     func insertSitesIntoStorageWithCapabilities(
-        _ sites: [(siteID: Int64, url: String, isWPCom: Bool, isJetpackInstalled: Bool, isJetpackConnected: Bool)]
+        _ sites: [(siteID: Int64, url: String, isWPCom: Bool, isJetpackInstalled: Bool, isJetpackConnected: Bool)],
+        inactiveSiteIDs: Set<Int64> = []
     ) async {
         await storageManager.performAndSaveAsync({ storage in
             for descriptor in sites {
                 let site = storage.insertNewObject(ofType: Site.self)
                 site.siteID = descriptor.siteID
                 site.url = descriptor.url
-                site.isWooCommerceActive = NSNumber(value: true)
+                site.isWooCommerceActive = NSNumber(value: !inactiveSiteIDs.contains(descriptor.siteID))
                 site.isWordPressStore = NSNumber(value: descriptor.isWPCom)
                 site.isJetpackThePluginInstalled = descriptor.isJetpackInstalled
                 site.isJetpackConnected = descriptor.isJetpackConnected

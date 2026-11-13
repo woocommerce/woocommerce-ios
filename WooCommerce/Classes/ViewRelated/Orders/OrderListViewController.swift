@@ -9,6 +9,7 @@ import WooFoundation
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
+@MainActor
 protocol OrderListViewControllerDelegate: AnyObject {
     /// Called when `OrderListViewController` (or `OrdersViewController`) is about to fetch Orders from the API.
     ///
@@ -29,7 +30,8 @@ protocol OrderListViewControllerDelegate: AnyObject {
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
-final class OrderListViewController: UIViewController, GhostableViewController {
+@MainActor
+final class OrderListViewController: UIViewController {
     /// Callback closure when an order is selected either manually (by the user) or automatically in multi-column view.
     /// `allViewModels` is a list of order details view models that are available in a stack when the split view is collapsed
     /// so that the user can navigate between order details easily. `index` is the default index of order details to be shown.
@@ -37,10 +39,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     /// view has multiple columns but only if the empty view is shown.
     /// `onCompletion` is called after switching details completes, with a boolean that indicates if the order details has been selected.
     /// When multi-column split view is shown, auto-selection only works if the empty state isn't shown.
-    typealias SelectOrderDetails = (_ allViewModels: [OrderDetailsViewModel],
-                                    _ index: Int,
-                                    _ isSelectedManually: Bool,
-                                    _ onCompletion: ((_ hasBeenSelected: Bool) -> Void)?) -> Void
+    typealias SelectOrderDetails = @MainActor @Sendable (_ allViewModels: [OrderDetailsViewModel],
+                                                         _ index: Int,
+                                                         _ isSelectedManually: Bool,
+                                                         _ onCompletion: ((_ hasBeenSelected: Bool) -> Void)?) -> Void
 
     weak var delegate: OrderListViewControllerDelegate?
 
@@ -49,25 +51,22 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     /// Main TableView.
     ///
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableViewTopConstraint: NSLayoutConstraint!
 
     /// The data source that is bound to `tableView`.
-    private var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>?
+    private var dataSource: UITableViewDiffableDataSource<Section, Item>?
+    private var ordersSnapshot = FetchResultSnapshot()
+    private let refreshUpdates = ListRefreshUpdates()
 
     /// Returns the first Order in the OrderList datasource
     ///
     var firstAvailableOrder: Order? {
-        let firstIndexPath = IndexPath(row: 0, section: 0)
-        guard let objectID = dataSource?.itemIdentifier(for: firstIndexPath),
+        guard let objectID = ordersSnapshot.itemIdentifiers.first,
               let orderViewModel = viewModel.detailsViewModel(withID: objectID) else {
             return nil
         }
         return orderViewModel.order
     }
-
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: OrderTableViewCell.self,
-                                                                                                estimatedRowHeight: Settings.estimatedRowHeight,
-                                                                                                tableViewStyle: .grouped,
-                                                                                                isScrollEnabled: false))
 
     /// Pull To Refresh Support.
     ///
@@ -83,7 +82,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// The view shown if the list is empty.
     ///
-    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+    private lazy var emptyStateView = ListEmptyView()
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -110,20 +109,13 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// UI Active State
     ///
-    private var state: State = .results {
-        didSet {
-            guard oldValue != state else {
-                return
-            }
-
-            didLeave(state: oldValue)
-            didEnter(state: state)
-        }
-    }
+    private var state: State = .results
 
     private var cancellables = Set<AnyCancellable>()
 
     private let siteID: Int64
+
+    private let stores: StoresManager
 
     /// Current top banner that is displayed.
     ///
@@ -140,10 +132,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var selectedOrderID: Int64?
 
-    /// Banner variation that will be shown as In-Person Payments feedback banner. If any.
-    ///
-    private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
-
     /// Notice presentation handler
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
@@ -155,9 +143,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, ((Bool) -> Void)?) -> Void) {
+         stores: StoresManager = ServiceLocator.stores,
+         switchDetailsHandler: @escaping SelectOrderDetails) {
         self.siteID = siteID
         self.viewModel = viewModel
+        self.stores = stores
         self.switchDetailsHandler = switchDetailsHandler
 
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -169,12 +159,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         fatalError("Not supported")
     }
 
-    deinit {
-        cancellables.forEach {
-            $0.cancel()
-        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         createDataSource()
@@ -183,6 +167,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         registerTableViewHeadersAndCells()
         configureTableView()
+        configureLiquidGlassTabBarUnderlap()
 
         configureViewModel()
         configureSyncingCoordinator()
@@ -193,7 +178,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
             return
         }
 
-        let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
+        let dataSource = UITableViewDiffableDataSource<Section, Item>(
             tableView: tableView,
             cellProvider: makeCellProvider()
         )
@@ -207,15 +192,24 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
-        // Fix any incomplete animation of the refresh control
-        // when switching tabs mid-animation
-        refreshControl.resetAnimation(in: tableView)
-
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Do not carry an active refresh animation across tab or navigation transitions.
+        // The underlying synchronization continues and updates the list when it completes.
+        refreshControl.endRefreshing()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        refreshUpdates.cancel()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -227,6 +221,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
+        updateEmptyStateHeight()
 
         // To fix this issue, the selected item checking is now called after `viewDidLayoutSubviews`, where `isCollapsed` value is
         // correctly set.
@@ -257,16 +252,20 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     }
 
     /// Returns a function that creates cells for `dataSource`.
-    private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
-        return { [weak self] tableView, indexPath, objectID in
-            let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
-            guard let self else {
+    private func makeCellProvider() -> UITableViewDiffableDataSource<Section, Item>.CellProvider {
+        return { [weak self] tableView, indexPath, item in
+            if case .placeholder = item {
+                let cell = tableView.dequeueReusableCell(withIdentifier: Constants.loadingCellIdentifier, for: indexPath)
+                cell.stopGhostAnimation()
+                cell.isUserInteractionEnabled = false
+                cell.accessibilityElementsHidden = true
+                cell.accessoryType = .none
+                cell.layoutIfNeeded()
                 return cell
             }
 
-            let cellViewModel = self.viewModel.cellViewModel(withID: objectID)
-
-            cell.configureCell(viewModel: cellViewModel)
+            let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
+            cell.configureCell(viewModel: item.objectID.flatMap { self?.viewModel.cellViewModel(withID: $0) })
             cell.layoutIfNeeded()
             return cell
         }
@@ -280,17 +279,17 @@ private extension OrderListViewController {
     /// Initialize ViewModel operations
     ///
     func configureViewModel() {
-        viewModel.onShouldResynchronizeIfViewIsVisible = { [weak self] in
+        viewModel.onShouldResynchronize = { [weak self] reason in
             guard let self else { return }
 
-            // Avoid synchronizing if the view is not visible. The refresh will be handled in
-            // `viewWillAppear` instead.
-            guard self.viewIfLoaded?.window != nil else { return }
+            // New-order notifications should update storage even when Orders is not visible,
+            // so the latest data is ready when the merchant returns to the list.
+            guard reason == .pushNotification || self.viewIfLoaded?.window != nil else { return }
 
             // Send a delegate event in case the updated happened while the app was in the background.
             self.delegate?.orderListViewControllerSyncTimestampChanged(lastFullSyncTimestamp)
 
-            self.syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
+            self.syncingCoordinator.resynchronize(reason: reason.rawValue)
         }
 
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
@@ -303,27 +302,26 @@ private extension OrderListViewController {
         viewModel.snapshot.sink { [weak self] snapshot in
             guard let self else { return }
 
-            dataSource?.apply(snapshot)
-
-            transitionToResultsUpdatedState()
-
-            /// Check that view is loaded and displayed to prevent UI tests failing while synching orders from other screens.
-            if isViewLoaded == true && view.window != nil,
-               self.splitViewController?.isCollapsed == false {
-                self.checkSelectedItem()
+            ordersSnapshot = snapshot
+            refreshUpdates.perform {
+                self.transitionToResultsUpdatedState(updateSnapshot: true)
             }
         }.store(in: &cancellables)
+
+        /// Reconfigure visible cells when the stored order statuses change, so status labels
+        /// pick up the latest server-provided names (e.g. after the first sync completes).
+        viewModel.statusesDidChange
+            .sink { [weak self] in
+                guard let self else { return }
+                refreshUpdates.perform { self.reconfigureOrderRows() }
+            }
+            .store(in: &cancellables)
 
         /// Update the top banner when needed
         viewModel.$topBanner
             .sink { [weak self] topBannerType in
                 guard let self else { return }
-                switch topBannerType {
-                case .none:
-                    self.hideTopBannerView()
-                case .error(let error):
-                    self.setErrorTopBanner(for: error)
-                }
+                refreshUpdates.perform { self.renderTopBanner(topBannerType) }
             }
             .store(in: &cancellables)
     }
@@ -345,7 +343,7 @@ private extension OrderListViewController {
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
-        tableView.estimatedSectionHeaderHeight = Settings.estimatedHeaderHeight
+        tableView.estimatedSectionHeaderHeight = Constants.estimatedHeaderHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
@@ -353,10 +351,22 @@ private extension OrderListViewController {
         tableView.allowsFocus = supportsFocus()
     }
 
+    func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        tableViewTopConstraint.isActive = false
+        tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(tableView)
+    }
+
     /// Registers all of the available table view cells and headers
     ///
     func registerTableViewHeadersAndCells() {
         tableView.registerNib(for: OrderTableViewCell.self)
+        // Keep loading cells separate so their skeleton layout never inherits an order's content.
+        tableView.register(OrderTableViewCell.loadNib(), forCellReuseIdentifier: Constants.loadingCellIdentifier)
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
@@ -370,9 +380,14 @@ extension OrderListViewController {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
         NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-        viewModel.onPullToRefresh()
-        syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
-            sender.endRefreshing()
+        refreshUpdates.beginRefreshing { [weak self] in
+            guard let self else { return }
+            ordersSnapshot.reconfigureItems(ordersSnapshot.itemIdentifiers)
+            transitionToResultsUpdatedState(updateSnapshot: true)
+            renderTopBanner(viewModel.topBanner)
+        }
+        syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) { [weak self] in
+            self?.refreshUpdates.endRefreshing(sender)
         }
     }
 
@@ -428,7 +443,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             }
         }
 
-        transitionToSyncingState()
+        refreshUpdates.perform { transitionToSyncingState() }
         viewModel.dataLoadingError = nil
 
         let action = viewModel.synchronizationAction(
@@ -450,6 +465,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                         self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: false, onCompletion: onCompletion)
                         ServiceLocator.analytics.track(event: .ConnectivityTool.automaticTimeoutRetry())
+                        return
                     } else {
                         self.viewModel.dataLoadingError = error
                     }
@@ -466,12 +482,14 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                                                                             totalCompletedOrders: totalCompletedOrderCount))
                 }
 
-                self.transitionToResultsUpdatedState()
-                self.refreshControl.endRefreshing()
+                self.refreshUpdates.perform {
+                    self.transitionToResultsUpdatedState()
+                    self.refreshControl.endRefreshing()
+                }
                 onCompletion?(error == nil)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Sets the current top banner in the table view header
@@ -484,8 +502,13 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         headerContainer.addSubview(topBannerView)
         headerContainer.pinSubviewToAllEdges(topBannerView)
 
-        tableView.tableHeaderView = headerContainer
-        tableView.updateHeaderHeight()
+        // Resolve the new banner's initial layout without animating its content from zero-sized frames.
+        UIView.performWithoutAnimation {
+            tableView.tableHeaderView = headerContainer
+            tableView.updateHeaderHeight()
+            headerContainer.layoutIfNeeded()
+            updateEmptyStateHeight()
+        }
     }
 
     /// Hide the top banner from the table view header
@@ -500,6 +523,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         tableView.updateHeaderHeight()
+        updateEmptyStateHeight()
     }
 }
 
@@ -520,12 +544,11 @@ extension OrderListViewController {
     /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
     ///
     private func mustStartFooterSpinner() -> Bool {
-        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced,
-              let dataSource else {
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
             return false
         }
 
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > dataSource.numberOfItems
+        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > ordersSnapshot.numberOfItems
     }
 
     /// Stops animating the Footer Spinner.
@@ -574,12 +597,12 @@ private extension OrderListViewController {
     /// Checks to see if there is a selected order ID, and selects its order.
     /// Otherwise, try to select first item.
     ///
-    func checkSelectedItem() {
+    func checkSelectedItem(forceShowingDetails: Bool = false) {
         guard let orderID = selectedOrderID else {
             selectFirstItemIfPossible()
             return
         }
-        let selected = selectOrderFromListIfPossible(for: orderID)
+        let selected = selectOrderFromListIfPossible(for: orderID, isTriggeredByUserAction: forceShowingDetails)
         if !selected {
             selectedIndexPath = nil
             switchDetailsHandler([], 0, true, nil)
@@ -590,8 +613,7 @@ private extension OrderListViewController {
     /// Otherwise, triggers closure to remove the current selected item from the split view's secondary column.
     ///
     func selectFirstItemIfPossible() {
-        let firstIndexPath = IndexPath(row: 0, section: 0)
-        guard let objectID = dataSource?.itemIdentifier(for: firstIndexPath),
+        guard let objectID = dataSource?.snapshot().itemIdentifiers.compactMap(\.objectID).first,
               let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID),
                 state != .empty else {
             selectedOrderID = nil
@@ -611,7 +633,8 @@ private extension OrderListViewController {
             return nil
         }
         for identifier in dataSource.snapshot().itemIdentifiers {
-            if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
+            if let objectID = identifier.objectID,
+               let detailsViewModel = viewModel.detailsViewModel(withID: objectID),
                detailsViewModel.order.orderID == orderID,
                let indexPath = dataSource.indexPath(for: identifier) {
                 return indexPath
@@ -622,37 +645,54 @@ private extension OrderListViewController {
 }
 
 extension OrderListViewController {
+    /// Recreates the selected detail without changing the selected row.
+    func restoreSelectedOrderDetails() {
+        checkSelectedItem(forceShowingDetails: true)
+    }
+
     /// Adds ability to select any order
     /// Used when opening an order with deep link
     /// - Parameter orderID: ID of the order to select in the list.
     /// - Parameter isTriggeredByUserAction: Reflects if the order selection was triggered by a manual user action and not a view lifecycle update
     /// Practically if the `isTriggeredByUserAction` is true, then the order details will be force presented
     /// even if `selectedOrderID` is the same as the new `orderID`
+    /// - Parameter shouldScrollIfNeeded: Whether to scroll the list to the selected row if it is not visible.
     /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
     func selectOrderFromListIfPossible(
         for orderID: Int64,
         isTriggeredByUserAction: Bool = false,
+        shouldScrollIfNeeded: Bool = false,
     ) -> Bool {
         guard let dataSource else {
             return false
         }
         for identifier in dataSource.snapshot().itemIdentifiers {
-            if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
+            if let objectID = identifier.objectID,
+               let detailsViewModel = viewModel.detailsViewModel(withID: objectID),
                detailsViewModel.order.orderID == orderID {
                 let orderNotAlreadySelected = selectedOrderID != orderID
                 let indexPath = dataSource.indexPath(for: identifier)
                 let indexPathNotAlreadySelected = selectedIndexPath != indexPath
                 let shouldSwitchDetails = orderNotAlreadySelected || indexPathNotAlreadySelected || isTriggeredByUserAction
                 if shouldSwitchDetails {
-                    showOrderDetails(detailsViewModel.order)
+                    showOrderDetails(detailsViewModel.order, shouldScrollIfNeeded: shouldScrollIfNeeded)
                 }
                 else {
-                    onOrderSelected(id: orderID)
+                    onOrderSelected(id: orderID, shouldScrollIfNeeded: shouldScrollIfNeeded)
                 }
                 return true
             }
         }
         return false
+    }
+
+    /// Selects and scrolls to an order shown outside of the list, like a loaded notification order,
+    /// when the list contains it. Otherwise, the current selection is kept.
+    func selectShownOrderIfListed(id orderID: Int64) {
+        guard indexPath(for: orderID) != nil else {
+            return
+        }
+        onOrderSelected(id: orderID, shouldScrollIfNeeded: true)
     }
 
     func showOrderDetails(_ order: Order, shouldScrollIfNeeded: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {
@@ -667,144 +707,50 @@ extension OrderListViewController {
     }
 }
 
-// MARK: - Placeholders & Ghostable Table
-//
-private extension OrderListViewController {
-
-    /// Renders the Placeholder Orders
-    ///
-    func displayPlaceholderOrders() {
-        displayGhostContent()
-    }
-
-    /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
-    ///
-    func removePlaceholderOrders() {
-        removeGhostContent()
-    }
-}
-
 // MARK: - Empty state view configuration
 //
 private extension OrderListViewController {
-    /// Shows the EmptyStateViewController
-    ///
-    func displayEmptyViewController() {
-        let childController = emptyStateViewController
-
-        // Abort if we are already displaying this childController
-        guard childController.parent == nil else {
-            return
-        }
-        guard let childView = childController.view else {
-            return
-        }
-
-        childController.configure(createFilterConfig())
-
-        // Show Error Loading Data banner if the empty state is caused by a sync error
-        if let error = viewModel.dataLoadingError {
-            childController.showTopBannerView(for: error)
-        } else {
-            childController.hideTopBannerView()
-        }
-
-        childView.translatesAutoresizingMaskIntoConstraints = false
-
-        addChild(childController)
-        view.addSubview(childView)
-        NSLayoutConstraint.activate([
-            childView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
-            childView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
-            childView.topAnchor.constraint(equalTo: tableView.topAnchor),
-            childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
-        ])
-        childController.didMove(toParent: self)
-    }
-
-    func removeEmptyViewController() {
-        let childController = emptyStateViewController
-
-        guard childController.parent == self,
-            let childView = childController.view else {
-            return
-        }
-
-        childController.willMove(toParent: nil)
-        childView.removeFromSuperview()
-        childController.removeFromParent()
-    }
-
-    /// Empty state config
-    ///
-    func createFilterConfig() ->  EmptyStateViewController.Config {
+    func configureEmptyStateView() {
         guard let filters = viewModel.filters, filters.numberOfActiveFilters != 0 else {
-            return noOrdersAvailableConfig()
-        }
-
-        return noOrdersMatchFilterConfig()
-    }
-
-    /// Creates EmptyStateViewController.Config when there are no orders available
-    ///
-    func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
-
-        let analytics = ServiceLocator.analytics
-        if viewModel.shouldEnableTestOrder, let url = viewModel.siteURL {
-
-            analytics.track(event: .TestOrder.entryPointDisplayed())
-            return .withButton(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-                               image: .boxesImage,
-                               details: Localization.createTestOrderDetail,
-                               buttonTitle: Localization.tryTestOrder,
-                               onTap: { [weak self] _ in
+            emptyStateView.configure(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+                                     image: .boxesImage,
+                                     details: Localization.allOrdersEmptyStateDetail,
+                                     buttonTitle: Localization.learnMore) { [weak self] _ in
                 guard let self else { return }
-                analytics.track(event: .TestOrder.tryTestOrderTapped())
-                let hostingController = CreateTestOrderHostingController {
-                    analytics.track(event: .TestOrder.testOrderStarted())
-                    UIApplication.shared.open(url)
-                }
-                self.present(UINavigationController(rootViewController: hostingController), animated: true)
-            }, onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
-            })
+                WebviewHelper.launch(WooConstants.URLs.blog.asURL(), with: self)
+            }
+            return
         }
 
-        /// Otherwise, show link to Woo blog.
-        return .withLink(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-                         image: .boxesImage,
-                         details: Localization.allOrdersEmptyStateDetail,
-                         linkTitle: Localization.learnMore,
-                         linkURL: WooConstants.URLs.blog.asURL()) { [weak self] refreshControl in
-            self?.pullToRefresh(sender: refreshControl)
-        }
-    }
-
-    /// Creates EmptyStateViewController.Config for no orders matching the filter empty view
-    ///
-    func noOrdersMatchFilterConfig() -> EmptyStateViewController.Config {
-        let boldSearchKeyword = NSAttributedString(string: viewModel.filters?.readableString ?? String(),
+        let boldSearchKeyword = NSAttributedString(string: filters.readableString,
                                                    attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
         let message = NSMutableAttributedString(string: Localization.filteredOrdersEmptyStateMessage)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
-        return EmptyStateViewController.Config.withButton(
-            message: message,
-            image: .magnifyingGlassNotFound,
-            details: "",
-            buttonTitle: Localization.clearButton,
-            onTap: { [weak self] _ in
-                self?.delegate?.clearFilters()
-            },
-            onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
-            })
+        emptyStateView.configure(message: message,
+                                 image: .magnifyingGlassNotFound,
+                                 details: "",
+                                 buttonTitle: Localization.clearButton) { [weak self] _ in
+            self?.delegate?.clearFilters()
+        }
+    }
+
+    func updateEmptyStateHeight() {
+        emptyStateView.updateHeight(in: tableView)
     }
 }
 
 // MARK: - UITableViewDelegate Conformance
 //
 extension OrderListViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        dataSource?.itemIdentifier(for: indexPath)?.objectID == nil ? nil : indexPath
+    }
+
+    func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
+        dataSource?.itemIdentifier(for: indexPath)?.objectID != nil
+    }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if splitViewController?.isCollapsed == true {
@@ -815,15 +761,14 @@ extension OrderListViewController: UITableViewDelegate {
             return
         }
 
-        guard let objectID = dataSource?.itemIdentifier(for: indexPath),
+        guard let objectID = dataSource?.itemIdentifier(for: indexPath)?.objectID,
               let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
             return
         }
 
         selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order,
-                                                                                 horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         selectedOrderID = order.orderID
         let allViewModels = allViewModels()
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
@@ -839,29 +784,44 @@ extension OrderListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let itemIndex = dataSource?.indexOfItem(for: indexPath) else {
+        guard let item = dataSource?.itemIdentifier(for: indexPath) else { return }
+        if case .placeholder = item {
+            cell.layoutIfNeeded()
+            cell.startGhostAnimation(style: .wooDefaultGhostStyle)
+            return
+        }
+        guard let objectID = item.objectID,
+              let itemIndex = ordersSnapshot.indexOfItem(objectID) else {
             return
         }
 
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
     }
 
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.stopGhostAnimation()
+    }
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard case .orders(let sectionIdentifier) = dataSource?.sectionIdentifier(for: section) else { return nil }
         let reuseIdentifier = TwoColumnSectionHeaderView.reuseIdentifier
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? TwoColumnSectionHeaderView else {
             return nil
         }
 
-        header.leftText = {
-            guard let sectionIdentifier = dataSource?.sectionIdentifier(for: section) else {
-                return nil
-            }
-
-            return viewModel.sectionTitleFor(sectionIdentifier: sectionIdentifier)
-        }()
+        header.leftText = viewModel.sectionTitleFor(sectionIdentifier: sectionIdentifier)
         header.rightText = nil
 
+        if #available(iOS 26.0, *) {
+            header.backgroundConfiguration = .clear()
+        }
+
         return header
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        guard case .orders = dataSource?.sectionIdentifier(for: section) else { return .leastNonzeroMagnitude }
+        return UITableView.automaticDimension
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -873,7 +833,7 @@ extension OrderListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         /// Fetch the order view model and make sure the order is not marked as completed before proceeding.
         ///
-        guard let objectID = dataSource?.itemIdentifier(for: indexPath),
+        guard let objectID = dataSource?.itemIdentifier(for: indexPath)?.objectID,
               let cellViewModel = viewModel.cellViewModel(withID: objectID),
               cellViewModel.status != .completed else {
                   return nil
@@ -893,64 +853,104 @@ extension OrderListViewController: UITableViewDelegate {
 //
 private extension OrderListViewController {
 
-    func didEnter(state: State) {
-        switch state {
-        case .empty:
-            displayEmptyViewController()
-        case .placeholder:
-            displayPlaceholderOrders()
-        case .syncing:
-            ensureFooterSpinnerIsStarted()
-        case .results:
-            break
-        }
+    func reconfigureOrderRows() {
+        guard let dataSource else { return }
+        var snapshot = dataSource.snapshot()
+        let orders = snapshot.itemIdentifiers.filter { $0.objectID != nil }
+        guard orders.isNotEmpty else { return }
+        snapshot.reconfigureItems(orders)
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
 
-    func didLeave(state: State) {
-        switch state {
-        case .empty:
-            removeEmptyViewController()
-        case .placeholder:
-            removePlaceholderOrders()
-        case .syncing:
-            ensureFooterSpinnerIsStopped()
-        case .results:
-            break
+    // Keep loading, empty, and error content in the tracked scroll view so UIKit applies
+    // the same navigation bar and filter insets in every state. Overlay views cover the large title on iOS 26.
+    func updateTableContent() {
+        guard let dataSource else { return }
+
+        let existingItems = Set(dataSource.snapshot().itemIdentifiers)
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        if state == .placeholder {
+            snapshot.appendSections([.placeholder])
+            snapshot.appendItems((0..<Constants.placeholderRowCount).map(Item.placeholder))
+        } else {
+            for section in ordersSnapshot.sectionIdentifiers {
+                snapshot.appendSections([.orders(section)])
+                snapshot.appendItems(ordersSnapshot.itemIdentifiers(inSection: section).map(Item.order), toSection: .orders(section))
+            }
+            let updatedItems = ordersSnapshot.reloadedItemIdentifiers + ordersSnapshot.reconfiguredItemIdentifiers
+            snapshot.reconfigureItems(Array(Set(updatedItems.map(Item.order)).intersection(existingItems)))
         }
+
+        let hadOrders = existingItems.contains { $0.objectID != nil }
+        dataSource.apply(snapshot, animatingDifferences: hadOrders && state == .results && view.window != nil)
+
+        if state == .empty {
+            configureEmptyStateView()
+            emptyStateView.show(in: tableView)
+        } else if tableView.tableFooterView !== footerSpinnerView {
+            tableView.tableFooterView = footerSpinnerView
+        }
+        ensureFooterSpinnerIsStopped()
     }
 
     /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState() {
-        guard let dataSource else {
-            return
+        state = ordersSnapshot.numberOfItems == 0 ? .placeholder : .syncing
+        if state == .placeholder {
+            updateTableContent()
+        } else {
+            ensureFooterSpinnerIsStarted()
         }
-        state = dataSource.isEmpty ? .placeholder : .syncing
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     /// Transitions to `.results` or `.empty`.
     ///
-    func transitionToResultsUpdatedState() {
-        guard let dataSource else {
-            return
+    func transitionToResultsUpdatedState(updateSnapshot: Bool = false) {
+        state = ordersSnapshot.numberOfItems == 0 ? .empty : .results
+        if updateSnapshot || state == .empty {
+            updateTableContent()
+        } else {
+            ensureFooterSpinnerIsStopped()
         }
-        state = dataSource.isEmpty ? .empty : .results
+
+        // Check that view is loaded and displayed to prevent UI tests failing while synching orders from other screens.
+        if updateSnapshot, isViewLoaded, view.window != nil,
+           splitViewController?.isCollapsed == false {
+            checkSelectedItem()
+        }
     }
 }
 
 // MARK: Top Banner Factories
 private extension OrderListViewController {
+    func renderTopBanner(_ topBanner: OrderListViewModel.TopBanner) {
+        switch topBanner {
+        case .none:
+            hideTopBannerView()
+        case .error(let error):
+            setErrorTopBanner(for: error)
+        case .currencyUnavailable:
+            setCurrencyUnavailableTopBanner()
+        }
+    }
+
     /// Sets the `topBannerView` property to an error banner.
     ///
     func setErrorTopBanner(for error: Error) {
         topBannerView = ErrorTopBannerFactory.createTopBanner(for: error,
                                                               expandedStateChangeHandler: { [weak self] in
-            self?.tableView.updateHeaderHeight()
+            self?.view.setNeedsLayout()
         },
         onTroubleshootButtonPressed: { [weak self] in
             guard let self else { return }
+
+            if self.ordersSnapshot.numberOfItems == 0 {
+                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+                return
+            }
 
             ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
             let connectivityToolViewController = ConnectivityToolViewController()
@@ -958,27 +958,36 @@ private extension OrderListViewController {
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self)
         })
         showTopBannerView()
     }
 
-    func allViewModels() -> [OrderDetailsViewModel] {
-        let ids = (0...tableView.numberOfSections - 1)
-            .map { section in
-                (0...tableView.numberOfRows(inSection: section) - 1)
-                    .compactMap { row in
-                        dataSource?.itemIdentifier(for: IndexPath(row: row, section: section))
-                    }
-            }
+    /// Sets the `topBannerView` property to a warning banner shown when the store currency couldn't be loaded.
+    ///
+    func setCurrencyUnavailableTopBanner() {
+        let retryAction = TopBannerViewModel.ActionButton(title: Localization.currencyUnavailableRetry) { [weak self] _ in
+            self?.viewModel.retryStoreCurrencySync()
+        }
+        let bannerViewModel = TopBannerViewModel(title: Localization.currencyUnavailableTitle,
+                                                 infoText: Localization.currencyUnavailableInfo,
+                                                 icon: .infoOutlineImage,
+                                                 isExpanded: true,
+                                                 shouldResizeInfo: false,
+                                                 topButton: .chevron(handler: { [weak self] in
+                                                     self?.view.setNeedsLayout()
+                                                 }),
+                                                 actionButtons: [retryAction],
+                                                 type: .warning)
+        let banner = TopBannerView(viewModel: bannerViewModel)
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        topBannerView = banner
+        showTopBannerView()
+    }
 
-        return ids
-            .flatMap { rows in
-                rows.compactMap { id in
-                    viewModel.detailsViewModel(withID: id)
-                }
-            }
+    func allViewModels() -> [OrderDetailsViewModel] {
+        ordersSnapshot.itemIdentifiers.compactMap { viewModel.detailsViewModel(withID: $0) }
     }
 }
 
@@ -991,20 +1000,30 @@ private extension OrderListViewController {
         static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales.",
                                                                  comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
-        static let createTestOrderDetail = NSLocalizedString(
-            "Run a test order to ensure your WooCommerce process delivers a seamless customer experience.",
-            comment: "Message shown in Orders → All Orders tab if the list is empty and the site has been launched"
-        )
-        static let tryTestOrder = NSLocalizedString(
-            "Try a Test Order",
-            comment: "Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched"
-        )
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
         static let clearButton = NSLocalizedString("Clear Filters",
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
+
+        static let currencyUnavailableTitle = NSLocalizedString(
+            "orderList.currencyUnavailable.banner.title",
+            value: "Store currency unavailable",
+            comment: "Title of the banner shown on the Orders list when the store's currency couldn't be loaded."
+        )
+
+        static let currencyUnavailableInfo = NSLocalizedString(
+            "orderList.currencyUnavailable.banner.info",
+            value: "We couldn't load your store's currency, so order totals may be shown in the wrong currency.",
+            comment: "Message of the banner shown on the Orders list when the store's currency couldn't be loaded."
+        )
+
+        static let currencyUnavailableRetry = NSLocalizedString(
+            "orderList.currencyUnavailable.banner.retry",
+            value: "Retry",
+            comment: "Title of the button to retry loading the store's currency on the Orders list warning banner."
+        )
 
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"
@@ -1035,10 +1054,25 @@ private extension OrderListViewController {
         }
     }
 
-    enum Settings {
+    enum Constants {
+        static let loadingCellIdentifier = "OrderLoadingCell"
+        static let placeholderRowCount = 3
         static let estimatedHeaderHeight = CGFloat(43)
-        static let estimatedRowHeight = CGFloat(86)
-        static let placeholderRowsPerSection = [3]
+    }
+
+    enum Section: Hashable {
+        case orders(String)
+        case placeholder
+    }
+
+    enum Item: Hashable {
+        case order(FetchResultSnapshotObjectID)
+        case placeholder(Int)
+
+        var objectID: FetchResultSnapshotObjectID? {
+            guard case .order(let objectID) = self else { return nil }
+            return objectID
+        }
     }
 
     enum State {

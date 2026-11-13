@@ -1,0 +1,96 @@
+# p2: orders.create.quantity
+appId: ${APP_ID}
+name: Change the quantity of a product in a new order
+tags:
+  - smoke_extended
+  - destructive
+  - orders
+---
+- stopApp
+- runFlow: ../subflows/ensure_logged_in.yaml
+
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- assertVisible:
+    id: new-order-create-button
+
+# Filter to Variable products so the order always goes through the variation
+# picker, then select the first variation of the first variable product.
+- tapOn:
+    id: new-order-add-product-button
+- extendedWaitUntil:
+    visible: Filter
+    timeout: 15000
+- tapOn: Filter
+- extendedWaitUntil:
+    visible: Product Type
+    timeout: 15000
+- tapOn: Product Type
+- extendedWaitUntil:
+    visible: Variable
+    timeout: 15000
+- tapOn: Variable
+- tapOn: Show Products
+- extendedWaitUntil:
+    visible:
+      id: product-item
+    timeout: 30000
+- tapOn:
+    text: ".*variations.*"
+    childOf:
+      id: product-item
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: product-variation-item
+    timeout: 30000
+- tapOn:
+    id: product-variation-item
+    index: 0
+- tapOn: Back
+- tapOn:
+    id: product-multiple-selection-done-button
+- extendedWaitUntil:
+    visible:
+      text: ".*, 1 × .*"
+    timeout: 30000
+- takeScreenshot: order_variation_line_item
+
+# The quantity field is exposed only after expanding the collapsed line-item card.
+- tapOn:
+    text: ".*, 1 × .*"
+    index: 0
+    point: "96%,20%"
+- extendedWaitUntil:
+    visible: Order Count
+    timeout: 15000
+# Tap the trailing edge so the cursor lands after the value and eraseText clears it.
+- tapOn:
+    text: "1"
+    rightOf: Order Count
+    point: "90%,50%"
+- eraseText
+- inputText: "2"
+# PassKit hides the keyboard toolbar's Done button from accessibility, so tap it
+# by its position at the trailing end of the toolbar.
+- waitForAnimationToEnd
+- tapOn:
+    id: Toolbar
+    below:
+      id: order-form-collect-payment
+    point: "87%,50%"
+- assertVisible: "2 × .*"
+- tapOn:
+    text: "2"
+    rightOf: Order Count
+    point: "90%,50%"
+- eraseText
+- inputText: "1"
+- waitForAnimationToEnd
+- tapOn:
+    id: Toolbar
+    below:
+      id: order-form-collect-payment
+    point: "87%,50%"
+- assertVisible: "1 × .*"

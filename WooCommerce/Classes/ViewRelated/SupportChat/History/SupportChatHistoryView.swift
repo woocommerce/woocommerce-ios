@@ -69,9 +69,9 @@ private extension SupportChatHistoryView {
             comment: "Navigation title for the support chat history screen"
         )
         static let emptyState = NSLocalizedString(
-            "supportChatHistoryView.emptyState",
-            value: "You haven't chatted with support yet.",
-            comment: "Empty state message shown when there are no stored support chats"
+            "supportChatHistoryView.aiChatsEmptyState",
+            value: "You haven't started an AI support chat yet.",
+            comment: "Empty state message shown when there are no stored AI support chats"
         )
     }
 }

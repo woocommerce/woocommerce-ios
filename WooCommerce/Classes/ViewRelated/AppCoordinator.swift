@@ -7,7 +7,9 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
+import protocol WooFoundationCore.CrashLogger
 
+@MainActor
 final class AppCoordinator {
     let tabBarController: MainTabBarController
 
@@ -17,23 +19,33 @@ final class AppCoordinator {
     private var authenticationManager: Authentication
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
+    private let crashLogging: CrashLogger
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
     private var storePickerCoordinator: StorePickerCoordinator?
+    private var significantChangeBlocker: SignificantChangeConsentBlockingHostingController?
+    /// Non-nil while the blocker's presentation is in flight: it re-checks that the blocker made it on screen.
+    private var significantChangeBlockerPresentationCheck: Task<Void, Never>?
+    private let blockerPresentationRetryDelay: Duration
+    private var foregroundConsentRecheckObserver: NSObjectProtocol?
+    private var deferredAgeVerificationObserver: NSObjectProtocol?
+    private var deferredConsentResponsesObserver: NSObjectProtocol?
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
     private let themeInstaller: ThemeInstaller
+    private let notificationCenter: NotificationCenter
+    private let applicationStateProvider: () -> UIApplication.State
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
     /// Handles the age range verification process and corresponding app/UI state behaviour.
-    private let ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator()
+    private let ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol
 
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
@@ -41,11 +53,16 @@ final class AppCoordinator {
          authenticationManager: Authentication = ServiceLocator.authenticationManager,
          roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(),
          analytics: Analytics = ServiceLocator.analytics,
+         crashLogging: CrashLogger = ServiceLocator.crashLogging,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
-         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
+         ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator(),
+         notificationCenter: NotificationCenter = .default,
+         applicationStateProvider: @escaping () -> UIApplication.State = { UIApplication.shared.applicationState },
+         blockerPresentationRetryDelay: Duration = Constants.blockerPresentationRetryDelay) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -59,12 +76,17 @@ final class AppCoordinator {
         self.authenticationManager = authenticationManager
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.analytics = analytics
+        self.crashLogging = crashLogging
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.themeInstaller = themeInstaller
+        self.ageRangeVerificationCoordinator = ageRangeVerificationCoordinator
+        self.notificationCenter = notificationCenter
+        self.applicationStateProvider = applicationStateProvider
+        self.blockerPresentationRetryDelay = blockerPresentationRetryDelay
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
@@ -73,6 +95,12 @@ final class AppCoordinator {
     }
 
     func start() {
+        // A parent/guardian can answer a significant-change consent question at any time,
+        // including long after it was sent — re-evaluate the age gate when an answer arrives.
+        // The listener is armed asynchronously; that's fine, the first verification pass is
+        // read-only and never depends on it.
+        startObservingConsentResponsesWhenActive()
+
         authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
                 guard let self else { return }
@@ -80,6 +108,10 @@ final class AppCoordinator {
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
                 case (false, true):
+                    // The session can end underneath the consent blocker (e.g. token invalidation);
+                    // the login UI replaces the whole hierarchy, so drop the blocker with it.
+                    self.cancelDeferredAgeVerification()
+                    self.dismissSignificantChangeBlockerIfNeeded(animated: false)
                     self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (false, false):
                     // This is not an expected auth state. When the user is logged out, we expect the default store will not be set.
@@ -87,13 +119,15 @@ final class AppCoordinator {
                     // To get into the expected logged-out state, we can fully deauthenticate before starting the auth flow.
                     DDLogWarn("⚠️ Unexpected authentication state: Unauthenticated user has a default store set.")
                     stores.deauthenticate()
+                    self.cancelDeferredAgeVerification()
+                    self.dismissSignificantChangeBlockerIfNeeded(animated: false)
                     self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (true, true):
                     self.displayLoggedInStateWithoutDefaultStore()
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
-                        self.triggerAgeVerification()
+                        self.triggerAgeVerification(trigger: .sessionStart)
                         self.synchronizeAndShowWhatsNew()
                     }
                 }
@@ -316,11 +350,18 @@ private extension AppCoordinator {
     /// check for errors and display store picker if none exists.
     ///
     func displayLoggedInStateWithoutDefaultStore() {
-        // Store picker is only displayed by `AppCoordinator` on launch, when the window's root is uninitialized.
-        // In other cases when the app is authenticated but there is no default store ID, the store picker is shown by authentication UI.
-        guard window.rootViewController == nil else {
+        // The store picker is displayed by `AppCoordinator` on launch (window root uninitialized) and when an
+        // in-session store reset occurs (window root is the logged-in tab UI, e.g. after an `unknown_blog`
+        // response clears the selected site). In other cases when the app is authenticated but there is no
+        // default store ID — such as mid-login — the store picker is shown by the authentication UI instead.
+        guard window.rootViewController == nil || window.rootViewController === tabBarController else {
             return
         }
+
+        // Dismiss anything presented on the current root before re-rooting. `tabBarController` is retained
+        // for the app's lifetime, so a modal left presented on it during an in-session reset would otherwise
+        // reappear when the user returns to it after re-selecting a store.
+        window.rootViewController?.dismiss(animated: false)
 
         /// If authenticating with site credentials only is incomplete,
         /// show the prologue screen to force the user to log in again.
@@ -334,9 +375,12 @@ private extension AppCoordinator {
         // Show error for the current site URL if exists.
         if let siteURL = loggedOutAppSettings.errorLoginSiteAddress {
             if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
+               // A relaunch onto a stored error site is not a login: no `signed_in` fires, so
+               // reporting a login step here would inflate the funnel on every cold start.
                let errorController = authenticationManager.errorViewController(for: siteURL,
                                                                                with: matcher,
                                                                                credentials: nil,
+                                                                               reportsLoginStep: false,
                                                                                navigationController: authenticationUI,
                                                                                onStorePickerDismiss: {}) {
                 window.rootViewController = authenticationUI
@@ -437,18 +481,266 @@ private extension AppCoordinator {
 }
 
 private extension AppCoordinator {
-    func triggerAgeVerification(onAllowed: @escaping () -> Void = { }) {
-        ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
-            hostingWindow: window
-        ) { [weak self] appAccessDescision, _ in
-            guard let self else { return }
-            if appAccessDescision == .allow {
-                onAllowed()
-            } else {
-                self.forceLogoutAndShowAgeAlert()
-            }
+    func triggerAgeVerification(trigger: AgeVerificationTrigger, onAllowed: @escaping () -> Void = { }) {
+        // The Declared Age Range calls go through a system XPC connection, and the FamilyCircleUI
+        // crash (WOOMOB-3608) is observed on launches the user never sees (prewarm, background
+        // refresh, push wake). Only verify while active.
+        guard applicationStateProvider() == .active else {
+            deferAgeVerificationUntilActive(trigger: trigger, onAllowed: onAllowed)
+            return
+        }
 
-            //TODO: consider adding analytics event with the result
+        ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
+            hostingWindow: window,
+            trigger: trigger
+        ) { [weak self] appAccessDecision, result in
+            guard let self else { return }
+            switch appAccessDecision {
+            case .allow:
+                // Only an authoritative outcome clears the consent blocker: the user is eligible,
+                // or the gate no longer applies at all. Transient fail-open results (SDK hiccup,
+                // invalid UI state — e.g. while the blocker itself is mid-presentation) must not
+                // tear it down.
+                switch result {
+                case .eligible, .ineligibleForAgeFeatures, .featureUnavailable:
+                    self.dismissSignificantChangeBlockerIfNeeded()
+                case .ineligible, .declinedSharing, .invalidUIState, .sdkError, .unknown:
+                    break
+                }
+                onAllowed()
+            case .allowConsentGranted:
+                // The parent/guardian approved. If the wall is up, say so and let the user
+                // dismiss it with Continue — a wall that silently vanishes reads as a glitch.
+                // With no wall (a cached grant on a fresh launch) nothing was blocking.
+                if isSignificantChangeBlockerUp {
+                    self.presentSignificantChangeBlocker(context: .approvalGranted)
+                }
+                onAllowed()
+            case .denyAndLogout:
+                self.forceLogoutAndShowAgeAlert()
+            case .restrictConsentRequired:
+                self.presentSignificantChangeBlocker(context: .approvalNeeded)
+            case .restrictPendingConsent:
+                self.presentSignificantChangeBlocker(context: .pendingApproval)
+            case .restrictDeniedConsent:
+                self.presentSignificantChangeBlocker(context: .approvalDenied)
+            }
+        }
+    }
+
+    /// Presents (or updates) the recoverable blocking screen for the significant-change
+    /// consent flow. No logout: the user keeps their session and explicitly sends the
+    /// approval request, re-checks, or re-asks.
+    func presentSignificantChangeBlocker(context: SignificantChangeBlockingContext) {
+        let action: @MainActor () -> Void = { [weak self] in
+            self?.handleSignificantChangeBlockerAction(for: context)
+        }
+        let contactSupport: @MainActor () -> Void = { [weak self] in
+            self?.presentSupportFromSignificantChangeBlocker()
+        }
+        // Only a declared change has its own Approval Needed copy.
+        let detailMessage: String? = context == .approvalNeeded
+            ? CurrentSignificantChange.activeDeclaration()?.blockerMessage
+            : nil
+        // Reuse the blocker only while it's on screen or its presentation is in flight. A stale
+        // reference — the presentation was refused, or the root was swapped underneath it —
+        // must be presented afresh, otherwise the user is silently let through.
+        if let blocker = significantChangeBlocker, isSignificantChangeBlockerUp {
+            // A re-check that lands on the same screen isn't a new dialog. An in-flight
+            // presentation reports whatever context is on screen once it completes.
+            if blocker.context != context, blocker.presentingViewController != nil, blocker.isBeingPresented == false {
+                analytics.track(event: .AgeVerification.dialogShown(for: context))
+            }
+            blocker.update(context: context, detailMessage: detailMessage, onAction: action, onContactSupport: contactSupport)
+            return
+        }
+        let blocker = SignificantChangeConsentBlockingHostingController(
+            context: context,
+            detailMessage: detailMessage,
+            onAction: action,
+            onContactSupport: contactSupport
+        )
+        significantChangeBlocker = blocker
+        startForegroundConsentRecheck()
+        presentSignificantChangeBlocker(blocker, attempt: 1)
+    }
+
+    /// The wall counts as up while it's on screen or its presentation is still in flight.
+    var isSignificantChangeBlockerUp: Bool {
+        guard let blocker = significantChangeBlocker else { return false }
+        return blocker.presentingViewController != nil || significantChangeBlockerPresentationCheck != nil
+    }
+
+    /// Presents on the deepest controller that is on screen and not going away. Right after the
+    /// Declared Age Range check, the topmost controller is Apple's host sheet mid-dismissal, and
+    /// a presentation on it is refused; anchored below it, UIKit queues the presentation behind
+    /// the dismissal instead. `dialog_shown` is tracked once the wall is actually on screen, and
+    /// a presentation that was still refused is retried a few times before giving up.
+    /// `attempt` counts `present` calls only: waiting for a busy presenter is not an attempt.
+    func presentSignificantChangeBlocker(_ blocker: SignificantChangeConsentBlockingHostingController, attempt: Int) {
+        guard significantChangeBlocker === blocker else { return }
+        guard let presenter = window.topmostVisiblePresenter else {
+            DDLogWarn("Failed to obtain view controller to present the significant change blocker.")
+            scheduleSignificantChangeBlockerPresentationCheck(for: blocker, nextAttempt: attempt)
+            return
+        }
+        // On a retry, a presenter still mid-transition has the earlier request queued behind it, and
+        // presenting again would present an active controller. Wait for the transition to end instead.
+        if attempt > 1, presenter.presentedViewController?.transitionCoordinator != nil {
+            DDLogInfo("Significant change blocker presentation is still queued behind a transition; waiting.")
+            scheduleSignificantChangeBlockerPresentationCheck(for: blocker, nextAttempt: attempt)
+            return
+        }
+        presenter.present(blocker, animated: true) { [weak self] in
+            guard let self, self.significantChangeBlocker === blocker else {
+                // Dismissed while the presentation was still queued: take the orphan down,
+                // otherwise an unowned modal wall stays up for good.
+                blocker.presentingViewController?.dismiss(animated: false)
+                return
+            }
+            self.significantChangeBlockerPresentationCheck?.cancel()
+            self.significantChangeBlockerPresentationCheck = nil
+            self.analytics.track(event: .AgeVerification.dialogShown(for: blocker.context))
+        }
+        scheduleSignificantChangeBlockerPresentationCheck(for: blocker, nextAttempt: attempt + 1)
+    }
+
+    /// Re-checks after a delay that the blocker reached the screen; if not, presents it again as `nextAttempt`.
+    func scheduleSignificantChangeBlockerPresentationCheck(for blocker: SignificantChangeConsentBlockingHostingController, nextAttempt: Int) {
+        let delay = blockerPresentationRetryDelay
+        significantChangeBlockerPresentationCheck = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: delay)
+            guard Task.isCancelled == false, let self, self.significantChangeBlocker === blocker else { return }
+            self.significantChangeBlockerPresentationCheck = nil
+            guard blocker.presentingViewController == nil, blocker.viewIfLoaded?.window == nil else { return }
+            guard nextAttempt <= Constants.maxBlockerPresentationAttempts else {
+                DDLogError("Significant change blocker could not be presented after \(nextAttempt - 1) attempts.")
+                self.crashLogging.logMessage(
+                    "Significant change consent blocker could not be presented",
+                    properties: ["attempts": nextAttempt - 1, "context": "\(blocker.context)"],
+                    level: .error
+                )
+                return
+            }
+            DDLogWarn("Significant change blocker is not on screen; presenting again (attempt \(nextAttempt)).")
+            self.presentSignificantChangeBlocker(blocker, attempt: nextAttempt)
+        }
+    }
+
+    func handleSignificantChangeBlockerAction(for context: SignificantChangeBlockingContext) {
+        analytics.track(event: .AgeVerification.action(for: context))
+        switch context {
+        case .approvalNeeded, .approvalDenied:
+            // The user explicitly sends (or re-sends) the approval request,
+            // then the gate re-evaluates with the outcome.
+            Task { @MainActor in
+                let state = await ageRangeVerificationCoordinator.requestSignificantChangeConsent(hostingWindow: window)
+                guard state != .notAvailable else {
+                    // The system can't take the question (unsupported OS, account not eligible
+                    // for asks, or the send failed). Policy is to fail open rather than wall the
+                    // user behind a button that can't do anything. Nothing is persisted, so the
+                    // gate re-evaluates on the next launch.
+                    DDLogWarn("Significant change consent request unavailable; allowing access.")
+                    dismissSignificantChangeBlockerIfNeeded()
+                    return
+                }
+                triggerAgeVerification(trigger: .wallAction)
+            }
+        case .pendingApproval:
+            triggerAgeVerification(trigger: .wallAction)
+        case .approvalGranted:
+            dismissSignificantChangeBlockerIfNeeded()
+        }
+    }
+
+    /// Opens Help & Support on top of the wall. The wall is never dismissed for this, so closing
+    /// support lands back on it with the same context. Ignored while the wall already presents
+    /// something (the system consent sheet, or support itself).
+    func presentSupportFromSignificantChangeBlocker() {
+        guard let blocker = significantChangeBlocker, blocker.presentedViewController == nil else { return }
+        analytics.track(event: .AgeVerification.contactSupportTapped(for: blocker.context))
+        authenticationManager.presentSupport(from: blocker, sourceTag: .ageRestriction, siteURL: nil)
+    }
+
+    func dismissSignificantChangeBlockerIfNeeded(animated: Bool = true) {
+        guard let blocker = significantChangeBlocker else { return }
+        significantChangeBlocker = nil
+        significantChangeBlockerPresentationCheck?.cancel()
+        significantChangeBlockerPresentationCheck = nil
+        stopForegroundConsentRecheck()
+        // Dismiss through the presenter so anything on top of the wall (e.g. Help & Support) goes with it.
+        (blocker.presentingViewController ?? blocker).dismiss(animated: animated)
+    }
+
+    /// Runs the verification on the next `didBecomeActive`. Only the latest trigger is kept:
+    /// one pass after activation covers every trigger that arrived while not active.
+    func deferAgeVerificationUntilActive(trigger: AgeVerificationTrigger, onAllowed: @escaping () -> Void) {
+        cancelDeferredAgeVerification()
+        deferredAgeVerificationObserver = notificationCenter.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            self.cancelDeferredAgeVerification()
+            guard self.isLoggedIn else { return }
+            self.triggerAgeVerification(trigger: trigger, onAllowed: onAllowed)
+        }
+    }
+
+    func cancelDeferredAgeVerification() {
+        if let observer = deferredAgeVerificationObserver {
+            notificationCenter.removeObserver(observer)
+            deferredAgeVerificationObserver = nil
+        }
+    }
+
+    /// The response listener also talks to the system over XPC, so it is armed on the same
+    /// terms as the verification: now if the app is active, otherwise on the next `didBecomeActive`.
+    func startObservingConsentResponsesWhenActive() {
+        guard applicationStateProvider() == .active else {
+            deferredConsentResponsesObserver = notificationCenter.addObserver(
+                forName: UIApplication.didBecomeActiveNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self else { return }
+                if let observer = self.deferredConsentResponsesObserver {
+                    self.notificationCenter.removeObserver(observer)
+                    self.deferredConsentResponsesObserver = nil
+                }
+                self.startObservingConsentResponses()
+            }
+            return
+        }
+        startObservingConsentResponses()
+    }
+
+    func startObservingConsentResponses() {
+        ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
+            // When logged out the outcome is already persisted; the next login's check picks it up.
+            guard let self, self.isLoggedIn else { return }
+            self.triggerAgeVerification(trigger: .consentResolution)
+        }
+    }
+
+    /// While the blocker is up, re-check on every foreground: the parent may have
+    /// answered the request (e.g. via Messages) while the app was in the background.
+    func startForegroundConsentRecheck() {
+        guard foregroundConsentRecheckObserver == nil else { return }
+        foregroundConsentRecheckObserver = notificationCenter.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.triggerAgeVerification(trigger: .foregroundRecheck)
+        }
+    }
+
+    func stopForegroundConsentRecheck() {
+        if let observer = foregroundConsentRecheckObserver {
+            notificationCenter.removeObserver(observer)
+            foregroundConsentRecheckObserver = nil
         }
     }
 
@@ -459,6 +751,8 @@ private extension AppCoordinator {
     }
 
     func forceLogoutAndShowAgeAlert() {
+        // Tracked before logout so the event is attributed to the restricted session, like the check itself.
+        analytics.track(event: .AgeVerification.dialogShown(screen: .underageAlert))
         forceLogoutAndReturnToLogin()
 
         DispatchQueue.main.async { [weak self] in
@@ -476,19 +770,41 @@ private extension AppCoordinator {
             )
             alert.addAction(
                 UIAlertAction(
-                    title: Localization.AgeVerificationAlert.confirmationButton,
-                    style: .default,
-                    handler: nil
-                )
+                    title: Localization.AgeVerificationAlert.contactSupportButton,
+                    style: .default
+                ) { [weak self, weak presenter] _ in
+                    self?.presentSupportFromUnderageAlert(from: presenter)
+                }
             )
+            let confirmation = UIAlertAction(
+                title: Localization.AgeVerificationAlert.confirmationButton,
+                style: .default,
+                handler: nil
+            )
+            alert.addAction(confirmation)
+            alert.preferredAction = confirmation
             presenter.present(alert, animated: true)
         }
+    }
+
+    /// Opens Help & Support over the logged-out UI, the same path the login screens' Help button uses.
+    /// The session is already gone, so closing support lands back on the login prologue.
+    /// - Parameter presenter: the view controller the alert was shown on; the alert itself is dismissed by the time its handler runs.
+    func presentSupportFromUnderageAlert(from presenter: UIViewController?) {
+        analytics.track(event: .AgeVerification.contactSupportTapped(screen: .underageAlert))
+        guard let presenter else {
+            DDLogWarn("Failed to obtain view controller to present Help & Support from the underage alert.")
+            return
+        }
+        authenticationManager.presentSupport(from: presenter, sourceTag: .ageRestriction, siteURL: nil)
     }
 }
 
 private extension AppCoordinator {
     enum Constants {
         static let animationDuration = TimeInterval(0.3)
+        static let blockerPresentationRetryDelay: Duration = .seconds(1)
+        static let maxBlockerPresentationAttempts = 5
     }
 
     enum Localization {
@@ -510,6 +826,12 @@ private extension AppCoordinator {
                 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton",
                 value: "Got it",
                 comment: "Alert confirmation button displayed when user identified as underage and taken to force logout."
+            )
+
+            static let contactSupportButton = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.contactSupportButton",
+                value: "Contact Support",
+                comment: "Alert button that opens Help & Support, displayed when user identified as underage and taken to force logout."
             )
         }
 

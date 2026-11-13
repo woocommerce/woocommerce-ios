@@ -79,6 +79,7 @@ struct SearchDebounceStrategyTests {
 }
 
 @Suite("Fetch Strategy Debouncing Tests")
+@MainActor
 struct FetchStrategyDebouncingTests {
     private let siteID: Int64 = 123
     private let mockAnalytics = MockPOSItemFetchAnalyticsTracking()

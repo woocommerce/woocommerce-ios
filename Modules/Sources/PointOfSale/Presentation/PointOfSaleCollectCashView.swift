@@ -3,6 +3,7 @@ import Combine
 import WooFoundation
 
 struct PointOfSaleCollectCashView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.posNavigationRouter) private var router
@@ -11,13 +12,23 @@ struct PointOfSaleCollectCashView: View {
     @FocusState private var isTextFieldFocused: Bool
 
     private let viewHelper: CollectCashViewHelper
-    private let currencyInputSanitizer: CurrencyInputSanitizer
+    private let currencySettings: CurrencySettings
     private let presetAmount: Decimal?
 
-    @State private var textFieldAmountInput: String = ""
-    @State private var isLoading: Bool = false
-    @State private var errorMessage: String?
-    @State private var changeDueMessage: String?
+    @Binding private var amountInput: POSCashAmountInputState
+
+    private var textFieldAmountInput: String { amountInput.amount }
+    private var isLoading: Bool {
+        get { amountInput.isSubmitting }
+        nonmutating set { amountInput.isSubmitting = newValue }
+    }
+    private var errorMessage: String? {
+        get { amountInput.errorMessage }
+        nonmutating set { amountInput.errorMessage = newValue }
+    }
+    private var changeDueMessage: String? {
+        viewHelper.updatechangeDueMessage(orderTotal: orderTotal, textFieldAmountInput: textFieldAmountInput)
+    }
 
     private let orderTotal: String
 
@@ -30,8 +41,8 @@ struct PointOfSaleCollectCashView: View {
 
     private var bottomPadding: CGFloat {
         keyboardObserver.isKeyboardVisible
-            ? Constants.bottomPadding
-            : floatingControlAreaSize.height + Constants.bottomPadding
+            ? metrics.padding.medium
+            : floatingControlAreaSize.height + metrics.padding.medium
     }
 
     private var isButtonEnabled: Bool {
@@ -40,9 +51,10 @@ struct PointOfSaleCollectCashView: View {
                                           isLoading: isLoading)
     }
 
-    init(orderTotal: String, currencySettings: CurrencySettings) {
+    init(orderTotal: String, currencySettings: CurrencySettings, amountInput: Binding<POSCashAmountInputState>) {
+        self._amountInput = amountInput
         self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
-        self.currencyInputSanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
+        self.currencySettings = currencySettings
         self.presetAmount = viewHelper.parseCurrency(orderTotal)
         self.orderTotal = orderTotal
     }
@@ -65,26 +77,20 @@ struct PointOfSaleCollectCashView: View {
     private var collectCashContent: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.medium)) {
                     POSPageHeaderView(title: Localization.backNavigationTitle,
                                       subtitle: formattedOrderTotal,
                                       backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
-                                                                     action: {
-                        isTextFieldFocused = false
-                        Task { @MainActor in
-                            await paymentModel.cancelCashPayment()
-                            router.popToRoot()
-                        }
-                    }))
+                                                                     action: cancelCashPayment))
 
-                    VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                    VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.medium)) {
                         Spacer()
 
-                        VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
+                        VStack(alignment: .center, spacing: conditionalPadding(metrics.spacing.xSmall)) {
                             POSCashAmountTextField(
-                                amount: $textFieldAmountInput,
+                                input: $amountInput,
                                 isFocused: $isTextFieldFocused,
-                                sanitizer: currencyInputSanitizer,
+                                currencySettings: currencySettings,
                                 preset: presetAmount,
                                 onSubmit: {
                                     Task { @MainActor in
@@ -126,7 +132,7 @@ struct PointOfSaleCollectCashView: View {
                         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                         .disabled(!isButtonEnabled)
                     }
-                    .padding([.horizontal])
+                    .posPadding(.horizontal, \.medium)
                     .padding(.bottom, bottomPadding)
                 }
                 .frame(minHeight: geometry.size.height)
@@ -134,7 +140,6 @@ struct PointOfSaleCollectCashView: View {
                 .animation(.easeInOut, value: changeDueMessage != nil)
                 .onChange(of: textFieldAmountInput) {
                     errorMessage = nil
-                    updateChangeDueMessage()
                 }
                 .onReceive(Publishers.keyboardFrame) {
                     shouldMinimizePadding = $0.intersects(buttonFrame)
@@ -144,6 +149,7 @@ struct PointOfSaleCollectCashView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea([])
+        .posEdgeSwipeBackAction(isEnabled: !isLoading, onBack: cancelCashPayment)
     }
 
     private func markComplete() async throws {
@@ -154,7 +160,16 @@ struct PointOfSaleCollectCashView: View {
 }
 
 private extension PointOfSaleCollectCashView {
+    private func cancelCashPayment() {
+        isTextFieldFocused = false
+        Task { @MainActor in
+            await paymentModel.cancelCashPayment()
+            router.popToRoot()
+        }
+    }
+
     private func submitCashAmount() async {
+        guard !isLoading else { return }
         analytics.track(.pointOfSaleCashPaymentTapped)
         isLoading = true
         do {
@@ -165,23 +180,12 @@ private extension PointOfSaleCollectCashView {
         isLoading = false
         isTextFieldFocused = false
     }
-
-    private func updateChangeDueMessage() {
-        changeDueMessage = viewHelper.updatechangeDueMessage(
-            orderTotal: orderTotal,
-            textFieldAmountInput: textFieldAmountInput)
-    }
 }
 
 private extension PointOfSaleCollectCashView {
-    enum Constants {
-        static let minimumPadding: CGFloat = POSSpacing.xSmall
-        static let bottomPadding: CGFloat = POSPadding.medium
-    }
-
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if shouldMinimizePadding {
-            return Constants.minimumPadding
+            return metrics.spacing.xSmall
         }
 
         return padding
@@ -215,7 +219,7 @@ private extension PointOfSaleCollectCashView {
 #if DEBUG
 #Preview {
     let model = POSPreviewHelpers.makePreviewAggregateModel()
-    PointOfSaleCollectCashView(orderTotal: "$1.23", currencySettings: CurrencySettings())
+    PointOfSaleCollectCashView(orderTotal: "$1.23", currencySettings: CurrencySettings(), amountInput: .constant(.init()))
         .environment(model.paymentModel)
 }
 #endif

@@ -28,7 +28,7 @@ public protocol PaymentRemoteProtocol {
 /// WPCOM Payment Endpoints
 ///
 // periphery:ignore
-public class PaymentRemote: Remote, PaymentRemoteProtocol {
+public class PaymentRemote: Remote, PaymentRemoteProtocol, @unchecked Sendable {
     public func loadPlan(thatMatchesID productID: Int64) async throws -> WPComPlan {
         let path = Path.products
         let request = DotcomRequest(wordpressApiVersion: .mark1_5, method: .get, path: path)
@@ -58,12 +58,12 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
     }
 
     public func createCart(siteID: Int64, productID: Int64) async throws {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             "products": [
-                [
+                RequestParameterValue.dictionary([
                     "product_id": productID,
                     "volume": 1
-                ]
+                ])
             ],
             // Necessary to create a persistent cart for later checkout, the default value is `true`.
             "temporary": false
@@ -76,7 +76,9 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
 }
 
 private extension PaymentRemote {
-    func createCart<T: Decodable>(siteID: Int64, parameters: [String: Any], encoding: ParameterEncoding = URLEncoding.default) async throws -> T {
+    func createCart<T: Decodable>(siteID: Int64,
+                                  parameters: RequestParameterConvertibleDictionary,
+                                  encoding: ParameterEncoding = URLEncoding.default) async throws -> T {
         let path = "\(Path.cartCreation)/\(siteID)"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters, encoding: encoding)
         return try await enqueue(request)
@@ -84,7 +86,7 @@ private extension PaymentRemote {
 }
 
 /// Contains necessary data for rendering a WPCOM plan in the app.
-public struct WPComPlan: Decodable, Equatable {
+public struct WPComPlan: Decodable, Equatable, Sendable {
     public let productID: Int64
     public let name: String
     public let formattedPrice: String
@@ -104,7 +106,7 @@ public struct WPComPlan: Decodable, Equatable {
 
 /// Contains necessary data for a site's WPCOM plan.
 // periphery:ignore
-public struct WPComSitePlan: Equatable {
+public struct WPComSitePlan: Equatable, Sendable {
     /// ID of the WPCOM plan.
     ///
     public let id: String

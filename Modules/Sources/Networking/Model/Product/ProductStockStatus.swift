@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductStockStatus Entity.
 ///
-public enum ProductStockStatus: Codable, Hashable, GeneratedFakeable {
+public enum ProductStockStatus: Codable, Hashable, GeneratedFakeable, Sendable {
     case inStock
     case outOfStock
     case onBackOrder

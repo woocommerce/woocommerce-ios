@@ -1,22 +1,24 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel
     let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+            VStack(spacing: metrics.spacing.large) {
                 Image(decorative: viewModel.imageName, bundle: .module)
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                VStack(spacing: metrics.spacing.medium) {
                     Text(viewModel.title)
                         .font(POSFontStyle.posHeadingBold)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityFocused($isTitleFocused)
+                        .accessibilityIdentifier("pos-reader-connection-failed-title")
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     Text(viewModel.errorDetails)
@@ -28,7 +30,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
             .frame(maxWidth: .infinity)
             .scrollVerticallyIfNeeded()
 
-            Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
+            Spacer(minLength: metrics.spacing.large)
 
             Button(viewModel.retryButtonViewModel.title,
                    action: viewModel.retryButtonViewModel.actionHandler)

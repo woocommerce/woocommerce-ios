@@ -2,7 +2,7 @@ import Foundation
 
 /// SiteStats: Remote Endpoints
 ///
-public class SiteStatsRemote: Remote {
+public class SiteStatsRemote: Remote, @unchecked Sendable {
 
     /// Fetch the visitor stats for a given site up to the current day, week, month, or year (depending on the given granularity of the `unit` parameter).
     ///

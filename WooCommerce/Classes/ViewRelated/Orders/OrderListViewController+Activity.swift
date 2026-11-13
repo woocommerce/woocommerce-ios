@@ -2,7 +2,7 @@ import Foundation
 import WooFoundation
 
 // MARK: - SearchableActivity Conformance
-extension OrderListViewController: SearchableActivityConvertible {
+extension OrderListViewController: @MainActor SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.orders.rawValue
     }

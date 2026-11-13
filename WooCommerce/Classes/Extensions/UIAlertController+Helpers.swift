@@ -4,6 +4,7 @@ import UIKit
 /// UIAlertController Helpers
 ///
 extension UIAlertController {
+    typealias OpenSettingsAction = @MainActor @Sendable (@escaping @MainActor @Sendable (Bool) -> Void) -> Void
 
     /// Discard Changes Action Sheet
     ///
@@ -20,11 +21,7 @@ extension UIAlertController {
             onCancel?()
         }
 
-        if let popoverController = actionSheet.popoverPresentationController {
-            popoverController.sourceView = viewController.view
-            popoverController.sourceRect = viewController.view.bounds
-            popoverController.permittedArrowDirections = []
-        }
+        actionSheet.centerActionSheet(in: viewController.view)
 
         viewController.present(actionSheet, animated: true)
     }
@@ -49,11 +46,7 @@ extension UIAlertController {
             onCancel?()
         }
 
-        if let popoverController = actionSheet.popoverPresentationController {
-            popoverController.sourceView = viewController.view
-            popoverController.sourceRect = viewController.view.bounds
-            popoverController.permittedArrowDirections = []
-        }
+        actionSheet.centerActionSheet(in: viewController.view)
 
         viewController.present(actionSheet, animated: true)
     }
@@ -61,23 +54,37 @@ extension UIAlertController {
     /// Present an alert when the app does not have permission to use camera for barcode scanner.
     /// The alert has an action that links to device settings and a cancel action.
     static func presentBarcodeScannerNoCameraPermissionAlert(viewController: UIViewController,
-                                                             onCancel: (() -> Void)? = nil) {
+                                                             onSettingsTapped: (() -> Void)? = nil,
+                                                             onSettingsOpened: (() -> Void)? = nil,
+                                                             onCancel: (() -> Void)? = nil,
+                                                             openSettings: OpenSettingsAction? = nil) {
         presentAlertWithLinkToOpenSettings(viewController: viewController,
                                            title: BarcodeScannerNoCameraPermissionAlert.Localization.title,
                                            message: BarcodeScannerNoCameraPermissionAlert.Localization.message,
-                                           onCancel: onCancel)
+                                           onSettingsTapped: onSettingsTapped,
+                                           onSettingsOpened: onSettingsOpened,
+                                           onCancel: onCancel,
+                                           openSettings: openSettings)
     }
 
     /// Present an alert with an action that links to device settings and cancel action.
     static func presentAlertWithLinkToOpenSettings(viewController: UIViewController,
                                                    title: String? = nil,
                                                    message: String? = nil,
-                                                   onCancel: (() -> Void)? = nil) {
+                                                   onSettingsTapped: (() -> Void)? = nil,
+                                                   onSettingsOpened: (() -> Void)? = nil,
+                                                   onCancel: (() -> Void)? = nil,
+                                                   openSettings: OpenSettingsAction? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.view.tintColor = .text
 
         let openSettingsAction = UIAlertAction(title: AlertWithLinkToOpenSettings.Localization.openSettings, style: .default) { _ in
-            AlertWithLinkToOpenSettings.openSettings()
+            onSettingsTapped?()
+            let openSettings = openSettings ?? AlertWithLinkToOpenSettings.openSettings
+            openSettings { didOpenSettings in
+                guard didOpenSettings else { return }
+                onSettingsOpened?()
+            }
         }
         alert.addAction(openSettingsAction)
         alert.preferredAction = openSettingsAction
@@ -87,13 +94,6 @@ extension UIAlertController {
         }
 
         viewController.present(alert, animated: true)
-    }
-
-    override open func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        if let window = view.window {
-            popoverPresentationController?.sourceRect = CGRect(x: window.bounds.midX, y: window.bounds.midY, width: 0, height: 0)
-        }
     }
 
     static func presentExpiredWPComPlanAlert(from viewController: UIViewController,
@@ -119,6 +119,34 @@ extension UIAlertController {
         alertController.addCancelActionWithTitle(ActionSheetStrings.cancel)
         viewController.present(alertController, animated: true)
     }
+
+    /// Centers this action sheet's popover in `view` and keeps it centered across layout changes (e.g. rotation).
+    ///
+    /// A popover anchors to a fixed `sourceRect` captured at presentation time; when the source view's bounds
+    /// change while the sheet is presented, that rect is stale and the sheet drifts off-center. The reposition
+    /// delegate re-anchors to the view's current bounds whenever UIKit repositions the popover.
+    func centerActionSheet(in view: UIView) {
+        guard let popoverController = popoverPresentationController else {
+            return
+        }
+        popoverController.sourceView = view
+        popoverController.sourceRect = view.bounds
+        popoverController.permittedArrowDirections = []
+        popoverController.delegate = CenteredPopoverRepositioner.shared
+    }
+}
+
+/// Re-centers a centered action sheet popover when UIKit repositions it (e.g. after rotation) by re-anchoring
+/// to the source view's current bounds. `UIPopoverPresentationController` holds its delegate weakly, so the
+/// delegate must be retained elsewhere; this stateless shared instance lives for the app's lifetime.
+private final class CenteredPopoverRepositioner: NSObject, UIPopoverPresentationControllerDelegate {
+    static let shared = CenteredPopoverRepositioner()
+
+    func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController,
+                                       willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>,
+                                       in view: AutoreleasingUnsafeMutablePointer<UIView>) {
+        rect.pointee = view.pointee.bounds
+    }
 }
 
 private enum ActionSheetStrings {
@@ -140,11 +168,13 @@ private enum AlertWithLinkToOpenSettings {
                                               comment: "Button title to cancel opening device settings in an alert")
     }
 
-    static let openSettings: () -> Void = {
+    @MainActor
+    static let openSettings: UIAlertController.OpenSettingsAction = { completion in
         guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
+            completion(false)
             return
         }
-        UIApplication.shared.open(targetURL)
+        UIApplication.shared.open(targetURL, options: [:], completionHandler: completion)
     }
 }
 

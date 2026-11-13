@@ -6,7 +6,7 @@ import Foundation
 // in one of the following formats:
 // - `"COUNTRY_CODE": "READABALE_COUNTRY_NAME"
 // - `"COUNTRY_CODE:COUNTRY_REGION": "READABLE_COUNTRY_NAME - READABLE_COUNTRY_REGION"
-public enum CountryCode: String, CaseIterable {
+public enum CountryCode: String, CaseIterable, Sendable {
     // A
     case AX
     case AF

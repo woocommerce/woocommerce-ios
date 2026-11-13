@@ -153,8 +153,9 @@ extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
 
 private enum Localization {
     static let cashOnDeliveryFailureNoticeTitle = NSLocalizedString(
-        "Failed to enable Pay in Person. Please try again later.",
-        comment: "Error displayed when the attempt to enable a Pay in Person checkout payment option fails")
+        "inPersonPayments.cashOnDelivery.notSetUp.enableFailureNotice.title",
+        value: "Failed to enable Pay In Person. Please try again later.",
+        comment: "Error displayed when the attempt to enable a Pay In Person checkout payment option fails")
 
     static let cashOnDeliveryFailureNoticeRetryTitle = NSLocalizedString(
         "Retry",

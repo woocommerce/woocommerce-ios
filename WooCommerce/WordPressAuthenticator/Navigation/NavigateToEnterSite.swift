@@ -11,7 +11,8 @@ public struct NavigateToEnterSite: NavigationCommand {
     ///   - autoSubmitsPrefilledSiteAddress: When `true`, the screen submits the pre-filled
     ///     site address once, on first appearance, so the caller can hand the merchant
     ///     straight to the next login step.
-    public init(loginFields: LoginFields? = nil, autoSubmitsPrefilledSiteAddress: Bool = false) {
+    public init(loginFields: LoginFields? = nil,
+                autoSubmitsPrefilledSiteAddress: Bool = false) {
         self.loginFields = loginFields
         self.autoSubmitsPrefilledSiteAddress = autoSubmitsPrefilledSiteAddress
     }

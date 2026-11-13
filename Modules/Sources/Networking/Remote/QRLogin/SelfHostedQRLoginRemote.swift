@@ -11,7 +11,7 @@ import NetworkingCore
 /// through `AlamofireNetwork` is not an option for these endpoints because
 /// that abstraction doesn't expose `HTTPURLResponse.statusCode` to the caller,
 /// and the QR-login error tables branch on status code.
-public protocol SelfHostedQRLoginRemoteProtocol {
+public protocol SelfHostedQRLoginRemoteProtocol: Sendable {
     func scan(siteURL: URL,
               token: String,
               device: QRLoginScanDevice) async throws -> SelfHostedQRLoginScanResponse
@@ -25,15 +25,15 @@ public protocol SelfHostedQRLoginRemoteProtocol {
                   exchangeGrant: String) async throws -> SelfHostedQRLoginExchangeResponse
 }
 
-public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
+public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol, Sendable {
 
     private let session: URLSessionProtocol
     private let apiRootCache: RESTAPIRootCaching
-    private let discoverRESTAPIRoot: (_ siteURL: String) async -> String?
+    private let discoverRESTAPIRoot: @Sendable (_ siteURL: String) async -> String?
 
     public init(session: URLSessionProtocol = URLSession.shared,
                 apiRootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared,
-                discoverRESTAPIRoot: ((_ siteURL: String) async -> String?)? = nil) {
+                discoverRESTAPIRoot: (@Sendable (_ siteURL: String) async -> String?)? = nil) {
         self.session = session
         self.apiRootCache = apiRootCache
 
@@ -42,7 +42,7 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
         } else {
             let discovery = WordPressAPIDiscovery(session: session)
             self.discoverRESTAPIRoot = {
-                await discovery.discoverRESTAPIRootURL(for: $0)
+                await discovery.resolveRESTAPIRootURL(for: $0)
             }
         }
     }
@@ -120,7 +120,7 @@ private extension SelfHostedQRLoginRemote {
             } else if let discoveredRoot = await discoverRESTAPIRoot(site) {
                 return discoveredRoot
             } else {
-                return site + Paths.restRouteRoot
+                return WordPressAPIDiscovery.defaultRESTAPIRootURL(for: site)
             }
         }()
 
@@ -182,7 +182,6 @@ private extension SelfHostedQRLoginRemote {
     }
 
     enum Paths {
-        static let restRouteRoot = "/?rest_route=/"
         static let namespace = "wc-admin/mobile-app"
         static let scan = "qr-login-scan"
         static let sessionStatus = "qr-login-session-status"

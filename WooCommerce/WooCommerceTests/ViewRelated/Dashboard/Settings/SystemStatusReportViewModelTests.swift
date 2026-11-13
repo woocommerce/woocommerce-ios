@@ -1,3 +1,4 @@
+import TestKit
 import XCTest
 @testable import Networking
 @testable import Yosemite
@@ -7,6 +8,7 @@ final class SystemStatusReportViewModelTests: XCTestCase {
 
     private let testSiteID: Int64 = 1232
 
+    @MainActor
     func test_errorFetchingReport_is_true_if_fetchingReport_fails() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
@@ -16,7 +18,7 @@ final class SystemStatusReportViewModelTests: XCTestCase {
         var fetchedSiteID: Int64?
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case .fetchSystemStatusReport(let siteID, let onCompletion):
+            case .fetchSystemStatusReport(let siteID, _, let onCompletion):
                 fetchedSiteID = siteID
                 onCompletion(.failure(NSError(domain: "Not Found", code: 404)))
             default:
@@ -27,7 +29,9 @@ final class SystemStatusReportViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(fetchedSiteID, testSiteID)
-        XCTAssertTrue(viewModel.errorFetchingReport)
+        waitUntil {
+            viewModel.errorFetchingReport
+        }
     }
 
     func test_formatReport_when_database_table_has_nil_values_then_displays_null_values() {

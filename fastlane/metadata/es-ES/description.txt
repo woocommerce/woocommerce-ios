@@ -1,4 +1,4 @@
-Gestiona tu empresa sobre la marcha con la aplicación móvil de WooCommerce. Añade productos, crea pedidos, acepta pagos rápidos y controla las ventas nuevas y las estadísticas clave en tiempo real.
+Gestiona tu empresa desde cualquier lugar con la aplicación móvil de WooCommerce. Añade productos, crea pedidos, acepta pagos rápidos y controla las ventas nuevas y las estadísticas clave en tiempo real.
 
 Añade y edita productos con un solo toque
 ¡Empieza en cuestión de segundos! Crea, agrupa y publica productos directamente desde tu iPhone o iPad. Aprovecha tu creatividad al momento: convierte tus ideas en productos al instante o guárdalas como borradores para usarlas más adelante.
@@ -7,10 +7,10 @@ Crea pedidos sobre la marcha
 Cuando hayas creado algunos productos, te resultará sencillo. Elige los artículos del catálogo, añade el envío y rellena los datos del cliente para crear rápidamente un pedido que se sincronice con el inventario.
 
 Acepta pagos en persona
-Recibe pagos físicos con WooCommerce In-Person Payments y un lector de tarjetas en Alemania, Australia, Austria, Bélgica, Canadá, España, Estados Unidos, Finlandia, Francia, Irlanda, Italia, Luxemburgo, Nueva Zelanda, Países Bajos, Portugal, Reino Unido y Singapur. Tap to Pay on iPhone está disponible en Reino Unido y Estados Unidos. Empieza un nuevo pedido (o encuentra uno existente que esté pendiente de pago) y acepta el pago sin problemas.
+Recibe pagos físicos con WooCommerce In-Person Payments y un lector de tarjetas en Australia, Canadá, Finlandia, Irlanda, Luxemburgo, Países Bajos, Nueva Zelanda, Singapur, Reino Unido y Estados Unidos. Tocar para pagar en iPhone está disponible en el Reino Unido y en Estados Unidos. Empieza un nuevo pedido (o encuentra uno existente que esté pendiente de pago) y acepta el pago sin problemas.
 
-Pasar del clic a la venta física
-Convierte cualquier tableta en un potente punto de venta con WooCommerce POS. Busca productos, escanea códigos de barras, aplica cupones y envía recibos por correo electrónico, con todas tus ventas físicas y en línea sincronizadas en tiempo real. Disponible en EE. UU., Reino Unido y Canadá.
+Da el salto del online al comercio físico
+Convierte cualquier tableta en un potente punto de venta con WooCommerce POS. Busca productos, escanea códigos de barras, aplica cupones y envía recibos por correo electrónico, con todas tus ventas físicas y en línea sincronizadas en tiempo real. Disponible en Australia, Canadá, Estados Unidos, Finlandia, Irlanda, Luxemburgo, Nueva Zelanda, Países Bajos, Reino Unido y Singapur.
 
 Recibe notificaciones de todas las ventas
 Ahora que vendes de manera activa, no te pierdas ningún pedido u opinión. Activa las alertas en tiempo real para estar al día y disfruta del adictivo sonido que produce una nueva venta.

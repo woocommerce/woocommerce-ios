@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 open class BaseScreen {
 
     enum UITestError: Error {

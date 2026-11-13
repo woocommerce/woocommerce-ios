@@ -55,7 +55,7 @@ private extension Binding {
     ///
     /// Because of that, this is a private helper to make the sheet presentation logic more concise and readable,
     /// but it wasn't a good candidate for a more general public operator.
-    func notNil<V>() -> Binding<Bool> where Value == V? {
+    func notNil<V: Sendable>() -> Binding<Bool> where Value == V? {
         Binding<Bool>(
             get: { self.wrappedValue != nil },
             set: { self.wrappedValue = $0 ? self.wrappedValue : nil }

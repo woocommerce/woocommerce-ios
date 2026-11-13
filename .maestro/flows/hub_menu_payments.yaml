@@ -1,0 +1,103 @@
+# p2: hub.payments.pay-in-person, hub.payments.order-card-reader, hub.payments.manuals
+# The full profile store supports card readers, so missing card-reader rows fail the flow.
+appId: ${APP_ID}
+name: "Hub Menu - Payments"
+tags:
+  - smoke_extended
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- tapOn:
+    id: "menu-payments"
+- extendedWaitUntil:
+    visible: "Payments"
+    timeout: 20000
+- assertVisible: "Payments"
+- extendedWaitUntil:
+    visible: "Pay In Person"
+    timeout: 20000
+- assertVisible: "Pay In Person"
+- takeScreenshot: hub_payments_top
+# Switch Pay in Person to the other state and back, so the lab store keeps
+# its setting. The switch reports 0 when off and 1 when on.
+- runFlow:
+    when:
+      visible:
+        text: "0"
+        rightOf: "Pay In Person"
+    commands:
+      - runFlow:
+          file: ../subflows/toggle_pay_in_person.yaml
+          env:
+            FROM: "0"
+            TO: "1"
+            CONFIRM: "Enable"
+      - runFlow:
+          file: ../subflows/toggle_pay_in_person.yaml
+          env:
+            FROM: "1"
+            TO: "0"
+            CONFIRM: "Disable"
+- runFlow:
+    when:
+      visible:
+        text: "1"
+        rightOf: "Pay In Person"
+    commands:
+      - runFlow:
+          file: ../subflows/toggle_pay_in_person.yaml
+          env:
+            FROM: "1"
+            TO: "0"
+            CONFIRM: "Disable"
+      - runFlow:
+          file: ../subflows/toggle_pay_in_person.yaml
+          env:
+            FROM: "0"
+            TO: "1"
+            CONFIRM: "Enable"
+- scrollUntilVisible:
+    element:
+      id: "card-reader-manuals"
+    direction: DOWN
+    timeout: 15000
+    label: "Require a card-reader-eligible extended-smoke store"
+- assertVisible: "Order Card Reader"
+- assertVisible: "Manage Card Reader"
+- assertVisible: ".*Learn more about In.Person Payments.*"
+- tapOn: "Order Card Reader"
+- extendedWaitUntil:
+    notVisible: "Manage Card Reader"
+    timeout: 20000
+- takeScreenshot: hub_payments_order_reader
+# The purchase page is a pushed web view, and a swipe back lands on the
+# page itself while it is still loading.
+- tapOn:
+    id: "BackButton"
+- extendedWaitUntil:
+    visible:
+      id: "card-reader-manuals"
+    timeout: 20000
+- tapOn:
+    id: "card-reader-manuals"
+- extendedWaitUntil:
+    visible: "Card Reader Manuals"
+    timeout: 15000
+- assertVisible: "BBPOS Chipper 2X BT"
+- assertVisible: "Stripe Reader M2"
+- takeScreenshot: hub_payments_manuals
+- tapOn:
+    id: "BackButton"
+- extendedWaitUntil:
+    visible:
+      id: "card-reader-manuals"
+    timeout: 15000
+- tapOn:
+    id: "BackButton"
+- extendedWaitUntil:
+    visible:
+      id: "menu-payments"
+    timeout: 10000

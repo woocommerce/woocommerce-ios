@@ -32,7 +32,7 @@ struct POSOrdersView: View {
             POSNavigationSplitView(selection: Binding(
                 get: { orderListModel.ordersController.selectedOrder },
                 set: { selectOrder($0) }
-            )) { _ in
+            ), pushedDetailBackgroundColor: .posSurfaceBright) { _ in
                 POSOrderListView(
                     isSearching: $isSearching,
                     searchTerm: $searchTerm,
@@ -165,7 +165,7 @@ private extension POSOrdersView {
             return
         }
 
-        if orderListModel.ordersController.hasModifiedRefundSelection {
+        if orderListModel.hasModifiedRefundSelection {
             pendingOrderSelection = order
             isCancelRefundConfirmationPresented = true
         } else {
@@ -176,7 +176,7 @@ private extension POSOrdersView {
     func cancelActiveRefundSelectionAndSelect(_ order: POSOrder) {
         activeRefundSelectionOrderID = nil
         pendingOrderSelection = nil
-        orderListModel.ordersController.clearRefundSelection()
+        orderListModel.clearRefundSelection()
         selectOrder(order)
     }
 
@@ -185,7 +185,7 @@ private extension POSOrdersView {
             activeRefundSelectionOrderID = nil
             pendingOrderSelection = nil
         }
-        orderListModel.ordersController.selectOrder(order)
+        orderListModel.selectOrder(order)
     }
 }
 

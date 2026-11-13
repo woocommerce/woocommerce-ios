@@ -12,8 +12,14 @@ final class MockAuthentication: Authentication {
         presentSupportFromScreen = screen
     }
 
+    private(set) var presentSupportWithSourceTagInvoked = false
+    private(set) var presentSupportSourceTag: WordPressSupportSourceTag?
+    private(set) weak var presentSupportSourceViewController: UIViewController?
+
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, siteURL: URL?) {
-        // no-op
+        presentSupportWithSourceTagInvoked = true
+        presentSupportSourceTag = sourceTag
+        presentSupportSourceViewController = sourceViewController
     }
 
     @MainActor
@@ -26,6 +32,7 @@ final class MockAuthentication: Authentication {
         false
     }
 
+    @MainActor
     func authenticationUI() -> UIViewController {
         UIViewController()
     }
@@ -41,8 +48,15 @@ final class MockAuthentication: Authentication {
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
                              credentials: AuthenticatorCredentials?,
+                             reportsLoginStep: Bool,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController? {
         nil
+    }
+
+    private(set) var spyNoteSiteDiscoveryIsFromLogin: Bool?
+
+    func noteSiteDiscoveryOrigin(isFromLogin: Bool) {
+        spyNoteSiteDiscoveryIsFromLogin = isFromLogin
     }
 }

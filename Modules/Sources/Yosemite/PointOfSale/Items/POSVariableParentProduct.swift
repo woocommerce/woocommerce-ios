@@ -1,6 +1,6 @@
 import Foundation
 
-public struct POSVariableParentProduct: Equatable, Hashable, Identifiable {
+public struct POSVariableParentProduct: Equatable, Hashable, Identifiable, Sendable {
     public let id: POSItemIdentifier
     public let name: String
     public let productImageSource: String?

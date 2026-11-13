@@ -68,7 +68,7 @@ private extension MetaDataStore {
     func updateMetaData(siteID: Int64,
                         parentItemID: Int64,
                         metaDataType: MetaDataType,
-                        metadata: [[String: Any?]],
+                        metadata: [RequestParameterDictionary],
                         onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         switch metaDataType {
         case .order:
@@ -87,7 +87,7 @@ private extension MetaDataStore {
     ///
     func updateOrderMetaData(siteID: Int64,
                              orderID: Int64,
-                             metadata: [[String: Any?]],
+                             metadata: [RequestParameterDictionary],
                              onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -161,7 +161,7 @@ private extension MetaDataStore {
     ///
     func updateProductMetaData(siteID: Int64,
                                productID: Int64,
-                               metadata: [[String: Any?]],
+                               metadata: [RequestParameterDictionary],
                                onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         Task { @MainActor in
             do {

@@ -2,6 +2,7 @@ import Testing
 @testable import Yosemite
 @testable import Networking
 
+@MainActor
 struct PointOfSalePopularPurchasableItemFetchStrategyTests {
     private let siteID: Int64 = 123
     private let pageSize = 10

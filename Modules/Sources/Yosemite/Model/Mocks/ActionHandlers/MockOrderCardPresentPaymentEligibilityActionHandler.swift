@@ -10,8 +10,10 @@ struct MockOrderCardPresentPaymentEligibilityActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case let .orderIsEligibleForCardPresentPayment(_, _, _, onCompletion):
-            onCompletion(.success(true))
+        case let .checkEligibility(_, _, _, onCompletion):
+            onCompletion(.success(.eligible))
+        case let .checkOrderContainsSubscription(_, _, onCompletion):
+            onCompletion(.success(false))
         }
     }
 }

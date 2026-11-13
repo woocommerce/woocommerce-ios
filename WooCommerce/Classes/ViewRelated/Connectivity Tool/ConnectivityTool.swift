@@ -3,7 +3,7 @@ import Combine
 
 /// Connectivity Tool Hosting Controller
 ///
-final class ConnectivityToolViewController: UIHostingController<ConnectivityTool> {
+final class ConnectivityToolViewController: TabBarHidingHostingController<ConnectivityTool> {
 
     /// ConnectivityTool view model
     ///
@@ -25,7 +25,6 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         viewModel = ConnectivityToolViewModel()
         let view = ConnectivityTool(cards: viewModel.cards)
         super.init(rootView: view)
-        self.hidesBottomBarWhenPushed = true
         self.title = NSLocalizedString("Troubleshoot Connection", comment: "Screen title for the connectivity tool")
     }
 
@@ -41,12 +40,6 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         // Bind chat button visibility
         viewModel.$showChatButton.sink { [weak self] show in
             self?.rootView.showChatButton = show
-        }
-        .store(in: &subscriptions)
-
-        // Bind contact support button visibility
-        viewModel.$showContactSupportButton.sink { [weak self] show in
-            self?.rootView.showContactSupportButton = show
         }
         .store(in: &subscriptions)
 
@@ -77,11 +70,6 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
             }
             .store(in: &subscriptions)
 
-        // Listen to the contact support button
-        rootView.onContactSupportTapped = { [weak self] in
-            self?.showContactSupportForm()
-        }
-
         // Listen to the chat with support button
         rootView.onChatWithSupportTapped = { [weak self] in
             self?.showSupportChat()
@@ -102,44 +90,8 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         coordinator.startSetup()
     }
 
-    private func showContactSupportForm(sourceTag: String? = nil,
-                                        additionalTags: [String] = [],
-                                        chatTranscript: String? = nil,
-                                        preselectedArea: SupportFormViewModel.Area? = nil) {
-        var attachments: [ZendeskAttachment] = []
-
-        if let troubleshootingDescription = viewModel.troubleshootingDescription(),
-           let data = troubleshootingDescription.data(using: .utf8) {
-            attachments.append(ZendeskAttachment(
-                data: data,
-                filename: "connectivitytest_log.txt",
-                contentType: "text/plain"
-            ))
-        }
-
-        if let transcript = chatTranscript,
-           !transcript.isEmpty,
-           let data = transcript.data(using: .utf8) {
-            attachments.append(ZendeskAttachment(
-                data: data,
-                filename: "support_chat_transcript.txt",
-                contentType: "text/plain"
-            ))
-        }
-
-        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(
-            sourceTag: sourceTag,
-            additionalTags: additionalTags,
-            attachments: attachments,
-            preselectedArea: preselectedArea
-        ))
-        supportController.show(from: self)
-
-        ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
-    }
-
     private func showSupportChat() {
-        var viewModelHolder: SupportChatViewModel?
+        weak var viewModelHolder: SupportChatViewModel?
         let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
             self?.navigationController?.popViewController(animated: true)
             self?.handleContactHumanSupport(chatID: chatID,
@@ -147,7 +99,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
                                             supportAreaInfo: supportAreaInfo,
                                             entryPoint: entryPoint,
                                             hasReceivedBotResponse: hasReceivedBotResponse,
-                                            onTicketCreated: { [weak viewModelHolder] in
+                                            onTicketCreated: {
                                                 viewModelHolder?.markChatTicketCreated()
                                             })
         }
@@ -168,6 +120,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
             additionalAttachmentsProvider: { [weak self] in
                 self?.buildTroubleshootingAttachment() ?? []
             },
+            mobileStatusReportProvider: MobileStatusReportProvider(),
             onTicketCreated: onTicketCreated
         )
         supportEscalationCoordinator?.handleEscalation(chatID: chatID,
@@ -218,10 +171,6 @@ struct ConnectivityTool: View {
     ///
     var cards: [Card]
 
-    /// Closure to be invoked when the "Contact Support" button is tapped.
-    ///
-    var onContactSupportTapped: (() -> ())?
-
     /// Closure to be invoked when the AI-backed "Contact Support" button is tapped.
     ///
     var onChatWithSupportTapped: (() -> ())?
@@ -229,10 +178,6 @@ struct ConnectivityTool: View {
     /// Whether the chat button should be shown.
     ///
     var showChatButton: Bool = false
-
-    /// Whether the contact support button should be shown.
-    ///
-    var showContactSupportButton: Bool = false
 
     /// Internal layout values
     ///
@@ -267,12 +212,6 @@ struct ConnectivityTool: View {
                     onChatWithSupportTapped?()
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .padding()
-            } else if showContactSupportButton {
-                Button(Localization.contactSupport) {
-                    onContactSupportTapped?()
-                }
-                .buttonStyle(SecondaryButtonStyle())
                 .padding()
             }
         }
@@ -330,6 +269,8 @@ struct ConnectivityToolCard: View {
         case success
         case empty(String)
         case error(String, [Action])
+        /// The site cannot answer the test. Never rendered as a card; the reason feeds the support attachment.
+        case skipped(String)
 
         /// Builds the icon based on the state
         ///
@@ -340,7 +281,7 @@ struct ConnectivityToolCard: View {
             case .success:
                 Image(uiImage: .checkCircleImage)
                     .environment(\.colorScheme, .light)
-            case .empty:
+            case .empty, .skipped:
                 EmptyView()
             case .error:
                 Image(uiImage: .exclamationFilledImage)

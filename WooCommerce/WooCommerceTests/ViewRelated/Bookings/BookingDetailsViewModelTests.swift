@@ -489,31 +489,18 @@ final class BookingDetailsViewModelTests: XCTestCase {
 
     // MARK: - Reschedule button visibility
 
-    func test_shouldShowRescheduleButton_returns_false_when_feature_flag_disabled() {
-        // Given
-        let booking = Booking.fake().copy(statusKey: "paid")
-        let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: false)
-
-        // When
-        let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowRescheduleButton)
-    }
-
-    func test_shouldShowRescheduleButton_returns_true_for_eligible_status_when_flag_enabled() {
+    func test_shouldShowRescheduleButton_returns_false_for_eligible_status() {
         // Given
         let eligibleStatuses = ["paid", "unpaid", "confirmed", "pending-confirmation"]
 
         for statusKey in eligibleStatuses {
             let booking = Booking.fake().copy(statusKey: statusKey)
-            let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: true)
 
             // When
-            let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
+            let viewModel = givenViewModel(booking: booking)
 
             // Then
-            XCTAssertTrue(viewModel.shouldShowRescheduleButton, "Reschedule should be visible for status: \(statusKey)")
+            XCTAssertFalse(viewModel.shouldShowRescheduleButton, "Reschedule should be hidden for status: \(statusKey)")
         }
     }
 
@@ -523,10 +510,9 @@ final class BookingDetailsViewModelTests: XCTestCase {
 
         for statusKey in ineligibleStatuses {
             let booking = Booking.fake().copy(statusKey: statusKey)
-            let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: true)
 
             // When
-            let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
+            let viewModel = givenViewModel(booking: booking)
 
             // Then
             XCTAssertFalse(viewModel.shouldShowRescheduleButton, "Reschedule should be hidden for status: \(statusKey)")
@@ -611,8 +597,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             bookingResourceIDs: [10, 20, 30]
         )
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: true)
-        let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
+        let viewModel = givenViewModel(booking: booking)
 
         // When
         viewModel.rescheduleBooking()

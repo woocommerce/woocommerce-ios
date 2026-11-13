@@ -56,6 +56,7 @@ extension Networking.AccountSettings {
         .init(
             userID: .fake(),
             tracksOptOut: .fake(),
+            crashReportingOptOut: .fake(),
             firstName: .fake(),
             lastName: .fake()
         )
@@ -134,6 +135,27 @@ extension Networking.BlazeAISuggestion {
             siteName: .fake(),
             textSnippet: .fake(),
             ctaText: .fake()
+        )
+    }
+}
+extension Networking.BlazeBillingSummary {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeBillingSummary {
+        .init(
+            debt: .fake(),
+            paymentLinks: .fake()
+        )
+    }
+}
+extension Networking.BlazeBillingSummary.PaymentLink {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeBillingSummary.PaymentLink {
+        .init(
+            date: .fake(),
+            amount: .fake(),
+            url: .fake()
         )
     }
 }
@@ -1587,7 +1609,10 @@ extension Networking.ShippingLabelCustomsForm.Item {
             weight: .fake(),
             hsTariffNumber: .fake(),
             originCountry: .fake(),
-            productID: .fake()
+            productID: .fake(),
+            code: .fake(),
+            manufacturerProductID: .fake(),
+            standardizedProductID: .fake()
         )
     }
 }
@@ -2448,6 +2473,26 @@ extension Networking.WooShippingSelectedRate {
             saturdayDeliveryRate: .fake(),
             additionalHandlingRate: .fake()
         )
+    }
+}
+extension Networking.WooShippingServiceStatusNotice {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingServiceStatusNotice {
+        .init(
+            id: .fake(),
+            severity: .fake(),
+            message: .fake(),
+            isDismissible: .fake(),
+            actionURL: .fake()
+        )
+    }
+}
+extension Networking.WooShippingServiceStatusSeverity {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingServiceStatusSeverity {
+        .info
     }
 }
 extension Networking.WooShippingShipment {

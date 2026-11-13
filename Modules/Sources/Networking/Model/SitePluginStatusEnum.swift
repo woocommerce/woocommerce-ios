@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents all of the possible Site Plugin Statuses in enum form
 ///
-public enum SitePluginStatusEnum: Decodable, Hashable, GeneratedFakeable {
+public enum SitePluginStatusEnum: Decodable, Hashable, Sendable, GeneratedFakeable {
     case active
     case networkActive
     case inactive

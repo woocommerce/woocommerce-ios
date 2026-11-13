@@ -75,6 +75,19 @@ final class InboxNoteRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.date, "in 2 months")
     }
 
+    func test_equality_when_actioned_state_differs_then_view_models_are_not_equal() {
+        // Given
+        let note = InboxNote.fake()
+        let actionedViewModel = InboxNoteRowViewModel(note: note.copy(status: "actioned"))
+        let unactionedViewModel = InboxNoteRowViewModel(note: note.copy(status: "unactioned"))
+
+        // When
+        let areEqual = actionedViewModel == unactionedViewModel
+
+        // Then
+        XCTAssertFalse(areEqual)
+    }
+
     // MARK: - `InboxNoteRowActionViewModel`
 
     func test_initializing_InboxNoteRowActionViewModel_with_action_with_empty_URL_path_has_nil_URL() {
@@ -101,29 +114,5 @@ final class InboxNoteRowViewModelTests: XCTestCase {
         XCTAssertEqual(actionViewModel.id, 134)
         XCTAssertEqual(actionViewModel.title, "Accept Apple Pay")
         XCTAssertEqual(actionViewModel.url?.absoluteString, "https://woocommerce.com")
-    }
-
-    func test_showInboxCTA_property_is_correctly_enabled() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isShowInboxCTAEnabled: true)
-        let note = InboxNote.fake()
-
-        // When
-        let viewModel = InboxNoteRowViewModel(note: note, featureFlagService: featureFlagService)
-
-        // Then
-        XCTAssertTrue(viewModel.showInboxCTA)
-    }
-
-    func test_showInboxCTA_property_is_correctly_disabled() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isShowInboxCTAEnabled: false)
-        let note = InboxNote.fake()
-
-        // When
-        let viewModel = InboxNoteRowViewModel(note: note, featureFlagService: featureFlagService)
-
-        // Then
-        XCTAssertFalse(viewModel.showInboxCTA)
     }
 }

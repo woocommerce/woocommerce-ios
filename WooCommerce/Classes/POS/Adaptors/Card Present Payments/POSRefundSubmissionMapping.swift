@@ -4,7 +4,7 @@ import Yosemite
 import WooFoundation
 
 struct POSRefundSubmissionMapping {
-    struct PreparedRefundContext {
+    struct PreparedRefundContext: Sendable {
         let order: Order
         let charge: WCPayCharge?
         let paymentGateway: PaymentGateway?
@@ -14,8 +14,10 @@ struct POSRefundSubmissionMapping {
     }
 
     private let currencyFormatter: CurrencyFormatter
+    private let numberOfDecimals: Int
 
-    init(currencyFormatter: CurrencyFormatter) {
+    init(currencyFormatter: CurrencyFormatter, numberOfDecimals: Int) {
+        self.numberOfDecimals = numberOfDecimals
         self.currencyFormatter = currencyFormatter
     }
 
@@ -29,8 +31,7 @@ struct POSRefundSubmissionMapping {
     }
 
     func determineRefundableFees(from order: Order, with refunds: [Refund]) -> [OrderFeeLine] {
-        let refundedFeeIDs = Set(refunds.flatMap(\.feeLines).map { $0.refundedItemID ?? $0.feeID })
-        return order.fees.filter { !refundedFeeIDs.contains($0.feeID) }
+        OrderRefundsOptionsDeterminer.remainingFees(in: order, refunds: refunds)
     }
 
     func makeSelectableItems(refundableItems: [RefundableOrderItem],
@@ -94,7 +95,7 @@ struct POSRefundSubmissionMapping {
             guard let quantity = selectedProductQuantities[refundableItem.item.itemID], quantity > 0 else {
                 return nil
             }
-            return RefundableOrderItem(item: refundableItem.item, quantity: quantity)
+            return refundableItem.selecting(quantity: quantity)
         }
 
         let selectedFeeIDs = Set(selectedItems.filter(\.isLumpSum).map(\.itemID))
@@ -103,12 +104,71 @@ struct POSRefundSubmissionMapping {
         return (refundItems, fees)
     }
 
-    func refundValues(items: [RefundableOrderItem], fees: [OrderFeeLine]) -> (subtotal: Decimal, tax: Decimal, total: Decimal) {
-        let itemValues = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: currencyFormatter).calculateRefundValues()
+    /// Builds the preview request lines: products refunded by quantity, fees by tax-inclusive amount.
+    func refundPreviewLineItems(from selectedItems: [POSRefundSelectableItem],
+                                context: PreparedRefundContext) -> [RefundPreviewLineItem] {
+        refundLines(from: selectedItems,
+                    context: context,
+                    quantityBased: RefundPreviewLineItem.quantityBased,
+                    amountBased: RefundPreviewLineItem.amountBased)
+    }
+
+    /// Builds the `compute_totals` creation request lines. Same construction as
+    /// `refundPreviewLineItems(from:context:)`, but the creation endpoint keys lines by `id`.
+    func computedRefundLineItems(from selectedItems: [POSRefundSelectableItem],
+                                 context: PreparedRefundContext) -> [ComputedRefundLineItem] {
+        refundLines(from: selectedItems,
+                    context: context,
+                    quantityBased: ComputedRefundLineItem.quantityBased,
+                    amountBased: ComputedRefundLineItem.amountBased)
+    }
+
+    /// Shared construction for both request shapes. The safety invariant is that a computed create
+    /// sends exactly what was previewed, so the two differ only in the line type they build — never
+    /// in which lines they include or what amounts those lines carry.
+    private func refundLines<Line>(from selectedItems: [POSRefundSelectableItem],
+                                   context: PreparedRefundContext,
+                                   quantityBased: (Int64, Int) -> Line,
+                                   amountBased: (Int64, Decimal) -> Line) -> [Line] {
+        let components = refundComponents(from: selectedItems, context: context)
+
+        let productLines = components.items.map {
+            quantityBased($0.item.itemID, $0.quantity)
+        }
+
+        let feeLines = components.fees.compactMap { fee -> Line? in
+            guard let refundTotal = grossRefundTotal(for: fee) else {
+                return nil
+            }
+            return amountBased(fee.feeID, refundTotal)
+        }
+
+        return productLines + feeLines
+    }
+
+    func refundValues(items: [RefundableOrderItem],
+                      fees: [OrderFeeLine],
+                      order: Order) -> (subtotal: Decimal, tax: Decimal, total: Decimal) {
+        let itemValues = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: currencyFormatter,
+                                                            numberOfDecimals: numberOfDecimals).calculateRefundValues()
         let feeValues = RefundFeesCalculationUseCase(fees: fees, currencyFormatter: currencyFormatter).calculateRefundValues()
         let subtotal = itemValues.subtotal + feeValues.subtotal
         let tax = itemValues.tax + feeValues.tax
-        return (subtotal, tax, subtotal + tax)
+        var total = subtotal + tax
+
+        if let maxRefundableAmount = maxRefundableAmount(for: order) {
+            total = min(total, maxRefundableAmount)
+        }
+
+        if total < subtotal + tax {
+            let lines = RefundCreationUseCase(amount: apiAmountString(for: total), reason: nil, automaticallyRefundsPayment: false,
+                                              items: items, shippingLines: [], fees: fees, currencyFormatter: currencyFormatter,
+                                              numberOfDecimals: numberOfDecimals).createRefundItems()
+            let allocatedSubtotal = lines.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
+            let allocatedTax = lines.flatMap(\.taxes).reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
+            return (allocatedSubtotal, allocatedTax, total)
+        }
+        return (subtotal, tax, total)
     }
 
     func apiAmountString(for amount: Decimal) -> String {
@@ -119,7 +179,7 @@ struct POSRefundSubmissionMapping {
         if let paymentGateway = context.paymentGateway {
             return paymentGateway.features.contains(.refunds)
         }
-        return context.order.paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
+        return !PaymentGateway.Constants.manualPaymentMethodIDs.contains(context.order.paymentMethodID)
     }
 
     func requiresCardPresentRefund(context: PreparedRefundContext) -> Bool {
@@ -145,6 +205,26 @@ struct POSRefundSubmissionMapping {
 }
 
 private extension POSRefundSubmissionMapping {
+    func maxRefundableAmount(for order: Order) -> Decimal? {
+        guard let orderTotal = currencyFormatter.convertToDecimal(order.total) as Decimal? else {
+            return nil
+        }
+        let totalRefunded = TotalRefundedCalculationUseCase(order: order, currencyFormatter: currencyFormatter).totalRefunded().decimalValue
+        return max(orderTotal + totalRefunded, .zero)
+    }
+
+    /// The tax-inclusive amount to request for a fee line, or nil for a zero-total fee.
+    /// Zero lines must be dropped from both the preview and the computed create: the server
+    /// rejects a gross line refund of zero with `invalid_refund_total`, and a zero line
+    /// contributes nothing to the refund. Fee totals are store-formatted decimal strings,
+    /// so an exact-zero comparison is sufficient.
+    func grossRefundTotal(for fee: OrderFeeLine) -> Decimal? {
+        let total = currencyFormatter.convertToDecimal(fee.total) as Decimal? ?? .zero
+        let totalTax = currencyFormatter.convertToDecimal(fee.totalTax) as Decimal? ?? .zero
+        let gross = total + totalTax
+        return gross == .zero ? nil : gross
+    }
+
     func displayName(for fee: OrderFeeLine) -> String {
         let trimmedName = (fee.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmedName.isEmpty ? Localization.defaultFeeName : trimmedName

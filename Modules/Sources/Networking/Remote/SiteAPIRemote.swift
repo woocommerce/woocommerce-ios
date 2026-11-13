@@ -3,7 +3,7 @@ import Foundation
 
 /// Site API: Remote Endpoints
 ///
-public class SiteAPIRemote: Remote {
+public class SiteAPIRemote: Remote, @unchecked Sendable {
 
     /// Calls the root wp-json endpoint (`/`) via the Jetpack tunnel for the provided siteID
     /// and parses the response for API information.
@@ -12,9 +12,12 @@ public class SiteAPIRemote: Remote {
     ///   - siteID: Site for which we'll fetch the API settings.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadAPIInformation(for siteID: Int64, completion: @escaping (Result<SiteAPI, Error>) -> Void) {
+    public func loadAPIInformation(for siteID: Int64,
+                                   detectUnexpectedResponses: Bool = false,
+                                   includeRoutes: Bool = false,
+                                   completion: @escaping (Result<SiteAPI, Error>) -> Void) {
         let path = String()
-        let parameters = [ParameterKeys.fields: ParameterValues.fieldValues]
+        let parameters = [ParameterKeys.fields: includeRoutes ? ParameterValues.fieldValuesIncludingRoutes : ParameterValues.fieldValues]
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
                                      siteID: siteID,
@@ -23,7 +26,7 @@ public class SiteAPIRemote: Remote {
                                      availableAsRESTRequest: false)
         let mapper = SiteAPIMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(request, mapper: mapper, detectUnexpectedResponses: detectUnexpectedResponses, completion: completion)
     }
 }
 
@@ -37,6 +40,7 @@ private extension SiteAPIRemote {
     }
 
     enum ParameterValues {
-        static let fieldValues: String = "authentication,namespaces,routes"
+        static let fieldValues: String = "authentication,namespaces"
+        static let fieldValuesIncludingRoutes: String = fieldValues + ",routes"
     }
 }

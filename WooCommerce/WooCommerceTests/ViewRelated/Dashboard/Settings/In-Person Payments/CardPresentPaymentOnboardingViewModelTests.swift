@@ -3,6 +3,7 @@ import Combine
 @testable import WooCommerce
 import Yosemite
 
+@MainActor
 final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
     private var sut: CardPresentPaymentsOnboardingViewModel!
     private var onboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
@@ -10,7 +11,8 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    override func setUp() {
+    override func setUp() async throws {
+        try await super.setUp()
         stateSubject = CurrentValueSubject<CardPresentPaymentOnboardingState, Never>(.loading)
         onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(
             initial: .noConnectionError,
@@ -18,9 +20,10 @@ final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
         sut = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         _ = cancellables.map { $0.cancel() }
         cancellables = []
+        try await super.tearDown()
     }
 
     func test_when_created_shouldShow_isUnknown() {

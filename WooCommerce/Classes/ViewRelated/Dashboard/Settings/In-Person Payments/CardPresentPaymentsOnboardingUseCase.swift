@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import os
 import Storage
 import Yosemite
 import Experiments
@@ -12,6 +13,7 @@ private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 /// Protocol for `CardPresentPaymentsOnboardingUseCase`.
 /// Right now, only used for testing.
 ///
+@MainActor
 protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     /// Current store onboarding state.
     ///
@@ -33,10 +35,21 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     ///
     func updateState()
 
+    /// Rechecks cached onboarding against the newly synchronized store country.
+    ///
+    func revalidateAfterCountryChange()
+
     /// Pending requirements can be skipped so the merchant can continue to collect payments.
-    /// Eventually, these become overdue requirements, which cannot be skipped
+    /// Eventually, these become overdue requirements, which can also be skipped (see `skipOverdueRequirements()`).
     ///
     func skipPendingRequirements()
+
+    /// Overdue requirements can also be skipped so the merchant can continue to collect payments, understanding
+    /// that some transactions may be declined until the requirement is resolved. This also skips any pending
+    /// requirements, so the merchant only has to skip once even if the account reports the same item as both
+    /// pending and overdue.
+    ///
+    func skipOverdueRequirements()
 
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin)
 
@@ -51,6 +64,7 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     func activateCardPresentPlugin()
 }
 
+@MainActor
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
@@ -61,6 +75,9 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
+    private var overdueRequirementsStepSkipped: Bool = false
+    /// Whether the last gateway account sync failed. Account-based states can't be trusted until a sync succeeds.
+    private var accountsSyncFailed: Bool = false
 
     @Published private(set) var state: CardPresentPaymentOnboardingState = .loading
 
@@ -77,7 +94,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     ) {
         self.storageManager = storageManager
         self.stores = stores
-        self.configurationLoader = .init(stores: stores)
+        self.configurationLoader = .init()
         self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configurationLoader: configurationLoader)
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
         self.analytics = analytics
@@ -102,6 +119,14 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         refresh()
     }
 
+    func skipOverdueRequirements() {
+        overdueRequirementsStepSkipped = true
+        // An account with overdue requirements often has the same items listed as pending too (e.g. a payout
+        // requirement moves from currently_due to past_due). Skip both so the merchant isn't asked to skip twice.
+        pendingRequirementsStepSkipped = true
+        refresh()
+    }
+
     func forceRefresh() {
         state = .loading
         refreshOnboardingState()
@@ -110,6 +135,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     func refreshIfNecessary() {
         if let cachedValue = cardPresentPaymentOnboardingStateCache.value,
            cachedValue.isCompleted {
+            // A completed state is only cached after a successful account sync.
+            accountsSyncFailed = false
             if cachedValue != state {
                 state = cachedValue
             }
@@ -126,15 +153,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
 
         let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { [weak self] result in
-            guard let self else { return }
-            self.state = .loading
-            switch result {
-            case .success:
-                DDLogInfo("Success installing \(pluginSlug)")
-                self.refresh()
-            case .failure(let error):
-                self.trackCardPresentPluginActionFailed(error, trigger: .notInstalled)
-                self.state = .genericError
+            Task { @MainActor in
+                guard let self else { return }
+                self.state = .loading
+                switch result {
+                case .success:
+                    DDLogInfo("Success installing \(pluginSlug)")
+                    self.refresh()
+                case .failure(let error):
+                    self.trackCardPresentPluginActionFailed(error, trigger: .notInstalled)
+                    self.state = .genericError
+                }
             }
         })
         stores.dispatch(installPluginAction)
@@ -148,15 +177,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         let pluginName = CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension
 
         let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { [weak self] result in
-            guard let self else { return }
-            self.state = .loading
-            switch result {
-            case .success:
-                DDLogInfo("Success activating \(pluginName)")
-                self.refresh()
-            case .failure(let error):
-                self.trackCardPresentPluginActionFailed(error, trigger: .notActivated)
-                self.state = .genericError
+            Task { @MainActor in
+                guard let self else { return }
+                self.state = .loading
+                switch result {
+                case .success:
+                    DDLogInfo("Success activating \(pluginName)")
+                    self.refresh()
+                case .failure(let error):
+                    self.trackCardPresentPluginActionFailed(error, trigger: .notActivated)
+                    self.state = .genericError
+                }
             }
         })
         stores.dispatch(activatePluginAction)
@@ -164,30 +195,39 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     private func refreshOnboardingState() {
         synchronizeStoreCountryAndPlugins { [weak self] in
-            self?.updateAccounts()
+            self?.updateAccounts(storeDataSynced: true)
         }
     }
 
     /// We need to sync payment gateway accounts to see if the payment gateway is set up correctly.
     /// But first we also need to prompt the CardPresentPaymentStore to use the right backend based on the active plugin.
     ///
-    func updateAccounts() {
+    /// - Parameter storeDataSynced: Whether the store settings and plugins synced without errors before this call.
+    ///
+    func updateAccounts(storeDataSynced: Bool) {
         guard let siteID else {
             return
         }
 
-        let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID) { [weak self] result in
+        let gateways = storeDataSynced ? gatewaysWithAccountRoutes() : CardPresentPaymentsPlugin.allCases
+        let paymentGatewayAccountsAction = CardPresentPaymentAction.loadAccounts(siteID: siteID, gateways: gateways) { [weak self] result in
             guard let self else {
                 return
             }
 
             switch result {
             case .success:
+                accountsSyncFailed = false
                 updateState()
                 CardPresentPaymentOnboardingStateCache.shared.update(state)
             case .failure(let error):
+                accountsSyncFailed = true
                 if isNetworkError(error) {
                     state = .noConnectionError
+                } else if storeDataSynced {
+                    // Account requests also fail when the payment plugins are missing or inactive,
+                    // so plugin steps such as installation are still shown. Account checks return an error.
+                    updateState()
                 } else {
                     state = .genericError
                 }
@@ -198,6 +238,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     func updateState() {
         state = checkOnboardingState()
+    }
+
+    func revalidateAfterCountryChange() {
+        let hadCompletedCache = cardPresentPaymentOnboardingStateCache.value?.isCompleted == true
+        cardPresentPaymentOnboardingStateCache.invalidate()
+        updateState()
+        // Preserve the initial network check when onboarding has not already been cached.
+        if hadCompletedCache && state.isCompleted {
+            cardPresentPaymentOnboardingStateCache.update(state)
+        }
     }
 
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {
@@ -247,13 +297,14 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         let group = DispatchGroup()
-        var errors = [Error]()
+        // The system status completion is `@Sendable`, so it cannot mutate a captured `var`; the errors live behind a lock.
+        let errors = OSAllocatedUnfairLock(initialState: [Error]())
 
         // We need to sync settings to check the store's country
         let settingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
             if let error {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing site settings: \(error)")
-                errors.append(error)
+                errors.withLock { $0.append(error) }
             }
             group.leave()
         }
@@ -264,7 +315,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let systemPluginsAction = SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
             if case let .failure(error) = result {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing system plugins: \(error)")
-                errors.append(error)
+                errors.withLock { $0.append(error) }
             }
             group.leave()
         }
@@ -273,13 +324,32 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         group.notify(queue: .main, execute: { [weak self] in
             guard let self else { return }
+            let errors = errors.withLock { $0 }
             if errors.isNotEmpty,
                errors.contains(where: self.isNetworkError(_:)) {
                 self.state = .noConnectionError
             } else {
-                self.updateAccounts()
+                self.updateAccounts(storeDataSynced: errors.isEmpty)
             }
         })
+    }
+
+    /// Gateways whose account routes exist, based on freshly synced plugins.
+    /// An inactive gateway plugin has no account route, so its account request would fail.
+    ///
+    func gatewaysWithAccountRoutes() -> [CardPresentPaymentsPlugin] {
+        let status = cardPresentPluginsDataProvider.paymentPluginsInstalledAndActiveStatus(
+            wcPay: cardPresentPluginsDataProvider.getWCPayPlugin(),
+            stripe: cardPresentPluginsDataProvider.getStripePlugin()
+        )
+        switch status {
+        case .onlyWCPayIsInstalledAndActive:
+            return [.wcPay]
+        case .onlyStripeIsInstalledAndActive:
+            return [.stripe]
+        case .bothAreInstalledAndActive, .noneAreInstalledAndActive:
+            return CardPresentPaymentsPlugin.allCases
+        }
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {
@@ -335,7 +405,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         guard let preferredPlugin = preferredPluginLocal else {
-            return .selectPlugin(pluginSelectionWasCleared: false)
+            // Choosing between two active gateways needs their accounts.
+            return accountsSyncFailed ? .genericError : .selectPlugin(pluginSelectionWasCleared: false)
         }
 
         let state = onboardingStateForPlugin(preferredPlugin, wcPay: wcPay, stripe: stripe)
@@ -386,6 +457,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func accountChecks(plugin: CardPresentPaymentsPlugin) -> CardPresentPaymentOnboardingState {
+        guard !accountsSyncFailed else {
+            return .genericError
+        }
         guard let account = getPaymentGatewayAccount(plugin: plugin) else {
             /// Active plugin but unable to fetch an account? Prompt the merchant to finish setting it up.
             return .pluginSetupNotCompleted(plugin: plugin)
@@ -399,7 +473,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountUnderReview(account: account) else {
             return .stripeAccountUnderReview(plugin: plugin)
         }
-        guard !isStripeAccountOverdueRequirements(account: account) else {
+        guard !shouldShowOverdueRequirements(account: account) else {
             logMissingRequirements(for: account)
             return .stripeAccountOverdueRequirement(plugin: plugin)
         }
@@ -421,8 +495,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
         stores.dispatch(setAccount)
 
-        // Also reset the skipped pending requirements step, so that it can be shown again in the next flow
+        // Also reset the skipped pending/overdue requirements steps, so that they can be shown again in the next flow
         pendingRequirementsStepSkipped = false
+        overdueRequirementsStepSkipped = false
         return .completed(plugin: CardPresentPaymentsPluginState(plugin: plugin))
     }
 
@@ -515,6 +590,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
         account.wcpayStatus == .restricted && account.hasOverdueRequirements
     }
 
+    func shouldShowOverdueRequirements(account: PaymentGatewayAccount) -> Bool {
+        isStripeAccountOverdueRequirements(account: account) && !overdueRequirementsStepSkipped
+    }
+
     func isStripeAccountRejected(account: PaymentGatewayAccount) -> Bool {
         account.wcpayStatus == .rejectedFraud
             || account.wcpayStatus == .rejectedListed
@@ -554,7 +633,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         account.wcpayStatus == .complete ||
         account.wcpayStatus == .enabled ||
         account.wcpayStatus == .restrictedSoon ||
-        account.wcpayStatus == .pendingVerification
+        account.wcpayStatus == .pendingVerification ||
+        (account.wcpayStatus == .restricted && (overdueRequirementsStepSkipped || pendingRequirementsStepSkipped))
     }
 
     func isNetworkError(_ error: Error) -> Bool {

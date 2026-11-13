@@ -66,11 +66,7 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
             }
             actionSheet.addCancelActionWithTitle(wrapper.cancelButtonTitle)
 
-            if let popoverController = actionSheet.popoverPresentationController {
-                popoverController.sourceView = viewController.view
-                popoverController.sourceRect = viewController.view.bounds
-                popoverController.permittedArrowDirections = []
-            }
+            actionSheet.centerActionSheet(in: viewController.view)
 
             viewController.present(actionSheet, animated: true)
         }
@@ -108,14 +104,12 @@ struct CloseButtonWithDiscardPrompt<Label>: ViewModifier where Label: View {
                     }, label: closeButtonLabel)
                 }
             })
-            .confirmationDialog(title, isPresented: $isShowingPrompt) {
-                Button(discardButtonTitle, role: .destructive, action: {
+            .alert(message, isPresented: $isShowingPrompt) {
+                Button(discardButtonTitle, role: .destructive) {
                     didDismiss?()
                     dismiss()
-                })
-                Button(cancelButtonTitle, role: .cancel, action: {})
-            } message: {
-                Text(message)
+                }
+                Button(cancelButtonTitle, role: .cancel) {}
             }
     }
 }

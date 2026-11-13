@@ -4,6 +4,7 @@ import CoreTelephony
 
 /// Type who informs us if the privacy banner should be shown or not.
 ///
+@MainActor
 final class PrivacyBannerPresentationUseCase {
 
     /// User Defaults database
@@ -51,12 +52,9 @@ private extension PrivacyBannerPresentationUseCase {
     ///
     func fetchUsersCountryCode() async throws -> String {
         try await withCheckedThrowingContinuation { continuation in
-            let action = UserAction.fetchUserIPCountryCode { result in
+            stores.dispatch(UserAction.fetchUserIPCountryCode { result in
                 continuation.resume(with: result)
-            }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+            })
         }
     }
 }

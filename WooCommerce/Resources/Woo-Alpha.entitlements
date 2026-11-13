@@ -8,7 +8,9 @@
 	<array>
 		<string>webcredentials:wordpress.com</string>
 		<string>applinks:woocommerce.com</string>
+		<string>applinks:www.woocommerce.com</string>
 		<string>applinks:woo.com</string>
+		<string>applinks:www.woo.com</string>
 	</array>
 	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array>

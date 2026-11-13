@@ -60,4 +60,24 @@ class ApplicationLogViewModelTests: XCTestCase {
         XCTAssertNil(line.dateText)
         XCTAssertEqual(line.text, "🔵 Tracked application_opened")
     }
+
+    func test_filteredLines_matches_substring_case_insensitively() {
+        // Given
+        let logText = """
+        2021/06/07 11:59:42:636  📱 Registering for Remote Notifications...
+        2021/06/07 11:59:46:454  🔵 Tracked application_opened
+        """
+        let model = ApplicationLogViewModel(logText: logText, logDate: "Today")
+
+        // When
+        // A partial, differently-cased query must match, since the point is finding events without exact casing.
+        model.searchText = "TRACKED"
+
+        // Then
+        // Filtering is driven by the debounced search text, so wait for it to propagate.
+        waitUntil {
+            model.filteredLines.count == 1
+        }
+        XCTAssertEqual(model.filteredLines.first?.text, "🔵 Tracked application_opened")
+    }
 }

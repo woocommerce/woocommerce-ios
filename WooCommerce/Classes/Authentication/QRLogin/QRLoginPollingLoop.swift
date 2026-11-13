@@ -110,7 +110,9 @@ final class QRLoginPollingLoop {
         }
     }
 
-    static let defaultSleeper: Sleeper = { interval in
-        try await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
+    static var defaultSleeper: Sleeper {
+        { interval in
+            try await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
+        }
     }
 }

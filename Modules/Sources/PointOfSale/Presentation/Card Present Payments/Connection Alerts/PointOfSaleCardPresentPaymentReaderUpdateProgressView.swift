@@ -2,8 +2,13 @@ import SwiftUI
 import WooFoundation
 
 struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
+    @Environment(\.posMetrics) private var metrics
     let progress: CGFloat
     let isComplete: Bool
+
+    private var borderInset: CGFloat {
+        metrics.spacing.xSmall
+    }
 
     var body: some View {
         ZStack {
@@ -13,7 +18,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
 
             Circle()
                 .fill(Color.posPrimary)
-                .frame(width: Constants.size - Constants.borderInset, height: Constants.size - Constants.borderInset)
+                .frame(width: Constants.size - borderInset, height: Constants.size - borderInset)
                 .clipShape(
                     Rectangle()
                         .offset(y: (1 - progress) * Constants.size)
@@ -32,15 +37,14 @@ struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
 
 private enum Constants {
     static let size: CGFloat = 100
-    static let borderInset: CGFloat = POSSpacing.xSmall
 }
 
 #Preview {
     @Previewable @State var progress: CGFloat = 0.5
 
-    VStack(spacing: 20) {
+    VStack(spacing: POSMetrics.regular.spacing.large) {
         PointOfSaleCardPresentPaymentReaderUpdateProgressView(progress: progress, isComplete: progress >= 1.0)
         Slider(value: $progress, in: 0...1)
     }
-    .padding()
+    .posPadding(\.medium)
 }

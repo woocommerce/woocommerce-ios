@@ -251,12 +251,6 @@ extension UIImage {
         return UIImage(named: "connect-wpcom")!
     }
 
-    /// Create order image
-    ///
-    static var createOrderImage: UIImage {
-        return UIImage(named: "create-order")!
-    }
-
     /// Gear Icon - used in `UIBarButtonItem`
     ///
     static var gearBarButtonItemImage: UIImage {

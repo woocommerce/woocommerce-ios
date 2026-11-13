@@ -3,6 +3,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
+@MainActor
 final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     var mockCollectPaymentHandler: ((_ onPreparingReader: () -> Void,
                                      _ onWaitingForInput: (Yosemite.CardReaderInput) -> Void,
@@ -12,9 +13,11 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                      _ onProcessingCompletion: (Yosemite.PaymentIntent) -> Void,
                                      _ onCompletion: (Result<CardPresentCapturedPaymentData, Error>) -> Void) -> Void)? = nil
 
+    var spyProcessingCompletion: ((PaymentIntent) -> Void)?
     var spyDidCallCollectPayment = false
     var spyCollectPaymentOrder: Order? = nil
     var spyCollectPaymentGatewayAccount: PaymentGatewayAccount? = nil
+    var spyCollectPaymentReaderType: CardReaderType?
     var spyCollectPaymentMethodTypes: [PaymentMethodType]? = nil
     var spyCollectPaymentStripeSmallestCurrencyUnitMultiplier: Decimal? = nil
     var spyCollectPaymentCountryCode: CountryCode? = nil
@@ -23,6 +26,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
+                        readerType: CardReaderType,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         countryCode: CountryCode,
@@ -35,9 +39,11 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        spyProcessingCompletion = onProcessingCompletion
         spyDidCallCollectPayment = true
         spyCollectPaymentOrder = order
         spyCollectPaymentGatewayAccount = paymentGatewayAccount
+        spyCollectPaymentReaderType = readerType
         spyCollectPaymentMethodTypes = paymentMethodTypes
         spyCollectPaymentStripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
         spyCollectPaymentCountryCode = countryCode
@@ -61,30 +67,14 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
 
     var spyDidCallCancelPayment = false
     var mockCancelPaymentResult: Result<Void, Error> = .success(())
+    var mockCancelPaymentHandler: ((@escaping (Result<Void, Error>) -> Void) -> Void)?
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         spyDidCallCancelPayment = true
-        onCompletion(mockCancelPaymentResult)
-    }
-
-    var spyDidCallEmailReceipt = false
-    var spyEmailReceiptOrder: Order? = nil
-    var spyEmailReceiptParams: CardPresentReceiptParameters? = nil
-    func emailReceipt(for order: Order,
-                      params: CardPresentReceiptParameters,
-                      onContent: @escaping (String) -> Void) {
-        spyDidCallEmailReceipt = true
-        spyEmailReceiptOrder = order
-        spyEmailReceiptParams = params
-    }
-
-    var spyDidCallSaveReceipt = false
-    var spySaveReceiptOrder: Order? = nil
-    var spySaveReceiptParams: CardPresentReceiptParameters? = nil
-    func saveReceipt(for order: Order,
-                     params: CardPresentReceiptParameters) {
-        spyDidCallSaveReceipt = true
-        spySaveReceiptOrder = order
-        spySaveReceiptParams = params
+        if let mockCancelPaymentHandler {
+            mockCancelPaymentHandler(onCompletion)
+        } else {
+            onCompletion(mockCancelPaymentResult)
+        }
     }
 
     func presentBackendReceipt(for order: Yosemite.Order, onCompletion: @escaping (Result<Yosemite.Receipt, Error>) -> Void) {

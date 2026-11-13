@@ -28,9 +28,9 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="1Vz-Zp-cOV" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="AEN-E8-lbK"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="1Vz-Zp-cOV" secondAttribute="bottom" id="FV2-2X-CKj"/>
-                <constraint firstItem="1Vz-Zp-cOV" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="bn3-Aa-tPz"/>
+                <constraint firstItem="1Vz-Zp-cOV" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="AEN-E8-lbK"/>
+                <constraint firstItem="i5M-Pr-FkT" firstAttribute="bottom" secondItem="1Vz-Zp-cOV" secondAttribute="bottom" id="FV2-2X-CKj"/>
+                <constraint firstItem="1Vz-Zp-cOV" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="bn3-Aa-tPz"/>
                 <constraint firstItem="1Vz-Zp-cOV" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="vKY-NI-vXt"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="120.53571428571428"/>

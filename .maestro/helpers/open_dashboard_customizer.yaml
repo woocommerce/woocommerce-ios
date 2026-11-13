@@ -1,0 +1,46 @@
+appId: ${APP_ID}
+---
+- scrollUntilVisible:
+    element:
+      id: "dashboard-edit-button"
+    direction: DOWN
+    timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: "dashboard-edit-button"
+      enabled: true
+    timeout: 30000
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn:
+    id: "dashboard-edit-button"
+    enabled: true
+    retryTapIfNoChange: true
+- waitForAnimationToEnd:
+    timeout: 5000
+- runFlow:
+    when:
+      visible:
+        id: "dashboard-edit-button"
+        enabled: true
+    commands:
+      - tapOn:
+          id: "dashboard-edit-button"
+          enabled: true
+          retryTapIfNoChange: true
+- waitForAnimationToEnd:
+    timeout: 5000
+- runFlow:
+    when:
+      visible:
+        id: "dashboard-edit-button"
+        enabled: true
+    commands:
+      - tapOn:
+          id: "dashboard-edit-button"
+          enabled: true
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: "dashboard-customization-save-button"
+    timeout: 15000

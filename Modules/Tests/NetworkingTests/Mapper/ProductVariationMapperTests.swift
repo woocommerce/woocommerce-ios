@@ -21,6 +21,15 @@ final class ProductVariationMapperTests: XCTestCase {
         XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
     }
 
+    /// Ensures a variation still decodes when a plugin nullifies its array fields. Regression for WOOMOB-3315.
+    ///
+    func test_ProductVariation_array_fields_default_to_empty_when_null() throws {
+        let variation = try XCTUnwrap(mapProductVariation(from: "product-variation-null-array-fields"))
+
+        XCTAssertTrue(variation.attributes.isEmpty)
+        XCTAssertTrue(variation.downloads.isEmpty)
+    }
+
     /// Verifies that all of the ProductVariation Fields are parsed correctly when response has no data envelope.
     ///
     func test_ProductVariation_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {

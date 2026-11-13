@@ -14,6 +14,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         let window = UIWindow(windowScene: windowScene)
+        if ProcessConfiguration.shouldDisableAnimations {
+            // AppDelegate runs before the scene creates its window, so configure Core Animation here for UI-test quiescence.
+            window.layer.speed = 100
+        }
         window.makeKeyAndVisible()
         self.window = window
 
@@ -77,6 +81,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Cache onboarding state to speed IPP process, then silently connect to Tap to Pay if previously connected, to speed up IPP
         AppDelegate.shared.refreshCardPresentPaymentsOnboardingIfNeeded()
+
+        // Heartbeat for Woo push tokens: stores not re-registered within the last day are registered again.
+        Task { @MainActor in
+            await ServiceLocator.pushNotesManager.refreshWooPushRegistrationsIfNeeded()
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

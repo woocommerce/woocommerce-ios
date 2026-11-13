@@ -1,12 +1,12 @@
 import Foundation
 import GRDB
 
-public protocol GRDBManagerProtocol {
+public protocol GRDBManagerProtocol: Sendable {
     var databaseConnection: GRDBDatabaseConnection { get }
     func reset() throws
 }
 
-public protocol GRDBDatabaseConnection: DatabaseReader, DatabaseWriter {}
+public protocol GRDBDatabaseConnection: DatabaseReader, DatabaseWriter, Sendable {}
 
 public final class GRDBManager: GRDBManagerProtocol {
 
@@ -87,6 +87,10 @@ private extension GRDBManager {
 
         migrator.registerMigration("V003AddVariationTypeKey") { db in
             try V003AddVariationTypeKey.migrate(db)
+        }
+
+        migrator.registerMigration("V004AddRelationLookupIndexes", foreignKeyChecks: .immediate) { db in
+            try V004AddRelationLookupIndexes.migrate(db)
         }
 
         try migrator.migrate(databaseConnection)

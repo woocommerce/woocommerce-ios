@@ -66,6 +66,20 @@ struct WooShippingCustomsForm: View {
         return .withColorStudio(name: .red, shade: shade)
     }
 
+    private var pluginUpdateNotice: some View {
+        HStack(alignment: .top, spacing: Constants.intoButtonHorizontalSpacing) {
+            Image(systemName: "info.circle")
+                .foregroundColor(Color(.wooCommercePurple(.shade60)))
+            Text(Localization.pluginUpdateNotice)
+                .footnoteStyle()
+                .foregroundColor(.primary)
+        }
+        .padding(Constants.borderPadding)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemBackground))
+        .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
+    }
+
     var body: some View {
         NavigationView {
             GeometryReader { _ in
@@ -73,6 +87,10 @@ struct WooShippingCustomsForm: View {
                     ScrollViewReader { _ in
                         ScrollView {
                             VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
+                                if viewModel.showsPluginUpdateNotice {
+                                    pluginUpdateNotice
+                                }
+
                                 Text(Localization.contentType)
                                         .font(.subheadline)
 
@@ -190,7 +208,6 @@ struct WooShippingCustomsForm: View {
                     Button {
                         // TODO: Save values
                         presentationMode.wrappedValue.dismiss()
-                        viewModel.onDismiss()
                     } label: {
                         Text(viewModel.requiredInformationIsEntered ? Localization.saveCustomsDetailsButtonTitle : Localization.addMissingInformationButtonTitle)
                     }
@@ -250,6 +267,11 @@ extension WooShippingCustomsForm {
         static let valueRequiredWarning = NSLocalizedString("wooShipping.customs.valueRequiredWarning",
                                                    value: "Value required",
                                                    comment: "Footnote when a required value is missing")
+        static let pluginUpdateNotice = NSLocalizedString(
+            "wooShipping.customs.pluginUpdateNotice",
+            value: "Shipments into the EU now need product identifiers on each item. Update the WooCommerce Shipping plugin to add them.",
+            comment: "Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers"
+        )
     }
 }
 

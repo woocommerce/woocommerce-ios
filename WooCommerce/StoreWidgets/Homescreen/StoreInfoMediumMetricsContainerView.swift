@@ -14,9 +14,14 @@ struct StoreInfoMediumMetricsContainerView: View {
         )
     }
 
+    private var usesCondensedLayout: Bool {
+        StoreInfoDynamicType.usesCondensedLayout(dynamicTypeSize)
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
-            StoreInfoMetricsLogoHeader(data: data)
+        VStack(alignment: .leading, spacing: Layout.sectionSpacing(for: dynamicTypeSize)) {
+            StoreInfoMetricsLogoHeader(data: data,
+                                       showsUpdatedTime: !usesCondensedLayout)
 
             StoreInfoMetricsGrid(metricSlots: visibleMetricSlots,
                                  dateRange: data.dateRange)
@@ -25,7 +30,9 @@ struct StoreInfoMediumMetricsContainerView: View {
     }
 
     private enum Layout {
-        static let sectionSpacing = 8.0
+        static func sectionSpacing(for dynamicTypeSize: DynamicTypeSize) -> Double {
+            StoreInfoDynamicType.usesCondensedLayout(dynamicTypeSize) ? 4.0 : 8.0
+        }
     }
 }
 

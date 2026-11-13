@@ -148,7 +148,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
 
         // Throttled API call
         let siteID = self.siteID
-        throttler.throttle {
+        throttler.throttle { [weak self] in
             DispatchQueue.main.async { [weak self] in
                 let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
                     guard let self else {

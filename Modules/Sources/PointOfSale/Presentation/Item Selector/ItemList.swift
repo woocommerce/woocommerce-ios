@@ -1,17 +1,14 @@
 import SwiftUI
+import class WooFoundation.KeyboardObserver
 import enum Yosemite.POSItem
-import struct Yosemite.POSVariableParentProduct
+import struct Yosemite.POSCoupon
 
 /// Displays a list of POS items or placeholder card based on the given state.
 struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
-    @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posMetrics) private var metrics
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
-
-    // Navigation only uses this on iOS 17
-    @State private var activeNavigationItem: POSItem? = nil
 
     var state: ItemListState? {
         switch node {
@@ -41,69 +38,35 @@ struct ItemList<HeaderView: View>: View {
     }
 
     var body: some View {
-        ZStack {
-            InfiniteScrollView(
-                triggerDeterminer: infiniteScrollTriggerDeterminer,
-                loadMore: {
-                    guard case .loaded(_, let hasMoreItems) = state,
-                          hasMoreItems
-                    else { return }
-                    willLoadMore?()
-                    await itemsController.loadNextItems(base: node)
-                },
-                content: {
-                    LazyVStack(spacing: Constants.itemSpacing) {
-                        headerView
+        InfiniteScrollView(
+            triggerDeterminer: infiniteScrollTriggerDeterminer,
+            loadMore: {
+                guard case .loaded(_, let hasMoreItems) = state,
+                      hasMoreItems
+                else { return }
+                willLoadMore?()
+                await itemsController.loadNextItems(base: node)
+            },
+            content: {
+                LazyVStack(spacing: metrics.spacing.medium) {
+                    headerView
 
-                        headerRows
+                    headerRows
 
-                        if let state {
-                            ForEach(Array(state.items.enumerated()), id: \.element.id) { index, item in
-                                ItemListRow(item: item, position: index, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
-                            }
+                    if let state {
+                        ForEach(Array(state.items.enumerated()), id: \.element.id) { index, item in
+                            ItemListRow(item: item, position: index, itemActionHandler: itemActionHandler)
                         }
-
-                        footerRows
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, Constants.itemListPadding)
-                    .padding(.bottom, keyboardObserver.isFullSizeKeyboardVisible ? Constants.itemListPadding : floatingControlAreaSize.height)
-                    .animation(.default, value: state?.items)
-                }
-            )
 
-            // Programmatic navigation overlay for iOS 17
-            if #available(iOS 18.0, *) {
-                EmptyView()
-            } else if let activeItem = activeNavigationItem,
-               case let .variableParentProduct(parentProduct) = activeItem {
-                // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
-                // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
-                NavigationLink(
-                    destination: ChildItemList(parentItem: activeItem,
-                                               title: parentProduct.name,
-                                               itemsController: posModel.purchasableItemsController,
-                                               itemActionHandler: itemActionHandler,
-                                               analyticsTracker: PointOfSaleItemListAnalyticsTracker(
-                                                sourceView: .variation,
-                                                sourceViewType: .init(
-                                                    isSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching,
-                                                    searchTerm: posModel.viewStateCoordinatorForView.searchTerm
-                                                ),
-                                                analytics: analytics
-                                               ))
-                    .barcodeScanning { scannedCode in
-                        posModel.barcodeScanned(scannedCode)
-                    },
-                    isActive: Binding(
-                        get: { activeNavigationItem != nil },
-                        set: { if !$0 { activeNavigationItem = nil } }
-                    ),
-                    label: { EmptyView() })
-                .opacity(0)
-                .frame(width: 0, height: 0)
+                    footerRows
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, metrics.padding.medium)
+                .padding(.bottom, keyboardObserver.isFullSizeKeyboardVisible ? metrics.padding.medium : floatingControlAreaSize.height)
+                .animation(.default, value: state?.items)
             }
-        }
+        )
     }
 
     @ViewBuilder var footerRows: some View {
@@ -118,7 +81,7 @@ struct ItemList<HeaderView: View>: View {
             }
         case .inlineError(_, let errorState, .pagination):
             POSListInlineErrorView(errorState: errorState,
-                                  buttonAction: {
+                                  buttonAction: { [itemsController, node] in
                 await itemsController.loadNextItems(base: node)
             })
         case .initial, .loaded, .error, .empty, .none, .inlineError(_, _, .refresh):
@@ -130,7 +93,7 @@ struct ItemList<HeaderView: View>: View {
         switch state {
         case .inlineError(_, let errorState, .refresh):
             POSListInlineErrorView(errorState: errorState,
-                                  buttonAction: {
+                                  buttonAction: { [itemsController] in
                 await itemsController.loadItems(base: .root)
             })
         case .initial, .loaded, .error, .empty, .none, .loading, .inlineError(_, _, .pagination):
@@ -139,16 +102,13 @@ struct ItemList<HeaderView: View>: View {
     }
 }
 
-private enum Constants {
-    static let itemListPadding: CGFloat = POSPadding.medium
-    static let itemSpacing: CGFloat = POSSpacing.medium
-}
-
 struct ItemListRow: View {
     let item: POSItem
     let position: Int
     let itemActionHandler: POSItemActionHandler
-    @Binding var activeNavigationItem: POSItem?
+
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posLayoutScale) private var layoutScale
 
     var body: some View {
         switch item {
@@ -160,35 +120,15 @@ struct ItemListRow: View {
             })
             .accessibilityIdentifier("pos-product-card-\(product.productID)")
         case let .variableParentProduct(parentProduct):
-            if #available(iOS 18.0, *) {
-                NavigationLink(value: item) {
-                    ParentProductCardView(name: parentProduct.name,
-                                          imageSource: parentProduct.productImageSource,
-                                          detailText: Localization.variationsAvailable)
-                }
-                .accessibilityIdentifier("pos-variable-product-card-\(parentProduct.productID)")
-                .simultaneousGesture(TapGesture().onEnded {
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                })
-            } else {
-                // Use a button to trigger navigation programmatically on iOS 17.
-
-                // We should drop this when we leave iOS 17.0 behind, but due to memory leaks caused by NavigationStack.
-                // we still have to use the NavigationView approach here.
-                // When we remove it, itemsStack will no longer be a dependency of ItemList
-
-                // Note that we don't use Navigation Link as this row can be redrawn if the dynamic type size
-                // is changed enough to push it offscreen. When that happens while viewing a child list,
-                // the navigation gets cancelled and the user is sent back to the root.
-                Button(action: {
-                    activeNavigationItem = item
-                }, label: {
-                    ParentProductCardView(name: parentProduct.name,
-                                          imageSource: parentProduct.productImageSource,
-                                          detailText: Localization.variationsAvailable)
-                })
-                .accessibilityIdentifier("pos-variable-product-card-\(parentProduct.productID)")
+            NavigationLink(value: item) {
+                ParentProductCardView(name: parentProduct.name,
+                                      imageSource: parentProduct.productImageSource,
+                                      detailText: Localization.variationsAvailable)
             }
+            .accessibilityIdentifier("pos-variable-product-card-\(parentProduct.productID)")
+            .simultaneousGesture(TapGesture().onEnded {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            })
         case let .variation(variation):
             Button(action: {
                 itemActionHandler.handleTap(item, position: position)
@@ -205,17 +145,27 @@ struct ItemListRow: View {
             .accessibilityIdentifier("pos-search-variation-card-\(variation.productVariationID)")
         case let .coupon(coupon):
             Button(action: {
-                if !coupon.isExpired {
+                // Only compact layouts show the applied state on the card, so only there a tap unselects it.
+                if isApplied(coupon) {
+                    itemActionHandler.handleTapOnAppliedCoupon(item)
+                } else if !coupon.isExpired {
                     itemActionHandler.handleTap(item, position: position)
                 }
             }, label: {
-                CouponCardView(coupon: coupon)
+                CouponCardView(coupon: coupon, isApplied: isApplied(coupon))
             })
+            .accessibilityIdentifier("pos-coupon-card-\(coupon.id.itemID)")
         }
     }
 }
 
 private extension ItemListRow {
+    func isApplied(_ coupon: POSCoupon) -> Bool {
+        ItemListViewHelper().shouldShowAppliedCouponIndicator(coupon: coupon,
+                                                              cartCoupons: posModel.cart.coupons,
+                                                              layoutScale: layoutScale)
+    }
+
     enum Localization {
         static let variationsAvailable = NSLocalizedString(
             "pos.parentProductCard.optionsAvailable",
@@ -232,6 +182,7 @@ private extension ItemListRow {
         node: .root,
         itemActionHandler: PointOfSalePreviewItemActionHandler()
     )
+    .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #Preview("Loading") {

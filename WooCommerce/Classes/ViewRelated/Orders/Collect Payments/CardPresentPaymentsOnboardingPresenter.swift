@@ -4,9 +4,11 @@ import Combine
 import Foundation
 
 protocol CardPresentPaymentsOnboardingPresenting {
+    @MainActor
     func showOnboardingIfRequired(from: ViewControllerPresenting,
                                   readyToCollectPayment: @escaping () -> Void)
 
+    @MainActor
     func refresh()
 }
 
@@ -17,21 +19,20 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private let stores: StoresManager
 
-    private let onboardingUseCase: CardPresentPaymentsOnboardingUseCase
+    // Created on first use so the initializer stays nonisolated for its nonisolated callers.
+    @MainActor private lazy var onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
 
-    private let readinessUseCase: CardPresentPaymentsReadinessUseCase
+    @MainActor private lazy var readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
 
-    private let onboardingViewModel: CardPresentPaymentsOnboardingViewModel
+    @MainActor private lazy var onboardingViewModel = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
 
     private var readinessSubscription: AnyCancellable?
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
-        readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
-        onboardingViewModel = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
     }
 
+    @MainActor
     func showOnboardingIfRequired(from viewController: ViewControllerPresenting,
                                   readyToCollectPayment completion: @escaping () -> Void) {
         readinessUseCase.checkCardPaymentReadiness()
@@ -41,6 +42,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         completion()
     }
 
+    @MainActor
     private func showOnboarding(from viewController: ViewControllerPresenting,
                                 readyToCollectPayment completion: @escaping () -> Void) {
         let onboardingViewController = CardPresentPaymentsOnboardingViewController(viewModel: onboardingViewModel,
@@ -66,6 +68,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     // The corresponding `show` we used can either push or present the onboardingViewController.
     // This function allows us to hide it in the appropriate way for how it was shown.
+    @MainActor
     private func hideOnboarding(_ onboardingViewController: UIViewController) {
         if let navigationController = onboardingViewController.navigationController {
             navigationController.popViewController(animated: true)
@@ -74,6 +77,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         }
     }
 
+    @MainActor
     func refresh() {
         onboardingUseCase.refreshIfNecessary()
     }

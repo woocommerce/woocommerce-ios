@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.SafariView
 
 struct POSSettingsHardwareDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
@@ -12,8 +13,22 @@ struct POSSettingsHardwareDetailView: View {
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
+    @State private var showPrinterSetupModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var isCancellingReconnection: Bool = false
+
+    /// Receipt printers appear in the hardware list only when the printer feature is enabled,
+    /// which is signalled by the settings controller exposing a printer connection controller.
+    private var hardwareDestinations: [HardwareDestination] {
+        HardwareDestination.allCases.filter { destination in
+            switch destination {
+            case .printers:
+                return settingsController.printerConnectionController != nil
+            default:
+                return true
+            }
+        }
+    }
 
     private var cardReaderName: String {
         settingsController.connectedCardReader?.name ?? Localization.cardReaderNotConnected
@@ -47,15 +62,14 @@ struct POSSettingsHardwareDetailView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.hardwareTitle)
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
-                ForEach(HardwareDestination.allCases) { destination in
+            VStack(spacing: metrics.spacing.small) {
+                ForEach(hardwareDestinations) { destination in
                     NavigationLink(value: NavigationDestination.hardware(destination)) {
-                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                        VStack(alignment: .leading, spacing: metrics.padding.xSmall) {
                             Text(destination.title)
                                 .font(.posBodyLargeBold)
                                 .foregroundStyle(Color.posOnSurface)
@@ -65,7 +79,7 @@ struct POSSettingsHardwareDetailView: View {
                                 .foregroundStyle(.secondary)
                                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
-                        .padding()
+                        .posPadding(\.medium)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color.posSurfaceContainerLowest)
                         .posItemCardBorderStyles()
@@ -74,7 +88,7 @@ struct POSSettingsHardwareDetailView: View {
                     .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                 }
             }
-            .padding(.horizontal, POSPadding.medium)
+            .posContentPadding(.horizontal, metrics.padding.medium)
 
             Spacer()
         }
@@ -86,6 +100,9 @@ struct POSSettingsHardwareDetailView: View {
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             case .hardware(.scanners):
                 scannersView
+                    .environment(\.posHeaderBackButtonConfiguration, nil)
+            case .hardware(.printers):
+                printersView
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
@@ -146,9 +163,9 @@ private extension POSSettingsHardwareDetailView {
 
     @ViewBuilder
     var cardReaderNameRow: some View {
-        VStack(alignment: .leading, spacing: POSPadding.small) {
-            HStack(alignment: .center, spacing: POSSpacing.medium) {
-                VStack(alignment: .leading, spacing: POSPadding.small) {
+        VStack(alignment: .leading, spacing: metrics.padding.small) {
+            HStack(alignment: .center, spacing: metrics.spacing.medium) {
+                VStack(alignment: .leading, spacing: metrics.padding.small) {
                     Text(Localization.readerModelTitle)
                         .font(.posBodyMediumRegular())
                     Text(cardReaderName)
@@ -169,7 +186,7 @@ private extension POSSettingsHardwareDetailView {
             }
 
             Divider()
-                .padding(.top, POSPadding.small)
+                .padding(.top, metrics.padding.small)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -181,15 +198,15 @@ private extension POSSettingsHardwareDetailView {
                 posModel.cancelReconnection()
             }
         } label: {
-            HStack(spacing: POSSpacing.small) {
+            HStack(spacing: metrics.spacing.small) {
                 ProgressView()
                     .progressViewStyle(POSProgressViewStyle(size: 16, lineWidth: 4))
                 Text(isCancellingReconnection ? Localization.cancellingReconnectionTitle : Localization.reconnectingButtonTitle)
             }
             .font(.posBodySmallBold())
             .foregroundColor(.posOnSurface)
-            .padding(.vertical, POSPadding.small)
-            .padding(.horizontal, POSPadding.medium)
+            .padding(.vertical, metrics.padding.small)
+            .padding(.horizontal, metrics.padding.medium)
             .background(Color.posSurfaceContainerLowest)
             .cornerRadius(POSCornerRadiusStyle.small.value)
             .overlay(
@@ -204,16 +221,11 @@ private extension POSSettingsHardwareDetailView {
     }
 
     var cardReadersView: some View {
-        VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(
-                title: Localization.cardReadersTitle,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    navigationPath.removeLast()
-                }, buttonIcon: "chevron.left"))
-            .foregroundColor(.posSurface)
-
+        POSSettingsDetailPage(title: Localization.cardReadersTitle,
+                              backgroundColor: backgroundColor,
+                              onBack: { navigationPath.removeLast() }) {
             ScrollView {
-                VStack(spacing: POSSpacing.small) {
+                VStack(spacing: metrics.spacing.small) {
                     switch posModel.cardReaderConnectionStatus {
                     case .connected, .reconnecting:
                         if shouldShowUpdateFirmwareButton {
@@ -221,7 +233,7 @@ private extension POSSettingsHardwareDetailView {
                                                     subtitle: Localization.updateFirmwareBannerSubtitle)
                         }
                         POSInformationCard {
-                            VStack(spacing: POSSpacing.small) {
+                            VStack(spacing: metrics.spacing.small) {
                                 cardReaderNameRow
 
                                 POSInformationCardFieldRow(label: Localization.readerBatteryTitle,
@@ -250,27 +262,20 @@ private extension POSSettingsHardwareDetailView {
                                     action: { showCardReaderDocumentationModal = true })
                     .accessibilityAddTraits(.isButton)
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
                 .foregroundColor(.posOnSurface)
             }
         }
-        .background(backgroundColor)
-        .navigationBarBackButtonHidden(true)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: POSConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
     }
 
     var scannersView: some View {
-        VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(
-                title: Localization.scannersTitle,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    navigationPath.removeLast()
-                }, buttonIcon: "chevron.left"))
-            .foregroundColor(.posSurface)
-
-            VStack(spacing: POSSpacing.small) {
+        POSSettingsDetailPage(title: Localization.scannersTitle,
+                              backgroundColor: backgroundColor,
+                              onBack: { navigationPath.removeLast() }) {
+            VStack(spacing: metrics.spacing.small) {
                 ForEach(ScannerDestination.allCases) { destination in
                     POSSettingsCard(
                         title: destination.title,
@@ -281,12 +286,98 @@ private extension POSSettingsHardwareDetailView {
                     )
                 }
             }
-            .padding(.horizontal, POSPadding.medium)
+            .padding(.horizontal, metrics.padding.medium)
 
             Spacer()
         }
+    }
+
+    var printersView: some View {
+        POSSettingsDetailPage(title: Localization.printersTitle,
+                              backgroundColor: backgroundColor,
+                              onBack: { navigationPath.removeLast() }) {
+            ScrollView {
+                VStack(spacing: metrics.spacing.small) {
+                    if let controller = settingsController.printerConnectionController {
+                        printerSection(controller: controller)
+                    }
+                }
+                .padding(.horizontal, metrics.padding.medium)
+                .foregroundColor(.posOnSurface)
+            }
+        }
+    }
+
+    /// The printer card, presenting the setup modal on the same non-optional controller that gates
+    /// this section — so the modal is only ever built when a controller exists.
+    @ViewBuilder
+    func printerSection(controller: POSPrinterConnectionController) -> some View {
+        Group {
+            if controller.isConnected {
+                POSInformationCard {
+                    printerNameRow(controller: controller)
+                }
+            } else {
+                POSSettingsCard(title: Localization.printerConnectTitle,
+                                subtitle: Localization.printerConnectSubtitle,
+                                action: { showPrinterSetupModal = true })
+            }
+        }
+        .posModal(isPresented: $showPrinterSetupModal) {
+            POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .settings)
+        }
+    }
+
+    func printerNameRow(controller: POSPrinterConnectionController) -> some View {
+        HStack(alignment: .center, spacing: metrics.spacing.medium) {
+            VStack(alignment: .leading, spacing: metrics.padding.small) {
+                Text(Localization.printerDeviceNameTitle)
+                    .font(.posBodyMediumRegular())
+                Text(controller.connectedPrinterName ?? Localization.printerNotConnected)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Button(Localization.printerDisconnectTitle) {
+                analytics.track(.pointOfSaleReceiptPrinterDisconnectTapped)
+                Task {
+                    await controller.disconnect()
+                }
+            }
+            .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default, isLoading: false))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+// MARK: - Detail page scaffold
+
+/// The shared scaffold for a hardware detail sub-page: a page header with a back button above the
+/// page's content, on the settings background. Keeps the per-device pages free of this boilerplate.
+private struct POSSettingsDetailPage<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
+    let title: String
+    let backgroundColor: Color
+    let onBack: () -> Void
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(spacing: metrics.spacing.none) {
+            POSPageHeaderView(
+                title: title,
+                // No `buttonIcon` override: the default is `chevron.backward`, which mirrors itself
+                // in right-to-left layouts. `chevron.left` does not, and pointed the wrong way.
+                backButtonConfiguration: .init(state: .enabled, action: onBack))
+            .foregroundColor(.posSurface)
+
+            content()
+        }
         .background(backgroundColor)
+        .posIgnoresHiddenKeyboardSafeArea()
         .navigationBarBackButtonHidden(true)
+        .posEdgeSwipeBackAction(onBack: onBack)
     }
 }
 
@@ -295,6 +386,7 @@ private extension POSSettingsHardwareDetailView {
     enum HardwareDestination: Identifiable, CaseIterable {
         case cardReaders
         case scanners
+        case printers
 
         var id: Self { self }
 
@@ -304,6 +396,8 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.hardwareNavigationCardReaderTitle
             case .scanners:
                 return Localization.hardwareNavigationBarcodeTitle
+            case .printers:
+                return Localization.hardwareNavigationPrinterTitle
             }
         }
 
@@ -313,6 +407,8 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.hardwareNavigationCardReaderSubtitle
             case .scanners:
                 return Localization.hardwareNavigationBarcodeSubtitle
+            case .printers:
+                return Localization.hardwareNavigationPrinterSubtitle
             }
         }
     }
@@ -478,6 +574,54 @@ private extension POSSettingsHardwareDetailView {
             comment: "Description of Barcode scanner settings configuration."
         )
 
+        static let hardwareNavigationPrinterTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterTitle",
+            value: "Receipt printers",
+            comment: "Navigation title of Receipt printer settings."
+        )
+
+        static let hardwareNavigationPrinterSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterSubtitle",
+            value: "Manage receipt printer connections",
+            comment: "Description of Receipt printer settings for connections."
+        )
+
+        static let printersTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printersTitle",
+            value: "Receipt printers",
+            comment: "Navigation title for receipt printers settings in Point of Sale."
+        )
+
+        static let printerConnectTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerConnectTitle",
+            value: "Connect printer",
+            comment: "Title for the receipt printer connect button when no printer is connected."
+        )
+
+        static let printerConnectSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerConnectSubtitle",
+            value: "Connect your receipt printer and start printing receipts",
+            comment: "Subtitle for the receipt printer connect button when no printer is connected."
+        )
+
+        static let printerDeviceNameTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerDeviceNameTitle",
+            value: "Device name",
+            comment: "Label for the connected receipt printer's name in Point of Sale settings."
+        )
+
+        static let printerNotConnected = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerNotConnected",
+            value: "Printer not connected",
+            comment: "Text shown when no receipt printer is connected in Point of Sale settings."
+        )
+
+        static let printerDisconnectTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerDisconnectTitle",
+            value: "Disconnect printer",
+            comment: "Title for the receipt printer disconnect button when a printer is connected."
+        )
+
         static let cardReaderConnectTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle",
             value: "Connect card reader",
@@ -548,6 +692,7 @@ private extension POSSettingsHardwareDetailView {
 
 private extension POSSettingsHardwareDetailView {
     struct POSSettingsCardWithIcon: View {
+        @Environment(\.posMetrics) private var metrics
         let title: String
         let subtitle: String
 
@@ -557,13 +702,13 @@ private extension POSSettingsHardwareDetailView {
         }
 
         var body: some View {
-            HStack(alignment: .center, spacing: POSPadding.medium) {
+            HStack(alignment: .center, spacing: metrics.padding.medium) {
                 Image(systemName: "info.circle")
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
                     .frame(width: 36, height: 36)
 
-                VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                VStack(alignment: .leading, spacing: metrics.padding.xSmall) {
                     Text(title)
                         .font(.posBodyLargeBold)
                         .foregroundStyle(Color.posOnSurface)
@@ -572,7 +717,7 @@ private extension POSSettingsHardwareDetailView {
                         .foregroundStyle(.secondary)
                 }
             }
-            .padding()
+            .posPadding(\.medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.posSurfaceContainerLowest)
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
@@ -586,7 +731,7 @@ private extension POSSettingsHardwareDetailView {
 #Preview {
     @Previewable @State var navigationPath = NavigationPath()
     NavigationStack(path: $navigationPath) {
-        POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController(), navigationPath: $navigationPath)
+        POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController.withPrinter(), navigationPath: $navigationPath)
     }
 }
 #endif

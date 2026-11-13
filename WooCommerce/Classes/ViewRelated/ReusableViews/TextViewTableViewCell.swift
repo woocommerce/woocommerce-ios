@@ -3,6 +3,7 @@ import Gridicons
 
 /// A table view cell that contains an icon and a text view.
 ///
+@MainActor
 final class TextViewTableViewCell: UITableViewCell {
     struct ViewModel {
         var icon: UIImage? = nil
@@ -60,7 +61,10 @@ final class TextViewTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureBackground()
         configureTextView()
 
@@ -91,7 +95,7 @@ final class TextViewTableViewCell: UITableViewCell {
         self.applyStyle(style: viewModel.style)
 
         // Compensate for line fragment padding and container insets if icon is nil
-        trailingContraint.constant = -(noteTextView.textContainer.lineFragmentPadding + noteTextView.textContainerInset.right)
+        trailingContraint.constant = noteTextView.textContainer.lineFragmentPadding + noteTextView.textContainerInset.right
         if iconImage == nil {
             leadingContraint.constant = -(noteTextView.textContainer.lineFragmentPadding + noteTextView.textContainerInset.left)
         } else {

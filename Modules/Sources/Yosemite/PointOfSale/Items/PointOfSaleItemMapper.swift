@@ -2,7 +2,8 @@ import Foundation
 import class WooFoundation.CurrencySettings
 import class WooFoundation.CurrencyFormatter
 
-public protocol PointOfSaleItemMapperProtocol {
+@MainActor
+public protocol PointOfSaleItemMapperProtocol: Sendable {
     func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem]
     func mapVariationsToPOSItems(variations: [POSProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem]
 
@@ -16,6 +17,7 @@ public protocol PointOfSaleItemMapperProtocol {
 /// Maps products and variations to POSItems, and populates the output with:
 /// - Formatted price based on store's currency settings.
 /// - Product thumbnail, if any.
+@MainActor
 final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
     private let currencyFormatter: CurrencyFormatter
 

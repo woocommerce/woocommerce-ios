@@ -11,12 +11,18 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .loadAccounts(let siteID, let onCompletion):
+        case .loadAccounts(let siteID, _, let onCompletion):
             loadAccounts(siteID: siteID, onCompletion: onCompletion)
         case .publishCardReaderConnections(let onCompletion):
             publishCardReaderConnections(onCompletion: onCompletion)
         case .selectedPaymentGatewayAccount(let onCompletion):
             onCompletion(objectGraph.paymentGatewayAccounts.first)
+        case .fetchPaymentGatewayAccount(let siteID, let gateway, let onCompletion):
+            if let account = objectGraph.paymentGatewayAccounts(for: siteID).first(where: { $0.gatewayID == gateway.gatewayID }) {
+                onCompletion(.success(account))
+            } else {
+                onCompletion(.failure(NSError(domain: "MockCardPresentPaymentActionHandler", code: 1)))
+            }
         case .checkDeviceSupport(_, _, _, _, let onCompletion):
             onCompletion(true)
         case .observeConnectedReaders(let onCompletion):
@@ -27,6 +33,19 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             // This immediately brings up the `CardPresentModalTapCard` screen, which is used by
             // `WooCommerceScreenshots` to display it for screenshotting purpose.
             onCardReaderMessage(.waitingForInput([.tap, .swipe, .insert]))
+        case .cancelReconnection(let onCompletion):
+            // No real reader to reconnect in the mock, so there's nothing to cancel.
+            onCompletion(.success(()))
+        case .cancelPayment(let onCompletion):
+            // Tapping cancel on the mocked `Tap Card` modal dispatches this.
+            onCompletion?(.success(()))
+        case .disconnect(let onCompletion):
+            // Reader teardown after cancelling a payment; no real reader to disconnect.
+            onCompletion(.success(()))
+        case .reset(let onCompletion):
+            onCompletion()
+        case .retrievePaymentIntent(_, let onCompletion):
+            onCompletion(.failure(NSError(domain: "MockCardPresentPaymentActionHandler", code: 1)))
         default:
             unimplementedAction(action: action)
         }

@@ -7,10 +7,18 @@ final class ReceiptViewModel {
     private(set) var orderID: Int64
     private let siteName: String?
 
-    init(receipt: Receipt, orderID: Int64, siteName: String?) {
+    /// Currency code of the order the receipt belongs to, used for analytics.
+    let currency: String?
+
+    /// Payment method of the order, when the receipt is shown right after collecting a card payment. Used for analytics.
+    let paymentMethod: PaymentMethod?
+
+    init(receipt: Receipt, orderID: Int64, siteName: String?, currency: String? = nil, paymentMethod: PaymentMethod? = nil) {
         self.receipt = receipt
         self.orderID = orderID
         self.siteName = siteName
+        self.currency = currency
+        self.paymentMethod = paymentMethod
     }
 
     var receiptURLString: String {

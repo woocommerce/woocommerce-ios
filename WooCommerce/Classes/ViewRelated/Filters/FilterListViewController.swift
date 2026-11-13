@@ -71,10 +71,14 @@ final class FilterTypeViewModel {
     /// The configuration of the filter value list selector.
     let listSelectorConfig: FilterListValueSelectorConfig
 
+    let accessibilityIdentifier: String?
+
     init(title: String,
          listSelectorConfig: FilterListValueSelectorConfig,
-         selectedValue: FilterType) {
+         selectedValue: FilterType,
+         accessibilityIdentifier: String? = nil) {
         self.title = title
+        self.accessibilityIdentifier = accessibilityIdentifier
         self.listSelectorConfig = listSelectorConfig
         self.selectedValue = selectedValue
     }
@@ -122,6 +126,13 @@ protocol FilterType {
 
     /// Whether the filter is set to a non-empty value.
     var isActive: Bool { get }
+
+    /// The identifier used to locate the filter value in UI tests.
+    var accessibilityIdentifier: String { get }
+}
+
+extension FilterType {
+    var accessibilityIdentifier: String { description }
 }
 
 /// Allows the user to filter a list of models with generic filters.
@@ -265,7 +276,18 @@ private extension FilterListViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .basicBackground
+        view.backgroundColor = .listBackground
+
+        let bottomBackground = UIView()
+        bottomBackground.backgroundColor = .basicBackground
+        bottomBackground.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(bottomBackground, at: 0)
+        NSLayoutConstraint.activate([
+            bottomBackground.topAnchor.constraint(equalTo: filterActionContainerView.bottomAnchor),
+            bottomBackground.leadingAnchor.constraint(equalTo: filterActionContainerView.leadingAnchor),
+            bottomBackground.trailingAnchor.constraint(equalTo: filterActionContainerView.trailingAnchor),
+            bottomBackground.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 
     func observeListSelectorCommandItemSelection() {
@@ -473,11 +495,10 @@ private extension FilterListViewController {
                                                                            title: viewModel.filterActionTitle) { [weak self] _ in
                                                                             self?.filterActionButtonTapped()
         }
-        let buttonContainerView = BottomButtonContainerView(viewModel: buttonContainerViewModel)
+        let buttonContainerView = BottomButtonContainerView(viewModel: buttonContainerViewModel,
+                                                            buttonAccessibilityIdentifier: "filter-apply-button")
         filterActionContainerView.addSubview(buttonContainerView)
         filterActionContainerView.pinSubviewToAllEdges(buttonContainerView)
-        filterActionContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
-        filterActionContainerView.setContentHuggingPriority(.required, for: .vertical)
     }
 }
 
@@ -549,6 +570,7 @@ private extension FilterListViewController {
         func configureCell(cell: TitleAndValueTableViewCell, model: FilterTypeViewModel) {
             cell.selectionStyle = .default
             cell.updateUI(title: model.cellViewModel.title, value: model.cellViewModel.value)
+            cell.accessibilityIdentifier = model.accessibilityIdentifier
             cell.accessoryType = .disclosureIndicator
         }
     }
@@ -598,7 +620,7 @@ private extension FilterListViewController {
 
         func configureCell(cell: BasicTableViewCell, model: FilterType) {
             cell.textLabel?.text = model.description
-            cell.accessibilityIdentifier = model.description
+            cell.accessibilityIdentifier = model.accessibilityIdentifier
             cell.accessoryView = nil
 
             if let promotable = model as? PromotableProductType, !promotable.isAvailable {

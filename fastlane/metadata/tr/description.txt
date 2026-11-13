@@ -6,11 +6,11 @@ Saniyeler içinde kullanmaya başlayın! Ürünleri doğrudan iPhone veya iPad'i
 Anında sipariş oluşturun
 Birkaç ürünü oluşturduktan sonra iş çok basittir. Kataloğunuzdan öğeler seçip, gönderim bilgisini ve müşteri ayrıntılarını girerek, stok durumunuzla eşitlenen bir siparişi hızlı bir şekilde oluşturun.
 
-Ödemeleri şahsen alın
-WooCommerce Şahsen Ödemeleri ve bir kart okuyucu kullanarak Avustralya, Avusturya, Belçika, Kanada, Finlandiya, Fransa, Almanya, İrlanda, İtalya, Lüksemburg, Hollanda, Yeni Zelanda, Portekiz, Singapur, İspanya, Birleşik Krallık ve ABD'de fiziksel ödemeler alın. Tap to Pay on iPhone, Birleşik Krallık ve ABD'de kullanılabilir. Yeni bir sipariş başlatın veya ödeme bekleyen mevcut bir sipariş bulun, ardından ödemeyi sorunsuz bir şekilde kabul edin.
+Şahsen ödemeleri alın
+WooCommerce Şahsen Ödemeler ile Avustralya, Kanada, Finlandiya, İrlanda, Lüksemburg, Hollanda, Yeni Zelanda, Singapur, Birleşik Krallık ve ABD'de bir kart okuyucu kullanarak fiziksel ödemeler alın. Tap to Pay on iPhone, Birleşik Krallık ve ABD'de kullanılabilir. Yeni bir sipariş başlatın veya ödeme bekleyen mevcut bir sipariş bulun, ardından ödemeyi sorunsuz bir şekilde kabul edin.
 
 Tıklamalardan gerçek dünyaya geçin
-WooCommerce POS ile herhangi bir tableti güçlü bir satış noktasına dönüştürün. Tüm çevrimiçi ve fiziksel satışlarınız gerçek zamanlı olarak senkronize edilirken; ürünleri arayın, barkodları tarayın, kuponları uygulayın ve e-posta makbuzları gönderin. ABD ve Birleşik Krallık'ta mevcut.
+WooCommerce POS ile herhangi bir tableti güçlü bir satış noktasına dönüştürün. Tüm çevrimiçi ve fiziksel satışlarınız gerçek zamanlı olarak senkronize edildiğinde ürünleri arayın, barkodu tarayın, kuponları uygulayın ve e-posta makbuzları gönderin. Avustralya, Kanada, Finlandiya, İrlanda, Lüksemburg, Hollanda, Yeni Zelanda, Singapur, Birleşik Krallık ve ABD'de mevcuttur.
 
 Her satıştan haberdar olun
 Artık aktif olarak satış yaptığınız için hiçbir siparişi veya yorumu kaçırmayın. Gerçek zamanlı uyarıları etkinleştirerek hiçbir şeyi kaçırmayın ve her yeni satışla birlikte duyacağınız o bağımlılık yaratan "yazarkasa" sesine odaklanın!

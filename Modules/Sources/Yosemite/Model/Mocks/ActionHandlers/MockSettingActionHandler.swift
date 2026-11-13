@@ -19,10 +19,13 @@ struct MockSettingActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .retrieveSiteAPI(let siteID, let onCompletion):
+        case .retrieveSiteAPI(let siteID, _, let onCompletion),
+             .retrieveSiteAPIIncludingRoutes(let siteID, let onCompletion):
             retrieveSiteAPI(siteId: siteID, onCompletion: onCompletion)
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):
             synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveGeneralSiteSettings(let siteID, let onCompletion):
+            onCompletion(.success(objectGraph.siteSettings(for: siteID)))
         case .retrieveTaxBasedOnSetting(_, let onCompletion):
             onCompletion(.success(objectGraph.taxBasedOnSetting))
         case .isFeatureEnabled(_, let feature, let onCompletion):

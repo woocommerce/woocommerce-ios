@@ -16,11 +16,11 @@ final class CardPresentPaymentPreflightControllerTests: XCTestCase {
     private var onboardingPresenter: DelayedCardPresentPaymentsOnboardingPresenter!
     private var alertsPresenter: MockCardPresentPaymentAlertsPresenter!
     private var locationService: MockLocationService!
-    private var sut: CardPresentPaymentPreflightController<
+    private lazy var sut: CardPresentPaymentPreflightController<
         TapToPayReaderConnectionAlertsProvider,
         MockCardReaderSettingsAlerts,
         MockCardPresentPaymentAlertsPresenter
-    >!
+    > = makeSUT()
 
     override func setUp() {
         super.setUp()
@@ -50,58 +50,6 @@ final class CardPresentPaymentPreflightControllerTests: XCTestCase {
         onboardingPresenter = DelayedCardPresentPaymentsOnboardingPresenter()
         alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         locationService = MockLocationService(status: .authorized)
-
-        let analyticsTracker = CardReaderConnectionAnalyticsTracker(
-            configuration: Mocks.configuration,
-            siteID: sampleSiteID,
-            connectionType: .userInitiated,
-            stores: stores,
-            analytics: analytics
-        )
-
-        let bluetoothConnectionController = CardReaderConnectionController(
-            forSiteID: sampleSiteID,
-            storageManager: storageManager,
-            stores: stores,
-            knownReaderProvider: MockKnownReaderProvider(knownReader: nil),
-            alertsPresenter: alertsPresenter,
-            alertsProvider: MockCardReaderSettingsAlerts(mode: .connectFoundReader),
-            configuration: Mocks.configuration,
-            analyticsTracker: analyticsTracker,
-            locationService: locationService
-        )
-
-        let tapToPayConnectionController = TapToPayCardReaderConnectionController(
-            forSiteID: sampleSiteID,
-            storageManager: storageManager,
-            stores: stores,
-            alertsPresenter: alertsPresenter,
-            alertsProvider: TapToPayReaderConnectionAlertsProvider(),
-            configuration: Mocks.configuration,
-            analyticsTracker: analyticsTracker,
-            locationService: locationService
-        )
-
-        sut = CardPresentPaymentPreflightController(
-            siteID: sampleSiteID,
-            configuration: Mocks.configuration,
-            rootViewController: NullViewControllerPresenting(),
-            alertsPresenter: alertsPresenter,
-            onboardingPresenter: onboardingPresenter,
-            tapToPayAlertProvider: TapToPayReaderConnectionAlertsProvider(),
-            externalReaderConnectionController: bluetoothConnectionController,
-            tapToPayConnectionController: tapToPayConnectionController,
-            tapToPayReconnectionController: TapToPayReconnectionController(
-                stores: stores,
-                connectionControllerFactory: TapToPayCardReaderConnectionControllerFactory(
-                    alertProvider: TapToPayReaderConnectionAlertsProvider()
-                ),
-                onboardingCache: CardPresentPaymentOnboardingStateCache()
-            ),
-            analyticsTracker: analyticsTracker,
-            stores: stores,
-            analytics: analytics
-        )
     }
 
     func test_start_when_onboarding_completion_runs_after_cancellation_then_does_not_start_reader_discovery() async {
@@ -165,6 +113,66 @@ final class CardPresentPaymentPreflightControllerTests: XCTestCase {
         // Then - readerConnection should not emit
         await fulfillment(of: [didNotEmitResult], timeout: 0.2)
         cancellable.cancel()
+    }
+}
+
+private extension CardPresentPaymentPreflightControllerTests {
+    func makeSUT() -> CardPresentPaymentPreflightController<
+        TapToPayReaderConnectionAlertsProvider,
+        MockCardReaderSettingsAlerts,
+        MockCardPresentPaymentAlertsPresenter
+    > {
+        let analyticsTracker = CardReaderConnectionAnalyticsTracker(
+            configuration: Mocks.configuration,
+            siteID: sampleSiteID,
+            connectionType: .userInitiated,
+            stores: stores,
+            analytics: analytics
+        )
+
+        let bluetoothConnectionController = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            stores: stores,
+            knownReaderProvider: MockKnownReaderProvider(knownReader: nil),
+            alertsPresenter: alertsPresenter,
+            alertsProvider: MockCardReaderSettingsAlerts(mode: .connectFoundReader),
+            configuration: Mocks.configuration,
+            analyticsTracker: analyticsTracker,
+            locationService: locationService
+        )
+
+        let tapToPayConnectionController = TapToPayCardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            stores: stores,
+            alertsPresenter: alertsPresenter,
+            alertsProvider: TapToPayReaderConnectionAlertsProvider(),
+            configuration: Mocks.configuration,
+            analyticsTracker: analyticsTracker,
+            locationService: locationService
+        )
+
+        return CardPresentPaymentPreflightController(
+            siteID: sampleSiteID,
+            configuration: Mocks.configuration,
+            rootViewController: NullViewControllerPresenting(),
+            alertsPresenter: alertsPresenter,
+            onboardingPresenter: onboardingPresenter,
+            tapToPayAlertProvider: TapToPayReaderConnectionAlertsProvider(),
+            externalReaderConnectionController: bluetoothConnectionController,
+            tapToPayConnectionController: tapToPayConnectionController,
+            tapToPayReconnectionController: TapToPayReconnectionController(
+                stores: stores,
+                connectionControllerFactory: TapToPayCardReaderConnectionControllerFactory(
+                    alertProvider: TapToPayReaderConnectionAlertsProvider()
+                ),
+                onboardingCache: CardPresentPaymentOnboardingStateCache()
+            ),
+            analyticsTracker: analyticsTracker,
+            stores: stores,
+            analytics: analytics
+        )
     }
 }
 

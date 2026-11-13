@@ -1,5 +1,4 @@
 import SwiftUI
-import struct WooFoundation.IndefiniteCircularProgressViewStyle
 
 /// A view that displays an animated progress indicator with a circular shape.
 struct POSButtonProgressViewStyle: ProgressViewStyle {
@@ -16,13 +15,11 @@ struct POSButtonProgressViewStyle: ProgressViewStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         ProgressView(configuration)
-            .progressViewStyle(IndefiniteCircularProgressViewStyle(
+            .progressViewStyle(POSProgressViewStyle(
                 // The size (dimension) of the circle is adjusted by the lineWidth because half of the border line is drawn outside the circle frame.
                 size: size - lineWidth,
                 lineWidth: lineWidth,
-                lineCap: .butt,
-                circleColor: Color.posSecondary,
-                fillColor: Color.posOnPrimary
+                arcColor: .posOnPrimary
             ))
     }
 }

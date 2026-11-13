@@ -1,20 +1,19 @@
 import Alamofire
 import Combine
 import Foundation
+import os
 
 /// Configuration for handling cookie nonce authentication.
 ///
 public struct CookieNonceAuthenticatorConfiguration {
     let username: String
     let password: String
-    let loginURL: URL
-    let adminURL: URL
+    let endpoints: CookieNonceAuthenticationEndpoints
 
-    public init(username: String, password: String, loginURL: URL, adminURL: URL) {
+    public init(username: String, password: String, endpoints: CookieNonceAuthenticationEndpoints) {
         self.username = username
         self.password = password
-        self.loginURL = loginURL
-        self.adminURL = adminURL
+        self.endpoints = endpoints
     }
 }
 
@@ -26,9 +25,20 @@ public final class WordPressOrgNetwork: Network {
     private let userAgent: String?
     private let requestConverter: RequestConverter
 
-    private lazy var alamofireSession: Alamofire.Session = {
-        makeSession(configuration: .default)
-    }()
+    /// Created on first use, like the `lazy var` it replaces; the lock makes the first use safe from any thread.
+    /// `OSAllocatedUnfairLock` rather than `Mutex`, which needs watchOS 11.
+    private let lazySession = OSAllocatedUnfairLock<Alamofire.Session?>(initialState: nil)
+
+    private var alamofireSession: Alamofire.Session {
+        lazySession.withLock { session in
+            if let session {
+                return session
+            }
+            let newSession = makeSession(configuration: .default)
+            session = newSession
+            return newSession
+        }
+    }
 
     public var session: URLSession { alamofireSession.session }
 
@@ -40,28 +50,11 @@ public final class WordPressOrgNetwork: Network {
         self.requestConverter = RequestConverter(siteAddress: siteAddress)
     }
 
-    public func responseData(for request: URLRequestConvertible) async throws -> Data? {
-        let request = requestConverter.convert(request)
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self else { return }
-
-            self.alamofireSession.request(request)
-                .validate()
-                .responseData(completionHandler: { response in
-                switch response.result {
-                case .success(let responseObject):
-                    continuation.resume(returning: responseObject)
-                case .failure(let error):
-                    DDLogWarn("⚠️ Error requesting \(request.urlRequest?.url?.absoluteString ?? ""): \(error.localizedDescription)")
-                    do {
-                        try Self.validateResponse(response.data)
-                        continuation.resume(throwing: error)
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
-                }
-            })
-        }
+    /// This network converts eligible Jetpack requests to direct calls just like `AlamofireNetwork`, so
+    /// only a request the converter leaves alone counts as tunnelled.
+    ///
+    public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request.originalResponseRequest is JetpackRequest && !requestConverter.convertsToDirectRequest(request.originalResponseRequest)
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -74,12 +67,16 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        let request = requestConverter.convert(request)
+        let responsePolicy = request as? UnexpectedResponseRequest
+        let request = requestConverter.convert(request.originalResponseRequest)
         alamofireSession.request(request)
             .validate()
             .responseData { response in
                 do {
                     try Self.validateResponse(response.data)
+                    if let responsePolicy, let error = response.unexpectedResponseError(for: responsePolicy, tunneled: request is JetpackRequest) {
+                        throw error
+                    }
                     completion(response.value, response.networkingError)
                 } catch {
                     completion(nil, error)
@@ -97,12 +94,16 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        let request = requestConverter.convert(request)
+        let responsePolicy = request as? UnexpectedResponseRequest
+        let request = requestConverter.convert(request.originalResponseRequest)
         alamofireSession.request(request)
             .validate()
             .responseData { response in
                 do {
                     try Self.validateResponse(response.data)
+                    if let responsePolicy, let error = response.unexpectedResponseError(for: responsePolicy, tunneled: request is JetpackRequest) {
+                        throw error
+                    }
                     completion(response.result.mapError { $0 })
                 } catch {
                     completion(.failure(error))
@@ -110,12 +111,17 @@ public final class WordPressOrgNetwork: Network {
             }
     }
 
-    public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
-        let request = requestConverter.convert(request)
+    public func responseDataAndHeaders(for request: URLRequestConvertible,
+                                       isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
+        let responsePolicy = request as? UnexpectedResponseRequest
+        let request = requestConverter.convert(request.originalResponseRequest)
         let sessionRequest = alamofireSession.request(request).validate()
         let response = await sessionRequest.serializingData().response
         do {
             try Self.validateResponse(response.data)
+            if let responsePolicy, let error = response.unexpectedResponseError(for: responsePolicy, tunneled: request is JetpackRequest) {
+                throw error
+            }
             switch response.result {
                 case .success(let data):
                     return (data, response.response?.headers.dictionary)

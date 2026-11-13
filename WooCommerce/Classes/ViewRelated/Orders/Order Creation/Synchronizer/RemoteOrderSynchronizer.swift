@@ -5,6 +5,7 @@ import WooFoundation
 
 /// Type that syncs the order with the remote server.
 ///
+@MainActor
 final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     // MARK: Outputs
@@ -71,6 +72,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     private let pluginsService: PluginsServiceProtocol
 
+    private let requestCurrency: String?
+
     /// This is the order status that we will use to keep the order in sync with the remote source.
     ///
     private var baseSyncStatus: OrderStatusEnum = .pending
@@ -106,11 +109,13 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
+         requestCurrency: String? = nil,
          debounceDuration: TimeInterval = 1.0) {
         self.siteID = siteID
         self.stores = stores
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.pluginsService = pluginsService
+        self.requestCurrency = requestCurrency
         self.blockingBehavior = .majorUpdates
         self.debounceDuration = debounceDuration
 
@@ -190,7 +195,7 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] productInput, order -> Order in
                 guard let self else { return order }
                 let localInput = self.replaceInputWithLocalIDIfNeeded(productInput)
-                let updatedOrder = ProductInputTransformer.update(input: localInput, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
+                let updatedOrder = ProductInputTransformer.update(input: localInput, on: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
@@ -210,8 +215,7 @@ private extension RemoteOrderSynchronizer {
 
                 let updatedOrder = ProductInputTransformer.updateMultipleItems(
                     with: localInputs,
-                    on: order,
-                    shouldUpdateOrDeleteZeroQuantities: .update)
+                    on: order)
 
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
@@ -466,23 +470,27 @@ private extension RemoteOrderSynchronizer {
         Future<Order, Error> { [weak self] promise in
             guard let self else { return }
 
+            let finish: @MainActor @Sendable (Result<Order, Error>) -> Void = { result in
+                promise(result)
+            }
             let giftCard = includesGiftCard ? self.giftCardToApply: nil
 
             let apiOrderStatus = self.orderStatus(for: type)
             let draftOrder = order.copy(status: apiOrderStatus).sanitizingLocalItems()
             let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder, giftCard: giftCard) { [weak self] result in
                 guard let self else { return }
+                Task { @MainActor in
+                    switch result {
+                    case .success(let remoteOrder):
+                        if giftCard != nil {
+                            self.giftCardToApply = nil
+                        }
+                        let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
+                        finish(.success(newLocalOrder))
 
-                switch result {
-                case .success(let remoteOrder):
-                    if giftCard != nil {
-                        self.giftCardToApply = nil
+                    case .failure(let error):
+                        finish(.failure(error))
                     }
-                    let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
-                    promise(.success(newLocalOrder))
-
-                case .failure(let error):
-                    promise(.failure(error))
                 }
             }
             self.stores.dispatch(action)
@@ -497,25 +505,30 @@ private extension RemoteOrderSynchronizer {
         Future<Order, Error> { [weak self] promise in
             guard let self else { return }
 
+            let finish: @MainActor @Sendable (Result<Order, Error>) -> Void = { result in
+                promise(result)
+            }
             let operationUpdateFields = self.orderUpdateFields(for: type)
             let orderToSubmit = order.sanitizingLocalItems()
             let giftCard = includesGiftCard ? self.giftCardToApply: nil
             let action = OrderAction.updateOrder(siteID: self.siteID,
                                                  order: orderToSubmit,
                                                  giftCard: giftCard,
-                                                 fields: operationUpdateFields) { [weak self] result in
+                                                 fields: operationUpdateFields,
+                                                 requestCurrency: requestCurrency) { [weak self] result in
                 guard let self else { return }
+                Task { @MainActor in
+                    switch result {
+                    case .success(let remoteOrder):
+                        if giftCard != nil {
+                            self.giftCardToApply = nil
+                        }
+                        let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
+                        finish(.success(newLocalOrder))
 
-                switch result {
-                case .success(let remoteOrder):
-                    if giftCard != nil {
-                        self.giftCardToApply = nil
+                    case .failure(let error):
+                        finish(.failure(error))
                     }
-                    let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
-                    promise(.success(newLocalOrder))
-
-                case .failure(let error):
-                    promise(.failure(error))
                 }
             }
             self.stores.dispatch(action)

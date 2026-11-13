@@ -53,11 +53,11 @@ struct PercentageAddCustomAmountInputTypeViewModelAdapter: AddCustomAmountInputT
     let baseAmount: Decimal
 
     var amountPublisher: Published<String>.Publisher? {
-        viewModel?.percentageViewModel?.$percentageCalculatedAmount
+        viewModel?.percentageViewModel?.$amount
     }
 
     var amount: String? {
-        viewModel?.percentageViewModel?.percentageCalculatedAmount
+        viewModel?.percentageViewModel?.amount
     }
 
     func preset(with fee: OrderFeeLine) {
@@ -73,6 +73,11 @@ final class AddCustomAmountViewModel: ObservableObject {
         case orderTotalPercentage(baseAmount: Decimal)
     }
 
+    enum FocusedField: Hashable {
+        case input
+        case name
+    }
+
     private var inputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter
     private let onCustomAmountEntered: CustomAmountEntered
     private let onCustomAmountDeleted: ((_ fee: Int64) -> Void)?
@@ -85,6 +90,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     ///
     @Published var name = ""
     @Published private(set) var shouldEnableDoneButton: Bool = false
+    @Published private(set) var focusedField: FocusedField? = .input
     @Published var isTaxable: Bool = true
     private var feeID: Int64? = nil
 
@@ -143,6 +149,24 @@ final class AddCustomAmountViewModel: ObservableObject {
         inputTypeViewModelAdapter.preset(with: fee)
         feeID = fee.feeID
     }
+
+    func focusInput() {
+        focusedField = .input
+    }
+
+    func focusName() {
+        focusedField = .name
+    }
+
+    func clearFocus() {
+        focusedField = nil
+    }
+
+    func clearInputFocus() {
+        if focusedField == .input {
+            focusedField = nil
+        }
+    }
 }
 
 private extension AddCustomAmountViewModel {
@@ -151,7 +175,9 @@ private extension AddCustomAmountViewModel {
         case .fixedAmount:
             formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         case .orderTotalPercentage(let baseAmount):
-            percentageViewModel = AddCustomAmountPercentageViewModel(baseAmountForPercentage: baseAmount, currencyFormatter: currencyFormatter)
+            percentageViewModel = AddCustomAmountPercentageViewModel(baseAmountForPercentage: baseAmount,
+                                                                     currencyFormatter: currencyFormatter,
+                                                                     fractionDigits: storeCurrencySettings.fractionDigits)
         }
     }
 

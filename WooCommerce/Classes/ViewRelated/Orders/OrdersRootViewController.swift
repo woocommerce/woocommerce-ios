@@ -6,10 +6,12 @@ import Experiments
 
 /// The root tab controller for Orders, which contains the `OrderListViewController` .
 ///
+@MainActor
 final class OrdersRootViewController: UIViewController {
 
     // The stack view which will contain the top bar filters and the order list.
     @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet private weak var stackViewTopConstraint: NSLayoutConstraint!
 
     // MARK: Child view controller
     private lazy var orderListViewModel = OrderListViewModel(siteID: siteID, filters: filters)
@@ -23,6 +25,14 @@ final class OrdersRootViewController: UIViewController {
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
+
+    private var usesLargeTitleWorkaround: Bool {
+        if #available(iOS 26.0, *) {
+            return false
+        } else {
+            return true
+        }
+    }
 
     private let siteID: Int64
 
@@ -40,6 +50,8 @@ final class OrdersRootViewController: UIViewController {
         let filteredOrdersBar = FilteredOrdersHeaderBar.instantiateFromNib()
         return filteredOrdersBar
     }()
+
+    private var liquidGlassHeaderBackgroundView: UIView?
 
     private var filters = FilterOrderListViewModel.Filters() {
         didSet {
@@ -65,7 +77,6 @@ final class OrdersRootViewController: UIViewController {
     }()
 
     private let featureFlagService: FeatureFlagService
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -80,12 +91,10 @@ final class OrdersRootViewController: UIViewController {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.switchDetailsHandler = switchDetailsHandler
@@ -105,6 +114,15 @@ final class OrdersRootViewController: UIViewController {
         configureNavigationButtons()
         configureFiltersBar()
         configureChildViewController()
+        configureLiquidGlassTabBarUnderlap()
+
+        if #available(iOS 26.0, *) {
+            registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (controller: OrdersRootViewController, _: UITraitCollection) in
+                // Dynamic Type can leave the bar at its collapsed height even when the list is at the top.
+                controller.view.layoutIfNeeded()
+                controller.navigationController?.navigationBar.sizeToFit()
+            }
+        }
 
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
@@ -113,6 +131,12 @@ final class OrdersRootViewController: UIViewController {
             guard let self else { return }
             self.configureStatusResultsController()
         }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        updateLiquidGlassHeaderOverlayLayout()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -158,9 +182,7 @@ final class OrdersRootViewController: UIViewController {
         let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
-        analytics.track(event: .Orders.orderOpen(
-            order: order,
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        analytics.track(event: .Orders.orderOpen(order: order))
     }
 
     /// Selects the order given the ID from the order list view if the order exists locally.
@@ -170,7 +192,8 @@ final class OrdersRootViewController: UIViewController {
     func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
         ordersViewController.selectOrderFromListIfPossible(
             for: orderID,
-            isTriggeredByUserAction: true
+            isTriggeredByUserAction: true,
+            shouldScrollIfNeeded: true
         )
     }
 
@@ -179,6 +202,17 @@ final class OrdersRootViewController: UIViewController {
     /// - Parameter orderID: ID of the order to be selected in the order list.
     func onOrderSelected(id orderID: Int64) {
         ordersViewController.onOrderSelected(id: orderID)
+    }
+
+    /// Selects and scrolls to an order shown outside of the order list when the list contains it.
+    /// - Parameter orderID: ID of the shown order.
+    func selectShownOrderIfListed(id orderID: Int64) {
+        ordersViewController.selectShownOrderIfListed(id: orderID)
+    }
+
+    /// Restores the selected detail after compact navigation removed it from the stack.
+    func restoreSelectedOrderDetails() {
+        ordersViewController.restoreSelectedOrderDetails()
     }
 
     /// Presents the Order Creation flow.
@@ -220,15 +254,11 @@ final class OrdersRootViewController: UIViewController {
         }
 
         viewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
-            self?.dismiss(animated: true) {
+            guard let self else { return }
+
+            self.dismiss(animated: true) { [weak self] in
                 self?.navigateToOrderDetail(order) { [weak self] _ in
-                    guard let self,
-                          let orderDetailsViewController = self.orderDetailsViewController else {
-                        return
-                    }
-                    let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: paymentMethodsViewModel)
-                    paymentMethodsViewController.parentController = orderDetailsViewController
-                    orderDetailsViewController.present(paymentMethodsViewController, animated: true)
+                    self?.presentPaymentMethods(viewModel: paymentMethodsViewModel)
                 }
             }
         }
@@ -257,19 +287,29 @@ final class OrdersRootViewController: UIViewController {
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self else { return }
                 switch result {
-                case let .success(product):
-                    self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
-                                                                                         source: .orderList,
-                                                                                         addedVia: .scanning,
-                                                                                         includesBundleProductConfiguration: false))
-                    self.presentOrderCreationFlowWithScannedProduct(product)
+                case let .success(item):
+                    // The scanner never passes through the selector, so refuse restricted products
+                    // here and explain why on the order list, rather than opening an empty order.
+                    if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
+                        self.displayRestrictedScannedProductNotice(restriction)
+                    } else {
+                        self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
+                                                                            source: .orderList,
+                                                                            addedVia: .scanning,
+                                                                            includesBundleProductConfiguration: false))
+                        self.presentOrderCreationFlowWithScannedProduct(item)
+                    }
                 case let .failure(error):
                     self.displayScannedProductErrorNotice(error, code: scannedBarcode)
                 }
                 navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
             }
-        }, onPermissionsDenied: { [weak self] in
-            self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
+        }, onPermissionsDenied: { [weak self] reason in
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: reason))
+        }, onSettingsTapped: { [weak self] reason in
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsTapped(from: .orderList, reason: reason))
+        }, onSettingsOpened: { [weak self] in
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .orderList))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
@@ -301,6 +341,13 @@ final class OrdersRootViewController: UIViewController {
         ordersViewController.showErrorNotice(notice, in: self)
     }
 
+    /// Presents a notice on the order list when a scanned product cannot be added to an order.
+    ///
+    private func displayRestrictedScannedProductNotice(_ restriction: ProductRestriction) {
+        let notice = Notice(title: restriction.reason)
+        ordersViewController.showErrorNotice(notice, in: self)
+    }
+
     /// Present `FilterListViewController`
     ///
     private func filterButtonTapped() {
@@ -314,9 +361,7 @@ final class OrdersRootViewController: UIViewController {
         }
 
         let fetchedStatuses = statusResultsController.fetchedObjects
-        let allowedStatuses = ciabEligibilityChecker.isCurrentSiteCIAB
-            ? CIABOrderStatusMapper.mapFilterOptions(fetchedStatuses)
-            : fetchedStatuses
+        let allowedStatuses = fetchedStatuses
 
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
@@ -360,21 +405,106 @@ private extension OrdersRootViewController {
     }
 
     func configureFiltersBar() {
-        // Display the filtered orders bar
-        stackView.addArrangedSubview(filtersBar)
+        if #available(iOS 26.0, *) {
+            configureLiquidGlassHeaderOverlay()
+        } else {
+            // Display the filtered orders bar
+            stackView.addArrangedSubview(filtersBar)
+        }
+
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }
     }
 
+    func configureLiquidGlassHeaderOverlay() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        let backgroundView = OrdersProductsListHeaderStyle.makeBackgroundView()
+        liquidGlassHeaderBackgroundView = backgroundView
+        view.addSubview(backgroundView)
+
+        filtersBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(filtersBar)
+
+        NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: filtersBar.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: filtersBar.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: filtersBar.bottomAnchor),
+            filtersBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            filtersBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            filtersBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+
+    func updateLiquidGlassHeaderOverlayLayout() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        let height = filtersBar.systemLayoutSizeFitting(targetSize,
+                                                       withHorizontalFittingPriority: .required,
+                                                       verticalFittingPriority: .fittingSizeLevel).height
+
+        guard height > 0 else {
+            return
+        }
+
+        guard let tableView = ordersViewController.tableView else {
+            return
+        }
+
+        let previousTopInset = tableView.contentInset.top
+        if abs(previousTopInset - height) > 0.5 {
+            let previousContentOffset = tableView.contentOffset
+            var contentInset = tableView.contentInset
+            contentInset.top = height
+            tableView.contentInset = contentInset
+            if !tableView.isTracking,
+               !tableView.isDragging,
+               !tableView.isDecelerating {
+                // UIKit may adjust the offset when the inset changes; use the original offset, as Products does.
+                tableView.contentOffset.y = previousContentOffset.y - (height - previousTopInset)
+            }
+        }
+
+        var verticalScrollIndicatorInsets = tableView.verticalScrollIndicatorInsets
+        verticalScrollIndicatorInsets.top = height
+        tableView.verticalScrollIndicatorInsets = verticalScrollIndicatorInsets
+        updateFiltersBarOverscrollPosition(from: tableView)
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        // The list table lives in a child controller, so register it from the root
+        // controller that owns the navigation item for native large title tracking.
+        setContentScrollView(ordersViewController.tableView, for: [.top, .bottom])
+
+        OrdersProductsListHeaderStyle.configureNavigationAppearance(navigationItem: navigationItem,
+                                                                    scrollView: ordersViewController.tableView)
+
+        stackViewTopConstraint.isActive = false
+        stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
+    }
+
     func configureChildViewController() {
-        // Configure large title using the `hiddenScrollView` trick.
-        hiddenScrollView.configureForLargeTitleWorkaround()
-        // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
-        view.addSubview(hiddenScrollView)
-        view.sendSubviewToBack(hiddenScrollView)
-        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        if usesLargeTitleWorkaround {
+            // Configure large title using the `hiddenScrollView` trick.
+            hiddenScrollView.configureForLargeTitleWorkaround()
+            // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
+            view.addSubview(hiddenScrollView)
+            view.sendSubviewToBack(hiddenScrollView)
+            hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+            view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        }
         ordersViewController.delegate = self
 
         // Add contentView to stackview
@@ -406,12 +536,7 @@ private extension OrdersRootViewController {
     func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
         guard let storedOrderFilters = filters.orderStatus else { return }
         let availableStatuses = Set(orderStatuses.map { $0.status })
-        // On CIAB sites, resolve synthetic statuses (e.g. "open") to their underlying core statuses
-        // before checking validity, since the API only returns core statuses.
-        let resolvedFilters = ciabEligibilityChecker.isCurrentSiteCIAB
-            ? CIABOrderStatusMapper.resolveFilterStatuses(storedOrderFilters)
-            : storedOrderFilters
-        for resolvedFilter in resolvedFilters {
+        for resolvedFilter in storedOrderFilters {
             if !availableStatuses.contains(resolvedFilter) {
                 clearFilters()
                 break
@@ -420,7 +545,13 @@ private extension OrdersRootViewController {
     }
 }
 
-extension OrdersRootViewController: OrderListViewControllerDelegate {
+extension OrdersRootViewController: ScrollToTopProviding {
+    var scrollToTopScrollView: UIScrollView? {
+        ordersViewController.tableView
+    }
+}
+
+extension OrdersRootViewController: @MainActor OrderListViewControllerDelegate {
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController) {
         // Do nothing here
     }
@@ -430,6 +561,12 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
     }
 
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateFiltersBarOverscrollPosition(from: scrollView)
+
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 
@@ -447,6 +584,17 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
 
         let dateFormatter = syncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
         filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
+    }
+
+    /// Mirrors the list's top overscroll so the overlaid filters bar and header background stay visually attached to the orders content.
+    private func updateFiltersBarOverscrollPosition(from scrollView: UIScrollView) {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        OrdersProductsListHeaderStyle.updateScrollPosition(backgroundView: liquidGlassHeaderBackgroundView,
+                                                           headerViews: [filtersBar],
+                                                           scrollView: scrollView)
     }
 }
 
@@ -539,14 +687,31 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
-        analytics.track(event: .Orders.orderOpen(
-            order: order,
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
-        ))
+        analytics.track(event: .Orders.orderOpen(order: order))
 
         ordersViewController.showOrderDetails(order, shouldScrollIfNeeded: true) { _ in
             onCompletion?(true)
         }
+    }
+
+    func presentPaymentMethods(viewModel: PaymentMethodsViewModel) {
+        guard let presenter = paymentMethodsPresenter else {
+            DDLogError("⛔️ Unable to present payment methods after creating order.")
+            return
+        }
+
+        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel)
+        paymentMethodsViewController.parentController = presenter
+        presenter.present(paymentMethodsViewController, animated: true)
+    }
+
+    var paymentMethodsPresenter: UIViewController? {
+        if let orderDetailsViewController,
+           orderDetailsViewController.viewIfLoaded?.window != nil {
+            return orderDetailsViewController
+        }
+
+        return navigationController?.visibleViewController ?? navigationController ?? self
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {

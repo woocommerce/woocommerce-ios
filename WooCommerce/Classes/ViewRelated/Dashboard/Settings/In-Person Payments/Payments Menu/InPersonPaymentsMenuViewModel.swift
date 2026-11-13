@@ -49,33 +49,38 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         let systemStatusService: SystemStatusServiceProtocol
         let noticePresenter: NoticePresenter
         let featureFlagService: FeatureFlagService
+        let stores: StoresManager
+        let siteSettings: SelectedSiteSettingsProtocol
 
+        @MainActor
         init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
              cardReaderSupportDeterminer: CardReaderSupportDetermining,
-             tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
+             tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker? = nil,
              wooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol?,
              systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
              analytics: Analytics = ServiceLocator.analytics,
              noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+             stores: StoresManager = ServiceLocator.stores,
+             siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings) {
             self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
             self.onboardingUseCase = onboardingUseCase
             self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
-            self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
+            self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker ?? TapToPayBadgePromotionChecker()
             self.wooPaymentsPayoutService = wooPaymentsPayoutService
             self.systemStatusService = systemStatusService
             self.analytics = analytics
             self.noticePresenter = noticePresenter
             self.featureFlagService = featureFlagService
+            self.stores = stores
+            self.siteSettings = siteSettings
         }
     }
 
     private let dependencies: Dependencies
-
-    var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
-        dependencies.cardPresentPaymentsConfiguration
-    }
+    let countryRecovery: CardPresentPaymentCountryRecovery
+    @Published private(set) var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     var onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol {
         dependencies.onboardingUseCase
@@ -93,6 +98,24 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         self.siteID = siteID
         self.dependencies = dependencies
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
+        countryRecovery = CardPresentPaymentCountryRecovery(siteID: siteID,
+                                                            configuration: dependencies.cardPresentPaymentsConfiguration,
+                                                            stores: dependencies.stores,
+                                                            settings: dependencies.siteSettings)
+        cardPresentPaymentsConfiguration = countryRecovery.configuration
+        countryRecovery.objectWillChange.sink { [weak self] in
+            self?.objectWillChange.send()
+        }.store(in: &cancellables)
+        countryRecovery.$configuration.dropFirst().sink { [weak self] configuration in
+            guard let self else { return }
+            cardPresentPaymentsConfiguration = configuration
+            onboardingUseCase.revalidateAfterCountryChange()
+            // Apply the new state immediately, before the debounced observation.
+            refreshAfterNewOnboardingState(onboardingUseCase.state)
+            runCardPresentPaymentsOnboardingIfPossible()
+            updateCardReadersSection()
+            Task { @MainActor in await self.updateTapToPaySection() }
+        }.store(in: &cancellables)
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
 
@@ -141,6 +164,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     func onAppear() async {
+        countryRecovery.recoverIfNeeded()
         runCardPresentPaymentsOnboardingIfPossible()
         await updateOutputProperties()
     }
@@ -207,10 +231,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 // MARK: - Background onboarding
 private extension InPersonPaymentsMenuViewModel {
     func observeOnboardingChanges() {
-        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
-            return
-        }
-
         onboardingUseCase.statePublisher
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()
@@ -221,6 +241,11 @@ private extension InPersonPaymentsMenuViewModel {
 
     func runCardPresentPaymentsOnboardingIfPossible() {
         guard cardPresentPaymentsConfiguration.isSupportedCountry else {
+            cardPresentPaymentsOnboardingNotice = nil
+            backgroundOnboardingInProgress = false
+            shouldShowOnboarding = false
+            updateForIncompleteOnboarding(selectedPlugin: nil)
+            payInPersonToggleViewModel.selectedPlugin = nil
             return
         }
 
@@ -228,6 +253,7 @@ private extension InPersonPaymentsMenuViewModel {
     }
 
     func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry else { return }
         guard state != .loading else {
             backgroundOnboardingInProgress = true
             return
@@ -274,6 +300,8 @@ private extension InPersonPaymentsMenuViewModel {
     }
 
     func updateForIncompleteOnboarding(selectedPlugin plugin: CardPresentPaymentsPlugin?) {
+        shouldShowPaymentOptionsSection = false
+        shouldShowManagePaymentGatewaysRow = false
         shouldDisableManageCardReaders = true
         selectedPaymentGatewayName = plugin?.pluginName
         selectedPaymentGatewayPlugin = plugin
@@ -339,7 +367,7 @@ private extension InPersonPaymentsMenuViewModel {
 }
 
 // MARK: - Deeplink navigation
-extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
+extension InPersonPaymentsMenuViewModel: @MainActor DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
         guard let paymentsDestination = destination as? PaymentsMenuDestination else {
             return

@@ -141,7 +141,7 @@ public enum WooPaymentsPayoutType: String, Codable, Equatable, GeneratedFakeable
 /// with additions in WooPayments e.g.
 // https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/
 // server/wp-content/rest-api-plugins/endpoints/wcpay/utils/class-deposit-utils.php#L141
-public enum WooPaymentsPayoutStatus: String, Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public enum WooPaymentsPayoutStatus: String, Codable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
     case estimated
     case pending
     case inTransit = "in_transit"
@@ -250,7 +250,7 @@ public struct WooPaymentsPayoutsSchedule: Codable, GeneratedFakeable, GeneratedC
 }
 
 /// originally from https://stripe.com/docs/api/accounts/object#account_object-settings-payouts-schedule-interval
-public enum WooPaymentsPayoutInterval: Equatable, GeneratedFakeable, GeneratedCopiable {
+public enum WooPaymentsPayoutInterval: Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
     case daily
     case weekly(anchor: Weekday)
     case monthly(anchor: Int)
@@ -291,7 +291,7 @@ public enum WooPaymentsPayoutInterval: Equatable, GeneratedFakeable, GeneratedCo
         }
     }
 
-    public enum Weekday: String, Decodable {
+    public enum Weekday: String, Decodable, Sendable {
         case sunday
         case monday
         case tuesday

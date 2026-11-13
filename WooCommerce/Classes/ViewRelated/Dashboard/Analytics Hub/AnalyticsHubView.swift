@@ -119,9 +119,6 @@ private extension AnalyticsHubHostingViewController {
 ///
 struct AnalyticsHubView: View {
 
-    /// Environment safe areas
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     /// Set this closure with UIKit code to pop the view controller and display the provided notice.
     /// Needed because we need access to the UIHostingController `popViewController` method.
     ///
@@ -133,6 +130,12 @@ struct AnalyticsHubView: View {
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
+        SafeAreaInsetsReader { _ in
+            content
+        }
+    }
+
+    private var content: some View {
         RefreshablePlainList(action: {
             viewModel.trackAnalyticsInteraction()
             await viewModel.updateData()
@@ -140,14 +143,12 @@ struct AnalyticsHubView: View {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard,
                                        selectionType: $viewModel.timeRangeSelectionType)
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(uiColor: .listForeground(modal: false)))
+                .background(Color(uiColor: .listForeground(modal: false)), ignoresSafeAreaEdges: [])
                 .addingTopAndBottomDividers()
 
                 ForEach(viewModel.enabledCards, id: \.self) { card in
                     analyticsCard(type: card)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
+                        .background(Color(uiColor: .listForeground(modal: false)), ignoresSafeAreaEdges: [])
                         .addingTopAndBottomDividers()
                 }
 
@@ -157,7 +158,6 @@ struct AnalyticsHubView: View {
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(uiColor: .listBackground))
-        .edgesIgnoringSafeArea(.horizontal)
         .task {
             await viewModel.loadAnalyticsCardSettings()
             await viewModel.updateData()
@@ -166,8 +166,8 @@ struct AnalyticsHubView: View {
             guard let notice else { return }
             dismissWithNotice(notice)
         }
-        .gesture(
-            // Detects when scrolling begins so it can be tracked.
+        .simultaneousGesture(
+            // Detects when scrolling begins so it can be tracked without blocking the navigation controller's swipe-back gesture.
             DragGesture().onChanged({ _ in
                 viewModel.trackAnalyticsInteraction()
             })

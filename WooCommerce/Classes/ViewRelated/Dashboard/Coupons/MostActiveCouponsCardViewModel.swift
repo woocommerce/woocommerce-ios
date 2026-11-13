@@ -66,7 +66,6 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func reloadData() async {
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .coupons))
         syncingData = true
@@ -88,7 +87,11 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
                 } else {
                     /// Refresh coupons in background
                     Task { @MainActor in
-                        try await synchronizeCoupons(for: couponReports)
+                        do {
+                            try await synchronizeCoupons(for: couponReports)
+                        } catch {
+                            DDLogError("⛔️ Failed to refresh most active coupons: \(error)")
+                        }
                     }
                 }
             }
@@ -173,7 +176,6 @@ private extension MostActiveCouponsCardViewModel {
             .prefix(Constants.numberOfCouponsToDisplay))
     }
 
-    @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
         await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadLastSelectedMostActiveCouponsTimeRange(siteID: siteID) { timeRange in
@@ -188,7 +190,6 @@ private extension MostActiveCouponsCardViewModel {
         stores.dispatch(action)
     }
 
-    @MainActor
     func synchronizeCoupons(for couponReports: [CouponReport]) async throws {
         guard couponReports.isNotEmpty else {
             return
@@ -207,7 +208,6 @@ private extension MostActiveCouponsCardViewModel {
         }
     }
 
-    @MainActor
     func fetchMostActiveCoupons() async throws -> [CouponReport] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(CouponAction.loadMostActiveCoupons(siteID: siteID,

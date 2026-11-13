@@ -1,7 +1,7 @@
 import Foundation
 import Codegen
 
-public struct WCAnalyticsCustomer: Decodable, GeneratedCopiable, GeneratedFakeable {
+public struct WCAnalyticsCustomer: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     /// The siteID for the WCAnalyticsCustomer
     public let siteID: Int64
 

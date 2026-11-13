@@ -3,7 +3,7 @@ import Codegen
 
 /// Response after updating shipments of an order
 ///
-public struct WooShippingUpdateShipmentResponse: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingUpdateShipmentResponse: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     public let shipments: WooShippingShipments
 
     public init(shipments: WooShippingShipments) {

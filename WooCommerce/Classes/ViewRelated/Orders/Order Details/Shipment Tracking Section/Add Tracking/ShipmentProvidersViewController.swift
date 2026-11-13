@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 
+@MainActor
 protocol ShipmentProviderListDelegate: AnyObject {
     func shipmentProviderList(_ list: ShipmentProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String)
 }
@@ -65,6 +66,11 @@ final class ShipmentProvidersViewController: UIViewController {
         configureTable()
         fetchGroups()
         startListeningToNotifications()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        table.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
     }
 
     override func viewWillDisappear(_ animated: Bool) {

@@ -16,6 +16,89 @@ final class AlamofireNetworkTests: XCTestCase {
         userDefaults = UserDefaults(suiteName: UUID().uuidString)
     }
 
+    override func tearDown() {
+        MockURLProtocol.Mocks.reset()
+        super.tearDown()
+    }
+
+    @MainActor
+    func test_remote_when_opted_in_mapper_fails_then_preserves_successful_response_metadata() throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp/v2/users/me")
+        MockURLProtocol.Mocks.mockResponse(["code": "blocked", "message": "Contact admin@example.com", "data": "private-sentinel"],
+                                          statusCode: 202, for: try request.asURLRequest(),
+                                          headers: ["Content-Type": "application/json; charset=utf-8"])
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let remote = Remote(network: network)
+
+        // When
+        let result: Result<User, Error> = waitFor { promise in
+            remote.enqueue(request, mapper: UserMapper(siteID: 123), detectUnexpectedResponses: true, completion: promise)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? UnexpectedStoreResponseError)
+        XCTAssertEqual(error.kind, .unexpectedContent)
+        XCTAssertEqual(error.statusCode, 202)
+        XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+        XCTAssertEqual(error.diagnostics?.excerpt, "blocked | Contact [email]")
+    }
+
+    @MainActor
+    func test_remote_async_when_opted_in_mapper_fails_then_preserves_successful_response_metadata() async throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp/v2/users/me")
+        MockURLProtocol.Mocks.mockResponse(["code": "blocked", "message": "Contact admin@example.com", "data": "private-sentinel"],
+                                          statusCode: 202, for: try request.asURLRequest(),
+                                          headers: ["Content-Type": "application/json; charset=utf-8"])
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let remote = Remote(network: network)
+
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: UserMapper(siteID: 123), detectUnexpectedResponses: true)
+            XCTFail("Expected a malformed user response")
+        } catch {
+            // Then
+            let error = try XCTUnwrap(error as? UnexpectedStoreResponseError)
+            XCTAssertEqual(error.kind, .unexpectedContent)
+            XCTAssertEqual(error.statusCode, 202)
+            XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+            XCTAssertEqual(error.diagnostics?.excerpt, "blocked | Contact [email]")
+        }
+    }
+
+    func test_responseData_when_direct_500_is_opted_in_then_preserves_status_in_typed_error() throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp-json")
+        MockURLProtocol.Mocks.mockResponse(["code": "critical_error"], statusCode: 500, for: try request.asURLRequest())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        // When
+        let error = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: request)) { _, error in promise(error) }
+        }
+        // Then
+        XCTAssertEqual((error as? UnexpectedStoreResponseError)?.kind, .unacceptableStatusCode)
+        XCTAssertEqual((error as? UnexpectedStoreResponseError)?.statusCode, 500)
+    }
+
+    func test_responseData_when_known_501_is_opted_in_then_preserves_disabled_password_error() throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .post, path: "wp-json")
+        MockURLProtocol.Mocks.mockResponse(["code": "application_passwords_disabled"], statusCode: 501, for: try request.asURLRequest())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        // When
+        let error = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: request)) { _, error in promise(error) }
+        }
+        // Then
+        XCTAssertEqual(error as? ApplicationPasswordUseCaseError, .applicationPasswordsDisabled)
+    }
+
     // MARK: - `responseData` with data and error in the callback
 
     func test_responseData_completion_block_returns_NetworkError_unacceptableStatusCode_when_status_code_is_invalid() throws {
@@ -229,6 +312,158 @@ final class AlamofireNetworkTests: XCTestCase {
         }
     }
 
+    // MARK: - Jetpack tunnel detection
+
+    func test_usesJetpackTunnel_when_no_site_is_selected_then_it_is_true_for_a_jetpack_request() {
+        // Given
+        let network = AlamofireNetwork(credentials: createWPComCredentials(),
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       userDefaults: userDefaults,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let request = createJetpackRequest(siteID: 123, path: "products")
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertTrue(usesTunnel)
+    }
+
+    func test_usesJetpackTunnel_when_the_site_uses_application_passwords_then_it_is_false_for_a_convertible_request() {
+        // Given
+        let network = createNetworkWithSelectedSite(siteID: 123, userDefaults: userDefaults)
+        let request = createJetpackRequest(siteID: 123, path: "products")
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertFalse(usesTunnel)
+    }
+
+    func test_usesJetpackTunnel_when_the_site_uses_application_passwords_then_it_is_true_for_a_tunnel_only_request() {
+        // Given
+        let network = createNetworkWithSelectedSite(siteID: 123, userDefaults: userDefaults)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: 123,
+                                     path: "products",
+                                     parameters: nil,
+                                     availableAsRESTRequest: false)
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertTrue(usesTunnel)
+    }
+
+    func test_usesJetpackTunnel_when_the_selected_site_has_no_application_password_then_it_is_true_for_a_convertible_request() {
+        // Given
+        let site = JetpackSite(siteID: 123, siteAddress: "https://example.com", applicationPasswordAvailable: false)
+        let network = AlamofireNetwork(credentials: createWPComCredentials(),
+                                       selectedSite: Just(site).eraseToAnyPublisher(),
+                                       appPasswordSupportState: Just(true).eraseToAnyPublisher(),
+                                       userDefaults: userDefaults,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let request = createJetpackRequest(siteID: 123, path: "products")
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertTrue(usesTunnel)
+    }
+
+    func test_usesJetpackTunnel_when_application_password_switching_is_off_then_it_is_true_for_a_convertible_request() {
+        // Given
+        let network = createNetworkWithSelectedSite(siteID: 123, userDefaults: userDefaults, appPasswordSupport: Just(false).eraseToAnyPublisher())
+        let request = createJetpackRequest(siteID: 123, path: "products")
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertTrue(usesTunnel)
+    }
+
+    func test_responseData_with_completion_when_opted_in_direct_request_fails_then_returns_tunnel_success() throws {
+        // Given
+        let siteID: Int64 = 123
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products")
+        let restRequest = createRESTRequest(path: "products")
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailure(jetpackRequest: jetpackRequest,
+                                             restRequest: restRequest,
+                                             failureStatusCode: 500,
+                                             failureResponse: ["error": "unauthorized"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: jetpackRequest)) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.1)
+        XCTAssertNotNil(result.0)
+        let responseDict = try JSONSerialization.jsonObject(with: try XCTUnwrap(result.0), options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["success"], "data")
+    }
+
+    func test_responseData_with_result_when_opted_in_direct_request_fails_then_returns_tunnel_success() throws {
+        // Given
+        let siteID: Int64 = 456
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "orders")
+        let restRequest = createRESTRequest(path: "orders")
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 500,
+                                                             failureResponse: ["error": "forbidden"],
+                                                             successResponse: ["success": "orders"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: jetpackRequest)) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let data = try XCTUnwrap(result.get())
+        let responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["success"], "orders")
+    }
+
+    @MainActor
+    func test_responseDataAndHeaders_when_opted_in_direct_request_fails_then_returns_tunnel_success() async throws {
+        // Given
+        let siteID: Int64 = 101
+        let testParameters: RequestParameterDictionary = ["name": "Test Product"]
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products", method: .post, parameters: testParameters)
+        let restRequest = createRESTRequest(path: "products", method: .post, parameters: testParameters)
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 500,
+                                                             failureResponse: ["error": "rate_limited"],
+                                                             successResponse: ["product": "created"])
+
+        // When
+        let result = try await network.responseDataAndHeaders(for: UnexpectedResponseRequest(original: jetpackRequest))
+
+        // Then
+        let responseDict = try JSONSerialization.jsonObject(with: result.0, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["product"], "created")
+    }
+
     // MARK: - Retry Logic Tests
 
     func test_responseData_with_completion_retries_direct_request_when_converted_request_fails() throws {
@@ -315,7 +550,7 @@ final class AlamofireNetworkTests: XCTestCase {
     func test_responseDataAndHeaders_retries_direct_request_when_converted_request_fails() async throws {
         // Given
         let siteID: Int64 = 101
-        let testParameters = ["name": "Test Product"]
+        let testParameters: RequestParameterDictionary = ["name": "Test Product"]
         let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products", method: .post, parameters: testParameters)
         let restRequest = createRESTRequest(path: "products", method: .post, parameters: testParameters)
         let network = createNetworkWithSelectedSite(siteID: siteID)
@@ -658,19 +893,18 @@ final class AlamofireNetworkTests: XCTestCase {
         // Given
         let siteAddress = "https://wporg-site.example.com"
         let credentials = Credentials.wporg(username: "user", password: "pass", siteAddress: siteAddress)
-        let expectation = expectation(description: "Discovery called")
-        var discoveredURL: String?
+        var network: AlamofireNetwork?
 
         // When
-        let network = AlamofireNetwork(credentials: credentials,
+        let discoveredURL = await withCheckedContinuation { continuation in
+            network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: nil,
                                        appPasswordSupportState: nil,
                                        sessionManager: createSessionWithMockURLProtocol(),
                                        discoveryHandler: { siteURL in
-                                           discoveredURL = siteURL
-                                           expectation.fulfill()
+                                           continuation.resume(returning: siteURL)
                                        })
-        await fulfillment(of: [expectation], timeout: 1.0)
+        }
 
         // Then
         XCTAssertEqual(discoveredURL, siteAddress)
@@ -681,44 +915,44 @@ final class AlamofireNetworkTests: XCTestCase {
         // Given
         let siteAddress = "https://apppw-site.example.com"
         let credentials = Credentials.applicationPassword(username: "user", password: "pass", siteAddress: siteAddress)
-        let expectation = expectation(description: "Discovery called")
-        var discoveredURL: String?
+        var network: AlamofireNetwork?
 
         // When
-        let network = AlamofireNetwork(credentials: credentials,
+        let discoveredURL = await withCheckedContinuation { continuation in
+            network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: nil,
                                        appPasswordSupportState: nil,
                                        sessionManager: createSessionWithMockURLProtocol(),
                                        discoveryHandler: { siteURL in
-                                           discoveredURL = siteURL
-                                           expectation.fulfill()
+                                           continuation.resume(returning: siteURL)
                                        })
-        await fulfillment(of: [expectation], timeout: 1.0)
+        }
 
         // Then
         XCTAssertEqual(discoveredURL, siteAddress)
+        _ = network
     }
 
     func test_discovery_is_triggered_with_siteAddress_for_wpcom_credentials() async {
         // Given
         let siteAddress = "https://wpcom-site.example.com"
         let credentials = Credentials.wpcom(username: "user", authToken: "token", siteAddress: siteAddress)
-        let expectation = expectation(description: "Discovery called")
-        var discoveredURL: String?
+        var network: AlamofireNetwork?
 
         // When
-        let network = AlamofireNetwork(credentials: credentials,
+        let discoveredURL = await withCheckedContinuation { continuation in
+            network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: nil,
                                        appPasswordSupportState: nil,
                                        sessionManager: createSessionWithMockURLProtocol(),
                                        discoveryHandler: { siteURL in
-                                           discoveredURL = siteURL
-                                           expectation.fulfill()
+                                           continuation.resume(returning: siteURL)
                                        })
-        await fulfillment(of: [expectation], timeout: 1.0)
+        }
 
         // Then
         XCTAssertEqual(discoveredURL, siteAddress)
+        _ = network
     }
 
     func test_discovery_is_not_triggered_when_credentials_are_nil() async {
@@ -739,6 +973,9 @@ final class AlamofireNetworkTests: XCTestCase {
     }
 
     // MARK: - Authentication Mode Tests
+    //
+    // `authenticationMode` is written on the main queue by `updateAuthenticationMode`, so each test reads it
+    // from a main-queue block to ensure the update has been delivered before asserting.
 
     func test_authenticationMode_is_appPasswords_for_wporg_credentials() {
         // Given
@@ -799,7 +1036,10 @@ final class AlamofireNetworkTests: XCTestCase {
 
     func test_authenticationMode_is_nil_for_no_credentials() {
         // When
-        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should be set")
@@ -909,7 +1149,7 @@ private extension AlamofireNetworkTests {
         return Session(configuration: configuration)
     }
 
-    func createJetpackRequest(siteID: Int64, path: String, method: HTTPMethod = .get, parameters: [String: Any]? = nil) -> JetpackRequest {
+    func createJetpackRequest(siteID: Int64, path: String, method: HTTPMethod = .get, parameters: RequestParameterDictionary? = nil) -> JetpackRequest {
         return JetpackRequest(wooApiVersion: .mark3,
                              method: method,
                              siteID: siteID,
@@ -918,7 +1158,7 @@ private extension AlamofireNetworkTests {
                              availableAsRESTRequest: true)
     }
 
-    func createRESTRequest(path: String, method: HTTPMethod = .get, parameters: [String: Any]? = nil) -> RESTRequest {
+    func createRESTRequest(path: String, method: HTTPMethod = .get, parameters: RequestParameterDictionary? = nil) -> RESTRequest {
         return RESTRequest(siteURL: "https://example.com",
                           wooApiVersion: .mark3,
                           method: method,

@@ -46,6 +46,16 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Whether the address is the default address for shipping labels; this is only used for origin addresses.
     @Published var isDefaultAddress: Bool
 
+    /// Title for the address edit screen.
+    var title: String {
+        switch addressType {
+        case .origin:
+            return Localization.editOrigin
+        case .destination:
+            return Localization.editDestination
+        }
+    }
+
     /// Whether to show the "save as default" toggle, to save the address as the default origin address.
     var showSaveAsDefault: Bool {
         switch addressType {
@@ -77,7 +87,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 
     /// The origin address country code.
-    /// Reserved for future validation rules.
+    /// Used to require a destination phone for international shipments.
     private let originCountryCode: String?
 
     /// The origin address state code.
@@ -127,6 +137,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     @Published private(set) var canConfirmWithoutVerification = false
 
     /// View model for selecting a country from a list.
+    @MainActor
     var countrySelectorVM: CountrySelectorViewModel {
         let selectedCountryBinding = Binding<AreaSelectorCommandProtocol?>(
             get: { self.selectedCountry },
@@ -136,6 +147,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 
     /// View model for selecting a state from a list.
+    @MainActor
     var stateSelectorVM: StateSelectorViewModel {
         let selectedStateBinding = Binding<AreaSelectorCommandProtocol?>(
             get: { self.selectedState },
@@ -148,7 +160,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     var countries: [Country] {
         switch addressType {
         case .origin:
-            resultsController.fetchedObjects.filter { Constants.acceptedUSPSCountries.contains($0.code) }
+            resultsController.fetchedObjects.filter { USPSDomesticMailCountries.rawCountryCodes.contains($0.code) }
         case .destination:
             resultsController.fetchedObjects
         }
@@ -238,7 +250,10 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.email = WooShippingAddressField(type: .email, value: email, required: true, validate: { newEmail in
             (newEmail.isEmpty || !EmailFormatValidator.validate(string: newEmail)) ? Localization.Validation.email : nil
         })
-        self.phone = WooShippingAddressField(type: .phone, value: phone, required: true, validate: { _ in return nil})
+        // Origin addresses always need a phone; destination addresses only for international shipments.
+        let isPhoneRequired = type == .origin || WooShippingPhoneValidator.isInternational(originCountry: originCountryCode,
+                                                                                              destinationCountry: country)
+        self.phone = WooShippingAddressField(type: .phone, value: phone, required: isPhoneRequired, validate: { _ in return nil})
         self.isDefaultAddress = isDefaultAddress
         self.showCompanyField = showCompanyField
         self.originalAddressIsVerified = isVerified
@@ -529,20 +544,22 @@ extension WooShippingEditAddressViewModel {
         allFields.forEach { $0.validateField() }
     }
 
+    /// Re-validates all fields immediately (bypassing the per-field debounce) and returns the status.
+    /// Used on the confirm tap so a fast tap can't skip local validation. See WOOMOB-3446.
+    func validatedStatus() -> WooShippingAddressStatus {
+        validateAddress()
+        return status
+    }
+
     /// Validate the address field with the given type.
     func validate(_ field: WooShippingAddressFieldType) {
         allFields.first { $0.type == field }?.validateField()
     }
 
-    /// Validates phone number for the address.
-    /// This take into account whether phone is not empty,
-    /// has length 10 with additional "1" area code for US.
+    /// Validates the phone number for the address: an empty phone is valid unless required, an entered phone must have a valid format.
     ///
     private var isPhoneNumberValid: Bool {
-        return WooShippingPhoneValidator.isValid(
-            phone: phone.value,
-            country: country.value
-        )
+        WooShippingPhoneValidator.issue(phone: phone.value, country: country.value, isRequired: phone.required) == nil
     }
 }
 
@@ -581,8 +598,9 @@ private extension WooShippingEditAddressViewModel {
                 selectedState = nil
                 state.required = stateRequired
 
-                // Update phone number requirement based on selected country.
-                phone.required = true
+                // The destination phone is only required for international shipments.
+                phone.required = addressType == .origin
+                    || WooShippingPhoneValidator.isInternational(originCountry: originCountryCode, destinationCountry: selectedCountry.code)
                 phone.validateField()
             }
             .store(in: &cancellables)
@@ -595,10 +613,6 @@ private extension WooShippingEditAddressViewModel {
                 guard let self else { return }
                 state.value = selectedState?.code ?? ""
                 state.setDisplayValue(selectedState?.name ?? "")
-
-                // Update phone number requirement based on selected state.
-                phone.required = true
-                phone.validateField()
             }
             .store(in: &cancellables)
     }
@@ -743,28 +757,14 @@ extension WooShippingEditAddressViewModel {
     }
 }
 
-// MARK: Constants
-private extension WooShippingEditAddressViewModel {
-    enum Constants {
-        /// This is hardcoded for now based on: https://git.io/JBuja.
-        /// It would be great if this can be fetched remotely.
-        ///
-        static let acceptedUSPSCountries = [
-            "US", // United States
-            "PR", // Puerto Rico
-            "VI", // Virgin Islands
-            "GU", // Guam
-            "AS", // American Samoa
-            "UM", // United States Minor Outlying Islands
-            "MH", // Marshall Islands
-            "FM", // Micronesia
-            "MP" // Northern Mariana Islands
-        ]
-    }
-}
-
 private extension WooShippingEditAddressViewModel {
     enum Localization {
+        static let editOrigin = NSLocalizedString("wooShipping.originAddresses.editOrigin",
+                                                  value: "Edit Origin",
+                                                  comment: "Title for the edit origin address screen in the shipping label creation flow")
+        static let editDestination = NSLocalizedString("wooShipping.createLabels.bottomSheet.editDestination",
+                                                       value: "Edit Destination",
+                                                       comment: "Title for the edit destination address screen in the shipping label creation flow")
         enum Validation {
             static let nameOrCompany = NSLocalizedString("wooShipping.createLabels.editAddress.validation.nameOrCompany",
                                                          value: "Please provide a valid name or company name.",

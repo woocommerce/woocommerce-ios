@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents the rate for all the Shipping Carriers
 ///
-public struct ShippingLabelCarriersAndRates: Equatable {
+public struct ShippingLabelCarriersAndRates: Equatable, Sendable {
 
     public var packageID: String?
     public let defaultRates: [ShippingLabelCarrierRate]
@@ -70,7 +70,7 @@ extension ShippingLabelCarriersAndRates: Decodable {
     }
 }
 
-private struct ShippingLabelRatesEnvelope: Decodable {
+private struct ShippingLabelRatesEnvelope: Decodable, Sendable {
     let rates: [ShippingLabelCarrierRate]
     let errors: [ShippingLabelRateError]
 
@@ -86,7 +86,7 @@ private struct ShippingLabelRatesEnvelope: Decodable {
     }
 }
 
-public struct ShippingLabelRateError: Equatable, Codable {
+public struct ShippingLabelRateError: Equatable, Codable, Sendable {
     public let code: String?
     public let message: String?
 

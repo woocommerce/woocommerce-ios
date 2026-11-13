@@ -42,6 +42,13 @@ final class POSSettingsStoreViewModel: ObservableObject {
         }
     }
 
+    /// The configured store name for a printed receipt, or `nil` when unset. Unlike `storeName`,
+    /// this omits the "Not set" UI placeholder so the receipt header is dropped rather than printing
+    /// a settings-screen placeholder to a customer.
+    var receiptStoreName: String? {
+        defaultSiteName
+    }
+
     var storeAddress: String {
         let siteAddress = SiteAddress(siteSettings: siteSettings)
         let address1 = siteAddress.address
@@ -64,6 +71,7 @@ final class POSSettingsStoreViewModel: ObservableObject {
         do {
             receiptInformation = try await settingsService.retrievePointOfSaleSettings()
         } catch {
+            guard !Task.isCancelled else { return }
             DDLogError("Failed to load POS settings: \(error)")
         }
     }

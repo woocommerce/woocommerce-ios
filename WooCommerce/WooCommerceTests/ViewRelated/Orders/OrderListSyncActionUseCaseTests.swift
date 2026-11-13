@@ -7,6 +7,7 @@ private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 private typealias Defaults = OrderListSyncActionUseCase.Defaults
 
 /// Tests for `OrderListSyncActionUseCase`.
+@MainActor
 final class OrderListSyncActionUseCaseTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000
@@ -137,6 +138,28 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
 
         XCTAssertEqual(writeStrategy, .save)
         XCTAssertNil(statuses?.first)
+        XCTAssertEqual(modifiedAfter, lastSyncDate)
+    }
+
+    func test_first_page_load_for_push_notification_performs_incremental_fetch() {
+        // Given
+        let useCase = OrderListSyncActionUseCase(siteID: siteID, filters: nil)
+        let lastSyncDate = Date()
+
+        // When
+        let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
+                                       pageSize: pageSize,
+                                       reason: .pushNotification,
+                                       lastFullSyncTimestamp: lastSyncDate,
+                                       completionHandler: unimportantCompletionHandler)
+
+        // Then
+        guard case .fetchFilteredOrders(_, _, _, _, let modifiedAfter, _, _, _, let writeStrategy, _, _) = action else {
+            XCTFail("Unexpected OrderAction type: \(action)")
+            return
+        }
+
+        XCTAssertEqual(writeStrategy, .save)
         XCTAssertEqual(modifiedAfter, lastSyncDate)
     }
 

@@ -16,11 +16,10 @@ final class CardPresentPaymentPreflightAdaptor: CardPresentPaymentPreflightContr
     @MainActor
     func attemptConnection(discoveryMethod: CardReaderDiscoveryMethod) async throws -> CardReaderPreflightResult {
         return try await withTaskCancellationHandler {
-            async let preflightResult = firstPreflightResult(
-                from: preflightController.readerConnection
-                    .compactMap { $0 }
-                    .values
-            )
+            let readerConnection = preflightController.readerConnection
+                .compactMap { $0 }
+                .values
+            async let preflightResult = firstPreflightResult(from: readerConnection)
 
             // This isn't a great async method... it would be better if it returned its result,
             // but it actually returns before connection is finished.

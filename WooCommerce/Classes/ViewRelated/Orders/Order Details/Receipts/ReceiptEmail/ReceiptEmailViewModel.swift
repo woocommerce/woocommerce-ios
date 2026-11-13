@@ -10,6 +10,7 @@ enum ReceiptEmailResult {
     case canceled
 }
 
+@MainActor
 final class ReceiptEmailViewModel: ObservableObject {
     @Published var email: String = ""
     @Published private(set) var state: PrimaryLoadingButtonStyle.State = .idle
@@ -29,14 +30,18 @@ final class ReceiptEmailViewModel: ObservableObject {
         self.onResult = onResult
     }
 
+    private var trimmedEmail: String {
+        email.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     var isEmailValid: Bool {
-        emailValidator(email)
+        emailValidator(trimmedEmail)
     }
 
     func sendReceipt() {
-        let email = email
+        let email = trimmedEmail
         let action = ReceiptAction.sendReceipt(order: order, email: email) { [weak self] result in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 self.state = .idle
                 switch result {

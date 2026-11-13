@@ -137,6 +137,7 @@ private extension StorePerformanceView {
             AdaptiveStack(horizontalAlignment: .leading) {
                 Text(viewModel.timeRange.isCustomTimeRange ?
                      Localization.custom : viewModel.timeRange.tabTitle)
+                    .accessibilityIdentifier("performance-\(viewModel.timeRange.menuAccessibilityIdentifier)")
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
                 if viewModel.timeRange.isCustomTimeRange {
@@ -197,8 +198,8 @@ private extension StorePerformanceView {
 
     @ViewBuilder
     var statsView: some View {
-        if viewModel.hasRevenue {
-            VStack(spacing: Layout.padding) {
+        VStack(spacing: Layout.padding) {
+            if viewModel.hasRevenue {
                 VStack(spacing: Layout.contentVerticalSpacing) {
                     if let selectedDateText = viewModel.selectedDateText {
                         Text(selectedDateText)
@@ -211,26 +212,32 @@ private extension StorePerformanceView {
                         .largeTitleStyle()
                         .accessibilityIdentifier("revenue-value")
                 }
-
-                HStack(alignment: .bottom) {
-                    Group {
-                        ordersStatsItemView
-                            .frame(maxWidth: .infinity)
-
-                        statsItemView(title: Localization.visitors,
-                                      value: viewModel.visitorStatsText,
-                                      redactMode: .withIcon)
-                        .frame(maxWidth: .infinity)
-
-                        statsItemView(title: Localization.conversion,
-                                      value: viewModel.conversionStatsText,
-                                      redactMode: .withoutIcon)
-                        .frame(maxWidth: .infinity)
-                    }
-                }
             }
-        } else {
-            emptyStatsView
+
+            statsItemsView
+
+            if !viewModel.hasRevenue {
+                emptyStatsView
+            }
+        }
+    }
+
+    var statsItemsView: some View {
+        HStack(alignment: .bottom) {
+            Group {
+                ordersStatsItemView
+                    .frame(maxWidth: .infinity)
+
+                statsItemView(title: Localization.visitors,
+                              value: viewModel.visitorStatsText,
+                              redactMode: .withIcon)
+                .frame(maxWidth: .infinity)
+
+                statsItemView(title: Localization.conversion,
+                              value: viewModel.conversionStatsText,
+                              redactMode: .withoutIcon)
+                .frame(maxWidth: .infinity)
+            }
         }
     }
 
@@ -416,7 +423,9 @@ private extension StorePerformanceView {
         static let orderTypeLabelMinScale: CGFloat = 0.7
         static let timestampInfoSpacing: CGFloat = 4
     }
+}
 
+extension StorePerformanceView {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "storePerformanceView.hideCard",

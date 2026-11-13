@@ -4,6 +4,7 @@ import WooFoundation
 struct InPersonPaymentsCountryNotSupportedStripe: View {
     let countryCode: CountryCode
     let analyticReason: String
+    let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -16,7 +17,13 @@ struct InPersonPaymentsCountryNotSupportedStripe: View {
             supportLink: true,
             learnMore: true,
             analyticReason: analyticReason,
-            plugin: .stripe
+            plugin: .stripe,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
+                text: Localization.primaryButton,
+                analyticReason: analyticReason,
+                plugin: .stripe,
+                action: onRefresh
+            )
         )
     }
 
@@ -30,6 +37,12 @@ struct InPersonPaymentsCountryNotSupportedStripe: View {
 }
 
 private enum Localization {
+    static let primaryButton = NSLocalizedString(
+        "cardPresentPayments.onboarding.countryNotSupportedStripe.refreshButton",
+        value: "Refresh",
+        comment: "Button to recheck In-Person Payments requirements when Stripe does not support the store country."
+    )
+
     static let title = NSLocalizedString(
         "We don’t support In‑Person Payments with Stripe in %1$@",
         comment: """
@@ -57,8 +70,8 @@ private enum Localization {
 struct InPersonPaymentsCountryNotSupportedStripe_Previews: PreviewProvider {
     static var previews: some View {
         // Valid country code
-        InPersonPaymentsCountryNotSupportedStripe(countryCode: .ES, analyticReason: "")
+        InPersonPaymentsCountryNotSupportedStripe(countryCode: .ES, analyticReason: "", onRefresh: {})
         // Invalid country code
-        InPersonPaymentsCountryNotSupportedStripe(countryCode: .unknown, analyticReason: "")
+        InPersonPaymentsCountryNotSupportedStripe(countryCode: .unknown, analyticReason: "", onRefresh: {})
     }
 }

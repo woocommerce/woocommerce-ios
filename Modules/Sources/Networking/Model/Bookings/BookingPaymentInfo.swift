@@ -1,6 +1,6 @@
 import Foundation
 
-public struct BookingPaymentInfo: Hashable {
+public struct BookingPaymentInfo: Hashable, Sendable {
     public let paymentMethodID: String
     public let paymentMethodTitle: String
     public let subtotal: String

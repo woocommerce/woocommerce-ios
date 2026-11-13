@@ -242,8 +242,9 @@ final class BlazeCampaignObjectivePickerViewModelTests: XCTestCase {
 
 private extension BlazeCampaignObjectivePickerViewModelTests {
     func insertObjective(_ readOnlyObjective: BlazeCampaignObjective) {
-        let newObjective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
-        newObjective.update(with: readOnlyObjective)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let newObjective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
+            newObjective.update(with: readOnlyObjective)
+        }, completion: {}, on: .main)
     }
 }

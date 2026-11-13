@@ -72,22 +72,22 @@ extension View {
 }
 
 #Preview {
-    VStack(spacing: 40) {
+    VStack(spacing: POSMetrics.regular.spacing.xxLarge) {
         Text("Medium Shadow")
-            .padding()
+            .posPadding(\.medium)
             .frame(width: 200, height: 100)
             .foregroundStyle(Color.posOnSecondaryContainer)
             .background(Color.posOutlineVariant)
             .posShadow(.medium, cornerRadius: 12)
 
         Text("Large Shadow")
-            .padding()
+            .posPadding(\.medium)
             .frame(width: 200, height: 100)
             .foregroundStyle(Color.posOnSecondaryContainer)
             .background(Color.posOutlineVariant)
             .posShadow(.large, cornerRadius: 16)
     }
-    .padding(100)
+    .posPadding(\.xxLarge)
 }
 
 // MARK: - UIKit Implementation (Private)
@@ -113,6 +113,13 @@ private class MultiShadowView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        // SwiftUI can update a representable's frame repeatedly while an ancestor is being dragged.
+        // Core Animation otherwise interpolates these layer changes independently of the SwiftUI
+        // transform, which makes card shadows appear to lag behind their rows during interactive navigation.
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        defer { CATransaction.commit() }
+
         layer.sublayers?.removeAll(where: { $0.name == "posShadowLayer" })
         for (index, shadow) in shadowLayers.enumerated() {
             let shadowLayer = CALayer()

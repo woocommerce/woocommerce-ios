@@ -88,7 +88,7 @@ struct ProductMetadataExtractor {
     private func convertToJSON(_ keyValueMetadata: AnyDictionary) throws -> Data {
         // Confirm the provided metadata is valid JSON that can be serialized.
         guard JSONSerialization.isValidJSONObject(keyValueMetadata) else {
-            throw ProductMetadataExtractorError.invalidJSONObject(keyValueMetadata)
+            throw ProductMetadataExtractorError.invalidJSONObject(String(describing: keyValueMetadata))
         }
 
         return try JSONSerialization.data(withJSONObject: keyValueMetadata)
@@ -110,5 +110,5 @@ private extension ProductMetadataExtractor {
 public enum ProductMetadataExtractorError: Error {
     /// Represents an error when a provided `key/value JSON object` can't be converted to `JSON data`.
     ///
-    case invalidJSONObject([String: Any?])
+    case invalidJSONObject(String)
 }

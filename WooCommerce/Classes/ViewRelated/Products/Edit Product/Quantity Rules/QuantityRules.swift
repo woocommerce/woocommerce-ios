@@ -20,11 +20,13 @@ struct QuantityRules: View {
     ///
     @ObservedObject var viewModel: QuantityRulesViewModel
 
-    /// Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
     var body: some View {
+        SafeAreaInsetsReader { _ in
+            content
+        }
+    }
+
+    private var content: some View {
         ScrollView {
             VStack(alignment: .leading) {
                 TitleAndTextFieldRow(title: Localization.minQuantity,
@@ -33,7 +35,6 @@ struct QuantityRules: View {
                                      keyboardType: .asciiCapableNumberPad)
                 Divider()
                     .padding(.leading)
-                    .padding(.trailing, insets: -safeAreaInsets)
 
                 // Maximum quantity
                 TitleAndTextFieldRow(title: Localization.maxQuantity,
@@ -42,7 +43,6 @@ struct QuantityRules: View {
                                      keyboardType: .asciiCapableNumberPad)
                 Divider()
                     .padding(.leading)
-                    .padding(.trailing, insets: -safeAreaInsets)
 
                 // Group of
                 TitleAndTextFieldRow(title: Localization.groupOf,
@@ -50,9 +50,8 @@ struct QuantityRules: View {
                                      text: $viewModel.groupOf,
                                      keyboardType: .asciiCapableNumberPad)
             }
-            .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
         }
         .navigationBarTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -63,7 +62,6 @@ struct QuantityRules: View {
                 }
             }
         }
-        .ignoresSafeArea(edges: .horizontal)
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )

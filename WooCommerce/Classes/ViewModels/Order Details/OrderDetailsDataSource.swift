@@ -2,13 +2,13 @@ import Foundation
 import SwiftUI
 import UIKit
 import Yosemite
-import Experiments
 import WooFoundation
 import protocol Storage.StorageManagerType
 
 
 /// The main file for Order Details data.
 ///
+@MainActor
 final class OrderDetailsDataSource: NSObject {
 
     /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
@@ -69,10 +69,6 @@ final class OrderDetailsDataSource: NSObject {
         !isEligibleForPayment &&
         !isEligibleForWooShipping
     }
-
-    /// Whether the order has a locally-generated receipt associated.
-    ///
-    var orderHasLocalReceipt: Bool = false
 
     /// Whether the order is eligible for backend receipt generation.
     /// This is calculated during sync to avoid async calls during section building.
@@ -238,31 +234,23 @@ final class OrderDetailsDataSource: NSObject {
 
     private let siteSettings: [SiteSetting]
 
-    private let featureFlags: FeatureFlagService
-
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
-
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
          refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
-         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker) {
+         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
-        self.receiptEligibilityUseCase = receiptEligibilityUseCase
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase ?? ReceiptEligibilityUseCase()
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin
-        self.featureFlags = featureFlags
-        self.ciabEligibilityChecker = ciabEligibilityChecker
 
         super.init()
     }
@@ -431,8 +419,6 @@ private extension OrderDetailsDataSource {
             configurePayment(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeReceipt:
             configureSeeReceipt(cell: cell)
-        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeLegacyReceipt:
-            configureSeeLegacyReceipt(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
@@ -572,6 +558,7 @@ private extension OrderDetailsDataSource {
             "Composes a new order note.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note."
         )
+        cell.accessibilityIdentifier = "order-details-add-note-button"
     }
 
     private func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
@@ -611,14 +598,7 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.seeReceipt
         cell.rightText = nil
         cell.hideFootnote()
-    }
-
-    private func configureSeeLegacyReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        cell.setLeftTitleToLinkStyle(true)
-        cell.leftText = Titles.seeLegacyReceipt
-        cell.rightText = nil
-        cell.hideFootnote()
-        cell.hideSeparator()
+        cell.accessibilityIdentifier = "order-details-see-receipt-button"
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
@@ -955,7 +935,7 @@ private extension OrderDetailsDataSource {
 
         cell.name = shippingAddress?.fullNameWithCompany
 
-        if let formattedPostalAddress = shippingAddress?.formattedPostalAddress {
+        if let formattedPostalAddress = shippingAddress?.formattedPostalAddressWithPhone {
             cell.title = Title.shippingAddress
             cell.address = formattedPostalAddress
             cell.onEditTapped = { [weak self] in
@@ -1044,12 +1024,10 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
-        let isStatusEditingSupported = ciabEligibilityChecker.isFeatureSupportedForCurrentSite(.manualOrderStatusUpdate)
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
             status: lookUpOrderStatus(for: order),
-            isEditButtonVisible: isStatusEditingSupported,
-            isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB
+            isEditButtonVisible: true
         )
 
         cell.configure(cellViewModel)
@@ -1320,11 +1298,7 @@ extension OrderDetailsDataSource {
                 let rows: [Row]
                 let headerStyle: Section.HeaderStyle
                 if isRefunded {
-                    if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
-                        rows = [.shippingLabelRefunded]
-                    } else {
-                        rows = [.shippingLabelRefunded, .shippingLabelDetail]
-                    }
+                    rows = [.shippingLabelRefunded]
                     headerStyle = .primary
                 } else {
                     rows = [.shippingLabelProducts, .shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]
@@ -1528,9 +1502,7 @@ extension OrderDetailsDataSource {
         if isEligibleForPayment {
             rows.append(.collectCardPaymentButton)
         }
-        if orderHasLocalReceipt {
-            rows.append(.seeLegacyReceipt)
-        } else if isEligibleForBackendReceipt {
+        if isEligibleForBackendReceipt {
             rows.append(.seeReceipt)
         }
         if isEligibleForRefund {
@@ -1633,7 +1605,7 @@ extension OrderDetailsDataSource {
 
         switch row {
         case .shippingAddress:
-            order.shippingAddress?.fullNameWithCompanyAndAddress.sendToPasteboard()
+            order.shippingAddress?.fullNameWithCompanyAddressAndPhone.sendToPasteboard()
         case .tracking:
             orderTracking(at: indexPath)?.trackingNumber.sendToPasteboard(includeTrailingNewline: false)
         default:
@@ -1747,7 +1719,6 @@ extension OrderDetailsDataSource {
             "OrderDetailsDataSource.configureSeeReceipt.button.title",
             value: "See Receipt",
             comment: "Text on the button title to see the order's receipt")
-        static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
         static let trashOrder = NSLocalizedString(
                      "orderDetailsDataSource.trashOrder.button.title",
                      value: "Move to trash",
@@ -1928,7 +1899,6 @@ extension OrderDetailsDataSource {
         case payment
         case customerPaid
         case seeReceipt
-        case seeLegacyReceipt
         case refund
         case netAmount
         case subscriptions
@@ -1982,8 +1952,6 @@ extension OrderDetailsDataSource {
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .seeReceipt:
-                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
-            case .seeLegacyReceipt:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refund:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier

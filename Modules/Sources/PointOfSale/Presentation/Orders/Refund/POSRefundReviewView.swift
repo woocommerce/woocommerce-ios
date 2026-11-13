@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundReviewView: View {
+    @Environment(\.posMetrics) private var metrics
     let onClose: () -> Void
     let itemsCount: Int
     let formattedItemsSubtotal: String
@@ -15,15 +16,16 @@ struct POSRefundReviewView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             headerView
             summarySection
-            Spacer(minLength: POSSpacing.large)
+            Spacer(minLength: metrics.spacing.large)
             buttonsSection
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
+        .posEdgeSwipeBackAction(onBack: onClose)
     }
 }
 
@@ -37,7 +39,7 @@ private extension POSRefundReviewView {
     }
 
     var summarySection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             itemsAndTaxRows
             Divider()
                 .overlay(Color.posOutlineVariant.opacity(0.5))
@@ -46,14 +48,14 @@ private extension POSRefundReviewView {
                 .overlay(Color.posOutlineVariant.opacity(0.5))
             refundReasonSection
         }
-        .padding(.horizontal, POSPadding.xLarge)
+        .padding(.horizontal, metrics.padding.xLarge)
         .frame(maxWidth: .infinity)
     }
 
     var itemsAndTaxRows: some View {
-        VStack(spacing: POSSpacing.small) {
+        VStack(spacing: metrics.spacing.small) {
             summaryRow(
-                label: String(format: Localization.itemsSubtotalFormat, itemsCount),
+                label: POSRefundSubtotalLabel.make(itemsCount),
                 value: formattedItemsSubtotal,
                 labelColor: .posOnSurfaceVariantHighest,
                 valueColor: .posOnSurface
@@ -68,7 +70,7 @@ private extension POSRefundReviewView {
     }
 
     var refundTotalSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             HStack {
                 Text(Localization.refundTotalLabel)
                     .font(.posBodyLargeBold)
@@ -85,27 +87,30 @@ private extension POSRefundReviewView {
     }
 
     var refundReasonSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            HStack {
-                Text(Localization.refundReasonLabel)
-                    .font(.posBodyLargeBold)
-                    .foregroundColor(.posOnSurface)
-                Spacer()
-                Button(action: onAddReason) {
+        Button(action: onAddReason) {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+                HStack {
+                    Text(Localization.refundReasonLabel)
+                        .font(.posBodyLargeBold)
+                        .foregroundColor(.posOnSurface)
+                    Spacer()
                     Text(refundReason != nil ? Localization.editReasonButton : Localization.addReasonButton)
                         .font(.posBodyMediumRegular(underline: true))
-                        .foregroundColor(.posPrimary)
+                        .foregroundColor(Color.posLink)
                 }
-                .accessibilityLabel(refundReason != nil ? Localization.editReasonAccessibilityLabel : Localization.addReasonAccessibilityLabel)
+                Text(refundReason ?? Localization.reasonPlaceholder)
+                    .font(.posBodyMediumRegular())
+                    .foregroundColor(refundReason != nil ? .posOnSurfaceVariantHighest : .posOnSurfaceVariantLowest)
             }
-            Text(refundReason ?? Localization.reasonPlaceholder)
-                .font(.posBodyMediumRegular())
-                .foregroundColor(refundReason != nil ? .posOnSurfaceVariantHighest : .posOnSurfaceVariantLowest)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+        .accessibilityLabel(refundReason != nil ? Localization.editReasonAccessibilityLabel : Localization.addReasonAccessibilityLabel)
+        .accessibilityValue(refundReason ?? "")
     }
 
     var buttonsSection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             Button(Localization.continueButton, action: onContinue)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
@@ -143,12 +148,6 @@ private extension POSRefundReviewView {
             "pos.refundReviewView.backButton.accessibilityLabel",
             value: "Back",
             comment: "Accessibility label for the back button on the refund review screen"
-        )
-
-        static let itemsSubtotalFormat = NSLocalizedString(
-            "pos.refundReviewView.itemsSubtotalFormat",
-            value: "Items subtotal (%d items)",
-            comment: "Label for items subtotal row in refund review. %d is the number of items."
         )
 
         static let taxLabel = NSLocalizedString(
@@ -226,7 +225,7 @@ private extension POSRefundReviewView {
         onAddReason: {},
         onContinue: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 
 #Preview("POSRefundReviewView with reason") {
@@ -241,6 +240,6 @@ private extension POSRefundReviewView {
         onAddReason: {},
         onContinue: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

@@ -109,7 +109,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
     /// Update the address remotely and invoke a completion block when finished
     ///
-    func saveAddress(onFinish: @escaping (Bool) -> Void) {
+    func saveAddress(onFinish: @escaping @MainActor @Sendable (Bool) -> Void) {
         guard validateEmail() else {
             notice = AddressFormViewModel.NoticeFactory.createInvalidEmailNotice()
             return onFinish(false)
@@ -138,23 +138,24 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
 
         let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, giftCard: nil, fields: orderFields) { [weak self] result in
             guard let self else { return }
+            Task { @MainActor in
+                self.performingNetworkRequest = false
+                switch result {
+                case .success(let updatedOrder):
+                    self.onOrderUpdate?(updatedOrder)
+                    self.notice = NoticeFactory.createSuccessNotice()
+                    self.analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
 
-            self.performingNetworkRequest = false
-            switch result {
-            case .success(let updatedOrder):
-                self.onOrderUpdate?(updatedOrder)
-                self.notice = NoticeFactory.createSuccessNotice()
-                self.analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
-
-            case .failure(let error):
-                DDLogError("⛔️ Error updating order: \(error)")
-                if self.type == .billing, updatedAddress.hasEmailAddress == false {
-                    DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
+                case .failure(let error):
+                    DDLogError("⛔️ Error updating order: \(error)")
+                    if self.type == .billing, updatedAddress.hasEmailAddress == false {
+                        DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
+                    }
+                    self.notice = AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress)
+                    self.analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
                 }
-                self.notice = AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress)
-                self.analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
+                onFinish(result.isSuccess)
             }
-            onFinish(result.isSuccess)
         }
 
         performingNetworkRequest = true

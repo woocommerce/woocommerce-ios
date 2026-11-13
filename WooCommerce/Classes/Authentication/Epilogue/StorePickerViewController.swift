@@ -1,3 +1,4 @@
+import protocol WooFoundation.Analytics
 import Combine
 import Foundation
 import SafariServices
@@ -50,12 +51,23 @@ enum StorePickerConfiguration: Equatable {
     /// Setup the store picker for use as list of stores
     ///
     case listStores
+
+    /// Login recovery screens also show connected stores before a store is selected.
+    var detectsUnexpectedLoginResponses: Bool {
+        switch self {
+        case .login, .listStores:
+            return true
+        case .standard, .switchingStores:
+            return false
+        }
+    }
 }
 
 
 /// Allows the user to pick which WordPress.com (OR) Jetpack-Connected-Store we should set up as the Main Store.
 ///
 final class StorePickerViewController: UIViewController {
+    typealias ErrorPresenter = (UIViewController, UIViewController, @escaping () -> Void) -> Void
 
     /// StorePickerViewController Delegate
     ///
@@ -65,13 +77,23 @@ final class StorePickerViewController: UIViewController {
     ///
     private let configuration: StorePickerConfiguration
 
+    /// Whether this picker is part of a login journey. `.listStores` is opened from the login
+    /// error screens, which are themselves reachable outside a login, so the caller decides.
+    private let isFromLogin: Bool
+
     /// View model for the controller
     ///
     private let viewModel: StorePickerViewModel
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    private lazy var requirementsChecker = RequirementsChecker()
+    private lazy var requirementsChecker = RequirementsChecker(stores: stores)
+    private var requirementCheckID = UUID()
+    private var roleCheckID = UUID()
+    private let analytics: Analytics
+    private let errorPresenter: ErrorPresenter
+    private(set) lazy var unexpectedResponsePresenter = LoginUnexpectedResponsePresenter(
+        analytics: analytics, presentation: { [weak self] source, alert, completion in self?.errorPresenter(source, alert, completion) })
 
     // MARK: - Private Properties
 
@@ -142,6 +164,7 @@ final class StorePickerViewController: UIViewController {
     ///
     private var currentlySelectedSite: Site? {
         didSet {
+            cancelChecks()
             guard let site = currentlySelectedSite else {
                 return
             }
@@ -163,14 +186,25 @@ final class StorePickerViewController: UIViewController {
     private let featureFlagService: FeatureFlagService
 
     init(configuration: StorePickerConfiguration,
+         isFromLogin: Bool? = nil,
          appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         analytics: Analytics = ServiceLocator.analytics,
+         viewModel: StorePickerViewModel? = nil,
+         errorPresenter: @escaping ErrorPresenter = { source, modal, completion in
+             source.present(modal, animated: true, completion: completion)
+         }) {
         self.configuration = configuration
+        self.isFromLogin = isFromLogin ?? (configuration == .login)
+        self.analytics = analytics
+        self.errorPresenter = errorPresenter
         self.appleIDCredentialChecker = appleIDCredentialChecker
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.viewModel = StorePickerViewModel(configuration: configuration)
+        self.viewModel = viewModel ?? StorePickerViewModel(configuration: configuration,
+                                                           isFromLogin: self.isFromLogin,
+                                                           stores: stores)
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -213,12 +247,24 @@ final class StorePickerViewController: UIViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        if isBeingDismissed || navigationController?.isBeingDismissed == true { cancelChecks() }
 
         if configuration == .login {
             // This should be called here to address this issue:
             // https://github.com/woocommerce/woocommerce-ios/issues/693
             stopListeningToNotifications()
         }
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        if parent == nil { cancelChecks() }
+    }
+
+    private func cancelChecks() {
+        requirementCheckID = UUID()
+        roleCheckID = UUID()
+        unexpectedResponsePresenter.invalidate()
     }
 }
 
@@ -289,7 +335,9 @@ private extension StorePickerViewController {
     }
 
     func refreshResults() {
-        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID)
+        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID) { [weak self] syncSucceeded in
+            self?.viewModel.trackLoginOutcome(syncSucceeded: syncSucceeded)
+        }
         viewModel.trackScreenView()
     }
 
@@ -370,7 +418,10 @@ private extension StorePickerViewController {
     }
 
     func presentSiteDiscovery() {
-        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
+        // One predicate for both gates, so the address screen's step and the outcome steps
+        // that follow it cannot disagree about whether this is a login.
+        ServiceLocator.authenticationManager.noteSiteDiscoveryOrigin(isFromLogin: isFromLogin)
+        guard let viewController = WordPressAuthenticator.siteDiscoveryUI(tracksLoginSteps: isFromLogin) else {
             return
         }
         navigationController?.show(viewController, sender: nil)
@@ -428,33 +479,18 @@ extension StorePickerViewController {
 //
 private extension StorePickerViewController {
 
-    /// Sets the first available Store as the default one. If possible!
+    /// Preselects a Store when there is an unambiguous choice.
     ///
     func preselectStoreIfPossible() {
 
-        guard case let .available(sites) = viewModel.state, let firstSite = sites.first(where: { $0.isWooCommerceActive }) else {
+        guard case let .available(sites) = viewModel.state else {
             return
         }
         guard currentlySelectedSite == nil else {
             return
         }
 
-        // If there is a defaultSite already set, select it
-        if let site = ServiceLocator.stores.sessionManager.defaultSite {
-            currentlySelectedSite = site
-            return
-        }
-
-        // If a site address was passed in credentials, select it
-        if case let .wpcom(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials,
-           let site = sites.first(where: { $0.url == siteAddress }),
-           site.isWooCommerceActive {
-            currentlySelectedSite = site
-            return
-        }
-
-        // Otherwise select the first site in the list
-        currentlySelectedSite = firstSite
+        currentlySelectedSite = viewModel.siteToPreselect(from: sites)
     }
 
     /// Reloads the UI.
@@ -527,17 +563,27 @@ private extension StorePickerViewController {
 
     /// If the provided site's WC version is not valid, display a warning to the user.
     ///
-    func displaySiteWCRequirementWarningIfNeeded(site: Site) {
+    func displaySiteWCRequirementWarningIfNeeded(site: Site, onRetryResult: ((Bool) -> Void)? = nil) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-        requirementsChecker.checkSiteEligibility(for: site) { [weak self] result in
+        let checkID = UUID()
+        requirementCheckID = checkID
+        requirementsChecker.checkSiteEligibility(for: site, detectUnexpectedResponses: configuration.detectsUnexpectedLoginResponses) { [weak self] result in
+            guard self?.requirementCheckID == checkID else { return }
             switch result {
             case .success(.validWCVersion):
+                onRetryResult?(true)
                 self?.updateUIForValidSite()
             case .success(.invalidWCVersion):
+                onRetryResult?(true)
                 self?.updateUIForInvalidSite(named: site.name)
             case .success(.expiredWPComPlan):
+                onRetryResult?(true)
                 self?.updateUIForExpiredWPComPlan(site: site)
-            case .failure:
+            case .failure(let error):
+                onRetryResult?(false)
+                if self?.presentUnexpectedFailure(error: error, step: .wooPluginCheck, siteURL: site.url, onRetry: { [weak self] result in
+                    self?.displaySiteWCRequirementWarningIfNeeded(site: site, onRetryResult: result)
+                }, canContinue: false) == true { return }
                 self?.updateUIForEmptyOrErroredSite(named: site.name, with: site.siteID)
             }
         }
@@ -614,10 +660,24 @@ private extension StorePickerViewController {
     /// Displays an error view as a modal with options to see troubleshooting tips and to contact support.
     ///
     func displayUnknownErrorModal(isPermissionError: Bool = false) {
-        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self, isPermissionError: isPermissionError)
+        let viewController = StorePickerErrorHostingController.createWithActions(
+            presenting: self,
+            isPermissionError: isPermissionError,
+            siteAddress: currentlySelectedSite?.url
+        )
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
-        present(viewController, animated: true)
+        errorPresenter(self, viewController) {}
+    }
+
+    func presentUnexpectedFailure(error: Error, step: LoginUnexpectedResponseFailure.Step, siteURL: String,
+                                  onRetry: @escaping LoginUnexpectedResponsePresenter.Retry, canContinue: Bool) -> Bool {
+        guard configuration.detectsUnexpectedLoginResponses,
+              let failure = LoginUnexpectedResponseFailure(error: error, step: step) else { return false }
+        toggleDismissButton(enabled: true)
+        updateActionButtonAndTableState(animating: false, enabled: canContinue)
+        unexpectedResponsePresenter.present(failure: failure, flow: .storePicker, from: self, siteURL: siteURL, onRetry: onRetry)
+        return true
     }
 
     /// Displays the Fancy Alert notice for a failed WC requirement check
@@ -803,6 +863,8 @@ private extension StorePickerViewController {
         let viewModel = NoWooErrorViewModel(
             site: site,
             showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
+            hasConnectedStores: self.viewModel.allFetchedSites.contains(where: \.isWooCommerceActive),
+            reportsLoginStep: isFromLogin,
             onSetupCompletion: { [weak self] siteID in
                 guard let self else { return }
                 self.navigationController?.popViewController(animated: true)
@@ -816,25 +878,32 @@ private extension StorePickerViewController {
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
 
-    func checkRoleEligibility(for site: Site) {
+    func checkRoleEligibility(for site: Site, onRetryResult: ((Bool) -> Void)? = nil) {
         guard let delegate else {
             return
         }
 
         updateActionButtonAndTableState(animating: true, enabled: false)
 
+        let checkID = UUID()
+        roleCheckID = checkID
         viewModel.checkEligibility(for: site.siteID) { [weak self] result in
-            guard let self else { return }
+            guard let self, roleCheckID == checkID else { return }
 
             self.updateActionButtonAndTableState(animating: false, enabled: true)
 
             switch result {
             case .success:
+                onRetryResult?(true)
                 // if user is eligible, then switch to the desired store.
                 delegate.didSelectStore(with: site.siteID) { [weak self] in
                     self?.dismiss()
                 }
             case .failure(let error):
+                onRetryResult?(false)
+                if presentUnexpectedFailure(error: error, step: .userRoleCheck, siteURL: site.url, onRetry: { [weak self] result in
+                    self?.checkRoleEligibility(for: site, onRetryResult: result)
+                }, canContinue: true) { return }
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
                     ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
                     delegate.showRoleErrorScreen(for: site.siteID, errorInfo: errorInfo) { [weak self] in

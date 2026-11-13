@@ -48,9 +48,11 @@ final class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureImages()
-        configureLabels()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureImages()
+            configureLabels()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

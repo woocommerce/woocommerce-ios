@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSRefundReaderDisconnectedView: View {
+    @Environment(\.posMetrics) private var metrics
     let onConnect: () -> Void
     let onCancel: () -> Void
     let onBack: () -> Void
@@ -11,9 +12,7 @@ struct POSRefundReaderDisconnectedView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            VStack(spacing: POSSpacing.none) {
-                Spacer(minLength: POSSpacing.large)
-
+            POSStatusScreenLayout(buttonsWidth: .capped) {
                 PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(
                     viewModel: .init(
                         title: Localization.title,
@@ -22,9 +21,7 @@ struct POSRefundReaderDisconnectedView: View {
                     ),
                     animation: .init(namespace: paymentMessageNamespace)
                 )
-
-                Spacer(minLength: POSSpacing.large)
-
+            } buttons: {
                 buttonsSection
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -33,14 +30,25 @@ struct POSRefundReaderDisconnectedView: View {
         }
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
+        .posEdgeSwipeBackAction(onBack: onBack)
     }
 }
 
 private extension POSRefundReaderDisconnectedView {
+    @ViewBuilder
     var headerView: some View {
+        if horizontalSizeClass == .compact {
+            POSRefundNavigationHeader(backAction: onBack,
+                                      backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
+        } else {
+            regularHeaderView
+        }
+    }
+
+    var regularHeaderView: some View {
         HStack {
             Button(action: onBack) {
-                Text(Image(systemName: "chevron.left"))
+                Text(Image(systemName: "chevron.backward"))
                     .font(.posButtonSymbolLarge)
             }
             .accessibilityLabel(Localization.backButtonAccessibilityLabel)
@@ -48,19 +56,17 @@ private extension POSRefundReaderDisconnectedView {
             Spacer()
         }
         .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
     }
 
     var buttonsSection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             Button(Localization.connectButton, action: onConnect)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
             Button(Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .frame(maxWidth: .infinity)
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -103,6 +109,6 @@ private extension POSRefundReaderDisconnectedView {
     POSRefundReaderDisconnectedView(onConnect: {},
                                     onCancel: {},
                                     onBack: {})
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

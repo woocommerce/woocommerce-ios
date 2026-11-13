@@ -3,9 +3,11 @@ import Foundation
 import Combine
 
 import struct Yosemite.Order
+import struct Yosemite.ReceiptStoreInformation
+import struct Yosemite.CardPresentTransactionDetails
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 import enum Yosemite.CardReaderSoftwareUpdateState
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
-import class Yosemite.PaymentCaptureCelebration
 
 /// Shared payment model that owns all payment state and logic.
 @MainActor
@@ -18,6 +20,20 @@ final class POSPaymentModel {
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
+    private(set) var cardPaymentSelectionMode: POSCardPaymentSelectionMode
+    private(set) var selectedCardPaymentRail: POSCardPaymentRail
+    var isCompactCardPaymentSelectionEnabled: Bool {
+        cardPaymentSelectionMode == .compact
+    }
+
+    var isBluetoothReaderSelected: Bool {
+        isCompactCardPaymentSelectionEnabled && selectedCardPaymentRail == .bluetoothReader
+    }
+
+    var isTapToPayAvailableForSelection: Bool {
+        preferredConnectionMethod == .tapToPay
+    }
+
     var isZeroTotal: Bool {
         guard let total = currentOrder?.total, let decimal = Decimal(string: total) else { return false }
         return decimal == 0
@@ -39,7 +55,7 @@ final class POSPaymentModel {
     /// session's default): the merchant can pick BT via the "Other payment
     /// methods" sheet on a TTP-default device, in which case the active
     /// session is `.bluetooth` even though preferred remains `.tapToPay`.
-    /// This is the field that gates the intermediate-state filter and the
+    /// This is the field that drives method-specific event handling and the
     /// model-side re-entry guard.
     private(set) var currentPaymentMethod: CardReaderConnectionMethod?
 
@@ -73,6 +89,9 @@ final class POSPaymentModel {
     private let scanToPayVerifier: POSScanToPayVerifying?
     private let markAsPaidHandler: POSMarkAsPaidHandling
     private let receiptSender: POSReceiptSending
+    /// Optional: nil when receipt printing is disabled (`.starReceiptPrinterSupport` off), matching
+    /// the aggregate model's `receiptPrinter`. The Print receipt button is hidden in that case.
+    private let receiptPrinter: ReceiptPrinterServiceProtocol?
     private let postPaymentStep: (() async throws -> Void)?
     let configuration: POSPaymentFlowConfiguration
     private let analytics: POSAnalyticsProviding
@@ -88,7 +107,7 @@ final class POSPaymentModel {
     /// `startPayment()` waits for any BT reader to come up and collects via that.
     /// `.tapToPay` (phone with TTP eligibility) only pre-connects the built-in
     /// reader on checkout — collection is gated behind an explicit method tap
-    /// from the buttons row / hero via `startPaymentWithMethod(_:)`, so the
+    /// from the buttons row / hero via `startCardPayment(with:)`, so the
     /// merchant's selection drives which method actually runs.
     private let preferredConnectionMethod: CardReaderConnectionMethod
 
@@ -115,6 +134,7 @@ final class POSPaymentModel {
     private var cancellables: Set<AnyCancellable> = []
     private var paymentSessionCancellables: Set<AnyCancellable> = []
     private var currentOrder: Order?
+    private var cardPaymentDetails: (orderID: Int64, cardDetails: CardPresentTransactionDetails)?
     private var formattedOrderTotalPrice: String?
     /// QR-encodeable URL for the active scan-to-pay payment. Populated lazily when the
     /// merchant taps Scan to Pay (after promoting the autoDraft to `.pending`).
@@ -123,6 +143,7 @@ final class POSPaymentModel {
     /// "still loading the URL" from "no URL available".
     private(set) var isPreparingScanToPay: Bool = false
     private var scanToPayPollingTask: Task<Void, Never>?
+    private var scanToPayGeneration = UUID()
 
     /// Coalesces concurrent silent-TTP pre-connect attempts. Without this,
     /// every call to `connectTapToPayReader` (which can come from
@@ -140,13 +161,15 @@ final class POSPaymentModel {
          scanToPayVerifier: POSScanToPayVerifying? = nil,
          markAsPaidHandler: POSMarkAsPaidHandling,
          receiptSender: POSReceiptSending,
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          postPaymentStep: (() async throws -> Void)? = nil,
          configuration: POSPaymentFlowConfiguration,
          analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         celebration: PaymentCaptureCelebrationProtocol = POSPaymentSuccessCelebration(),
          scanToPayPollInterval: TimeInterval = 3,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
+         cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
          paymentState: PointOfSalePaymentState = .idle) {
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderProvider = orderProvider
@@ -155,6 +178,7 @@ final class POSPaymentModel {
         self.scanToPayVerifier = scanToPayVerifier
         self.markAsPaidHandler = markAsPaidHandler
         self.receiptSender = receiptSender
+        self.receiptPrinter = receiptPrinter
         self.postPaymentStep = postPaymentStep
         self.configuration = configuration
         self.analytics = analytics
@@ -162,6 +186,8 @@ final class POSPaymentModel {
         self.celebration = celebration
         self.scanToPayPollInterval = scanToPayPollInterval
         self.preferredConnectionMethod = preferredConnectionMethod
+        self.cardPaymentSelectionMode = cardPaymentSelectionMode
+        self.selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: preferredConnectionMethod)
         self.paymentState = paymentState
 
         publishCardReaderConnectionStatus()
@@ -172,18 +198,45 @@ final class POSPaymentModel {
 
 // MARK: - Card Payment Methods
 extension POSPaymentModel {
+    /// Update presentation behavior without restarting or switching an active payment.
+    func updateCardPaymentSelectionMode(_ mode: POSCardPaymentSelectionMode) {
+        guard cardPaymentSelectionMode != mode else { return }
+        if mode == .compact, let method = currentPaymentMethod ?? lastConnectedMethod {
+            selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
+        }
+        cardPaymentSelectionMode = mode
+    }
+
     /// Called by the aggregate model when checkout opens.
     ///
     /// Bluetooth path: runs the auto-collect-on-connect flow that's been there forever
     /// — wait for any reader to come up, then collect via that.
     ///
     /// Tap to Pay path: only pre-connects the built-in reader. Collection is gated
-    /// behind an explicit `startPaymentWithMethod(.tapToPay)` from the hero CTA so
+    /// behind an explicit `startCardPayment(with: .tapToPay)` from the hero CTA so
     /// the merchant's selection drives the actual flow — no auto-collect to race.
     func startPayment() async {
         DDLogInfo("🃏 [CardPayment] startPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
 
         subscribeToPaymentSessionEvents()
+
+        if isCompactCardPaymentSelectionEnabled {
+            switch selectedCardPaymentRail {
+            case .tapToPay:
+                isAwaitingExplicitPaymentStart = true
+                currentPaymentMethod = nil
+                return
+            case .bluetoothReader:
+                isAwaitingExplicitPaymentStart = false
+                if case .connected = cardReaderConnectionStatus {
+                    currentPaymentMethod = .bluetooth
+                } else {
+                    currentPaymentMethod = nil
+                }
+                await startPaymentFlow(using: .bluetooth)
+                return
+            }
+        }
 
         if preferredConnectionMethod == .tapToPay {
             // One-shot Bluetooth cleanup. Each new order on phone POS
@@ -228,21 +281,26 @@ extension POSPaymentModel {
         logInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), " +
                 "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
 
-        // Same-method re-entry guard. Two different shapes:
-        // - BT: card state moves out of `.idle` during collection, so the
-        //   currentPaymentMethod check catches re-entry too.
-        // - TTP: we suppress intermediate card states so `paymentState.card`
-        //   stays `.idle` for the whole session — `currentPaymentMethod` is
-        //   the canonical "in flight" check.
+        // Same-method re-entry guard. `currentPaymentMethod` is the canonical
+        // "in flight" check, including the early Tap to Pay window before the
+        // first payment-state event arrives.
         if currentPaymentMethod == method {
-            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — \(method) session already active")
-            return
+            if shouldAllowSameMethodCardPaymentRetry(for: method) {
+                DDLogInfo("🃏 [CardPayment] allowing \(method) re-entry while reader is disconnected")
+            } else {
+                DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — \(method) session already active")
+                return
+            }
         }
         // Block re-entry while non-idle if there's no active method to switch
         // *from* (stray closure / SwiftUI re-render after a terminal state).
         if paymentState.card != .idle, currentPaymentMethod == nil {
             DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — non-idle card state with no active method")
             return
+        }
+
+        if isCompactCardPaymentSelectionEnabled {
+            selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
         }
 
         // Method-switch path: the merchant is switching from one active
@@ -258,6 +316,7 @@ extension POSPaymentModel {
             } catch {
                 DDLogError("🃏 [CardPayment] cancelPayment on method switch failed: \(error)")
             }
+            currentPaymentMethod = nil
         }
 
         // When switching to Bluetooth from a TTP-pre-connect-in-flight state
@@ -280,9 +339,14 @@ extension POSPaymentModel {
 
         subscribeToPaymentSessionEvents()
         // Merchant explicitly chose a method — track it as the active session
-        // method (drives the intermediate-state filter) and open the gate so
-        // subsequent Stripe Terminal events drive the state machine.
-        currentPaymentMethod = method
+        // method and open the gate so subsequent Stripe Terminal events drive
+        // the state machine.
+        if isCompactCardPaymentSelectionEnabled,
+           shouldAllowSameMethodCardPaymentRetry(for: method) {
+            currentPaymentMethod = nil
+        } else {
+            currentPaymentMethod = method
+        }
         isAwaitingExplicitPaymentStart = false
 
         // If a reader is connected via a *different* method than the one the
@@ -312,8 +376,12 @@ extension POSPaymentModel {
             // appears. We let the existing pre-connect Task drive the connect;
             // `startPaymentFlow` will subscribe to `.connected` and collect as
             // soon as the pre-connect Task completes.
+            await startPaymentFlow(using: method)
+
             if method == .tapToPay, tapToPayConnectTask != nil {
                 DDLogInfo("🃏 [CardPayment] tap during pre-connect — letting existing pre-connect drive the connect")
+            } else if method == .bluetooth, isCompactCardPaymentSelectionEnabled {
+                connectCardReader()
             } else {
                 Task { @MainActor [weak self] in
                     do {
@@ -324,9 +392,38 @@ extension POSPaymentModel {
                     }
                 }
             }
+            return
         }
 
         await startPaymentFlow(using: method)
+    }
+
+    func selectCardPaymentRail(_ rail: POSCardPaymentRail) async {
+        guard isCompactCardPaymentSelectionEnabled else { return }
+        guard selectedCardPaymentRail != rail else { return }
+
+        if let active = currentPaymentMethod, active != rail.connectionMethod {
+            do {
+                try await cardPresentPaymentService.cancelPayment()
+            } catch {
+                DDLogError("🃏 [CardPayment] cancelPayment on rail switch failed: \(error)")
+            }
+            currentPaymentMethod = nil
+        }
+
+        startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
+        startPaymentGeneration += 1
+        selectedCardPaymentRail = rail
+
+        if case .connected = cardReaderConnectionStatus,
+           lastConnectedMethod != rail.connectionMethod {
+            await cardPresentPaymentService.disconnectReader()
+        }
+    }
+
+    func startCardPayment(with rail: POSCardPaymentRail) async {
+        await startPaymentWithMethod(rail.connectionMethod)
     }
 
     /// Pre-connects the built-in Tap to Pay reader without starting collection.
@@ -427,7 +524,28 @@ extension POSPaymentModel {
             return
         }
 
+        // The reader can disconnect while cancellation is suspended. Collecting now would
+        // start reader discovery through preflight without an explicit connection request.
+        guard case .connected = cardReaderConnectionStatus else {
+            DDLogInfo("🃏 [CardPayment] reader unavailable after cancel, waiting for reconnection")
+            // Large layouts retain the chosen method so the default Tap to Pay flow cannot take over.
+            if isCompactCardPaymentSelectionEnabled {
+                currentPaymentMethod = nil
+                if selectedCardPaymentRail == .tapToPay {
+                    isAwaitingExplicitPaymentStart = true
+                    startPaymentOnCardReaderConnection?.cancel()
+                    startPaymentOnCardReaderConnection = nil
+                    startPaymentGeneration += 1
+                    return
+                }
+            }
+            await startPaymentFlow(using: method)
+            return
+        }
+
         DDLogInfo("🃏 [CardPayment] startPayment proceeding to collectCardPayment")
+        currentPaymentMethod = method
+        isAwaitingExplicitPaymentStart = false
         await collectCardPayment(using: method)
     }
 
@@ -445,7 +563,11 @@ extension POSPaymentModel {
     }
 
     private func collectPayment(for order: Order, using method: CardReaderConnectionMethod) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
+        collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(order: order))
+        let result = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
+        if case .success(let transaction) = result, let cardDetails = transaction.cardDetails {
+            cardPaymentDetails = (order.orderID, cardDetails)
+        }
     }
 
     func cancelThenCollectPayment() {
@@ -469,17 +591,26 @@ extension POSPaymentModel {
         guard case .connected = cardReaderConnectionStatus else {
             return
         }
-        await collectCardPayment(using: preferredConnectionMethod)
+        await collectCardPayment(using: activeCardPaymentConnectionMethod)
     }
 
     func connectCardReader() {
-        analytics.track(.pointOfSaleCardReaderConnectionTapped)
         guard connectCardReaderTask == nil else { return }
+
+        /// The merchant is starting reader discovery here, not picking a discovered reader.
+        /// The tap on a specific found reader is tracked by `CardReaderConnectionController`.
+        /// Tracked after the guard so a tap that is ignored because a connection is already
+        /// in flight does not report a discovery that never started.
+        ///
+        analytics.track(.cardReaderDiscoveryTapped)
         connectCardReaderTask = Task { @MainActor [weak self] in
             defer { self?.connectCardReaderTask = nil }
             do {
                 _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
                 self?.lastConnectedMethod = .bluetooth
+                if self?.isCompactCardPaymentSelectionEnabled == true {
+                    self?.selectedCardPaymentRail = .bluetoothReader
+                }
             } catch {
                 DDLogWarn("🃏 [CardPayment] BT connect failed: \(error)")
             }
@@ -515,6 +646,10 @@ extension POSPaymentModel {
         analytics.track(.cardReaderDisconnectTapped)
         Task { @MainActor [weak self] in
             await self?.cardPresentPaymentService.disconnectReader()
+            if self?.isCompactCardPaymentSelectionEnabled == true,
+               self?.isTapToPayAvailableForSelection == true {
+                self?.selectedCardPaymentRail = .tapToPay
+            }
         }
     }
 
@@ -586,12 +721,12 @@ extension POSPaymentModel {
         }
         try await cashPaymentHandler.completeCashPayment(for: order, changeDueAmount: changeDueAmount)
         try? await postPaymentStep?()
-        cashPaymentSuccess()
+        cashPaymentSuccess(order: order)
     }
 
-    private func cashPaymentSuccess() {
+    private func cashPaymentSuccess(order: Order) {
         paymentState.cash = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 }
@@ -613,6 +748,9 @@ extension POSPaymentModel {
         startPaymentOnCardReaderConnection = nil
         startPaymentGeneration += 1
 
+        let generation = UUID()
+        scanToPayGeneration = generation
+
         // Flip state right away so the dashboard observer pushes the QR screen.
         scanToPayURL = nil
         isPreparingScanToPay = true
@@ -632,10 +770,7 @@ extension POSPaymentModel {
             let paymentOrder = try await orderProvider.provideOrderForScanToPay()
 
             // Bail if the merchant cancelled while we were waiting for the network.
-            guard paymentState.scanToPay.isShowingQRCode else {
-                isPreparingScanToPay = false
-                return
-            }
+            guard generation == scanToPayGeneration, paymentState.scanToPay.isShowingQRCode else { return }
 
             currentOrder = paymentOrder.order
             formattedOrderTotalPrice = paymentOrder.formattedTotal
@@ -646,6 +781,7 @@ extension POSPaymentModel {
             // would always classify the autoDraft as pending and burn API calls for nothing.
             startScanToPayPolling()
         } catch {
+            guard generation == scanToPayGeneration else { return }
             DDLogError("📲 [ScanToPay] failed to provide order: \(error)")
             isPreparingScanToPay = false
             // Leave state as `.showingQRCode` so the view can render an "unable to generate"
@@ -655,6 +791,7 @@ extension POSPaymentModel {
 
     /// Stage 2 (cancel): merchant tapped back. Resets state and re-arms the card flow.
     func cancelScanToPayPayment() async {
+        scanToPayGeneration = UUID()
         analytics.track(.pointOfSaleBackToCheckoutFromScanToPayTapped)
         stopScanToPayPolling()
         paymentState.scanToPay = .idle
@@ -673,23 +810,20 @@ extension POSPaymentModel {
     /// note and transitions to success. Used when the gateway webhook hasn't fired yet but
     /// the merchant verified the payment out-of-band.
     func completeScanToPayPayment() async throws {
-        let order: Order
-        if let currentOrder {
-            order = currentOrder
-        } else {
-            let paymentOrder = try await orderProvider.provideOrder()
-            order = paymentOrder.order
-            currentOrder = order
+        if currentOrder == nil {
+            currentOrder = try await orderProvider.provideOrder().order
         }
-        try await scanToPayHandler.completeScanToPayPayment(for: order)
+        guard let order = currentOrder else { return }
+        try await scanToPayHandler.completeScanToPayPayment()
         try? await postPaymentStep?()
-        scanToPayPaymentSuccess()
+        scanToPayPaymentSuccess(order: order)
     }
 
-    private func scanToPayPaymentSuccess() {
+    private func scanToPayPaymentSuccess(order: Order) {
+        guard paymentState.scanToPay != .paymentSuccess else { return }
         stopScanToPayPolling()
         paymentState.scanToPay = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulScanToPayPayment()
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 
@@ -723,8 +857,8 @@ extension POSPaymentModel {
                     guard stillShowingAfterCall else { return }
 
                     switch result {
-                    case .paid:
-                        await MainActor.run { self.handleScanToPayDetectedPayment() }
+                    case .paid(let order):
+                        await MainActor.run { self.handleScanToPayDetectedPayment(order: order) }
                         return
                     case .pending:
                         await MainActor.run {
@@ -758,13 +892,16 @@ extension POSPaymentModel {
 
     /// Backend confirmed the customer paid via the gateway. Skip the manual handler (no need
     /// to add a "merchant marked it paid" note) and transition straight to success.
-    private func handleScanToPayDetectedPayment() {
+    private func handleScanToPayDetectedPayment(order: Order) {
         guard paymentState.scanToPay.isShowingQRCode else { return }
+        currentOrder = order
         analytics.track(.pointOfSaleScanToPayPaymentDetectedViaPolling)
         paymentState.scanToPay = .showingQRCode(verification: .confirming)
         Task { @MainActor [weak self] in
             try? await self?.postPaymentStep?()
-            self?.scanToPayPaymentSuccess()
+            self?.scanToPayPaymentSuccess(order: order)
+
+            await self?.scanToPayHandler.recordScanToPayPaymentMethod()
         }
     }
 }
@@ -835,7 +972,7 @@ extension POSPaymentModel {
             paymentState.markAsPaid = .processing
             try await markAsPaidHandler.markOrderAsPaid(for: order, note: note)
             try? await postPaymentStep?()
-            markAsPaidPaymentSuccess()
+            markAsPaidPaymentSuccess(order: order)
         } catch {
             // Roll back so the merchant can try again or cancel.
             paymentState.markAsPaid = .confirming
@@ -844,9 +981,9 @@ extension POSPaymentModel {
         }
     }
 
-    private func markAsPaidPaymentSuccess() {
+    private func markAsPaidPaymentSuccess(order: Order) {
         paymentState.markAsPaid = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment()
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 }
@@ -859,6 +996,19 @@ extension POSPaymentModel {
         }
         try await receiptSender.sendReceipt(orderID: order.orderID, recipientEmail: emailAddress)
         currentOrder = order.copy(billingAddress: order.billingAddress?.copy(email: emailAddress))
+    }
+
+    /// Prints the current order's receipt on the connected printer. The aggregate model supplies
+    /// best-effort `storeInformation`; the printer assembles the receipt content from the order.
+    func printReceipt(storeInformation: ReceiptStoreInformation) async throws {
+        guard let order = currentOrder else {
+            throw POSPaymentError.noOrder
+        }
+        guard let receiptPrinter else {
+            return
+        }
+        let cardDetails = cardPaymentDetails?.orderID == order.orderID ? cardPaymentDetails?.cardDetails : nil
+        try await receiptPrinter.printReceipt(order: order, storeInformation: storeInformation, cardDetails: cardDetails)
     }
 }
 
@@ -904,6 +1054,7 @@ extension POSPaymentModel {
 // MARK: - Reset
 extension POSPaymentModel {
     func reset() {
+        scanToPayGeneration = UUID()
         cancelConnectCardReaderTask()
         cancelTapToPayConnectTask()
         stopScanToPayPolling()
@@ -911,6 +1062,7 @@ extension POSPaymentModel {
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
         currentOrder = nil
+        cardPaymentDetails = nil
         formattedOrderTotalPrice = nil
         scanToPayURL = nil
         isPreparingScanToPay = false
@@ -969,6 +1121,7 @@ extension POSPaymentModel {
                     // should stay out of the way — otherwise we race the
                     // session's chosen method and confuse the SDK.
                     guard self.currentPaymentMethod == nil else { return }
+                    guard self.paymentState.allowsAutomaticCardPaymentStartOnReaderChange else { return }
                     switch status {
                     case .disconnected:
                         // "Reader fell off the device" — re-enter the
@@ -1018,6 +1171,7 @@ private extension POSPaymentModel {
             .sink(receiveValue: { [weak self] connectionStatus in
                 guard let self else { return }
                 cardReaderConnectionStatus = connectionStatus
+                collectOrderPaymentAnalyticsTracker.trackCardReaderConnectionChanged(isConnected: connectionStatus.isConnected)
                 if connectionStatus == .disconnected {
                     // Clear the tracking flag so the next pre-connect can't
                     // mistakenly think a TTP reader is still attached and
@@ -1041,6 +1195,19 @@ private extension POSPaymentModel {
                 self?.cardReaderUpdateState = updateState
             })
             .store(in: &cancellables)
+    }
+
+    var activeCardPaymentConnectionMethod: CardReaderConnectionMethod {
+        if isCompactCardPaymentSelectionEnabled {
+            return selectedCardPaymentRail.connectionMethod
+        }
+        return preferredConnectionMethod
+    }
+
+    func shouldAllowSameMethodCardPaymentRetry(for method: CardReaderConnectionMethod) -> Bool {
+        guard method == .bluetooth else { return false }
+        guard case .disconnected = cardReaderConnectionStatus else { return false }
+        return true
     }
 
     /// Always-on subscriptions for reader connection alerts and onboarding.
@@ -1081,11 +1248,12 @@ private extension POSPaymentModel {
                 // merchant *wants* to see the scan / foundReader / connect
                 // / failure modals, so neither suppression block below
                 // applies — Settings drives its UI off them.
-                let isExplicitConnectInProgress = connectCardReaderTask != nil
+                let isExplicitConnectInProgress = connectCardReaderTask != nil ||
+                    (isCompactCardPaymentSelectionEnabled && selectedCardPaymentRail == .bluetoothReader)
 
                 let isInTransparentTapToPayFlow = !isExplicitConnectInProgress
-                    && (currentPaymentMethod == .tapToPay
-                        || (currentPaymentMethod == nil && preferredConnectionMethod == .tapToPay))
+                    && (currentPaymentMethod == .tapToPay ||
+                        (currentPaymentMethod == nil && activeCardPaymentConnectionMethod == .tapToPay))
                 if isInTransparentTapToPayFlow {
                     switch eventDetails {
                     case .scanningForReaders,
@@ -1105,7 +1273,7 @@ private extension POSPaymentModel {
                 // merchant explicitly tapped Connect in Settings, they need to
                 // see the failure to know to retry or fix something — keep
                 // those alerts visible. BT-default devices keep them too.
-                if preferredConnectionMethod == .tapToPay && !isExplicitConnectInProgress {
+                if activeCardPaymentConnectionMethod == .tapToPay && !isExplicitConnectInProgress {
                     switch eventDetails {
                     case .connectingFailed,
                             .connectingFailedNonRetryable,
@@ -1180,7 +1348,7 @@ private extension POSPaymentModel {
                 return false
             }
             .sink { [weak self] _ in
-                guard let self, self.preferredConnectionMethod == .tapToPay else { return }
+                guard let self, self.currentPaymentMethod == .tapToPay else { return }
                 self.isAwaitingExplicitPaymentStart = true
                 self.currentPaymentMethod = nil
                 self.paymentState.card = .idle
@@ -1204,51 +1372,16 @@ private extension POSPaymentModel {
                 let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
                                                                       using: presentationStyleDeterminerDependencies)
 
-                if case .acceptingCard = newCardPaymentState {
+                switch newCardPaymentState {
+                case .validatingOrder, .preparingReader:
+                    // Re-arming at both steps keeps a failed validation from reporting the previous attempt's timing.
+                    collectOrderPaymentAnalyticsTracker.trackCardPaymentAttemptStarted()
+                case .acceptingCard:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
-                }
-
-                if case .processingPayment = newCardPaymentState {
+                case .processingPayment:
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
-                }
-
-                // On the TTP path Apple's modal owns the merchant's UX between
-                // "Pay with Tap to pay" and a terminal event. Letting the
-                // intermediate card states (validatingOrder / preparingReader /
-                // acceptingCard / cardInserted / processingPayment) drive our
-                // own card state is invisible while the modal is on screen,
-                // but on cancel the modal dismisses faster than the
-                // `cancelledOnReader` event arrives, and the merchant sees
-                // our underlying "Tap card" / "Ready for payment" UI flash
-                // for a frame. Suppress intermediates here — terminal states
-                // (cardPaymentSuccessful / paymentError) still come through.
-                // The cancel-on-reader path is handled by its dedicated
-                // synchronous reset above. Gated on the *current session's*
-                // method — when the merchant picks BT via the sheet on a
-                // TTP-default device, BT events should drive the UI normally.
-                if self.currentPaymentMethod == .tapToPay,
-                   let state = newCardPaymentState {
-                    switch state {
-                    case .validatingOrder,
-                            .preparingReader,
-                            .acceptingCard,
-                            .cardInserted:
-                        return nil
-                    case .processingPayment,
-                            .idle,
-                            .cardPaymentSuccessful,
-                            .paymentError,
-                            .validatingOrderError,
-                            .paymentIntentCreationError:
-                        // `.processingPayment` is intentionally let through on
-                        // TTP so the brief window between Apple's modal closing
-                        // and the success card rendering shows the inline
-                        // "Processing payment" message via `PaymentViewContent`
-                        // — matches what the BT reader path does, and avoids
-                        // the merchant seeing the hero with its spinner-in-
-                        // button as the "back to checkout" intermediate.
-                        break
-                    }
+                default:
+                    break
                 }
 
                 return newCardPaymentState
@@ -1316,7 +1449,7 @@ private extension POSPaymentModel {
     /// after a cancel-on-reader so transient events during the cancel teardown can't
     /// flicker the card state.
     var shouldPropagatePaymentEvent: Bool {
-        guard preferredConnectionMethod == .tapToPay else { return true }
+        guard activeCardPaymentConnectionMethod == .tapToPay else { return true }
         return !isAwaitingExplicitPaymentStart
     }
 
@@ -1325,7 +1458,7 @@ private extension POSPaymentModel {
         // back to the idle hero rather than the legacy iPad "Payment canceled /
         // Try payment again" screen — Android does the same. Suppress the inline
         // message here; the cancelledOnReader sink in subscribeToPaymentSessionEvents resets card state.
-        if preferredConnectionMethod == .tapToPay,
+        if currentPaymentMethod == .tapToPay,
            case .show(.cancelledOnReader) = event {
             return nil
         }

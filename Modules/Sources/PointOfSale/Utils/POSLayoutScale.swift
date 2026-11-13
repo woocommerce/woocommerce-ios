@@ -1,12 +1,12 @@
 import SwiftUI
 
 enum POSLayoutScale {
-    case tablet
-    case phone
+    case regular
+    case compact
 }
 
 private struct POSLayoutScaleKey: EnvironmentKey {
-    static let defaultValue: POSLayoutScale = .tablet
+    static let defaultValue: POSLayoutScale = .regular
 }
 
 extension EnvironmentValues {

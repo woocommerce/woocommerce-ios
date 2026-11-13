@@ -1,0 +1,130 @@
+import StoreDesignSystem
+import SwiftUI
+import Yosemite
+
+struct StoreAnalyticsUpdateModeSheet: View {
+    @State private var viewModel: AnalyticsUpdateModeBottomSheetViewModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var showingLearnMoreWebView = false
+    @State private var hasUpdateError = false
+
+    init(viewModel: AnalyticsUpdateModeBottomSheetViewModel) {
+        _viewModel = State(initialValue: viewModel)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: StoreSpacing.s5) {
+            StoreDashboardSheetHeader(
+                title: Localization.title,
+                description: Localization.description
+            )
+
+            Spacer()
+                .frame(height: StoreSpacing.s3)
+
+            VStack(alignment: .leading, spacing: StoreSpacing.s5) {
+                ForEach(AnalyticsImportUpdateMode.allCases, id: \.rawValue) { mode in
+                    StoreDashboardSheetOptionRow(
+                        title: mode.localizedTitle,
+                        description: mode.localizedDescription,
+                        isSelected: viewModel.selectedMode == mode,
+                        isLoading: viewModel.updatingMode == mode,
+                        accessibilityIdentifier: "dashboard-analytics-import-update-mode-\(mode.rawValue)",
+                        action: { select(mode) }
+                    )
+                }
+            }
+            .disabled(viewModel.isUpdating)
+
+            if hasUpdateError {
+                Text(Localization.updateErrorNotice)
+                    .storeTextStyle(.bodySmall)
+                    .foregroundStyle(.storeError)
+            }
+
+            Text(footerText)
+                .storeTextStyle(.bodySmall)
+                .foregroundStyle(.storeOnSurfaceVariant)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .environment(\.openURL, OpenURLAction { _ in
+                    showingLearnMoreWebView = true
+                    return .handled
+                })
+
+            Spacer()
+                .frame(height: StoreSpacing.s5)
+        }
+        .padding(.horizontal, StorePadding.p5)
+        .padding(.top, StorePadding.p5)
+        .sheet(isPresented: $showingLearnMoreWebView) {
+            WebViewSheet(viewModel: AnalyticsUpdateModeBottomSheet.Constants.learnMoreWebViewModel) {
+                showingLearnMoreWebView = false
+            }
+        }
+    }
+
+    private func select(_ mode: AnalyticsImportUpdateMode) {
+        hasUpdateError = false
+        Task { @MainActor in
+            do {
+                if try await viewModel.handleSelection(mode) {
+                    dismiss()
+                }
+            } catch {
+                hasUpdateError = true
+            }
+        }
+    }
+
+    private var footerText: AttributedString {
+        var text = AttributedString(String.localizedStringWithFormat(Localization.footer, Localization.learnMore))
+        guard let range = text.range(of: Localization.learnMore) else { return text }
+        text[range].link = URL(string: AnalyticsUpdateModeBottomSheet.Constants.learnMoreURL)
+        text[range].foregroundColor = .storePrimary
+        text[range].underlineStyle = .single
+        return text
+    }
+}
+
+private extension StoreAnalyticsUpdateModeSheet {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "analyticsUpdateModeBottomSheet.title",
+            value: "Analytics updates",
+            comment: "Title of the analytics updates sheet"
+        )
+        static let description = NSLocalizedString(
+            "analyticsUpdateModeBottomSheet.description",
+            value: "Choose when analytics data is updated.",
+            comment: "Description of the analytics updates sheet"
+        )
+        static let footer = NSLocalizedString(
+            "analyticsUpdateModeBottomSheet.footerWithLearnMoreLink",
+            value: "This is a store-wide setting, which also controls the \"Updates\" option in WooCommerce admin analytics settings. %1$@.",
+            comment: "Footer of the analytics updates sheet"
+        )
+        static let learnMore = NSLocalizedString(
+            "analyticsUpdateModeBottomSheet.learnMore",
+            value: "Learn more",
+            comment: "Link to WooCommerce Analytics documentation"
+        )
+        static let updateErrorNotice = NSLocalizedString(
+            "analyticsUpdateModeBottomSheet.updateErrorNotice",
+            value: "Couldn't update the setting. Please try again.",
+            comment: "Notice shown when saving Analytics updates fails"
+        )
+    }
+}
+
+#Preview {
+    StoreSheet {
+        StoreAnalyticsUpdateModeSheet(
+            viewModel: AnalyticsUpdateModeBottomSheetViewModel(
+                siteID: 123,
+                selectedMode: .scheduled,
+                onModeUpdated: { _ in }
+            )
+        )
+    }
+}

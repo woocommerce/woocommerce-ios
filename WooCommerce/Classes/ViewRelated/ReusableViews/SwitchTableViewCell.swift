@@ -3,6 +3,7 @@ import UIKit
 
 /// UITableViewCell (Subtitle Style) with a UISwitch on its right hand side.
 ///
+@MainActor
 class SwitchTableViewCell: UITableViewCell {
 
     /// Toggle Switch
@@ -50,7 +51,10 @@ class SwitchTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureBackground()
         setupTextLabels()
         setupSwitch()

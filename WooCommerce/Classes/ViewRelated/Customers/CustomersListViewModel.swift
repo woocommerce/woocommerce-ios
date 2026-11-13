@@ -4,6 +4,7 @@ import protocol Storage.StorageManagerType
 import Combine
 import class WooFoundation.VersionHelpers
 
+@MainActor
 final class CustomersListViewModel: ObservableObject {
 
     /// Customers to display in customer list.
@@ -26,7 +27,7 @@ final class CustomersListViewModel: ObservableObject {
 
     /// Whether the search header should be displayed.
     var showSearchHeader: Bool {
-        customers.isNotEmpty || searchTerm.isNotEmpty
+        searchTerm.isNotEmpty || (customers.isNotEmpty && !customerListErrorViewModel.isActive)
     }
 
     // MARK: Sync
@@ -54,6 +55,13 @@ final class CustomersListViewModel: ObservableObject {
     /// Plugins service.
     private let pluginsService: PluginsServiceProtocol
 
+    lazy var customerListErrorViewModel = CustomerListErrorViewModel(siteID: siteID,
+                                                                      source: .customers,
+                                                                      reloadCustomers: { [weak self] in
+                                                                          self?.paginationTracker.resync()
+                                                                      },
+                                                                      stores: stores)
+
     /// Customers ResultsController.
     private lazy var resultsController: ResultsController<StorageWCAnalyticsCustomer> = {
         let predicate = resultsPredicate
@@ -71,7 +79,6 @@ final class CustomersListViewModel: ObservableObject {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
-    @MainActor
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -134,7 +141,7 @@ final class CustomersListViewModel: ObservableObject {
 
 // MARK: - Remote Sync
 
-extension CustomersListViewModel: PaginationTrackerDelegate {
+extension CustomersListViewModel: @MainActor PaginationTrackerDelegate {
     /// Syncs the first page of customers from remote.
     func loadCustomers() {
         paginationTracker.syncFirstPage()
@@ -180,13 +187,16 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
             switch result {
             case let .success(hasNextPage):
                 ServiceLocator.analytics.track(event: .CustomersHub.customerListLoaded())
+                if pageNumber == self.pageFirstIndex {
+                    self.customerListErrorViewModel.customersDidLoad()
+                }
+                self.updateResults()
                 onCompletion?(.success(hasNextPage))
             case let .failure(error):
                 DDLogError("⛔️ Error synchronizing customers: \(error)")
                 ServiceLocator.analytics.track(event: .CustomersHub.customerListLoadFailed(withError: error))
-                onCompletion?(.failure(error))
+                self.handleSyncFailure(error, onCompletion: onCompletion)
             }
-            self.updateResults()
         }
         stores.dispatch(action)
     }
@@ -201,14 +211,26 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
                                                                filter: searchFilter) { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success:
+            case .success(let hasNextPage):
+                if pageNumber == self.pageFirstIndex {
+                    self.customerListErrorViewModel.customersDidLoad()
+                }
                 self.updateResults()
+                onCompletion?(.success(hasNextPage))
             case let .failure(error):
                 DDLogError("⛔️ Error searching customers: \(error)")
+                self.handleSyncFailure(error, onCompletion: onCompletion)
             }
-            onCompletion?(result)
         }
         stores.dispatch(action)
+    }
+
+    private func handleSyncFailure(_ error: Error, onCompletion: SyncCompletion?) {
+        Task {
+            _ = await self.customerListErrorViewModel.customersDidFail(with: error)
+            self.updateResults()
+            onCompletion?(.failure(error))
+        }
     }
 }
 
@@ -221,7 +243,6 @@ private extension CustomersListViewModel {
     }
 
     /// Checks whether the store is eligible for searching all customer search filters at once.
-    @MainActor
     func configureSearchHeader() {
         let isEligible = isEligibleForAdvancedSearch()
         searchFilter = isEligible ? .all : .name
@@ -229,7 +250,6 @@ private extension CustomersListViewModel {
     }
 
     /// Checks whether the store is eligible for searching all customer search filters at once.
-    @MainActor
     func isEligibleForAdvancedSearch() -> Bool {
         // Fetches WC plugin.
         guard let wcPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true) else {

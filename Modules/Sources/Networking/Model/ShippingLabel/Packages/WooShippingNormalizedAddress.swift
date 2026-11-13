@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a normalized address for the WooCommerce Shipping extension.
 ///
-public struct WooShippingNormalizedAddress: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingNormalizedAddress: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     /// The name of the company at the address.
     public let company: String
 

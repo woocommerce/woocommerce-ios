@@ -31,9 +31,10 @@ final class BottomButtonContainerView: UIView {
 
     private let viewModel: ViewModel
 
-    init(viewModel: ViewModel) {
+    init(viewModel: ViewModel, buttonAccessibilityIdentifier: String? = nil) {
         self.viewModel = viewModel
         super.init(frame: .zero)
+        button.accessibilityIdentifier = buttonAccessibilityIdentifier
 
         translatesAutoresizingMaskIntoConstraints = false
         configureContainerView()
@@ -62,6 +63,7 @@ private extension BottomButtonContainerView {
         addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         pinSubviewToAllEdges(button, insets: Constants.buttonMarginInsets)
+        button.setContentCompressionResistancePriority(.required, for: .vertical)
 
         button.setTitle(viewModel.title, for: .normal)
         button.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)

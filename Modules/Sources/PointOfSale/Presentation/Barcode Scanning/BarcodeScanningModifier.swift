@@ -13,7 +13,7 @@ struct BarcodeScanningModifier: ViewModifier {
             content
 
             if enabled {
-                BarcodeScannerContainer(onScan: onScan)
+                BarcodeScannerContainer(isScanningEnabled: { enabled }, onScan: onScan)
             }
         }
     }

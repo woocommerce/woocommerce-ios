@@ -5,6 +5,7 @@ import Yosemite
 @testable import WooCommerce
 
 @MainActor
+@Suite(.timeLimit(.minutes(5)))
 struct ConnectivityToolViewModelTests {
 
     // MARK: - testAnalyticsSetting
@@ -79,6 +80,29 @@ struct ConnectivityToolViewModelTests {
         #expect(actions.contains(where: { $0.title == "View technical details" }))
     }
 
+    @Test func test_testAnalyticsSetting_when_setting_is_not_exposed_then_skips_the_test() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.failure(SettingError.settingNotExposed))
+            default:
+                break
+            }
+        }
+        let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
+
+        // When
+        let result = await sut.testAnalyticsSetting()
+
+        // Then
+        guard case .skipped = result else {
+            Issue.record("Expected .skipped state but got \(result)")
+            return
+        }
+    }
+
     // MARK: - enableAnalytics
 
     @Test func test_enableAnalytics_when_succeeds_then_updates_card_to_relaunch_message() async {
@@ -115,8 +139,10 @@ struct ConnectivityToolViewModelTests {
         // When — trigger enableAnalytics through the action callback (simulates tapping the button).
         enableAction.action()
 
-        // Then — MockStoresManager dispatches synchronously so the card update is immediate.
-        let updatedCard = sut.cards.last(where: { $0.testCase == .analyticsSetting })
+        // Then
+        let updatedCard = await analyticsCard(of: sut) { state in
+            if case .empty = state { true } else { false }
+        }
         guard case let .empty(message) = updatedCard?.state else {
             Issue.record("Expected .empty state after enabling analytics but got \(String(describing: updatedCard?.state))")
             return
@@ -127,11 +153,13 @@ struct ConnectivityToolViewModelTests {
     @Test func test_enableAnalytics_when_fails_twice_then_restores_error_state() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var enableAttempts = 0
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
             case let .retrieveAnalyticsSetting(_, onCompletion):
                 onCompletion(.success(false))
             case let .enableAnalyticsSetting(_, onCompletion):
+                enableAttempts += 1
                 let error = NSError(domain: "TestDomain", code: 500, userInfo: nil)
                 onCompletion(.failure(error))
             default:
@@ -155,16 +183,69 @@ struct ConnectivityToolViewModelTests {
             state: testResult
         ))
 
-        // When — trigger enableAnalytics; it will fail, auto-retry (retries: 1), then restore error state.
+        // When — trigger enableAnalytics; it will fail, auto-retry once, then restore error state.
         enableAction.action()
 
-        // Then — after two synchronous failures, the card should be restored to the error state.
-        let restoredCard = sut.cards.last(where: { $0.testCase == .analyticsSetting })
+        // Then
+        let restoredCard = await analyticsCard(of: sut) { state in
+            if case .error = state { true } else { false }
+        }
         guard case let .error(_, restoredActions) = restoredCard?.state else {
             Issue.record("Expected error state to be restored but got \(String(describing: restoredCard?.state))")
             return
         }
         #expect(restoredActions.contains(where: { $0.title == "Enable Analytics" }))
+        #expect(enableAttempts == 2)
+    }
+
+    @Test func test_enableAnalytics_when_first_attempt_fails_then_retries_and_updates_card_to_relaunch_message() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var enableAttempts = 0
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(false))
+            case let .enableAnalyticsSetting(_, onCompletion):
+                enableAttempts += 1
+                if enableAttempts == 1 {
+                    onCompletion(.failure(NSError(domain: "TestDomain", code: 500, userInfo: nil)))
+                } else {
+                    onCompletion(.success(()))
+                }
+            default:
+                break
+            }
+        }
+        let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
+
+        let testResult = await sut.testAnalyticsSetting()
+        guard case let .error(_, actions) = testResult,
+              let enableAction = actions.first(where: { $0.title == "Enable Analytics" }) else {
+            Issue.record("Expected error card with Enable Analytics action but got \(testResult)")
+            return
+        }
+
+        sut.cards.append(ConnectivityTool.Card(
+            testCase: .analyticsSetting,
+            title: ConnectivityToolViewModel.ConnectivityTest.analyticsSetting.title,
+            icon: ConnectivityToolViewModel.ConnectivityTest.analyticsSetting.icon,
+            state: testResult
+        ))
+
+        // When
+        enableAction.action()
+
+        // Then
+        let updatedCard = await analyticsCard(of: sut) { state in
+            if case .empty = state { true } else { false }
+        }
+        guard case let .empty(message) = updatedCard?.state else {
+            Issue.record("Expected .empty state after enabling analytics but got \(String(describing: updatedCard?.state))")
+            return
+        }
+        #expect(message.contains("relaunch"))
+        #expect(enableAttempts == 2)
     }
 
     // MARK: - Analytics tracking
@@ -183,6 +264,20 @@ struct ConnectivityToolViewModelTests {
         #expect(properties?["test"] as? String == "analytics")
         #expect(properties?["success"] as? Bool == true)
         #expect(properties?["time_taken"] as? Double == 0.5)
+        #expect(properties?["skipped"] as? Bool == false)
+    }
+
+    @Test func test_requestResponse_event_when_test_is_skipped_then_carries_skipped_property() {
+        // Given
+        let event = WooAnalyticsEvent.ConnectivityTool.requestResponse(test: .analytics, success: true, timeTaken: 0.5, skipped: true)
+
+        // When
+        let properties = event.properties
+
+        // Then
+        #expect(properties["test"] as? String == "analytics")
+        #expect(properties["success"] as? Bool == true)
+        #expect(properties["skipped"] as? Bool == true)
     }
 
     // MARK: - testNotifications
@@ -408,60 +503,6 @@ struct ConnectivityToolViewModelTests {
         }
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.viewDetails.id }))
     }
-
-    // MARK: - isBotChatSupported
-
-    @Test func test_isBotChatSupported_when_feature_flag_enabled_and_wpcom_authenticated_then_returns_true() {
-        // Given
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-
-        // When
-        let sut = ConnectivityToolViewModel(
-            session: SessionManager.makeForTesting(authenticated: true),
-            stores: stores,
-            featureFlagService: featureFlagService
-        )
-
-        // Then
-        #expect(sut.isBotChatSupported == true)
-    }
-
-    @Test func test_isBotChatSupported_when_feature_flag_disabled_then_returns_false() {
-        // Given
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = false
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-
-        // When
-        let sut = ConnectivityToolViewModel(
-            session: SessionManager.makeForTesting(authenticated: true),
-            stores: stores,
-            featureFlagService: featureFlagService
-        )
-
-        // Then
-        #expect(sut.isBotChatSupported == false)
-    }
-
-    @Test func test_isBotChatSupported_when_authenticated_without_wpcom_then_returns_true() {
-        // Given
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
-        let session = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
-        let stores = MockStoresManager(sessionManager: session)
-
-        // When
-        let sut = ConnectivityToolViewModel(
-            session: session,
-            stores: stores,
-            featureFlagService: featureFlagService
-        )
-
-        // Then
-        #expect(sut.isBotChatSupported)
-    }
 }
 
 // MARK: - Helpers
@@ -484,4 +525,15 @@ private func assertState(_ actual: ConnectivityToolCard.ConnectivityState,
         }
     }()
     #expect(matches, "Expected \(expected) but got \(actual)", sourceLocation: sourceLocation)
+}
+
+@MainActor
+private func analyticsCard(of sut: ConnectivityToolViewModel,
+                           where matches: (ConnectivityToolCard.ConnectivityState) -> Bool) async -> ConnectivityTool.Card? {
+    for await cards in sut.$cards.values {
+        if let card = cards.last(where: { $0.testCase == .analyticsSetting }), matches(card.state) {
+            return card
+        }
+    }
+    return nil
 }

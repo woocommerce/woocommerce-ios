@@ -172,8 +172,8 @@ private extension StoreStatsChart {
     }
 
     enum Constants {
-        static var noRevenueLineColor = Color(.listForeground(modal: false))
-        static var chartLineColor = Color(
+        static let noRevenueLineColor = Color(.listForeground(modal: false))
+        static let chartLineColor = Color(
             light: .withColorStudio(name: .wooCommercePurple, shade: .shade50),
             dark: .withColorStudio(name: .wooCommercePurple, shade: .shade30)
         )

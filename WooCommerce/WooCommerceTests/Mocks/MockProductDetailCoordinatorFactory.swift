@@ -4,6 +4,7 @@ import Yosemite
 class MockProductDetailCoordinatorFactory: ProductDetailCoordinatorFactoryProtocol {
     private(set) var createdWebCoordiantor = false
     private(set) var createdNativeCoordiantor = false
+    private(set) var nativeCoordinators: [MockProductDetailNativeCoordinator] = []
 
     func webCoordinator(site: Site?) -> ProductDetailWebCoordinator {
         createdWebCoordiantor = true
@@ -12,6 +13,8 @@ class MockProductDetailCoordinatorFactory: ProductDetailCoordinatorFactoryProtoc
 
     func nativeCoordinator() -> ProductDetailNativeCoordinator {
         createdNativeCoordiantor = true
-        return MockProductDetailNativeCoordinator()
+        let coordinator = MockProductDetailNativeCoordinator()
+        nativeCoordinators.append(coordinator)
+        return coordinator
     }
 }

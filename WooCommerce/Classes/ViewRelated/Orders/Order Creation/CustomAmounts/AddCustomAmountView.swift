@@ -2,68 +2,91 @@ import SwiftUI
 import WooFoundation
 
 struct AddCustomAmountView: View {
-    @ObservedObject private(set) var viewModel: AddCustomAmountViewModel
+    @StateObject private var viewModel: AddCustomAmountViewModel
+    @State private var keyboardObserver = KeyboardObserver()
 
     @Environment(\.dismiss) var dismiss
+    @FocusState private var focusedField: AddCustomAmountViewModel.FocusedField?
+
+    init(viewModel: AddCustomAmountViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         NavigationStack {
-            List {
-                if let formattableAmountTextFieldViewModel = viewModel.formattableAmountTextFieldViewModel {
+            GeometryReader { geometry in
+                List {
+                    if let formattableAmountTextFieldViewModel = viewModel.formattableAmountTextFieldViewModel {
+                        VStack(alignment: .leading) {
+                            Text(Localization.amountTitle)
+                                .font(.title3)
+                                .foregroundColor(Color(.textSubtle))
+                            FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel,
+                                                       isFocused: inputFocusBinding)
+                        }
+                    }
+
+                    if let percentageViewModel = viewModel.percentageViewModel {
+                        AddCustomAmountPercentageView(viewModel: percentageViewModel,
+                                                      isFocused: inputFocusBinding)
+                    }
+
+                    Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
+                        .font(.title3)
+                        .onChange(of: viewModel.isTaxable) {
+                            focusedField = nil
+                            viewModel.clearFocus()
+                        }
+
                     VStack(alignment: .leading) {
-                        Text(Localization.amountTitle)
+                        Text(Localization.nameTitle)
                             .font(.title3)
                             .foregroundColor(Color(.textSubtle))
-                        FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel)
+                        TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
+                            .secondaryTitleStyle()
+                            .foregroundColor(Color(.textSubtle))
+                            .accessibilityIdentifier(AccessibilityIdentifiers.customAmountNameField)
+                            .focused($focusedField, equals: .name)
+                            .onChange(of: focusedField) { _, focusedField in
+                                guard focusedField == .name else { return }
+                                viewModel.focusName()
+                            }
+                            .restoresInputFocus(when: viewModel.focusedField == .name, restoreFocus: restoreNameFocus)
                     }
-                }
 
-                if let percentageViewModel = viewModel.percentageViewModel {
-                    AddCustomAmountPercentageView(viewModel: percentageViewModel)
-                }
-
-                Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
-                    .font(.title3)
-
-                VStack(alignment: .leading) {
-                    Text(Localization.nameTitle)
-                        .font(.title3)
-                        .foregroundColor(Color(.textSubtle))
-                    TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
-                        .secondaryTitleStyle()
-                        .foregroundColor(Color(.textSubtle))
-                }
-
-                Button(Localization.deleteButtonTitle) {
-                    viewModel.deleteButtonPressed()
-                    dismiss()
-                }
-                .foregroundColor(.init(uiColor: .error))
-                .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
-                .accessibilityIdentifier(AccessibilityIdentifiers.deleteCustomAmountButton)
-                .listRowSeparator(.hidden, edges: .bottom)
-                .renderedIf(viewModel.shouldShowDeleteButton)
-            }
-            .listStyle(.plain)
-            .safeAreaInset(edge: .bottom) {
-                Button(viewModel.doneButtonTitle) {
-                    viewModel.doneButtonPressed()
-                    dismiss()
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(!viewModel.shouldEnableDoneButton)
-                .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
-                .padding()
-                .background(Color(.systemBackground))
-            }
-            .navigationTitle(Localization.navigationTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
+                    Button(Localization.deleteButtonTitle) {
+                        viewModel.deleteButtonPressed()
                         dismiss()
-                    } label: {
-                        Text(Localization.navigationCancelButtonTitle)
+                    }
+                    .foregroundColor(.init(uiColor: .error))
+                    .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
+                    .accessibilityIdentifier(AccessibilityIdentifiers.deleteCustomAmountButton)
+                    .listRowSeparator(.hidden, edges: .bottom)
+                    .renderedIf(viewModel.shouldShowDeleteButton)
+                }
+                .listStyle(.plain)
+                .mask(Rectangle().ignoresSafeArea(.container, edges: .bottom))
+                .safeAreaInset(edge: .bottom, spacing: .zero) {
+                    Button(viewModel.doneButtonTitle) {
+                        viewModel.doneButtonPressed()
+                        dismiss()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(!viewModel.shouldEnableDoneButton)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
+                    .padding([.top, .horizontal])
+                    .padding(.bottom, keyboardObserver.isKeyboardVisible || geometry.safeAreaInsets.bottom == 0 ? Layout.footerBottomPadding : 0)
+                    .background(Color(.systemBackground), ignoresSafeAreaEdges: .bottom)
+                }
+                .navigationTitle(Localization.navigationTitle)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text(Localization.navigationCancelButtonTitle)
+                        }
                     }
                 }
             }
@@ -73,8 +96,37 @@ struct AddCustomAmountView: View {
 }
 
 private extension AddCustomAmountView {
+    var inputFocusBinding: Binding<Bool> {
+        Binding(
+            get: {
+                viewModel.focusedField == .input
+            },
+            set: { isFocused in
+                if isFocused {
+                    focusedField = nil
+                    viewModel.focusInput()
+                } else {
+                    viewModel.clearInputFocus()
+                }
+            }
+        )
+    }
+
+    func restoreNameFocus() {
+        guard viewModel.focusedField == .name else { return }
+
+        focusedField = .name
+        DispatchQueue.main.async {
+            guard viewModel.focusedField == .name else { return }
+            focusedField = .name
+        }
+    }
+}
+
+private extension AddCustomAmountView {
     enum Layout {
         static let mainVerticalSpacing: CGFloat = 8
+        static let footerBottomPadding: CGFloat = 16
     }
 }
 
@@ -96,5 +148,6 @@ private extension AddCustomAmountView {
     enum AccessibilityIdentifiers {
         static let addCustomAmountButton = "order-add-custom-amount-view-add-custom-amount-button"
         static let deleteCustomAmountButton = "order-add-custom-amount-view-delete-custom-amount-button"
+        static let customAmountNameField = "order-add-custom-amount-name-field"
     }
 }

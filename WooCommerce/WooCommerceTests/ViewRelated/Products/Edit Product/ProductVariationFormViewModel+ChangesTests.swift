@@ -6,6 +6,7 @@ import XCTest
 import Yosemite
 
 /// Unit tests for unsaved changes (`hasUnsavedChanges`)
+@MainActor
 final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
     private var productImageStatusesSubscription: AnyCancellable?
@@ -312,6 +313,7 @@ extension EditableProductVariationModel {
 
 // Helper in unit tests
 extension ProductVariationFormViewModel {
+    @MainActor
     convenience init(productVariation: EditableProductVariationModel,
                      formType: ProductFormType = .edit,
                      productImageActionHandler: ProductImageActionHandlerProtocol,

@@ -58,12 +58,17 @@ final class AztecEditorViewController: UIViewController, Editor {
         self?.showDescriptionGenerationBottomSheet()
     }
 
-    /// Aztec's Format Bar (toolbar above the keyboard)
+    /// Aztec's Format Bar, pinned to the bottom of the editor and following the keyboard.
     ///
     private lazy var formatBar: Aztec.FormatBar = {
         let toolbar = formatBarFactory.formatBar() { [weak self] formatBarItem, formatBar in
             guard let self else {
                 return
+            }
+            // The bar is tappable with the keyboard down, and the heading and list pickers present as input views, which need focus.
+            let activeView = self.editorView.activeView
+            if !activeView.isFirstResponder {
+                activeView.becomeFirstResponder()
             }
             self.formatBarCommandCoordinator.handleAction(formatBarItem: formatBarItem,
                                                           editorView: self.editorView,
@@ -71,6 +76,41 @@ final class AztecEditorViewController: UIViewController, Editor {
             formatBar.update(editorView: self.editorView)
         }
         return toolbar
+    }()
+
+    /// Hosts the format bar and, when enabled, the AI action next to it.
+    /// Its height comes from the arranged subviews' intrinsic 44 pt; Aztec's flexible-height resizing is inert inside a stack view.
+    ///
+    private lazy var formatBarContainer: UIStackView = {
+        let arrangedSubviews = isAIGenerationEnabled ? [aiActionView, formatBar] : [formatBar]
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        stackView.axis = .horizontal
+        stackView.spacing = 0
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    /// Pins the bar to the keyboard while it is shown and to the safe area otherwise. Leaving the keyboard layout guide
+    /// attached while the keyboard is hidden misplaces the bar after a rotation when the text view is still first responder.
+    private lazy var formatBarKeyboardConstraint = formatBarContainer.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+    private lazy var formatBarSafeAreaConstraint = formatBarContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+        MainActor.assumeIsolated {
+            self?.updateFormatBarBottomConstraint(isKeyboardVisible: keyboardFrame != .zero)
+        }
+    }
+
+    /// Cmd+B / Cmd+I / Cmd+U, built once since UIKit queries `keyCommands` on every key event.
+    ///
+    private lazy var formattingKeyCommands: [UIKeyCommand] = {
+        let commands = [
+            UIKeyCommand(title: Localization.boldShortcut, action: #selector(toggleBoldFromShortcut), input: "b", modifierFlags: .command),
+            UIKeyCommand(title: Localization.italicShortcut, action: #selector(toggleItalicFromShortcut), input: "i", modifierFlags: .command),
+            UIKeyCommand(title: Localization.underlineShortcut, action: #selector(toggleUnderlineFromShortcut), input: "u", modifierFlags: .command)
+        ]
+        commands.forEach { $0.wantsPriorityOverSystemBehavior = true }
+        return commands
     }()
 
     /// Aztec's Format Bar Action Handling Coordinator
@@ -94,13 +134,6 @@ final class AztecEditorViewController: UIViewController, Editor {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         return label
-    }()
-
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
-        }
-        return keyboardFrameObserver
     }()
 
     // FIXME: This has a long call chain and cannot be quickly addressed as part of the current SwiftLint violations smashing round
@@ -136,8 +169,10 @@ final class AztecEditorViewController: UIViewController, Editor {
         configureView()
         configureSubviews()
 
+        configureFormatBarConstraints()
         aztecUIConfigurator.configureConstraints(editorView: editorView,
                                                  editorContainerView: view,
+                                                 editorBottomAnchor: formatBarContainer.topAnchor,
                                                  placeholderView: placeholderLabel)
         disableLinkTapRecognizer(from: editorView.richTextView)
 
@@ -149,7 +184,7 @@ final class AztecEditorViewController: UIViewController, Editor {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        startListeningToNotifications()
+        keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -165,7 +200,6 @@ private extension AztecEditorViewController {
     }
 
     func configureView() {
-        edgesForExtendedLayout = UIRectEdge()
         view.backgroundColor = .basicBackground
     }
 
@@ -173,6 +207,26 @@ private extension AztecEditorViewController {
         view.addSubview(richTextView)
         view.addSubview(htmlTextView)
         view.addSubview(placeholderLabel)
+        view.addSubview(formatBarContainer)
+    }
+
+    /// Keeps the format bar inside the editor's own bounds: it follows the docked keyboard and otherwise
+    /// sits above the bottom safe area.
+    func configureFormatBarConstraints() {
+        NSLayoutConstraint.activate([
+            formatBarContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            formatBarContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            formatBarSafeAreaConstraint
+        ])
+    }
+
+    func updateFormatBarBottomConstraint(isKeyboardVisible: Bool) {
+        let (toDeactivate, toActivate) = isKeyboardVisible
+            ? (formatBarSafeAreaConstraint, formatBarKeyboardConstraint)
+            : (formatBarKeyboardConstraint, formatBarSafeAreaConstraint)
+        toDeactivate.isActive = false
+        toActivate.isActive = true
+        view.layoutIfNeeded()
     }
 
     func registerAttachmentImageProviders() {
@@ -200,26 +254,6 @@ private extension AztecEditorViewController {
         }
         recognizer.isEnabled = false
     }
-
-    func createInputAccessoryView() -> UIView {
-        guard isAIGenerationEnabled else {
-            return formatBar
-        }
-
-        let stackView = UIStackView(arrangedSubviews: [aiActionView, formatBar])
-        stackView.spacing = 0
-        stackView.axis = .horizontal
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-
-        let accessoryView = InputAccessoryView()
-        accessoryView.addSubview(stackView)
-        accessoryView.pinSubviewToAllEdges(stackView)
-        accessoryView.translatesAutoresizingMaskIntoConstraints = false
-
-        accessoryView.sizeToFit()
-
-        return accessoryView
-    }
 }
 
 private extension AztecEditorViewController {
@@ -233,22 +267,6 @@ private extension AztecEditorViewController {
 
     func refreshPlaceholderVisibility() {
         placeholderLabel.isHidden = richTextView.isHidden || !richTextView.text.isEmpty
-    }
-}
-
-// MARK: Keyboard frame update handling
-//
-extension AztecEditorViewController: KeyboardScrollable {
-    var scrollable: UIScrollView {
-        editorView.activeView
-    }
-}
-
-// MARK: - Notifications
-//
-private extension AztecEditorViewController {
-    func startListeningToNotifications() {
-        keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }
 
@@ -285,6 +303,36 @@ extension AztecEditorViewController {
     }
 }
 
+// MARK: - Hardware keyboard shortcuts
+//
+extension AztecEditorViewController {
+    /// The rich text view declines the standard bold / italic / underline edit actions (`allowsEditingTextAttributes` is off),
+    /// so the editor registers the shortcuts itself and forwards them to Aztec's edit action overrides.
+    override var keyCommands: [UIKeyCommand]? {
+        formattingKeyCommands
+    }
+
+    @objc private func toggleBoldFromShortcut() {
+        forwardShortcut { $0.toggleBoldface(nil) }
+    }
+
+    @objc private func toggleItalicFromShortcut() {
+        forwardShortcut { $0.toggleItalics(nil) }
+    }
+
+    @objc private func toggleUnderlineFromShortcut() {
+        forwardShortcut { $0.toggleUnderline(nil) }
+    }
+
+    private func forwardShortcut(_ action: (Aztec.TextView) -> Void) {
+        guard editorView.editingMode == .richText else {
+            return
+        }
+        action(richTextView)
+        formatBar.update(editorView: editorView)
+    }
+}
+
 // MARK: - UITextViewDelegate methods
 //
 extension AztecEditorViewController: UITextViewDelegate {
@@ -303,10 +351,19 @@ extension AztecEditorViewController: UITextViewDelegate {
         formatBar.update(editorView: editorView)
         onContentChanged?(getHTML())
     }
+}
 
-    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        textView.inputAccessoryView = createInputAccessoryView()
-        return true
+private extension AztecEditorViewController {
+    enum Localization {
+        static let boldShortcut = NSLocalizedString("aztecEditor.shortcut.bold",
+                                                    value: "Bold",
+                                                    comment: "Title of the Cmd+B keyboard shortcut in the product description editor.")
+        static let italicShortcut = NSLocalizedString("aztecEditor.shortcut.italic",
+                                                      value: "Italic",
+                                                      comment: "Title of the Cmd+I keyboard shortcut in the product description editor.")
+        static let underlineShortcut = NSLocalizedString("aztecEditor.shortcut.underline",
+                                                         value: "Underline",
+                                                         comment: "Title of the Cmd+U keyboard shortcut in the product description editor.")
     }
 }
 

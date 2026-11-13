@@ -7,14 +7,16 @@ final class SupportDataSourcesTests: XCTestCase {
     override class func setUp() {
         super.setUp()
         WordPressAuthenticator.initializeAuthenticator()
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isSupportRequestEnabled: true))
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService())
     }
 
+    @MainActor
     func test_mobile_app_formID_has_correct_value() {
         let dataSource = MobileAppSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         XCTAssertEqual(dataSource.formID, 360000010286)
     }
 
+    @MainActor
     func test_mobile_app_tags_have_correct_values() {
         // Given
         let dataSource = MobileAppSupportDataSource(metadataProvider: SupportFormMetadataProvider())
@@ -25,6 +27,7 @@ final class SupportDataSourcesTests: XCTestCase {
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
     }
 
+    @MainActor
     func test_mobile_app_fields_have_correct_ids() {
         let dataSource = MobileAppSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         let customFieldsKeys = dataSource.customFields.keys.sorted()
@@ -40,11 +43,13 @@ final class SupportDataSourcesTests: XCTestCase {
         ].sorted())
     }
 
+    @MainActor
     func test_ipp_formID_has_correct_value() {
         let dataSource = IPPSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         XCTAssertEqual(dataSource.formID, 360000010286)
     }
 
+    @MainActor
     func test_ipp_tags_have_correct_values() {
         // Given
         let dataSource = IPPSupportDataSource(metadataProvider: SupportFormMetadataProvider())
@@ -55,6 +60,7 @@ final class SupportDataSourcesTests: XCTestCase {
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
     }
 
+    @MainActor
     func test_ipp_fields_have_correct_ids() {
         let dataSource = IPPSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         let customFieldsKeys = dataSource.customFields.keys.sorted()
@@ -70,11 +76,13 @@ final class SupportDataSourcesTests: XCTestCase {
         ].sorted())
     }
 
+    @MainActor
     func test_wc_plugins_formID_has_correct_value() {
         let dataSource = WCPluginsSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         XCTAssertEqual(dataSource.formID, 189946)
     }
 
+    @MainActor
     func test_wc_plugins_tags_have_correct_values() {
         // Given
         let dataSource = WCPluginsSupportDataSource(metadataProvider: SupportFormMetadataProvider())
@@ -85,6 +93,7 @@ final class SupportDataSourcesTests: XCTestCase {
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
     }
 
+    @MainActor
     func test_wc_plugins_fields_have_correct_ids() {
         let dataSource = WCPluginsSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         let customFieldsKeys = dataSource.customFields.keys.sorted()
@@ -100,11 +109,13 @@ final class SupportDataSourcesTests: XCTestCase {
         ].sorted())
     }
 
+    @MainActor
     func test_wcpay_formID_has_correctValue() {
         let dataSource = WCPaySupportDataSource(metadataProvider: SupportFormMetadataProvider())
         XCTAssertEqual(dataSource.formID, 189946)
     }
 
+    @MainActor
     func test_wcpay_tags_have_correct_values() {
         let dataSource = WCPaySupportDataSource(metadataProvider: SupportFormMetadataProvider())
         let tagsSet = Set(dataSource.tags)
@@ -114,6 +125,7 @@ final class SupportDataSourcesTests: XCTestCase {
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
     }
 
+    @MainActor
     func test_wcpay_custom_fields_have_correct_values() {
         let dataSource = WCPaySupportDataSource(metadataProvider: SupportFormMetadataProvider())
         let customFieldsKeys = dataSource.customFields.keys.sorted()
@@ -130,11 +142,13 @@ final class SupportDataSourcesTests: XCTestCase {
         ].sorted())
     }
 
+    @MainActor
     func test_other_plugins_formID_has_correctValue() {
         let dataSource = OtherPluginsSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         XCTAssertEqual(dataSource.formID, 189946)
     }
 
+    @MainActor
     func test_other_plugins_tags_have_correct_values() {
         let dataSource = OtherPluginsSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         let tagsSet = Set(dataSource.tags)
@@ -144,6 +158,7 @@ final class SupportDataSourcesTests: XCTestCase {
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
     }
 
+    @MainActor
     func test_other_plugins_custom_fields_have_correct_values() {
         let dataSource = OtherPluginsSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         let customFieldsKeys = dataSource.customFields.keys.sorted()
@@ -160,6 +175,7 @@ final class SupportDataSourcesTests: XCTestCase {
         ].sorted())
     }
 
+    @MainActor
     func test_site_address_custom_field_is_inserted_correctly() {
         // Given
         let dataSOurce = MobileAppSupportDataSource(metadataProvider: SupportFormMetadataProvider())

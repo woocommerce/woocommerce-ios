@@ -23,6 +23,50 @@ struct POSManagerOverrideHandlerTests {
         #expect(sut.pinEntryState == .idle)
     }
 
+    @Test func test_gate_when_session_grants_capability_then_performs_immediately_without_override() {
+        // Given an operator who already holds the capability
+        let manager = POSLocalRole.admin.staff
+        let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: manager))
+        var performCount = 0
+        var capturedViaOverride: Bool?
+
+        // When
+        sut.gate(.manageStoreSettings, reason: "Opening settings requires manager approval") { viaOverride in
+            performCount += 1
+            capturedViaOverride = viaOverride
+        }
+
+        // Then it runs directly, flags no override, and presents no modal
+        #expect(performCount == 1)
+        #expect(capturedViaOverride == false)
+        #expect(sut.request == nil)
+    }
+
+    @Test func test_gate_when_session_denies_capability_then_presents_override_and_performs_on_approval() async {
+        // Given an operator who lacks the capability
+        let cashier = POSLocalRole.cashier.staff
+        let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: cashier))
+        var performCount = 0
+        var capturedViaOverride: Bool?
+
+        // When the gate is requested for a capability the operator lacks
+        sut.gate(.manageStoreSettings, reason: "Opening settings requires manager approval") { viaOverride in
+            performCount += 1
+            capturedViaOverride = viaOverride
+        }
+
+        // Then the override modal is presented and the action has not run yet
+        #expect(sut.request?.capability == .manageStoreSettings)
+        #expect(performCount == 0)
+
+        // When an authorized manager approves
+        await sut.submit(pin: "1234")
+
+        // Then the action runs and flags that it came through the override
+        #expect(performCount == 1)
+        #expect(capturedViaOverride == true)
+    }
+
     @Test func test_submit_when_started_then_sets_loading_state() async {
         // Given
         var loadingStateObserved = false
@@ -49,7 +93,7 @@ struct POSManagerOverrideHandlerTests {
         let session = MockPOSAccessSession()
         let sut = POSManagerOverrideHandler(session: session)
         sut.requestApproval(
-            for: .viewPOSSettings,
+            for: .manageStoreSettings,
             reason: "Viewing settings requires manager approval",
             onApproved: {
                 completionWasCalled = true
@@ -62,7 +106,7 @@ struct POSManagerOverrideHandlerTests {
         // Then
         #expect(succeeded == true)
         #expect(session.managerApprovalPINs == ["1234"])
-        #expect(session.managerApprovalCapabilities == [.viewPOSSettings])
+        #expect(session.managerApprovalCapabilities == [.manageStoreSettings])
         #expect(sut.request == nil)
         #expect(sut.pinEntryState == .idle)
         #expect(completionWasCalled)
@@ -105,7 +149,7 @@ struct POSManagerOverrideHandlerTests {
         // Given
         let session = MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN))
         let sut = POSManagerOverrideHandler(session: session)
-        sut.requestApproval(for: .editPOSSettings, reason: "Editing settings requires manager approval")
+        sut.requestApproval(for: .manageStoreSettings, reason: "Editing settings requires manager approval")
         await sut.submit(pin: "9999")
 
         // When
@@ -115,7 +159,7 @@ struct POSManagerOverrideHandlerTests {
         #expect(sut.request == nil)
         #expect(sut.pinEntryState == .idle)
         #expect(session.managerApprovalPINs == ["9999"])
-        #expect(session.managerApprovalCapabilities == [.editPOSSettings])
+        #expect(session.managerApprovalCapabilities == [.manageStoreSettings])
     }
 
     @Test func test_submit_when_request_replaced_in_flight_then_neither_completion_is_called() async {

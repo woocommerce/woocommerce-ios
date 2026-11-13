@@ -20,6 +20,7 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
          navigationController = nil
      }
 
+    @MainActor
     func test_web_view_is_presented_if_authentication_is_not_needed() throws {
         // Given
         let coordinator = GoogleAdsCampaignCoordinator(
@@ -40,6 +41,7 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
         XCTAssertTrue(presentedController is WebViewHostingController)
     }
 
+    @MainActor
     func test_authenticated_web_view_is_presented_if_authentication_is_needed() throws {
         // Given
         let coordinator = GoogleAdsCampaignCoordinator(

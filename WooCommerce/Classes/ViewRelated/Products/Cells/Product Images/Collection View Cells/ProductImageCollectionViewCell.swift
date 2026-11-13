@@ -1,12 +1,18 @@
 import UIKit
 import Combine
 
+@MainActor
 final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
 
-    var cancellable: Cancellable?
-    var cancellableTask: Task<Void, Never>?
+    var cancellable: Cancellable? {
+        get { imageRequestCancellable }
+        set { imageRequestCancellable = newValue.map { AnyCancellable($0) } }
+    }
+
+    // The token cancels on release without accessing actor-owned state from deinit.
+    private var imageRequestCancellable: AnyCancellable?
 
     private(set) lazy var coverTagView: UIView = {
         let containerView = UIView(frame: .zero)
@@ -31,27 +37,21 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureImageView()
-        configureCellAppearance()
-        configureCoverTagView()
-        observeInterfaceStyleChange()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureImageView()
+            configureCellAppearance()
+            configureCoverTagView()
+            observeInterfaceStyleChange()
+        }
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        cancellableTask?.cancel()
-        cancellableTask = nil
-
         cancellable?.cancel()
         cancellable = nil
 
         imageView.image = nil
-    }
-
-    deinit {
-        cancellableTask?.cancel()
-        cancellable?.cancel()
     }
 }
 

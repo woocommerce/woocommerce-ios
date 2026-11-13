@@ -8,6 +8,7 @@ import YosemiteTestHelpers
 
 // MARK: - ResultsController Unit Tests
 //
+@MainActor
 final class ResultsControllerTests: XCTestCase {
 
     /// InMemory Storage!
@@ -29,14 +30,14 @@ final class ResultsControllerTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     /// Verifies that the Results Controller has an Empty Section right after the Fetch OP is performed.
@@ -123,7 +124,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `onWillChangeContent` is called *before* anything is updated.
     ///
-    func testOnWillChangeContentIsEffectivelyCalledBeforeChanges() {
+    func testOnWillChangeContentIsEffectivelyCalledBeforeChanges() async {
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
 
@@ -140,12 +141,12 @@ final class ResultsControllerTests: XCTestCase {
 
         storageManager.insertSampleAccount()
 
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that onDidChangeContent is effectivelyc alled *after* the results are altered.
     ///
-    func testOnDidChangeContentIsEffectivelyCalledAfterChangesArePerformed() {
+    func testOnDidChangeContentIsEffectivelyCalledAfterChangesArePerformed() async {
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
 
@@ -162,13 +163,13 @@ final class ResultsControllerTests: XCTestCase {
 
         storageManager.insertSampleAccount()
 
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
     }
 
 
     /// Verifies that `onDidChangeObject` is called whenever a new object is inserted.
     ///
-    func testOnDidChangeObjectIsEffectivelyCalledOnceNewObjectsAreInserted() {
+    func testOnDidChangeObjectIsEffectivelyCalledOnceNewObjectsAreInserted() async {
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
 
@@ -183,13 +184,13 @@ final class ResultsControllerTests: XCTestCase {
 
         storageManager.insertSampleAccount()
 
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
     }
 
 
     /// Verifies that `onDidChangeSection` is called whenever new sections are added.
     ///
-    func testOnDidChangeSectionIsCalledWheneverNewSectionsAreAdded() {
+    func testOnDidChangeSectionIsCalledWheneverNewSectionsAreAdded() async {
         let sectionNameKeyPath = "userID"
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage,
                                                                    sectionNameKeyPath: sectionNameKeyPath,
@@ -204,7 +205,7 @@ final class ResultsControllerTests: XCTestCase {
 
         storageManager.insertSampleAccount()
 
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
     }
 
 
@@ -228,7 +229,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `fetchedObjects` effectively  returns all of the (readOnly) objects that are expected to be available.
     ///
-    func testResettingStorageIsMappedIntoOnResetClosure() {
+    func testResettingStorageIsMappedIntoOnResetClosure() async {
         storageManager.insertSampleAccount()
         storageManager.insertSampleAccount()
 
@@ -246,7 +247,7 @@ final class ResultsControllerTests: XCTestCase {
         storageManager.reset()
         XCTAssertTrue(resultsController.isEmpty)
 
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
     }
 
 

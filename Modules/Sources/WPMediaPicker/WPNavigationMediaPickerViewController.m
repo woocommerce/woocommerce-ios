@@ -206,7 +206,17 @@ static NSString *const ArrowDown = @"\u25be";
 {
     [self.mediaPicker setGroup:group];
     self.mediaPicker.title = group.name;
-    [self.internalNavigationController pushViewController:self.mediaPicker animated:YES];
+
+    // Defensive guard against the "pushed the same view controller instance more than once" crash
+    // (WordPress-iOS#20890): `UITableView/didSelectRowAt` can fire twice under certain circumstances, which
+    // pushes the same `mediaPicker` instance again and crashes.
+    //
+    // This is the interim guard upstream authored (MediaPicker-iOS#411) and proposed to ship (WordPress-iOS#21105),
+    // but abandoned in favour of replacing this device picker with Apple's PHPickerViewController (WordPress-iOS#21190).
+    // We are not migrating, so we adopt their interim guard here. MediaPicker-iOS is archived; no release carries it.
+    if (self.internalNavigationController.topViewController != self.mediaPicker) {
+        [self.internalNavigationController pushViewController:self.mediaPicker animated:YES];
+    }
 }
 
 - (void)mediaGroupPickerViewControllerDidCancel:(WPMediaGroupPickerViewController *)picker

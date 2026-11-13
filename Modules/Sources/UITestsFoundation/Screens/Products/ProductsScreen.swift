@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class ProductsScreen: ScreenObject {
 
 
@@ -67,9 +68,7 @@ public final class ProductsScreen: ScreenObject {
         /// WOOMOB-1901
         /// Since presentation styles may differ (popover / sheet) we should target it by id
         let sheet = app.otherElements["product-creation-sheet"]
-        if sheet.waitForExistence(timeout: 1) {
-            sheet.swipeUp() // Make bottom sheet show more product creation options.
-        } else {
+        if !sheet.waitForExistence(timeout: 5) {
             XCTFail("Add product UI did not appear")
         }
 
@@ -108,7 +107,7 @@ public final class ProductsScreen: ScreenObject {
     @discardableResult
     public func verifyProductList(products: [ProductData]) throws -> Self {
         app.assertTextVisibilityCount(textToFind: products[0].name, expectedCount: 1)
-        app.assertElement(matching: products[0].name, existsOnCellWithIdentifier: products[0].stock_status)
+        XCTAssertTrue(productsTableView.cells[products[0].name].staticTexts["product-stock-status-\(products[0].stock_status)"].exists)
         let productListTable = app.tables["products-table-view"]
         XCTAssertEqual(products.count, productListTable.cells.count, "Expected '\(products.count)' products but found '\(productListTable.cells.count)' instead!")
 
@@ -122,10 +121,16 @@ public final class ProductsScreen: ScreenObject {
     }
 
     public func tapProductType(productType: String) throws -> SingleProductScreen {
-        // Swipe up to get all the list in view
-        app.tables.firstMatch.swipeUp()
-        let productTypeLabel = NSPredicate(format: "label CONTAINS[c] %@", productType)
-        app.staticTexts.containing(productTypeLabel).firstMatch.tap()
+        let typeID = ["physical": "simple", "virtual": "simpleVirtual", "external": "affiliate"][productType] ?? productType
+        let sheet = app.otherElements["product-creation-sheet"]
+        let row = sheet.descendants(matching: .any)["product-type-option-\(typeID)"].firstMatch
+        for _ in 0..<10 {
+            if row.isHittable && sheet.frame.contains(row.frame) {
+                break
+            }
+            sheet.swipeUp()
+        }
+        row.waitAndTap()
         return try SingleProductScreen()
     }
 
@@ -141,13 +146,15 @@ public final class ProductsScreen: ScreenObject {
 
     @discardableResult
     public func verifyProductFilterResults(products: [ProductData], filter: String) throws -> Self {
-        let filteredProducts = products.filter { $0.stock_status == filter.lowercased() }
+        let filteredProducts = products.filter { $0.stock_status == filter }
 
         for product in filteredProducts {
             productsTableView.assertTextVisibilityCount(textToFind: product.name, expectedCount: 1)
+            XCTAssertTrue(productsTableView.cells[product.name].staticTexts["product-stock-status-\(filter)"].exists)
         }
 
-        productsTableView.assertTextVisibilityCount(textToFind: filter, expectedCount: filteredProducts.count)
+        XCTAssertEqual(productsTableView.cells.count, filteredProducts.count)
+        XCTAssertEqual(productsTableView.staticTexts.matching(identifier: "product-stock-status-\(filter)").count, filteredProducts.count)
 
         return self
     }

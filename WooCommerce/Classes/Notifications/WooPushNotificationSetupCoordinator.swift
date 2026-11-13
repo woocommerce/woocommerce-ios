@@ -20,7 +20,8 @@ final class WooPushNotificationSetupCoordinator {
     func startSetup(siteAlreadyConnected: Bool,
                     pluginOutdatedVersion: String? = nil) {
         guard let site = stores.sessionManager.defaultSite else {
-            fatalError("❌ No default site found for Woo push notification setup!")
+            assertionFailure("No default site found for Woo push notification setup.")
+            return
         }
         let navigationController = WooNavigationController()
         let handler = WPComConnectionSetupHandler(
@@ -67,7 +68,7 @@ final class WooPushNotificationSetupCoordinator {
 
 enum WooPluginRequirements {
     static let pluginPath = "woocommerce/woocommerce.php"
-    static let minimumVersion = "10.9.0"
+    static let minimumVersion = "10.9.2"
 }
 
 private extension WooPushNotificationSetupCoordinator {

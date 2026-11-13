@@ -78,7 +78,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
                                                      statusCode: 404,
                                                      httpVersion: nil,
                                                      headerFields: nil))
-        let policy = await viewModel.decidePolicy(for: response)
+        let policy = await viewModel.decidePolicy(for: response, isForMainFrame: true)
 
         // Then
         XCTAssertEqual(policy, .cancel)
@@ -103,7 +103,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
                                                      statusCode: 200,
                                                      httpVersion: nil,
                                                      headerFields: nil))
-        let policy = await viewModel.decidePolicy(for: response)
+        let policy = await viewModel.decidePolicy(for: response, isForMainFrame: true)
 
         // Then
         XCTAssertEqual(policy, .allow)

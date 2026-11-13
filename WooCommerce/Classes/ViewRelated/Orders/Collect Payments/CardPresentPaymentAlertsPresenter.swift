@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
+@MainActor
 protocol CardPresentPaymentAlertsPresenting<AlertDetails> {
     associatedtype AlertDetails
     func present(viewModel: AlertDetails)

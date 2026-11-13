@@ -5,6 +5,9 @@ import Yosemite
 
 protocol PushNotesManager {
 
+    /// Temporarily suppresses the foreground new-order notice for a payment collected in this app.
+    @MainActor func suppressNewOrderNotice(for order: Order)
+
     /// An observable that emits values when the Remote Notifications are received while the app is
     /// in the foreground.
     ///
@@ -32,6 +35,13 @@ protocol PushNotesManager {
     /// WordPress.com Device Identifier
     ///
     var deviceID: String? { get }
+
+    /// Apple's Push Notification device token, as last received from APNs.
+    ///
+    /// `nil` means the app holds no current token — never obtained, cleared on unregistration, or APNs
+    /// registration failed — any of which blocks both push systems.
+    ///
+    var deviceToken: String? { get }
 
     /// Self-driven push notification token ID
     ///
@@ -73,10 +83,13 @@ protocol PushNotesManager {
     /// - Throws: If any step in the registration pipeline fails.
     @MainActor func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64
 
-    /// Registers a specific site for self-driven push notifications.
+    /// Registers a specific site for self-driven push notifications when it is not already registered and its next check is due.
     /// - Parameter siteID: The site ID to register.
     /// - Throws: If registration fails or device token is not available.
     @MainActor func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws
+
+    /// Re-registers the device token with every visible store whose next check is due. Makes no requests otherwise.
+    @MainActor func refreshWooPushRegistrationsIfNeeded() async
 
     /// Registers the Application for Remote Notifications.
     ///

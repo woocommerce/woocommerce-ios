@@ -11,8 +11,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
         let mockStorage = MockStorageManager()
         mockStorage.insertSampleSite(
             readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
+                siteID: sampleSiteID
             )
         )
         let filterType = FilterProductListViewModel.ProductListFilter.stockStatus
@@ -32,8 +31,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
         let mockStorage = MockStorageManager()
         mockStorage.insertSampleSite(
             readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
+                siteID: sampleSiteID
             )
         )
         let filterType = FilterProductListViewModel.ProductListFilter.productStatus
@@ -53,8 +51,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
         let mockStorage = MockStorageManager()
         mockStorage.insertSampleSite(
             readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
+                siteID: sampleSiteID
             )
         )
 
@@ -75,8 +72,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
         let mockStorage = MockStorageManager()
         mockStorage.insertSampleSite(
             readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
+                siteID: sampleSiteID
             )
         )
 
@@ -107,8 +103,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
 
         mockStorage.insertSampleSite(
             readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
+                siteID: sampleSiteID
             )
         )
 
@@ -156,8 +151,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                                                 active: true))
         mockStorage.insertSampleSite(
             readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
+                siteID: sampleSiteID
             )
         )
 
@@ -184,55 +178,6 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
             .init(productType: .variableSubscription, isAvailable: true, promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()),
             .init(productType: .bundle, isAvailable: true, promoteUrl: WooConstants.URLs.productBundlesExtension.asURL()),
             .init(productType: .composite, isAvailable: false, promoteUrl: WooConstants.URLs.compositeProductsExtension.asURL())
-        ])
-    }
-
-    func test_creating_promotable_product_types_for_ciab_site_outputs_correct_types() throws {
-        // Given
-        let mockStorage = MockStorageManager()
-        mockStorage.insertSampleSite(
-            readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: true,
-                gardenName: "commerce"
-            )
-        )
-
-        let filterType = FilterProductListViewModel.ProductListFilter.productType(
-            siteID: sampleSiteID
-        )
-
-        let filters = FilterProductListViewModel.Filters(
-            stockStatus: nil,
-            productStatus: nil,
-            promotableProductType: nil,
-            productCategory: nil,
-            favoriteProduct: nil,
-            numberOfActiveFilters: 0
-        )
-
-        // When
-        let viewModel = filterType.createViewModel(
-            filters: filters,
-            storageManager: mockStorage
-        )
-
-        let options: [PromotableProductType?] = try {
-            switch viewModel.listSelectorConfig {
-            case .staticOptions(let options):
-                return try XCTUnwrap(options as? [PromotableProductType?])
-            default:
-                XCTFail("Unexpected selector config")
-                return []
-            }
-        }()
-
-        // Then
-        XCTAssertEqual(options, [
-            nil,
-            .init(productType: .simple, isAvailable: true, promoteUrl: nil),
-            .init(productType: .booking, isAvailable: true, promoteUrl: nil),
-            .init(productType: .affiliate, isAvailable: true, promoteUrl: nil)
         ])
     }
 }

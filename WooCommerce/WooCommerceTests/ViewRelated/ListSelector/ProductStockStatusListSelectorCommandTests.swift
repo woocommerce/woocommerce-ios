@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class ProductStockStatusListSelectorCommandTests: XCTestCase {
 
     func test_selected_status() {
@@ -23,6 +24,7 @@ final class ProductStockStatusListSelectorCommandTests: XCTestCase {
         XCTAssertEqual(command.data.count, 3)
     }
 
+    @MainActor
     func test_cell_configuration() {
         let product = Product.fake()
         let command = ProductStockStatusListSelectorCommand(selected: product.productStockStatus)

@@ -1,28 +1,33 @@
 import SwiftUI
+import enum Yosemite.POSCatalogSyncProgress
 
 struct POSSettingsLocalCatalogDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: POSSettingsLocalCatalogViewModel
+    /// Gates an edit action on `manageStoreSettings`. Defaults to running it directly (previews / no host gate).
+    private let requestEditPermission: POSPermissionRequest
 
-    init(viewModel: POSSettingsLocalCatalogViewModel) {
+    init(viewModel: POSSettingsLocalCatalogViewModel,
+         requestEditPermission: @escaping POSPermissionRequest = { $0() }) {
         self.viewModel = viewModel
+        self.requestEditPermission = requestEditPermission
     }
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.localCatalogTitle)
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
             ScrollView {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     catalogStatus
                     if viewModel.deviceHasCellularCapability {
                         managingDataUsage
                     }
                     manualCatalogUpdate
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, metrics.padding.medium)
             }
         }
         .background(Style.backgroundColor)
@@ -39,7 +44,7 @@ private extension POSSettingsLocalCatalogDetailView {
     @ViewBuilder
     var catalogStatus: some View {
         POSInformationCard {
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 POSInformationCardFieldRow(
                     label: Localization.catalogSize,
                     value: viewModel.catalogSize
@@ -61,51 +66,81 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     var managingDataUsage: some View {
-        @Bindable var viewModel = viewModel
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSInformationCard {
                 POSInformationCardFieldRowWithToggle(
                     label: Localization.managingDataUsage,
                     value: Localization.allowSyncOnCellular,
                     showSeparator: false,
-                    isOn: $viewModel.allowFullSyncOnCellular
+                    isOn: cellularSyncBinding
                 )
             }
         }
     }
 
+    /// Toggling the cellular-sync setting is an edit, so route changes through `manageStoreSettings`:
+    /// the value only flips once the operator holds the cap or a manager approves the override.
+    private var cellularSyncBinding: Binding<Bool> {
+        Binding(
+            get: { viewModel.allowFullSyncOnCellular },
+            set: { newValue in
+                requestEditPermission { viewModel.allowFullSyncOnCellular = newValue }
+            }
+        )
+    }
+
     @ViewBuilder
     var manualCatalogUpdate: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSInformationCard {
                 POSInformationCardFieldRow(
                     label: Localization.manualCatalogUpdate,
                     value: Localization.manualUpdateInfo,
                     showSeparator: false,
                     labelStyle: .bold,
-                    buttonTitle: Localization.updateCatalog,
+                    buttonTitle: updateCatalogButtonTitle,
                     buttonAction: {
-                        Task {
-                            await viewModel.refreshCatalog()
+                        requestEditPermission {
+                            Task {
+                                await viewModel.refreshCatalog()
+                            }
                         }
                     },
                     buttonStyle: .primary,
-                    isLoading: viewModel.isRefreshingCatalog
+                    isButtonEnabled: !viewModel.isRefreshingCatalog
                 )
             }
         }
     }
 
+    var updateCatalogButtonTitle: String {
+        guard viewModel.isRefreshingCatalog else {
+            return Localization.updateCatalog
+        }
+
+        guard let progress = viewModel.catalogRefreshProgress else {
+            return Localization.updateCatalogPreparing
+        }
+
+        switch progress {
+        case .preparing:
+            return Localization.updateCatalogPreparing
+        case .itemCount(let processed, let total):
+            let format = total == 1 ? Localization.updateCatalogProgressSingularFormat : Localization.updateCatalogProgressFormat
+            return String.localizedStringWithFormat(format, processed, total)
+        }
+    }
+
     @ViewBuilder
     func errorView(errorState: PointOfSaleErrorState) -> some View {
-        VStack(spacing: POSSpacing.xxLarge) {
+        VStack(spacing: metrics.spacing.xxLarge) {
             POSModalCloseButton(accessibilityLabel: Localization.errorCancelButtonTitle) {
                 viewModel.catalogRefreshError = nil
             }
 
             POSErrorView(viewModel: errorViewModel(errorState: errorState))
         }
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
         .frame(maxWidth: Constants.errorModalMaxWidth)
     }
 
@@ -182,6 +217,26 @@ private extension POSSettingsLocalCatalogDetailView {
             "posSettingsLocalCatalogDetailView.updateCatalog",
             value: "Update catalog",
             comment: "Button text for updating the catalog manually."
+        )
+
+        static let updateCatalogPreparing = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.updateCatalogPreparing",
+            value: "Preparing...",
+            comment: "Button text shown while a manual POS catalog update is preparing before item counts are available."
+        )
+
+        static let updateCatalogProgressFormat = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.updateCatalogProgressFormat",
+            value: "%1$ld of %2$ld items",
+            comment: "Button text shown during a manual POS catalog update. %1$ld is the number of catalog items processed, " +
+                "%2$ld is the total number of catalog items."
+        )
+
+        static let updateCatalogProgressSingularFormat = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.updateCatalogProgressFormat.singular",
+            value: "%1$ld of %2$ld item",
+            comment: "Button text shown during a manual POS catalog update when there is one item. " +
+                "%1$ld is the number of catalog items processed, %2$ld is the total number of catalog items."
         )
 
         static let errorRetryButtonTitle = NSLocalizedString(

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Dimensions Entity.
 ///
-public struct ProductDimensions: Codable, Equatable, GeneratedFakeable {
+public struct ProductDimensions: Codable, Equatable, GeneratedFakeable, Sendable {
     public let length: String
     public let width: String
     public let height: String

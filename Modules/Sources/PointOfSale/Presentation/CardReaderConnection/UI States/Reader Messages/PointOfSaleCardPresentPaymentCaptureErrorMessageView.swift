@@ -2,6 +2,7 @@ import SwiftUI
 import enum Yosemite.CardReaderServiceError
 
 struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     @StateObject private var viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -13,32 +14,31 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
-            POSErrorXMark()
-                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+        POSStatusScreenLayout(buttonsWidth: .capped) {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
+                POSErrorXMark()
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-            Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                Spacer()
+                    .frame(height: metrics.spacing.large)
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                Text(viewModel.title)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityFocused($isTitleFocused)
-                    .foregroundStyle(Color.posOnSurface)
-                    .font(.posHeadingBold)
-                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
+                    Text(viewModel.title)
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($isTitleFocused)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posHeadingBold)
+                        .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                Text(viewModel.message)
-                    .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posOnSurface)
-                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                    Text(viewModel.message)
+                        .font(.posBodyLargeRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                        .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                }
+                .dynamicWidthScaling(containerWidth: width)
             }
-            .dynamicWidthScaling(containerWidth: width)
-
-            Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
-
-            VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
+        } buttons: {
+            VStack(spacing: metrics.spacing.large) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -48,10 +48,8 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                 }
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
-            .dynamicWidthScaling(containerWidth: width)
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .posModal(isPresented: $viewModel.showsInfoSheet) {
             PointOfSaleCardPresentPaymentCaptureFailedView(isPresented: $viewModel.showsInfoSheet)
         }

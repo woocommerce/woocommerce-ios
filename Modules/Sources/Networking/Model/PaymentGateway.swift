@@ -3,11 +3,11 @@ import Codegen
 
 /// Represents a Payment Gateway.
 ///
-public struct PaymentGateway: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct PaymentGateway: Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
 
     /// Features for payment gateway.
     ///
-    public enum Feature: Equatable {
+    public enum Feature: Equatable, Sendable {
         case products
         case refunds
         case custom(raw: String)
@@ -15,7 +15,7 @@ public struct PaymentGateway: Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Setting for a payment gateway
     ///
-    public struct Setting: Equatable, GeneratedCopiable, GeneratedFakeable {
+    public struct Setting: Equatable, Sendable, GeneratedCopiable, GeneratedFakeable {
         public let settingID: String
         public let value: String
 
@@ -133,6 +133,19 @@ extension PaymentGateway: Codable {
 extension PaymentGateway {
     public enum Constants {
         public static let cashOnDeliveryGatewayID = "cod"
+
+        /// Payment method slug used when the merchant marks an order as paid manually,
+        /// e.g. for an external reader, account credit, gift card, or any out-of-band collection.
+        /// Matches the "Other" payment method in the WooCommerce admin order screen.
+        /// Distinct from `cashOnDeliveryGatewayID` so reporting can separate the two flows.
+        public static let manualPaymentMethodID = "other"
+
+        /// Payment methods collected outside a refund-capable gateway. When their gateway can't be found,
+        /// refunds are recorded only (`api_refund=false`): requesting a gateway refund fails server-side.
+        public static let manualPaymentMethodIDs: Set<String> = [
+            cashOnDeliveryGatewayID,
+            manualPaymentMethodID
+        ]
     }
 }
 

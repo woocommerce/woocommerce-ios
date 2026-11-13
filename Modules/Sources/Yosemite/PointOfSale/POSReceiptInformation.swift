@@ -1,4 +1,4 @@
-public struct POSReceiptInformation: Equatable {
+public struct POSReceiptInformation: Equatable, Sendable {
     public let storeName: String?
     public let storeAddress: String?
     public let phone: String?

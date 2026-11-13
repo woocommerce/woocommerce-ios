@@ -20,15 +20,12 @@ final class ProductDetailNavigator {
 
     static var shared = ProductDetailNavigator()
 
-    private let ciabChecker: CIABEligibilityCheckerProtocol
     private let coordinatorFactory: ProductDetailCoordinatorFactoryProtocol
     private let stores: StoresManager
 
-    init(ciabChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
-         coordinatorFactory: ProductDetailCoordinatorFactoryProtocol = ProductDetailCoordinatorFactory.default,
+    init(coordinatorFactory: ProductDetailCoordinatorFactoryProtocol = ProductDetailCoordinatorFactory.default,
          stores: StoresManager = ServiceLocator.stores,
     ) {
-        self.ciabChecker = ciabChecker
         self.coordinatorFactory = coordinatorFactory
         self.stores = stores
     }
@@ -42,6 +39,7 @@ final class ProductDetailNavigator {
     ///   - onDuplicate: Optional callback invoked with the new duplicate after a successful product duplication,
     ///     letting the caller decide how to open it (native flow only).
     /// - Returns: A ready-to-present view controller (native or web).
+    @MainActor
     func makeDestination(product: Product,
                          presentationStyle: Presentation = .push,
                          isReadOnly: Bool,
@@ -57,19 +55,38 @@ final class ProductDetailNavigator {
             }
         } else {
             let coordinator = coordinatorFactory.nativeCoordinator()
+            let duplicateNavigation: ProductDuplicateNavigationHandler = { [self] sourceViewController, duplicatedProduct in
+                if let onDuplicate {
+                    onDuplicate(duplicatedProduct)
+                } else {
+                    replaceDestination(sourceViewController: sourceViewController, with: duplicatedProduct)
+                }
+            }
             viewController = coordinator.viewController(product: product,
                                                         presentationStyle: presentationStyle,
                                                         isReadOnly: isReadOnly,
                                                         onDelete: onDelete,
-                                                        onDuplicate: onDuplicate)
+                                                        onDuplicate: duplicateNavigation)
         }
 
         return viewController
     }
 
+    /// Replaces a native product editor with another product detail so Back cannot reveal the source editor's draft.
+    @MainActor
+    func replaceDestination(sourceViewController: UIViewController, with duplicatedProduct: Product) {
+        guard let navigationController = sourceViewController.navigationController,
+              let sourceIndex = navigationController.viewControllers.firstIndex(where: { $0 === sourceViewController }) else {
+            return
+        }
+
+        let destination = makeDestination(product: duplicatedProduct, isReadOnly: false)
+        var viewControllers = navigationController.viewControllers
+        viewControllers[sourceIndex] = destination
+        navigationController.setViewControllers(viewControllers, animated: true)
+    }
+
     private func shouldOpenInWeb(product: Product) -> Bool {
-        let isLegacyBookableType = product.productType == .legacyBooking
-        let isNewBookableType = ciabChecker.isCurrentSiteCIAB && product.productType == .booking
-        return isLegacyBookableType || isNewBookableType
+        product.productType == .legacyBooking
     }
 }

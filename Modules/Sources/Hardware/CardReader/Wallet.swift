@@ -1,5 +1,5 @@
 /// Representation of SCPWallet
-public struct Wallet: Codable, Equatable {
+public struct Wallet: Codable, Equatable, Sendable {
     public let type: String?
 }
 

@@ -9,7 +9,7 @@ import Foundation
         password: String,
         multifactorCode: String?,
         success: @escaping (_ authToken: String?) -> Void,
-        needsMultifactor: @escaping ((_ userID: Int, _ nonceInfo: SocialLogin2FANonceInfo?) -> Void),
+        needsMultifactor: @escaping ((_ userID: Int, _ nonceInfo: SocialLogin2FANonceInfo?, _ supportedAuthTypes: [String]) -> Void),
         failure: ((_ error: Error) -> Void)?
     )
 

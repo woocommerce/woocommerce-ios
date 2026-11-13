@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 public let navBackButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
 
 extension XCUIElement {
@@ -35,6 +36,7 @@ extension XCUIElement {
 
 extension XCTestCase {
 
+    @MainActor
     public func takeScreenshotOfFailedTest() {
         if let failureCount = testRun?.failureCount, failureCount > 0 {
             XCTContext.runActivity(named: "Take a screenshot at the end of a failed test") { _ in
@@ -43,6 +45,7 @@ extension XCTestCase {
         }
     }
 
+    @MainActor
     public func systemAlertHandler(alertTitle: String, alertButton: String) {
         addUIInterruptionMonitor(withDescription: alertTitle) { alert -> Bool in
             let alertButtonElement = alert.buttons[alertButton]
@@ -95,6 +98,7 @@ extension XCTestCase {
         static let tag = "tag"
     }
 
+    @MainActor
     public func elementIsFullyVisibleOnScreen(element: XCUIElement) -> Bool {
         guard element.exists && !element.frame.isEmpty && element.isHittable else { return false }
         return XCUIApplication().windows.element(boundBy: 0).frame.contains(element.frame)
@@ -132,16 +136,33 @@ extension XCUIElement {
         XCTAssertEqual(try! getStaticTextVisibilityCount(textToFind: textToFind), expectedCount)
     }
 
-    // Parent element is accessibilityIdentifier, child element is staticText
-    func verifyElementOnCell(parent: String, child: String) throws -> Bool {
-        let parentPredicate = NSPredicate(format: "identifier == %@", parent)
-        let childPredicate = NSPredicate(format: "label ==[c] %@", child)
+    /// Looks for a `staticText` child of the cell with the given accessibility identifier, whose label satisfies `labelPredicate`.
+    /// Note: the lookup always starts from the application, not from the receiver.
+    func verifyStaticTextOnCell(cellIdentifier: String, labelPredicate: NSPredicate) -> Bool {
+        let cellPredicate = NSPredicate(format: "identifier == %@", cellIdentifier)
 
-        return XCUIApplication().tables.cells.matching(parentPredicate).children(matching: .staticText).element(matching: childPredicate).firstMatch.exists
+        return XCUIApplication().tables.cells.matching(cellPredicate)
+            .children(matching: .staticText)
+            .element(matching: labelPredicate)
+            .firstMatch
+            .exists
     }
 
-    public func assertElement(matching: String, existsOnCellWithIdentifier cellIdentifier: String) {
-        XCTAssertTrue(try verifyElementOnCell(parent: matching, child: cellIdentifier), "Element does not exist on cell!")
+    /// Asserts that a cell identified by `cellIdentifier` has a `staticText` child whose label is exactly `label`.
+    public func assertStaticText(withLabel label: String, existsOnCellWithIdentifier cellIdentifier: String) {
+        let labelPredicate = NSPredicate(format: "label ==[c] %@", label)
+
+        XCTAssertTrue(verifyStaticTextOnCell(cellIdentifier: cellIdentifier, labelPredicate: labelPredicate),
+                      "No static text labeled '\(label)' found on cell '\(cellIdentifier)'!")
+    }
+
+    /// Asserts that a cell identified by `cellIdentifier` has a `staticText` child whose label contains `substring`.
+    /// Use this when the label is a composed detail line (e.g. "On back order • $150.00") and only one part of it is under test.
+    public func assertStaticText(containing substring: String, existsOnCellWithIdentifier cellIdentifier: String) {
+        let labelPredicate = NSPredicate(format: "label CONTAINS[c] %@", substring)
+
+        XCTAssertTrue(verifyStaticTextOnCell(cellIdentifier: cellIdentifier, labelPredicate: labelPredicate),
+                      "No static text containing '\(substring)' found on cell '\(cellIdentifier)'!")
     }
 
     func verifyLabelContains(substring firstSubstring: String, and secondSubstring: String) throws -> Bool {
@@ -184,6 +205,51 @@ extension XCUIElement {
 }
 
 extension XCUIApplication {
+    public func tapNavigationBarButton(_ identifier: String) {
+        let button = buttons[identifier]
+        if !button.waitForExistence(timeout: 3) {
+            navigationBars.buttons["OverflowBarButtonItem"].tap()
+        }
+        button.waitAndTap()
+    }
+
+    public func navigationBarButtonExists(_ identifier: String, timeout: TimeInterval) -> Bool {
+        let button = buttons[identifier]
+        if button.waitForExistence(timeout: timeout) {
+            return true
+        }
+        let overflowButton = navigationBars.buttons["OverflowBarButtonItem"]
+        guard overflowButton.exists else {
+            return false
+        }
+        overflowButton.tap()
+        let existsInOverflowMenu = button.waitForExistence(timeout: 3)
+        overflowButton.tap()
+        return existsInOverflowMenu
+    }
+
+    /// Dismisses the system prompt asking to allow notifications, which the app requests after login
+    /// while the permission is still undetermined.
+    @discardableResult
+    public func dismissNotificationsPermissionPromptIfNeeded(timeout: TimeInterval = 5) -> Bool {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let prompt = springboard.alerts
+            .matching(NSPredicate(format: "label CONTAINS %@", "Would Like to Send You Notifications"))
+            .firstMatch
+        guard prompt.waitForExistence(timeout: timeout) else {
+            return false
+        }
+
+        let dontAllowButton = prompt.buttons["Don’t Allow"]
+        guard dontAllowButton.waitForExistence(timeout: 2) else {
+            XCTFail("Notifications prompt has no Don’t Allow button. Buttons: \(prompt.buttons.allElementsBoundByIndex.map(\.label))")
+            return false
+        }
+
+        dontAllowButton.tap()
+        return true
+    }
+
     @discardableResult
     public func dismissSavePasswordPromptIfNeeded(timeout: TimeInterval = 15,
                                                 until element: XCUIElement? = nil,

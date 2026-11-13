@@ -41,6 +41,7 @@ extension WordPressMediaLibraryPickerDataSource {
 
 /// Implements `WPMediaCollectionDataSource` that provides the media data from WP Media Library for the picker UI.
 ///
+@MainActor
 final class WordPressMediaLibraryPickerDataSource: NSObject {
     private let siteID: Int64
     private let productID: Int64?
@@ -76,7 +77,7 @@ final class WordPressMediaLibraryPickerDataSource: NSObject {
     }
 }
 
-extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
+extension WordPressMediaLibraryPickerDataSource: @MainActor WPMediaCollectionDataSource {
     func numberOfGroups() -> Int {
         return 1
     }

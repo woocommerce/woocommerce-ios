@@ -11,12 +11,21 @@ class OrderStatusListViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 12345
     private let sampleOrderStatuses: [OrderStatusEnum] = [.pending, .processing, .onHold, .completed]
-    private var storageManager: MockOrderStatusesStoresManager!
+    private var storageManager: MockStorageManager!
 
     override func setUp() {
         super.setUp()
-        storageManager = MockOrderStatusesStoresManager()
-        storageManager.insert(sampleOrderStatuses, on: sampleSiteID)
+        storageManager = MockStorageManager()
+        let statuses = sampleOrderStatuses
+        let siteID = sampleSiteID
+        storageManager.performAndSave({ storage in
+            for status in statuses {
+                let orderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+                orderStatus.name = status.rawValue
+                orderStatus.slug = status.rawValue
+                orderStatus.siteID = siteID
+            }
+        }, completion: nil, on: .main)
     }
 
     override func tearDown() {
@@ -116,26 +125,5 @@ class OrderStatusListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(selectedStatus, sampleOrderStatuses[expectedStatusIndex])
-    }
-}
-
-/// Mock Order Statuses Store Manager
-///
-private final class MockOrderStatusesStoresManager: MockStorageManager {
-    /// Insert an array of order statuses into storage.
-    ///
-    func insert(_ statuses: [OrderStatusEnum], on siteID: Int64) {
-        for status in statuses {
-            insert(status, on: siteID)
-        }
-    }
-
-    /// Inserts an order status into storage.
-    ///
-    func insert(_ status: OrderStatusEnum, on siteID: Int64) {
-        let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
-        orderStatus.name = status.rawValue
-        orderStatus.slug = status.rawValue
-        orderStatus.siteID = siteID
     }
 }

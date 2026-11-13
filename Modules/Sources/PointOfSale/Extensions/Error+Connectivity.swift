@@ -2,7 +2,7 @@ import Foundation
 import enum Alamofire.AFError
 import enum Networking.BackgroundDownloadError
 
-extension Error {
+public extension Error {
     var isConnectivityError: Bool {
         if let backgroundDownloadError = self as? BackgroundDownloadError {
             switch backgroundDownloadError {

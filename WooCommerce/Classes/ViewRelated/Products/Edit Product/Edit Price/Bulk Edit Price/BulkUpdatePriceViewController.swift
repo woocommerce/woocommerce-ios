@@ -49,6 +49,11 @@ final class BulkUpdatePriceViewController: UIViewController {
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     /// Configures the title and appearance of the save button
     ///
     func configureSaveButton() {

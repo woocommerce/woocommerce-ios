@@ -1,4 +1,5 @@
 import Foundation
+import os
 import Yosemite
 import WooFoundation
 import Combine
@@ -37,6 +38,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
     private var subscriptions: Set<AnyCancellable> = []
     private let initialNoticeDelay: RunLoop.SchedulerTimeType.Stride
+    private let serviceStatusRefreshTimeout: Duration
     private let analytics: Analytics
 
     private(set) var orderItems: WooShippingItemsViewModel
@@ -62,6 +64,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             observeSelectedPackage()
             observeSelectedRates()
             observeShippingRates()
+            observeEUProductIdentifiersCheck()
         }
     }
 
@@ -75,9 +78,23 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     @Published var labelPurchaseErrorNotice: Notice?
 
+    /// Store-wide carrier incidents, shown on every unpurchased shipment.
+    @Published private(set) var serviceStatusNotices: [WooShippingServiceStatusNotice] = []
+
+    /// Includes dismissed notices, so a purchase failure can still explain an incident whose banner was dismissed.
+    private var fetchedServiceStatusNotices: [WooShippingServiceStatusNotice] = []
+
+    /// Hidden until the screen is reopened, even if a refetch returns them again.
+    private var dismissedServiceStatusNoticeIDs: Set<String> = []
+
+    private var serviceStatusRefreshTask: Task<Void, Never>?
+
     @Published private(set) var state = ContentState.loading
 
     @Published private(set) var shouldShowNotices = false
+
+    /// Mirrors the selected shipment check state so the parent view updates purchase controls.
+    @Published private(set) var isCheckingEUProductIdentifiers = false
 
     /// View model for split shipments.
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
@@ -114,8 +131,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         }
     }
 
-    /// This property can be set to display a notice with the provided label about the origin address status.
-    @Published var originAddressUnverifiedNoticeLabel: String?
+    /// This property can be set to display a notice with the provided label about the origin address status
+    /// (e.g. a missing phone number, missing email, or an unverified address).
+    @Published var originAddressNoticeLabel: String?
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
@@ -197,9 +215,21 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     private(set) var paymentMethodsViewModel: ShippingLabelPaymentMethodsViewModel?
 
-    @Published var shouldShowUPSTermsAndConditions = false
+    @Published var shouldShowUPSTermsAndConditions = false {
+        didSet {
+            if shouldShowUPSTermsAndConditions {
+                analytics.track(event: .WooShipping.carrierTermsOfService(carrier: .upsdap, state: .shown))
+            }
+        }
+    }
 
-    @Published var shouldShowFedExTermsAndConditions = false
+    @Published var shouldShowFedExTermsAndConditions = false {
+        didSet {
+            if shouldShowFedExTermsAndConditions {
+                analytics.track(event: .WooShipping.carrierTermsOfService(carrier: .fedex, state: .shown))
+            }
+        }
+    }
 
     var upsTermsViewModel: UPSTermsViewModel? {
         guard let originAddress = selectedOriginAddress?.toWooShippingAddress() else {
@@ -244,10 +274,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         )
     }()
 
-    /// Provides checks for CIAB
-    /// Used to determine "Split Shipments" feature availability
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
-
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          preselection: WooShippingCreateLabelSelection? = nil,
@@ -256,8 +282,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
+         serviceStatusRefreshTimeout: Duration = .seconds(5),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
         self.itemsDataSource = DefaultWooShippingItemsDataSource(
@@ -273,11 +299,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.shippingSettingsService = shippingSettingsService
         self.weightUnit = shippingSettingsService.weightUnit ?? ""
         self.dimensionsUnit = shippingSettingsService.dimensionUnit ?? ""
         self.initialNoticeDelay = initialNoticeDelay
+        self.serviceStatusRefreshTimeout = serviceStatusRefreshTimeout
         self.isOrderCompleted = order.status == .completed
 
         let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
@@ -307,6 +333,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         configureAccountSettingsResultsController()
 
         Task { @MainActor in
+            refreshServiceStatusNotices()
             await loadRequiredData()
 
             // After shipment configs are updated, shipments are updated with purchased label details.
@@ -366,6 +393,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.shipments = shipments
     }
 
+    /// Tracks that the merchant accepted the carrier Terms of Service.
+    func trackCarrierTermsAccepted(_ carrier: WooAnalyticsEvent.WooShipping.Carrier) {
+        analytics.track(event: .WooShipping.carrierTermsOfService(carrier: carrier, state: .accepted))
+    }
+
     func didUpdateAccountSettings(_ accountSettings: ShippingLabelAccountSettings) {
         self.paymentMethod = accountSettings.paymentMethods.first(where: { $0.paymentMethodID == accountSettings.selectedPaymentMethodID })
         self.paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
@@ -384,13 +416,20 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         }
         isPurchasingLabel = true
         labelPurchaseErrorNotice = nil
+        var purchaseError: Error?
+        var isServiceStatusIncidentShown = false
 
         do {
             if shouldRefreshPackageAndRate {
                 try await currentShipmentDetailsViewModel.refreshPackagesAndShippingRates()
             }
             let markOrderComplete = isOrderCompleted ? nil : self.markOrderComplete
-            try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
+            do {
+                try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
+            } catch {
+                purchaseError = error
+                throw error
+            }
         } catch let DotcomError.unknown(code, _, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
         } catch let DotcomError.unknown(code, _, _) where code == Constants.missingFedExTermsOfServiceAcceptance {
@@ -410,9 +449,15 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                     self?.editDestinationAddress()
                 }
             } else {
+                var incident: WooShippingServiceStatusNotice?
+                if WooShippingServiceOutage.isOutage(error) {
+                    incident = await activeServiceStatusIncident()
+                }
+                isServiceStatusIncidentShown = incident != nil
                 labelPurchaseErrorNotice = Notice(
                     title: Localization.LabelPurchaseError.title,
-                    message: Localization.LabelPurchaseError.message,
+                    message: incident.map { String(format: Localization.LabelPurchaseError.serviceStatusMessage, $0.message) }
+                        ?? Localization.LabelPurchaseError.message,
                     feedbackType: .error,
                     actionTitle: Localization.LabelPurchaseError.retry
                 ) { [weak self] in
@@ -424,6 +469,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 }
             }
             DDLogError("⛔️ Error purchasing shipping label: \(error)")
+        }
+        if let purchaseError {
+            analytics.track(event: .WooShipping.purchaseStep(state: .purchaseFailed,
+                                                             error: purchaseError,
+                                                             serviceStatusNoticeShown: isServiceStatusIncidentShown))
         }
         isPurchasingLabel = false
     }
@@ -543,6 +593,79 @@ private extension WooShippingCreateLabelsViewModel {
     }
 }
 
+// MARK: Service status notices
+extension WooShippingCreateLabelsViewModel {
+    @MainActor
+    func dismissServiceStatusNotice(id: String) {
+        dismissedServiceStatusNoticeIDs.insert(id)
+        serviceStatusNotices.removeAll { $0.id == id }
+    }
+
+    /// Fetches the active carrier incidents, reusing the request already in flight.
+    @MainActor
+    @discardableResult
+    func refreshServiceStatusNotices() -> Task<Void, Never> {
+        if let serviceStatusRefreshTask {
+            return serviceStatusRefreshTask
+        }
+        let task = Task { @MainActor [weak self] in
+            await self?.loadServiceStatusNotices()
+            self?.serviceStatusRefreshTask = nil
+        }
+        serviceStatusRefreshTask = task
+        return task
+    }
+}
+
+private extension WooShippingCreateLabelsViewModel {
+    @MainActor
+    func loadServiceStatusNotices() async {
+        do {
+            let notices = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(WooShippingAction.loadServiceStatusNotices(siteID: order.siteID) { result in
+                    continuation.resume(with: result)
+                })
+            }
+            fetchedServiceStatusNotices = notices
+            serviceStatusNotices = notices.filter { !dismissedServiceStatusNoticeIDs.contains($0.id) }
+        } catch {
+            // Older plugins don't have the endpoint (404). The notices are optional, so keep the screen as is.
+            DDLogError("⛔️ Error loading WooShipping service status: \(error)")
+        }
+    }
+
+    /// Refetches the notices, waiting at most `serviceStatusRefreshTimeout`, and returns the most severe warning or error.
+    @MainActor
+    func activeServiceStatusIncident() async -> WooShippingServiceStatusNotice? {
+        let refresh = refreshServiceStatusNotices()
+        let timeout = serviceStatusRefreshTimeout
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            // The refresh and the timeout race to resume; the second one is ignored, so neither needs cancelling.
+            let hasResumed = OSAllocatedUnfairLock(initialState: false)
+            let resumeOnce: @Sendable () -> Void = {
+                let isFirst = hasResumed.withLock { resumed in
+                    defer { resumed = true }
+                    return !resumed
+                }
+                if isFirst {
+                    continuation.resume()
+                }
+            }
+            Task {
+                await refresh.value
+                resumeOnce()
+            }
+            Task {
+                try? await Task.sleep(for: timeout)
+                resumeOnce()
+            }
+        }
+        return fetchedServiceStatusNotices
+            .filter { $0.severity != .info }
+            .max { $0.severity < $1.severity }
+    }
+}
+
 // MARK: Split Shipments
 // Accessors describing Split Shipments elements availability
 extension WooShippingCreateLabelsViewModel {
@@ -550,20 +673,14 @@ extension WooShippingCreateLabelsViewModel {
         return itemsDataSource.items.map(\.quantity).reduce(0, +) > 1
     }
 
-    private var splitShipmentsFeatureAvailable: Bool {
-        return siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.splitShipments)
-    }
-
     /// Determines if the "Edit split shipments" (pencil icon) is visible in top shipments bar.
     var editSplitShipmentsOptionVisible: Bool {
-        splitShipmentsFeatureAvailable &&
         hasMultipleProducts &&
         hasUnfulfilledShipments
     }
 
     /// Determines if the "Split Shipments" row is visible above the "Products" section
     var splitShipmentsRowVisible: Bool {
-        splitShipmentsFeatureAvailable &&
         hasMultipleProducts &&
         shipments.count == 1 &&
         canViewLabel == false
@@ -631,6 +748,15 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$selectedRate)
     }
 
+    func observeEUProductIdentifiersCheck() {
+        guard let currentShipmentDetailsViewModel else {
+            isCheckingEUProductIdentifiers = false
+            return
+        }
+        currentShipmentDetailsViewModel.$isCheckingEUProductIdentifiers
+            .assign(to: &$isCheckingEUProductIdentifiers)
+    }
+
     func observeShippingRates() {
         guard let currentShipmentDetailsViewModel else {
             shippingRates = []
@@ -651,17 +777,24 @@ private extension WooShippingCreateLabelsViewModel {
                 shippingLabel: shipment.purchasedLabel,
                 originAddress: originAddressPublisher,
                 destinationAddress: $destinationAddress.eraseToAnyPublisher(),
+                originAddressID: $selectedOriginAddress.map { $0?.id }.eraseToAnyPublisher(),
                 stores: stores,
                 onLabelPurchase: { [weak self] newLabel in
                     self?.handleLabelPurchaseSuccess(newLabel: newLabel, in: shipment)
                 }, onLabelRefund: { [weak self] labelID in
                     self?.handleLabelRefundRequested(labelID: labelID, in: shipment)
+                }, onLabelRatesLoadingFailure: { [weak self] error in
+                    guard WooShippingServiceOutage.isOutage(error) else { return }
+                    Task { @MainActor in
+                        self?.refreshServiceStatusNotices()
+                    }
                 })
         }
         observeHAZMATNotices()
         observeSelectedPackage()
         observeSelectedRates()
         observeShippingRates()
+        observeEUProductIdentifiersCheck()
     }
 
     func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {
@@ -701,8 +834,21 @@ private extension WooShippingCreateLabelsViewModel {
             .sink { [weak self] selectedOriginAddress in
                 guard let self else { return }
                 originAddress = selectedOriginAddress?.formattedPostalAddress ?? ""
-                originAddressUnverifiedNoticeLabel = {
-                    if let selectedOriginAddress, !selectedOriginAddress.isVerified {
+                originAddressNoticeLabel = {
+                    guard let selectedOriginAddress else {
+                        return nil
+                    }
+                    // A missing phone number or email is the only origin input that reliably fails rate loading,
+                    // so surface the specific missing field before falling back to the generic unverified notice.
+                    // Use the digit-based check so whitespace/punctuation-only phones, which the backend also rejects as empty,
+                    // are treated as missing.
+                    if selectedOriginAddress.toWooShippingAddress().phoneDigits.isEmpty {
+                        return Localization.OriginAddress.missingPhone
+                    }
+                    if selectedOriginAddress.email.isEmpty {
+                        return Localization.OriginAddress.missingEmail
+                    }
+                    if !selectedOriginAddress.isVerified {
                         return Localization.OriginAddressStatus.unverified
                     }
                     return nil
@@ -729,8 +875,9 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$destinationAddressStatusNoticeLabel)
 
         $destinationAddress
-            .map { [weak self] address -> String? in
-                return self?.destinationPhoneNoticeLabel(for: address)
+            .combineLatest($selectedOriginAddress, $selectedRate)
+            .map { [weak self] address, originAddress, selectedRate -> String? in
+                self?.destinationPhoneNoticeLabel(for: address, originCountry: originAddress?.country, selectedRate: selectedRate)
             }
             .assign(to: &$destinationPhoneNumberNoticeLabel)
 
@@ -745,17 +892,27 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$destinationAddressStatusNoticeLabel)
     }
 
-    func destinationPhoneNoticeLabel(for address: WooShippingAddress?) -> String? {
+    func destinationPhoneNoticeLabel(for address: WooShippingAddress?,
+                                     originCountry: String?,
+                                     selectedRate: WooShippingSelectedRate?) -> String? {
         guard let address else {
             return nil
         }
-        if address.phoneDigits.isEmpty {
+        let isRequired = WooShippingPhoneValidator.isDestinationPhoneRequired(originCountry: originCountry,
+                                                                              destinationCountry: address.country,
+                                                                              carrierID: selectedRate?.rate.carrierID)
+        switch WooShippingPhoneValidator.issue(phone: address.phone, country: address.country, isRequired: isRequired) {
+        case .missing:
+            if let selectedRate, !WooShippingPhoneValidator.isInternational(originCountry: originCountry, destinationCountry: address.country) {
+                // On a domestic shipment, only the selected service can require the phone.
+                return String.localizedStringWithFormat(Localization.DestinationPhoneNumber.requiredByService, selectedRate.rate.title)
+            }
             return Localization.DestinationPhoneNumber.missing
-        }
-        if !address.hasValidPhoneNumberForShipping {
+        case .invalid:
             return Localization.DestinationPhoneNumber.invalid
+        case .none:
+            return nil
         }
-        return nil
     }
 
     /// Ensures that initial notices are only displayed after the view is ready
@@ -915,6 +1072,19 @@ private extension WooShippingCreateLabelsViewModel {
             )
         }
 
+        enum OriginAddress {
+            static let missingPhone = NSLocalizedString(
+                "wooShipping.createLabels.originAddress.missingPhone",
+                value: "Phone number is missing for the origin address.",
+                comment: "Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen"
+            )
+            static let missingEmail = NSLocalizedString(
+                "wooShipping.createLabels.originAddress.missingEmail",
+                value: "Email is missing for the origin address.",
+                comment: "Notice when the origin (ship from) address is missing an email on the shipping label creation screen"
+            )
+        }
+
         enum DestinationAddressStatus {
             static let verified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationVerified",
                                                                value: "Verified destination address",
@@ -934,6 +1104,12 @@ private extension WooShippingCreateLabelsViewModel {
             static let message = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.message",
                                                    value: "We are unable to purchase the shipping label. Please try again.",
                                                    comment: "Message in the notice when purchasing a shipping label fails")
+            static let serviceStatusMessage = NSLocalizedString(
+                "wooShipping.createLabels.labelPurchaseError.serviceStatusMessage",
+                value: "We are unable to purchase the shipping label due to a carrier service issue: %1$@",
+                comment: "Message in the notice when purchasing a shipping label fails during a carrier outage. " +
+                "%1$@ is the incident reported by the carrier, e.g. 'USPS: API Outage | Status: Investigating'."
+            )
             static let retry = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.retry",
                                                    value: "Retry",
                                                    comment: "Button to retry label purchase when an error occurs")
@@ -949,6 +1125,12 @@ private extension WooShippingCreateLabelsViewModel {
                 "wooShipping.createLabels.destinationPhoneNumber.invalid",
                 value: "Please enter a valid phone number for the destination address.",
                 comment: "Notice when the destination phone number is invalid"
+            )
+            static let requiredByService = NSLocalizedString(
+                "wooShipping.createLabels.destinationPhoneNumber.requiredByService",
+                value: "%1$@ requires a recipient phone number.",
+                comment: "Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. " +
+                "%1$@ is the service name, e.g. FedEx Ground Economy."
             )
         }
 

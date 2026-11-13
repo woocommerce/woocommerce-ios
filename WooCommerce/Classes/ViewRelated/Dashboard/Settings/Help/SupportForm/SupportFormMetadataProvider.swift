@@ -1,12 +1,14 @@
 import Foundation
 import CoreTelephony
 import Yosemite
+import class UIKit.UIDevice
 import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.ConnectivityObserver
 
 /// Helper that provides general device & site zendesk metadata.
 ///
+@MainActor
 class SupportFormMetadataProvider {
 
     /// Dependencies
@@ -67,7 +69,6 @@ class SupportFormMetadataProvider {
             site.plan.isNotEmpty ? site.plan : nil,
             stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil,
             stores.requestAuthenticationMode == .appPasswordsWithJetpack ? Constants.jetpackSiteUsingAppPasswords : nil,
-            site.isCIAB ? Constants.ciabTag : nil
         ].compactMap { $0 } + getIPPTags()
     }
 
@@ -151,26 +152,7 @@ private extension SupportFormMetadataProvider {
     /// Get the device free space: EG `56.34 GB`
     ///
     func getDeviceFreeSpace() -> String {
-        guard let resourceValues = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
-              let capacityBytes = resourceValues.volumeAvailableCapacity else {
-            return Constants.unknownValue
-        }
-
-        // format string using human readable units. ex: 1.5 GB
-        // Since ByteCountFormatter.string translates the string and has no locale setting,
-        // do the byte conversion manually so the Free Space is in English.
-        let sizeAbbreviations = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-        var sizeAbbreviationsIndex = 0
-        var capacity = Double(capacityBytes)
-
-        while capacity > 1024 {
-            capacity /= 1024
-            sizeAbbreviationsIndex += 1
-        }
-
-        let formattedCapacity = String(format: "%4.2f", capacity)
-        let sizeAbbreviation = sizeAbbreviations[sizeAbbreviationsIndex]
-        return "\(formattedCapacity) \(sizeAbbreviation)"
+        UIDevice.current.freeDiskSpaceInEnglish ?? Constants.unknownValue
     }
 
     /// Gets the content of the main/first log file. Trimmed with a character limit.
@@ -218,7 +200,6 @@ private extension SupportFormMetadataProvider {
         static let networkWWAN = "Mobile"
         static let sourcePlatform = "mobile_-_woo_ios"
         static let jetpackSiteUsingAppPasswords = "jetpack_site_using_app_passwords"
-        static let ciabTag = "commerce_in_a_box"
     }
 
     /// Payments extensions Slugs

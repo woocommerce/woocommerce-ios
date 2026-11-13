@@ -1,6 +1,6 @@
 import Foundation
 
-public enum Plugin: Equatable, CaseIterable {
+public enum Plugin: Equatable, CaseIterable, Sendable {
     case blaze
     case jetpack
     case googleListingsAndAds
@@ -13,6 +13,8 @@ public enum Plugin: Equatable, CaseIterable {
     case wooProductBundles
     case wooSubscriptions
     case wooShipmentTracking
+    case wooShipping
+    case wooShippingAndTax
     case wooSquare
 
     /// Creates a Plugin from a plugin file name in the plugin path.
@@ -63,6 +65,10 @@ public enum Plugin: Equatable, CaseIterable {
             return "woocommerce-subscriptions"
         case .wooShipmentTracking:
             return "woocommerce-shipment-tracking"
+        case .wooShipping:
+            return "woocommerce-shipping"
+        case .wooShippingAndTax:
+            return "woocommerce-services"
         case .wooSquare:
             return "woocommerce-square"
         }

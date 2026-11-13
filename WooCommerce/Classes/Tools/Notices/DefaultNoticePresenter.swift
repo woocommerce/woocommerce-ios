@@ -6,11 +6,12 @@ import WordPressUI
 
 /// NoticePresenter: Coordinates Notice rendering, in both, FG and BG execution modes.
 ///
+@MainActor
 class DefaultNoticePresenter: NoticePresenter {
 
     /// UIKit Feedback Gen!
     ///
-    private let generator = UINotificationFeedbackGenerator()
+    private lazy var generator = UINotificationFeedbackGenerator()
 
     /// Notices Queue.
     ///
@@ -22,27 +23,47 @@ class DefaultNoticePresenter: NoticePresenter {
 
     var kvoToken: NSKeyValueObservation?
 
+    private var tabBarFrameToken: NSKeyValueObservation?
+
+    // ServiceLocator can construct the presenter outside the main actor. UIKit is initialized lazily when presenting.
+    nonisolated init() {}
+
+    private weak var presentingViewControllerOnMainActor: UIViewController?
+
     /// UIViewController to be used as Notice(s) Presenter
     ///
-    weak var presentingViewController: UIViewController?
-
-    /// Observes keyboard and repositions Notice
-    ///
-    private var keyboardFrameObserver: KeyboardFrameObserver?
+    // These synchronous protocol entry points are called on the main thread, as required by their UIKit work.
+    // Keep runtime checks until NoticePresenter and its callers are migrated to @MainActor in their feature slices.
+    nonisolated var presentingViewController: UIViewController? {
+        get {
+            MainActor.assumeIsolated { presentingViewControllerOnMainActor }
+        }
+        set {
+            MainActor.assumeIsolated { presentingViewControllerOnMainActor = newValue }
+        }
+    }
 
     /// Enqueues the specified Notice for display.
     ///
     @discardableResult
-    func enqueue(notice: Notice) -> Bool {
-        guard
-            noticeOnScreen != notice, // Ignore if we are already presenting this notice.
-            !notices.contains(notice) // Ignore if this notice is already enqueued and waiting for presentation.
-        else {
-            return false
+    nonisolated func enqueue(notice: Notice) -> Bool {
+        #if hasFeature(StrictConcurrency)
+        // The legacy Notice contains a non-Sendable action. This checked, synchronous bridge never changes executors.
+        // Remove this local escape hatch with the bridge when NoticePresenter's callers adopt @MainActor.
+        // Minimal checking infers Sendable for Notice and warns if this annotation is present.
+        nonisolated(unsafe) let notice = notice
+        #endif
+        return MainActor.assumeIsolated {
+            guard
+                noticeOnScreen != notice, // Ignore if we are already presenting this notice.
+                !notices.contains(notice) // Ignore if this notice is already enqueued and waiting for presentation.
+            else {
+                return false
+            }
+            notices.append(notice)
+            presentNextNoticeIfPossible()
+            return true
         }
-        notices.append(notice)
-        presentNextNoticeIfPossible()
-        return true
     }
 }
 
@@ -107,38 +128,20 @@ private extension DefaultNoticePresenter {
 
         let noticeContainerView = NoticeContainerView(noticeView: noticeView)
 
-        var onScreenBottomOffsetAdjustedForKeyboard: CGFloat = 0
-        keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            guard let self else { return }
-
-            onScreenBottomOffsetAdjustedForKeyboard = -keyboardFrame.height
-
-            // Subtract the tab bar height from keyboard height, if keyboard is visible
-            // to avoid having extra gap between keyboard and notice, when `offscreenBottomOffset` has a positive value
-            //
-            if keyboardFrame.height > 0 {
-                onScreenBottomOffsetAdjustedForKeyboard -= self.offscreenBottomOffset
-            }
-
-            // Adjust the bottom constraint ONLY if the noticeContainerView is already presented.
-            // If noticeContainerView is not already presented, it will be presented using onScreenBottomOffsetAdjustedForKeyboard.
-            //
-            if noticeContainerView.superview != nil {
-                noticeContainerView.noticeBottomConstraint.constant = onScreenBottomOffsetAdjustedForKeyboard
-                self.animatePresentation(toState: {
-                    noticeContainerView.layoutIfNeeded()
-                })
-            }
-        }
-        keyboardFrameObserver?.startObservingKeyboardFrame(sendInitialEvent: true)
-
         addNoticeContainerToPresentingViewController(noticeContainerView)
 
+        // Let UIKit track the docked keyboard as part of the view's layout so the notice follows keyboard and window changes.
         NSLayoutConstraint.activate([
             noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            makeBottomConstraintForNoticeContainer(noticeContainerView)
-        ])
+            noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ] + makeBottomConstraintsForNoticeContainer(noticeContainerView))
+        updateBaseline(of: noticeContainerView)
+        noticeContainerView.onLayoutChange = { [weak self, weak noticeContainerView] in
+            guard let self, let noticeContainerView else {
+                return
+            }
+            self.updateBaseline(of: noticeContainerView)
+        }
 
         let offScreenState = { [weak noticeView, weak self] in
             guard let noticeView, let self else {
@@ -152,7 +155,7 @@ private extension DefaultNoticePresenter {
 
         let onScreenState = {
             noticeView.alpha = UIKitConstants.alphaFull
-            noticeContainerView.noticeBottomConstraint.constant = onScreenBottomOffsetAdjustedForKeyboard
+            noticeContainerView.noticeBottomConstraint.constant = 0
 
             noticeContainerView.layoutIfNeeded()
         }
@@ -171,13 +174,15 @@ private extension DefaultNoticePresenter {
         }
 
         animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay) {
+                dismiss()
+            }
         })
     }
 
     private func dismissHandler(for noticeContainerView: UIView,
-                                fromState: (() -> Void)? = nil,
-                                toState: @escaping () -> Void) -> () -> Void {
+                                fromState: (@MainActor () -> Void)? = nil,
+                                toState: @escaping @MainActor () -> Void) -> @MainActor @Sendable () -> Void {
         return {
             guard noticeContainerView.superview != nil else {
                 return
@@ -192,8 +197,8 @@ private extension DefaultNoticePresenter {
 
     func dismiss() {
         noticeOnScreen = nil
-        keyboardFrameObserver = nil
         kvoToken = nil
+        tabBarFrameToken = nil
         presentNextNoticeIfPossible()
     }
 
@@ -205,42 +210,92 @@ private extension DefaultNoticePresenter {
         }
     }
 
-    func makeBottomConstraintForNoticeContainer(_ container: UIView) -> NSLayoutConstraint {
+    func makeBottomConstraintsForNoticeContainer(_ container: NoticeContainerView) -> [NSLayoutConstraint] {
         guard let presentingViewController else {
             fatalError("NoticePresenter requires a presentingViewController!")
         }
 
+        let view: UIView = presentingViewController.view
+        let baselineAnchor: NSLayoutYAxisAnchor
+        // UIKit can detach the tab bar; a constraint to a view outside the hierarchy cannot be activated.
         if let tabBarController = presentingViewController as? UITabBarController,
-           !tabBarController.tabBar.isHidden {
-            if kvoToken == nil {
-                kvoToken = tabBarController.tabBar.observe(\.isHidden, options: .new) { tabBar, _ in
-                    guard tabBar.isHidden else {
+           !tabBarController.tabBar.isHidden,
+           tabBarController.tabBar.isDescendant(of: tabBarController.view) {
+            baselineAnchor = tabBarController.tabBar.topAnchor
+            // Used instead of the tab bar baseline while the tab bar is a vertical side bar.
+            let safeAreaConstraint = container.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            safeAreaConstraint.priority = .defaultHigh
+            container.safeAreaBaselineConstraint = safeAreaConstraint
+            // The tab bar can change its orientation after the container's last layout pass of a transition.
+            tabBarFrameToken = tabBarController.tabBar.observe(\.frame) { [weak self, weak container] _, _ in
+                MainActor.assumeIsolated {
+                    guard let self, let container else {
                         return
                     }
-
-                    // If the tab bar hides we also hide the notice, as trying to rearrange the notice accordingly might bring unexpected results
-                    // due to the internal logic of UITabBarController e.g they remove/recreate the tab bar when navigation happens
-                    container.isHidden = true
+                    self.updateBaseline(of: container)
                 }
             }
 
-            return container.bottomAnchor.constraint(equalTo: tabBarController.tabBar.topAnchor)
+            if kvoToken == nil {
+                kvoToken = tabBarController.tabBar.observe(\.isHidden, options: .new) { tabBar, _ in
+                    // UIKit changes this property on the main thread; KVO delivers the observation synchronously.
+                    MainActor.assumeIsolated {
+                        guard tabBar.isHidden else {
+                            return
+                        }
+
+                        // If the tab bar hides we also hide the notice, as trying to rearrange the notice accordingly might bring unexpected results
+                        // due to the internal logic of UITabBarController e.g they remove/recreate the tab bar when navigation happens
+                        container.isHidden = true
+                    }
+                }
+            }
+        } else {
+            baselineAnchor = presentingViewController.view.bottomAnchor
         }
 
-        return container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor)
+        let baselineConstraint = container.bottomAnchor.constraint(equalTo: baselineAnchor)
+        baselineConstraint.priority = .defaultHigh
+        container.baselineConstraint = baselineConstraint
+
+        let keyboardConstraint = container.bottomAnchor.constraint(lessThanOrEqualTo: view.keyboardLayoutGuide.topAnchor)
+
+        return [baselineConstraint, keyboardConstraint]
+    }
+
+    /// Whether the presenter's tab bar is laid out as a vertical side bar.
+    var isTabBarVertical: Bool {
+        guard let tabBarController = presentingViewController as? UITabBarController else {
+            return false
+        }
+        return NoticeLayout.isVerticalBar(frame: tabBarController.tabBar.frame)
+    }
+
+    /// Pins the notice above a bottom tab bar, or to the bottom safe area when the tab bar is a side bar.
+    func updateBaseline(of container: NoticeContainerView) {
+        // UIKit can detach the tab bar; a constraint to a view outside the hierarchy cannot be activated.
+        guard let tabBarController = presentingViewController as? UITabBarController,
+              tabBarController.tabBar.isDescendant(of: tabBarController.view),
+              container.isDescendant(of: tabBarController.view),
+              let safeAreaConstraint = container.safeAreaBaselineConstraint,
+              let baselineConstraint = container.baselineConstraint,
+              safeAreaConstraint.isActive != isTabBarVertical else {
+            return
+        }
+        baselineConstraint.isActive = !isTabBarVertical
+        safeAreaConstraint.isActive = isTabBarVertical
     }
 
     var offscreenBottomOffset: CGFloat {
-        if let tabBarController = presentingViewController as? UITabBarController {
-            return tabBarController.tabBar.bounds.height
+        guard let tabBarController = presentingViewController as? UITabBarController else {
+            return 0
         }
-
-        return 0
+        return isTabBarVertical ? tabBarController.view.safeAreaInsets.bottom : tabBarController.tabBar.bounds.height
     }
 
-    func animatePresentation(fromState: (() -> Void)? = nil,
-                             toState: @escaping () -> Void,
-                             completion: (() -> Void)? = nil) {
+    func animatePresentation(fromState: (@MainActor () -> Void)? = nil,
+                             toState: @escaping @MainActor () -> Void,
+                             completion: (@MainActor () -> Void)? = nil) {
         fromState?()
 
         UIView.animate(withDuration: Animations.appearanceDuration,
@@ -262,13 +317,36 @@ private extension DefaultNoticePresenter {
     }
 }
 
+// MARK: - NoticeLayout: Layout rules shared by the UIKit and SwiftUI notices.
+//
+enum NoticeLayout {
+    /// A tab bar that is taller than wide is a side bar, so "above the tab bar" is not the bottom of the screen.
+    static func isVerticalBar(frame: CGRect) -> Bool {
+        frame.height > frame.width
+    }
+
+    /// Notices are capped at half the width in wide, regular-width windows only.
+    static func widthMultiplier(availableWidth: CGFloat, isRegularWidth: Bool) -> CGFloat {
+        isRegularWidth && availableWidth >= NarrowWindowLayout.compactLayoutThreshold ? 0.5 : 1.0
+    }
+}
 
 // MARK: - NoticeContainerView: Small wrapper view that ensures a notice remains centered and at a maximum width when
-//         displayed in a regular size class.
+//         displayed in a wide window.
 //
 private class NoticeContainerView: UIView {
 
-    let containerMargin: CGFloat = 16.0
+    /// Baseline used while the tab bar is at the bottom, or always when there is no tab bar.
+    var baselineConstraint: NSLayoutConstraint?
+
+    /// Baseline used while the tab bar is a vertical side bar.
+    var safeAreaBaselineConstraint: NSLayoutConstraint?
+
+    /// Called on layout passes and safe-area changes, when the tab bar may have changed its orientation.
+    var onLayoutChange: (() -> Void)?
+
+    private let containerMargin: CGFloat = 16.0
+    private let bottomMargin: CGFloat = 8.0
 
     private let contentView: UIView = {
         let view = UIView()
@@ -316,7 +394,10 @@ private class NoticeContainerView: UIView {
         /// NoticeContainer Setup
         ///
         translatesAutoresizingMaskIntoConstraints = false
-        layoutMargins = UIEdgeInsets(top: containerMargin, left: containerMargin, bottom: containerMargin, right: containerMargin)
+        layoutMargins = UIEdgeInsets(top: containerMargin,
+                                    left: containerMargin,
+                                    bottom: bottomMargin,
+                                    right: containerMargin)
         addSubview(contentView)
 
         /// LayoutContraints: ContentView
@@ -356,12 +437,33 @@ private class NoticeContainerView: UIView {
     }
 
     private lazy var noticeWidthConstraint: NSLayoutConstraint = {
-        // At regular width, the notice shouldn't be any wider than 1/2 the app's width
+        // In a wide window, the notice shouldn't be any wider than 1/2 the app's width
         return noticeView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5)
     }()
 
     private func activateNoticeWidthIfNeeded() {
-        noticeWidthConstraint.isActive = traitCollection.horizontalSizeClass == .regular
+        let isRegularWidth = traitCollection.horizontalSizeClass == .regular
+        let isHalfWidth = NoticeLayout.widthMultiplier(availableWidth: bounds.width, isRegularWidth: isRegularWidth) < 1
+        guard noticeWidthConstraint.isActive != isHalfWidth else {
+            return
+        }
+        noticeWidthConstraint.isActive = isHalfWidth
+    }
+
+    override func layoutSubviews() {
+        activateNoticeWidthIfNeeded()
+        onLayoutChange?()
+        super.layoutSubviews()
+    }
+
+    override func safeAreaInsetsDidChange() {
+        super.safeAreaInsetsDidChange()
+        onLayoutChange?()
+    }
+
+    // Only a visible notice takes touches, so the container never blocks the views beside or under it.
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        noticeView.alpha > UIKitConstants.alphaZero && noticeView.point(inside: convert(point, to: noticeView), with: event)
     }
 
     private func observeTraitChanges() {

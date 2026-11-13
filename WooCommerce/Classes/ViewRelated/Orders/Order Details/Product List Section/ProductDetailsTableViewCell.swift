@@ -62,15 +62,18 @@ final class ProductDetailsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureProductImageView()
-        configureNameLabel()
-        configurePriceLabel()
-        configureSKULabel()
-        configureSubtitleLabel()
-        configureSelectionStyle()
-        configureAttributesStackView()
-        configureAddOnViews()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureProductImageView()
+            configureNameLabel()
+            configurePriceLabel()
+            configureSKULabel()
+            configureSubtitleLabel()
+            configureSelectionStyle()
+            configureAttributesStackView()
+            configureAddOnViews()
+            observeInterfaceTraitChanges()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -86,10 +89,8 @@ private extension ProductDetailsTableViewCell {
     }
 
     func configureProductImageView() {
-        productImageView.image = UIImage.productPlaceholderImage
-        productImageView.tintColor = .listSmallIcon
-        productImageView.contentMode = .scaleAspectFill
-        productImageView.clipsToBounds = true
+        productImageView.applyProductThumbnailStyle()
+        productImageView.showProductThumbnailPlaceholder()
     }
 
     func configureNameLabel() {
@@ -139,6 +140,16 @@ private extension ProductDetailsTableViewCell {
         selectionStyle = .none
     }
 
+    func observeInterfaceTraitChanges() {
+        let traits: [UITrait] = [
+            UITraitUserInterfaceStyle.self,
+            UITraitAccessibilityContrast.self
+        ]
+        registerForTraitChanges(traits) { (self: Self, _: UITraitCollection) in
+            self.productImageView.refreshProductThumbnailBorderColor()
+        }
+    }
+
     /// Adds padding between the leading margin and the product image if the product is a child product.
     ///
     func configureChildProductPadding(isChildProduct: Bool) {
@@ -185,11 +196,17 @@ extension ProductDetailsTableViewCell {
     /// Configure a product detail cell
     ///
     func configure(item: ProductDetailsCellViewModel, imageService: ImageService) {
+        productImageView.applyProductThumbnailStyle()
+        productImageView.showProductThumbnailPlaceholder()
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
-                                                       placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
+                                                       placeholder: ProductThumbnailStyle.placeholderImage,
                                                        progressBlock: nil,
-                                                       completion: nil)
+                                                       completion: { [weak self] image, error in
+                                                           if image != nil && error == nil {
+                                                               self?.productImageView.showProductThumbnailImage()
+                                                           }
+                                                       })
 
         nameLabel.text = item.name
         priceLabel.text = item.total
@@ -202,7 +219,9 @@ extension ProductDetailsTableViewCell {
 
     func configure(customAmountViewModel: OrderDetailsCustomAmountCellViewModel) {
         nameLabel.text = customAmountViewModel.name
+        productImageView.removeProductThumbnailStyle()
         productImageView.image = customAmountViewModel.image
+        productImageView.showProductThumbnailImage()
         priceLabel.text = customAmountViewModel.total
         subtitleLabel.text = Localization.customAmount
         viewAddOnsStackView.isHidden = true

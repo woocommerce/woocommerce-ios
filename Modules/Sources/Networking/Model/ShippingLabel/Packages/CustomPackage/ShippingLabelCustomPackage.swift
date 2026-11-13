@@ -4,7 +4,7 @@ import WooFoundation
 
 /// Represents a custom package in Shipping Labels.
 ///
-public struct ShippingLabelCustomPackage: Equatable, GeneratedFakeable {
+public struct ShippingLabelCustomPackage: Equatable, GeneratedFakeable, Sendable {
 
     /// Usually is always `true` for custom packages
     public let isUserDefined: Bool

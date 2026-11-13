@@ -6,6 +6,7 @@ import WooFoundation
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class SimplePaymentsSummaryViewModelTests: XCTestCase {
 
     var subscriptions = Set<AnyCancellable>()
@@ -384,7 +385,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(updateStatus, .pending)
     }
 
-    func test_when_order_is_updated_navigation_to_payments_method_is_triggered() {
+    func test_when_order_is_updated_navigation_to_payments_method_is_triggered() async {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
@@ -402,7 +403,14 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.navigateToPaymentMethods)
 
         // When
-        viewModel.updateOrder()
+        await withCheckedContinuation { continuation in
+            viewModel.$navigateToPaymentMethods
+                .dropFirst()
+                .first(where: { $0 })
+                .sink { _ in continuation.resume() }
+                .store(in: &subscriptions)
+            viewModel.updateOrder()
+        }
 
         // Then
         XCTAssertTrue(viewModel.navigateToPaymentMethods)
@@ -531,7 +539,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         assertEqual(mockAnalytics.receivedProperties[2]["state"] as? String, "off") // Taxes disabled due to setting `enableTaxes` as false
     }
 
-    func test_failing_event_is_tracked_when_order_fails_to_update() {
+    func test_failing_event_is_tracked_when_order_fails_to_update() async {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
         mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -555,7 +563,14 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
                                                        analytics: WooAnalytics(analyticsProvider: mockAnalytics))
 
         // When
-        viewModel.updateOrder()
+        await withCheckedContinuation { continuation in
+            viewModel.$showLoadingIndicator
+                .dropFirst()
+                .first(where: { !$0 })
+                .sink { _ in continuation.resume() }
+                .store(in: &subscriptions)
+            viewModel.updateOrder()
+        }
 
         // Then
         assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.paymentsFlowFailed.rawValue])

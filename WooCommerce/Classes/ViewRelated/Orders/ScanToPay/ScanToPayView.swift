@@ -20,6 +20,7 @@ struct ScanToPayView: View {
                             .interpolation(.none)
                             .resizable()
                             .frame(width: Layout.qrCodeWidth, height: Layout.qrCodeHeight)
+                            .accessibilityIdentifier("scan-to-pay-qr-code")
                         DoneButton() {
                             dismiss()
                             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.onSuccessCallDelayAfterDismiss) {
@@ -59,6 +60,7 @@ struct ScanToPayView: View {
                 onButtonTapped()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .accessibilityIdentifier("scan-to-pay-done-button")
         }
     }
 }

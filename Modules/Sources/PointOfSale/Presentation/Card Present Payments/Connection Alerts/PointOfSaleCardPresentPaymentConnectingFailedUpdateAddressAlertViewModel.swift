@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import SwiftUI
 
@@ -16,6 +17,10 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
 
     private let showsInAuthenticatedWebView: Bool
     private let retrySearchAction: () -> Void
+    private let openURL: (URL) -> Void
+
+    private let notificationCenter: NotificationCenter
+    private var foregroundRetrySubscription: AnyCancellable?
 
     private var openSettingsButtonViewModel: CardPresentPaymentsModalButtonViewModel {
         CardPresentPaymentsModalButtonViewModel(
@@ -25,7 +30,13 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
                 if showsInAuthenticatedWebView {
                     shouldShowSettingsWebView = true
                 } else {
-                    UIApplication.shared.open(settingsAdminUrl)
+                    foregroundRetrySubscription = notificationCenter
+                        .publisher(for: UIApplication.willEnterForegroundNotification)
+                        .first()
+                        .sink { [weak self] _ in
+                            self?.retrySearchAction()
+                        }
+                    openURL(settingsAdminUrl)
                 }
                 primaryButtonViewModel = retryButtonViewModel
             })
@@ -36,10 +47,14 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     init(settingsAdminUrl: URL,
          showsInAuthenticatedWebView: Bool,
          retrySearchAction: @escaping () -> Void,
-         cancelSearchAction: @escaping () -> Void) {
+         cancelSearchAction: @escaping () -> Void,
+         openURL: @escaping (URL) -> Void = { UIApplication.shared.open($0) },
+         notificationCenter: NotificationCenter = .default) {
         self.settingsAdminUrl = settingsAdminUrl
         self.showsInAuthenticatedWebView = showsInAuthenticatedWebView
         self.retrySearchAction = retrySearchAction
+        self.openURL = openURL
+        self.notificationCenter = notificationCenter
         self.retryButtonViewModel = CardPresentPaymentsModalButtonViewModel(
             title: Localization.retry,
             actionHandler: retrySearchAction)

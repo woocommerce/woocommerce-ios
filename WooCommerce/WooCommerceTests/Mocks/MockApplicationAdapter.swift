@@ -18,9 +18,17 @@ final class MockApplicationAdapter: ApplicationAdapter {
     ///
     var registerWasCalled = false
 
+    /// Called when `registerForRemoteNotifications` is invoked.
+    ///
+    var onRegisterForRemoteNotifications: (() -> Void)?
+
     /// Title, subtitle, and message tuples received via the `presentInAppNotification` method.
     ///
     var presentInAppMessages = [(title: String, subtitle: String?, message: String?)]()
+
+    /// Action handlers received via the `presentInAppNotification` method.
+    ///
+    var presentInAppActionHandlers = [() -> Void]()
 
     /// Notification Identifiers received via the `presentNotificationDetails` method.
     ///
@@ -30,12 +38,14 @@ final class MockApplicationAdapter: ApplicationAdapter {
     ///
     func registerForRemoteNotifications() {
         registerWasCalled = true
+        onRegisterForRemoteNotifications?()
     }
 
     /// Innocuous `presentInAppNotification`
     ///
     func presentInAppNotification(title: String, subtitle: String?, message: String?, actionTitle: String, actionHandler: @escaping () -> Void) {
         presentInAppMessages.append((title: title, subtitle: subtitle, message: message))
+        presentInAppActionHandlers.append(actionHandler)
     }
 
     /// Innocuous `displayNotificationDetails`
@@ -51,6 +61,7 @@ final class MockApplicationAdapter: ApplicationAdapter {
     ///
     func reset() {
         registerWasCalled = false
+        onRegisterForRemoteNotifications = nil
         applicationIconBadgeNumber = .min
         presentDetailsNoteIDs = []
     }

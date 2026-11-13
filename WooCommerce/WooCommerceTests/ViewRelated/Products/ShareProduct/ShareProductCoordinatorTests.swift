@@ -3,31 +3,38 @@ import XCTest
 
 final class ShareProductCoordinatorTests: XCTestCase {
 
+    private var window: UIWindow!
+    private var rootViewController: UIViewController!
     private var navigationController: UINavigationController!
     private let productPath = "https://example.com"
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
     override func setUp() {
-        navigationController = UINavigationController()
+        super.setUp()
+        rootViewController = UIViewController()
+        navigationController = UINavigationController(rootViewController: rootViewController)
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = UIViewController()
-        window.makeKeyAndVisible()
+        window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = navigationController
+        window.makeKeyAndVisible()
 
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        super.setUp()
     }
 
     override func tearDown() {
+        navigationController.dismiss(animated: false)
+        window.isHidden = true
+        window = nil
+        rootViewController = nil
         navigationController = nil
         analytics = nil
         analyticsProvider = nil
         super.tearDown()
     }
 
+    @MainActor
     func test_default_share_sheet_is_displayed_when_AI_is_not_available() throws {
         // Given
         let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: false)
@@ -35,7 +42,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
                                                   productDescription: "Test description",
-                                                  shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
+                                                  shareSheetAnchorItem: makeShareSheetAnchorItem(),
                                                   eligibilityChecker: checker,
                                                   navigationController: navigationController)
 
@@ -48,6 +55,39 @@ final class ShareProductCoordinatorTests: XCTestCase {
         }
     }
 
+    func test_sharing_helper_configures_bar_button_item_as_share_popover_source() throws {
+        // Given
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad)
+        let url = try XCTUnwrap(URL(string: productPath))
+        let anchorItem = makeShareSheetAnchorItem()
+
+        // When
+        let activityViewController = try XCTUnwrap(SharingHelper.makeActivityViewController(url: url,
+                                                                                            title: "Test",
+                                                                                            from: anchorItem))
+
+        // Then
+        let popoverController = try XCTUnwrap(activityViewController.popoverPresentationController)
+        XCTAssertIdentical(popoverController.sourceItem as? UIBarButtonItem, anchorItem)
+    }
+
+    func test_sharing_helper_configures_view_as_share_popover_source() throws {
+        // Given
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad)
+        let url = try XCTUnwrap(URL(string: productPath))
+        let anchorView = UIView()
+
+        // When
+        let activityViewController = try XCTUnwrap(SharingHelper.makeActivityViewController(url: url,
+                                                                                            title: "Test",
+                                                                                            from: anchorView))
+
+        // Then
+        let popoverController = try XCTUnwrap(activityViewController.popoverPresentationController)
+        XCTAssertIdentical(popoverController.sourceItem as? UIView, anchorView)
+    }
+
+    @MainActor
     func test_AI_sheet_is_displayed_when_AI_is_available() throws {
         // Given
         let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: true)
@@ -55,7 +95,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
                                                   productDescription: "Test description",
-                                                  shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
+                                                  shareSheetAnchorItem: makeShareSheetAnchorItem(),
                                                   eligibilityChecker: checker,
                                                   navigationController: navigationController)
 
@@ -68,6 +108,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_analytics_is_tracked_when_AI_sheet_is_displayed() throws {
         // Given
         let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: true)
@@ -75,7 +116,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
                                                   productDescription: "Test description",
-                                                  shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
+                                                  shareSheetAnchorItem: makeShareSheetAnchorItem(),
                                                   eligibilityChecker: checker,
                                                   navigationController: navigationController,
                                                   analytics: analytics)
@@ -89,5 +130,11 @@ final class ShareProductCoordinatorTests: XCTestCase {
         // Then
         let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
         XCTAssertEqual(firstEvent, "product_sharing_ai_displayed")
+    }
+
+    private func makeShareSheetAnchorItem() -> UIBarButtonItem {
+        let item = UIBarButtonItem(systemItem: .done)
+        rootViewController.navigationItem.rightBarButtonItem = item
+        return item
     }
 }

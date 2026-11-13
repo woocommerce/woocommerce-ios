@@ -19,6 +19,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
 
 /// Configures the sections and rows of Product form table view based on the view model.
 ///
+@MainActor
 final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
     private var onNameChange: ((_ name: String?) -> Void)?
@@ -80,6 +81,7 @@ extension ProductFormTableViewDataSource: UITableViewDataSource {
 
 private extension ProductFormTableViewDataSource {
     func configure(_ cell: UITableViewCell, section: ProductFormSection, indexPath: IndexPath) {
+        cell.accessibilityIdentifier = nil
         switch section {
         case .primaryFields(let rows):
             configureCellInPrimaryFieldsSection(cell, row: rows[indexPath.row])
@@ -102,6 +104,7 @@ private extension ProductFormTableViewDataSource {
                             isVariation: isVariation)
         case .linkedProductsPromo(let viewModel):
             configureLinkedProductsPromo(cell: cell, viewModel: viewModel)
+            cell.accessibilityIdentifier = "product-linked-products-promo-cell"
         case .name(let name, let editable, let productStatus):
             configureName(cell: cell, name: name, isEditable: editable, productStatus: productStatus)
         case .variationName(let name):
@@ -119,6 +122,7 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
+    @MainActor
     func configureImages(cell: UITableViewCell, isEditable: Bool, isStorePublic: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
         // only show images row if it's a .org site or a public .com site. Private .com site will see a banner.
         guard isStorePublic else {
@@ -382,6 +386,25 @@ private extension ProductFormTableViewDataSource {
 //
 private extension ProductFormTableViewDataSource {
     func configureCellInSettingsFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.SettingsRow) {
+        let accessibilityIdentifier: String?
+        switch row {
+        case .price:
+            accessibilityIdentifier = "product-price-cell"
+        case .inventory, .simplifiedInventory:
+            accessibilityIdentifier = "product-inventory-cell"
+        case .variations:
+            accessibilityIdentifier = "product-variations-cell"
+        case .groupedProducts:
+            accessibilityIdentifier = "product-grouped-products-cell"
+        case .externalURL:
+            accessibilityIdentifier = "product-external-url-cell"
+        default:
+            accessibilityIdentifier = nil
+        }
+        if let accessibilityIdentifier {
+            cell.accessibilityIdentifier = accessibilityIdentifier
+        }
+
         switch row {
         case .price(let viewModel, _),
              .customFields(let viewModel),
@@ -420,6 +443,7 @@ private extension ProductFormTableViewDataSource {
             fatalError()
         }
         cell.updateUI(viewModel: viewModel.toCellViewModel())
+        cell.detailsAccessibilityIdentifier = viewModel.detailsAccessibilityIdentifier
     }
 
     func configureReviews(cell: UITableViewCell,

@@ -35,24 +35,30 @@ final class MockAssistantBackend: AssistantBackendConfirming {
         continuation.finish()
     }
 
-    func send(turn: AssistantTurn,
-              context: AssistantContext,
-              session: AssistantSession?) -> AsyncThrowingStream<BackendYield, Error> {
-        let index = recordTurn(turn)
-        return AsyncThrowingStream { continuation in
-            self.start(index: index, continuation: continuation)
+    nonisolated func send(turn: AssistantTurn,
+                          context: AssistantContext,
+                          session: AssistantSession?) -> AsyncThrowingStream<BackendYield, Error> {
+        MainActor.assumeIsolated {
+            let index = recordTurn(turn)
+            return AsyncThrowingStream { continuation in
+                self.start(index: index, continuation: continuation)
+            }
         }
     }
 
-    func confirmProposal(_ id: UUID) async {
-        recordConfirmedProposal(id)
+    nonisolated func confirmProposal(_ id: UUID) async {
+        await recordConfirmedProposal(id)
     }
 
-    func cancelProposal(_ id: UUID) async {
-        recordCancelledProposal(id)
+    nonisolated func cancelProposal(_ id: UUID) async {
+        await recordCancelledProposal(id)
     }
 
-    func reset() async {
+    nonisolated func reset() async {
+        await performReset()
+    }
+
+    private func performReset() async {
         resetCallCount += 1
         if resetIsHeld {
             await withCheckedContinuation { continuation in

@@ -43,9 +43,11 @@ final class OrdersRemoteTests: XCTestCase {
     func test_order_fields_parameter_values_do_not_contain_whitespace() throws {
         // When
         let fieldValues = OrdersRemote.ParameterValues.fieldValues
+        let listFieldValues = OrdersRemote.ParameterValues.listFieldValues
 
         // Then
         XCTAssertFalse(fieldValues.contains(" "))
+        XCTAssertFalse(listFieldValues.contains(" "))
     }
 
     func test_order_fields_parameter_includes_created_via_field() throws {
@@ -54,6 +56,16 @@ final class OrdersRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(fieldValues.contains("created_via"), "fieldValues should include 'created_via' field")
+    }
+
+    func test_order_list_fields_parameter_excludes_meta_data_and_otherwise_matches_fieldValues() throws {
+        // When
+        let fieldValues = OrdersRemote.ParameterValues.fieldValues.components(separatedBy: ",")
+        let listFieldValues = OrdersRemote.ParameterValues.listFieldValues.components(separatedBy: ",")
+
+        // Then
+        XCTAssertFalse(listFieldValues.contains("meta_data"), "listFieldValues should not include 'meta_data'")
+        XCTAssertEqual(fieldValues.filter { $0 != "meta_data" }, listFieldValues)
     }
 
     // MARK: - Load All Orders Tests
@@ -146,29 +158,43 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
+    func test_loadAllOrders_excludes_meta_data_from_fields_parameter() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        // When
+        _ = try await remote.loadAllOrders(for: sampleSiteID)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertFalse(received.contains("meta_data"))
+    }
+
     // MARK: - Load Orders by IDs Tests
 
-    func test_loadOrders_by_ids_when_request_succeeds_returns_parsed_orders() async throws {
+    func test_loadBookingOrders_by_ids_when_request_succeeds_returns_parsed_orders() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         let orderIDs: [Int64] = [1, 2, 3]
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
         // When
-        let orders = try await remote.loadOrders(for: sampleSiteID, orderIDs: orderIDs)
+        let orders = try await remote.loadBookingOrders(for: sampleSiteID, orderIDs: orderIDs)
 
         // Then
         XCTAssertEqual(orders.count, 4) // The sample file has 4 orders
     }
 
-    func test_loadOrders_by_ids_when_invoked_sends_correct_parameters() async throws {
+    func test_loadBookingOrders_by_ids_when_invoked_sends_correct_parameters() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         let orderIDs: [Int64] = [1, 2, 3, 2] // with duplicate
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
         // When
-        _ = try await remote.loadOrders(for: sampleSiteID, orderIDs: orderIDs)
+        _ = try await remote.loadBookingOrders(for: sampleSiteID, orderIDs: orderIDs)
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -183,12 +209,27 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(parameters["per_page"] as? String, "4") // per_page matches order ID count
     }
 
-    func test_loadOrders_by_ids_with_empty_ids_returns_empty_array_and_makes_no_request() async throws {
+    func test_loadBookingOrders_by_ids_requests_meta_data_limited_to_payment_status() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        // When
+        _ = try await remote.loadBookingOrders(for: sampleSiteID, orderIDs: [1])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let fields = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertTrue(fields.contains("meta_data"), "Bookings consume `_payment_status`, so `meta_data` must stay in the response")
+        XCTAssertEqual(request.parameters["include_meta"] as? String, "_payment_status")
+    }
+
+    func test_loadBookingOrders_by_ids_with_empty_ids_returns_empty_array_and_makes_no_request() async throws {
         // Given
         let remote = OrdersRemote(network: network)
 
         // When
-        let orders = try await remote.loadOrders(for: sampleSiteID, orderIDs: [])
+        let orders = try await remote.loadBookingOrders(for: sampleSiteID, orderIDs: [])
 
         // Then
         XCTAssertTrue(orders.isEmpty)
@@ -280,6 +321,20 @@ final class OrdersRemoteTests: XCTestCase {
 
         // Then
         XCTAssert(orders.count == 4)
+    }
+
+    func test_searchOrders_excludes_meta_data_from_fields_parameter() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        // When
+        _ = try await remote.searchOrders(for: sampleSiteID, keyword: String())
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertFalse(received.contains("meta_data"))
     }
 
     /// Verifies that searchOrders properly relays Networking Layer errors.
@@ -449,30 +504,37 @@ final class OrdersRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
-        let lineItem = try XCTUnwrap((request.parameters["line_items"] as? [[String: AnyHashable]])?.first)
-        let received = try XCTUnwrap(lineItem["bundle_configuration"] as? [[String: AnyHashable]])
-        let expected: [[String: AnyHashable]] = [
-            [
-                "bundled_item_id": 20,
-                "product_id": 51,
-                "quantity": 3,
-                "optional_selected": true
-            ],
-            [
-                "bundled_item_id": 21,
-                "product_id": 52,
-                "quantity": 5,
-                "variation_id": 77,
-                "attributes": [
-                    [
-                        "id": 2,
-                        "name": "Color",
-                        "option": "Coral"
-                    ] as [String: AnyHashable]
-                ] as [AnyHashable]
-            ]
-        ]
-        assertEqual(expected, received)
+        let lineItemsValue = try XCTUnwrap(request.requestParameters.dictionary?["line_items"])
+        guard case .array(let lineItems) = lineItemsValue else {
+            return XCTFail("Expected line_items array")
+        }
+        let firstLineItem = try XCTUnwrap(lineItems.first)
+        guard case .dictionary(let lineItem) = firstLineItem else {
+            return XCTFail("Expected line item dictionary")
+        }
+        let received = try XCTUnwrap(lineItem["bundle_configuration"])
+        let expected: RequestParameterValue = .array([
+            .dictionary([
+                "bundled_item_id": .int(20),
+                "product_id": .int(51),
+                "quantity": .int(3),
+                "optional_selected": .bool(true)
+            ]),
+            .dictionary([
+                "bundled_item_id": .int(21),
+                "product_id": .int(52),
+                "quantity": .int(5),
+                "variation_id": .int(77),
+                "attributes": .array([
+                    .dictionary([
+                        "id": .int(2),
+                        "name": .string("Color"),
+                        "option": .string("Coral")
+                    ])
+                ])
+            ])
+        ])
+        XCTAssertEqual(expected, received)
     }
 
     func test_update_order_properly_encodes_coupon_lines() throws {
@@ -566,6 +628,67 @@ final class OrdersRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let received = try XCTUnwrap(request.parameters["dp"] as? String)
         assertEqual(received, "8")
+    }
+
+    func test_updateOrder_with_request_currency_encodes_currency_in_tunnel_path_and_preserves_body() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake().copy(orderID: sampleOrderID, customerNote: "Updated note")
+
+        // When
+        remote.updateOrder(from: sampleSiteID,
+                           order: order,
+                           giftCard: nil,
+                           fields: [.customerNote],
+                           requestCurrency: "EUR") { _ in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let urlRequest = try request.asURLRequest()
+        let path = try encodedFormField(named: "path", in: urlRequest)
+        let body = try encodedFormField(named: "body", in: urlRequest)
+        let payload = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(body.utf8)) as? [String: Any])
+        XCTAssertEqual(path, "/wc/v3/orders/\(sampleOrderID)&currency=EUR&_method=post")
+        XCTAssertEqual(payload["customer_note"] as? String, "Updated note")
+        XCTAssertNil(payload["currency"])
+    }
+
+    func test_updateOrder_with_request_currency_preserves_query_when_converted_to_REST() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake().copy(orderID: sampleOrderID, customerNote: "Updated note")
+
+        // When
+        remote.updateOrder(from: sampleSiteID,
+                           order: order,
+                           giftCard: nil,
+                           fields: [.customerNote],
+                           requestCurrency: "EUR") { _ in }
+
+        // Then
+        let jetpackRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let request = try XCTUnwrap(jetpackRequest.asRESTRequest(with: "https://example.com"))
+        let urlRequest = try request.asURLRequest()
+        let queryItems = URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false)?.queryItems
+        let payload = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(urlRequest.httpBody)) as? [String: Any])
+        XCTAssertEqual(queryItems?.first { $0.name == "currency" }?.value, "EUR")
+        XCTAssertEqual(payload["customer_note"] as? String, "Updated note")
+        XCTAssertNil(payload["currency"])
+    }
+
+    func test_updateOrder_without_request_currency_omits_currency_query() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: .fake().copy(orderID: sampleOrderID), giftCard: nil, fields: []) { _ in }
+
+        // Then
+        let jetpackRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertNil(jetpackRequest.queryParameters.dictionary)
+        let request = try XCTUnwrap(jetpackRequest.asRESTRequest(with: "https://example.com"))
+        let queryItems = URLComponents(url: try XCTUnwrap(request.asURLRequest().url), resolvingAgainstBaseURL: false)?.queryItems
+        XCTAssertNil(queryItems?.first { $0.name == "currency" })
     }
 
     // MARK: - Load Order Notes Tests
@@ -735,6 +858,41 @@ final class OrdersRemoteTests: XCTestCase {
             "quantity": expectedQuantity
         ]
         assertEqual(received, expected)
+    }
+
+    func test_create_order_jetpack_body_preserves_nested_parameter_arrays() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let orderItem = OrderItem.fake().copy(productID: 5, quantity: 2)
+        let order = Order.fake().copy(items: [orderItem])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.items]) { _ in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let urlRequest = try request.asURLRequest()
+        let body = try encodedFormField(named: "body", in: urlRequest)
+        let payload = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(body.utf8)) as? [String: Any])
+        assertOrderCreationPayloadPreservesNumericScalars(payload)
+    }
+
+    func test_create_order_rest_body_preserves_nested_parameter_arrays() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let orderItem = OrderItem.fake().copy(productID: 5, quantity: 2)
+        let order = Order.fake().copy(items: [orderItem])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.items]) { _ in }
+
+        // Then
+        let jetpackRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let request = try XCTUnwrap(jetpackRequest.asRESTRequest(with: "https://example.com"))
+        let urlRequest = try request.asURLRequest()
+        let body = try XCTUnwrap(urlRequest.httpBody)
+        let payload = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        assertOrderCreationPayloadPreservesNumericScalars(payload)
     }
 
     func test_create_order_properly_encodes_addresses() throws {
@@ -986,7 +1144,58 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(parameters["status"] as? String, "any")
         XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
         XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
-        XCTAssertNotNil(parameters["_fields"] as? String)
+        let fields = try XCTUnwrap(parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("meta_data"))
+    }
+
+    func test_loadPOSOrders_sends_correct_parameters() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let pageNumber = 3
+        let pageSize = 25
+
+        // When
+        _ = try? await remote.loadPOSOrders(siteID: sampleSiteID, pageNumber: pageNumber, pageSize: pageSize)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let parameters = request.parameters
+
+        XCTAssertEqual(parameters["page"] as? String, String(pageNumber))
+        XCTAssertEqual(parameters["per_page"] as? String, String(pageSize))
+        XCTAssertEqual(parameters["status"] as? String, "any")
+        XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
+        XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
+        let fields = try XCTUnwrap(parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("meta_data"))
+    }
+
+    func test_loadPOSOrder_requests_full_precision_amounts() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        _ = try? await remote.loadPOSOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.parameters["dp"] as? String, "8")
+    }
+
+    func test_loadPOSOrders_by_orderIDs_excludes_meta_data_from_fields() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        _ = try? await remote.loadPOSOrders(siteID: sampleSiteID, orderIDs: [sampleOrderID])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let parameters = request.parameters
+
+        XCTAssertEqual(parameters["include"] as? String, String(sampleOrderID))
+        let fields = try XCTUnwrap(parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("meta_data"))
     }
 
     func test_searchPOSOrders_properly_relays_networking_error() async throws {
@@ -1001,6 +1210,53 @@ final class OrdersRemoteTests: XCTestCase {
             // Then
             XCTAssertEqual(error as? NetworkError, .notFound(response: nil))
         }
+    }
+}
+
+private extension OrdersRemoteTests {
+    func encodedFormField(named name: String, in request: URLRequest) throws -> String {
+        let body = try XCTUnwrap(request.httpBody)
+        let query = try XCTUnwrap(String(data: body, encoding: .utf8))
+        let components = URLComponents(string: "https://example.com?\(query)")
+        return try XCTUnwrap(components?.queryItems?.first { $0.name == name }?.value)
+    }
+
+    func assertOrderCreationPayloadPreservesNumericScalars(_ payload: [String: Any]) {
+        guard let lineItem = (payload["line_items"] as? [[String: Any]])?.first else {
+            return XCTFail("Expected line_items in order creation payload")
+        }
+        XCTAssertEqual(number(lineItem["id"]), 0)
+        XCTAssertEqual(number(lineItem["product_id"]), 5)
+        XCTAssertEqual(number(lineItem["quantity"]), 2)
+        XCTAssertFalse(isBoolean(lineItem["id"]))
+        XCTAssertFalse(isBoolean(lineItem["product_id"]))
+        XCTAssertFalse(isBoolean(lineItem["quantity"]))
+
+        guard let metadata = (payload["meta_data"] as? [[String: Any]])?.first else {
+            return XCTFail("Expected meta_data in order creation payload")
+        }
+        XCTAssertEqual(number(metadata["id"]), 0)
+        XCTAssertFalse(isBoolean(metadata["id"]))
+    }
+
+    func number(_ value: Any?) -> Int64? {
+        switch value {
+        case let value as Int:
+            return Int64(value)
+        case let value as Int64:
+            return value
+        case let value as NSNumber where CFGetTypeID(value) != CFBooleanGetTypeID():
+            return value.int64Value
+        default:
+            return nil
+        }
+    }
+
+    func isBoolean(_ value: Any?) -> Bool {
+        guard let value = value as? NSNumber else {
+            return false
+        }
+        return CFGetTypeID(value) == CFBooleanGetTypeID()
     }
 }
 

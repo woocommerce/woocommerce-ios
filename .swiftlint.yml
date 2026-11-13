@@ -109,6 +109,9 @@ only_rules:
   # Prefer `reduce(into:_:)` over `reduce(_:_:)` for non-trivial accumulator types.
   - reduce_into
 
+  # `nil` coalescing on a non-optional is redundant.
+  - redundant_nil_coalescing
+
   # Type annotations are redundant when the type can be inferred.
   - redundant_type_annotation
 
@@ -203,6 +206,13 @@ custom_rules:
     name: "String Interpolation in Localized String"
     regex: 'NSLocalizedString\("[^"]*\\\(\S*\)'
     message: "Localized strings must not use interpolated variables. Instead, use `String(format:`"
+    severity: error
+
+  pos_metrics_spacing:
+    name: "POS Metrics Spacing"
+    regex: '(\.padding\(\s*((\.(horizontal|vertical|top|bottom|leading|trailing|all)|\[[^\]]*\])\s*,\s*)?-?(0\.[0-9]*[1-9][0-9]*|[1-9][0-9]*(\.[0-9]+)?)\s*\)|spacing:\s*-?(0\.[0-9]*[1-9][0-9]*|[1-9][0-9]*(\.[0-9]+)?)\s*[,)]|\.padding\(\s*((\.(horizontal|vertical|top|bottom|leading|trailing|all)|\[[^\]]*\])\s*(,\s*nil\s*)?|nil\s*)?\))'
+    message: "In POS, use spacing and padding from `POSMetrics` (`metrics.spacing.medium`, `.posPadding(\\.medium)`) so they adapt on phone. Do not use numbers or the SwiftUI default padding."
+    included: Modules/Sources/PointOfSale/.*\.swift
     severity: error
 
   swiftui_localization:

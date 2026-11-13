@@ -83,9 +83,12 @@ public final class CardPresentPaymentStore: Store {
             completion(paymentGatewayAccount)
         case .loadActivePaymentGatewayExtension(let completion):
             loadActivePaymentGateway(onCompletion: completion)
-        case .loadAccounts(let siteID, let onCompletion):
+        case .loadAccounts(let siteID, let gateways, let onCompletion):
             loadAccounts(siteID: siteID,
+                         gateways: gateways,
                          onCompletion: onCompletion)
+        case .fetchPaymentGatewayAccount(let siteID, let gateway, let onCompletion):
+            fetchPaymentGatewayAccount(siteID: siteID, gateway: gateway, onCompletion: onCompletion)
         case .checkDeviceSupport(let siteID,
                                  let cardReaderType,
                                  let discoveryMethod,
@@ -139,6 +142,8 @@ public final class CardPresentPaymentStore: Store {
                                onCardReaderMessage: event,
                                onProcessingCompletion: processPaymentCompletion,
                                onCompletion: completion)
+        case .retrievePaymentIntent(let clientSecret, let completion):
+            retrievePaymentIntent(clientSecret: clientSecret, onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
         case .refundPayment(let parameters, let onCardReaderMessage, let completion):
@@ -378,9 +383,8 @@ private extension CardPresentPaymentStore {
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {
-        paymentCancellable?.cancel()
-        paymentCancellable = nil
-
+        // Keep the payment subscription alive until Hardware confirms the Stripe flow has stopped. If cancellation
+        // loses a race with native Tap to Pay presentation, the ongoing payment must still reach Woo for processing.
         cardReaderService.cancelPaymentIntent()
             .subscribe(Subscribers.Sink(receiveCompletion: { value in
             switch value {
@@ -392,6 +396,19 @@ private extension CardPresentPaymentStore {
         }, receiveValue: {
             onCompletion?(.success(()))
         }))
+    }
+
+    func retrievePaymentIntent(clientSecret: String,
+                               onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
+        cardReaderService.retrievePaymentIntent(clientSecret: clientSecret)
+            .sink(receiveCompletion: { completion in
+                if case let .failure(error) = completion {
+                    onCompletion(.failure(error))
+                }
+            }, receiveValue: { intent in
+                onCompletion(.success(intent))
+            })
+            .store(in: &cancellables)
     }
 
     func refundPayment(parameters: RefundParameters, onCardReaderMessage: @escaping (CardReaderEvent) -> Void, onCompletion: ((Result<Void, Error>) -> Void)?) {
@@ -504,36 +521,48 @@ private extension CardPresentPaymentStore {
         onCompletion(usingBackend)
     }
 
-    /// Loads the account corresponding to the currently selected backend. Deletes the other (if it exists).
+    /// Loads the accounts of the given gateways. Deletes the stored accounts of the other gateways.
     ///
-    func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func loadAccounts(siteID: Int64, gateways: [CardPresentPaymentsPlugin], onCompletion: @escaping (Result<Void, Error>) -> Void) {
         var error: Error? = nil
         var hasSuccess: Bool? = nil
 
         let group = DispatchGroup()
         group.enter()
-        loadWCPayAccount(siteID: siteID, onCompletion: { result in
-            switch result {
-            case .failure(let loadError):
-                DDLogError("⛔️ Error synchronizing WCPay Account: \(loadError)")
-                error = loadError
-            case .success:
-                hasSuccess = true
+        if gateways.contains(.wcPay) {
+            loadWCPayAccount(siteID: siteID, onCompletion: { result in
+                switch result {
+                case .failure(let loadError):
+                    DDLogError("⛔️ Error synchronizing WCPay Account: \(loadError)")
+                    error = loadError
+                case .success:
+                    hasSuccess = true
+                }
+                group.leave()
+            })
+        } else {
+            deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID) {
+                group.leave()
             }
-            group.leave()
-        })
+        }
 
         group.enter()
-        loadStripeAccount(siteID: siteID, onCompletion: {result in
-            switch result {
-            case .failure(let loadError):
-                DDLogError("⛔️ Error synchronizing Stripe Account: \(loadError)")
-                error = loadError
-            case .success:
-                hasSuccess = true
+        if gateways.contains(.stripe) {
+            loadStripeAccount(siteID: siteID, onCompletion: {result in
+                switch result {
+                case .failure(let loadError):
+                    DDLogError("⛔️ Error synchronizing Stripe Account: \(loadError)")
+                    error = loadError
+                case .success:
+                    hasSuccess = true
+                }
+                group.leave()
+            })
+        } else {
+            deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID) {
+                group.leave()
             }
-            group.leave()
-        })
+        }
 
         group.notify(queue: .main) {
             switch (hasSuccess, error) {
@@ -546,6 +575,21 @@ private extension CardPresentPaymentStore {
             case (_, .none):
                 // This... shouldn't really happen.
                 onCompletion(.failure(CardPresentPaymentStoreError.unknownErrorFetchingAccounts))
+            }
+        }
+    }
+
+    func fetchPaymentGatewayAccount(siteID: Int64,
+                                    gateway: CardPresentPaymentsPlugin,
+                                    onCompletion: @escaping (Result<PaymentGatewayAccount, Error>) -> Void) {
+        switch gateway {
+        case .wcPay:
+            remote.loadAccount(for: siteID, detectUnexpectedResponses: true) { result in
+                onCompletion(result.map { $0.toPaymentGatewayAccount(siteID: siteID) })
+            }
+        case .stripe:
+            stripeRemote.loadAccount(for: siteID, detectUnexpectedResponses: true) { result in
+                onCompletion(result.map { $0.toPaymentGatewayAccount(siteID: siteID) })
             }
         }
     }

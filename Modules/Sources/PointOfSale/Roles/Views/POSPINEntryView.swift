@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct POSPINEntryView: View {
+    @Environment(\.posMetrics) private var metrics
     private let state: POSPINEntryState
     private let pinLength: Int
     private let onComplete: (String) async -> Bool
@@ -67,7 +68,7 @@ private extension POSPINEntryView {
 
     var dotsRow: some View {
         TimelineView(.animation(paused: !isLoading)) { context in
-            HStack(spacing: POSSpacing.medium) {
+            HStack(spacing: metrics.spacing.medium) {
                 ForEach(0..<pinLength, id: \.self) { index in
                     dot(filled: isLoading || index < enteredPIN.count,
                         yOffset: waveOffset(index: index, date: context.date))
@@ -238,7 +239,7 @@ private extension POSPINEntryView {
         static let statusRowHeight = dotSize
         static let dotBorderWidth: CGFloat = 2
         static let keySize: CGFloat = 72
-        static let keySpacing: CGFloat = POSSpacing.medium
+        static let keySpacing: CGFloat = POSMetrics.Scale.regular.medium
         static let keypadHeight = keySize * CGFloat(rows.count) + keySpacing * CGFloat(rows.count - 1)
         static let disabledOpacity: Double = 0.4
         static let shakeDuration: TimeInterval = 0.4
@@ -299,8 +300,7 @@ private extension POSPINEntryView {
 
 extension POSPINEntryView {
     static let contentWidth: CGFloat = 420
-    static let contentSpacing: CGFloat = POSSpacing.xLarge
-    static let titleToPINSpacing: CGFloat = POSSpacing.large
+    static let contentSpacing: CGFloat = POSMetrics.Scale.regular.xLarge
 
     static var preferredHeight: CGFloat {
         Constants.statusRowHeight + contentSpacing + Constants.keypadHeight
@@ -312,25 +312,25 @@ extension POSPINEntryView {
 #if DEBUG
 #Preview("Idle") {
     POSPINEntryView(state: .idle, onComplete: { _ in true })
-        .padding()
+        .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Error") {
     POSPINEntryView(state: .error(kind: .invalidPIN), onComplete: { _ in false })
-        .padding()
+        .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Lockout") {
     POSPINEntryView(state: .lockout(until: Date().addingTimeInterval(30)), onComplete: { _ in true })
-        .padding()
+        .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
 #Preview("Loading") {
     POSPINEntryView(state: .loading, onComplete: { _ in true })
-        .padding()
+        .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }
 
@@ -345,7 +345,7 @@ extension POSPINEntryView {
             }
         }
     })
-    .padding()
+    .posPadding(\.medium)
     .background(Color.posSurfaceContainerLow)
 }
 #endif

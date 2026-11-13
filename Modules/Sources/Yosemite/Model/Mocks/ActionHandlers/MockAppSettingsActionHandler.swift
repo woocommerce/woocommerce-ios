@@ -65,14 +65,17 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                 .getPOSSurveyPotentialMerchantNotificationScheduled,
                 .getHasPOSBeenOpenedAtLeastOnce,
                 .setHasPOSBeenOpenedAtLeastOnce,
-                .setPOSLastOpenedDate:
+                .setPOSLastOpenedDate,
+                .setHTTPSConfigurationUpdateRequired,
+                .getHTTPSConfigurationWarningState,
+                .dismissHTTPSConfigurationWarning:
             break
         default: unimplementedAction(action: action)
         }
     }
 
     func loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {
-        onCompletion(.success(true))
+        onCompletion(.success(false))
     }
 
     func setInstallationDateIfNecessary(date: Date, onCompletion: (Result<Bool, Error>) -> Void) {

@@ -1,5 +1,11 @@
 import SwiftUI
 
+/// A view-facing request to perform a capability-gated action. Called with the action to run, it either
+/// runs it immediately (the operator holds the capability) or presents the manager-override modal and runs
+/// it once an authorized staff member approves. Views default it to running the action directly, which keeps
+/// previews and ungated hosts working without a real gate.
+typealias POSPermissionRequest = (_ perform: @escaping () -> Void) -> Void
+
 private struct POSManagerOverrideModalModifier: ViewModifier {
     @Environment(\.posAccessSession) private var session
 
@@ -48,6 +54,7 @@ private extension View {
 }
 
 private struct POSManagerOverrideModalSizing: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posModalParentSize) private var parentSize
 
@@ -65,18 +72,18 @@ private extension POSManagerOverrideModalSizing {
     }
 
     var horizontalPadding: CGFloat {
-        isCompactWidth ? POSPadding.none : POSPadding.xxLarge
+        isCompactWidth ? metrics.padding.none : metrics.padding.xxLarge
     }
 
     var verticalPadding: CGFloat {
-        isCompactWidth ? POSPadding.none : POSPadding.xxLarge
+        isCompactWidth ? metrics.padding.none : metrics.padding.xxLarge
     }
 
     var frameWidth: CGFloat? {
         guard !isCompactWidth else {
             return nil
         }
-        return min(parentSize.width, POSPINEntryView.contentWidth + POSPadding.xxLarge * 2)
+        return min(parentSize.width, POSPINEntryView.contentWidth + metrics.padding.xxLarge * 2)
     }
 }
 
@@ -133,9 +140,9 @@ private struct POSManagerOverridePreview: View {
 
 private struct POSManagerOverridePreviewSurface: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.xLarge) {
             HStack {
-                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.xSmall) {
                     Text("Order #1043")
                         .font(.posHeadingBold)
                         .foregroundStyle(Color.posOnSurface)
@@ -152,11 +159,11 @@ private struct POSManagerOverridePreviewSurface: View {
                     .foregroundStyle(Color.posOnSurface)
             }
 
-            VStack(spacing: POSSpacing.medium) {
+            VStack(spacing: POSMetrics.regular.spacing.medium) {
                 row(title: "Black hoodie", detail: "$32.00")
                 row(title: "Beanie", detail: "$16.00")
             }
-            .padding(POSPadding.medium)
+            .padding(POSMetrics.regular.padding.medium)
             .background(Color.posSurfaceContainerLowest)
             .cornerRadius(POSCornerRadiusStyle.medium.value)
 
@@ -165,7 +172,7 @@ private struct POSManagerOverridePreviewSurface: View {
             Button("Create coupon") {}
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
-        .padding(POSPadding.xxLarge)
+        .padding(POSMetrics.regular.padding.xxLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurface)
     }

@@ -4,6 +4,7 @@ import SwiftUI
 /// A view that displays when the Point of Sale (POS) feature is not available for the current store.
 /// Shows the specific reason why POS is ineligible and provides a button to re-check eligibility.
 struct POSIneligibleView: View {
+    @Environment(\.posMetrics) private var metrics
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
     @Environment(\.dismiss) private var dismiss
@@ -29,33 +30,33 @@ struct POSIneligibleView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 Spacer()
 
-                VStack(alignment: .center, spacing: POSSpacing.none) {
+                VStack(alignment: .center, spacing: metrics.spacing.none) {
                     POSErrorXMark()
 
                     Spacer()
-                        .frame(height: POSSpacing.medium)
+                        .frame(height: metrics.spacing.medium)
 
-                    VStack(spacing: POSSpacing.small) {
-                        Text(Localization.title)
+                    VStack(spacing: metrics.spacing.small) {
+                        Text(title)
                             .font(POSFontStyle.posHeadingBold.font())
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color.posOnSurface)
                             .accessibilityIdentifier("pos-ineligible-title")
 
                         suggestionBodyText(suggestionText)
-                            .accessibilityIdentifier("pos-ineligible-suggestion")
+                            .accessibilityIdentifier(suggestionAccessibilityIdentifier)
                     }
                     .containerRelativeFrame(.horizontal) { length, _ in
                         max(length * frameWidthMultiplier, 300)
                     }
 
                     Spacer()
-                        .frame(height: POSSpacing.large)
+                        .frame(height: metrics.spacing.large)
 
-                    VStack(spacing: POSSpacing.medium) {
+                    VStack(spacing: metrics.spacing.medium) {
                         Button {
                             Task { @MainActor in
                                 do {
@@ -91,7 +92,7 @@ struct POSIneligibleView: View {
 
                 Spacer()
             }
-            .padding(POSPadding.large)
+            .padding(metrics.padding.large)
             .frame(maxWidth: .infinity, minHeight: scrollViewHeight > 0 ? scrollViewHeight : nil)
             .measureHeight { height in
                 contentHeight = height
@@ -118,8 +119,17 @@ struct POSIneligibleView: View {
             .foregroundColor(Color.posOnSurface)
     }
 
+    private var suggestionAccessibilityIdentifier: String {
+        if case .unsupportedWooCommerceVersion = reason {
+            return "pos-ineligible-unsupported-woocommerce-version-suggestion"
+        }
+        return "pos-ineligible-suggestion"
+    }
+
     private var suggestionText: String {
         switch reason {
+        case .noInternetConnection:
+            return POSConnectivityErrorNotice.subtitle
         case let .unsupportedWooCommerceVersion(minimumVersion):
             let format = NSLocalizedString("pos.ineligible.suggestion.unsupportedWooCommerceVersion",
                                      value: "Your WooCommerce version is not supported. " +
@@ -150,15 +160,20 @@ struct POSIneligibleView: View {
                 "and %2$@ is a placeholder for the localized list of supported currency codes."
             )
             return String.localizedStringWithFormat(format, countryCode.readableCountry, formattedCurrencyList)
-        case .siteSettingsNotAvailable:
+        case .siteSettingsNotAvailable, .unsupportedCountry:
             return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable.1",
                                      value: "We were unable to load the site settings info. Please check your internet connection and try again. " +
                                      "If the issue persists, contact support for assistance.",
                                      comment: "Suggestion for site settings unavailable: check connection or contact support")
-        case .selfDeallocated:
-            return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
-                                     value: "Try relaunching the app to resolve this issue.",
-                                     comment: "Suggestion for self deallocated: relaunch")
+        }
+    }
+
+    private var title: String {
+        switch reason {
+        case .noInternetConnection:
+            return POSConnectivityErrorNotice.title
+        default:
+            return Localization.title
         }
     }
 }
@@ -188,11 +203,12 @@ private extension POSIneligibleReason {
                 value: "Enable POS feature",
                 comment: "Button title to enable the POS feature switch and refresh POS eligibility check"
             )
-        case .unsupportedWooCommerceVersion,
+        case .noInternetConnection,
+                .unsupportedWooCommerceVersion,
                 .siteSettingsNotAvailable,
+                .unsupportedCountry,
                 .wooCommercePluginNotFound,
-                .unsupportedCurrency,
-                .selfDeallocated:
+                .unsupportedCurrency:
             return NSLocalizedString(
                 "pos.ineligible.refresh.button.title",
                 value: "Retry",
@@ -203,6 +219,13 @@ private extension POSIneligibleReason {
 }
 
 #if DEBUG
+
+#Preview("No internet connection") {
+    POSIneligibleView(
+        reason: .noInternetConnection,
+        onRefresh: {}
+    )
+}
 
 #Preview("Unsupported currency") {
     POSIneligibleView(

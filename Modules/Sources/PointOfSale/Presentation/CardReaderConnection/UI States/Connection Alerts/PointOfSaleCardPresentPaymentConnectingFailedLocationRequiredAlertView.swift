@@ -1,18 +1,18 @@
 import SwiftUI
-import WooFoundation
 
 struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel
     let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
-                SharedImageAsset.location.image
+            VStack(spacing: metrics.spacing.large) {
+                PointOfSaleAssets.location.image
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                VStack(spacing: metrics.spacing.medium) {
                     Text(viewModel.title)
                         .font(POSFontStyle.posHeadingBold)
                         .fixedSize(horizontal: false, vertical: true)
@@ -29,11 +29,12 @@ struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: V
             .frame(maxWidth: .infinity)
             .scrollVerticallyIfNeeded()
 
-            Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
+            Spacer(minLength: metrics.spacing.large)
 
             Button(viewModel.primaryButtonViewModel.title,
                    action: viewModel.primaryButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .accessibilityIdentifier("pos-reader-location-settings-button")
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .frame(maxHeight: .infinity)

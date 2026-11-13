@@ -140,6 +140,12 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         currencyFormatter.formatAmount(finalAmountDecimal)
     }
 
+    /// Formatted signed string value of currently entered discount.
+    ///
+    var signedFinalAmountString: String? {
+        currencyFormatter.formatAmount(finalAmountDecimal, isNegative: true)
+    }
+
     /// Returns the formatted string value of a price, substracting the current stored discount entered by the merchant
     ///
     var formattedPriceAfterDiscount: String {
@@ -195,8 +201,6 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     /// Currency formatter setup with store settings.
     ///
     private let currencyFormatter: CurrencyFormatter
-
-    private let minusSign: String = NumberFormatter().minusSign
 
     /// Analytics engine.
     ///

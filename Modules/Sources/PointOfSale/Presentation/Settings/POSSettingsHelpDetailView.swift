@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.SafariView
 
 struct POSSettingsHelpDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     @Environment(\.posExternalViews) private var externalViews
 
     @State private var showProductRestrictions = false
@@ -13,13 +14,12 @@ struct POSSettingsHelpDetailView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             POSPageHeaderView(title: Localization.helpTitle)
                 .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
 
             ScrollView {
-                VStack(spacing: POSSpacing.small) {
+                VStack(spacing: metrics.spacing.small) {
                     POSSettingsCard(
                         title: Localization.productRestrictionsInfo,
                         subtitle: Localization.productRestrictionsInfoSubtitle,
@@ -44,7 +44,7 @@ struct POSSettingsHelpDetailView: View {
                         }
                     )
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, metrics.padding.medium)
             }
         }
         .background(backgroundColor)

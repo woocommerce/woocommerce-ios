@@ -1,16 +1,29 @@
 import SwiftUI
 
-extension View {
-    /// Standard bottom-action padding for phone POS full-screen flows.
-    func posPhoneBottomButtonPadding() -> some View {
-        padding(.horizontal, POSPhoneBottomButtonPadding.horizontal)
-            .padding(.top, POSPhoneBottomButtonPadding.top)
-            .padding(.bottom, POSPhoneBottomButtonPadding.bottom)
+private struct POSPhoneBottomButtonPaddingModifier: ViewModifier {
+    @Environment(\.posMetrics) private var metrics
+
+    let bottom: CGFloat?
+
+    func body(content: Content) -> some View {
+        content
+            .padding(.horizontal, metrics.padding.medium)
+            .padding(.top, metrics.padding.medium)
+            .padding(.bottom, bottom ?? metrics.padding.medium)
     }
 }
 
-private enum POSPhoneBottomButtonPadding {
-    static let horizontal: CGFloat = POSPadding.medium
-    static let top: CGFloat = POSPadding.medium
-    static let bottom: CGFloat = POSPadding.xxLarge
+extension View {
+    /// Standard bottom-action padding for phone POS full-screen flows.
+    func posPhoneBottomButtonPadding(bottom: CGFloat? = nil) -> some View {
+        modifier(POSPhoneBottomButtonPaddingModifier(bottom: bottom))
+    }
+}
+
+enum POSCompactFooterLayout {
+    /// Match the compact page header's top spacing when there is no bottom inset.
+    /// The system safe area supplies that space when its inset is larger.
+    static func bottomPadding(safeAreaInset: CGFloat, metrics: POSMetrics) -> CGFloat {
+        max(metrics.padding.medium - safeAreaInset, metrics.padding.none)
+    }
 }

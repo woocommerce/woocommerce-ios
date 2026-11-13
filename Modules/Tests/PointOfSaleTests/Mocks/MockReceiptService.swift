@@ -1,6 +1,7 @@
 import Foundation
 @testable import Yosemite
 
+@MainActor
 final class MockReceiptService: POSReceiptServiceProtocol {
     var sendReceiptWasCalled: Bool?
     var spyIsEligibleForPOSReceipt: Bool?

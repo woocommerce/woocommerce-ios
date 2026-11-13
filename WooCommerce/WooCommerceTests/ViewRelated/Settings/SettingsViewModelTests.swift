@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 final class SettingsViewModelTests: XCTestCase {
 
     /// Mock Storage: InMemory
@@ -26,8 +27,8 @@ final class SettingsViewModelTests: XCTestCase {
 
     private var analytics: WooAnalytics!
 
-    override func setUpWithError() throws {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
         sessionManager = .makeForTesting(authenticated: true)
         stores = MockStoresManager(sessionManager: sessionManager)
@@ -37,14 +38,14 @@ final class SettingsViewModelTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
         stores = nil
         sessionManager = nil
         defaults = nil
         analytics = nil
         analyticsProvider = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_sections_is_not_empty_after_view_did_load() {
@@ -459,27 +460,11 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
     }
 
-    func test_sections_do_not_contain_plugins_when_site_is_CIAB() {
+    func test_sections_contain_plugins_when_user_is_admin() {
         // Given
         let viewModel = SettingsViewModel(
             stores: stores,
-            storageManager: storageManager,
-            ciabEligibilityChecker: MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true))
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.plugins) })
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.woocommerceDetails) })
-    }
-
-    func test_sections_contain_plugins_when_site_is_not_CIAB_and_user_is_admin() {
-        // Given
-        let viewModel = SettingsViewModel(
-            stores: stores,
-            storageManager: storageManager,
-            ciabEligibilityChecker: MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false))
+            storageManager: storageManager)
 
         // When
         viewModel.onViewDidLoad()
@@ -495,8 +480,7 @@ final class SettingsViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = SettingsViewModel(
             stores: stores,
-            storageManager: storageManager,
-            ciabEligibilityChecker: MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false))
+            storageManager: storageManager)
 
         // When
         viewModel.onViewDidLoad()

@@ -28,9 +28,18 @@ final class MockCardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboard
         // No op
     }
 
+    func revalidateAfterCountryChange() {
+        // No op
+    }
+
     var skipPendingRequirementsWasCalled = false
     func skipPendingRequirements() {
         skipPendingRequirementsWasCalled = true
+    }
+
+    var skipOverdueRequirementsWasCalled = false
+    func skipOverdueRequirements() {
+        skipOverdueRequirementsWasCalled = true
     }
 
     var selectPluginWasCalled = false

@@ -1,7 +1,7 @@
 import Codegen
 
 /// Represents a selected shipping rate with the Woo Shipping extension.
-public struct WooShippingSelectedRate: Equatable, GeneratedFakeable {
+public struct WooShippingSelectedRate: Equatable, GeneratedFakeable, Sendable {
 
     /// Basic rate for the selected carrier without additional service.
     public let rate: ShippingLabelCarrierRate

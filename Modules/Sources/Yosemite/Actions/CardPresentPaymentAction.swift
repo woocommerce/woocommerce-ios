@@ -18,12 +18,20 @@ public enum CardPresentPaymentAction: Action {
     ///
     case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentsPlugin) -> Void)
 
-    /// Retrieves and stores payment gateway account(s) for the provided `siteID`
-    /// We support payment gateway accounts for both the WooPayments extension AND
-    /// the Stripe extension. Let's attempt to load each and update view storage with the results.
-    /// Calls the passed completion with success after both loads have been attempted.
+    /// Retrieves and stores the payment gateway accounts of `gateways` (default: WooPayments and Stripe)
+    /// for the provided `siteID`, and deletes the stored accounts of the other gateways.
+    /// Completes with success if any requested account loads; an empty `gateways` list loads nothing and fails.
+    /// Narrow `gateways` only when freshly synced plugins show which gateways are active.
     ///
-    case loadAccounts(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+    case loadAccounts(siteID: Int64,
+                      gateways: [CardPresentPaymentsPlugin] = CardPresentPaymentsPlugin.allCases,
+                      onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Fetches one gateway account without changing stored accounts, the selected gateway, or reader state.
+    /// Opts into unexpected-response detection, so failures can be `UnexpectedStoreResponseError`.
+    case fetchPaymentGatewayAccount(siteID: Int64,
+                                    gateway: CardPresentPaymentsPlugin,
+                                    onCompletion: (Result<PaymentGatewayAccount, Error>) -> Void)
 
     case checkDeviceSupport(siteID: Int64,
                             cardReaderType: CardReaderType,
@@ -77,6 +85,9 @@ public enum CardPresentPaymentAction: Action {
                       onCardReaderMessage: (CardReaderEvent) -> Void,
                       onProcessingCompletion: (PaymentIntent) -> Void,
                       onCompletion: (Result<PaymentIntent, Error>) -> Void)
+
+    /// Retrieves the latest state of a PaymentIntent from Stripe using its client secret.
+    case retrievePaymentIntent(clientSecret: String, onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
     /// Refund payment of an order, client side. Only for use on Interac payments
     ///

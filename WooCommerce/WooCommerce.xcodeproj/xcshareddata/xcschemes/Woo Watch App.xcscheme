@@ -59,7 +59,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26F81B142BE433A2009EC58E"
             BuildableName = "Woo Watch App.app"
-            BlueprintName = "Woo Watch App"
             ReferencedContainer = "container:WooCommerce.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -76,7 +75,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26F81B142BE433A2009EC58E"
             BuildableName = "Woo Watch App.app"
-            BlueprintName = "Woo Watch App"
             ReferencedContainer = "container:WooCommerce.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

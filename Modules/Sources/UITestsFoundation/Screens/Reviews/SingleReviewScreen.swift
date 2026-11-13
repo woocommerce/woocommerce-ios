@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class SingleReviewScreen: ScreenObject {
 
     init(app: XCUIApplication = XCUIApplication()) throws {

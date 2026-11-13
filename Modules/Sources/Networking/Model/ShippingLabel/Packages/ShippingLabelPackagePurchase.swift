@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents the complete package details that will be sent to the Shipping Labels Purchase endpoint.
 ///
-public struct ShippingLabelPackagePurchase: Equatable, GeneratedFakeable {
+public struct ShippingLabelPackagePurchase: Equatable, GeneratedFakeable, Sendable {
 
     /// Selected package for the shipping label
     public let package: ShippingLabelPackageSelected

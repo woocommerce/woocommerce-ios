@@ -34,6 +34,7 @@ final class SummaryTableViewCell: UITableViewCell {
         salesChannelLabel.text = viewModel.salesChannel
         salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
         updateStatusButton.isHidden = !viewModel.isEditButtonVisible
+        updateStatusButton.accessibilityIdentifier = "order-status-\(viewModel.presentation.style.rawValue)"
         display(presentation: viewModel.presentation)
     }
 
@@ -46,10 +47,11 @@ final class SummaryTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
-        configureLabels()
-        configureIcon()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureLabels()
+            configureIcon()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -102,17 +104,13 @@ private extension SummaryTableViewCell {
         subtitleLabel.accessibilityIdentifier = "summary-table-view-cell-created-label"
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
         paymentStatusLabel.accessibilityIdentifier = "summary-table-view-cell-payment-status-label"
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1) {
-            salesChannelLabel.isHidden = false
-            configureSalesChannelLabel()
-        } else {
-            salesChannelLabel.isHidden = true
-        }
+        salesChannelLabel.isHidden = false
+        configureSalesChannelLabel()
     }
 
     func configureIcon() {
         updateStatusButton.applyIconButtonStyle(icon: .pencilImage)
+        updateStatusButton.accessibilityIdentifier = "summary-table-view-cell-update-status-button"
 
         updateStatusButton.addTarget(self, action: #selector(editWasTapped), for: .touchUpInside)
 

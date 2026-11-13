@@ -1,25 +1,48 @@
 import Foundation
+import Synchronization
 @testable import NetworkingCore
 
-final class MockURLSession: URLSessionProtocol {
-    var responses: [String: (Data, URLResponse)] = [:]
-    var errors: [String: Error] = [:]
+/// Stands in for `URLSession` in discovery and application-password tests.
+///
+/// The discovery tests call it from concurrent tasks, so its state is guarded by a lock.
+///
+final class MockURLSession: URLSessionProtocol, Sendable {
+    private struct State {
+        var responses: [String: (Data, URLResponse)] = [:]
+        var errors: [String: Error] = [:]
+        var lastRequest: URLRequest?
+        var requestCount = 0
+    }
 
-    private(set) var lastRequest: URLRequest?
-    private(set) var requestCount = 0
+    private let state = Mutex(State())
+
+    var lastRequest: URLRequest? {
+        state.withLock { $0.lastRequest }
+    }
+
+    var requestCount: Int {
+        state.withLock { $0.requestCount }
+    }
+
+    /// The stubbed responses registered so far, keyed by URL.
+    var responses: [String: (Data, URLResponse)] {
+        state.withLock { $0.responses }
+    }
 
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-        lastRequest = request
-        requestCount += 1
-
         let key = request.url?.absoluteString ?? ""
-
-        if let error = errors[key] {
-            throw error
+        let (stubbedError, stubbedResponse) = state.withLock { state -> (Error?, (Data, URLResponse)?) in
+            state.lastRequest = request
+            state.requestCount += 1
+            return (state.errors[key], state.responses[key])
         }
 
-        if let response = responses[key] {
-            return response
+        if let stubbedError {
+            throw stubbedError
+        }
+
+        if let stubbedResponse {
+            return stubbedResponse
         }
 
         // Default success response
@@ -40,17 +63,14 @@ final class MockURLSession: URLSessionProtocol {
             httpVersion: nil,
             headerFields: headerFields
         )!
-        responses[url] = (data, response)
+        state.withLock { $0.responses[url] = (data, response) }
     }
 
     func simulateError(for url: String, error: Error) {
-        errors[url] = error
+        state.withLock { $0.errors[url] = error }
     }
 
     func reset() {
-        responses.removeAll()
-        errors.removeAll()
-        lastRequest = nil
-        requestCount = 0
+        state.withLock { $0 = State() }
     }
 }

@@ -6,17 +6,77 @@ import UIKit
 //
 extension UINavigationController {
 
-    /// Whenever there's a single viewController onscreen, this method will set the "Top" UIScrollView's
-    /// Content Offset to zero.
+    /// Updates the navigation bar visibility only when it differs from the requested state.
+    ///
+    /// Avoiding redundant visibility updates is important when this navigation controller is wrapped by a split view.
+    /// UIKit can otherwise try to lay out the wrapper's navigation bar using an item that still belongs to this bar.
+    func setNavigationBarHiddenIfNeeded(_ hidden: Bool, animated: Bool) {
+        guard isNavigationBarHidden != hidden else {
+            return
+        }
+
+        setNavigationBarHidden(hidden, animated: animated)
+    }
+
+    /// Whenever there's a single viewController onscreen, this method will scroll its main UIScrollView
+    /// (`ScrollToTopProviding`, or else the view's first subview) to the top of its content.
     ///
     func scrollContentToTop(animated: Bool) {
         guard viewControllers.count == 1,
-            let scrollView = visibleViewController?.view?.subviews.first as? UIScrollView
-            else {
-                return
+              let visibleViewController,
+              let scrollView = (visibleViewController as? ScrollToTopProviding)?.scrollToTopScrollView
+                ?? (visibleViewController.view?.subviews.first as? UIScrollView)
+        else {
+            return
         }
 
-        scrollView.setContentOffset(.zero, animated: animated)
+        // The top sits above `.zero` when bars or headers inset the content.
+        let topOffset = CGPoint(x: -scrollView.adjustedContentInset.left, y: -scrollView.adjustedContentInset.top)
+        scrollView.setContentOffset(topOffset, animated: animated)
+    }
+
+    /// Two-stage tab re-selection: pop to root, or scroll to top when already at root.
+    /// Every screen being popped must permit it (`shouldPopOnBackButton`), like tapping Back
+    /// through them; the first screen that refuses becomes the new top instead. Screens inside
+    /// a nested navigation controller (e.g. a collapsed split view's column) are asked too.
+    /// Returns `true` when the stack ends up at its root, `false` when a screen refused.
+    @discardableResult
+    func popToRootOrScrollToTop(animated: Bool) -> Bool {
+        guard viewControllers.count > 1 else {
+            scrollContentToTop(animated: animated)
+            return true
+        }
+        for element in viewControllers.dropFirst().reversed() {
+            for screen in Self.screens(in: element) {
+                guard screen.shouldPopOnBackButton() else {
+                    revealRefusingScreen(screen, poppedElement: element, animated: animated)
+                    return false
+                }
+            }
+        }
+        popToRootViewController(animated: animated)
+        return true
+    }
+
+    /// The screens a stack element stands for, top-down. A collapsed split view puts its column
+    /// into the stack as a navigation controller, so that element stands for everything inside it.
+    static func screens(in element: UIViewController) -> [UIViewController] {
+        guard let nestedNavigationController = element as? UINavigationController else {
+            return [element]
+        }
+        return nestedNavigationController.viewControllers.reversed()
+    }
+
+    /// Pops down to the screen that refused, making it the visible top.
+    private func revealRefusingScreen(_ screen: UIViewController, poppedElement element: UIViewController, animated: Bool) {
+        if topViewController !== element {
+            popToViewController(element, animated: animated)
+        }
+        guard let nestedNavigationController = element as? UINavigationController,
+              nestedNavigationController.topViewController !== screen else {
+            return
+        }
+        nestedNavigationController.popToViewController(screen, animated: animated)
     }
 
     /// Completion block for popToRootViewController
@@ -37,6 +97,16 @@ extension UINavigationController {
         helperViewControllers[helperViewControllers.count - 1] = viewController
         setViewControllers(helperViewControllers, animated: animated)
     }
+}
+
+// MARK: - Scroll to top on tab re-selection
+//
+/// Adopted by screens whose list isn't their view's first subview (e.g. it is nested in a stack view
+/// below a filters bar, or a hidden large title helper scroll view sits first), so tab re-selection
+/// scrolls the list itself.
+@MainActor
+protocol ScrollToTopProviding {
+    var scrollToTopScrollView: UIScrollView? { get }
 }
 
 // MARK: - Handle UINavigationBar's 'Back' button action

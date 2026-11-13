@@ -1,14 +1,15 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class ProductFilterScreen: ScreenObject {
 
     private let stockStatusButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.staticTexts["Stock Status"]
+        $0.cells["product-filter-stock-status-cell"]
     }
 
     private let showProductsButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.staticTexts["Show Products"]
+        $0.buttons["filter-apply-button"]
     }
 
     private var stockStatusButton: XCUIElement { stockStatusButtonGetter(app) }
@@ -24,7 +25,7 @@ public final class ProductFilterScreen: ScreenObject {
 
     public func setStockStatusFilterAs(_ filter: String) throws -> ProductsScreen {
         stockStatusButton.tap()
-        app.cells[filter].tap()
+        app.cells["product-stock-status-\(filter)"].tap()
         showProductsButton.tap()
 
         return try ProductsScreen()

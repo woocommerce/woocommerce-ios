@@ -14,31 +14,31 @@ public enum QRLoginAction: Action {
     case selfHostedScan(siteURL: URL,
                         token: String,
                         device: QRLoginScanDevice,
-                        completion: (Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError>) -> Void)
+                        completion: @Sendable (Result<SelfHostedQRLoginScanResponse, QRLoginNetworkError>) -> Void)
 
     case selfHostedPoll(siteURL: URL,
                         sessionID: String,
                         tokenHash: String,
-                        completion: (Result<SelfHostedQRLoginSessionStatus, QRLoginNetworkError>) -> Void)
+                        completion: @Sendable (Result<SelfHostedQRLoginSessionStatus, QRLoginNetworkError>) -> Void)
 
     case selfHostedExchange(siteURL: URL,
                             token: String,
                             exchangeGrant: String,
-                            completion: (Result<SelfHostedQRLoginExchangeResponse, QRLoginNetworkError>) -> Void)
+                            completion: @Sendable (Result<SelfHostedQRLoginExchangeResponse, QRLoginNetworkError>) -> Void)
 
     // MARK: - WP.com (public-api.wordpress.com)
 
     case wpComScan(token: String,
                    encrypted: String,
                    device: QRLoginScanDevice,
-                   completion: (Result<WPComQRLoginScanResponse, QRLoginNetworkError>) -> Void)
+                   completion: @Sendable (Result<WPComQRLoginScanResponse, QRLoginNetworkError>) -> Void)
 
     case wpComPoll(sessionID: String,
                    tokenHash: String,
-                   completion: (Result<WPComQRLoginSessionStatus, QRLoginNetworkError>) -> Void)
+                   completion: @Sendable (Result<WPComQRLoginSessionStatus, QRLoginNetworkError>) -> Void)
 
     case wpComExchange(token: String,
                        encrypted: String,
                        exchangeGrant: String,
-                       completion: (Result<WPComQRLoginExchangeResponse, QRLoginNetworkError>) -> Void)
+                       completion: @Sendable (Result<WPComQRLoginExchangeResponse, QRLoginNetworkError>) -> Void)
 }

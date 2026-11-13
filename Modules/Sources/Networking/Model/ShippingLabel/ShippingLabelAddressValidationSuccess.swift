@@ -4,7 +4,7 @@ import Codegen
 
 /// Represents Shipping Label Address that has been validated
 ///
-public struct ShippingLabelAddressValidationSuccess: Equatable, GeneratedFakeable {
+public struct ShippingLabelAddressValidationSuccess: Equatable, GeneratedFakeable, Sendable {
     public let address: ShippingLabelAddress
 
     /// When sending an address to normalize to the server, if the response has the is_trivial_normalization property set to true,

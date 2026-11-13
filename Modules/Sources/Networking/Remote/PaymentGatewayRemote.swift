@@ -2,7 +2,7 @@ import Foundation
 
 /// Payment Gateways Endpoints
 ///
-public class PaymentGatewayRemote: Remote {
+public class PaymentGatewayRemote: Remote, @unchecked Sendable {
 
     /// Retrieves all of the `PaymentGateways` available.
     ///

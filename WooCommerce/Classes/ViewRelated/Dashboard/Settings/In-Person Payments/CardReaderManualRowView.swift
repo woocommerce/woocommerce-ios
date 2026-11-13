@@ -2,9 +2,6 @@ import SwiftUI
 import struct WooFoundation.SafariSheetView
 
 struct CardReaderManualRowView: View {
-    // Environment safe areas
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 

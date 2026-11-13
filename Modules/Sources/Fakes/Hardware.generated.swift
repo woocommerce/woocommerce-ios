@@ -78,6 +78,7 @@ extension Hardware.PaymentIntent {
         .init(
             id: .fake(),
             status: .fake(),
+            clientSecret: .fake(),
             created: .fake(),
             amount: .fake(),
             currency: .fake(),

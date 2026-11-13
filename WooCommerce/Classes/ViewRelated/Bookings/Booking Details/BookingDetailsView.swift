@@ -2,8 +2,6 @@ import SwiftUI
 import Networking
 
 struct BookingDetailsView: View {
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     @State private var showingOptions = false
     @State private var showingCancelAlert = false
     @State private var cancellingBooking = false
@@ -117,7 +115,6 @@ private extension BookingDetailsView {
                     text: text,
                     alignment: .left
                 )
-                .padding(.horizontal, insets: safeAreaInsets)
                 .accessibility(addTraits: .isHeader)
             }
 

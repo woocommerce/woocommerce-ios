@@ -7,90 +7,25 @@ import struct Yosemite.POSItemIdentifier
 struct CartViewHelperTests {
     let sut = CartViewHelper()
 
-    @Test func shouldPreventCartEditing_when_card_paymentState_idle_and_order_is_syncing() async throws {
-        // Given
-
+    @Test(arguments: [PointOfSaleCardPaymentState.cardInserted, .processingPayment, .paymentError, .cardPaymentSuccessful])
+    func shouldPreventCartEditing_when_card_was_presented_or_payment_finished_then_returns_true(
+        cardState: PointOfSaleCardPaymentState
+    ) async throws {
         // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: .syncing,
-                                             paymentState: PointOfSalePaymentState(card: .idle, cash: .idle)) == true)
+        #expect(sut.shouldPreventCartEditing(paymentState: PointOfSalePaymentState(card: cardState, cash: .idle)) == true)
     }
 
-    @Test func shouldPreventCartEditing_when_card_paymentState_cardPaymentSuccessful() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
+    @Test(arguments: [PointOfSaleCardPaymentState.idle,
+                      .validatingOrder,
+                      .validatingOrderError,
+                      .preparingReader,
+                      .paymentIntentCreationError,
+                      .acceptingCard])
+    func shouldPreventCartEditing_when_no_card_was_presented_then_returns_false(
+        cardState: PointOfSaleCardPaymentState
+    ) async throws {
         // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle)) == true)
-    }
-
-    @Test func shouldPreventCartEditing_when_card_paymentState_processingPayment() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .processingPayment, cash: .idle)) == true)
-    }
-
-    @Test func shouldPreventCartEditing_false_when_card_paymentState_acceptingCard() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .acceptingCard, cash: .idle)) == false)
-    }
-
-    @Test func shouldPreventCartEditing_false_when_card_paymentState_validatingOrderError() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .validatingOrderError, cash: .idle)) == false)
-    }
-
-    @Test func shouldPreventCartEditing_when_card_paymentState_cardInserted() async throws {
-        // Given
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // When, Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .cardInserted, cash: .idle)) == true)
-    }
-
-    @Test func shouldPreventCartEditing_false_when_card_paymentState_paymentIntentCreationError() async throws {
-        // When
-        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
-            cartTotal: "$10.00",
-            orderTotal: "$12.00",
-            taxTotal: "$2.00",
-            orderTotalDecimal: 12.0))
-
-        // Then
-        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
-                                             paymentState: PointOfSalePaymentState(card: .paymentIntentCreationError, cash: .idle)) == false)
+        #expect(sut.shouldPreventCartEditing(paymentState: PointOfSalePaymentState(card: cardState, cash: .idle)) == false)
     }
 
     @Test(arguments: zip([0, 1, 2, 3], [nil, "1 item", "2 items", "3 items"]))
@@ -157,6 +92,23 @@ struct CartViewHelperTests {
                                    couponItem: coupon) == .valid(couponTotal))
     }
 
+    @Test func couponRowState_coupon_code_match_is_case_insensitive() async throws {
+        // Given
+        let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")
+        let couponTotal = PointOfSaleCouponTotal(code: "test10", total: "10.00")
+        let orderTotals = PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00",
+            orderTotalDecimal: 12.0,
+            couponsTotals: [couponTotal])
+
+        // When, Then
+        #expect(sut.couponRowState(orderStage: .finalizing,
+                                   orderState: .loaded(orderTotals),
+                                   couponItem: coupon) == .valid(couponTotal))
+    }
+
     @Test func couponRowState_finalizing_and_loaded_with_no_matching_coupon_returns_idle() async throws {
         // Given
         let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")
@@ -191,6 +143,146 @@ struct CartViewHelperTests {
         #expect(sut.couponRowState(orderStage: .finalizing,
                                    orderState: .error(.other("Some other error"), {}),
                                    couponItem: coupon) == .idle)
+    }
+
+    @Test func discountNotAppliedNote_building_stage_returns_false() async throws {
+        // Given
+        let cart = makeCartWithCoupon(appliesToWholeCart: true)
+        let orderState = makeLoadedOrderState(couponsTotals: [makeCouponTotal(hasDiscount: true)])
+
+        // When, Then
+        #expect(sut.shouldShowCustomAmountDiscountNotAppliedNote(orderStage: .building,
+                                                                 orderState: orderState,
+                                                                 cart: cart) == false)
+    }
+
+    @Test func discountNotAppliedNote_finalizing_and_syncing_returns_false() async throws {
+        // Given
+        let cart = makeCartWithCoupon(appliesToWholeCart: true)
+
+        // When, Then
+        #expect(sut.shouldShowCustomAmountDiscountNotAppliedNote(orderStage: .finalizing,
+                                                                 orderState: .syncing,
+                                                                 cart: cart) == false)
+    }
+
+    @Test func discountNotAppliedNote_finalizing_and_error_returns_false() async throws {
+        // Given
+        let cart = makeCartWithCoupon(appliesToWholeCart: true)
+
+        // When, Then
+        #expect(sut.shouldShowCustomAmountDiscountNotAppliedNote(orderStage: .finalizing,
+                                                                 orderState: .error(.invalidCoupon("Invalid coupon"), {}),
+                                                                 cart: cart) == false)
+    }
+
+    @Test func discountNotAppliedNote_whole_cart_coupon_with_discount_returns_true() async throws {
+        // Given
+        let cart = makeCartWithCoupon(appliesToWholeCart: true)
+        let orderState = makeLoadedOrderState(couponsTotals: [makeCouponTotal(hasDiscount: true)])
+
+        // When, Then
+        #expect(sut.shouldShowCustomAmountDiscountNotAppliedNote(orderStage: .finalizing,
+                                                                 orderState: orderState,
+                                                                 cart: cart) == true)
+    }
+
+    @Test func discountNotAppliedNote_whole_cart_coupon_without_discount_returns_false() async throws {
+        // Given
+        let cart = makeCartWithCoupon(appliesToWholeCart: true)
+        let orderState = makeLoadedOrderState(couponsTotals: [makeCouponTotal(hasDiscount: false)])
+
+        // When, Then
+        #expect(sut.shouldShowCustomAmountDiscountNotAppliedNote(orderStage: .finalizing,
+                                                                 orderState: orderState,
+                                                                 cart: cart) == false)
+    }
+
+    @Test func discountNotAppliedNote_restricted_coupon_with_discount_returns_false() async throws {
+        // Given
+        let cart = makeCartWithCoupon(appliesToWholeCart: false)
+        let orderState = makeLoadedOrderState(couponsTotals: [makeCouponTotal(hasDiscount: true)])
+
+        // When, Then
+        #expect(sut.shouldShowCustomAmountDiscountNotAppliedNote(orderStage: .finalizing,
+                                                                 orderState: orderState,
+                                                                 cart: cart) == false)
+    }
+
+    @Test func discountNotAppliedNote_no_coupons_in_cart_returns_false() async throws {
+        // Given
+        let cart = Cart(customAmounts: [POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)])
+        let orderState = makeLoadedOrderState(couponsTotals: [makeCouponTotal(hasDiscount: true)])
+
+        // When, Then
+        #expect(sut.shouldShowCustomAmountDiscountNotAppliedNote(orderStage: .finalizing,
+                                                                 orderState: orderState,
+                                                                 cart: cart) == false)
+    }
+
+    @Test func discountNotAppliedNote_coupon_code_match_is_case_insensitive() async throws {
+        // Given
+        let cart = makeCartWithCoupon(code: "test10", appliesToWholeCart: true)
+        let orderState = makeLoadedOrderState(couponsTotals: [makeCouponTotal(code: "TEST10", hasDiscount: true)])
+
+        // When, Then
+        #expect(sut.shouldShowCustomAmountDiscountNotAppliedNote(orderStage: .finalizing,
+                                                                 orderState: orderState,
+                                                                 cart: cart) == true)
+    }
+
+    @Test func discountNotAppliedNote_discount_from_different_coupon_returns_false() async throws {
+        // Given
+        let cart = makeCartWithCoupon(code: "WHOLECART", appliesToWholeCart: true)
+        let orderState = makeLoadedOrderState(couponsTotals: [makeCouponTotal(code: "OTHER", hasDiscount: true)])
+
+        // When, Then
+        #expect(sut.shouldShowCustomAmountDiscountNotAppliedNote(orderStage: .finalizing,
+                                                                 orderState: orderState,
+                                                                 cart: cart) == false)
+    }
+
+    @Test func itemDiscountedNote_building_stage_returns_false() async throws {
+        // Given
+        let cartItem = makeItem()
+        let orderState = makeLoadedOrderState(discountedCartItemIDs: [cartItem.id])
+
+        // When, Then
+        #expect(sut.shouldShowItemDiscountedNote(orderStage: .building,
+                                                 orderState: orderState,
+                                                 cartItem: cartItem) == false)
+    }
+
+    @Test func itemDiscountedNote_finalizing_and_syncing_returns_false() async throws {
+        // Given
+        let cartItem = makeItem()
+
+        // When, Then
+        #expect(sut.shouldShowItemDiscountedNote(orderStage: .finalizing,
+                                                 orderState: .syncing,
+                                                 cartItem: cartItem) == false)
+    }
+
+    @Test func itemDiscountedNote_finalizing_and_item_discounted_returns_true() async throws {
+        // Given
+        let cartItem = makeItem()
+        let orderState = makeLoadedOrderState(discountedCartItemIDs: [cartItem.id])
+
+        // When, Then
+        #expect(sut.shouldShowItemDiscountedNote(orderStage: .finalizing,
+                                                 orderState: orderState,
+                                                 cartItem: cartItem) == true)
+    }
+
+    @Test func itemDiscountedNote_finalizing_and_item_not_discounted_returns_false() async throws {
+        // Given
+        let cartItem = makeItem()
+        let orderState = makeLoadedOrderState(discountedCartItemIDs: [UUID()])
+
+        // When, Then
+        #expect(sut.shouldShowItemDiscountedNote(orderStage: .finalizing,
+                                                 orderState: orderState,
+                                                 cartItem: cartItem) == false)
     }
 
     @Test func shouldShowCheckout_when_not_building_stage_returns_false() async throws {
@@ -282,4 +374,28 @@ private func makeItem() -> Cart.PurchasableItem {
           title: "Item",
           subtitle: nil,
           quantity: 1)
+}
+
+private func makeCartWithCoupon(code: String = "TEST10", appliesToWholeCart: Bool) -> Cart {
+    Cart(coupons: [Cart.CouponItem(id: UUID(),
+                                   posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1),
+                                   code: code,
+                                   summary: "",
+                                   appliesToWholeCart: appliesToWholeCart)],
+         customAmounts: [POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)])
+}
+
+private func makeCouponTotal(code: String = "TEST10", hasDiscount: Bool) -> PointOfSaleCouponTotal {
+    PointOfSaleCouponTotal(code: code, total: "-$1.00", hasDiscount: hasDiscount)
+}
+
+private func makeLoadedOrderState(couponsTotals: [PointOfSaleCouponTotal] = [],
+                                  discountedCartItemIDs: Set<UUID> = []) -> PointOfSaleOrderState {
+    .loaded(PointOfSaleOrderTotals(
+        cartTotal: "$10.00",
+        orderTotal: "$12.00",
+        taxTotal: "$2.00",
+        orderTotalDecimal: 12.0,
+        couponsTotals: couponsTotals,
+        discountedCartItemIDs: discountedCartItemIDs))
 }

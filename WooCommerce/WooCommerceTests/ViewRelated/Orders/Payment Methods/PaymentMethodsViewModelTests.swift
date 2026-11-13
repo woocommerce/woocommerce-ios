@@ -36,7 +36,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -118,7 +118,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let (siteID, orderID): (Int64, Int64) = await waitForAsync { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, _, _, _, onCompletion):
+                case let .updateOrder(_, _, _, _, _, onCompletion):
                     onCompletion(.success(.fake()))
                 case let .retrieveOrder(siteID, orderID, _):
                     promise((siteID, orderID))
@@ -145,7 +145,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -178,7 +178,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         var orderUpdateFields: [OrderUpdateField]?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, fields, onCompletion):
+            case let .updateOrder(_, order, _, fields, _, onCompletion):
                 modifiedOrder = order
                 orderUpdateFields = fields
                 onCompletion(.success(.fake()))
@@ -210,7 +210,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -249,7 +249,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -278,7 +278,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -319,7 +319,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -451,7 +451,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
             case .retrieveOrder:
                 break
@@ -491,7 +491,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let cashPaymentInfo = OrderPaidByCashInfo(customerPaidAmount: "$50", changeGivenAmount: "$20", addNoteWithChangeData: true)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -699,6 +699,57 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
+    func test_card_payment_when_only_order_currency_is_unsupported_then_explains_hidden_methods() {
+        // Given
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
+            guard case let .checkEligibility(_, _, _, completion) = action else { return }
+            completion(.success(.unsupportedCurrency("USD")))
+        }
+        let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: .init(country: .GB))
+
+        // When
+        let viewModel = PaymentMethodsViewModel(siteID: 1212, orderID: 111, total: "5", formattedTotal: "$5.00",
+                                                flow: .simplePayment, channel: .storeManagement, dependencies: dependencies)
+
+        // Then
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
+        XCTAssertEqual(viewModel.cardPaymentUnavailableMessage,
+                       "Card payments aren’t available for this order’s currency (USD).")
+    }
+
+    func test_country_changes_when_same_screen_is_retained_then_updates_card_methods_and_currency_message() {
+        // Given
+        let settings = MockSelectedSiteSettings()
+        let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
+        settings.mockSettingsStream = changes.eraseToAnyPublisher()
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
+            guard case let .checkEligibility(_, _, configuration, completion) = action else { return }
+            completion(.success(configuration.currencies.contains(.USD) ? .eligible : .unsupportedCurrency("USD")))
+        }
+        let dependencies = Dependencies(stores: stores, storage: storage,
+                                        cardPresentPaymentsConfiguration: .init(country: .unknown), siteSettings: settings)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212, orderID: 111, total: "5", formattedTotal: "$5.00",
+                                                flow: .simplePayment, channel: .storeManagement, dependencies: dependencies)
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
+        XCTAssertNil(viewModel.cardPaymentUnavailableMessage)
+
+        for country in ["GB", "US", "LT"] {
+            // When
+            let setting = SiteSetting.fake().copy(siteID: 1212, settingID: "woocommerce_default_country",
+                                                  value: country, settingGroupKey: "general")
+            changes.send((siteID: 1212, settings: [setting], source: .storageChange))
+
+            // Then
+            XCTAssertEqual(viewModel.showPayWithCardRow, country == "US")
+            XCTAssertEqual(viewModel.showTapToPayRow, country == "US")
+            XCTAssertEqual(viewModel.cardPaymentUnavailableMessage != nil, country == "GB")
+        }
+    }
+
     func test_card_row_is_shown_for_eligible_order_and_country_even_when_ttp_is_not_supported() {
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: .US)
@@ -767,8 +818,10 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let configuration = CardPresentPaymentsConfiguration(country: .US)
         stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
             switch action {
-            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
+            case let .checkEligibility(_, _, _, completion):
                 completion(.failure(NSError(domain: "Error", code: 0)))
+            case .checkOrderContainsSubscription:
+                XCTFail("Subscriptions shouldn't be checked when the order eligibility check fails")
             }
         }
 
@@ -787,6 +840,87 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.showPayWithCardRow)
         XCTAssertFalse(viewModel.showTapToPayRow)
+    }
+
+    func test_card_rows_are_shown_as_loading_while_checking_order_for_subscriptions() {
+        // Given
+        simulate(cardPaymentEligibility: true, orderContainsSubscription: nil, on: stores)
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+
+        // When
+        let viewModel = makeViewModel()
+
+        // Then
+        XCTAssertTrue(viewModel.isCheckingCardPaymentEligibility)
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertTrue(viewModel.showTapToPayRow)
+    }
+
+    func test_card_rows_are_shown_when_order_does_not_contain_subscription() {
+        // Given
+        simulate(cardPaymentEligibility: true, orderContainsSubscription: .success(false), on: stores)
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+
+        // When
+        let viewModel = makeViewModel()
+
+        // Then
+        XCTAssertFalse(viewModel.isCheckingCardPaymentEligibility)
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertTrue(viewModel.showTapToPayRow)
+        XCTAssertNil(viewModel.cardPaymentUnavailableMessage)
+    }
+
+    func test_card_rows_are_not_shown_when_order_contains_subscription() {
+        // Given
+        simulate(cardPaymentEligibility: true, orderContainsSubscription: .success(true), on: stores)
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+
+        // When
+        let viewModel = makeViewModel()
+
+        // Then
+        XCTAssertFalse(viewModel.isCheckingCardPaymentEligibility)
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
+        XCTAssertNil(viewModel.cardPaymentUnavailableMessage)
+    }
+
+    func test_card_rows_are_not_shown_and_message_is_set_when_checking_order_for_subscriptions_fails() {
+        // Given
+        simulate(cardPaymentEligibility: true, orderContainsSubscription: .failure(NSError(domain: "Error", code: 0)), on: stores)
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+
+        // When
+        let viewModel = makeViewModel()
+
+        // Then
+        XCTAssertFalse(viewModel.isCheckingCardPaymentEligibility)
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
+        XCTAssertNotNil(viewModel.cardPaymentUnavailableMessage)
+    }
+
+    func test_order_is_not_checked_for_subscriptions_when_order_is_not_eligible() {
+        // Given
+        var checkedForSubscriptions = false
+        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
+            switch action {
+            case let .checkEligibility(_, _, _, completion):
+                completion(.success(.ineligible))
+            case .checkOrderContainsSubscription:
+                checkedForSubscriptions = true
+            }
+        }
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+
+        // When
+        let viewModel = makeViewModel()
+
+        // Then
+        XCTAssertFalse(checkedForSubscriptions)
+        XCTAssertFalse(viewModel.isCheckingCardPaymentEligibility)
+        XCTAssertFalse(viewModel.showPayWithCardRow)
     }
 
     func test_card_rows_are_not_shown_for_non_eligible_order() {
@@ -1169,13 +1303,31 @@ private extension PaymentMethodsViewModelTests {
         simulate(tapToPayDeviceAvailability: tapToPayDeviceAvailability, on: stores)
     }
 
-    private func simulate(cardPaymentEligibility: Bool, on stores: MockStoresManager) {
+    /// - Parameter orderContainsSubscription: Result of the order subscription check. When `nil`, the check never completes.
+    private func simulate(cardPaymentEligibility: Bool,
+                          orderContainsSubscription: Result<Bool, Error>? = .success(false),
+                          on stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
             switch action {
-            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
-                completion(.success(cardPaymentEligibility))
+            case let .checkEligibility(_, _, _, completion):
+                completion(.success(cardPaymentEligibility ? .eligible : .ineligible))
+            case let .checkOrderContainsSubscription(_, _, completion):
+                if let orderContainsSubscription {
+                    completion(orderContainsSubscription)
+                }
             }
         }
+    }
+
+    func makeViewModel(configuration: CardPresentPaymentsConfiguration = CardPresentPaymentsConfiguration(country: .US)) -> PaymentMethodsViewModel {
+        let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: configuration)
+        return PaymentMethodsViewModel(siteID: 1212,
+                                       orderID: 111,
+                                       total: "5",
+                                       formattedTotal: "$5.00",
+                                       flow: .simplePayment,
+                                       channel: .storeManagement,
+                                       dependencies: dependencies)
     }
 
     private func simulate(tapToPayDeviceAvailability: Bool, on stores: MockStoresManager) {

@@ -4,26 +4,32 @@ import struct WooFoundation.WooAnalyticsEvent
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posAccessSession) private var session
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
-    @Binding private var showSettings: Bool
+    /// Invoked when the Exit POS menu item is tapped. The host gates it on `.exitPOS` before
+    /// presenting the exit confirmation.
+    private let onExitSelected: () -> Void
+    /// Invoked when the Settings menu item is tapped. The host gates it on `.manageStoreSettings` before
+    /// presenting the settings screen.
+    private let onSettingsSelected: () -> Void
+    /// Invoked when the Orders menu item is tapped.
     private let onOrdersSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
 
-    init(showExitPOSModal: Binding<Bool>,
+    init(onExitSelected: @escaping () -> Void,
          showSupport: Binding<Bool>,
          showDocumentation: Binding<Bool>,
-         showSettings: Binding<Bool>,
+         onSettingsSelected: @escaping () -> Void,
          onOrdersSelected: @escaping () -> Void) {
-        self._showExitPOSModal = showExitPOSModal
+        self.onExitSelected = onExitSelected
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
-        self._showSettings = showSettings
+        self.onSettingsSelected = onSettingsSelected
         self.onOrdersSelected = onOrdersSelected
     }
 
@@ -47,12 +53,14 @@ struct POSFloatingControlView: View {
             .cornerRadius(Constants.cornerRadius)
             .disabled(posModel.paymentState.card == .processingPayment)
 
-            CardReaderConnectionStatusView()
-                .foregroundStyle(fontColor)
-                .background(backgroundColor)
-                .cornerRadius(Constants.cornerRadius)
-                .disabled(posModel.paymentState.shownFullScreen)
-                .disabled(horizontalSizeClass != .regular)
+            if shouldShowReaderStatus {
+                CardReaderConnectionStatusView()
+                    .foregroundStyle(fontColor)
+                    .background(backgroundColor)
+                    .cornerRadius(Constants.cornerRadius)
+                    .disabled(posModel.paymentState.disablesCardReaderConnectionControl)
+                    .disabled(horizontalSizeClass != .regular)
+            }
         }
         .posModal(isPresented: $showProductRestrictionsModal) {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
@@ -68,10 +76,25 @@ struct POSFloatingControlView: View {
 }
 
 private extension POSFloatingControlView {
+    var shouldShowReaderStatus: Bool {
+        switch posModel.tapToPayAvailabilityController?.state {
+        case .unavailable, nil: true
+        case .available, .unknown: false
+        }
+    }
+
     @ViewBuilder private func menuOptions() -> some View {
+        // First-declared items render nearest the ellipsis button (the bottom), so declaring the staff
+        // row here keeps it at the bottom of the menu.
+        if let staff = session.currentStaff {
+            POSStaffMenuRow(staff: staff)
+
+            Divider()
+        }
+
         Button {
             analytics.track(.pointOfSaleExitMenuItemTapped)
-            showExitPOSModal = true
+            onExitSelected()
         } label: {
             Label(
                 title: { Text(Localization.exitPointOfSale) },
@@ -82,31 +105,50 @@ private extension POSFloatingControlView {
         if horizontalSizeClass == .regular || isPhoneLayout {
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                showSettings = true
+                onSettingsSelected()
             } label: {
                 Label(
                     title: { Text(Localization.settings) },
                     icon: { Image(systemName: "gearshape") }
                 )
             }
+            .accessibilityIdentifier("pos-settings-menu-item")
 
-            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+            Button {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
+                onOrdersSelected()
+            } label: {
+                Label(
+                    title: { Text(Localization.orders) },
+                    icon: { Image(systemName: "text.document") }
+                )
+            }
+
+            if canLockPOS {
                 Button {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    onOrdersSelected()
+                    session.lock()
                 } label: {
                     Label(
-                        title: { Text(Localization.orders) },
-                        icon: { Image(systemName: "text.document") }
+                        title: { Text(Localization.lockPOS) },
+                        icon: { Image(systemName: "lock") }
                     )
                 }
+                .accessibilityIdentifier("pos-lock-menu-item")
             }
         }
     }
 
     private var isPhoneLayout: Bool {
-        horizontalSizeClass == .compact &&
-        featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        horizontalSizeClass == .compact
+    }
+
+    private var isRolesEnabled: Bool {
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles)
+    }
+
+    /// Only offer Lock POS when an Admin PIN protects POS, so the lock screen always has a PIN to unlock with.
+    private var canLockPOS: Bool {
+        isRolesEnabled && session.isPINProtectionEnabled
     }
 }
 
@@ -149,6 +191,12 @@ private extension POSFloatingControlView {
             comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
         )
 
+        static let lockPOS = NSLocalizedString(
+            "pointOfSale.floatingButtons.lock.button.title",
+            value: "Lock POS",
+            comment: "The title of the menu button to lock Point of Sale, requiring PIN entry to continue."
+        )
+
         static let exitPointOfSale = NSLocalizedString(
             "pointOfSale.floatingButtons.exit.button.title",
             value: "Exit POS",
@@ -167,10 +215,10 @@ private extension POSFloatingControlView {
 #if DEBUG
 
 #Preview("Reader Disconnected") {
-    POSFloatingControlView(showExitPOSModal: .constant(false),
+    POSFloatingControlView(onExitSelected: {},
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false),
+                           onSettingsSelected: {},
                            onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
@@ -182,22 +230,36 @@ private extension POSFloatingControlView {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(
         cardPresentPaymentService: paymentService
     )
-    return POSFloatingControlView(showExitPOSModal: .constant(false),
+    return POSFloatingControlView(onExitSelected: {},
                                   showSupport: .constant(false),
                                   showDocumentation: .constant(false),
-                                  showSettings: .constant(false),
+                                  onSettingsSelected: {},
                                   onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
 
 #Preview("Secondary/disabled Background") {
-    POSFloatingControlView(showExitPOSModal: .constant(false),
+    POSFloatingControlView(onExitSelected: {},
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false),
+                           onSettingsSelected: {},
                            onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .secondary)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+}
+
+#Preview("Signed-in Operator") {
+    let session = MockPOSAccessSession(
+        currentStaff: POSLocalRole.cashier.staff
+    )
+    return POSFloatingControlView(onExitSelected: {},
+                                  showSupport: .constant(false),
+                                  showDocumentation: .constant(false),
+                                  onSettingsSelected: {},
+                                  onOrdersSelected: {})
+        .environment(\.posBackgroundAppearance, .primary)
+        .environment(\.posAccessSession, session)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 

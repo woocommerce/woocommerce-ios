@@ -52,22 +52,22 @@ public enum NetworkError: Error, Equatable {
 
     /// Content of the `code` field in the response if available
     public var errorCode: String? {
-        guard let response else { return nil }
-        let decoder = JSONDecoder()
-        guard let decodedResponse = try? decoder.decode(NetworkErrorResponse.self, from: response) else {
-            return nil
-        }
-        return decodedResponse.code
+        decodedResponse?.code
+    }
+
+    /// Content of the `message` field in the response if available
+    public var errorMessage: String? {
+        decodedResponse?.message
     }
 
     /// Content of the `data` field in the response if available
     public var errorData: [String: AnyDecodable]? {
+        decodedResponse?.data
+    }
+
+    private var decodedResponse: NetworkErrorResponse? {
         guard let response else { return nil }
-        let decoder = JSONDecoder()
-        guard let decodedResponse = try? decoder.decode(NetworkErrorResponse.self, from: response) else {
-            return nil
-        }
-        return decodedResponse.data
+        return try? JSONDecoder().decode(NetworkErrorResponse.self, from: response)
     }
 }
 
@@ -107,21 +107,21 @@ extension NetworkError: CustomStringConvertible {
     public var description: String {
         switch self {
         case let .notFound(responseData):
-            let response: String? = responseData.map { String(data: $0, encoding: .utf8) } ?? nil
+            let response: String? = responseData.flatMap { String(data: $0, encoding: .utf8) }
             let format = NSLocalizedString(
                 "NetworkError.notFound",
                 value: "Sorry, we couldn't find what you were looking for. Please try again. Response: %1$@",
                 comment: "Error message when we receive not found error")
             return String.localizedStringWithFormat(format, response ?? "")
         case let .timeout(responseData):
-            let response: String? = responseData.map { String(data: $0, encoding: .utf8) } ?? nil
+            let response: String? = responseData.flatMap { String(data: $0, encoding: .utf8) }
             let format = NSLocalizedString(
                 "NetworkError.timeout",
                 value: "Sorry, the request took too long to process. Please try again later. Response: %1$@",
                 comment: "Error message when a request times out.")
             return String.localizedStringWithFormat(format, response ?? "")
         case let .unacceptableStatusCode(statusCode, responseData):
-            let response: String? = responseData.map { String(data: $0, encoding: .utf8) } ?? nil
+            let response: String? = responseData.flatMap { String(data: $0, encoding: .utf8) }
             let format = NSLocalizedString(
                 "NetworkError.unacceptableStatusCode",
                 value: "Sorry, there was an issue with the server. Please try again later. (Error code: %1$d). Response: %2$@",
@@ -144,6 +144,7 @@ extension NetworkError: CustomStringConvertible {
 
 struct NetworkErrorResponse: Decodable {
     let code: String?
+    let message: String?
     let data: [String: AnyDecodable]?
 
     init(from decoder: Decoder) throws {
@@ -155,6 +156,8 @@ struct NetworkErrorResponse: Decodable {
             }
             return try container.decodeIfPresent(String.self, forKey: .code)
         }()
+        // A non-string `message` must not cost callers `code` and `data`.
+        self.message = try? container.decodeIfPresent(String.self, forKey: .message)
         self.data = try container.decodeIfPresent([String: AnyDecodable].self, forKey: .data)
     }
 
@@ -163,6 +166,7 @@ struct NetworkErrorResponse: Decodable {
     private enum CodingKeys: String, CodingKey {
         case error
         case code
+        case message
         case data
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 
 /// ShippingMethodsRemote: Remote Endpoints
 ///
-public final class ShippingMethodsRemote: Remote {
+public final class ShippingMethodsRemote: Remote, @unchecked Sendable {
 
     /// Retrieves all of the shipping methods for a given store.
     /// - Parameter siteID: Site for which we'll fetch the shipping methods.

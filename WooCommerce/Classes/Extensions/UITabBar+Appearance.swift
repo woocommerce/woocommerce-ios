@@ -1,3 +1,5 @@
+import StoreDesignSystem
+import SwiftUI
 import UIKit
 
 
@@ -6,46 +8,58 @@ import UIKit
 extension UITabBar {
     /// Applies the default WC's Appearance
     ///
-    class func applyWooAppearance() {
+    class func applyWooAppearance(usesStoreDesignSystem: Bool = ServiceLocator.featureFlagService.usesStoreDesignSystem) {
         let appearance = Self.appearance()
-        appearance.barTintColor = .appTabBar
-        appearance.tintColor = .accent
+        appearance.tintColor = usesStoreDesignSystem ? UIColor(Color.storeOnSurface) : .accent
+        appearance.unselectedItemTintColor = usesStoreDesignSystem ? UIColor(Color.storeOnSurface) : nil
 
         // tab bar needs to be translucent to get rid of the extra space at the bottom of
         // the view controllers embedded in split view.
         appearance.isTranslucent = true
 
-        /// iOS 13.0 and 13.1 doesn't render the tabbar shadow color correctly while in dark mode.
-        /// To fix it, we have to specifically set it in the `standardAppearance` object.
-        ///
-        appearance.standardAppearance = createWooTabBarAppearance()
-
-        /// This is needed because the tab bar background has the wrong color under iOS 15 (using Xcode 13).
-        /// More: issue-5018
-        ///
-        appearance.scrollEdgeAppearance = appearance.standardAppearance
+        let tabBarAppearance = wooAppearance(usesStoreDesignSystem: usesStoreDesignSystem)
+        appearance.standardAppearance = tabBarAppearance
+        appearance.scrollEdgeAppearance = tabBarAppearance
     }
 
     /// Creates an appearance object for a tabbar with the default WC style.
     ///
-    private static func createWooTabBarAppearance() -> UITabBarAppearance {
+    static func wooAppearance(usesStoreDesignSystem: Bool = ServiceLocator.featureFlagService.usesStoreDesignSystem) -> UITabBarAppearance {
         let standardAppearance = UITabBarAppearance()
-        standardAppearance.backgroundColor = .appTabBar
-        standardAppearance.shadowColor = .systemColor(.separator)
-        applyWooAppearance(to: standardAppearance.inlineLayoutAppearance)
-        applyWooAppearance(to: standardAppearance.stackedLayoutAppearance)
-        applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance)
+        standardAppearance.configureWithDefaultBackground()
+        applyWooAppearance(to: standardAppearance.inlineLayoutAppearance, usesStoreDesignSystem: usesStoreDesignSystem)
+        applyWooAppearance(to: standardAppearance.stackedLayoutAppearance, usesStoreDesignSystem: usesStoreDesignSystem)
+        applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance, usesStoreDesignSystem: usesStoreDesignSystem)
         return standardAppearance
     }
 
     /// Configures the appearance object for a tabbar's items with the default WC style.
     ///
-    private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance) {
-        tabBarItemAppearance.normal.badgeTextAttributes = [.foregroundColor: UIColor.white]
-        tabBarItemAppearance.selected.badgeTextAttributes = [.foregroundColor: UIColor.white]
-        tabBarItemAppearance.disabled.badgeTextAttributes = [.foregroundColor: UIColor.white]
-        tabBarItemAppearance.normal.badgeBackgroundColor = .primary
-        tabBarItemAppearance.selected.badgeBackgroundColor = .primary
-        tabBarItemAppearance.disabled.badgeBackgroundColor = .primary
+    private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance, usesStoreDesignSystem: Bool) {
+        let badgeTextColor = usesStoreDesignSystem ? UIColor(Color.storeOnError) : .white
+        let badgeBackgroundColor = usesStoreDesignSystem ? UIColor(Color.storeAccentRed) : .primary
+        let badgeTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: badgeTextColor]
+
+        if usesStoreDesignSystem {
+            let itemColor = UIColor(Color.storeOnSurface)
+            // Without a paragraph style, iPad before iOS 26 keeps the stacked-font title width and shows text cut-off.
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineBreakMode = .byTruncatingTail
+            let titleTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: itemColor, .paragraphStyle: paragraphStyle]
+
+            tabBarItemAppearance.normal.iconColor = itemColor
+            tabBarItemAppearance.normal.titleTextAttributes = titleTextAttributes
+            tabBarItemAppearance.selected.iconColor = itemColor
+            tabBarItemAppearance.selected.titleTextAttributes = titleTextAttributes
+            tabBarItemAppearance.focused.iconColor = itemColor
+            tabBarItemAppearance.focused.titleTextAttributes = titleTextAttributes
+        }
+
+        tabBarItemAppearance.normal.badgeTextAttributes = badgeTextAttributes
+        tabBarItemAppearance.selected.badgeTextAttributes = badgeTextAttributes
+        tabBarItemAppearance.disabled.badgeTextAttributes = badgeTextAttributes
+        tabBarItemAppearance.normal.badgeBackgroundColor = badgeBackgroundColor
+        tabBarItemAppearance.selected.badgeBackgroundColor = badgeBackgroundColor
+        tabBarItemAppearance.disabled.badgeBackgroundColor = badgeBackgroundColor
     }
 }

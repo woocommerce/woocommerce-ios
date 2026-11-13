@@ -1,6 +1,7 @@
 import Combine
 import Photos
 import PointOfSale
+import StoreDesignSystem
 import SwiftUI
 import TestKit
 import XCTest
@@ -41,6 +42,20 @@ final class MainTabBarControllerTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_bookings_store_design_system_icons_use_regular_and_solid_calendar_variants() throws {
+        // Given
+        let tab = WooTab.bookings
+
+        // When
+        let icons = try XCTUnwrap(tab.storeDesignSystemIcons)
+
+        // Then
+        XCTAssertEqual(icons.normal.name, StoreIcon.Calendar.regular.name)
+        XCTAssertEqual(icons.normal.style, StoreIcon.Calendar.regular.style)
+        XCTAssertEqual(icons.selected.name, StoreIcon.Calendar.solid.name)
+        XCTAssertEqual(icons.selected.style, StoreIcon.Calendar.solid.style)
+    }
+
     func test_selected_tab_is_dashboard_after_navigating_to_products_tab_then_updating_to_a_different_site() throws {
         // Arrange
         ServiceLocator.setFeatureFlagService(MockFeatureFlagService())
@@ -71,6 +86,48 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(selectedTabIndexAfterSiteChange, WooTab.myStore.visibleIndex(isPOSTabVisible: false))
     }
 
+    @MainActor
+    func test_willEnterForeground_when_orders_tab_is_selected_then_resets_storeOrder_badge() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let tabBarController = try makeTabBarControllerWithHiddenPOSTab(pushNotesManager: pushNotesManager, siteID: 134)
+        tabBarController.selectedIndex = WooTab.orders.visibleIndex(isPOSTabVisible: false)
+
+        // When
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(pushNotesManager.resetBadgeCountKinds, [.storeOrder])
+    }
+
+    @MainActor
+    func test_willEnterForeground_when_products_tab_is_selected_then_resets_storeStock_badge() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let tabBarController = try makeTabBarControllerWithHiddenPOSTab(pushNotesManager: pushNotesManager, siteID: 134)
+        tabBarController.selectedIndex = WooTab.products.visibleIndex(isPOSTabVisible: false)
+
+        // When
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(pushNotesManager.resetBadgeCountKinds, [.storeStock])
+    }
+
+    @MainActor
+    func test_willEnterForeground_when_no_site_is_selected_then_does_not_reset_any_badge() throws {
+        // Given no site, so the tab bar has no tabs and no selected view controller
+        let pushNotesManager = MockPushNotificationsManager()
+        _ = try makeTabBarControllerWithHiddenPOSTab(pushNotesManager: pushNotesManager, siteID: nil)
+
+        // When
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(pushNotesManager.resetBadgeCountKinds, [])
+    }
+
+    @MainActor
     func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_hubMenu_tab() throws {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
@@ -171,8 +228,8 @@ final class MainTabBarControllerTests: XCTestCase {
         // When
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
-                                                              error: NSError(domain: "", code: 8))))
+                                 error: .failedUploadingImage(error: NSError(domain: "", code: 8)),
+                                 asset: .phAsset(asset: PHAsset())))
 
         // Given
         XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
@@ -272,8 +329,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
-                                                              error: error)))
+                                 error: .failedUploadingImage(error: error),
+                                 asset: .phAsset(asset: PHAsset())))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
@@ -318,8 +375,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
-                                                              error: error)))
+                                 error: .failedUploadingImage(error: error),
+                                 asset: .phAsset(asset: PHAsset())))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
@@ -434,8 +491,34 @@ final class MainTabBarControllerTests: XCTestCase {
         let splitViewController = try XCTUnwrap(ordersSplitViewWrapper.children.first as? UISplitViewController)
 
         waitUntil {
-            let secondaryViewController = (splitViewController.viewController(for: .secondary) as? UINavigationController)?.topViewController
-            return secondaryViewController is OrderLoaderViewController
+            // On a phone the tab switch collapses the split view, which shows the details in the primary column.
+            [UISplitViewController.Column.primary, .secondary].contains { column in
+                (splitViewController.viewController(for: column) as? UINavigationController)?.topViewController is OrderLoaderViewController
+            }
+        }
+
+        // Resets the tab bar controller mock at the end of the test.
+        TestingAppDelegate.mockTabBarController = nil
+    }
+
+    @MainActor
+    func test_navigating_to_order_creation_presents_order_form_on_first_visit_to_orders_tab() throws {
+        // Given
+        let siteID: Int64 = 256
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService())
+
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        TestingAppDelegate.mockTabBarController = tabBarController
+        window.rootViewController = tabBarController
+
+        // When
+        tabBarController.navigate(to: OrdersDestination.createOrder)
+
+        // Then
+        waitUntil {
+            tabBarController.presentedViewController is OrderFormHostingController
         }
 
         // Resets the tab bar controller mock at the end of the test.
@@ -511,7 +594,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: false),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: false),
-                   isAnInstanceOf: ProductsViewController.self)
+                   isAnInstanceOf: ProductsSplitViewWrapperController.self)
 
         let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController,
@@ -554,6 +637,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(mockPOSEligibilityService.loadCachedPOSTabVisibility(siteID: siteID), true)
     }
 
+    @MainActor
     func test_event_is_tracked_after_eligibility_check() throws {
         // Given
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
@@ -587,15 +671,11 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual(true, analyticsProvider.receivedProperties[safe: indexOfEvent]?["is_visible"] as? Bool)
     }
 
-    func test_initial_tabs_visibility_is_set_from_cache() throws {
+    func test_initial_tabs_visibility_on_phone_uses_cached_pos_visibility() throws {
         // Given
         let siteID: Int64 = 1126
         let mockPOSEligibilityService = MockPOSEligibilityService()
         mockPOSEligibilityService.cachedTabVisibility[siteID] = true
-
-        let userDefaults = UserDefaults(suiteName: #function)!
-        userDefaults.removePersistentDomain(forName: #function)
-        userDefaults.cacheBookingsTabVisibility(siteID: siteID, isVisible: true)
 
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
 
@@ -603,7 +683,7 @@ final class MainTabBarControllerTests: XCTestCase {
             return MainTabBarController(coder: coder,
                                         stores: stores,
                                         posEligibilityService: mockPOSEligibilityService,
-                                        userDefaults: userDefaults)
+                                        isPad: false)
         }) else {
             XCTFail("Failed to instantiate MainTabBarController")
             return
@@ -614,40 +694,34 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view) // This triggers viewDidLoad
 
         // Then
-        let expectedTabs: [WooTab] = [.myStore, .orders, .products, .bookings, .pointOfSale, .hubMenu]
-        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: true, isBookingsTabVisible: true)
+        let expectedTabs: [WooTab] = [.myStore, .orders, .products, .pointOfSale, .hubMenu]
+        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: true, isBookingsTabVisible: false)
         XCTAssertEqual(tabBarController.viewControllers?.count, expectedTabs.count)
         XCTAssertEqual(visibleTabs, expectedTabs)
     }
 
-    func test_switching_sites_applies_cached_tab_visibility() throws {
+    @MainActor
+    func test_switching_sites_applies_cached_pos_tab_visibility() throws {
         // Arrange
         let siteA_ID: Int64 = 101
         let siteB_ID: Int64 = 202
 
-        // Site A: POS visible, Bookings not visible
         let mockPOSEligibilityService = MockPOSEligibilityService()
         mockPOSEligibilityService.cachedTabVisibility[siteA_ID] = true
         mockPOSEligibilityService.cachedTabVisibility[siteB_ID] = false
 
-        let userDefaults = UserDefaults(suiteName: #function)!
-        userDefaults.removePersistentDomain(forName: #function)
-        userDefaults.cacheBookingsTabVisibility(siteID: siteA_ID, isVisible: false)
-        userDefaults.cacheBookingsTabVisibility(siteID: siteB_ID, isVisible: true)
-
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let mockBookingsEligibilityChecker = MockAsyncBookingsEligibilityChecker()
 
         let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             MainTabBarController(coder: coder,
                                  stores: stores,
                                  posTabVisibilityCheckerFactory: { site in
-                                     POSTabVisibilityChecker(site: site, eligibilityService: mockPOSEligibilityService)
+                                     POSTabVisibilityChecker(site: site,
+                                                             eligibilityService: mockPOSEligibilityService)
                                  },
                                  posEligibilityService: mockPOSEligibilityService,
-                                 bookingsEligibilityCheckerFactory: { site in
-                                     BookingsTabEligibilityChecker(site: site, userDefaults: userDefaults)
-                                 },
-                                 userDefaults: userDefaults)
+                                 bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker })
         }))
 
         // Trigger viewDidLoad
@@ -669,19 +743,18 @@ final class MainTabBarControllerTests: XCTestCase {
         stores.updateDefaultStore(storeID: siteB_ID)
         stores.updateDefaultStore(.fake().copy(siteID: siteB_ID))
 
-        // Assert 2: Site B should have Bookings, but not POS.
-        XCTAssertEqual(tabBarController.viewControllers?.count, 5, "There should be 5 tabs for Site B")
-        XCTAssertTrue(tabBarController.tabRootViewControllers.contains(where: { $0 is BookingsTabViewHostingController }),
-                      "Bookings tab should be visible for Site B")
+        // Assert 2: Site B should not have cached POS or Bookings visibility.
+        XCTAssertEqual(tabBarController.viewControllers?.count, 4, "There should be 4 tabs for Site B")
+        XCTAssertFalse(tabBarController.tabRootViewControllers.contains(where: { $0 is BookingsTabViewHostingController }),
+                       "Bookings tab should not be visible for Site B before eligibility check completes")
         XCTAssertFalse(tabBarController.tabRootViewControllers.contains(where: { $0 is POSTabViewController }),
                        "POS tab should not be visible for Site B")
     }
 
     @MainActor
-    func test_bookings_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
+    func test_bookings_tab_becomes_visible_after_eligibility_check_succeeds() throws {
         // Given
         let mockBookingsEligibilityChecker = MockAsyncBookingsEligibilityChecker()
-        mockBookingsEligibilityChecker.initialVisibility = true
 
         let mockFeatureFlagService = MockFeatureFlagService()
         ServiceLocator.setFeatureFlagService(mockFeatureFlagService)
@@ -706,7 +779,13 @@ final class MainTabBarControllerTests: XCTestCase {
         stores.updateDefaultStore(storeID: siteID)
         stores.updateDefaultStore(.fake().copy(siteID: siteID))
 
-        // Then bookings tab is visible before eligibility check is returned
+        // Then bookings tab is hidden before eligibility check is returned
+        XCTAssertEqual(tabBarController.tabRootViewControllers.count, 4)
+
+        // When bookings tab becomes visible
+        mockBookingsEligibilityChecker.setVisibilityResult(true)
+
+        // Then bookings tab is visible
         waitUntil {
             tabBarController.tabRootViewControllers.count == 5
         }
@@ -715,38 +794,99 @@ final class MainTabBarControllerTests: XCTestCase {
             isPOSTabVisible: false,
             isBookingsTabVisible: true
         ), isAnInstanceOf: BookingsTabViewHostingController.self)
+    }
 
-        // When bookings tab becomes invisible
-        mockBookingsEligibilityChecker.setVisibilityResult(false)
+    // MARK: - Tab re-selection
 
-        // Then bookings tab is hidden
+    func test_handleTabReselection_when_tab_is_container_wrapped_reselection_handler_then_forwards_to_handler() throws {
+        // Given
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        let reselectionHandler = SpyReselectionController()
+        let containerController = TabContainerController()
+        containerController.wrappedController = reselectionHandler
+        tabBarController.viewControllers = [containerController]
+        tabBarController.selectedViewController = containerController
+
+        // When
+        tabBarController.handleTabReselection()
+
+        // Then
+        // The dispatch must unwrap the container and forward to its wrapped `TabReselectionHandling` content.
+        XCTAssertEqual(reselectionHandler.handledCount, 1)
+    }
+
+    func test_handleTabReselection_when_tab_is_navigation_controller_then_pops_to_root() throws {
+        // Given
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        navigationController.pushViewController(UIViewController(), animated: false)
+        tabBarController.viewControllers = [navigationController]
+        tabBarController.selectedViewController = navigationController
+        window.rootViewController = tabBarController
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+
+        // When
+        tabBarController.handleTabReselection()
+
+        // Then
+        // The dispatch must pop the selected tab's navigation stack back to its root.
         waitUntil {
-            tabBarController.tabRootViewControllers.count == 4
+            navigationController.viewControllers.count == 1
         }
+    }
 
-        assertThat(tabBarController.tabRootViewController(
-            tab: .myStore,
-            isPOSTabVisible: false,
-            isBookingsTabVisible: false
-        ), isAnInstanceOf: DashboardViewHostingController.self)
-        assertThat(tabBarController.tabRootViewController(
-            tab: .orders,
-            isPOSTabVisible: false,
-            isBookingsTabVisible: false
-        ), isAnInstanceOf: OrdersSplitViewWrapperController.self)
-        assertThat(tabBarController.tabRootViewController(
-            tab: .products,
-            isPOSTabVisible: false,
-            isBookingsTabVisible: false
-        ), isAnInstanceOf: ProductsViewController.self)
+    func test_handleTabReselection_when_navigation_root_is_reselection_handler_then_pops_and_forwards() throws {
+        // Given
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        let reselectionHandler = SpyReselectionController()
+        let navigationController = UINavigationController(rootViewController: reselectionHandler)
+        navigationController.pushViewController(UIViewController(), animated: false)
+        tabBarController.viewControllers = [navigationController]
+        tabBarController.selectedViewController = navigationController
+        window.rootViewController = tabBarController
 
-        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(
-            tab: .hubMenu,
-            isPOSTabVisible: false,
-            isBookingsTabVisible: false
-        ) as? UINavigationController)
-        assertThat(hubMenuNavigationController.topViewController,
-                   isAnInstanceOf: HubMenuViewController.self)
+        // When
+        tabBarController.handleTabReselection()
+
+        // Then
+        // The dispatch must pop the stack to its root and forward to the root's handler.
+        waitUntil {
+            navigationController.viewControllers.count == 1 && reselectionHandler.handledCount == 1
+        }
+    }
+
+    func test_handleTabReselection_when_a_screen_refuses_to_pop_then_root_handler_is_not_notified() throws {
+        // Given
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        let reselectionHandler = SpyReselectionController()
+        let navigationController = UINavigationController(rootViewController: reselectionHandler)
+        navigationController.pushViewController(NonPoppableViewController(), animated: false)
+        tabBarController.viewControllers = [navigationController]
+        tabBarController.selectedViewController = navigationController
+        window.rootViewController = tabBarController
+
+        // When
+        tabBarController.handleTabReselection()
+
+        // Then
+        // A refused pop must leave the stack alone and skip the root's own reset.
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+        XCTAssertEqual(reselectionHandler.handledCount, 0)
+    }
+}
+
+private final class SpyReselectionController: UIViewController, TabReselectionHandling {
+    private(set) var handledCount = 0
+
+    func handleTabReselection() {
+        handledCount += 1
+    }
+}
+
+/// Refuses to pop, mimicking a screen with unsaved changes.
+private final class NonPoppableViewController: UIViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        false
     }
 }
 
@@ -797,7 +937,7 @@ extension MainTabBarController {
 }
 
 @MainActor
-private final class MockAsyncPOSEligibilityChecker: @preconcurrency POSTabVisibilityCheckerProtocol {
+private final class MockAsyncPOSEligibilityChecker: POSTabVisibilityCheckerProtocol {
     var initialVisibility: Bool = false
     private var visibilityResult: Bool?
     private var visibilityContinuation: CheckedContinuation<Bool, Never>?
@@ -826,7 +966,6 @@ private final class MockAsyncPOSEligibilityChecker: @preconcurrency POSTabVisibi
 
 @MainActor
 private final class MockAsyncBookingsEligibilityChecker: @preconcurrency BookingsTabEligibilityCheckerProtocol {
-    var initialVisibility: Bool = false
     private var visibilityResult: Bool?
     private var visibilityContinuation: CheckedContinuation<Bool, Never>?
 
@@ -838,10 +977,6 @@ private final class MockAsyncBookingsEligibilityChecker: @preconcurrency Booking
         }
     }
 
-    func checkInitialVisibility() -> Bool {
-        initialVisibility
-    }
-
     func checkVisibility() async -> Bool {
         if let visibilityResult {
             return visibilityResult
@@ -849,5 +984,26 @@ private final class MockAsyncBookingsEligibilityChecker: @preconcurrency Booking
         return await withCheckedContinuation { continuation in
             visibilityContinuation = continuation
         }
+    }
+}
+
+private extension MainTabBarControllerTests {
+    @MainActor
+    func makeTabBarControllerWithHiddenPOSTab(pushNotesManager: PushNotesManager, siteID: Int64?) throws -> MainTabBarController {
+        let posTabVisibilityChecker = MockPOSTabVisibilityChecker()
+        posTabVisibilityChecker.visibility = false
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            MainTabBarController(coder: coder,
+                                 stores: self.stores,
+                                 pushNotesManager: pushNotesManager,
+                                 posTabVisibilityCheckerFactory: { _ in posTabVisibilityChecker })
+        }))
+        // Triggers `viewDidLoad`, which subscribes to foreground notifications.
+        XCTAssertNotNil(tabBarController.view)
+        if let siteID {
+            stores.updateDefaultStore(storeID: siteID)
+            stores.updateDefaultStore(.fake().copy(siteID: siteID))
+        }
+        return tabBarController
     }
 }

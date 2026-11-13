@@ -68,6 +68,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
+    private lazy var productPreviewAuthenticationAvailability = ProductPreviewAuthenticationAvailability(sessionManager: stores.sessionManager)
+
     private var isEligibleForBlaze = false
 
     private var hasActiveBlazeCampaign = false
@@ -186,12 +188,19 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
         }()
 
-        // The `frame_nonce` value must be stored for the preview to be displayed
-        if let site = stores.sessionManager.defaultSite,
-           site.frameNonce.isNotEmpty,
-            // Preview existing drafts or new products that can be saved as a draft
-           canSaveAsDraft() || originalProductModel.status == .draft {
-            buttons.insert(.preview, at: 0)
+        // Preview existing drafts or new products that can be saved as a draft
+        if canSaveAsDraft() || originalProductModel.status == .draft,
+           let site = stores.sessionManager.defaultSite {
+            // Only the Jetpack plugin accepts `frame-nonce`, so stores without it show their 404 page when signed out.
+            // Flex sites can report `jetpack: false` while listing Jetpack as a connected plugin.
+            let jetpackCanPreview = site.frameNonce.isNotEmpty &&
+                (!site.isJetpackCPConnected || site.jetpackConnectionActivePlugins.contains("jetpack"))
+            let permalink = URL(string: product.permalink)
+            let urlToCheck = permalink?.host == nil ? URL(string: site.url) : permalink
+
+            if jetpackCanPreview || productPreviewAuthenticationAvailability.canAuthenticate(for: urlToCheck) {
+                buttons.insert(.preview, at: 0)
+            }
         }
 
         // Add more button if needed
@@ -262,10 +271,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         updateBlazeEligibility()
     }
 
-    deinit {
-        cancellable?.cancel()
-    }
-
     func hasUnsavedChanges() -> Bool {
         let hasProductChangesExcludingImages = product.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasImageChanges = productImagesUploader
@@ -274,6 +279,29 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                                                   isLocalID: !product.existsRemotely),
                                        originalImages: originalProduct.images)
         return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword || isNewTemplateProduct()
+    }
+
+    /// Re-fetches the product from the server so the detail screen reflects remote changes (e.g. new reviews or
+    /// an updated price) made since it was cached. The fresh product is only applied when there are no unsaved
+    /// local edits, so an in-progress edit is never clobbered.
+    func refreshProduct() {
+        guard originalProduct.product.existsRemotely else {
+            return
+        }
+        let productID = originalProduct.productID
+        let siteID = originalProduct.siteID
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let refreshedProduct = try await self.remoteActionUseCase.retrieveProduct(id: productID, siteID: siteID)
+                guard !self.hasUnsavedChanges() else {
+                    return
+                }
+                self.originalProduct = EditableProductModel(product: refreshedProduct)
+            } catch {
+                DDLogError("⛔️ Error refreshing product on product detail: \(error)")
+            }
+        }
     }
 }
 
@@ -325,7 +353,7 @@ extension ProductFormViewModel {
     }
 
     func canDuplicateProduct() -> Bool {
-        formType == .edit
+        formType == .edit && originalProduct.product.existsRemotely
     }
 }
 
@@ -542,7 +570,7 @@ extension ProductFormViewModel {
         }()
         let subscription = product.subscription?.copy(trialLength: trialLength,
                                                       trialPeriod: trialPeriod,
-                                                      oneTimeShipping: oneTimeShipping ?? nil)
+                                                      oneTimeShipping: oneTimeShipping)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
 
@@ -624,11 +652,22 @@ extension ProductFormViewModel {
         }
     }
 
-    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+    func productDuplicationSnapshot() -> ProductDuplicationSnapshot<ProductModel>? {
+        guard canDuplicateProduct() else {
+            return nil
+        }
+        return ProductDuplicationSnapshot(product: originalProduct, password: originalPassword)
+    }
 
-        remoteActionUseCase.duplicateProduct(originalProduct: product,
-                                             password: password) { [weak self] result in
-            guard let self else { return }
+    func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>,
+                          onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+        guard formType == .edit, snapshot.product.product.existsRemotely else {
+            return
+        }
+
+        remoteActionUseCase.duplicateProduct(originalProduct: snapshot.product,
+                                             password: snapshot.password) { [weak self] result in
+            guard self != nil else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -717,8 +756,7 @@ extension ProductFormViewModel {
         let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
         let hasMinMaxQuantityRules = product.canEditQuantityRules
         analytics.track(event: .ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
-                                                                      hasMinMaxQuantityRules: hasMinMaxQuantityRules,
-                                                                      horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+                                                     hasMinMaxQuantityRules: hasMinMaxQuantityRules))
     }
 }
 
@@ -879,7 +917,6 @@ private extension ProductFormViewModel {
 // MARK: Favorite
 //
 extension ProductFormViewModel {
-    @MainActor
     func isFavorite() async -> Bool {
         await favoriteProductsUseCase.isFavorite(productID: product.productID)
     }

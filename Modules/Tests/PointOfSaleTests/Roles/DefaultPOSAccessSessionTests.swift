@@ -7,12 +7,7 @@ import Testing
 struct DefaultPOSAccessSessionTests {
     @Test func test_signIn_when_pin_is_valid_then_sets_currentStaff_and_unlocks_and_resets_limiter() async throws {
         // Given
-        let staff = POSStaff(
-            userID: 1,
-            displayName: "Maya",
-            preset: "shop_manager",
-            capabilities: Set(POSCapability.allCases.map(\.rawValue))
-        )
+        let staff = makeStaff()
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         sut.limiter.recordFailure()
 
@@ -127,7 +122,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_lock_when_called_then_sets_isLocked_true_and_keeps_currentStaff() async throws {
         // Given
-        let staff = POSStaff(userID: 1, displayName: "Maya", preset: "shop_manager", capabilities: [])
+        let staff = makeStaff()
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -139,9 +134,10 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.currentStaff == staff)
     }
 
-    @Test func test_requestManagerApproval_when_called_then_throws_unknown() async {
+    @Test func test_requestManagerApproval_when_authenticator_fails_then_throws_unknown() async {
         // Given
-        let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
+        let authenticator = MockPOSPINAuthenticator(verifyResult: .failure(.unknown))
+        let sut = makeSUT(authenticator: authenticator)
 
         // When / Then
         await #expect(throws: POSAuthError.unknown) {
@@ -151,12 +147,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_currentStaff_has_capability_then_returns_true() async throws {
         // Given
-        let staff = POSStaff(
-            userID: 1,
-            displayName: "Maya",
-            preset: "shop_manager",
-            capabilities: [POSCapability.issueRefunds.rawValue]
-        )
+        let staff = makeStaff(capabilities: [.issueRefunds])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -166,7 +157,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_currentStaff_lacks_capability_then_returns_false() async throws {
         // Given
-        let staff = POSStaff(userID: 1, displayName: "Maya", preset: "pos_cashier", capabilities: [])
+        let staff = makeStaff(capabilities: POSLocalRole.cashier.capabilities)
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -174,12 +165,23 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.allows(.issueRefunds) == false)
     }
 
-    @Test func test_allows_when_no_currentStaff_then_returns_false() {
-        // Given
+    @Test func test_allows_when_gated_but_not_signed_in_then_returns_false() {
+        // Given a session with an Admin PIN (gating active) but nobody signed in
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
 
-        // When / Then
+        // When / Then — gating is active and there's no current staff, so access is denied
+        #expect(sut.session.isPINProtectionEnabled == true)
         #expect(sut.session.allows(.issueRefunds) == false)
+    }
+
+    @Test func test_allows_when_no_admin_pin_is_set_then_returns_true() {
+        // Given a roles-enabled session without an Admin PIN (gating inactive)
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), credentials: .success([]))
+
+        // When / Then — nobody can sign in and no PIN could approve an override, so gating is off
+        #expect(sut.session.isPINProtectionEnabled == false)
+        #expect(sut.session.allows(.issueRefunds) == true)
+        #expect(sut.session.allows(.exitPOS) == true)
     }
 
     @Test func test_lock_when_called_then_persists_true_to_per_site_lock_key() {
@@ -195,7 +197,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_signIn_when_pin_is_valid_then_persists_false_to_per_site_lock_key() async throws {
         // Given
-        let staff = POSStaff(userID: 1, displayName: "Maya", preset: "shop_manager", capabilities: [])
+        let staff = makeStaff()
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         sut.session.lock()
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == true)
@@ -218,17 +220,67 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 999)) == false)
     }
 
-    @Test func test_signIn_when_pin_is_valid_then_sets_hasAnyPINs_true() async throws {
-        // Given
-        let staff = POSStaff(userID: 1, displayName: "Maya", preset: "shop_manager", capabilities: [])
-        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
-        #expect(sut.session.hasAnyPINs == false)
-
-        // When
-        try await sut.session.signIn(withPIN: "1234")
+    @Test func test_init_when_no_pins_are_set_then_protection_is_off_and_unlocked() {
+        // Given / When
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), credentials: .success([]))
 
         // Then
-        #expect(sut.session.hasAnyPINs == true)
+        #expect(sut.session.isPINProtectionEnabled == false)
+        #expect(sut.session.isLocked == false)
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
+    }
+
+    @Test func test_init_when_admin_pin_is_set_then_protection_is_on_and_locked() {
+        // Given / When
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
+
+        // Then
+        #expect(sut.session.isPINProtectionEnabled == true)
+        #expect(sut.session.isLocked == true)
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == true)
+    }
+
+    @Test func test_init_when_pins_are_unreadable_then_stays_locked_and_denies_actions() {
+        // Given / When
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), credentials: .failure(.storageFailure))
+
+        // Then
+        #expect(sut.session.isPINProtectionEnabled == true)
+        #expect(sut.session.isLocked == true)
+        #expect(sut.session.allows(.processSales) == false)
+        #expect(sut.session.allows(.exitPOS) == false)
+    }
+
+    @Test func test_init_when_pins_are_unreadable_then_does_not_persist_the_lock_for_cold_launch() {
+        // Given / When
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), credentials: .failure(.storageFailure))
+
+        // Then
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
+    }
+
+    @Test func test_lock_when_protection_is_off_then_stays_unlocked() {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), credentials: .success([]))
+
+        // When
+        sut.session.lock()
+
+        // Then
+        #expect(sut.session.isLocked == false)
+    }
+
+    @Test func test_allows_when_cashier_is_signed_in_then_allows_only_cashier_capabilities() async throws {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(POSLocalRole.cashier.staff)))
+
+        // When
+        try await sut.session.signIn(withPIN: "5678")
+
+        // Then
+        #expect(sut.session.allows(.processSales))
+        #expect(sut.session.allows(.issueRefunds) == false)
+        #expect(sut.session.allows(.manageStoreSettings) == false)
     }
 }
 
@@ -240,6 +292,7 @@ private extension DefaultPOSAccessSessionTests {
     }
 
     func makeSUT(authenticator: POSPINAuthenticating,
+                 credentials: Result<[POSPINCredential], POSPINStoreError>? = nil,
                  now: @escaping () -> Date = { Date() }) -> SUT {
         let scope = UserDefaultsTestScope()
         let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
@@ -247,13 +300,22 @@ private extension DefaultPOSAccessSessionTests {
             siteID: 123,
             authenticator: authenticator,
             rateLimiter: limiter,
+            credentialProvider: MockPOSPINCredentialProvider(credentialsResult: credentials ?? .success([makeAdminCredential()])),
             userDefaults: scope.defaults
         )
         return SUT(session: session, limiter: limiter, scope: scope)
     }
+
+    func makeAdminCredential() -> POSPINCredential {
+        POSPINCredential(staff: POSLocalRole.admin.staff,
+                         pinHash: POSPINHash(algorithm: "pbkdf2-sha256", iterations: 1, salt: Data([1]), hash: Data([2])))
+    }
+
+    func makeStaff(capabilities: Set<POSCapability> = Set(POSCapability.allCases)) -> POSStaff {
+        POSStaff(displayName: "Staff", capabilities: capabilities)
+    }
 }
 
-@MainActor
 private final class UserDefaultsTestScope {
     let defaults: UserDefaults
     private let suiteName: String

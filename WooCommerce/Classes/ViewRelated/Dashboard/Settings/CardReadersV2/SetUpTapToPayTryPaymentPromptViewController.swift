@@ -163,15 +163,17 @@ private enum Constants {
 private extension SetUpTapToPayPaymentPromptView {
     enum Localization {
         static let setUpTryPaymentPromptTitle = NSLocalizedString(
-            "Would you like to try a payment",
+            "setUpTapToPayPaymentPrompt.title",
+            value: "Would you like to try a payment?",
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that " +
             "Tap to Pay on iPhone is ready"
         )
 
         static let setUpTryPaymentPromptDescription = NSLocalizedString(
-            "Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done.",
+            "setUpTapToPayPaymentPrompt.description",
+            value: "Try a %1$@ live payment with your debit or credit card. You can refund the payment when you're done; processing fees apply.",
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced " +
-            "with the amount of the trial payment, in the store's currency."
+            "with the amount of the trial payment, in the store's currency. The trial payment is a live transaction and incurs processing fees."
         )
 
         static let tryAPaymentButton = NSLocalizedString(

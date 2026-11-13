@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// Represents the response when an Destination address is updated in the WooCommerce Shipping extension.
-public struct WooShippingDestinationAddressUpdate: Equatable {
+public struct WooShippingDestinationAddressUpdate: Equatable, Sendable {
     public let address: WooShippingDestinationAddress
     public let isVerified: Bool
 

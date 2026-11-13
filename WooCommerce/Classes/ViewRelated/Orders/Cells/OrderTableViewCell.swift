@@ -4,7 +4,8 @@ import Yosemite
 
 // MARK: - OrderTableViewCell
 //
-final class OrderTableViewCell: UITableViewCell, SearchResultCell {
+@MainActor
+final class OrderTableViewCell: UITableViewCell, @MainActor SearchResultCell {
     typealias SearchModel = OrderListCellViewModel
 
     /// Order's Title
@@ -62,8 +63,7 @@ final class OrderTableViewCell: UITableViewCell, SearchResultCell {
         paymentStatusLabel.applyStyle(for: viewModel.status)
         paymentStatusLabel.text = viewModel.statusString
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1),
-           let salesChannel = viewModel.salesChannel, salesChannel == .pointOfSale {
+        if let salesChannel = viewModel.salesChannel, salesChannel == .pointOfSale {
             salesChannelLabel.isHidden = false
             salesChannelLabel.applySalesChannelStyle()
             salesChannelLabel.text = salesChannel.description
@@ -82,8 +82,11 @@ final class OrderTableViewCell: UITableViewCell, SearchResultCell {
     // MARK: - Overridden Methods
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureLabels()
+        // UIKit invokes awakeFromNib on the main thread, but the imported override is nonisolated.
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureLabels()
+        }
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

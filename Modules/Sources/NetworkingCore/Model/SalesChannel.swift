@@ -1,6 +1,6 @@
 import Foundation
 
-public enum SalesChannel {
+public enum SalesChannel: Sendable {
     case pointOfSale
     case webCheckout
     case wpAdmin

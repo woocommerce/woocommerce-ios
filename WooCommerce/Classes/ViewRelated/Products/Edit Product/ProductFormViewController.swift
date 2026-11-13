@@ -7,6 +7,8 @@ import Yosemite
 import SwiftUI
 import protocol Storage.StorageManagerType
 
+typealias ProductDuplicateNavigationHandler = (_ sourceViewController: UIViewController, _ duplicatedProduct: Product) -> Void
+
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
     typealias ProductModel = ViewModel.ProductModel
@@ -72,7 +74,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
     private let subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
 
     private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
     private var didShowTooltip = false {
@@ -85,6 +86,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     ///
     private var shareProductCoordinator: ShareProductCoordinator?
 
+    /// Re-entry guard for the More Options menu: `presentMoreOptionsActionSheet` suspends before
+    /// presenting, so rapid taps would otherwise queue multiple action sheets (WOOMOB-3923).
+    ///
+    private var isPresentingMoreOptionsMenu = false
+
     /// Whether the product details were generated with AI.
     ///
     private let isAIContent: Bool
@@ -95,9 +101,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let onDeleteCompletion: () -> Void
 
-    /// Called with the newly created duplicate after a successful product duplication, letting the presenter decide
-    /// how to open it. When `nil`, the form falls back to confirming the copy in place (the legacy behavior).
-    private let onDuplicateCompletion: ((Product) -> Void)?
+    /// Opens the newly created duplicate after successful product duplication, replacing this source editor.
+    private let onDuplicateCompletion: ProductDuplicateNavigationHandler
 
     private let userDefaults: UserDefaults
 
@@ -111,7 +116,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          userDefaults: UserDefaults = .standard,
          onDeleteCompletion: @escaping () -> Void = {},
-         onDuplicateCompletion: ((Product) -> Void)? = nil) {
+         onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) {
         self.viewModel = viewModel
         self.isAIContent = isAIContent
         self.eventLogger = eventLogger
@@ -140,14 +145,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        productSubscription?.cancel()
-        productNameSubscription?.cancel()
-        updateEnabledSubscription?.cancel()
-        newVariationsPriceSubscription?.cancel()
-        blazeEligibilitySubscription?.cancel()
     }
 
     override func viewDidLoad() {
@@ -190,6 +187,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                            isLocalID: !viewModel.productModel.existsRemotely))
 
         viewModel.trackProductFormLoaded()
+        viewModel.refreshProduct()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -199,11 +197,23 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         prepareForBackgroundUploadsUponDismissal()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override var shouldShowOfflineBanner: Bool {
         return true
     }
 
     // MARK: - Navigation actions handling
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.tooltipPresenter?.containerSizeDidChange()
+        }
+    }
 
     override func shouldPopOnBackButton() -> Bool {
         guard viewModel.hasUnsavedChanges() == false else {
@@ -229,11 +239,17 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     @objc func saveProductAndLogEvent() {
+        guard !shouldIgnoreBarButtonTap("save") else {
+            return
+        }
         eventLogger.logUpdateButtonTapped()
         saveProduct()
     }
 
     @objc func publishProduct() {
+        guard !shouldIgnoreBarButtonTap("publish") else {
+            return
+        }
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: ["product_type": product.productType.rawValue])
         } else if viewModel.formType == .edit && isAIContent {
@@ -246,7 +262,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     @objc func dismissPresentedViewController() {
-        presentedViewController?.dismiss(animated: true, completion: nil)
+        dismissPresentedIfNeeded()
     }
 
     func saveProductAsDraft() {
@@ -266,7 +282,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             })
         case .noActionHandlerFound, .noRemoteProductIDFound:
             displayError(error: .unexpected)
-        case let .failedUploadingImage(asset, error):
+        case let .failedUploadingImage(error):
+            guard let asset = errorInfo.asset else {
+                ServiceLocator.crashLogging.logMessage(
+                    "Product image upload failure received without its asset",
+                    properties: nil,
+                    level: .error
+                )
+                return displayError(error: .unexpected)
+            }
             displayImageUploadErrorAlert(error: error, for: asset)
         }
     }
@@ -286,7 +310,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     // MARK: Product preview action handling
 
-    @objc private func saveDraftAndDisplayProductPreview() {
+    @objc func saveDraftAndDisplayProductPreview() {
+        guard !shouldIgnoreBarButtonTap("preview") else {
+            return
+        }
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductSaveAsDraftTapped, withProperties: ["product_type": product.productType.rawValue])
         }
@@ -303,24 +330,40 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
     }
 
+    /// Bar button taps can slip through while the More Options menu is attached on iOS 26 (WOOMOB-3923).
+    private func shouldIgnoreBarButtonTap(_ action: String) -> Bool {
+        guard let presented = presentedViewController else {
+            return false
+        }
+        DDLogWarn("⚠️ Ignored product form \(action) tap: already presenting \(type(of: presented))")
+        return true
+    }
+
     private func displayProductPreview() {
         ServiceLocator.analytics.track(event: .ProductDetail.previewTapped())
 
-        guard var permalink = URLComponents(string: product.permalink),
-              let nonce = ServiceLocator.stores.sessionManager.defaultSite?.frameNonce else {
+        guard var previewURL = URLComponents(string: product.permalink) else {
             return
         }
 
-        var updatedQueryItems = permalink.queryItems ?? []
+        var updatedQueryItems = previewURL.queryItems ?? []
         updatedQueryItems.append(.init(name: "preview", value: "true"))
-        updatedQueryItems.append(.init(name: "frame-nonce", value: nonce))
-        permalink.queryItems = updatedQueryItems
+        if let nonce = ServiceLocator.stores.sessionManager.defaultSite?.frameNonce, nonce.isNotEmpty {
+            // Lets the Jetpack plugin show the draft when the web view isn't signed in; it ignores the nonce for signed-in visitors.
+            updatedQueryItems.append(.init(name: "frame-nonce", value: nonce))
+        }
+        previewURL.queryItems = updatedQueryItems
 
-        let configuration = WebViewControllerConfiguration(url: permalink.url)
-        configuration.secureInteraction = true
-        let webKitVC = WebKitViewController(configuration: configuration)
-        let nc = WooNavigationController(rootViewController: webKitVC)
-        present(nc, animated: true)
+        guard let url = previewURL.url else {
+            return
+        }
+
+        let webViewModel = DefaultAuthenticatedWebViewModel(title: product.name,
+                                                            initialURL: url,
+                                                            initialURLHTTPErrorHandler: { statusCode in
+            ServiceLocator.analytics.track(event: .ProductDetail.previewFailed(statusCode: statusCode))
+        })
+        presentAuthenticatedWebView(webViewModel)
     }
 
     // MARK: Navigation actions
@@ -347,8 +390,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     /// More Options button action
     ///
     @objc func didTapMoreOptions(_ sender: UIBarButtonItem) {
+        guard !isPresentingMoreOptionsMenu else {
+            return
+        }
+        isPresentingMoreOptionsMenu = true
         Task { @MainActor in
             await presentMoreOptionsActionSheet(sender)
+            isPresentingMoreOptionsMenu = false
         }
     }
 
@@ -409,7 +457,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         if viewModel.canDuplicateProduct() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
-                self?.duplicateProduct()
+                self?.handleProductDuplication()
             }
         }
 
@@ -425,7 +473,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.barButtonItem = moreOptionsButton
 
-        present(actionSheet, animated: true)
+        presentIfIdle(actionSheet)
     }
 
     // MARK: - UIScrollViewDelegate
@@ -655,6 +703,8 @@ private extension ProductFormViewController {
         // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
         tableView.contentInsetAdjustmentBehavior = .never
 
+        configureLiquidGlassTabBarUnderlap()
+
         tableView.reloadData()
     }
 
@@ -712,14 +762,22 @@ private extension ProductFormViewController {
 
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
 
-            moreDetailsContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            moreDetailsContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            moreDetailsContainerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            moreDetailsContainerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             moreDetailsContainerView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             moreDetailsContainerView.topAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        setContentScrollView(tableView, for: .bottom)
     }
 }
 
@@ -1015,6 +1073,9 @@ private extension ProductFormViewController {
                                                                             self?.showDownloadableFiles()
                                                                         case .editCustomFields:
                                                                             self?.showCustomFields()
+                                                                        case .editAttributes:
+                                                                            self?.trackAddProductAttributeTapped()
+                                                                            self?.addProductAttribute()
                                                                         }
                                                                     }
         }
@@ -1047,17 +1108,22 @@ private extension ProductFormViewController {
             case .failure(let error):
                 DDLogError("⛔️ Error updating Product: \(error)")
 
-                // Dismisses the in-progress UI then presents the error alert.
-                self?.navigationController?.dismiss(animated: true) {
+                // Dismisses the in-progress UI (only it — another modal may be presented instead
+                // when the guarded HUD presentation was dropped) then presents the error alert.
+                let presentErrorAlert: () -> Void = {
                     self?.displayProductSavingErrorAlert(error: error, onRetry: {
-                        self?.saveProductRemotely(status: status, onCompletion: onCompletion)
+                        // Retry through saveProduct so the progress HUD is shown again: without it,
+                        // a second failure's alert can race whatever else gets presented meanwhile.
+                        self?.saveProduct(status: status, onCompletion: onCompletion)
                     })
                     onCompletion(.failure(error))
                 }
+                if let self {
+                    self.dismissInProgressViewIfNeeded(completion: presentErrorAlert)
+                } else {
+                    presentErrorAlert()
+                }
             case .success:
-                // Dismisses the in-progress UI
-                self?.navigationController?.dismiss(animated: true, completion: nil)
-
                 // Presents the confirmation alert
                 let alertType: ProductSavedAlertType
                 if status == .published && (isNewProduct || previousStatus != .published) {
@@ -1072,7 +1138,17 @@ private extension ProductFormViewController {
                 // Show linked products promo banner after product save
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
                 self?.reloadLinkedPromoCell()
-                onCompletion(.success(()))
+
+                // Dismisses the in-progress UI (only it — another modal may be presented instead
+                // when the guarded HUD presentation was dropped), deferring the completion until
+                // the dismissal finishes so completion handlers can present safely (WOOMOB-3923).
+                if let self {
+                    self.dismissInProgressViewIfNeeded {
+                        onCompletion(.success(()))
+                    }
+                } else {
+                    onCompletion(.success(()))
+                }
             }
         }
     }
@@ -1142,13 +1218,17 @@ private extension ProductFormViewController {
             return
         }
 
-        let viewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
+        let webViewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
+        presentAuthenticatedWebView(webViewModel)
+    }
+
+    private func presentAuthenticatedWebView(_ viewModel: DefaultAuthenticatedWebViewModel) {
         let controller = AuthenticatedWebViewController(viewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: controller)
         controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
                                                                       target: self,
                                                                       action: #selector(dismissPresentedViewController))
-        present(navigationController, animated: true)
+        presentIfIdle(navigationController)
     }
 
     func displayShareProduct(from sourceView: UIBarButtonItem, analyticSource: WooAnalyticsEvent.ProductForm.ShareProductSource) {
@@ -1169,33 +1249,30 @@ private extension ProductFormViewController {
         self.shareProductCoordinator = shareProductCoordinator
     }
 
-    func duplicateProduct() {
+    private func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>) {
         showSavingProgress(.duplicate)
-        viewModel.duplicateProduct(onCompletion: { [weak self] result in
+        viewModel.duplicateProduct(from: snapshot, onCompletion: { [weak self] result in
             switch result {
             case .failure(let error):
                 DDLogError("⛔️ Error duplicating Product: \(error)")
 
                 // Dismisses the in-progress UI then presents the error alert.
-                self?.navigationController?.dismiss(animated: true) {
+                self?.dismissInProgressViewIfNeeded {
                     self?.displayError(error: error, title: Localization.duplicateProductError)
                 }
             case .success(let duplicatedProduct):
-                // Dismisses the in-progress UI, then either hands the duplicate to the presenter to open (matching
-                // Android) or, when no handler is provided, confirms the copy in place (the legacy behavior).
-                self?.navigationController?.dismiss(animated: true) {
+                // Dismisses the in-progress UI, then hands the duplicate to the navigation owner to replace this editor.
+                self?.dismissInProgressViewIfNeeded {
                     guard let self else {
                         return
                     }
-                    if let onDuplicateCompletion = self.onDuplicateCompletion,
-                       let product = (duplicatedProduct as? EditableProductModel)?.product {
-                        onDuplicateCompletion(product)
-                        ServiceLocator.noticePresenter.enqueue(
-                            notice: .init(title: ProductSavedAlertType.copied.alertTitle)
-                        )
-                    } else {
-                        self.presentProductConfirmationSaveAlert(type: .copied)
+                    guard let product = (duplicatedProduct as? EditableProductModel)?.product else {
+                        return
                     }
+                    self.onDuplicateCompletion(self, product)
+                    ServiceLocator.noticePresenter.enqueue(
+                        notice: .init(title: ProductSavedAlertType.copied.alertTitle)
+                    )
                 }
             }
         })
@@ -1233,7 +1310,7 @@ private extension ProductFormViewController {
                 ServiceLocator.analytics.track(.productDetailProductDeleted)
                 self.viewModel.removeFromFavorite()
                 // Dismisses the in-progress UI.
-                self.navigationController?.dismiss(animated: true, completion: nil)
+                self.dismissInProgressViewIfNeeded()
                 // Dismiss or Pop the Product Form
                 self.dismissOrPopViewController()
                 self.onDeleteCompletion()
@@ -1241,7 +1318,7 @@ private extension ProductFormViewController {
                 DDLogError("⛔️ Error deleting Product: \(error)")
 
                 // Dismisses the in-progress UI then presents the error alert.
-                self.navigationController?.dismiss(animated: true) { [weak self] in
+                self.dismissInProgressViewIfNeeded { [weak self] in
                     self?.displayError(error: error)
                 }
             }
@@ -1320,6 +1397,10 @@ private extension ProductFormViewController {
     func trackEditProductAttributeRowTapped() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
     }
+
+    func trackAddProductAttributeTapped() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.addAttributeButtonTapped(productID: product.productID))
+    }
 }
 
 // MARK: Navigation Bar Items
@@ -1377,6 +1458,10 @@ private extension ProductFormViewController {
                                             target: self,
                                             action: #selector(publishProduct))
         publishButton.accessibilityIdentifier = "publish-product-button"
+        publishButton.menuRepresentation = overflowMenuAction(title: Localization.publishTitle,
+                                                              accessibilityIdentifier: "publish-product-button") { [weak self] in
+            self?.publishProduct()
+        }
         return publishButton
     }
 
@@ -1386,7 +1471,19 @@ private extension ProductFormViewController {
                                          target: self,
                                          action: #selector(saveProductAndLogEvent))
         saveButton.accessibilityIdentifier = "save-product-button"
+        saveButton.menuRepresentation = overflowMenuAction(title: Localization.saveTitle,
+                                                           accessibilityIdentifier: "save-product-button") { [weak self] in
+            self?.saveProductAndLogEvent()
+        }
         return saveButton
+    }
+
+    func overflowMenuAction(title: String, accessibilityIdentifier: String, handler: @escaping () -> Void) -> UIAction {
+        let action = UIAction(title: title) { _ in
+            handler()
+        }
+        action.accessibilityIdentifier = accessibilityIdentifier
+        return action
     }
 
     func createPreviewBarButtonItem() -> UIBarButtonItem {
@@ -1433,7 +1530,7 @@ private extension ProductFormViewController {
 
     func presentBackNavigationActionSheet(onDiscard: @escaping () -> Void = {}, onCancel: @escaping () -> Void = {}) {
         let exitForm: () -> Void = {
-            presentationStyle.createExitForm(viewController: navigationController ?? self, completion: onDiscard)
+            presentationStyle.createExitForm(viewController: self, completion: onDiscard)
         }()
         let viewControllerToPresentAlert = navigationController?.topViewController ?? self
         switch viewModel.formType {
@@ -1651,8 +1748,7 @@ private extension ProductFormViewController {
         let productType = BottomSheetProductType(productType: viewModel.productModel.productType, isVirtual: viewModel.productModel.virtual)
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .editForm(selected: productType),
-            subscriptionProductsEligibilityChecker: subscriptionProductsEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
+            subscriptionProductsEligibilityChecker: subscriptionProductsEligibilityChecker
         ) { [weak self] selectedProductType in
             self?.dismiss(animated: true, completion: nil)
 
@@ -2018,6 +2114,21 @@ private extension ProductFormViewController {
         show(attributesViewController, sender: self)
     }
 
+    /// Navigate to add the first attribute of a product
+    ///
+    func addProductAttribute() {
+        guard let productModel = product as? EditableProductModel else {
+            return
+        }
+        let addAttributeViewModel = AddAttributeViewModel(product: productModel.product, isVariationsFlow: false)
+        let addAttributeViewController = AddAttributeViewController(viewModel: addAttributeViewModel) { [weak self] updatedProduct in
+            guard let self else { return }
+            self.viewModel.updateProductVariations(from: updatedProduct)
+            self.navigationController?.popToViewController(self, animated: true)
+        }
+        show(addAttributeViewController, sender: self)
+    }
+
     func editVariationAttributes() {
         guard let productVariationModel = product as? EditableProductVariationModel else {
             return
@@ -2192,6 +2303,29 @@ private extension ProductFormViewController {
         }
         let viewController = QuantityRulesViewController(viewModel: quantityRulesViewModel)
         show(viewController, sender: self)
+    }
+}
+
+// MARK: Product duplication
+
+extension ProductFormViewController {
+    /// Handles the initial duplication intent and captures the persisted source before presenting confirmation UI.
+    func handleProductDuplication() {
+        guard let snapshot = viewModel.productDuplicationSnapshot() else {
+            return
+        }
+
+        if !viewModel.hasUnsavedChanges() {
+            duplicateProduct(from: snapshot)
+            return
+        }
+
+        presentProductDuplicationConfirmationAlert { [weak self] isConfirmed in
+            guard isConfirmed else {
+                return
+            }
+            self?.duplicateProduct(from: snapshot)
+        }
     }
 }
 

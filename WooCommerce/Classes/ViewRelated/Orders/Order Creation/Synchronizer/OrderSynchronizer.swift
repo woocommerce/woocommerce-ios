@@ -24,6 +24,7 @@ struct OrderSyncAddressesInput {
 
 /// A type that  receives "supported" order properties and keeps it synced against another source.
 ///
+@MainActor
 protocol OrderSynchronizer {
 
     // MARK: Outputs

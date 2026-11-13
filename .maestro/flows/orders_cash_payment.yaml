@@ -1,0 +1,91 @@
+# p2: orders.collect-payment.cash
+appId: ${APP_ID}
+name: Collect cash for a run-owned order
+tags:
+  - smoke_extended
+  - destructive
+  - orders
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- tapOn:
+    id: new-order-add-product-button
+- tapOn:
+    id: product-item
+    index: 0
+- tapOn:
+    id: product-multiple-selection-done-button
+# The order totals panel is pinned over the bottom of the form, so a blind swipe
+# can leave this row present in the hierarchy but covered: the tap is then
+# swallowed by the panel. Scroll until it is genuinely unobscured.
+- scrollUntilVisible:
+    element:
+      id: add-customer-note-button
+    direction: DOWN
+    visibilityPercentage: 100
+- tapOn:
+    id: add-customer-note-button
+- tapOn:
+    id: edit-note-text-editor
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Cash ${SUITE_RUN_ID}
+- tapOn:
+    id: edit-note-done-button
+# Verify the note on the order form, where it is rendered as a "Customer Note"
+# section. Order details shows it wrapped in quotation marks, so the plain text
+# does not match there.
+- scrollUntilVisible:
+    element:
+      text: Cash ${SUITE_RUN_ID}
+    direction: DOWN
+    visibilityPercentage: 100
+- assertVisible: Cash ${SUITE_RUN_ID}
+- tapOn:
+    id: new-order-create-button
+- extendedWaitUntil:
+    visible:
+      id: order-details-table-view
+    timeout: 30000
+# The new order's details are still moving into place right after creation, and
+# the floating tab bar covers the bottom of the list.
+- waitForAnimationToEnd:
+    timeout: 5000
+- scrollUntilVisible:
+    element:
+      id: order-details-collect-payment-button
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: order-details-collect-payment-button
+- assertVisible:
+    id: payment-methods-header-label
+- tapOn:
+    id: payment-methods-view-cash-row
+- assertVisible: Cash received
+- tapOn: Cash received
+- inputText: "9999"
+- assertVisible: Change due
+# Right after the decimal pad opens, Maestro can still report the button below it,
+# and the tap then types into the keyboard.
+- runFlow:
+    when:
+      visible: "1"
+    commands:
+      - extendedWaitUntil:
+          visible:
+            text: "Mark Order as Complete"
+            above: "1"
+          timeout: 10000
+- tapOn: Mark Order as Complete
+# Order details keep the scroll position that centred Collect Payment, so the
+# status at the top of the screen is out of view.
+- scrollUntilVisible:
+    element:
+      text: Completed
+    direction: UP
+    timeout: 30000
+- assertVisible: Completed

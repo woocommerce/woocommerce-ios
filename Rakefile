@@ -28,7 +28,7 @@ namespace :dependencies do
 
   namespace :bundle do
     task :check do
-      sh 'bundle check --path=${BUNDLE_PATH:-vendor/bundle} > /dev/null', verbose: false do |ok, _res|
+      sh 'BUNDLE_PATH=${BUNDLE_PATH:-vendor/bundle} bundle check > /dev/null', verbose: false do |ok, _res|
         next if ok
 
         # bundle check exits with a non zero code if install is needed
@@ -38,7 +38,7 @@ namespace :dependencies do
     end
 
     task :install do
-      sh 'bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}'
+      sh 'BUNDLE_PATH=${BUNDLE_PATH:-vendor/bundle} bundle install --jobs=3 --retry=3'
     end
     CLOBBER << 'vendor/bundle'
     CLOBBER << '.bundle'
@@ -46,9 +46,10 @@ namespace :dependencies do
 
   namespace :credentials do
     task :apply do
-      next unless Dir.exist?(File.join(Dir.home, '.mobile-secrets/.git')) || ENV.key?('CONFIGURE_ENCRYPTION_KEY')
+      # External contributors build against the templated credentials.
+      next unless system('command -v a8c-secrets > /dev/null 2>&1')
 
-      sh('FASTLANE_SKIP_UPDATE_CHECK=1 FASTLANE_ENV_PRINTER=1 bundle exec fastlane run configure_apply force:true')
+      sh('a8c-secrets decrypt')
     end
   end
 end
@@ -79,8 +80,10 @@ end
 
 desc 'Run all code generation tasks'
 task :generate do
-  # See note in BuildTools/.sourcery.yml for why we call without arguments
-  run_package_plugin(cmd: 'sourcery-command --disableCache')
+  # See note in BuildTools/.sourcery.yml for why we call without arguments.
+  # Built in release until Sourcery handles type specifiers other than `inout`, such as
+  # `isolated`: its debug build fails an assertion on them and crashes.
+  run_package_plugin(cmd: 'sourcery-command --disableCache', configuration: 'release')
 end
 
 def command?(command)
@@ -102,8 +105,9 @@ def swiftlint(additional_args: [])
   run_package_plugin(cmd: "swiftlint --working-directory .. --quiet #{additional_args.join(' ')}")
 end
 
-def run_package_plugin(cmd:)
-  run_in_build_tools(cmd: "swift package plugin --allow-writing-to-directory .. --allow-writing-to-package-directory #{cmd}")
+def run_package_plugin(cmd:, configuration: nil)
+  configuration_flag = configuration ? " -c #{configuration}" : ''
+  run_in_build_tools(cmd: "swift package#{configuration_flag} plugin --allow-writing-to-directory .. --allow-writing-to-package-directory #{cmd}")
 end
 
 # We could use more idiomatic Ruby here, with `Dir.chdir`, but leaving as raw shell commands for when we'll drop Ruby and rake for tooling.

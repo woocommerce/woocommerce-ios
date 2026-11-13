@@ -184,6 +184,38 @@ class AnalyticsTrackerTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
+    /// Tests that extra properties are merged into a step event.
+    ///
+    func testStepWithExtraProperties() {
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+
+        tracker.set(source: .default)
+        tracker.set(flow: .loginWithSiteAddress)
+        tracker.track(step: .start, properties: ["url": "example.com"])
+
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.properties["url"], "example.com")
+        XCTAssertEqual(events.first?.properties["flow"], AuthenticatorAnalyticsTracker.Flow.loginWithSiteAddress.rawValue)
+        XCTAssertEqual(events.first?.properties["step"], AuthenticatorAnalyticsTracker.Step.start.rawValue)
+        XCTAssertEqual(events.first?.properties["source"], AuthenticatorAnalyticsTracker.Source.default.rawValue)
+    }
+
+    /// Tests that extra properties cannot overwrite the tracker's own state.
+    ///
+    func testStepExtraPropertiesCannotOverwriteState() {
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+
+        tracker.set(source: .default)
+        tracker.set(flow: .loginWithSiteAddress)
+        tracker.track(step: .start, properties: ["flow": "spoofed", "step": "spoofed", "source": "spoofed"])
+
+        XCTAssertEqual(events.first?.properties["flow"], AuthenticatorAnalyticsTracker.Flow.loginWithSiteAddress.rawValue)
+        XCTAssertEqual(events.first?.properties["step"], AuthenticatorAnalyticsTracker.Step.start.rawValue)
+        XCTAssertEqual(events.first?.properties["source"], AuthenticatorAnalyticsTracker.Source.default.rawValue)
+    }
+
     /// Tests legacy tracking for a click interaction
     ///
     func testClickLegacyTracking() {

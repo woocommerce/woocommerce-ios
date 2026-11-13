@@ -5,7 +5,7 @@ import WooFoundation
 /// The states are specific to the onboarding UX in the app, and are based on the WooPayments onboarding state and the UI state determined in
 /// `CardPresentPaymentsOnboardingUseCaseProtocol`.
 /// The WooPayments onboarding state comes from the payments backend, and is represented by a different enum `WCPayAccountStatusEnum`.
-public enum CardPresentPaymentOnboardingState: Equatable {
+public enum CardPresentPaymentOnboardingState: Equatable, Sendable {
     /// The app is loading the required data to check for the current state
     ///
     case loading
@@ -58,7 +58,8 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case stripeAccountPendingRequirement(plugin: CardPresentPaymentsPlugin, deadline: Date?)
 
-    /// There are some overdue requirements on the connected Stripe account. Connecting to a reader or accepting payments is not supported in this state.
+    /// There are some overdue requirements on the connected Stripe account. Payments might not work until the requirements are addressed,
+    /// but the merchant can choose to skip this step and attempt to connect to a reader and accept payments anyway.
     ///
     case stripeAccountOverdueRequirement(plugin: CardPresentPaymentsPlugin)
 

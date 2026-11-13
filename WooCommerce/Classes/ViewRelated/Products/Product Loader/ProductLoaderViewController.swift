@@ -229,7 +229,10 @@ private extension ProductLoaderViewController {
     func presentProductDetails(for product: Product) {
         let viewController = ProductDetailNavigator.shared.makeDestination(product: product,
                                                                            presentationStyle: .contained(in: { [weak self] in self }),
-                                                                           isReadOnly: forceReadOnly)
+                                                                           isReadOnly: forceReadOnly,
+                                                                           onDuplicate: { [weak self] duplicatedProduct in
+            self?.state = .productLoaded(product: duplicatedProduct)
+        })
         attachProductDetailsChildViewController(viewController)
     }
 

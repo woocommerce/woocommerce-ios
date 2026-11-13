@@ -2,7 +2,7 @@ import Foundation
 
 /// OrderStats: Remote Endpoints found in wc-admin's v4 API
 ///
-public final class OrderStatsRemoteV4: Remote {
+public final class OrderStatsRemoteV4: Remote, @unchecked Sendable {
     /// Fetch the order stats for a given site, depending on the given granularity of the `unit` parameter.
     ///
     /// - Parameters:
@@ -28,7 +28,7 @@ public final class OrderStatsRemoteV4: Remote {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.interval: unit.rawValue,
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),

@@ -10,7 +10,8 @@ fi
 SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb
 CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
 CREDS_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/ApiCredentials-Template.swift
-SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
+# Assumes the default a8c-secrets workspace; the directory name must match `.a8c-secrets/repo-id`.
+SECRETS_PATH="${HOME}/.a8c-secrets/woocommerce-ios@github.com@woocommerce/woo_app_credentials.json"
 
 ## Collect output paths from the per-target build phase's `outputPaths`.
 ## Xcode exposes them as SCRIPT_OUTPUT_FILE_N (with SCRIPT_OUTPUT_FILE_COUNT).
@@ -31,7 +32,7 @@ done
 ##
 if [ ! -f "$SECRETS_PATH" ]; then
 
-    echo "warning: Could not find secrets at $SECRETS_PATH. This is likely due to the secrets folder being missing. Falling back to templated secrets. If you are an internal contributor, run \`bundle exec fastlane run configure_apply\` to update your secrets"
+    echo "warning: Could not find secrets at $SECRETS_PATH. This is likely due to the secrets folder being missing. Falling back to templated secrets. If you are an internal contributor, install a8c-secrets from https://github.com/Automattic/a8c-secrets, follow its set up instructions, then run \`a8c-secrets decrypt\`"
 
     echo ">> Using Templated Secrets"
 

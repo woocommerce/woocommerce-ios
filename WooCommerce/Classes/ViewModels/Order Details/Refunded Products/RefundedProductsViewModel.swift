@@ -1,10 +1,12 @@
 import Foundation
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 
 // MARK: - View Model for the Refunded Products view controller
 //
+@MainActor
 final class RefundedProductsViewModel {
     /// Order we're observing.
     ///
@@ -14,17 +16,24 @@ final class RefundedProductsViewModel {
     ///
     private var refundedProducts: [AggregateOrderItem]
 
+    /// StorageManager to fetch products and product variations
+    ///
+    private let storageManager: StorageManagerType
+
     /// The datasource that will be used to render the Refunded Products screen.
     ///
     private(set) lazy var dataSource: RefundedProductsDataSource = {
-        RefundedProductsDataSource(order: order, refundedProducts: refundedProducts)
+        RefundedProductsDataSource(order: order, refundedProducts: refundedProducts, storageManager: storageManager)
     }()
 
     /// Designated initializer.
     ///
-    init(order: Order, refundedProducts: [AggregateOrderItem]) {
+    init(order: Order,
+         refundedProducts: [AggregateOrderItem],
+         storageManager: StorageManagerType) {
         self.order = order
         self.refundedProducts = refundedProducts
+        self.storageManager = storageManager
     }
 
     /// Update the view model's order when notified

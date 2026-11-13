@@ -14,7 +14,7 @@ public struct ParcelPresetCarrier: Identifiable {
     }
 }
 
-public struct ParcelPresetPackage: Identifiable {
+public struct ParcelPresetPackage: Identifiable, Sendable {
     public let id: String
     public let name: String
     public let length: Float
@@ -56,5 +56,5 @@ public protocol ParcelFittingDelegate: AnyObject {
                                   starredPackageIDs: Set<String>,
                                   dimensionUnit: UnitLength)
     func parcelFittingDidCancel()
-    func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool)
+    @MainActor func parcelFittingDidToggleStar(packageID: String, carrierID: String, isStarred: Bool)
 }

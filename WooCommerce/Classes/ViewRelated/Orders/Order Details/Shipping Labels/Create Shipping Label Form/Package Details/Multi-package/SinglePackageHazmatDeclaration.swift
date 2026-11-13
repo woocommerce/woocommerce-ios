@@ -66,7 +66,7 @@ struct SinglePackageHazmatDeclaration: View {
 
                 Divider()
             }
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             Text(Localization.hazmatTooltip)
                 .renderedIf(!viewModel.containsHazmatMaterials)
@@ -74,7 +74,6 @@ struct SinglePackageHazmatDeclaration: View {
                 .padding(.leading, Constants.horizontalPadding)
                 .calloutStyle()
         }
-        .renderedIf(viewModel.isHazmatShippingEnabled)
     }
 
     private func createHazmatInstructionsView() -> some View {

@@ -1,7 +1,7 @@
 import SwiftUI
-import WooFoundation
 
 struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
+    @Environment(\.posMetrics) private var metrics
     let viewModel: PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel
     let animation: POSCardPresentPaymentAlertAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -10,11 +10,11 @@ struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
         VStack(spacing: 0) {
             Spacer()
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
-                SharedImageAsset.location.decorativeImage
+            VStack(spacing: metrics.spacing.large) {
+                PointOfSaleAssets.location.decorativeImage
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                VStack(spacing: metrics.spacing.medium) {
                     Text(viewModel.title)
                         .font(POSFontStyle.posHeadingBold)
                         .fixedSize(horizontal: false, vertical: true)
@@ -22,7 +22,7 @@ struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
                         .accessibilityFocused($isTitleFocused)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                    VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                    VStack(spacing: metrics.spacing.medium) {
                         Text(viewModel.subtitle)
                             .font(POSFontStyle.posBodyLargeRegular())
                             .fixedSize(horizontal: false, vertical: true)
@@ -37,11 +37,12 @@ struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
             .frame(maxWidth: .infinity)
             .scrollVerticallyIfNeeded()
 
-            Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
+            Spacer(minLength: metrics.spacing.large)
 
             Button(viewModel.primaryButtonViewModel.title,
                    action: viewModel.primaryButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .accessibilityIdentifier("pos-reader-location-continue-button")
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .frame(maxHeight: .infinity)

@@ -21,8 +21,8 @@ struct ShippingLabelCustomsFormInput: View {
         self.packageNumber = packageNumber
         self.safeAreaInsets = safeAreaInsets
         self.viewModel = viewModel
-        self.isCollapsed = packageNumber > 1
         self.infoTooltipTapped = infoTooltipTapped
+        self.isCollapsed = packageNumber > 1
     }
 
     var body: some View {
@@ -39,7 +39,7 @@ struct ShippingLabelCustomsFormInput: View {
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding(.top, Constants.verticalPadding)
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             VStack(spacing: 0) {
                 ListHeaderView(text: Localization.packageContentSection.uppercased(), alignment: .left)

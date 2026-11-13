@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 import TestKit
 
+@MainActor
 final class ProductVariationFormViewModelTests: XCTestCase {
     // MARK: `canViewProductInStore`
 

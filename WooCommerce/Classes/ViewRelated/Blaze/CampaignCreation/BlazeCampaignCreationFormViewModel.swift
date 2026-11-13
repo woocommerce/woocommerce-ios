@@ -1,5 +1,4 @@
 import Foundation
-import Experiments
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -8,6 +7,7 @@ import Photos
 import class Networking.UserAgent
 
 /// View model for `BlazeCampaignCreationForm`
+@MainActor
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     let siteID: Int64
@@ -139,7 +139,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }()
 
-    var confirmPaymentViewModel: BlazeConfirmPaymentViewModel? {
+    @Published private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel?
+
+    private func makeConfirmPaymentViewModel() -> BlazeConfirmPaymentViewModel? {
         guard let image else {
             return nil
         }
@@ -222,8 +224,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published var isShowingMissingObjectiveAlert = false
     @Published var isShowingMissingImageErrorAlert = false
     @Published var isShowingMissingDestinationURLAlert = false
-    @Published var isShowingPaymentInfo = false
-
     /// ResultController to get the product for the given product ID
     ///
     private lazy var productsResultsController: GenericResultsController<StorageProduct, BlazeCampaignProduct> = {
@@ -276,7 +276,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private let locale: Locale
     private let userDefaults: UserDefaults
     private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
 
     private var didTrackOnAppear = false
 
@@ -288,7 +287,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          locale: Locale = .current,
          userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
@@ -298,12 +296,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.locale = locale
         self.userDefaults = userDefaults
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
-        // sets isEvergreen = true by default if evergreen campaigns are supported
-        self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
+        self.isEvergreen = true
 
         product = productsResultsController.fetchedObjects.first
 
@@ -382,8 +378,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             return isShowingMissingDestinationURLAlert = true
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective),
-           campaignObjective == nil {
+        if campaignObjective == nil {
             return isShowingMissingObjectiveAlert = true
         }
 
@@ -395,7 +390,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             isEvergreen: isEvergreen,
             objective: campaignObjective?.id
         ))
-        isShowingPaymentInfo = true
+
+        guard let confirmPaymentViewModel = makeConfirmPaymentViewModel() else {
+            return
+        }
+        self.confirmPaymentViewModel = confirmPaymentViewModel
     }
 }
 
@@ -540,9 +539,6 @@ private extension BlazeCampaignCreationFormViewModel {
 
 private extension BlazeCampaignCreationFormViewModel {
     func initializeCampaignObjective() {
-        guard featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective) else {
-            return
-        }
         guard let savedID = userDefaults.retrieveSavedObjectiveID(for: siteID) else {
             return
         }

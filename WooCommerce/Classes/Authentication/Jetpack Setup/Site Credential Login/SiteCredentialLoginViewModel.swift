@@ -4,6 +4,7 @@ import WordPressAuthenticator
 import enum Alamofire.AFError
 import struct Networking.CookieNonceAuthenticatorConfiguration
 import class Networking.WordPressOrgNetwork
+import struct NetworkingCore.CookieNonceAuthenticationEndpoints
 import protocol WooFoundation.Analytics
 
 /// View model for `SiteCredentialLoginView`.
@@ -74,8 +75,13 @@ private extension SiteCredentialLoginViewModel {
     }
 
     func handleCookieAuthentication() {
-        guard let loginURL = URL(string: siteURL + Constants.loginPath),
-              let adminURL = URL(string: siteURL + Constants.adminPath) else {
+        let endpoints: CookieNonceAuthenticationEndpoints
+        do {
+            guard let canonicalSiteURL = URL(string: siteURL) else {
+                throw CookieNonceAuthenticationEndpoints.ValidationError.invalidURL
+            }
+            endpoints = try CookieNonceAuthenticationEndpoints(siteURL: canonicalSiteURL)
+        } catch {
             DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
             isLoggingIn = false
             return
@@ -87,8 +93,7 @@ private extension SiteCredentialLoginViewModel {
         // Prepares the authenticator with username and password
         let config = CookieNonceAuthenticatorConfiguration(username: username,
                                                            password: password,
-                                                           loginURL: loginURL,
-                                                           adminURL: adminURL)
+                                                           endpoints: endpoints)
         let network = WordPressOrgNetwork(configuration: config, siteAddress: siteURL)
         let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         stores.dispatch(authenticationAction)
@@ -111,6 +116,11 @@ private extension SiteCredentialLoginViewModel {
     }
 
     func handleRemoteError(_ error: Error) {
+        if case let AFError.requestRetryFailed(_, originalError) = error {
+            // A rejected username or password arrives wrapped around the request's 401.
+            handleRemoteError(originalError)
+            return
+        }
         switch error {
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)),
             AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
@@ -135,7 +145,7 @@ private extension SiteCredentialLoginViewModel {
 
     func clearCookies(for siteURL: String) {
         guard let url = URL(string: siteURL) else { return }
-        cookieJar.cookies(for: url)?.forEach { cookieJar.deleteCookie($0) }
+        cookieJar.removeCookies(forHostOf: url)
     }
 }
 
@@ -146,10 +156,5 @@ extension SiteCredentialLoginViewModel {
             comment: "An error message shown during login when the username or password is incorrect."
         )
         static let genericFailure = NSLocalizedString("Login failed. Please try again.", comment: "A generic error during site credential login")
-    }
-
-    enum Constants {
-        static let loginPath = "/wp-login.php"
-        static let adminPath = "/wp-admin/"
     }
 }

@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: "tab-bar-menu-item"
+# Settings is the first row. On iPhone SE, stores with more menu rows push the
+# lower rows below the tab bar.
+- extendedWaitUntil:
+    visible:
+      id: "dashboard-settings-button"
+    timeout: 20000

@@ -4,7 +4,7 @@ import struct Alamofire.JSONEncoding
 
 /// Protocol for `BlazeRemote` mainly used for mocking.
 ///
-public protocol BlazeRemoteProtocol {
+public protocol BlazeRemoteProtocol: Sendable {
     /// Creates a new Blaze campaign
     /// - Parameters:
     ///    - campaign: Details of the Blaze campaign to be created
@@ -82,6 +82,11 @@ public protocol BlazeRemoteProtocol {
     ///
     func fetchPaymentInfo(siteID: Int64) async throws -> BlazePaymentInfo
 
+    /// Fetches the Blaze billing summary of the current user, including any outstanding balance.
+    /// - Parameter siteID: ID of the site to create Blaze campaigns for.
+    ///
+    func fetchBillingSummary(siteID: Int64) async throws -> BlazeBillingSummary
+
     /// Fetches objectives for campaign creation.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to create ads campaigns.
@@ -92,7 +97,7 @@ public protocol BlazeRemoteProtocol {
 
 /// Blaze: Remote Endpoints
 ///
-public final class BlazeRemote: Remote, BlazeRemoteProtocol {
+public final class BlazeRemote: Remote, BlazeRemoteProtocol, @unchecked Sendable {
 
     public func createCampaign(_ campaign: CreateBlazeCampaign,
                                siteID: Int64) async throws {
@@ -100,7 +105,6 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 
         let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
         let parameters = try campaign.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
-            .compactMapValues { $0 } // filters out any field with nil value
 
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
@@ -118,7 +122,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
                                    skip: Int,
                                    limit: Int) async throws -> [BlazeCampaignListItem] {
         let path = Paths.campaigns(siteID: siteID)
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             Keys.LoadCampaigns.siteID: siteID,
             Keys.LoadCampaigns.skip: skip,
             Keys.LoadCampaigns.limit: limit
@@ -141,7 +145,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     ///
     public func fetchTargetLanguages(for siteID: Int64, locale: String) async throws -> [BlazeTargetLanguage] {
         let path = BlazeTargetOption.languages.endpoint(for: siteID)
-        let parameters: [String: Any] = [Keys.locale: locale]
+        let parameters: RequestParameterConvertibleDictionary = [Keys.locale: locale]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeTargetLanguageListMapper(locale: locale)
         return try await enqueue(request, mapper: mapper)
@@ -151,7 +155,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     ///
     public func fetchTargetDevices(for siteID: Int64, locale: String) async throws -> [BlazeTargetDevice] {
         let path = BlazeTargetOption.devices.endpoint(for: siteID)
-        let parameters: [String: Any] = [Keys.locale: locale]
+        let parameters: RequestParameterConvertibleDictionary = [Keys.locale: locale]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeTargetDeviceListMapper(locale: locale)
         return try await enqueue(request, mapper: mapper)
@@ -161,7 +165,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     ///
     public func fetchTargetTopics(for siteID: Int64, locale: String) async throws -> [BlazeTargetTopic] {
         let path = BlazeTargetOption.topics.endpoint(for: siteID)
-        let parameters: [String: Any] = [Keys.locale: locale]
+        let parameters: RequestParameterConvertibleDictionary = [Keys.locale: locale]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeTargetTopicListMapper(locale: locale)
         return try await enqueue(request, mapper: mapper)
@@ -171,7 +175,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     ///
     public func fetchTargetLocations(for siteID: Int64, query: String, locale: String) async throws -> [BlazeTargetLocation] {
         let path = BlazeTargetOption.locations.endpoint(for: siteID)
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             Keys.locale: locale,
             Keys.query: query
         ]
@@ -192,7 +196,6 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         dateFormatter.dateFormat = Constants.dateFormat
 
         let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
-            .compactMapValues { $0 } // filters out any field with nil value
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .post,
@@ -230,11 +233,20 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         return try await enqueue(request, mapper: mapper)
     }
 
+    /// Fetches the Blaze billing summary of the current user.
+    ///
+    public func fetchBillingSummary(siteID: Int64) async throws -> BlazeBillingSummary {
+        let path = Paths.billingSummary(siteID: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
+        let mapper = BlazeBillingSummaryMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
+
     /// Fetches objectives for campaign creation.
     ///
     public func fetchCampaignObjectives(siteID: Int64, locale: String) async throws -> [BlazeCampaignObjective] {
         let path = Paths.campaignObjective(siteID: siteID)
-        let parameters: [String: Any] = [Keys.locale: locale]
+        let parameters: RequestParameterConvertibleDictionary = [Keys.locale: locale]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeCampaignObjectiveListMapper(locale: locale)
         return try await enqueue(request, mapper: mapper)
@@ -291,6 +303,10 @@ private extension BlazeRemote {
             "sites/\(siteID)/wordads/dsp/api/v1.1/payment-methods"
         }
 
+        static func billingSummary(siteID: Int64) -> String {
+            "sites/\(siteID)/wordads/dsp/api/v1/user/billing-summary"
+        }
+
         static func campaignObjective(siteID: Int64) -> String {
             "sites/\(siteID)/wordads/dsp/api/v1.1/campaigns/objectives"
         }
@@ -327,7 +343,7 @@ private extension BlazeRemote {
 }
 
 /// Blaze Forecasted Impressions input
-public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
+public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable, Sendable {
     // Start date of the campaign.
     public let startDate: Date
     // End date of the campaign
@@ -366,7 +382,7 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
 }
 
 /// Blaze Forecasted Impressions sub-input related to targetings.
-public struct BlazeTargetOptions: Encodable, GeneratedFakeable, GeneratedCopiable, Equatable {
+public struct BlazeTargetOptions: Encodable, GeneratedFakeable, GeneratedCopiable, Equatable, Sendable {
     // Target location IDs for the campaign. Optional.
     public let locations: [Int64]?
     // Target languages for the campaign. Optional.

@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class AddProductScreen: ScreenObject {
 
     private let searchBarGetter: (XCUIApplication) -> XCUIElement = {
@@ -21,8 +22,6 @@ public final class AddProductScreen: ScreenObject {
     }
 
     /// Taps a product from the list.
-    /// - Returns: Unified Order screen object.
-    @discardableResult
     public func tapProduct(byName name: String) {
         app.buttons.staticTexts[name].firstMatch.tap()
         tapDoneButton()

@@ -59,7 +59,10 @@ extension CollapsibleProductCardPriceSummaryViewModel {
         guard let price = pricedIndividually ? price : "0" else {
             return nil
         }
-        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
+        guard let priceDecimal = currencyFormatter.convertToDecimal(price)?.decimalValue else {
+            return "-"
+        }
+        let productSubtotal = quantity * priceDecimal
         return currencyFormatter.formatAmount(productSubtotal)
     }
 }

@@ -9,7 +9,7 @@ struct POSInformationCard<Content: View>: View {
 
     var body: some View {
         content
-            .padding()
+            .posPadding(\.medium)
             .frame(maxWidth: .infinity)
             .background(Color.posSurfaceContainerLowest)
             .posItemCardBorderStyles()
@@ -17,6 +17,7 @@ struct POSInformationCard<Content: View>: View {
 }
 
 struct POSInformationCardFieldRow: View {
+    @Environment(\.posMetrics) private var metrics
     enum ButtonStyle {
         case `default`
         case primary
@@ -34,7 +35,7 @@ struct POSInformationCardFieldRow: View {
     let buttonTitle: String?
     let buttonAction: (() -> Void)?
     let buttonStyle: ButtonStyle
-    let isLoading: Bool
+    let isButtonEnabled: Bool
 
     init(label: String,
          value: String,
@@ -43,7 +44,7 @@ struct POSInformationCardFieldRow: View {
          buttonTitle: String? = nil,
          buttonAction: (() -> Void)? = nil,
          buttonStyle: ButtonStyle = .default,
-         isLoading: Bool = false) {
+         isButtonEnabled: Bool = true) {
         self.label = label
         self.value = value
         self.showSeparator = showSeparator
@@ -51,13 +52,13 @@ struct POSInformationCardFieldRow: View {
         self.buttonTitle = buttonTitle
         self.buttonAction = buttonAction
         self.buttonStyle = buttonStyle
-        self.isLoading = isLoading
+        self.isButtonEnabled = isButtonEnabled
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSPadding.small) {
-            HStack(alignment: .center, spacing: POSSpacing.medium) {
-                VStack(alignment: .leading, spacing: POSPadding.small) {
+        VStack(alignment: .leading, spacing: metrics.padding.small) {
+            HStack(alignment: .center, spacing: metrics.spacing.medium) {
+                VStack(alignment: .leading, spacing: metrics.padding.small) {
                     Text(label)
                         .font(labelStyle == .bold ? .posBodyMediumBold : .posBodyMediumRegular())
                     Text(value)
@@ -72,14 +73,15 @@ struct POSInformationCardFieldRow: View {
                         .buttonStyle(POSInfoCardButtonStyle(
                             size: .compact,
                             variant: buttonStyle == .primary ? .primary : .default,
-                            isLoading: isLoading
+                            isLoading: false
                         ))
+                        .disabled(!isButtonEnabled)
                 }
             }
 
             if showSeparator {
                 Divider()
-                    .padding(.top, POSPadding.small)
+                    .padding(.top, metrics.padding.small)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

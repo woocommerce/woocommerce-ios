@@ -11,7 +11,7 @@ class MetaDataEncoderTests: XCTestCase {
         let metadata = MetaData(metadataID: 1, key: "key", value: "value")
 
         // When
-        let dictionary = try metadata.toDictionary()
+        let dictionary = try metadata.toJSONObjectDictionary()
 
         // Then
         XCTAssertEqual(dictionary["id"] as? Int, 1)
@@ -24,7 +24,7 @@ class MetaDataEncoderTests: XCTestCase {
         let metadata = MetaData(metadataID: 1, key: "key", value: "{\"key\":\"value\"}")
 
         // When
-        let dictionary = try metadata.toDictionary()
+        let dictionary = try metadata.toJSONObjectDictionary()
 
         // Then
         let expectedValue = ["key": "value"]
@@ -38,7 +38,7 @@ class MetaDataEncoderTests: XCTestCase {
         let metadata = MetaData(metadataID: 1, key: "key", value: "[{\"key\":\"value\"}]")
 
         // When
-        let dictionary = try metadata.toDictionary()
+        let dictionary = try metadata.toJSONObjectDictionary()
 
         // Then
         let expectedValue = [["key": "value"]]

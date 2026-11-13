@@ -11,10 +11,12 @@ struct CardPresentCapturedPaymentData {
     let receiptParameters: CardPresentReceiptParameters?
 }
 
+@MainActor
 protocol PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
+                        readerType: CardReaderType,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         countryCode: CountryCode,
@@ -33,10 +35,6 @@ protocol PaymentCaptureOrchestrating {
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void)
 
-    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void)
-
-    func saveReceipt(for order: Order, params: CardPresentReceiptParameters)
-
     func presentBackendReceipt(for order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void)
 }
 
@@ -48,6 +46,7 @@ protocol PaymentCaptureOrchestrating {
 /// 3. Controls (prevents during payment) wallet presentation: we don't want to use the merchant's Apple Pay for their customer's purchase!
 /// 4. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
 /// 5. Submit the Payment Intent to WCPay to capture a payment
+@MainActor
 final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
@@ -58,13 +57,16 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     private let stores: StoresManager
+    private let pushNotesManager: PushNotesManager
 
     init(stores: StoresManager = ServiceLocator.stores,
          paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer(),
-         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
+         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.stores = stores
         self.paymentReceiptEmailParameterDeterminer = paymentReceiptEmailParameterDeterminer
         self.celebration = celebration
+        self.pushNotesManager = pushNotesManager
     }
 
     private var handlersForActivePayment: PaymentHandlers? = nil
@@ -72,6 +74,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
+                        readerType: CardReaderType,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         countryCode: CountryCode,
@@ -84,12 +87,14 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        let readerEventFilter = CardReaderEventPresentationFilter()
         handlersForActivePayment = PaymentHandlers(onPreparingReader: onPreparingReader,
                                                    onWaitingForInput: onWaitingForInput,
                                                    onCardInserted: onCardInserted,
                                                    onProcessingMessage: onProcessingMessage,
                                                    onDisplayMessage: onDisplayMessage,
                                                    onProcessingCompletion: onProcessingCompletion,
+                                                   readerEventFilter: readerEventFilter,
                                                    countryCode: countryCode,
                                                    terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled)
         onPreparingReader()
@@ -105,7 +110,9 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
         /// reader begins to collect payment.
         ///
-        suppressPassPresentation()
+        if readerType != .tapToPay {
+            suppressPassPresentation()
+        }
 
         let paymentAction = CardPresentPaymentAction.collectPayment(
             siteID: order.siteID,
@@ -114,11 +121,12 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             countryCode: countryCode,
             terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
+                guard let event = readerEventFilter.filter(event) else { return }
                 switch event {
                 case .waitingForInput(let inputMethods):
                     onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
-                    onDisplayMessage(message)
+                    onDisplayMessage(message.text)
                 case .removeCardRequested(let message):
                     onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
@@ -129,10 +137,13 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     DDLogInfo("💳 Unhandled card reader event received: \(event)")
                 }
             },
-            onProcessingCompletion: { intent in
+            onProcessingCompletion: { [pushNotesManager] intent in
+                // Record before backend capture, which can emit the order push before onCompletion.
+                pushNotesManager.suppressNewOrderNotice(for: order)
                 onProcessingCompletion(intent)
             },
             onCompletion: { [weak self] result in
+                readerEventFilter.reset()
                 self?.allowPassPresentation()
                 self?.completePaymentIntentCapture(
                     order: order,
@@ -152,6 +163,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         }
 
         handlers.onPreparingReader()
+        handlers.readerEventFilter.reset()
 
         let retryPaymentAction = CardPresentPaymentAction.retryPayment(
             siteID: order.siteID,
@@ -159,11 +171,12 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             countryCode: handlers.countryCode,
             terminalPaymentPreparationEnabled: handlers.terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
+                guard let event = handlers.readerEventFilter.filter(event) else { return }
                 switch event {
                 case .waitingForInput(let inputMethods):
                     handlers.onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
-                    handlers.onDisplayMessage(message)
+                    handlers.onDisplayMessage(message.text)
                 case .removeCardRequested(let message):
                     handlers.onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
@@ -174,10 +187,12 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     DDLogInfo("💳 Unhandled card reader event received during retry: \(event)")
                 }
             },
-            onProcessingCompletion: { intent in
+            onProcessingCompletion: { [pushNotesManager] intent in
+                pushNotesManager.suppressNewOrderNotice(for: order)
                 handlers.onProcessingCompletion(intent)
             },
             onCompletion: { [weak self] result in
+                handlers.readerEventFilter.reset()
                 self?.allowPassPresentation()
                 self?.completePaymentIntentCapture(
                     order: order,
@@ -190,18 +205,11 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        handlersForActivePayment?.readerEventFilter.reset()
         let action = CardPresentPaymentAction.cancelPayment() { [weak self] result in
             self?.allowPassPresentation()
             onCompletion(result)
         }
-        stores.dispatch(action)
-    }
-
-    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        let action = ReceiptAction.generateContent(order: order, parameters: params) { emailContent in
-            onContent(emailContent)
-        }
-
         stores.dispatch(action)
     }
 
@@ -214,12 +222,6 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 onCompletion(.failure(error))
             }
         }
-        stores.dispatch(action)
-    }
-
-    func saveReceipt(for order: Order, params: CardPresentReceiptParameters) {
-        let action = ReceiptAction.saveReceipt(order: order, parameters: params)
-
         stores.dispatch(action)
     }
 }
@@ -291,7 +293,6 @@ private extension PaymentCaptureOrchestrator {
             }
 
             celebrate() // plays a sound, haptic
-            saveReceipt(for: order, params: receiptParameters)
             onCompletion(.success(.init(paymentMethod: paymentMethod,
                                         receiptParameters: receiptParameters)))
             self.handlersForActivePayment = nil
@@ -426,6 +427,7 @@ private extension PaymentCaptureOrchestrator {
         let onProcessingMessage: () -> Void
         let onDisplayMessage: (String) -> Void
         let onProcessingCompletion: (PaymentIntent) -> Void
+        let readerEventFilter: CardReaderEventPresentationFilter
         let countryCode: CountryCode
         let terminalPaymentPreparationEnabled: Bool
     }

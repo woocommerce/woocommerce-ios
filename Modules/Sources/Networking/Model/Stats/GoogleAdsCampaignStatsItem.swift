@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a single campaign stat for a specific period.
 ///
-public struct GoogleAdsCampaignStatsItem: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct GoogleAdsCampaignStatsItem: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
 
     /// Campaign ID
     ///

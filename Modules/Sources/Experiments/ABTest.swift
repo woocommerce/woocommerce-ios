@@ -44,15 +44,15 @@ public extension ABTest {
     static func start(for context: ExperimentContext) async {
         let experiments = ABTest.genuineCases.filter { $0.context == context }
 
+        // Strongly capture `ExPlat.shared` so it can't be released on a background thread.
+        guard !experiments.isEmpty, let explat = ExPlat.shared else {
+            return
+        }
+
         await withCheckedContinuation { continuation in
-            guard !experiments.isEmpty else {
-                return continuation.resume(returning: ())
-            }
+            explat.register(experiments: experiments.map { $0.rawValue })
 
-            let experimentNames = experiments.map { $0.rawValue }
-            ExPlat.shared?.register(experiments: experimentNames)
-
-            ExPlat.shared?.refresh {
+            explat.refresh { @Sendable in
                 continuation.resume(returning: ())
             }
         } as Void
@@ -75,7 +75,7 @@ public extension Variation {
 
 /// The context for an A/B testing experiment (where the experience being tested occurs).
 ///
-public enum ExperimentContext: Equatable {
+public enum ExperimentContext: Equatable, Sendable {
     case loggedOut
     case loggedIn
     case none // For the `null` experiment case

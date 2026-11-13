@@ -10,14 +10,14 @@ public protocol AnnouncementsRemoteProtocol {
 
 /// `Announcement` remote endpoints.
 ///
-public final class AnnouncementsRemote: Remote, AnnouncementsRemoteProtocol {
+public final class AnnouncementsRemote: Remote, AnnouncementsRemoteProtocol, @unchecked Sendable {
 
     /// Retrieves all the `Announcement` available for a given `appVersion` and `locale`
     ///
     public func loadAnnouncements(appVersion: String,
                                   locale: String,
                                   onCompletion: @escaping (Result<[Announcement], Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             Key.appID: Constants.WooCommerceAppId,
             Key.appVersion: appVersion,
             Key.locale: locale

@@ -1,0 +1,36 @@
+appId: ${APP_ID}
+---
+- extendedWaitUntil:
+    visible:
+      id: "dashboard-customization-save-button"
+      enabled: true
+    timeout: 15000
+- tapOn:
+    id: "dashboard-customization-save-button"
+    enabled: true
+- waitForAnimationToEnd:
+    timeout: 5000
+- runFlow:
+    when:
+      visible:
+        id: "dashboard-customization-save-button"
+        enabled: true
+    commands:
+      - tapOn:
+          id: "dashboard-customization-save-button"
+          enabled: true
+- waitForAnimationToEnd:
+    timeout: 5000
+- runFlow:
+    when:
+      visible:
+        id: "dashboard-customization-save-button"
+        enabled: true
+    commands:
+      - tapOn:
+          id: "dashboard-customization-save-button"
+          enabled: true
+- extendedWaitUntil:
+    notVisible:
+      id: "dashboard-customization-save-button"
+    timeout: 30000

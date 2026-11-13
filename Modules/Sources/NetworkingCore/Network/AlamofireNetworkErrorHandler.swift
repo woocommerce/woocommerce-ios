@@ -1,17 +1,25 @@
 import Foundation
 import Alamofire
+import os
 
 /// Thread-safe handler for network error tracking and retry logic
-final class AlamofireNetworkErrorHandler {
-    private let queue = DispatchQueue(label: "com.networkingcore.errorhandler", attributes: .concurrent)
-    /// Serial queue for UserDefaults operations to prevent race conditions while avoiding deadlocks
-    private let userDefaultsQueue = DispatchQueue(label: "com.networkingcore.errorhandler.userdefaults")
-    private let userDefaults: UserDefaults
+final class AlamofireNetworkErrorHandler: Sendable {
+    private struct State {
+        var appPasswordFailures: [Int64: Int] = [:]
+        var retriedJetpackRequests: [RetriedJetpackRequest] = []
+    }
+
+    private let state = OSAllocatedUnfairLock(initialState: State())
+
+    /// Serializes the read-modify-write of the unsupported list. Kept apart from `state` so that KVO
+    /// observers of `userDefaults` never run while `state` is held.
+    private let userDefaultsLock = OSAllocatedUnfairLock()
+
+    /// `UserDefaults` is documented as thread-safe but is not marked `Sendable` in the current SDK.
+    /// Every write goes through `userDefaultsLock`. Remove the annotation once the SDK marks it `Sendable`.
+    nonisolated(unsafe) private let userDefaults: UserDefaults
     private let credentials: Credentials?
     private let notificationCenter: NotificationCenter
-
-    private var _appPasswordFailures: [Int64: Int] = [:]
-    private var _retriedJetpackRequests: [RetriedJetpackRequest] = []
 
     init(credentials: Credentials?,
          userDefaults: UserDefaults = .standard,
@@ -21,34 +29,10 @@ final class AlamofireNetworkErrorHandler {
         self.notificationCenter = notificationCenter
     }
 
-    // MARK: - Thread-safe property access
-
-    private var appPasswordFailures: [Int64: Int] {
-        get {
-            queue.sync { _appPasswordFailures }
-        }
-        set {
-            queue.sync(flags: .barrier) { [weak self] in
-                self?._appPasswordFailures = newValue
-            }
-        }
-    }
-
-    private var retriedJetpackRequests: [RetriedJetpackRequest] {
-        get {
-            queue.sync { _retriedJetpackRequests }
-        }
-        set {
-            queue.sync(flags: .barrier) { [weak self] in
-                self?._retriedJetpackRequests = newValue
-            }
-        }
-    }
-
     // MARK: - Public interface
 
     func prepareAppPasswordSupport(for siteID: Int64) {
-        appPasswordFailures.removeValue(forKey: siteID)
+        state.withLock { _ = $0.appPasswordFailures.removeValue(forKey: siteID) }
         notificationCenter.post(name: .JetpackSiteEligibleForAppPasswordSupport, object: siteID)
     }
 
@@ -76,7 +60,7 @@ final class AlamofireNetworkErrorHandler {
 
         if isExpectedError {
             let retriedRequest = RetriedJetpackRequest(request: request, error: error)
-            retriedJetpackRequests.append(retriedRequest)
+            state.withLock { $0.retriedJetpackRequests.append(retriedRequest) }
             logRequestFailure(request: convertedURLRequest, error: error)
             return true
         }
@@ -87,20 +71,13 @@ final class AlamofireNetworkErrorHandler {
         originalRequest: URLRequestConvertible,
         failure: Error?
     ) {
-        let retriedRequest: RetriedJetpackRequest? = queue.sync(flags: .barrier) { [weak self] in
-            guard let self else { return nil }
-            guard let urlRequest = try? originalRequest.asURLRequest() else { return nil }
-            let retriedRequestIndex = _retriedJetpackRequests.firstIndex { retriedRequest in
-                guard let retriedURLRequest = try? retriedRequest.request.asURLRequest() else {
-                    return false
-                }
-                return urlRequest.url == retriedURLRequest.url &&
-                       urlRequest.httpMethod == retriedURLRequest.httpMethod
-            }
+        guard let request = originalRequest.originalResponseRequest as? JetpackRequest else { return }
+        let retriedRequest: RetriedJetpackRequest? = state.withLock { state in
+            let retriedRequestIndex = state.retriedJetpackRequests.firstIndex { $0.request == request }
 
             guard let index = retriedRequestIndex else { return nil }
 
-            return _retriedJetpackRequests.remove(at: index)
+            return state.retriedJetpackRequests.remove(at: index)
         }
 
         guard let retriedRequest else { return }
@@ -151,24 +128,18 @@ final class AlamofireNetworkErrorHandler {
     }
 
     func isRequestRetried(_ request: URLRequestConvertible) -> Bool {
-        guard let urlRequest = try? request.asURLRequest() else {
+        guard let request = request.originalResponseRequest as? JetpackRequest else {
             return false
         }
-        return retriedJetpackRequests.contains { retriedRequest in
-            guard let currentItem = try? retriedRequest.request.asURLRequest() else {
-                return false
-            }
-            return currentItem.url == urlRequest.url &&
-                   currentItem.httpMethod == urlRequest.httpMethod
-        }
+        let retriedJetpackRequests = state.withLock { $0.retriedJetpackRequests }
+        return retriedJetpackRequests.contains { $0.request == request }
     }
 
     func flagSiteAsUnsupported(for siteID: Int64, flow: RequestFlow, cause: AppPasswordFlagCause, error: Error) {
-        // Use dedicated serial queue for UserDefaults operations to:
+        // Use a dedicated lock for UserDefaults operations to:
         // 1. Prevent race conditions where concurrent writes overwrite each other
         // 2. Avoid deadlock by not using the main queue that KVO observers may need
-        userDefaultsQueue.sync { [weak self] in
-            guard let self else { return }
+        userDefaultsLock.withLock {
             var currentList = userDefaults.applicationPasswordUnsupportedList
             currentList[String(siteID)] = Date()
             userDefaults.applicationPasswordUnsupportedList = currentList
@@ -215,8 +186,11 @@ enum AppPasswordFlagCause: String {
 // MARK: Private helpers
 private extension AlamofireNetworkErrorHandler {
     func incrementFailureCount(for siteID: Int64, originalFailure: Error) {
-        let currentFailureCount = appPasswordFailures[siteID] ?? 0
-        let updatedCount = currentFailureCount + 1
+        let updatedCount = state.withLock { state in
+            let updatedCount = (state.appPasswordFailures[siteID] ?? 0) + 1
+            state.appPasswordFailures[siteID] = updatedCount
+            return updatedCount
+        }
         if updatedCount == AppPasswordConstants.requestFailureThreshold {
             let flow: RequestFlow
             let failure: Error
@@ -235,15 +209,13 @@ private extension AlamofireNetworkErrorHandler {
                 error: failure
             )
         }
-        appPasswordFailures[siteID] = updatedCount
     }
 
     func clearUnsupportedFlag(for siteID: Int64) {
-        // Use dedicated serial queue for UserDefaults operations to:
+        // Use a dedicated lock for UserDefaults operations to:
         // 1. Prevent race conditions where concurrent writes overwrite each other
         // 2. Avoid deadlock by not using the main queue that KVO observers may need
-        userDefaultsQueue.sync { [weak self] in
-            guard let self else { return }
+        userDefaultsLock.withLock {
             let currentList = userDefaults.applicationPasswordUnsupportedList
             let filteredList = currentList.filter { flag in
                 flag.key != String(siteID)
@@ -294,6 +266,7 @@ private extension AlamofireNetworkErrorHandler {
     }
 }
 /// Helper type to keep track of retried requests with accompanied error
+/// Matched by comparing `request` itself, because tunneled POST, PUT and DELETE requests all share one URL and HTTP method.
 struct RetriedJetpackRequest {
     let request: JetpackRequest
     let error: Error

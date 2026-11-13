@@ -13,7 +13,7 @@ public protocol JetpackSettingsRemoteProtocol {
 
 /// Jetpack Settings: Remote endpoints
 ///
-public final class JetpackSettingsRemote: Remote, JetpackSettingsRemoteProtocol {
+public final class JetpackSettingsRemote: Remote, JetpackSettingsRemoteProtocol, @unchecked Sendable {
 
     public func enableJetpackModule(for siteID: Int64, moduleSlug: String) async throws {
         let parameters = [moduleSlug: true]

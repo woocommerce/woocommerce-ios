@@ -46,7 +46,6 @@ final class InboxDashboardCardViewModel: ObservableObject {
         configureResultsController()
     }
 
-    @MainActor
     func reloadData() async {
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .inbox))
         syncingData = true
@@ -70,7 +69,6 @@ final class InboxDashboardCardViewModel: ObservableObject {
 
 // MARK: - Private helpers
 private extension InboxDashboardCardViewModel {
-    @MainActor
     func loadInboxMessages() async throws -> [InboxNote] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InboxNotesAction.loadAllInboxNotes(siteID: siteID,

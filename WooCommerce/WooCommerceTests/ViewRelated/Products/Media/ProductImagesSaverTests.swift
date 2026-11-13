@@ -4,6 +4,7 @@ import Photos
 import XCTest
 import Yosemite
 
+@MainActor
 final class ProductImagesSaverTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID: Int64 = 606

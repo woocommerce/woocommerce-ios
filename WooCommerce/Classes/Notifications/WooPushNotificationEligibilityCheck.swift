@@ -12,11 +12,13 @@ protocol WooPushNotificationEligibilityChecking {
 final class WooPushNotificationEligibilityCheck: WooPushNotificationEligibilityChecking {
     private let featureFlagService: FeatureFlagService
     private let stores: StoresManager
+    private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
 
     init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores) {
         self.featureFlagService = featureFlagService
         self.stores = stores
+        self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
     }
 
     @MainActor
@@ -25,15 +27,6 @@ final class WooPushNotificationEligibilityCheck: WooPushNotificationEligibilityC
 
         let defaultM1Value = featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)
 
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
-                .selfDrivenPushNotificationsM1,
-                defaultValue: defaultM1Value,
-                useCache: true,
-                completion: { value in
-                    continuation.resume(returning: value)
-                })
-            )
-        }
+        return await remoteFeatureFlagService.isEnabled(.selfDrivenPushNotificationsM1, defaultValue: defaultM1Value)
     }
 }

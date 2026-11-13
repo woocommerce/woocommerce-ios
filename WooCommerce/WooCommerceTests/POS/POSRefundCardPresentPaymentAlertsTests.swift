@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 
 final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
+    @MainActor
     func test_present_when_payment_cancellation_runs_then_marks_refund_as_cancelled() {
         let stateModel = POSRefundSubmissionModel()
         var didMarkCancelled = false
@@ -16,7 +17,7 @@ final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
             didCancelPayment = true
         })
 
-        guard case .tapSwipeOrInsertCard(_, let cancelPayment) = waitForCardPresentEvent(in: stateModel) else {
+        guard case .tapSwipeOrInsertCard(_, let cancelPayment) = cardPresentEvent(in: stateModel) else {
             return XCTFail("Expected tap, swipe, or insert card event.")
         }
         cancelPayment()
@@ -25,6 +26,7 @@ final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
         XCTAssertTrue(didCancelPayment)
     }
 
+    @MainActor
     func test_present_when_multiple_reader_search_is_cancelled_then_marks_refund_as_cancelled() {
         let stateModel = POSRefundSubmissionModel()
         var didMarkCancelled = false
@@ -39,7 +41,7 @@ final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
             selectedReaderID = nil
         }
 
-        guard case .foundMultipleReaders(_, let selectionHandler) = waitForCardPresentEvent(in: stateModel) else {
+        guard case .foundMultipleReaders(_, let selectionHandler) = cardPresentEvent(in: stateModel) else {
             return XCTFail("Expected multiple reader event.")
         }
         selectionHandler(nil)
@@ -48,6 +50,7 @@ final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
         XCTAssertNil(selectedReaderID)
     }
 
+    @MainActor
     func test_present_when_multiple_reader_is_selected_then_does_not_mark_refund_as_cancelled() {
         let stateModel = POSRefundSubmissionModel()
         var didMarkCancelled = false
@@ -62,7 +65,7 @@ final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
             selectedReaderID = nil
         }
 
-        guard case .foundMultipleReaders(_, let selectionHandler) = waitForCardPresentEvent(in: stateModel) else {
+        guard case .foundMultipleReaders(_, let selectionHandler) = cardPresentEvent(in: stateModel) else {
             return XCTFail("Expected multiple reader event.")
         }
         selectionHandler("reader-1")
@@ -73,18 +76,12 @@ final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
 }
 
 private extension POSRefundCardPresentPaymentAlertsTests {
-    func waitForCardPresentEvent(in stateModel: POSRefundSubmissionModel) -> CardPresentPaymentEventDetails {
-        var eventDetails: CardPresentPaymentEventDetails?
-        let expectation = expectation(description: "Card-present event is presented")
-
-        DispatchQueue.main.async {
-            if case .cardPresentEvent(let details) = stateModel.state {
-                eventDetails = details
-            }
-            expectation.fulfill()
+    /// The presenter updates the state model synchronously when called on the main thread.
+    @MainActor
+    func cardPresentEvent(in stateModel: POSRefundSubmissionModel) -> CardPresentPaymentEventDetails? {
+        guard case .cardPresentEvent(let details) = stateModel.state else {
+            return nil
         }
-
-        wait(for: [expectation], timeout: 1)
-        return eventDetails!
+        return details
     }
 }

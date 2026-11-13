@@ -6,6 +6,7 @@ import WooFoundationCore
 
 /// Type that receives and stores the necessary dependencies from the phone session.
 ///
+@MainActor
 final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSessionDelegate {
 
     @Published var dependencies: WatchDependencies?
@@ -41,9 +42,10 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
 
     /// Get the latest application context when the session activates
     ///
-    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+    nonisolated func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        let appContext = Self.encodeApplicationContext(session.receivedApplicationContext)
         DispatchQueue.main.async {
-            self.storeDependencies(appContext: session.receivedApplicationContext)
+            self.storeDependencies(appContext: appContext)
             self.reloadDependencies()
 
             self.tracksProvider?.flushQueuedEvents()
@@ -60,11 +62,18 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
 
     /// Get new application context on real time.
     ///
-    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
+    nonisolated func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
+        let appContext = Self.encodeApplicationContext(applicationContext)
         DispatchQueue.main.async {
-            self.storeDependencies(appContext: applicationContext)
+            self.storeDependencies(appContext: appContext)
             self.reloadDependencies()
         }
+    }
+
+    /// Copy the payload on WatchConnectivity's delegate queue before crossing to the main actor.
+    /// Neither WCSession nor its [String: Any] context can safely cross that boundary.
+    nonisolated private static func encodeApplicationContext(_ applicationContext: [String: Any]) -> Result<Data, Error> {
+        Result { try JSONSerialization.data(withJSONObject: applicationContext) }
     }
 
     /// Update UI from stored dependencies
@@ -88,10 +97,10 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
     /// Store dependencies from the app context
     /// Receiving an empty dictionary will clear the store as it likely mean that the user has logged out of the app.
     ///
-    private func storeDependencies(appContext: [String: Any]) {
+    private func storeDependencies(appContext: Result<Data, Error>) {
         let dependencies: WatchDependencies? = {
             do {
-                let data = try JSONSerialization.data(withJSONObject: appContext)
+                let data = try appContext.get()
                 return try JSONDecoder().decode(WatchDependencies.self, from: data)
             } catch {
                 print ("Error decoding dependencies: \(error)")

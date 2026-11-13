@@ -224,11 +224,6 @@ struct POSLockScreenModelTests {
     }
 
     private func makeStaff() -> POSStaff {
-        POSStaff(
-            userID: 1,
-            displayName: "Maya",
-            preset: "Manager",
-            capabilities: Set(POSCapability.allCases.map(\.rawValue))
-        )
+        POSLocalRole.admin.staff
     }
 }

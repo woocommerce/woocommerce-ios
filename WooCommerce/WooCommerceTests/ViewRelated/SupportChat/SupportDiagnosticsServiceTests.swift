@@ -6,6 +6,7 @@ import protocol WooFoundation.ConnectivityObserver
 @testable import Networking
 @testable import WooCommerce
 
+@Suite(.serialized)
 @MainActor
 struct SupportDiagnosticsServiceTests {
 
@@ -152,6 +153,31 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[0].test == Test.analyticsSetting)
         #expect(results[0].suggestedAction == Action.enableAnalytics)
         #expect(results[0].errorMessage?.contains("not enabled") == true)
+    }
+
+    @Test func test_testAnalyticsSetting_when_setting_is_not_exposed_then_returns_not_applicable_success() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.failure(SettingError.settingNotExposed))
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        let results = await sut.runTests([Test.analyticsSetting])
+
+        // Then
+        #expect(results.count == 1)
+        #expect(results[0].isSuccess == true)
+        #expect(results[0].test == Test.analyticsSetting)
+        #expect(results[0].errorMessage == nil)
+        #expect(results[0].technicalDetails?.hasPrefix("Not applicable") == true)
+        #expect(results[0].troubleshootingDescription().contains("Not applicable") == true)
     }
 
     @Test func test_testAnalyticsSetting_when_request_fails_then_returns_failure_with_technical_details() async {
@@ -503,9 +529,11 @@ struct SupportDiagnosticsServiceTests {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let testError = NSError(domain: "TestDomain", code: 500, userInfo: nil)
+        var attempts = 0
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
             case let .enableAnalyticsSetting(_, onCompletion):
+                attempts += 1
                 onCompletion(.failure(testError))
             default:
                 break
@@ -520,6 +548,33 @@ struct SupportDiagnosticsServiceTests {
         } catch {
             // Expected
         }
+        #expect(attempts == 2)
+    }
+
+    @Test func test_enableAnalytics_when_first_attempt_fails_then_retries_and_completes_without_error() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var attempts = 0
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .enableAnalyticsSetting(_, onCompletion):
+                attempts += 1
+                if attempts == 1 {
+                    onCompletion(.failure(NSError(domain: "TestDomain", code: 500, userInfo: nil)))
+                } else {
+                    onCompletion(.success(()))
+                }
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        try await sut.enableAnalytics()
+
+        // Then
+        #expect(attempts == 2)
     }
 
     // MARK: - Register Device Action

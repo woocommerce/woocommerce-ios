@@ -3,7 +3,7 @@ import Codegen
 
 /// Represent a Tax Class Entity.
 ///
-public struct TaxClass: Decodable, Equatable, GeneratedFakeable {
+public struct TaxClass: Decodable, Equatable, GeneratedFakeable, Sendable {
 
     /// WordPress.com Site Identifier.
     ///

@@ -17,10 +17,23 @@ struct RefundShippingCalculationUseCase {
     /// Calculates the total value(cost + tax) to be refunded.
     ///
     func calculateRefundValue() -> Decimal {
-        guard let cost = currencyFormatter.convertToDecimal(shippingLine.total) as Decimal?,
-            let tax = currencyFormatter.convertToDecimal(shippingLine.totalTax) as Decimal? else {
-                return .zero
+        guard let cost = currencyFormatter.convertToDecimal(shippingLine.total) as Decimal? else {
+            return .zero
         }
-        return cost + tax
+        return cost + taxToRefund
+    }
+
+    /// Sums the shipping line's tax lines rather than using `totalTax`: when the store rounds tax per line
+    /// (the WooCommerce default), `totalTax` is rounded to currency decimals while `total` and
+    /// `taxes[].total` keep the API's full precision, so mixing them can push the refund amount
+    /// above the order total and the API rejects the refund with "Invalid refund amount".
+    ///
+    private var taxToRefund: Decimal {
+        guard shippingLine.taxes.isNotEmpty else {
+            return currencyFormatter.convertToDecimal(shippingLine.totalTax) as Decimal? ?? .zero
+        }
+        return shippingLine.taxes.reduce(Decimal.zero) { total, taxLine in
+            total + ((currencyFormatter.convertToDecimal(taxLine.total) as Decimal?) ?? .zero)
+        }
     }
 }

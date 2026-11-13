@@ -12,6 +12,14 @@ class PriceFieldFormatter {
         return amountWithSymbol
     }
 
+    var numericTextSeparators: Set<Character> {
+        BidirectionalText.numericSeparators(including: [
+            storeCurrencySettings.sanitizedDecimalSeparator,
+            userLocale.decimalSeparator ?? "",
+            minusSign
+        ])
+    }
+
     /// Current amount converted to Decimal.
     ///
     var amountDecimal: Decimal {

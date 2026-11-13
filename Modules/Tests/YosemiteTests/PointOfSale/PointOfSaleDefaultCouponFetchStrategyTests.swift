@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 @testable import Yosemite
 import class WooFoundation.CurrencySettings
 
+@MainActor
 struct PointOfSaleDefaultCouponFetchStrategyTests {
     private let sut: PointOfSaleDefaultCouponFetchStrategy
     private let couponStoreMethods: MockCouponStoreMethods
@@ -19,6 +20,29 @@ struct PointOfSaleDefaultCouponFetchStrategyTests {
             storage: storage,
             couponStoreMethods: couponStoreMethods
         )
+    }
+
+    @Test func test_fetch_local_coupons_when_currency_changes_then_updates_summary() async throws {
+        // Given
+        let settings = CurrencySettings()
+        settings.currencyCode = .USD
+        let strategy = PointOfSaleDefaultCouponFetchStrategy(siteID: sampleSiteID, currencySettings: settings,
+                                                              storage: storage, couponStoreMethods: couponStoreMethods)
+        storage.insertSampleCoupon(readOnlyCoupon: .fake().copy(siteID: sampleSiteID, amount: "10", discountType: .fixedCart))
+        let initialItems = try await strategy.fetchLocalCoupons()
+
+        // When
+        settings.currencyCode = .EUR
+        let updatedItems = try await strategy.fetchLocalCoupons()
+
+        // Then
+        guard case .coupon(let initialCoupon) = initialItems.first,
+              case .coupon(let updatedCoupon) = updatedItems.first else {
+            Issue.record("Expected coupons before and after the currency change")
+            return
+        }
+        #expect(initialCoupon.summary.contains("$"))
+        #expect(updatedCoupon.summary.contains("€"))
     }
 
     @Test func fetchLocalCoupons_when_zero_coupons_then_returns_empty_array() async throws {

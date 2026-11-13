@@ -8,15 +8,15 @@ extension Product {
     static func createRegularPriceViewModel(regularPrice: String?,
                                             using currencySettings: CurrencySettings,
                                             onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
-        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        let currencyCode = ServiceLocator.currencySettings.currencyCode
-        let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let thousandsSeparator = ServiceLocator.currencySettings.groupingSeparator
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let currencyCode = currencySettings.currencyCode
+        let unit = currencySettings.symbol(from: currencyCode)
+        let thousandsSeparator = currencySettings.groupingSeparator
         let value: String = {
             guard let regularPrice, regularPrice.isNotEmpty else {
                 return ""
             }
-            return (currencyFormatter.formatAmount(regularPrice, with: unit) ?? "")
+            return (currencyFormatter.formatAmount(regularPrice, with: currencyCode.rawValue) ?? "")
                 .replacingOccurrences(of: unit, with: "")
                 .replacingOccurrences(of: thousandsSeparator, with: "")
                 .filter { !$0.isWhitespace }
@@ -26,7 +26,7 @@ extension Product {
                                   value: value,
                                   placeholder: placeholder,
                                   accessibilityHint: Localization.regularPriceAccessibilityHint,
-                                  unitPosition: currencySettings.currencyUnitPosition,
+                                  unitPosition: currencySettings.priceInputUnitPosition,
                                   keyboardType: .numbersAndPunctuation,
                                   inputFormatter: PriceInputFormatter(),
                                   style: .primary,
@@ -36,15 +36,15 @@ extension Product {
     static func createSalePriceViewModel(salePrice: String?,
                                          using currencySettings: CurrencySettings,
                                          onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
-        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        let currencyCode = ServiceLocator.currencySettings.currencyCode
-        let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let thousandsSeparator = ServiceLocator.currencySettings.groupingSeparator
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let currencyCode = currencySettings.currencyCode
+        let unit = currencySettings.symbol(from: currencyCode)
+        let thousandsSeparator = currencySettings.groupingSeparator
         let value: String = {
             guard let salePrice, salePrice.isNotEmpty else {
                 return ""
             }
-            return (currencyFormatter.formatAmount(salePrice, with: unit) ?? "")
+            return (currencyFormatter.formatAmount(salePrice, with: currencyCode.rawValue) ?? "")
                 .replacingOccurrences(of: unit, with: "")
                 .replacingOccurrences(of: thousandsSeparator, with: "")
                 .filter { !$0.isWhitespace }
@@ -55,7 +55,7 @@ extension Product {
                                   value: value,
                                   placeholder: placeholder,
                                   accessibilityHint: Localization.salePriceAccessibility,
-                                  unitPosition: currencySettings.currencyUnitPosition,
+                                  unitPosition: currencySettings.priceInputUnitPosition,
                                   keyboardType: .numbersAndPunctuation,
                                   inputFormatter: PriceInputFormatter(),
                                   style: .primary,
@@ -65,15 +65,15 @@ extension Product {
     static func createSubscriptionSignupFeeViewModel(fee: String?,
                                                      using currencySettings: CurrencySettings,
                                                      onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
-        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        let currencyCode = ServiceLocator.currencySettings.currencyCode
-        let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let thousandsSeparator = ServiceLocator.currencySettings.groupingSeparator
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let currencyCode = currencySettings.currencyCode
+        let unit = currencySettings.symbol(from: currencyCode)
+        let thousandsSeparator = currencySettings.groupingSeparator
         let value: String = {
             guard let fee, fee.isNotEmpty else {
                 return ""
             }
-            return (currencyFormatter.formatAmount(fee, with: unit) ?? "")
+            return (currencyFormatter.formatAmount(fee, with: currencyCode.rawValue) ?? "")
                 .replacingOccurrences(of: unit, with: "")
                 .replacingOccurrences(of: thousandsSeparator, with: "")
                 .filter { !$0.isWhitespace }
@@ -84,7 +84,7 @@ extension Product {
                                   value: value,
                                   placeholder: placeholder,
                                   accessibilityHint: Localization.signupFeeAccessibilityHint,
-                                  unitPosition: currencySettings.currencyUnitPosition,
+                                  unitPosition: currencySettings.priceInputUnitPosition,
                                   keyboardType: .numbersAndPunctuation,
                                   inputFormatter: PriceInputFormatter(),
                                   style: .primary,
@@ -131,16 +131,20 @@ extension Product {
     }
 }
 
-private extension CurrencySettings {
-    var currencyUnitPosition: UnitInputViewModel.UnitPosition {
-        switch currencyPosition {
-        case .left:
+extension CurrencySettings {
+    /// The placement of the currency symbol in price input fields.
+    ///
+    /// Price inputs render the amount and currency symbol in separate views, so Unicode bidirectional reordering
+    /// cannot move a strong RTL currency symbol to the same visual side as formatted display strings.
+    var priceInputUnitPosition: UnitInputViewModel.UnitPosition {
+        switch (currencyPosition, BidirectionalText.containsStrongRightToLeftCharacter(in: currencySymbol)) {
+        case (.left, false), (.right, true):
             return .beforeInputWithoutSpace
-        case .leftSpace:
+        case (.leftSpace, false), (.rightSpace, true):
             return .beforeInput
-        case .right:
+        case (.right, false), (.left, true):
             return .afterInputWithoutSpace
-        case .rightSpace:
+        case (.rightSpace, false), (.leftSpace, true):
             return .afterInput
         }
     }

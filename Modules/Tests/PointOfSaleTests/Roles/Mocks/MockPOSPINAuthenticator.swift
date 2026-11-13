@@ -9,14 +9,7 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
     private(set) var authenticatedPINs: [String] = []
     private(set) var verifyCallCount: Int = 0
 
-    init(authenticateResult: Result<POSStaff, POSAuthError> = .success(
-            POSStaff(
-                userID: 1,
-                displayName: "Maya",
-                preset: "shop_manager",
-                capabilities: Set(POSCapability.allCases.map(\.rawValue))
-            )
-         ),
+    init(authenticateResult: Result<POSStaff, POSAuthError> = .success(POSLocalRole.admin.staff),
          verifyResult: Result<Void, POSAuthError> = .success(())) {
         self.authenticateResult = authenticateResult
         self.verifyResult = verifyResult
@@ -27,9 +20,8 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
         return try authenticateResult.get()
     }
 
-    func verify(managerPIN pin: String, authorizes capability: POSCapability)
-        async throws(POSAuthError) {
+    func verify(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) {
         verifyCallCount += 1
-        _ = try verifyResult.get()
+        try verifyResult.get()
     }
 }

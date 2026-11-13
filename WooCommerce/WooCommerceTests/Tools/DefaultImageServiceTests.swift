@@ -268,17 +268,6 @@ final class DefaultImageServiceTests: XCTestCase {
 
     func testDownloadAndCacheImageForImageView_withEmptyBounds_usesDefaultThumbnailSize() {
         // Given
-        let originalFeatureFlagService = ServiceLocator.featureFlagService
-        defer {
-            ServiceLocator.setFeatureFlagService(originalFeatureFlagService)
-        }
-
-        ServiceLocator.setFeatureFlagService(
-            MockFeatureFlagService(
-                isProductImageOptimizedHandlingEnabled: true
-            )
-        )
-
         let mockImageView = UIImageView(frame: .zero)
         let mockCache = MockImageCache(name: "Testing")
         let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])

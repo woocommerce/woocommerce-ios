@@ -41,14 +41,15 @@ final class ShippingMethodStoreTests: XCTestCase {
 
     /// Verifies that `ShippingMethodStore.synchronizeShippingMethods` effectively persists any retrieved `ShippingMethod`.
     ///
-    func test_synchronizeShippingMethods_effectively_persists_retrieved_shipping_methods() {
+    @MainActor
+    func test_synchronizeShippingMethods_effectively_persists_retrieved_shipping_methods() async throws {
         // Given
         let store = ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "shipping_methods", filename: "shipping-methods")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ShippingMethod.self), 0)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let action = ShippingMethodAction.synchronizeShippingMethods(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -65,7 +66,8 @@ final class ShippingMethodStoreTests: XCTestCase {
 
     /// Verifies that `ShippingMethodStore.synchronizeShippingMethods` removes any `ShippingMethod` not included in the response.
     ///
-    func test_synchronizeShippingMethods_removes_stale_shipping_methods_from_storage() {
+    @MainActor
+    func test_synchronizeShippingMethods_removes_stale_shipping_methods_from_storage() async throws {
         // Given
         let store = ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "shipping_methods", filename: "shipping-methods")
@@ -74,7 +76,7 @@ final class ShippingMethodStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ShippingMethod.self), 1)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let action = ShippingMethodAction.synchronizeShippingMethods(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -90,13 +92,14 @@ final class ShippingMethodStoreTests: XCTestCase {
 
     /// Verifies that `ShippingMethodStore.synchronizeShippingMethods` returns an error whenever there is an error response from the backend.
     ///
-    func test_synchronizeShippingMethods_returns_error_upon_response_error() {
+    @MainActor
+    func test_synchronizeShippingMethods_returns_error_upon_response_error() async throws {
         // Given
         let store = ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "shipping_methods", filename: "generic_error")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let action = ShippingMethodAction.synchronizeShippingMethods(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -109,12 +112,13 @@ final class ShippingMethodStoreTests: XCTestCase {
 
     /// Verifies that `ShippingMethodStore.synchronizeShippingMethods` returns an error whenever there is no backend response.
     ///
-    func test_synchronizeShippingMethods_returns_error_upon_empty_response() {
+    @MainActor
+    func test_synchronizeShippingMethods_returns_error_upon_empty_response() async throws {
         // Given
         let store = ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = try await waitForCompletion { promise in
             let action = ShippingMethodAction.synchronizeShippingMethods(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -134,7 +138,9 @@ private extension ShippingMethodStoreTests {
     }
 
     func insertShippingMethodToStorage(_ readOnlyShippingMethod: Networking.ShippingMethod) {
-        let storageShippingMethod = viewStorage.insertNewObject(ofType: Storage.ShippingMethod.self)
-        storageShippingMethod.update(with: readOnlyShippingMethod)
+        storageManager.performAndSave({ storage in
+            let storageShippingMethod = storage.insertNewObject(ofType: Storage.ShippingMethod.self)
+            storageShippingMethod.update(with: readOnlyShippingMethod)
+        }, completion: nil, on: .main)
     }
 }

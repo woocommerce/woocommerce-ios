@@ -57,9 +57,7 @@ struct DefaultImageService: ImageService {
         let url = URL(string: encodedString ?? "")
 
         let targetSize: CGSize
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(
-            .productImageOptimizedHandling
-        ) && !imageView.bounds.isEmpty {
+        if !imageView.bounds.isEmpty {
             let scale = UIScreen.main.scale
             targetSize = CGSize(
                 width: imageView.bounds.width * scale,

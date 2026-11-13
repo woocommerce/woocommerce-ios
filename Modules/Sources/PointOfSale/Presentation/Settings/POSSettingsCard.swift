@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct POSSettingsCard: View {
+    @Environment(\.posMetrics) private var metrics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     let title: String
     let subtitle: String
     let isSelected: Bool
@@ -13,9 +16,15 @@ struct POSSettingsCard: View {
         self.action = action
     }
 
+    /// On phone the selected detail replaces the list, so retaining a selection border on the
+    /// off-screen row adds no information and makes the stroke visible during an interactive pop.
+    private var showsSelectionBorder: Bool {
+        isSelected && horizontalSizeClass == .regular
+    }
+
     var body: some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+            VStack(alignment: .leading, spacing: metrics.padding.xSmall) {
                 Text(title)
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -23,13 +32,13 @@ struct POSSettingsCard: View {
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(.secondary)
             }
-            .padding()
+            .posPadding(\.medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.posSurfaceContainerLowest)
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             .posItemCardBorderStyles()
             .overlay {
-                if isSelected {
+                if showsSelectionBorder {
                     RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
                         .stroke(Color.posOnSurface, lineWidth: 2)
                 }

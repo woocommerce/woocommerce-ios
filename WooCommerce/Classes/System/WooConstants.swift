@@ -219,10 +219,6 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
-        /// URL for the products feedback survey
-        ///
-        case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
-
         /// URL for the AI Assistant beta feedback survey
         ///
         case aiAssistantFeedback = "https://automattic.survey.fm/woo-mobile-ai-assistant"
@@ -278,12 +274,6 @@ extension WooConstants {
         /// Temporary redirect URL for authenticated web view when authenticating WPCom automatically
         ///
         case wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"
-
-#if DEBUG
-        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-testing"
-#else
-        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-production"
-#endif
 
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         ///

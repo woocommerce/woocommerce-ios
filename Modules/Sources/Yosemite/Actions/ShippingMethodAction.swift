@@ -6,5 +6,5 @@ public enum ShippingMethodAction: Action {
 
     /// Synchronizes all the shipping methods associated with the provided `siteID`
     ///
-    case synchronizeShippingMethods(siteID: Int64, completion: (Result<Void, Error>) -> Void)
+    case synchronizeShippingMethods(siteID: Int64, completion: @Sendable (Result<Void, Error>) -> Void)
 }

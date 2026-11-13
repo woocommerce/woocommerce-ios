@@ -69,6 +69,7 @@ private extension DiscountLineDetailsView {
                 }
                 .focused()
                 .keyboardType(.numbersAndPunctuation)
+                .environment(\.layoutDirection, .leftToRight)
                 .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
                 .padding([.leading, .trailing], Layout.padding)
                 .overlay {

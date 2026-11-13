@@ -11,6 +11,7 @@ import enum WooFoundation.CountryCode
 final class ClientSideBannerProvider {
 
     private let stores: StoresManager
+    private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
     private let siteSettings: SelectedSiteSettingsProtocol
@@ -22,6 +23,7 @@ final class ClientSideBannerProvider {
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          userInterfaceIdiom: UIUserInterfaceIdiom) {
         self.stores = stores
+        self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.siteSettings = siteSettings
@@ -45,7 +47,7 @@ final class ClientSideBannerProvider {
             return nil
         }
 
-        let isRemoteFlagEnabled = await isRemoteFeatureFlagEnabled()
+        let isRemoteFlagEnabled = await remoteFeatureFlagService.isEnabled(.wooPosTabletPromoBanner, defaultValue: false)
         guard isRemoteFlagEnabled else {
             return nil
         }
@@ -70,21 +72,6 @@ final class ClientSideBannerProvider {
     private func isNonJetpackSite(_ site: Site) -> Bool {
         let connectionType = SiteConnectionType(site: site)
         return connectionType == .nonJetpack
-    }
-
-    private func isRemoteFeatureFlagEnabled() async -> Bool {
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else {
-                return continuation.resume(returning: false)
-            }
-            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(
-                .wooPosTabletPromoBanner,
-                defaultValue: false
-            ) { isEnabled in
-                continuation.resume(returning: isEnabled)
-            }
-            self.stores.dispatch(action)
-        }
     }
 
     private func isBannerVisible(for campaign: FeatureAnnouncementCampaign) async -> Bool {

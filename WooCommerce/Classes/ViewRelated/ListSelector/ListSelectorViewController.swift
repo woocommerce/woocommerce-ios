@@ -2,6 +2,7 @@ import UIKit
 
 /// A generic data source for the list selector UI `ListSelectorViewController`.
 ///
+@MainActor
 protocol ListSelectorCommand {
     associatedtype Model
     associatedtype Cell: UITableViewCell
@@ -26,6 +27,7 @@ protocol ListSelectorCommand {
     func isSelected(model: Model) -> Bool
 
     /// Configures the cell with the given model.
+    @MainActor
     func configureCell(cell: Cell, model: Model)
 }
 
@@ -62,6 +64,11 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         configureNavigation()
         configureMainView()
         configureTableView()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -132,7 +139,12 @@ private extension ListSelectorViewController {
 
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(tableView)
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
 
         registerTableViewCells()
     }

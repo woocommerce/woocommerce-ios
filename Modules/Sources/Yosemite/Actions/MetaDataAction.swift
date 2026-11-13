@@ -16,6 +16,6 @@ public enum MetaDataAction: Action {
     case updateMetaData(siteID: Int64,
                         parentItemID: Int64,
                         metaDataType: MetaDataType,
-                        metadata: [[String: Any?]],
+                        metadata: [RequestParameterDictionary],
                         onCompletion: (Result<[MetaData], Error>) -> Void)
 }

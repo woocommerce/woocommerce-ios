@@ -59,6 +59,7 @@ public extension String {
     ///
     /// - Parameter includeTrailingNewline: If true, inserts a trailing newline; defaults to true
     ///
+    @MainActor
     func sendToPasteboard(includeTrailingNewline: Bool = true) {
         guard self.isEmpty == false else {
             return

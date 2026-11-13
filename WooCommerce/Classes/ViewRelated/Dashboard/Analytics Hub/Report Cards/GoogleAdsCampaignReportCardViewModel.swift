@@ -6,6 +6,7 @@ import protocol WooFoundation.Analytics
 /// Analytics Hub Google Ads Campaign Card ViewModel.
 /// Used to transmit Google Ads campaigns analytics data.
 ///
+@MainActor
 final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
@@ -235,7 +236,6 @@ extension GoogleAdsCampaignReportCardViewModel {
 
     /// Closure to be called when a campaign is successfully created from the call to action.
     ///
-    @MainActor
     func onGoogleCampaignCreated() async {
         didCreateCampaign = true
         await reload()
@@ -243,7 +243,6 @@ extension GoogleAdsCampaignReportCardViewModel {
 
     /// Checks whether the store is eligible for campaign creation.
     ///
-    @MainActor
     private func checkGoogleAdsEligibility() async -> Bool {
         isEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: siteID)
         return isEligibleForGoogleAds
@@ -252,7 +251,6 @@ extension GoogleAdsCampaignReportCardViewModel {
 
 // MARK: Networking
 private extension GoogleAdsCampaignReportCardViewModel {
-    @MainActor
     func retrieveGoogleCampaignStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
         isRedacted = true
         defer {
@@ -277,7 +275,6 @@ private extension GoogleAdsCampaignReportCardViewModel {
         previousPeriodStats = allStats?.previousPeriodStats
     }
 
-    @MainActor
     /// Retrieves Google campaign stats using the `retrieveGoogleCampaignStats` action.
     ///
     func retrieveGoogleCampaignStats(timeZone: TimeZone,

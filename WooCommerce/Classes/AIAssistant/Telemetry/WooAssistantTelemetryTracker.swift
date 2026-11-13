@@ -1,9 +1,9 @@
 import EventHorizonSDK
 import Foundation
-@preconcurrency import protocol WooFoundation.Analytics
+import protocol WooFoundation.Analytics
 import WooAIAssistant
 
-struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
+struct WooAssistantTelemetryTracker: Sendable, AssistantTelemetryTracker {
 
     private let analytics: Analytics
 

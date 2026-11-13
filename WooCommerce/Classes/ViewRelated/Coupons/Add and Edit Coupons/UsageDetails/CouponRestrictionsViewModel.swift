@@ -59,6 +59,7 @@ final class CouponRestrictionsViewModel: ObservableObject {
 
     /// View model for the product selector
     ///
+    @MainActor
     lazy var productSelectorViewModel = {
         ProductSelectorViewModel(siteID: siteID,
                                  source: .couponRestrictions,

@@ -12,7 +12,7 @@ public protocol JustInTimeMessagesRemoteProtocol {
 
 /// Just In Time Messages: Remote endpoints
 ///
-public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemoteProtocol {
+public final class JustInTimeMessagesRemote: Remote, JustInTimeMessagesRemoteProtocol, @unchecked Sendable {
     // MARK: - GET Just In Time Messages
 
     /// Retrieves all of the `JustInTimeMessage`s from the API.

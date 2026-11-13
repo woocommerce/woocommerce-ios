@@ -1,10 +1,44 @@
 import SwiftUI
 
 /// A reusable notice view component that displays information with an icon, title, optional dismiss button, and optional content view.
-/// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-67_18935
+/// Design refs: 1qcjzXitBHU7xPnpCOWnNM-fi-67_18935, 1qcjzXitBHU7xPnpCOWnNM-fi-67_18939
 struct POSNoticeView<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
+    enum Style {
+        case neutral
+        case alertLowest
+
+        var backgroundColor: Color {
+            switch self {
+            case .neutral:
+                Color.posSurfaceBright
+            case .alertLowest:
+                Color.posAlertLowest
+            }
+        }
+
+        var foregroundColor: Color {
+            switch self {
+            case .neutral:
+                Color.posOnSurface
+            case .alertLowest:
+                Color.posOnAlertLowest
+            }
+        }
+
+        var dismissIconColor: Color {
+            switch self {
+            case .neutral:
+                Color.posOnSurfaceVariantLowest
+            case .alertLowest:
+                Color.posOnAlertLowest
+            }
+        }
+    }
+
     private let title: String
     private let icon: Image
+    private let style: Style
     private let onDismiss: (() -> Void)?
     private let onTap: (() -> Void)?
     private let content: Content?
@@ -12,36 +46,38 @@ struct POSNoticeView<Content: View>: View {
     init(
         title: String,
         icon: Image,
+        style: Style = .neutral,
         onDismiss: (() -> Void)? = nil,
         onTap: (() -> Void)? = nil,
         @ViewBuilder content: () -> Content? = { nil }
     ) {
         self.title = title
         self.icon = icon
+        self.style = style
         self.onDismiss = onDismiss
         self.onTap = onTap
         self.content = content()
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: Constants.padding) {
+        HStack(alignment: .center, spacing: metrics.padding.medium) {
             VStack {
                 Spacer()
                 Text(icon.resizable())
                     .font(.posButtonSymbolLarge)
-                    .padding(.horizontal, Constants.iconHorizontalPadding)
-                    .foregroundColor(Color.posOnSurface)
+                    .padding(.horizontal, metrics.padding.small)
+                    .foregroundColor(style.foregroundColor)
                     .accessibilityHidden(true)
                 Spacer()
             }
-            VStack(alignment: .leading, spacing: Constants.titleSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.small) {
                 Text(title)
                     .font(Constants.titleFont)
                     .accessibilityAddTraits(.isHeader)
                 if let content {
                     content
                         .font(Constants.contentFont)
-                        .lineSpacing(Constants.textSpacing)
+                        .lineSpacing(metrics.spacing.xSmall)
                         .accessibilityElement(children: .combine)
                 }
             }
@@ -55,7 +91,7 @@ struct POSNoticeView<Content: View>: View {
                         label: {
                             Text(Image(systemName: "xmark"))
                                 .font(.posButtonSymbolSmall)
-                                .foregroundColor(Color.posOnSurfaceVariantLowest)
+                                .foregroundColor(style.dismissIconColor)
                                 .accessibilityLabel(Localization.dismissAccessibilityLabel)
                         }
                     )
@@ -64,10 +100,11 @@ struct POSNoticeView<Content: View>: View {
                 }
             }
         }
-        .padding(Constants.padding)
+        .foregroundColor(style.foregroundColor)
+        .padding(metrics.padding.medium)
         .frame(maxWidth: .infinity)
         .fixedSize(horizontal: false, vertical: true)
-        .background(Color.posSurfaceBright)
+        .background(style.backgroundColor)
         .cornerRadius(Constants.cornerRadius)
         .posShadow(.medium, cornerRadius: Constants.cornerRadius)
         .if(onTap != nil) { view in
@@ -86,11 +123,7 @@ private enum Constants {
     static let titleFont: POSFontStyle = .posBodyLargeBold
     static let contentFont: POSFontStyle = .posBodySmallRegular()
     static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
-    static let textSpacing: CGFloat = POSSpacing.xSmall
-    static let titleSpacing: CGFloat = POSSpacing.small
-    static let iconHorizontalPadding: CGFloat = POSPadding.small
     static let dismissIconPadding: CGFloat = 6
-    static let padding: CGFloat = POSPadding.medium
 }
 
 private enum Localization {
@@ -108,14 +141,14 @@ private enum Localization {
         onDismiss: {},
         onTap: {}
     ) {
-        VStack(alignment: .leading, spacing: Constants.textSpacing) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.xSmall) {
             Text("This is a subtitle that explains more about the notice.")
             Text("Here's a hint about what to do next. Learn More")
                 .font(.posBodySmallBold())
                 .foregroundColor(Color.posPrimary)
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 
 #Preview("Without dismiss") {
@@ -124,14 +157,14 @@ private enum Localization {
         icon: Image(systemName: "bell"),
         onTap: {}
     ) {
-        VStack(alignment: .leading, spacing: Constants.textSpacing) {
+        VStack(alignment: .leading, spacing: POSMetrics.regular.spacing.xSmall) {
             Text("This is a subtitle that explains more about the notice.")
             Text("Here's a hint about what to do next. Learn More")
                 .font(.posBodySmallBold())
                 .foregroundColor(Color.posPrimary)
         }
     }
-    .padding()
+    .posPadding(\.medium)
 }
 
 #Preview("Banner that fits to width") {
@@ -140,5 +173,5 @@ private enum Localization {
         icon: Image(systemName: "info.circle")
     )
     .fixedSize(horizontal: true, vertical: true)
-    .padding()
+    .posPadding(\.medium)
 }

@@ -1,6 +1,6 @@
 import Foundation
-import Experiments
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -33,53 +33,90 @@ final class StorePickerViewModel {
     ///
     private let configuration: StorePickerConfiguration
 
+    /// Whether this picker belongs to a login journey. `.listStores` is opened from the login
+    /// error screens, which are reachable outside a login too, so the caller says which it is.
+    private let isFromLogin: Bool
+
     private let storageManager: StorageManagerType
     private let stores: StoresManager
     private let userDefaults: UserDefaults
     private let analytics: Analytics
+    private let tracker: AuthenticatorAnalyticsTracker
     private let roleEligibilityUseCase: RoleEligibilityUseCase
-    private let featureFlagService: FeatureFlagService
-
+    private var hasTrackedLoginOutcome = false
     init(configuration: StorePickerConfiguration,
+         isFromLogin: Bool? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         tracker: AuthenticatorAnalyticsTracker = .shared) {
         self.configuration = configuration
+        self.isFromLogin = isFromLogin ?? (configuration == .login)
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
-        self.featureFlagService = featureFlagService
         self.analytics = analytics
-        self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
+        self.tracker = tracker
+        self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores, detectUnexpectedResponses: configuration.detectsUnexpectedLoginResponses)
     }
 
     func trackScreenView() {
         let objects = resultsController.fetchedObjects
-        let stores = objects.filter { $0.isWooCommerceActive == true }
+        let wooStores = objects.filter { $0.isWooCommerceActive == true }
         let nonWooSites = objects.filter { $0.isWooCommerceActive == false }
         analytics.track(.sitePickerStoresShown, withProperties: [
-            "num_of_stores": stores.count,
+            "num_of_stores": wooStores.count,
             "num_of_non_woo_sites": nonWooSites.count
         ])
+    }
+
+    /// Reports what the merchant is looking at once the sites are settled, not when the screen is
+    /// built: before the sync the picker is showing a cache that may be empty for no other reason
+    /// than that this is the first run. Reported once, since a picker is visited once.
+    ///
+    /// A failed sync leaves whatever the cache held on screen. A list is still a list, so it counts,
+    /// but an empty one proves nothing about the account and is left unreported.
+    ///
+    func trackLoginOutcome(syncSucceeded: Bool) {
+        guard isFromLogin, !hasTrackedLoginOutcome else {
+            return
+        }
+
+        switch state {
+        case .empty:
+            guard syncSucceeded else {
+                return
+            }
+            hasTrackedLoginOutcome = true
+            tracker.track(step: .noWooStores)
+        case .available:
+            hasTrackedLoginOutcome = true
+            // An account with no store still lands on the list, shown as the sites it does own, so
+            // both steps describe the same screen. This one goes first so the tracker's current
+            // step ends on siteList, since that is what later clicks on the screen are attributed to.
+            if allFetchedSites.allSatisfy({ $0.isWooCommerceActive == false }) {
+                tracker.track(step: .noWooStores)
+            }
+            tracker.track(step: .siteList)
+        }
     }
 
     @MainActor
     func refreshSites(currentlySelectedSiteID: Int64?) async {
         await withCheckedContinuation { continuation in
-            refreshSites(currentlySelectedSiteID: currentlySelectedSiteID) {
+            refreshSites(currentlySelectedSiteID: currentlySelectedSiteID) { _ in
                 continuation.resume()
             }
         }
     }
 
-    func refreshSites(currentlySelectedSiteID: Int64?, completion: (() -> Void)? = nil) {
+    func refreshSites(currentlySelectedSiteID: Int64?, completion: ((Bool) -> Void)? = nil) {
         refetchSitesAndUpdateState()
 
-        synchronizeSites(selectedSiteID: currentlySelectedSiteID) { [weak self] _ in
+        synchronizeSites { [weak self] result in
             self?.refetchSitesAndUpdateState()
-            completion?()
+            completion?(result.isSuccess)
         }
     }
 
@@ -104,6 +141,32 @@ final class StorePickerViewModel {
         userDefaults.unhideStoreID(siteID)
         updateDisplayedStores()
     }
+
+    /// Returns the store that should be selected when the picker first loads.
+    func siteToPreselect(from sites: [Site]) -> Site? {
+        guard let firstAvailableStore = sites.first(where: \.isWooCommerceActive) else {
+            return nil
+        }
+
+        // Login only preselects an explicit credential match or an unambiguous sole result.
+        if configuration != .login, let site = stores.sessionManager.defaultSite {
+            return site
+        }
+
+        if case let .wpcom(_, _, siteAddress) = stores.sessionManager.defaultCredentials,
+           let site = sites.first(where: { $0.url == siteAddress }),
+           site.isWooCommerceActive {
+            return site
+        }
+
+        if configuration != .login {
+            return firstAvailableStore
+        }
+        guard sites.count == 1 else {
+            return nil
+        }
+        return firstAvailableStore
+    }
 }
 
 // MARK: - Private helpers
@@ -122,21 +185,20 @@ private extension StorePickerViewModel {
 
     func checkIfHidingStoresShouldBeEnabled() {
         shouldEnableHidingStores = {
-            guard featureFlagService.isFeatureFlagEnabled(.hideSitesInStorePicker),
-                  configuration == .switchingStores else {
+            guard configuration == .switchingStores else {
                 return false
             }
             return allFetchedSites.filter { $0.isWooCommerceActive }.count > 1
         }()
     }
 
-    func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let syncStartTime = Date()
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: selectedSiteID) { result in
+            .synchronizeSites { result in
                 switch result {
-                case .success(let containsJCPSites):
-                    if containsJCPSites {
+                case .success(let result):
+                    if result.containsJetpackConnectionPackageSites {
                         let syncDuration = round(Date().timeIntervalSince(syncStartTime) * 1000)
                         ServiceLocator.analytics.track(.jetpackCPSitesFetched, withProperties: ["duration": syncDuration])
                     }

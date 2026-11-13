@@ -6,13 +6,13 @@ import Storage
 // MARK: - BlazeStore
 //
 public final class BlazeStore: Store {
-    private let remote: BlazeRemoteProtocol
+    private let requests: BlazeRequestHandler
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
          remote: BlazeRemoteProtocol) {
-        self.remote = remote
+        self.requests = BlazeRequestHandler(remote: remote, storageManager: storageManager)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -49,6 +49,20 @@ public final class BlazeStore: Store {
             return
         }
 
+        requests.onAction(action)
+    }
+}
+
+private final class BlazeRequestHandler: Sendable {
+    private let remote: BlazeRemoteProtocol
+    private let storageManager: StorageManagerType
+
+    init(remote: BlazeRemoteProtocol, storageManager: StorageManagerType) {
+        self.remote = remote
+        self.storageManager = storageManager
+    }
+
+    func onAction(_ action: BlazeAction) {
         switch action {
         case let .createCampaign(campaign, siteID, onCompletion):
             createCampaign(campaign: campaign, siteID: siteID, onCompletion: onCompletion)
@@ -73,18 +87,27 @@ public final class BlazeStore: Store {
             fetchAISuggestions(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case let .fetchPaymentInfo(siteID, onCompletion):
             fetchPaymentInfo(siteID: siteID, onCompletion: onCompletion)
+        case let .fetchBillingSummary(siteID, onCompletion):
+            fetchBillingSummary(siteID: siteID, onCompletion: onCompletion)
         case let .synchronizeCampaignObjectives(siteID, locale, onCompletion):
             synchronizeCampaignObjectives(siteID: siteID, locale: locale, onCompletion: onCompletion)
         }
+    }
+
+    private func performAndSaveOnMain(_ operation: @escaping @Sendable (StorageType) -> Void,
+                                      completion: @escaping @MainActor @Sendable () -> Void) {
+        storageManager.performAndSave(operation, completion: {
+            MainActor.assumeIsolated { completion() }
+        }, on: .main)
     }
 }
 
 // MARK: - Create a new Blaze campaign
 //
-private extension BlazeStore {
+private extension BlazeRequestHandler {
     func createCampaign(campaign: CreateBlazeCampaign,
                         siteID: Int64,
-                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                        onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
                 try await remote.createCampaign(campaign, siteID: siteID)
@@ -98,11 +121,11 @@ private extension BlazeStore {
 
 // MARK: - Synchronized campaigns list
 //
-private extension BlazeStore {
+private extension BlazeRequestHandler {
     func synchronizeCampaignsList(siteID: Int64,
                                   skip: Int,
                                   limit: Int,
-                                  onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+                                  onCompletion: @escaping @MainActor @Sendable (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let results = try await remote.loadCampaignsList(for: siteID,
@@ -121,7 +144,7 @@ private extension BlazeStore {
 
     func synchronizeCampaign(campaignID: String,
                              siteID: Int64,
-                             onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                             onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let result = try await remote.retrieveCampaignDetails(campaignID: campaignID, from: siteID)
@@ -140,8 +163,8 @@ private extension BlazeStore {
     func upsertStoredBlazeCampaignListItemsInBackground(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
                                                         siteID: Int64,
                                                         shouldClearExistingCampaigns: Bool = false,
-                                                        onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ [weak self] derivedStorage in
+                                                        onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ [weak self] derivedStorage in
             guard let self else { return }
             if shouldClearExistingCampaigns {
                 derivedStorage.deleteBlazeCampaignListItems(siteID: siteID)
@@ -149,7 +172,7 @@ private extension BlazeStore {
             upsertStoredBlazeCampaignListItems(readOnlyCampaigns: readOnlyCampaigns,
                                                in: derivedStorage,
                                                siteID: siteID)
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 
     /// Updates or Inserts the specified BlazeCampaignListItem entities
@@ -172,9 +195,9 @@ private extension BlazeStore {
 }
 
 // MARK: - Synchronize target devices
-private extension BlazeStore {
+private extension BlazeRequestHandler {
 
-    func synchronizeTargetDevices(siteID: Int64, locale: String, onCompletion: @escaping (Result<[BlazeTargetDevice], Error>) -> Void) {
+    func synchronizeTargetDevices(siteID: Int64, locale: String, onCompletion: @escaping @MainActor @Sendable (Result<[BlazeTargetDevice], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let devices = try await remote.fetchTargetDevices(for: siteID, locale: locale)
@@ -193,22 +216,22 @@ private extension BlazeStore {
     ///
     func insertStoredTargetDevicesInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
                                                locale: String,
-                                               onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ derivedStorage in
+                                               onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ derivedStorage in
             derivedStorage.deleteBlazeTargetDevices(locale: locale)
             for device in readonlyDevices {
                 let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
                 storageDevice.update(with: device)
             }
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 }
 
 // MARK: - Synchronize target languages
-private extension BlazeStore {
+private extension BlazeRequestHandler {
     func synchronizeTargetLanguages(siteID: Int64,
                                     locale: String,
-                                    onCompletion: @escaping (Result<[BlazeTargetLanguage], Error>) -> Void) {
+                                    onCompletion: @escaping @MainActor @Sendable (Result<[BlazeTargetLanguage], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let languages = try await remote.fetchTargetLanguages(for: siteID, locale: locale)
@@ -227,22 +250,22 @@ private extension BlazeStore {
     ///
     func insertStoredTargetLanguagesInBackground(readonlyLanguages: [Networking.BlazeTargetLanguage],
                                                  locale: String,
-                                                 onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ derivedStorage in
+                                                 onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ derivedStorage in
             derivedStorage.deleteBlazeTargetLanguages(locale: locale)
             for language in readonlyLanguages {
                 let storageLanguage = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetLanguage.self)
                 storageLanguage.update(with: language)
             }
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 }
 
 // MARK: - Synchronize target topics
-private extension BlazeStore {
+private extension BlazeRequestHandler {
     func synchronizeTargetTopics(siteID: Int64,
                                  locale: String,
-                                 onCompletion: @escaping (Result<[BlazeTargetTopic], Error>) -> Void) {
+                                 onCompletion: @escaping @MainActor @Sendable (Result<[BlazeTargetTopic], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let topics = try await remote.fetchTargetTopics(for: siteID, locale: locale)
@@ -261,23 +284,23 @@ private extension BlazeStore {
     ///
     func insertStoredTargetTopicsInBackground(readonlyTopics: [Networking.BlazeTargetTopic],
                                               locale: String,
-                                              onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ derivedStorage in
+                                              onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ derivedStorage in
             derivedStorage.deleteBlazeTargetTopics(locale: locale)
             for topic in readonlyTopics {
                 let storageTopic = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetTopic.self)
                 storageTopic.update(with: topic)
             }
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 }
 
 // MARK: - Fetch target location by keyword
-private extension BlazeStore {
+private extension BlazeRequestHandler {
     func fetchTargetLocations(siteID: Int64,
                               query: String,
                               locale: String,
-                              onCompletion: @escaping (Result<[BlazeTargetLocation], Error>) -> Void) {
+                              onCompletion: @escaping @MainActor @Sendable (Result<[BlazeTargetLocation], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let locations = try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)
@@ -290,10 +313,10 @@ private extension BlazeStore {
 }
 
 // MARK: - Fetch forecasted impressions for a campaign to be created
-private extension BlazeStore {
+private extension BlazeRequestHandler {
     func fetchForecastedImpressions(siteID: Int64,
                                     input: BlazeForecastedImpressionsInput,
-                                    onCompletion: @escaping (Result<BlazeImpressions, Error>) -> Void) {
+                                    onCompletion: @escaping @MainActor @Sendable (Result<BlazeImpressions, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let impressions = try await remote.fetchForecastedImpressions(for: siteID, with: input)
@@ -307,10 +330,10 @@ private extension BlazeStore {
 
 // MARK: - Fetch AI based suggestions
 //
-private extension BlazeStore {
+private extension BlazeRequestHandler {
     func fetchAISuggestions(siteID: Int64,
                             productID: Int64,
-                            onCompletion: @escaping (Result<[BlazeAISuggestion], Error>) -> Void) {
+                            onCompletion: @escaping @MainActor @Sendable (Result<[BlazeAISuggestion], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let suggestions: [BlazeAISuggestion] = try await remote.fetchAISuggestions(siteID: siteID, productID: productID)
@@ -324,8 +347,8 @@ private extension BlazeStore {
 
 // MARK: - Fetch payment info
 //
-private extension BlazeStore {
-    func fetchPaymentInfo(siteID: Int64, onCompletion: @escaping (Result<BlazePaymentInfo, Error>) -> Void) {
+private extension BlazeRequestHandler {
+    func fetchPaymentInfo(siteID: Int64, onCompletion: @escaping @MainActor @Sendable (Result<BlazePaymentInfo, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let paymentInfo = try await remote.fetchPaymentInfo(siteID: siteID)
@@ -337,12 +360,27 @@ private extension BlazeStore {
     }
 }
 
+// MARK: - Fetch billing summary
+//
+private extension BlazeRequestHandler {
+    func fetchBillingSummary(siteID: Int64, onCompletion: @escaping @MainActor @Sendable (Result<BlazeBillingSummary, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let summary = try await remote.fetchBillingSummary(siteID: siteID)
+                onCompletion(.success(summary))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+}
+
 // MARK: Sync campaign objectives
 //
-private extension BlazeStore {
+private extension BlazeRequestHandler {
     func synchronizeCampaignObjectives(siteID: Int64,
                                        locale: String,
-                                       onCompletion: @escaping (Result<[BlazeCampaignObjective], Error>) -> Void) {
+                                       onCompletion: @escaping @MainActor @Sendable (Result<[BlazeCampaignObjective], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let objectives = try await remote.fetchCampaignObjectives(siteID: siteID, locale: locale)
@@ -361,14 +399,14 @@ private extension BlazeStore {
     ///
     func insertStoredCampaignObjectiveInBackground(readonlyObjectives: [Networking.BlazeCampaignObjective],
                                                    locale: String,
-                                                   onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ derivedStorage in
+                                                   onCompletion: @escaping @MainActor @Sendable () -> Void) {
+        performAndSaveOnMain({ derivedStorage in
             derivedStorage.deleteBlazeCampaignObjectives(locale: locale)
             for objective in readonlyObjectives {
                 let storageObjectives = derivedStorage.insertNewObject(ofType: Storage.BlazeCampaignObjective.self)
                 storageObjectives.update(with: objective)
             }
-        }, completion: onCompletion, on: .main)
+        }, completion: onCompletion)
     }
 }
 

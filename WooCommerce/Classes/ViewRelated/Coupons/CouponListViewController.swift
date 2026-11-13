@@ -165,7 +165,7 @@ private extension CouponListViewController {
             guard let self else { return }
             self.dismiss(animated: true)
         })
-        present(addEditHostingController, animated: true)
+        presentIfIdle(addEditHostingController)
     }
 }
 
@@ -265,7 +265,9 @@ private extension CouponListViewController {
                                                                   image: .couponsImage,
                                                                   details: Localization.couponsDisabledDetail,
                                                                   buttonTitle: Localization.couponsDisabledAction) { [weak self] _ in
-            self?.viewModel.enableCoupons()
+            Task { [weak self] in
+                await self?.viewModel.enableCoupons()
+            }
         }
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)

@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class CardReaderManualsScreen: ScreenObject {
     private let chipperManualButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["BBPOS Chipper 2X BT"]

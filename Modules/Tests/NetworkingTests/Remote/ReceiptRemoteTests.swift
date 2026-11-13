@@ -125,6 +125,43 @@ final class ReceiptRemoteTests: XCTestCase {
         try await remote.sendReceipt(siteID: 123, orderID: orderID)
     }
 
+    func test_sendReceipt_with_completion_when_request_succeeds_then_completes_with_success() throws {
+        // Given
+        let remote = ReceiptRemote(network: network)
+        let endpoint = "orders/\(sampleOrderID)/actions/send_order_details"
+        network.simulateResponse(requestUrlSuffix: endpoint, filename: "orders-actions-send-order-details")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            remote.sendReceipt(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNoThrow(try result.get())
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.method, .post)
+        XCTAssertEqual(request.path, endpoint)
+    }
+
+    func test_sendReceipt_with_completion_when_request_fails_then_completes_with_error() throws {
+        // Given
+        let remote = ReceiptRemote(network: network)
+        let endpoint = "orders/\(sampleOrderID)/actions/send_order_details"
+        network.simulateError(requestUrlSuffix: endpoint, error: NetworkError.timeout())
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            remote.sendReceipt(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertThrowsError(try result.get())
+    }
+
     func test_sendPOSReceipt_when_templateID_provided_includes_template_id() async throws {
         // Given
         let remote = ReceiptRemote(network: network)

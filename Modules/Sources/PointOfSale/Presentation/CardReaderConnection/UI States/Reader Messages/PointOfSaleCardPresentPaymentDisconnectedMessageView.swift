@@ -8,6 +8,7 @@ import SwiftUI
 /// This view used to host its own "Connect your reader" CTA, but moving it into
 /// the row keeps method selection in one place and avoids two competing CTAs.
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
+    @Environment(\.posMetrics) private var metrics
     private let viewModel: PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel
     private let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
@@ -20,14 +21,14 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: POSSpacing.none) {
+        VStack(alignment: .center, spacing: metrics.spacing.none) {
             POSCardPresentPaymentMessageViewImage(imageName: PointOfSaleAssets.readerDisconnected.imageName)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             Spacer()
-                .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing))
+                .frame(height: dynamicSpacing(metrics.spacing.large))
 
-            VStack(alignment: .center, spacing: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.textSpacing)) {
+            VStack(alignment: .center, spacing: dynamicSpacing(metrics.spacing.small)) {
                 Text(viewModel.title)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -40,7 +41,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
-            .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
+            .padding(.horizontal, metrics.padding.xxLarge)
         }
         .frame(maxWidth: .infinity)
         .multilineTextAlignment(.center)

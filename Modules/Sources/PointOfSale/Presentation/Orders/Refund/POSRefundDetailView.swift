@@ -3,6 +3,7 @@ import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
 
 struct POSRefundDetailView: View {
+    @Environment(\.posMetrics) private var metrics
     let refund: POSOrderRefund
     let title: String
     let paymentMethodDescription: String
@@ -12,10 +13,10 @@ struct POSRefundDetailView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             headerView
             ScrollView {
-                VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: metrics.spacing.medium) {
                     if !refund.items.isEmpty {
                         productRows
                         POSDivider()
@@ -24,8 +25,8 @@ struct POSRefundDetailView: View {
                     POSDivider()
                     refundTotalSection
                 }
-                .padding(.horizontal, POSPadding.xLarge)
-                .padding(.bottom, POSPadding.xLarge)
+                .padding(.horizontal, metrics.padding.xLarge)
+                .padding(.bottom, metrics.padding.xLarge)
             }
         }
         .background(Color.posSurfaceBright)
@@ -55,17 +56,17 @@ private extension POSRefundDetailView {
             .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
         }
         .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        .padding(metrics.padding.xLarge)
     }
 
     var productRows: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             ForEach(refund.items) { item in
                 productRow(item: item)
 
                 if item.id != refund.items.last?.id {
                     POSDivider()
-                        .padding(.vertical, POSSpacing.small)
+                        .padding(.vertical, metrics.spacing.small)
                 }
             }
         }
@@ -76,9 +77,9 @@ private extension POSRefundDetailView {
     }
 
     var summaryRows: some View {
-        VStack(spacing: POSSpacing.small) {
+        VStack(spacing: metrics.spacing.small) {
             summaryRow(
-                label: Localization.itemsSubtotalLabel(refund.itemCount),
+                label: POSRefundSubtotalLabel.make(refund.itemCount),
                 value: refund.formattedItemsSubtotal
             )
             summaryRow(
@@ -89,7 +90,7 @@ private extension POSRefundDetailView {
     }
 
     var refundTotalSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             HStack {
                 Text(Localization.refundTotalLabel)
                     .font(.posBodyLargeBold)
@@ -128,20 +129,6 @@ private extension POSRefundDetailView {
             comment: "Accessibility label for close button on refund detail dialog"
         )
 
-        static func itemsSubtotalLabel(_ count: Int) -> String {
-            let singular = NSLocalizedString(
-                "pos.refundDetailView.itemsSubtotalFormat.singular",
-                value: "Items subtotal (%1$d item)",
-                comment: "Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items."
-            )
-            let plural = NSLocalizedString(
-                "pos.refundDetailView.itemsSubtotalFormat.plural",
-                value: "Items subtotal (%1$d items)",
-                comment: "Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items."
-            )
-            return String.pluralize(count, singular: singular, plural: plural)
-        }
-
         static let taxLabel = NSLocalizedString(
             "pos.refundDetailView.taxLabel",
             value: "Tax",
@@ -175,7 +162,7 @@ private extension POSRefundDetailView {
         paymentMethodDescription: "Via WooCommerce In-Person Payments",
         onClose: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 
 #Preview("Refund Detail - Multiple Items") {
@@ -197,6 +184,6 @@ private extension POSRefundDetailView {
         paymentMethodDescription: "Via WooCommerce In-Person Payments",
         onClose: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

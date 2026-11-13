@@ -104,17 +104,6 @@ final class OrderMapperTests: XCTestCase {
         }
     }
 
-    /// Verifies that Order shipping phone is parsed correctly from metadata.
-    ///
-    func test_Order_shipping_phone_is_correctly_parsed_from_metadata() {
-        guard let order = mapLoadFullyRefundedOrderResponse(), let shippingAddress = order.shippingAddress else {
-            XCTFail("Expected a mapped order response with a non-nil shipping address.")
-            return
-        }
-
-        XCTAssertEqual(shippingAddress.phone, "555-666-7777")
-    }
-
     /// Verifies that all of the Order Items are parsed correctly.
     ///
     func test_Order_items_are_correctly_parsed() {
@@ -465,6 +454,9 @@ final class OrderMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(order.shippingLines.first?.taxes.first?.taxID, 1)
         XCTAssertEqual(order.items.first?.sku, "123")
+        XCTAssertEqual(order.items.first?.taxes.first?.taxID, 0)
+        XCTAssertEqual(order.items.last?.taxes.first?.taxID, 1)
+        XCTAssertEqual(order.fees.first?.taxes.first?.taxID, 0)
     }
 
     func test_order_line_item_addons_without_ID_are_parsed_correctly() throws {

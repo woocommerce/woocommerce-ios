@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class OrderSearchScreen: ScreenObject {
 
     init(app: XCUIApplication = XCUIApplication()) throws {

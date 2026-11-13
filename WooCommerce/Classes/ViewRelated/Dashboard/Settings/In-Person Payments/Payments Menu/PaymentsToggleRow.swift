@@ -17,7 +17,7 @@ struct PaymentsToggleRow: View {
                 toggleRowViewModel.cashOnDeliveryEnabledState
             },
             set: {
-                toggleRowViewModel.updateCashOnDeliverySetting(enabled: $0)
+                toggleRowViewModel.cashOnDeliveryToggleRequested(enabled: $0)
             })
     }
 
@@ -37,6 +37,26 @@ struct PaymentsToggleRow: View {
             }
             .accessibilityElement(children: .combine)
         }
+        .alert(toggleRowViewModel.pendingToggleConfirmation?.title ?? "",
+               isPresented: Binding(
+                get: {
+                    toggleRowViewModel.pendingToggleConfirmation != nil
+                },
+                set: { isPresented in
+                    if !isPresented {
+                        toggleRowViewModel.dismissCashOnDeliveryToggleConfirmation()
+                    }
+                }),
+               presenting: toggleRowViewModel.pendingToggleConfirmation) { confirmation in
+            Button(confirmation.confirmButtonTitle) {
+                toggleRowViewModel.confirmCashOnDeliveryToggle(targetState: confirmation.targetState)
+            }
+            Button(confirmation.cancelButtonTitle, role: .cancel) {
+                toggleRowViewModel.dismissCashOnDeliveryToggleConfirmation()
+            }
+        } message: { confirmation in
+            Text(confirmation.message)
+        }
     }
 
     private enum Layout {
@@ -47,7 +67,7 @@ struct PaymentsToggleRow: View {
 struct PaymentsToggleRow_Previews: PreviewProvider {
     static var previews: some View {
         PaymentsToggleRow(image: Image(uiImage: .creditCardIcon),
-                          title: "Pay in Person",
+                          title: "Pay In Person",
                           toggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel())
         .previewLayout(.sizeThatFits)
     }

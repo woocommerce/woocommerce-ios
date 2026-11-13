@@ -12,12 +12,6 @@
    Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
 
-/* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (%2$ld option)";
-
-/* Format for each Product attribute in plural form */
-"%1$@ (%2$ld options)" = "%1$@ (%2$ld options)";
-
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (Private)";
 
@@ -59,17 +53,11 @@ which should be translated separately and considered part of this sentence. */
 /* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
 "%1$@ off · %2$@" = "%1$@ off · %2$@";
 
-/* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ refund requested (%2$@)";
-
 /* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
 "%1$@ selected" = "%1$@ selected";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
 "%1$@ total" = "%1$@ total";
-
-/* Payment on <date> received via (payment method title) */
-"%1$@ via %2$@" = "%1$@ via %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
 "%1$@ · Excl. %2$@" = "%1$@ · Excl. %2$@";
@@ -157,9 +145,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "%@ label refund requested";
-
-/* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
-"%@ via %@" = "%1$@ via %2$@";
 
 /* Message of the free trial banner when there is more than 1 day left */
 "%d days left in your trial." = "%d days left in your trial.";
@@ -497,6 +482,21 @@ which should be translated separately and considered part of this sentence. */
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Add your first store";
 
+/* Button that confirms an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsAction" = "Stop using";
+
+/* Message of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsMessage" = "Existing variations will no longer match on this attribute.";
+
+/* Title of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsTitle" = "Stop using for variations?";
+
+/* Title of the switch that uses a product attribute for variations. */
+"addAttributeOptionsViewController.usedForVariations" = "Used for variations";
+
+/* Title of the switch that shows a product attribute on the product page. */
+"addAttributeOptionsViewController.visibleOnProductPage" = "Visible on product page";
+
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "Delete Custom Amount";
 
@@ -704,9 +704,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "Amount (%@)";
 
-/* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "Amount Eligible For Refund";
-
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "Amount Paid";
@@ -864,10 +861,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Metric";
 
-/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+/* Description of the analytics updates sheet
+   Description shown below the title of the analytics updates bottom sheet on the dashboard. */
 "analyticsUpdateModeBottomSheet.description" = "Choose when analytics data is updated.";
 
-/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period.
+   Footer of the analytics updates sheet */
 "analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "This is a store-wide setting, which also controls the \"Updates\" option in WooCommerce admin analytics settings. %1$@.";
 
 /* Description of the Immediately analytics update option. */
@@ -876,7 +875,8 @@ which should be translated separately and considered part of this sentence. */
 /* Analytics update option that imports analytics data as soon as new data is available. */
 "analyticsUpdateModeBottomSheet.immediateTitle" = "Immediately";
 
-/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation.
+   Link to WooCommerce Analytics documentation */
 "analyticsUpdateModeBottomSheet.learnMore" = "Learn more";
 
 /* Navigation title for the WooCommerce Analytics documentation web view. */
@@ -888,10 +888,12 @@ which should be translated separately and considered part of this sentence. */
 /* Analytics update option that imports analytics data on a schedule. */
 "analyticsUpdateModeBottomSheet.scheduledTitle" = "Scheduled";
 
-/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+/* Title of the analytics updates sheet
+   Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
 "analyticsUpdateModeBottomSheet.title" = "Analytics updates";
 
-/* Notice shown when saving the analytics update mode setting fails. */
+/* Notice shown when saving Analytics updates fails
+   Notice shown when saving the analytics update mode setting fails. */
 "analyticsUpdateModeBottomSheet.updateErrorNotice" = "Couldn't update the setting. Please try again.";
 
 /* Country option for a site address. */
@@ -926,6 +928,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "Got it";
 
+/* Alert button that opens Help & Support, displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.contactSupportButton" = "Contact Support";
+
 /* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
 "appCoordinator.ineligibleAgeRangeAlert.message" = "Your Apple account age is below the minimum required for this app (%1d+).";
 
@@ -952,6 +957,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Application Name";
+
+/* Button that exports all retained application logs as a ZIP file. */
+"applicationLog.exportAllLogs" = "Export All Logs";
+
+/* Message of an alert shown when application logs could not be exported. */
+"applicationLog.exportError.message" = "Please try again.";
+
+/* Button that dismisses the application log export error alert. */
+"applicationLog.exportError.ok" = "OK";
+
+/* Title of an alert shown when application logs could not be exported. */
+"applicationLog.exportError.title" = "Unable to Export Logs";
+
+/* Placeholder text for the search field on the application log detail screen. */
+"applicationLogDetail.searchPrompt" = "Search logs";
 
 /* Button that will navigate to a web page explaining Application Password */
 "applicationPasswordDisabled.auxiliaryButtonTitle" = "What is Application Password?";
@@ -1167,21 +1187,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "Average Order Value";
 
-/* The title on the payment row of the Order Details screen when the payment is still pending */
-"Awaiting payment" = "Awaiting payment";
-
-/* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
-"Awaiting payment via %@" = "Awaiting payment via %@";
-
 /* Country option for a site address. */
 "Azerbaijan" = "Azerbaijan";
+
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "Bold";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "Italic";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "Underline";
 
 /* Country option for a site address. */
 "Åland Islands" = "Åland Islands";
 
 /* Accessibility label for Back button in the navigation bar
-   Alert button title - dismisses alert, which cancels the log out attempt
-   Previous web page */
+   Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Back";
 
 /* Accessibility announcement message when device goes back online */
@@ -1681,6 +1703,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "Weekly";
 
+/* Title of the web view to pay an unpaid Blaze order from the Blaze campaign list. */
+"blazeCampaignListView.paymentTitle" = "Pay Outstanding Balance";
+
 /* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
 "blazeCampaignObjectivePickerView.accessibilityHintSelected" = "Selected";
 
@@ -1920,6 +1945,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Learn how %1$@ works";
+
+/* Message of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. %1$@ is the formatted outstanding amount, e.g. $25.05. */
+"blazeOutstandingBalanceView.message" = "Your account currently has an outstanding balance of %1$@. Please pay it before creating new campaigns.";
+
+/* Button to open the payment page of an unpaid Blaze order. */
+"blazeOutstandingBalanceView.pay" = "Pay";
+
+/* Title of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. */
+"blazeOutstandingBalanceView.title" = "Outstanding balance";
 
 /* Button title in the Blaze Payment Method screen if there is an existing payment method */
 "blazePaymentMethodsView.addAnotherCreditCardButton" = "Add another credit card";
@@ -2794,6 +2828,18 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a dismiss button when a software update has finished */
 "CardPresentModalUpdateProgress.button.dismissButtonText" = "Dismiss";
 
+/* Shown when fetching store settings fails and the store country remains unknown. */
+"cardPresentPayment.countryRecovery.cardPaymentSettingsUnavailable" = "We couldn’t load your store settings to check card payment availability.";
+
+/* Status while fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.checkingCardPaymentAvailability" = "Checking card payment availability…";
+
+/* Shown when fetched store settings have no recognizable country. Check the store country, then retry. */
+"cardPresentPayment.countryRecovery.countryUnavailable" = "We couldn’t identify your store’s country. Check the country in your WooCommerce store settings.";
+
+/* Retry fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.retry" = "Retry";
+
 /* A title for CTA to present native location permission alert */
 "cardPresentPayment.locationPreAlert.continueButton" = "Continue";
 
@@ -2818,8 +2864,68 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "Enable location services in device settings to allow payments.";
 
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"cardPresentPayment.reader.multipleContactlessCardsDetected" = "Multiple cards detected. Try again with a single card.";
+
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "WooCommerce Settings";
+
+/* VoiceOver summary confirming that a Tap to Pay payment was canceled without charging the customer. */
+"cardPresentPayment.tapToPay.paymentCancelled.accessibilityLabel" = "Payment canceled. No payment was taken. The Tap to Pay checkmark and sound only confirmed that the card was read.";
+
+/* Explains that Apple's Tap to Pay success feedback did not mean the canceled payment was completed. */
+"cardPresentPayment.tapToPay.paymentCancelled.cardReadExplanation" = "The Tap to Pay checkmark and sound only confirmed that the card was read.";
+
+/* Button dismissing confirmation of a canceled Tap to Pay payment. */
+"cardPresentPayment.tapToPay.paymentCancelled.done" = "Done";
+
+/* Message confirming that a canceled Tap to Pay payment did not charge the customer. */
+"cardPresentPayment.tapToPay.paymentCancelled.noPaymentTaken" = "No payment was taken.";
+
+/* Title confirming that a Tap to Pay payment was canceled in WooCommerce. */
+"cardPresentPayment.tapToPay.paymentCancelled.title" = "Payment canceled";
+
+/* Button to recheck In-Person Payments requirements when the payment account was rejected. */
+"cardPresentPayments.onboarding.accountRejected.refreshButton" = "Refresh";
+
+/* Button to recheck In-Person Payments requirements while the payment account is under review. */
+"cardPresentPayments.onboarding.accountUnderReview.refreshButton" = "Refresh";
+
+/* Button to recheck In-Person Payments requirements when the store country is not supported. */
+"cardPresentPayments.onboarding.countryNotSupported.refreshButton" = "Refresh";
+
+/* Button to recheck In-Person Payments requirements when Stripe does not support the store country. */
+"cardPresentPayments.onboarding.countryNotSupportedStripe.refreshButton" = "Refresh";
+
+/* Button to open the selected payment plugin's settings. */
+"cardPresentPayments.onboarding.paymentSettings.button" = "Open Payment Settings";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotActivated.refreshButton" = "Refresh";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotInstalled.refreshButton" = "Refresh";
+
+/* Title of the store admin web view opened from payment onboarding. */
+"cardPresentPayments.onboarding.storeAdmin.title" = "Store Admin";
+
+/* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.message" = "You have at least one overdue requirement. You can skip and keep taking payments, but if the requirement is blocking your account, some transactions may be declined until you resolve it.";
+
+/* Button to open a web view and resolve overdue requirements before continuing with In-Person Payments. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.resolveButton" = "Resolve Now";
+
+/* Button to skip the overdue-requirements onboarding step and continue accepting In-Person Payments. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.skipButton" = "Skip";
+
+/* Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.title" = "Overdue requirements on your account";
+
+/* Button to recheck In-Person Payments requirements when checking payment eligibility failed. */
+"cardPresentPayments.onboarding.unavailable.retryButton" = "Retry";
+
+/* Button to open store admin to update a payment plugin. */
+"cardPresentPayments.onboarding.updatePlugin.button" = "Update Plugin in Store Admin";
 
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "Back to Order";
@@ -3004,9 +3110,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Christmas Island" = "Christmas Island";
 
-/* Display label for the CIAB 'Open' order status, which groups pending, processing, on-hold, and failed orders. */
-"ciabOrderStatusMapper.open" = "Open";
-
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
 "City" = "City";
@@ -3096,50 +3199,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Collapsed";
 
-/* Title of the button to add address in the order form customer card. */
-"collapsibleCustomerCard.addAddress.title" = "Add customer address";
-
-/* Address header text in the order form customer card when the billing and shipping addresses are the same. */
-"collapsibleCustomerCard.editAddress.address.header" = "Address";
-
-/* Billing address header text in the order form customer card. */
-"collapsibleCustomerCard.editAddress.billing.header" = "Billing address";
-
-/* Shipping address header text in the order form customer card. */
-"collapsibleCustomerCard.editAddress.shipping.header" = "Shipping address";
-
-/* Title of the email text field in the order form customer card. */
-"collapsibleCustomerCard.emailTextField.placeholder" = "Enter email address";
-
-/* Title of the email text field in the order form customer card. */
-"collapsibleCustomerCard.emailTextField.title" = "Email address";
-
-/* Title of the button to remove customer from an order in the order form customer card. */
-"collapsibleCustomerCard.removeCustomerButton.title" = "Remove customer from order";
-
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
-
-/* The label points to the free trial conditions for product subscriptions */
-"CollapsibleProductRowCard.text.freetrial" = "Free trial";
-
-/* The label points to the charge interval for product subscriptions */
-"CollapsibleProductRowCard.text.interval" = "Interval";
-
-/* The label points to the sign up fee conditions for product subscriptions */
-"CollapsibleProductRowCard.text.signupfee" = "Signup fee";
-
-/* Description of the billing and billing frequency for a subscription product. Reads as: 'Every 2 months'. */
-"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "Every %1$@ %2$@";
-
-/* Description of the free trial conditions for a subscription product. Reads as: '3 days free'. */
-"CollapsibleProductRowCardViewModel.formattedFreeTrial" = "%1$@ %2$@ free";
-
-/* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
-"CollapsibleProductRowCardViewModel.formattedSignUpFee" = "%1$@ signup";
-
-/* Summary of quantity and signup fees for a subscription product when multiple are selected.Reads as: '3 × $0.60'. Please ensure you use a multiplication symbol, not a letter x */
-"CollapsibleProductRowCardViewModel.signupFeeSummary" = "%1$@ × %2$@";
 
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "SKU: %1$@";
@@ -3160,14 +3221,77 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "Collect payments, setup Tap to Pay, order card readers and more.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "Change due: %1$@";
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "Change due: %1$@";
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Order total has changed since the beginning of payment. Please go back and check the order is correct, then try the payment again.";
 
 /* Country option for a site address. */
 "Colombia" = "Colombia";
+
+/* Sanitized response excerpt in the automatic login support message */
+"com.woocommerce.login.supportContext.excerpt" = "Response excerpt: %1$@";
+
+/* Automatic user message opening support chat after an unexpected login response; placeholders contain diagnostics */
+"com.woocommerce.login.supportContext.message" = "I couldn't log in to my store. Please help me troubleshoot this unexpected response.\n\nSite: %1$@\nLogin step: %2$@\nLogin flow: %3$@\nFailure kind: %4$@\nHTTP status: %5$@";
+
+/* Request and content type diagnostic details in the automatic login support message */
+"com.woocommerce.login.supportContext.metadata" = "Request: %1$@\nContent type: %2$@";
+
+/* Unavailable diagnostic value in the automatic login support message */
+"com.woocommerce.login.supportContext.unknown" = "Unknown";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "Dismiss";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "Your store returned an unexpected response, so we couldn’t finish logging you in. Try again or contact support for help.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "Try Again";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "Contact Support";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "Unable to log in";
+
+/* Description shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.description" = "A security plugin may move the WordPress dashboard. Enter the address you use to open it.";
+
+/* Placeholder for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.placeholder" = "WordPress dashboard address";
+
+/* Title shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.title" = "Where is your store’s dashboard?";
+
+/* Browser authentication button shown during custom address recovery. */
+"com.woocommerce.siteCredentials.recovery.browserAlternative" = "Try signing in with your browser instead";
+
+/* Button returning to the username and password form. */
+"com.woocommerce.siteCredentials.recovery.cancel" = "Cancel";
+
+/* Error shown when no WordPress dashboard exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.adminNotFound" = "We couldn’t reach the WordPress dashboard at that address. Check it and try again.";
+
+/* Error shown when a custom WordPress address does not belong to the current site. */
+"com.woocommerce.siteCredentials.recovery.error.differentSite" = "Enter an address on the same site without changing its secure connection or port.";
+
+/* Error shown when a custom WordPress address is not a full web address. */
+"com.woocommerce.siteCredentials.recovery.error.invalidURL" = "Enter a full web address, including http:// or https://.";
+
+/* Error shown when no WordPress sign-in page exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.loginNotFound" = "We couldn’t find a WordPress sign-in page at that address. Check it and try again.";
+
+/* Description shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.description" = "A security plugin may use a custom WordPress sign-in address. Enter the address you use to sign in.";
+
+/* Placeholder for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.placeholder" = "WordPress sign-in address";
+
+/* Title shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.title" = "Where do you sign in to your store?";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store." = "Come back soon for more tips and insights on growing your store.";
@@ -3181,9 +3305,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
 "Compared to **%1$@**" = "Compared to **%1$@**";
-
-/* Third instruction on the test order screen */
-"Complete the payment and await a push notification about the order on your WooCommerce app." = "Complete the payment and await a push notification about the order on your WooCommerce app.";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "Component Options";
@@ -3655,6 +3776,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of Summary section in Coupon Details screen */
 "Coupon Summary" = "Coupon Summary";
 
+/* Accessibility hint for an applied coupon card in the coupon list. Activating the card removes the coupon from the cart. */
+"couponCardView.appliedAccessibilityHint" = "Removes the coupon from the cart";
+
+/* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
+"couponCardView.appliedAccessibilityValue" = "Applied";
+
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "Expired on %@";
 
@@ -3841,9 +3968,6 @@ which should be translated separately and considered part of this sentence. */
    Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "Customer Provided Note";
 
-/* Accessibility title for the search button on the customer section. */
-"customer.search.button.accessibilityLabel" = "Search customer";
-
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "Guest";
 
@@ -3949,6 +4073,42 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "Customers need to enter this code to use the coupon.";
 
+/* Message shown when WooCommerce Analytics is turned off while loading customers */
+"customers.error.analyticsDisabled" = "Customer lists need WooCommerce Analytics, which is turned off for this store. You can enable it here, or in your store admin under WooCommerce › Settings › Advanced › Features and then tap Retry.";
+
+/* Message shown when the current user can't view the WooCommerce Analytics setting */
+"customers.error.analyticsNoPermission" = "Customer lists need WooCommerce Analytics, which isn't available on this store. Ask a store administrator to turn it on in WooCommerce › Settings › Advanced › Features.";
+
+/* Message shown when WooCommerce Analytics is unavailable while loading customers */
+"customers.error.analyticsUnavailable" = "Customer lists need WooCommerce Analytics, which isn't available on this store right now. Ask a store administrator to check that it's turned on.";
+
+/* Cancel action in the WooCommerce Analytics confirmation */
+"customers.error.cancel" = "Cancel";
+
+/* Confirmation action to enable WooCommerce Analytics */
+"customers.error.confirm" = "Enable";
+
+/* Explanation that enabling WooCommerce Analytics changes a store-wide setting */
+"customers.error.confirmationMessage" = "This changes a setting for your whole store. It stays on until someone turns it off in WooCommerce › Settings › Advanced › Features. Customers from the time Analytics was off may only show up after you import historical data in WooCommerce › Analytics › Settings.";
+
+/* Confirmation title before enabling WooCommerce Analytics from the customer loading error state */
+"customers.error.confirmationTitle" = "Enable WooCommerce Analytics?";
+
+/* Action to enable WooCommerce Analytics from the customer loading error state */
+"customers.error.enableAnalytics" = "Enable Analytics";
+
+/* Notice shown when the app can't enable WooCommerce Analytics from the Customers error state */
+"customers.error.enableAnalyticsFailure" = "WooCommerce Analytics couldn't be enabled. Please try again.";
+
+/* Generic customer loading error shown after a WooCommerce Analytics error */
+"customers.error.generic" = "Failed to fetch the customers data. Please try again later.";
+
+/* Retry action in the customer loading error state */
+"customers.error.retry" = "Retry";
+
+/* Title for the customer loading error state */
+"customers.error.title" = "Customers can't be loaded";
+
 /* Message to prompt users to search for customers on the customer search screen */
 "customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "Search for an existing customer";
 
@@ -3957,6 +4117,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Add Customer to order screen when getting the customer information */
 "customerSelectorViewController.guestSelectionDisallowedError" = "This user is a guest, and guests can’t be used for filtering orders.";
+
+/* Button to load the customers again after they failed to load in the customer selector screen */
+"customerSelectorViewController.retry" = "Retry";
 
 /* Placeholder for a customer with no email address in the Customers list screen. */
 "customersList.emailPlaceholder" = "No email address";
@@ -4133,7 +4296,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the Dashboard generic error card. */
 "dashboardCardErrorView.dismissSupport" = "Done";
 
-/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+/* The info of the error view when failed to load store statistics on the Dashboard screen.
+   The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
 "dashboardCardErrorView.errorMessage" = "Try reloading this card. If the issue persists, please %1$@.";
 
 /* The title of the error view when failed to load a Dashboard card */
@@ -4193,7 +4357,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of 'Date Paid' section in the receipt */
 "Date paid" = "Date paid";
 
-/* Navigation title of the orders filter selector screen for date range
+/* Accessibility label for the date range selection menu on a Dashboard card.
+   Navigation title of the orders filter selector screen for date range
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "Date Range";
@@ -4218,6 +4383,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the default component option field in the Component Settings view */
 "Default Option" = "Default Option";
+
+/* Format of each attribute on the Product screen attributes row. %1$@ is the attribute name, %2$@ its options, e.g. Color: Red, Blue */
+"defaultProductFormTableViewModel.attributeDetailFormat" = "%1$@: %2$@";
+
+/* Title of the attributes row on the Product screen */
+"defaultProductFormTableViewModel.attributesTitle" = "Attributes";
 
 /* Details text for the Custom Fields row */
 "defaultProductFormTableViewModel.customFieldsRowDetails" = "View and edit the product's custom fields";
@@ -4311,8 +4482,7 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
 "Disconnect Reader" = "Disconnect Reader";
 
-/* Discount label for payment view
-   Text in the product row card when a discount has already been added to a product
+/* Text in the product row card when a discount has already been added to a product
    Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation */
 "Discount" = "Discount";
@@ -4341,7 +4511,6 @@ which should be translated separately and considered part of this sentence. */
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
-   Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -4351,7 +4520,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "Dismiss";
@@ -4385,9 +4553,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Do not allow";
-
-/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
-"Do you want to add Pay in Person to your web checkout?" = "Do you want to add Pay in Person to your web checkout?";
 
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "Do you want to connect to reader %1$@?";
@@ -4476,6 +4641,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "Dotcom Token Invalid";
+
+/* WordPress.com error thrown when the site ID is no longer recognized. */
+"Dotcom Unknown Blog" = "Dotcom Unknown Blog";
+
+/* WordPress.com error thrown when the store rejects the signature of a Jetpack request. */
+"dotcomError.invalidSignature.description" = "Dotcom Invalid Signature";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Double tap to dismiss";
@@ -4617,6 +4788,12 @@ which should be translated separately and considered part of this sentence. */
 /* The string to show on order taxes when they are calculated based on the shop base address */
 "editableOrderViewModel.taxBasedOnSetting.shopBaseAddress" = "Calculated on shop base address.";
 
+/* Label of a product attribute that is not visible on the product page */
+"editAttributesViewModel.hidden" = "Hidden";
+
+/* Label of a product attribute that is used for variations */
+"editAttributesViewModel.usedForVariations" = "Used for variations";
+
 /* User's Editor role. */
 "Editor" = "Editor";
 
@@ -4724,9 +4901,6 @@ which should be translated separately and considered part of this sentence. */
 /* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Enable Coupons" = "Enable Coupons";
 
-/* Title for the button to enable the Pay in Person payment gateway during card present payments onboarding. */
-"Enable Pay in Person" = "Enable Pay in Person";
-
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Enable Reviews";
 
@@ -4738,9 +4912,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "Enabled";
-
-/* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
-"Enabling \"Pay in Person\" lets customers pay you for online orders at delivery via cash or card." = "Enabling \"Pay in Person\" lets customers pay you for online orders at delivery via cash or card.";
 
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
@@ -5081,12 +5252,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Failed to delete coupon. Please try again.";
 
-/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
-"Failed to disable Pay in Person. Please try again later." = "Failed to disable Pay in Person. Please try again later.";
-
-/* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
-"Failed to enable Pay in Person. Please try again later." = "Failed to enable Pay in Person. Please try again later.";
-
 /* Error message displayed when failed to fetch application password authorization URL during login */
 "Failed to fetch the authorization URL for application passwords. Please try again." = "Failed to fetch the authorization URL for application passwords. Please try again.";
 
@@ -5173,7 +5338,8 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the cell Customs inside Create Shipping Label form */
 "Fill out customs form" = "Fill out customs form";
 
-/* Title of the button to select all products on the Select Product screen
+/* Accessibility label for the filter menu on a Dashboard card.
+   Title of the button to select all products on the Select Product screen
    Title of the toolbar button to filter orders without filters applied.
    Title of the toolbar button to filter products by different attributes.
    Title of the toolbar button to filter products without any filters applied. */
@@ -5289,9 +5455,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Forgot password?";
-
-/* Next web page */
-"Forward" = "Forward";
 
 /* Country option for a site address. */
 "France" = "France";
@@ -5422,14 +5585,12 @@ which should be translated separately and considered part of this sentence. */
 /* Order gift card error notice title when the gift card is invalid. */
 "Gift card is not applied" = "Gift card is not applied";
 
-/* Gift Cards label for payment view
-   Gift Cards section title */
+/* Gift Cards section title */
 "Gift Cards" = "Gift Cards";
 
-/* The title of the button to give feedback about products beta features on the banner on the products tab
-   Title of the button to give feedback about the add-ons feature
+/* Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
-   Title on the navigation bar for the products feedback survey */
+   Title on the navigation bar for feedback surveys */
 "Give feedback" = "Give feedback";
 
 /* Subtitle of the store onboarding task to get paid. */
@@ -5670,6 +5831,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when online PIN is not supported in offline mode. */
 "hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "Online PIN is not supported in offline mode. Please retry the payment with another card.";
 
+/* Error message when the payment intent has no id, so the payment cannot be processed. */
+"hardware.cardReader.underlyingError.paymentIntentIdMissing" = "Sorry, we could not complete this payment, as no payment id was found.";
+
 /* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
 "hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "A card wasn't presented within the time limit.";
 
@@ -5768,14 +5932,20 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Help Center";
 
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "Revisit past support conversations";
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "Revisit past AI support chats";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Chat History";
 
 /* Subtitle for Contact Support */
 "helpAndSupport.contactSupport.subtitle" = "Get help with app or store issues";
+
+/* Description of the mobile status report on Help screen */
+"helpAndSupport.mobileStatusReport.description" = "App, device and store information from this app";
+
+/* View mobile status report cell title on Help screen */
+"helpAndSupport.mobileStatusReport.title" = "Mobile Status Report";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Test if your site works with the app";
@@ -5820,6 +5990,18 @@ which should be translated separately and considered part of this sentence. */
 /* Post HTML content */
 "HTML Content" = "HTML Content";
 
+/* Accessibility label for dismissing the HTTPS configuration warning. */
+"https-configuration-warning.dismiss" = "Dismiss";
+
+/* Message in a persistent warning explaining that a merchant should configure their store address to use HTTPS. */
+"https-configuration-warning.https-supported-message" = "Your store supports HTTPS, but its address is configured to use HTTP. Update it to HTTPS to protect your store and prevent connection problems.";
+
+/* Button title that opens documentation about configuring HTTPS for a WooCommerce store. */
+"https-configuration-warning.learn-more" = "Learn more";
+
+/* Title of a persistent warning shown when a store reports an HTTP site address. */
+"https-configuration-warning.title" = "Secure your store with HTTPS";
+
 /* Title of the Bookings menu in the hub menu */
 "hubMenu.bookings" = "Bookings";
 
@@ -5840,6 +6022,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "Reviews";
+
+/* VoiceOver value for a More menu item marked with a dot badge */
+"hubMenu.storeDesignSystem.newFeature" = "New feature";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google for WooCommerce";
@@ -5979,10 +6164,33 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "inPersonPayments.cardPresent.cardInserted.title" = "Card inserted";
 
+/* Title for the button to enable the Pay In Person payment gateway during card present payments onboarding. */
+"inPersonPayments.cashOnDelivery.notSetUp.enableButton" = "Enable Pay In Person";
+
+/* Error displayed when the attempt to enable a Pay In Person checkout payment option fails */
+"inPersonPayments.cashOnDelivery.notSetUp.enableFailureNotice.title" = "Failed to enable Pay In Person. Please try again later.";
+
+/* The message explaining what will happen when the merchant enables the Pay In Person payment gateway during card present payments onboarding. */
+"inPersonPayments.cashOnDelivery.notSetUp.message" = "Enabling Pay In Person lets customers pay you for online orders at delivery via cash or card.";
+
+/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay In Person payment gateway. */
+"inPersonPayments.cashOnDelivery.notSetUp.title" = "Do you want to add Pay In Person to your web checkout?";
+
+/* Error message when a Card Present Payments extension is not activated,
+shown to users who cannot activate it themselves. %1$@ is the extension name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"inPersonPaymentsPluginNotActivated.messageForNonAdministrator" = "The %1$@ extension is installed on your store but not activated. Please ask a store administrator to activate it to accept In‑Person Payments.";
+
 /* Error message when WooPayments is not installed
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "inPersonPaymentsPluginNotInstalled.message" = "You’ll need to install the free WooPayments extension on your store to accept In‑Person Payments.";
+
+/* Error message when WooPayments is not installed, shown to users who cannot install it themselves.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.messageForNonAdministrator" = "You’ll need the free WooPayments extension installed on your store to accept In‑Person Payments. Please ask a store administrator to install it.";
 
 /* Title for the error screen when WooPayments is not installed */
 "inPersonPaymentsPluginNotInstalled.title" = "Install WooPayments";
@@ -6095,9 +6303,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the error screen when the merchant's payment account is restricted because it's under reviw
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
-   Title for the error screen when the Stripe account is restricted because there are overdue requirements.
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments is currently unavailable" = "In‑Person Payments is currently unavailable";
 
@@ -6129,6 +6334,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Issue Refund";
+
+/* Error when loading refund history before a new refund. */
+"issueRefund.fetchRefunds.failed" = "Could not load previous refunds.";
 
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Issuing Refund...";
@@ -6470,9 +6678,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for placeholder rows while products are loading */
 "Loading products" = "Loading products";
 
-/* Loading. Verb */
-"Loading..." = "Loading...";
-
 /* Message on the local notification to remind to continue the Blaze campaign creation. */
 "localNotification.AbandonedCampaignCreation.body" = "Get your products seen by millions with Blaze and boost your sales";
 
@@ -6683,9 +6888,6 @@ which should be translated separately and considered part of this sentence. */
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "Manual Refund";
 
-/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
-"manual refund" = "manual refund";
-
 /* on request (lower case), shown in a sentence like 'Payout schedule: manual, on request' */
 "manually, on request" = "manually, on request";
 
@@ -6817,14 +7019,44 @@ which should be translated separately and considered part of this sentence. */
 /* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
 "menu.payments.inPersonPayments.setup.incomplete.notice.title" = "In-Person Payments setup is incomplete.";
 
-/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
-"menu.payments.payInPerson.learnMore.description" = "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@";
+/* A label prompting users to learn more about adding Pay In Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"menu.payments.payInPerson.learnMore.description.payInPersonCasing" = "The Pay In Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@";
 
 /* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout.  */
 "menu.payments.payInPerson.learnMore.link" = "Learn more";
 
 /* Title for the accessibility action to open the learn more screen, showing information about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link.accessibilityAction" = "Learn more";
+
+/* Cancel button of the confirmation alert shown when the merchant toggles the Pay In Person checkout payment option in the Payments menu. Tapping it leaves the payment method unchanged. */
+"menu.payments.payInPerson.toggle.confirmation.cancelButton" = "Cancel";
+
+/* Confirmation button of the alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.confirmButton" = "Disable";
+
+/* Message of the confirmation alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.message" = "This disables the Cash on Delivery payment method at your store’s checkout, so customers won’t be able to select it.";
+
+/* Title of the confirmation alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.title" = "Disable Pay In Person?";
+
+/* Error displayed when the attempt to disable a Pay In Person checkout payment option fails */
+"menu.payments.payInPerson.toggle.disableFailureNotice.title" = "Failed to disable Pay In Person. Please try again later.";
+
+/* Confirmation button of the alert shown when the merchant turns on the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.enableConfirmation.confirmButton" = "Enable";
+
+/* Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option and the payment method already has the default Pay in Person title */
+"menu.payments.payInPerson.toggle.enableConfirmation.message" = "This enables the Cash on Delivery payment method at your store’s checkout.";
+
+/* Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option and the payment method has a custom title which will be replaced. %1$@ is a placeholder for the payment method's current customer-facing title, e.g. \"Cash on delivery\". %2$@ is a placeholder for the title it will be renamed to, e.g. \"Pay in Person\". */
+"menu.payments.payInPerson.toggle.enableConfirmation.messageRenameWithTitles" = "This enables the Cash on Delivery payment method at your store’s checkout and renames it from “%1$@” to “%2$@” for your customers, including on your website’s checkout.";
+
+/* Title of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.enableConfirmation.title" = "Enable Pay In Person?";
+
+/* Error displayed when the attempt to enable a Pay In Person checkout payment option fails */
+"menu.payments.payInPerson.toggle.enableFailureNotice.title" = "Failed to enable Pay In Person. Please try again later.";
 
 /* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "menu.payments.payInPerson.toggle.row.title" = "Pay in Person";
@@ -6890,6 +7122,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the mobile app support area option */
 "Mobile App" = "Mobile App";
 
+/* Toast message shown after tapping Copy on the Mobile Status Report screen */
+"mobileStatusReportView.copiedToClipboard" = "Mobile status report copied to clipboard";
+
+/* Navigation title of the mobile status report screen */
+"mobileStatusReportView.title" = "Mobile Status Report";
+
 /* Country option for a site address. */
 "Moldova" = "Moldova";
 
@@ -6921,7 +7159,8 @@ which should be translated separately and considered part of this sentence. */
 /* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
 "More details here" = "More details here";
 
-/* Accessibility label for the Edit Product More Options action sheet
+/* Accessibility label for an overflow menu.
+   Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "More options";
 
@@ -6990,9 +7229,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar button title used to save changes and close the multiline text editor. */
 "MultilineEditableTextDetailView.doneButton.title" = "Done";
-
-/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Multiple Contactless Cards Detected";
 
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Multiple Stores";
@@ -7099,9 +7335,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "New Caledonia" = "New Caledonia";
 
-/* The title of the top banner on the Products tab. */
-"New features available!" = "New features available!";
-
 /* Title for the order creation screen */
 "New Order" = "New Order";
 
@@ -7195,8 +7428,8 @@ which should be translated separately and considered part of this sentence. */
 /* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
 "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "Products can use their own threshold or the store-wide threshold. %1$@ to see the current value.";
 
-/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
-"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "Products can use their own threshold or the store-wide threshold of\u{00A0}%1$@. %2$@";
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The character before %1$@ is a non-breaking space, keeping the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat.v2" = "Products can use their own threshold or the store-wide threshold of %1$@. %2$@";
 
 /* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
 "newStockNotificationPreferencesDetailView.lowStock.title" = "Low stock";
@@ -7572,9 +7805,6 @@ which should be translated separately and considered part of this sentence. */
    Go to the settings app */
 "Open Settings" = "Open Settings";
 
-/* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
-"Open wp-admin" = "Open wp-admin";
-
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Opens a list of available statuses.";
 
@@ -7588,9 +7818,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility hint for selecting a product in an order form */
 "Opens product detail." = "Opens product detail.";
-
-/* Accessibility hint to open web page in Safari */
-"Opens the web page in Safari" = "Opens the web page in Safari";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Option name";
@@ -7664,6 +7891,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.title" = "You cannot add a variable product directly.";
 
+/* Shown when a bundle's products could not be loaded, so the app cannot tell whether it can be added. */
+"order.bundle.cannotCheckBundledProducts.notice.title" = "Cannot check the bundled products. Please try again.";
+
+/* Title of a notice shown while the products inside a scanned bundle are loaded. */
+"order.bundle.checkingBundledProducts.notice.title" = "Checking the bundled products…";
+
 /* Title for the Coupon screen during order creation */
 "order.form.coupon.add.button.title" = "Add Coupon";
 
@@ -7691,8 +7924,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.giftCard.add.button.title" = "Add Gift Card";
 
-/* A 'Learn More' label text, which shows tax information upon being clicked. */
-"order.form.paymentSection.taxes.learnMore" = "Learn More.";
+/* A 'Learn more' label text, which shows tax information upon being clicked. */
+"order.form.paymentSection.taxes.learnMore.sentenceCase" = "Learn more";
 
 /* Label for the row showing the shipping tax. */
 "order.form.paymentSection.taxes.shippingTax" = "Shipping Tax";
@@ -7776,6 +8009,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the section that display coupons applied to an order, within the order creation screen. */
 "OrderCouponSectionView.header.coupons" = "Coupons";
 
+/* Message shown when a merchant tries to add a bundle holding a bookable product to an order. */
+"orderCreationProductRestrictions.bookableBundleReason" = "Bundles with bookable products are not supported";
+
+/* Message shown when a merchant tries to add a bundle holding a subscription product to an order. */
+"orderCreationProductRestrictions.subscriptionBundleReason" = "Bundles with subscription products are not supported";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "orderDetail.deleteTracking.notice.title" = "Unable to delete tracking for order #%1$d";
 
@@ -7811,6 +8050,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Custom Amount";
+
+/* Button dismissing the error shown when a gift-card order cannot be refunded in the app */
+"orderDetails.issueRefund.giftCardUnsupported.alert.dismissButton" = "OK";
+
+/* Message explaining why an order paid with a gift card must be refunded from the store admin */
+"orderDetails.issueRefund.giftCardUnsupported.alert.message" = "This order was paid with a gift card. Refunding here won’t restore the gift-card balance. To refund correctly, please process it from your store admin on the web.";
+
+/* Title shown when a merchant tries to refund an order paid with a gift card */
+"orderDetails.issueRefund.giftCardUnsupported.alert.title" = "Refund from your store admin";
 
 /* Title in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.campaign" = "Campaign";
@@ -7908,21 +8156,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "How do you want to add your custom amount?";
 
-/* Title text of the button that adds customer data in the order form. */
-"orderForm.customerSection.addCustomer" = "Add Customer";
-
-/* Placeholder of the email in the header of a customer card in order form when an account is not required. */
-"orderForm.customerSection.customerCard.header.emailPlaceholder.notRequired" = "Email address";
-
-/* Placeholder of the email in the header of a customer card in order form when an account is required. */
-"orderForm.customerSection.customerCard.header.emailPlaceholder.required" = "Email address required";
-
-/* Header text of the customer card in the order form. */
-"orderForm.customerSection.customerHeader" = "Customer";
-
-/* Title of the order customer selection screen in the order form.. */
-"orderForm.customerSection.customerSelectorTitle" = "Add customer details";
-
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "Collect Payment";
 
@@ -7944,20 +8177,44 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "Shipping";
 
-/* Fulfillment status badge text shown on CIAB order rows when the order has been fulfilled. */
-"orderFulfillmentStatus.badge.fulfilled" = "Fulfilled";
+/* Message of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.info" = "We couldn't load your store's currency, so order totals may be shown in the wrong currency.";
 
-/* Fulfillment status badge text with date, shown on the CIAB order details screen. %1$@ is the formatted date. */
-"orderFulfillmentStatus.badge.fulfilledWithDate" = "Fulfilled on %1$@";
+/* Title of the button to retry loading the store's currency on the Orders list warning banner. */
+"orderList.currencyUnavailable.banner.retry" = "Retry";
 
-/* Fulfillment status badge text shown on CIAB order rows when the order has not been fulfilled. */
-"orderFulfillmentStatus.badge.unfulfilled" = "Unfulfilled";
+/* Title of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.title" = "Store currency unavailable";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "orderlistcellviewmodel.cell.title" = "#%1$@ %2$@";
 
 /* In Order List, the name of the billed person when there are no first and last name. */
 "orderlistcellviewmodel.customerName.guestName" = "Guest";
+
+/* Discount label for payment view */
+"orderPaymentDetails.discount.title" = "Discount";
+
+/* Gift Cards label for payment view */
+"orderPaymentDetails.giftCards.title" = "Gift Cards";
+
+/* The title on the payment row of the Order Details screen when the payment is still pending */
+"orderPaymentDetails.paymentSummary.awaitingPayment" = "Awaiting payment";
+
+/* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
+"orderPaymentDetails.paymentSummary.awaitingPaymentViaPaymentMethod" = "Awaiting payment via %@";
+
+/* Payment summary on the Order Details screen when the order is paid but has no payment method title. Reads like: Payment on Nov 19, 2019. %1$@ is the payment date. */
+"orderPaymentDetails.paymentSummary.dateOnly" = "Payment on %1$@";
+
+/* Payment on <date> received via (payment method title) */
+"orderPaymentDetails.paymentSummary.withPaymentMethod" = "%1$@ via %2$@";
+
+/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
+"orderPaymentDetails.refundSummary.manualRefund" = "manual refund";
+
+/* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
+"orderPaymentDetails.refundSummary.withRefundMethod" = "%1$@ via %2$@";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Coupon";
@@ -8141,9 +8398,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner when the order is not editable */
 "Parts of this order are not currently editable" = "Parts of this order are not currently editable";
 
-/* No comment provided by engineer. */
-"password" = "password";
-
 /* Accessibility label for the password text field in the self-hosted login page.
    Login dialog password placeholder
    Password field title in Product Visibility
@@ -8205,6 +8459,12 @@ which should be translated separately and considered part of this sentence. */
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment." = "Payment was declined for an unspecified reason. Try another means of payment.";
 
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "Couldn’t check whether this order can be paid by card. Please try again.";
+
+/* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
+"paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "Card payments aren’t available for this order’s currency (%1$@).";
+
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Pay in Person";
 
@@ -8222,6 +8482,162 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader";
+
+/* Headline of the payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.headline" = "This login cannot read payment settings";
+
+/* Payment setup check result when WordPress refuses the request because of the login or its permissions */
+"paymentSupportDiagnostics.accessDenied.message" = "Your store did not let this login read the payment settings. Log in again with an administrator or shop manager account, then tap Retry.";
+
+/* Headline of the payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.headline" = "Account does not support store currency";
+
+/* Payment setup check result when the payment account does not support the store currency */
+"paymentSupportDiagnostics.accountCurrency.message" = "Your payment account cannot take payments in your store currency. Changing the store currency does not convert your product prices, so continue to chat before you change it.";
+
+/* Headline of the payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.headline" = "Payment account is not live";
+
+/* Payment setup check result when the payment account is not live and not in test mode */
+"paymentSupportDiagnostics.accountNotLiveYet.message" = "Live card payments can fail until the account is live. Check the account status in the payment settings.";
+
+/* Headline of the payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.headline" = "Payment account is restricted";
+
+/* Payment setup check result when the payment account is restricted without pending or overdue requirements */
+"paymentSupportDiagnostics.accountUnderReview.message" = "There is nothing for you to submit now. Continue to chat if you need help with the account.";
+
+/* Headline of the payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.headline" = "Your site blocked a setup check";
+
+/* Payment setup check result when the store blocks a request with HTTP 401 or 403 without a WordPress error code */
+"paymentSupportDiagnostics.blocked.message" = "Your payment setup is unknown. A security plugin or a firewall on your site usually causes this. Allow requests from the WooCommerce app in that plugin, or ask your hosting provider to allow them. You do not need to turn the plugin off.";
+
+/* Headline of the payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.headline" = "Account cannot take live payments";
+
+/* Payment setup check result when the payment provider reports that the live account cannot accept charges */
+"paymentSupportDiagnostics.chargesDisabled.message" = "Your payment provider reports that your account cannot take live card payments. Finish the account setup in the payment settings.";
+
+/* Headline of the payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.headline" = "Choose a payment provider";
+
+/* Payment setup check result when WooPayments and Stripe are both active and no provider is chosen in the app */
+"paymentSupportDiagnostics.chooseGateway.message" = "WooPayments and Stripe are both active. In the app, go to Menu > Payments, tap Continue setup, and choose a provider. You do not need to deactivate either plugin.";
+
+/* Headline of the payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.headline" = "Account country does not match store country";
+
+/* Payment setup check result when the payment account country does not match the store country */
+"paymentSupportDiagnostics.countryMismatch.message" = "Check that your store address is correct. Your payment account country cannot be changed, so continue to chat before you change other settings.";
+
+/* Payment setup check result when a store hosted on WordPress.com blocks, fails or times out a request */
+"paymentSupportDiagnostics.hostedSite.message" = "The app could not check your payment setup. Continue to chat so we can check your site.";
+
+/* Headline of the payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.headline" = "Payment plugin is not active";
+
+/* Payment setup check result when a supported payment plugin is installed but not active */
+"paymentSupportDiagnostics.inactivePlugin.message" = "Activate the payment plugin, then finish its setup.";
+
+/* Headline of the payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.headline" = "Store address is incomplete";
+
+/* Payment setup check result when the store address is missing the street address, city or postcode */
+"paymentSupportDiagnostics.incompleteAddress.message" = "Card readers and Tap to Pay need a street address, city and postcode. Add them in your store settings.";
+
+/* Headline of the payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.headline" = "Store country is not set";
+
+/* Payment setup check result when the store country is empty */
+"paymentSupportDiagnostics.missingCountry.message" = "Set your store country in your store settings.";
+
+/* Headline of the payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.headline" = "Store currency is not set";
+
+/* Payment setup check result when the store currency is empty */
+"paymentSupportDiagnostics.missingCurrency.message" = "Set your store currency in your store settings.";
+
+/* Headline of the payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.headline" = "No in-person payment plugin is active";
+
+/* Payment setup check result when neither WooPayments nor Stripe is active for the store country */
+"paymentSupportDiagnostics.noActivePlugin.message" = "Install and activate WooPayments, then finish its setup.";
+
+/* Headline of the payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.headline" = "Payment plugin needs an update";
+
+/* Payment setup check result when the payment plugin version is too old for card reader payments */
+"paymentSupportDiagnostics.oldPlugin.message" = "Your payment plugin version is too old for in-person payments. Update the plugin.";
+
+/* Headline of the payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.headline" = "Account has overdue requirements";
+
+/* Payment setup check result when the payment account is restricted with overdue requirements */
+"paymentSupportDiagnostics.overdueRequirements.message" = "Payments and payouts can stop until you submit the requested information. Submit it in the payment settings.";
+
+/* Note on a payment setup check result when the payment account has pending requirements */
+"paymentSupportDiagnostics.pendingRequirements.note" = "Your payment provider needs more information before a deadline. Submit it to keep payouts active.";
+
+/* Headline of the payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.headline" = "Provider not available in your country";
+
+/* Payment setup check result when the active payment provider does not support card reader payments in the store country */
+"paymentSupportDiagnostics.providerNotSupported.message" = "Your payment provider does not support in-person payments in your store country. Install and activate WooPayments, then go to Menu > Payments and tap Continue setup.";
+
+/* Headline of the payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.headline" = "Payment account was rejected";
+
+/* Payment setup check result when the payment provider rejected the account */
+"paymentSupportDiagnostics.rejectedAccount.message" = "In-person payments are not available with this payment account. Continue to chat to learn about your options. You can still take cash payments in the app.";
+
+/* Headline of the payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.headline" = "Could not check payment setup";
+
+/* Payment setup check result when a request to the store fails for another reason */
+"paymentSupportDiagnostics.requestFailed.message" = "Your payment setup is unknown. Check your internet connection, then tap Retry.";
+
+/* Headline of the payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.headline" = "No payment account connected";
+
+/* Payment setup check result when the payment provider reports no account for the store */
+"paymentSupportDiagnostics.setupIncomplete.message" = "Your store is not connected to a payment account. Finish the account setup in the payment settings.";
+
+/* Headline of the payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.headline" = "Store did not respond correctly";
+
+/* Payment setup check result when the store times out, fails, or sends an unreadable reply */
+"paymentSupportDiagnostics.siteError.message" = "Your payment setup is unknown. Ask your hosting provider to check the server error logs.";
+
+/* Headline of the payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.headline" = "Test mode is on";
+
+/* Payment setup check result when a live payment account is in test mode */
+"paymentSupportDiagnostics.testMode.message" = "Your payment plugin is in test mode, so live card payments will not work. Turn off test mode in the payment settings. On a staging copy of your store, take payments from your live store instead.";
+
+/* Headline of the payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.headline" = "Test payments only";
+
+/* Payment setup check result when the payment account is not live and is in test mode */
+"paymentSupportDiagnostics.testPaymentsOnly.message" = "Your payment account is in test mode, so live card payments will not work. Finish the live account setup in the payment settings. On a staging site, use your live store instead.";
+
+/* Headline of the payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.headline" = "Account status is unknown";
+
+/* Payment setup check result when the payment account status is unknown */
+"paymentSupportDiagnostics.unknownAccount.message" = "The app does not recognize your payment account status. Check the account in the payment settings, or continue to chat.";
+
+/* Headline of the payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.headline" = "Store country is not supported";
+
+/* Payment setup check result when the store country does not support card reader payments */
+"paymentSupportDiagnostics.unsupportedCountry.message" = "In-person card payments are not available in your store country. If the country in your store address is wrong, correct it. You can still take cash payments in the app.";
+
+/* Headline of the payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.headline" = "Store currency is not supported";
+
+/* Payment setup check result when the store currency is not supported for card reader payments in the store country */
+"paymentSupportDiagnostics.unsupportedCurrency.message" = "In-person payments do not support your store currency in this country. Changing the currency does not convert your product prices, so continue to chat before you change it.";
 
 /* Accessibility label for the collapse chevron on the Payout summary */
 "payouts.currency.overview.accessibility.hide" = "Hide payout details";
@@ -8259,8 +8675,8 @@ which should be translated separately and considered part of this sentence. */
 /* A status for a payout, shown in a small badge view */
 "payouts.currency.overview.payoutTable.status.unknown.title" = "Unknown";
 
-/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
-"payouts.currency.overview.pendingFunds" = "Pending funds";
+/* Title for total balance overview in WooPayments Payouts view. This shows the combined available and pending balance, matching the WooPayments plugin wording. */
+"payouts.currency.overview.totalBalance" = "Total balance";
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Edit";
@@ -8607,6 +9023,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "Scanning for reader";
 
+/* Button dismissing the Tap to Pay payment cancellation confirmation in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.done.button.title" = "Done";
+
+/* Explains that Tap to Pay card reading succeeded but the payment was canceled in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.message" = "No payment was taken. The Tap to Pay checkmark and sound only confirmed that the card was read.";
+
+/* Title confirming that a Tap to Pay payment was canceled in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.title" = "Payment canceled";
+
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "New order";
 
@@ -8922,17 +9347,35 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the system fails to collect a cash payment. */
 "pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Error trying to process payment. Try again.";
 
-/* A description within a full screen loading view for POS catalog. */
-"pointOfSale.catalogLoadingView.exitButton.description" = "Syncing will continue in the background.";
+/* A description shown below the Exit POS button while the POS catalog is syncing. */
+"pointOfSale.catalogLoadingView.backgroundSyncSubtitle" = "You can leave and syncing will continue in the background.";
 
 /* A button that exits POS. */
 "pointOfSale.catalogLoadingView.exitButton.title" = "Exit POS";
+
+/* A hint within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.hint" = "Catalog syncing may take a few minutes.";
+
+/* Progress text for POS catalog sync. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat" = "%1$ld of %2$ld items";
+
+/* Progress text for POS catalog sync when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat.singular" = "%1$ld of %2$ld item";
+
+/* Progress text shown while the POS catalog is being prepared before item counts are available. */
+"pointOfSale.catalogLoadingView.preparing" = "Preparing catalog...";
 
 /* A title of a full screen view that is displayed while the POS catalog is being synced. */
 "pointOfSale.catalogLoadingView.title" = "Syncing catalog";
 
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Coupon not applied";
+
+/* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
+"pointOfSale.customAmountRow.discountNotApplied" = "Discount not applied";
+
+/* Accessibility hint for a custom amount row in the Point of Sale cart. Activating the row opens the edit form. */
+"pointOfSale.customAmountRow.edit.accessibilityHint" = "Edit custom amount";
 
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Please wait";
@@ -8948,6 +9391,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "Exit POS";
+
+/* The title of the menu button to lock Point of Sale, requiring PIN entry to continue. */
+"pointOfSale.floatingButtons.lock.button.title" = "Lock POS";
 
 /* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
 "pointOfSale.floatingButtons.orders.button.title" = "Orders";
@@ -8967,14 +9413,14 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "Settings";
 
-/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
-"pointOfSale.item.edit.button.accessibilityLabel" = "Edit";
-
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Remove";
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Loading";
+
+/* Note shown on a product row in the Point of Sale cart at checkout when the order response shows the line item received a discount, from a coupon or another source. */
+"pointOfSale.itemRow.discountApplied" = "Discount applied";
 
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "Mark as paid";
@@ -9048,18 +9494,6 @@ which should be translated separately and considered part of this sentence. */
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "One or more products";
 
-/* Row subtitle in the Other Payment Methods popover for manually marking an order as paid. */
-"pointOfSale.otherPaymentMethods.markOrderAsPaid.subtitle" = "Use when payment was already collected another way.";
-
-/* Row title in the Other Payment Methods popover for manually marking an order as paid. */
-"pointOfSale.otherPaymentMethods.markOrderAsPaid.title" = "Mark order as paid";
-
-/* Row subtitle in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
-"pointOfSale.otherPaymentMethods.scanToPay.subtitle" = "Show a QR code for the customer to pay from their phone.";
-
-/* Row title in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
-"pointOfSale.otherPaymentMethods.scanToPay.title" = "Scan to Pay";
-
 /* Message shown while loading the order for a payment in Point of Sale */
 "pointOfSale.payment.loading.message" = "Loading order";
 
@@ -9121,7 +9555,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.scanToPay.navigation.title" = "Scan to Pay";
 
 /* Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale. */
-"pointOfSale.scanToPay.orderNote" = "Customer paid via Scan to Pay";
+"pointOfSale.scanToPay.orderNote.1" = "Paid via Scan to Pay";
 
 /* Loading message shown while preparing the order for scan-to-pay (promoting it to pending). */
 "pointOfSale.scanToPay.preparing.message" = "Generating QR code…";
@@ -9156,6 +9590,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the view where an email address should be entered when sending receipts */
 "pointOfSale.sendreceipt.textfield.placeholder" = "Type email";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the exit permission tries to leave Point of Sale. */
+"pointOfSaleDashboard.exit.overrideReason" = "Exiting Point of Sale requires approval";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Cancel";
 
@@ -9180,6 +9617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Phone-only overflow menu item to open Point of Sale settings. */
 "pointOfSaleDashboard.phone.menu.settings" = "Settings";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the view-settings permission tries to open Point of Sale settings. */
+"pointOfSaleDashboard.settings.overrideReason" = "Opening settings requires approval";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "Cancel";
 
@@ -9187,7 +9627,10 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Pay in Person";
 
 /* Title for the payment method used when manually marking an order as paid in Point of Sale. */
-"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle" = "Other";
+"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle.1" = "Order marked as paid";
+
+/* Title for the payment method used when a Point of Sale order is paid through Scan to Pay. */
+"pointOfSaleOrderController.scanToPay.paymentMethodTitle" = "Scan to Pay";
 
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
@@ -9240,11 +9683,35 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title of Card reader settings. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Card readers";
 
+/* Description of Receipt printer settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterSubtitle" = "Manage receipt printer connections";
+
+/* Navigation title of Receipt printer settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterTitle" = "Receipt printers";
+
 /* Navigation title for the hardware settings list. */
 "pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "Hardware";
 
 /* Button to dismiss the support form from POS settings. */
 "pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "Cancel";
+
+/* Subtitle for the receipt printer connect button when no printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerConnectSubtitle" = "Connect your receipt printer and start printing receipts";
+
+/* Title for the receipt printer connect button when no printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerConnectTitle" = "Connect printer";
+
+/* Label for the connected receipt printer's name in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.printerDeviceNameTitle" = "Device name";
+
+/* Title for the receipt printer disconnect button when a printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerDisconnectTitle" = "Disconnect printer";
+
+/* Text shown when no receipt printer is connected in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.printerNotConnected" = "Printer not connected";
+
+/* Navigation title for receipt printers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.printersTitle" = "Receipt printers";
 
 /* Text displayed on Point of Sale settings pointing to the card reader battery. */
 "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "Battery";
@@ -9338,6 +9805,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the store details in POS settings. */
 "pointOfSaleSettingsStoreDetailView.storeTitle" = "Store";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
+"pointOfSaleSettingsView.editOverrideReason" = "Changing settings requires approval";
+
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "Settings";
 
@@ -9358,6 +9828,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Product catalog";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "Manage payment settings";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "Payments";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Store configuration and settings";
@@ -9575,6 +10051,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce Settings";
 
+/* Number of items in the cart when there are multiple items. %1$d is the number of items. */
+"pos.cart.itemCount.plural" = "%1$d items";
+
+/* Number of items in the cart when there is one item. %1$d is the number of items. */
+"pos.cart.itemCount.singular" = "%1$d item";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Tap on a product to \n add it to the cart, or ";
 
@@ -9608,7 +10090,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Tap to Pay button in the POS checkout payment-method row. */
 "pos.checkout.paymentMethod.tapToPay" = "Tap to Pay";
 
-/* Title shown on a toast view that appears when there's no internet connection */
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.connectivity.subtitle" = "Please check your internet connection and try again.";
+
+/* Title shown when Point of Sale has no internet connection */
 "pos.connectivity.title" = "No internet connection";
 
 /* A button that dismisses coupon creation sheet */
@@ -9616,6 +10101,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for the view that selects the type of coupon to create */
 "pos.couponCreationSheet.selectCoupon.title" = "Create coupon";
+
+/* Button on the exit Point of Sale modal that dismisses it without exiting Point of Sale. */
+"pos.exitPOSModal.cancelButton" = "Cancel";
+
+/* Accessibility label for the button to close the exit Point of Sale modal alert. */
+"pos.exitPOSModal.closeButton.accessibilityLabel" = "Close";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "Any orders in progress will be lost.";
@@ -9638,9 +10129,6 @@ which should be translated separately and considered part of this sentence. */
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "Point of Sale must be enabled to proceed. Please enable the POS feature below or from your WordPress admin under WooCommerce settings > Advanced > Features and try again.";
 
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "Try relaunching the app to resolve this issue.";
-
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "We were unable to load the site settings info. Please check your internet connection and try again. If the issue persists, contact support for assistance.";
 
@@ -9661,9 +10149,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
 "pos.itemList.catalogBlockedTitle" = "Action needed on your store";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "Please check your internet connection and try again.";
 
 /* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
 "pos.itemList.customAmountEntryRow.subtitle" = "Add a one-off charge.";
@@ -9716,6 +10201,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Products";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the create-coupons permission tries to create a coupon. */
+"pos.itemlistview.couponOverrideReason" = "Creating coupons requires approval";
+
 /* Label/placeholder text for the search field for Coupons in Point of Sale. */
 "pos.itemListView.coupons.searchField.label" = "Search coupons";
 
@@ -9733,12 +10221,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "Refresh catalog";
-
-/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.description" = "Starting August 1st, point of sale will require WooCommerce 10.5.0 or later. Update to ensure uninterrupted access.";
-
-/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.title" = "Update WooCommerce Soon";
 
 /* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "Products";
@@ -9815,6 +10297,12 @@ which should be translated separately and considered part of this sentence. */
 /* Section title for the order items list (products and custom amounts) in order details */
 "pos.orderDetailsView.itemsTitle" = "Items";
 
+/* Accessibility label for the order items section while refund details are loading. */
+"pos.orderDetailsView.loadingItems.accessibilityLabel" = "Loading items";
+
+/* Accessibility label for the refunded items section while refund details are loading. */
+"pos.orderDetailsView.loadingRefundedItems.accessibilityLabel" = "Loading refunded items";
+
 /* Subtitle shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.subtitle" = "Please try again.";
 
@@ -9838,6 +10326,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for the refunded items list (products and custom amounts) in order details */
 "pos.orderDetailsView.refundedItemsTitle" = "Refunded items";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the issue-refunds permission tries to start a refund. %1$@ is the order number. */
+"pos.orderDetailsView.refundOverride.description" = "Refunding Order #%1$@ requires approval";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "Refund #%1$d";
@@ -9908,6 +10399,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
 "pos.ordersView.cancelRefundAlert.title" = "Cancel this refund?";
 
+/* Row subtitle in the Other Payment Methods sheet when the external Bluetooth card reader option is disabled because it is already active. */
+"pos.otherPaymentMethods.cardReader.disabled.subtitle" = "Card reader is already selected for this payment.";
+
 /* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
 "pos.otherPaymentMethods.cardReader.subtitle" = "Connect a Bluetooth reader to take card payments.";
 
@@ -9929,8 +10423,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
 "pos.otherPaymentMethods.sheet.title" = "Other payment methods";
 
+/* Row subtitle in the Other Payment Methods sheet when Tap to Pay is disabled because it is already selected. */
+"pos.otherPaymentMethods.tapToPay.disabled.subtitle" = "Tap to Pay is already selected for this payment.";
+
+/* Row subtitle in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.subtitle" = "Use this iPhone to take card payments.";
+
+/* Row title in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.title" = "Tap to Pay";
+
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Options available";
+
+/* Button title on the Point of Sale payment success screen for printing a receipt for the completed order. */
+"pos.paymentSuccess.button.printReceipt" = "Print receipt";
 
 /* Accessibility label for the delete key on the POS PIN numpad */
 "pos.pinEntry.delete.accessibilityLabel" = "Delete";
@@ -9994,6 +10500,105 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "OK";
+
+/* Button to start printer discovery after pairing in POS settings. */
+"pos.printerSetup.connectButton" = "Connect printer";
+
+/* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
+"pos.printerSetup.connecting.format" = "Connecting to %1$@…";
+
+/* Message shown when the receipt printer search fails to run in POS settings, most often because the device's Bluetooth is switched off. */
+"pos.printerSetup.discoveryFailed.message" = "Make sure Bluetooth is on, then search again.";
+
+/* Title shown when the receipt printer search fails to run in POS settings. */
+"pos.printerSetup.discoveryFailed.title" = "Couldn't search for printers";
+
+/* Message shown when receipt printer setup fails in POS settings. */
+"pos.printerSetup.error.message" = "We couldn't connect to your printer. Please try again.";
+
+/* Title shown when receipt printer setup fails in POS settings. */
+"pos.printerSetup.error.title" = "Something went wrong";
+
+/* Button to close the receipt printer setup without connecting in POS settings. */
+"pos.printerSetup.foundMultiple.cancelButton" = "Cancel";
+
+/* Button in a printer row to connect to that receipt printer in POS settings. */
+"pos.printerSetup.foundMultiple.connectButton" = "Connect";
+
+/* Accessibility label for the connect button in a printer row in POS settings. %1$@ is the printer name. */
+"pos.printerSetup.foundMultiple.connectButton.accessibilityLabel" = "Connect to %1$@";
+
+/* Label shown next to a spinner while receipt printer scanning continues in POS settings. */
+"pos.printerSetup.foundMultiple.scanningLabel" = "Scanning for printers";
+
+/* Title shown above the list of discovered receipt printers in POS settings. */
+"pos.printerSetup.foundMultiple.title" = "Several printers found";
+
+/* Button to connect to the single discovered receipt printer in POS settings. */
+"pos.printerSetup.foundOne.connectButton" = "Connect to printer";
+
+/* Button to skip the discovered receipt printer and keep searching in POS settings. */
+"pos.printerSetup.foundOne.keepSearchingButton" = "Keep Searching";
+
+/* Message asking the merchant to confirm connecting to the discovered receipt printer in POS settings. */
+"pos.printerSetup.foundOne.message" = "Do you want to connect to this printer?";
+
+/* Title shown when a single receipt printer is discovered in POS settings. %1$@ is the printer name. */
+"pos.printerSetup.foundOne.titleFormat" = "Found %1$@";
+
+/* Message shown when no receipt printers are discovered in POS settings. */
+"pos.printerSetup.noPrinters.pairInSettingsMessage" = "Make sure your printer is on and paired in the Settings app under Bluetooth, then search again.";
+
+/* Title shown when no receipt printers are discovered in POS settings. */
+"pos.printerSetup.noPrinters.title" = "No printers found";
+
+/* Instruction shown on the receipt printer pairing step when the app's Bluetooth permission is disabled, telling the merchant to enable it in the iOS Settings app. */
+"pos.printerSetup.pair.enableBluetoothInstruction" = "Bluetooth access is turned off. Tap Open Settings to turn it on, then pair your printer under Bluetooth.";
+
+/* Instruction for pairing a receipt printer in POS settings. Tells the user to pair the printer in the iOS Settings app under Bluetooth before searching in the app. */
+"pos.printerSetup.pair.pairInSettingsInstruction" = "Turn on your Star Micronics receipt printer, then pair it in the Settings app under Bluetooth. Once it's paired, tap Connect printer to find it.";
+
+/* Title for the printer pairing step in POS settings. */
+"pos.printerSetup.pair.title" = "Pair your printer";
+
+/* Button to retry receipt printer discovery in POS settings. */
+"pos.printerSetup.searchAgainButton" = "Search again";
+
+/* Message shown while discovering receipt printers in POS settings. */
+"pos.printerSetup.searching" = "Searching for printers…";
+
+/* Secondary button that opens the app's Settings page, where Bluetooth can be enabled, during receipt printer setup in POS. */
+"pos.printerSetup.settingsButton" = "Open Settings";
+
+/* Message of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.message" = "Close the printer cover, then try again.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer cover is open. */
+"pos.printReceiptFailure.coverOpen.title" = "Printer cover is open";
+
+/* Button to email the receipt instead of printing it, from the POS print failure modal. */
+"pos.printReceiptFailure.emailButton" = "Email receipt";
+
+/* Message of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.message" = "Something went wrong while printing. Please try again.";
+
+/* Title of the modal shown when a POS receipt fails to print for an unknown reason. */
+"pos.printReceiptFailure.generic.title" = "Couldn't print the receipt";
+
+/* Message of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperMessage" = "Make sure a paper roll is loaded and seated correctly, then try again.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer detects no paper. The roll may be empty or loaded incorrectly. */
+"pos.printReceiptFailure.paperEmpty.checkPaperTitle" = "Check the printer paper";
+
+/* Message of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.message" = "Make sure your printer is on and nearby with Bluetooth turned on, then try again.";
+
+/* Title of the modal shown when a POS receipt can't print because the printer connection was lost. */
+"pos.printReceiptFailure.printerOffline.title" = "Can't reach your printer";
+
+/* Button to print the receipt again from the POS print failure modal. */
+"pos.printReceiptFailure.retryButton" = "Retry";
 
 /* Error shown when POS tries to process a second refund while another refund is in progress. */
 "pos.refund.processing.error.alreadyInProgress" = "A refund is already in progress. Please wait for it to finish.";
@@ -10097,10 +10702,10 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for close button on refund detail dialog */
 "pos.refundDetailView.closeButton.accessibilityLabel" = "Close";
 
-/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there are multiple items. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.plural" = "Items subtotal (%1$d items)";
 
-/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there is 1 item. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.singular" = "Items subtotal (%1$d item)";
 
 /* Label for refund total row in refund detail */
@@ -10158,6 +10763,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label showing number of selected items in the refund items selection modal */
 "pos.refundItemsSelectionView.itemsSelectedCountFormat" = "(%d selected)";
 
+/* Error shown on the refund item-selection step when fetching the server-calculated refund total fails */
+"pos.refundItemsSelectionView.previewError" = "Couldn't calculate the refund total. Please try again.";
+
+/* Button to retry fetching the server-calculated refund total on the refund item-selection step */
+"pos.refundItemsSelectionView.retryButton" = "Retry";
+
+/* Button to reload the refundable items after the store rejected the refund because the order changed */
+"pos.refundItemsSelectionView.reviewRemainingItemsButton" = "Review remaining items";
+
 /* Accessibility label for the select-all checkbox in the refund items selection modal */
 "pos.refundItemsSelectionView.selectAll.accessibilityLabel" = "Select or deselect all items";
 
@@ -10181,6 +10795,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when POS cannot confirm whether a card-present refund was recorded successfully. */
 "pos.refundModalContentView.cardPresentCreateError.title" = "Couldn't confirm refund";
+
+/* Button to reload the refundable items after the store rejected the refund because the order changed */
+"pos.refundModalContentView.reviewRemainingItemsButton" = "Review remaining items";
 
 /* Accessibility label for the back button on the nothing to refund screen */
 "pos.refundNothingToRefundView.backButton.accessibilityLabel" = "Back";
@@ -10238,9 +10855,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "Edit reason";
-
-/* Label for items subtotal row in refund review. %d is the number of items. */
-"pos.refundReviewView.itemsSubtotalFormat" = "Items subtotal (%d items)";
 
 /* Placeholder text when no refund reason has been added */
 "pos.refundReviewView.reasonPlaceholder" = "Reason for refunding order";
@@ -10308,11 +10922,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "Why can't I see my products?";
 
-/* Label to be displayed in the product's card when there's stock of a given product */
-"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ in stock";
+/* Display name for the admin POS staff role. */
+"pos.staffPreset.admin" = "Admin";
 
-/* Label to be displayed in the product's card when out of stock */
-"pos.stockStatusLabel.outofstock" = "Out of stock";
+/* Display name for the cashier POS staff role. */
+"pos.staffPreset.cashier" = "Cashier";
 
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
@@ -10371,6 +10985,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Cash payment";
 
+/* Title for the primary Point of Sale checkout button that starts the card reader connection flow. */
+"pos.totalsView.connectCardReader.button.title.1" = "Connect card reader";
+
 /* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
 "pos.totalsView.customAmountsTotal" = "Custom amounts";
 
@@ -10386,7 +11003,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when the POS order created by the server does not match the cart contents. */
 "pos.totalsView.orderMismatch.error.title" = "Couldn't check out";
 
-/* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
+/* Title for the Point of Sale checkout button that opens additional payment methods, such as Scan to Pay or Mark order as paid. */
 "pos.totalsView.otherPaymentMethods.button.title" = "Other payment methods";
 
 /* Title for subtotal amount field */
@@ -10464,6 +11081,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button text for updating the catalog manually. */
 "posSettingsLocalCatalogDetailView.updateCatalog" = "Update catalog";
 
+/* Button text shown while a manual POS catalog update is preparing before item counts are available. */
+"posSettingsLocalCatalogDetailView.updateCatalogPreparing" = "Preparing...";
+
+/* Button text shown during a manual POS catalog update. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat" = "%1$ld of %2$ld items";
+
+/* Button text shown during a manual POS catalog update when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat.singular" = "%1$ld of %2$ld item";
+
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
 "posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d products and %2$ld variations";
 
@@ -10475,6 +11101,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Update date unavailable";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "Play a sound when a payment completes";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "Payment success sound";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "Payments";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -10754,6 +11389,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
 "ProductBarcodeInputScanner.titleView" = "Scan barcode or QR Code";
 
+/* Error shown when creating a product category with a name that already exists. */
+"productCategoryActionError.duplicateName" = "A category with this name already exists. Please choose a different name.";
+
 /* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
 "productCreationAIPromptProgressBar.main.almostDone" = "Almost there.";
 
@@ -10925,6 +11563,12 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for empty product ratings */
 "productForm.quantityRules.placeholder" = "No Quantity Rules";
 
+/* Subtitle of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesSubtitle" = "Add details like material or size to the product page";
+
+/* Title of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesTitle" = "Attributes";
+
 /* Subtitle of the product form bottom sheet action for custom fields */
 "productFormBottomSheetAction.customFieldsSubtitle" = "View and edit custom fields";
 
@@ -10960,6 +11604,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "Mark as favorite";
+
+/* Button that cancels product duplication and keeps unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.cancel" = "Cancel";
+
+/* Destructive button that confirms duplication using the last saved product version. */
+"productFormViewController.productDuplicationConfirmation.confirm" = "Discard & duplicate";
+
+/* Message explaining that product duplication uses the last saved version instead of unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.message" = "Your unsaved changes will be lost. The duplicate will use the last saved version.";
+
+/* Title of the confirmation alert shown before duplicating a product with unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.title" = "Discard changes and duplicate?";
 
 /* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
 "productFormViewController.productSavingError.cancel" = "Cancel";
@@ -11051,18 +11707,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Sign-up Fee";
 
-/* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
-"ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@ / %2$@ %3$@";
-
-/* Description of the subscription conditions for a subscription product, with signup fees and free trials.Reads as: '$25.00 signup · 1 month free'. */
-"ProductRowViewModel.formattedProductSubscriptionConditions" = "%1$@ signup · %2$@ %3$@ free";
-
-/* Description of the subscription conditions for a subscription product, with only free trial.Reads as: '1 month free'. */
-"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup" = "%1$@ %2$@ free";
-
-/* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
-"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "%1$@ signup";
-
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
@@ -11091,6 +11735,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining unsupported bookable products for order creation */
 "productSelectorViewModel.bookableProductUnsupportedReason" = "Bookable products are not supported for order creation";
+
+/* Message shown when the products inside a bundle could not be loaded, so the app cannot tell whether the bundle can be added to the order. */
+"productSelectorViewModel.cannotCheckBundledProducts" = "Cannot check the bundled products. Please try again.";
 
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld products selected";
@@ -11146,8 +11793,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for the stock items with no items sold on the Stock section on the My Store screen. */
 "productStockDashboardCard.item.subtitle.zero" = "No item sold last 30 days";
 
+/* Time when the Stock dashboard card was last updated */
+"productStockDashboardCard.lastUpdated" = "Last Updated: %1$@";
+
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.products" = "Products";
+
+/* Message on the Stock dashboard card when a refresh fails; includes the last updated time */
+"productStockDashboardCard.refreshFailed" = "Couldn't refresh · Last Updated: %1$@";
 
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.status" = "Status";
@@ -11199,9 +11852,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Puerto Rico" = "Puerto Rico";
-
-/* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "Purchase Date";
 
 /* Create Shipping Label form -> Purchase Label button */
 "Purchase Label" = "Purchase Label";
@@ -11573,12 +12223,44 @@ which should be translated separately and considered part of this sentence. */
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
 
-/* The title of the view containing a receipt preview
-   Title of receipt. */
+/* Title of receipt. */
 "Receipt" = "Receipt";
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Receipt from %1$@";
+
+/* EMV account type line on a printed receipt. %1$@ is the account type. */
+"receipt.accountType" = "Account Type: %1$@";
+
+/* EMV Application Identifier line on a printed receipt. %1$@ is the AID value. */
+"receipt.aid" = "AID: %1$@";
+
+/* EMV application name (card scheme app) line on a printed receipt. %1$@ is the application name. */
+"receipt.applicationName" = "Application Name: %1$@";
+
+/* Card payment method on a printed receipt. %1$@ is the card brand, %2$@ is the last 4 digits. */
+"receipt.cardBrandAndLast4" = "%1$@ - %2$@";
+
+/* Label above the payment date on a printed receipt. */
+"receipt.datePaid" = "Date Paid";
+
+/* A purchased line item on a printed receipt. %1$@ is the item title, %2$@ is the quantity. */
+"receipt.itemTitleAndQuantity" = "%1$@ x%2$@";
+
+/* A line item title with its product attributes on a printed receipt. %1$@ is the item title, %2$@ is the comma-separated attributes (e.g. variations). */
+"receipt.itemTitleWithAttributes" = "%1$@. %2$@";
+
+/* Label above the order note on a printed receipt. */
+"receipt.notes" = "Notes";
+
+/* Order number line on a printed receipt. %1$@ is the order ID. */
+"receipt.orderNumber" = "Order #%1$@";
+
+/* Label above the card payment method on a printed receipt. */
+"receipt.paymentMethod" = "Payment Method";
+
+/* Title of the view containing a receipt preview. */
+"receiptViewController.title" = "Receipt";
 
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
 "receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: receipt for order #%2$@";
@@ -11586,9 +12268,7 @@ which should be translated separately and considered part of this sentence. */
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
 "receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: receipt for order #%2$@ on %3$@";
 
-/* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup
-   Button to refresh the state of the in-person payments setup. */
+/* Button to refresh the state of the in-person payments setup */
 "Refresh" = "Refresh";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -11614,9 +12294,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after an in-person refund fails */
 "Refund failed" = "Refund failed";
 
-/* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "Refund Label (%1$@)";
-
 /* Alert title when starting the in-person refund flow without a user name. */
 "Refund payment" = "Refund payment";
 
@@ -11628,6 +12305,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
+
+/* Error shown when a refund is rejected because the refund amount is not valid. */
+"refundAPIError.invalidRefundAmount" = "The refund amount isn't valid.";
+
+/* Error shown when a refund is rejected because the order status does not allow refunds or nothing refundable remains. */
+"refundAPIError.orderNotRefundable" = "This order can't be refunded.";
+
+/* Error shown when a refund is rejected because the selected quantity exceeds what is still refundable for an item. */
+"refundAPIError.quantityExceedsRefundable" = "The selected quantity is more than what's left to refund.";
+
+/* Error shown when a refund is rejected because the requested total exceeds the order's remaining refundable amount. */
+"refundAPIError.refundExceedsRemaining" = "The refund amount is more than what's left to refund on this order.";
+
+/* Error shown when a refund is rejected because the requested amount exceeds what is left to refund on an item. */
+"refundAPIError.refundTotalExceedsLine" = "The refund amount is more than what's left to refund for this item.";
+
+/* Error shown when a refund is rejected because one of the selected items is already fully refunded. */
+"refundAPIError.selectedItemAlreadyRefunded" = "One of the selected items has already been fully refunded.";
 
 /* Title on the refund screen that lists the custom amounts total cost */
 "refundCustomAmountsDetails.totalTitle" = "Custom Amounts Refund";
@@ -11747,8 +12442,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the report section on the privacy screen */
 "Reports" = "Reports";
 
-/* Navigation bar title to request a refund for a shipping label
-   Request a refund on a shipping label from the shipping label more menu action sheet */
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Request a Refund";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
@@ -11766,9 +12460,6 @@ which should be translated separately and considered part of this sentence. */
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Reset your password";
-
-/* Button to open a web view and resolve pending plugin requirements before using it. */
-"Resolve Now" = "Resolve Now";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "Restricted to customers with emails: %1$@";
@@ -11869,17 +12560,11 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Romania" = "Romania";
 
-/* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "Run a test order to ensure your WooCommerce process delivers a seamless customer experience.";
-
 /* Country option for a site address. */
 "Russia" = "Russia";
 
 /* Country option for a site address. */
 "Rwanda" = "Rwanda";
-
-/* Button label to open web page in Safari */
-"Safari" = "Safari";
 
 /* Country option for a site address. */
 "Saint Barthélemy" = "Saint Barthélemy";
@@ -12014,9 +12699,6 @@ which should be translated separately and considered part of this sentence. */
 /* Coupons Search Placeholder */
 "Search all coupons" = "Search all coupons";
 
-/* Customer Search Placeholder */
-"Search all customers" = "Search all customers";
-
 /* Orders Search Placeholder */
 "Search all orders" = "Search all orders";
 
@@ -12066,9 +12748,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "See layout and paper sizes options";
-
-/* Text on the button to see a saved receipt */
-"See Receipt" = "See Receipt";
 
 /* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
 "Select %1$d Categories" = "Select %1$d Categories";
@@ -12151,9 +12830,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Select your shipping carrier and rates";
-
-/* Second instruction on the test order screen */
-"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Select your test product, add to cart, and complete checkout on that web store as a real customer.";
 
 /* Dismiss button on the alert when there is an error selecting image */
 "selectPackageImageCoordinator.imageErrorAlert.ok" = "OK";
@@ -12246,8 +12922,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
 "Setup failed" = "Setup failed";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card, which creates a live transaction and incurs processing fees */
+"setUpTapToPayInformation.tryPayment.hint" = "Try a live payment using your own card (and refund it when you're done; processing fees apply.)";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. The trial payment is a live transaction and incurs processing fees. */
+"setUpTapToPayPaymentPrompt.description" = "Try a %1$@ live payment with your debit or credit card. You can refund the payment when you're done; processing fees apply.";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
 "SetUpTapToPayPaymentPrompt.skipButton.title" = "Not now";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"setUpTapToPayPaymentPrompt.title" = "Would you like to try a payment?";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Payment Complete";
@@ -12260,7 +12945,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
-   Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Share";
 
@@ -12498,11 +13182,47 @@ which should be translated separately and considered part of this sentence. */
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Signed in as @%1$@";
 
-/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
-"significantChangeConsent.ageRatingChange.description" = "App age rating changed to %1$d.";
+/* Description a parent or guardian sees in the system consent request when the app's App Store age rating changes. */
+"significantChangeConsent.ageRatingChange.request.description" = "The app's App Store age rating has increased.";
 
-/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
-"significantChangeConsent.manual.description" = "Significant app update: %1$@.";
+/* Button on the significant-change blocking screen that sends the approval request again. */
+"significantChangeConsent.blocking.askAgain.button" = "Ask Again";
+
+/* Button on the significant-change blocking screen that re-checks the approval status. */
+"significantChangeConsent.blocking.checkAgain.button" = "Check Again";
+
+/* Secondary button on the significant-change blocking screen that opens Help & Support. */
+"significantChangeConsent.blocking.contactSupport.button" = "Contact Support";
+
+/* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
+"significantChangeConsent.blocking.continue.button" = "Continue";
+
+/* Message of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.message" = "A parent or guardian declined the approval needed to continue using this app. You can send the approval request again.";
+
+/* Title of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.title" = "Approval Declined";
+
+/* Message of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.message" = "Your parent or guardian approved the recent changes to this app. You're all set.";
+
+/* Title of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.title" = "Approval Granted";
+
+/* Message of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.message" = "Recent changes to this app need to be approved by your parent or guardian before you can continue. Send them an approval request to proceed.";
+
+/* Title of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.title" = "Approval Needed";
+
+/* Message of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.message" = "We've sent an approval request for recent changes to this app to your parent or guardian. Once they respond, tap Check Again to continue.";
+
+/* Title of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.title" = "Approval Requested";
+
+/* Button on the significant-change blocking screen that sends the approval request to a parent/guardian. */
+"significantChangeConsent.blocking.requestApproval.button" = "Request Approval";
 
 /* Display label for simple product type. */
 "Simple" = "Simple";
@@ -12623,9 +13343,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Add Edit Coupon screen when the update of the coupon goes in error. */
 "Something went wrong while updating the coupon." = "Something went wrong while updating the coupon.";
-
-/* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "Something went wrong with the refund. Please try again.";
 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
@@ -12751,9 +13468,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
 
-/* Title on the action button on the test order screen */
-"Start Test order" = "Start Test order";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -12814,6 +13528,31 @@ which should be translated separately and considered part of this sentence. */
 
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "Store Settings";
+
+/* VoiceOver value announced for a selected checkbox. */
+"storeCheckbox.accessibilityValue.checked" = "Checked";
+
+/* VoiceOver value announced for a checkbox in the indeterminate (partially selected) state. */
+"storeCheckbox.accessibilityValue.mixed" = "Mixed";
+
+/* VoiceOver value announced for an unselected checkbox. */
+"storeCheckbox.accessibilityValue.unchecked" = "Unchecked";
+
+/* Explanation shown when the app cannot reach the merchant's store because of a problem on their site. */
+"storeConnectionError.body.v2" = "We're having trouble connecting to your store. This is usually a connection issue on your WordPress site, often caused by a security plugin, a recent plugin update, or a Jetpack connection that needs to be refreshed. The WooCommerce app can't fix this from your phone.";
+
+/* Title of the button that opens the support form from the store connection warning. */
+"storeConnectionError.contactSupport" = "Contact support";
+
+/* Title of the button that hides the store connection warning for the current session. */
+"storeConnectionError.dismiss" = "Dismiss";
+
+/* Title of the warning shown when the app cannot reach the merchant's store. */
+"storeConnectionError.title" = "Your store can't be reached";
+
+/* Accessibility label for dismissing a view.
+   Default accessibility label for dismissing a store notice banner. */
+"storeNoticeBanner.dismiss.accessibilityLabel" = "Dismiss";
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "View all %1$d tasks";
@@ -12881,6 +13620,15 @@ which should be translated separately and considered part of this sentence. */
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "Pick Store to Connect (%1$d hidden)";
 
+/* Accessibility label for the star rating on a review in the Dashboard card */
+"storeReviewDashboardRow.rating" = "%1$d out of 5 stars";
+
+/* VoiceOver label of the control that empties the text of a search field. */
+"storeSearchField.clear" = "Clear";
+
+/* VoiceOver position of a segment in a segmented control. %1$d is the position, %2$d the total count. */
+"storeSegmentedControl.accessibilityValue.position" = "%1$d of %2$d";
+
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "Selected date";
 
@@ -12898,6 +13646,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback label for a store stats widget site entity when its name is unknown. */
 "storeStatsWidget.storeEntity.fallbackName" = "Store";
+
+/* VoiceOver position of a tab in a tab row. %1$d is the position, %2$d the total count. */
+"storeTabRow.accessibilityValue.position" = "%1$d of %2$d";
+
+/* VoiceOver label of the back control in a top app bar. */
+"storeTopAppBar.navigation.back" = "Back";
+
+/* VoiceOver label of the close control in a top app bar. */
+"storeTopAppBar.navigation.close" = "Close";
 
 /* Range label for the Last Month option in the Store Stats widget */
 "storeWidgets.dateRange.lastMonth" = "Last Month";
@@ -13107,8 +13864,8 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Untitled chat";
 
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "You haven't chatted with support yet.";
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "You haven't started an AI support chat yet.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Chat History";
@@ -13118,6 +13875,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
 "supportChatMessageRow.failedAccessibilityLabel" = "Not sent. %1$@";
+
+/* Line fixed at the top of the AI support chat that tells the merchant the replies come from an AI acting for Woo Support */
+"supportChatView.aiDisclosure" = "You’re chatting with AI from Woo Support.";
 
 /* Message shown when all diagnostic checks pass */
 "supportChatView.allChecksPassed" = "All checks completed with no issues.";
@@ -13176,8 +13936,17 @@ which should be translated separately and considered part of this sentence. */
 /* Generic error message shown when an AI support chat request fails */
 "supportChatViewModel.aiChatConnectionErrorMessage" = "We couldn't connect to AI chat right now.";
 
+/* Error message shown when device registration for push notifications fails from support chat */
+"supportChatViewModel.deviceRegistrationErrorMessage" = "We couldn't register your device for push notifications. Please try again.";
+
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Hello! I'm your Woo Mobile Support Bot. Is there anything I can help you with today?";
+
+/* Shown in support chat under the headline when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassed" = "If a payment failed, continue to chat and share the order number.";
+
+/* Headline shown in support chat when the Payments troubleshooting checks find no problem */
+"supportChatViewModel.paymentChecksPassedHeadline" = "Payment setup checks passed";
 
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Please describe your issue in more detail so I can help.";
@@ -13194,11 +13963,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to enable order notifications */
 "supportDiagnosticsService.action.enableOrderNotifications" = "Enable Order Notifications";
 
+/* Action button that opens the WooPayments or Stripe settings page in the store admin */
+"supportDiagnosticsService.action.openPaymentSettings" = "Open Payment Settings";
+
+/* Action button that opens the Plugins page in the store admin */
+"supportDiagnosticsService.action.openPlugins" = "Open Plugins";
+
 /* Action button to open the store push notification preferences screen */
 "supportDiagnosticsService.action.openPushNotificationPreferences" = "Notification Preferences";
 
 /* Action button to open device notification settings */
 "supportDiagnosticsService.action.openSettings" = "Open Settings";
+
+/* Action button that opens WooCommerce General settings in the store admin */
+"supportDiagnosticsService.action.openStoreSettings" = "Open Store Settings";
 
 /* Action button to register the device for push notifications */
 "supportDiagnosticsService.action.registerDevice" = "Register Device";
@@ -13269,6 +14047,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the notification settings diagnostic test */
 "supportDiagnosticsService.test.notifications" = "Checking notification settings";
 
+/* Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay */
+"supportDiagnosticsService.test.paymentConfiguration" = "Checking your store's payment setup";
+
 /* Title for the site connection diagnostic test */
 "supportDiagnosticsService.test.site" = "Connecting to your site";
 
@@ -13300,13 +14081,16 @@ which should be translated separately and considered part of this sentence. */
 "supportEscalationCoordinator.ticketCreatedTitle" = "Request Sent!";
 
 /* Message for the alert asking consent to send an AI chat transcript to support */
-"supportEscalationCoordinator.transcriptConsentMessage" = "We can create a support request using this chat transcript, or you can open the contact form and enter the details yourself.";
+"supportEscalationCoordinator.transcriptConsentMessageV2" = "Both options include this chat transcript. Send the request now, or open the contact form to add more details first.";
 
 /* Title for the alert asking consent to send an AI chat transcript to support */
 "supportEscalationCoordinator.transcriptConsentTitle" = "Send this chat to support?";
 
 /* Header text before the chat transcript in support ticket description */
 "supportEscalationCoordinator.transcriptHeader" = "Following is the transcript of an in-app AI support chat session:";
+
+/* Disclosure below the support form message editor when an AI chat transcript will be included */
+"supportForm.aiChatTranscriptDisclosure" = "Your AI support chat transcript will also be included with this request.";
 
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Got It";
@@ -13370,6 +14154,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Support issue type for other problems not listed */
 "supportIssueType.other" = "Other";
+
+/* Support issue type for problems with taking payments in person: card readers, Tap to Pay and the payment provider. Matches the Payments menu. */
+"supportIssueType.payments" = "Payments";
 
 /* Support issue type for problems receiving push notifications */
 "supportIssueType.receivingNotifications" = "Receiving push notifications";
@@ -13481,9 +14268,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Tap or insert card to refund";
-
-/* First instruction on the test order screen */
-"Tap the button below to be redirected to your online store via a web browser." = "Tap the button below to be redirected to your online store via a web browser.";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Tap to insert a Horizontal Ruler";
@@ -14262,8 +15046,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "Tip";
 
-/* Accessibility label for web page preview title
-   Add Product Category. Placeholder of cell presenting the title of the category.
+/* Add Product Category. Placeholder of cell presenting the title of the category.
    Placeholder in the Product Title row on Product form screen. */
 "Title" = "Title";
 
@@ -14424,20 +15207,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Trust";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
-"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done.";
-
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "Try a Payment";
-
-/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
-"Try a payment using your own card (and refund it when you're done.)" = "Try a payment using your own card (and refund it when you're done.)";
-
-/* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Try a Test Order" = "Try a Test Order";
-
-/* Title shown on the test order screen */
-"Try a test order" = "Try a test order";
 
 /* Action button to retry Jetpack activation. */
 "Try Activating Again" = "Try Activating Again";
@@ -14525,6 +15296,24 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Tuvalu" = "Tuvalu";
+
+/* Instruction to enter a backup code */
+"twoFactorMethods.backupCodeInstructions" = "Enter a backup code to continue.";
+
+/* Instruction to enter a code sent by email */
+"twoFactorMethods.emailInstructions" = "Check your email for a verification code from WordPress.com, then enter it to continue.";
+
+/* Button to text another verification code when one was already sent by text message */
+"twoFactorMethods.resendTextCodeButton" = "Resend code via SMS";
+
+/* Instruction to use a security key */
+"twoFactorMethods.securityKeyInstructions" = "Please provide your security key to continue.";
+
+/* Instruction to enter a code sent by text message */
+"twoFactorMethods.textMessageInstructions" = "We sent a text message. Enter the verification code from the message.";
+
+/* Button to enter a backup code on the 2FA screen */
+"twoFAViewController.useBackupCodeButton" = "Use a backup code instead";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "Type of contents";
@@ -14991,9 +15780,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Use Suggested Address";
 
-/* Fourth instruction on the test order screen */
-"Use the app to process the refund for the test order." = "Use the app to process the refund for the test order.";
-
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "User Profiles";
 
@@ -15042,9 +15828,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */
 "Variations" = "Variations";
-
-/* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Variations Attributes";
 
 /* Title for the notice when after variations were created */
 "Variations created successfully" = "Variations created successfully";
@@ -15361,9 +16144,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* More Privacy Options section title in the privacy screen. */
 "Web Options" = "Web Options";
 
-/* Verb. Dismiss the web view screen. */
-"webKit.button.dismiss" = "Dismiss";
-
 /* Title of a button linking to the app's website */
 "Website" = "Website";
 
@@ -15676,6 +16456,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "Phone number is required for the destination address.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "%1$@ requires a recipient phone number.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Add company";
 
@@ -15802,11 +16585,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to retry label purchase when an error occurs */
 "wooShipping.createLabels.labelPurchaseError.retry" = "Retry";
 
+/* Message in the notice when purchasing a shipping label fails during a carrier outage. %1$@ is the incident reported by the carrier, e.g. 'USPS: API Outage | Status: Investigating'. */
+"wooShipping.createLabels.labelPurchaseError.serviceStatusMessage" = "We are unable to purchase the shipping label due to a carrier service issue: %1$@";
+
 /* Title of the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.title" = "Error purchasing shipping label.";
 
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "We are unable to load required data";
+
+/* Notice when the origin (ship from) address is missing an email on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingEmail" = "Email is missing for the origin address.";
+
+/* Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingPhone" = "Phone number is missing for the origin address.";
 
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "Done";
@@ -15915,6 +16707,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "Retry";
+
+/* Accessibility label for the button that dismisses a carrier service incident banner. %1$@ is the incident message, e.g. 'UPS: Label creation delays'. */
+"wooShipping.createLabels.serviceStatus.dismissNotice" = "Dismiss notice: %1$@";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.error" = "Error";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.info" = "Information";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.warning" = "Warning";
+
+/* Button on a carrier service incident banner in the shipping label creation screen that opens the provider status page */
+"wooShipping.createLabels.serviceStatus.viewStatusPage" = "View status page";
 
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "Shipment %1$d";
@@ -16027,6 +16834,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "More info about ITN";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "Shipments into the EU now need product identifiers on each item. Update the WooCommerce Shipping plugin to add them.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Product Details";
 
@@ -16072,6 +16882,24 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "Description must be 30 characters or fewer.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "Required for shipments to the EU";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "Must be %1$d characters or fewer.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "EU product identifiers";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "Required for shipments into the EU. SKU and GTIN / EAN are prefilled from the product's Inventory settings.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN / EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "Enter the GTIN/EAN, or select \"No barcode\"";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS tariff number";
 
@@ -16081,8 +16909,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "Optional";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "Manufacturer part number";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "No barcode";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Origin Country";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "The tariff number must be between 6 and 12 digits long";
@@ -16406,9 +17243,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "Work with us";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Would you like to try a payment" = "Would you like to try a payment";
-
 /* Text to suggest another form of 2FA authentication */
 "wpCom2FALoginView.anotherFormText" = "Or choose another form of authentication.";
 
@@ -16420,6 +17254,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button to request 2FA code via SMS on the WPCom 2FA login screen */
 "wpCom2FALoginView.textMeACode" = "Text me a code instead";
+
+/* Button to enter a backup code on the WPCom 2FA login screen */
+"wpCom2FALoginView.useBackupCodeButton" = "Use a backup code instead";
 
 /* Placeholder for the 2FA code field on the WPCom 2FA login screen */
 "wpCom2FALoginView.verificationCode" = "Verification code";
@@ -16589,6 +17426,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message in the Push Notifications Benefits View for users without admin role */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission" = "Your account does not have permission to complete push notifications setup. Please ask your store administrator to handle this.";
 
+/* Error message in the Push Notifications Benefits View when the store's Jetpack is in Offline Mode */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.storeInOfflineMode" = "Push notifications can’t be set up because your store is in Offline Mode. If you still need help, please contact support.";
+
 /* Title in the product description AI generator view. */
 "Write a description" = "Write a description";
 
@@ -16659,9 +17499,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "You can only add variable subscriptions in the web dashboard";
 
-/* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process.";
-
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode/ZIP in wp-admin > WooCommerce > Settings (General)";
 
@@ -16682,11 +17519,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "You have a new order! 🎉";
-
-/* Error message when WooPayments is not supported because the Stripe account has overdue requirements
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
-"You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments.";
 
 /* Error message for a short value in Description row in Customs screen of Shipping Label flow */
 "You must provide a clear, specific description for every item." = "You must provide a clear, specific description for every item.";

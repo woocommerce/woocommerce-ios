@@ -1,13 +1,13 @@
 import SwiftUI
 
-/// Preference key used by deep child views (e.g. the pushed custom amount form)
+/// Preference key used by deep child views (e.g. pushed checkout screens)
 /// to ask the POS dashboard to hide its floating control overlay.
 ///
 /// The reducer takes the OR of nested values so any view in the hierarchy that
 /// requests hiding wins; siblings that don't set the preference don't override
 /// a sibling's request.
 struct POSHidesFloatingControlPreferenceKey: PreferenceKey {
-    static var defaultValue: Bool = false
+    static let defaultValue: Bool = false
 
     static func reduce(value: inout Bool, nextValue: () -> Bool) {
         value = value || nextValue()

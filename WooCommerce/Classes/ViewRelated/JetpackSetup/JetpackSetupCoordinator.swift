@@ -1,5 +1,4 @@
 import UIKit
-import Experiments
 import Yosemite
 import enum Networking.NetworkError
 import class Networking.AlamofireNetwork
@@ -8,6 +7,7 @@ import WooFoundation
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
+@MainActor
 final class JetpackSetupCoordinator {
     let rootViewController: UIViewController
 
@@ -22,7 +22,6 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
     private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
     private let onCompletion: (() -> Void)?
@@ -34,9 +33,9 @@ final class JetpackSetupCoordinator {
               flow: loginFlow,
               allowAccountCreation: true,
               accountService: accountService,
-              onPasswordUIRequest: showPasswordUI(email:),
-              onMagicLinkRequest: showMagicLinkRequestUI,
-              onMagicLinkSent: showMagicLinkSentUI,
+              onPasswordUIRequest: { email in self.showPasswordUI(email: email) },
+              onMagicLinkRequest: { email in self.showMagicLinkRequestUI(email: email) },
+              onMagicLinkSent: { email, isSignup in self.showMagicLinkSentUI(email: email, isSignup: isSignup) },
               onError: { [weak self] message in
             self?.showAlert(message: message)
         })
@@ -52,7 +51,6 @@ final class JetpackSetupCoordinator {
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck(),
          onCompletion: (() -> Void)? = nil) {
         self.site = site
@@ -61,7 +59,6 @@ final class JetpackSetupCoordinator {
         self.accountService = accountService
         self.stores = stores
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
         self.onCompletion = onCompletion
         self.jetpackConnectionService = JetpackConnectionService(siteID: site.siteID, stores: stores)
@@ -71,7 +68,7 @@ final class JetpackSetupCoordinator {
     /// Skips the benefits modal when the self-driven push notifications feature is enabled.
     ///
     func startSetup() {
-        Task { @MainActor in
+        Task {
             let isEligible = await pushNotificationEligibilityChecker.checkEligibility()
             if isEligible {
                 await startSetupDirectly()
@@ -103,7 +100,7 @@ final class JetpackSetupCoordinator {
 
     func startAuthentication(with emailOrUsername: String?) {
         if let emailOrUsername {
-            Task { @MainActor in
+            Task {
                 analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
                 await emailLoginViewModel.checkWordPressComAccount(emailOrUsername: emailOrUsername)
             }
@@ -117,7 +114,7 @@ final class JetpackSetupCoordinator {
 //
 private extension JetpackSetupCoordinator {
     func showBenefitModal() {
-        let benefitsController = JetpackBenefitsHostingController(siteURL: site.url, isJetpackCPSite: site.isJetpackCPConnected, onSubmit: { [weak self] in
+        let benefitsController = JetpackBenefitsHostingController(isJetpackCPSite: site.isJetpackCPConnected, onSubmit: { [weak self] in
             await self?.handleBenefitModalCTA()
         }, onDismiss: { [weak self] in
             self?.rootViewController.dismiss(animated: true, completion: nil)
@@ -128,7 +125,6 @@ private extension JetpackSetupCoordinator {
     /// Starts the Jetpack setup flow directly, skipping the benefits modal.
     /// Used when the self-driven push notifications feature is enabled.
     ///
-    @MainActor
     func startSetupDirectly() async {
         guard proceedToSetupSteps() == false else {
             return
@@ -138,7 +134,6 @@ private extension JetpackSetupCoordinator {
         await checkConnectionAndAuthenticateIfNeeded(dismissing: progressView)
     }
 
-    @MainActor
     func handleBenefitModalCTA() async {
         guard proceedToSetupSteps() == false else {
             return
@@ -162,7 +157,6 @@ private extension JetpackSetupCoordinator {
     /// Checks Jetpack connection state, tracks analytics, and starts authentication.
     /// Optionally dismisses a presented view controller (e.g. a loading indicator) on completion.
     ///
-    @MainActor
     func checkConnectionAndAuthenticateIfNeeded(dismissing viewController: UIViewController? = nil) async {
         do {
             try await checkJetpackConnectionState()
@@ -236,7 +230,8 @@ private extension JetpackSetupCoordinator {
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
-        Task { @MainActor in
+        Task { [weak self] in
+            guard let self else { return }
             guard let username = await loadWPComAccountUsername(authToken: authToken) else {
                 return showAlert(message: Localization.errorFetchingWPComAccount, onRetry: { [weak self] in
                     self?.startJetpackSetupFlow(authToken: authToken)
@@ -288,10 +283,23 @@ private extension JetpackSetupCoordinator {
     }
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
+        let previousCredentials = stores.sessionManager.defaultCredentials
+        let previousAuthenticationEndpoints = previousCredentials.flatMap {
+            stores.sessionManager.cookieNonceAuthenticationEndpoints(for: $0)
+        }
+        authenticateUserAndRefreshSite(
+            with: credentials,
+            replacing: previousCredentials,
+            previousAuthenticationEndpoints: previousAuthenticationEndpoints
+        )
+    }
+
+    func authenticateUserAndRefreshSite(with credentials: Credentials,
+                                        replacing previousCredentials: Credentials?,
+                                        previousAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) {
         analytics.track(.jetpackSetupCompleted)
 
-        let previousCredentials = stores.sessionManager.defaultCredentials
-        if previousCredentials != credentials {
+        if stores.sessionManager.defaultCredentials != credentials {
             stores.authenticate(credentials: credentials)
         }
 
@@ -307,14 +315,18 @@ private extension JetpackSetupCoordinator {
                     dismiss()
                 } else {
                     stores.updateDefaultStore(storeID: site.siteID)
-                    stores.sessionManager.deleteApplicationPassword(using: previousCredentials, locally: true)
-                    stores.synchronizeEntities { [weak self] in
+                    stores.sessionManager.deleteApplicationPassword(
+                        using: previousCredentials,
+                        cookieNonceAuthenticationEndpoints: previousAuthenticationEndpoints,
+                        locally: true
+                    )
+                    stores.synchronizeEntities(preservingSelectedSite: true) { [weak self] in
                         self?.stores.updateDefaultStore(site)
                         dismiss()
                     }
                 }
 
-                func dismiss() {
+                @MainActor func dismiss() {
                     rootViewController.dismiss(animated: true, completion: { [weak self] in
                         self?.analytics.track(.jetpackSetupSynchronizationCompleted)
                         self?.registerForPushNotifications()
@@ -327,11 +339,18 @@ private extension JetpackSetupCoordinator {
                 DDLogError("⛔️ Error fetching sites after Jetpack setup: \(error)")
                 progressView.dismiss(animated: true, completion: { [weak self] in
                     self?.showAlert(message: Localization.errorFetchingSites, onRetry: {
-                        self?.authenticateUserAndRefreshSite(with: credentials)
+                        self?.authenticateUserAndRefreshSite(
+                            with: credentials,
+                            replacing: previousCredentials,
+                            previousAuthenticationEndpoints: previousAuthenticationEndpoints
+                        )
                     }, onCancel: {
                         // Revert the change to credentials
                         if let previousCredentials {
-                            self?.stores.authenticate(credentials: previousCredentials)
+                            self?.restoreAuthentication(
+                                credentials: previousCredentials,
+                                cookieNonceAuthenticationEndpoints: previousAuthenticationEndpoints
+                            )
                         }
                     })
                 })
@@ -339,10 +358,26 @@ private extension JetpackSetupCoordinator {
         }
 
         if site.isJetpackCPConnected {
-            stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url, onCompletion: resultHandler))
+            stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { result in
+                resultHandler(result.map(\.site))
+            })
         } else {
             stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme(), completion: resultHandler))
         }
+    }
+
+    func restoreAuthentication(credentials: Credentials,
+                               cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) {
+        if let cookieNonceAuthenticationEndpoints {
+            stores.sessionManager.saveCookieNonceAuthenticationEndpoints(
+                cookieNonceAuthenticationEndpoints,
+                for: credentials
+            )
+        }
+        stores.authenticate(
+            credentials: credentials,
+            cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints
+        )
     }
 
     func registerForPushNotifications() {
@@ -360,7 +395,6 @@ private extension JetpackSetupCoordinator {
 //
 private extension JetpackSetupCoordinator {
 
-    @MainActor
     func loadWPComAccountUsername(authToken: String) async -> String? {
         await withCheckedContinuation { continuation in
             let network = AlamofireNetwork(credentials: Credentials(authToken: authToken), selectedSite: nil, appPasswordSupportState: nil)
@@ -371,7 +405,6 @@ private extension JetpackSetupCoordinator {
         }
     }
 
-    @MainActor
     func isJetpackInstalledAndActive() async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: 0) { result in
@@ -417,7 +450,7 @@ private extension JetpackSetupCoordinator {
                                                                                                  onMagicLinkSent: { [weak self] email in
             self?.showMagicLinkSentUI(email: email, isSignup: false)
         },
-                                                                                                 onUseUsernamePassword: showWPComUsernameLogin,
+                                                                                                 onUseUsernamePassword: { self.showWPComUsernameLogin() },
                                                                                                  onError: { [weak self] message in
             self?.showAlert(message: message)
         }))
@@ -451,7 +484,7 @@ private extension JetpackSetupCoordinator {
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
                 self.analytics.track(event: .JetpackSetup.loginFlow(step: .password, failure: error))
-                let message = error.localizedDescription
+                let message = (error as? WordPressComOAuthError)?.loginErrorMessage ?? error.localizedDescription
                 self.showAlert(message: message)
             },
             onLoginSuccess: { @MainActor [weak self] authToken in

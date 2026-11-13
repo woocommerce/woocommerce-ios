@@ -1,10 +1,12 @@
 import XCTest
 import CoreData
+import TestKit
 import Yosemite
 import YosemiteTestHelpers
 
 // MARK: - EntityListener Unit Tests
 //
+@MainActor
 class EntityListenerTests: XCTestCase {
 
     /// InMemory Storage!
@@ -20,8 +22,8 @@ class EntityListenerTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
     }
 
@@ -29,11 +31,11 @@ class EntityListenerTests: XCTestCase {
 
     /// Verifies that onUpsert is called everytime the associated Storage.Entity is Updated.
     ///
-    func testOnUpsertGetsCalledWheneverTargetEntityIsEffectivelyUpdated() {
+    func testOnUpsertGetsCalledWheneverTargetEntityIsEffectivelyUpdated() async {
         /// Step 1: Insert
         ///
         let storageAccount = storageManager.insertSampleAccount()
-        viewContext.saveIfNeeded()
+        storageManager.performAndSave({ _ in }, completion: nil, on: .main)
 
         /// Step 2: Setup the Listener
         ///
@@ -46,54 +48,85 @@ class EntityListenerTests: XCTestCase {
             expectation.fulfill()
         }
 
-        listener.onDelete = {
+        listener.onReplace = { _ in
             XCTFail()
         }
 
         /// Step 3: Update!
         ///
         storageAccount.displayName = updatedDisplayName
-        viewContext.saveIfNeeded()
+        storageManager.performAndSave({ _ in }, completion: nil, on: .main)
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that onDelete is called everytime the associated Storage Entity is nuked.
+    /// Verifies that no closure is called when the associated Storage.Entity is deleted
+    /// without a replacement.
     ///
-    func testOnDeleteGetsCalledWheneverTargetEntityIsEffectivelyNuked() {
-        /// Step 1: Insert
-        ///
+    func test_no_closure_gets_called_when_target_entity_is_deleted_without_replacement() async {
+        // Given
         let storageAccount = storageManager.insertSampleAccount()
-        viewContext.saveIfNeeded()
-
-        /// Step 2: Setup the Listener
-        ///
+        storageManager.performAndSave({ _ in }, completion: nil, on: .main)
         let listener = EntityListener(viewContext: viewContext, readOnlyEntity: storageAccount.toReadOnly())
-        let expectation = self.expectation(description: "onDelete")
 
         listener.onUpsert = { _ in
-            XCTFail()
+            XCTFail("A deleted entity should not be reported as upserted")
+        }
+        listener.onReplace = { _ in
+            XCTFail("A deleted entity without replacement should not be reported as replaced")
         }
 
-        listener.onDelete = {
-            expectation.fulfill()
-        }
-
-        /// Step 3: Nuke!
-        ///
+        // When
+        // The listener reacts to the context's ObjectsDidChange notification: waiting for the same
+        // notification proves the deletion was processed while the listener stayed silent.
+        let notification = expectation(forNotification: .NSManagedObjectContextObjectsDidChange,
+                                       object: viewContext)
+        // Only the first notification matters, as with the observer this expectation replaces.
+        notification.assertForOverFulfill = false
         viewContext.deleteObject(storageAccount)
-        viewContext.saveIfNeeded()
+        storageManager.performAndSave({ _ in }, completion: nil, on: .main)
+        await fulfillment(of: [notification], timeout: Constants.expectationTimeout)
+        // Keep the listener observing until the deletion notification has been delivered.
+        withExtendedLifetime(listener) {}
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        // Neither `onUpsert` nor `onReplace` was executed (either would have failed the test above).
+    }
+
+    /// Verifies that onReplace is called when the associated Storage.Entity is deleted and
+    /// re-inserted within a single save, receiving the replacement entity.
+    ///
+    func test_onReplace_gets_called_when_target_entity_is_deleted_and_reinserted_in_a_single_save() async {
+        // Given
+        let storageAccount = storageManager.insertSampleAccount()
+        storageManager.performAndSave({ _ in }, completion: nil, on: .main)
+        let readOnlyAccount = storageAccount.toReadOnly()
+        let listener = EntityListener(viewContext: viewContext, readOnlyEntity: readOnlyAccount)
+
+        // When
+        // The entity is replaced: deleted and re-inserted within a single save.
+        let replacement: Account = await waitForAsync { promise in
+            listener.onReplace = { replacement in
+                promise(replacement)
+            }
+
+            self.viewContext.deleteObject(storageAccount)
+            let replacementAccount = self.viewContext.insertNewObject(ofType: StorageAccount.self)
+            replacementAccount.update(with: readOnlyAccount)
+            self.storageManager.performAndSave({ _ in }, completion: nil, on: .main)
+        }
+
+        // Then
+        XCTAssertEqual(replacement.userID, readOnlyAccount.userID)
     }
 
     /// Verifies that onUpsert is called everytime the associated Storage.Entity is Refreshed.
     ///
-    func testOnUpsertGetsCalledWheneverTheAssociatedContextRefreshesAllObjects() {
+    func testOnUpsertGetsCalledWheneverTheAssociatedContextRefreshesAllObjects() async {
         /// Step 1: Insert
         ///
         let storageAccount = storageManager.insertSampleAccount()
-        viewContext.saveIfNeeded()
+        storageManager.performAndSave({ _ in }, completion: nil, on: .main)
 
         /// Step 2: Setup the Listener
         ///
@@ -104,7 +137,7 @@ class EntityListenerTests: XCTestCase {
             expectation.fulfill()
         }
 
-        listener.onDelete = {
+        listener.onReplace = { _ in
             XCTFail()
         }
 
@@ -112,7 +145,7 @@ class EntityListenerTests: XCTestCase {
         ///
         viewContext.refreshAllObjects()
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that onUpsert is called whenever the ReadOnly Entity is actually *inserted* into the associated Context.
@@ -120,7 +153,7 @@ class EntityListenerTests: XCTestCase {
     /// Normally, this scenario wouldn't happen: EntityListener *USERS* would never have access to ReadOnly instances
     /// before they're effectively persisted. *But* we're supporting this, as a safety measure.
     ///
-    func testOnUpsertGetsCalledWheneverTheAssociatedEntityGetsInsertedInContext() {
+    func testOnUpsertGetsCalledWheneverTheAssociatedEntityGetsInsertedInContext() async {
         /// Step 1: Insert
         ///
         let storageAccount = storageManager.insertSampleAccount()
@@ -134,14 +167,14 @@ class EntityListenerTests: XCTestCase {
             expectation.fulfill()
         }
 
-        listener.onDelete = {
+        listener.onReplace = { _ in
             XCTFail()
         }
 
         /// Step 3: Save and effectively insert into the mainMOC
         ///
-        viewContext.saveIfNeeded()
+        storageManager.performAndSave({ _ in }, completion: nil, on: .main)
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
     }
 }

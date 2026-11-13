@@ -13,6 +13,7 @@ configurations:
   - child: ../Modules/Sources/Codegen/Sourcery/Copiable/WooCommerce-Copiable.sourcery.yaml
   - child: ../Modules/Sources/Codegen/Sourcery/Copiable/WooFoundation-Copiable.sourcery.yaml
   - child: ../Modules/Sources/Codegen/Sourcery/Copiable/Yosemite-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/DesignSystemDemo/StoreDesignSystem-TokenCatalogs.yaml
   - child: ../Modules/Sources/Codegen/Sourcery/Fakes/Hardware-Fakes.yaml
   - child: ../Modules/Sources/Codegen/Sourcery/Fakes/Networking-Fakes.yaml
   - child: ../Modules/Sources/Codegen/Sourcery/Fakes/WooFoundation-Fakes.yaml

@@ -20,7 +20,7 @@ final class PrivacyBannerViewModel: ObservableObject {
 
     /// Completion handler.
     ///
-    @MainActor private let onCompletion: (Result<Destination, PrivacyBannerViewModel.Error>) -> ()
+    private let onCompletion: @MainActor (Result<Destination, PrivacyBannerViewModel.Error>) -> ()
 
     /// Stores & Session.
     ///
@@ -32,7 +32,7 @@ final class PrivacyBannerViewModel: ObservableObject {
 
     init(analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
-         onCompletion: @escaping (Result<Destination, PrivacyBannerViewModel.Error>) -> ()) {
+         onCompletion: @escaping @MainActor (Result<Destination, PrivacyBannerViewModel.Error>) -> ()) {
         self.analyticsEnabled = analytics.userHasOptedIn
         self.stores = stores
         self.analytics = analytics

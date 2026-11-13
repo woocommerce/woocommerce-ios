@@ -6,6 +6,14 @@ public protocol ConnectivityObserver {
     /// Getter for current state of the connectivity.
     var currentStatus: ConnectivityStatus { get }
 
+    /// Whether the current connection is metered (`NWPath.isExpensive`) — typically cellular or a personal
+    /// hotspot. `nil` until the first path update arrives.
+    var isConnectionMetered: Bool? { get }
+
+    /// Whether Low Data Mode (`NWPath.isConstrained`) applies to the current connection. `nil` until the
+    /// first path update arrives.
+    var isLowDataModeEnabled: Bool? { get }
+
     /// Publisher for connectivity availability.
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { get }
 }
@@ -15,7 +23,7 @@ public protocol ConnectivityObserver {
 /// - unknown:      It is unknown whether the network is reachable.
 /// - notReachable: The network is not reachable.
 /// - reachable:    The network is reachable.
-public enum ConnectivityStatus: Equatable {
+public enum ConnectivityStatus: Equatable, Sendable {
     case unknown
     case notReachable
     case reachable(type: ConnectionType)
@@ -26,7 +34,7 @@ public enum ConnectivityStatus: Equatable {
 /// - ethernetOrWiFi: The connection type is either over Ethernet or WiFi.
 /// - cellular:       The connection type is a cellular connection.
 /// - other:          The connection type is via a local loopback network, virtual network or other unknown types.
-public enum ConnectionType: Equatable {
+public enum ConnectionType: Equatable, Sendable {
     case ethernetOrWiFi
     case cellular
     case other

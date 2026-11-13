@@ -155,8 +155,12 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         refresh()
 
         Task { @MainActor in
-            name = try await inventoryItem.retrieveName(with: stores, siteID: siteID)
-            showLoadingName = false
+            do {
+                name = try await inventoryItem.retrieveName(with: stores, siteID: siteID)
+                showLoadingName = false
+            } catch {
+                DDLogError("⛔️ Failed to retrieve inventory item name: \(error)")
+            }
         }
     }
 

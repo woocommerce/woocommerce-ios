@@ -5,6 +5,7 @@ import enum Yosemite.OrderPaymentMethod
 import enum Yosemite.SearchDebounceStrategy
 
 struct POSOrderListView: View {
+    @Environment(\.posMetrics) private var metrics
     @Binding var isSearching: Bool
     @Binding var searchTerm: String
     let onOrderSelected: (POSOrder) -> Void
@@ -68,9 +69,7 @@ struct POSOrderListView: View {
                         POSSearchField(
                             searchTerm: $searchTerm,
                             searchable: POSOrderSearchable(ordersController: orderListModel.ordersController),
-                            onBack: {
-                                setSearch(false)
-                            }
+                            onBack: { setSearch(false) }
                         )
                         .posSearchTextFieldUnfocusedBorderColor(.posOutlineVariant)
                         .transition(.asymmetric(
@@ -109,12 +108,14 @@ struct POSOrderListView: View {
             }
         }
         .animation(.default, value: orderListModel.ordersController.ordersViewState.isEmpty)
-        .background(Color.posSurfaceBright)
+        // Reaches under the status bar so that strip slides away with the list on phone.
+        .background(Color.posSurfaceBright.ignoresSafeArea())
         .navigationBarHidden(true)
         .refreshable {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListPullToRefresh())
             await orderListModel.ordersController.refreshOrders()
         }
+        .posEdgeSwipeBackAction(isEnabled: isSearching, onBack: { setSearch(false) })
     }
 
     @ViewBuilder
@@ -139,7 +140,8 @@ struct POSOrderListView: View {
                     await orderListModel.ordersController.loadNextOrders()
                 },
                 content: {
-                    LazyVStack(spacing: POSSpacing.medium) {
+                    let dateFormatter = DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
+                    LazyVStack(spacing: metrics.spacing.medium) {
                         headerRows
                             .id(Constants.scrollTopID)
 
@@ -155,7 +157,11 @@ struct POSOrderListView: View {
                             ))
                             onOrderSelected(order)
                         }) {
-                            POSOrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
+                            POSOrderRowView(
+                                order: order,
+                                formattedDateCreated: dateFormatter.string(from: order.dateCreated),
+                                isSelected: orderListModel.ordersController.selectedOrder?.id == order.id
+                            )
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
@@ -163,9 +169,9 @@ struct POSOrderListView: View {
 
                     footerRows
                 }
-                .padding(.horizontal)
-                .padding(.top, POSPadding.xSmall)
-                .padding(.bottom, POSPadding.medium)
+                .padding(.horizontal, metrics.padding.medium)
+                .padding(.top, metrics.padding.xSmall)
+                .padding(.bottom, metrics.padding.medium)
             }
             )
             .scrollDismissesKeyboard(.immediately)
@@ -201,7 +207,9 @@ struct POSOrderListView: View {
 }
 
 private struct POSOrderRowView: View {
+    @Environment(\.posMetrics) private var metrics
     let order: POSOrder
+    let formattedDateCreated: String
     let isSelected: Bool
 
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -209,7 +217,7 @@ private struct POSOrderRowView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var minHeight: CGFloat {
-        min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
+        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumOrderCardHeightMultiplier)
     }
 
     /// Suppress the selection border on compact widths — there is no adjacent detail pane on phone,
@@ -219,14 +227,14 @@ private struct POSOrderRowView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
             orderHeaderRow
             orderDetailsColumn
-            Spacer().frame(height: POSSpacing.xSmall)
+            Spacer().frame(height: metrics.spacing.xSmall)
             POSOrderBadgeView(order: order)
         }
-        .padding(.horizontal, POSPadding.medium * (1 / scale))
-        .padding(.vertical, POSPadding.medium * (1 / scale))
+        .padding(.horizontal, metrics.padding.medium * (1 / scale))
+        .padding(.vertical, metrics.padding.medium * (1 / scale))
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : minHeight, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
@@ -245,7 +253,7 @@ private struct POSOrderRowView: View {
         POSOrderListView.Localization.orderRowAccessibilityLabel(
             orderNumber: order.number,
             total: order.formattedTotal,
-            date: DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated),
+            date: formattedDateCreated,
             email: order.customerEmail,
             status: order.status.localizedName
         )
@@ -270,8 +278,8 @@ private struct POSOrderRowView: View {
 
     @ViewBuilder
     private var orderDetailsColumn: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+            Text(formattedDateCreated)
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .fixedSize(horizontal: false, vertical: true)
@@ -288,83 +296,45 @@ private struct POSOrderRowView: View {
 }
 
 private struct POSGhostOrderRowView: View {
+    @Environment(\.posMetrics) private var metrics
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var minHeight: CGFloat {
+        min(metrics.productCardSize * scale, metrics.productCardSize * Constants.maximumOrderCardHeightMultiplier)
+    }
+
+    private var isAccessibilitySize: Bool {
+        dynamicTypeSize.isAccessibilitySize
+    }
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack(alignment: .leading, spacing: POSSpacing.none) {
-                ghostHeaderRow(geometry: geometry)
-                    .padding(.bottom, POSSpacing.xSmall)
-                ghostDetailsColumn(geometry: geometry)
-                    .padding(.bottom, POSSpacing.xSmall * 3)
-                ghostBadgeRow(geometry: geometry)
+        // Sample lengths keep the order number and amount 1x, the date 3x, and the status 2x.
+        // Accessibility sizes use a shorter unit, so the number and amount stay apart.
+        let unit = isAccessibilitySize ? 3 : 7
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+            HStack {
+                POSPlaceholderText(.redactedPlaceholder(length: unit), font: .posBodySmallBold())
+                Spacer()
+                POSPlaceholderText(.redactedPlaceholder(length: unit), font: .posBodySmallRegular())
             }
+            POSPlaceholderText(.redactedPlaceholder(length: unit * 3), font: .posBodySmallRegular())
+            // Reserves an email line, so the ghost matches the typical loaded row. Rows without an email are one line shorter.
+            POSPlaceholderText(.redactedPlaceholder(length: 1), font: .posBodySmallRegular())
+                .hidden()
+            Spacer().frame(height: metrics.spacing.xSmall)
+            // Caption text is narrower, so the status needs a longer sample for 2x width.
+            POSPlaceholderText(.redactedPlaceholder(length: unit * 16 / 7), font: .posCaptionRegular)
+                .padding(.vertical, metrics.padding.xSmall)
         }
-        .padding(.horizontal, POSPadding.medium * (1 / scale))
-        .padding(.vertical, POSPadding.medium * (1 / scale))
-        .frame(height: cardHeight)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, metrics.padding.medium * (1 / scale))
+        .padding(.vertical, metrics.padding.medium * (1 / scale))
+        .frame(maxWidth: .infinity, minHeight: isAccessibilitySize ? nil : minHeight, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .geometryGroup()
         .accessibilityHidden(true)
     }
-
-    @ViewBuilder
-    private func ghostHeaderRow(geometry: GeometryProxy) -> some View {
-        HStack(alignment: .center) {
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: geometry.size.width * 0.25, height: GhostConstants.textLineHeight * scale)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                .shimmering()
-
-            Spacer()
-
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: geometry.size.width * 0.25, height: GhostConstants.textLineHeight * scale)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                .shimmering()
-        }
-        .frame(maxHeight: .infinity)
-    }
-
-    @ViewBuilder
-    private func ghostDetailsColumn(geometry: GeometryProxy) -> some View {
-        Rectangle()
-            .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: geometry.size.width * 0.4, height: GhostConstants.textLineHeight * scale)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .shimmering()
-            .frame(maxHeight: .infinity, alignment: .leading)
-    }
-
-    @ViewBuilder
-    private func ghostBadgeRow(geometry: GeometryProxy) -> some View {
-        Rectangle()
-            .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: geometry.size.width * 0.28, height: GhostConstants.badgeHeight * scale)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .shimmering()
-            .frame(maxHeight: .infinity)
-    }
-
-    private var cardHeight: CGFloat {
-        let headerHeight = GhostConstants.rowHeight * scale
-        let detailsHeight = GhostConstants.rowHeight * scale
-        let badgeHeight = GhostConstants.badgeRowHeight * scale
-        let fixedSpacing = POSSpacing.xSmall + POSSpacing.xSmall * 3
-        let fixedPadding = POSPadding.medium * (1 / scale) * 2
-        return headerHeight + detailsHeight + badgeHeight + fixedSpacing + fixedPadding
-    }
-}
-
-private enum GhostConstants {
-    static let textLineHeight: CGFloat = 16
-    static let rowHeight: CGFloat = 24
-    static let badgeHeight: CGFloat = 20
-    static let badgeRowHeight: CGFloat = 28
 }
 
 // MARK: - Search
@@ -421,8 +391,7 @@ final class POSOrderSearchable: POSSearchable {
 // MARK: - Constants
 
 private enum Constants {
-    static let orderCardMinHeight: CGFloat = 112
-    static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
+    static let maximumOrderCardHeightMultiplier: CGFloat = 2
     static let animationDuration: CGFloat = 0.2
     static let scrollTopID = "orderListViewTopID"
 }

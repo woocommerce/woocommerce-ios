@@ -4,7 +4,7 @@ struct OrderShippingSection: View {
     /// View model to add, edit, or remove shipping lines
     @ObservedObject var viewModel: EditableOrderShippingLineViewModel
 
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         VStack {
@@ -34,7 +34,7 @@ struct OrderShippingSection: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .padding()
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: true)), ignoresSafeAreaEdges: [])
         .addingTopAndBottomDividers()
         .sheet(item: $viewModel.shippingLineDetails, content: { viewModel in
             ShippingLineSelectionDetails(viewModel: viewModel)

@@ -1,0 +1,166 @@
+# p2: hub.settings
+appId: ${APP_ID}
+name: "Hub Menu - Settings"
+tags:
+  - smoke_extended
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- assertVisible:
+    id: "dashboard-settings-button"
+- assertVisible:
+    id: "menu-payments"
+- tapOn:
+    id: "dashboard-settings-button"
+- extendedWaitUntil:
+    visible: "Troubleshoot Connection"
+    timeout: 15000
+- takeScreenshot: hub_settings
+
+# Open every item except Log Out and the account deletion inside Account
+# Settings, and come back. Section headers repeat some row titles, so those
+# rows use index 1.
+- tapOn: "Troubleshoot Connection"
+- extendedWaitUntil:
+    visible: "Internet Connection"
+    timeout: 15000
+- tapOn:
+    id: "BackButton"
+
+- tapOn:
+    text: "Plugins"
+    index: 1
+- extendedWaitUntil:
+    visible: "WooCommerce"
+    timeout: 30000
+- tapOn: "Close"
+
+# The WooCommerce row opens the plugin's update page only while an update is
+# available, so it is checked without opening it.
+- assertVisible:
+    text: "WooCommerce"
+    below:
+      text: "Plugins"
+      index: 1
+
+- tapOn: "Store Name"
+- extendedWaitUntil:
+    visible: "Store name"
+    timeout: 15000
+- tapOn: "Cancel"
+
+- scrollUntilVisible:
+    element: "Help & Support"
+    direction: DOWN
+    timeout: 10000
+    centerElement: true
+- tapOn: "Help & Support"
+- extendedWaitUntil:
+    visible: "Help"
+    timeout: 15000
+- tapOn:
+    id: "BackButton"
+
+- runFlow:
+    when:
+      visible:
+        id: "settings-beta-features-button"
+    commands:
+      - tapOn:
+          id: "settings-beta-features-button"
+      - extendedWaitUntil:
+          visible: "Experimental Features"
+          timeout: 15000
+      - tapOn:
+          id: "BackButton"
+
+- scrollUntilVisible:
+    element: "Send Feedback"
+    direction: DOWN
+    timeout: 10000
+    centerElement: true
+- tapOn: "Send Feedback"
+- extendedWaitUntil:
+    visible: "How can we improve?"
+    timeout: 30000
+- tapOn: "Close"
+
+# The notification row shows only while push notifications can be set up.
+- scrollUntilVisible:
+    element: "Privacy Settings"
+    direction: DOWN
+    timeout: 10000
+    centerElement: true
+- runFlow:
+    when:
+      visible: "Notification Settings"
+    commands:
+      - tapOn: "Notification Settings"
+      - extendedWaitUntil:
+          visible: "Save"
+          timeout: 15000
+      - tapOn:
+          id: "BackButton"
+      - scrollUntilVisible:
+          element: "Privacy Settings"
+          direction: DOWN
+          timeout: 10000
+          centerElement: true
+- tapOn: "Privacy Settings"
+- extendedWaitUntil:
+    visible: "We value your privacy.*"
+    timeout: 15000
+- tapOn:
+    id: "BackButton"
+
+- scrollUntilVisible:
+    element: "About the app"
+    direction: DOWN
+    timeout: 10000
+    centerElement: true
+- tapOn:
+    text: "WooCommerce"
+    below: "About the app"
+- extendedWaitUntil:
+    visible: "Rate us"
+    timeout: 15000
+- tapOn: "Close"
+
+# Open Device Settings leaves the app for the system Settings app.
+- scrollUntilVisible:
+    element: "Open Device Settings"
+    direction: DOWN
+    timeout: 10000
+    centerElement: true
+- tapOn: "Open Device Settings"
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    visible: "Open Device Settings"
+    timeout: 15000
+
+- scrollUntilVisible:
+    element:
+      id: "settings-log-out-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    text: "Account Settings"
+    index: 1
+- extendedWaitUntil:
+    visible: "Close Account"
+    timeout: 15000
+- tapOn:
+    id: "BackButton"
+
+- assertVisible:
+    id: "settings-log-out-button"
+- tapOn:
+    id: "BackButton"
+- extendedWaitUntil:
+    visible:
+      id: "dashboard-settings-button"
+    timeout: 10000

@@ -69,7 +69,8 @@ extension Storage.GeneralAppSettings {
         isCustomFieldsTopBannerDismissed: CopiableProp<Bool> = .copy,
         isPOSSurveyPotentialMerchantNotificationScheduled: CopiableProp<Bool> = .copy,
         isPOSSurveyCurrentMerchantNotificationScheduled: CopiableProp<Bool> = .copy,
-        hasPOSBeenOpenedAtLeastOnce: CopiableProp<Bool> = .copy
+        hasPOSBeenOpenedAtLeastOnce: CopiableProp<Bool> = .copy,
+        isPOSPaymentSuccessSoundEnabled: CopiableProp<Bool> = .copy
     ) -> Storage.GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
@@ -86,6 +87,7 @@ extension Storage.GeneralAppSettings {
         let isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled ?? self.isPOSSurveyPotentialMerchantNotificationScheduled
         let isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled ?? self.isPOSSurveyCurrentMerchantNotificationScheduled
         let hasPOSBeenOpenedAtLeastOnce = hasPOSBeenOpenedAtLeastOnce ?? self.hasPOSBeenOpenedAtLeastOnce
+        let isPOSPaymentSuccessSoundEnabled = isPOSPaymentSuccessSoundEnabled ?? self.isPOSPaymentSuccessSoundEnabled
 
         return Storage.GeneralAppSettings(
             installationDate: installationDate,
@@ -102,7 +104,8 @@ extension Storage.GeneralAppSettings {
             isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
             isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
             isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
-            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce
+            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce,
+            isPOSPaymentSuccessSoundEnabled: isPOSPaymentSuccessSoundEnabled
         )
     }
 }
@@ -130,11 +133,13 @@ extension Storage.GeneralStoreSettings {
         favoriteProductIDs: CopiableProp<[Int64]> = .copy,
         searchTermsByKey: CopiableProp<[String: [String]]> = .copy,
         isPOSTabVisible: NullableCopiableProp<Bool> = .copy,
+        lastKnownPOSEligibility: NullableCopiableProp<Bool> = .copy,
         lastPOSOpenedDate: NullableCopiableProp<Date> = .copy,
         firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
         syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy,
-        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy,
-        isCardPresentPaymentsCountryExpansionEligible: NullableCopiableProp<Bool> = .copy
+        posCatalogFileBlockedByHostAt: NullableCopiableProp<Date> = .copy,
+        requiresHTTPSConfigurationUpdate: NullableCopiableProp<Bool> = .copy,
+        lastHTTPSConfigurationWarningDismissedDate: NullableCopiableProp<Date> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -157,11 +162,13 @@ extension Storage.GeneralStoreSettings {
         let favoriteProductIDs = favoriteProductIDs ?? self.favoriteProductIDs
         let searchTermsByKey = searchTermsByKey ?? self.searchTermsByKey
         let isPOSTabVisible = isPOSTabVisible ?? self.isPOSTabVisible
+        let lastKnownPOSEligibility = lastKnownPOSEligibility ?? self.lastKnownPOSEligibility
         let lastPOSOpenedDate = lastPOSOpenedDate ?? self.lastPOSOpenedDate
         let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
         let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
-        let lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate ?? self.lastSunsetWarningDismissedDate
-        let isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible ?? self.isCardPresentPaymentsCountryExpansionEligible
+        let posCatalogFileBlockedByHostAt = posCatalogFileBlockedByHostAt ?? self.posCatalogFileBlockedByHostAt
+        let requiresHTTPSConfigurationUpdate = requiresHTTPSConfigurationUpdate ?? self.requiresHTTPSConfigurationUpdate
+        let lastHTTPSConfigurationWarningDismissedDate = lastHTTPSConfigurationWarningDismissedDate ?? self.lastHTTPSConfigurationWarningDismissedDate
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -185,11 +192,13 @@ extension Storage.GeneralStoreSettings {
             favoriteProductIDs: favoriteProductIDs,
             searchTermsByKey: searchTermsByKey,
             isPOSTabVisible: isPOSTabVisible,
+            lastKnownPOSEligibility: lastKnownPOSEligibility,
             lastPOSOpenedDate: lastPOSOpenedDate,
             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
             syncPOSCatalogOverCellular: syncPOSCatalogOverCellular,
-            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
-            isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible
+            posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
+            requiresHTTPSConfigurationUpdate: requiresHTTPSConfigurationUpdate,
+            lastHTTPSConfigurationWarningDismissedDate: lastHTTPSConfigurationWarningDismissedDate
         )
     }
 }

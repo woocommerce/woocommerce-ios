@@ -12,6 +12,9 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet var verticalCenterConstraint: NSLayoutConstraint?
 
+    /// Injected so code validation can be tested without accessing the system clipboard.
+    var pasteboardStringProvider: () -> String? = { UIPasteboard.general.string }
+
     private var pasteboardChangeCountBeforeBackground: Int = 0
     override var sourceTag: WordPressSupportSourceTag {
         get {
@@ -191,7 +194,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         case .invalid(nonNumbers: true):
             displayError(message: NSLocalizedString("A verification code will only contain numbers.", comment: "Shown when a user types a non-number into the two factor field."))
         default:
-            if let pasteString = UIPasteboard.general.string, pasteString == replacementString {
+            if let pasteString = pasteboardStringProvider(), pasteString == replacementString {
                 displayError(message: NSLocalizedString("That doesn't appear to be a valid verification code.", comment: "Shown when a user pastes a code into the two factor field that contains letters or is the wrong length"))
             }
         }
@@ -209,7 +212,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         let allowedCharacters = CharacterSet.decimalDigits
         let resultCharacterSet = CharacterSet(charactersIn: codeStripped)
         let isOnlyNumbers = allowedCharacters.isSuperset(of: resultCharacterSet)
-        let isShortEnough = codeStripped.count <= SocialLogin2FANonceInfo.TwoFactorTypeLengths.backup.rawValue
+        let isShortEnough = codeStripped.count <= SocialLogin2FANonceInfo.TwoFactorTypeLengths.email.rawValue
 
         if isOnlyNumbers && isShortEnough {
             return .valid(codeStripped)

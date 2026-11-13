@@ -1,7 +1,9 @@
+import PointOfSale
 import Codegen
 import Combine
 import Networking
 import TestKit
+import UIKit
 import XCTest
 import Yosemite
 import WooFoundation
@@ -21,6 +23,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                         BluetoothCardReaderPaymentAlertsProvider,
                                                         MockCardPresentPaymentAlertsPresenter>!
     private var receiptEligibilityUseCase: MockReceiptEligibilityUseCase!
+    private var notificationCenter: NotificationCenter!
+    private var applicationState: UIApplication.State!
 
     override func setUp() {
         super.setUp()
@@ -31,12 +35,16 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         mockPreflightController = MockCardPresentPaymentPreflightController()
         receiptEligibilityUseCase = MockReceiptEligibilityUseCase()
+        notificationCenter = NotificationCenter()
+        applicationState = .active
 
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
         setUpUseCase(order: order)
     }
 
-    private func setUpUseCase(order: Order, configuration: CardPresentPaymentsConfiguration = Mocks.configuration) {
+    private func setUpUseCase(order: Order,
+                              configuration: CardPresentPaymentsConfiguration = Mocks.configuration,
+                              analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil) {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case .retrieveOrderRemotely(_, _, let completion):
@@ -57,8 +65,23 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              tapToPayAlertsProvider: TapToPayCardReaderPaymentAlertsProvider(),
                                              bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
                                              preflightController: mockPreflightController,
-                                             analyticsTracker: mockAnalyticsTracker,
-                                             receiptEligibilityUseCase: receiptEligibilityUseCase)
+                                             analyticsTracker: analyticsTracker ?? mockAnalyticsTracker,
+                                             receiptEligibilityUseCase: receiptEligibilityUseCase,
+                                             notificationCenter: notificationCenter,
+                                             applicationStateProvider: { [weak self] in self?.applicationState ?? .inactive })
+    }
+
+    func test_retryApproach_when_paymentCapture_fails_with_paymentIntentIdMissing_then_dontRetry() {
+        // Given
+        let error = CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing)
+
+        // When
+        let retryApproach = error.retryApproach
+
+        // Then
+        guard case .dontRetry = retryApproach else {
+            return XCTFail("Expected .dontRetry, got \(retryApproach)")
+        }
     }
 
     func test_cancelling_reader_connection_triggers_onCancel_and_tracks_collectPaymentCanceled_event() throws {
@@ -70,13 +93,313 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in }, onCancel: {
                 promise(())
-            }, onPaymentCompletion: {}, onCompleted: {})
+            }, onPaymentCompletion: { _ in }, onCompleted: {})
             self.mockPreflightController.cancelConnection(readerModel: Mocks.cardReaderModel, gatewayID: Mocks.paymentGatewayAccount, source: .foundReader)
         }
 
         // Then
         XCTAssertTrue(mockAnalyticsTracker.didCallTrackPaymentCancelation)
         assertEqual(.foundReader, mockAnalyticsTracker.spyPaymentCancelationSource)
+    }
+
+    func test_collectPayment_canceledWhileValidatingOrder_doesNotStartPaymentAfterValidationCompletes() async throws {
+        // Given
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        var orderRetrievalCompletion: ((Result<Order, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .retrieveOrderRemotely(_, _, completion) = action else { return }
+            orderRetrievalCompletion = completion
+        }
+
+        let collected = expectation(description: "Payment must not start after cancellation")
+        collected.isInverted = true
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { _, _, _, _, _, _, _ in
+            collected.fulfill()
+        }
+
+        let canceled = expectation(description: "Payment flow canceled")
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: { canceled.fulfill() },
+                               onPaymentCompletion: { _ in },
+                               onCompleted: {})
+        mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
+
+        let validatingOrderAlert = try XCTUnwrap(alertsPresenter.spyPresentedAlertViewModels.last)
+
+        // When
+        validatingOrderAlert.didTapSecondaryButton(in: nil)
+        await fulfillment(of: [canceled], timeout: Constants.expectationTimeout)
+        let completeRetrieval = try XCTUnwrap(orderRetrievalCompletion)
+        completeRetrieval(.success(order))
+
+        // Then
+        await fulfillment(of: [collected], timeout: Constants.expectationTimeout)
+        XCTAssertFalse(mockPaymentOrchestrator.spyDidCallCollectPayment)
+    }
+
+    func test_cancel_when_sdk_completion_is_delayed_then_clears_confirmation_before_next_collection() async throws {
+        // Given
+        let analytics = MockPOSAnalytics()
+        var milliseconds = 0
+        let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, monotonicMilliseconds: { milliseconds })
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        setUpUseCase(order: order, analyticsTracker: tracker)
+        tracker.trackCheckoutTapped()
+        tracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: defaultOrderID,
+                                                                     currency: "USD", total: "1.5", paymentMethodID: ""))
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { _, onWaitingForInput, _, _, _, onConfirmed, _ in
+            onWaitingForInput(.tap)
+            milliseconds = 100
+            onConfirmed(.fake())
+        }
+        var finishCancellation: ((Result<Void, Error>) -> Void)?
+        let cancellationRequested = expectation(description: "SDK cancellation requested")
+        mockPaymentOrchestrator.mockCancelPaymentHandler = {
+            finishCancellation = $0
+            cancellationRequested.fulfill()
+        }
+        useCase.collectPayment(using: .bluetoothScan, channel: .pos,
+                               onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in }, onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+        XCTAssertTrue(mockPaymentOrchestrator.spyDidCallCollectPayment)
+        let waitingAlert = try XCTUnwrap(alertsPresenter.spyPresentedAlertViewModels.last)
+        // When
+        milliseconds = 150
+        waitingAlert.didTapSecondaryButton(in: ImmediateDismissViewController())
+        await fulfillment(of: [cancellationRequested], timeout: Constants.expectationTimeout)
+        let complete = try XCTUnwrap(finishCancellation)
+        // Then
+        milliseconds = 200
+        tracker.trackPaymentFailure(with: TestError.cancellationFailed)
+        XCTAssertNil(analytics.events.last?.properties["pos_time_since_payment_confirmed_ms"])
+        // When
+        mockPaymentOrchestrator.spyProcessingCompletion?(.fake())
+        milliseconds = 225
+        tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
+        milliseconds = 250
+        complete(.success(()))
+        // Then
+        let cancellation = try XCTUnwrap(analytics.events.last)
+        XCTAssertEqual(cancellation.eventName, "card_present_collect_payment_canceled")
+        XCTAssertNil(cancellation.properties["sync_strategy"])
+        XCTAssertFalse(cancellation.properties.keys.contains { ($0 as? String)?.hasPrefix("pos_time_since_") == true })
+        // When
+        milliseconds = 300
+        tracker.trackPaymentFailure(with: TestError.cancellationFailed)
+        // Then
+        XCTAssertEqual(analytics.events.last?.properties["pos_time_since_payment_confirmed_ms"] as? Int, 75)
+    }
+
+    func test_interac_confirmation_during_cancellation_when_no_newer_pos_confirmation_then_preserves_legacy_event_without_timing() async throws {
+        try await assertInteracConfirmationDuringCancellation(newerPOSConfirmation: false)
+    }
+
+    func test_interac_confirmation_during_cancellation_when_newer_pos_confirmation_exists_then_preserves_event_and_timestamp() async throws {
+        try await assertInteracConfirmationDuringCancellation(newerPOSConfirmation: true)
+    }
+
+    func test_interac_confirmation_during_cancellation_when_non_pos_then_preserves_legacy_event() async throws {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider, consent: MockAnalyticsConsent())
+        let tracker = CollectOrderPaymentAnalytics(siteID: defaultSiteID, analytics: analytics,
+                                                  configuration: CardPresentPaymentsConfiguration(country: .CA))
+        let pending = try await beginCancellationWithHeldCallback(analyticsTracker: tracker, channel: .storeManagement)
+        // When
+        pending.confirm(PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))]))
+        pending.finishCancellation(.failure(TestError.cancellationFailed))
+        // Then
+        XCTAssertEqual(provider.receivedEvents, ["card_interac_collect_payment_success"])
+        let properties = try XCTUnwrap(provider.receivedProperties.last)
+        XCTAssertEqual(properties["country"] as? String, "CA")
+        XCTAssertEqual(properties["site_id"] as? Int64, defaultSiteID)
+        XCTAssertNil(properties["sync_strategy"])
+        XCTAssertFalse(properties.keys.contains { ($0 as? String)?.hasPrefix("pos_time_since_") == true })
+    }
+
+    func test_preflight_cancellation_when_another_collection_has_confirmed_then_preserves_confirmation() {
+        // Given
+        let analytics = MockPOSAnalytics()
+        var milliseconds = 0
+        let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, monotonicMilliseconds: { milliseconds })
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        setUpUseCase(order: order, analyticsTracker: tracker)
+        useCase.collectPayment(using: .bluetoothScan, channel: .pos,
+                               onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in }, onCompleted: {})
+        tracker.trackCheckoutTapped()
+        tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
+        // When
+        mockPreflightController.cancelConnection(readerModel: nil, gatewayID: nil, source: .foundReader)
+        milliseconds = 100
+        tracker.trackPaymentFailure(with: TestError.cancellationFailed)
+        // Then
+        XCTAssertEqual(analytics.events.last?.properties["pos_time_since_payment_confirmed_ms"] as? Int, 100)
+    }
+
+    func test_collectPayment_canceledWhilePreparingReader_ignoresSubsequentReaderEvents() throws {
+        // Given
+        var presentedAlertCountAfterCancellation: Int?
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
+                                                              onWaitingForInput,
+                                                              _,
+                                                              _,
+                                                              _,
+                                                              _,
+                                                              _ in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                viewModel.didTapSecondaryButton(in: nil)
+            }
+            onPreparingReader()
+            presentedAlertCountAfterCancellation = self.alertsPresenter.spyPresentedAlertViewModels.count
+            onWaitingForInput(.tap)
+        }
+
+        let canceled = expectation(description: "Payment flow canceled")
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: { canceled.fulfill() },
+                               onPaymentCompletion: { _ in },
+                               onCompleted: {})
+        mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
+
+        // When
+        wait(for: [canceled], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(alertsPresenter.spyPresentedAlertViewModels.count, try XCTUnwrap(presentedAlertCountAfterCancellation))
+    }
+
+    func test_collectPayment_successfulCancellationAfterTapToPayWasShown_requiresConfirmationBeforeCompleting() async throws {
+        // Given
+        applicationState = .inactive
+        var didCancelFlow = false
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader, _, _, _, _, _, onCompletion in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                self.alertsPresenter.onPresentCalled = nil
+                viewModel.didTapSecondaryButton(in: nil)
+            }
+            onPreparingReader()
+            onCompletion(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: .commandCancelled(from: .app))))
+        }
+
+        // When
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: { didCancelFlow = true },
+                               onPaymentCompletion: { _ in },
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertFalse(didCancelFlow)
+        XCTAssertEqual(alertsPresenter.spyDismissCallCount, 0)
+
+        // When
+        applicationState = .active
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        XCTAssertFalse(didCancelFlow)
+        let confirmation = try XCTUnwrap(alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalTapToPayPaymentCancelled)
+        XCTAssertEqual(confirmation.topTitle, "Payment canceled")
+        XCTAssertEqual(confirmation.bottomTitle, "No payment was taken.")
+        XCTAssertEqual(confirmation.bottomSubtitle, "The Tap to Pay checkmark and sound only confirmed that the card was read.")
+
+        // When
+        confirmation.didTapPrimaryButton(in: nil)
+
+        // Then
+        XCTAssertTrue(didCancelFlow)
+    }
+
+    func test_collectPayment_when_app_reactivates_before_slow_cancellation_completes_still_requires_confirmation() async throws {
+        // Given
+        var cancellationCompletion: ((Result<Void, Error>) -> Void)?
+        mockPaymentOrchestrator.mockCancelPaymentHandler = { completion in
+            cancellationCompletion = completion
+        }
+        var didCancelFlow = false
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader, _, _, _, _, _, _ in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                self.alertsPresenter.onPresentCalled = nil
+                viewModel.didTapSecondaryButton(in: nil)
+            }
+            onPreparingReader()
+        }
+
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: { didCancelFlow = true },
+                               onPaymentCompletion: { _ in },
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // When
+        applicationState = .inactive
+        notificationCenter.post(name: UIApplication.willResignActiveNotification, object: nil)
+        applicationState = .active
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        try XCTUnwrap(cancellationCompletion)(.success(()))
+
+        // Then
+        XCTAssertFalse(didCancelFlow)
+        let confirmation = try XCTUnwrap(alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalTapToPayPaymentCancelled)
+
+        // When
+        confirmation.didTapPrimaryButton(in: nil)
+
+        // Then
+        XCTAssertTrue(didCancelFlow)
+    }
+
+    func test_collectPayment_failedCancellation_keepsPaymentFlowActive() async {
+        // Given
+        mockPaymentOrchestrator.mockCancelPaymentResult = .failure(TestError.cancellationFailed)
+        var didCancelFlow = false
+        var didPresentProcessingAfterFailedCancellation = false
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
+                                                              _,
+                                                              onProcessingMessage,
+                                                              _,
+                                                              _,
+                                                              _,
+                                                              _ in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                self.alertsPresenter.onPresentCalled = nil
+                viewModel.didTapSecondaryButton(in: nil)
+            }
+            onPreparingReader()
+            let alertCountAfterCancellation = self.alertsPresenter.spyPresentedAlertViewModels.count
+            onProcessingMessage()
+            didPresentProcessingAfterFailedCancellation =
+                self.alertsPresenter.spyPresentedAlertViewModels.count == alertCountAfterCancellation + 1
+        }
+
+        // When
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: { didCancelFlow = true },
+                               onPaymentCompletion: { _ in },
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertFalse(didCancelFlow)
+        XCTAssertTrue(didPresentProcessingAfterFailedCancellation)
     }
 
     func test_collectPayment_processing_completion_tracks_payment_success_event() throws {
@@ -89,7 +412,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -98,6 +421,27 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then
         XCTAssert(mockAnalyticsTracker.didCallTrackSuccessfulPayment)
         assertEqual(interacPaymentMethod, mockAnalyticsTracker.spyTrackSuccessfulPaymentCapturedPaymentData?.paymentMethod)
+    }
+
+    func test_collectPayment_when_payment_completes_then_passes_receipt_parameters_to_onPaymentCompletion() throws {
+        // Given
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
+        let receiptParameters = CardPresentReceiptParameters.fake()
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: paymentMethod,
+                                                                                                    receiptParameters: receiptParameters))
+
+        // When
+        let completionReceiptParameters: CardPresentReceiptParameters? = waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+                promise($0)
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(completionReceiptParameters, receiptParameters)
     }
 
     func test_collectPayment_enables_terminal_payment_preparation_when_route_is_available_for_Canada() throws {
@@ -115,7 +459,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -140,7 +484,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -174,7 +518,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -198,7 +542,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When we make a successful payment
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -210,6 +554,137 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     }
 
     // MARK: - Failure cases
+    func test_ambiguous_server_capture_error_returns_success_when_refreshed_intent_confirms_capture() throws {
+        // Given
+        let clientSecret = "pi_client_secret"
+        let intentID = "pi_123"
+        let intent = PaymentIntent.fake().copy(id: intentID,
+                                               status: .requiresCapture,
+                                               clientSecret: clientSecret,
+                                               metadata: [PaymentIntent.MetadataKeys.orderID: String(defaultOrderID)])
+        let error = ServerSidePaymentCaptureError.paymentGateway(
+            error: .orderPaymentCaptureError(message: "Server-side capture failed")
+        )
+        mockFailedCardPresentPaymentActions(intent: intent, error: error)
+
+        var retrievedClientSecret: String?
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case let .retrievePaymentIntent(clientSecret, completion) = action else { return }
+            retrievedClientSecret = clientSecret
+            completion(.success(intent.copy(status: .succeeded)))
+        }
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: { _ in promise(()) },
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(retrievedClientSecret, clientSecret)
+        XCTAssertTrue(mockAnalyticsTracker.didCallTrackSuccessfulPayment)
+    }
+
+    func test_ambiguous_server_capture_error_does_not_return_success_when_refreshed_intent_requires_capture() throws {
+        // Given
+        let intent = ambiguousCapturePaymentIntent()
+        let error = ServerSidePaymentCaptureError.paymentGateway(
+            error: .orderPaymentCaptureError(message: "Server-side capture failed")
+        )
+        mockFailedCardPresentPaymentActions(intent: intent, error: error)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case let .retrievePaymentIntent(_, completion) = action else { return }
+            completion(.success(intent.copy(status: .requiresCapture)))
+        }
+
+        // When
+        let _: CardPresentModalNonRetryableErrorWithoutEmail = waitFor { promise in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                guard let errorAlert = viewModel as? CardPresentModalNonRetryableErrorWithoutEmail else { return }
+                promise(errorAlert)
+            }
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: { _ in XCTFail("Payment should not complete") },
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+    }
+
+    func test_ambiguous_server_capture_error_does_not_return_success_for_a_different_payment_intent() throws {
+        // Given
+        let intent = ambiguousCapturePaymentIntent()
+        let error = ServerSidePaymentCaptureError.paymentGateway(
+            error: .orderPaymentCaptureError(message: "Server-side capture failed")
+        )
+        mockFailedCardPresentPaymentActions(intent: intent, error: error)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case let .retrievePaymentIntent(_, completion) = action else { return }
+            completion(.success(intent.copy(id: "pi_different", status: .succeeded)))
+        }
+
+        // When
+        let _: CardPresentModalNonRetryableErrorWithoutEmail = waitFor { promise in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                guard let errorAlert = viewModel as? CardPresentModalNonRetryableErrorWithoutEmail else { return }
+                promise(errorAlert)
+            }
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: { _ in XCTFail("Payment should not complete") },
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+    }
+
+    func test_post_confirmation_error_returns_receipt_capable_success_from_refreshed_intent() throws {
+        // Given
+        let intent = ambiguousCapturePaymentIntent().copy(
+            amount: 150,
+            currency: "usd",
+            collectedPaymentMethod: .cardPresent(details: .fake())
+        )
+        let refreshedIntent = intent.copy(status: .succeeded)
+        let error = CardReaderServiceError.paymentCapture()
+        mockFailedCardPresentPaymentActions(intent: intent, error: error)
+        receiptEligibilityUseCase.isEligibleForBackendReceipts = true
+        var didRetrieveIntent = false
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case let .retrievePaymentIntent(_, completion) = action else { return }
+            didRetrieveIntent = true
+            completion(.success(refreshedIntent))
+        }
+
+        // When
+        let success: CardPresentModalSuccessWithoutEmail = waitFor { promise in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                guard let success = viewModel as? CardPresentModalSuccessWithoutEmail else { return }
+                promise(success)
+            }
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: { _ in },
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertTrue(didRetrieveIntent)
+        XCTAssertNotNil(success.primaryButtonTitle)
+        XCTAssertNotNil(refreshedIntent.receiptParameters())
+    }
+
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
         let order = Order.fake().copy(total: "0.49")
@@ -253,7 +728,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 channel: .storeManagement,
                 onFailure: { _ in },
                 onCancel: {},
-                onPaymentCompletion: {},
+                onPaymentCompletion: { _ in },
                 onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -378,7 +853,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -411,7 +886,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
+            self.useCase.collectPayment(using: .bluetoothScan, channel: .storeManagement, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in
                 promise(())
             }, onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
@@ -447,7 +922,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: {},
+                                        onPaymentCompletion: { _ in },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -481,7 +956,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: {},
+                                        onPaymentCompletion: { _ in },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -516,7 +991,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                         channel: .storeManagement,
                                         onFailure: { _ in },
                                         onCancel: {},
-                                        onPaymentCompletion: {},
+                                        onPaymentCompletion: { _ in },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -526,54 +1001,116 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertNotNil(lastAlert)
     }
 
-    func test_collectPayment_channel_is_passed_to_payment_capture_orchestrator() throws {
-        // When
-        useCase.collectPayment(using: .bluetoothScan,
-                               channel: .pos,
-                               onFailure: { _ in },
-                               onCancel: {},
-                               onPaymentCompletion: {},
-                               onCompleted: {})
-        mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+    func test_collect_payment_when_preflight_connects_tap_to_pay_then_passes_connected_reader_type_to_orchestrator() async {
+        // Given
+        let reader = MockCardReader.tapToPay()
 
-        // Then
-        XCTAssertEqual(mockPaymentOrchestrator.spyChannel, .pos)
-    }
-
-    func test_collectPayment_configured_country_is_passed_to_payment_capture_orchestrator() throws {
         // When
         useCase.collectPayment(using: .bluetoothScan,
                                channel: .storeManagement,
                                onFailure: { _ in },
                                onCancel: {},
-                               onPaymentCompletion: {},
+                               onPaymentCompletion: { _ in },
                                onCompleted: {})
-        mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: reader, gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyCollectPaymentReaderType, .tapToPay)
+    }
+
+    func test_collect_payment_when_preflight_connects_external_reader_then_passes_connected_reader_type_to_orchestrator() async {
+        // Given
+        let reader = MockCardReader.wisePad3()
+
+        // When
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: { _ in },
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: reader, gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyCollectPaymentReaderType, .wisepad3)
+    }
+
+    func test_collect_payment_when_tap_to_pay_payment_restarts_then_preserves_connected_reader_type() async throws {
+        // Given
+        var collectedReaderTypes: [CardReaderType] = []
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { [weak self] _, _, _, _, _, _, onCompletion in
+            guard let self, let readerType = self.mockPaymentOrchestrator.spyCollectPaymentReaderType else { return }
+            collectedReaderTypes.append(readerType)
+            if collectedReaderTypes.count == 1 {
+                onCompletion(.failure(CollectOrderPaymentUseCaseError.paymentGatewayNotFound))
+            }
+        }
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: { _ in },
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+        let errorAlert = try XCTUnwrap(alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalErrorWithoutEmail)
+
+        // When
+        await waitForPaymentCollection {
+            errorAlert.didTapPrimaryButton(in: nil)
+        }
+
+        // Then
+        XCTAssertEqual(collectedReaderTypes, [.tapToPay, .tapToPay])
+    }
+
+    func test_collectPayment_channel_is_passed_to_payment_capture_orchestrator() async throws {
+        // When
+        useCase.collectPayment(using: .bluetoothScan,
+                               channel: .pos,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: { _ in },
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(mockPaymentOrchestrator.spyChannel, .pos)
+    }
+
+    func test_collectPayment_configured_country_is_passed_to_payment_capture_orchestrator() async throws {
+        // When
+        useCase.collectPayment(using: .bluetoothScan,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: {},
+                               onPaymentCompletion: { _ in },
+                               onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
 
         // Then
         XCTAssertEqual(mockPaymentOrchestrator.spyCollectPaymentCountryCode, .US)
     }
 
     func test_completion_called_after_alert_presentation() throws {
-        receiptEligibilityUseCase.isEligibleForBackendReceipts = true
         let paymentMethod = PaymentMethod.cardPresent(details: .fake())
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
         let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: paymentMethod, receiptParameters: .fake())
         mockSuccessfulCardPresentPaymentActions(intent: intent, capturedPaymentData: capturedPaymentData)
         enum Event {
-            case receiptEligibilityCheck
             case alertPresented
             case paymentCompletion
         }
         var eventOrder: [Event] = []
-
-        receiptEligibilityUseCase.mockIsEligibleForBackendReceiptsHandler = { completion in
-            // Force receiptEligibilityCheck completion delay
-            DispatchQueue.main.async {
-                eventOrder.append(.receiptEligibilityCheck)
-                completion(true)
-            }
-        }
 
         // Track when receipt alert is presented
         alertsPresenter.onPresentCalled = { viewModel in
@@ -590,7 +1127,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                 channel: .storeManagement,
                 onFailure: { _ in },
                 onCancel: {},
-                onPaymentCompletion: {
+                onPaymentCompletion: { _ in
                     eventOrder.append(.paymentCompletion)
                     promise(())
                 },
@@ -600,7 +1137,44 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
 
         // Then ensure payment completion happens after alert presentation to avoid CollectOrderPaymentUseCase deinit before alert presentation
-        XCTAssertEqual(eventOrder, [.receiptEligibilityCheck, .alertPresented, .paymentCompletion])
+        XCTAssertEqual(eventOrder, [.alertPresented, .paymentCompletion])
+    }
+
+    func test_collectPayment_when_backend_receipt_is_not_eligible_then_completes_without_receipt_alert() throws {
+        // Given
+        receiptEligibilityUseCase.isEligibleForBackendReceipts = false
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: paymentMethod, receiptParameters: .fake())
+        mockSuccessfulCardPresentPaymentActions(intent: intent, capturedPaymentData: capturedPaymentData)
+
+        var didCompletePayment = false
+        var didCompleteFlow = false
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(
+                using: .bluetoothScan,
+                channel: .storeManagement,
+                onFailure: { _ in },
+                onCancel: {},
+                onPaymentCompletion: { _ in
+                    didCompletePayment = true
+                    promise(())
+                },
+                onCompleted: {
+                    didCompleteFlow = true
+                }
+            )
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertTrue(didCompletePayment)
+        XCTAssertTrue(didCompleteFlow)
+        XCTAssertFalse(alertsPresenter.spyPresentedAlertViewModels.contains { viewModel in
+            viewModel is CardPresentModalSuccessWithoutEmail || viewModel is CardPresentModalSuccessEmailSent
+        })
     }
 
     func test_collectPayment_succeeds_when_order_total_precision_differs_between_initial_and_retrieved_order() throws {
@@ -645,7 +1219,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                     XCTFail("Payment should not be canceled")
                     promise(())
                 },
-                onPaymentCompletion: {
+                onPaymentCompletion: { _ in
                     paymentCompleted = true
                     promise(())
                 },
@@ -661,6 +1235,70 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 }
 
 private extension CollectOrderPaymentUseCaseTests {
+    func waitForPaymentCollection(_ connect: () -> Void) async {
+        let collected = expectation(description: "Payment collection started after order validation")
+        let handler = mockPaymentOrchestrator.mockCollectPaymentHandler
+        defer { mockPaymentOrchestrator.mockCollectPaymentHandler = handler }
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { preparing, waiting, processing, inserted, display, confirmed, completion in
+            handler?(preparing, waiting, processing, inserted, display, confirmed, completion)
+            collected.fulfill()
+        }
+        connect()
+        await fulfillment(of: [collected], timeout: Constants.expectationTimeout)
+    }
+
+    func assertInteracConfirmationDuringCancellation(newerPOSConfirmation: Bool) async throws {
+        // Given
+        let analytics = MockPOSAnalytics()
+        var milliseconds = 0
+        let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, monotonicMilliseconds: { milliseconds })
+        tracker.trackCheckoutTapped()
+        let pending = try await beginCancellationWithHeldCallback(analyticsTracker: tracker, channel: .pos)
+        if newerPOSConfirmation {
+            milliseconds = 200
+            tracker.trackProcessingCompletion(intent: .fake(), recordPaymentConfirmation: true)
+        }
+        // When
+        milliseconds = 250
+        pending.confirm(PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))]))
+        // Then
+        XCTAssertEqual(analytics.events.filter { $0.eventName == "card_interac_collect_payment_success" }.count, 1)
+        // When
+        pending.finishCancellation(.failure(TestError.cancellationFailed))
+        milliseconds = 300
+        tracker.trackPaymentFailure(with: TestError.cancellationFailed)
+        // Then
+        XCTAssertEqual(analytics.events.last?.properties["pos_time_since_payment_confirmed_ms"] as? Int,
+                       newerPOSConfirmation ? 100 : nil)
+    }
+
+    func beginCancellationWithHeldCallback(analyticsTracker: CollectOrderPaymentAnalyticsTracking,
+                                           channel: PaymentChannel) async throws -> (confirm: (PaymentIntent) -> Void,
+                                                                              finishCancellation: (Result<Void, Error>) -> Void) {
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        setUpUseCase(order: order, analyticsTracker: analyticsTracker)
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { _, onWaitingForInput, _, _, _, _, _ in
+            onWaitingForInput(.tap)
+        }
+        var finishCancellation: ((Result<Void, Error>) -> Void)?
+        mockPaymentOrchestrator.mockCancelPaymentHandler = { finishCancellation = $0 }
+        useCase.collectPayment(using: .bluetoothScan, channel: channel,
+                               onFailure: { _ in }, onCancel: {}, onPaymentCompletion: { _ in }, onCompleted: {})
+        await waitForPaymentCollection {
+            mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+        let waitingAlert = try XCTUnwrap(alertsPresenter.spyPresentedAlertViewModels.last)
+        waitingAlert.didTapSecondaryButton(in: ImmediateDismissViewController())
+        return (try XCTUnwrap(mockPaymentOrchestrator.spyProcessingCompletion), try XCTUnwrap(finishCancellation))
+    }
+
+    func ambiguousCapturePaymentIntent() -> PaymentIntent {
+        PaymentIntent.fake().copy(id: "pi_123",
+                                  status: .requiresCapture,
+                                  clientSecret: "pi_client_secret",
+                                  metadata: [PaymentIntent.MetadataKeys.orderID: String(defaultOrderID)])
+    }
+
     func presentErrorAlert<Alert: CardPresentPaymentsModalViewModel>(for error: Error,
                                                                      as alertType: Alert.Type,
                                                                      onFailure: @escaping (Error) -> Void) -> Alert {
@@ -679,7 +1317,7 @@ private extension CollectOrderPaymentUseCaseTests {
                                         channel: .storeManagement,
                                         onFailure: onFailure,
                                         onCancel: {},
-                                        onPaymentCompletion: {},
+                                        onPaymentCompletion: { _ in },
                                         onCompleted: {})
             self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
@@ -688,7 +1326,7 @@ private extension CollectOrderPaymentUseCaseTests {
     func mockTerminalPaymentPreparationRoute(isAvailable: Bool) {
         stores.whenReceivingAction(ofType: SettingAction.self) { [defaultSiteID] action in
             switch action {
-            case let .retrieveSiteAPI(siteID, completion):
+            case let .retrieveSiteAPIIncludingRoutes(siteID, completion):
                 XCTAssertEqual(siteID, defaultSiteID)
                 completion(.success(SiteAPI(siteID: siteID,
                                             namespaces: [],
@@ -703,7 +1341,7 @@ private extension CollectOrderPaymentUseCaseTests {
     func mockUnexpectedTerminalPaymentPreparationRouteCheck() {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
-            case let .retrieveSiteAPI(siteID, completion):
+            case let .retrieveSiteAPIIncludingRoutes(siteID, completion):
                 XCTFail("AU terminal payment preparation should not depend on the site route list.")
                 completion(.success(SiteAPI(siteID: siteID,
                                             namespaces: [],
@@ -743,6 +1381,10 @@ private extension CollectOrderPaymentUseCaseTests {
 }
 
 private extension CollectOrderPaymentUseCaseTests {
+    enum TestError: Error {
+        case cancellationFailed
+    }
+
     enum Mocks {
         static let configuration = CardPresentPaymentsConfiguration(country: .US)
         static let cardReaderModel: String = "WISEPAD_3"

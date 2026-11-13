@@ -27,6 +27,7 @@ final class ProductDescriptionAICoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_ProductDescriptionGenerationHostingController_is_presented_after_start_is_called() throws {
         // Given
         let coordinator = ProductDescriptionAICoordinator(product: EditableProductModel(product: .fake()),
@@ -43,6 +44,7 @@ final class ProductDescriptionAICoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_productDescriptionAIButtonTapped_is_tracked_when_bottom_sheet_is_presented() throws {
         // Given
         let coordinator = ProductDescriptionAICoordinator(product: EditableProductModel(product: .fake()),

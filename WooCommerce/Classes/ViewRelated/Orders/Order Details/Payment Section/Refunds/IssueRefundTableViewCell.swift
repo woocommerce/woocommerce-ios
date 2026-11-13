@@ -9,9 +9,10 @@ final class IssueRefundTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
-        configureIssueRefundButton()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureIssueRefundButton()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -36,6 +37,7 @@ private extension IssueRefundTableViewCell {
     func configureIssueRefundButton() {
         issueRefundButton.applySecondaryButtonStyle()
         issueRefundButton.setTitle(Localization.buttonTitle, for: .normal)
+        accessibilityIdentifier = "order-details-issue-refund-button"
     }
 }
 

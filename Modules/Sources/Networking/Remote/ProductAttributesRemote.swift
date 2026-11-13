@@ -2,7 +2,7 @@ import Foundation
 
 /// Product Attributes: Remote Endpoints for fetching global product attributes.
 ///
-public final class ProductAttributesRemote: Remote {
+public final class ProductAttributesRemote: Remote, @unchecked Sendable {
 
     // MARK: - Product Attributes
 

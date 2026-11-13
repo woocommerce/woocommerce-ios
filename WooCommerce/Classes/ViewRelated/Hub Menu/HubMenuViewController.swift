@@ -14,13 +14,15 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
                                           stores: stores)
 
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
-        super.init(rootView: HubMenu(viewModel: viewModel))
+        super.init(rootView: HubMenu(viewModel: viewModel,
+                                    httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel))
         configureTabBarItem()
 
         rootView.switchStoreHandler = { [weak self] in
@@ -29,6 +31,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
         rootView.googleAdsCampaignHandler = { [weak self] in
             self?.presentGoogleAds()
+        }
+
+        rootView.httpsConfigurationHelpHandler = { [weak self] in
+            guard let self else { return }
+            WebviewHelper.launch(HTTPSConfigurationWarningContent.helpURL, with: self)
         }
     }
 
@@ -142,6 +149,24 @@ extension HubMenuViewController: DeepLinkNavigator {
         case .paymentsMenu:
             showPaymentsMenu()
         }
+    }
+}
+
+extension HubMenuViewController: TabReselectionHandling {
+    func handleTabReselection() {
+        // Destinations can push UIKit screens onto the `NavigationStack`'s backing navigation
+        // controller (e.g. Settings → Help), which `navigationPath` knows nothing about.
+        // Popping that controller first keeps `navigationPath` in sync with what is on screen.
+        guard let stackNavigationController,
+              stackNavigationController.popToRootOrScrollToTop(animated: true) else {
+            return
+        }
+        viewModel.popToRoot()
+    }
+
+    /// The `UINavigationController` backing the SwiftUI `NavigationStack`.
+    private var stackNavigationController: UINavigationController? {
+        children.compactMap { $0 as? UINavigationController }.first
     }
 }
 

@@ -1,9 +1,8 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class SingleOrderScreen: ScreenObject {
-
-    let tabBar: TabNavComponent
 
     private let editOrderButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["order-details-edit-button"]
@@ -18,7 +17,7 @@ public final class SingleOrderScreen: ScreenObject {
     }
 
     private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["order-details-collect-payment-button"]
+        $0.cells["order-details-collect-payment-button"]
     }
 
     private var editOrderButton: XCUIElement { editOrderButtonGetter(app) }
@@ -26,8 +25,6 @@ public final class SingleOrderScreen: ScreenObject {
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
-        tabBar = try TabNavComponent(app: app)
-
         try super.init(
             expectedElementGetters: [ summaryCellTitleGetter, summaryCellPaymentStatusGetter ],
             app: app
@@ -45,18 +42,17 @@ public final class SingleOrderScreen: ScreenObject {
         let orderTotalPredicate = NSPredicate(format: "label CONTAINS %@", order.total)
 
         // Check that navigation bar contains order number
-        let navigationBarTitles = app.navigationBars.map { $0.staticTexts.element.label }
-        let expectedTitle = "#\(order.number)"
-        XCTAssertTrue(navigationBarTitles.contains(where: { $0.contains(expectedTitle) }), "No navigation bar found with title \(expectedTitle)")
+        let orderNumberPredicate = NSPredicate(format: "identifier CONTAINS %@ OR label CONTAINS %@", order.number, order.number)
+        XCTAssertTrue(app.navigationBars.matching(orderNumberPredicate).firstMatch.exists, "No navigation bar found for order \(order.number)")
 
         // Check order status and total
         let orderDetailTableView = app.tables["order-details-table-view"]
-        orderDetailTableView.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
+        XCTAssertTrue(orderDetailTableView.buttons["order-status-\(order.status)"].exists)
         XCTAssertTrue(app.otherElements.containing(orderTotalPredicate).element.exists)
 
         // Check name on order summary
-        orderDetailTableView.assertElement(matching: "summary-table-view-cell",
-                                           existsOnCellWithIdentifier: "\(order.billing.first_name) \(order.billing.last_name)")
+        orderDetailTableView.assertStaticText(withLabel: "\(order.billing.first_name) \(order.billing.last_name)",
+                                              existsOnCellWithIdentifier: "summary-table-view-cell")
 
         // Check product(s) on order
         for product in order.line_items {
@@ -90,7 +86,13 @@ public final class SingleOrderScreen: ScreenObject {
             return try OrdersScreen()
         }
 
-        pop()
+        // Duo puts the system back button in the vertical bar, outside the navigation bar.
+        let systemBackButton = app.buttons["BackButton"]
+        if systemBackButton.exists {
+            systemBackButton.tap()
+        } else {
+            pop()
+        }
         return try OrdersScreen()
     }
 

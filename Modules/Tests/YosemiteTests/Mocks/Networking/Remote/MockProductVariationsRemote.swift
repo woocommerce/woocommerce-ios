@@ -5,6 +5,7 @@ import XCTest
 
 /// Mock for `MockProductVariationsRemote`.
 ///
+@MainActor
 final class MockProductVariationsRemote {
     private struct ResultKey: Hashable {
         let siteID: Int64
@@ -89,7 +90,16 @@ final class MockProductVariationsRemote {
 
 // MARK: - ProductVariationsRemoteProtocol conformance
 
-extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
+extension MockProductVariationsRemote: @MainActor ProductVariationsRemoteProtocol {
+    func loadProductVariations(for siteID: Int64,
+                               productID: Int64,
+                               variationIDs: [Int64],
+                               pageNumber: Int,
+                               pageSize: Int,
+                               currency: String?) async throws -> [ProductVariation] {
+        []
+    }
+
     func loadAllProductVariations(for siteID: Int64,
                                   productID: Int64,
                                   variationIDs: [Int64],
@@ -100,6 +110,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
         // no-op
     }
 
+    @MainActor
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
                                       pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
@@ -116,7 +127,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
     }
 
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }
@@ -136,7 +147,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                  productID: Int64,
                                  newVariation: CreateProductVariation,
                                  completion: @escaping (Result<ProductVariation, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }
@@ -160,7 +171,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
     }
 
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }
@@ -181,7 +192,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                      variationID: Int64,
                                      image: ProductImage,
                                      completion: @escaping (Result<ProductVariation, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }
@@ -199,9 +210,9 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
 
     func updateProductVariations(siteID: Int64,
                                  productID: Int64,
-                                 productVariations: [ProductVariation],
+                                 productVariations: [PartialProductVariationUpdate],
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID,
@@ -216,7 +227,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
     }
 
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else {
                 return
             }

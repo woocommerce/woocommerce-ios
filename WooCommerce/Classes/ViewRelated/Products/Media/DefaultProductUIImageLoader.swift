@@ -15,7 +15,6 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         case unableToLoadImage
     }
 
-    private var imageStorage: ImageStorage
     private let imageService: ImageService
 
     private let productImageActionHandler: ProductImageActionHandler?
@@ -33,21 +32,32 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
     private var assetUploadSubscription: AnyCancellable?
 
     /// - Parameters:
-    ///   - productImageActionHandler: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
-    ///     Set this property when images are being uploaded in the scope.
     ///   - imageService: provides images given a URL.
     ///   - phAssetImageLoaderProvider: provides a `PHAssetImageLoader` instance that loads an image given a `PHAsset` asset.
     ///     Only non-nil if `PHAsset` image request is used (e.g. image upload).
     ///     It is a callback because we lazy load `PHAssetImageLoader` to avoid triggering permission alert by initializing `PHImageManager` before it is used.
-    init(productImageActionHandler: ProductImageActionHandler? = nil,
+    init(imageService: ImageService = ServiceLocator.imageService,
+         phAssetImageLoaderProvider: (() -> PHAssetImageLoader)? = nil) {
+        self.productImageActionHandler = nil
+        self.imageService = imageService
+        self.phAssetImageLoaderProvider = phAssetImageLoaderProvider
+    }
+
+    /// Use when images are being uploaded in the scope: the asset image is reused after being uploaded to a remote image
+    /// to avoid an extra network call. Main-actor isolated because it subscribes to the main-actor `ProductImageActionHandler`.
+    /// - Parameters:
+    ///   - productImageActionHandler: the handler whose asset uploads are observed.
+    ///   - imageService: provides images given a URL.
+    ///   - phAssetImageLoaderProvider: see the other initializer.
+    @MainActor
+    init(productImageActionHandler: ProductImageActionHandler,
          imageService: ImageService = ServiceLocator.imageService,
          phAssetImageLoaderProvider: (() -> PHAssetImageLoader)? = nil) {
         self.productImageActionHandler = productImageActionHandler
         self.imageService = imageService
         self.phAssetImageLoaderProvider = phAssetImageLoaderProvider
-        self.imageStorage = ImageStorage()
 
-        assetUploadSubscription = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
+        assetUploadSubscription = productImageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self else { return }
             guard case let .success(productImage) = result else {
                 return
@@ -78,10 +88,6 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
     }
 
     func requestImage(productImage: ProductImage) async throws -> UIImage {
-        if let image = await imageStorage.getImage(id: productImage.imageID) {
-            return image
-        }
-
         guard let encodedString = productImage.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: encodedString) else {
             throw ImageLoaderError.invalidURL
@@ -138,10 +144,6 @@ private extension DefaultProductUIImageLoader {
             return
         }
 
-        let useImageServiceCache = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
-            .productImageOptimizedHandling
-        )
-
         switch asset {
         case .phAsset(let asset):
             phAssetImageLoader.requestImage(for: asset,
@@ -151,36 +153,10 @@ private extension DefaultProductUIImageLoader {
                 guard let image, let self else {
                     return
                 }
-                if useImageServiceCache {
-                    self.imageService.storeImageInCache(image, for: url)
-                } else {
-                    Task {
-                        await self.imageStorage.saveImage(image: image, id: productImage.imageID)
-                    }
-                }
+                self.imageService.storeImageInCache(image, for: url)
             }
         case .uiImage(let image, _, _):
-            if useImageServiceCache {
-                imageService.storeImageInCache(image, for: url)
-            } else {
-                Task {
-                    await self.imageStorage.saveImage(image: image, id: productImage.imageID)
-                }
-            }
+            imageService.storeImageInCache(image, for: url)
         }
-    }
-}
-
-/// Stores images in a dictionary using given `id`
-///
-private actor ImageStorage {
-    private var images: [Int64: UIImage] = [:]
-
-    func saveImage(image: UIImage, id: Int64) {
-        images[id] = image
-    }
-
-    func getImage(id: Int64) -> UIImage? {
-        images[id]
     }
 }

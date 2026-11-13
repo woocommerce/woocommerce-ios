@@ -50,4 +50,10 @@ final class ToolbarView: UIView {
         let subviews = leftViews + [flexView] + rightViews
         stackView.addArrangedSubviews(subviews)
     }
+
+    func setContentInsets(_ insets: NSDirectionalEdgeInsets, alignment: UIStackView.Alignment) {
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.directionalLayoutMargins = insets
+        stackView.alignment = alignment
+    }
 }

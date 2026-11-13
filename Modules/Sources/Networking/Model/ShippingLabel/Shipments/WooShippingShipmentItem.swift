@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a shipment from the WooCommerce Shipping extension.
 ///
-public struct WooShippingShipment: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingShipment: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     /// ID of the site that the shipment belongs to.
     public let siteID: Int64
 
@@ -35,7 +35,7 @@ public struct WooShippingShipment: Equatable, GeneratedFakeable, GeneratedCopiab
 
 /// Represents a shipment item from the WooCommerce Shipping extension.
 ///
-public struct WooShippingShipmentItem: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingShipmentItem: Codable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     /// ID of the order item
     public let id: Int64
 

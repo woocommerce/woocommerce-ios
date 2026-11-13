@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class LoginCheckMagicLinkScreen: ScreenObject {
 
     private let passwordButtonGetter: (XCUIApplication) -> XCUIElement = {

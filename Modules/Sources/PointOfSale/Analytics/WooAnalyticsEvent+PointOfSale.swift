@@ -2,10 +2,15 @@ import Foundation
 import enum Yosemite.CardPresentPaymentOnboardingState
 import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
+import enum Yosemite.POSSearchMethod
+import enum WooFoundation.CurrencyCode
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
 import enum WooFoundation.CountryCode
+import protocol WooFoundation.WooAnalyticsEventPropertyType
+import enum Yosemite.CardReaderServiceError
 import enum Yosemite.PaymentMethod
+import enum Yosemite.RefundAPIError
 import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
@@ -23,16 +28,24 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceCardTapped = "milliseconds_since_card_tapped"
             static let checkoutTapCount = "checkout_tap_count"
             static let waitingTime = "waiting_time"
+            static let readerConnectedAtCheckout = "reader_connected_at_checkout"
+            static let millisecondsWaitingForReaderConnection = "milliseconds_waiting_for_reader_connection"
+            static let millisecondsFromOrderSyncToReaderReady = "milliseconds_from_order_sync_to_reader_ready"
+            static let readerReadySignal = "reader_ready_signal"
             static let type = "type"
             static let sourceView = "source"
             static let sourceViewType = "source_type"
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
             static let totalItems = "total_items"
+            static let amountNormalized = "amount_normalized"
+            static let currency = "currency"
+            static let transport = "transport"
             static let cardReaderModel = "card_reader_model"
             static let countryCode = "country"
             static let paymentMethodType = "payment_method_type"
             static let gatewayID = "plugin_slug"
+            static let cancellationSource = "cancellation_source"
             static let scanDurationMs = "scan_duration_ms"
             static let barcodeLength = "barcode_length"
             static let failReason = "fail_reason"
@@ -46,15 +59,23 @@ extension WooAnalyticsEvent {
             static let pageNumber = "page_number"
             static let reason = "reason"
             static let syncStrategy = "sync_strategy"
+            static let posTimeSinceCheckoutStarted = "pos_time_since_checkout_started_ms"
+            static let posTimeSinceOrderSyncCompleted = "pos_time_since_order_sync_completed_ms"
+            static let posTimeSincePaymentConfirmed = "pos_time_since_payment_confirmed_ms"
             static let searchMethod = "search_method"
             static let resultPosition = "result_position"
             static let deltaFromToday = "delta_from_today"
             static let refundType = "refund_type"
             static let hasReason = "has_reason"
             static let refundStep = "refund_step"
+            static let refundFlow = "refund_flow"
+            /// Distinct from the `error_code` the `error:` initializer writes from `NSError.code`:
+            /// this is the REST rejection code, and the two must not share a key.
+            static let apiErrorCode = "api_error_code"
             static let action = "action"
             static let mode = "mode"
             static let isTaxable = "is_taxable"
+            static let enabled = "enabled"
         }
 
         /// Source of the event where the event is triggered
@@ -242,23 +263,92 @@ extension WooAnalyticsEvent {
             )
         }
 
-        /// Tracks the time elapsed preparing reader for payment, after successful order creation
-        /// - Parameter waitingTime: Elapsed time from Order creation to card ready for payment
+        /// Android also sends `collection_started` for Tap to Pay, which has no input request there.
         ///
-        public static func cardReaderReadyForCardPayment(waitingTime: Double) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment, properties: [Key.waitingTime: "\(waitingTime)"])
+        public enum ReaderReadySignal: String {
+            case inputRequested = "input_requested"
+        }
+
+        /// Values that are `nil` are left out of the event, and so are negative durations.
+        ///
+        public struct ReaderReadyTiming: Equatable {
+            /// Whether a reader was connected when the customer interaction started.
+            public let readerConnectedAtCheckout: Bool?
+            /// From the customer interaction start to the first reader connection, when it was not connected at the start.
+            public let millisecondsWaitingForReaderConnection: Int?
+            /// From the latest of order sync, reader connection and the attempt start, to the reader being ready for a card.
+            public let millisecondsFromOrderSyncToReaderReady: Int?
+            public let readerReadySignal: ReaderReadySignal?
+
+            public init(readerConnectedAtCheckout: Bool? = nil,
+                        millisecondsWaitingForReaderConnection: Int? = nil,
+                        millisecondsFromOrderSyncToReaderReady: Int? = nil,
+                        readerReadySignal: ReaderReadySignal? = nil) {
+                self.readerConnectedAtCheckout = readerConnectedAtCheckout
+                self.millisecondsWaitingForReaderConnection = millisecondsWaitingForReaderConnection
+                self.millisecondsFromOrderSyncToReaderReady = millisecondsFromOrderSyncToReaderReady
+                self.readerReadySignal = readerReadySignal
+            }
+
+            var properties: [String: WooAnalyticsEventPropertyType] {
+                var properties: [String: WooAnalyticsEventPropertyType] = [:]
+                properties[Key.readerConnectedAtCheckout] = readerConnectedAtCheckout.map { String($0) }
+                properties[Key.millisecondsWaitingForReaderConnection] = millisecondsWaitingForReaderConnection.flatMap { $0 >= 0 ? $0 : nil }
+                properties[Key.millisecondsFromOrderSyncToReaderReady] = millisecondsFromOrderSyncToReaderReady.flatMap { $0 >= 0 ? $0 : nil }
+                properties[Key.readerReadySignal] = readerReadySignal?.rawValue
+                return properties
+            }
+        }
+
+        /// Tracks the time elapsed preparing reader for payment, after successful order creation
+        /// - Parameter waitingTime: Elapsed time in seconds from Order creation to card ready for payment
+        /// - Parameter readerReadyTiming: Connection state at checkout and the split connection and preparation intervals
+        ///
+        public static func cardReaderReadyForCardPayment(waitingTime: Double,
+                                                         readerReadyTiming: ReaderReadyTiming = ReaderReadyTiming()) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment,
+                              properties: readerReadyTiming.properties.merging([Key.waitingTime: "\(waitingTime)"],
+                                                                               uniquingKeysWith: { _, new in new }))
+        }
+
+        /// Adds a fresh timing snapshot without changing legacy payment properties.
+        public static func withCheckoutTiming(_ event: WooAnalyticsEvent,
+                                              syncStrategy: POSCheckoutCatalogStrategy,
+                                              millisecondsSinceCheckoutStarted: Int?,
+                                              millisecondsSinceOrderSyncCompleted: Int?,
+                                              millisecondsSincePaymentConfirmed: Int?) -> WooAnalyticsEvent {
+            var properties = event.properties
+            properties[Key.syncStrategy] = syncStrategy.rawValue
+            let timings = [
+                Key.posTimeSinceCheckoutStarted: millisecondsSinceCheckoutStarted,
+                Key.posTimeSinceOrderSyncCompleted: millisecondsSinceOrderSyncCompleted,
+                Key.posTimeSincePaymentConfirmed: millisecondsSincePaymentConfirmed
+            ]
+            for (key, value) in timings {
+                if let value, value >= 0 {
+                    properties[key] = value
+                } else {
+                    properties.removeValue(forKey: key)
+                }
+            }
+            return WooAnalyticsEvent(statName: event.statName, properties: properties, error: event.error)
         }
 
         public static func cardPresentCollectPaymentSuccess(forGatewayID: String?,
                                                      countryCode: CountryCode,
                                                      paymentMethod: PaymentMethod,
                                                      cardReaderModel: String?,
+                                                     order: POSPaymentAnalyticsOrder,
+                                                     transport: String,
                                                      millisecondsSinceCustomerIteractionStarted: Double,
                                                      millisecondsSinceOrderSyncSuccess: Double,
                                                      millisecondsSinceReaderReadyToCollect: Double,
                                                      millisecondsSinceCardTapped: Double,
-                                                     checkoutTapCount: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
+                                                     checkoutTapCount: Int,
+                                                     readerReadyTiming: ReaderReadyTiming = ReaderReadyTiming()) -> WooAnalyticsEvent {
+            let baseProperties = paymentProperties(for: order).merging(readerReadyTiming.properties, uniquingKeysWith: { _, new in new })
+            return WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: baseProperties.merging([
+                Key.transport: transport,
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,
                 Key.gatewayID: safeGatewayID(for: forGatewayID),
@@ -268,6 +358,68 @@ extension WooAnalyticsEvent {
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
                 Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
                 Key.checkoutTapCount: "\(checkoutTapCount)"
+            ], uniquingKeysWith: { _, new in new }))
+        }
+
+        /// Tracked when a card present payment fails in POS.
+        ///
+        public static func cardPresentCollectPaymentFailed(forGatewayID: String?,
+                                                           error: Error,
+                                                           countryCode: CountryCode,
+                                                           cardReaderModel: String?,
+                                                           millisecondsSinceCustomerIteractionStarted: Double,
+                                                           millisecondsSinceOrderSyncSuccess: Double,
+                                                           millisecondsSinceReaderReadyToCollect: Double,
+                                                           millisecondsSinceCardTapped: Double,
+                                                           checkoutTapCount: Int,
+                                                           readerReadyTiming: ReaderReadyTiming = ReaderReadyTiming()) -> WooAnalyticsEvent {
+            let paymentMethod: PaymentMethod? = {
+                guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(_, paymentMethod) = error else {
+                    return nil
+                }
+                return paymentMethod
+            }()
+            let properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID),
+                Key.paymentMethodType: paymentMethod.map(analyticsValue(for:)),
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+                Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
+                Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
+                Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
+                Key.checkoutTapCount: "\(checkoutTapCount)"
+            ].compactMapValues { $0 }
+            return WooAnalyticsEvent(statName: .collectPaymentFailed,
+                                     properties: properties.merging(readerReadyTiming.properties, uniquingKeysWith: { current, _ in current }),
+                                     error: error)
+        }
+
+        /// Tracked when a card present payment is cancelled in POS.
+        ///
+        public static func cardPresentCollectPaymentCanceled(forGatewayID: String?,
+                                                             countryCode: CountryCode,
+                                                             cardReaderModel: String?,
+                                                             cancellationSource: String,
+                                                             checkoutTapCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentCanceled, properties: [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID),
+                Key.cancellationSource: cancellationSource,
+                Key.checkoutTapCount: "\(checkoutTapCount)"
+            ])
+        }
+
+        /// Tracked when an Interac payment is processed in POS, alongside the regular card payment success event.
+        ///
+        public static func interacCollectPaymentSuccess(forGatewayID: String?,
+                                                        countryCode: CountryCode,
+                                                        cardReaderModel: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectInteracPaymentSuccess, properties: [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID)
             ])
         }
 
@@ -282,22 +434,48 @@ extension WooAnalyticsEvent {
             }
         }
 
-        public static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleCashCollectPaymentSuccess, properties: [
+        public static func cashCollectPaymentSuccess(order: POSPaymentAnalyticsOrder,
+                                                     countryCode: CountryCode,
+                                                     millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleCashCollectPaymentSuccess, properties: paymentProperties(for: order).merging([
+                Key.countryCode: countryCode.rawValue,
+                Key.paymentMethodType: "cash",
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
-            ])
+            ], uniquingKeysWith: { _, new in new }))
         }
 
-        public static func scanToPayCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleScanToPayCollectPaymentSuccess, properties: [
+        public static func scanToPayCollectPaymentSuccess(order: POSPaymentAnalyticsOrder,
+                                                          countryCode: CountryCode,
+                                                          millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleScanToPayCollectPaymentSuccess, properties: paymentProperties(for: order).merging([
+                Key.countryCode: countryCode.rawValue,
+                Key.paymentMethodType: "scan_to_pay",
+                Key.gatewayID: order.paymentMethodID.isEmpty ? "unknown" : order.paymentMethodID,
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
-            ])
+            ], uniquingKeysWith: { _, new in new }))
         }
 
-        public static func markAsPaidSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleMarkAsPaidSuccess, properties: [
+        private static func paymentProperties(for order: POSPaymentAnalyticsOrder) -> [String: WooAnalyticsEventPropertyType] {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.orderID: order.orderID,
+                Key.currency: order.currency
+            ]
+            let total = NSDecimalNumber(string: order.total, locale: Locale(identifier: "en_US_POSIX"))
+            if total != .notANumber, let currency = CurrencyCode(rawValue: order.currency) {
+                properties[Key.amountNormalized] = total.multiplying(by: NSDecimalNumber(value: currency.smallestCurrencyUnitMultiplier)).intValue
+            }
+            return properties
+        }
+
+        public static func markAsPaidSuccess(order: POSPaymentAnalyticsOrder,
+                                             countryCode: CountryCode,
+                                             millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleMarkAsPaidSuccess, properties: paymentProperties(for: order).merging([
+                Key.countryCode: countryCode.rawValue,
+                Key.paymentMethodType: "mark_as_paid",
+                Key.gatewayID: "other",
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
-            ])
+            ], uniquingKeysWith: { _, new in new }))
         }
 
         static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
@@ -348,7 +526,8 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Key.sourceView: SourceView(itemType: itemType).rawValue,
                                 Key.resultsCount: "\(resultsCount)",
-                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
+                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)",
+                                Key.searchMethod: POSSearchMethod.remote.rawValue
                               ])
         }
 
@@ -457,6 +636,18 @@ extension WooAnalyticsEvent {
                               properties: [Key.scanner: scanner.analyticsName])
         }
 
+        // MARK: - Receipt Printer Analytics Events
+
+        static func receiptPrinterSetupStarted(source: POSPrinterSetupSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleReceiptPrinterSetupStarted,
+                              properties: [Key.sourceView: source.rawValue])
+        }
+
+        static func receiptPrinterConnected(source: POSPrinterSetupSource?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleReceiptPrinterConnected,
+                              properties: source.map { [Key.sourceView: $0.rawValue] } ?? [:])
+        }
+
         // MARK: - Orders Analytics Events
 
         static func ordersMenuItemTapped() -> WooAnalyticsEvent {
@@ -517,7 +708,7 @@ extension WooAnalyticsEvent {
         }
 
         static func ordersListLoaded() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .ordersListLoaded, properties: [:])
+            WooAnalyticsEvent(statName: .pointOfSaleOrdersListLoaded, properties: [:])
         }
 
         // MARK: - Checkout Outdated Item Detection Events
@@ -573,16 +764,29 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func refundProcessingStarted() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingStarted, properties: [:])
+        static func refundProcessingStarted(flow: POSRefundReviewData.CalculationFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingStarted, properties: [
+                Key.refundFlow: flow.rawValue
+            ])
         }
 
-        static func refundProcessingSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingSuccess, properties: [:])
+        static func refundProcessingSuccess(flow: POSRefundReviewData.CalculationFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingSuccess, properties: [
+                Key.refundFlow: flow.rawValue
+            ])
         }
 
-        static func refundProcessingFailed(error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingFailed, properties: [:], error: error)
+        static func refundProcessingFailed(error: Error, flow: POSRefundReviewData.CalculationFlow) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.refundFlow: flow.rawValue
+            ]
+            // The wire code separates deterministic server rejections (`woocommerce_rest_*`) from
+            // transport failures, which `error_description` alone cannot do — it is localized to
+            // the store and varies by message. Omitted rather than sent empty when there is none.
+            if let code = RefundAPIError.restErrorCode(from: error) {
+                properties[Key.apiErrorCode] = code
+            }
+            return WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingFailed, properties: properties, error: error)
         }
 
         enum RefundStep: String {
@@ -600,6 +804,13 @@ extension WooAnalyticsEvent {
         static func refundSelectAllTapped(action: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleRefundSelectAllTapped, properties: [
                 Key.action: action
+            ])
+        }
+
+        /// `enabled` is sent as `"true"`/`"false"`, matching Android.
+        static func paymentSuccessSoundToggled(isEnabled: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSalePaymentSuccessSoundToggled, properties: [
+                Key.enabled: String(isEnabled)
             ])
         }
     }

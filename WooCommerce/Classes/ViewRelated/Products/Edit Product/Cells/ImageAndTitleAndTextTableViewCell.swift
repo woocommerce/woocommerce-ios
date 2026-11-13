@@ -4,6 +4,11 @@ import UIKit
 /// Displays an optional image, title and text.
 ///
 final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
+    var detailsAccessibilityIdentifier: String? {
+        get { descriptionLabel.accessibilityIdentifier }
+        set { descriptionLabel.accessibilityIdentifier = newValue }
+    }
+
     /// Supported font styles.
     enum FontStyle {
         case body
@@ -131,26 +136,32 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
 
     private var showsSeparator: Bool = true
 
+    private var defaultCellBackgroundColor: UIColor = .listForeground(modal: false)
+
     private var cancellable: AnyCancellable?
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureLabels()
-        configureImageView()
-        configureContentStackView()
-        configureTitleAndTextStackView()
-        configureDefaultBackgroundConfiguration()
-        configureSelectedBackground()
+        MainActor.assumeIsolated {
+            configureLabels()
+            configureImageView()
+            configureContentStackView()
+            configureTitleAndTextStackView()
+            configureDefaultBackgroundConfiguration()
+            configureSelectedBackground()
+        }
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         cancellable = nil
+        defaultCellBackgroundColor = .listForeground(modal: false)
+        configureDefaultBackgroundConfiguration()
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
         super.updateConfiguration(using: state)
-        updateDefaultBackgroundConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state, backgroundColor: defaultCellBackgroundColor)
     }
 
     override func layoutMarginsDidChange() {
@@ -173,6 +184,7 @@ extension ImageAndTitleAndTextTableViewCell {
         }
         titleLabel.textColor = viewModel.text?.isEmpty == false ? .text: .textSubtle
         titleLabel.numberOfLines = viewModel.numberOfLinesForTitle
+        descriptionLabel.accessibilityIdentifier = nil
         descriptionLabel.text = viewModel.text
         descriptionLabel.textColor = .textSubtle
         descriptionLabel.isHidden = viewModel.text == nil || viewModel.text?.isEmpty == true
@@ -210,6 +222,12 @@ extension ImageAndTitleAndTextTableViewCell {
             hideSeparator()
         }
         showsSeparator = viewModel.showsSeparator
+    }
+
+    func updateBackgroundColor(_ color: UIColor) {
+        defaultCellBackgroundColor = color
+        contentView.backgroundColor = color
+        configureDefaultBackgroundConfiguration(backgroundColor: color)
     }
 
     func updateUI(switchableViewModel: SwitchableViewModel) {

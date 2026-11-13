@@ -12,6 +12,9 @@ struct PointOfSaleOrderTotals: Equatable {
     /// so the totals breakdown can hide the row.
     let customAmountsTotal: String?
     let couponsTotals: [PointOfSaleCouponTotal]
+    /// Cart rows whose order line item shows a discount (`subtotal` above `total` in the
+    /// order response), regardless of whether it came from a coupon or another source.
+    let discountedCartItemIDs: Set<UUID>
 
     init(cartTotal: String,
          orderTotal: String,
@@ -19,7 +22,8 @@ struct PointOfSaleOrderTotals: Equatable {
          orderTotalDecimal: Decimal,
          discountTotal: String? = nil,
          customAmountsTotal: String? = nil,
-         couponsTotals: [PointOfSaleCouponTotal] = []) {
+         couponsTotals: [PointOfSaleCouponTotal] = [],
+         discountedCartItemIDs: Set<UUID> = []) {
         self.cartTotal = cartTotal
         self.orderTotal = orderTotal
         self.taxTotal = taxTotal
@@ -27,10 +31,19 @@ struct PointOfSaleOrderTotals: Equatable {
         self.discountTotal = discountTotal
         self.customAmountsTotal = customAmountsTotal
         self.couponsTotals = couponsTotals
+        self.discountedCartItemIDs = discountedCartItemIDs
     }
 }
 
 struct PointOfSaleCouponTotal: Equatable {
     let code: String
     let total: String
+    /// Whether the order response shows this coupon actually produced a discount.
+    let hasDiscount: Bool
+
+    init(code: String, total: String, hasDiscount: Bool = false) {
+        self.code = code
+        self.total = total
+        self.hasDiscount = hasDiscount
+    }
 }

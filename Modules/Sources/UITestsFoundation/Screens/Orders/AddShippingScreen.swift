@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class AddShippingScreen: ScreenObject {
 
     private let shippingNameGetter: (XCUIApplication) -> XCUIElement = {

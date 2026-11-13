@@ -75,4 +75,24 @@ final class StatsIntervalDataParserTests: XCTestCase {
         // Then
         XCTAssertEqual(averageOrderValueData, [20, 30])
     }
+
+    func test_getChartData_when_an_interval_has_an_empty_dateStart_then_it_is_dropped_and_does_not_crash() {
+        // Given
+        // One interval has an unparseable (empty) start date, mirroring the malformed server
+        // data that used to crash the app during dashboard sync.
+        let orderStats = OrderStatsV4.fake().copy(intervals: [
+            .fake().copy(dateStart: "",
+                         dateEnd: "2019-07-09 01:59:59",
+                         subtotals: .fake().copy(grossRevenue: 25)),
+            .fake().copy(dateStart: "2019-07-09 00:00:00",
+                         dateEnd: "2019-07-09 00:59:59",
+                         subtotals: .fake().copy(grossRevenue: 31))
+        ])
+
+        // When
+        let totalRevenueData = StatsIntervalDataParser.getChartData(for: .grossRevenue, from: orderStats)
+
+        // Then
+        XCTAssertEqual(totalRevenueData, [31])
+    }
 }

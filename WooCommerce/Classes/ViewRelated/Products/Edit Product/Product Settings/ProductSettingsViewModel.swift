@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 
 /// The Product Settings contains 2 sections: Publish Settings and More Options
+@MainActor
 final class ProductSettingsViewModel {
 
     private let product: Product
@@ -73,6 +74,7 @@ final class ProductSettingsViewModel {
         }
     }
 
+    @MainActor
     func handleCellTap(at indexPath: IndexPath, sourceViewController: UIViewController) {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]

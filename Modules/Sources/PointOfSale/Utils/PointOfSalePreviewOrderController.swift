@@ -31,15 +31,17 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
 
     func confirmScanToPayPayment() async throws {}
 
+    func recordScanToPayPaymentMethod() async {}
+
     func reloadCurrentOrder() async throws -> Order {
-        guard case let .loaded(_, order) = orderState else {
+        guard case let .loaded(_, order, _) = orderState else {
             throw NSError(domain: "PointOfSalePreviewOrderController", code: 0)
         }
         return order
     }
 
     func promoteCurrentOrderToPending() async throws -> Order {
-        guard case let .loaded(_, order) = orderState else {
+        guard case let .loaded(_, order, _) = orderState else {
             throw NSError(domain: "PointOfSalePreviewOrderController", code: 0)
         }
         return order

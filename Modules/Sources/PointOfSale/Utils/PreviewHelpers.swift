@@ -1,6 +1,7 @@
 #if DEBUG
 
 import Foundation
+import SwiftUI
 import WooFoundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
@@ -53,6 +54,12 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSItemIdentifier
+import protocol Yosemite.ReceiptPrinterServiceProtocol
+import enum Yosemite.PrinterConnectionStatus
+import struct Yosemite.PrinterDevice
+import struct Yosemite.ReceiptContent
+import struct Yosemite.ReceiptStoreInformation
+import struct Yosemite.CardPresentTransactionDetails
 
 // MARK: - PreviewProvider helpers
 //
@@ -156,6 +163,8 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
     func handleTap(_ item: Yosemite.POSItem, position: Int) { }
+
+    func handleTapOnAppliedCoupon(_ item: Yosemite.POSItem) { }
 }
 
 final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
@@ -216,49 +225,53 @@ private var mockVariationItems: [POSItem] {
 struct POSPreviewHelpers {
     @MainActor
     static func makePreviewAggregateModel(
-        itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
-        couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
-        couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
-        orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
-        settingsController: POSSettingsControllerProtocol = POSSettingsPreviewController(),
+        itemsController: PointOfSaleItemsControllerProtocol? = nil,
+        purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
+        couponsController: PointOfSaleCouponsControllerProtocol? = nil,
+        couponsSearchController: PointOfSaleCouponsControllerProtocol? = nil,
+        cardPresentPaymentService: CardPresentPaymentFacade? = nil,
+        orderController: PointOfSaleOrderControllerProtocol? = nil,
+        settingsController: POSSettingsControllerProtocol? = nil,
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentPreviewAnalytics(),
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
-        popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
-        barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
+        popularItemsController: PointOfSaleItemsControllerProtocol? = nil,
+        barcodeScanService: PointOfSaleBarcodeScanServiceProtocol? = nil,
         receiptSender: POSReceiptSending = POSReceiptSenderPreview(),
         analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
-        sunsetWarningChecker: POSSunsetWarningChecking? = nil
+        receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
+        let cardPresentPaymentService = cardPresentPaymentService ?? CardPresentPaymentPreviewService()
+
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
-            itemsController: itemsController,
-            purchasableItemsSearchController: purchasableItemsSearchController,
-            couponsController: couponsController,
-            couponsSearchController: couponsSearchController,
+            itemsController: itemsController ?? PointOfSalePreviewItemsController(),
+            purchasableItemsSearchController: purchasableItemsSearchController ?? PointOfSalePreviewItemsController(),
+            couponsController: couponsController ?? PointOfSalePreviewCouponsController(),
+            couponsSearchController: couponsSearchController ?? PointOfSalePreviewCouponsController(),
             cardPresentPaymentService: cardPresentPaymentService,
-            orderController: orderController,
-            settingsController: settingsController,
+            orderController: orderController ?? PointOfSalePreviewOrderController(),
+            settingsController: settingsController ?? POSSettingsPreviewController(),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
-            popularPurchasableItemsController: popularItemsController,
-            barcodeScanService: barcodeScanService,
+            popularPurchasableItemsController: popularItemsController ?? PointOfSalePreviewItemsController(),
+            barcodeScanService: barcodeScanService ?? PointOfSalePreviewBarcodeScanService(),
             receiptSender: receiptSender,
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible,
-            sunsetWarningChecker: sunsetWarningChecker
+            receiptPrinter: receiptPrinter
         )
     }
 
+    @MainActor
     static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
         return POSOrderListModel(
             ordersController: POSConfigurablePreviewOrderListController(state: state),
+            refundController: POSPreviewRefundController(),
             receiptSender: POSReceiptSenderPreview(),
             refundSubmissionModel: POSRefundSubmissionModel())
     }
@@ -505,13 +518,11 @@ struct POSPreviewHelpers {
 
 
 // MARK: - Preview Orders Controller
-final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
-    var refundSelectableItems: [POSRefundSelectableItem]
+final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol, POSOrderSelectionHandling {
     let ordersViewState: POSOrderListState
 
     init(state: POSOrderListState) {
         self.ordersViewState = state
-        self.refundSelectableItems = []
     }
 
     var selectedOrder: POSOrder? {
@@ -519,27 +530,44 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     }
 
     var isLoadingOrderRefunds = false
+    var orderDetailsItemsState: POSOrderDetailsItemsState {
+        .loaded(
+            lineItems: displayedLineItems,
+            customAmounts: displayedCustomAmounts,
+            refundedItems: selectedOrder?.refunds.flatMap(\.items) ?? []
+        )
+    }
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
-    var refundActionAvailability: RefundActionAvailability { .available }
-    var currentRefundRequiresCardPresentRefund: Bool { false }
-    var hasModifiedRefundSelection = false
 
     func loadOrders() async {}
     func loadNextOrders() async {}
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
     func updateOrder(orderID: Int64) async throws {}
-    func preloadRefundDetails() async {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
-    func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
-    func toggleRefundItemSelection(at index: Int) {}
-    func clearRefundSelection() {}
-    func toggleAllRefundItemsSelection() {}
-    func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
-    func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
+}
+
+final class POSPreviewRefundController: POSRefundControllerProtocol {
+    var selectableItems: [POSRefundSelectableItem] = []
+    var hasLoadedSelectableItems: Bool { !selectableItems.isEmpty }
+    var hasModifiedSelection = false
+    var reviewPreparationState: POSRefundReviewPreparationState = .idle
+    var requiresCardPresentRefund = false
+
+    func preloadRefund(for order: POSOrder) async {}
+    func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult { .hasItemsToRefund }
+    func refreshRefundableItems() async -> StartRefundFlowResult { .hasItemsToRefund }
+    func toggleItemSelection(at index: Int) {}
+    func toggleAllItemsSelection() {}
+    func clearSelection() {}
+    func reset() {}
+    func prepareReview() async -> POSRefundReviewPreparationResult { .preparationError }
+    func processRefund(reason: String?) async throws -> POSRefundSubmissionResult {
+        POSRefundSubmissionResult(refundedOrderID: 0)
+    }
 }
 
 // MARK: - Barcode Scan Service
@@ -549,8 +577,9 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
     }
 }
 
+@MainActor
 final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    func checkEligibility() async -> POSEligibilityState { .eligible }
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState { .eligible }
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
 }
 
@@ -559,6 +588,8 @@ final class POSReceiptSenderPreview: POSReceiptSending {
 }
 
 final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {
+    func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {}
+
     func trackCustomerInteractionStarted() {}
 
     func trackOrderSyncSuccess() {}
@@ -567,13 +598,19 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
     func trackCardReaderTapped() {}
 
+    func trackCardReaderConnectionChanged(isConnected: Bool) {}
+
+    func trackCardPaymentAttemptStarted() {}
+
+    func resetCheckoutTiming() {}
+
     func trackCheckoutTapped() {}
 
-    func trackSuccessfulCashPayment() {}
+    func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulScanToPayPayment() {}
+    func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulMarkAsPaidPayment() {}
+    func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder) {}
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
@@ -594,6 +631,8 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func promoteOrderToPending(order: Yosemite.Order) async throws -> Yosemite.Order { order }
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
+
+    func recordScanToPayPaymentMethod(order: Yosemite.Order) async throws {}
 }
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {
@@ -691,6 +730,9 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
+
+    /// Main actor isolated because `externalNavigation` and `externalViews` are main actor requirements.
+    @MainActor init() {}
 }
 
 // MARK: - Preview Catalog Services
@@ -728,23 +770,14 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     let fullSyncStateModel = POSCatalogSyncStateModel()
 
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        return await fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
-    }
-
-    func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
-        return false
-    }
-
-    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
-        // Preview implementation - return 48 hours for testing stale warning
-        return 48
+        return await fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID, syncDate: Date())
     }
 
     func stopOngoingSyncs(for siteID: Int64) async {
         // Preview implementation - no-op
     }
 
-    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+    func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws {
         // no-op
     }
 
@@ -754,6 +787,78 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
 
     func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
         // no-op
+    }
+}
+
+final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
+    private let devices: [PrinterDevice]
+    private let keepDiscovering: Bool
+    private let failsToConnect: Bool
+    private let failsDiscovery: Bool
+
+    /// - Parameters:
+    ///   - devices: printers the discovery stream yields, so previews can land on the found states.
+    ///   - keepDiscovering: when `true` the stream stays open after yielding, keeping the live
+    ///     scanning indicator visible instead of ending the scan.
+    ///   - failsToConnect: when `true`, `connect(to:)` throws so previews can land on the error state.
+    ///   - failsDiscovery: when `true`, `discover()` throws so previews can land on the error state.
+    init(devices: [PrinterDevice] = [],
+         keepDiscovering: Bool = false,
+         failsToConnect: Bool = false,
+         failsDiscovery: Bool = false) {
+        self.devices = devices
+        self.keepDiscovering = keepDiscovering
+        self.failsToConnect = failsToConnect
+        self.failsDiscovery = failsDiscovery
+    }
+
+    func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
+        AsyncStream { $0.yield(.idle) }
+    }
+
+    func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
+        AsyncThrowingStream { continuation in
+            if failsDiscovery {
+                continuation.finish(throwing: NSError(domain: "POSReceiptPrinterPreviewService", code: 0))
+                return
+            }
+            for device in devices {
+                continuation.yield(device)
+            }
+            if !keepDiscovering {
+                continuation.finish()
+            }
+        }
+    }
+
+    func stopDiscovery() async {}
+
+    func connect(to printer: PrinterDevice) async throws {
+        if failsToConnect {
+            throw NSError(domain: "POSReceiptPrinterPreviewService", code: 0)
+        }
+    }
+
+    func disconnect() async {}
+
+    func printReceipt(content: ReceiptContent,
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {}
+
+    func printReceipt(order: Order,
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {}
+}
+
+extension POSPreviewHelpers {
+    /// iPad landscape space for POS modal content in previews, where no `POSRootModalViewModifier` measures it.
+    static let modalParentSize = CGSize(width: 1192, height: 822)
+}
+
+extension View {
+    /// Gives modal content in a preview the space `POSRootModalViewModifier` measures at runtime.
+    func posPreviewModalParentSize() -> some View {
+        environment(\.posModalParentSize, POSPreviewHelpers.modalParentSize)
     }
 }
 

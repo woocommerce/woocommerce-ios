@@ -24,7 +24,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                      images: [.fake().copy(imageID: 1)])
     }
 
-    private let sampleImage = UIImage.gridicon(.calendar, size: .init(width: 600, height: 600))
+    @MainActor
+    private var sampleImage: UIImage { UIImage.gridicon(.calendar, size: .init(width: 600, height: 600)) }
 
     private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline",
                                                          textSnippet: "First suggested description",
@@ -65,6 +66,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: Initial values
+    @MainActor
     func test_image_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
@@ -79,6 +81,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.image)
     }
 
+    @MainActor
     func test_tagline_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
@@ -93,6 +96,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tagline, "")
     }
 
+    @MainActor
     func test_description_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
@@ -107,6 +111,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.description, "")
     }
 
+    @MainActor
     func test_ad_destination_product_url_is_updated_correctly_if_empty() throws {
         // Given
         insertProduct(sampleProduct.copy(permalink: ""))
@@ -121,45 +126,28 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.adDestinationViewModel?.productURL, sampleSiteAddress + "?post_type=product&p=\(sampleProductID)")
     }
 
-    func test_hasEndDate_is_true_when_feature_flag_is_disabled() {
+    @MainActor
+    func test_hasEndDate_is_false_by_default() {
         // Given
         insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
-                                                           onCompletion: {})
-
-        // Then
-        XCTAssertTrue(viewModel.budgetSettingViewModel.hasEndDate)
-    }
-
-    func test_hasEndDate_is_false_when_feature_flag_is_enabled() {
-        // Given
-        insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // Then
         XCTAssertFalse(viewModel.budgetSettingViewModel.hasEndDate)
     }
 
+    @MainActor
     func test_campaignObjectiveText_is_updated_based_on_saved_objective() throws {
         // Given
         insertProduct(sampleProduct)
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let locale = Locale.current
-        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: true)
         let objective = BlazeCampaignObjective(id: "traffic", title: "Traffic", description: "", suitableForDescription: "", locale: locale.identifier)
         insertCampaignObjective(objective)
 
@@ -172,7 +160,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            productImageLoader: imageLoader,
                                                            locale: locale,
                                                            userDefaults: userDefaults,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // Then
@@ -604,19 +591,17 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isShowingMissingImageErrorAlert)
     }
 
-    func test_it_shows_error_if_confirm_without_objective_when_feature_flag_for_objective_is_on() async {
+    @MainActor
+    func test_it_shows_error_if_confirm_without_objective() async {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
-        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: true)
-
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -629,26 +614,23 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isShowingMissingObjectiveAlert)
     }
 
-    func test_it_does_not_show_error_if_confirm_with_objective_when_feature_flag_for_objective_is_on() async {
+    @MainActor
+    func test_it_does_not_show_error_if_confirm_with_objective() async {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
-        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: true)
-
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
 
         // When
-        viewModel.campaignObjectiveViewModel.selectedObjective = .fake().copy(id: "sales")
-        viewModel.campaignObjectiveViewModel.confirmSelection()
+        selectCampaignObjective(in: viewModel)
         viewModel.didTapConfirmDetails()
 
         // Then
@@ -718,7 +700,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
-        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -726,12 +707,12 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
 
         await viewModel.loadAISuggestions()
+        selectCampaignObjective(in: viewModel)
 
         // When
         viewModel.didTapConfirmDetails()
@@ -749,7 +730,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
-        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -757,7 +737,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -767,6 +746,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let editAdViewModel = viewModel.editAdViewModel
         editAdViewModel.tagline = "Custom tagline"
         editAdViewModel.didTapSave()
+        selectCampaignObjective(in: viewModel)
 
         // When
         viewModel.didTapConfirmDetails()
@@ -784,7 +764,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
-        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -792,7 +771,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                             analytics: analytics,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -802,6 +780,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let editAdViewModel = viewModel.editAdViewModel
         editAdViewModel.description = "Custom description"
         editAdViewModel.didTapSave()
+        selectCampaignObjective(in: viewModel)
 
         // When
         viewModel.didTapConfirmDetails()
@@ -819,7 +798,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
-        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -827,7 +805,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -838,6 +815,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         editAdViewModel.tagline = "Custom tagline"
         editAdViewModel.description = "Custom description"
         editAdViewModel.didTapSave()
+        selectCampaignObjective(in: viewModel)
 
         // When
         viewModel.didTapConfirmDetails()
@@ -855,7 +833,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
-        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -863,7 +840,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -872,6 +848,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // set evergreen
         viewModel.budgetSettingViewModel.hasEndDate = false
         viewModel.budgetSettingViewModel.confirmSettings()
+        selectCampaignObjective(in: viewModel)
         viewModel.didTapConfirmDetails()
 
         // Then
@@ -887,7 +864,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
-        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -895,7 +871,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -904,6 +879,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // set non-evergreen
         viewModel.budgetSettingViewModel.hasEndDate = true
         viewModel.budgetSettingViewModel.confirmSettings()
+        selectCampaignObjective(in: viewModel)
         viewModel.didTapConfirmDetails()
 
         // Then
@@ -969,16 +945,15 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox First Line - Evergreen Campaigns
+    @MainActor
     func test_tos_checkbox_first_line_evergreen_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // When
@@ -1001,19 +976,20 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox First Line - Finite Campaigns Up To 7 Days
+    @MainActor
     func test_tos_checkbox_first_line_finite_up_to_seven_days_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // When
+        viewModel.budgetSettingViewModel.hasEndDate = true
+        viewModel.budgetSettingViewModel.confirmSettings()
         let attributedText = viewModel.tosCheckboxAttributedText
         let textContent = String(attributedText.characters)
 
@@ -1034,20 +1010,20 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox First Line - Finite Campaigns More Than 7 Days
+    @MainActor
     func test_tos_checkbox_first_line_finite_more_than_seven_days_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // When
         // Set duration to more than 7 days to trigger the "more than 7 days" scenario
+        viewModel.budgetSettingViewModel.hasEndDate = true
         viewModel.budgetSettingViewModel.didTapApplyDuration(dayCount: 14, since: Date.now + 60 * 60 * 24)
         viewModel.budgetSettingViewModel.confirmSettings()
 
@@ -1070,6 +1046,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox Link Attributes
+    @MainActor
     func test_tos_checkbox_attributed_text_has_proper_link_attributes() throws {
         // Given
         insertProduct(sampleProduct)
@@ -1095,6 +1072,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: ToS Checkbox Second Line - Unified for All Campaign Types
+    @MainActor
     func test_tos_checkbox_second_line_displays_unified_text() throws {
         // Given
         insertProduct(sampleProduct)
@@ -1121,6 +1099,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 private extension BlazeCampaignCreationFormViewModelTests {
     /// Insert a `Product` into storage.
     ///
+    @MainActor
     func insertProduct(_ readOnlyProduct: Product) {
         storageManager.performAndSave({ storage in
             let product = storage.insertNewObject(ofType: StorageProduct.self)
@@ -1134,11 +1113,18 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }, completion: {}, on: .main)
     }
 
+    @MainActor
     func insertCampaignObjective(_ readOnlyObjective: BlazeCampaignObjective) {
         storageManager.performAndSave({ storage in
             let objective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
             objective.update(with: readOnlyObjective)
         }, completion: {}, on: .main)
+    }
+
+    @MainActor
+    func selectCampaignObjective(in viewModel: BlazeCampaignCreationFormViewModel) {
+        viewModel.campaignObjectiveViewModel.selectedObjective = .fake().copy(id: "sales")
+        viewModel.campaignObjectiveViewModel.confirmSelection()
     }
 }
 
@@ -1146,6 +1132,7 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
     var imageRequestedForProductImage: Yosemite.ProductImage?
     var requestImageStubbedResponse: UIImage?
 
+    @MainActor
     func requestImage(productImage: ProductImage) async throws -> UIImage {
         imageRequestedForProductImage = productImage
         if let requestImageStubbedResponse {
@@ -1174,6 +1161,7 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
 }
 
 private extension BlazeCampaignCreationFormViewModelTests {
+    @MainActor
     func mockAISuggestionsSuccess(_ suggestions: [BlazeAISuggestion]) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
@@ -1185,6 +1173,7 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }
     }
 
+    @MainActor
     func mockAISuggestionsFailure(_ error: Error) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
@@ -1196,6 +1185,7 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }
     }
 
+    @MainActor
     func mockDownloadImage(_ image: UIImage?) {
         imageLoader.requestImageStubbedResponse = image
     }

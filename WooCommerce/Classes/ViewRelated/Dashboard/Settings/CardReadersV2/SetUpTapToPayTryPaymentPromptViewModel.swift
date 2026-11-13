@@ -3,7 +3,8 @@ import Yosemite
 import Combine
 import WooFoundation
 
-final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresentedViewModel, ObservableObject {
+@MainActor
+final class SetUpTapToPayTryPaymentPromptViewModel: @MainActor PaymentSettingsFlowPresentedViewModel, ObservableObject {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
@@ -101,31 +102,34 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         let action = OrderAction.createSimplePaymentsOrder(siteID: siteID,
                                                            status: .pending,
                                                            amount: trialPaymentAmount,
-                                                           taxable: false) { [weak self] result in
+                                                           taxable: false,
+                                                           currency: currencySettings.currencyCode.rawValue) { [weak self] result in
             guard let self else { return }
-            self.loading = false
+            Task { @MainActor in
+                self.loading = false
 
-            switch result {
-            case .success(let order):
-                self.summaryViewModel = TryAPaymentSummaryViewModel(
-                    simplePaymentSummaryViewModel: SimplePaymentsSummaryViewModel(order: order,
-                                                                                  providedAmount: order.total,
-                                                                                  amountName: Localization.tryAPaymentAmountName,
-                                                                                  presentNoticeSubject: self.presentNoticeSubject,
-                                                                                  analyticsFlow: .tapToPayTryAPayment),
-                    siteID: self.siteID,
-                    order: order)
-                self.summaryActive = true
+                switch result {
+                case .success(let order):
+                    self.summaryViewModel = TryAPaymentSummaryViewModel(
+                        simplePaymentSummaryViewModel: SimplePaymentsSummaryViewModel(order: order,
+                                                                                      providedAmount: order.total,
+                                                                                      amountName: Localization.tryAPaymentAmountName,
+                                                                                      presentNoticeSubject: self.presentNoticeSubject,
+                                                                                      analyticsFlow: .tapToPayTryAPayment),
+                        siteID: self.siteID,
+                        order: order)
+                    self.summaryActive = true
 
 
-            case .failure(let error):
-                self.presentNoticeSubject.send(.error(Localization.errorCreatingTestPayment))
-                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .tapToPayTryAPayment,
-                                                                                              source: .tapToPayTryAPaymentPrompt,
-                                                                                              country: configuration.countryCode,
-                                                                                              currency: currencySettings.currencyCode.rawValue))
+                case .failure(let error):
+                    self.presentNoticeSubject.send(.error(Localization.errorCreatingTestPayment))
+                    self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .tapToPayTryAPayment,
+                                                                                                  source: .tapToPayTryAPaymentPrompt,
+                                                                                                  country: self.configuration.countryCode,
+                                                                                                  currency: self.currencySettings.currencyCode.rawValue))
 
-                DDLogError("⛔️ Error creating Tap to Pay try a payment order: \(error)")
+                    DDLogError("⛔️ Error creating Tap to Pay try a payment order: \(error)")
+                }
             }
         }
         stores.dispatch(action)
@@ -146,7 +150,8 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                                                           items: refundableOrderItems,
                                                           shippingLines: summaryViewModel.order.shippingLines,
                                                           fees: summaryViewModel.order.fees,
-                                                          currencyFormatter: CurrencyFormatter(currencySettings: ServiceLocator.currencySettings))
+                                                          currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+                                                          numberOfDecimals: currencySettings.fractionDigits)
                 let refund = refundUseCase.createRefund()
                 let refundAction = RefundAction.createRefund(siteID: siteID,
                                                              orderID: summaryViewModel.orderID,
@@ -207,10 +212,6 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     func onTrialPaymentFlowFinished() {
         summaryActive = false
         paymentFlowFinished = true
-    }
-
-    deinit {
-        subscriptions.removeAll()
     }
 }
 

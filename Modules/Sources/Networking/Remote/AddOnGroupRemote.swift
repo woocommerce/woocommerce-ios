@@ -2,7 +2,7 @@ import Foundation
 
 /// `AddOnGroup` remote endpoints.
 ///
-public final class AddOnGroupRemote: Remote {
+public final class AddOnGroupRemote: Remote, @unchecked Sendable {
 
     /// Retrieves all the `AddOnGroups` available for a given `siteID`
     ///

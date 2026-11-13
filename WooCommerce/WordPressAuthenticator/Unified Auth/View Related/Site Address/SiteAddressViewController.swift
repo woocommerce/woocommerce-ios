@@ -24,6 +24,19 @@ final class SiteAddressViewController: LoginViewController {
     /// rotation or re-appearance never re-submits.
     var autoSubmitsPrefilledSiteAddress = false
 
+    /// Whether this screen belongs to a login journey. Site discovery also opens from the
+    /// in-app store switcher, where a login step would be wrong.
+    var tracksLoginSteps = true
+
+    /// A disabled tracker reports nothing and keeps its own state, so neither this screen's
+    /// events nor the ones `LoginViewController` sends on its behalf reach the shared tracker
+    /// or latch a flow this journey never belonged to.
+    private lazy var silentTracker = AuthenticatorAnalyticsTracker(enabled: false, track: { _ in })
+
+    override var tracker: AuthenticatorAnalyticsTracker {
+        tracksLoginSteps ? super.tracker : silentTracker
+    }
+
     /// A state variable that is `true` if network calls are currently happening and so the
     /// view should be showing a loading indicator.
     ///

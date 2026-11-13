@@ -5,6 +5,7 @@ import struct Yosemite.Order
 import enum Yosemite.CardReaderSoftwareUpdateState
 @testable import PointOfSale
 
+@MainActor
 final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     // MARK: - Variables for emitting events in unit tests
 
@@ -48,6 +49,12 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     @MainActor
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         connectReaderCallCount += 1
+        switch connectReaderResult {
+        case .connected(let reader):
+            connectedReader = reader
+        case .canceled:
+            connectedReader = nil
+        }
         onConnectReaderCalled?()
         return connectReaderResult
     }
@@ -63,18 +70,28 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     var onCollectPaymentCalled: (() -> Void)?
     var collectPaymentWasCalled = false
     var collectPaymentChannel: PaymentChannel?
+    var spyCollectPaymentOrders: [Yosemite.Order] = []
+    var spyCollectPaymentMethods: [CardReaderConnectionMethod] = []
+    var collectPaymentOverride: (@MainActor () async throws -> CardPresentPaymentResult)?
     func collectPayment(for order: Yosemite.Order,
                         using connectionMethod: CardReaderConnectionMethod,
                         channel: PaymentChannel) async throws -> CardPresentPaymentResult {
         collectPaymentWasCalled = true
         collectPaymentChannel = channel
+        spyCollectPaymentOrders.append(order)
+        spyCollectPaymentMethods.append(connectionMethod)
         onCollectPaymentCalled?()
+        if let collectPaymentOverride {
+            return try await collectPaymentOverride()
+        }
         paymentEvent = .show(eventDetails: CardPresentPaymentEventDetails.paymentSuccess(done: {}))
         return .success(CardPresentPaymentTransaction())
     }
 
+    var cancelPaymentCallCount = 0
     func cancelPayment() {
         cancelPaymentCalled = true
+        cancelPaymentCallCount += 1
     }
 
     var onCancelPaymentCalled: (() async throws -> Void)?

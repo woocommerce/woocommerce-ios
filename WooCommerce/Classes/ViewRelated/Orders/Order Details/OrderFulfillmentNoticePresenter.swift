@@ -11,6 +11,7 @@ import protocol WooFoundation.Analytics
 /// `OrderFulfillmentUseCase`. And we want to do this even if the user has already left the
 /// `ViewController` (i.e. `OrderDetailsViewController`).
 ///
+@MainActor
 final class OrderFulfillmentNoticePresenter {
 
     /// Represents notices titles.

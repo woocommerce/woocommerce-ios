@@ -1,9 +1,13 @@
 import SwiftUI
 
 struct POSRefundErrorView: View {
+    @Environment(\.posMetrics) private var metrics
     let title: String
     let subtitle: String
     let onRetry: (() -> Void)?
+    /// Label for the primary action. Defaults to "Retry"; a recovery that is not a retry, such as
+    /// reloading the refundable items, passes its own.
+    let retryButtonTitle: String?
     let cancelButtonTitle: String?
     let onCancel: () -> Void
     let onClose: () -> Void
@@ -14,24 +18,27 @@ struct POSRefundErrorView: View {
     init(title: String,
          subtitle: String,
          onRetry: (() -> Void)?,
+         retryButtonTitle: String? = nil,
          cancelButtonTitle: String? = nil,
          onCancel: @escaping () -> Void,
          onClose: @escaping () -> Void) {
         self.title = title
         self.subtitle = subtitle
         self.onRetry = onRetry
+        self.retryButtonTitle = retryButtonTitle
         self.cancelButtonTitle = cancelButtonTitle
         self.onCancel = onCancel
         self.onClose = onClose
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             headerView
-            Spacer(minLength: POSSpacing.large)
-            contentView
-            Spacer(minLength: POSSpacing.large)
-            buttonsSection
+            POSStatusScreenLayout(buttonsWidth: .capped) {
+                contentView
+            } buttons: {
+                buttonsSection
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
@@ -48,13 +55,14 @@ private extension POSRefundErrorView {
     }
 
     var contentView: some View {
-        VStack(spacing: POSSpacing.xLarge) {
+        VStack(spacing: metrics.spacing.xLarge) {
             POSErrorXMark()
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
 
                 Text(subtitle)
@@ -65,21 +73,20 @@ private extension POSRefundErrorView {
             }
             .multilineTextAlignment(.center)
         }
-        .padding(.horizontal, POSPadding.xLarge)
+        .padding(.horizontal, metrics.padding.xLarge)
         .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
     }
 
     var buttonsSection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: metrics.spacing.medium) {
             if let onRetry {
-                Button(Localization.retryButton, action: onRetry)
+                Button(retryButtonTitle ?? Localization.retryButton, action: onRetry)
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
 
             Button(cancelButtonTitle ?? Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -116,7 +123,7 @@ private extension POSRefundErrorView {
         onCancel: {},
         onClose: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 
 #Preview("POSRefundErrorView - Load Error") {
@@ -127,6 +134,6 @@ private extension POSRefundErrorView {
         onCancel: {},
         onClose: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

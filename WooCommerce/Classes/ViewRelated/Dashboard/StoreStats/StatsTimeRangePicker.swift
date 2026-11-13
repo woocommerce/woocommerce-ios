@@ -36,7 +36,7 @@ struct StatsTimeRangePicker: View {
     StatsTimeRangePicker(currentTimeRange: .today, onSelect: { _ in })
 }
 
-private extension StatsTimeRangeV4 {
+extension StatsTimeRangeV4 {
     var menuAccessibilityIdentifier: String {
         switch self {
         case .today:

@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 import WooFoundation
 import YosemiteTestHelpers
+import enum NetworkingCore.DotcomError
 @testable import WooCommerce
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
@@ -20,6 +21,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     private var knownCardReaderProvider: MockKnownReaderProvider!
     private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var storageManager: MockStorageManager!
+    private var refundService: MockRefundService!
 
     override func setUp() {
         super.setUp()
@@ -32,9 +34,11 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         knownCardReaderProvider = MockKnownReaderProvider()
         onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         storageManager = MockStorageManager()
+        refundService = MockRefundService()
     }
 
     override func tearDown() {
+        refundService = nil
         storageManager = nil
         onboardingPresenter = nil
         knownCardReaderProvider = nil
@@ -46,6 +50,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_submitRefund_with_non_interac_payment_method_does_not_dispatch_CardPresentPaymentActions() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -71,6 +76,173 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertFalse(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
     }
 
+    @MainActor
+    func test_submitRefund_with_server_line_items_creates_computed_refund_with_restock_instead_of_classic_create() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .success(.fake())
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(refundService.spyCreateRefundRestockItems, true)
+        // The server owns the math: the submission path never sends an amount override.
+        XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), nil)
+        let dispatchedV3Create = stores.receivedActions.contains(where: { action in
+            guard let refundAction = action as? RefundAction, case .createRefund = refundAction else {
+                return false
+            }
+            return true
+        })
+        XCTAssertFalse(dispatchedV3Create)
+    }
+
+    // Regression test for WOOMOB-3522: the create response is sufficient, so submission must not
+    // dispatch an additional `retrieveRefund` action.
+    @MainActor
+    func test_submitRefund_regression_with_server_line_items_does_not_retrieve_refund_after_creation() {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .success(MockRefunds.sampleRefund(isAutomated: true))
+
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertFalse(didDispatchRetrieveRefund)
+    }
+
+    @MainActor
+    func test_submitRefund_with_server_line_items_relays_create_failure() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .failure(NSError(domain: "test", code: 1))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    @MainActor
+    func test_submitRefund_with_server_line_items_maps_rejection_code_to_RefundAPIError() throws {
+        // Given a computed create the server rejects because the order changed in the meantime
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .failure(DotcomError.unknown(code: "woocommerce_rest_refund_exceeds_remaining", message: nil, data: nil))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then the typed rejection (with its user-facing copy) is relayed
+        XCTAssertEqual(result.failure as? RefundAPIError, .refundExceedsRemaining)
+    }
+
+    @MainActor
+    func test_submitRefund_with_server_line_items_keeps_unmapped_error_code_unchanged() throws {
+        // Given a rejection code that indicates a client bug rather than an actionable state change
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        let error = DotcomError.unknown(code: "woocommerce_rest_invalid_line_item", message: nil, data: nil)
+        refundService.createRefundResult = .failure(error)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then the original error keeps the generic path
+        XCTAssertNil(result.failure as? RefundAPIError)
+        XCTAssertEqual(result.failure as? DotcomError, error)
+    }
+
+    @MainActor
+    func test_submitRefund_with_classic_create_maps_rejection_code_to_RefundAPIError() throws {
+        // Given the classic v3 create fails with an actionable rejection code
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: nil,
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(refund: nil, error: DotcomError.unknown(code: "woocommerce_rest_order_not_refundable", message: nil, data: nil))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? RefundAPIError, .orderNotRefundable)
+    }
+
+    // Regression test for WOOMOB-3522: the create response is sufficient, so submission must not
+    // dispatch an additional `retrieveRefund` action.
+    @MainActor
+    func test_submitRefund_regression_with_classic_create_does_not_retrieve_refund_after_creation() {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: nil,
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(refund: MockRefunds.sampleRefund(isAutomated: true), error: nil)
+
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertFalse(didDispatchRetrieveRefund)
+    }
+
+    @MainActor
     func test_submitRefund_with_interac_payment_method_dispatches_CardPresentPaymentActions() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -91,6 +263,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertTrue(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
     }
 
+    @MainActor
     func test_submitRefund_with_cardInserted_reader_event_shows_cardInserted_alert() {
         // Given
         let useCase = createUseCase(details: interacRefundDetails())
@@ -109,6 +282,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertTrue(alerts.cardInsertedWasCalled)
     }
 
+    @MainActor
     func test_submitRefund_with_removeCardRequested_reader_event_shows_reader_message() {
         // Given
         let useCase = createUseCase(details: interacRefundDetails())
@@ -128,6 +302,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(alerts.spyDisplayReaderMessage, "Remove card")
     }
 
+    @MainActor
     func test_submitRefund_with_non_interac_payment_method_does_not_call_showOnboardingIfRequired() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -153,6 +328,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertFalse(onboardingPresenter.spyShowOnboardingWasCalled)
     }
 
+    @MainActor
     func test_submitRefund_with_missing_server_side_refund_response_returns_failure() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -178,6 +354,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .missingCreatedRefund)
     }
 
+    @MainActor
     func test_submitRefund_with_interac_payment_method_calls_showOnboardingIfRequired() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -198,6 +375,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertTrue(onboardingPresenter.spyShowOnboardingWasCalled)
     }
 
+    @MainActor
     func test_submitRefund_without_a_paymentGatewayAccount_in_storage_returns_failure() {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -223,6 +401,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .unknownPaymentGatewayAccount)
     }
 
+    @MainActor
     func test_submitRefund_successfully_tracks_interacRefundSuccess_event_when_payment_method_is_interac() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -255,6 +434,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
 
+    @MainActor
     func test_submitRefund_successfully_does_not_track_interacRefundSuccess_event_when_payment_method_is_not_interac() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -277,6 +457,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("interac_refund_success"))
     }
 
+    @MainActor
     func test_submitRefund_with_client_side_success_and_server_side_failure_tracks_interacRefundSuccess_event_when_payment_method_is_interac() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -310,6 +491,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
 
+    @MainActor
     func test_submitRefund_with_client_side_failure_tracks_interacRefundFailed_event_when_payment_method_is_interac() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -343,6 +525,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
 
+    @MainActor
     func test_submitRefund_with_client_side_retryable_failure_shows_non_retryable_error_alert() throws {
         // Given
         let shouldRetry = false
@@ -383,6 +566,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertTrue(self.alerts.nonRetryableErrorWasCalled)
     }
 
+    @MainActor
     func test_canceling_scanningForReader_alert_tracks_interacRefundCanceled_event_when_payment_method_is_interac() throws {
         // Given
         let siteID: Int64 = 863
@@ -420,6 +604,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayID)
     }
 
+    @MainActor
     func test_canceling_preparingReader_alert_tracks_interacRefundCanceled_event_when_payment_method_is_interac() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -456,6 +641,16 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 }
 
 private extension RefundSubmissionUseCaseTests {
+    var didDispatchRetrieveRefund: Bool {
+        stores.receivedActions.contains { action in
+            guard let refundAction = action as? RefundAction,
+                  case .retrieveRefund = refundAction else {
+                return false
+            }
+            return true
+        }
+    }
+
     func interacRefundDetails(siteID: Int64 = Mocks.siteID) -> RefundDetails {
         .init(order: .fake().copy(siteID: siteID, total: "2.28"),
               charge: .fake().copy(paymentMethodDetails: .interacPresent(
@@ -534,6 +729,7 @@ private extension RefundSubmissionUseCaseTests {
         }
     }
 
+    @MainActor
     func createUseCase(details: RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter>.Details) ->
     RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter> {
         let dependencies = Dependencies(
@@ -544,7 +740,8 @@ private extension RefundSubmissionUseCaseTests {
                 onboardingPresenter,
             stores: stores,
             storageManager: storageManager,
-            analytics: analytics)
+            analytics: analytics,
+            refundService: refundService)
 
         return RefundSubmissionUseCase(
             details: details,

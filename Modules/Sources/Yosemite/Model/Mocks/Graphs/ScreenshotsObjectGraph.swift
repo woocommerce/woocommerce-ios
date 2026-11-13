@@ -1,4 +1,6 @@
 import Foundation
+import enum NetworkingCore.Credentials
+import struct NetworkingCore.Site
 import Storage
 import enum WooFoundation.CurrencyCode
 
@@ -81,7 +83,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
     }
 
     func accountSettingsWithUserId(userId: Int64) -> AccountSettings {
-        return .init(userID: userId, tracksOptOut: true, firstName: "Mario", lastName: "Rossi")
+        return .init(userID: userId, tracksOptOut: true, crashReportingOptOut: nil, firstName: "Mario", lastName: "Rossi")
     }
 
     var currentNotificationCount: Int = 4

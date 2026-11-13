@@ -35,7 +35,11 @@ final class ProductPriceSettingsViewModel_ProductVariationTests: XCTestCase {
             dateOnSaleEnd: saleEndDate,
             subscription: .fake()
         )
-        let model = EditableProductVariationModel(productVariation: productVariation)
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: .variableSubscription,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: nil)
         let viewModel = ProductPriceSettingsViewModel(product: model)
 
         // Act
@@ -47,6 +51,29 @@ final class ProductPriceSettingsViewModel_ProductVariationTests: XCTestCase {
             Section(title: ProductPriceSettingsViewModel.Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale]),
         ]
         XCTAssertEqual(sections, initialSections)
+    }
+
+    func test_price_section_excludes_subscription_rows_if_variation_parent_is_not_subscription_type() {
+        // Arrange
+        // A variation of a non-subscription variable product can retain `_subscription_*` metadata;
+        // the price editor must not surface subscription rows for it.
+        let productVariation = MockProductVariation().productVariation().copy(
+            dateOnSaleStart: nil,
+            dateOnSaleEnd: nil,
+            subscription: .fake()
+        )
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: .variable,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: nil)
+        let viewModel = ProductPriceSettingsViewModel(product: model)
+
+        // Act
+        let sections = viewModel.sections
+
+        // Assert
+        XCTAssertEqual(sections.first, Section(title: ProductPriceSettingsViewModel.Strings.priceSectionTitle, rows: [.price]))
     }
 
     func testTappingScheduleSaleToRowTogglesPickerRowInSalesSection() {

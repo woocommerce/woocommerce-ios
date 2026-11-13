@@ -83,14 +83,16 @@ final class PickListTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        selectionStyle = .none
-        configureBackground()
-        setupImageView()
-        setupNameLabel()
-        setupQuantityLabel()
-        setupSkuLabel()
-        setupAddOnViews()
+        MainActor.assumeIsolated {
+            selectionStyle = .none
+            configureBackground()
+            setupImageView()
+            setupNameLabel()
+            setupQuantityLabel()
+            setupSkuLabel()
+            setupAddOnViews()
+            observeInterfaceTraitChanges()
+        }
     }
 
     override func prepareForReuse() {
@@ -112,11 +114,17 @@ extension PickListTableViewCell {
     /// Configure a pick list cell
     ///
     func configure(item: ProductDetailsCellViewModel, imageService: ImageService) {
+        productImageView.applyProductThumbnailStyle()
+        productImageView.showProductThumbnailPlaceholder()
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
-                                                       placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
+                                                       placeholder: ProductThumbnailStyle.placeholderImage,
                                                        progressBlock: nil,
-                                                       completion: nil)
+                                                       completion: { [weak self] image, error in
+                                                           if image != nil && error == nil {
+                                                               self?.productImageView.showProductThumbnailImage()
+                                                           }
+                                                       })
         name = item.name
         quantity = item.quantity
         viewAddOnsStackView.isHidden = !item.hasAddOns
@@ -139,10 +147,8 @@ private extension PickListTableViewCell {
     }
 
     func setupImageView() {
-        productImageView.image = .productImage
-        productImageView.tintColor = .listSmallIcon
-        productImageView.contentMode = .scaleAspectFill
-        productImageView.clipsToBounds = true
+        productImageView.applyProductThumbnailStyle()
+        productImageView.showProductThumbnailPlaceholder()
     }
 
     func setupNameLabel() {
@@ -177,6 +183,16 @@ private extension PickListTableViewCell {
             self?.onViewAddOnsTouchUp?()
         }
         viewAddOnsStackView.addGestureRecognizer(tapRecognizer)
+    }
+
+    func observeInterfaceTraitChanges() {
+        let traits: [UITrait] = [
+            UITraitUserInterfaceStyle.self,
+            UITraitAccessibilityContrast.self
+        ]
+        registerForTraitChanges(traits) { (self: Self, _: UITraitCollection) in
+            self.productImageView.refreshProductThumbnailBorderColor()
+        }
     }
 }
 

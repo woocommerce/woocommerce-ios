@@ -35,9 +35,10 @@ final class OrderSubscriptionTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
-        configureLabels()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureLabels()
+        }
     }
 
     override func prepareForReuse() {

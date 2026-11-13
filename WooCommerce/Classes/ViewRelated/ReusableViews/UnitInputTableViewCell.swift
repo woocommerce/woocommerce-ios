@@ -32,6 +32,7 @@ struct UnitInputViewModel {
 
 /// Displays a title, an editable text field for user input and the unit of the text field value.
 ///
+@MainActor
 final class UnitInputTableViewCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var inputAndUnitStackView: UIStackView!
@@ -46,7 +47,10 @@ final class UnitInputTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureSelectionStyle()
         configureTitleLabel()
         configureSubtitleLabel()
@@ -71,6 +75,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         onInputChange = viewModel.onInputChange
 
         configureStyle(viewModel.style)
+        configureInputTextDirection(inputFormatter: viewModel.inputFormatter)
         configureInputTextFieldState(enabled: viewModel.isInputEnabled)
 
         rearrangeInputAndUnitStackViewSubviews(using: viewModel.unitPosition)
@@ -168,6 +173,10 @@ private extension UnitInputTableViewCell {
             inputTextField.textAlignment = style == .primary ? .right : .left
             // swiftlint:enable:next inverse_text_alignment
         }
+    }
+
+    func configureInputTextDirection(inputFormatter: UnitInputFormatter) {
+        inputTextField.semanticContentAttribute = inputFormatter is PriceInputFormatter ? .forceLeftToRight : .unspecified
     }
 
     func configureUnitLabel() {

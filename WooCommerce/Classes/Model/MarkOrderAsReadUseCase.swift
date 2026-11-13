@@ -15,35 +15,34 @@ struct MarkOrderAsReadUseCase {
     /// and then we compare local `orderID` with the one from remote `Note`.
     /// If they match we mark it as read.
     /// Returns synchronized note id if marking was successful and error if some error happened
+    @MainActor
     static func markOrderNoteAsReadIfNeeded(network: Network, noteID: Int64, orderID: Int) async -> Result<Int64, Error> {
         let notesRemote = NotificationsRemote(network: network)
 
-        let loadedNotes: Result<[Note], Error> = await withCheckedContinuation { continuation in
-            notesRemote.loadNotes(noteIDs: [noteID], pageSize: nil) { result in
+        // Inspect the non-Sendable notes on the callback's executor; only the validation result crosses the continuation.
+        let validation: Result<Void, Error> = await withCheckedContinuation { continuation in
+            notesRemote.loadNotes(noteIDs: [noteID], pageSize: nil) { @Sendable result in
                 switch result {
                 case .success(let notes):
-                    continuation.resume(returning: .success(notes))
+                    guard let note = notes.first(where: { $0.noteID == noteID }) else {
+                        continuation.resume(returning: .failure(.unavailableNote))
+                        return
+                    }
+                    guard note.meta.identifier(forKey: .order) == orderID, !note.read else {
+                        continuation.resume(returning: .failure(.noNeedToMarkAsRead))
+                        return
+                    }
+                    continuation.resume(returning: .success(()))
                 case .failure(let error):
                     continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.failure(error)))
                 }
             }
         }
 
-        switch loadedNotes {
-        case .success(let notes):
-            guard let note = notes.first(where: { goalNote in
-                return goalNote.noteID == noteID
-            }) else {
-                return .failure(MarkOrderAsReadUseCase.Error.unavailableNote)
-            }
-            guard let loadedNoteOrderID = note.meta.identifier(forKey: .order),
-                  loadedNoteOrderID == orderID,
-                  note.read == false else {
-                return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
-            }
-
+        switch validation {
+        case .success:
             let updatedStatus: Result<Int64, Error> = await withCheckedContinuation { continuation in
-                notesRemote.updateReadStatus(noteIDs: [noteID], read: true) { error in
+                notesRemote.updateReadStatus(noteIDs: [noteID], read: true) { @Sendable error in
                     if let error {
                         continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.failure(error)))
                     } else {

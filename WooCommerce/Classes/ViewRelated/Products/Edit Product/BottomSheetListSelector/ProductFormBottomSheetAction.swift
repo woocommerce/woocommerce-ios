@@ -13,6 +13,7 @@ enum ProductFormBottomSheetAction {
     case editReviews
     case editDownloadableFiles
     case editCustomFields
+    case editAttributes
 
     init?(productFormAction: ProductFormEditAction) {
         switch productFormAction {
@@ -36,6 +37,8 @@ enum ProductFormBottomSheetAction {
             self = .editDownloadableFiles
         case .customFields:
             self = .editCustomFields
+        case .attributes:
+            self = .editAttributes
         default:
             return nil
         }
@@ -76,6 +79,10 @@ extension ProductFormBottomSheetAction {
             return NSLocalizedString("productFormBottomSheetAction.customFieldsTitle",
                                      value: "Custom Fields",
                                      comment: "Title of the product form bottom sheet action for custom fields")
+        case .editAttributes:
+            return NSLocalizedString("productFormBottomSheetAction.attributesTitle",
+                                     value: "Attributes",
+                                     comment: "Title of the product form bottom sheet action for adding product attributes")
         }
     }
 
@@ -113,6 +120,10 @@ extension ProductFormBottomSheetAction {
             return NSLocalizedString("productFormBottomSheetAction.customFieldsSubtitle",
                                      value: "View and edit custom fields",
                                      comment: "Subtitle of the product form bottom sheet action for custom fields")
+        case .editAttributes:
+            return NSLocalizedString("productFormBottomSheetAction.attributesSubtitle",
+                                     value: "Add details like material or size to the product page",
+                                     comment: "Subtitle of the product form bottom sheet action for adding product attributes")
         }
     }
 }

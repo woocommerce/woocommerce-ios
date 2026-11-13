@@ -5,12 +5,12 @@ import Yosemite
 /// Handles the scheduling of local notifications with support of remote feature flags.
 final class LocalNotificationScheduler {
     private let pushNotesManager: PushNotesManager
-    private let stores: StoresManager
+    private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
 
     init(pushNotesManager: PushNotesManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.pushNotesManager = pushNotesManager
-        self.stores = stores
+        self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
     }
 
     /// Schedules a local notification behind an optional remote feature flag.
@@ -27,7 +27,7 @@ final class LocalNotificationScheduler {
                   trigger: UNNotificationTrigger?,
                   remoteFeatureFlag: RemoteFeatureFlag?,
                   shouldSkipIfScheduled: Bool = false) async {
-        if let remoteFeatureFlag, await isRemoteFeatureFlagEnabled(remoteFeatureFlag) == false {
+        if let remoteFeatureFlag, await remoteFeatureFlagService.isEnabled(remoteFeatureFlag, defaultValue: false) == false {
             return
         }
 
@@ -43,16 +43,5 @@ final class LocalNotificationScheduler {
     /// - Parameter scenario: The scenario to cancel.
     func cancel(scenario: LocalNotification.Scenario) async {
         await pushNotesManager.cancelLocalNotification(scenarios: [scenario])
-    }
-}
-
-private extension LocalNotificationScheduler {
-    @MainActor
-    func isRemoteFeatureFlagEnabled(_ remoteFeatureFlag: RemoteFeatureFlag) async -> Bool {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(remoteFeatureFlag, defaultValue: false) { isEnabled in
-                continuation.resume(returning: isEnabled)
-            })
-        }
     }
 }

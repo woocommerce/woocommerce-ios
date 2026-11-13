@@ -7,6 +7,7 @@ import class WordPressShared.EmailFormatValidator
 
 /// `ViewModel` to drive the content of the `SimplePaymentsSummary` view.
 ///
+@MainActor
 final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// Wraps the `Order`'s tax breakup (`tax_lines`) information
@@ -265,18 +266,20 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                                            orderNote: noteContent,
                                                            email: email.isEmpty ? nil : email) { [weak self] result in
             guard let self else { return }
-            self.showLoadingIndicator = false
+            Task { @MainActor in
+                self.showLoadingIndicator = false
 
-            switch result {
-            case .success:
-                self.navigateToPaymentMethods = true
-            case .failure(let error):
-                self.presentNoticeSubject.send(.error(Localization.updateError))
-                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: self.flow,
-                                                                                              source: .summary,
-                                                                                              country: countryCode,
-                                                                                              currency: currencySettings.currencyCode.rawValue))
-                DDLogError("⛔️ Error updating simple payments order: \(error)")
+                switch result {
+                case .success:
+                    self.navigateToPaymentMethods = true
+                case .failure(let error):
+                    self.presentNoticeSubject.send(.error(Localization.updateError))
+                    self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: self.flow,
+                                                                                                  source: .summary,
+                                                                                                  country: self.countryCode,
+                                                                                                  currency: self.currencySettings.currencyCode.rawValue))
+                    DDLogError("⛔️ Error updating simple payments order: \(error)")
+                }
             }
         }
         stores.dispatch(action)

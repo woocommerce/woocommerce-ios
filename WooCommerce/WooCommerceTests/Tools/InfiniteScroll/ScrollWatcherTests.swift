@@ -3,13 +3,15 @@ import XCTest
 
 @testable import WooCommerce
 
+@MainActor
 final class ScrollWatcherTests: XCTestCase {
     private var subscription: AnyCancellable?
 
-    override func tearDown() {
+    override func tearDown() async throws {
         subscription?.cancel()
+        subscription = nil
 
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_scroll_trigger_is_emitted_only_after_scrolling_to_above_threshold() {

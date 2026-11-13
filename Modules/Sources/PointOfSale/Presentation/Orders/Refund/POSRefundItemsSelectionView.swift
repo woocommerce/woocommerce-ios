@@ -2,8 +2,10 @@ import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 
 struct POSRefundItemsSelectionView: View {
+    @Environment(\.posMetrics) private var metrics
     let onClose: () -> Void
     let onContinue: () -> Void
+    let onRefreshItems: () -> Void
 
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
@@ -11,7 +13,30 @@ struct POSRefundItemsSelectionView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
-        orderListModel.ordersController.refundSelectableItems
+        orderListModel.refundSelectableItems
+    }
+
+    private var reviewPreparationState: POSRefundReviewPreparationState {
+        orderListModel.refundReviewPreparationState
+    }
+
+    /// The inline error shown above the continue button: the server's rejection copy when the
+    /// preview failed with an actionable code, or the generic copy for other preview failures.
+    private var previewErrorMessage: String? {
+        guard case .previewError(let message, _) = reviewPreparationState else {
+            return nil
+        }
+        return message ?? Localization.previewError
+    }
+
+    /// What the failed preview offers the cashier next. A recognised rejection is deterministic,
+    /// so the same request cannot succeed: the way forward is a reloaded item list, or changing
+    /// the selection. Only unrecognised failures, network errors among them, keep the retry.
+    private var previewRecovery: POSRefundRecovery? {
+        guard case .previewError(_, let recovery) = reviewPreparationState else {
+            return nil
+        }
+        return recovery
     }
 
     private var selectedItems: [POSRefundSelectableItem] {
@@ -28,10 +53,10 @@ struct POSRefundItemsSelectionView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
+        VStack(spacing: metrics.spacing.none) {
             headerView
 
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: metrics.spacing.none) {
                 itemsHeaderView
 
                 Divider()
@@ -39,11 +64,11 @@ struct POSRefundItemsSelectionView: View {
 
                 itemsList
             }
-            .padding(.horizontal, POSPadding.xLarge)
-            .padding(.bottom, POSPadding.xLarge)
+            .padding(.horizontal, metrics.padding.xLarge)
+            .padding(.bottom, metrics.padding.xLarge)
             .frame(maxHeight: .infinity)
 
-            continueButton
+            actionsFooter
                 .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
                                                  maxWidth: .infinity)
         }
@@ -63,44 +88,64 @@ private extension POSRefundItemsSelectionView {
     }
 
     var itemsHeaderView: some View {
-        HStack(spacing: POSSpacing.small) {
+        // Top aligned so the checkbox stays level with the first line once the label wraps.
+        HStack(alignment: .top, spacing: metrics.spacing.small) {
             POSCheckbox(
                 isSelected: allItemsSelected,
                 onToggle: {
                     let action = allItemsSelected ? "deselected" : "selected"
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.refundSelectAllTapped(action: action))
-                    orderListModel.ordersController.toggleAllRefundItemsSelection()
+                    orderListModel.toggleAllRefundItemsSelection()
                 }
             )
             .accessibilityLabel(Localization.selectAllAccessibilityLabel)
 
-            HStack(spacing: POSSpacing.xSmall) {
-                Text(Localization.itemsHeaderTitle)
-                    .font(.caption.weight(.semibold))
-                    .foregroundColor(.posOnSurface)
-                    .textCase(.uppercase)
+            // Side by side only while both fit. Forced side by side, each label wrapped
+            // inside its own narrow column, which left the two ragged against each other
+            // in translations longer than the English this was sized for.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: metrics.spacing.xSmall) {
+                    selectAllLabel
+                    selectedCountLabel
+                }
 
-                Text(String(format: Localization.itemsSelectedCountFormat, selectedItems.count))
-                    .font(.caption.weight(.regular))
-                    .foregroundColor(.posOnSurfaceVariantLowest)
-                    .textCase(.uppercase)
+                VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+                    selectAllLabel
+                    selectedCountLabel
+                }
             }
 
             Spacer()
         }
-        .padding(.bottom, POSPadding.medium)
+        .padding(.bottom, metrics.padding.medium)
+    }
+
+    private var selectAllLabel: some View {
+        Text(Localization.itemsHeaderTitle)
+            .font(.posCaptionBold)
+            .foregroundColor(.posOnSurface)
+            .textCase(.uppercase)
+            .multilineTextAlignment(.leading)
+    }
+
+    private var selectedCountLabel: some View {
+        Text(String(format: Localization.itemsSelectedCountFormat, selectedItems.count))
+            .font(.posCaptionRegular)
+            .foregroundColor(.posOnSurfaceVariantLowest)
+            .textCase(.uppercase)
+            .multilineTextAlignment(.leading)
     }
 
     var itemsList: some View {
         ScrollView {
-            LazyVStack(spacing: POSSpacing.none) {
+            LazyVStack(spacing: metrics.spacing.none) {
                 ForEach(refundSelectableItems.indices, id: \.self) { index in
                     let item = refundSelectableItems[index]
 
                     POSRefundItemRow(
                         item: item,
                         onToggle: {
-                            orderListModel.ordersController.toggleRefundItemSelection(at: index)
+                            orderListModel.toggleRefundItemSelection(at: index)
                         }
                     )
 
@@ -113,12 +158,55 @@ private extension POSRefundItemsSelectionView {
         }
     }
 
-    var continueButton: some View {
-        Button(Localization.continueButton) {
-            onContinue()
+    var actionsFooter: some View {
+        VStack(spacing: metrics.spacing.small) {
+            if let previewErrorMessage {
+                Text(previewErrorMessage)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posError)
+                    .multilineTextAlignment(.center)
+            }
+
+            recoveryButton
+
+            Button(Localization.continueButton) {
+                onContinue()
+            }
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: reviewPreparationState == .loading))
+            .disabled(isContinueDisabled)
         }
-        .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .disabled(!hasSelectedItems)
+    }
+
+    @ViewBuilder
+    var recoveryButton: some View {
+        switch previewRecovery {
+        case .retry:
+            Button(Localization.retryButton) {
+                onContinue()
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        case .refreshItems:
+            Button(Localization.reviewRemainingItemsButton) {
+                onRefreshItems()
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        case .dismiss, nil:
+            EmptyView()
+        }
+    }
+
+    /// A failed preview always disables Continue: the same selection produces the same answer, so
+    /// the cashier moves on by changing the selection or through the recovery button above it.
+    var isContinueDisabled: Bool {
+        guard hasSelectedItems else {
+            return true
+        }
+        switch reviewPreparationState {
+        case .loading, .previewError:
+            return true
+        case .idle:
+            return false
+        }
     }
 }
 
@@ -136,6 +224,21 @@ private extension POSRefundItemsSelectionView {
             "pos.refundItemsSelectionView.continueButton",
             value: "Continue",
             comment: "Button to continue with selected items for refund"
+        )
+        static let previewError = NSLocalizedString(
+            "pos.refundItemsSelectionView.previewError",
+            value: "Couldn't calculate the refund total. Please try again.",
+            comment: "Error shown on the refund item-selection step when fetching the server-calculated refund total fails"
+        )
+        static let retryButton = NSLocalizedString(
+            "pos.refundItemsSelectionView.retryButton",
+            value: "Retry",
+            comment: "Button to retry fetching the server-calculated refund total on the refund item-selection step"
+        )
+        static let reviewRemainingItemsButton = NSLocalizedString(
+            "pos.refundItemsSelectionView.reviewRemainingItemsButton",
+            value: "Review remaining items",
+            comment: "Button to reload the refundable items after the store rejected the refund because the order changed"
         )
 
         static let backButtonAccessibilityLabel = NSLocalizedString(
@@ -168,8 +271,10 @@ private extension POSRefundItemsSelectionView {
 #Preview("POSRefundItemsSelectionView") {
     POSRefundItemsSelectionView(
         onClose: { },
-        onContinue: { }
+        onContinue: { },
+        onRefreshItems: { }
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
+    .posPreviewModalParentSize()
 }
 #endif

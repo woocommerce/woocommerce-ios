@@ -2,6 +2,7 @@ import Foundation
 import Testing
 import UIKit
 import WordPressAuthenticator
+@testable import class WordPressAuthenticator.LoginPrologueViewController
 @testable import WooCommerce
 
 /// Tests for the QR-login wiring in `AuthenticationManager` — the deep-link
@@ -18,6 +19,64 @@ struct AuthenticationManagerQRLoginTests {
 
     init() {
         WordPressAuthenticator.initializeAuthenticator()
+    }
+
+    // MARK: - Restarting authentication
+
+    @Test func test_login_when_authenticator_is_replaced_then_starts_qr_flow_on_new_stack() async throws {
+        // Given: recovery logs out before the normal store-picker handoff releases the QR flow.
+        let manager = AuthenticationManager(qrLoginAvailability: MockQRLoginAvailability(prologueAvailable: true))
+        let originalNavigation = try #require(manager.authenticationUI() as? UINavigationController)
+        manager.displayAuthenticatorIfLoggedOut = { originalNavigation }
+        let originalPrologue = try #require(originalNavigation.topViewController as? LoginPrologueViewController)
+        #expect(await originalPrologue.onPrimaryLoginCTA?() == true)
+        #expect(originalNavigation.viewControllers.count == 2)
+
+        // When: logout creates a fresh authenticator while the previous stack still exists.
+        let newNavigation = try #require(manager.authenticationUI() as? UINavigationController)
+        manager.displayAuthenticatorIfLoggedOut = { newNavigation }
+        let newPrologue = try #require(newNavigation.topViewController as? LoginPrologueViewController)
+        let handled = await newPrologue.onPrimaryLoginCTA?()
+
+        // Then: the login tap navigates on the new stack instead of being swallowed.
+        #expect(handled == true)
+        #expect(newNavigation.viewControllers.count == 2)
+        #expect(originalNavigation.viewControllers.count == 2)
+    }
+
+    @Test func test_login_when_tapped_twice_on_same_authenticator_then_reuses_qr_flow() async throws {
+        // Given
+        let manager = AuthenticationManager(qrLoginAvailability: MockQRLoginAvailability(prologueAvailable: true))
+        let navigation = try #require(manager.authenticationUI() as? UINavigationController)
+        manager.displayAuthenticatorIfLoggedOut = { navigation }
+        let prologue = try #require(navigation.topViewController as? LoginPrologueViewController)
+
+        // When
+        #expect(await prologue.onPrimaryLoginCTA?() == true)
+        let qrScreen = navigation.topViewController
+        #expect(await prologue.onPrimaryLoginCTA?() == true)
+
+        // Then
+        #expect(navigation.viewControllers.count == 2)
+        #expect(navigation.topViewController === qrScreen)
+    }
+
+    @Test func test_qr_deep_link_when_authenticator_is_replaced_then_uses_new_stack() async throws {
+        // Given
+        let manager = makeManager(deepLinkAvailable: true)
+        let originalNavigation = try #require(manager.authenticationUI() as? UINavigationController)
+        manager.displayAuthenticatorIfLoggedOut = { originalNavigation }
+        #expect(await manager.handleAuthenticationUrl(Self.selfHostedURL, options: [:], rootViewController: UIViewController()))
+
+        // When
+        let newNavigation = try #require(manager.authenticationUI() as? UINavigationController)
+        manager.displayAuthenticatorIfLoggedOut = { newNavigation }
+        let handled = await manager.handleAuthenticationUrl(Self.selfHostedURL, options: [:], rootViewController: UIViewController())
+
+        // Then
+        #expect(handled)
+        #expect(newNavigation.viewControllers.count == 2)
+        #expect(originalNavigation.viewControllers.count == 2)
     }
 
     // MARK: - handleSignedInQRLoginDeepLink

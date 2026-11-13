@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import protocol WordPressAuthenticator.LoginNavigationBarHiding
 
 /// Navigation-bar treatment for a QR-login screen.
 enum QRLoginNavigationBarStyle {
@@ -16,12 +17,20 @@ enum QRLoginNavigationBarStyle {
 /// The WordPress-Authenticator prologue hides the navigation bar in its own
 /// `viewWillAppear`, so each QR screen re-applies the navigation-bar state it
 /// needs when it appears.
-final class QRLoginHostingController<Content: View>: UIHostingController<Content> {
+final class QRLoginHostingController<Content: View>: UIHostingController<Content>, LoginNavigationBarHiding {
+
+    var prefersNavigationBarHidden: Bool {
+        navigationBarStyle == .hidden
+    }
 
     var navigationBarStyle: QRLoginNavigationBarStyle = .inherited
 
     /// When `true`, the status bar uses light content — for the dark prologue.
     var prefersLightStatusBar = false
+
+    /// Invoked on every `viewDidAppear`, including when the screen reappears
+    /// after a screen pushed on top of it is popped.
+    var onViewDidAppear: (() -> Void)?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         prefersLightStatusBar ? .lightContent : .default
@@ -36,5 +45,10 @@ final class QRLoginHostingController<Content: View>: UIHostingController<Content
             navigationController?.setNavigationBarHidden(false, animated: animated)
         }
         setNeedsStatusBarAppearanceUpdate()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        onViewDidAppear?()
     }
 }

@@ -40,6 +40,7 @@ class AppleAuthenticator: NSObject {
 
     func showFrom(viewController: UIViewController) {
         loginFields.meta.socialService = SocialServiceName.apple
+        loginFields.supportedAuthTypes = []
         showFromViewController = viewController
         requestAuthorization()
     }
@@ -105,7 +106,9 @@ private extension AppleAuthenticator {
         // consult with your lead before removing this event.
         track(.signedIn)
 
-        tracker.track(step: .success) {
+        // The step is reported once a store has been chosen, in the store picker. The legacy stat
+        // keeps its existing condition.
+        if tracker.shouldUseLegacyTracker() {
             track(.loginSocialSuccess)
         }
 

@@ -52,7 +52,7 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 private extension ProductVariationFormActionsFactory {
     /// All the editable actions in the settings section given the product variation.
     func allSettingsSectionActions() -> [ProductFormEditAction] {
-        let shouldShowSubscriptionRow = productVariation.subscription != nil
+        let shouldShowSubscriptionRow = productVariation.isSubscriptionProduct
         let shouldShowPriceSettingsRow = editable || productVariation.regularPrice?.isNotEmpty == true
         let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
@@ -92,7 +92,7 @@ private extension ProductVariationFormActionsFactory {
             // The price settings, attributes, and visibility actions are always visible in the settings section.
             return true
         case .subscriptionFreeTrial, .subscriptionExpiry:
-            return productVariation.subscription != nil
+            return productVariation.isSubscriptionProduct
         case .inventorySettings:
             let hasStockData = productVariation.manageStock ? productVariation.stockQuantity != nil: true
             return productVariation.sku != nil || hasStockData

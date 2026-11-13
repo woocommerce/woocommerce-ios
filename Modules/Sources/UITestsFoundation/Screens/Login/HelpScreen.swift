@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class HelpScreen: ScreenObject {
 
     // "Help" screen elements

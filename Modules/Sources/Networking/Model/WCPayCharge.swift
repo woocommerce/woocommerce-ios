@@ -7,7 +7,7 @@ import Codegen
 /// The endpoint returns a thin wrapper around the Stripe object, so
 /// [these docs are relevant](https://stripe.com/docs/api/charges/object)
 ///
-public struct WCPayCharge: Decodable, GeneratedCopiable, GeneratedFakeable, Equatable {
+public struct WCPayCharge: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable, Equatable {
     /// The siteID of the site that the charge relates to
     public let siteID: Int64
 

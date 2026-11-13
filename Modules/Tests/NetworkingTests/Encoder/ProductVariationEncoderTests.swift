@@ -18,7 +18,7 @@ final class ProductVariationEncoderTests: XCTestCase {
         let variation = ProductVariation.fake().copy(subscription: subscription)
 
         // When
-        let parameters = try variation.toDictionary()
+        let parameters = try variation.toJSONObjectDictionary()
 
         // Then
         let metadata =  try XCTUnwrap(parameters["meta_data"] as? [[String: Any]])
@@ -53,7 +53,7 @@ final class ProductVariationEncoderTests: XCTestCase {
         let variation = ProductVariation.fake()
 
         // When
-        let parameters = try variation.toDictionary()
+        let parameters = try variation.toJSONObjectDictionary()
 
         // Then
         XCTAssertNil(parameters["meta_data"])

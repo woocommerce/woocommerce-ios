@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class PrologueScreen: ScreenObject {
 
     private let titleLabelGetter: (XCUIApplication) -> XCUIElement = {

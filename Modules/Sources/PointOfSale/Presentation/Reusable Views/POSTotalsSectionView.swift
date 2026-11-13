@@ -6,6 +6,7 @@ import struct Yosemite.POSOrderRefund
 /// Displays subtotal, optional discount, tax, total, paid amount with payment method,
 /// and optional refund rows with net payment.
 struct POSTotalsSectionView: View {
+    @Environment(\.posMetrics) private var metrics
     let sectionTitle: String
     let subtotalLabel: String
     let subtotalAmount: String
@@ -21,13 +22,13 @@ struct POSTotalsSectionView: View {
     @Binding var selectedRefundForDetail: POSOrderRefund?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: metrics.spacing.medium) {
             Text(sectionTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: metrics.spacing.small) {
                 totalsRow(title: subtotalLabel, amount: subtotalAmount)
 
                 totalsRow(title: Localization.taxesLabel, amount: taxAmount)
@@ -56,7 +57,7 @@ struct POSTotalsSectionView: View {
                 }
             }
         }
-        .padding(POSPadding.medium)
+        .padding(metrics.padding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
@@ -64,7 +65,7 @@ struct POSTotalsSectionView: View {
     // MARK: - Paid Row
 
     private var paidAmountRow: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.none) {
+        VStack(alignment: .leading, spacing: metrics.spacing.none) {
             if let paidAmount {
                 totalsRow(
                     title: Localization.paidLabel,
@@ -111,57 +112,52 @@ struct POSTotalsSectionView: View {
 
     @ViewBuilder
     private func refundRow(refund: POSOrderRefund, index: Int) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            HStack {
-                Text(Localization.refundTitle(index + 1))
-                    .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                Spacer()
-                Text(refund.formattedTotal)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posError)
-            }
-
-            if isLoadingRefundDetails {
-                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
-                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
-            } else {
-                if let dateCreated = refund.dateCreated {
-                    Text(refundDateFormatter.string(from: dateCreated))
+        Button {
+            selectedRefundForDetail = refund
+        } label: {
+            VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+                HStack {
+                    Text(Localization.refundTitle(index + 1))
+                        .font(.posBodyLargeBold)
+                        .foregroundStyle(Color.posOnSurface)
+                    Spacer()
+                    Text(refund.formattedTotal)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        .foregroundStyle(Color.posError)
                 }
 
-                if let reason = refund.reason, !reason.isEmpty {
-                    Text(reason)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                }
+                if isLoadingRefundDetails {
+                    POSPlaceholderText(.redactedPlaceholder(length: 9), font: .posBodyMediumRegular())
+                    POSPlaceholderText(.redactedPlaceholder(length: 6), font: .posBodyMediumRegular())
+                } else {
+                    if let dateCreated = refund.dateCreated {
+                        Text(refundDateFormatter.string(from: dateCreated))
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    }
 
-                Button {
-                    selectedRefundForDetail = refund
-                } label: {
+                    if let reason = refund.reason, !reason.isEmpty {
+                        Text(reason)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    }
+
                     Text(Localization.viewDetailsLabel)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posPrimary)
+                        .foregroundStyle(Color.posLink)
                         .underline()
                 }
             }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+        .disabled(isLoadingRefundDetails)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Localization.refundAccessibilityLabel(
             index: index + 1,
             amount: refund.formattedTotal,
             reason: refund.reason
         ))
-    }
-
-    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
-        Rectangle()
-            .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: width, height: height)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .shimmering()
     }
 
     // MARK: - Generic Row
@@ -299,10 +295,4 @@ private enum Localization {
         )
         return String(format: format, amount)
     }
-}
-
-private enum Constants {
-    static let longWidth: CGFloat = 120
-    static let shortWidth: CGFloat = 80
-    static let rowHeight: CGFloat = 16
 }

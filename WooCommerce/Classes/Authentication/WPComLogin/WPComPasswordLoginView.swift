@@ -5,11 +5,13 @@ import Kingfisher
 final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswordLoginView> {
 
     private let flow: WPComLoginFlow
+    let viewModel: WPComPasswordLoginViewModel
 
     init(title: String,
          flow: WPComLoginFlow,
          viewModel: WPComPasswordLoginViewModel) {
         self.flow = flow
+        self.viewModel = viewModel
         super.init(rootView: WPComPasswordLoginView(title: title,
                                                     flow: flow,
                                                     viewModel: viewModel))

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Hashable, Identifiable {
+public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Hashable, Identifiable, Sendable {
     // Identifiable & POSOrderableItem
     public let id: POSItemIdentifier
 

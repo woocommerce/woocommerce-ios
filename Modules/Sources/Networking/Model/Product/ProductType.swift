@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductType Entity.
 ///
-public enum ProductType: Codable, Hashable, GeneratedFakeable {
+public enum ProductType: Codable, Hashable, GeneratedFakeable, Sendable {
     case simple
     case grouped
     case affiliate

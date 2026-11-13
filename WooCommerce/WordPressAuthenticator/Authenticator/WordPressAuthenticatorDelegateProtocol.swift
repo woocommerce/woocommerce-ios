@@ -1,3 +1,28 @@
+/// The authentication endpoint a site credential login attempt is currently trying to establish.
+///
+public enum SiteCredentialRecoveryEndpoint: Equatable {
+    case login
+    case admin
+}
+
+/// Why a candidate endpoint entered by the merchant could not be used.
+///
+public enum SiteCredentialRecoveryError: Equatable {
+    case invalidURL
+    case differentSite
+    case notFound
+}
+
+/// A request for the merchant to confirm where one of the site's authentication endpoints lives.
+///
+/// `draftURL` is the address to prefill. The `admin` case also carries the already verified login
+/// entry so it survives the second round trip.
+///
+public enum SiteCredentialRecovery: Equatable {
+    case login(draftURL: String, error: SiteCredentialRecoveryError?)
+    case admin(verifiedLoginURL: String, draftURL: String, error: SiteCredentialRecoveryError?)
+}
+
 // MARK: - WordPressAuthenticator Delegate Protocol
 //
 public protocol WordPressAuthenticatorDelegate: AnyObject {
@@ -132,6 +157,65 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping (Error, Bool) -> Void)
 
+    /// Asks the Host App to authenticate site credentials against explicitly configured endpoints.
+    ///
+    /// This is the endpoint-aware counterpart of `handleSiteCredentialLogin`. It lets the Host App ask the merchant
+    /// where the sign-in page or the dashboard lives when they are not at the standard addresses.
+    ///
+    /// - Parameters:
+    ///     - credentials: WordPress.org credentials submitted in the site credentials form.
+    ///     - loginURL: the login entry address to use, or `nil` to use the standard one.
+    ///     - adminURL: the admin base address to use, or `nil` to use the standard one.
+    ///     - endpointUnderVerification: the endpoint this attempt is trying to confirm, or `nil` for an ordinary attempt.
+    ///     - retryingFailure: the original failure when this is an explicit alert retry.
+    ///     - onRetryResult: called once when the originally failed step passes or this attempt fails before it passes.
+    ///     - onLoading: the block to update the loading state on the site credentials form when necessary.
+    ///     - onSuccess: the block to finish the login flow, carrying credentials that record the verified endpoints.
+    ///     - onRecovery: asks for an endpoint address; returns whether the recovery UI was displayed.
+    ///     - onFailure: the block to trigger error handling. The closure accepts an error, a boolean indicating if the
+    ///       login failed with incorrect credentials, the verified login entry address when one is already known,
+    ///       and whether browser authentication could plausibly solve this credential-response failure.
+    ///
+    @MainActor
+    func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
+                                     loginURL: String?,
+                                     adminURL: String?,
+                                     endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
+                                     retryingFailure: Error?,
+                                     onRetryResult: ((Bool) -> Void)?,
+                                     onLoading: @escaping (Bool) -> Void,
+                                     onSuccess: @escaping (WordPressOrgCredentials) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
+                                     onFailure: @escaping (Error, Bool, String?, Bool) -> Void)
+
+    /// Signals to the Host App that the merchant explicitly asked to authenticate with a browser instead.
+    ///
+    /// - Parameters:
+    ///     - siteURL: The site URL being authenticated.
+    ///     - viewController: the view controller containing the site credential input.
+    ///
+    @MainActor
+    func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController)
+
+    /// Signals to the Host App to handle an error for site credential login, stating whether a browser
+    /// alternative may still be offered to the merchant.
+    ///
+    /// - Parameters:
+    ///     - error: The site credential login failure.
+    ///     - offersBrowserAlternative: whether the failure is one the browser flow could plausibly solve.
+    ///     - siteURL: The site URL of the login failure.
+    ///     - viewController: the view controller containing the site credential input.
+    ///
+    @MainActor
+    func presentSiteCredentialLoginFailure(error: Error,
+                                           offersBrowserAlternative: Bool,
+                                           for siteURL: String,
+                                           in viewController: UIViewController,
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void)
+
+    @MainActor
+    func cancelSiteCredentialLogin()
+
     /// Signals to the Host App to handle an error for site credential login.
     ///
     /// - Parameters:
@@ -139,6 +223,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///     - siteURL: The site URL of the login failure.
     ///     - viewController: the view controller containing the site credential input.
     ///
+    @MainActor
     func handleSiteCredentialLoginFailure(error: Error,
                                           for siteURL: String,
                                           in viewController: UIViewController)
@@ -205,6 +290,50 @@ public extension WordPressAuthenticatorDelegate {
         // No-op
     }
 
+    /// Bridges the endpoint-aware contract onto Host Apps that only adopt the legacy one, so they keep
+    /// their existing behaviour and never see an endpoint recovery request.
+    ///
+    @MainActor
+    func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
+                                     loginURL: String?,
+                                     adminURL: String?,
+                                     endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
+                                     retryingFailure: Error? = nil,
+                                     onRetryResult: ((Bool) -> Void)? = nil,
+                                     onLoading: @escaping (Bool) -> Void,
+                                     onSuccess: @escaping (WordPressOrgCredentials) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
+                                     onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
+        handleSiteCredentialLogin(
+            credentials: credentials,
+            onLoading: onLoading,
+            onSuccess: { onSuccess(credentials) },
+            onFailure: { error, incorrectCredentials in
+                onFailure(error, incorrectCredentials, nil, false)
+            }
+        )
+    }
+
+    @MainActor
+    func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
+        // No-op
+    }
+
+    @MainActor
+    func presentSiteCredentialLoginFailure(error: Error,
+                                           offersBrowserAlternative: Bool,
+                                           for siteURL: String,
+                                           in viewController: UIViewController,
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
+        handleSiteCredentialLoginFailure(error: error, for: siteURL, in: viewController)
+    }
+
+    @MainActor
+    func cancelSiteCredentialLogin() {
+        // No-op for hosts without a cancellable credential transaction.
+    }
+
+    @MainActor
     func handleSiteCredentialLoginFailure(error: Error,
                                           for siteURL: String,
                                           in viewController: UIViewController) {

@@ -51,6 +51,7 @@ final class SiteListMapperTests: XCTestCase {
         XCTAssertEqual(site.url, "https://insecure-site.testing.blog")
         XCTAssertEqual(site.adminURL, "https://insecure-site.testing.blog/wp-admin/")
         XCTAssertEqual(site.loginURL, "https://insecure-site.testing.blog/wp-login.php")
+        XCTAssertEqual(site.wasURLNormalizedToHTTPS, true)
     }
 }
 

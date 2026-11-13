@@ -38,7 +38,7 @@ final class MainTabViewModel {
 
     private var cancellables = Set<AnyCancellable>()
 
-    private(set) lazy var tapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
+    @MainActor private(set) lazy var tapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
 
     init(storesManager: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
@@ -89,6 +89,7 @@ final class MainTabViewModel {
 
     /// Loads the the hub Menu tab badge and listens to any change to update it
     ///
+    @MainActor
     func loadHubMenuTabBadge() {
         synchronizeShouldShowBadgeOnHubMenuTabLogic()
 

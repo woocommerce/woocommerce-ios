@@ -27,22 +27,20 @@ extension WooAnalyticsEvent {
             .init(statName: .settingsTroubleshootConnectionTapped, properties: [:])
         }
 
-        static func requestResponse(test: Test, success: Bool, timeTaken: Double) -> WooAnalyticsEvent {
+        /// `skipped` is true when the site cannot answer the test; `success` is then true as no failure was found.
+        static func requestResponse(test: Test, success: Bool, timeTaken: Double, skipped: Bool = false) -> WooAnalyticsEvent {
             .init(statName: .connectivityToolRequestResponse,
                   properties: [
                     "test": test.rawValue,
                     "success": success,
-                    "time_taken": timeTaken
+                    "time_taken": timeTaken,
+                    "skipped": skipped
                   ]
             )
         }
 
         static func readMoreTapped() -> WooAnalyticsEvent {
             .init(statName: .connectivityToolReadMoreTapped, properties: [:])
-        }
-
-        static func contactSupportTapped() -> WooAnalyticsEvent {
-            .init(statName: .connectivityToolContactSupportTapped, properties: [:])
         }
 
         static func preLoginRequestResponse(testName: String, success: Bool, timeTaken: Double) -> WooAnalyticsEvent {

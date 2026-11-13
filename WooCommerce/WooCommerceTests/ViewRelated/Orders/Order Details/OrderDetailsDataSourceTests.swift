@@ -12,6 +12,7 @@ import YosemiteTestHelpers
 
 /// Test cases for `OrderDetailsDataSourceTests`
 ///
+@MainActor
 final class OrderDetailsDataSourceTests: XCTestCase {
 
     private typealias Title = OrderDetailsDataSource.Title
@@ -22,14 +23,14 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage
     }
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_payment_section_is_shown_right_after_the_products_custom_amounts_refunded_products_and_shipping_sections() throws {
@@ -804,8 +805,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.configureResultsControllers { }
 
         // When
@@ -850,8 +850,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.configureResultsControllers { }
 
         // When
@@ -877,8 +876,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
@@ -896,8 +894,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = false
         dataSource.configureResultsControllers { }
 
@@ -929,7 +926,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
                                                  cardPresentPaymentsConfiguration: Mocks.configuration,
                                                  receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
          dataSource.isEligibleForBackendReceipt = true
-         //dataSource.orderHasLocalReceipt = false
 
          // When
          dataSource.reloadSections()
@@ -940,7 +936,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
          XCTAssertNotNil(seeReceiptRow)
      }
 
-    func test_payment_section_when_not_eligible_for_receipts_then_does_not_render_see_receipt_row() throws {
+    func test_payment_section_when_backend_receipt_is_not_eligible_then_does_not_render_see_receipt_row() throws {
         // Given
         let order = Order.fake()
         let dataSource = OrderDetailsDataSource(order: order,
@@ -958,54 +954,127 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(seeReceiptRow)
     }
 
-    func test_payment_section_when_backend_and_local_receipts_coexist_then_prioritizes_local_over_backend_receipt() throws {
+    // MARK: - Shipping address row
+
+    func test_shipping_address_cell_when_address_has_phone_then_address_ends_with_phone_and_edit_is_available() throws {
         // Given
-        let order = Order.fake()
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
-        dataSource.isEligibleForBackendReceipt = true
-        dataSource.orderHasLocalReceipt = true
+        let shippingAddress = Self.shippingPostalAddress.copy(phone: "2125550199")
+        let (dataSource, tableView, indexPath) = try makeDataSourceWithShippingRow(shippingAddress: shippingAddress)
 
         // When
-        dataSource.reloadSections()
+        let cell = try XCTUnwrap(dataSource.tableView(tableView, cellForRowAt: indexPath) as? CustomerInfoTableViewCell)
 
         // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        let seeReceiptRow = row(row: .seeReceipt, in: paymentSection)
-        let seeLegacyReceiptRow = row(row: .seeLegacyReceipt, in: paymentSection)
-
-        XCTAssertNil(seeReceiptRow)
-        XCTAssertNotNil(seeLegacyReceiptRow)
+        XCTAssertTrue(try XCTUnwrap(cell.address).hasSuffix("\n2125550199"))
+        XCTAssertEqual(cell.address, shippingAddress.formattedPostalAddressWithPhone)
+        XCTAssertNotNil(cell.onEditTapped)
     }
 
-    func test_payment_section_when_neither_receipt_is_eligible_then_renders_no_receipt_buttons_() throws {
-         // Given
-         let order = Order.fake()
-         let dataSource = OrderDetailsDataSource(order: order,
-                                                 storageManager: storageManager,
-                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                 receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
-         dataSource.isEligibleForBackendReceipt = false
-         dataSource.orderHasLocalReceipt = false
+    func test_shipping_address_cell_when_address_has_only_phone_then_address_is_phone_and_edit_is_available() throws {
+        // Given
+        let shippingAddress = Address.empty.copy(phone: "2125550199")
+        let (dataSource, tableView, indexPath) = try makeDataSourceWithShippingRow(shippingAddress: shippingAddress)
 
-         // When
-         dataSource.reloadSections()
+        // When
+        let cell = try XCTUnwrap(dataSource.tableView(tableView, cellForRowAt: indexPath) as? CustomerInfoTableViewCell)
 
-         // Then
-         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-         let seeReceiptRow = row(row: .seeReceipt, in: paymentSection)
-         let seeLegacyReceiptRow = row(row: .seeLegacyReceipt, in: paymentSection)
+        // Then
+        XCTAssertEqual(cell.address, "2125550199")
+        XCTAssertNotNil(cell.onEditTapped)
+        XCTAssertNil(cell.onAddTapped)
+    }
 
-         XCTAssertNil(seeReceiptRow)
-         XCTAssertNil(seeLegacyReceiptRow)
-     }
+    func test_shipping_address_cell_when_address_has_no_phone_then_address_equals_formattedPostalAddress() throws {
+        // Given
+        let shippingAddress = Self.shippingPostalAddress.copy(phone: .some(nil))
+        let (dataSource, tableView, indexPath) = try makeDataSourceWithShippingRow(shippingAddress: shippingAddress)
+
+        // When
+        let cell = try XCTUnwrap(dataSource.tableView(tableView, cellForRowAt: indexPath) as? CustomerInfoTableViewCell)
+
+        // Then
+        XCTAssertNotNil(shippingAddress.formattedPostalAddress)
+        XCTAssertEqual(cell.address, shippingAddress.formattedPostalAddress)
+    }
+
+    func test_shipping_address_cell_when_address_is_empty_and_phone_is_blank_then_add_button_is_shown() throws {
+        // Given
+        let shippingAddress = Address.empty.copy(phone: "  ")
+        let (dataSource, tableView, indexPath) = try makeDataSourceWithShippingRow(shippingAddress: shippingAddress)
+
+        // When
+        let cell = try XCTUnwrap(dataSource.tableView(tableView, cellForRowAt: indexPath) as? CustomerInfoTableViewCell)
+
+        // Then
+        XCTAssertNil(cell.address)
+        XCTAssertNotNil(cell.onAddTapped)
+        XCTAssertNil(cell.onEditTapped)
+    }
+
+    func test_copyText_when_row_is_shipping_address_then_pasteboard_contains_phone() throws {
+        // Given
+        let shippingAddress = Self.shippingPostalAddress.copy(phone: "2125550199")
+        let (dataSource, _, indexPath) = try makeDataSourceWithShippingRow(shippingAddress: shippingAddress)
+        UIPasteboard.general.string = ""
+
+        // When
+        dataSource.copyText(at: indexPath)
+
+        // Then
+        let copiedText = try XCTUnwrap(UIPasteboard.general.string)
+        XCTAssertTrue(copiedText.contains("2125550199"))
+        XCTAssertEqual(copiedText, shippingAddress.fullNameWithCompanyAddressAndPhone + "\n")
+    }
 }
 
 // MARK: - Test Data
 
 private extension OrderDetailsDataSourceTests {
+    static var shippingPostalAddress: Address {
+        Address.fake().copy(firstName: "Skylar",
+                            lastName: "Ferry",
+                            address1: "60 29th Street",
+                            city: "San Francisco",
+                            state: "CA",
+                            postcode: "94110",
+                            country: "US")
+    }
+
+    /// Builds a data source whose order has a non-virtual product, so the shipping address row is present.
+    ///
+    func makeDataSourceWithShippingRow(shippingAddress: Address) throws -> (OrderDetailsDataSource, UITableView, IndexPath) {
+        let order = makeOrder().copy(shippingAddress: shippingAddress)
+        insert(product: Product.fake().copy(siteID: order.siteID, productID: 100, virtual: false))
+
+        let dataSource = OrderDetailsDataSource(
+            order: order,
+            storageManager: storageManager,
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            receiptEligibilityUseCase: MockReceiptEligibilityUseCase()
+        )
+        dataSource.configureResultsControllers { }
+        dataSource.reloadSections()
+
+        let tableView = UITableView()
+        tableView.registerNib(for: CustomerInfoTableViewCell.self)
+
+        var shippingIndexPath: IndexPath?
+        for (sectionIndex, section) in dataSource.sections.enumerated() {
+            for (rowIndex, row) in section.rows.enumerated() where row == .shippingAddress {
+                shippingIndexPath = IndexPath(row: rowIndex, section: sectionIndex)
+            }
+        }
+
+        return (dataSource, tableView, try XCTUnwrap(shippingIndexPath))
+    }
+
+    func insert(product: Product) {
+        storageManager.performAndSave({ storage in
+            let storageProduct = storage.insertNewObject(ofType: StorageProduct.self)
+            storageProduct.update(with: product)
+        }, completion: {}, on: .main)
+    }
+
     func makeOrder() -> Order {
         MockOrders().makeOrder(items: [makeOrderItem(), makeOrderItem()], fees: [OrderFeeLine.fake()])
     }

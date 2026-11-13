@@ -13,20 +13,11 @@ struct CollapsibleProductCardPriceSummary: View {
     var body: some View {
         HStack {
             HStack {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
-                    viewModel.isSubscriptionProduct {
-                    Spacer()
-                    Text(viewModel.priceQuantityLine)
-                        .foregroundColor(.secondary)
-                        .redacted(reason: isLoading ? .placeholder : [])
-                        .shimmering(active: isLoading)
-                } else {
-                    Text(viewModel.priceQuantityLine)
-                        .foregroundColor(.secondary)
-                        .redacted(reason: isLoading ? .placeholder : [])
-                        .shimmering(active: isLoading)
-                    Spacer()
-                }
+                Text(viewModel.priceQuantityLine)
+                    .foregroundColor(.secondary)
+                    .redacted(reason: isLoading ? .placeholder : [])
+                    .shimmering(active: isLoading)
+                Spacer()
             }
             if let price = viewModel.priceBeforeDiscountsLabel {
                 Text(price)

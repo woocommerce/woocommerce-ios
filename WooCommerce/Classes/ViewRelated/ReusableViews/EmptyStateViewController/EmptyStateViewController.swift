@@ -12,7 +12,8 @@ import UIKit
 /// These elements are hidden by default and can be configured and shown using
 /// the `configure` method.
 ///
-final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentProvider {
+@MainActor
+final class EmptyStateViewController: UIViewController, @MainActor KeyboardFrameAdjustmentProvider {
 
     /// The main message shown at the top.
     ///
@@ -201,7 +202,9 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             case .withSupportRequest:
                 return { [weak self] in
                     if let self {
-                        let supportForm = SupportFormHostingController(viewModel: .init())
+                        let supportForm = SupportFormHostingController(
+                            viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider())
+                        )
                         supportForm.show(from: self)
                     }
                 }
@@ -273,7 +276,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
                                                               onContactSupportButtonPressed: { [weak self] in
             guard let self else { return }
 
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self)
         })
 

@@ -27,8 +27,7 @@ struct PointOfSaleDashboardViewHelperTests {
         POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD, .GBP]),
         POSIneligibleReason.siteSettingsNotAvailable,
         POSIneligibleReason.wooCommercePluginNotFound,
-        POSIneligibleReason.featureSwitchDisabled,
-        POSIneligibleReason.selfDeallocated
+        POSIneligibleReason.featureSwitchDisabled
     ])
     func determineViewState_when_ineligible_returns_ineligible(reason: POSIneligibleReason) async throws {
         // Given
@@ -155,5 +154,123 @@ struct PointOfSaleDashboardViewHelperTests {
     func showsFloatingControl_when_loading_or_ineligible_returns_false(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
         // When & Then
         #expect(viewState.showsFloatingControl == expected)
+    }
+
+    // MARK: - Compact Cart Button
+
+    @Test func showsCompactCartButton_when_cart_is_empty_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
+            cartIsEmpty: true,
+            floatingControlSuppressed: false
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func showsCompactCartButton_when_cart_has_items_returns_true() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
+            cartIsEmpty: false,
+            floatingControlSuppressed: false
+        )
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func showsCompactCartButton_when_cart_has_items_but_floating_control_is_suppressed_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
+            cartIsEmpty: false,
+            floatingControlSuppressed: true
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func showsCompactCartButton_when_cart_is_empty_and_floating_control_is_suppressed_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.showsCompactCartButton(
+            cartIsEmpty: true,
+            floatingControlSuppressed: true
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    // MARK: - Auto-open Cart On Scan
+
+    @Test func shouldAutoOpenCartOnScan_when_phone_layout_and_building_returns_true() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(
+            isPhoneLayout: true,
+            orderStage: .building
+        )
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func shouldAutoOpenCartOnScan_when_phone_layout_and_finalizing_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(
+            isPhoneLayout: true,
+            orderStage: .finalizing
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: [PointOfSaleOrderStage.building, PointOfSaleOrderStage.finalizing])
+    func shouldAutoOpenCartOnScan_when_not_phone_layout_returns_false(orderStage: PointOfSaleOrderStage) async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(
+            isPhoneLayout: false,
+            orderStage: orderStage
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    // MARK: - Dismiss Cart Sheet
+
+    @Test func shouldDismissCompactCartSheet_when_phone_layout_and_cart_is_empty_returns_true() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldDismissCompactCartSheet(
+            isPhoneLayout: true,
+            cartIsEmpty: true
+        )
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func shouldDismissCompactCartSheet_when_phone_layout_and_cart_has_items_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldDismissCompactCartSheet(
+            isPhoneLayout: true,
+            cartIsEmpty: false
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: [true, false])
+    func shouldDismissCompactCartSheet_when_not_phone_layout_returns_false(cartIsEmpty: Bool) async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldDismissCompactCartSheet(
+            isPhoneLayout: false,
+            cartIsEmpty: cartIsEmpty
+        )
+
+        // Then
+        #expect(result == false)
     }
 }

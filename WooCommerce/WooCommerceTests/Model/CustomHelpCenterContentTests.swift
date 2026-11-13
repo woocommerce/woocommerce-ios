@@ -254,7 +254,7 @@ final class CustomHelpCenterContentTests: XCTestCase {
     //
     func test_init_screen_returns_valid_instance_for_wrong_account_error_screen() throws {
         // Given
-        let step = "wrong_wordpress_account"
+        let step = AuthenticatorAnalyticsTracker.Step.wrongWordPressAccount.rawValue
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPasswordWithMagicLinkEmphasis
 
         // When
@@ -274,7 +274,7 @@ final class CustomHelpCenterContentTests: XCTestCase {
     //
     func test_init_screen_returns_valid_instance_for_not_a_woocommerce_site_error_screen() throws {
         // Given
-        let step = "not_woo_store"
+        let step = AuthenticatorAnalyticsTracker.Step.notWooStore.rawValue
         let flow: AuthenticatorAnalyticsTracker.Flow = .loginWithPasswordWithMagicLinkEmphasis
 
         // When

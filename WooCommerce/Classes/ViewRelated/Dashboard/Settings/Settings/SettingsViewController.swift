@@ -7,6 +7,7 @@ import Yosemite
 import SwiftUI
 import WooFoundationCore
 
+@MainActor
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
 }
@@ -43,10 +44,10 @@ final class SettingsViewController: UIViewController {
 
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
-    init(viewModel: ViewModel = SettingsViewModel(),
+    init(viewModel: ViewModel? = nil,
          stores: StoresManager = ServiceLocator.stores,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
-        self.viewModel = viewModel
+        self.viewModel = viewModel ?? SettingsViewModel()
         self.stores = stores
         self.pushNotesManager = pushNotesManager
         super.init(nibName: nil, bundle: nil)
@@ -65,6 +66,7 @@ final class SettingsViewController: UIViewController {
         configureNavigation()
         configureMainView()
         configureTableView()
+        configureLiquidGlassTabBarUnderlap()
         configureTableViewFooter()
         registerTableViewCells()
         viewModel.onViewDidLoad()
@@ -78,6 +80,7 @@ final class SettingsViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
         tableView.updateFooterHeight()
     }
 }
@@ -95,12 +98,24 @@ private extension SettingsViewController {
     }
 
     func configureTableView() {
+        tableView.accessibilityIdentifier = "settings-screen"
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
 
         tableView.dataSource = self
         tableView.delegate = self
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        // Pairs with `.ignoresSafeArea` in `HubMenu.detailView` — either alone leaves the list clipped
+        // above the floating tab bar instead of scrolling under it.
+        setContentScrollView(tableView, for: .bottom)
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(tableView)
     }
 
     func configureTableViewFooter() {
@@ -541,8 +556,11 @@ private extension SettingsViewController {
     }
 
     func debugPanelWasPressed() {
-        let hostingController = UIHostingController(rootView: DebugPanelView())
-        navigationController?.pushViewController(hostingController, animated: true)
+        let hostingController = UIHostingController(rootView: NavigationStack {
+            DebugPanelView()
+        })
+        hostingController.modalPresentationStyle = .fullScreen
+        present(hostingController, animated: true)
     }
 
     func whatsNewWasPressed() {

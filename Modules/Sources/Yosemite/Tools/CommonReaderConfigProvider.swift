@@ -1,6 +1,8 @@
 import Foundation
 import Hardware
 import Networking
+import protocol WooFoundation.Analytics
+import struct WooFoundationCore.WooAnalyticsEvent
 
 public protocol CardReaderRemoteConfigLoading {
     func setContext(siteID: Int64, remote: CardReaderCapableRemote)
@@ -13,10 +15,14 @@ public protocol CommonReaderConfigProviding: CardReaderRemoteConfigLoading, Card
 public final class CommonReaderConfigProvider: CommonReaderConfigProviding {
     var siteID: Int64?
     var readerConfigRemote: CardReaderCapableRemote?
+    private let analytics: Analytics?
 
-    public init(siteID: Int64? = nil, readerConfigRemote: CardReaderCapableRemote? = nil) {
+    public init(siteID: Int64? = nil,
+                readerConfigRemote: CardReaderCapableRemote? = nil,
+                analytics: Analytics? = nil) {
         self.siteID = siteID
         self.readerConfigRemote = readerConfigRemote
+        self.analytics = analytics
     }
 
     public func setContext(siteID: Int64, remote: CardReaderCapableRemote) {
@@ -53,18 +59,45 @@ public final class CommonReaderConfigProvider: CommonReaderConfigProviding {
             return
         }
 
+        let analytics = self.analytics
         readerConfigRemote?.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
             case .success(let location):
                 let readerLocation = location.toReaderLocation(siteID: siteID)
+                analytics?.track(WooAnalyticsEvent.InPersonPaymentsLocation.cardReaderLocationSuccess(siteID: siteID))
                 completion(.success(readerLocation.id))
             case .failure(let error):
-                if let configError = CardReaderConfigError(error: error) {
+                let configError = CardReaderConfigError(error: error)
+                analytics?.track(WooAnalyticsEvent.InPersonPaymentsLocation
+                    .cardReaderLocationFailure(siteID: siteID, reason: configError.locationFailureReason))
+                if let configError {
                     completion(.failure(configError))
                 } else {
                     completion(.failure(error))
                 }
             }
+        }
+    }
+}
+
+private extension Analytics {
+    /// Convenience for tracking a strongly-typed `WooAnalyticsEvent` from the data layer,
+    /// where the app target's `track(event:)` convenience is not available.
+    func track(_ event: WooAnalyticsEvent) {
+        track(event.statName.rawValue, properties: event.properties, error: event.error)
+    }
+}
+
+private extension Optional where Wrapped == CardReaderConfigError {
+    /// Maps a resolved `CardReaderConfigError` (or its absence) to an analytics failure reason.
+    var locationFailureReason: WooAnalyticsEvent.InPersonPaymentsLocation.FailureReason {
+        switch self {
+        case .incompleteStoreAddress?:
+            return .incompleteStoreAddress
+        case .invalidPostalCode?:
+            return .invalidPostalCode
+        case .none:
+            return .other
         }
     }
 }

@@ -9,11 +9,11 @@ struct MobileAppSupportDataSource: SupportFormMetaDataSource {
         ZendeskForms.IDs.mobileForm
     }
 
-    var tags: [String] {
+    @MainActor var tags: [String] {
         metadataProvider.systemTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.jetpack]
     }
 
-    var customFields: [Int64: String] {
+    @MainActor var customFields: [Int64: String] {
         var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.wooMobileApps
         return generalFields
@@ -29,11 +29,11 @@ struct IPPSupportDataSource: SupportFormMetaDataSource {
         ZendeskForms.IDs.mobileForm
     }
 
-    var tags: [String] {
+    @MainActor var tags: [String] {
         metadataProvider.systemTags() + [ZendeskForms.Tags.wcMobileApps, ZendeskForms.Tags.productAreaIPP, ZendeskForms.Tags.wcPayments]
     }
 
-    var customFields: [Int64: String] {
+    @MainActor var customFields: [Int64: String] {
         var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.wooMobileApps
         return generalFields
@@ -49,11 +49,11 @@ struct WCPluginsSupportDataSource: SupportFormMetaDataSource {
         ZendeskForms.IDs.wooForm
     }
 
-    var tags: [String] {
+    @MainActor var tags: [String] {
         metadataProvider.systemTags() + [ZendeskForms.Tags.wcCore, ZendeskForms.Tags.appTransfer, ZendeskForms.Tags.support]
     }
 
-    var customFields: [Int64: String] {
+    @MainActor var customFields: [Int64: String] {
         var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.category] = ZendeskForms.Fields.support
         return generalFields
@@ -69,7 +69,7 @@ struct WCPaySupportDataSource: SupportFormMetaDataSource {
         ZendeskForms.IDs.wooForm
     }
 
-    var tags: [String] {
+    @MainActor var tags: [String] {
         metadataProvider.systemTags() + [ZendeskForms.Tags.appTransfer,
                                          ZendeskForms.Tags.wcPayments,
                                          ZendeskForms.Tags.payment,
@@ -77,7 +77,7 @@ struct WCPaySupportDataSource: SupportFormMetaDataSource {
                                          ZendeskForms.Tags.productAreaWCPayments]
     }
 
-    var customFields: [Int64: String] {
+    @MainActor var customFields: [Int64: String] {
         var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.category] = ZendeskForms.Fields.support
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.payment
@@ -94,14 +94,14 @@ struct OtherPluginsSupportDataSource: SupportFormMetaDataSource {
         ZendeskForms.IDs.wooForm
     }
 
-    var tags: [String] {
+    @MainActor var tags: [String] {
         metadataProvider.systemTags() + [ZendeskForms.Tags.productAreaWooExtensions,
                                          ZendeskForms.Tags.appTransfer,
                                          ZendeskForms.Tags.support,
                                          ZendeskForms.Tags.store]
     }
 
-    var customFields: [Int64: String] {
+    @MainActor var customFields: [Int64: String] {
         var generalFields = metadataProvider.systemFields()
         generalFields[ZendeskForms.IDs.category] = ZendeskForms.Fields.support
         generalFields[ZendeskForms.IDs.subCategory] = ZendeskForms.Fields.store
@@ -110,13 +110,24 @@ struct OtherPluginsSupportDataSource: SupportFormMetaDataSource {
 }
 
 extension SupportFormMetaDataSource {
-    /// Adds site address to the datasource metadata
+    /// Adds site address and optional AI chat context to the datasource metadata.
     ///
-    func customFields(siteAddress: String) -> [Int64: String] {
+    @MainActor func customFields(siteAddress: String, aiChatID: Int64? = nil) -> [Int64: String] {
         var fields = customFields
         fields[ZendeskForms.IDs.siteAddress] = siteAddress
+        if let aiChatID {
+            fields[ZendeskForms.IDs.aiChatID] = String(aiChatID)
+        }
         return fields
     }
+}
+
+/// Zendesk custom field IDs shared with support form tests.
+///
+enum ZendeskCustomFieldIDs {
+    // Must be included at ticket creation for the transcript-linking webhook to run.
+    // Zendesk's Support SDK requires this field to be visible and editable by end users.
+    static let aiChatID: Int64 = 33538949515668
 }
 
 /// Zendesk Constant Values
@@ -130,6 +141,7 @@ private enum ZendeskForms {
         static let category: Int64 = 25176003
         static let subCategory: Int64 = 25176023
         static let siteAddress: Int64 = 22054927
+        static let aiChatID = ZendeskCustomFieldIDs.aiChatID
     }
 
     /// Custom Field Values

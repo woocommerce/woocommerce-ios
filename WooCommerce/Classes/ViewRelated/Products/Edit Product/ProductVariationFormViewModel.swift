@@ -137,10 +137,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         }
     }
 
-    deinit {
-        cancellable?.cancel()
-    }
-
     func hasUnsavedChanges() -> Bool {
         let hasProductChangesExcludingImages =
         productVariation.productVariation.copy(image: .some(nil)) != originalProductVariation.productVariation.copy(image: .some(nil))
@@ -426,7 +422,12 @@ extension ProductVariationFormViewModel {
         storesManager.dispatch(updateAction)
     }
 
-    func duplicateProduct(onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
+    func productDuplicationSnapshot() -> ProductDuplicationSnapshot<EditableProductVariationModel>? {
+        nil
+    }
+
+    func duplicateProduct(from snapshot: ProductDuplicationSnapshot<EditableProductVariationModel>,
+                          onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
         // no-op
     }
 

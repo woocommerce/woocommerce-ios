@@ -3,7 +3,7 @@ import WooFoundation
 import Networking
 import Codegen
 
-public struct WooPaymentsPayoutsOverviewByCurrency: GeneratedCopiable, GeneratedFakeable {
+public struct WooPaymentsPayoutsOverviewByCurrency: GeneratedCopiable, GeneratedFakeable, Sendable {
     public let currency: CurrencyCode
     public let automaticPayouts: Bool
     public let payoutInterval: WooPaymentsPayoutInterval
@@ -12,7 +12,7 @@ public struct WooPaymentsPayoutsOverviewByCurrency: GeneratedCopiable, Generated
     public let lastPayout: LastPayout?
     public let availableBalance: NSDecimalNumber
 
-    public struct LastPayout {
+    public struct LastPayout: Sendable {
         public let amount: NSDecimalNumber
         public let date: Date
         public let status: WooPaymentsPayoutStatus

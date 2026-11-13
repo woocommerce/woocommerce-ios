@@ -19,7 +19,7 @@ final class ProductEncoderTests: XCTestCase {
                                           subscription: subscription)
 
         // When
-        let parameters = try product.toDictionary()
+        let parameters = try product.toJSONObjectDictionary()
 
         // Then
         let metadata =  try XCTUnwrap(parameters["meta_data"] as? [[String: Any]])
@@ -54,7 +54,7 @@ final class ProductEncoderTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "simple")
 
         // When
-        let parameters = try product.toDictionary()
+        let parameters = try product.toJSONObjectDictionary()
 
         // Then
         XCTAssertNil(parameters["meta_data"])

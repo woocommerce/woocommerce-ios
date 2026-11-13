@@ -8,13 +8,15 @@ import enum Alamofire.AFError
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
-public protocol PointOfSaleCouponServiceProtocol {
+@MainActor
+public protocol PointOfSaleCouponServiceProtocol: Sendable {
     func provideLocalPointOfSaleCoupons(fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> [POSItem]
     func providePointOfSaleCoupons(pageNumber: Int,
                                    fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem>
     func enableCoupons() async throws
 }
 
+@MainActor
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let storage: StorageManagerType
@@ -44,7 +46,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                   storage: storage)
     }
 
-    @MainActor
     public func provideLocalPointOfSaleCoupons(fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> [POSItem] {
         let couponsEnabled = try await checkStoreCouponSettings()
         if !couponsEnabled {
@@ -57,7 +58,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     /// Syncs with the remote and provides all currently loaded coupons.
     /// - Parameter pageNumber: The page number to fetch from the remote.
     /// - Returns: All currently loaded coupons.
-    @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int,
                                           fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
@@ -73,7 +73,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         }
     }
 
-    @MainActor
     public func enableCoupons() async throws {
         return try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
@@ -89,7 +88,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 }
 
 private extension PointOfSaleCouponService {
-    @MainActor
     private func checkStoreCouponSettings() async throws -> Bool {
         let settingID = Constants.enableCouponsSettingID
         let storageSetting = storage.viewStorage.loadSiteSetting(siteID: siteID, settingID: settingID)

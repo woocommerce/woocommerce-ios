@@ -46,6 +46,9 @@ final class DashboardViewModel: ObservableObject {
     ///
     private var previousDashboardCards: [DashboardCard] = []
 
+    /// Set once the dashboard view has asked for its cards; a background launch alone never does.
+    private var hasViewRequestedCards = false
+
     /// Cards fetched from storage
     ///
     private var savedCards: [DashboardCard] = []
@@ -83,8 +86,6 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var analyticsImportUpdateMode: AnalyticsImportUpdateMode?
     @Published private var hasOrders = false
 
-    @Published private(set) var isEligibleForInbox = false
-
     @Published private(set) var isEligibleForStock = false
 
     @Published private(set) var isEligibleForStoreSetup = false
@@ -106,9 +107,8 @@ final class DashboardViewModel: ObservableObject {
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let userDefaults: UserDefaults
     private let pushNotesManager: PushNotesManager
+    private let application: ApplicationAdapter
     private let storageManager: StorageManagerType
-    private let inboxEligibilityChecker: InboxEligibilityChecker
-    private let siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
@@ -165,14 +165,13 @@ final class DashboardViewModel: ObservableObject {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol = AIAssistantEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
-         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
+         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining? = nil,
          clientSideBannerProvider: ClientSideBannerProvider? = nil,
-         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck()) {
+         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck(),
+         application: ApplicationAdapter = UIApplication.shared) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -180,6 +179,7 @@ final class DashboardViewModel: ObservableObject {
         self.analytics = analytics
         self.userDefaults = userDefaults
         self.pushNotesManager = pushNotesManager
+        self.application = application
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID,
@@ -203,8 +203,6 @@ final class DashboardViewModel: ObservableObject {
             stores: stores
         )
 
-        self.inboxEligibilityChecker = inboxEligibilityChecker
-        self.siteIsCIABEligibilityChecker = siteIsCIABEligibilityChecker
         self.aiAssistantEligibilityChecker = aiAssistantEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
@@ -215,7 +213,7 @@ final class DashboardViewModel: ObservableObject {
                                                                                                                blazeEligibilityChecker: blazeEligibilityChecker)
         self.blazeLocalNotificationScheduler.observeNotificationUserResponse()
 
-        self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
+        self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer ?? TapToPayAwarenessMomentDeterminer()
 
         self.clientSideBannerProvider = clientSideBannerProvider ?? ClientSideBannerProvider(
             stores: stores,
@@ -291,7 +289,6 @@ final class DashboardViewModel: ObservableObject {
         updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard && isEligibleForStoreSetup,
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
-                             canShowInbox: isEligibleForInbox,
                              canShowStock: isEligibleForStock,
                              canShowAIAssistant: isAIAssistantEligible,
                              hasOrders: hasOrders)
@@ -320,7 +317,6 @@ final class DashboardViewModel: ObservableObject {
     @MainActor
     func reloadAllData(forceCardsRefresh: Bool = false) async {
         isReloadingAllData = true
-        checkInboxEligibility()
         refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite, useCache: false)
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
@@ -442,6 +438,7 @@ final class DashboardViewModel: ObservableObject {
 private extension DashboardViewModel {
     @MainActor
     func loadDashboardCardsFromStorage() async {
+        hasViewRequestedCards = true
         let storageCards = await withCheckedContinuation { continuation in
             stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
                 continuation.resume(returning: cards)
@@ -610,10 +607,14 @@ private extension DashboardViewModel {
 
                 previousDashboardCards = cards
 
-                if newlyEnabledCards.isNotEmpty {
-                    Task { @MainActor in
-                        await self.reloadCardsIfNeeded(newlyEnabledCards)
-                    }
+                // Background launches (BGAppRefresh, silent push) build this view model with no view;
+                // reloading here emits dashboard events that Looker counts as user activity.
+                guard newlyEnabledCards.isNotEmpty,
+                      hasViewRequestedCards || application.applicationState != .background else {
+                    return
+                }
+                Task { @MainActor in
+                    await self.reloadCardsIfNeeded(newlyEnabledCards)
                 }
             })
             .store(in: &subscriptions)
@@ -699,7 +700,7 @@ private extension DashboardViewModel {
                     }
                 case .stock:
                     group.addTask { [weak self] in
-                        await self?.productStockCardViewModel.reloadData()
+                        await self?.productStockCardViewModel.reloadDataIfNeeded(forceRefresh: forceRefresh)
                     }
                 case .reviews:
                     group.addTask { [weak self] in
@@ -727,8 +728,9 @@ private extension DashboardViewModel {
             return
         }
 
-        let supportedCards = Set(DashboardTimestampStore.Card.allCases.map { $0.dashboardCard } )
-        let supportedVisibleCards = showOnDashboardCards.filter { supportedCards.contains($0.type) }
+        var cardsSupportingRefreshOnAppearance = Set(DashboardTimestampStore.Card.allCases.map { $0.dashboardCard } )
+        cardsSupportingRefreshOnAppearance.insert(.stock)
+        let supportedVisibleCards = showOnDashboardCards.filter { cardsSupportingRefreshOnAppearance.contains($0.type) }
 
         await reloadCardsIfNeeded(supportedVisibleCards)
     }
@@ -745,21 +747,18 @@ private extension DashboardViewModel {
             .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard,
                            $isEligibleForStock)
             .combineLatest(googleAdsDashboardCardViewModel.$canShowOnDashboard,
-                           $hasOrders,
-                           $isEligibleForInbox)
+                           $hasOrders)
             .combineLatest($isAIAssistantEligible)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
                 let (((canShowOnboarding, canShowBlaze, canShowStock),
                       canShowGoogle,
-                      hasOrders,
-                      isEligibleForInbox),
+                      hasOrders),
                      isAIAssistantEligible) = combinedResult
                 updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                      canShowBlaze: canShowBlaze,
                                      canShowGoogle: canShowGoogle,
-                                     canShowInbox: isEligibleForInbox,
                                      canShowStock: canShowStock,
                                      canShowAIAssistant: isAIAssistantEligible,
                                      hasOrders: hasOrders)
@@ -775,9 +774,10 @@ private extension DashboardViewModel {
 
     func observeSelfDrivenPushTokenPersistence() {
         pushNotesManager.siteIDsRegisteredForWooPNsPublisher
-            .combineLatest(userDefaults.publisher(for: \.hideWPComConnectionOnDashboard))
+            .combineLatest(userDefaults.publisher(for: \.hideWPComConnectionOnDashboard),
+                           stores.sessionManager.defaultSitePublisher)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _, _ in
+            .sink { [weak self] _, _, _ in
                 guard let self else { return }
                 Task {
                     await self.updateSelfDrivenPushRegistrationStatus()
@@ -803,47 +803,17 @@ private extension DashboardViewModel {
         }
     }
 
-    func checkInboxEligibility() {
-        isEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
-    }
-
     func observeStockEligibility() {
         stores.site
             .removeDuplicates()
-            .map { [weak self] in
-                guard
-                    let self,
-                    let site = $0
-                else {
-                    return false
-                }
-
-                return siteIsCIABEligibilityChecker
-                    .isFeatureSupported(
-                        .productsStockDashboardCard,
-                        for: site
-                    )
-            }
+            .map { $0 != nil }
             .assign(to: &$isEligibleForStock)
     }
 
     func observeStoreSetupEligibility() {
         stores.site
             .removeDuplicates()
-            .map { [weak self] in
-                guard
-                    let self,
-                    let site = $0
-                else {
-                    return false
-                }
-
-                return siteIsCIABEligibilityChecker
-                    .isFeatureSupported(
-                        .storeSetupDashboardCard,
-                        for: site
-                    )
-            }
+            .map { $0 != nil }
             .assign(to: &$isEligibleForStoreSetup)
     }
 
@@ -951,7 +921,6 @@ private extension DashboardViewModel {
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
                               canShowStock: Bool,
-                              canShowInbox: Bool,
                               canShowAIAssistant: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
@@ -982,7 +951,7 @@ private extension DashboardViewModel {
                                    enabled: canShowBlaze))
 
         cards.append(DashboardCard(type: .inbox,
-                                   availability: canShowInbox ? .show : .hide,
+                                   availability: .show,
                                    enabled: false))
         cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
         cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
@@ -1010,7 +979,6 @@ private extension DashboardViewModel {
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowGoogle: Bool,
-                              canShowInbox: Bool,
                               canShowStock: Bool,
                               canShowAIAssistant: Bool,
                               hasOrders: Bool) {
@@ -1025,7 +993,6 @@ private extension DashboardViewModel {
                                                 canShowAnalytics: canShowAnalytics,
                                                 canShowLastOrders: canShowLastOrders,
                                                 canShowStock: canShowStock,
-                                                canShowInbox: canShowInbox,
                                                 canShowAIAssistant: canShowAIAssistant)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.
@@ -1126,10 +1093,16 @@ private extension DashboardViewModel {
         isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID)
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
 
+        guard let defaultSite = stores.sessionManager.defaultSite,
+              defaultSite.siteID == siteID else {
+            shouldSuggestWPComConnection = false
+            return
+        }
+
         let isEligibleForSelfDrivenPN = await pushNotificationEligibilityChecker.checkEligibility()
         shouldSuggestWPComConnection = pushNotesManager.hasStoredSiteIDsRegisteredForWooPNs &&
             registeredSiteIDs.contains(siteID) == false &&
-            (stores.isAuthenticatedWithoutWPCom || stores.sessionManager.defaultSite?.isJetpackCPConnected == true) &&
+            (stores.isAuthenticatedWithoutWPCom || defaultSite.isJetpackCPConnected) &&
             !dismissedWPComConnectionSuggestion &&
             isEligibleForSelfDrivenPN
     }

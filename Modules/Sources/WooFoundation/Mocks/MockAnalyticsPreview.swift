@@ -1,8 +1,9 @@
 import Foundation
+import os
 
 public final class MockAnalyticsPreview: Analytics {
     public init(userHasOptedIn: Bool = true, analyticsProvider: AnalyticsProvider = MockAnalyticsProviderPreview()) {
-        self.userHasOptedIn = userHasOptedIn
+        self.userHasOptedInState = OSAllocatedUnfairLock(initialState: userHasOptedIn)
         self.analyticsProvider = analyticsProvider
     }
 
@@ -22,7 +23,12 @@ public final class MockAnalyticsPreview: Analytics {
         //
     }
 
-    public var userHasOptedIn: Bool
+    private let userHasOptedInState: OSAllocatedUnfairLock<Bool>
 
-    public var analyticsProvider: AnalyticsProvider
+    public var userHasOptedIn: Bool {
+        get { userHasOptedInState.withLock { $0 } }
+        set { userHasOptedInState.withLock { $0 = newValue } }
+    }
+
+    public let analyticsProvider: AnalyticsProvider
 }

@@ -3,7 +3,7 @@ import Codegen
 
 /// Brief information of a Blaze Campaign used in list screen
 ///
-public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     /// Site Identifier.
     ///
@@ -203,7 +203,7 @@ private extension BlazeCampaignListItem {
     }
 }
 
-public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable, Sendable {
     public let mode: Mode
     public let amount: Double
     public let currency: String
@@ -214,7 +214,7 @@ public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable
         self.currency = currency
     }
 
-    public enum Mode: String, Codable, GeneratedFakeable {
+    public enum Mode: String, Codable, GeneratedFakeable, Sendable {
         case total
         case daily
     }

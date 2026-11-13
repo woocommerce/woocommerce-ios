@@ -67,6 +67,20 @@ final class MockOrders {
 
     func orderPaidWithNoPaymentMethod() -> Order {
         return Order.fake().copy(
+            needsPayment: false,
+            status: .completed,
+            datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
+            paymentMethodID: "",
+            paymentMethodTitle: "")
+    }
+
+    /// A paid order (with a stale `date_paid`) that was later reverted to an unpaid status.
+    /// WooCommerce core keeps `date_paid` set, so `needsPayment` is the signal that it awaits payment again.
+    ///
+    func orderRevertedToPendingWithNoPaymentMethod() -> Order {
+        return Order.fake().copy(
+            needsPayment: true,
+            status: .pending,
             datePaid: DateFormatter.dateFromString(with: "2018-04-03T23:05:14"),
             paymentMethodID: "",
             paymentMethodTitle: "")

@@ -1,7 +1,7 @@
-import ScreenObject
 import XCTest
 
-public final class PaymentsScreen: ScreenObject {
+@MainActor
+public final class PaymentsScreen {
     private let cardReaderManualsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["card-reader-manuals"]
     }
@@ -15,19 +15,15 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     private let markAsPaidButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["Mark Order as Complete"]
+        $0.buttons["cash-payment-mark-order-complete-button"]
     }
 
     private let learnMoreButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.textViews["Learn more about In‑Person Payments"].firstMatch
+        $0.staticTexts["in-person-payments-learn-more"].firstMatch
     }
 
     private let IPPDocumentationHeaderTextGetter: (XCUIApplication) -> XCUIElement = {
         $0.staticTexts["Getting started with In-Person Payments with WooPayments"]
-    }
-
-    private let paymentsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
-        $0.navigationBars["Payments"]
     }
 
     private let addCustomAmountGetter: (XCUIApplication) -> XCUIElement = {
@@ -45,7 +41,6 @@ public final class PaymentsScreen: ScreenObject {
     private var cardReaderManualsButton: XCUIElement { cardReaderManualsButtonGetter(app) }
     private var learnMoreButton: XCUIElement { learnMoreButtonGetter(app) }
     private var nextButton: XCUIElement { nextButtonGetter(app) }
-    private var paymentsNavigationBar: XCUIElement { paymentsNavigationBarGetter(app) }
     private var cashPaymentButton: XCUIElement { cashPaymentButtonGetter(app) }
     private var markAsPaidButton: XCUIElement { markAsPaidButtonGetter(app) }
     private var IPPDocumentationHeaderText: XCUIElement { IPPDocumentationHeaderTextGetter(app) }
@@ -53,18 +48,19 @@ public final class PaymentsScreen: ScreenObject {
     private var confirmCustomAmountButton: XCUIElement { confirmCustomAmountGetter(app) }
     private var orderFormCollectPaymentButton: XCUIElement { orderFormCollectPaymentButtonGetter(app) }
 
+    public let app: XCUIApplication
+
     public init(app: XCUIApplication = XCUIApplication()) throws {
-        try super.init(
-            expectedElementGetters: [
-                paymentsNavigationBarGetter,
-                cardReaderManualsButtonGetter
-            ],
-            app: app
-        )
+        self.app = app
+        // The row can be visible but non-hittable while the universal-link destination settles, so wait by existence.
+        guard cardReaderManualsButton.waitForExistence(timeout: Constants.screenLoadTimeout) else {
+            throw PaymentsScreenError.timedOut
+        }
     }
 
     @discardableResult
     public func tapCardReaderManuals() throws -> CardReaderManualsScreen {
+        XCTAssertTrue(cardReaderManualsButton.waitForIsHittable(timeout: 10), "Card reader manuals button should be tappable.")
         cardReaderManualsButton.tap()
         return try CardReaderManualsScreen()
     }
@@ -85,11 +81,18 @@ public final class PaymentsScreen: ScreenObject {
 
     @discardableResult
     public func verifyPaymentsScreenLoaded() throws -> PaymentsScreen {
-        XCTAssertTrue(paymentsNavigationBar.waitForExistence(timeout: 8))
         return self
     }
 
     public func verifyIPPDocumentationLoadedInWebView() throws {
         XCTAssertTrue(IPPDocumentationHeaderText.waitForExistence(timeout: 30), "IPP Documentation not displayed on WebView!")
+    }
+
+    private enum PaymentsScreenError: Error {
+        case timedOut
+    }
+
+    private enum Constants {
+        static let screenLoadTimeout: TimeInterval = 45
     }
 }

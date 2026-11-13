@@ -9,11 +9,10 @@ struct QRLoginAvailabilityTests {
 
     // MARK: - Prologue gating
 
-    @Test func isAvailableForPrologue_when_flag_on_and_bucket_enabled_and_camera_available_then_true() async {
+    @Test func isAvailableForPrologue_when_flag_on_and_camera_available_then_true() async {
         // Given
         let availability = QRLoginAvailability(stores: makeStores(remoteFlag: true),
                                                overrideStore: nil,
-                                               rolloutBucket: makeBucket(value: 1),
                                                isCameraAvailable: { true })
 
         // When / Then
@@ -24,18 +23,6 @@ struct QRLoginAvailabilityTests {
         // Given
         let availability = QRLoginAvailability(stores: makeStores(remoteFlag: false),
                                                overrideStore: nil,
-                                               rolloutBucket: makeBucket(value: 1),
-                                               isCameraAvailable: { true })
-
-        // When / Then
-        #expect(await availability.isAvailableForPrologue() == false)
-    }
-
-    @Test func isAvailableForPrologue_when_bucket_disabled_then_false() async {
-        // Given
-        let availability = QRLoginAvailability(stores: makeStores(remoteFlag: true),
-                                               overrideStore: nil,
-                                               rolloutBucket: makeBucket(value: 5),
                                                isCameraAvailable: { true })
 
         // When / Then
@@ -46,18 +33,16 @@ struct QRLoginAvailabilityTests {
         // Given
         let availability = QRLoginAvailability(stores: makeStores(remoteFlag: true),
                                                overrideStore: nil,
-                                               rolloutBucket: makeBucket(value: 1),
                                                isCameraAvailable: { false })
 
         // When / Then
         #expect(await availability.isAvailableForPrologue() == false)
     }
 
-    @Test func isAvailableForPrologue_when_debug_override_true_then_bypasses_flag_and_bucket() async {
-        // Given — override true, but the flag is off and the bucket is disabled.
+    @Test func isAvailableForPrologue_when_debug_override_true_then_bypasses_flag() async {
+        // Given — override true, but the flag is off.
         let availability = QRLoginAvailability(stores: makeStores(remoteFlag: false),
                                                overrideStore: StubOverrideStore(value: true),
-                                               rolloutBucket: makeBucket(value: 9),
                                                isCameraAvailable: { true })
 
         // When / Then
@@ -68,7 +53,6 @@ struct QRLoginAvailabilityTests {
         // Given
         let availability = QRLoginAvailability(stores: makeStores(remoteFlag: true),
                                                overrideStore: StubOverrideStore(value: false),
-                                               rolloutBucket: makeBucket(value: 1),
                                                isCameraAvailable: { true })
 
         // When / Then
@@ -79,7 +63,6 @@ struct QRLoginAvailabilityTests {
         // Given
         let availability = QRLoginAvailability(stores: makeStores(remoteFlag: true, completionTiming: .deferred),
                                                overrideStore: nil,
-                                               rolloutBucket: makeBucket(value: 1),
                                                isCameraAvailable: { true })
 
         // When / Then
@@ -88,11 +71,10 @@ struct QRLoginAvailabilityTests {
 
     // MARK: - Deep-link gating
 
-    @Test func isAvailableForDeepLink_when_flag_on_then_true_even_if_bucket_disabled_and_camera_unavailable() async {
-        // Given — deep-link bypasses the bucket and skips the camera check.
+    @Test func isAvailableForDeepLink_when_flag_on_then_true_even_if_camera_unavailable() async {
+        // Given — deep-link skips the camera check.
         let availability = QRLoginAvailability(stores: makeStores(remoteFlag: true),
                                                overrideStore: nil,
-                                               rolloutBucket: makeBucket(value: 9),
                                                isCameraAvailable: { false })
 
         // When / Then
@@ -103,7 +85,6 @@ struct QRLoginAvailabilityTests {
         // Given
         let availability = QRLoginAvailability(stores: makeStores(remoteFlag: false),
                                                overrideStore: nil,
-                                               rolloutBucket: makeBucket(value: 1),
                                                isCameraAvailable: { true })
 
         // When / Then
@@ -114,7 +95,6 @@ struct QRLoginAvailabilityTests {
         // Given
         let availability = QRLoginAvailability(stores: makeStores(remoteFlag: false),
                                                overrideStore: StubOverrideStore(value: true),
-                                               rolloutBucket: makeBucket(value: 9),
                                                isCameraAvailable: { false })
 
         // When / Then
@@ -148,11 +128,6 @@ private extension QRLoginAvailabilityTests {
             }
         }
         return stores
-    }
-
-    func makeBucket(value: Int) -> QRLoginRolloutBucket {
-        QRLoginRolloutBucket(userDefaults: UserDefaults(suiteName: UUID().uuidString)!,
-                             randomBucketProvider: { value })
     }
 }
 

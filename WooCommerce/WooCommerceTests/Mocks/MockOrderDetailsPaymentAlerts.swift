@@ -25,7 +25,7 @@ final class MockOrderDetailsPaymentAlerts {
 }
 
 extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
-    func preparingReader(onCancel: @escaping () -> Void) {
+    func preparingReader(onCancel: @escaping @MainActor @Sendable () -> Void) {
         cancelPreparingReaderAlert = onCancel
     }
 
@@ -33,11 +33,11 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         // no-op
     }
 
-    func tapOrInsertCard(title: String, amount: String, inputMethods: Yosemite.CardReaderInput, onCancel: @escaping () -> Void) {
+    func tapOrInsertCard(title: String, amount: String, inputMethods: Yosemite.CardReaderInput, onCancel: @escaping @MainActor @Sendable () -> Void) {
         cancelTapOrInsertCardAlert = onCancel
     }
 
-    func cardInserted(title: String, amount: String, onCancel: @escaping () -> Void) {
+    func cardInserted(title: String, amount: String, onCancel: @escaping @MainActor @Sendable () -> Void) {
         cardInsertedWasCalled = true
         cancelCardInsertedAlert = onCancel
     }
@@ -56,13 +56,13 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         emailReceiptFromSuccessAlert = emailReceipt
     }
 
-    func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
+    func error(error: Error, tryAgain: @escaping @MainActor @Sendable () -> Void, dismissCompletion: @escaping @MainActor @Sendable () -> Void) {
         self.error = error
         retryFromError = tryAgain
         dismissErrorCompletion = dismissCompletion
     }
 
-    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
+    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping @MainActor @Sendable () -> Void) {
         nonRetryableErrorWasCalled = true
         dismissErrorCompletion = dismissCompletion
     }

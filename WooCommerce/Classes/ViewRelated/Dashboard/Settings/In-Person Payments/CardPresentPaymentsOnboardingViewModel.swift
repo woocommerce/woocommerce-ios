@@ -4,7 +4,8 @@ import Yosemite
 import Experiments
 import WooFoundation
 
-final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel, Identifiable {
+@MainActor
+final class CardPresentPaymentsOnboardingViewModel: ObservableObject, @MainActor PaymentSettingsFlowPresentedViewModel, Identifiable {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
@@ -17,8 +18,9 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     /// Initializes the view model for a specific site
     ///
     init(stores: StoresManager = ServiceLocator.stores,
-         useCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+         useCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
          didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)? = nil) {
+        let useCase = useCase ?? CardPresentPaymentsOnboardingUseCase()
         self.stores = stores
         self.useCase = useCase
         self.didChangeShouldShow = didChangeShouldShow
@@ -46,11 +48,11 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     init(
         fixedState: CardPresentPaymentOnboardingState,
         fixedUserIsAdministrator: Bool = false,
-        useCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+        useCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
         stores: StoresManager = ServiceLocator.stores) {
             self.stores = stores
             state = fixedState
-            self.useCase = useCase
+            self.useCase = useCase ?? CardPresentPaymentsOnboardingUseCase()
             userIsAdministrator = fixedUserIsAdministrator
             updateLearnMoreURL(state: fixedState)
         }
@@ -59,6 +61,19 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     ///
     func refresh() {
         useCase.refresh()
+    }
+
+    var pluginManagementURL: URL? {
+        guard userIsAdministrator, let site = stores.sessionManager.defaultSite,
+              URL(string: site.adminURL)?.host != nil else { return nil }
+        return URL(string: site.pluginsURL)
+    }
+
+    func paymentSettingsURL(for plugin: CardPresentPaymentsPlugin) -> URL? {
+        guard userIsAdministrator, let site = stores.sessionManager.defaultSite,
+              URL(string: site.adminURL)?.host != nil else { return nil }
+        let url = site.pluginSettingsSectionURL(from: plugin)
+        return URL(string: plugin == .stripe ? url + "&panel=settings" : url)
     }
 
     /// Sends the action to install the Card Present plugin
@@ -78,6 +93,13 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     func skipPendingRequirements() {
         trackSkipped(state: useCase.state, remindLater: true)
         useCase.skipPendingRequirements()
+    }
+
+    /// Skips the Overdue Requirements step when the user taps `Skip`
+    ///
+    func skipOverdueRequirements() {
+        trackSkipped(state: useCase.state, remindLater: false)
+        useCase.skipOverdueRequirements()
     }
 
     /// Selects the plugin to use as a payment gateway when there are multiple available
@@ -146,7 +168,7 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     var didUpdate: (() -> Void)? = nil
 }
 
-extension CardPresentPaymentsOnboardingViewModel: Equatable {
+extension CardPresentPaymentsOnboardingViewModel: @MainActor Equatable {
     static func == (lhs: CardPresentPaymentsOnboardingViewModel, rhs: CardPresentPaymentsOnboardingViewModel) -> Bool {
         lhs.state == rhs.state &&
         lhs.userIsAdministrator == rhs.userIsAdministrator &&

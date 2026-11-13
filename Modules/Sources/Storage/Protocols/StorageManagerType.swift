@@ -11,7 +11,7 @@ public extension NSNotification.Name {
 
 /// Defines the methods and properties implemented by any concrete StorageManager implementation.
 ///
-public protocol StorageManagerType: AnyObject {
+public protocol StorageManagerType: AnyObject, Sendable {
 
     /// Returns the `Storage` associated to the main thread.
     ///
@@ -26,8 +26,8 @@ public protocol StorageManagerType: AnyObject {
     ///   - operation: A closure which uses the given `StorageType` to make data changes in background.
     ///   - completion: A closure which is called after the changed made by the `operation` is saved.
     ///   - queue: A queue on which to execute the completion closure.
-    func performAndSave(_ operation: @escaping (StorageType) -> Void,
-                        completion: (() -> Void)?,
+    func performAndSave(_ operation: @escaping @Sendable (StorageType) -> Void,
+                        completion: (@Sendable () -> Void)?,
                         on queue: DispatchQueue)
 
     /// Execute the given `operation` with a background context, save the changes, and return the result.
@@ -40,16 +40,16 @@ public protocol StorageManagerType: AnyObject {
     ///   - completion: A closure which is called with the `operation`'s execution result,
     ///   which is either an error thrown by the `operation` or the return value of the `operation`.
     ///   - queue: A queue on which to execute the completion closure.
-    func performAndSave<T>(_ operation: @escaping (StorageType) throws -> T,
-                           completion: @escaping (Result<T, Error>) -> Void,
-                           on queue: DispatchQueue)
+    func performAndSave<T: Sendable>(_ operation: @escaping @Sendable (StorageType) throws -> T,
+                                     completion: @escaping @Sendable (Result<T, Error>) -> Void,
+                                     on queue: DispatchQueue)
 
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.
     ///
     /// - Parameter onCompletion: A callback closure triggered when the resetting is done.
     ///
-    func reset(onCompletion: (() -> Void)?)
+    func reset(onCompletion: (@Sendable () -> Void)?)
 }
 
 public extension StorageManagerType {
@@ -63,7 +63,7 @@ public extension StorageManagerType {
     /// - Parameters:
     ///   - operation: A closure which uses the given `StorageType` to make data changes in background.
     ///   - queue: A queue on which to execute the completion closure.
-    func performAndSaveAsync(_ operation: @escaping (StorageType) -> Void, on queue: DispatchQueue = .main) async {
+    func performAndSaveAsync(_ operation: @escaping @Sendable (StorageType) -> Void, on queue: DispatchQueue = .main) async {
         await withCheckedContinuation { continuation in
             performAndSave(operation, completion: {
                 continuation.resume()

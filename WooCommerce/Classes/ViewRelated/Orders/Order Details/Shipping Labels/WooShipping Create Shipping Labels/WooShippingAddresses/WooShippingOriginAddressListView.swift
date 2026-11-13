@@ -60,7 +60,7 @@ struct WooShippingOriginAddressListView: View {
                 // TODO: Handle edits to the address fields
                 NavigationStack {
                     WooShippingEditAddressView(viewModel: addressToEdit)
-                    .navigationTitle(Localization.editOrigin)
+                    .navigationTitle(addressToEdit.title)
                     .navigationBarTitleDisplayMode(.inline)
                 }
             }
@@ -87,9 +87,6 @@ private extension WooShippingOriginAddressListView {
         static let defaultAddress = NSLocalizedString("wooShipping.originAddresses.defaultAddress",
                                                       value: "(default)",
                                                       comment: "Indicates that the address is the default origin address  on the shipping label creation screen")
-        static let editOrigin = NSLocalizedString("wooShipping.originAddresses.editOrigin",
-                                                    value: "Edit Origin",
-                                                    comment: "Title for the edit origin address screen in the shipping label creation flow")
         static let unverified = NSLocalizedString("wooShipping.originAddresses.unverified",
                                                   value: "Unverified address",
                                                   comment: "Label when an address is unverified on the shipping label creation screen")

@@ -3,7 +3,7 @@ import Codegen
 
 /// Shipping label data for printing
 ///
-public struct ShippingLabelPrintData: Decodable, Equatable, GeneratedFakeable {
+public struct ShippingLabelPrintData: Decodable, Equatable, GeneratedFakeable, Sendable {
     /// The media type of shipping label document.
     public let mimeType: String
 

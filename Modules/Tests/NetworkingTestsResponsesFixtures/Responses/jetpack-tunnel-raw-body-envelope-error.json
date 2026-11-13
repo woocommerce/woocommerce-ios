@@ -1,0 +1,11 @@
+{
+  "status": 500,
+  "body": {
+    "error": "no_response_body",
+    "message": "Remote site returned non-JSON response",
+    "data": {
+      "status": 503,
+      "raw_body": "<html>upstream application_password=app-pass failed</html>"
+    }
+  }
+}

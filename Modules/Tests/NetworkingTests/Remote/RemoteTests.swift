@@ -1,7 +1,9 @@
 import Combine
+import Synchronization
 import XCTest
 import Fakes
 import TestKit
+import protocol Alamofire.URLRequestConvertible
 
 @testable import Networking
 @testable import NetworkingCore
@@ -18,9 +20,161 @@ final class RemoteTests: XCTestCase {
 
     private var cancellables = Set<AnyCancellable>()
 
-    override func setUp() {
-        super.setUp()
-        cancellables = []
+    func test_enqueue_when_authorization_is_malformed_then_attaches_diagnostics_without_parsing_notification() throws {
+        // Given
+        let network = SuccessfulNetwork(data: try malformedAuthorizationResponse())
+        let remote = Remote(network: network)
+        let request = UnexpectedResponseRequest(original: RESTRequest(siteURL: "https://example.com", method: .get, path: ""))
+        request.recordResponse(status: 202, contentType: "application/json", tunneled: false)
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let observer = NotificationCenter.default.addObserver(forName: .RemoteDidReceiveJSONParsingError, object: nil, queue: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+
+        // When
+        let result: Result<WordPressSite, Error> = waitFor { promise in
+            remote.enqueue(request, mapper: WordPressSiteMapper(validateAuthorization: true), completion: promise)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? UnexpectedStoreResponseError)
+        XCTAssertEqual(error.kind, .unexpectedContent)
+        XCTAssertEqual(error.statusCode, 202)
+        XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+        XCTAssertEqual(error.diagnostics?.request, "GET /wp-json")
+        XCTAssertNil(error.diagnostics?.excerpt)
+        XCTAssertTrue(notifications.values.isEmpty)
+    }
+
+    func test_fetchSiteInfo_when_authorization_is_malformed_then_returns_typed_failure_without_parsing_notification() async throws {
+        // Given
+        let network = SuccessfulNetwork(data: try malformedAuthorizationResponse())
+        let remote = WordPressSiteRemote(network: network,
+                                         apiRootCache: MockRESTAPIRootCache(stubbedRoot: "https://example.com/wp-json/"),
+                                         discoverRESTAPIRoot: { _ in nil })
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let observer = NotificationCenter.default.addObserver(forName: .RemoteDidReceiveJSONParsingError, object: nil, queue: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+
+        // When
+        do {
+            _ = try await remote.fetchSiteInfo(for: "https://example.com", detectUnexpectedResponses: true)
+            XCTFail("Expected invalid authorization metadata to be rejected")
+        } catch {
+            // Then
+            let failure = try XCTUnwrap(error as? UnexpectedStoreResponseError)
+            XCTAssertEqual(failure.kind, .unexpectedContent)
+            XCTAssertEqual(failure.diagnostics?.request, "GET /wp-json")
+            XCTAssertNil(failure.diagnostics?.excerpt)
+        }
+        XCTAssertTrue(notifications.values.isEmpty)
+    }
+
+    func test_enqueue_when_opted_in_mapper_fails_then_posts_sanitized_parsing_notification() throws {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let notificationExpectation = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+            return true
+        }
+        // When
+        let result: Result<Any, Error> = waitFor { promise in
+            remote.enqueue(self.request, mapper: SensitiveFailingMapper(), detectUnexpectedResponses: true, completion: promise)
+        }
+        wait(for: [notificationExpectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.failure is UnexpectedStoreResponseError)
+        let notification = try XCTUnwrap(notifications.values.first)
+        XCTAssertEqual(notifications.values.count, 1)
+        XCTAssertEqual(notification.path, "something")
+        XCTAssertEqual(notification.entity, "Any")
+        XCTAssertTrue(notification.isDecodingError)
+        XCTAssertFalse(notification.errorDescription?.contains("private-sentinel") == true)
+    }
+
+    func test_enqueue_async_when_opted_in_mapper_fails_then_posts_parsing_notification() async throws {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let notificationExpectation = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+            return true
+        }
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: SensitiveFailingMapper(), detectUnexpectedResponses: true)
+            XCTFail("Expected a mapping failure")
+        } catch {
+            // Then
+            XCTAssertTrue(error is UnexpectedStoreResponseError)
+        }
+        await fulfillment(of: [notificationExpectation], timeout: Constants.expectationTimeout)
+        XCTAssertEqual(notifications.values.count, 1)
+        XCTAssertEqual(notifications.values.first?.path, "something")
+        XCTAssertEqual(notifications.values.first?.entity, "Any")
+        XCTAssertEqual(notifications.values.first?.isDecodingError, true)
+        XCTAssertFalse(notifications.values.first?.errorDescription?.contains("private-sentinel") == true)
+    }
+
+    func test_enqueue_when_opted_in_and_payload_shape_is_wrong_then_returns_typed_failure() async {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: UserMapper(siteID: 123), detectUnexpectedResponses: true)
+            XCTFail("Expected a malformed user response")
+        } catch {
+            // Then
+            XCTAssertEqual((error as? UnexpectedStoreResponseError)?.kind, .unexpectedContent)
+            XCTAssertNil((error as? UnexpectedStoreResponseError)?.diagnostics?.excerpt)
+        }
+    }
+
+    func test_enqueue_when_not_opted_in_and_payload_shape_is_wrong_then_preserves_decoding_error() async {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: UserMapper(siteID: 123))
+            XCTFail("Expected a malformed user response")
+        } catch {
+            // Then
+            XCTAssertTrue(error is DecodingError)
+        }
+    }
+
+    func test_responseDataAndHeaders_when_called_from_mainActor_then_forwards_caller_isolation() async throws {
+        // Given
+        let network: any Network = IsolationCapturingNetwork()
+
+        // When
+        let response = try await network.responseDataAndHeaders(for: request)
+
+        // Then
+        XCTAssertEqual(response.0, Data([1]))
+    }
+
+    func test_responseData_when_called_from_mainActor_then_forwards_caller_isolation() async throws {
+        // Given
+        let network: any Network = IsolationCapturingNetwork()
+
+        // When
+        let response = try await network.responseData(for: request)
+
+        // Then
+        XCTAssertEqual(response, Data([1]))
     }
 
     /// Verifies that `enqueue:mapper:` properly wraps up the received request within an AuthenticatedRequest, with
@@ -145,6 +299,54 @@ final class RemoteTests: XCTestCase {
         XCTAssertNotNil(mapper.input)
     }
 
+    /// Verifies that `enqueue:mapper:` with `Result` callback delivers a successful result on the main thread,
+    /// even though validation and parsing now run on a background queue.
+    ///
+    func test_enqueue_with_result_when_parsing_succeeds_then_completion_is_called_on_main_thread() {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        var isMainThread: Bool?
+        waitForExpectation { expectation in
+            remote.enqueue(request, mapper: mapper) { _ in
+                isMainThread = Thread.isMainThread
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(isMainThread, true)
+    }
+
+    /// Verifies that `enqueue:mapper:` with `Result` callback delivers a parsing failure on the main thread,
+    /// so the error-handling notifications keep firing on the main thread.
+    ///
+    func test_enqueue_with_result_when_parsing_fails_then_completion_is_called_on_main_thread() {
+        // Given
+        let network = MockNetwork()
+        let mapper = FailingDummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        var isMainThread: Bool?
+        waitForExpectation { expectation in
+            remote.enqueue(request, mapper: mapper) { _ in
+                isMainThread = Thread.isMainThread
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(isMainThread, true)
+    }
+
     /// Verifies that `enqueuePublisher` relays any received payload over to the Mapper.
     ///
     func test_enqueuePublisher_relays_received_payload_to_mapper() {
@@ -185,6 +387,305 @@ final class RemoteTests: XCTestCase {
         }
 
         await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `enqueue:` posts a `RemoteDidReceiveUnknownBlogError` Notification whenever the backend returns an
+    /// `unknown_blog` error.
+    ///
+    func test_enqueue_posts_unknown_blog_notification_when_the_response_contains_unknown_blog_error() async throws {
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveUnknownBlogError, object: nil, handler: nil)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "unknown_blog_error")
+
+        do {
+            let _: String = try await remote.enqueue(request)
+        } catch {
+            let error = try XCTUnwrap(error as? DotcomError)
+            XCTAssertEqual(error, .unknownBlog())
+        }
+
+        await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that a network-level failure is only mapped and re-thrown: it is NOT routed through
+    /// `handleResponseError`, so no error notification is posted even for a failure that would map to one.
+    func test_enqueue_when_the_network_request_fails_then_does_not_post_an_error_notification() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+        // `request` is a JetpackRequest, so this would post a Jetpack-timeout notification if the
+        // network-failure path passed it to `handleResponseError` — which it must not.
+        network.simulateError(requestUrlSuffix: "something", error: DotcomError.requestFailed())
+
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
+        expectationForNotification.isInverted = true
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then: the error is mapped and re-thrown as-is, without handling it.
+            XCTAssertEqual(error as? DotcomError, .requestFailed())
+        }
+
+        await fulfillment(of: [expectationForNotification], timeout: 1.0)
+    }
+
+    // MARK: - Store connection error detection
+
+    func test_enqueue_when_the_response_body_names_the_invalid_signature_error_then_the_store_is_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_error")
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            XCTAssertEqual(error as? DotcomError, .invalidSignature())
+        }
+
+        // Then
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    func test_enqueue_when_the_response_body_names_the_invalid_signature_code_then_the_store_is_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            XCTAssertEqual(error as? DotcomError, .invalidSignature())
+        }
+
+        // Then
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    /// The store's rejection can also reach us as a status code failure whose body names the code.
+    ///
+    func test_enqueue_when_the_request_fails_with_the_invalid_signature_status_code_then_the_store_is_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+
+        let responseBody = try XCTUnwrap(#"{"code":"rest_invalid_signature","message":"The request is not signed correctly."}"#.data(using: .utf8))
+        network.simulateError(requestUrlSuffix: "something",
+                              error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+        }
+    }
+
+    func test_enqueue_when_the_response_contains_another_error_then_the_store_is_not_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "unknown_blog_error")
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? DotcomError, .unknownBlog())
+            XCTAssertTrue(recorder.invalidSignatureSiteIDs.isEmpty)
+        }
+    }
+
+    func test_enqueue_when_the_request_succeeds_then_the_store_is_recorded_as_reachable() throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "generic_success_data")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { _, error in
+            XCTAssertNil(error)
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(recorder.successfulConnectionSiteIDs, [123])
+    }
+
+    /// A direct request authenticated with an application password never touches the Jetpack connection,
+    /// so its success must not clear a store whose tunnel is still broken.
+    ///
+    func test_enqueue_when_the_request_succeeds_directly_with_an_application_password_then_the_store_is_not_recorded_as_reachable() throws {
+        // Given
+        let network = MockNetwork()
+        network.simulatesJetpackTunnel = false
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "generic_success_data")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { _, error in
+            XCTAssertNil(error)
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+    }
+
+    /// The `(Output?, Error?)` overload parses the body even when the request failed, because the Jetpack
+    /// tunnel returns a body worth reading alongside an error status. A body the validator has nothing to
+    /// say about must not be mistaken for the store being reachable.
+    ///
+    func test_enqueue_when_the_response_has_both_a_body_and_a_transport_error_then_the_store_is_not_recorded_as_reachable() throws {
+        // Given
+        // `rest_no_route` is deliberately a code `DotcomValidator` ignores, so validation passes and the
+        // only thing left saying the request failed is the transport error alongside it.
+        let responseBody = try XCTUnwrap(#"{"code":"rest_no_route","message":"No route was found matching the URL."}"#.data(using: .utf8))
+        let network = BodyAndErrorNetwork(data: responseBody,
+                                          error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { _, _ in
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+    }
+
+    /// Uploads are not status-code validated, so an error status reaches us as a body with no error at
+    /// all. That is indistinguishable from a success here, so an upload must never be taken as evidence
+    /// that the store is reachable.
+    ///
+    func test_enqueueMultipartFormDataUpload_when_the_upload_cannot_report_its_outcome_then_the_store_is_not_recorded_as_reachable() throws {
+        // Given
+        let responseBody = try XCTUnwrap(#"{"code":"rest_no_route","message":"No route was found matching the URL."}"#.data(using: .utf8))
+        // This stub drops the error on the upload path, exactly as `AlamofireNetwork` does.
+        let network = BodyAndErrorNetwork(data: responseBody,
+                                          error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueueMultipartFormDataUpload(request, mapper: DummyMapper(), multipartFormData: { _ in }) { _ in
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+    }
+
+    /// The header-only overload parses no body, but it is a real store request: POS catalog syncing uses
+    /// it, so it has to be able to clear a store that has recovered.
+    ///
+    func test_enqueueWithResponseHeaders_when_the_request_succeeds_then_the_store_is_recorded_as_reachable() async throws {
+        // Given
+        let responseBody = try XCTUnwrap("{}".data(using: .utf8))
+        let network = SuccessfulNetwork(data: responseBody, headers: ["x-wp-total": "7"])
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+
+        // When
+        _ = try await remote.enqueueWithResponseHeaders(request)
+
+        // Then
+        XCTAssertEqual(recorder.successfulConnectionSiteIDs, [123])
+    }
+
+    /// The tunnel answers with a healthy status and an error body, so a 200 on its own says nothing
+    /// about the store. This overload parses no body for its callers, but it still has to read one
+    /// before deciding the store recovered.
+    ///
+    func test_enqueueWithResponseHeaders_when_the_body_carries_the_invalid_signature_error_then_the_store_is_not_recorded_as_reachable() async throws {
+        // Given
+        let responseBody = try XCTUnwrap(#"{"code":"rest_invalid_signature","message":"The request is not signed correctly."}"#.data(using: .utf8))
+        let network = SuccessfulNetwork(data: responseBody)
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+
+        // When
+        _ = try await remote.enqueueWithResponseHeaders(request)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    /// The `Result` overload sees a plain success whenever the transport was fine, so the body is the
+    /// only thing standing between a tunneled error and the store being marked reachable.
+    ///
+    func test_enqueue_with_result_when_the_body_carries_the_invalid_signature_error_then_the_store_is_not_recorded_as_reachable() {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { (_: Result<Any, Error>) in
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    func test_enqueue_publisher_when_the_body_carries_the_invalid_signature_error_then_the_store_is_not_recorded_as_reachable() {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network, storeConnectionErrorRecorder: recorder)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper())
+            .sink { _ in expectationForRequest.fulfill() }
+            .store(in: &cancellables)
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
     }
 
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
@@ -467,11 +968,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         let result: (Any?, Error?) = waitFor { promise in
@@ -487,8 +988,8 @@ final class RemoteTests: XCTestCase {
         XCTAssertNotNil(result.1)
         XCTAssertTrue(result.1 is DecodingError)
 
-        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        let path = try XCTUnwrap(notifications.values.first?.path)
+        let entityName = try XCTUnwrap(notifications.values.first?.entity)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
     }
@@ -504,11 +1005,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         let result: Result<Any, Error> = waitFor { promise in
@@ -523,8 +1024,8 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
 
-        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        let path = try XCTUnwrap(notifications.values.first?.path)
+        let entityName = try XCTUnwrap(notifications.values.first?.entity)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
     }
@@ -540,11 +1041,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         let result: Result<Any, Error> = waitFor { promise in
@@ -558,8 +1059,8 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
 
-        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        let path = try XCTUnwrap(notifications.values.first?.path)
+        let entityName = try XCTUnwrap(notifications.values.first?.entity)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
     }
@@ -576,11 +1077,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         do {
@@ -589,8 +1090,8 @@ final class RemoteTests: XCTestCase {
             await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
-            let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-            let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+            let path = try XCTUnwrap(notifications.values.first?.path)
+            let entityName = try XCTUnwrap(notifications.values.first?.entity)
             XCTAssertEqual(path, "something")
             XCTAssertEqual(entityName, "Any")
         }
@@ -606,11 +1107,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         do {
@@ -619,8 +1120,8 @@ final class RemoteTests: XCTestCase {
             await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
-            let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-            let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+            let path = try XCTUnwrap(notifications.values.first?.path)
+            let entityName = try XCTUnwrap(notifications.values.first?.entity)
             XCTAssertEqual(path, "something")
             XCTAssertEqual(entityName, "Array<String>")
         }
@@ -638,14 +1139,14 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
-        let result: Result<Any, Error> = waitFor { promise in
+        let result: Result<Any, Error> = await waitForAsync { promise in
             remote.enqueueMultipartFormDataUpload(self.request, mapper: mapper, multipartFormData: { _ in }) { result in
                 promise(result)
             }
@@ -656,13 +1157,119 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
 
-        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        let path = try XCTUnwrap(notifications.values.first?.path)
+        let entityName = try XCTUnwrap(notifications.values.first?.entity)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
     }
 
     // MARK: Mapping `NetworkError`
+
+    func test_enqueue_async_when_jetpack_network_error_response_contains_raw_body_then_logs_and_preserves_mapped_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let logger = SpyJetpackTunnelRawBodyErrorLogger()
+        let remote = Remote(network: network, jetpackTunnelRawBodyErrorLogger: logger)
+        let responseData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-error"))
+        network.simulateError(
+            requestUrlSuffix: "something",
+            error: NetworkError.unacceptableStatusCode(statusCode: 500, response: responseData)
+        )
+
+        // When
+        do {
+            try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            assertRawBodyDotcomError(error)
+        }
+
+        let call = try XCTUnwrap(logger.calls.first)
+        XCTAssertEqual(logger.calls.count, 1)
+        XCTAssertEqual(call.responseData, responseData)
+        XCTAssertEqual(call.requestMethod, "POST")
+        XCTAssertEqual(call.requestPath, "something")
+        XCTAssertEqual(call.transportStatus, 500)
+    }
+
+    func test_enqueue_with_mapper_when_jetpack_validation_error_contains_raw_body_then_logs_and_preserves_completion_error() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let logger = SpyJetpackTunnelRawBodyErrorLogger()
+        let remote = Remote(network: network, jetpackTunnelRawBodyErrorLogger: logger)
+        let responseData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-error"))
+        network.simulateResponse(requestUrlSuffix: "something", filename: "jetpack-tunnel-raw-body-error")
+
+        // When
+        let result: (Any?, Error?) = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper) { output, error in
+                promise((output, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.0)
+        assertRawBodyDotcomError(result.1)
+
+        let call = try XCTUnwrap(logger.calls.first)
+        XCTAssertEqual(logger.calls.count, 1)
+        XCTAssertEqual(call.responseData, responseData)
+        XCTAssertEqual(call.requestMethod, "POST")
+        XCTAssertEqual(call.requestPath, "something")
+        XCTAssertNil(call.transportStatus)
+    }
+
+    func test_enqueue_async_when_jetpack_network_error_response_contains_envelope_raw_body_then_logs_and_preserves_network_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let logger = SpyJetpackTunnelRawBodyErrorLogger()
+        let remote = Remote(network: network, jetpackTunnelRawBodyErrorLogger: logger)
+        let responseData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-envelope-error"))
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500, response: responseData)
+        network.simulateError(requestUrlSuffix: "something", error: expectedError)
+
+        // When
+        do {
+            try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+
+        let call = try XCTUnwrap(logger.calls.first)
+        XCTAssertEqual(logger.calls.count, 1)
+        XCTAssertEqual(call.responseData, responseData)
+        XCTAssertEqual(call.requestMethod, "POST")
+        XCTAssertEqual(call.requestPath, "something")
+        XCTAssertEqual(call.transportStatus, 500)
+    }
+
+    func test_enqueue_async_when_non_jetpack_network_error_response_contains_raw_body_then_does_not_log() async throws {
+        // Given
+        let network = MockNetwork()
+        let logger = SpyJetpackTunnelRawBodyErrorLogger()
+        let remote = Remote(network: network, jetpackTunnelRawBodyErrorLogger: logger)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: "something")
+        let responseData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-error"))
+        network.simulateError(
+            requestUrlSuffix: "something",
+            error: NetworkError.unacceptableStatusCode(statusCode: 500, response: responseData)
+        )
+
+        // When
+        do {
+            try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            assertRawBodyDotcomError(error)
+        }
+
+        XCTAssertTrue(logger.calls.isEmpty)
+    }
 
     /// Verifies that `enqueue:mapper:` (with `Result`) maps an error from `responseData` when error has proper response data
     ///
@@ -1104,6 +1711,217 @@ final class RemoteTests: XCTestCase {
     }
 }
 
+private extension RemoteTests {
+    func malformedAuthorizationResponse() throws -> Data {
+        let response = try XCTUnwrap(Loader.contentsOf("wordpress-site-info-with-auth-url"))
+        var json = try XCTUnwrap(JSONSerialization.jsonObject(with: response) as? [String: Any])
+        json["authentication"] = ["application-passwords": ["endpoints": ["authorization": "/relative"]]]
+        return try JSONSerialization.data(withJSONObject: json)
+    }
+
+    func assertRawBodyDotcomError(_ error: Error?, file: StaticString = #filePath, line: UInt = #line) {
+        guard let error,
+              case let DotcomError.unknown(code, _, _) = error else {
+            return XCTFail("Expected DotcomError.unknown", file: file, line: line)
+        }
+
+        XCTAssertEqual(code, "no_response_body", file: file, line: line)
+    }
+}
+
+/// Models what `AlamofireNetwork` hands back for a failing Jetpack request, which `MockNetwork` cannot
+/// express because it returns either a body or an error, never both.
+///
+/// The two paths differ on purpose, matching production. `responseData` reports `networkingError`, which
+/// is derived from the status code. `uploadMultipartFormData` reports Alamofire's own `response.error`,
+/// and uploads are not `.validate()`d, so an error status arrives with no error at all: body present,
+/// error nil.
+///
+/// Collects values appended from the notification observer, which runs off the test's isolation.
+///
+private final class LockedCollector<Value: Sendable>: Sendable {
+    private let storage = Mutex<[Value]>([])
+
+    func append(_ value: Value) {
+        storage.withLock { $0.append(value) }
+    }
+
+    var values: [Value] {
+        storage.withLock { $0 }
+    }
+}
+
+/// The fields of a `RemoteDidReceiveJSONParsingError` notification the tests assert on, copied out of the
+/// non-Sendable `Notification` inside the observer so they can cross back to the test.
+///
+private struct ParsingErrorNotification: Sendable {
+    let path: String?
+    let entity: String?
+    let isDecodingError: Bool
+    let errorDescription: String?
+
+    init(_ notification: Notification) {
+        path = notification.userInfo?["path"] as? String
+        entity = notification.userInfo?["entity"] as? String
+        isDecodingError = notification.object is DecodingError
+        errorDescription = (notification.object as? DecodingError).map { String(describing: $0) }
+    }
+}
+
+private final class BodyAndErrorNetwork: Network {
+    private let data: Data
+    private let error: Error
+
+    init(data: Data, error: Error) {
+        self.data = data
+        self.error = error
+    }
+
+    var session: URLSession { URLSession(configuration: .default) }
+
+    /// Stands in for a store reached through the tunnel.
+    ///
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, error)
+    }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+        completion(.failure(error))
+    }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
+        throw error
+    }
+
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        Just<Swift.Result<Data, Error>>(.failure(error)).eraseToAnyPublisher()
+    }
+
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                 to request: URLRequestConvertible,
+                                 completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, nil)
+    }
+}
+
+/// Reports a successful response for every path, for exercising the self-healing clear.
+///
+private final class SuccessfulNetwork: Network {
+    private let data: Data
+    private let headers: Network.ResponseHeaders?
+
+    init(data: Data, headers: Network.ResponseHeaders? = [:]) {
+        self.data = data
+        self.headers = headers
+    }
+
+    var session: URLSession { URLSession(configuration: .default) }
+
+    /// Stands in for a store reached through the tunnel.
+    ///
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, nil)
+    }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+        completion(.success(data))
+    }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
+        (data, headers)
+    }
+
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        Just<Swift.Result<Data, Error>>(.success(data)).eraseToAnyPublisher()
+    }
+
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                 to request: URLRequestConvertible,
+                                 completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, nil)
+    }
+}
+
+/// Returns whether the call carried MainActor isolation in its response body.
+private struct IsolationCapturingNetwork: Network {
+    var session: URLSession { URLSession(configuration: .default) }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) { }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) { }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
+        (Data([isolation === MainActor.shared ? 1 : 0]), nil)
+    }
+
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        Empty<Swift.Result<Data, Error>, Never>().eraseToAnyPublisher()
+    }
+
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                 to request: URLRequestConvertible,
+                                 completion: @escaping (Data?, Error?) -> Void) { }
+
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
+}
+
+private final class MockStoreConnectionErrorRecorder: StoreConnectionErrorRecording {
+    private struct Recorded {
+        var invalidSignatureSiteIDs: [Int64] = []
+        var successfulConnectionSiteIDs: [Int64] = []
+    }
+
+    private let recorded = Mutex(Recorded())
+
+    var invalidSignatureSiteIDs: [Int64] { recorded.withLock { $0.invalidSignatureSiteIDs } }
+    var successfulConnectionSiteIDs: [Int64] { recorded.withLock { $0.successfulConnectionSiteIDs } }
+
+    func recordInvalidSignature(siteID: Int64) {
+        recorded.withLock { $0.invalidSignatureSiteIDs.append(siteID) }
+    }
+
+    func recordSuccessfulConnection(siteID: Int64) {
+        recorded.withLock { $0.successfulConnectionSiteIDs.append(siteID) }
+    }
+}
+
+private final class SpyJetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging {
+    struct Call {
+        let responseData: Data?
+        let requestMethod: String?
+        let requestPath: String?
+        let transportStatus: Int?
+    }
+
+    private let recordedCalls = Mutex<[Call]>([])
+
+    var calls: [Call] { recordedCalls.withLock { $0 } }
+
+    func logIfNeeded(responseData: Data?, request: Request, transportStatus: Int?) {
+        let jetpackRequest = request as? JetpackRequest
+        let call = Call(
+            responseData: responseData,
+            requestMethod: jetpackRequest?.method.rawValue.uppercased(),
+            requestPath: jetpackRequest?.path,
+            transportStatus: transportStatus
+        )
+        recordedCalls.withLock { $0.append(call) }
+    }
+}
+
 
 /// Dummy Mapper: Useful only for Remote UnitTests
 ///
@@ -1126,5 +1944,11 @@ private class FailingDummyMapper: Mapper {
     func map(response: Data) throws -> Any {
         let decoder = JSONDecoder()
         return try decoder.decode(String.self, from: Data())
+    }
+}
+
+private struct SensitiveFailingMapper: Mapper {
+    func map(response: Data) throws -> Any {
+        throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "private-sentinel"))
     }
 }

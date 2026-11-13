@@ -8,22 +8,24 @@ extension UITableViewCell {
 
     /// Returns a reuseIdentifier that matches the receiver's classname (non namespaced).
     ///
-    class var reuseIdentifier: String {
+    nonisolated class var reuseIdentifier: String {
         return classNameWithoutNamespaces
     }
 
     /// Configures the default background configuration
-    func configureDefaultBackgroundConfiguration() {
+    func configureDefaultBackgroundConfiguration(backgroundColor: UIColor = .listForeground(modal: false)) {
         var backgroundConfiguration = defaultBackgroundConfiguration()
-        backgroundConfiguration.backgroundColor = .listForeground(modal: false)
+        backgroundConfiguration.backgroundColor = backgroundColor
         self.backgroundConfiguration = backgroundConfiguration
     }
 
     /// Updates the default background configuration
-    func updateDefaultBackgroundConfiguration(using state: UICellConfigurationState, style: UITableView.Style = .grouped) {
+    func updateDefaultBackgroundConfiguration(using state: UICellConfigurationState,
+                                              style: UITableView.Style = .grouped,
+                                              backgroundColor: UIColor = .listForeground(modal: false)) {
         var backgroundConfiguration = defaultBackgroundConfiguration().updated(for: state)
         if style == .grouped {
-            backgroundConfiguration.backgroundColor = .listForeground(modal: false)
+            backgroundConfiguration.backgroundColor = backgroundColor
         }
 
         if state.isSelected || state.isHighlighted {

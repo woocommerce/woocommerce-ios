@@ -75,16 +75,6 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         var id: String {
             status?.rawValue ?? "any"
         }
-
-        var description: String {
-            guard let status else {
-                return Localization.anyStatusCase
-            }
-            if status == .custom(CIABOrderStatusMapper.openSlug) {
-                return CIABOrderStatusMapper.displayName(for: status)
-            }
-            return status.description
-        }
     }
     // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?
@@ -99,17 +89,28 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         guard let selectedOrderStatus else {
             return Localization.anyStatusCase
         }
-        if selectedOrderStatus == .custom(CIABOrderStatusMapper.openSlug) {
-            return CIABOrderStatusMapper.displayName(for: selectedOrderStatus)
+        return siteStatuses.displayName(for: selectedOrderStatus)
+    }
+
+    /// Display name for the currently selected status, used by the empty state. Nil when no status is selected.
+    ///
+    var selectedOrderStatusDisplayName: String? {
+        selectedOrderStatus.map { siteStatuses.displayName(for: $0) }
+    }
+
+    /// Resolves the display name for a status selector menu row, preferring the server-provided name.
+    ///
+    func title(for row: OrderStatusRow) -> String {
+        guard let status = row.status else {
+            return Localization.anyStatusCase
         }
-        return selectedOrderStatus.description
+        return siteStatuses.displayName(for: status)
     }
 
     private let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -118,16 +119,19 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// The current list of order statuses for the site, used to resolve server-provided display names.
+    /// Cached and refreshed via the results controller's change handlers to avoid re-mapping on every access.
+    ///
+    private var siteStatuses: [OrderStatus] = []
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.analytics = analytics
         self.stores = stores
         self.storageManager = storageManager
-        self.ciabEligibilityChecker = ciabEligibilityChecker
 
         Task { @MainActor in
             selectedOrderStatus = await loadLastSelectedOrderStatus()
@@ -146,9 +150,9 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         do {
             async let orders = loadLast3Orders(for: selectedOrderStatus)
             try? await loadOrderStatuses()
-            let isCIAB = ciabEligibilityChecker.isCurrentSiteCIAB
+            let siteStatuses = statusResultsController.fetchedObjects
             rows = try await orders
-                .map { LastOrderDashboardRowViewModel(order: $0, isCIAB: isCIAB) }
+                .map { LastOrderDashboardRowViewModel(order: $0, siteStatuses: siteStatuses) }
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .lastOrders))
         } catch {
             syncingError = error
@@ -191,13 +195,7 @@ private extension LastOrdersDashboardCardViewModel {
     @MainActor
     func loadLast3Orders(for status: OrderStatusEnum?) async throws -> [Order] {
         return try await withCheckedThrowingContinuation { continuation in
-            let resolvedStatuses: [String] = {
-                guard let status else { return [] }
-                if ciabEligibilityChecker.isCurrentSiteCIAB {
-                    return CIABOrderStatusMapper.resolveFilterStatuses([status]).map { $0.rawValue }
-                }
-                return [status.rawValue]
-            }()
+            let resolvedStatuses = status.map { [$0.rawValue] } ?? []
             stores.dispatch(OrderAction.fetchFilteredOrders(
                 siteID: siteID,
                 statuses: resolvedStatuses,
@@ -245,19 +243,8 @@ private extension LastOrdersDashboardCardViewModel {
     }
 
     func updateStatuses() {
-        if ciabEligibilityChecker.isCurrentSiteCIAB {
-            let fetchedStatuses = statusResultsController.fetchedObjects.map {
-                OrderStatus(name: $0.name, siteID: $0.siteID, slug: $0.slug, total: Int($0.total))
-            }
-            let mappedStatuses = CIABOrderStatusMapper.mapFilterOptions(fetchedStatuses)
-                .map { OrderStatusRow($0.status) }
-            allStatuses = [.any] + mappedStatuses
-        } else {
-            let remoteStatuses = statusResultsController.fetchedObjects
-                .map { OrderStatusEnum(rawValue: $0.slug) }
-                .map { OrderStatusRow($0) }
-            allStatuses = [.any] + remoteStatuses
-        }
+        siteStatuses = statusResultsController.fetchedObjects
+        allStatuses = [.any] + siteStatuses.map { OrderStatusRow($0.status) }
     }
 
     @MainActor

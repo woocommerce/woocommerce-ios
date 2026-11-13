@@ -43,6 +43,7 @@ final class SupportDiagnosticsService {
         case loadingProducts
         case analyticsSetting
         case notifications
+        case paymentConfiguration
 
         var title: String {
             switch self {
@@ -60,6 +61,8 @@ final class SupportDiagnosticsService {
                 return Localization.Test.analyticsSetting
             case .notifications:
                 return Localization.Test.notifications
+            case .paymentConfiguration:
+                return Localization.Test.paymentConfiguration
             }
         }
     }
@@ -75,6 +78,9 @@ final class SupportDiagnosticsService {
         case openNotificationSettings
         case openPushNotificationPreferences
         case retryDiagnostics
+        case openPaymentProvider(CardPresentPaymentsPlugin)
+        case openStoreSettings
+        case openPlugins
 
         var title: String {
             switch self {
@@ -94,6 +100,12 @@ final class SupportDiagnosticsService {
                 return Localization.Action.openPushNotificationPreferences
             case .retryDiagnostics:
                 return Localization.Action.retryDiagnostics
+            case .openPaymentProvider:
+                return Localization.Action.openPaymentSettings
+            case .openStoreSettings:
+                return Localization.Action.openStoreSettings
+            case .openPlugins:
+                return Localization.Action.openPlugins
             }
         }
 
@@ -109,6 +121,8 @@ final class SupportDiagnosticsService {
                 return "gear"
             case .retryDiagnostics:
                 return "arrow.clockwise"
+            case .openPaymentProvider, .openStoreSettings, .openPlugins:
+                return "arrow.up.forward.square"
             }
         }
     }
@@ -119,11 +133,13 @@ final class SupportDiagnosticsService {
         let errorMessage: String
         let technicalDetails: String?
         let suggestedAction: Action?
+        let headline: String?
 
-        init(errorMessage: String, technicalDetails: String? = nil, suggestedAction: Action? = nil) {
+        init(errorMessage: String, technicalDetails: String? = nil, suggestedAction: Action? = nil, headline: String? = nil) {
             self.errorMessage = errorMessage
             self.technicalDetails = technicalDetails
             self.suggestedAction = suggestedAction
+            self.headline = headline
         }
     }
 
@@ -135,16 +151,31 @@ final class SupportDiagnosticsService {
         let errorMessage: String?
         let technicalDetails: String?
         let suggestedAction: Action?
+        var advisoryMessage: String? = nil
+        var isInconclusive: Bool = false
+        /// Short statement of the problem, shown in place of the check name.
+        var headline: String? = nil
+        /// Stable code of the finding for analytics, without store data.
+        var reason: String? = nil
 
         static func == (lhs: Result, rhs: Result) -> Bool {
             lhs.test == rhs.test &&
             lhs.isSuccess == rhs.isSuccess &&
+            lhs.headline == rhs.headline &&
+            lhs.reason == rhs.reason &&
             lhs.errorMessage == rhs.errorMessage &&
-            lhs.suggestedAction == rhs.suggestedAction
+            lhs.suggestedAction == rhs.suggestedAction &&
+            lhs.advisoryMessage == rhs.advisoryMessage &&
+            lhs.isInconclusive == rhs.isInconclusive
         }
 
         static func success(test: Test) -> Result {
             Result(test: test, isSuccess: true, errorMessage: nil, technicalDetails: nil, suggestedAction: nil)
+        }
+
+        /// The site cannot answer the test. Counts as a pass, with the reason kept for the support context.
+        static func notApplicable(test: Test, reason: String) -> Result {
+            Result(test: test, isSuccess: true, errorMessage: nil, technicalDetails: reason, suggestedAction: nil)
         }
 
         static func failure(test: Test, failure: Failure) -> Result {
@@ -152,14 +183,18 @@ final class SupportDiagnosticsService {
                    isSuccess: false,
                    errorMessage: failure.errorMessage,
                    technicalDetails: failure.technicalDetails,
-                   suggestedAction: failure.suggestedAction)
+                   suggestedAction: failure.suggestedAction,
+                   headline: failure.headline)
         }
 
         func troubleshootingDescription() -> String {
-            let status = isSuccess ? "Success" : (errorMessage ?? "Failed")
+            let status = isSuccess && !isInconclusive ? "Success" : (errorMessage ?? "Failed")
             var lines = [test.title, "Result: \(status)"]
             if let details = technicalDetails {
                 lines.append("Details: \(details)")
+            }
+            if let advisoryMessage {
+                lines.append("Advisory: \(advisoryMessage)")
             }
             return lines.joined(separator: "\n")
         }
@@ -230,8 +265,7 @@ final class SupportDiagnosticsService {
         var results: [Result] = []
 
         for test in tests {
-            let failure = await runTest(test)
-            let result = failure.map { Result.failure(test: test, failure: $0) } ?? Result.success(test: test)
+            let result = await runTest(test)
             results.append(result)
 
             if !result.isSuccess {
@@ -251,28 +285,34 @@ final class SupportDiagnosticsService {
         return await runTests(tests)
     }
 
-    /// Runs a single test and returns failure details if the test failed, nil if successful.
+    /// Runs a single test and returns its result.
     ///
-    private func runTest(_ test: Test) async -> Failure? {
+    private func runTest(_ test: Test) async -> Result {
         switch test {
         case .internetConnection:
-            return checkInternetConnection()
+            return result(for: test, failure: checkInternetConnection())
         case .wpComServers:
-            return await checkWPComServers()
+            return result(for: test, failure: await checkWPComServers())
         case .site:
-            return await checkSite()
+            return result(for: test, failure: await checkSite())
         case .siteOrders:
-            return await checkSiteOrders()
+            return result(for: test, failure: await checkSiteOrders())
         case .loadingProducts:
-            return await checkLoadingProducts()
+            return result(for: test, failure: await checkLoadingProducts())
         case .analyticsSetting:
             return await checkAnalyticsSetting()
         case .notifications:
-            return await checkNotifications()
+            return result(for: test, failure: await checkNotifications())
+        case .paymentConfiguration:
+            return await PaymentSupportDiagnostics(siteID: siteID, stores: stores).run()
         }
     }
 
-    // MARK: - Individual Checks (return nil on success, Failure on error)
+    private func result(for test: Test, failure: Failure?) -> Result {
+        failure.map { Result.failure(test: test, failure: $0) } ?? Result.success(test: test)
+    }
+
+    // MARK: - Individual Checks (return nil on success, Failure on error; the analytics check returns a Result)
 
     private func checkInternetConnection() -> Failure? {
         let status = connectivityObserver.currentStatus
@@ -342,23 +382,30 @@ final class SupportDiagnosticsService {
         }
     }
 
-    private func checkAnalyticsSetting() async -> Failure? {
+    /// Returns a not-applicable pass when the site does not expose the setting in its REST API.
+    ///
+    private func checkAnalyticsSetting() async -> Result {
         await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsSetting(siteID: siteID) { result in
                 switch result {
                 case .success(let isEnabled):
                     if isEnabled {
                         DDLogInfo("SupportDiagnostics: ✅ Analytics enabled")
-                        continuation.resume(returning: nil)
+                        continuation.resume(returning: .success(test: .analyticsSetting))
                     } else {
                         DDLogInfo("SupportDiagnostics: ⚠️ Analytics disabled")
-                        continuation.resume(returning: Failure(errorMessage: Localization.Error.analyticsDisabled,
-                                                               suggestedAction: .enableAnalytics))
+                        let failure = Failure(errorMessage: Localization.Error.analyticsDisabled, suggestedAction: .enableAnalytics)
+                        continuation.resume(returning: .failure(test: .analyticsSetting, failure: failure))
                     }
                 case .failure(let error):
+                    if let settingError = error as? SettingError, case .settingNotExposed = settingError {
+                        DDLogInfo("SupportDiagnostics: ⏭️ Analytics setting is not exposed by the site, not applicable")
+                        continuation.resume(returning: .notApplicable(test: .analyticsSetting, reason: Constants.analyticsSettingNotExposedReason))
+                        return
+                    }
                     DDLogError("SupportDiagnostics: ❌ Analytics check failed\n\(error)")
-                    continuation.resume(returning: Failure(errorMessage: Localization.Error.analyticsCheckFailed,
-                                                           technicalDetails: error.formattedTechnicalDetails))
+                    let failure = Failure(errorMessage: Localization.Error.analyticsCheckFailed, technicalDetails: error.formattedTechnicalDetails)
+                    continuation.resume(returning: .failure(test: .analyticsSetting, failure: failure))
                 }
             }
             stores.dispatch(action)
@@ -530,34 +577,25 @@ final class SupportDiagnosticsService {
     /// Enables WooCommerce Analytics on the site.
     ///
     func enableAnalytics() async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            enableAnalyticsWithRetry(retries: 0) { result in
-                switch result {
-                case .success:
-                    continuation.resume()
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+        do {
+            try await enableAnalyticsSetting()
+        } catch {
+            do {
+                try await enableAnalyticsSetting()
+            } catch {
+                DDLogError("SupportDiagnostics: ❌ Failed to enable analytics\n\(error)")
+                throw error
             }
         }
+        DDLogInfo("SupportDiagnostics: ✅ Analytics enabled successfully")
     }
 
-    private func enableAnalyticsWithRetry(retries: Int, completion: @escaping (Swift.Result<Void, Error>) -> Void) {
-        let action = SettingAction.enableAnalyticsSetting(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success:
-                DDLogInfo("SupportDiagnostics: ✅ Analytics enabled successfully")
-                completion(.success(()))
-            case .failure(let error):
-                if retries < 1 {
-                    self?.enableAnalyticsWithRetry(retries: retries + 1, completion: completion)
-                } else {
-                    DDLogError("SupportDiagnostics: ❌ Failed to enable analytics\n\(error)")
-                    completion(.failure(error))
-                }
-            }
+    private func enableAnalyticsSetting() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(SettingAction.enableAnalyticsSetting(siteID: siteID) { result in
+                continuation.resume(with: result)
+            })
         }
-        stores.dispatch(action)
     }
 
     /// Registers the device for push notifications.
@@ -654,6 +692,15 @@ extension SupportDiagnosticsService {
     }
 }
 
+// MARK: - Constants
+
+private extension SupportDiagnosticsService {
+    enum Constants {
+        /// Not user facing: sent in the chat troubleshooting context when the analytics check does not apply.
+        static let analyticsSettingNotExposedReason = "Not applicable: the site does not expose the analytics setting in its REST API"
+    }
+}
+
 // MARK: - Localization
 
 private extension SupportDiagnosticsService {
@@ -694,9 +741,29 @@ private extension SupportDiagnosticsService {
                 value: "Checking notification settings",
                 comment: "Title for the notification settings diagnostic test"
             )
+            static let paymentConfiguration = NSLocalizedString(
+                "supportDiagnosticsService.test.paymentConfiguration",
+                value: "Checking your store's payment setup",
+                comment: "Progress step in support chat while the app checks the store's payment setup for card readers and Tap to Pay"
+            )
         }
 
         enum Action {
+            static let openPaymentSettings = NSLocalizedString(
+                "supportDiagnosticsService.action.openPaymentSettings",
+                value: "Open Payment Settings",
+                comment: "Action button that opens the WooPayments or Stripe settings page in the store admin"
+            )
+            static let openStoreSettings = NSLocalizedString(
+                "supportDiagnosticsService.action.openStoreSettings",
+                value: "Open Store Settings",
+                comment: "Action button that opens WooCommerce General settings in the store admin"
+            )
+            static let openPlugins = NSLocalizedString(
+                "supportDiagnosticsService.action.openPlugins",
+                value: "Open Plugins",
+                comment: "Action button that opens the Plugins page in the store admin"
+            )
             static let enableAnalytics = NSLocalizedString(
                 "supportDiagnosticsService.action.enableAnalytics",
                 value: "Enable Analytics",

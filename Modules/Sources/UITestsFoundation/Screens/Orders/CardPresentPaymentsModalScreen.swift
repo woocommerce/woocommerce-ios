@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class CardPresentPaymentsModalScreen: ScreenObject {
 
     private let dismissButtonGetter: (XCUIApplication) -> XCUIElement = {

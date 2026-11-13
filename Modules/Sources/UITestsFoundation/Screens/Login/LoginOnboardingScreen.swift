@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class LoginOnboardingScreen: ScreenObject {
 
     private let skipOnboardingButtonGetter: (XCUIApplication) -> XCUIElement = {

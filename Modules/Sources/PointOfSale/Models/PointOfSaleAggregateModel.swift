@@ -7,6 +7,7 @@ import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Order
+import struct Yosemite.ReceiptStoreInformation
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import struct Yosemite.POSCustomAmount
@@ -19,17 +20,22 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCartProductObserving
 import class Yosemite.POSCatalogSyncCoordinator
+import enum Yosemite.POSCatalogSyncState
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
+@MainActor
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
     func addToCart(_ item: POSItem)
+    func remove(cartItem: CartItem)
 
     func saveSearchTerm(_ term: String, for itemType: POSItemType)
 }
 
+@MainActor
 @Observable final class PointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
     private var checkoutGeneration = 0
@@ -38,29 +44,33 @@ protocol PointOfSaleAggregateModelProtocol {
 
     // Temporary forwarding properties for backward compatibility while views are migrated
     // to read directly from paymentModel via the environment. Remove once migration is complete.
-    @MainActor var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { paymentModel.cardReaderConnectionStatus }
-    @MainActor var paymentState: PointOfSalePaymentState { paymentModel.paymentState }
-    @MainActor var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? {
+    var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { paymentModel.cardReaderConnectionStatus }
+    var paymentState: PointOfSalePaymentState { paymentModel.paymentState }
+    var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? {
         get { paymentModel.cardPresentPaymentAlertViewModel }
         set { paymentModel.cardPresentPaymentAlertViewModel = newValue }
     }
-    @MainActor var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { paymentModel.cardPresentPaymentInlineMessage }
-    @MainActor var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer? {
+    var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { paymentModel.cardPresentPaymentInlineMessage }
+    var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer? {
         get { paymentModel.cardPresentPaymentOnboardingViewContainer }
         set { paymentModel.cardPresentPaymentOnboardingViewContainer = newValue }
     }
 
-    @MainActor var isCardReaderUpdateAvailable: Bool { paymentModel.isCardReaderUpdateAvailable }
+    var isCardReaderUpdateAvailable: Bool { paymentModel.isCardReaderUpdateAvailable }
+
+    /// Whether a receipt printer is currently connected. `false` when the printer feature is off
+    /// (no connection controller) or no printer is paired.
+    var isReceiptPrinterConnected: Bool {
+        settingsController.printerConnectionController?.isConnected ?? false
+    }
 
     private(set) var cart: Cart = .init() {
         didSet { rebuildCartProductObservation() }
     }
 
-    /// The custom amount currently being edited via the cart pencil button.
-    /// Setting this to a non-`nil` value presents the edit modal; assigning `nil` dismisses it.
-    /// Adding a new custom amount (entry row in the products list) is handled separately
-    /// by the items list view as a navigation push and doesn't go through this state.
-    var editingCustomAmount: POSCustomAmount?
+    /// Presents the full-screen custom amount flow over both panes; assigning `nil` dismisses it.
+    /// Lives on the model because add starts in the products pane and edit starts in the cart.
+    var customAmountFlow: POSCustomAmountFlow?
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 
@@ -87,16 +97,16 @@ protocol PointOfSaleAggregateModelProtocol {
     /// Indicates whether the local catalog feature is enabled for this store
     let isLocalCatalogEligible: Bool
 
-    /// Checker for whether the store needs a POS sunset warning (WC < 10.5)
-    private let sunsetWarningChecker: POSSunsetWarningChecking?
-
     /// Resolves whether Tap to Pay is available for the current device + site. Optional
     /// so existing callers (previews, tests) keep working — when nil the rest of POS
     /// behaves as if TTP is not available.
     private(set) var tapToPayAvailabilityController: POSTapToPayAvailabilityController?
 
-    private var cancellables: Set<AnyCancellable> = []
+    /// Receipt-printer backend for POS. Optional so existing callers (previews, tests)
+    /// keep working — when nil POS behaves as if receipt printing is not available.
+    private(set) var receiptPrinter: ReceiptPrinterServiceProtocol?
 
+    private var cancellables: Set<AnyCancellable> = []
     // Private storage of the concrete coordinator
     private let _viewStateCoordinator = PointOfSaleViewStateCoordinator()
 
@@ -111,20 +121,24 @@ protocol PointOfSaleAggregateModelProtocol {
     }
 
     // Track stale sync warning (only relevant when using local catalog)
-    var isSyncStale: Bool = false
     var isStaleSyncWarningDismissed: Bool = false
+    private var hasTrackedStaleSyncWarningShown = false
+    private var lastKnownFullSyncDate: Date?
 
     var showStaleSyncWarning: Bool {
         // Only show warning if using local catalog
         guard isLocalCatalogEligible else {
             return false
         }
-        return isSyncStale && !isStaleSyncWarningDismissed
+
+        guard let syncDate = currentFullSyncState?.lastFullSyncDate ?? lastKnownFullSyncDate,
+              let thresholdDate = Calendar.current.date(byAdding: .day, value: -Constants.staleSyncThresholdDays, to: Date()) else {
+            return false
+        }
+
+        return syncDate < thresholdDate && !isStaleSyncWarningDismissed
     }
 
-    var showSunsetWarning: Bool = false
-
-    @MainActor
     init(entryPointController: POSEntryPointController,
          itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -145,9 +159,10 @@ protocol PointOfSaleAggregateModelProtocol {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
          cartProductObserver: POSCartProductObserving? = nil,
          isLocalCatalogEligible: Bool = false,
-         sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
-         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth) {
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
+         cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -166,8 +181,8 @@ protocol PointOfSaleAggregateModelProtocol {
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.cartProductObserver = cartProductObserver
         self.isLocalCatalogEligible = isLocalCatalogEligible
-        self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityController = tapToPayAvailabilityController
+        self.receiptPrinter = receiptPrinter
 
         // Payment controller is created with cart-specific dependencies.
         // The weak self captures below are safe because paymentModel is owned by self.
@@ -180,6 +195,7 @@ protocol PointOfSaleAggregateModelProtocol {
             scanToPayVerifier: POSCartScanToPayVerifier(orderController: orderController),
             markAsPaidHandler: POSCartMarkAsPaidHandler(orderController: orderController),
             receiptSender: receiptSender,
+            receiptPrinter: receiptPrinter,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },
@@ -190,6 +206,7 @@ protocol PointOfSaleAggregateModelProtocol {
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             preferredConnectionMethod: preferredConnectionMethod,
+            cardPaymentSelectionMode: cardPaymentSelectionMode,
             paymentState: paymentState)
         weakSelf = self
 
@@ -226,6 +243,8 @@ extension PointOfSaleAggregateModel {
         for type in types {
             switch type {
             case .purchasableItem:
+                // Queued scans must not repopulate the cleared cart.
+                checkoutGeneration += 1
                 cart.purchasableItems.removeAll()
             case .coupon:
                 cart.coupons.removeAll()
@@ -245,25 +264,27 @@ extension PointOfSaleAggregateModel {
         cart.removeCustomAmount(id: id)
     }
 
-    @MainActor
     func addMoreToCart() {
         setStateForEditing()
     }
 
-    @MainActor
-    func cancelInFlightCheckout() {
+    func leaveCheckout() {
+        // A paid order can't be edited or charged again, so leaving its success screen starts a fresh cart.
+        guard !paymentState.isSuccess else {
+            startNewCart()
+            return
+        }
         setStateForEditing()
     }
 
-    @MainActor
     func startNewCart() {
+        collectOrderPaymentAnalyticsTracker.resetCheckoutTiming()
         removeAllItemsFromCart()
         orderController.clearOrder()
         setStateForEditing()
         viewStateCoordinator.reset()
     }
 
-    @MainActor
     private func setStateForEditing() {
         checkoutGeneration += 1
         orderStage = .building
@@ -315,9 +336,14 @@ extension PointOfSaleAggregateModel {
 
 // MARK: - Barcode Scanning
 extension PointOfSaleAggregateModel {
-    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
+    @discardableResult
+    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) -> Task<Void, Never> {
+        let currentCheckoutGeneration = checkoutGeneration
+        return Task { [weak self] in
+            // A queued result must still belong to this cart, even after returning to building.
+            guard let self,
+                  self.orderStage == .building,
+                  self.checkoutGeneration == currentCheckoutGeneration else { return }
             switch result {
             case .success(let barcode):
                 await handleSuccessfulScan(barcode: barcode)
@@ -327,7 +353,6 @@ extension PointOfSaleAggregateModel {
         }
     }
 
-    @MainActor
     private func handleSuccessfulScan(barcode: String) async {
         let placeholderItemID = cart.addLoadingItem().id
 
@@ -359,7 +384,6 @@ extension PointOfSaleAggregateModel {
         }
     }
 
-    @MainActor
     private func handleFailedScan(error: Error) async {
         let scanError = switch error {
         case HIDBarcodeParserError.scanTooShort(let barcode):
@@ -374,7 +398,6 @@ extension PointOfSaleAggregateModel {
         await handleErrorItemAdded(scanError)
     }
 
-    @MainActor
     private func handleErrorItemAdded(_ error: PointOfSaleBarcodeScanError) async {
         // Only play a sound and track analytics if the item still exists in the cart.
         await soundPlayer.playSound(.barcodeScanFailure)
@@ -425,97 +448,108 @@ private extension PointOfSaleAggregateModel {
 
 // MARK: - Payment (delegated to POSPaymentModel)
 extension PointOfSaleAggregateModel {
-    @MainActor
     func connectCardReader() {
         paymentModel.connectCardReader()
     }
 
-    @MainActor
     func cancelReconnection() {
         paymentModel.cancelReconnection()
     }
 
-    @MainActor
     func disconnectCardReader() {
         paymentModel.disconnectCardReader()
     }
 
-    @MainActor
     func updateCardReaderSoftware() {
         paymentModel.updateCardReaderSoftware()
     }
 
-    @MainActor
     func startCashPayment() {
         paymentModel.startCashPayment()
     }
 
-    @MainActor
     func cancelCashPayment() async {
         await paymentModel.cancelCashPayment()
     }
 
-    @MainActor
     func collectCashPayment(changeDueAmount: String?) async throws {
         try await paymentModel.collectCashPayment(changeDueAmount: changeDueAmount)
     }
 
-    @MainActor
     func startScanToPayPayment() async {
         await paymentModel.startScanToPayPayment()
     }
 
-    @MainActor
     func cancelScanToPayPayment() async {
         await paymentModel.cancelScanToPayPayment()
     }
 
-    @MainActor
     func completeScanToPayPayment() async throws {
         try await paymentModel.completeScanToPayPayment()
     }
 
-    @MainActor
     func startMarkAsPaidPayment() {
         paymentModel.startMarkAsPaidPayment()
     }
 
-    @MainActor
     func cancelMarkAsPaidPayment() async {
         await paymentModel.cancelMarkAsPaidPayment()
     }
 
-    @MainActor
     func confirmMarkAsPaidPayment() async throws {
         try await paymentModel.confirmMarkAsPaidPayment()
     }
 
-    @MainActor
     func sendReceipt(to emailAddress: String) async throws {
         try await paymentModel.sendReceipt(to: emailAddress)
     }
 
-    @MainActor
+    func printReceipt() async throws {
+        // Refresh the store's receipt settings so the printout reflects any changes made this
+        // session. On failure the previously loaded values are kept, so printing still proceeds
+        // with the best available information.
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
+        try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
+    }
+
+    /// Warms the store's receipt settings (phone/email/returns policy) at POS start so the first
+    /// print has values ready without waiting on a fetch. The print flow refreshes these before
+    /// printing; this preload keeps a populated fallback for when that refresh fails. No-op when
+    /// receipt printing is unavailable; fails gracefully otherwise.
+    func preloadReceiptStoreInformation() async {
+        guard receiptPrinter != nil else { return }
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
+    }
+
+    /// Best-effort store details for the printed receipt header, drawn from the POS settings store
+    /// view model. Falls back to the store name / address it exposes when receipt-specific settings
+    /// aren't populated.
+    private func receiptStoreInformation() -> ReceiptStoreInformation {
+        let storeViewModel = settingsController.storeViewModel
+        let receiptInformation = storeViewModel.receiptInformation
+        return ReceiptStoreInformation(storeName: receiptInformation.storeName ?? storeViewModel.receiptStoreName,
+                                       storeAddress: receiptInformation.storeAddress ?? storeViewModel.storeAddress,
+                                       phone: receiptInformation.phone,
+                                       email: receiptInformation.email,
+                                       refundReturnsPolicy: receiptInformation.refundReturnsPolicy)
+    }
+
     func cancelThenCollectPayment() {
         paymentModel.cancelThenCollectPayment()
     }
 
-    @MainActor
     func cancelThenCollectPayment() async {
         await paymentModel.cancelThenCollectPayment()
     }
 
-    @MainActor
     func cancelCardPaymentsOnboarding() {
         paymentModel.cancelCardPaymentsOnboarding()
     }
 
-    @MainActor
     func trackCardPaymentsOnboardingShown() {
         paymentModel.trackCardPaymentsOnboardingShown()
     }
 
-    @MainActor
     private func setupReaderReconnectionObservation() {
         withObservationTracking { [weak self] in
             guard let self else { return }
@@ -527,14 +561,15 @@ extension PointOfSaleAggregateModel {
             }
         } onChange: { [weak self] in
             guard let self else { return }
-            DispatchQueue.main.async(execute: setupReaderReconnectionObservation)
+            DispatchQueue.main.async {
+                self.setupReaderReconnectionObservation()
+            }
         }
     }
 }
 
 // MARK: - Order syncing
 extension PointOfSaleAggregateModel {
-    @MainActor
     func checkOut() async {
         checkoutGeneration += 1
         let currentCheckoutGeneration = checkoutGeneration
@@ -563,7 +598,7 @@ extension PointOfSaleAggregateModel {
     /// Triggers an incremental catalog sync if the order response indicates product prices have changed.
     /// The sync updates GRDB, which the cart product observer picks up to update cart item prices reactively.
     private func triggerIncrementalSyncIfPriceChanged() {
-        guard case .loaded(_, let order) = orderController.orderState else { return }
+        guard case .loaded(_, let order, _) = orderController.orderState else { return }
         guard POSOrderPriceChangeDetector().detectsPriceChange(cart: cart, order: order) else { return }
         guard let catalogSyncCoordinator else { return }
 
@@ -575,7 +610,6 @@ extension PointOfSaleAggregateModel {
     }
 
     /// Removes unavailable products from the local catalog after detecting them during order sync
-    @MainActor
     private func removeMissingProductsFromCatalogAfterSync() async {
         // If we identified specific missing products, remove them from the catalog immediately
         if case .error(.missingProducts(let missingProducts), _) = orderController.orderState.externalState {
@@ -656,10 +690,10 @@ private extension PointOfSaleAggregateModel {
 
 // MARK: - Lifecycle
 extension PointOfSaleAggregateModel {
-    @MainActor
     func pointOfSaleClosed() {
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
+        checkoutGeneration += 1
         orderController.clearOrder()
 
         // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,
@@ -675,7 +709,6 @@ extension PointOfSaleAggregateModel {
 // MARK: - Incremental catalog sync on payment success
 
 private extension PointOfSaleAggregateModel {
-    @MainActor
     private func setupPaymentSuccessObservation() {
         withObservationTracking { [weak self] in
             guard let self else { return }
@@ -684,7 +717,9 @@ private extension PointOfSaleAggregateModel {
             }
         } onChange: { [weak self] in
             guard let self else { return }
-            DispatchQueue.main.async(execute: setupPaymentSuccessObservation)
+            DispatchQueue.main.async {
+                self.setupPaymentSuccessObservation()
+            }
         }
     }
 
@@ -722,60 +757,29 @@ extension PointOfSaleAggregateModel {
         isStaleSyncWarningDismissed = true
     }
 
-    @MainActor
     func checkStaleSyncStatus() async {
         guard let catalogSyncCoordinator else { return }
-        let isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
-        let wasShowingStaleSyncWarning = showStaleSyncWarning
 
-        self.isSyncStale = isSyncStale
+        let syncState = await catalogSyncCoordinator.loadLastFullSyncState(for: siteID)
+        lastKnownFullSyncDate = syncState.lastFullSyncDate
 
-        await trackStaleSyncWarningShownIfNeeded(wasShowing: wasShowingStaleSyncWarning)
+        trackStaleSyncWarningShownIfNeeded()
     }
 
-    /// Calculates the number of hours since the last catalog sync
-    /// - Returns: Hours since last sync, or nil if no sync date is available
-    func hoursSinceLastSync() async -> Int? {
-        guard let catalogSyncCoordinator else { return nil }
-        return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID)
-    }
-
-    private func trackStaleSyncWarningShownIfNeeded(wasShowing: Bool) async {
-        guard !wasShowing,
+    private func trackStaleSyncWarningShownIfNeeded() {
+        guard !hasTrackedStaleSyncWarningShown,
               showStaleSyncWarning,
-              let hours = await hoursSinceLastSync() else {
+              let syncDate = currentFullSyncState?.lastFullSyncDate ?? lastKnownFullSyncDate else {
             return
         }
 
+        hasTrackedStaleSyncWarningShown = true
+        let hours = Int(Date().timeIntervalSince(syncDate) / 3600)
         analytics.track(event: WooAnalyticsEvent.LocalCatalog.staleWarningShown(hoursSinceLastSync: hours))
     }
-}
 
-extension PointOfSaleAggregateModel {
-    func dismissSunsetWarning() {
-        showSunsetWarning = false
-        sunsetWarningChecker?.recordDismissal(siteID: siteID)
-    }
-
-    @MainActor
-    func checkSunsetWarningStatus() async {
-        guard let sunsetWarningChecker else { return }
-        let shouldShow = await sunsetWarningChecker.shouldShowSunsetWarning(siteID: siteID)
-        let wasShowingSunsetWarning = showSunsetWarning
-
-        guard shouldShow else {
-            showSunsetWarning = false
-            return
-        }
-
-        showSunsetWarning = true
-        trackSunsetWarningShownIfNeeded(wasShowing: wasShowingSunsetWarning)
-    }
-
-    private func trackSunsetWarningShownIfNeeded(wasShowing: Bool) {
-        guard !wasShowing, showSunsetWarning else { return }
-
-        analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
+    private var currentFullSyncState: POSCatalogSyncState? {
+        catalogSyncCoordinator?.fullSyncStateModel.state[siteID]
     }
 }
 
@@ -787,7 +791,6 @@ private enum Constants {
 
 #if DEBUG
 extension PointOfSaleAggregateModel {
-    @MainActor
     func setPreviewState(paymentState: PointOfSalePaymentState, inlineMessage: PointOfSaleCardPresentPaymentMessageType?) {
         paymentModel.setPreviewState(paymentState: paymentState, inlineMessage: inlineMessage)
     }

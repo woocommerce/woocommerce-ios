@@ -2,11 +2,13 @@ import Combine
 import SwiftUI
 import UIKit
 import Yosemite
-import Experiments
 
-/// Hosting controller that wraps an `EditOrderAddressForm`.
+/// Hosting controller that wraps an `EditOrderAddressForm` in a `NavigationStack`, needed to push the country and state selectors.
+/// Present it directly, not inside a navigation controller.
 ///
-final class EditOrderAddressHostingController: UIHostingController<EditOrderAddressForm<EditOrderAddressFormViewModel>> {
+final class EditOrderAddressHostingController: UIHostingController<NavigationStack<NavigationPath, EditOrderAddressForm<EditOrderAddressFormViewModel>>> {
+
+    private let viewModel: EditOrderAddressFormViewModel
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -25,12 +27,15 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
     private let systemNoticePresenter: NoticePresenter
 
     init(viewModel: EditOrderAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        self.viewModel = viewModel
         self.systemNoticePresenter = systemNoticePresenter
-        super.init(rootView: EditOrderAddressForm(viewModel: viewModel))
+        super.init(rootView: NavigationStack { EditOrderAddressForm(viewModel: viewModel) })
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
-        rootView.dismiss = { [weak self] _ in
-            self?.dismiss(animated: true, completion: nil)
+        rootView = NavigationStack {
+            EditOrderAddressForm(dismiss: { [weak self] _ in
+                self?.dismiss(animated: true, completion: nil)
+            }, viewModel: viewModel)
         }
     }
 
@@ -38,11 +43,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         super.viewDidLoad()
 
         // Set presentation delegate to track the user dismiss flow event
-        if let navigationController {
-            navigationController.presentationController?.delegate = self
-        } else {
-            presentationController?.delegate = self
-        }
+        presentationController?.delegate = self
     }
 
     dynamic required init?(coder aDecoder: NSCoder) {
@@ -53,7 +54,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         super.viewWillDisappear(animated)
 
         // Show any notice that should have been presented before the underlying disappears.
-        enqueuePendingNotice(rootView.viewModel.notice, using: systemNoticePresenter)
+        enqueuePendingNotice(viewModel.notice, using: systemNoticePresenter)
     }
 }
 
@@ -61,18 +62,18 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
 ///
 extension EditOrderAddressHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        !rootView.viewModel.hasPendingChanges
+        !viewModel.hasPendingChanges
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
             self?.dismiss(animated: true)
-            self?.rootView.viewModel.userDidCancelFlow()
+            self?.viewModel.userDidCancelFlow()
         }
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        rootView.viewModel.userDidCancelFlow()
+        viewModel.userDidCancelFlow()
     }
 }
 
@@ -93,10 +94,13 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     ///
     @Bindable private(set) var viewModel: ViewModel
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-    @State private var showingCustomerSearch: Bool = false
-
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         Group {
             ScrollView {
                 SingleAddressForm(fields: $viewModel.fields,
@@ -106,7 +110,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                   sectionTitle: viewModel.sectionTitle,
                                   showEmailField: viewModel.showEmailField,
                                   showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
-                                  showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
+                                  showStateFieldAsSelector: viewModel.showStateFieldAsSelector,
+                                  safeAreaInsets: .zero)
                          .accessibilityElement(children: .contain)
                          .accessibilityIdentifier("order-address-form")
 
@@ -114,8 +119,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     TitleAndToggleRow(title: alternativeUsageToggleTitle, isOn: $viewModel.fields.useAsToggle)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.systemBackground))
+                        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                         .addingTopAndBottomDividers()
                 }
 
@@ -123,8 +127,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     TitleAndToggleRow(title: differentAddressToggleTitle, isOn: $viewModel.showDifferentAddressForm)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.systemBackground))
+                        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
                         .addingTopAndBottomDividers()
                         .accessibilityIdentifier("order-creation-customer-details-shipping-address-toggle")
                 }
@@ -137,7 +140,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                       sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
                                       showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
-                                      showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
+                                      showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector,
+                                      safeAreaInsets: .zero)
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("secondary-order-address-form")
                 }
@@ -146,7 +150,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             }
             .disableAutocorrection(true)
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .ignoresSafeArea(.container, edges: .bottom)
         }
         .navigationTitle(viewModel.viewTitle)
         .navigationBarTitleDisplayMode(.inline)
@@ -156,16 +160,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     dismiss(.cancel)
                     viewModel.userDidCancelFlow()
                 })
-            }
-
-            ToolbarItemGroup(placement: .automatic) {
-                if viewModel.showSearchButton {
-                    Button(action: {
-                        showingCustomerSearch = true
-                    }, label: {
-                        Image(systemName: "magnifyingglass")
-                    })
-                }
             }
 
             ToolbarItem(placement: .confirmationAction) {
@@ -179,12 +173,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             viewModel.onLoadTrigger.send()
         }
         .notice($viewModel.notice)
-        .sheet(isPresented: $showingCustomerSearch, content: {
-            OrderCustomerListView(siteID: viewModel.siteID, onCustomerTapped: { customer in
-                viewModel.customerSelectedFromSearch(customer: customer)
-                showingCustomerSearch = false
-            })
-        })
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.
@@ -209,8 +197,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
 struct SingleAddressForm: View {
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     @Binding var fields: AddressFormFields
 
     let countryViewModelClosure: () -> CountrySelectorViewModel
@@ -221,6 +207,7 @@ struct SingleAddressForm: View {
     let showEmailField: Bool
     let showPhoneCountryCodeField: Bool
     let showStateFieldAsSelector: Bool
+    let safeAreaInsets: EdgeInsets
 
     /// Set it to `true` to present the country selector.
     ///
@@ -238,6 +225,12 @@ struct SingleAddressForm: View {
 
     var body: some View {
         content
+            .navigationDestination(isPresented: $showCountrySelector) {
+                FilterListSelector(viewModel: countryViewModelClosure())
+            }
+            .navigationDestination(isPresented: $showStateSelector) {
+                FilterListSelector(viewModel: stateViewModelClosure())
+            }
             .onPreferenceChange(MaxWidthPreferenceKey.self) { value in
                 if let value {
                     titleWidth = value
@@ -314,28 +307,26 @@ struct SingleAddressForm: View {
                                  keyboardType: .phonePad)
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.systemBackground))
+        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
         .addingTopAndBottomDividers()
 
         ListHeaderView(text: sectionTitle, alignment: .left)
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
-                Button(action: {
-                    showMapPicker = true
-                    ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
-                                                   withProperties: ["locale": Locale.current.identifier])
-                }) {
-                    HStack {
-                        Image(systemName: "map")
-                        Text(Localization.pickOnMap)
-                    }
+            Button(action: {
+                showMapPicker = true
+                ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
+                                               withProperties: ["locale": Locale.current.identifier])
+            }) {
+                HStack {
+                    Image(systemName: "map")
+                    Text(Localization.pickOnMap)
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
             }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
 
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,
@@ -391,27 +382,6 @@ struct SingleAddressForm: View {
             }
 
             Group {
-                // Go to edit country
-                LazyNavigationLink(destination: FilterListSelector(viewModel: countryViewModelClosure()), isActive: $showCountrySelector) {
-                    EmptyView()
-                }
-
-                // Go to edit state
-                LazyNavigationLink(destination: FilterListSelector(viewModel: stateViewModelClosure()), isActive: $showStateSelector) {
-                    EmptyView()
-                }
-
-                ///
-                /// iOS 14.5 has a bug where
-                /// Pushing a view while having "exactly two" navigation links makes the pushed view to be popped when the initial view changes its state.
-                /// EG: AddressForm -> CountrySelector -> Country is selected -> AddressForm updates country -> CountrySelector is popped automatically.
-                /// Adding an extra and useless navigation link fixes the problem but throws a warning in the console.
-                /// Ref: https://forums.swift.org/t/14-5-beta3-navigationlink-unexpected-pop/45279
-                ///
-                NavigationLink(destination: EmptyView()) {
-                    EmptyView()
-                }
-
                 TitleAndValueRow(title: Localization.countryField,
                                  titleWidth: $titleWidth,
                                  value: .init(placeHolder: Localization.hintSelectOption, content: fields.country),
@@ -425,7 +395,7 @@ struct SingleAddressForm: View {
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.systemBackground))
+        .background(Color(.systemBackground), ignoresSafeAreaEdges: [])
         .addingTopAndBottomDividers()
         .onChange(of: showStateSelector) {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -569,7 +539,7 @@ struct EditAddressForm_Previews: PreviewProvider {
     static let sampleViewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
 
     static var previews: some View {
-        NavigationView {
+        NavigationStack {
             EditOrderAddressForm(viewModel: sampleViewModel)
         }
     }
@@ -585,7 +555,8 @@ struct EditAddressForm_Previews: PreviewProvider {
                           sectionTitle: viewModel.sectionTitle,
                           showEmailField: viewModel.showEmailField,
                           showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
-                          showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
+                          showStateFieldAsSelector: viewModel.showStateFieldAsSelector,
+                          safeAreaInsets: .zero)
     }
 }
 

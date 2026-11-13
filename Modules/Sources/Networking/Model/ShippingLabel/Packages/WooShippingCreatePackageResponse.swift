@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a list of saved Shipping Label Packages (custom and predefined) for the WooCommerce Shipping extension.
 ///
-public struct WooShippingCreatePackageResponse: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingCreatePackageResponse: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     /// Saved custom packages
     public let customPackages: [WooShippingCustomPackage]

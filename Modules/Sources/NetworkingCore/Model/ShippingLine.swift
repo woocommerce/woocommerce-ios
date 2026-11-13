@@ -17,6 +17,9 @@ public struct ShippingLine: Codable, Equatable, Sendable, GeneratedFakeable, Gen
     public let totalTax: String
     public let taxes: [ShippingLineTax]
 
+    /// Original order line ID when this shipping line belongs to a refund.
+    public let refundedItemID: Int64?
+
     /// Shipping Method struct initializer.
     ///
     public init(shippingID: Int64,
@@ -24,9 +27,11 @@ public struct ShippingLine: Codable, Equatable, Sendable, GeneratedFakeable, Gen
                 methodID: String?,
                 total: String,
                 totalTax: String,
-                taxes: [ShippingLineTax]) {
+                taxes: [ShippingLineTax],
+                refundedItemID: Int64? = nil) {
 
         self.shippingID = shippingID
+        self.refundedItemID = refundedItemID
         self.methodTitle = methodTitle
         self.methodID = methodID
         self.total = total
@@ -37,6 +42,19 @@ public struct ShippingLine: Codable, Equatable, Sendable, GeneratedFakeable, Gen
 
 // MARK: Codable
 extension ShippingLine {
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let metadata = [MetaData].decodeFlexibly(from: container, forKey: .metadata)
+        let originalID = metadata.first(where: { $0.key == "_refunded_item_id" }).flatMap { Int64($0.value.stringValue) }
+        self.init(shippingID: try container.decode(Int64.self, forKey: .shippingID),
+                  methodTitle: try container.decode(String.self, forKey: .methodTitle),
+                  methodID: try container.decodeIfPresent(String.self, forKey: .methodID),
+                  total: try container.decode(String.self, forKey: .total),
+                  totalTax: try container.decode(String.self, forKey: .totalTax),
+                  taxes: try container.decode([ShippingLineTax].self, forKey: .taxes),
+                  refundedItemID: originalID)
+    }
 
     /// Encodes ShippingLine writable fields.
     ///
@@ -56,6 +74,7 @@ extension ShippingLine {
 private extension ShippingLine {
 
     enum CodingKeys: String, CodingKey {
+        case metadata              = "meta_data"
         case shippingID            = "id"
         case methodTitle           = "method_title"
         case methodID              = "method_id"

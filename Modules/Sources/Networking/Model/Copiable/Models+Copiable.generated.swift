@@ -140,6 +140,39 @@ extension Networking.BlazeAISuggestion {
     }
 }
 
+extension Networking.BlazeBillingSummary {
+    public func copy(
+        debt: CopiableProp<Double> = .copy,
+        paymentLinks: CopiableProp<[BlazeBillingSummary.PaymentLink]> = .copy
+    ) -> Networking.BlazeBillingSummary {
+        let debt = debt ?? self.debt
+        let paymentLinks = paymentLinks ?? self.paymentLinks
+
+        return Networking.BlazeBillingSummary(
+            debt: debt,
+            paymentLinks: paymentLinks
+        )
+    }
+}
+
+extension Networking.BlazeBillingSummary.PaymentLink {
+    public func copy(
+        date: NullableCopiableProp<Date> = .copy,
+        amount: CopiableProp<Double> = .copy,
+        url: CopiableProp<String> = .copy
+    ) -> Networking.BlazeBillingSummary.PaymentLink {
+        let date = date ?? self.date
+        let amount = amount ?? self.amount
+        let url = url ?? self.url
+
+        return Networking.BlazeBillingSummary.PaymentLink(
+            date: date,
+            amount: amount,
+            url: url
+        )
+    }
+}
+
 extension Networking.BlazeCampaignBudget {
     public func copy(
         mode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,
@@ -2608,7 +2641,10 @@ extension Networking.ShippingLabelCustomsForm.Item {
         weight: CopiableProp<Double> = .copy,
         hsTariffNumber: CopiableProp<String> = .copy,
         originCountry: CopiableProp<String> = .copy,
-        productID: CopiableProp<Int64> = .copy
+        productID: CopiableProp<Int64> = .copy,
+        code: NullableCopiableProp<String> = .copy,
+        manufacturerProductID: NullableCopiableProp<String> = .copy,
+        standardizedProductID: NullableCopiableProp<String> = .copy
     ) -> Networking.ShippingLabelCustomsForm.Item {
         let description = description ?? self.description
         let quantity = quantity ?? self.quantity
@@ -2617,6 +2653,9 @@ extension Networking.ShippingLabelCustomsForm.Item {
         let hsTariffNumber = hsTariffNumber ?? self.hsTariffNumber
         let originCountry = originCountry ?? self.originCountry
         let productID = productID ?? self.productID
+        let code = code ?? self.code
+        let manufacturerProductID = manufacturerProductID ?? self.manufacturerProductID
+        let standardizedProductID = standardizedProductID ?? self.standardizedProductID
 
         return Networking.ShippingLabelCustomsForm.Item(
             description: description,
@@ -2625,7 +2664,10 @@ extension Networking.ShippingLabelCustomsForm.Item {
             weight: weight,
             hsTariffNumber: hsTariffNumber,
             originCountry: originCountry,
-            productID: productID
+            productID: productID,
+            code: code,
+            manufacturerProductID: manufacturerProductID,
+            standardizedProductID: standardizedProductID
         )
     }
 }
@@ -3679,6 +3721,30 @@ extension Networking.WooShippingPackagesResponse {
             customPackages: customPackages,
             savedPredefinedPackages: savedPredefinedPackages,
             allPredefinedOptions: allPredefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingServiceStatusNotice {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        severity: CopiableProp<WooShippingServiceStatusSeverity> = .copy,
+        message: CopiableProp<String> = .copy,
+        isDismissible: CopiableProp<Bool> = .copy,
+        actionURL: NullableCopiableProp<URL> = .copy
+    ) -> Networking.WooShippingServiceStatusNotice {
+        let id = id ?? self.id
+        let severity = severity ?? self.severity
+        let message = message ?? self.message
+        let isDismissible = isDismissible ?? self.isDismissible
+        let actionURL = actionURL ?? self.actionURL
+
+        return Networking.WooShippingServiceStatusNotice(
+            id: id,
+            severity: severity,
+            message: message,
+            isDismissible: isDismissible,
+            actionURL: actionURL
         )
     }
 }

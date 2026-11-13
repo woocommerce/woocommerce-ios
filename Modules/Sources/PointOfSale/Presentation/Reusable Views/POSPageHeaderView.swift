@@ -11,11 +11,13 @@ struct POSPageHeaderBackButtonConfiguration {
     let state: State
     let action: () -> Void
     let buttonIcon: String?
+    let accessibilityIdentifier: String?
 
-    init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil) {
+    init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil, accessibilityIdentifier: String? = nil) {
         self.state = state
         self.action = action
         self.buttonIcon = buttonIcon
+        self.accessibilityIdentifier = accessibilityIdentifier
     }
 }
 
@@ -37,6 +39,8 @@ struct POSPageHeaderItem: Identifiable {
 }
 
 /// A header view for POS pages.
+/// Compact headers keep the back button, title, and actions in one navigation row.
+/// Use `subtitle` or `bottomContent` for information below that row; callers need no row-height adjustments.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
 struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomContent: View>: View {
     private let items: [POSPageHeaderItem]
@@ -45,17 +49,35 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private let trailingContent: TrailingContent
     private let bottomContent: BottomContent
     @Environment(\.posHeaderBackButtonConfiguration) private var environmentBackButtonConfiguration
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posHeaderTopPadding) private var topPadding
+    @Environment(\.posLayoutScale) private var layoutScale
+    @Environment(\.posMetrics) private var metrics
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
         environmentBackButtonConfiguration ?? backButtonConfiguration
     }
 
     private var hStackAlignment: VerticalAlignment {
-        items.first?.subtitle == nil ? .center: .firstTextBaseline
+        if horizontalSizeClass == .compact {
+            return .top
+        }
+        return items.first?.subtitle == nil ? .center: .firstTextBaseline
     }
 
     private var showsBackButton: Bool {
         effectiveBackButtonConfiguration != nil
+    }
+
+    private var navigationRowMinHeight: CGFloat? {
+        horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight : nil
+    }
+
+    /// Whether the header shows more than one title for the merchant to switch between,
+    /// as the Products / Coupons header does. A single title is a plain heading.
+    private var hasSelectableTitles: Bool {
+        items.count > 1
     }
 
     init(
@@ -88,11 +110,9 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         self.bottomContent = bottomContent()
     }
 
-    @Environment(\.posLayoutScale) private var layoutScale
-
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+            HStack(alignment: hStackAlignment, spacing: metrics.spacing.medium) {
                 leadingContent
 
                 if shouldShowItemsContent {
@@ -104,49 +124,61 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                 }
 
                 trailingContent
+                    .frame(minHeight: navigationRowMinHeight)
             }
 
             bottomContent
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
-        .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)
-        .padding(.trailing, POSHeaderLayoutConstants.sectionHorizontalPadding)
-        .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
+        .posContentPadding(.horizontal, metrics.padding.medium)
+        .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? metrics.padding.medium : metrics.padding.large))
+        .padding(.bottom, metrics.padding.large)
     }
 
+    /// Try full-size tabs, then smaller tabs, before allowing horizontal scrolling.
     @ViewBuilder
     private var itemsContent: some View {
-        let itemsRow = VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+        if hasSelectableTitles {
+            ViewThatFits(in: .horizontal) {
+                itemsRow()
+
+                itemsRow(titleFont: titleFont(size: titleSize * 0.9))
+
+                itemsRow(titleFont: titleFont(size: titleSize * 0.85))
+
+                POSHeaderScrollableTitles {
+                    itemsRow(titleFont: titleFont(size: titleSize * 0.85))
+                }
+            }
+        } else {
+            itemsRow()
+        }
+    }
+
+    private var titleSize: CGFloat {
+        POSFontStyle.posHeadingBold.baseSize(for: layoutScale)
+    }
+
+    private func titleFont(size: CGFloat) -> Font {
+        let category = UIContentSizeCategory(min(dynamicTypeSize, POSHeaderLayoutConstants.maximumDynamicTypeSize))
+        return POSFontStyle.posHeadingBold.font(baseSize: size, maximumContentSizeCategory: category)
+    }
+
+    private func itemsRow(titleFont: Font? = nil) -> some View {
+        VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+            HStack(alignment: hStackAlignment, spacing: metrics.spacing.medium) {
                 if showsBackButton {
                     backButton
+                        .frame(minHeight: navigationRowMinHeight)
                 }
                 ForEach(0..<items.count, id: \.self) { index in
-                    VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                        HStack(spacing: POSSpacing.small) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.xSmall) {
+                        HStack(spacing: metrics.spacing.small) {
                             if items[index].title.isNotEmpty {
                                 Button(action: {
                                     items[index].action?()
                                 }) {
-                                    Group {
-                                        // Phone: items live inside a horizontal ScrollView, so
-                                        // `.fixedSize` lets long titles take their natural width
-                                        // and swipe rather than squeeze. iPad: items render
-                                        // inline (no ScrollView), so we keep the pre-#17092
-                                        // `.minimumScaleFactor(0.5)` shrinking behaviour to
-                                        // avoid overflowing in narrow split-view.
-                                        if layoutScale == .phone {
-                                            Text(items[index].title)
-                                                .fixedSize(horizontal: true, vertical: false)
-                                        } else {
-                                            Text(items[index].title)
-                                                .minimumScaleFactor(0.5)
-                                        }
-                                    }
-                                    .font(.posHeadingBold)
-                                    .lineLimit(1)
-                                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                    .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                    titleText(items[index].title, isSelected: items[index].isSelected, font: titleFont)
                                 }
                                 .disabled(items[index].isSelected)
                                 .accessibilityElement()
@@ -156,36 +188,52 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
                             if items[index].isLoading {
                                 ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .scaleEffect(0.7)
+                                    .progressViewStyle(POSProgressViewStyle(size: 16, lineWidth: 4))
                                     .transition(.opacity.combined(with: .scale))
                             }
                         }
+                        // Keep subtitles below the navigation row instead of moving its title and back button.
+                        .frame(minHeight: navigationRowMinHeight)
 
                         if let subtitle = items[index].subtitle {
-                            Text(subtitle)
-                                .font(.posBodyLargeRegular())
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                .foregroundColor(.posOnSurface)
+                            subtitleText(subtitle)
                         }
                     }
                 }
             }
         }
+    }
 
-        if layoutScale == .phone {
-            ScrollView(.horizontal, showsIndicators: false) {
-                itemsRow
-            }
+    private func titleText(_ title: String, isSelected: Bool, font: Font?) -> some View {
+        titleLabel(title, font: font)
+            // Single titles can shrink by up to 20% and wrap to two lines;
+            // selectable titles keep their natural width for the horizontal scroll fallback.
+            .lineLimit(hasSelectableTitles ? 1 : 2)
+            .minimumScaleFactor(hasSelectableTitles ? 1 : 0.8)
+            .allowsTightening(!hasSelectableTitles)
+            .fixedSize(horizontal: hasSelectableTitles, vertical: false)
+            .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+            .foregroundColor(isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+    }
+
+    @ViewBuilder
+    private func titleLabel(_ title: String, font: Font?) -> some View {
+        if let font {
+            Text(title).font(font)
         } else {
-            itemsRow
+            Text(title).font(.posHeadingBold)
         }
     }
 
-    private var shouldHaveLeadingPaddingForItems: Bool {
-        items.isNotEmpty || showsBackButton
+    private func subtitleText(_ subtitle: String) -> some View {
+        Text(subtitle)
+            .font(.posBodyLargeRegular())
+            // Follows the title: without the scroll fallback a single-title header would
+            // otherwise clip a long subtitle, such as the date and email on order details.
+            .lineLimit(hasSelectableTitles ? 1 : Constants.subtitleLineLimit)
+            .fixedSize(horizontal: hasSelectableTitles, vertical: false)
+            .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+            .foregroundColor(.posOnSurface)
     }
 
     private var shouldShowItemsContent: Bool {
@@ -200,13 +248,47 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     }
 }
 
+private struct POSHeaderScrollableTitles<Content: View>: View {
+    @Environment(\.posMetrics) private var metrics
+    @State private var clippedEdges: Edge.Set = []
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            content
+        }
+        .onScrollGeometryChange(for: Edge.Set.self) { geometry in
+            var edges: Edge.Set = []
+            if geometry.visibleRect.minX > 1 {
+                edges.insert(.leading)
+            }
+            if geometry.visibleRect.maxX < geometry.contentSize.width - 1 {
+                edges.insert(.trailing)
+            }
+            return edges
+        } action: { _, edges in
+            clippedEdges = edges
+        }
+        .mask {
+            GeometryReader { geometry in
+                let fade = min(metrics.spacing.medium / max(geometry.size.width, 1), 0.5)
+                LinearGradient(stops: [
+                    .init(color: clippedEdges.contains(.leading) ? .clear : .black, location: 0),
+                    .init(color: .black, location: fade),
+                    .init(color: .black, location: 1 - fade),
+                    .init(color: clippedEdges.contains(.trailing) ? .clear : .black, location: 1)
+                ], startPoint: UnitPoint(x: 0, y: 0.5), endPoint: UnitPoint(x: 1, y: 0.5))
+            }
+        }
+    }
+}
+
 private enum Constants {
-    static let horizontalSpacing: CGFloat = POSSpacing.medium
-    static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
+    static let subtitleLineLimit: Int = 2
 }
 
 struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {
-    static let defaultValue: POSPageHeaderBackButtonConfiguration? = nil
+    static var defaultValue: POSPageHeaderBackButtonConfiguration? { nil }
 }
 
 struct POSHeaderBackButtonIconKey: EnvironmentKey {
@@ -215,7 +297,7 @@ struct POSHeaderBackButtonIconKey: EnvironmentKey {
 
 struct POSHeaderBackButtonPaddingKey: EnvironmentKey {
     /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
-    static let defaultValue: CGFloat = POSPadding.large / 2
+    static let defaultValue: CGFloat = POSMetrics.regular.padding.large / 2
 }
 
 extension EnvironmentValues {
@@ -258,7 +340,7 @@ extension View {
 #Preview {
     @Previewable @State var isProductsSelected: Bool = true
 
-    VStack(spacing: 20) {
+    VStack(spacing: POSMetrics.regular.spacing.large) {
         // Header without back button.
         POSPageHeaderView(
             title: "Products",
@@ -287,7 +369,7 @@ extension View {
             title: "Products",
             backButtonConfiguration: .init(state: .enabled, action: {}),
             trailingContent: {
-                HStack(spacing: 16) {
+                HStack(spacing: POSMetrics.regular.spacing.medium) {
                     Button(action: {}) {
                         Text(Image(systemName: "info.circle"))
                             .font(.posButtonSymbolLarge)
@@ -346,7 +428,7 @@ extension View {
                 .init(title: "Coupons", isSelected: !isProductsSelected) { isProductsSelected.toggle() }
             ],
             trailingContent: {
-                HStack(spacing: 16) {
+                HStack(spacing: POSMetrics.regular.spacing.medium) {
                     Button(action: {}) {
                         Text(Image(systemName: "plus"))
                             .font(.posButtonSymbolLarge)
@@ -370,8 +452,8 @@ extension View {
                 Text("Completed")
                     .font(.posBodySmallRegular())
                     .foregroundStyle(Color.posSuccess)
-                    .padding(.horizontal, POSPadding.small)
-                    .padding(.vertical, POSPadding.xSmall)
+                    .padding(.horizontal, POSMetrics.regular.padding.small)
+                    .padding(.vertical, POSMetrics.regular.padding.xSmall)
                     .background(Color.posSuccess.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             },
@@ -383,10 +465,21 @@ extension View {
                     Button("Refund") {}
                         .buttonStyle(.borderedProminent)
                 }
-                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                .padding(.top, POSSpacing.medium)
+                .padding(.horizontal, POSMetrics.regular.padding.medium)
+                .padding(.top, POSMetrics.regular.spacing.medium)
             }
         )
     }
     .background(Color.posSurface)
+}
+
+private struct POSHeaderTopPaddingKey: EnvironmentKey {
+    static let defaultValue: CGFloat? = nil
+}
+
+extension EnvironmentValues {
+    var posHeaderTopPadding: CGFloat? {
+        get { self[POSHeaderTopPaddingKey.self] }
+        set { self[POSHeaderTopPaddingKey.self] = newValue }
+    }
 }

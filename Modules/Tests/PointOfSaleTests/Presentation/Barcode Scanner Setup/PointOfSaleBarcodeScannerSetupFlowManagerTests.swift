@@ -4,6 +4,7 @@ import GameController
 import enum WooFoundationCore.WooAnalyticsStat
 @testable import PointOfSale
 
+@MainActor
 struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
 
     @Test func test_flowManager_tracks_scanner_selected_when_selectScanner_called() {

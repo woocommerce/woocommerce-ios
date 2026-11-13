@@ -1,18 +1,24 @@
 import Combine
 import UIKit
+import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController,
 /// modeling an error when Jetpack is not installed or is not connected
 /// Displayed as an entry point to the native Jetpack setup flow.
 ///
+@MainActor
 final class JetpackSetupRequiredViewModel: ULErrorViewModel {
 
     let siteURL: String
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     private let connectionOnly: Bool
+    /// Whether this screen was reached inside a login journey; it is also reachable from an
+    /// in-app store switch, where a login step would be wrong.
+    private let reportsLoginStep: Bool
     private let authentication: Authentication
     private let analytics: Analytics
+    private let tracker: AuthenticatorAnalyticsTracker
     private var coordinator: LoginJetpackSetupCoordinator?
     private var imageDownloadTask: ImageDownloadTask?
 
@@ -20,12 +26,16 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
 
     init(siteURL: String,
          connectionOnly: Bool,
+         reportsLoginStep: Bool = false,
          authentication: Authentication = ServiceLocator.authenticationManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         tracker: AuthenticatorAnalyticsTracker = .shared) {
         self.connectionOnly = connectionOnly
+        self.reportsLoginStep = reportsLoginStep
         self.siteURL = siteURL
         self.authentication = authentication
         self.analytics = analytics
+        self.tracker = tracker
     }
 
     // MARK: - Data and configuration
@@ -88,10 +98,18 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {
+        // Tracks this screen outside a login journey, which the login-only step below does not.
         if connectionOnly {
             analytics.track(.loginJetpackConnectionErrorShown)
         } else {
             analytics.track(.loginJetpackRequiredScreenViewed)
+        }
+
+        if reportsLoginStep {
+            tracker.track(
+                step: connectionOnly ? .jetpackNotConnected : .jetpackNotInstalled,
+                properties: [AuthenticatorAnalyticsTracker.Property.url.rawValue: siteURL.trimHTTPScheme()]
+            )
         }
 
         loadSiteFavicon()

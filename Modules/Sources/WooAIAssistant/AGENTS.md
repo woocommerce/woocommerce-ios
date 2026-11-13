@@ -153,7 +153,7 @@ Each turn returns a `ConversationTurnResult` carrying the per-turn assistant out
 
 Tests live in `Modules/Tests/WooAIAssistantTests/` mirroring the source folder layout. New tests use Swift Testing (`@Test`, `#expect()`) with snake_case method names. Slow runs almost always trace to a hanging continuation-based mock; fix the mock, not the runner.
 
-The end-to-end evaluation loop is the `/woo-ai-smoke` skill. It drives `WooAssistantHeadless` against a real demo store and writes JSONL run records under `.claude/skills/woo-ai-smoke/runs/`. Always run smokes via subagent; the log volume is large.
+The end-to-end evaluation loop is the `/woo-ai-smoke` skill. It drives `WooAssistantHeadless` against a real demo store and writes JSONL run records under `.agents/skills/woo-ai-smoke/runs/`. Always run smokes via subagent; the log volume is large.
 
 ## Anti-patterns and non-goals
 

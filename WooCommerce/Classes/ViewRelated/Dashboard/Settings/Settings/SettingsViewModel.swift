@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 import class WooFoundation.VersionHelpers
 import enum WooFoundation.BuildConfiguration
 
+@MainActor
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section
 
@@ -32,6 +33,7 @@ protocol SettingsViewModelOutput {
     var siteUrl: String? { get }
 }
 
+@MainActor
 protocol SettingsViewModelActionsHandler {
     /// Sets up the view model and loads the settings.
     /// Presenter (SettingsViewController in this case) is responsible for calling this from viewDidLoad method.
@@ -48,10 +50,12 @@ protocol SettingsViewModelActionsHandler {
     func reloadSettings()
 }
 
+@MainActor
 protocol SettingsViewModelInput: AnyObject {
     var presenter: SettingsViewPresenter? { get set }
 }
 
+@MainActor
 final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActionsHandler, SettingsViewModelInput {
 
     typealias Row = SettingsViewController.Row
@@ -104,7 +108,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
     private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
     private var isSelfDrivenPNEligible = false
@@ -121,7 +124,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          defaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          analytics: Analytics = ServiceLocator.analytics,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck()) {
         self.stores = stores
         self.storageManager = storageManager
@@ -129,7 +131,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         self.defaults = defaults
         self.pushNotesManager = pushNotesManager
         self.analytics = analytics
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
 
         /// Initialize Sites Results Controller
@@ -189,16 +190,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         guard stores.isAuthenticated else {
             return localDefault
         }
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
-                .smarterNotifications,
-                defaultValue: localDefault,
-                useCache: true,
-                completion: { value in
-                    continuation.resume(returning: value)
-                })
-            )
-        }
+        return await RemoteFeatureFlagService(stores: stores).isEnabled(.smarterNotifications, defaultValue: localDefault)
     }
 
     /// Reloads the sites when store picker gets dismissed.
@@ -270,11 +262,6 @@ private extension SettingsViewModel {
                 return nil
             }
 
-            // Hide plugins section for CIAB sites
-            guard !ciabEligibilityChecker.isCurrentSiteCIAB else {
-                return nil
-            }
-
             return Section(title: Localization.pluginsTitle,
                            rows: [.plugins, .woocommerceDetails],
                            footerHeight: UITableView.automaticDimension)
@@ -293,8 +280,7 @@ private extension SettingsViewModel {
 
             if defaults.wpcomSiteSuspended == false,
                site.isJetpackCPConnected == true ||
-                (site.isNonJetpackSite == true &&
-                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
+                site.isNonJetpackSite == true {
                 rows.append(.installJetpack)
             }
 

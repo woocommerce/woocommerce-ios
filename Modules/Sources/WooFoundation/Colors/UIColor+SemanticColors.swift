@@ -18,7 +18,7 @@ public extension UIColor {
 
     /// Brand. WooCommercePurple-60 (all versions of iOS, Light and Dark Mode)
     ///
-    static var brand = UIColor.withColorStudio(.brand)
+    static let brand = UIColor.withColorStudio(.brand)
 
     /// Error. Red-50 (< iOS 13 and Light Mode) and Red-30 (Dark Mode)
     ///
@@ -35,7 +35,7 @@ public extension UIColor {
 
     /// Primary. resolves to accent, WooCommercePurple-40 (Light mode) and WooCommercePurple-30 (Dark mode)
     ///
-    static var primary: UIColor = .accent
+    static let primary: UIColor = .accent
 
     /// Warning. Orange-30 (< iOS 13 and Light Mode) and Orange-50 (Dark Mode)
     ///
@@ -85,7 +85,7 @@ public extension UIColor {
 public extension UIColor {
     /// Text link. resolves to accent, WooCommercePurple-40 (Light mode) and WooCommercePurple-30 (Dark mode)
     ///
-    static var textLink: UIColor = .accent
+    static let textLink: UIColor = .accent
 
     /// Text.
     ///
@@ -132,7 +132,7 @@ public extension UIColor {
 
     /// Text.
     ///
-    static var textBrand: UIColor = .accent
+    static let textBrand: UIColor = .accent
 
     /// Text Warning.
     ///
@@ -193,15 +193,15 @@ public extension UIColor {
 
     /// Primary Button Border.
     ///
-    static var primaryButtonBorder = UIColor.clear
+    static let primaryButtonBorder = UIColor.clear
 
     /// Primary Button Highlighted Background.
     ///
-    static var primaryButtonDownBackground = accentDark
+    static let primaryButtonDownBackground = accentDark
 
     /// Primary Button Highlighted Border.
     ///
-    static var primaryButtonDownBorder = accentDark
+    static let primaryButtonDownBorder = accentDark
 
     /// Secondary Button Background.
     ///
@@ -270,7 +270,7 @@ public extension UIColor {
 
     /// Secondary Light Button Background.
     ///
-    static var secondaryLightButtonBackground: UIColor = .white
+    static let secondaryLightButtonBackground: UIColor = .white
 
     /// Button Disabled Background.
     ///

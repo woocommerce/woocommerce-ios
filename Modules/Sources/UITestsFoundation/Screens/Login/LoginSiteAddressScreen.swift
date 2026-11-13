@@ -1,6 +1,7 @@
 import ScreenObject
 import XCTest
 
+@MainActor
 public final class LoginSiteAddressScreen: ScreenObject {
 
     private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -22,8 +23,8 @@ public final class LoginSiteAddressScreen: ScreenObject {
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
-                nextButtonGetter,
-                siteAddressFieldGetter
+                siteAddressFieldGetter,
+                nextButtonGetter
             ],
             app: app
         )
@@ -31,6 +32,8 @@ public final class LoginSiteAddressScreen: ScreenObject {
 
     public func proceedWith(siteUrl: String) throws -> GetStartedScreen {
         siteAddressField.enterText(text: siteUrl)
+        XCTAssertTrue(nextButton.waitForExistence(timeout: 10), "Site address Next button should exist after entering the site URL.")
+        XCTAssertTrue(nextButton.waitForIsHittable(timeout: 10), "Site address Next button should be tappable after entering the site URL.")
         nextButton.tap()
 
         return try GetStartedScreen()

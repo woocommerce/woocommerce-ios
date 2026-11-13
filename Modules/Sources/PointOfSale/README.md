@@ -51,6 +51,10 @@ Each `Controller` handles a piece of global shared state, and provides the inter
 
 Often, the best way to do that is to expose a single enum covering all valid possibilities for that state, rather than exposing model objects. We've not achieved that in all the controllers yet, and some global state hasn't been encapsulated in a controller successfully yet, for example card payments.
 
+#### Coordinating models
+
+When one screen spans several controllers, a coordinating model owns them and is the single surface its views talk to. `POSOrderListModel` is the example: it holds the order list controller and the refund controller, forwards their state and actions to the orders screens, and owns everything that spans both, such as resetting the refund flow when the selected order changes and refreshing an order after a refund. Neither controller knows about the other. `POSOrderListModel` deliberately holds the order list controller twice — once as the view-facing `POSSearchingOrderListControllerProtocol` and once privately as `POSOrderSelectionHandling` — so views can read list state but cannot change the selection behind the model's back.
+
 #### Services
 
 Ideally each `Service` should be stateless, and owned by a controller which handles the state in between service calls, where needed.
@@ -84,6 +88,14 @@ The `PointOfSale` module depends on shared internal modules (e.g. `WooFoundation
 * **`POSTabCoordinator`** — Acts as a factory of PointOfSaleEntryPointView and injects the main app target dependencies.
 * **Adaptors Layer** — Implementations of the dependency protocols, located in the Woo app target, bridging POS to main app functionality.
 * **Environment Integration** — Dependencies are injected through environment values, providing access in SwiftUI views without using singletons directly.
+
+### Adaptive split layouts
+
+Use `POSNavigationSplitView` for list/detail screens and `POSPageHeaderView` for headers. The split container keeps content clear of an active book division and joins pane backgrounds at the fold. SDK and runtime guards are handled by the shared layout.
+
+For outer content padding, use `.posContentPadding(.horizontal, metrics.padding.medium)` instead of `.padding(.horizontal, metrics.padding.medium)`. It counts nearby system fold clearance toward the requested padding; keep ordinary padding inside cards. Use `.posContentPadding(insets)` when horizontal and vertical padding differ.
+
+A custom split container should use `POSBookPoseLayout.leadingWidth`, `trailingWidth` and `spacing` for content. Its background uses zero spacing and `backgroundLeadingWidth` for the leading color. Apply `.posBookPoseAnimation(layout)` once to the container, including its background, to animate entering and leaving book pose after the initial layout. Do not apply it to individual panes or detail views.
 
 ### Dependency Injection
 

@@ -38,6 +38,29 @@ struct POSCatalogIncrementalSyncServiceTests {
         #expect(mockPersistenceService.persistIncrementalCatalogDataCallCount == 1)
     }
 
+    @Test func startIncrementalSync_uses_earliest_server_date_as_syncDate() async throws {
+        // Given - responses carry server `Date` headers; products earlier than variations
+        let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
+        let earlier = Date(timeIntervalSince1970: 5_000)
+        let later = Date(timeIntervalSince1970: 9_000)
+        mockSyncRemote.setIncrementalProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0, serverDate: earlier))
+        )
+        mockSyncRemote.setIncrementalVariationResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0, serverDate: later))
+        )
+
+        // When
+        let result = try await sut.startIncrementalSync(for: sampleSiteID,
+                                                        lastFullSyncDate: lastFullSyncDate,
+                                                        lastIncrementalSyncDate: nil)
+
+        // Then - the watermark is the earliest server date across responses, not the device clock
+        #expect(result.syncDate == earlier)
+    }
+
     @Test func startIncrementalSync_uses_last_incremental_sync_date_as_modifiedAfter_date_when_available() async throws {
         // Given
         let lastFullSyncDate = Date(timeIntervalSince1970: 1000)

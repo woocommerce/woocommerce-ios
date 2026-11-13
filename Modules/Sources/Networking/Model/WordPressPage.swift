@@ -3,7 +3,7 @@ import Codegen
 
 /// Details of a WordPress web page.
 ///
-public struct WordPressPage: Decodable, Equatable, Identifiable, GeneratedCopiable, GeneratedFakeable {
+public struct WordPressPage: Decodable, Equatable, Identifiable, Sendable, GeneratedCopiable, GeneratedFakeable {
     /// ID of the page in the site
     public let id: Int64
 

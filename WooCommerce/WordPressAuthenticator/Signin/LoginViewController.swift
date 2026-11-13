@@ -5,7 +5,10 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
 
-    let tracker = AuthenticatorAnalyticsTracker.shared
+    /// Overridable so a screen that is not part of a login journey can swap in a tracker that
+    /// reports nothing — this class tracks on its subclasses' behalf (dismiss, failures), so a
+    /// gate applied only in a subclass would miss those.
+    var tracker: AuthenticatorAnalyticsTracker { .shared }
 
     /// Constraints on the table view container.
     /// Used to adjust the table width in unified views.
@@ -88,7 +91,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         instructionLabel?.textColor = WordPressAuthenticator.shared.style.instructionColor
     }
 
-    func configureViewLoading(_ loading: Bool) {
+    public func configureViewLoading(_ loading: Bool) {
         configureSubmitButton(animating: loading)
         navigationItem.hidesBackButton = loading
     }
@@ -141,7 +144,14 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController else {
-            fatalError("No navigation controller found to show login epilogue")
+            // A dropped presentation can orphan this VC (a recoverable UIKit race, not programmer
+            // error), so report and skip the epilogue instead of crashing. `flow` tags the concrete
+            // login flow, since this method is shared across all of them.
+            WPAuthenticatorLogError("No navigation controller found to show login epilogue")
+            WordPressAuthenticator.track(.loginMagicLinkFailed,
+                                         properties: ["reason": "missing_navigation_controller",
+                                                      "flow": String(describing: type(of: self))])
+            return
         }
 
         authenticationDelegate.presentLoginEpilogue(in: navigationController,
@@ -173,7 +183,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     // MARK: SigninWPComSyncHandler methods
     open dynamic func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode, siteURL: loginFields.siteAddress)
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode, siteURL: loginFields.effectiveSiteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
         syncWPComAndPresentEpilogue(credentials: credentials)
@@ -294,7 +304,6 @@ extension LoginViewController {
         // This stat is part of a funnel that provides critical information. Please
         // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn, properties: properties)
-        tracker.track(step: .success)
     }
 
     /// Links the current WordPress Account to a Social Service (if possible!!).

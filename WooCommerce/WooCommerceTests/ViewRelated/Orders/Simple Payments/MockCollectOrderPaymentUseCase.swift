@@ -15,7 +15,7 @@ struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
                         channel: PaymentChannel,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
-                        onPaymentCompletion: @escaping () -> Void,
+                        onPaymentCompletion: @escaping (CardPresentReceiptParameters?) -> Void,
                         onCompleted: @escaping () -> Void) {
         switch onCollectResult {
         case .success:

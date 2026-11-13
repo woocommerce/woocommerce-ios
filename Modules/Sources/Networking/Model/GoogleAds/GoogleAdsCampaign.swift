@@ -3,7 +3,7 @@ import Foundation
 
 /// Details for a Google ads campaign.
 ///
-public struct GoogleAdsCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct GoogleAdsCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     public let id: Int64
 

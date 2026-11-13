@@ -7,7 +7,7 @@ import WooFoundation
 final class AddCustomAmountViewModelTests: XCTestCase {
     func test_shouldEnableDoneButton_when_amount_is_not_greater_than_zero_then_disables_done_button() {
         // Given
-        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: { _, _, _, _ in })
 
         // When
         viewModel.formattableAmountTextFieldViewModel?.updateAmount("$0")
@@ -157,6 +157,102 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         viewModel.percentageViewModel?.updatePercentageCalculatedAmount("\(percentage)")
 
         // Then
-        XCTAssertEqual(viewModel.percentageViewModel?.percentageCalculatedAmount, currencyFormatter.formatAmount(amountString))
+        XCTAssertEqual(viewModel.percentageViewModel?.formattedAmount, currencyFormatter.formatAmount(amountString))
+    }
+
+    func test_doneButtonPressed_when_percentage_amount_has_thousands_then_passes_plain_number_not_display_string() throws {
+        // Given
+        let usStoreSettings = CurrencySettings()
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 12345),
+                                                 storeCurrencySettings: usStoreSettings,
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+        viewModel.percentageViewModel?.updatePercentageCalculatedAmount("10")
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        // The order sync parses "$1,234.50" as 1.234, so the fee total must be a plain number.
+        let amount = try XCTUnwrap(enteredAmount)
+        XCTAssertFalse(amount.contains("$") || amount.contains(","))
+        XCTAssertEqual(CurrencyFormatter(currencySettings: usStoreSettings).convertToDecimal(amount), 1234.5)
+    }
+
+    func test_doneButtonPressed_when_store_uses_dot_thousands_separator_then_passes_plain_number_rounded_to_store_decimals() {
+        // Given
+        let dotThousandsSettings = CurrencySettings(currencyCode: .USD,
+                                                    currencyPosition: .left,
+                                                    thousandSeparator: ".",
+                                                    decimalSeparator: ",",
+                                                    numberOfDecimals: 0)
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 12345),
+                                                 storeCurrencySettings: dotThousandsSettings,
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+        viewModel.percentageViewModel?.updatePercentageCalculatedAmount("10")
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        // The sheet shows "$1.235", so the fee total must be 1235, not 1234.5 or 1.
+        XCTAssertEqual(enteredAmount, "1235")
+    }
+
+    func test_clearInputFocus_when_fixed_amount_then_clears_focused_field() {
+        // Given
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
+
+        // When
+        viewModel.clearInputFocus()
+
+        // Then
+        XCTAssertNil(viewModel.focusedField)
+    }
+
+    func test_clearInputFocus_when_percentage_then_clears_focused_field() {
+        // Given
+        let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 200), onCustomAmountEntered: { _, _, _, _ in })
+
+        // When
+        viewModel.clearInputFocus()
+
+        // Then
+        XCTAssertNil(viewModel.focusedField)
+    }
+
+    func test_focusName_when_fixed_amount_then_sets_name_focus() {
+        // Given
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
+
+        // When
+        viewModel.focusName()
+
+        // Then
+        XCTAssertEqual(viewModel.focusedField, .name)
+    }
+
+    func test_focusInput_when_fixed_amount_then_sets_input_focus() {
+        // Given
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
+        viewModel.focusName()
+
+        // When
+        viewModel.focusInput()
+
+        // Then
+        XCTAssertEqual(viewModel.focusedField, .input)
+    }
+
+    func test_focusName_when_percentage_then_sets_name_focus() {
+        // Given
+        let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 200), onCustomAmountEntered: { _, _, _, _ in })
+
+        // When
+        viewModel.focusName()
+
+        // Then
+        XCTAssertEqual(viewModel.focusedField, .name)
     }
 }

@@ -343,6 +343,7 @@ private final class SpyAnalytics: QRLoginAnalyticsTracking {
     private(set) var failures: [String] = []
 
     func setFlow(_ flow: AuthenticatorAnalyticsTracker.Flow) {}
+    func setStep(_ step: AuthenticatorAnalyticsTracker.Step) {}
     func trackStep(_ step: AuthenticatorAnalyticsTracker.Step) { steps.append(step) }
     func trackClick(_ click: AuthenticatorAnalyticsTracker.ClickTarget) { clicks.append(click) }
     func trackFailure(_ failure: String) { failures.append(failure) }

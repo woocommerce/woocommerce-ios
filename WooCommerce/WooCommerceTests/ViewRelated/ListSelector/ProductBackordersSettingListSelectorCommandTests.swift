@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class ProductBackordersSettingListSelectorCommandTests: XCTestCase {
 
     func test_selected_setting() {
@@ -22,6 +23,7 @@ final class ProductBackordersSettingListSelectorCommandTests: XCTestCase {
         XCTAssertEqual(command.data.count, 3)
     }
 
+    @MainActor
     func test_cell_configuration() {
         let product = Product.fake()
         let command = ProductBackordersSettingListSelectorCommand(selected: product.backordersSetting)

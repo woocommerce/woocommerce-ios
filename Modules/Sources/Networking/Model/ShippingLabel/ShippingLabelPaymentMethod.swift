@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipping Label Payment Method.
 ///
-public struct ShippingLabelPaymentMethod: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct ShippingLabelPaymentMethod: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
     /// The remote ID for the payment method.
     public let paymentMethodID: Int64
 

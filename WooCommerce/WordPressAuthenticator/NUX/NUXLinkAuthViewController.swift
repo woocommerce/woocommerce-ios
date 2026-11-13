@@ -24,12 +24,9 @@ class NUXLinkAuthViewController: LoginViewController {
     }
 
     func syncAndContinue(authToken: String, flow: Flow, isJetpackConnect: Bool) {
-        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackConnect, multifactor: false, siteURL: "https://wordpress.com")
-        let credentials = AuthenticatorCredentials(wpcom: wpcom)
+        let credentials = makeCredentials(authToken: authToken, isJetpackConnect: isJetpackConnect)
 
         syncWPComAndPresentEpilogue(credentials: credentials) {
-            self.tracker.track(step: .success)
-
             switch flow {
             case .signup:
                 // This stat is part of a funnel that provides critical information. Before
@@ -40,5 +37,12 @@ class NUXLinkAuthViewController: LoginViewController {
                 WordPressAuthenticator.track(.loginMagicLinkSucceeded)
             }
         }
+    }
+
+    /// Uses the entered store address so the epilogue navigates to it; falls back to wordpress.com.
+    func makeCredentials(authToken: String, isJetpackConnect: Bool) -> AuthenticatorCredentials {
+        let siteURL = loginFields.siteAddress.isEmpty ? "https://wordpress.com" : loginFields.siteAddress
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackConnect, multifactor: false, siteURL: siteURL)
+        return AuthenticatorCredentials(wpcom: wpcom)
     }
 }

@@ -7,10 +7,10 @@ import Storage
 // MARK: - OrderStore
 //
 public class OrderStore: Store {
-    private let remote: OrdersRemote
+    private let requestHandler: OrderStoreRequestHandler
 
     override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = OrdersRemote(network: network)
+        self.requestHandler = OrderStoreRequestHandler(storageManager: storageManager, network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -20,9 +20,26 @@ public class OrderStore: Store {
         dispatcher.register(processor: self, for: OrderAction.self)
     }
 
+    override public func onAction(_ action: Action) {
+        requestHandler.onAction(action)
+    }
+}
+
+
+// Keeps request handling separate from the non-Sendable dispatcher.
+// Pending database writes do not keep the handler alive.
+private final class OrderStoreRequestHandler: Sendable {
+    let remote: OrdersRemote
+    let storageManager: StorageManagerType
+
+    init(storageManager: StorageManagerType, network: Network) {
+        self.remote = OrdersRemote(network: network)
+        self.storageManager = storageManager
+    }
+
     /// Receives and executes Actions.
     ///
-    override public func onAction(_ action: Action) {
+    func onAction(_ action: Action) {
         guard let action = action as? OrderAction else {
             assertionFailure("OrderStore received an unsupported action")
             return
@@ -63,12 +80,22 @@ public class OrderStore: Store {
                               onCompletion: onCompletion)
         case .updateOrderStatus(let siteID, let orderID, let statusKey, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
-        case let .updateOrder(siteID, order, giftCard, fields, onCompletion):
-            updateOrder(siteID: siteID, order: order, giftCard: giftCard, fields: fields, onCompletion: onCompletion)
+        case let .updateOrder(siteID, order, giftCard, fields, requestCurrency, onCompletion):
+            updateOrder(siteID: siteID,
+                        order: order,
+                        giftCard: giftCard,
+                        fields: fields,
+                        requestCurrency: requestCurrency,
+                        onCompletion: onCompletion)
         case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
             updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
-        case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
-            createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
+        case let .createSimplePaymentsOrder(siteID, status, amount, taxable, currency, onCompletion):
+            createSimplePaymentsOrder(siteID: siteID,
+                                      status: status,
+                                      amount: amount,
+                                      taxable: taxable,
+                                      currency: currency,
+                                      onCompletion: onCompletion)
         case let .createOrder(siteID, order, giftCard, onCompletion):
             createOrder(siteID: siteID, order: order, giftCard: giftCard, onCompletion: onCompletion)
         case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, amountName, taxable, orderNote, email, onCompletion):
@@ -97,11 +124,11 @@ public class OrderStore: Store {
 
 // MARK: - Services!
 //
-private extension OrderStore {
+private extension OrderStoreRequestHandler {
 
     /// Nukes all of the Stored Orders.
     ///
-    func resetStoredOrders(onCompletion: @escaping () -> Void) {
+    func resetStoredOrders(onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ storage in
             storage.deleteAllObjects(ofType: Storage.Order.self)
         }, completion: {
@@ -112,7 +139,7 @@ private extension OrderStore {
 
     /// Searches all of the orders that contain a given Keyword.
     ///
-    func searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping @Sendable (Error?) -> Void) {
         Task { @MainActor in
             do {
                 let orders = try await remote.searchOrders(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
@@ -151,7 +178,7 @@ private extension OrderStore {
                              createdVia: String?,
                              writeStrategy: OrderAction.OrdersStorageWriteStrategy,
                              pageSize: Int,
-                             onCompletion: @escaping (TimeInterval, Result<[Order], Error>) -> Void) {
+                             onCompletion: @escaping @Sendable (TimeInterval, Result<[Order], Error>) -> Void) {
 
         let pageNumber = OrdersRemote.Defaults.pageNumber
         let startTime = Date()
@@ -173,7 +200,9 @@ private extension OrderStore {
                     onCompletion(Date().timeIntervalSince(startTime), result)
                 case .deleteAllBeforeSaving, .save:
                     let removeAllStoredOrders = writeStrategy == .deleteAllBeforeSaving
-                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders, removeAllStoredOrders: removeAllStoredOrders) {
+                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders,
+                                                         removeAllStoredOrders: removeAllStoredOrders,
+                                                         includingMetadataDerivedFields: false) {
                         onCompletion(Date().timeIntervalSince(startTime), result)
                     }
                 }
@@ -196,7 +225,7 @@ private extension OrderStore {
                            createdVia: String?,
                            pageNumber: Int,
                            pageSize: Int,
-                           onCompletion: @escaping (TimeInterval, Error?) -> Void) {
+                           onCompletion: @escaping @Sendable (TimeInterval, Error?) -> Void) {
         let startTime = Date()
         Task { @MainActor in
             do {
@@ -210,7 +239,7 @@ private extension OrderStore {
                                                             createdVia: createdVia,
                                                             pageNumber: pageNumber,
                                                             pageSize: pageSize)
-                upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+                upsertStoredOrdersInBackground(readOnlyOrders: orders, includingMetadataDerivedFields: false) {
                     onCompletion(Date().timeIntervalSince(startTime), nil)
                 }
             } catch {
@@ -221,7 +250,7 @@ private extension OrderStore {
 
     /// Checks if the store already has any orders.
     ///
-    func checkIfStoreHasOrders(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func checkIfStoreHasOrders(siteID: Int64, onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -232,7 +261,7 @@ private extension OrderStore {
         // If there are no locally stored orders, then check remote.
         Task { @MainActor in
             do {
-                let orders = try await remote.loadAllOrders(for: siteID, pageNumber: Default.firstPageNumber, pageSize: 1)
+                let orders = try await remote.loadAllOrders(for: siteID, pageNumber: Store.Default.firstPageNumber, pageSize: 1)
                 onCompletion(.success(orders.isEmpty == false))
             } catch {
                 onCompletion(.failure(error))
@@ -242,12 +271,17 @@ private extension OrderStore {
 
     /// Retrieves a specific order associated with a given Site ID (if any!).
     ///
-    func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
+    func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping @Sendable (Order?, Error?) -> Void) {
         // Check first if the order exists in storage. If it doesn't, fetch it from remote.
+        // The date-modified shortcut below is only valid when the stored order is complete: order list and
+        // search fetches omit `meta_data` (see `OrdersRemote.ParameterValues.listFieldValues`), so an order
+        // stored without any metadata-derived values must be synced in full before it can be served locally.
         let storage = storageManager.viewStorage
-        guard let storedOrder = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
+        guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID),
+              storageOrder.containsMetadataDerivedValues else {
             return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         }
+        let storedOrder = storageOrder.toReadOnly()
 
         Task {
             // If the order exists in storage, fetch the last modified date to see if it has been updated remotely.
@@ -264,21 +298,21 @@ private extension OrderStore {
         }
     }
 
-    func retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
         loadOrderFromRemote(siteID: siteID, orderID: orderID) { order, error in
             if let error {
                 onCompletion(.failure(error))
             } else if let order {
                 onCompletion(.success(order))
             } else {
-                onCompletion(.failure(RetrieveOrderError.noErrorAndOrderFromRemote))
+                onCompletion(.failure(OrderStore.RetrieveOrderError.noErrorAndOrderFromRemote))
             }
         }
     }
 
     /// Loads a specific order associated with a given Site ID from remote.
     ///
-    private func loadOrderFromRemote(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
+    private func loadOrderFromRemote(siteID: Int64, orderID: Int64, onCompletion: @escaping @Sendable (Order?, Error?) -> Void) {
         remote.loadOrder(for: siteID, orderID: orderID) { [weak self] order, error in
             guard let order else {
                 if case NetworkError.notFound? = error {
@@ -287,6 +321,13 @@ private extension OrderStore {
                     }
                 } else {
                     onCompletion(nil, error)
+                }
+                return
+            }
+
+            guard order.status != .autoDraft else {
+                self?.deleteStoredOrder(siteID: siteID, orderID: orderID) {
+                    onCompletion(order, nil)
                 }
                 return
             }
@@ -303,9 +344,10 @@ private extension OrderStore {
                                    status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
-                                   onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
-        remote.createOrder(siteID: siteID, order: order, giftCard: nil, fields: [.status, .feeLines]) { [weak self] result in
+                                   currency: String,
+                                   onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
+        let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable).copy(currency: currency)
+        remote.createOrder(siteID: siteID, order: order, giftCard: nil, fields: [.status, .feeLines, .currency]) { [weak self] result in
             switch result {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored
@@ -333,7 +375,7 @@ private extension OrderStore {
                                    taxable: Bool,
                                    orderNote: String?,
                                    email: String?,
-                                   onCompletion: @escaping (Result<Order, Error>) -> Void) {
+                                   onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
 
         // Recreate the original order
         let originalOrder = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
@@ -361,7 +403,7 @@ private extension OrderStore {
 
     /// Creates a manual order with the provided order details.
     ///
-    func createOrder(siteID: Int64, order: Order, giftCard: String?, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func createOrder(siteID: Int64, order: Order, giftCard: String?, onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
         let fields: [OrdersRemote.CreateOrderField] = [.status,
                                                        .items,
                                                        .billingAddress,
@@ -382,11 +424,11 @@ private extension OrderStore {
 
     /// Updates an Order with the specified Status.
     ///
-    func updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: @escaping (Error?) -> Void) {
+    func updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: @escaping @Sendable (Error?) -> Void) {
         /// Optimistically update the Status
         updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: status) { [weak self] previousStatus in
             guard let self else {
-                return onCompletion(UpdateOrderStatusError.undefinedState)
+                return onCompletion(OrderStore.UpdateOrderStatusError.undefinedState)
             }
             remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] order, error in
                 guard let error else {
@@ -406,7 +448,12 @@ private extension OrderStore {
 
     /// Updates the specified fields from an order.
     ///
-    func updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func updateOrder(siteID: Int64,
+                     order: Order,
+                     giftCard: String?,
+                     fields: [OrderUpdateField],
+                     requestCurrency: String? = nil,
+                     onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
         /// When an order item has a remote ID and bundle configuration, the order's line items need to be updated in the following way:
         /// - Set the original order item with the bundle configuration quantity to 0, and remove the bundle configuration
         /// - Create a new order item with the bundle configuration
@@ -434,7 +481,11 @@ private extension OrderStore {
             }
         }()
 
-        remote.updateOrder(from: siteID, order: order.copy(items: items), giftCard: giftCard, fields: fields) { [weak self] result in
+        remote.updateOrder(from: siteID,
+                           order: order.copy(items: items),
+                           giftCard: giftCard,
+                           fields: fields,
+                           requestCurrency: requestCurrency) { [weak self] result in
             self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
         }
     }
@@ -443,7 +494,7 @@ private extension OrderStore {
     ///
     /// Updates will be reverted in case of failure.
     ///
-    func updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
         // Optimistically update the stored order.
         let backupOrder = upsertStoredOrder(readOnlyOrder: order)
 
@@ -472,10 +523,10 @@ private extension OrderStore {
     /// Updates an order to be considered as paid locally, for use cases where the payment is captured in the
     /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
     ///
-    func markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
         storageManager.performAndSave({ storage in
             guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-                throw MarkOrderAsPaidLocallyError.orderNotFoundInStorage
+                throw OrderStore.MarkOrderAsPaidLocallyError.orderNotFoundInStorage
             }
             order.datePaid = datePaid
             order.statusKey = OrderStatusEnum.processing.rawValue
@@ -492,7 +543,7 @@ private extension OrderStore {
 
     /// Deletes a given order.
     ///
-    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
         // Optimistically delete the order from storage
         deleteStoredOrder(siteID: siteID, orderID: order.orderID)
 
@@ -536,11 +587,11 @@ private extension OrderStore {
 
 // MARK: - Storage
 //
-extension OrderStore {
+private extension OrderStoreRequestHandler {
 
     /// Deletes any Storage.Order with the specified OrderID
     ///
-    func deleteStoredOrder(siteID: Int64, orderID: Int64, onCompletion: (() -> Void)? = nil) {
+    func deleteStoredOrder(siteID: Int64, orderID: Int64, onCompletion: (@Sendable () -> Void)? = nil) {
         storageManager.performAndSave({ storage in
             guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
                 return
@@ -553,7 +604,7 @@ extension OrderStore {
     ///
     func updateOrderStatus(siteID: Int64, orderID: Int64,
                            statusKey: OrderStatusEnum,
-                           onCompletion: @escaping (_ previousStatus: OrderStatusEnum) -> Void) {
+                           onCompletion: @escaping @Sendable (_ previousStatus: OrderStatusEnum) -> Void) {
         storageManager.performAndSave({ storage -> OrderStatusEnum in
             guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
                 return statusKey
@@ -581,20 +632,20 @@ extension OrderStore {
     /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
     ///
     func upsertStoredOrder(readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false, in storage: StorageType) {
-        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], insertingSearchResults: insertingSearchResults, in: storage)
+        requestHandler.upsertStoredOrders(readOnlyOrders: [readOnlyOrder], insertingSearchResults: insertingSearchResults, in: storage)
     }
 
     /// Unit Testing Helper: Updates or Inserts a given Search Results page
     ///
     func upsertStoredResults(for siteID: Int64, keyword: String, readOnlyOrder: Networking.Order, in storage: StorageType) {
-        upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: [readOnlyOrder], in: storage)
+        requestHandler.upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: [readOnlyOrder], in: storage)
     }
 }
 
 
 // MARK: - Storage: Search Results
 //
-private extension OrderStore {
+private extension OrderStoreRequestHandler {
     /// Updates or inserts the specified ReadOnly Order Entity.
     ///
     /// - Returns: The updated order, prior to performing the update operation or the given order when
@@ -616,10 +667,13 @@ private extension OrderStore {
 
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
     ///
-    func upsertSearchResultsInBackground(for siteID: Int64, keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
+    func upsertSearchResultsInBackground(for siteID: Int64, keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
-            upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders,
+                               insertingSearchResults: true,
+                               includingMetadataDerivedFields: false,
+                               in: derivedStorage)
             upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }
@@ -645,8 +699,8 @@ private extension OrderStore {
 
 // MARK: - Storage: Orders
 //
-private extension OrderStore {
-    func handleCreateOrUpdateOrderResult(_ result: Result<Order, Error>, giftCard: String?, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+private extension OrderStoreRequestHandler {
+    func handleCreateOrUpdateOrderResult(_ result: Result<Order, Error>, giftCard: String?, onCompletion: @escaping @Sendable (Result<Order, Error>) -> Void) {
         switch result {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored
@@ -655,7 +709,7 @@ private extension OrderStore {
                 }
 
                 if let giftCard, order.appliedGiftCards.contains(where: { $0.code == giftCard }) == false {
-                    return onCompletion(.failure(GiftCardError.notApplied))
+                    return onCompletion(.failure(OrderStore.GiftCardError.notApplied))
                 }
 
                 upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
@@ -666,9 +720,9 @@ private extension OrderStore {
                    case let .unknown(code, message, _) = dotcomError {
                     switch code {
                         case "woocommerce_rest_gift_card_cannot_apply":
-                            return onCompletion(.failure(GiftCardError.cannotApply(reason: message)))
+                            return onCompletion(.failure(OrderStore.GiftCardError.cannotApply(reason: message)))
                         case "woocommerce_rest_gift_card_cannot_parse_data":
-                            return onCompletion(.failure(GiftCardError.invalid(reason: message)))
+                            return onCompletion(.failure(OrderStore.GiftCardError.invalid(reason: message)))
                         default:
                             return onCompletion(result)
                     }
@@ -681,13 +735,16 @@ private extension OrderStore {
     ///
     private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
                                                 removeAllStoredOrders: Bool = false,
-                                                onCompletion: (() -> Void)? = nil) {
+                                                includingMetadataDerivedFields: Bool = true,
+                                                onCompletion: (@Sendable () -> Void)? = nil) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
             if removeAllStoredOrders {
                 derivedStorage.deleteAllObjects(ofType: Storage.Order.self)
             }
-            upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders,
+                               includingMetadataDerivedFields: includingMetadataDerivedFields,
+                               in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }
 
@@ -696,13 +753,19 @@ private extension OrderStore {
     /// - Parameters:
     ///     - readOnlyOrders: Remote Orders to be persisted.
     ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
+    ///     - includingMetadataDerivedFields: Pass `false` for orders fetched without the `meta_data` field
+    ///                                       (list and search fetches) so previously stored metadata-derived
+    ///                                       values are preserved instead of overwritten.
     ///     - storage: Where we should save all the things!
     ///
-    private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
-                                    insertingSearchResults: Bool = false,
-                                    in storage: StorageType) {
+    func upsertStoredOrders(readOnlyOrders: [Networking.Order],
+                            insertingSearchResults: Bool = false,
+                            includingMetadataDerivedFields: Bool = true,
+                            in storage: StorageType) {
         let useCase = OrdersUpsertUseCase(storage: storage)
-        useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
+        useCase.upsert(readOnlyOrders,
+                       insertingSearchResults: insertingSearchResults,
+                       includingMetadataDerivedFields: includingMetadataDerivedFields)
     }
 }
 
@@ -814,5 +877,25 @@ private extension OrderStore.GiftCardError {
                 comment: "Order gift card error notice message when the gift card is invalid."
             )
         }
+    }
+}
+
+private extension Storage.Order {
+    /// Whether this stored order carries any metadata-derived values, proving it was upserted from a
+    /// fetch that included the `meta_data` field. Order list and search fetches omit `meta_data`
+    /// (`OrdersRemote.ParameterValues.listFieldValues`), so an order stored only from those fetches has
+    /// none of these values and cannot be served from storage without a full sync first.
+    ///
+    /// `attributionInfo` alone identifies almost all fully-synced orders: `OrderAttributionInfo(metaData:)`
+    /// is non-failable, so the order decoder produces a non-nil value whenever the response contained at
+    /// least one metadata entry. Orders with zero metadata entries can never be certified as complete and
+    /// always take the full fetch — their payloads are the smallest, so the extra cost is minimal.
+    /// `fulfillmentStatusKey` is deliberately omitted: a non-unknown value implies a `_fulfillment_status`
+    /// metadata entry was present, which already makes `attributionInfo` non-nil.
+    var containsMetadataDerivedValues: Bool {
+        attributionInfo != nil
+            || customFields?.isEmpty == false
+            || chargeID != nil
+            || renewalSubscriptionID != nil
     }
 }

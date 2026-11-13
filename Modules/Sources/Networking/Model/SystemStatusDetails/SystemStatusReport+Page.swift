@@ -3,7 +3,7 @@ import Foundation
 public extension SystemStatusReport {
     /// Subtype for details about a site's pages in system status.
     ///
-    struct Page: Decodable {
+    struct Page: Decodable, Sendable {
         public let pageName, pageID: String
         public let pageSet, pageExists, pageVisible: Bool
         public let shortcode: String

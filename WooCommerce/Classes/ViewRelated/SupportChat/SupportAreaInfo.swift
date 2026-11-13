@@ -15,9 +15,6 @@ struct SupportAreaInfo {
     /// The support topic returned by the bot for ticket tagging.
     let topic: String?
 
-    /// Full chat transcript.
-    let transcript: String
-
     /// Pre-fetched system status report, if available.
     let systemStatusReport: String?
 
@@ -29,13 +26,11 @@ struct SupportAreaInfo {
          area: SupportFormViewModel.Area,
          confidence: SupportAreaConfidence,
          topic: String? = nil,
-         transcript: String,
          systemStatusReport: String? = nil) {
         self.areaType = areaType
         self.area = area
         self.confidence = confidence
         self.topic = topic
-        self.transcript = transcript
         self.systemStatusReport = systemStatusReport
     }
 }

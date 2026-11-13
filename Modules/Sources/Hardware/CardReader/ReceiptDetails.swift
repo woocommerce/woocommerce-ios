@@ -1,5 +1,5 @@
 /// Receipt details associated with a card present transaction.
-public struct ReceiptDetails: Codable, Equatable {
+public struct ReceiptDetails: Codable, Equatable, Sendable {
     /// Also known as “Application Name”. Required on EMV receipts.
     public let applicationPreferredName: String
 
@@ -20,6 +20,22 @@ public struct ReceiptDetails: Codable, Equatable {
 
     /// The type of account being debited or credited
     public let accountType: String?
+
+    public init(applicationPreferredName: String,
+                dedicatedFileName: String,
+                authorizationResponseCode: String,
+                applicationCryptogram: String,
+                terminalVerificationResults: String,
+                transactionStatusInformation: String,
+                accountType: String?) {
+        self.applicationPreferredName = applicationPreferredName
+        self.dedicatedFileName = dedicatedFileName
+        self.authorizationResponseCode = authorizationResponseCode
+        self.applicationCryptogram = applicationCryptogram
+        self.terminalVerificationResults = terminalVerificationResults
+        self.transactionStatusInformation = transactionStatusInformation
+        self.accountType = accountType
+    }
 }
 
 extension ReceiptDetails {

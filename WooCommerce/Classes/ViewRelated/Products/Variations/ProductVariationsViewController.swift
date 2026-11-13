@@ -63,7 +63,7 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
-    private let syncingCoordinator = SyncingCoordinator()
+    private let syncingCoordinator = SyncingCoordinator(pageSize: Settings.pageSize)
 
 
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
@@ -464,7 +464,7 @@ private extension ProductVariationsViewController {
     }
 
     func navigateToAddAttributeViewController() {
-        let viewModel = AddAttributeViewModel(product: product)
+        let viewModel = AddAttributeViewModel(product: product, isVariationsFlow: true)
         let addAttributeViewController = AddAttributeViewController(viewModel: viewModel) { [weak self] updatedProduct in
             guard let self else { return }
             self.product = updatedProduct
@@ -566,7 +566,8 @@ private extension ProductVariationsViewController {
                                                        eventLogger: ProductVariationFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
-                                                       presentationStyle: .navigationStack)
+                                                       presentationStyle: .navigationStack,
+                                                       onDuplicateCompletion: { _, _ in })
         navigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -577,7 +578,7 @@ private extension ProductVariationsViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
 
-        syncingCoordinator.synchronizeFirstPage {
+        syncingCoordinator.resynchronize {
             sender.endRefreshing()
         }
     }
@@ -603,7 +604,7 @@ private extension ProductVariationsViewController {
                 self?.dismiss(animated: true)
             })
             let navigationController = WooNavigationController(rootViewController: BulkUpdateViewController(viewModel: viewModel))
-            self.present(navigationController, animated: true)
+            self.presentIfIdle(navigationController)
 
             self.analytics.track(event: .Variations.bulkUpdateSectionTapped())
         }
@@ -613,7 +614,7 @@ private extension ProductVariationsViewController {
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.barButtonItem = sender
 
-        present(actionSheet, animated: true)
+        presentIfIdle(actionSheet)
     }
 
     /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.
@@ -802,6 +803,8 @@ private extension ProductVariationsViewController {
     enum Settings {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
+        /// API maximum per page.
+        static let pageSize = 100
     }
 
     enum Localization {

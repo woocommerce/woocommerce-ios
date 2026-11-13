@@ -2,6 +2,7 @@ import UIKit
 
 /// Contains a title label and a text field.
 ///
+@MainActor
 final class TitleAndTextFieldTableViewCell: UITableViewCell {
     struct ViewModel {
         let title: String?
@@ -52,7 +53,10 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        MainActor.assumeIsolated { configureAfterNibLoad() }
+    }
 
+    private func configureAfterNibLoad() {
         configureSelectionStyle()
         configureTitleLabel()
         configureTextField()

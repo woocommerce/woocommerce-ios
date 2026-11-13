@@ -20,20 +20,20 @@ final class NotificationServiceSuppressionTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - shouldSuppressWPComNotification
+    // MARK: - shouldSuppressNotification
 
     func test_shouldSuppress_returns_true_when_site_is_registered_and_both_keys_present() {
         state.markSiteAsRegisteredForWooPNs(42)
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42), "note_id": Int64(1)]
 
-        XCTAssertTrue(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_when_site_is_not_registered() {
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42), "note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_when_noteID_is_missing() {
@@ -41,7 +41,7 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_when_siteID_is_missing() {
@@ -49,7 +49,7 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_when_userInfo_is_empty() {
@@ -57,15 +57,15 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = [:]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
-    func test_shouldSuppress_returns_false_when_siteID_is_wrong_type() {
+    func test_shouldSuppress_returns_false_when_wpcom_duplicate_siteID_is_numeric_string() {
         state.markSiteAsRegisteredForWooPNs(42)
 
         let userInfo: [AnyHashable: Any] = ["blog": "42", "note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_for_different_registered_site() {
@@ -73,7 +73,7 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42), "note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_true_for_one_of_multiple_registered_sites() {
@@ -83,7 +83,7 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(20), "note_id": Int64(5)]
 
-        XCTAssertTrue(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_after_site_is_unregistered() {
@@ -92,7 +92,45 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42), "note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
+    }
+
+    func test_shouldSuppress_returns_false_when_connected_sites_have_not_been_synchronized_or_are_cleared() {
+        let userInfo: [AnyHashable: Any] = ["blog": Int64(42)]
+
+        XCTAssertFalse(state.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo))
+
+        state.updateConnectedSiteIDs([])
+        state.clearConnectedSiteIDs()
+
+        XCTAssertFalse(state.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo))
+    }
+
+    func test_shouldSuppress_returns_true_when_authoritative_empty_connected_site_list_omits_notification_site() {
+        state.updateConnectedSiteIDs([])
+
+        let userInfo: [AnyHashable: Any] = ["blog": Int64(42)]
+
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: userInfo))
+        XCTAssertEqual(state.connectedSiteIDs, [])
+    }
+
+    func test_shouldSuppress_returns_true_when_disconnected_siteID_is_numeric_string() {
+        state.updateConnectedSiteIDs([])
+
+        let userInfo: [AnyHashable: Any] = ["blog": "42"]
+
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: userInfo))
+    }
+
+    func test_shouldSuppress_allows_notification_after_site_reconnects() {
+        let userInfo: [AnyHashable: Any] = ["blog": Int64(42)]
+        state.updateConnectedSiteIDs([1])
+        XCTAssertTrue(state.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo))
+
+        state.updateConnectedSiteIDs([1, 42])
+
+        XCTAssertFalse(state.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo))
     }
 
     // MARK: - Unknown notification type gate (RSM-3048)

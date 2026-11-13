@@ -15,18 +15,23 @@ struct StoreInfoSmallMetricsContainerView: View {
     }
 
     private var showsUpdatePrefix: Bool {
-        !StoreInfoDynamicType.usesAccessibilityLayout(dynamicTypeSize)
+        !StoreInfoDynamicType.usesCondensedLayout(dynamicTypeSize)
+    }
+
+    private var showsUpdatedTime: Bool {
+        !StoreInfoDynamicType.usesCondensedLayout(dynamicTypeSize)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.headerSpacing) {
+        VStack(alignment: .leading, spacing: Layout.headerSpacing(for: dynamicTypeSize)) {
             StoreInfoMetricsLogoHeader(data: data,
                                        showsRange: false,
-                                       showsUpdatePrefix: showsUpdatePrefix)
+                                       showsUpdatePrefix: showsUpdatePrefix,
+                                       showsUpdatedTime: showsUpdatedTime)
 
-            Spacer(minLength: Layout.metricSpacing)
+            Spacer(minLength: Layout.metricSpacing(for: dynamicTypeSize))
 
-            VStack(alignment: .leading, spacing: Layout.metricSpacing) {
+            VStack(alignment: .leading, spacing: Layout.metricSpacing(for: dynamicTypeSize)) {
                 ForEach(Array(visibleMetricSlots.enumerated()), id: \.offset) { _, slot in
                     MetricSlotView(slot: slot, placeholderMinHeight: Layout.emptyMetricMinHeight) { metric in
                         MetricCellView(metric: WidgetMetricPresenter(metric: metric, dateRange: data.dateRange))
@@ -38,8 +43,14 @@ struct StoreInfoSmallMetricsContainerView: View {
     }
 
     private enum Layout {
-        static let headerSpacing = 6.0
-        static let metricSpacing = 6.0
+        static func headerSpacing(for dynamicTypeSize: DynamicTypeSize) -> Double {
+            StoreInfoDynamicType.usesCondensedLayout(dynamicTypeSize) ? 4.0 : 6.0
+        }
+
+        static func metricSpacing(for dynamicTypeSize: DynamicTypeSize) -> Double {
+            StoreInfoDynamicType.usesCondensedLayout(dynamicTypeSize) ? 4.0 : 6.0
+        }
+
         static let emptyMetricMinHeight = 36.0
     }
 }

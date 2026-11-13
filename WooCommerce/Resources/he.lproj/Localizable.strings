@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-02 09:58:14+0000 */
+/* Translation-Revision-Date: 2026-11-04 09:55:10+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -12,12 +12,6 @@
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
    Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
-
-/* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (אפשרות ⁦%2$ld)";
-
-/* Format for each Product attribute in plural form */
-"%1$@ (%2$ld options)" = "%1$@ (%2$ld אפשרויות)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (פרטי)";
@@ -60,17 +54,11 @@ which should be translated separately and considered part of this sentence. */
 /* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
 "%1$@ off · %2$@" = "%1$@ הנחה · %2$@";
 
-/* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "נשלחה בקשה עבור החזר כספי %1$@ ‏(%2$@)";
-
 /* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
 "%1$@ selected" = "נבחרו %1$@";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
 "%1$@ total" = "סך הכול %1$@";
-
-/* Payment on <date> received via (payment method title) */
-"%1$@ via %2$@" = "%1$@ באמצעות %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
 "%1$@ · Excl. %2$@" = "%1$@ · לא כולל %2$@";
@@ -158,9 +146,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "נשלחה בקשה להחזר כספי עבור תווית %@";
-
-/* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
-"%@ via %@" = "%1$@ באמצעות %2$@";
 
 /* Message of the free trial banner when there is more than 1 day left */
 "%d days left in your trial." = "נותרו %d ימים בתקופת הניסיון שלך.";
@@ -624,9 +609,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "סכום (%@)";
 
-/* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "ניתן לקבל החזר כספי עבור הסכום";
-
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "הסכום ששולם";
@@ -837,12 +819,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "ערך הזמנות ממוצע";
-
-/* The title on the payment row of the Order Details screen when the payment is still pending */
-"Awaiting payment" = "ממתין לתשלום";
-
-/* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
-"Awaiting payment via %@" = "ממתין לתשלום באמצעות %@";
 
 /* Country option for a site address. */
 "Azerbaijan" = "אזרבייג'ן";
@@ -1563,27 +1539,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "צומצם";
 
-/* The label points to the free trial conditions for product subscriptions */
-"CollapsibleProductRowCard.text.freetrial" = "תקופת ניסיון בחינם";
-
-/* The label points to the charge interval for product subscriptions */
-"CollapsibleProductRowCard.text.interval" = "פרק זמן";
-
-/* The label points to the sign up fee conditions for product subscriptions */
-"CollapsibleProductRowCard.text.signupfee" = "דמי הרשמה";
-
-/* Description of the billing and billing frequency for a subscription product. Reads as: 'Every 2 months'. */
-"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "כל %1$@ %2$@";
-
-/* Description of the free trial conditions for a subscription product. Reads as: '3 days free'. */
-"CollapsibleProductRowCardViewModel.formattedFreeTrial" = "%1$@ %2$@ בחינם";
-
-/* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
-"CollapsibleProductRowCardViewModel.formattedSignUpFee" = "%1$@ הרשמה";
-
-/* Summary of quantity and signup fees for a subscription product when multiple are selected.Reads as: '3 × $0.60'. Please ensure you use a multiplication symbol, not a letter x */
-"CollapsibleProductRowCardViewModel.signupFeeSummary" = "%1$@ × %2$@";
-
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "SKU‏: %1$@";
 
@@ -1618,9 +1573,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
 "Compared to **%1$@**" = "לערוך השוואה מול **%1$@**";
-
-/* Third instruction on the test order screen */
-"Complete the payment and await a push notification about the order on your WooCommerce app." = "יש להשלים את התשלום ולהמתין להודעה בדחיפה לגבי ההזמנה שלך באפליקציה של WooCommerce.";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "אפשרויות רכיבים";
@@ -2166,8 +2118,7 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
 "Disconnect Reader" = "לנתק את הקורא";
 
-/* Discount label for payment view
-   Text in the product row card when a discount has already been added to a product
+/* Text in the product row card when a discount has already been added to a product
    Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation */
 "Discount" = "הנחה";
@@ -2196,7 +2147,6 @@ which should be translated separately and considered part of this sentence. */
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
-   Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -2206,7 +2156,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "בטל";
@@ -2240,9 +2189,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "לא לאפשר";
-
-/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
-"Do you want to add Pay in Person to your web checkout?" = "האם ברצונך להוסיף את 'לשלם באופן אישי' אל תהליך התשלום בקופה באתר?";
 
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "האם ברצונך להתחבר לקורא %1$@?";
@@ -2331,6 +2277,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "האסימון Dotcom לא תקף";
+
+/* WordPress.com error thrown when the site ID is no longer recognized. */
+"Dotcom Unknown Blog" = "Dotcom Unknown Blog";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "יש להקיש פעמיים כדי להתעלם";
@@ -2498,9 +2447,6 @@ which should be translated separately and considered part of this sentence. */
 /* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Enable Coupons" = "להפעיל קופונים";
 
-/* Title for the button to enable the Pay in Person payment gateway during card present payments onboarding. */
-"Enable Pay in Person" = "להפעיל 'תשלום באופן אישי'";
-
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "להפעיל ביקורות";
 
@@ -2515,9 +2461,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "הופעל";
-
-/* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
-"Enabling \"Pay in Person\" lets customers pay you for online orders at delivery via cash or card." = "הפעלת האפשרות 'לשלם באופן אישי' תאפשר ללקוחות לשלם לך על הזמנות מקוונות במעמד המשלוח באמצעות מזומן או כרטיס.";
 
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
@@ -2812,12 +2755,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "מחיקת הקופון נכשלה. יש לנסות שוב.";
 
-/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
-"Failed to disable Pay in Person. Please try again later." = "לא ניתן היה להפעיל 'תשלום באופן אישי'. יש לנסות שוב מאוחר יותר.";
-
-/* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
-"Failed to enable Pay in Person. Please try again later." = "לא ניתן היה להפעיל 'תשלום באופן אישי'. יש לנסות שוב מאוחר יותר.";
-
 /* Error message displayed when failed to fetch application password authorization URL during login */
 "Failed to fetch the authorization URL for application passwords. Please try again." = "נכשל הניסיון להביא את כתובת ה-URL המאושרת לסיסמאות של האפליקציה. יש לנסות שוב.";
 
@@ -3074,8 +3011,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the the row showing the gift card to apply to the order */
 "Gift Card" = "שובר מתנה";
 
-/* Gift Cards label for payment view
-   Gift Cards section title */
+/* Gift Cards section title */
 "Gift Cards" = "שוברי מתנה";
 
 /* Header of the gift card code text field in the order form. */
@@ -3088,10 +3024,9 @@ which should be translated separately and considered part of this sentence. */
 /* Order gift card error notice title when the gift card is invalid. */
 "Gift card is not applied" = "שובר המתנה לא הוחל";
 
-/* The title of the button to give feedback about products beta features on the banner on the products tab
-   Title of the button to give feedback about the add-ons feature
+/* Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
-   Title on the navigation bar for the products feedback survey */
+   Title on the navigation bar for feedback surveys */
 "Give feedback" = "להעניק משוב";
 
 /* Subtitle of the store onboarding task to get paid. */
@@ -3496,9 +3431,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "In‑Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "אפשר לעבד תשלומים באופן אישי באמצעות אחד מספקי התשלום האלו. באיזה ספק ברצונך להשתמש?";
 
 /* Title for the error screen when the merchant's payment account is restricted because it's under reviw
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
-   Title for the error screen when the Stripe account is restricted because there are overdue requirements.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments is currently unavailable" = "תשלומים באופן אישי אינם זמינים כרגע.";
@@ -4151,9 +4083,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar button title used to save changes and close the multiline text editor. */
 "MultilineEditableTextDetailView.doneButton.title" = "בוצע";
 
-/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "זוהו מספר כרטיסים ללא מגע";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "מספר חנויות";
 
@@ -4252,9 +4181,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "להשתמש בתצוגה של נתונים אנליטיים כדי לראות את המבקרים, הדוחות ועוד.";
-
-/* The title of the top banner on the Products tab. */
-"New features available!" = "אפשרויות חדשות זמינות!";
 
 /* Rich order notification text, will read as: New order for MyCustom store */
 "New order for" = "הזמנה חדשה עבור";
@@ -4521,9 +4447,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Menu button */
 "Open menu" = "לפתוח תפריט";
-
-/* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
-"Open wp-admin" = "לפתוח את wp-admin";
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "פתיחת רשימה של מצבים זמינים.";
@@ -5287,18 +5210,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
 "ProductBarcodeInputScanner.titleView" = "יש לסרוק את הברקוד או קוד ה-QR";
 
-/* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
-"ProductRowViewModel.formattedProductSubscriptionBilling" = "‎%1$@ \/ %2$@ %3$@‎";
-
-/* Description of the subscription conditions for a subscription product, with signup fees and free trials.Reads as: '$25.00 signup · 1 month free'. */
-"ProductRowViewModel.formattedProductSubscriptionConditions" = "%1$@ הרשמה · %2$@ %3$@ בחינם";
-
-/* Description of the subscription conditions for a subscription product, with only free trial.Reads as: '1 month free'. */
-"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup" = "%1$@ %2$@ בחינם";
-
-/* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
-"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "%1$@ הרשמה";
-
 /* Bookable product type label interpretation as Service. Presented in product type picker in filters. */
 "ProductType.service" = "שירות";
 
@@ -5355,9 +5266,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Puerto Rico" = "פורטו ריקו";
 
-/* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "תאריך הרכישה";
-
 /* Create Shipping Label form -> Purchase Label button */
 "Purchase Label" = "רכישת תוויות";
 
@@ -5413,9 +5321,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "נשמח לקבל ממך דירוג";
 
-/* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "יצירת קשר עם נציגי התמיכה שלנו שיכולים לענות על שאלות קשות";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "לעיון בעצות שלנו לפתרון בעיות";
 
@@ -5431,16 +5336,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "סיבה להחזר הכספי על ההזמנה";
 
-/* The title of the view containing a receipt preview
-   Title of receipt. */
+/* Title of receipt. */
 "Receipt" = "קבלה";
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "קבלה מאת %1$@";
 
 /* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup
-   Button to refresh the state of the in-person payments setup. */
+   Button to refresh the state of the in-person payments setup */
 "Refresh" = "רענן";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -5462,9 +5365,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Refund Details section title */
 "Refund Details" = "פרטי ההחזר";
-
-/* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "החזר כספי עבור תווית (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "להנפיק החזר כספי עבור משלוח";
@@ -5587,8 +5487,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the report section on the privacy screen */
 "Reports" = "דוחות";
 
-/* Navigation bar title to request a refund for a shipping label
-   Request a refund on a shipping label from the shipping label more menu action sheet */
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "לבקש החזר כספי";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
@@ -5606,9 +5505,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "יש לאפס את הסיסמה שלך";
-
-/* Button to open a web view and resolve pending plugin requirements before using it. */
-"Resolve Now" = "לטפל בבעיה כעת";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "מוגבל ללקוחות עם אימיילים: %1$@";
@@ -5681,9 +5577,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Romania" = "רומניה";
-
-/* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "יש לבצע הזמנה לבדיקה כדי לוודא שתהליך של WooCommerce שהגדרת מאפשר חוויית שימוש חלקה ללקוחות.";
 
 /* Country option for a site address. */
 "Russia" = "רוסיה";
@@ -5830,9 +5723,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Coupons Search Placeholder */
 "Search all coupons" = "לחפש את כל הקופונים";
 
-/* Customer Search Placeholder */
-"Search all customers" = "לחפש בין כל הלקוחות";
-
 /* Orders Search Placeholder */
 "Search all orders" = "חיפוש בכל ההזמנות";
 
@@ -5864,9 +5754,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "להציג חנויות מחוברות";
-
-/* Text on the button to see a saved receipt */
-"See Receipt" = "להצגת הקבלה";
 
 /* Description of the 'My Store' screen - used for spotlight indexing on iOS. */
 "See at a glance which products are winning." = "אפשר להציג במבט כללי את המוצרים המובילים.";
@@ -5955,9 +5842,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "יש לבחור את ספק המשלוח והתעריפים";
-
-/* Second instruction on the test order screen */
-"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "יש לבחור את המוצר לבדיקה, להוסיף אותו לעגלה ולהשלים את תהליך התשלום בקופה בחנות המקוונת, בדיוק כמו לקוח אמיתי.";
 
 /* Text for the send button in the product review reply screen */
 "Send" = "לשלוח";
@@ -6271,9 +6155,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message in the Add Edit Coupon screen when the update of the coupon goes in error. */
 "Something went wrong while updating the coupon." = "משהו השתבש במהלך עדכון הקופון.";
 
-/* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "משהו השתבש בביצוע ההחזר הכספי. יש לנסות שוב.";
-
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
 "Something went wrong, please try again later." = "משהו השתבש, יש לנסות שוב מאוחר יותר.";
@@ -6388,9 +6269,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for one of the filters in order custom date range
    Start Date label in custom range date picker */
 "Start Date" = "תאריך התחלה";
-
-/* Title on the action button on the test order screen */
-"Start Test order" = "להתחיל הזמנה לבדיקה";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "יש להתחיל את תהליך היצירה של הקופון על ידי בחירה בסוג ההנחה בגיליון התחתון";
@@ -6596,9 +6474,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "יש להצמיד או להכניס את הכרטיס לביצוע החזר כספי";
-
-/* First instruction on the test order screen */
-"Tap the button below to be redirected to your online store via a web browser." = "יש להקיש על הכפתור שלמטה כדי לעבור אל החנות המקוונת שלך דרך הדפדפן.";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7363,20 +7238,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
 "Try Out Tap to Pay on iPhone" = "לנסות את Tap To Pay ב-iPhone";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
-"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "לנסות תשלום של %1$@ באמצעות כרטיס חיוב\/אשראי. בסיום באפשרותך להנפיק החזר כספי.";
-
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "לנסות גביית תשלום";
-
-/* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Try a Test Order" = "לנסות הזמנה לבדיקה";
-
-/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
-"Try a payment using your own card (and refund it when you're done.)" = "ניתן לנסות ביצוע תשלום באמצעות הכרטיס שלך (ולהנפיק החזר כספי אחרי שסיימת).";
-
-/* Title shown on the test order screen */
-"Try a test order" = "לנסות הזמנה לבדיקה";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
@@ -7833,9 +7696,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "להשתמש בסיסמה כדי להתחבר";
 
-/* Fourth instruction on the test order screen */
-"Use the app to process the refund for the test order." = "ניתן להשתמש באפליקציה כדי לעבד את ההחזר הכספי של ההזמנה לבדיקה.";
-
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "פרופילי משתמשים";
 
@@ -7878,9 +7738,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */
 "Variations" = "סוגים";
-
-/* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "מאפייני סוגים";
 
 /* Title for the notice when after variations were created */
 "Variations created successfully" = "הסוגים נוצרו בהצלחה";
@@ -8240,9 +8097,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "לעבוד איתנו";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Would you like to try a payment" = "האם ברצונך לנסות תשלום";
-
 /* Title in the product description AI generator view. */
 "Write a description" = "לכתוב תיאור";
 
@@ -8301,9 +8155,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "ניתן להוסיף מינויים עם סוגים דרך לוח הבקרה באתר האינטרנט בלבד";
 
-/* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "אפשר לבקש החזר כספי עבור תווית משלוח שלא נעשה בה שימוש כדי לשלוח חבילה.\nלעיבוד הבקשה יידרשו 14 ימים לפחות.";
-
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "אפשר להגדיר את המיקוד של החנות שלך במקטע 'wp-admin' > ‏WooCommerce > הגדרות (כללי)";
 
@@ -8324,11 +8175,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "יש לך הזמנה חדשה! 🎉";
-
-/* Error message when WooPayments is not supported because the Stripe account has overdue requirements
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
-"You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "בחשבונך קיימת לפחות דרישה אחת שעבר המועד שלה. יש לטפל בה כדי לחדש את פעולת התשלומים באופן אישי.";
 
 /* Error message for a short value in Description row in Customs screen of Shipping Label flow */
 "You must provide a clear, specific description for every item." = "עליך לספק תיאור ברור וספציפי לגבי כל פריט.";
@@ -8427,6 +8273,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "ביטול";
+
+/* Button that confirms an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsAction" = "הפסקת שימוש";
+
+/* Message of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsMessage" = "הווריאציות הקיימות לא יתאימו עוד לתכונה זו.";
+
+/* Title of the alert shown before an attribute stops being used for variations. */
+"addAttributeOptionsViewController.stopUsingForVariationsTitle" = "האם להפסיק להשתמש בווריאציות?";
+
+/* Title of the switch that uses a product attribute for variations. */
+"addAttributeOptionsViewController.usedForVariations" = "נועד עבור וריאציות";
+
+/* Title of the switch that shows a product attribute on the product page. */
+"addAttributeOptionsViewController.visibleOnProductPage" = "מוצג בעמוד המוצר";
 
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "למחוק סכום בהתאמה אישית";
@@ -8614,8 +8475,41 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "מדד";
 
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "אפשר לבחור מתי הנתונים האנליטיים יעודכנו.";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "זוהי הגדרה שכוללת את כל החנות, ושולטת גם באפשרות 'עדכונים' בהגדרות הנתונים האנליטיים של מנהל המערכת של WooCommerce‏. %1$@.";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "מתעדכן ברגע שנתונים חדשים זמינים.";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "מיד";
+
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "למידע נוסף";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "נתונים אנליטיים של WooCommerce";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "מתעדכן באופן אוטומטי כל 12 שעות.\nמומלץ לחנויות עם נפח הזמנות גבוה.";
+
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "מתוזמן";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "עדכוני נתונים אנליטיים";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "לא ניתן היה לעדכן את ההגדרה. יש לנסות שוב.";
+
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "הבנתי";
+
+/* Alert button that opens Help & Support, displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.contactSupportButton" = "פנייה לתמיכה";
 
 /* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
 "appCoordinator.ineligibleAgeRangeAlert.message" = "הגיל של חשבון Apple שלך נמוך מהמינימום הנדרש עבור אפליקציה זו (%1d+).";
@@ -8640,6 +8534,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "סמל";
+
+/* Button that exports all retained application logs as a ZIP file. */
+"applicationLog.exportAllLogs" = "ייצוא של כל היומנים";
+
+/* Message of an alert shown when application logs could not be exported. */
+"applicationLog.exportError.message" = "יש לנסות שוב.";
+
+/* Button that dismisses the application log export error alert. */
+"applicationLog.exportError.ok" = "אישור";
+
+/* Title of an alert shown when application logs could not be exported. */
+"applicationLog.exportError.title" = "לא ניתן לייצא יומנים";
+
+/* Placeholder text for the search field on the application log detail screen. */
+"applicationLogDetail.searchPrompt" = "חיפוש ביומני רישום";
 
 /* Button that will navigate to a web page explaining Application Password */
 "applicationPasswordDisabled.auxiliaryButtonTitle" = "מהי 'סיסמת אפליקציה'?";
@@ -8724,6 +8633,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "רוצה לפתוח חנות חדשה?";
+
+/* Title of the Cmd+B keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.bold" = "מודגש";
+
+/* Title of the Cmd+I keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.italic" = "נטוי";
+
+/* Title of the Cmd+U keyboard shortcut in the product description editor. */
+"aztecEditor.shortcut.underline" = "קו תחתון";
 
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "לשלוח הודעת Telegram";
@@ -9152,6 +9070,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "שבועית";
 
+/* Title of the web view to pay an unpaid Blaze order from the Blaze campaign list. */
+"blazeCampaignListView.paymentTitle" = "תשלום היתרה לתשלום";
+
 /* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
 "blazeCampaignObjectivePickerView.accessibilityHintSelected" = "נבחר";
 
@@ -9391,6 +9312,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "למידע נוסף על אופן הפעולה של %1$@";
+
+/* Message of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. %1$@ is the formatted outstanding amount, e.g. $25.05. */
+"blazeOutstandingBalanceView.message" = "בחשבונך קיימת כרגע יתרה לפירעון בסכום של %1$@. יש לשלם לפני יצירה של קמפיינים חדשים.";
+
+/* Button to open the payment page of an unpaid Blaze order. */
+"blazeOutstandingBalanceView.pay" = "תשלום";
+
+/* Title of the notice shown on the Blaze campaign list when the account has unpaid Blaze orders. */
+"blazeOutstandingBalanceView.title" = "יתרה לתשלום";
 
 /* Button title in the Blaze Payment Method screen if there is an existing payment method */
 "blazePaymentMethodsView.addAnotherCreditCardButton" = "להוסיף כרטיס אשראי אחר";
@@ -9819,6 +9749,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "המערכת סורקת כדי לאתר קורא";
 
+/* Shown when fetching store settings fails and the store country remains unknown. */
+"cardPresentPayment.countryRecovery.cardPaymentSettingsUnavailable" = "לא הצלחנו לטעון את ההגדרות של החנות שלך כדי לבדוק את זמינות התשלום בכרטיס.";
+
+/* Status while fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.checkingCardPaymentAvailability" = "בודק את זמינות התשלום בכרטיס…";
+
+/* Shown when fetched store settings have no recognizable country. Check the store country, then retry. */
+"cardPresentPayment.countryRecovery.countryUnavailable" = "לא הצלחנו לזהות את המדינה של החנות שלך. יש לבדוק את המדינה בהגדרות של החנות שלך ב-WooCommerce.";
+
+/* Retry fetching store settings to check card payment availability. */
+"cardPresentPayment.countryRecovery.retry" = "לנסות שוב";
+
 /* A title for CTA to present native location permission alert */
 "cardPresentPayment.locationPreAlert.continueButton" = "המשך";
 
@@ -9843,8 +9785,68 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "יש להפעיל את שירותי המיקום בהגדרות המכשיר כדי לאפשר תשלומים.";
 
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"cardPresentPayment.reader.multipleContactlessCardsDetected" = "התגלו מספר כרטיסים. יש לנסות שוב עם כרטיס יחיד.";
+
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "הגדרות WooCommerce";
+
+/* VoiceOver summary confirming that a Tap to Pay payment was canceled without charging the customer. */
+"cardPresentPayment.tapToPay.paymentCancelled.accessibilityLabel" = "התשלום בוטל. לא בוצע חיוב. סימן האישור והצליל של 'תשלום בנגיעה' אישרו שהכרטיס נקרא בלבד.";
+
+/* Explains that Apple's Tap to Pay success feedback did not mean the canceled payment was completed. */
+"cardPresentPayment.tapToPay.paymentCancelled.cardReadExplanation" = "סימן האישור והצליל של 'תשלום בנגיעה' אישרו שהכרטיס נקרא בלבד.";
+
+/* Button dismissing confirmation of a canceled Tap to Pay payment. */
+"cardPresentPayment.tapToPay.paymentCancelled.done" = "בוצע";
+
+/* Message confirming that a canceled Tap to Pay payment did not charge the customer. */
+"cardPresentPayment.tapToPay.paymentCancelled.noPaymentTaken" = "לא בוצע חיוב.";
+
+/* Title confirming that a Tap to Pay payment was canceled in WooCommerce. */
+"cardPresentPayment.tapToPay.paymentCancelled.title" = "התשלום בוטל";
+
+/* Button to recheck In-Person Payments requirements when the payment account was rejected. */
+"cardPresentPayments.onboarding.accountRejected.refreshButton" = "ריענון";
+
+/* Button to recheck In-Person Payments requirements while the payment account is under review. */
+"cardPresentPayments.onboarding.accountUnderReview.refreshButton" = "ריענון";
+
+/* Button to recheck In-Person Payments requirements when the store country is not supported. */
+"cardPresentPayments.onboarding.countryNotSupported.refreshButton" = "ריענון";
+
+/* Button to recheck In-Person Payments requirements when Stripe does not support the store country. */
+"cardPresentPayments.onboarding.countryNotSupportedStripe.refreshButton" = "ריענון";
+
+/* Button to open the selected payment plugin's settings. */
+"cardPresentPayments.onboarding.paymentSettings.button" = "פתיחת הגדרות התשלום";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotActivated.refreshButton" = "ריענון";
+
+/* Button to recheck payment setup after a store administrator installs or activates the payment plugin. */
+"cardPresentPayments.onboarding.pluginNotInstalled.refreshButton" = "ריענון";
+
+/* Title of the store admin web view opened from payment onboarding. */
+"cardPresentPayments.onboarding.storeAdmin.title" = "ממשק הניהול של החנות";
+
+/* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.message" = "בחשבונך קיימת לפחות דרישה אחת שמועד הטיפול בה חלף. ניתן לדלג ולהמשיך לקבל תשלומים, אך אם הדרישה גורמת לחסימת החשבון, ייתכן שחלק מהעסקאות לא יאושרו עד להסדרת העניין.";
+
+/* Button to open a web view and resolve overdue requirements before continuing with In-Person Payments. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.resolveButton" = "טיפול בבעיה כעת";
+
+/* Button to skip the overdue-requirements onboarding step and continue accepting In-Person Payments. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.skipButton" = "דילוג";
+
+/* Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.title" = "דרישות שמועד הטיפול בהן חלף בחשבונך";
+
+/* Button to recheck In-Person Payments requirements when checking payment eligibility failed. */
+"cardPresentPayments.onboarding.unavailable.retryButton" = "לנסות שוב";
+
+/* Button to open store admin to update a payment plugin. */
+"cardPresentPayments.onboarding.updatePlugin.button" = "עדכון התוסף בממשק הניהול של החנות";
 
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "בחזרה להזמנה";
@@ -9927,38 +9929,77 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "לגבות תשלום (%1$@)";
 
-/* Display label for the CIAB 'Open' order status, which groups pending, processing, on-hold, and failed orders. */
-"ciabOrderStatusMapper.open" = "פתיחה";
-
-/* Title of the button to add address in the order form customer card. */
-"collapsibleCustomerCard.addAddress.title" = "להוסיף כתובת לקוח";
-
-/* Address header text in the order form customer card when the billing and shipping addresses are the same. */
-"collapsibleCustomerCard.editAddress.address.header" = "כתובת";
-
-/* Billing address header text in the order form customer card. */
-"collapsibleCustomerCard.editAddress.billing.header" = "כתובת לחיוב";
-
-/* Shipping address header text in the order form customer card. */
-"collapsibleCustomerCard.editAddress.shipping.header" = "כתובת משלוח";
-
-/* Title of the email text field in the order form customer card. */
-"collapsibleCustomerCard.emailTextField.placeholder" = "להזין את כתובת האימייל";
-
-/* Title of the email text field in the order form customer card. */
-"collapsibleCustomerCard.emailTextField.title" = "כתובת אימייל";
-
-/* Title of the button to remove customer from an order in the order form customer card. */
-"collapsibleCustomerCard.removeCustomerButton.title" = "להסיר את הלקוח מההזמנה";
-
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "סך כל ההזמנה שונה מתחילת תהליך התשלום. יש לחזור אחורה ולוודא שפרטי ההזמנה נכונים ולנסות לשלם שוב.";
 
-/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
-"collectcashviewhelper.changedue" = "העודף הנדרש: %1$@";
+/* Change due when the cash amount entered exceeds the order total.'Due' means owed, not a deadline and not an expiry date. Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue.1" = "עודף מגיע: %1$@";
+
+/* Sanitized response excerpt in the automatic login support message */
+"com.woocommerce.login.supportContext.excerpt" = "קטע מתוך התגובה: %1$@";
+
+/* Automatic user message opening support chat after an unexpected login response; placeholders contain diagnostics */
+"com.woocommerce.login.supportContext.message" = "לא הצלחתי להתחבר לחנות שלי. עזרו לי לפתור את הבעיה שנגרמה עקב תגובה בלתי צפויה זו.\n\nאתר: %1$@\nשלב כניסה: %2$@\nתהליך כניסה: %3$@\nסוג כשל: %4$@\nסטטוס HTTP: ‏%5$@";
+
+/* Request and content type diagnostic details in the automatic login support message */
+"com.woocommerce.login.supportContext.metadata" = "בקשה: %1$@\nסוג התכולה: %2$@";
+
+/* Unavailable diagnostic value in the automatic login support message */
+"com.woocommerce.login.supportContext.unknown" = "לא ידוע";
+
+/* Dismiss the login failure alert */
+"com.woocommerce.login.unexpectedResponse.dismiss" = "סגירה";
+
+/* Unexpected login response alert message */
+"com.woocommerce.login.unexpectedResponse.message" = "החנות שלך החזירה תגובה לא צפויה, לכן לא הצלחנו להשלים את הכניסה שלך. יש לנסות שוב, או לפנות לתמיכה לקבלת עזרה.";
+
+/* Retry the failed login step */
+"com.woocommerce.login.unexpectedResponse.retry" = "יש לנסות שוב";
+
+/* Open AI support for login */
+"com.woocommerce.login.unexpectedResponse.support" = "פנייה לתמיכה";
+
+/* Unexpected login response alert title */
+"com.woocommerce.login.unexpectedResponse.title" = "אין אפשרות לבצע כניסה";
+
+/* Description shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.description" = "תוסף אבטחה עשוי להעביר את לוח הבקרה של WordPress. יש להזין את הכתובת המשמשת אותך לפתיחתו.";
+
+/* Placeholder for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.placeholder" = "כתובת לוח הבקרה של WordPress";
+
+/* Title shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.title" = "היכן לוח הבקרה של החנות שלך?";
+
+/* Browser authentication button shown during custom address recovery. */
+"com.woocommerce.siteCredentials.recovery.browserAlternative" = "כדאי לנסות לבצע כניסה באמצעות הדפדפן שלך במקום זאת";
+
+/* Button returning to the username and password form. */
+"com.woocommerce.siteCredentials.recovery.cancel" = "ביטול";
+
+/* Error shown when no WordPress dashboard exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.adminNotFound" = "לא הצלחנו ליצור קשר עם לוח הבקרה של WordPress בכתובת זו. יש לבדוק ולנסות שוב.";
+
+/* Error shown when a custom WordPress address does not belong to the current site. */
+"com.woocommerce.siteCredentials.recovery.error.differentSite" = "יש להזין כתובת באותו אתר בלי לשנות את החיבור המאובטח או היציאה שלו.";
+
+/* Error shown when a custom WordPress address is not a full web address. */
+"com.woocommerce.siteCredentials.recovery.error.invalidURL" = "יש להזין כתובת אינטרנט מלאה, כולל http:\/\/‎ או https:\/\/‎.";
+
+/* Error shown when no WordPress sign-in page exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.loginNotFound" = "לא הצלחנו למצוא את עמוד הכניסה ל-WordPress בכתובת זו. יש לבדוק ולנסות שוב.";
+
+/* Description shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.description" = "תוסף אבטחה עשוי להשתמש בכתובת כניסה מותאמת אישית ל-WordPress. יש להזין את הכתובת המשמשת אותך לביצוע כניסה.";
+
+/* Placeholder for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.placeholder" = "כתובת הכניסה ל-WordPress";
+
+/* Title shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.title" = "היכן ברצונך לבצע כניסה לחנות שלך?";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "בוחר מוצר לקמפיין של Blaze.";
@@ -10059,9 +10100,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "לעולם לא לפספס הזמנה חדשה";
 
-/* Button to open AI chat support in the connectivity tool screen */
-"connectivityTool.chatWithSupport" = "שיחה עם התמיכה בצ'אט";
-
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "פתרון בעיות לחיבור";
 
@@ -10157,6 +10195,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssuesMessage" = "אם הנתונים עדיין לא נטענים, יש ליצור קשר עם צוות התמיכה שלנו לסיוע.";
+
+/* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
+"couponCardView.appliedAccessibilityValue" = "הפעולה הוחלה";
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "פג תוקף מתאריך %@";
@@ -10281,9 +10322,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner when there are unsaved custom fields */
 "customFieldsListTopBanner.title" = "להציג ולנהל שדות מותאמים";
 
-/* Accessibility title for the search button on the customer section. */
-"customer.search.button.accessibilityLabel" = "חיפוש לקוח";
-
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "אורח";
 
@@ -10395,6 +10433,45 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Add Customer to order screen when getting the customer information */
 "customerSelectorViewController.guestSelectionDisallowedError" = "המשתמש הזה הוא אורח, ולא ניתן להשתמש באורחים לסינון הזמנות.";
 
+/* Button to load the customers again after they failed to load in the customer selector screen */
+"customerSelectorViewController.retry" = "לנסות שוב";
+
+/* Message shown when WooCommerce Analytics is turned off while loading customers */
+"customers.error.analyticsDisabled" = "רשימת לקוחות זקוקה ל-WooCommerce Analytics, אשר מושבת עבור חנות זו. ניתן להפעיל זאת כאן, או בממשק הניהול של החנות שלך במקטע WooCommerce › הגדרות › מתקדם › תכונות, ולאחר מכן להקיש על 'לנסות שוב'.";
+
+/* Message shown when the current user can't view the WooCommerce Analytics setting */
+"customers.error.analyticsNoPermission" = "רשימות לקוחות זקוקות ל-WooCommerce Analytics, שאינו זמין בחנות זו. יש לבקש ממנהל מערכת בחנות להפעיל אותו במקטע WooCommerce › הגדרות › מתקדם › תכונות.";
+
+/* Message shown when WooCommerce Analytics is unavailable while loading customers */
+"customers.error.analyticsUnavailable" = "רשימות לקוחות זקוקות ל-WooCommerce Analytics, שאינו זמין בחנות זו כעת. יש לבקש ממנהל מערכת בחנות לבדוק שהאפשרות מופעלת.";
+
+/* Cancel action in the WooCommerce Analytics confirmation */
+"customers.error.cancel" = "ביטול";
+
+/* Confirmation action to enable WooCommerce Analytics */
+"customers.error.confirm" = "הפעלה";
+
+/* Explanation that enabling WooCommerce Analytics changes a store-wide setting */
+"customers.error.confirmationMessage" = "פעולה זו משנה הגדרה החלה על החנות כולה. ההגדרה נשארת פעילה עד שמישהו מכבה אותה במקטע WooCommerce › הגדרות › מתקדם › תכונות. ייתכן שנתוני הלקוחות מהתקופה שבה השירות של Analytics היה מושבת יופיעו רק לאחר ייבוא נתונים היסטוריים במקטע WooCommerce › Analytics › הגדרות.";
+
+/* Confirmation title before enabling WooCommerce Analytics from the customer loading error state */
+"customers.error.confirmationTitle" = "האם להפעיל את WooCommerce Analytics?";
+
+/* Action to enable WooCommerce Analytics from the customer loading error state */
+"customers.error.enableAnalytics" = "הפעלת Analytics";
+
+/* Notice shown when the app can't enable WooCommerce Analytics from the Customers error state */
+"customers.error.enableAnalyticsFailure" = "לא ניתן היה להפעיל את WooCommerce Analytics. יש לנסות שוב.";
+
+/* Generic customer loading error shown after a WooCommerce Analytics error */
+"customers.error.generic" = "שליפת נתוני הלקוחות נכשלה. יש לנסות שוב מאוחר יותר.";
+
+/* Retry action in the customer loading error state */
+"customers.error.retry" = "לנסות שוב";
+
+/* Title for the customer loading error state */
+"customers.error.title" = "לא ניתן היה לטעון את הלקוחות";
+
 /* Placeholder for a customer with no email address in the Customers list screen. */
 "customersList.emailPlaceholder" = "כתובת אימייל לא קיימת";
 
@@ -10503,11 +10580,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "dashboardViewHostingController.title" = "החנות שלי";
 
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "למידע נוסף";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "הנתונים הסטטיסטיים עשויים להתעכב עד 12 שעות.";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "יום";
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "ימים";
+
+/* Format of each attribute on the Product screen attributes row. %1$@ is the attribute name, %2$@ its options, e.g. Color: Red, Blue */
+"defaultProductFormTableViewModel.attributeDetailFormat" = "%1$@: %2$@";
+
+/* Title of the attributes row on the Product screen */
+"defaultProductFormTableViewModel.attributesTitle" = "מאפיינים";
 
 /* Details text for the Custom Fields row */
 "defaultProductFormTableViewModel.customFieldsRowDetails" = "להציג ולנהל את השדות המותאמים של המוצר";
@@ -10536,11 +10625,20 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "דמי הרשמה: %1$@";
 
+/* WordPress.com error thrown when the store rejects the signature of a Jetpack request. */
+"dotcomError.invalidSignature.description" = "חתימה לא תקפה של Dotcom";
+
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "מסמך במכשיר";
 
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "מדיה במכשיר";
+
+/* Label of a product attribute that is not visible on the product page */
+"editAttributesViewModel.hidden" = "מוסתר";
+
+/* Label of a product attribute that is used for variations */
+"editAttributesViewModel.usedForVariations" = "נועד עבור וריאציות";
 
 /* Button to open map address picker. */
 "editOrderAddressForm.pickOnMap" = "למצוא במפה";
@@ -10891,6 +10989,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when online PIN is not supported in offline mode. */
 "hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "PIN מקוון לא נתמך במצב לא מקוון. יש לנסות לגבות את התשלום שוב עם כרטיס שונה.";
 
+/* Error message when the payment intent has no id, so the payment cannot be processed. */
+"hardware.cardReader.underlyingError.paymentIntentIdMissing" = "מצטערים, לא הצלחנו להשלים את התשלום, מאחר שלא נמצא מזהה תשלום.";
+
 /* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
 "hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "לא הוצג כרטיס במגבלת הזמן שהוגדרה.";
 
@@ -10921,23 +11022,38 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "לקורא הכרטיסים שחזר מהאיתור אין כתובת IP ולא ניתן להתחבר אליו.";
 
-/* Subtitle for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.subtitle" = "קבלת עזרה מסייען הבינה המלאכותית שלנו:";
-
-/* Title for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.title" = "שיחה עם התמיכה בצ'אט";
-
-/* Subtitle for the support chat history row on the Help screen */
-"helpAndSupport.chatHistory.subtitle" = "חזרה לשיחות תמיכה קודמות";
+/* Subtitle for the AI support chat history row on the Help screen */
+"helpAndSupport.chatHistory.aiChatsSubtitle" = "עיון בצ'אטים האחרונים עם התמיכה באמצעות בינה מלאכותית";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "היסטוריית צ'אטים";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "קבלת עזרה עבור בעיות באפליקציה או בחנות.";
+
+/* Description of the mobile status report on Help screen */
+"helpAndSupport.mobileStatusReport.description" = "מידע על האפליקציה, המכשיר והחנות מהאפליקציה הזו";
+
+/* View mobile status report cell title on Help screen */
+"helpAndSupport.mobileStatusReport.title" = "דוח סטטוס למכשירים ניידים";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "בדיקה אם האתר שלך עובד עם האפליקציה";
 
 /* Title for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.title" = "בדיקת תאימות האתר";
+
+/* Accessibility label for dismissing the HTTPS configuration warning. */
+"https-configuration-warning.dismiss" = "סגירה";
+
+/* Message in a persistent warning explaining that a merchant should configure their store address to use HTTPS. */
+"https-configuration-warning.https-supported-message" = "החנות שלך תומכת ב-HTTPS, אך הכתובת שלה מוגדרת לשימוש ב-HTTP. יש לעדכן אותה ל-HTTPS כדי להגן על החנות שלך ולמנוע בעיות בחיבור.";
+
+/* Button title that opens documentation about configuring HTTPS for a WooCommerce store. */
+"https-configuration-warning.learn-more" = "למידע נוסף";
+
+/* Title of a persistent warning shown when a store reports an HTTP site address. */
+"https-configuration-warning.title" = "אבטחת החנות שלך עם HTTPS";
 
 /* Title of the Bookings menu in the hub menu */
 "hubMenu.bookings" = "הזמנות";
@@ -10959,6 +11075,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "ביקורות";
+
+/* VoiceOver value for a More menu item marked with a dot badge */
+"hubMenu.storeDesignSystem.newFeature" = "תכונה חדשה";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google ל-WooCommerce";
@@ -10984,10 +11103,33 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "inPersonPayments.cardPresent.cardInserted.title" = "הכרטיס הוכנס";
 
+/* Title for the button to enable the Pay In Person payment gateway during card present payments onboarding. */
+"inPersonPayments.cashOnDelivery.notSetUp.enableButton" = "הפעלת 'תשלום באופן אישי'";
+
+/* Error displayed when the attempt to enable a Pay In Person checkout payment option fails */
+"inPersonPayments.cashOnDelivery.notSetUp.enableFailureNotice.title" = "לא ניתן היה להפעיל את 'תשלום באופן אישי'. יש לנסות שוב מאוחר יותר.";
+
+/* The message explaining what will happen when the merchant enables the Pay In Person payment gateway during card present payments onboarding. */
+"inPersonPayments.cashOnDelivery.notSetUp.message" = "הפעלת האפשרות 'תשלום באופן אישי' תאפשר ללקוחות לשלם לך על הזמנות מקוונות במעמד המשלוח באמצעות מזומן או כרטיס.";
+
+/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay In Person payment gateway. */
+"inPersonPayments.cashOnDelivery.notSetUp.title" = "האם ברצונך להוסיף את 'תשלום באופן אישי' אל תהליך התשלום בקופה באתר?";
+
+/* Error message when a Card Present Payments extension is not activated,
+shown to users who cannot activate it themselves. %1$@ is the extension name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"inPersonPaymentsPluginNotActivated.messageForNonAdministrator" = "בחנות שלך הותקנה ההרחבה %1$@, אך היא לא הופעלה. יש לבקש ממנהל מערכת של החנות להפעיל אותה כדי לקבל תשלומים באופן אישי";
+
 /* Error message when WooPayments is not installed
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "inPersonPaymentsPluginNotInstalled.message" = "יש להתקין את ההרחבה החינמית WooPayments בחנות שלך כדי לקבל תשלומים במסירה אישית.";
+
+/* Error message when WooPayments is not installed, shown to users who cannot install it themselves.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.messageForNonAdministrator" = "כדי לקבל תשלומים באופן אישי, יהיה עליך להתקין בחנות שלך את התוסף WooPayments החינמי. יש לבקש ממנהל מערכת של החנות להתקין אותה.";
 
 /* Title for the error screen when WooPayments is not installed */
 "inPersonPaymentsPluginNotInstalled.title" = "התקנת WooPayments";
@@ -11036,6 +11178,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for Payments home screen action */
 "infoplist.OpenPaymentsAction.Title" = "תשלומים";
+
+/* Error when loading refund history before a new refund. */
+"issueRefund.fetchRefunds.failed" = "לא ניתן היה לטעון את ההחזרים הכספיים הקודמים.";
 
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "לחבר את Jetpack";
@@ -11142,9 +11287,6 @@ which should be translated separately and considered part of this sentence. */
 /* Caption displayed in the simplified prologue screen */
 "loginPrologue.title" = "זוהי פלטפורמה למסחר אלקטרוני שגדלה איתך";
 
-/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
-"manual refund" = "החזר כספי ידני";
-
 /* on request (lower case), shown in a sentence like 'Payout schedule: manual, on request' */
 "manually, on request" = "ידנית, לפי בקשה";
 
@@ -11198,14 +11340,44 @@ which should be translated separately and considered part of this sentence. */
 /* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
 "menu.payments.inPersonPayments.setup.incomplete.notice.title" = "לא הושלמה ההגדרה של 'לשלם באופן אישי'.";
 
-/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
-"menu.payments.payInPerson.learnMore.description" = "עם 'לשלם באופן אישי' ניתן לקבל תשלומים עבור הזמנות שבוצעו באתר, או במעמד האיסוף\/בעת המסירה. %1$@";
+/* A label prompting users to learn more about adding Pay In Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"menu.payments.payInPerson.learnMore.description.payInPersonCasing" = "עם 'תשלום באופן אישי' ניתן לקבל תשלומים עבור הזמנות שבוצעו באתר, או במעמד האיסוף המסירה. %1$@";
 
 /* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link" = "מידע נוסף";
 
 /* Title for the accessibility action to open the learn more screen, showing information about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link.accessibilityAction" = "מידע נוסף";
+
+/* Cancel button of the confirmation alert shown when the merchant toggles the Pay In Person checkout payment option in the Payments menu. Tapping it leaves the payment method unchanged. */
+"menu.payments.payInPerson.toggle.confirmation.cancelButton" = "ביטול";
+
+/* Confirmation button of the alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.confirmButton" = "השבתה";
+
+/* Message of the confirmation alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.message" = "פעולה זו משביתה את אמצעי התשלום 'תשלום בעת מסירה' בקופה של החנות שלך, כדי שהלקוחות לא יוכלו לבחור אותו.";
+
+/* Title of the confirmation alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.title" = "האם להשבית 'תשלום באופן אישי'?";
+
+/* Error displayed when the attempt to disable a Pay In Person checkout payment option fails */
+"menu.payments.payInPerson.toggle.disableFailureNotice.title" = "לא ניתן היה להשבית את 'תשלום באופן אישי'. יש לנסות שוב מאוחר יותר.";
+
+/* Confirmation button of the alert shown when the merchant turns on the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.enableConfirmation.confirmButton" = "הפעלה";
+
+/* Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option and the payment method already has the default Pay in Person title */
+"menu.payments.payInPerson.toggle.enableConfirmation.message" = "פעולה זו מפעילה את אמצעי התשלום 'תשלום בעת מסירה' בקופה של החנות שלך.";
+
+/* Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option and the payment method has a custom title which will be replaced. %1$@ is a placeholder for the payment method's current customer-facing title, e.g. \"Cash on delivery\". %2$@ is a placeholder for the title it will be renamed to, e.g. \"Pay in Person\". */
+"menu.payments.payInPerson.toggle.enableConfirmation.messageRenameWithTitles" = "פעולה זו מפעילה את אמצעי התשלום 'תשלום בעת מסירה' בקופה של החנות שלך, ומשנה את שמו מ-'%1$@' ל-'%2$@' עבור הלקוחות שלך, כולל בקופה של האתר שלך.";
+
+/* Title of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.enableConfirmation.title" = "האם להפעיל 'תשלום באופן אישי'?";
+
+/* Error displayed when the attempt to enable a Pay In Person checkout payment option fails */
+"menu.payments.payInPerson.toggle.enableFailureNotice.title" = "לא ניתן היה להפעיל את 'תשלום באופן אישי'. יש לנסות שוב מאוחר יותר.";
 
 /* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "menu.payments.payInPerson.toggle.row.title" = "לשלם באופן אישי";
@@ -11236,6 +11408,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the section related to Woo Payments Payouts/Balances. */
 "menu.payments.wooPaymentsPayouts.section.title" = "יתרת תשלומים ב-Woo";
+
+/* Toast message shown after tapping Copy on the Mobile Status Report screen */
+"mobileStatusReportView.copiedToClipboard" = "דוח הסטטוס למכשירים ניידים הועתק ללוח";
+
+/* Navigation title of the mobile status report screen */
+"mobileStatusReportView.title" = "דוח סטטוס למכשירים ניידים";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "חודש";
@@ -11360,8 +11538,8 @@ which should be translated separately and considered part of this sentence. */
 /* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
 "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "מוצרים יכולים להשתמש בסף משלהם או בסף הכללי של החנות. %1$@ כדי להציג את הערך הנוכחי.";
 
-/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
-"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "מוצרים יכולים להשתמש בסף משלהם או בסף הכללי של החנות של ⁦{00A0}⁩%1$@. %2$@";
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The character before %1$@ is a non-breaking space, keeping the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat.v2" = "מוצרים יכולים להשתמש בסף משלהם או בסף של %1$@ של כלל החנות. %2$@";
 
 /* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
 "newStockNotificationPreferencesDetailView.lowStock.title" = "מלאי מוגבל";
@@ -11489,6 +11667,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.title" = "לא ניתן להוסיף ישירות מוצר עם סוגים.";
 
+/* Shown when a bundle's products could not be loaded, so the app cannot tell whether it can be added. */
+"order.bundle.cannotCheckBundledProducts.notice.title" = "לא ניתן לבדוק את המוצרים בחבילה. יש לנסות שוב.";
+
+/* Title of a notice shown while the products inside a scanned bundle are loaded. */
+"order.bundle.checkingBundledProducts.notice.title" = "מתבצעת בדיקה של המוצרים בחבילה…";
+
 /* Title for the Coupon screen during order creation */
 "order.form.coupon.add.button.title" = "הוספת קופון";
 
@@ -11516,8 +11700,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.giftCard.add.button.title" = "להוסיף שובר מתנה";
 
-/* A 'Learn More' label text, which shows tax information upon being clicked. */
-"order.form.paymentSection.taxes.learnMore" = "למידע נוסף.";
+/* A 'Learn more' label text, which shows tax information upon being clicked. */
+"order.form.paymentSection.taxes.learnMore.sentenceCase" = "למידע נוסף";
 
 /* Label for the row showing the shipping tax. */
 "order.form.paymentSection.taxes.shippingTax" = "מיסי משלוח";
@@ -11598,6 +11782,12 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.webAdmin" = "מנהל מערכת אינטרנט";
 
+/* Message shown when a merchant tries to add a bundle holding a bookable product to an order. */
+"orderCreationProductRestrictions.bookableBundleReason" = "חבילות עם מוצרים שניתנים להזמנה אינן נתמכות";
+
+/* Message shown when a merchant tries to add a bundle holding a subscription product to an order. */
+"orderCreationProductRestrictions.subscriptionBundleReason" = "חבילות עם מוצרי מינוי אינן נתמכות";
+
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "orderDetail.deleteTracking.notice.title" = "אין אפשרות למחוק את המעקב אחר הזמנה מס' ⁦%1$d⁩";
 
@@ -11609,6 +11799,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "סכום בהתאמה אישית";
+
+/* Button dismissing the error shown when a gift-card order cannot be refunded in the app */
+"orderDetails.issueRefund.giftCardUnsupported.alert.dismissButton" = "אישור";
+
+/* Message explaining why an order paid with a gift card must be refunded from the store admin */
+"orderDetails.issueRefund.giftCardUnsupported.alert.message" = "הזמנה זו שולמה באמצעות כרטיס מתנה. ביצוע החזר כספי כאן לא ישחזר את היתרה בכרטיס המתנה. כדי לבצע את ההחזר הכספי כראוי, יש לעבד אותו דרך ממשק הניהול של החנות באתר.";
+
+/* Title shown when a merchant tries to refund an order paid with a gift card */
+"orderDetails.issueRefund.giftCardUnsupported.alert.title" = "החזר כספי ממנהל החנות שלך";
 
 /* Title in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.campaign" = "קמפיין";
@@ -11694,21 +11893,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "איך ברצונך להוסיף את הסכום בהתאמה אישית?";
 
-/* Title text of the button that adds customer data in the order form. */
-"orderForm.customerSection.addCustomer" = "להוסיף לקוח";
-
-/* Placeholder of the email in the header of a customer card in order form when an account is not required. */
-"orderForm.customerSection.customerCard.header.emailPlaceholder.notRequired" = "כתובת אימייל";
-
-/* Placeholder of the email in the header of a customer card in order form when an account is required. */
-"orderForm.customerSection.customerCard.header.emailPlaceholder.required" = "חובה להזין כתובת אימייל";
-
-/* Header text of the customer card in the order form. */
-"orderForm.customerSection.customerHeader" = "לקוח";
-
-/* Title of the order customer selection screen in the order form.. */
-"orderForm.customerSection.customerSelectorTitle" = "הוספה של פרטי לקוחות";
-
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "לגבות תשלום";
 
@@ -11730,14 +11914,38 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "משלוח";
 
-/* Fulfillment status badge text shown on CIAB order rows when the order has been fulfilled. */
-"orderFulfillmentStatus.badge.fulfilled" = "הושלם";
+/* Message of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.info" = "לא הצלחנו לטעון את המטבע של החנות שלך, ולכן ייתכן שסכומי ההזמנות מוצגים במטבע שגוי.";
 
-/* Fulfillment status badge text with date, shown on the CIAB order details screen. %1$@ is the formatted date. */
-"orderFulfillmentStatus.badge.fulfilledWithDate" = "הושלם ב-%1$@";
+/* Title of the button to retry loading the store's currency on the Orders list warning banner. */
+"orderList.currencyUnavailable.banner.retry" = "ניסיון חוזר";
 
-/* Fulfillment status badge text shown on CIAB order rows when the order has not been fulfilled. */
-"orderFulfillmentStatus.badge.unfulfilled" = "לא הושלם";
+/* Title of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.title" = "מטבע החנות אינו זמין";
+
+/* Discount label for payment view */
+"orderPaymentDetails.discount.title" = "הנחה";
+
+/* Gift Cards label for payment view */
+"orderPaymentDetails.giftCards.title" = "שוברי מתנה";
+
+/* The title on the payment row of the Order Details screen when the payment is still pending */
+"orderPaymentDetails.paymentSummary.awaitingPayment" = "ממתין לתשלום";
+
+/* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
+"orderPaymentDetails.paymentSummary.awaitingPaymentViaPaymentMethod" = "ממתין לתשלום באמצעות %@";
+
+/* Payment summary on the Order Details screen when the order is paid but has no payment method title. Reads like: Payment on Nov 19, 2019. %1$@ is the payment date. */
+"orderPaymentDetails.paymentSummary.dateOnly" = "תשלום בתאריך %1$@";
+
+/* Payment on <date> received via (payment method title) */
+"orderPaymentDetails.paymentSummary.withPaymentMethod" = "%1$@ באמצעות %2$@";
+
+/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
+"orderPaymentDetails.refundSummary.manualRefund" = "החזר כספי ידני";
+
+/* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
+"orderPaymentDetails.refundSummary.withRefundMethod" = "%1$@ באמצעות %2$@";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "קופון";
@@ -11811,8 +12019,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "להציג את התמונה";
 
-/* No comment provided by engineer. */
-"password" = "סיסמה";
+/* Explains why card payment methods are hidden when checking whether the order contains a subscription failed. */
+"paymentMethods.cardPaymentsSubscriptionCheckFailed" = "לא ניתן היה לבדוק אם ניתן לשלם את ההזמנה באמצעות כרטיס. יש לנסות שוב.";
+
+/* Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD. */
+"paymentMethods.cardPaymentsUnavailableForOrderCurrency" = "תשלומים בכרטיסים אינם זמינים עבור המטבע של ההזמנה הזו (%1$@).";
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "לשלם באופן אישי";
@@ -11862,8 +12073,8 @@ which should be translated separately and considered part of this sentence. */
 /* A status for a payout, shown in a small badge view */
 "payouts.currency.overview.payoutTable.status.unknown.title" = "לא ידוע";
 
-/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
-"payouts.currency.overview.pendingFunds" = "יתרות בהמתנה לאישור";
+/* Title for total balance overview in WooPayments Payouts view. This shows the combined available and pending balance, matching the WooPayments plugin wording. */
+"payouts.currency.overview.totalBalance" = "יתרה כוללת";
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "לערוך";
@@ -11966,6 +12177,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "המערכת סורקת כדי לאתר קורא";
+
+/* Button dismissing the Tap to Pay payment cancellation confirmation in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.done.button.title" = "בוצע";
+
+/* Explains that Tap to Pay card reading succeeded but the payment was canceled in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.message" = "לא בוצע חיוב. סימן האישור והצליל של 'תשלום בנגיעה' אישרו שהכרטיס נקרא בלבד.";
+
+/* Title confirming that a Tap to Pay payment was canceled in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.title" = "התשלום בוטל";
 
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "הזמנה חדשה";
@@ -12282,17 +12502,32 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the system fails to collect a cash payment. */
 "pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "שגיאה בניסיון לעבד את התשלום. יש לנסות שוב.";
 
-/* A description within a full screen loading view for POS catalog. */
-"pointOfSale.catalogLoadingView.exitButton.description" = "הסנכרון יתבצע ברקע.";
+/* A description shown below the Exit POS button while the POS catalog is syncing. */
+"pointOfSale.catalogLoadingView.backgroundSyncSubtitle" = "אפשר לצאת, והסנכרון ימשיך לפעול ברקע.";
 
 /* A button that exits POS. */
 "pointOfSale.catalogLoadingView.exitButton.title" = "לצאת מ-POS";
+
+/* A hint within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.hint" = "סנכרון הקטלוג עשוי להימשך מספר דקות.";
+
+/* Progress text for POS catalog sync. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat" = "%1$ld מתוך ⁦%2$ld⁩ פריטים";
+
+/* Progress text for POS catalog sync when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat.singular" = "פריט ⁦%1$ld⁩ מתוך ⁦%2$ld⁩";
+
+/* Progress text shown while the POS catalog is being prepared before item counts are available. */
+"pointOfSale.catalogLoadingView.preparing" = "מכין קטלוג...";
 
 /* A title of a full screen view that is displayed while the POS catalog is being synced. */
 "pointOfSale.catalogLoadingView.title" = "מסנכרן את הקטלוג";
 
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "הקופון לא הוחל";
+
+/* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
+"pointOfSale.customAmountRow.discountNotApplied" = "ההנחות לא הוחלו";
 
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "ביטול חיבור מחדש";
@@ -12308,6 +12543,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "לצאת מ-POS";
+
+/* The title of the menu button to lock Point of Sale, requiring PIN entry to continue. */
+"pointOfSale.floatingButtons.lock.button.title" = "נעילת POS";
 
 /* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
 "pointOfSale.floatingButtons.orders.button.title" = "הזמנות";
@@ -12327,6 +12565,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "הגדרות";
 
+/* Format for the signed-in POS staff member shown in the menu: name, then role, e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role. */
+"pointOfSale.floatingButtons.staff.labelFormat" = "%1$@ - %2$@";
+
 /* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.edit.button.accessibilityLabel" = "עריכה";
 
@@ -12335,6 +12576,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "טוען";
+
+/* Note shown on a product row in the Point of Sale cart at checkout when the order response shows the line item received a discount, from a coupon or another source. */
+"pointOfSale.itemRow.discountApplied" = "ההנחה הוחלה";
 
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "סימון כ'שולמה'";
@@ -12356,6 +12600,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
 "pointOfSale.markAsPaid.failureMessage" = "לא ניתן היה לסמן הזמנה זו כ'שולמה'. יש לנסות שוב.";
+
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "אירעה בעיה ביצירת ההזמנה, הפריטים אינם תואמים לבחירה שלך. יש לבדוק את התוכן של עגלת הקניות ולנסות שוב.";
 
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "מוצר אחד או יותר";
@@ -12404,18 +12651,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "לפחות מוצר אחד";
-
-/* Row subtitle in the Other Payment Methods popover for manually marking an order as paid. */
-"pointOfSale.otherPaymentMethods.markOrderAsPaid.subtitle" = "אפשר להשתמש באפשרות זו כאשר התשלום כבר נגבה בדרך אחרת.";
-
-/* Row title in the Other Payment Methods popover for manually marking an order as paid. */
-"pointOfSale.otherPaymentMethods.markOrderAsPaid.title" = "סימון הזמנה כ'שולמה'";
-
-/* Row subtitle in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
-"pointOfSale.otherPaymentMethods.scanToPay.subtitle" = "אפשר להציג קוד QR שהלקוח יכול לשלם מהטלפון שלו.";
-
-/* Row title in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
-"pointOfSale.otherPaymentMethods.scanToPay.title" = "סריקה לתשלום";
 
 /* Message shown while loading the order for a payment in Point of Sale */
 "pointOfSale.payment.loading.message" = "טוען הזמנה";
@@ -12478,7 +12713,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.scanToPay.navigation.title" = "סריקה לתשלום";
 
 /* Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale. */
-"pointOfSale.scanToPay.orderNote" = "הלקוח שילם באמצעות 'סריקה לתשלום'";
+"pointOfSale.scanToPay.orderNote.1" = "שולם באמצעות סריקה לתשלום";
 
 /* Loading message shown while preparing the order for scan-to-pay (promoting it to pending). */
 "pointOfSale.scanToPay.preparing.message" = "יוצר קוד QR...";
@@ -12513,6 +12748,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the view where an email address should be entered when sending receipts */
 "pointOfSale.sendreceipt.textfield.placeholder" = "להקליד אימייל";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the exit permission tries to leave Point of Sale. */
+"pointOfSaleDashboard.exit.overrideReason" = "יציאה מ-Point of Sale מצריכה אישור";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "ביטול";
 
@@ -12537,6 +12775,9 @@ which should be translated separately and considered part of this sentence. */
 /* Phone-only overflow menu item to open Point of Sale settings. */
 "pointOfSaleDashboard.phone.menu.settings" = "הגדרות";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the view-settings permission tries to open Point of Sale settings. */
+"pointOfSaleDashboard.settings.overrideReason" = "פתיחת ההגדרות מצריכה אישור";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "לבטל";
 
@@ -12544,7 +12785,10 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "לשלם באופן אישי";
 
 /* Title for the payment method used when manually marking an order as paid in Point of Sale. */
-"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle" = "אחר";
+"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle.1" = "ההזמנה סומנה כ'שולמה'";
+
+/* Title for the payment method used when a Point of Sale order is paid through Scan to Pay. */
+"pointOfSaleOrderController.scanToPay.paymentMethodTitle" = "סריקה לתשלום";
 
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
@@ -12597,11 +12841,35 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title of Card reader settings. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "קוראי כרטיסים";
 
+/* Description of Receipt printer settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterSubtitle" = "ניהול חיבורי מדפסות קבלות";
+
+/* Navigation title of Receipt printer settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterTitle" = "מדפסות לקבלות";
+
 /* Navigation title for the hardware settings list. */
 "pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "חומרה";
 
 /* Button to dismiss the support form from POS settings. */
 "pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "לבטל";
+
+/* Subtitle for the receipt printer connect button when no printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerConnectSubtitle" = "יש לחבר את מדפסת הקבלות ולהתחיל להדפיס קבלות";
+
+/* Title for the receipt printer connect button when no printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerConnectTitle" = "חיבור מדפסת";
+
+/* Label for the connected receipt printer's name in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.printerDeviceNameTitle" = "שם המכשיר:";
+
+/* Title for the receipt printer disconnect button when a printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerDisconnectTitle" = "ניתוק מדפסת";
+
+/* Text shown when no receipt printer is connected in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.printerNotConnected" = "המדפסת אינה מחוברת";
+
+/* Navigation title for receipt printers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.printersTitle" = "מדפסות קבלות";
 
 /* Text displayed on Point of Sale settings pointing to the card reader battery. */
 "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "סוללה";
@@ -12675,6 +12943,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the store details in POS settings. */
 "pointOfSaleSettingsStoreDetailView.storeTitle" = "חנות";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
+"pointOfSaleSettingsView.editOverrideReason" = "שינוי ההגדרות מצריך אישור";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
+"pointOfSaleSettingsView.manageStaffOverrideReason" = "ניהול צוות מצריך אישור";
+
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "הגדרות";
 
@@ -12695,6 +12969,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "קטלוג מוצרים";
+
+/* Description of the settings to be found within the Payments section. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsSubtitle" = "ניהול הגדרות תשלום";
+
+/* Title of the Payments section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationPaymentsTitle" = "תשלומים";
+
+/* Description of the settings to be found within the Staff section. */
+"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "הצגת צוות וגישת PIN";
+
+/* Title of the Staff section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "צוות";
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "תצורה והגדרות של החנות";
@@ -12804,6 +13090,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
 "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "תמונה של קוד לסריקה לצד סורק ברקוד.";
 
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "סגירה";
+
 /* Message shown when scanner setup is complete */
 "pos.barcodeScannerSetup.complete.instruction.2" = "הכול מוכן, אפשר להתחיל לסרוק מוצרים. בפעם הבאה שיהיה צורך לחבר את הסורק, אפשר להדליק אותו והוא יתחבר מחדש אוטומטית.";
 
@@ -12900,6 +13189,12 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "הגדרות WooCommerce";
 
+/* Number of items in the cart when there are multiple items. %1$d is the number of items. */
+"pos.cart.itemCount.plural" = "⁦%1$d⁩ פריטים";
+
+/* Number of items in the cart when there is one item. %1$d is the number of items. */
+"pos.cart.itemCount.singular" = "פריט ⁦%1$d⁩";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "יש להקיש על מוצר כדי \n להוסיף את המוצר לעגלה, או ";
 
@@ -12933,7 +13228,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Tap to Pay button in the POS checkout payment-method row. */
 "pos.checkout.paymentMethod.tapToPay" = "Tap to Pay";
 
-/* Title shown on a toast view that appears when there's no internet connection */
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.connectivity.subtitle" = "נא לבדוק את החיבור לאינטרנט ולנסות שנית.";
+
+/* Title shown when Point of Sale has no internet connection */
 "pos.connectivity.title" = "אין חיבור אינטרנט";
 
 /* A button that dismisses coupon creation sheet */
@@ -12941,6 +13239,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for the view that selects the type of coupon to create */
 "pos.couponCreationSheet.selectCoupon.title" = "ליצור קופון";
+
+/* Button on the exit Point of Sale modal that dismisses it without exiting Point of Sale. */
+"pos.exitPOSModal.cancelButton" = "ביטול";
+
+/* Accessibility label for the button to close the exit Point of Sale modal alert. */
+"pos.exitPOSModal.closeButton.accessibilityLabel" = "סגירה";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "כל התקדמות שנרשמה בהזמנות תאבד.";
@@ -12963,9 +13267,6 @@ which should be translated separately and considered part of this sentence. */
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
 "pos.ineligible.suggestion.featureSwitchDisabled.3" = "כדי להמשיך, יש להפעיל את 'נקודת מכירה'. יש להפעיל את האפשרות של POS מתחת או ממנהל המערכת של WordPress במקטע 'הגדרות WooCommerce' > 'מתקדם' > 'אפשרויות' ולנסות שוב.";
 
-/* Suggestion for self deallocated: relaunch */
-"pos.ineligible.suggestion.selfDeallocated" = "כדאי להפעיל מחדש את האפליקציה כדי לפתור בעיה זו.";
-
 /* Suggestion for site settings unavailable: check connection or contact support */
 "pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "לא הצלחנו לטעון את פרטי ההגדרות של האתר. יש לבדוק את החיבור לאינטרנט ולנסות שוב. אם הבעיה ממשיכה, יש ליצור קשר עם צוות התמיכה לקבלת עזרה.";
 
@@ -12981,8 +13282,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "לא ניתן לטעון";
 
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "השירות של Point of Sale אינו יכול לגשת לקובץ עם פרטי המוצרים שלך, משום שספקית האחסון שלך חוסמת אותו.\nיש לבקש ממנה לאפשר גישה לקובץ הזה כדי שהשירות של Point of Sale ימשיך לפעול כראוי.";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "נדרשת פעולה בחנות שלך";
 
 /* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
 "pos.itemList.customAmountEntryRow.subtitle" = "הוספת חיוב חד פעמי.";
@@ -13044,6 +13348,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback label/placeholder text for the search field in Point of Sale. */
 "pos.itemListView.searchField.label" = "לחפש";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the create-coupons permission tries to create a coupon. */
+"pos.itemlistview.couponOverrideReason" = "יצירת קופונים מצריכה אישור";
+
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "קופונים";
 
@@ -13052,12 +13359,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "לרענן את הקטלוג";
-
-/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.description" = "החל מ-1 באוגוסט, מערכת הקופה תדרוש WooCommerce 10.5.0 ומעלה. יש לעדכן כדי להבטיח גישה ללא הפרעות.";
-
-/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.title" = "יש לעדכן את WooCommerce בקרוב";
 
 /* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "מוצרים";
@@ -13140,6 +13441,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.title" = "לא ניתן לטעון את פרטי ההחזר הכספי";
 
+/* Accessibility label for the order items section while refund details are loading. */
+"pos.orderDetailsView.loadingItems.accessibilityLabel" = "טוען פריטים";
+
+/* Accessibility label for the refunded items section while refund details are loading. */
+"pos.orderDetailsView.loadingRefundedItems.accessibilityLabel" = "טוען פריטים שעבורם הונפק החזר כספי";
+
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "פעולות נוספות";
 
@@ -13154,6 +13461,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the issue-refunds permission tries to start a refund. %1$@ is the order number. */
+"pos.orderDetailsView.refundOverride.description" = "הנפקת החזר כספי עבור הזמנה מס' %1$@ מצריכה אישור";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "החזר כספי מס' ⁦%1$d⁩";
@@ -13172,6 +13482,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "לא ניתן לטעון את ההזמנות";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "ניסיון חוזר";
 
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "רענון";
@@ -13224,6 +13537,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
 "pos.ordersView.cancelRefundAlert.title" = "האם לבטל החזר כספי זה?";
 
+/* Row subtitle in the Other Payment Methods sheet when the external Bluetooth card reader option is disabled because it is already active. */
+"pos.otherPaymentMethods.cardReader.disabled.subtitle" = "קורא כרטיסים כבר נבחר עבור תשלום זה.";
+
 /* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
 "pos.otherPaymentMethods.cardReader.subtitle" = "חיבור קורא Bluetooth כדי לקבל תשלומים באמצעות כרטיס.";
 
@@ -13245,8 +13561,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
 "pos.otherPaymentMethods.sheet.title" = "אמצעי תשלום אחרים";
 
+/* Row subtitle in the Other Payment Methods sheet when Tap to Pay is disabled because it is already selected. */
+"pos.otherPaymentMethods.tapToPay.disabled.subtitle" = "שירות Tap to Pay כבר נבחר עבור תשלום זה.";
+
+/* Row subtitle in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.subtitle" = "השתמש ב-iPhone זה כדי לקבל תשלומים בכרטיס.";
+
+/* Row title in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.title" = "Tap to Pay";
+
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "אפשרויות זמינות";
+
+/* Button title on the Point of Sale payment success screen for printing a receipt for the completed order. */
+"pos.paymentSuccess.button.printReceipt" = "הדפסת קבלה";
 
 /* Accessibility label for the delete key on the POS PIN numpad */
 "pos.pinEntry.delete.accessibilityLabel" = "מחיקה";
@@ -13310,6 +13638,69 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "אישור";
+
+/* Button to start printer discovery after pairing in POS settings. */
+"pos.printerSetup.connectButton" = "חיבור מדפסת";
+
+/* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
+"pos.printerSetup.connecting.format" = "מתחבר אל %1$@…";
+
+/* Message shown when receipt printer setup fails in POS settings. */
+"pos.printerSetup.error.message" = "לא הצלחנו להתחבר למדפסת שלך. יש לנסות שוב.";
+
+/* Title shown when receipt printer setup fails in POS settings. */
+"pos.printerSetup.error.title" = "משהו השתבש";
+
+/* Button to close the receipt printer setup without connecting in POS settings. */
+"pos.printerSetup.foundMultiple.cancelButton" = "ביטול";
+
+/* Button in a printer row to connect to that receipt printer in POS settings. */
+"pos.printerSetup.foundMultiple.connectButton" = "'התחברות'";
+
+/* Accessibility label for the connect button in a printer row in POS settings. %1$@ is the printer name. */
+"pos.printerSetup.foundMultiple.connectButton.accessibilityLabel" = "התחברות אל %1$@";
+
+/* Label shown next to a spinner while receipt printer scanning continues in POS settings. */
+"pos.printerSetup.foundMultiple.scanningLabel" = "מחפש מדפסות";
+
+/* Title shown above the list of discovered receipt printers in POS settings. */
+"pos.printerSetup.foundMultiple.title" = "נמצאו כמה מדפסות";
+
+/* Button to connect to the single discovered receipt printer in POS settings. */
+"pos.printerSetup.foundOne.connectButton" = "התחברות למדפסת";
+
+/* Button to skip the discovered receipt printer and keep searching in POS settings. */
+"pos.printerSetup.foundOne.keepSearchingButton" = "המשך חיפוש";
+
+/* Message asking the merchant to confirm connecting to the discovered receipt printer in POS settings. */
+"pos.printerSetup.foundOne.message" = "האם ברצונך להתחבר למדפסת זו?";
+
+/* Title shown when a single receipt printer is discovered in POS settings. %1$@ is the printer name. */
+"pos.printerSetup.foundOne.titleFormat" = "%1$@ נמצאה";
+
+/* Message shown when no receipt printers are discovered in POS settings. */
+"pos.printerSetup.noPrinters.pairInSettingsMessage" = "יש לוודא שהמדפסת מופעלת ומחוברת באמצעות Bluetooth דרך אפליקציית 'הגדרות', ולאחר מכן לחפש שוב.";
+
+/* Title shown when no receipt printers are discovered in POS settings. */
+"pos.printerSetup.noPrinters.title" = "לא נמצאו מדפסות";
+
+/* Instruction shown on the receipt printer pairing step when the app's Bluetooth permission is disabled, telling the merchant to enable it in the iOS Settings app. */
+"pos.printerSetup.pair.enableBluetoothInstruction" = "הגישה ל-Bluetooth כבויה. יש להקיש על 'פתיחת הגדרות' כדי להפעיל את האפשרות, ולאחר מכן לחבר את המדפסת באמצעות Bluetooth.";
+
+/* Instruction for pairing a receipt printer in POS settings. Tells the user to pair the printer in the iOS Settings app under Bluetooth before searching in the app. */
+"pos.printerSetup.pair.pairInSettingsInstruction" = "יש להפעיל את מדפסת הקבלות של Star Micronics, ולאחר מכן לחבר אותה באמצעות Bluetooth דרך אפליקציית 'הגדרות'. לאחר השיוך, יש להקיש על 'חיבור מדפסת' כדי למצוא אותה.";
+
+/* Title for the printer pairing step in POS settings. */
+"pos.printerSetup.pair.title" = "שיוך המדפסת שלך";
+
+/* Button to retry receipt printer discovery in POS settings. */
+"pos.printerSetup.searchAgainButton" = "חיפוש חוזר";
+
+/* Message shown while discovering receipt printers in POS settings. */
+"pos.printerSetup.searching" = "מחפש מדפסות…";
+
+/* Secondary button that opens the app's Settings page, where Bluetooth can be enabled, during receipt printer setup in POS. */
+"pos.printerSetup.settingsButton" = "פתיחת הגדרות";
 
 /* Error shown when POS tries to process a second refund while another refund is in progress. */
 "pos.refund.processing.error.alreadyInProgress" = "ההחזר הכספי כבר מתבצע. יש להמתין לסיום הפעולה.";
@@ -13413,10 +13804,10 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for close button on refund detail dialog */
 "pos.refundDetailView.closeButton.accessibilityLabel" = "לסגור";
 
-/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there are multiple items. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.plural" = "סכום ביניים של הפריטים (⁦%1$d⁩ פריטים)";
 
-/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+/* Label for items subtotal row in refund review and detail when there is 1 item. %1$d is the number of items. */
 "pos.refundDetailView.itemsSubtotalFormat.singular" = "סכום ביניים של הפריטים (פריט ⁦%1$d⁩)";
 
 /* Label for refund total row in refund detail */
@@ -13465,6 +13856,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label showing number of selected items in the refund items selection modal */
 "pos.refundItemsSelectionView.itemsSelectedCountFormat" = "(%d נבחר)";
 
+/* Error shown on the refund item-selection step when fetching the server-calculated refund total fails */
+"pos.refundItemsSelectionView.previewError" = "לא ניתן לחשב את הסכום הכולל של ההחזר הכספי. יש לנסות שוב.";
+
+/* Button to retry fetching the server-calculated refund total on the refund item-selection step */
+"pos.refundItemsSelectionView.retryButton" = "ניסיון חוזר";
+
+/* Button to reload the refundable items after the store rejected the refund because the order changed */
+"pos.refundItemsSelectionView.reviewRemainingItemsButton" = "בדיקת הפריטים שנותרו";
+
 /* Accessibility label for the select-all checkbox in the refund items selection modal */
 "pos.refundItemsSelectionView.selectAll.accessibilityLabel" = "לבחור או לבטל את הבחירה בכל הפריטים";
 
@@ -13488,6 +13888,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when POS cannot confirm whether a card-present refund was recorded successfully. */
 "pos.refundModalContentView.cardPresentCreateError.title" = "לא ניתן לאשר את ההחזר הכספי";
+
+/* Button to reload the refundable items after the store rejected the refund because the order changed */
+"pos.refundModalContentView.reviewRemainingItemsButton" = "בדיקת הפריטים שנותרו";
 
 /* Accessibility label for the back button on the nothing to refund screen */
 "pos.refundNothingToRefundView.backButton.accessibilityLabel" = "חזרה";
@@ -13545,9 +13948,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "לערוך את הסיבה";
-
-/* Label for items subtotal row in refund review. %d is the number of items. */
-"pos.refundReviewView.itemsSubtotalFormat" = "סכום ביניים של פריטים (%d פריטים)";
 
 /* Placeholder text when no refund reason has been added */
 "pos.refundReviewView.reasonPlaceholder" = "סיבה להחזר הכספי על ההזמנה";
@@ -13624,11 +14024,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "למה המוצרים שלי לא מופיעים?";
 
-/* Label to be displayed in the product's card when there's stock of a given product */
-"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ במלאי";
+/* Display name for the admin POS staff role. */
+"pos.staffPreset.admin" = "מנהל מערכת";
 
-/* Label to be displayed in the product's card when out of stock */
-"pos.stockStatusLabel.outofstock" = "לא במלאי";
+/* Display name for the cashier POS staff role. */
+"pos.staffPreset.cashier" = "קופאי";
+
+/* Display name for the manager POS staff role. */
+"pos.staffPreset.manager" = "מנהל";
 
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "נקודת מכירה";
@@ -13687,10 +14090,25 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "תשלום במזומן";
 
+/* Title for the primary Point of Sale checkout button that starts the card reader connection flow. */
+"pos.totalsView.connectCardReader.button.title.1" = "חיבור קורא כרטיסים";
+
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "סכומים בהתאמה אישית";
+
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "סך כל ההנחה";
 
-/* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "עריכת הזמנה";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "אירעה בעיה ביצירת ההזמנה, הפריטים אינם תואמים לבחירה שלך. יש לבדוק את התוכן של עגלת הקניות ולנסות שוב.";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "לא ניתן היה לשלם בקופה";
+
+/* Title for the Point of Sale checkout button that opens additional payment methods, such as Scan to Pay or Mark order as paid. */
 "pos.totalsView.otherPaymentMethods.button.title" = "אמצעי תשלום אחרים";
 
 /* Title for subtotal amount field */
@@ -13701,12 +14119,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "סכום כולל";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "עליך להתאים את חלוקת המסך כדי לספק מקום נוסף ל'נקודת מכירה'.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "התצוגה של 'נקודת מכירה' לא נתמכת ברוחב המסך הזה.";
 
 /* Button title for the POS promotional banner on the dashboard */
 "posPromoOnPhonesCampaign.buttonTitle" = "למידע נוסף";
@@ -13774,6 +14186,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button text for updating the catalog manually. */
 "posSettingsLocalCatalogDetailView.updateCatalog" = "לעדכן את הקטלוג";
 
+/* Button text shown while a manual POS catalog update is preparing before item counts are available. */
+"posSettingsLocalCatalogDetailView.updateCatalogPreparing" = "מכין...";
+
+/* Button text shown during a manual POS catalog update. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat" = "%1$ld מתוך ⁦%2$ld⁩ פריטים";
+
+/* Button text shown during a manual POS catalog update when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat.singular" = "פריט ⁦%1$ld⁩ מתוך ⁦%2$ld⁩";
+
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
 "posSettingsLocalCatalogViewModel.catalogSizeFormat" = "⁦%1$d⁩ מוצרים ו-⁦%2$ld⁩ סוגים";
 
@@ -13785,6 +14206,51 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "תאריך העדכון לא זמין";
+
+/* Description of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.subtitle" = "השמעת צליל עם השלמת תשלום";
+
+/* Title of the toggle that turns the sound played after a successful payment on or off in Point of Sale settings. */
+"posSettingsPaymentsDetailView.paymentSuccessSound.title" = "צליל תשלום מוצלח";
+
+/* Navigation title for the payments settings in Point of Sale settings. */
+"posSettingsPaymentsDetailView.title" = "תשלומים";
+
+/* Footer text explaining how POS locking works, including auto-lock timeout. */
+"posStaffSettingsView.autoLockFooter" = "קופת ה-POS ננעלת כשמקישים על 'נעילת קופה' מתוך התפריט, או באופן אוטומטי לאחר 5 דקות של חוסר פעילות.";
+
+/* Button to open the WordPress admin staff management page in a web view. */
+"posStaffSettingsView.manageStaffWebButton" = "ניהול צוות באינטרנט";
+
+/* Navigation title for the web view showing WordPress admin staff management. */
+"posStaffSettingsView.manageStaffWebTitle" = "ניהול צוות";
+
+/* Status label shown next to a staff member who does not have a PIN configured. */
+"posStaffSettingsView.noPINLabel" = "אין קוד PIN";
+
+/* Status label shown next to a staff member who has a PIN configured. */
+"posStaffSettingsView.pinSetLabel" = "קוד PIN הוגדר";
+
+/* Display name for the administrator role in the POS staff list. */
+"posStaffSettingsView.role.admin" = "מנהל מערכת";
+
+/* Display name for the POS cashier role in the POS staff list. */
+"posStaffSettingsView.role.posCashier" = "קופאי ה-POS";
+
+/* Display name for the POS manager role in the POS staff list. */
+"posStaffSettingsView.role.posManager" = "מנהל ה-POS";
+
+/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
+"posStaffSettingsView.signedInBadge" = "מחובר";
+
+/* Error message shown when the staff list fails to load from the server. */
+"posStaffSettingsView.staffLoadError" = "לא ניתן לטעון את הצוות. בדוק את החיבור שלך ונסה שוב.";
+
+/* Button to retry loading the staff list after a failure. */
+"posStaffSettingsView.staffLoadRetry" = "נסה שוב";
+
+/* Navigation title for the staff settings detail view in POS settings. */
+"posStaffSettingsView.staffTitle" = "צוות";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "נקודת קצה של REST API לא נמצאה.";
@@ -13852,9 +14318,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "REST API של WordPress";
 
-/* Chat with AI support button in the pre-login connectivity tool */
-"preLoginConnectivityToolView.chatWithSupport" = "שיחה עם התמיכה בצ'אט";
-
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "פנייה לתמיכה";
 
@@ -13875,6 +14338,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "פרטי";
+
+/* Error shown when creating a product category with a name that already exists. */
+"productCategoryActionError.duplicateName" = "כבר קיימת קטגוריה בשם זה. יש לבחור שם אחר.";
 
 /* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
 "productCreationAIPromptProgressBar.main.almostDone" = "כמעט סיימת.";
@@ -14047,6 +14513,12 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for empty product ratings */
 "productForm.quantityRules.placeholder" = "אין כללי כמות";
 
+/* Subtitle of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesSubtitle" = "הוספת פרטים כגון חומר או גודל לעמוד המוצר";
+
+/* Title of the product form bottom sheet action for adding product attributes */
+"productFormBottomSheetAction.attributesTitle" = "מאפיינים";
+
 /* Subtitle of the product form bottom sheet action for custom fields */
 "productFormBottomSheetAction.customFieldsSubtitle" = "להציג ולנהל שדות מותאמים";
 
@@ -14082,6 +14554,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "להוסיף למועדפים";
+
+/* Button that cancels product duplication and keeps unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.cancel" = "ביטול";
+
+/* Destructive button that confirms duplication using the last saved product version. */
+"productFormViewController.productDuplicationConfirmation.confirm" = "ביטול ושכפול";
+
+/* Message explaining that product duplication uses the last saved version instead of unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.message" = "השינויים שלא נשמרו יאבדו. העותק המשוכפל ישתמש בגרסה האחרונה שנשמרה.";
+
+/* Title of the confirmation alert shown before duplicating a product with unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.title" = "האם לבטל את השינויים ולשכפל?";
 
 /* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
 "productFormViewController.productSavingError.cancel" = "ביטול";
@@ -14176,6 +14660,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message explaining unsupported bookable products for order creation */
 "productSelectorViewModel.bookableProductUnsupportedReason" = "מוצרים שניתנים להזמנה לא נתמכים ביצירת הזמנות";
 
+/* Message shown when the products inside a bundle could not be loaded, so the app cannot tell whether the bundle can be added to the order. */
+"productSelectorViewModel.cannotCheckBundledProducts" = "לא ניתן לבדוק את המוצרים בחבילה. יש לנסות שוב.";
+
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld מוצרים נבחרו";
 
@@ -14224,8 +14711,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for the stock items with no items sold on the Stock section on the My Store screen. */
 "productStockDashboardCard.item.subtitle.zero" = "אין פריטים שנמכרו ב-30 הימים האחרונים";
 
+/* Time when the Stock dashboard card was last updated */
+"productStockDashboardCard.lastUpdated" = "עדכון אחרון: %1$@";
+
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.products" = "מוצרים";
+
+/* Message on the Stock dashboard card when a refresh fails; includes the last updated time */
+"productStockDashboardCard.refreshFailed" = "לא ניתן היה לרענן · עדכון אחרון: %1$@";
 
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.status" = "סטטוס";
@@ -14338,6 +14831,207 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
 "pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "לא במלאי";
 
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "מבצעת כניסה…";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "ביטול";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "ללא גישה למצלמה, עדיין ניתן להיכנס על ידי הזנת כתובת החנות שלך.";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "מתן גישה למצלמה";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "דרושה גישה למצלמה";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "יש לאפשר גישה למצלמה בהגדרות, או לבטל כדי להיכנס באמצעות כתובת החנות שלך במקום זאת.";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "פתיחת הגדרות ההרשאות";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "הגישה למצלמה כבויה";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "כניסה זו כבר הושלמה במכשיר אחר. יש ליצור קוד חדש אם עליך לנסות שוב.";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "כבר בוצעה כניסה במקום אחר";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "קוד זה כבר נסרק. יש ליצור קוד חדש בחנות שלך.";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "כבר נעשה שימוש בקוד זה";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "קוד זה פג תוקף או שכבר נעשה בו שימוש. יש ליצור קוד חדש בחנות שלך.";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "פג תוקף הקוד";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "הזנת כתובת ה-URL של האתר במקום זאת";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "האפליקציה כבר מותקנת — קוד QR זה מיועד להתקנתה. ב-wp-admin, יש להקיש על הכפתור 'האפליקציה מותקנת' כדי לחשוף את קוד ה-QR לכניסה. לחלופין, אפשר לבקר בכתובת woo.com\/mobilelogin מהמחשב שלך.";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "זהו קוד ה-QR להתקנה";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "קוד QR זה אינו קוד כניסה של WooCommerce. יש ליצור קוד חדש בחנות שלך ולנסות שוב.";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "לא קוד של WooCommerce";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "יש לבדוק את החיבור ולנסות שוב.";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "לא ניתן היה להגיע לחנות שלך";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "השירות של WooCommerce לא הותקן באתר זה.";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "לא חנות של WooCommerce";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "יש להמתין מספר דקות ולנסות שנית.";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "יותר מדי ניסיונות";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "סריקת קוד חדש";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "לא הצלחנו לקרוא קוד QR זה. יש לנסות שוב.";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "לא ניתן היה לקרוא קוד זה";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "למען אבטחתך, ניסיון כניסה זה בוטל. יש ליצור קוד חדש בחנות שלך כדי לנסות שוב.";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "הכניסה נדחתה";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "הכניסה שלך נקטעה. יש ליצור קוד חדש בחנות שלך ולנסות שוב.";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "הכניסה נקטעה";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "לא אישרת בזמן. יש ליצור קוד חדש בחנות שלך ולנסות שוב.";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "תם הזמן הקצוב לכניסה";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "לא הצלחנו לבצע אימות מול החנות שלך. יש לנסות שוב.";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "הכניסה נכשלה";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "תוסף ה-WooCommerce שלך אינו תומך בכניסה באמצעות QR. יש לעדכן את WooCommerce בחנות שלך ולנסות שוב, או להיכנס על ידי הזנת כתובת ה-URL של האתר שלך.";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "חנות זו אינה יכולה להשלים כניסה באמצעות קוד QR";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "ניסיון חוזר";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "החנות שלך החזירה שגיאה לא צפויה. כדאי להמתין רגע ולנסות שוב.";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "משהו השתבש";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "לחשבון שלך אין הרשאה להשתמש באפליקציה עבור החנות הזו.";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "דרושה הרשאה";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "עזרה";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "ביטול";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "פקיעת תוקף בעוד ⁦%1$d⁩ שנ'";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "שני המסכים חייבים להציג את אותו מספר להשלמת הכניסה.";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "מתבצעת כניסה אל";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "מתבצעת כניסה בתור";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "יש להקיש על המספר הזה במחשב שלך כדי להשלים את התהליך.";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "אישור ביצוע כניסה";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "חזרה";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "אין לך מחשב? כניסה עם כתובת של חנות";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "עזרה";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "סריקת קוד QR";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "לאחר מכן, יש לסרוק את קוד ה-QR שמופיע.";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "במחשב שלך, יש לבקר בכתובת:";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "יש לסרוק לכניסה";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "מעתיק את כתובת ה-URL ללוח.";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "הקישור הועתק!";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "ביטול";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "יש למרכז את קוד ה-QR בתוך המסגרת";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "יש לבקר ב-woo.com\/mobilelogin";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "המשך הפעולה ינתק אותך מהסשן הנוכחי שלך ויתחיל כניסה חדשה.";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "ביטול";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "המשך ביציאה";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "כבר בוצעה כניסה";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "בוצע";
 
@@ -14356,11 +15050,62 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the number of product ratings in singular form */
 "rated once" = "דורג פעם אחת";
 
+/* EMV account type line on a printed receipt. %1$@ is the account type. */
+"receipt.accountType" = "סוג החשבון: %1$@";
+
+/* EMV Application Identifier line on a printed receipt. %1$@ is the AID value. */
+"receipt.aid" = "AID: %1$@";
+
+/* EMV application name (card scheme app) line on a printed receipt. %1$@ is the application name. */
+"receipt.applicationName" = "שם האפליקציה: %1$@";
+
+/* Card payment method on a printed receipt. %1$@ is the card brand, %2$@ is the last 4 digits. */
+"receipt.cardBrandAndLast4" = "%1$@ - %2$@";
+
+/* Label above the payment date on a printed receipt. */
+"receipt.datePaid" = "תאריך התשלום";
+
+/* A purchased line item on a printed receipt. %1$@ is the item title, %2$@ is the quantity. */
+"receipt.itemTitleAndQuantity" = "%1$@ x%2$@";
+
+/* A line item title with its product attributes on a printed receipt. %1$@ is the item title, %2$@ is the comma-separated attributes (e.g. variations). */
+"receipt.itemTitleWithAttributes" = "%1$@. %2$@";
+
+/* Label above the order note on a printed receipt. */
+"receipt.notes" = "הערות";
+
+/* Order number line on a printed receipt. %1$@ is the order ID. */
+"receipt.orderNumber" = "הזמנה מס׳ %1$@";
+
+/* Label above the card payment method on a printed receipt. */
+"receipt.paymentMethod" = "אמצעי תשלום";
+
+/* Title of the view containing a receipt preview. */
+"receiptViewController.title" = "קבלה";
+
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
 "receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: קבלה עבור ההזמנה #%2$@";
 
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
 "receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: קבלה עבור ההזמנה #%2$@ בחנות %3$@";
+
+/* Error shown when a refund is rejected because the refund amount is not valid. */
+"refundAPIError.invalidRefundAmount" = "סכום ההחזר הכספי אינו תקף.";
+
+/* Error shown when a refund is rejected because the order status does not allow refunds or nothing refundable remains. */
+"refundAPIError.orderNotRefundable" = "לא ניתן להנפיק החזר כספי עבור הזמנה זו.";
+
+/* Error shown when a refund is rejected because the selected quantity exceeds what is still refundable for an item. */
+"refundAPIError.quantityExceedsRefundable" = "הכמות שנבחרה גדולה מהכמות שנותרה לביצוע החזר כספי.";
+
+/* Error shown when a refund is rejected because the requested total exceeds the order's remaining refundable amount. */
+"refundAPIError.refundExceedsRemaining" = "סכום ההחזר הכספי גבוה מהסכום שנותר לביצוע החזר כספי עבור הזמנה זו.";
+
+/* Error shown when a refund is rejected because the requested amount exceeds what is left to refund on an item. */
+"refundAPIError.refundTotalExceedsLine" = "סכום ההחזר הכספי גבוה מהסכום שנותר לביצוע החזר כספי עבור פריט זה.";
+
+/* Error shown when a refund is rejected because one of the selected items is already fully refunded. */
+"refundAPIError.selectedItemAlreadyRefunded" = "כבר בוצע החזר כספי מלא על אחד מהפריטים שנבחרו.";
 
 /* Title on the refund screen that lists the custom amounts total cost */
 "refundCustomAmountsDetails.totalTitle" = "החזרים של סכומים בהתאמה אישית";
@@ -14430,6 +15175,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when there is an error selecting image */
 "selectPackageImageCoordinator.imageErrorAlert.title" = "לא ניתן לבחור את התמונה";
+
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card, which creates a live transaction and incurs processing fees */
+"setUpTapToPayInformation.tryPayment.hint" = "ניתן לנסות ביצוע תשלום אמיתי באמצעות הכרטיס שלך (ולהנפיק החזר כספי בסיום; יחולו עמלות סליקה).";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. The trial payment is a live transaction and incurs processing fees. */
+"setUpTapToPayPaymentPrompt.description" = "אפשר לנסות תשלום אמיתי בסך %1$@ באמצעות כרטיס חיוב או אשראי. אפשר להנפיק החזר כספי בסיום; יחולו עמלות סליקה.";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"setUpTapToPayPaymentPrompt.title" = "האם ברצונך לנסות תשלום?";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "התשלום הושלם";
@@ -14516,11 +15270,47 @@ which should be translated separately and considered part of this sentence. */
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "⁦%1$d⁩ פריטים מתוך %2$@";
 
-/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
-"significantChangeConsent.ageRatingChange.description" = "דירוג הגיל של האפליקציה השתנה ל-⁦%1$d⁩.";
+/* Description a parent or guardian sees in the system consent request when the app's App Store age rating changes. */
+"significantChangeConsent.ageRatingChange.request.description" = "דירוג הגיל של האפליקציה ב-App Store עלה.";
 
-/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
-"significantChangeConsent.manual.description" = "עדכון משמעותי באפליקציה: %1$@.";
+/* Button on the significant-change blocking screen that sends the approval request again. */
+"significantChangeConsent.blocking.askAgain.button" = "בקשה חוזרת";
+
+/* Button on the significant-change blocking screen that re-checks the approval status. */
+"significantChangeConsent.blocking.checkAgain.button" = "בדיקה חוזרת";
+
+/* Secondary button on the significant-change blocking screen that opens Help & Support. */
+"significantChangeConsent.blocking.contactSupport.button" = "פנייה לתמיכה";
+
+/* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
+"significantChangeConsent.blocking.continue.button" = "המשך";
+
+/* Message of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.message" = "הורה או אפוטרופוס דחה את האישור הנדרש כדי להמשיך להשתמש באפליקציה הזו. ניתן לשלוח שוב את בקשת האישור.";
+
+/* Title of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.title" = "האישור נדחה";
+
+/* Message of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.message" = "ההורה או האפוטרופוס שלך אישר את השינויים האחרונים באפליקציה הזו. הכול מוכן.";
+
+/* Title of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.title" = "האישור ניתן";
+
+/* Message of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.message" = "לפני שתוכל להמשיך, שינויים אחרונים באפליקציה זו צריכים לקבל את אישור ההורה או האפוטרופוס שלך. יש לשלוח להם בקשת אישור כדי להמשיך.";
+
+/* Title of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.title" = "נדרש אישור";
+
+/* Message of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.message" = "שלחנו להורה או לאפוטרופוס שלך בקשת אישור בנוגע לשינויים האחרונים שבוצעו באפליקציה הזו. לאחר שתתקבל תגובה, יש להקיש על 'בדיקה בחוזרת' כדי להמשיך.";
+
+/* Title of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.title" = "נשלחה בקשה לאישור";
+
+/* Button on the significant-change blocking screen that sends the approval request to a parent/guardian. */
+"significantChangeConsent.blocking.requestApproval.button" = "שליחת בקשה אישור";
 
 /* Error message shown when the site info check and API discovery both fail. */
 "siteAddress.siteConnectionError" = "נתקלנו בבעיה בהתחברות לאתר שלך. יש לבדוק את כתובת האתר ולנסות שוב.";
@@ -14579,6 +15369,30 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "טווח מותאם";
 
+/* VoiceOver value announced for a selected checkbox. */
+"storeCheckbox.accessibilityValue.checked" = "מסומן";
+
+/* VoiceOver value announced for a checkbox in the indeterminate (partially selected) state. */
+"storeCheckbox.accessibilityValue.mixed" = "משולב";
+
+/* VoiceOver value announced for an unselected checkbox. */
+"storeCheckbox.accessibilityValue.unchecked" = "לא מסומן";
+
+/* Explanation shown when the app cannot reach the merchant's store because of a problem on their site. */
+"storeConnectionError.body.v2" = "נתקלנו בבעיה בהתחברות לחנות שלך. זוהי בדרך כלל בעיית חיבור באתר ה-WordPress שלך, שנגרמת לעיתים קרובות מתוסף אבטחה, מעדכון אחרון של תוסף או מחיבור ל-Jetpack שיש לרענן. אפליקציית WooCommerce לא יכולה לפתור זאת מהטלפון שלך.";
+
+/* Title of the button that opens the support form from the store connection warning. */
+"storeConnectionError.contactSupport" = "פנייה לתמיכה";
+
+/* Title of the button that hides the store connection warning for the current session. */
+"storeConnectionError.dismiss" = "התעלמות";
+
+/* Title of the warning shown when the app cannot reach the merchant's store. */
+"storeConnectionError.title" = "לא ניתן היה להגיע לחנות שלך";
+
+/* Default accessibility label for dismissing a store notice banner. */
+"storeNoticeBanner.dismiss.accessibilityLabel" = "סגירה";
+
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "להציג את כל ⁦%1$d⁩ המשימות";
 
@@ -14615,6 +15429,12 @@ which should be translated separately and considered part of this sentence. */
 /* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
 "storePerformanceView.revenueType.total" = "סכום כולל";
 
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "הנתונים האנליטיים עשויים להיות מעודכנים בעיכוב של עד 12 שעות.";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "פרטי עדכון נתונים אנליטיים";
+
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "אין אפשרות להציג את הביצועים בחנות שלך";
 
@@ -14639,6 +15459,12 @@ which should be translated separately and considered part of this sentence. */
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "יש לבחור חנות כדי להתחבר (⁦%1$d⁩ מוסתרות)";
 
+/* VoiceOver label of the control that empties the text of a search field. */
+"storeSearchField.clear" = "ניקוי";
+
+/* VoiceOver position of a segment in a segmented control. %1$d is the position, %2$d the total count. */
+"storeSegmentedControl.accessibilityValue.position" = "⁦%1$d⁩ מתוך ⁦%2$d⁩";
+
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "תאריך נבחר";
 
@@ -14656,6 +15482,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback label for a store stats widget site entity when its name is unknown. */
 "storeStatsWidget.storeEntity.fallbackName" = "חנות";
+
+/* VoiceOver position of a tab in a tab row. %1$d is the position, %2$d the total count. */
+"storeTabRow.accessibilityValue.position" = "⁦%1$d⁩ מתוך ⁦%2$d⁩";
+
+/* VoiceOver label of the back control in a top app bar. */
+"storeTopAppBar.navigation.back" = "חזרה";
+
+/* VoiceOver label of the close control in a top app bar. */
+"storeTopAppBar.navigation.close" = "סגירה";
 
 /* Range label for the Last Month option in the Store Stats widget */
 "storeWidgets.dateRange.lastMonth" = "בחודש שעבר";
@@ -14820,14 +15655,11 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "צ'אט ללא כותרת";
 
-/* Empty state message shown when there are no stored support chats */
-"supportChatHistoryView.emptyState" = "עדיין לא התחלת שיחת צ'אט עם התמיכה.";
+/* Empty state message shown when there are no stored AI support chats */
+"supportChatHistoryView.aiChatsEmptyState" = "עדיין לא התחלת שיחת תמיכה באמצעות בינה מלאכותית.";
 
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "היסטוריית צ'אטים";
-
-/* Navigation title for the AI support chat screen */
-"supportChatHostingController.title" = "שיחה עם התמיכה בצ'אט";
 
 /* Title of the web view to update WooCommerce plugin from support chat */
 "supportChatHostingController.updateWooCommerce" = "עדכון WooCommerce";
@@ -14883,17 +15715,17 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "נוצר כרטיס תמיכה עבור הצ'אט הזה. אנו נגיב באימייל.";
 
-/* Navigation title for the AI support chat screen */
-"supportChatView.title" = "שיחה עם התמיכה בצ'אט";
-
 /* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
-"supportChatView.toolbar.contactSupport" = "פנייה לתמיכה";
+"supportChatView.toolbar.humanSupport" = "פנייה לנציג תמיכה";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "סימון כ'נפתר'";
 
 /* Generic error message shown when an AI support chat request fails */
 "supportChatViewModel.aiChatConnectionErrorMessage" = "לא הצלחנו להתחבר לצ'אט הבינה המלאכותית כעת.";
+
+/* Error message shown when device registration for push notifications fails from support chat */
+"supportChatViewModel.deviceRegistrationErrorMessage" = "לא הצלחנו לרשום את המכשיר שלך להודעות בדחיפה. יש לנסות שוב.";
 
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "שלום! אני בוט התמיכה שלך עבור Woo Mobile. יש משהו שאני יכול לעזור לך איתו היום?";
@@ -15019,13 +15851,16 @@ which should be translated separately and considered part of this sentence. */
 "supportEscalationCoordinator.ticketCreatedTitle" = "הבקשה נשלחה!";
 
 /* Message for the alert asking consent to send an AI chat transcript to support */
-"supportEscalationCoordinator.transcriptConsentMessage" = "אפשר ליצור פנייה לתמיכה באמצעות תמלול השיחה הזו, או לפתוח את טופס יצירת הקשר ולהזין את הפרטים בעצמך.";
+"supportEscalationCoordinator.transcriptConsentMessageV2" = "שתי האפשרויות כוללות את תמליל השיחה הזה. אפשר לשלוח את הבקשה עכשיו, או לפתוח את טופס יצירת הקשר ולהוסיף פרטים נוספים לפני השליחה.";
 
 /* Title for the alert asking consent to send an AI chat transcript to support */
 "supportEscalationCoordinator.transcriptConsentTitle" = "האם לשלוח את השיחה הזו לתמיכה?";
 
 /* Header text before the chat transcript in support ticket description */
 "supportEscalationCoordinator.transcriptHeader" = "להלן התמלול של שיחת תמיכה בצ'אט עם הבינה המלאכותית באפליקציה:";
+
+/* Disclosure below the support form message editor when an AI chat transcript will be included */
+"supportForm.aiChatTranscriptDisclosure" = "תמליל שיחת התמיכה שלך עם הבינה המלאכותית יצורף גם הוא לבקשה זו.";
 
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "הבנתי";
@@ -15294,11 +16129,35 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "להסתיר את 'הביצועים הטובים ביותר'";
 
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "הנתונים האנליטיים עשויים להתעדכן בעיכוב של עד 12 שעות.";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "פרטי עדכון נתונים אנליטיים";
+
 /* Title when the Top Performers card is disabled because the analytics feature is unavailable */
 "topPerformersDashboardView.unavailableAnalyticsView.title" = "אין אפשרות להציג את הביצועים המובילים בחנות שלך";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "להציג את כל הנתונים האנליטיים של החנות";
+
+/* Button to enter a backup code on the 2FA screen */
+"twoFAViewController.useBackupCodeButton" = "שימוש בקוד גיבוי במקום זאת";
+
+/* Instruction to enter a backup code */
+"twoFactorMethods.backupCodeInstructions" = "יש להקליד את קוד הגיבוי כדי להמשיך.";
+
+/* Instruction to enter a code sent by email */
+"twoFactorMethods.emailInstructions" = "יש לבדוק אם התקבל קוד אימות באימייל שלך מ-WordPress.com ולהזין אותו כדי להמשיך.";
+
+/* Button to text another verification code when one was already sent by text message */
+"twoFactorMethods.resendTextCodeButton" = "שליחה חוזרת של הקוד באמצעות SMS";
+
+/* Instruction to use a security key */
+"twoFactorMethods.securityKeyInstructions" = "כדי להמשיך עליך לספק מפתח אבטחה.";
+
+/* Instruction to enter a code sent by text message */
+"twoFactorMethods.textMessageInstructions" = "שלחנו הודעת טקסט. יש להזין את קוד האימות מההודעה.";
 
 /* Button title to contact support to get help with unavailable Analytics module */
 "unavailableAnalyticsView.buttonTitle" = "עדיין דרושה לך עזרה? ליצירת קשר";
@@ -15648,6 +16507,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice when the destination phone number is missing on the shipping label creation screen */
 "wooShipping.createLabels.destinationPhoneNumber.missing" = "מספר טלפון נדרש עבור כתובת היעד.";
 
+/* Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. %1$@ is the service name, e.g. FedEx Ground Economy. */
+"wooShipping.createLabels.destinationPhoneNumber.requiredByService" = "נדרש מספר טלפון של הנמען עבור %1$@.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "להוסיף חברה";
 
@@ -15774,11 +16636,20 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry label purchase when an error occurs */
 "wooShipping.createLabels.labelPurchaseError.retry" = "לנסות שוב";
 
+/* Message in the notice when purchasing a shipping label fails during a carrier outage. %1$@ is the incident reported by the carrier, e.g. 'USPS: API Outage | Status: Investigating'. */
+"wooShipping.createLabels.labelPurchaseError.serviceStatusMessage" = "לא ניתן לרכוש את תווית המשלוח עקב תקלה בשירות של חברת השילוח: %1$@";
+
 /* Title of the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.title" = "אירעה שגיאה ברכישה של תווית המשלוח.";
 
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "לא הצלחנו לטעון את הנתונים הנדרשים";
+
+/* Notice when the origin (ship from) address is missing an email on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingEmail" = "האימייל חסר עבור כתובת המוצא.";
+
+/* Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingPhone" = "מספר הטלפון חסר עבור כתובת המוצא.";
 
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "בוצע";
@@ -15887,6 +16758,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "לנסות שוב";
+
+/* Accessibility label for the button that dismisses a carrier service incident banner. %1$@ is the incident message, e.g. 'UPS: Label creation delays'. */
+"wooShipping.createLabels.serviceStatus.dismissNotice" = "סגירת הודעה: %1$@";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.error" = "שגיאה";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.info" = "מידע";
+
+/* Accessibility description of the severity of a carrier service incident banner on the shipping label creation screen */
+"wooShipping.createLabels.serviceStatus.severity.warning" = "אזהרה";
+
+/* Button on a carrier service incident banner in the shipping label creation screen that opens the provider status page */
+"wooShipping.createLabels.serviceStatus.viewStatusPage" = "הצגת עמוד סטטוס";
 
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "משלוח ⁦%1$d⁩";
@@ -15999,6 +16885,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "מידע נוסף על ITN";
 
+/* Notice shown when the WooCommerce Shipping plugin must be updated to support EU product identifiers */
+"wooShipping.customs.pluginUpdateNotice" = "כעת נדרשים מזהי מוצרים לכל פריט במשלוחים לאיחוד האירופי. יש לעדכן את התוסף WooCommerce Shipping כדי להוסיף אותם.";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "פרטי המוצר";
 
@@ -16044,6 +16933,24 @@ which should be translated separately and considered part of this sentence. */
 /* Warning text when the customs item description is too long for USPS domestic mail shipments */
 "wooShipping.customsItems.descriptionLengthWarning" = "התיאור חייב להיות באורך של 30 תווים או פחות.";
 
+/* Error shown when a required EU product identifier is empty */
+"wooShipping.customsItems.euProductIdentifier.required" = "חובה במשלוחים לאיחוד האירופי";
+
+/* Error shown when an EU product identifier exceeds the allowed character count */
+"wooShipping.customsItems.euProductIdentifier.tooLong" = "חייב להכיל ⁦%1$d⁩ תווים לכל היותר.";
+
+/* Section title for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers" = "מזהי מוצרים לאיחוד האירופי";
+
+/* Explanatory text for EU product identifiers in customs items */
+"wooShipping.customsItems.euProductIdentifiers.description" = "חובה במשלוחים אל תוך האיחוד האירופי. ה-SKU וה-GTIN \/ EAN ממולאים מראש מתוך הגדרות המלאי של המוצר.";
+
+/* Label for the GTIN/EAN field in customs items */
+"wooShipping.customsItems.gtin" = "GTIN \/ EAN";
+
+/* Error shown when a required GTIN is empty and the no barcode option is not selected */
+"wooShipping.customsItems.gtin.required" = "יש להזין GTIN\/EAN או לבחור באפשרות 'ללא ברקוד'";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "מספר של תעריף HS";
 
@@ -16053,8 +16960,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber.placeholder" = "אופציונלי";
 
+/* Label for the manufacturer part number field in customs items */
+"wooShipping.customsItems.manufacturerPartNumber" = "מק\"ט יצרן";
+
+/* Toggle label for items without a barcode */
+"wooShipping.customsItems.noBarcode" = "ללא ברקוד";
+
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "מדינת המוצא";
+
+/* Label for the SKU field in customs items */
+"wooShipping.customsItems.sku" = "SKU";
 
 /* Warning text when the shipping customs tariff number is not valid */
 "wooShipping.customsItems.tariffNumberRulesWarning" = "מספר התעריף חייב להיות באורך של 6 עד 12 ספרות";
@@ -16386,6 +17302,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to request 2FA code via SMS on the WPCom 2FA login screen */
 "wpCom2FALoginView.textMeACode" = "שלחו לי קוד במקום זה";
 
+/* Button to enter a backup code on the WPCom 2FA login screen */
+"wpCom2FALoginView.useBackupCodeButton" = "שימוש בקוד גיבוי במקום זאת";
+
 /* Placeholder for the 2FA code field on the WPCom 2FA login screen */
 "wpCom2FALoginView.verificationCode" = "קוד אימות";
 
@@ -16553,6 +17472,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Push Notifications Benefits View for users without admin role */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission" = "החשבון שלך אינו מורשה להשלים את הגדרת התראות הדחיפה. יש לפנות למנהל החנות שלך כדי שיטפל בכך.";
+
+/* Error message in the Push Notifications Benefits View when the store's Jetpack is in Offline Mode */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.storeInOfflineMode" = "לא ניתן להגדיר התראות בדחיפה, מכיוון שהחנות שלך נמצאת במצב לא מקוון. אם עדיין דרושה לך עזרה, ניתן ליצור קשר עם התמיכה.";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat.";

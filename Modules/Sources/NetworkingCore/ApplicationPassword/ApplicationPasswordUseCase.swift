@@ -14,8 +14,15 @@ public enum ApplicationPasswordUseCaseError: Error {
     case applicationPasswordsDisabled
     case failedToConstructLoginOrAdminURLUsingSiteAddress
     case unauthorizedRequest
+    /// The site's login page rejected the saved username or password.
+    case siteCredentialsRejected
     case unableToFindPasswordUUID
     case notSupported
+}
+
+public enum ApplicationPasswordValidationResult {
+    case valid
+    case invalid(Error)
 }
 
 public protocol ApplicationPasswordUseCase {
@@ -26,11 +33,19 @@ public protocol ApplicationPasswordUseCase {
     /// Whether the use case is capable of re-generating password
     var canRegenerateApplicationPassword: Bool { get }
 
+    /// Whether the use case is capable of validating the stored password with the site.
+    ///
+    var canValidateApplicationPassword: Bool { get }
+
     /// Generates new ApplicationPassword
     ///
     /// - Returns: Generated `ApplicationPassword` instance
     ///
     func generateNewPassword() async throws -> ApplicationPassword
+
+    /// Validates the stored application password with the site.
+    ///
+    func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult
 
     /// Deletes the application password
     ///
@@ -40,7 +55,17 @@ public protocol ApplicationPasswordUseCase {
     func deletePassword(locally: Bool) async throws
 }
 
+public extension ApplicationPasswordUseCase {
+    var canValidateApplicationPassword: Bool { false }
+
+    func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult {
+        throw ApplicationPasswordUseCaseError.notSupported
+    }
+}
+
 public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
+    private let detectUnexpectedResponses: Bool
+
     /// Authentication type
     ///
     private let authenticationType: AuthenticationType
@@ -68,17 +93,16 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 network: Network,
                 passwordName: String? = nil,
                 storage: ApplicationPasswordStorageType? = nil,
-                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) {
+                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared,
+                detectUnexpectedResponses: Bool = false) {
+        self.detectUnexpectedResponses = detectUnexpectedResponses
         self.authenticationType = type
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.network = network
         self.applicationPasswordName = passwordName ?? Self.createPasswordName()
 
         if case .wporg(_, _, let siteAddress) = type, !(network is AlamofireNetwork) {
-            self.discoveryTask = Task {
-                guard rootCache.root(for: siteAddress) == nil else { return }
-                _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
-            }
+            self.discoveryTask = Self.makeDiscoveryTask(for: siteAddress, rootCache: rootCache)
         } else {
             self.discoveryTask = nil
         }
@@ -88,39 +112,56 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     public init(username: String,
                 password: String,
                 siteAddress: String,
+                authenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
                 network: Network? = nil,
                 storage: ApplicationPasswordStorageType? = nil,
-                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) throws {
+                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared,
+                detectUnexpectedResponses: Bool = false) throws {
+        let defaultEndpoints: CookieNonceAuthenticationEndpoints
+        do {
+            guard let siteURL = URL(string: siteAddress) else {
+                throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
+            }
+            defaultEndpoints = try CookieNonceAuthenticationEndpoints(siteURL: siteURL)
+        } catch {
+            DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteAddress)")
+            throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
+        }
+
+        let resolvedEndpoints = authenticationEndpoints ?? defaultEndpoints
+        guard resolvedEndpoints.siteURL == defaultEndpoints.siteURL else {
+            DDLogWarn("⚠️ Cookie nonce authentication endpoints do not match site \(siteAddress)")
+            throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
+        }
+
+        self.detectUnexpectedResponses = detectUnexpectedResponses
         self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.applicationPasswordName = Self.createPasswordName()
 
         if let network {
             self.network = network
-            if network is AlamofireNetwork {
-                self.discoveryTask = nil
-            } else {
-                self.discoveryTask = Task {
-                    guard rootCache.root(for: siteAddress) == nil else { return }
-                    _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
-                }
-            }
+            self.discoveryTask = network is AlamofireNetwork ? nil : Self.makeDiscoveryTask(for: siteAddress, rootCache: rootCache)
         } else {
-            guard let loginURL = URL(string: siteAddress + Constants.loginPath),
-                  let adminURL = URL(string: siteAddress + Constants.adminPath) else {
-                DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteAddress)")
-                throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
-            }
             // Prepares the authenticator with username and password
             let config = CookieNonceAuthenticatorConfiguration(username: username,
                                                                password: password,
-                                                               loginURL: loginURL,
-                                                               adminURL: adminURL)
+                                                               endpoints: resolvedEndpoints)
             self.network = WordPressOrgNetwork(configuration: config, siteAddress: siteAddress)
-            self.discoveryTask = Task {
-                guard rootCache.root(for: siteAddress) == nil else { return }
-                _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
-            }
+            self.discoveryTask = Self.makeDiscoveryTask(for: siteAddress, rootCache: rootCache)
+        }
+    }
+
+    /// Eagerly resolves the REST API root URL unless it is already cached.
+    ///
+    private static func makeDiscoveryTask(for siteAddress: String, rootCache: RESTAPIRootCaching) -> Task<Void, Never>? {
+        guard rootCache.root(for: siteAddress) == nil else {
+            return nil
+        }
+        return Task {
+            // The root may have been cached between this task being created and started.
+            guard rootCache.root(for: siteAddress) == nil else { return }
+            _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
         }
     }
 
@@ -207,20 +248,29 @@ private extension DefaultApplicationPasswordUseCase {
 
     /// Helper method to construct network requests either directly with the remote site
     /// or through Jetpack proxy.
-    func constructRequest(method: HTTPMethod, path: String, parameters: [String: Any]? = nil) -> Request {
-        switch authenticationType {
+    func constructRequest(method: HTTPMethod, path: String, parameters: RequestParameterDictionary? = nil) -> Request {
+        constructRequest(method: method, path: path, requestParameters: parameters)
+    }
+
+    func constructRequest<Value: RequestParameterValueConvertible>(method: HTTPMethod, path: String, parameters: [String: Value]) -> Request {
+        constructRequest(method: method, path: path, requestParameters: parameters.requestParameterDictionary)
+    }
+
+    private func constructRequest(method: HTTPMethod, path: String, requestParameters: RequestParameterDictionary?) -> Request {
+        let request: Request = switch authenticationType {
         case .wpcom(let siteID):
             JetpackRequest(wooApiVersion: .none,
                            method: method,
                            siteID: siteID,
                            path: path,
-                           parameters: parameters)
+                           parameters: requestParameters)
         case .wporg(_, _, let siteAddress):
             RESTRequest(siteURL: siteAddress,
                         method: method,
                         path: path,
-                        parameters: parameters)
+                        parameters: requestParameters)
         }
+        return UnexpectedResponseRequest.wrap(request, enabled: detectUnexpectedResponses)
     }
 
     /// Creates application password using WordPress.com authentication token
@@ -253,7 +303,11 @@ private extension DefaultApplicationPasswordUseCase {
                         let password = try mapper.map(response: data)
                         continuation.resume(returning: password)
                     } catch {
-                        continuation.resume(throwing: error)
+                        if self.detectUnexpectedResponses, error is DecodingError, let policy = request as? UnexpectedResponseRequest {
+                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent))
+                        } else {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 case .failure(let error):
                     guard let error = error as? AFError else {
@@ -262,6 +316,8 @@ private extension DefaultApplicationPasswordUseCase {
                     }
 
                     switch error {
+                    case .requestRetryFailed(CookieNonceAuthenticator.Error.authenticationFailed(.invalidCredentials), _):
+                        continuation.resume(throwing: ApplicationPasswordUseCaseError.siteCredentialsRejected)
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.notFound)):
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.applicationPasswordsDisabledErrorCode)):
@@ -297,7 +353,11 @@ private extension DefaultApplicationPasswordUseCase {
                             continuation.resume(throwing: ApplicationPasswordUseCaseError.unableToFindPasswordUUID)
                         }
                     } catch {
-                        continuation.resume(throwing: error)
+                        if self.detectUnexpectedResponses, error is DecodingError, let policy = request as? UnexpectedResponseRequest {
+                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent))
+                        } else {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 case .failure(let error):
                     continuation.resume(throwing: error)
@@ -380,8 +440,6 @@ private extension DefaultApplicationPasswordUseCase {
     }
 
     enum Constants {
-        static let loginPath = "/wp-login.php"
-        static let adminPath = "/wp-admin/"
         static let editValue = "edit"
     }
 }

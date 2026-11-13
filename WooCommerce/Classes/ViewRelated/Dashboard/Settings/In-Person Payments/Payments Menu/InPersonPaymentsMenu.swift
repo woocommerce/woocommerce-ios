@@ -10,10 +10,7 @@ struct InPersonPaymentsMenu: View {
             ScrollView {
                 VStack(spacing: 0) {
                     payoutSummary
-                        .background {
-                            Color(UIColor.systemBackground)
-                                .ignoresSafeArea()
-                        }
+                        .background(Color(UIColor.systemBackground), ignoresSafeAreaEdges: [])
 
                     if let payInPersonToggleViewModel = viewModel.payInPersonToggleViewModel as? InPersonPaymentsCashOnDeliveryToggleRowViewModel {
                         ScrollViewSection {
@@ -158,14 +155,19 @@ struct InPersonPaymentsMenu: View {
             }
             .navigationDestination(isPresented: $viewModel.presentSupport) {
                 SupportForm(isPresented: $viewModel.presentSupport,
-                            viewModel: .init())
+                            viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             }
             .navigationDestination(isPresented: $viewModel.presentManagePaymentGateways) {
                 InPersonPaymentsSelectPluginView(selectedPlugin: viewModel.selectedPaymentGatewayPlugin,
                                                  onPluginSelected: viewModel.preferredPluginSelected)
             }
 
-            if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
+            if viewModel.countryRecovery.isLoading {
+                LoadingNoticeView(message: CardPresentPaymentCountryRecovery.Localization.loading)
+            }
+            if let recoveryNotice = viewModel.countryRecovery.notice {
+                PermanentNoticeView(notice: recoveryNotice)
+            } else if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)
                     .transition(.opacity.animation(.easeInOut))
             }

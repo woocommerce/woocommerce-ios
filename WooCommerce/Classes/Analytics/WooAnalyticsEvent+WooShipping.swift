@@ -1,11 +1,24 @@
 import Foundation
+import protocol WooFoundation.WooAnalyticsEventPropertyType
 
 extension WooAnalyticsEvent {
     enum WooShipping {
         private enum Keys: String {
             case type
             case state
+            case carrier
             case unfulfilledShipmentsCount = "unfulfilled_shipments_count"
+            case serviceStatusNoticeShown = "service_status_notice_shown"
+        }
+
+        enum Carrier: String {
+            case upsdap
+            case fedex
+        }
+
+        enum CarrierTermsState: String {
+            case shown
+            case accepted
         }
 
         enum AddressType: String {
@@ -88,15 +101,27 @@ extension WooAnalyticsEvent {
         }
 
         /// When the state of the purchase step changes.
-        static func purchaseStep(state: PurchaseStep, error: Error? = nil) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .wooShippingPurchaseStep,
-                              properties: [Keys.state.rawValue: state.rawValue],
-                              error: error)
+        /// - Parameter serviceStatusNoticeShown: Whether a carrier incident replaced the generic purchase error.
+        static func purchaseStep(state: PurchaseStep, error: Error? = nil, serviceStatusNoticeShown: Bool = false) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.state.rawValue: state.rawValue]
+            if serviceStatusNoticeShown {
+                properties[Keys.serviceStatusNoticeShown.rawValue] = true
+            }
+            return WooAnalyticsEvent(statName: .wooShippingPurchaseStep,
+                                     properties: properties,
+                                     error: error)
         }
 
         /// When a shipping label refund is requested
         static func refundRequested(error: Error? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .wooShippingRefundRequested, properties: [:], error: error)
+        }
+
+        /// When the carrier Terms of Service sheet is shown, or the merchant accepts it.
+        static func carrierTermsOfService(carrier: Carrier, state: CarrierTermsState) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .wooShippingCarrierTermsOfService,
+                              properties: [Keys.carrier.rawValue: carrier.rawValue,
+                                           Keys.state.rawValue: state.rawValue])
         }
     }
 }

@@ -16,7 +16,10 @@ final class ServiceLocator {
 
     /// WooAnalytics Wrapper
     ///
-    private static var _analytics: Analytics = WooAnalytics(analyticsProvider: TracksProvider())
+    private static var _analytics: Analytics = {
+        let provider = TracksProvider(consent: UserDefaultsAnalyticsConsent())
+        return WooAnalytics(analyticsProvider: provider, consent: provider.consent)
+    }()
 
     /// StoresManager
     ///
@@ -25,8 +28,6 @@ final class ServiceLocator {
     /// WordPressAuthenticator Wrapper
     ///
     private static var _authenticationManager: Authentication = AuthenticationManager()
-
-    private static var _ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
 
     private static var _featureFlagOverrideStore: FeatureFlagOverrideStore = UserDefaultsFeatureFlagOverrideStore()
 
@@ -97,6 +98,10 @@ final class ServiceLocator {
     ///
     private static var _fileLogger: Logs = DDFileLogger()
 
+    /// Recent warning and error log provider
+    ///
+    private static let _recentApplicationLogProvider = RecentApplicationLogProvider()
+
     /// Application Log Provider
     ///
     private static var _applicationLogProvider: ApplicationLogProvider = DefaultApplicationLogProvider()
@@ -115,11 +120,15 @@ final class ServiceLocator {
     private static var _cardReader: CardReaderService = NoOpCardReaderService()
     #endif
 
-    private static var _cardReaderConfigProvider: CommonReaderConfigProviding = CommonReaderConfigProvider()
+    private static var _cardReaderConfigProvider: CommonReaderConfigProviding = CommonReaderConfigProvider(analytics: analytics)
 
     /// Support for printing receipts
     ///
-    private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
+    @MainActor private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
+
+    /// Support for discovering and connecting to external receipt printers
+    ///
+    private static var _printerDiscovery: PrinterDiscoveryService = StarPrinterService()
 
     /// Observer for network connectivity
     ///
@@ -133,10 +142,11 @@ final class ServiceLocator {
     ///
     private static var _generalAppSettings = GeneralAppSettingsStorage()
 
-    private static var _cardPresentPaymentsOnboardingIPPUsersRefresher =
+    @MainActor private static var _cardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
-    private static var _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
+    @MainActor
+    private static let _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
             connectionControllerFactory: TapToPayCardReaderConnectionControllerFactory(
                 alertProvider: TapToPayReaderConnectionAlertsProvider()))
 
@@ -215,10 +225,6 @@ final class ServiceLocator {
     /// - Returns: An implementation of the AuthenticationManager protocol. It defaults to DefaultAuthenticationManager
     static var authenticationManager: Authentication {
         return _authenticationManager
-    }
-
-    static var ciabEligibilityChecker: CIABEligibilityCheckerProtocol {
-        return _ciabEligibilityChecker
     }
 
     /// Shipping Settings
@@ -310,6 +316,10 @@ final class ServiceLocator {
         return _fileLogger
     }
 
+    static var recentApplicationLogProvider: RecentApplicationLogProvider {
+        _recentApplicationLogProvider
+    }
+
     static var applicationLogProvider: ApplicationLogProvider {
         return _applicationLogProvider
     }
@@ -347,8 +357,14 @@ final class ServiceLocator {
 
     /// Provides the access point to the ReceiptPrinterService.
     /// - Returns: An implementation of the ReceiptPrinterService protocol.
-    static var receiptPrinterService: PrinterService {
+    @MainActor static var receiptPrinterService: PrinterService {
         _receiptPrinter
+    }
+
+    /// Provides the access point to the receipt printer device service used to discover and connect to physical printers.
+    /// - Returns: An implementation of the ReceiptPrinterServiceProtocol protocol.
+    static var posReceiptPrinterService: ReceiptPrinterServiceProtocol {
+        ReceiptPrinterService(printerDiscoveryService: _printerDiscovery)
     }
 
     /// Provides access point to the ConnectivityObserver.
@@ -369,10 +385,11 @@ final class ServiceLocator {
         _generalAppSettings
     }
 
-    static var cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher {
+    @MainActor static var cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher {
         _cardPresentPaymentsOnboardingIPPUsersRefresher
     }
 
+    @MainActor
     static var tapToPayReconnectionController: TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider,
                                                                                 CardPresentPaymentAlertsPresenter> {
         _tapToPayReconnectionController
@@ -518,7 +535,7 @@ extension ServiceLocator {
         _cardReaderConfigProvider = mock
     }
 
-    static func setReceiptPrinter(_ mock: PrinterService) {
+    @MainActor static func setReceiptPrinter(_ mock: PrinterService) {
         guard isRunningTests() else {
             return
         }

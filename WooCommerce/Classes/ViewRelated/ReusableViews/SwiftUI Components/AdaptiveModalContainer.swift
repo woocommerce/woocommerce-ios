@@ -46,7 +46,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
         let isInteractiveDismissable: Bool
 
         var body: some View {
-            NavigationView {
+            NavigationStack {
                 primaryView({ // presentSecondaryView
                     isShowingSecondaryView = true
                 })
@@ -56,13 +56,12 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
                     }
                 }
                 .sheet(isPresented: $isShowingSecondaryView) {
-                    NavigationView {
+                    NavigationStack {
                         secondaryView($isShowingSecondaryView)
                     }
                     .interactiveDismissDisabled(!isInteractiveDismissable)
                 }
             }
-            .navigationViewStyle(.stack)
             .onAppear {
                 isShowingSecondaryView = false
             }
@@ -77,23 +76,29 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
 
         var body: some View {
             HStack(spacing: 0) {
-                NavigationView {
-                    secondaryView($isShowingSecondaryView)
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                dismissBarButton()
+                GeometryReader { column in
+                    NavigationStack {
+                        secondaryView($isShowingSecondaryView)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarLeading) {
+                                    dismissBarButton()
+                                }
                             }
-                        }
+                    }
+                    // Set on the stack so pushed destinations inherit it too.
+                    .environment(\.navigationColumnEdgesInsideSafeArea, column.horizontalEdgesInsideSafeArea)
                 }
-                .navigationViewStyle(.stack)
                 .layoutPriority(1)
 
                 Divider()
+                    .ignoresSafeArea(edges: .vertical)
 
-                NavigationView {
-                    primaryView(nil)
+                GeometryReader { column in
+                    NavigationStack {
+                        primaryView(nil)
+                    }
+                    .environment(\.navigationColumnEdgesInsideSafeArea, column.horizontalEdgesInsideSafeArea)
                 }
-                .navigationViewStyle(.stack)
                 .frame(minWidth: 400)
             }
             .onAppear {
@@ -126,5 +131,19 @@ extension EnvironmentValues {
     var adaptiveModalContainerPresentationStyle: AdaptiveModalContainerPresentationStyle? {
         get { self[AdaptiveModalContainerPresentationStyleKey.self] }
         set { self[AdaptiveModalContainerPresentationStyleKey.self] = newValue }
+    }
+}
+
+private extension GeometryProxy {
+    /// Horizontal edges of this column that do not touch the container's unsafe area.
+    var horizontalEdgesInsideSafeArea: Edge.Set {
+        var edges: Edge.Set = []
+        if safeAreaInsets.leading == 0 {
+            edges.insert(.leading)
+        }
+        if safeAreaInsets.trailing == 0 {
+            edges.insert(.trailing)
+        }
+        return edges
     }
 }

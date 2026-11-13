@@ -42,9 +42,7 @@ final class ULAccountMatcher {
             return true
         }
 
-        return sites
-            .map { $0.url.trimHTTPScheme() }
-            .contains(originalURL.trimHTTPScheme())
+        return matchedSite(originalURL: originalURL) != nil
     }
 
     /// Returns a locally stored site that matches the given site URL.
@@ -59,7 +57,14 @@ final class ULAccountMatcher {
             return nil
         }
 
-        return sites.first { $0.url.contains(originalURL.trimHTTPScheme()) }
+        guard let address = SiteAddress(originalURL) else { return nil }
+        // Prefer the entered hostname when both variants belong to this account.
+        if let exactMatch = sites.first(where: { SiteAddress($0.url) == address }) {
+            return exactMatch
+        }
+        let candidates = sites.filter { SiteAddress($0.url)?.withoutWWW == address.withoutWWW }
+        // Do not choose an arbitrary store if the fallback is ambiguous.
+        return candidates.count == 1 ? candidates.first : nil
     }
 
     /// Refreshes locally stored sites that were synced previously.
@@ -68,6 +73,37 @@ final class ULAccountMatcher {
             try resultsController.performFetch()
         } catch {
             DDLogError("⛔️ Unable to refresh locally stored sites: \(error)")
+        }
+    }
+}
+
+private extension ULAccountMatcher {
+    struct SiteAddress: Equatable {
+        var host: String
+        let port: Int?
+        let path: String
+        let query: String?
+
+        init?(_ address: String) {
+            let address = address.contains("://") ? address : "https://" + address
+            guard let components = URLComponents(string: address),
+                  ["http", "https"].contains(components.scheme?.lowercased() ?? ""),
+                  let host = components.host, !host.isEmpty,
+                  components.user == nil, components.password == nil else { return nil }
+            self.host = host.lowercased()
+            port = components.port
+            path = components.percentEncodedPath.hasSuffix("/")
+                ? String(components.percentEncodedPath.dropLast())
+                : components.percentEncodedPath
+            query = components.percentEncodedQuery
+        }
+
+        var withoutWWW: Self {
+            var address = self
+            if address.host.hasPrefix("www.") {
+                address.host = String(address.host.dropFirst(4))
+            }
+            return address
         }
     }
 }

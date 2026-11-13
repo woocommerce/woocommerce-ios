@@ -1,5 +1,5 @@
 {
-  "originHash" : "ec9cd3ba0557d92d70422d7b171708735229ff51688dc59b98efa29e1a14843a",
+  "originHash" : "697851aad485df38d9401e4f7e2b179bfc80515ffbaa0ba850bd595c8429130c",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Automattic/Automattic-Tracks-iOS.git",
       "state" : {
-        "revision" : "b017a3510c4214f628305686dfd301ee19d7afe6",
-        "version" : "4.2.1"
+        "revision" : "cdc9348b2804af0b70a06d125fd4236d5c6f7f39",
+        "version" : "4.3.1"
       }
     },
     {
@@ -243,6 +243,15 @@
       }
     },
     {
+      "identity" : "starxpand-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/star-micronics/StarXpand-SDK-iOS",
+      "state" : {
+        "revision" : "37ead35af06789f03ffb34cbf08557be519edfd3",
+        "version" : "2.12.1"
+      }
+    },
+    {
       "identity" : "stripe-terminal-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stripe/stripe-terminal-ios",
@@ -357,15 +366,6 @@
       "state" : {
         "revision" : "e58d38ab5a32f7c0baf63cbcc5f7cdf02bb12a99",
         "version" : "7.0.1"
-      }
-    },
-    {
-      "identity" : "viewinspector",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/nalexn/ViewInspector",
-      "state" : {
-        "revision" : "788e7879d38a839c4e348ab0762dcc0364e646a2",
-        "version" : "0.10.1"
       }
     },
     {

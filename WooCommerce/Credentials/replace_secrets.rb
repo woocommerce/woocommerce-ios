@@ -54,13 +54,12 @@ end
 ##
 def process(template_path, secrets_path)
   secrets = load(secrets_path)
-  template = File.open(template_path, 'r')
 
-  template.each_line do |line|
-    puts line % secrets
+  File.open(template_path, 'r') do |template|
+    template.each_line do |line|
+      puts line % secrets
+    end
   end
-
-  template.close
 end
 
 ## Main!

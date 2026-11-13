@@ -23,18 +23,23 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     /// Optional closure for when a web page fails to load.
     let errorHandler: ((Error) -> Void)?
 
+    private let initialURLHTTPErrorHandler: ((Int) -> Void)?
+    @MainActor private var didReceiveInitialURLMainFrameResponse = false
+
     init(title: String = "",
          initialURL: URL,
          urlToTriggerExit: String? = nil,
          pageLoadHandler: ((URL) -> Void)? = nil,
          redirectHandler: ((URL) -> Void)? = nil,
-         errorHandler: ((Error) -> Void)? = nil) {
+         errorHandler: ((Error) -> Void)? = nil,
+         initialURLHTTPErrorHandler: ((Int) -> Void)? = nil) {
         self.title = title
         self.initialURL = initialURL
         self.urlToTriggerExit = urlToTriggerExit
         self.pageLoadHandler = pageLoadHandler
         self.redirectHandler = redirectHandler
         self.errorHandler = errorHandler
+        self.initialURLHTTPErrorHandler = initialURLHTTPErrorHandler
     }
 
     func handleDismissal() {
@@ -57,6 +62,26 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         .allow
+    }
+
+    @MainActor func decidePolicy(for response: URLResponse, isForMainFrame: Bool) async -> WKNavigationResponsePolicy {
+        // Preview routes return to the initial URL; sign-in pages, frames, and linked pages use other URLs.
+        guard isForMainFrame,
+              let initialURL,
+              response.url == initialURL,
+              !didReceiveInitialURLMainFrameResponse else {
+            return .allow
+        }
+
+        didReceiveInitialURLMainFrameResponse = true
+
+        guard let response = response as? HTTPURLResponse,
+              !(200..<400).contains(response.statusCode) else {
+            return .allow
+        }
+
+        initialURLHTTPErrorHandler?(response.statusCode)
+        return .allow
     }
 
     func didFinishNavigation(for url: URL) {

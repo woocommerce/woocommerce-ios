@@ -15,6 +15,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     private let siteURL: String
     private let loginFacade: LoginFacade
+    private var loginFields = LoginFields()
     private let onMagicLinkRequest: (String) async -> Void
     private let onMultifactorCodeRequest: (LoginFields) -> Void
     private let onLoginFailure: (Error) -> Void
@@ -24,15 +25,16 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     init(siteURL: String = "",
          email: String,
+         loginFacade: LoginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
+                                                dotcomSecret: ApiCredentials.dotcomSecret,
+                                                userAgent: UserAgent.defaultUserAgent),
          onMagicLinkRequest: @escaping (String) async -> Void,
          onMultifactorCodeRequest: @escaping (LoginFields) -> Void,
          onLoginFailure: @escaping (Error) -> Void,
          onLoginSuccess: @escaping (String) async -> Void) {
         self.siteURL = siteURL
         self.email = email
-        self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
-                                       dotcomSecret: ApiCredentials.dotcomSecret,
-                                       userAgent: UserAgent.defaultUserAgent)
+        self.loginFacade = loginFacade
         self.onMagicLinkRequest = onMagicLinkRequest
         self.onMultifactorCodeRequest = onMultifactorCodeRequest
         self.onLoginFailure = onLoginFailure
@@ -49,7 +51,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     func handleLogin() {
         isLoggingIn = true
-        let loginFields = createLoginFields()
+        loginFields = createLoginFields()
         loginFacade.signIn(with: loginFields)
     }
 
@@ -81,14 +83,12 @@ private extension WPComPasswordLoginViewModel {
             .sha256Hash()
     }
 
-    func createLoginFields(with nonceInfo: SocialLogin2FANonceInfo? = nil, userID: Int = 0) -> LoginFields {
+    func createLoginFields() -> LoginFields {
         let loginFields = LoginFields()
         loginFields.username = email
         loginFields.password = password
         loginFields.siteAddress = siteURL
         loginFields.userIsDotCom = true
-        loginFields.nonceInfo = nonceInfo
-        loginFields.nonceUserID = userID
         return loginFields
     }
 }
@@ -96,13 +96,13 @@ private extension WPComPasswordLoginViewModel {
 extension WPComPasswordLoginViewModel: LoginFacadeDelegate {
     func needsMultifactorCode() {
         isLoggingIn = false
-        let loginFields = createLoginFields()
         onMultifactorCodeRequest(loginFields)
     }
 
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         isLoggingIn = false
-        let loginFields = createLoginFields(with: nonceInfo, userID: userID)
+        loginFields.nonceInfo = nonceInfo
+        loginFields.nonceUserID = userID
         onMultifactorCodeRequest(loginFields)
     }
 

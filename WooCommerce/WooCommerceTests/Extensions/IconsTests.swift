@@ -127,10 +127,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.connectWPComImage)
     }
 
-    func test_create_order_image_is_not_nil() {
-        XCTAssertNotNil(UIImage.createOrderImage)
-    }
-
     func testGearBarButtonItemImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.gearBarButtonItemImage)
     }

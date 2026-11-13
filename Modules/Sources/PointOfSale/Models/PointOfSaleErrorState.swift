@@ -140,7 +140,7 @@ struct PointOfSaleErrorState: Equatable {
         }
 
         if let error, error.isConnectivityError {
-            return Constants.connectivityErrorSubtitle
+            return POSConnectivityErrorNotice.subtitle
         }
 
         return Constants.genericErrorSubtitle
@@ -224,11 +224,6 @@ struct PointOfSaleErrorState: Equatable {
             "pos.itemList.failedToRefreshCouponsTitle.2",
             value: "Unable to refresh coupons",
             comment: "Title appearing on the coupon list screen when there's an error refreshing coupons."
-        )
-        static let connectivityErrorSubtitle = NSLocalizedString(
-            "pos.itemList.connectivityErrorSubtitle",
-            value: "Please check your internet connection and try again.",
-            comment: "Subtitle appearing on error screens when there is a network connectivity error."
         )
         static let catalogBlockedTitle = NSLocalizedString(
             "pos.itemList.catalogBlockedTitle",

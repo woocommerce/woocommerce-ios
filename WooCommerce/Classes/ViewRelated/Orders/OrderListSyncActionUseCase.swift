@@ -1,9 +1,6 @@
 import Foundation
 
 import enum Yosemite.OrderAction
-import struct Yosemite.OrderStatus
-import class Yosemite.CIABEligibilityChecker
-import protocol Yosemite.CIABEligibilityCheckerProtocol
 
 /// Returns what `OrderAction` should be used when synchronizing a list of orders.
 ///
@@ -48,31 +45,34 @@ struct OrderListSyncActionUseCase {
         case pullToRefresh = "pull_to_refresh"
         case viewWillAppear = "view_will_appear"
         case backgroundFetch = "background_fetch"
+        case pushNotification = "push_notification"
     }
 
     let siteID: Int64
     /// The current filters applied to the Order List
     let filters: FilterOrderListViewModel.Filters?
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     init(siteID: Int64,
-         filters: FilterOrderListViewModel.Filters?,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
         self.filters = filters
-        self.ciabEligibilityChecker = ciabEligibilityChecker
     }
 
     /// Returns the action to use when synchronizing.
+    @MainActor
     func actionFor(pageNumber: Int,
                    pageSize: Int,
                    reason: SyncReason?,
                    lastFullSyncTimestamp: Date?,
                    completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
+        let finish: @MainActor @Sendable (TimeInterval, Error?) -> Void = { timeInterval, error in
+            completionHandler(timeInterval, error)
+        }
+        let completion: @Sendable (TimeInterval, Error?) -> Void = { timeInterval, error in
+            Task { @MainActor in finish(timeInterval, error) }
+        }
         let filterStatuses = filters?.orderStatus ?? []
-        let statuses = ciabEligibilityChecker.isCurrentSiteCIAB
-            ? CIABOrderStatusMapper.resolveFilterStatuses(filterStatuses).map { $0.rawValue }
-            : filterStatuses.map { $0.rawValue }
+        let statuses = filterStatuses.map { $0.rawValue }
         let startDate = filters?.dateRange?.computedStartDate
         let endDate = filters?.dateRange?.computedEndDate
         let productID = filters?.product?.id
@@ -108,9 +108,9 @@ struct OrderListSyncActionUseCase {
                 onCompletion: { timeInterval, result in
                     switch result {
                     case .success:
-                        completionHandler(timeInterval, nil)
+                        completion(timeInterval, nil)
                     case .failure(let error):
-                        completionHandler(timeInterval, error)
+                        completion(timeInterval, error)
                     }
                 }
             )
@@ -126,7 +126,7 @@ struct OrderListSyncActionUseCase {
             createdVia: createdVia,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            onCompletion: completionHandler
+            onCompletion: completion
         )
     }
 }

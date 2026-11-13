@@ -9,7 +9,7 @@ import Codegen
 ///
 /// Custom receipt field details can be found in [Stripe's documentation](https://stripe.com/docs/terminal/features/receipts#custom)
 ///
-public struct WCPayCardPresentReceiptDetails: Codable, GeneratedCopiable, GeneratedFakeable, Equatable {
+public struct WCPayCardPresentReceiptDetails: Codable, Sendable, GeneratedCopiable, GeneratedFakeable, Equatable {
     /// The funding method for the account used to pay, e.g. `credit`, `debit`, `prepaid`, `unknown`
     public let accountType: WCPayCardFunding
 

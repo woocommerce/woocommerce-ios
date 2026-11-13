@@ -5,6 +5,7 @@ import YosemiteTestHelpers
 @testable import WooCommerce
 import enum Networking.DotcomError
 
+@MainActor
 final class AnalyticsHubViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
@@ -16,7 +17,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
     private let sampleAdminURL = "https://example.com/wp-admin/"
 
-    override func setUp() {
+    override func setUp() async throws {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(adminURL: sampleAdminURL)))
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -408,27 +409,28 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
         assertEqual(2, stores.receivedActions.filter { $0 is StatsActionV4 }.count)
 
-        // When the products card is enabled
-        let fetchedTopEarnerStats: Bool = try waitFor { promise in
-            self.stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-                switch action {
-                case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                    completion(.success(.fake()))
-                case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                    completion(.success(.fake()))
-                    promise(true)
-                default:
-                    break
-                }
+        let fetchedTopEarnerStats = expectation(description: "Fetch top earner stats for the enabled card")
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+                fetchedTopEarnerStats.fulfill()
+            default:
+                break
             }
-            self.vm.customizeAnalytics()
-            let customizeAnalytics = try XCTUnwrap(self.vm.customizeAnalyticsViewModel)
-            customizeAnalytics.selectedCards.update(with: AnalyticsCard(type: .products, enabled: false))
-            customizeAnalytics.saveChanges()
         }
 
+        // When the products card is enabled
+        vm.customizeAnalytics()
+        let customizeAnalytics = try XCTUnwrap(vm.customizeAnalyticsViewModel)
+        customizeAnalytics.selectedCards.update(with: AnalyticsCard(type: .products, enabled: false))
+        customizeAnalytics.saveChanges()
+        let result = await XCTWaiter.fulfillment(of: [fetchedTopEarnerStats], timeout: 5)
+
         // Then it fetches order stats and top earner stats for products card
-        XCTAssertTrue(fetchedTopEarnerStats)
+        XCTAssertEqual(result, .completed)
         assertEqual(5, stores.receivedActions.filter { $0 is StatsActionV4 }.count)
     }
 

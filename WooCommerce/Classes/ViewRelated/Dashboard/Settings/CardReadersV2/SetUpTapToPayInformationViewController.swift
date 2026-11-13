@@ -69,6 +69,7 @@ struct SetUpTapToPayInformationView: View {
     @ObservedObject var viewModel: SetUpTapToPayInformationViewModel
     var showURL: ((URL) -> Void)? = nil
     @State var showingAboutTapToPay: Bool = false
+    @State private var availableHeight: CGFloat = Constants.iPhoneSEPortraitHeight + 1
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
@@ -77,7 +78,15 @@ struct SetUpTapToPayInformationView: View {
     }
 
     var imageMaxHeight: CGFloat {
-        isCompact ? Constants.maxCompactImageHeight : Constants.maxImageHeight
+        guard !isCompact else {
+            return Constants.maxCompactImageHeight
+        }
+
+        guard availableHeight <= Constants.iPhoneSEPortraitHeight else {
+            return Constants.maxImageHeight
+        }
+
+        return availableHeight / Constants.iPhoneSEPortraitHeight * Constants.iPhoneSEImageHeight
     }
 
     var body: some View {
@@ -133,6 +142,11 @@ struct SetUpTapToPayInformationView: View {
             .scrollVerticallyIfNeeded()
         }
         .padding()
+        .onGeometryChange(for: CGFloat.self) { geometry in
+            geometry.size.height
+        } action: { newAvailableHeight in
+            availableHeight = newAvailableHeight
+        }
         .onAppear(perform: viewModel.viewDidAppear)
         .sheet(isPresented: $showingAboutTapToPay) {
             TapToPayEducationView(viewModel: .init(flow: .about, completion: { result in
@@ -148,11 +162,10 @@ struct SetUpTapToPayInformationView: View {
 }
 
 private enum Constants {
-    // maxHeight should be 208, but that hides the button on iPhone SE
-    // TODO: make this 208, or proportional to screen height for small screens
-    // https://github.com/woocommerce/woocommerce-ios/issues/9134
-    static let maxImageHeight: CGFloat = 180
+    static let maxImageHeight: CGFloat = 208
     static let maxCompactImageHeight: CGFloat = 80
+    static let iPhoneSEPortraitHeight: CGFloat = 667
+    static let iPhoneSEImageHeight: CGFloat = 180
     static let hintSpacing: CGFloat = 16
     static let learnMorePadding: CGFloat = 8
 }
@@ -178,9 +191,10 @@ private enum Localization {
     )
 
     static let hintThree = NSLocalizedString(
-        "Try a payment using your own card (and refund it when you're done.)",
+        "setUpTapToPayInformation.tryPayment.hint",
+        value: "Try a live payment using your own card (and refund it when you're done; processing fees apply.)",
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments " +
-        "using their own card"
+        "using their own card, which creates a live transaction and incurs processing fees"
     )
 
     static let setUpButton = NSLocalizedString(

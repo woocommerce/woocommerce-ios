@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a list of available Shipping Label Packages (custom and predefined) for the WooCommerce Shipping extension.
 ///
-public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingPackagesResponse: Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     public let siteID: Int64
 
@@ -51,7 +51,7 @@ extension WooShippingPackagesResponse: Decodable {
 
         allPredefinedPackagesData.forEach { key, value in
             // key is a carrier id, for example "usps"
-            if let provider: [String: Any]? = try? value.toDictionary() {
+            if let provider: [String: Any]? = try? value.toJSONObjectDictionary() {
                 var providerOptions: [WooShippingPredefinedOption] = []
                 provider?.forEach({ _, providerValue in
                     // providerKey is package group id, for example "pri_flat_boxes"

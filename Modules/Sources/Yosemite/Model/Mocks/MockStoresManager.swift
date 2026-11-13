@@ -27,7 +27,6 @@ public class MockStoresManager: StoresManager {
     private let productActionHandler: MockProductActionHandler
     private let productReviewActionHandler: MockProductReviewActionHandler
     private let productVariationActionHandler: MockProductVariationActionHandler
-    private let receiptActionHandler: MockReceiptActionHandler
     private let refundActionHandler: MockRefundActionHandler
     private let settingActionHandler: MockSettingActionHandler
     private let shipmentActionHandler: MockShipmentActionHandler
@@ -42,12 +41,13 @@ public class MockStoresManager: StoresManager {
     private let googleAdsActionHandler: MockGoogleAdsActionHandler
     private let justInTimeMessageActionHandler: MockJustInTimeMessageActionHandler
     private let shippingMethodActionHandler: MockShippingMethodActionHandler
+    private let wooShippingActionHandler: MockWooShippingActionHandler
     private let couponActionHandler: MockCouponActionHandler
     private let supportChatActionHandler: MockSupportChatActionHandler
 
 
 
-    init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
+    init(objectGraph: MockObjectGraph, storageManager: any StorageManagerType & Sendable) {
         self.objectGraph = objectGraph
         self.storageManager = storageManager
 
@@ -61,7 +61,6 @@ public class MockStoresManager: StoresManager {
         orderNoteActionHandler = MockOrderNoteActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productActionHandler = MockProductActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productVariationActionHandler = MockProductVariationActionHandler(objectGraph: objectGraph, storageManager: storageManager)
-        receiptActionHandler = MockReceiptActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         refundActionHandler = MockRefundActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shippingLabelActionHandler = MockShippingLabelActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shipmentActionHandler = MockShipmentActionHandler(objectGraph: objectGraph, storageManager: storageManager)
@@ -79,6 +78,7 @@ public class MockStoresManager: StoresManager {
         googleAdsActionHandler = MockGoogleAdsActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         justInTimeMessageActionHandler = MockJustInTimeMessageActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shippingMethodActionHandler = MockShippingMethodActionHandler(objectGraph: objectGraph, storageManager: storageManager)
+        wooShippingActionHandler = MockWooShippingActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         couponActionHandler = MockCouponActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         supportChatActionHandler = MockSupportChatActionHandler(objectGraph: objectGraph, storageManager: storageManager)
     }
@@ -145,8 +145,6 @@ public class MockStoresManager: StoresManager {
             userActionHandler.handle(action: action)
         case let action as AnnouncementsAction:
             announcementsActionHandler.handle(action: action)
-        case let action as ReceiptAction:
-            receiptActionHandler.handle(action: action)
         case let action as OrderCardPresentPaymentEligibilityAction:
             orderCardPresentPaymentEligibilityActionHandler.handle(action: action)
         case let action as SystemStatusAction:
@@ -163,6 +161,8 @@ public class MockStoresManager: StoresManager {
             justInTimeMessageActionHandler.handle(action: action)
         case let action as ShippingMethodAction:
             shippingMethodActionHandler.handle(action: action)
+        case let action as WooShippingAction:
+            wooShippingActionHandler.handle(action: action)
         case let action as CouponAction:
             couponActionHandler.handle(action: action)
         case let action as SupportChatAction:
@@ -171,6 +171,16 @@ public class MockStoresManager: StoresManager {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(true)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
+            }
+        case let action as StoreOnboardingTasksAction:
+            switch action {
+            case let .loadOnboardingTasks(_, completion):
+                // No onboarding tasks: the mocked store reads as fully set up, so the dashboard
+                // onboarding card stays out of screenshots. Without this the dashboard's reload
+                // dispatches an unhandled action and the mock asserts, crashing the app.
+                completion(.success([]))
             }
         default:
             let message = "⚠️ [MockStoresManager] Unhandled action type: \(action.identifier) \(String(describing: action))"
@@ -197,12 +207,18 @@ public class MockStoresManager: StoresManager {
     }
 
     @discardableResult
+    public func authenticate(credentials: Credentials,
+                             cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        return self
+    }
+
+    @discardableResult
     public func deauthenticate() -> StoresManager {
         return self
     }
 
     @discardableResult
-    public func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
+    public func synchronizeEntities(preservingSelectedSite: Bool = false, onCompletion: (() -> Void)?) -> StoresManager {
         if let siteID = sessionManager.defaultStoreID {
             Task {
                 await synchronizeGeneralSiteSettings(siteID: siteID)
@@ -258,6 +274,10 @@ public class MockStoresManager: StoresManager {
     }
 
     public func listenToWPCOMInvalidWPCOMTokenNotification() {
+        // no-op
+    }
+
+    public func listenToUnknownBlogNotification() {
         // no-op
     }
 

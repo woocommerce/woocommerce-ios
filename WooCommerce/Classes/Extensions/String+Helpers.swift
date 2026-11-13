@@ -5,6 +5,11 @@ import UIKit
 /// String: Helper Methods
 ///
 extension String {
+    /// Whether the string contains any non-whitespace or newline characters.
+    var isNonBlank: Bool {
+        !trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
     /// Get quotation marks from Locale
     static var quotes: (String, String) {
         guard

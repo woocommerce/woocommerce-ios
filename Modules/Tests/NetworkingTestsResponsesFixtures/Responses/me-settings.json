@@ -57,5 +57,6 @@
 	"jetpack_connect": [],
 	"is_desktop_app_user": true,
 	"locale_variant": false,
-	"tracks_opt_out": true
+	"tracks_opt_out": true,
+	"woomobile_crash_reporting_opt_out": false
 }

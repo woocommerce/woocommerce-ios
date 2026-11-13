@@ -31,13 +31,18 @@ public class SettingStore: Store {
             return
         }
 
+        let methods = methods
         switch action {
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):
             methods.synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveGeneralSiteSettings(let siteID, let onCompletion):
+            siteSettingsRemote.loadGeneralSettings(for: siteID, detectUnexpectedResponses: true, completion: onCompletion)
         case .synchronizeProductSiteSettings(let siteID, let onCompletion):
             methods.synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
-        case .retrieveSiteAPI(let siteID, let onCompletion):
-            methods.retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveSiteAPI(let siteID, let detectUnexpectedResponses, let onCompletion):
+            methods.retrieveSiteAPI(siteID: siteID, detectUnexpectedResponses: detectUnexpectedResponses, includeRoutes: false, onCompletion: onCompletion)
+        case let .retrieveSiteAPIIncludingRoutes(siteID, onCompletion):
+            methods.retrieveSiteAPI(siteID: siteID, detectUnexpectedResponses: false, includeRoutes: true, onCompletion: onCompletion)
         case let .retrievePointOfSaleSettings(siteID, onCompletion):
             Task { @MainActor in
                 do {

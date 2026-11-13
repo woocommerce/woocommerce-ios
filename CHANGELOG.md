@@ -1,6 +1,36 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 26.0
+You can now add and edit attributes on every product type. Camera barcode scanning is more accurate. Product search in Point of Sale is faster for large catalogs. Carrier outage notices appear while you create shipping labels. Give this update a try and let us know what you think.
+
+## 25.9
+Shipping into the EU is now easier—your customs forms ask for each item's SKU, manufacturer part number and GTIN/EAN when needed. In-person setup works smoothly for stores without WooPayments or Stripe. Shipping labels now make the recipient phone number optional for domestic orders.
+
+## 25.8
+You now see friendly device names when signing in with a QR code, and can submit nine-digit codes from WordPress.com. Age verification alerts offer a Contact Support option. If a category name already exists, you’ll get a clear error. Notification delivery and Blaze balances are also easier to manage.
+
+## 25.7
+Age verification is now clearer: if parental consent is pending or denied, you'll see a screen explaining what to do next, not just a log out. If a connection issue stops your store loading, the app tells you what's happening and offers support, so you're not left guessing.
+
+## 25.6
+More fixes for your store: orders paid via Scan to Pay or Mark as Paid show the correct payment method. You’ll see a warning if your store’s currency can’t load. Purchased shipping labels now appear reliably, and rejected site logins show an error. We also fixed an iOS 26 crash, a Settings layout issue, and other product and order problems.
+
+## 25.5
+You can now see product prices and SKUs in your product list, and Dashboard stats stay visible even when there’s no revenue on the chosen dates. Refunds for gift card payments are now handled from your store admin. Plus, fixes across orders, payments, POS, and in-app displays keep your store running smoothly.
+
+## 25.4
+Order statuses now show in your store's language everywhere you view orders. New order notifications look right in dark mode, and login issues are fixed for stores with certain hosting. Returning from product or order details no longer crashes in specific iOS versions.
+
+## 25.3
+Running your store is now smoother: Point of Sale opens instantly offline after syncing, and product details update each time you reopen them. Creating orders and accepting payments works as expected on iPhone, and shop layouts and links display better at large font sizes.
+
+## 25.2
+Your "Report Crashes" privacy setting now follows you across devices and reinstalls. Shipping Labels now require a valid phone number before confirming. It's now easier to connect your card reader in landscape, and refund details in POS appear clearly while loading and in dark mode.
+
+## 25.1
+Phone POS is now available for UK-based stores. Product search when creating orders is easier with a new Products/SKU filter, and your payments balance summary splits out Total and Available funds. Product titles and order creation layouts are tidier, and picking images or viewing actions on iPad won’t crash your flow.
+
 ## 25.0
 Now you can log in easily with a QR-code. Duplicating a product opens the new copy and preserves original images. Refunds for orders with multiple shipping lines, or duplicate line items, now work as they should. Your POS catalog downloads more quickly, and you'll see smoother resizing of the app on iPad.
 ## 24.9

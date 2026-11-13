@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents Shipping Label Address that should be verified.
 ///
-public struct ShippingLabelAddressVerification: Equatable, GeneratedFakeable {
+public struct ShippingLabelAddressVerification: Equatable, GeneratedFakeable, Sendable {
     public let address: ShippingLabelAddress?
     public let type: ShipType
 
@@ -15,7 +15,7 @@ public struct ShippingLabelAddressVerification: Equatable, GeneratedFakeable {
     /// Represents all of the possible Type Statuses in enum form.
     /// It can be either be destination for the `Ship TO` address OR `origin` for the `Ship FROM` address.
     ///
-    public enum ShipType: String, Encodable, Hashable, GeneratedFakeable {
+    public enum ShipType: String, Encodable, Hashable, GeneratedFakeable, Sendable {
         case origin
         case destination
     }

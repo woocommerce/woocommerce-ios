@@ -20,6 +20,7 @@ import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -33,6 +34,7 @@ public struct PointOfSaleEntryPointView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
+    private let registerOnDismiss: (@escaping () -> Void) -> Bool
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
@@ -52,9 +54,10 @@ public struct PointOfSaleEntryPointView: View {
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let cartProductObserver: POSCartProductObserving?
     private let isLocalCatalogEligible: Bool
-    private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
+    private let receiptPrinter: ReceiptPrinterServiceProtocol?
+    private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -82,11 +85,14 @@ public struct PointOfSaleEntryPointView: View {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          receiptSettingsAdminURL: String,
-         sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          services: POSDependencyProviding,
-         itemProvider: PointOfSaleItemServiceProtocol? = nil) {
+         httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
+         itemProvider: PointOfSaleItemServiceProtocol? = nil,
+         registerOnDismiss: @escaping (@escaping () -> Void) -> Bool = { _ in true }) {
+        self.registerOnDismiss = registerOnDismiss
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
@@ -97,7 +103,10 @@ public struct PointOfSaleEntryPointView: View {
 
         // Use observable controller with GRDB if local catalog is eligible,
         // otherwise fall back to standard controller.
-        if isLocalCatalogEligible, let grdbManager, let catalogSyncCoordinator {
+        let catalogSyncStrategy = POSCheckoutCatalogStrategy(isLocalCatalogEligible: isLocalCatalogEligible,
+                                                            hasDatabase: grdbManager != nil,
+                                                            hasSyncCoordinator: catalogSyncCoordinator != nil)
+        if catalogSyncStrategy == .localCatalog, let grdbManager, let catalogSyncCoordinator {
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
                 grdbManager: grdbManager,
@@ -135,6 +144,7 @@ public struct PointOfSaleEntryPointView: View {
                                                           receiptSender: receiptSender,
                                                           currencySettingsProvider: services.currency,
                                                           analytics: services.analytics)
+        let printerConnectionController = receiptPrinter.map { POSPrinterConnectionController(service: $0, analytics: services.analytics) }
         self.settingsController = PointOfSaleSettingsController(siteID: siteID,
                                                                 settingsService: settingsService,
                                                                 cardPresentPaymentService: cardPresentPaymentService,
@@ -144,7 +154,9 @@ public struct PointOfSaleEntryPointView: View {
                                                                 grdbManager: grdbManager,
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
-                                                                receiptSettingsAdminURL: receiptSettingsAdminURL)
+                                                                receiptSettingsAdminURL: receiptSettingsAdminURL,
+                                                                analytics: services.analytics,
+                                                                printerConnectionController: printerConnectionController)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -156,10 +168,9 @@ public struct PointOfSaleEntryPointView: View {
         self.receiptSender = receiptSender
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
-                                                      refundsService: refundsService,
-                                                      refundSubmissionProcessor: refundSubmissionProcessor,
-                                                      featureFlags: services.featureFlags)
+                                                      refundsService: refundsService)
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
+                                                refundController: POSRefundController(refundSubmissionProcessor: refundSubmissionProcessor),
                                                 receiptSender: receiptSender,
                                                 refundSubmissionModel: refundSubmissionProcessor.stateModel)
         if isLocalCatalogEligible, let grdbManager {
@@ -176,15 +187,26 @@ public struct PointOfSaleEntryPointView: View {
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
-        self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
+        self.receiptPrinter = receiptPrinter
+        self.httpsConfigurationNotice = httpsConfigurationNotice
     }
 
     public var body: some View {
+        GeometryReader { geometry in
+            // Keep native compact windows compact; collapse regular windows that cannot fit two panes.
+            let isCompactLayout = horizontalSizeClass == .compact || geometry.size.width < Constants.minimumSplitWidth
+            content(isCompactLayout: isCompactLayout)
+                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? 0 : nil)
+                .environment(\.horizontalSizeClass, isCompactLayout ? .compact : .regular)
+        }
+    }
+
+    private func content(isCompactLayout: Bool) -> some View {
         Group {
             if let posModel {
-                PointOfSaleDashboardView()
+                PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
                     .environment(posModel)
                     .environment(posModel.paymentModel)
                     .posAutoLockActivityTracking(
@@ -200,6 +222,8 @@ public struct PointOfSaleEntryPointView: View {
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
+            // Check for nil because returning from the full-screen Tap to Pay payment simulation can restart this task.
+            guard posModel == nil else { return }
             posModel = PointOfSaleAggregateModel(
                 entryPointController: posEntryPointController,
                 itemsController: itemsController,
@@ -219,12 +243,28 @@ public struct PointOfSaleEntryPointView: View {
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 cartProductObserver: cartProductObserver,
                 isLocalCatalogEligible: isLocalCatalogEligible,
-                sunsetWarningChecker: sunsetWarningChecker,
                 tapToPayAvailabilityController: tapToPayAvailabilityChecker.map { checker in
                     POSTapToPayAvailabilityController(availabilityChecker: checker,
                                                       analytics: services.analytics)
                 },
-                preferredConnectionMethod: preferredConnectionMethod)
+                receiptPrinter: receiptPrinter,
+                preferredConnectionMethod: preferredConnectionMethod,
+                cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
+
+            let cleanup = { [posModel, posModalManager, onPointOfSaleModeActiveStateChange] in
+                onPointOfSaleModeActiveStateChange(false)
+                posModalManager.onDisappear()
+                posModel?.pointOfSaleClosed()
+            }
+            guard registerOnDismiss(cleanup) else {
+                cleanup()
+                return
+            }
+            onPointOfSaleModeActiveStateChange(true)
+
+            // Warm the store's receipt settings while POS starts up so printing a receipt after a
+            // payment doesn't wait on a fetch.
+            await posModel?.preloadReceiptStoreInformation()
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)
@@ -238,31 +278,24 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel)
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
-        .environment(\.posLayoutScale, isPhoneLayout ? .phone : .tablet)
         .injectKeyboardObserver()
-        .onAppear {
-            onPointOfSaleModeActiveStateChange(true)
-        }
-        .onDisappear {
-            onPointOfSaleModeActiveStateChange(false)
-            posModalManager.onDisappear()
-            posModel?.pointOfSaleClosed()
-        }
         .posLockScreenOverlay()
+        .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .environment(\.posAccessSession, accessSession)
-        .task {
-            await accessSession.refreshPINStatus()
+        .onChange(of: isCompactLayout) { _, isCompactLayout in
+            posModel?.paymentModel.updateCardPaymentSelectionMode(isCompactLayout ? .compact : .large)
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             // Active app switch, not idle - lock even mid-payment.
-            guard accessSession.hasAnyPINs, accessSession.currentStaff != nil else { return }
+            guard accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
             accessSession.lock()
         }
     }
 
-    private var isPhoneLayout: Bool {
-        horizontalSizeClass == .compact &&
-        services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+    private enum Constants {
+        static let minimumSplitWidth: CGFloat = 700
+        // Preserve usual phone and tablet padding; a taller system bar supplies the top clearance.
+        static let maximumTopClearance: CGFloat = 64
     }
 }
 

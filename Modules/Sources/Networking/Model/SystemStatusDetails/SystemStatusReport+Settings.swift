@@ -3,7 +3,7 @@ import Foundation
 public extension SystemStatusReport {
     /// Details about a store's settings in its system status report.
     ///
-    struct Settings: Decodable {
+    struct Settings: Decodable, Sendable {
         public let apiEnabled, forceSSL: Bool
         public let currency, currencySymbol, currencyPosition, thousandSeparator: String
         public let decimalSeparator: String

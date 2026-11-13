@@ -1,46 +1,163 @@
 import Foundation
+import UIKit
 import Yosemite
 import AutomatticTracks
 import WordPressShared
 import protocol WooFoundation.AnalyticsProvider
 import WooFoundationCore
+import os
 
-public class TracksProvider: NSObject, AnalyticsProvider {
+public enum POSAnalyticsEntryPoint: String, Sendable {
+    case posTab = "pos_tab"
+    case autoReopen = "auto_reopen"
+}
+
+public final class TracksProvider: NSObject, AnalyticsProvider {
+
+    let consent: AnalyticsConsentProviding
 
     /// `TracksServiceExecutor` ensures that we access the Tracks service on a background queue, while always creating the service on the main thread.
-    private enum TracksServiceExecutor {
-        private static let contextManager = TracksContextManager()
+    enum TracksServiceExecutor {
+        /// AutomatticTracks does not declare its Objective-C service types `Sendable`. The container is created on the
+        /// main thread and every service access is serialized on `queue`, so the references never race.
+        private final class ServiceContainer: @unchecked Sendable {
+            private let contextManager = TracksContextManager()
+            let service: TracksService
 
-        private static let service: TracksService = {
-            let service = TracksService(contextManager: contextManager)!
-            service.eventNamePrefix = Constants.eventNamePrefix
-            return service
-        }()
+            init() {
+                service = TracksService(contextManager: contextManager)!
+                service.eventNamePrefix = Constants.eventNamePrefix
+            }
+        }
+
+        /// Captures can include Tracks' type-erased property dictionaries. The operation is immutable after creation
+        /// and invoked exactly once on `queue`, which provides the missing synchronization contract.
+        private final class Operation: @unchecked Sendable {
+            let body: (TracksService) -> Void
+
+            init(_ body: @escaping (TracksService) -> Void) {
+                self.body = body
+            }
+        }
+
+        private static let serviceContainer = ServiceContainer()
 
         private static let queue = DispatchQueue(label: "com.woocommerce.TracksProvider")
 
         /// Keep lazy `TracksService` construction off the serialization queue while still serializing service use.
         static func enqueue(_ operation: @escaping (TracksService) -> Void) {
-            let enqueue: (TracksService) -> Void = { tracksService in
+            let operation = Operation(operation)
+            let enqueue: @Sendable (ServiceContainer) -> Void = { container in
                 queue.async {
-                    operation(tracksService)
+                    operation.body(container.service)
                 }
             }
 
             if Thread.isMainThread {
-                enqueue(service)
+                enqueue(serviceContainer)
             } else {
                 DispatchQueue.main.async {
-                    enqueue(service)
+                    enqueue(serviceContainer)
                 }
             }
         }
     }
 
-    private static var isPOSModeActive: Bool = false
+    private struct POSState: Sendable {
+        var isModeActive = false
+        var entryPoint: POSAnalyticsEntryPoint?
+    }
+
+    private static let posState = OSAllocatedUnfairLock(initialState: POSState())
+
+    private static var isPOSModeActive: Bool {
+        posState.withLock { $0.isModeActive }
+    }
+
+    static var activePOSEntryPoint: POSAnalyticsEntryPoint? {
+        posState.withLock { state in
+            state.isModeActive ? state.entryPoint : nil
+        }
+    }
+
+    /// Background construction starts with `.unspecified` and refreshes asynchronously to avoid blocking
+    /// the main actor while `ServiceLocator` holds its static-initialization lock.
+    private let deviceTypeForAnalyticsState: OSAllocatedUnfairLock<String>
+
+    var deviceTypeForAnalytics: String {
+        deviceTypeForAnalyticsState.withLock { $0 }
+    }
+
+    init(consent: AnalyticsConsentProviding,
+         deviceTypeForAnalytics: String? = nil) {
+        self.consent = consent
+        deviceTypeForAnalyticsState = OSAllocatedUnfairLock(
+            initialState: deviceTypeForAnalytics ?? UIUserInterfaceIdiom.unspecified.deviceTypeForAnalytics
+        )
+        super.init()
+
+        guard deviceTypeForAnalytics == nil else {
+            return
+        }
+        Self.refreshDeviceTypeForAnalytics(state: deviceTypeForAnalyticsState)
+    }
 
     public static func setPOSMode(_ active: Bool) {
-        isPOSModeActive = active
+        posState.withLock { state in
+            state.isModeActive = active
+            if active == false {
+                state.entryPoint = nil
+            }
+        }
+    }
+
+    public static func setPOSEntryPoint(_ entryPoint: POSAnalyticsEntryPoint) {
+        posState.withLock { $0.entryPoint = entryPoint }
+    }
+}
+
+extension TracksProvider {
+    /// Read on the main thread only; UIKit trait reads are main-thread bound. Off the main thread
+    /// (background BGTask/push events, where layout is irrelevant) it returns `.unspecified`, which
+    /// `addHorizontalSizeClass(to:sizeClass:)` skips.
+    func currentHorizontalSizeClass() -> UIUserInterfaceSizeClass {
+        guard Thread.isMainThread else {
+            return .unspecified
+        }
+        return MainActor.assumeIsolated {
+            UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass ?? .unspecified
+        }
+    }
+
+    /// Adds `horizontal_size_class` to the event's properties when a concrete layout is known,
+    /// without overwriting a value the event already provides.
+    ///
+    func addHorizontalSizeClass(to properties: [AnyHashable: Any]?,
+                                sizeClass: UIUserInterfaceSizeClass) -> [AnyHashable: Any]? {
+        guard sizeClass != .unspecified else {
+            return properties
+        }
+
+        var decoratedProperties = properties ?? [:]
+        guard decoratedProperties[Constants.horizontalSizeClassKey] == nil else {
+            return decoratedProperties
+        }
+
+        decoratedProperties[Constants.horizontalSizeClassKey] = sizeClass.nameForAnalytics
+        return decoratedProperties
+    }
+
+    func addPointOfSaleProperties(to properties: [AnyHashable: Any]?,
+                                  deviceType: String,
+                                  entryPoint: POSAnalyticsEntryPoint?) -> [AnyHashable: Any] {
+        var decoratedProperties = properties ?? [:]
+        decoratedProperties[Constants.deviceTypeKey] = deviceType
+
+        if let entryPoint {
+            decoratedProperties[Constants.entryPointKey] = entryPoint.rawValue
+        }
+
+        return decoratedProperties
     }
 }
 
@@ -48,8 +165,8 @@ public class TracksProvider: NSObject, AnalyticsProvider {
 // MARK: - AnalyticsProvider Conformance
 //
 public extension TracksProvider {
-    func refreshUserData() {
-        switchTracksUsersIfNeeded()
+    func refreshUserData(completion: @escaping @Sendable () -> Void) {
+        switchTracksUsersIfNeeded(completion: completion)
         refreshTracksMetadata()
     }
 
@@ -58,8 +175,24 @@ public extension TracksProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
-        let eventName = decorateEventNameForPOSIfNeeded(eventName)
-        Self.TracksServiceExecutor.enqueue { tracksService in
+        guard consent.userHasOptedIn else {
+            return
+        }
+
+        let carriesPOSProperties = carriesPointOfSaleProperties(eventName)
+        let eventName = needsPointOfSaleNamePrefix(eventName) ? Constants.pointOfSaleEventNamePrefix + eventName : eventName
+        var properties = addHorizontalSizeClass(to: properties, sizeClass: currentHorizontalSizeClass())
+        if carriesPOSProperties {
+            properties = addPointOfSaleProperties(to: properties,
+                                                  deviceType: deviceTypeForAnalytics,
+                                                  entryPoint: Self.activePOSEntryPoint)
+        }
+        Self.TracksServiceExecutor.enqueue { [consent] tracksService in
+            // Consent may have changed while the event was waiting on the queue.
+            guard consent.userHasOptedIn else {
+                return
+            }
+
             if let properties {
                 guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {
                     return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
@@ -88,7 +221,7 @@ public extension TracksProvider {
     /// When a user opts-out, wipe data
     ///
     func clearUsers() {
-        guard ServiceLocator.analytics.userHasOptedIn else {
+        guard consent.userHasOptedIn else {
             // To be safe, nil out the anonymousUserID guid so a fresh one is regenerated
             UserDefaults.standard[.defaultAnonymousID] = nil
             UserDefaults.standard[.analyticsUsername] = nil
@@ -107,7 +240,7 @@ public extension TracksProvider {
 // MARK: - Private Helpers
 //
 private extension TracksProvider {
-    func switchTracksUsersIfNeeded() {
+    func switchTracksUsersIfNeeded(completion: @escaping @Sendable () -> Void = {}) {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
         let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
         if ServiceLocator.stores.isAuthenticated,
@@ -121,6 +254,7 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: false)
+                    completion()
                 }
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
@@ -129,6 +263,7 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: true)
+                    completion()
                 }
             } else {
                 // Username changed for some reason - switch back to anonymous first
@@ -138,20 +273,30 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: false)
+                    completion()
                 }
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
             Self.TracksServiceExecutor.enqueue { tracksService in
                 tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+                completion()
             }
         }
     }
 
-    private func decorateEventNameForPOSIfNeeded(_ eventName: String) -> String {
+    private func carriesPointOfSaleProperties(_ eventName: String) -> Bool {
+        guard WooAnalyticsStat(rawValue: eventName) != nil else {
+            return false
+        }
+
+        return needsPointOfSaleNamePrefix(eventName) || eventName.hasPrefix(Constants.pointOfSaleEventNamePrefix)
+    }
+
+    private func needsPointOfSaleNamePrefix(_ eventName: String) -> Bool {
         guard let event = WooAnalyticsStat(rawValue: eventName) else {
             DDLogWarn("⚠️ Event not found in WooAnalyticsStat list")
-            return eventName
+            return false
         }
 
         let pointOfSaleEventList: Set<WooAnalyticsStat> = [
@@ -173,15 +318,32 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleReceiptEmailSendTapped,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingShown,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingDismissed,
-            WooAnalyticsStat.pointOfSaleCardReaderConnectionTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutTapToPayTapped,
+            WooAnalyticsStat.pointOfSaleTapToPayNotAvailable,
             WooAnalyticsStat.pointOfSaleInteractionWithCustomerStarted,
             WooAnalyticsStat.pointOfSaleViewDocsTapped,
             WooAnalyticsStat.pointOfSaleEditReceiptTapped,
+            WooAnalyticsStat.receiptPrintTapped,
+            WooAnalyticsStat.receiptPrintSuccess,
+            WooAnalyticsStat.receiptPrintFailed,
+            WooAnalyticsStat.receiptPrintRetryTapped,
             WooAnalyticsStat.pointOfSaleReaderReadyForCardPayment,
             WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
             WooAnalyticsStat.pointOfSaleCheckoutCashPaymentTapped,
             WooAnalyticsStat.pointOfSaleCashPaymentTapped,
             WooAnalyticsStat.pointOfSaleCashPaymentFailed,
+            WooAnalyticsStat.pointOfSaleOtherPaymentMethodsTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped,
+            WooAnalyticsStat.pointOfSaleScanToPayPaymentTapped,
+            WooAnalyticsStat.pointOfSaleScanToPayPaymentFailed,
+            WooAnalyticsStat.pointOfSaleScanToPayCollectPaymentSuccess,
+            WooAnalyticsStat.pointOfSaleScanToPayPaymentDetectedViaPolling,
+            WooAnalyticsStat.pointOfSaleBackToCheckoutFromScanToPayTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutMarkAsPaidTapped,
+            WooAnalyticsStat.pointOfSaleMarkAsPaidConfirmed,
+            WooAnalyticsStat.pointOfSaleMarkAsPaidFailed,
+            WooAnalyticsStat.pointOfSaleMarkAsPaidSuccess,
+            WooAnalyticsStat.pointOfSaleBackToCheckoutFromMarkAsPaidTapped,
             WooAnalyticsStat.pointOfSaleItemsHeaderTapped,
             WooAnalyticsStat.pointOfSaleCouponsCreateTapped,
             WooAnalyticsStat.pointOfSaleSearchButtonTapped,
@@ -205,6 +367,9 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleBarcodeScannerSetupDismissed,
             WooAnalyticsStat.pointOfSaleBarcodeScannerSetupRetryTapped,
             WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerConnected,
+            WooAnalyticsStat.pointOfSaleReceiptPrinterSetupStarted,
+            WooAnalyticsStat.pointOfSaleReceiptPrinterConnected,
+            WooAnalyticsStat.pointOfSaleReceiptPrinterDisconnectTapped,
             WooAnalyticsStat.pointOfSaleOrdersMenuItemTapped,
             WooAnalyticsStat.pointOfSaleOrdersListPullToRefresh,
             WooAnalyticsStat.pointOfSaleOrdersListFetched,
@@ -221,22 +386,29 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleRefundProcessingFailed,
             WooAnalyticsStat.pointOfSaleRefundFlowAborted,
             WooAnalyticsStat.pointOfSaleRefundSelectAllTapped,
+            WooAnalyticsStat.pointOfSaleRefundServerFlowUnavailable,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedScreenShown,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,
 
             // Order
-            WooAnalyticsStat.ordersListLoaded,
             WooAnalyticsStat.orderCreationSuccess,
             WooAnalyticsStat.orderCreationFailed,
 
             // Card Reader Connection
+            WooAnalyticsStat.cardReaderDiscoveryTapped,
+            WooAnalyticsStat.cardReaderDiscoveryReaderDiscovered,
+            WooAnalyticsStat.cardReaderConnectionTapped,
+            WooAnalyticsStat.cardReaderAutoConnectionStarted,
             WooAnalyticsStat.cardReaderDiscoveryFailed,
             WooAnalyticsStat.cardReaderConnectionFailed,
             WooAnalyticsStat.cardReaderConnectionSuccess,
             WooAnalyticsStat.cardReaderDisconnectTapped,
             WooAnalyticsStat.cardReaderLocationPermissionPreAlertShown,
             WooAnalyticsStat.cardReaderLocationPermissionRequiredShown,
+            WooAnalyticsStat.cardReaderLocationSuccess,
+            WooAnalyticsStat.cardReaderLocationFailure,
+            WooAnalyticsStat.cardReaderLocationMissingTapped,
 
             // Card Reader Software Update
             WooAnalyticsStat.cardReaderSoftwareUpdateTapped,
@@ -263,6 +435,15 @@ private extension TracksProvider {
             WooAnalyticsStat.collectPaymentCanceled,
             WooAnalyticsStat.collectPaymentFailed,
             WooAnalyticsStat.collectPaymentSuccess,
+            WooAnalyticsStat.collectInteracPaymentSuccess,
+
+            // Refunds
+            WooAnalyticsStat.refundCreate,
+            WooAnalyticsStat.refundCreateSuccess,
+            WooAnalyticsStat.refundCreateFailed,
+            WooAnalyticsStat.interacRefundSuccess,
+            WooAnalyticsStat.interacRefundFailed,
+            WooAnalyticsStat.interacRefundCanceled,
 
             // Coupons
             WooAnalyticsStat.couponSettingEnabled,
@@ -274,6 +455,8 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleSettingsStoreDetailsTapped,
             WooAnalyticsStat.pointOfSaleSettingsHardwareTapped,
             WooAnalyticsStat.pointOfSaleSettingsHelpTapped,
+            WooAnalyticsStat.pointOfSaleSettingsPaymentsTapped,
+            WooAnalyticsStat.pointOfSalePaymentSuccessSoundToggled,
             WooAnalyticsStat.pointOfSaleEmptyCartSetupScannerTapped,
 
             // Catalog
@@ -287,8 +470,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed,
             WooAnalyticsStat.pointOfSaleLocalCatalogBlockedFellBackToRemote
         ]
 
@@ -305,22 +486,16 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed,
             WooAnalyticsStat.pointOfSaleLocalCatalogBlockedFellBackToRemote
         ]
 
         // Apply prefix if: (POS mode is active AND event is in the list) OR event is a local catalog event
-        guard (Self.isPOSModeActive && pointOfSaleEventList.contains(event)) || localCatalogEventList.contains(event) else {
-            return eventName
-        }
-        let prefix = "pos_"
-        return "\(prefix)\(eventName)"
+        return (Self.isPOSModeActive && pointOfSaleEventList.contains(event)) || localCatalogEventList.contains(event)
     }
 
     func refreshTracksMetadata() {
         DDLogInfo("♻️ Refreshing tracks metadata...")
-        let readUIKitAndApply = {
+        let readUIKitAndApply: @MainActor @Sendable () -> Void = {
             let voiceOver = UIAccessibility.isVoiceOverRunning
             let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
             Self.TracksServiceExecutor.enqueue { tracksService in
@@ -333,9 +508,25 @@ private extension TracksProvider {
             }
         }
         if Thread.isMainThread {
-            readUIKitAndApply()
+            MainActor.assumeIsolated {
+                readUIKitAndApply()
+            }
         } else {
             DispatchQueue.main.async { readUIKitAndApply() }
+        }
+    }
+
+    static func refreshDeviceTypeForAnalytics(state: OSAllocatedUnfairLock<String>) {
+        let readAndStoreDeviceType: @MainActor @Sendable () -> Void = {
+            let deviceType = UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics
+            state.withLock { $0 = deviceType }
+        }
+        if Thread.isMainThread {
+            MainActor.assumeIsolated {
+                readAndStoreDeviceType()
+            }
+        } else {
+            DispatchQueue.main.async(execute: readAndStoreDeviceType)
         }
     }
 }
@@ -347,6 +538,10 @@ private extension TracksProvider {
 
     enum Constants {
         static let eventNamePrefix = "woocommerceios"
+        static let pointOfSaleEventNamePrefix = "pos_"
+        static let horizontalSizeClassKey = "horizontal_size_class"
+        static let deviceTypeKey = "device_type"
+        static let entryPointKey = "entry_point"
     }
 
     enum UserProperties {

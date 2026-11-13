@@ -24,26 +24,10 @@ extension UnitInputViewModel {
                                     "The price for bulk updating all variations. Editable.",
                                     comment: "VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for"
                                     + " bulk updating all variations"),
-                                  unitPosition: currencySettings.currencyUnitPosition,
+                                  unitPosition: currencySettings.priceInputUnitPosition,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   style: .secondary,
                                   onInputChange: onInputChange)
-    }
-}
-
-private extension CurrencySettings {
-    /// The placement of the currency symbol accordig to the currency settings
-    var currencyUnitPosition: UnitInputViewModel.UnitPosition {
-        switch currencyPosition {
-        case .left:
-            return .beforeInputWithoutSpace
-        case .leftSpace:
-            return .beforeInput
-        case .right:
-            return .afterInputWithoutSpace
-        case .rightSpace:
-            return .afterInput
-        }
     }
 }

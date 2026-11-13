@@ -11,6 +11,7 @@ public enum PointOfSaleItemServiceError: Error, Equatable {
 
 /// Product provider for the Point of Sale feature
 ///
+@MainActor
 public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let itemMapper: PointOfSaleItemMapperProtocol
 

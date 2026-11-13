@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Tax Refund for a specific Order Item.
 ///
-public struct OrderItemTaxRefund: Codable, Equatable, GeneratedFakeable, Hashable {
+public struct OrderItemTaxRefund: Codable, Equatable, Sendable, GeneratedFakeable, Hashable {
 
     /// Tax ID for line item
     ///
@@ -30,7 +30,7 @@ public struct OrderItemTaxRefund: Codable, Equatable, GeneratedFakeable, Hashabl
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let taxID = try container.decode(Int64.self, forKey: .taxID)
+        let taxID = container.failsafeDecodeInt64(forKey: .taxID)
         let subtotal = try container.decode(String.self, forKey: .subtotal)
         let total = try container.decode(String.self, forKey: .total)
 

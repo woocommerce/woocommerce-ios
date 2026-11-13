@@ -13,23 +13,17 @@ extension Site {
             PropertyKeys.isWPComStore: isWordPressComStore,
             PropertyKeys.isJetpackInstalled: isJetpackThePluginInstalled,
             PropertyKeys.isJetpackConnected: isJetpackConnected,
-            PropertyKeys.isJetpackCPConnected: isJetpackCPConnected,
-            PropertyKeys.isCIAB: isCIAB
+            PropertyKeys.isJetpackCPConnected: isJetpackCPConnected
         ]
-        if let gardenPartner {
-            properties[PropertyKeys.gardenPartner] = gardenPartner
-        }
         return properties
     }
 
-    private enum PropertyKeys {
+    enum PropertyKeys {
         static let blogID = "blog_id"
         static let siteURL = "site_url"
         static let isWPComStore = "is_wpcom_store"
         static let isJetpackInstalled = "is_jetpack_installed"
         static let isJetpackConnected = "is_jetpack_connected"
         static let isJetpackCPConnected = "is_jetpack_cp_connected"
-        static let isCIAB = "is_ciab"
-        static let gardenPartner = "garden_partner"
     }
 }

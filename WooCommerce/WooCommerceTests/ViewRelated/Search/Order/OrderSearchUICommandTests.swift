@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import Yosemite
 import YosemiteTestHelpers
@@ -5,27 +6,30 @@ import YosemiteTestHelpers
 import Storage
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class OrderSearchUICommandTests: XCTestCase {
     let siteID: Int64 = 12345
-    private var storageManager: MockOrderStatusesStoresManager!
+    private var storageManager: MockStorageManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private var systemUnderTest: OrderSearchUICommand!
+    private var cancellables: Set<AnyCancellable> = []
 
-    override func setUp() {
-        super.setUp()
-        storageManager = MockOrderStatusesStoresManager()
+    override func setUp() async throws {
+        try await super.setUp()
+        storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         systemUnderTest = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
+        cancellables.removeAll()
         storageManager = nil
         analyticsProvider = nil
         analytics = nil
         systemUnderTest = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_createStarterViewController_returns_nil_so_empty_results_table_shown_before_search() {
@@ -60,6 +64,38 @@ final class OrderSearchUICommandTests: XCTestCase {
         // Then
         XCTAssertNotNil(cellViewModel, "Expected createCellViewModel to return an OrderListCellViewModel instance")
         XCTAssertEqual(cellViewModel.status, .onHold, "Expected createCellViewModel to return on hold status")
+    }
+
+    func test_createCellViewModel_when_site_status_stored_then_statusString_uses_server_name() {
+        // Given
+        let mockOrder = MockOrders().makeOrder(status: .onHold)
+        // Server name differs from the slug, so we can tell them apart.
+        insertOrderStatus(name: "Server On Hold", slug: OrderStatusEnum.onHold.rawValue)
+
+        // When
+        let cellViewModel = systemUnderTest.createCellViewModel(model: mockOrder)
+
+        // Then — the stored server name is preferred over the app-localized name
+        XCTAssertEqual(cellViewModel.statusString, "Server On Hold")
+    }
+
+    func test_reloadUIRequests_emits_when_stored_order_statuses_change() {
+        // Given
+        // Access the results controller (via a cell view model) so its change observation is wired up.
+        _ = systemUnderTest.createCellViewModel(model: MockOrders().makeOrder(status: .onHold))
+
+        let expectation = expectation(description: "reloadUIRequests emits when the stored order statuses change")
+        systemUnderTest.reloadUIRequests
+            .sink {
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // When
+        insertOrderStatus(name: "Server On Hold", slug: OrderStatusEnum.onHold.rawValue)
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func test_SanitizeKeyword_removing_leading_pound_symbol() {
@@ -128,26 +164,17 @@ final class OrderSearchUICommandTests: XCTestCase {
     private func insertOrderStatuses() {
         let statuses: [OrderStatusEnum] = [.pending, .processing, .onHold, .completed, .cancelled, .failed, .custom("aCustomStatus")]
         statuses.forEach { status in
-            storageManager.insertOrderStatus(name: status.rawValue)
+            insertOrderStatus(name: status.rawValue)
         }
-        storageManager.viewStorage.saveIfNeeded()
     }
-}
 
-/// Mock Order Statuses Store Manager
-///
-private final class MockOrderStatusesStoresManager: MockStorageManager {
-    fileprivate static let siteID: Int64 = 12345
-
-    /// Inserts an order status
-    ///
-    @discardableResult
-    func insertOrderStatus(name: String) -> StorageOrderStatus {
-        let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
-        orderStatus.name = name
-        orderStatus.slug = name
-        orderStatus.siteID = MockOrderStatusesStoresManager.siteID
-        viewStorage.saveIfNeeded()
-        return orderStatus
+    private func insertOrderStatus(name: String, slug: String? = nil) {
+        let siteID = siteID
+        storageManager.performAndSave({ storage in
+            let orderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+            orderStatus.name = name
+            orderStatus.slug = slug ?? name
+            orderStatus.siteID = siteID
+        }, completion: nil, on: .main)
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 
 /// Gift Card Stats: Remote Endpoints for fetching gift card stats.
 ///
-public final class GiftCardStatsRemote: Remote {
+public final class GiftCardStatsRemote: Remote, @unchecked Sendable {
 
     /// Fetch the used gift card stats for a given site, depending on the given granularity of the `unit` parameter.
     ///
@@ -26,7 +26,7 @@ public final class GiftCardStatsRemote: Remote {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.interval: unit.rawValue,
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),

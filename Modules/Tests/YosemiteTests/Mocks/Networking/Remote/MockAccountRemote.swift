@@ -9,6 +9,7 @@ import XCTest
 final class MockAccountRemote {
     /// Returns the value as a publisher when `loadSites` is called.
     var loadSitesResult: Result<[Site], Error> = .success([])
+    var loadSitesPublisher: AnyPublisher<Result<[Site], Error>, Never>?
 
     /// Returns the requests that have been made to `AccountRemoteProtocol`.
     var invocations = [Invocation]()
@@ -33,6 +34,14 @@ final class MockAccountRemote {
 
     /// Returns the value when `closeAccount` is called.
     private var closeAccountResult: Result<Void, Error> = .success(())
+
+    /// Returns the value when `updateCrashReportingOptOut` is called.
+    private var updateCrashReportingOptOutResult: Result<Void, Error>?
+
+    /// Returns the value when `updateCrashReportingOptOut` is called.
+    func whenUpdatingCrashReportingOptOut(thenReturn result: Result<Void, Error>) {
+        updateCrashReportingOptOutResult = result
+    }
 
     /// Returns the value as a publisher when `closeAccount` is called.
     func whenClosingAccount(thenReturn result: Result<Void, Error>) {
@@ -74,6 +83,7 @@ extension MockAccountRemote {
         case loadSites
         case checkIfWooCommerceIsActive(siteID: Int64)
         case fetchWordPressSiteSettings(siteID: Int64)
+        case updateCrashReportingOptOut(optOut: Bool)
     }
 }
 
@@ -92,9 +102,18 @@ extension MockAccountRemote: AccountRemoteProtocol {
         // no-op
     }
 
+    func updateCrashReportingOptOut(optOut: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        invocations.append(.updateCrashReportingOptOut(optOut: optOut))
+        guard let result = updateCrashReportingOptOutResult else {
+            XCTFail("Could not find result for updating the crash reporting opt out.")
+            return completion(.failure(NetworkError.notFound()))
+        }
+        completion(result)
+    }
+
     func loadSites() -> AnyPublisher<Result<[Site], Error>, Never> {
         invocations.append(.loadSites)
-        return Just<Result<[Site], Error>>(loadSitesResult).eraseToAnyPublisher()
+        return loadSitesPublisher ?? Just<Result<[Site], Error>>(loadSitesResult).eraseToAnyPublisher()
     }
 
     func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never> {

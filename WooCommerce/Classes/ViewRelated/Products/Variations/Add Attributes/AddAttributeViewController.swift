@@ -45,6 +45,11 @@ final class AddAttributeViewController: UIViewController, GhostableViewControlle
         configureViewModel()
         enableDoneButton(false)
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
 }
 
 // MARK: - View Configuration
@@ -90,7 +95,9 @@ private extension AddAttributeViewController {
             case .initialized:
                 break
             case .syncing:
-                self?.displayGhostContent()
+                if let self {
+                    self.displayGhostContent(over: self.tableView)
+                }
             case .failed:
                 self?.removeGhostContent()
                 self?.displaySyncingErrorNotice()
@@ -255,7 +262,7 @@ extension AddAttributeViewController {
     /// Presents `AddAttributeOptionsViewController` and passes the same `onCompletion` closure, for our presenterVC  to handle.
     ///
     private func presentAddAttributeOptions(for attribute: AddAttributeOptionsViewModel.Attribute) {
-        let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: attribute)
+        let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: attribute, isVariationsFlow: self.viewModel.isVariationsFlow)
         let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel, onCompletion: onCompletion)
         show(addAttributeOptionsVC, sender: nil)
     }

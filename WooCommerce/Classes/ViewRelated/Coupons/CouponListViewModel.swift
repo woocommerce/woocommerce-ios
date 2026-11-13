@@ -24,6 +24,7 @@ enum CouponListState {
     }
 }
 
+@MainActor
 final class CouponListViewModel {
 
     typealias CellViewModel = CouponCellViewModel
@@ -60,12 +61,12 @@ final class CouponListViewModel {
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
-         syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
+         syncingCoordinator: SyncingCoordinatorProtocol? = nil,
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
-        self.syncingCoordinator = syncingCoordinator
+        self.syncingCoordinator = syncingCoordinator ?? SyncingCoordinator()
         self.storesManager = storesManager
         self.storageManager = storageManager
         self.resultsController = Self.createResultsController(siteID: siteID,
@@ -119,21 +120,25 @@ final class CouponListViewModel {
 
     /// Enable coupons for the store
     ///
-    func enableCoupons() {
+    func enableCoupons() async {
+        guard state != .loading else {
+            return
+        }
         ServiceLocator.analytics.track(.couponSettingEnabled)
 
         state = .loading
-        let action = SettingAction.enableCouponSetting(siteID: siteID) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success:
-                self.syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
-            case .failure(let error):
-                DDLogError("⛔️ Error enabling coupon setting: \(error)")
-                self.state = .couponsDisabled
-            }
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            storesManager.dispatch(SettingAction.enableCouponSetting(siteID: siteID) { result in
+                continuation.resume(returning: result)
+            })
         }
-        storesManager.dispatch(action)
+        switch result {
+        case .success:
+            syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
+        case .failure(let error):
+            DDLogError("⛔️ Error enabling coupon setting: \(error)")
+            state = .couponsDisabled
+        }
     }
 }
 
@@ -172,14 +177,16 @@ private extension CouponListViewModel {
 
     /// Check whether coupons are enabled for this store.
     ///
-    func loadCouponSetting(completionHandler: @escaping ((Result<Bool, Error>) -> Void)) {
-        let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
-            if let isEnabled = try? result.get(), !isEnabled {
-                ServiceLocator.analytics.track(.couponSettingDisabled)
-            }
-            completionHandler(result)
+    func loadCouponSetting() async -> Result<Bool, Error> {
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
+            storesManager.dispatch(SettingAction.retrieveCouponSetting(siteID: siteID) { result in
+                continuation.resume(returning: result)
+            })
         }
-        storesManager.dispatch(action)
+        if let isEnabled = try? result.get(), !isEnabled {
+            ServiceLocator.analytics.track(.couponSettingDisabled)
+        }
+        return result
     }
 }
 
@@ -220,18 +227,18 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
         case .failure(let error):
             DDLogError("⛔️ Error synchronizing coupons: \(error)")
             ServiceLocator.analytics.track(.couponsLoadedFailed, withError: error)
-            loadCouponSetting { [weak self] result in
+            Task { [weak self] in
                 guard let self else { return }
-                switch result {
+                switch await loadCouponSetting() {
                 case .success(let isEnabled):
                     if isEnabled {
-                        self.transitionToResultsUpdatedState(hasData: self.couponViewModels.isNotEmpty)
+                        transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)
                     } else {
-                        self.state = .couponsDisabled
+                        state = .couponsDisabled
                     }
                 case .failure(let error):
                     DDLogError("⛔️ Error retrieving coupon setting: \(error)")
-                    self.transitionToResultsUpdatedState(hasData: self.couponViewModels.isNotEmpty)
+                    transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)
                 }
             }
         }

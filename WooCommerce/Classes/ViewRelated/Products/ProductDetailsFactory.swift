@@ -11,13 +11,14 @@ struct ProductDetailsFactory {
     ///   - forceReadOnly: force the product detail to be presented in read only mode
     ///   - onDeleteCompletion: called when the product deletion completes in the product form.
     ///   - onDuplicateCompletion: called with the new duplicate when a product duplication completes in the product form.
+    @MainActor
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = ServiceLocator.currencySettings,
                                forceReadOnly: Bool,
                                productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
                                onDeleteCompletion: @escaping () -> Void = {},
-                               onDuplicateCompletion: ((Product) -> Void)? = nil) -> UIViewController {
+                               onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) -> UIViewController {
         let vc = productDetails(product: product,
                                 presentationStyle: presentationStyle,
                                 currencySettings: currencySettings,
@@ -30,13 +31,14 @@ struct ProductDetailsFactory {
 }
 
 private extension ProductDetailsFactory {
+    @MainActor
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,
                                isEditProductsEnabled: Bool,
                                productImageUploader: ProductImageUploaderProtocol,
                                onDeleteCompletion: @escaping () -> Void,
-                               onDuplicateCompletion: ((Product) -> Void)? = nil) -> UIViewController {
+                               onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) -> UIViewController {
         let vc: UIViewController
         let productModel = EditableProductModel(product: product)
         let productImageActionHandler = productImageUploader

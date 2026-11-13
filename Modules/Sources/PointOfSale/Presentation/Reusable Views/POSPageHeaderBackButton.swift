@@ -4,6 +4,7 @@ struct POSPageHeaderBackButton: View {
     private let configuration: POSPageHeaderBackButtonConfiguration
     @Environment(\.posHeaderBackButtonIcon) private var environmentIcon
     @Environment(\.posHeaderBackButtonPadding) private var backButtonPadding
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     init(configuration: POSPageHeaderBackButtonConfiguration) {
         self.configuration = configuration
@@ -20,8 +21,12 @@ struct POSPageHeaderBackButton: View {
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
                 .padding(.horizontal, backButtonPadding)
+                .frame(width: horizontalSizeClass == .compact ? POSHeaderLayoutConstants.compactBackButtonSize : nil,
+                       height: horizontalSizeClass == .compact ? POSHeaderLayoutConstants.compactBackButtonSize : nil)
+                .contentShape(Rectangle())
         }
         .disabled(configuration.state == .disabled || configuration.state == .shimmering)
+        .accessibilityIdentifier(configuration.accessibilityIdentifier ?? Constants.defaultAccessibilityIdentifier)
         .if(configuration.state == .shimmering) { view in
             view.shimmering()
         }
@@ -31,5 +36,6 @@ struct POSPageHeaderBackButton: View {
 private extension POSPageHeaderBackButton {
     enum Constants {
         static let defaultBackButtonIcon = "chevron.backward"
+        static let defaultAccessibilityIdentifier = "pos-header-back-button"
     }
 }

@@ -18,7 +18,7 @@ struct CouponRestrictions: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
+        SafeAreaInsetsReader { _ in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     VStack(alignment: .leading, spacing: 0) {
@@ -27,37 +27,29 @@ struct CouponRestrictions: View {
                                              text: $viewModel.minimumSpend,
                                              keyboardType: .decimalPad,
                                              inputFormatter: CouponAmountInputFormatter())
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                         TitleAndTextFieldRow(title: String.localizedStringWithFormat(Localization.maximumSpend, viewModel.currencySymbol),
                                              placeholder: Localization.none,
                                              text: $viewModel.maximumSpend,
                                              keyboardType: .decimalPad,
                                              inputFormatter: CouponAmountInputFormatter())
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                         TitleAndTextFieldRow(title: Localization.usageLimitPerCoupon,
                                              placeholder: Localization.unlimited,
                                              text: $viewModel.usageLimitPerCoupon,
                                              keyboardType: .asciiCapableNumberPad,
                                              inputFormatter: IntegerInputFormatter(defaultValue: ""))
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                         TitleAndTextFieldRow(title: Localization.usageLimitPerUser,
                                              placeholder: Localization.unlimited,
                                              text: $viewModel.usageLimitPerUser,
                                              keyboardType: .asciiCapableNumberPad,
                                              inputFormatter: IntegerInputFormatter(defaultValue: ""))
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                         Divider()
                             .padding(.leading, Constants.margin)
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                     }
                     .background(Color(.listForeground(modal: false)))
 
@@ -68,10 +60,8 @@ struct CouponRestrictions: View {
                                     text: $viewModel.limitUsageToXItems,
                                     keyboardType: .asciiCapableNumberPad,
                                     inputFormatter: IntegerInputFormatter(defaultValue: ""))
-                                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                             Divider()
                                     .padding(.leading, Constants.margin)
-                                    .padding(.leading, insets: geometry.safeAreaInsets)
                         }.renderedIf(viewModel.shouldDisplayLimitUsageToXItemsRow)
                         TitleAndValueRow(title: Localization.allowedEmails,
                                          value: viewModel.allowedEmails.isNotEmpty ?
@@ -80,41 +70,33 @@ struct CouponRestrictions: View {
                                          selectionStyle: .disclosure) {
                             showingAllowedEmails = true
                         }
-                                         .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         Divider()
                             .padding(.leading, Constants.margin)
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                     }
 
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         TitleAndToggleRow(title: Localization.individualUseOnly,
                                           isOn: $viewModel.individualUseOnly)
                             .padding(.horizontal, Constants.margin)
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         Divider()
                             .padding(.leading, Constants.margin)
-                            .padding(.leading, insets: geometry.safeAreaInsets)
 
                         Text(Localization.individualUseDescription)
                             .footnoteStyle()
                             .padding(.horizontal, Constants.margin)
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         TitleAndToggleRow(title: Localization.excludeSaleItems,
                                           isOn: $viewModel.excludeSaleItems)
                             .padding(.horizontal, Constants.margin)
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         Divider()
                             .padding(.leading, Constants.margin)
-                            .padding(.leading, insets: geometry.safeAreaInsets)
 
                         Text(Localization.excludeSaleItemsDescription)
                             .footnoteStyle()
                             .padding(.horizontal, Constants.margin)
-                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                     }
                     .padding(.vertical, Constants.margin)
                 }
@@ -148,12 +130,10 @@ struct CouponRestrictions: View {
                 }
                 .padding(.vertical, Constants.sectionSpacing)
                 .padding(.horizontal, Constants.margin)
-                .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .scrollDismissesKeyboard(.immediately)
             .background(Color(.listForeground(modal: false)))
-            .ignoresSafeArea(.container, edges: [.horizontal])
             .sheet(isPresented: $showingExcludeProducts) {
                 ProductSelectorNavigationView(configuration: .excludedProductsForCoupons,
                                               isPresented: $showingExcludeProducts,
@@ -168,8 +148,8 @@ struct CouponRestrictions: View {
                                         categoryListConfig: categoryListConfig,
                                         viewModel: viewModel.categorySelectorViewModel)
             }
-            LazyNavigationLink(destination: CouponAllowedEmails(viewModel: viewModel.allowedEmailsViewModel), isActive: $showingAllowedEmails) {
-                EmptyView()
+            .navigationDestination(isPresented: $showingAllowedEmails) {
+                CouponAllowedEmails(viewModel: viewModel.allowedEmailsViewModel)
             }
         }
         .navigationTitle(Localization.usageRestriction)

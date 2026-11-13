@@ -62,7 +62,7 @@ struct SupportChatRemoteTests {
     @Test func sendMessage_when_context_provided_then_context_is_in_request_parameters() async throws {
         // Given
         let remote = SupportChatRemote(network: network)
-        let context: [String: Any] = [
+        let context: RequestParameterDictionary = [
             "selectedSiteId": 220224716,
             "pathname": "/home/example.com"
         ]
@@ -95,6 +95,22 @@ struct SupportChatRemoteTests {
         // Then
         let parameters = try #require(network.queryParametersDictionary)
         #expect(parameters["context"] == nil)
+    }
+
+    @Test func test_sendMessage_when_context_has_mobile_report_then_preserves_full_report_in_json() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        let report = "Connectivity failed\n\n## Mobile Status Report\nOS: iOS 27\n# No store selected"
+        let context: RequestParameterDictionary = ["troubleshootingResults": .string(report), "site_url": .string("https://example.com")]
+
+        // When
+        _ = try? await remote.sendMessage(botSlug: botSlug, message: "Login failed", chatID: nil, sessionID: nil, context: context)
+
+        // Then
+        let parameters = try #require(network.queryParametersDictionary)
+        let sentContext = try #require(parameters["context"] as? [String: Any])
+        #expect(sentContext["troubleshootingResults"] as? String == report)
+        #expect(sentContext["site_url"] as? String == "https://example.com")
     }
 
     // MARK: - Response decoding

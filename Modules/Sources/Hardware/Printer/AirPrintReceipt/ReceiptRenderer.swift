@@ -115,19 +115,11 @@ private extension ReceiptRenderer {
     private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in content.lineItems {
-            var variations = ""
-            if !line.attributes.isEmpty {
-                variations.append(
-                    line.attributes.map {
-                            "\($0.name) \($0.value)".trimmingCharacters(in: .whitespaces)
-                        }
-                        .joined(separator: ", ")
-                )
-            }
+            let variations = line.attributesDescription
 
             var title = line.title
             if !variations.isEmpty {
-                title.append(". \(variations.trimmingCharacters(in: .whitespaces))")
+                title.append(". \(variations)")
             }
             let stripedTitle = title.htmlStripped()
             summaryContent += "<tr><td>\(stripedTitle) × \(line.quantity)</td><td>\(line.amount)</td></tr>"

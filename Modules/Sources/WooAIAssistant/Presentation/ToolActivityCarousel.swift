@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 
 struct ToolCallSnapshot: Identifiable, Equatable {

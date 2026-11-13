@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SimpleProductsOnlyInformation: View {
+    @Environment(\.posMetrics) private var metrics
     @Binding var isPresented: Bool
     @Environment(\.posExternalNavigation) private var navigation
 
@@ -18,7 +19,7 @@ struct SimpleProductsOnlyInformation: View {
             PointOfSaleInformationModalParagraphView(style: .outlined) {
                 Text(hintMessage)
 
-                Spacer().frame(height: POSSpacing.small)
+                Spacer().frame(height: metrics.spacing.small)
 
                 Button {
                     navigation.navigateToCreateOrder()
@@ -76,6 +77,9 @@ private extension SimpleProductsOnlyInformation {
     }
 }
 
+#if DEBUG
 #Preview {
     SimpleProductsOnlyInformation(isPresented: .constant(true))
+        .posPreviewModalParentSize()
 }
+#endif

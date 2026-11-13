@@ -1,6 +1,6 @@
 import Foundation
 
-public struct StoreOnboardingTask: Decodable, Equatable {
+public struct StoreOnboardingTask: Decodable, Equatable, Sendable {
     public let isComplete: Bool
     public let type: TaskType
 
@@ -16,7 +16,7 @@ public struct StoreOnboardingTask: Decodable, Equatable {
 }
 
 public extension StoreOnboardingTask {
-    enum TaskType: Decodable, Equatable {
+    enum TaskType: Decodable, Equatable, Sendable {
         case storeDetails
         case addFirstProduct
         case launchStore

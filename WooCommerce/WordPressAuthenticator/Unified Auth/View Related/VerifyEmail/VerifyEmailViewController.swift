@@ -184,10 +184,14 @@ private extension VerifyEmailViewController {
         let email = loginFields.username
 
         configureViewLoading(true)
+        // Capture before the async request so the save doesn't depend on `self` surviving:
+        // if the screen deallocates first, `self?.loginFields.siteAddress` would be nil and clear it.
+        let siteAddress = loginFields.siteAddress
         let service = WordPressComAccountService()
         service.requestAuthenticationLink(for: email,
                                           jetpackLogin: loginFields.meta.jetpackLogin,
                                           success: { [weak self] in
+                                            MagicLinkSiteAddressStorage.shared.save(siteAddress)
                                             self?.didRequestAuthenticationLink()
                                             self?.configureViewLoading(false)
             }, failure: { [weak self] (error: Error) in

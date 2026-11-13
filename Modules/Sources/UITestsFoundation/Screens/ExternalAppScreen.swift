@@ -1,38 +1,65 @@
 import XCTest
 
+@MainActor
 public final class ExternalAppScreen {
 
-    public private(set) var app: XCUIApplication!
+    public init() {}
 
-    public init() {
-        app = XCUIApplication()
-    }
-
-    let universalLinks = [
-        "payments": "https://woocommerce.com/mobile/payments",
-        "orders": "https://www.woocommerce.com/mobile/orders/details?blog_id=161477129&order_id=3337"
+    private let universalLinks: [String: UniversalLink] = [
+        "payments": UniversalLink(
+            url: "https://woocommerce.com/mobile/payments",
+            destinationElement: { $0.buttons["card-reader-manuals"] }
+        ),
+        "orders": UniversalLink(
+            url: "https://www.woocommerce.com/mobile/orders/details?blog_id=161477129&order_id=3337",
+            destinationElement: { $0.tables["order-details-table-view"] }
+        )
     ]
 
-    // To open universal links listed in mocked HTML file
-    public func openUniversalLinkFromSafariApp(linkedScreen: String) throws {
+    public func openUniversalLink(linkedScreen: String) throws {
         guard let universalLink = universalLinks[linkedScreen] else {
             throw NSError(domain: "UI Test", code: 0, userInfo: [NSLocalizedDescriptionKey: "Universal link not found for key: \(linkedScreen)"])
         }
-
-        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
-        safari.launch()
-
-        // To accommodate elements on both iPhone and iPad
-        let searchBarElement = UIDevice.current.userInterfaceIdiom == .phone ? "CapsuleNavigationBar?isSelected=true" : "UnifiedTabBar"
-
-        // Go to Wiremock's HTML file with universal links
-        safari.otherElements[searchBarElement].tap()
-        safari.typeText("http://localhost:8282/links.html")
-        safari.buttons["Go"].tap()
-
-        guard safari.links[universalLink].waitForIsHittable(timeout: 10) else {
-            return XCTFail("\(universalLink) is not displayed!")
+        guard let url = URL(string: universalLink.url) else {
+            throw NSError(domain: "UI Test", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid universal link: \(universalLink.url)"])
         }
-        safari.links[universalLink].tap()
+
+        let app = XCUIApplication()
+        for attempt in 1...Constants.maximumOpenAttempts {
+            XCUIDevice.shared.system.open(url)
+            let destinationElement = universalLink.destinationElement(app)
+            if destinationElement.waitForExistence(timeout: Constants.destinationWaitTimeout) {
+                return
+            }
+
+            // Once Woo handled the link, keep waiting for its destination instead of stacking the same route again.
+            if app.state == .runningForeground || destinationElement.exists {
+                if destinationElement.waitForExistence(timeout: Constants.routedDestinationWaitTimeout) {
+                    return
+                }
+                break
+            }
+
+            if attempt < Constants.maximumOpenAttempts {
+                app.activate()
+            }
+        }
+
+        throw NSError(
+            domain: "UI Test",
+            code: 0,
+            userInfo: [NSLocalizedDescriptionKey: "Universal link did not open \(linkedScreen) after \(Constants.maximumOpenAttempts) attempts"]
+        )
+    }
+
+    private struct UniversalLink {
+        let url: String
+        let destinationElement: (XCUIApplication) -> XCUIElement
+    }
+
+    private enum Constants {
+        static let maximumOpenAttempts = 3
+        static let destinationWaitTimeout: TimeInterval = 10
+        static let routedDestinationWaitTimeout: TimeInterval = 20
     }
 }

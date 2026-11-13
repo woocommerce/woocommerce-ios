@@ -131,7 +131,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     func observeIsSiteEligibleForBlaze() {
         stores.site
             .removeDuplicates()
-            .sink { site in
+            .sink { [weak self] site in
                 Task { [weak self] in
                     guard
                         let self,

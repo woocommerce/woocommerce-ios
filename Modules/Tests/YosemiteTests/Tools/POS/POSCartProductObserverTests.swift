@@ -77,6 +77,30 @@ struct POSCartProductObserverTests {
         }
     }
 
+    @Test func observe_when_variation_parent_has_attribute_not_used_for_variations_then_name_skips_it() async throws {
+        // Given
+        let grdbManager = try GRDBManager()
+        insertSite(into: grdbManager)
+        insertVariableProductWithVariation(into: grdbManager)
+
+        let sut = POSCartProductObserver(
+            siteID: siteID,
+            grdbManager: grdbManager,
+            currencySettings: CurrencySettings()
+        )
+
+        // When
+        let items = await firstEmission(from: sut, productIDs: [], variationIDs: [1001])
+
+        // Then
+        guard case .variation(let variation) = items.first else {
+            Issue.record("Expected variation, got \(String(describing: items.first))")
+            return
+        }
+        #expect(variation.name.contains("Red"))
+        #expect(!variation.name.contains("Material"))
+    }
+
     @Test func observe_when_same_IDs_called_again_then_does_not_rebuild() throws {
         // Given
         let grdbManager = try GRDBManager()
@@ -149,8 +173,60 @@ private extension POSCartProductObserverTests {
         }
     }
 
+    /// Inserts variable product 100 with a "Color" attribute used for variations, a "Material" attribute
+    /// not used for variations, and variation 1001 with "Color: Red".
+    func insertVariableProductWithVariation(into grdbManager: GRDBManager) {
+        try? grdbManager.databaseConnection.write { db in
+            let product = PersistedProduct(
+                id: 100,
+                siteID: siteID,
+                name: "Hoodie",
+                productTypeKey: "variable",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "10.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "publish"
+            )
+            try product.insert(db)
+
+            var color = PersistedProductAttribute(id: nil, siteID: siteID, productID: 100, remoteAttributeID: 1, name: "Color",
+                                                  position: 0, visible: true, variation: true, options: ["Red", "Blue"])
+            try color.insert(db)
+            var material = PersistedProductAttribute(id: nil, siteID: siteID, productID: 100, remoteAttributeID: 0, name: "Material",
+                                                     position: 1, visible: true, variation: false, options: ["Cotton"])
+            try material.insert(db)
+
+            let variation = PersistedProductVariation(
+                id: 1001,
+                siteID: siteID,
+                productID: 100,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "10.00",
+                downloadable: false,
+                fullDescription: nil,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            try variation.insert(db)
+            var variationColor = PersistedProductVariationAttribute(id: nil, siteID: siteID, productVariationID: 1001,
+                                                                    remoteAttributeID: 1, name: "Color", option: "Red")
+            try variationColor.insert(db)
+        }
+    }
+
     /// Calls observe and waits for the first emission from the items publisher.
-    func firstEmission(from observer: POSCartProductObserver, productIDs: Set<Int64>) async -> [POSItem] {
+    func firstEmission(from observer: POSCartProductObserver,
+                       productIDs: Set<Int64>,
+                       variationIDs: Set<Int64> = []) async -> [POSItem] {
         await withCheckedContinuation { (continuation: CheckedContinuation<[POSItem], Never>) in
             var cancellable: AnyCancellable?
             cancellable = observer.items
@@ -159,7 +235,7 @@ private extension POSCartProductObserverTests {
                     continuation.resume(returning: items)
                     cancellable?.cancel()
                 }
-            observer.observe(productIDs: productIDs, variationIDs: [])
+            observer.observe(productIDs: productIDs, variationIDs: variationIDs)
         }
     }
 }

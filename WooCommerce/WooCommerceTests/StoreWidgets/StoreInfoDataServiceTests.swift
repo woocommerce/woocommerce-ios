@@ -171,6 +171,7 @@ struct StoreInfoDataServiceTests {
 
     // MARK: - General settings
 
+    @MainActor
     @Test func fetchGeneralSettings_when_request_succeeds_then_returns_currency_settings() async throws {
         // Given
         let network = MockNetwork()
@@ -189,6 +190,7 @@ struct StoreInfoDataServiceTests {
         #expect(network.requestsForResponseData.count == 1)
     }
 
+    @MainActor
     @Test func fetchGeneralSettings_when_response_has_incomplete_currency_settings_then_throws() async {
         // Given
         let network = MockNetwork()
@@ -203,6 +205,7 @@ struct StoreInfoDataServiceTests {
         #expect(network.requestsForResponseData.count == 1)
     }
 
+    @MainActor
     @Test func fetchGeneralSettings_when_request_fails_then_throws() async {
         // Given
         let network = MockNetwork()

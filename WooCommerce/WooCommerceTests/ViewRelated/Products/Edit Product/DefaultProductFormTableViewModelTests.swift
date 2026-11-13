@@ -33,6 +33,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             }
         }
         XCTAssertEqual(inventoryViewModel?.details, ProductStockStatus.onBackOrder.description)
+        XCTAssertEqual(inventoryViewModel?.detailsAccessibilityIdentifier, "product-stock-status-onbackorder")
     }
 
     func test_variable_product_inventory_row_has_no_details_when_stock_management_is_disabled_without_sku() {
@@ -63,6 +64,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             }
         }
         XCTAssertNil(inventoryViewModel?.details)
+        XCTAssertNotNil(inventoryViewModel)
+        XCTAssertNil(inventoryViewModel?.detailsAccessibilityIdentifier)
     }
 
     func test_variable_product_inventory_row_has_details_when_passing_global_unique_identifier() {
@@ -96,6 +99,38 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
         let expectedDetails = "GTIN, UPC, EAN, ISBN: \(globalUniqueID)"
         XCTAssertEqual(inventoryViewModel?.details, expectedDetails)
+        XCTAssertNil(inventoryViewModel?.detailsAccessibilityIdentifier)
+    }
+
+    func test_inventory_when_stock_is_managed_then_stock_status_identifier_is_absent() throws {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                                          sku: "managed-product",
+                                          manageStock: true,
+                                          stockQuantity: 5,
+                                          stockStatusKey: ProductStockStatus.inStock.rawValue)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        let inventoryViewModel = try XCTUnwrap(rows.compactMap { row -> ProductFormSection.SettingsRow.ViewModel? in
+            guard case let .inventory(viewModel, _) = row else {
+                return nil
+            }
+            return viewModel
+        }.first)
+        XCTAssertNotNil(inventoryViewModel.details)
+        XCTAssertNil(inventoryViewModel.detailsAccessibilityIdentifier)
     }
 
     func test_variation_view_model_image_row_has_isVariation_true() {
@@ -331,6 +366,50 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
 
         let hasOneTimeShippingEnabledLabel = shippingViewModel?.details?.contains(DefaultProductFormTableViewModel.Localization.oneTimeShippingEnabled) ?? false
         XCTAssertFalse(hasOneTimeShippingEnabledLabel)
+    }
+
+    // MARK: Price row subscription gating
+
+    func test_price_row_shows_recurring_price_for_subscription_product() throws {
+        // Given
+        let subscription = ProductSubscription.fake().copy(period: .month, periodInterval: "1")
+        let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue,
+                                          regularPrice: "60",
+                                          subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "$",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        let priceDetails = try XCTUnwrap(priceRowDetails(in: tableViewModel))
+        XCTAssertTrue(priceDetails.contains("every"))
+    }
+
+    func test_price_row_shows_plain_price_for_simple_product_with_stale_subscription_metadata() throws {
+        // Given
+        // A simple product can retain `_subscription_*` metadata after being changed away from a
+        // subscription type; the price row must show a plain regular price, not a recurring one.
+        let subscription = ProductSubscription.fake().copy(period: .month, periodInterval: "1")
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                                          regularPrice: "60",
+                                          subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "$",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        let priceDetails = try XCTUnwrap(priceRowDetails(in: tableViewModel))
+        XCTAssertFalse(priceDetails.contains("every"))
     }
 
     // MARK: Subscription free trial
@@ -836,9 +915,53 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertFalse(containsDescriptionAIRow)
         XCTAssertFalse(containsLearnMoreAboutAIRow)
     }
+
+    func test_attributes_row_lists_each_attribute_with_its_options() throws {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: [
+            ProductAttribute.fake().copy(name: "Color", variation: true, options: ["Red", "Blue"]),
+            ProductAttribute.fake().copy(name: "Material", variation: false, options: [])
+        ])
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            return XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+        }
+        let attributesRowViewModel = try XCTUnwrap(rows.compactMap { row -> ProductFormSection.SettingsRow.ViewModel? in
+            if case let .attributes(viewModel, _) = row {
+                return viewModel
+            }
+            return nil
+        }.first)
+        XCTAssertEqual(attributesRowViewModel.title, "Attributes")
+        XCTAssertEqual(attributesRowViewModel.details, "Color: Red, Blue\nMaterial")
+    }
 }
 
 private extension DefaultProductFormTableViewModelTests {
+    /// Returns the `details` string of the price settings row, searching all settings sections.
+    func priceRowDetails(in tableViewModel: DefaultProductFormTableViewModel) -> String? {
+        for section in tableViewModel.sections {
+            guard case let .settings(rows) = section else {
+                continue
+            }
+            for row in rows {
+                if case let .price(viewModel, _) = row {
+                    return viewModel.details
+                }
+            }
+        }
+        return nil
+    }
+
     enum Localization {
         static let priceFormat = NSLocalizedString("Regular price: %1$@ every %2$@",
                                                    comment: "Description of the subscription price for a product, with the price and billing frequency. " +

@@ -1,7 +1,7 @@
 import Foundation
 import Codegen
 
-public struct Receipt: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct Receipt: Decodable, Sendable, GeneratedFakeable, GeneratedCopiable {
     public let receiptURL: String
     public let expirationDate: String
 

@@ -104,19 +104,11 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogStaleWarningDismissed, properties: [:])
         }
 
-        // MARK: - Sunset Warning Events
-
-        public static func sunsetWarningShown() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSunsetWarningShown, properties: [:])
-        }
-
-        public static func sunsetWarningDismissed() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSunsetWarningDismissed, properties: [:])
-        }
-
         // MARK: - Core Sync Events
 
-        public static func syncStarted(syncType: String, syncStrategy: String, connectionType: String) -> WooAnalyticsEvent {
+        public static func syncStarted(syncType: String,
+                                       syncStrategy: String,
+                                       connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncStarted,
                               properties: [
                                 Key.syncType: syncType,
@@ -189,7 +181,9 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed, properties: properties, error: error)
         }
 
-        public static func syncSkipped(reason: String, syncType: String, syncStrategy: String) -> WooAnalyticsEvent {
+        public static func syncSkipped(reason: String,
+                                       syncType: String,
+                                       syncStrategy: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncSkipped,
                               properties: [Key.reason: reason,
                                            Key.syncType: syncType,
@@ -203,6 +197,44 @@ extension WooAnalyticsEvent {
         public static func blockedFellBackToRemote(wooCommerceVersion: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogBlockedFellBackToRemote,
                               properties: [Key.wooCommerceVersion: wooCommerceVersion ?? "unknown"])
+        }
+    }
+}
+
+// MARK: - In-Person Payments Card Reader Location Events
+extension WooAnalyticsEvent {
+    /// Analytics events for the outcome of card reader location fetching.
+    ///
+    /// Tracked from the data layer (`CommonReaderConfigProvider`), where the location fetch
+    /// resolves and the failure reason is determined. Defined here (rather than in the app target's
+    /// `InPersonPayments` group) so that Yosemite can reach them.
+    public enum InPersonPaymentsLocation {
+        /// Event property keys.
+        private enum Key {
+            static let siteID = "site_id"
+            static let reason = "reason"
+        }
+
+        /// Reason the location fetch failed. Raw values are sent as the `reason` property.
+        public enum FailureReason: String {
+            case incompleteStoreAddress = "incomplete_store_address"
+            case invalidPostalCode = "invalid_postal_code"
+            case other
+        }
+
+        /// Tracked when the default reader location is fetched successfully.
+        public static func cardReaderLocationSuccess(siteID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationSuccess,
+                              properties: [Key.siteID: "\(siteID)"])
+        }
+
+        /// Tracked when the default reader location fetch fails.
+        public static func cardReaderLocationFailure(siteID: Int64, reason: FailureReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationFailure,
+                              properties: [
+                                Key.siteID: "\(siteID)",
+                                Key.reason: reason.rawValue
+                              ])
         }
     }
 }

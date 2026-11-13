@@ -11,21 +11,25 @@ struct BarcodeScannerContainer: View {
     let configuration: HIDBarcodeParserConfiguration
     /// Callback that is triggered when a barcode scan completes (success or failure)
     let onScan: (Result<String, HIDBarcodeParserError>) -> Void
+    let isScanningEnabled: () -> Bool
 
     @Environment(\.posAnalytics) private var analytics
 
     init(
         configuration: HIDBarcodeParserConfiguration = .default,
+        isScanningEnabled: @escaping () -> Bool = { true },
         onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void
     ) {
         self.configuration = configuration
         self.onScan = onScan
+        self.isScanningEnabled = isScanningEnabled
     }
 
     var body: some View {
         BarcodeScannerContainerRepresentable(
             configuration: configuration,
             analytics: analytics,
+            isScanningEnabled: isScanningEnabled,
             onScan: onScan
         )
         .frame(width: 0, height: 0)
@@ -40,17 +44,21 @@ struct BarcodeScannerContainer: View {
 struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
     let configuration: HIDBarcodeParserConfiguration
     let analytics: POSAnalyticsProviding
+    let isScanningEnabled: () -> Bool
     let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
-    func makeUIViewController(context: Context) -> UIViewController {
+    func makeUIViewController(context: Context) -> GameControllerBarcodeScannerHostingController {
         return GameControllerBarcodeScannerHostingController(
             configuration: configuration,
             analytics: analytics,
+            isScanningEnabled: isScanningEnabled,
             onScan: onScan
         )
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: GameControllerBarcodeScannerHostingController, context: Context) {
+        uiViewController.isScanningEnabled = isScanningEnabled
+    }
 }
 
 /// A UIHostingController that dynamically switches between GameController and UIKit barcode scanning
@@ -66,11 +74,14 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     private let onScan: (Result<String, HIDBarcodeParserError>) -> Void
     private let voiceOverStateProvider: VoiceOverStateProvider
     private let analytics: POSAnalyticsProviding
+    private var isObserving = false
+    var isScanningEnabled: () -> Bool
 
     // Public initializer for production use
     init(
         configuration: HIDBarcodeParserConfiguration,
         analytics: POSAnalyticsProviding,
+        isScanningEnabled: @escaping () -> Bool = { true },
         onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void,
         voiceOverStateProvider: VoiceOverStateProvider = SystemVoiceOverStateProvider()
     ) {
@@ -78,9 +89,9 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
         self.onScan = onScan
         self.voiceOverStateProvider = voiceOverStateProvider
         self.analytics = analytics
+        self.isScanningEnabled = isScanningEnabled
         super.init(rootView: EmptyView())
 
-        setupInitialObserver()
         observeVoiceOverChanges()
     }
 
@@ -89,15 +100,11 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     }
 
     deinit {
+        // Releasing the container releases its observers; `GameControllerBarcodeObserver` cleans up in its own deinit.
         NotificationCenter.default.removeObserver(self)
-        cleanupObservers()
     }
 
     // MARK: - Observer Management
-
-    private func setupInitialObserver() {
-        switchToAppropriateObserver()
-    }
 
     private func observeVoiceOverChanges() {
         NotificationCenter.default.addObserver(
@@ -109,6 +116,7 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     }
 
     @objc private func voiceOverStatusChanged() {
+        guard isObserving else { return }
         switchToAppropriateObserver()
     }
 
@@ -121,12 +129,14 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
             uiKitObserver = UIKitBarcodeObserver(
                 configuration: configuration,
                 analytics: analytics,
+                isScanningEnabled: { [weak self] in self?.isScanningEnabled() ?? false },
                 onScan: onScan
             )
         } else {
             gameControllerObserver = GameControllerBarcodeObserver(
                 configuration: configuration,
                 analytics: analytics,
+                isScanningEnabled: { [weak self] in self?.isScanningEnabled() ?? false },
                 onScan: onScan
             )
         }
@@ -145,6 +155,10 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        guard !isObserving else { return }
+
+        isObserving = true
+        switchToAppropriateObserver()
 
         if voiceOverStateProvider.isVoiceOverRunning {
             becomeFirstResponder()
@@ -153,10 +167,14 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        guard isObserving else { return }
 
         if voiceOverStateProvider.isVoiceOverRunning {
             resignFirstResponder()
         }
+
+        isObserving = false
+        cleanupObservers()
     }
 
     /// Handles the end of keyboard press events, interpreting them as barcode input.

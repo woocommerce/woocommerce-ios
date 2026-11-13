@@ -49,7 +49,7 @@ private extension IssueRefundCoordinatingController {
         // Select quantity action
         issueRefundViewController.onSelectQuantityAction = { [weak self, weak issueRefundViewController] command in
             self?.navigateToItemQuantitySelection(using: command) { selectedQuantity in
-                issueRefundViewController?.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: command.itemIndex)
+                issueRefundViewController?.updateRefundQuantity(quantity: selectedQuantity, forItemWithID: command.itemID)
             }
         }
 

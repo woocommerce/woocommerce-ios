@@ -16,13 +16,8 @@ import CocoaLumberjackSwift
 /// Change this to adjust the verbosity of the log.
 ///
 /// Example:
-///     internal var defaultDebugLevel: DDLogLevel = .verbose
-internal var defaultDebugLevel: DDLogLevel = CocoaLumberjackSwift.dynamicLogLevel
-
-/// Reset the logging level threshold to the app-wide default.
-internal func resetDefaultDebugLevel() {
-    defaultDebugLevel = CocoaLumberjackSwift.dynamicLogLevel
-}
+///     internal let defaultDebugLevel: DDLogLevel = .verbose
+internal let defaultDebugLevel: DDLogLevel = CocoaLumberjackSwift.dynamicLogLevel
 
 internal func DDLogDebug(_ message: @autoclosure () -> String,
                          level: DDLogLevel = defaultDebugLevel,

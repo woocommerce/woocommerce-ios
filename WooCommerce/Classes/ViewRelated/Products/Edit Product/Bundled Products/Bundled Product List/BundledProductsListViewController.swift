@@ -31,11 +31,13 @@ struct BundledProductsList: View {
     ///
     @ScaledMetric private var imageWidth = Layout.standardImageWidth
 
-    ///   Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
     var body: some View {
+        SafeAreaInsetsReader { _ in
+            content
+        }
+    }
+
+    private var content: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
                 ForEach(viewModel.bundledProducts) { bundledProduct in
@@ -54,16 +56,13 @@ struct BundledProductsList: View {
                         TitleAndSubtitleRow(title: bundledProduct.title, subtitle: bundledProduct.subtitle)
                             .accessibilityElement(children: .combine)
                     }
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    Divider().padding(.leading, insets: safeAreaInsets)
+                    Divider()
                 }
             }
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: [])
 
             FooterNotice(infoText: viewModel.infoNotice)
-                .padding(.horizontal, insets: safeAreaInsets)
         }
-        .ignoresSafeArea(edges: .horizontal)
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )

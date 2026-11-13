@@ -20,6 +20,7 @@ final class RefundConfirmationViewModel {
     /// Amount currency formatter
     ///
     private let currencyFormatter: CurrencyFormatter
+    private let numberOfDecimals: Int
 
     /// StoresManager to dispatch the "Create Refund" action.
     ///
@@ -65,6 +66,7 @@ final class RefundConfirmationViewModel {
         self.details = details
         self.actionProcessor = actionProcessor
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.numberOfDecimals = currencySettings.fractionDigits
         self.analytics = analytics
     }
 
@@ -74,19 +76,21 @@ final class RefundConfirmationViewModel {
     ///   - rootViewController: view controller used to present in-person refund alerts if needed.
     ///   - showInProgressUI: called when in-progress UI should be shown during refund submission. In-person refund submission does not show in-progress UI.
     ///   - onCompletion: called when the refund submission completes.
+    @MainActor
     func submit(rootViewController: UIViewController,
                 showInProgressUI: @escaping (() -> Void),
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // Creates refund object.
         let shippingLines = details.refundsShipping ? details.shippingLines : []
-        let fees = details.refundsFees ? details.order.fees : []
+        let fees = details.refundsFees ? details.fees : []
         let useCase = RefundCreationUseCase(amount: details.amount,
                                             reason: reasonForRefundCellViewModel.value,
                                             automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
                                             items: details.items,
                                             shippingLines: shippingLines,
                                             fees: fees,
-                                            currencyFormatter: currencyFormatter)
+                                            currencyFormatter: currencyFormatter,
+                                            numberOfDecimals: numberOfDecimals)
         let refund = useCase.createRefund()
 
         // Submits refund.
@@ -98,7 +102,7 @@ final class RefundConfirmationViewModel {
             rootViewController: rootViewController,
             alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
                                               presentingController: rootViewController),
-            cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
+            cardPresentConfiguration: CardPresentConfigurationLoader().configuration,
             cardReaderConnectionAlerts: BluetoothReaderConnectionAlertsProvider(),
             alertPresenter: CardPresentPaymentAlertsPresenter(rootViewController: rootViewController),
             dependencies: RefundSubmissionUseCase.Dependencies(
@@ -128,12 +132,18 @@ final class RefundConfirmationViewModel {
 
     /// Updates the order associated with the refund to reflect the latest refund status.
     ///
+    @MainActor
     func updateOrder(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let finish: @MainActor @Sendable (Result<Void, Error>) -> Void = { result in
+            onCompletion(result)
+        }
         let action = OrderAction.retrieveOrder(siteID: details.order.siteID, orderID: details.order.orderID) { _, error  in
-            if let error {
-                return onCompletion(.failure(error))
+            Task { @MainActor in
+                if let error {
+                    return finish(.failure(error))
+                }
+                finish(.success(()))
             }
-            onCompletion(.success(()))
         }
         actionProcessor.dispatch(action)
     }
@@ -165,6 +175,7 @@ extension RefundConfirmationViewModel {
         /// Indicates if fees will be refunded
         ///
         let refundsFees: Bool
+        let fees: [OrderFeeLine]
 
         /// Order items and quantities to refund
         ///
@@ -186,13 +197,15 @@ extension RefundConfirmationViewModel {
              items: [RefundableOrderItem],
              paymentGateway: PaymentGateway?,
              paymentGatewayAccount: PaymentGatewayAccount?,
-             shippingLines: [ShippingLine]? = nil) {
+             shippingLines: [ShippingLine]? = nil,
+             fees: [OrderFeeLine]? = nil) {
             self.order = order
             self.charge = charge
             self.amount = amount
             self.refundsShipping = refundsShipping
             self.shippingLines = shippingLines ?? order.shippingLines
             self.refundsFees = refundsFees
+            self.fees = fees ?? order.fees
             self.items = items
             self.paymentGateway = paymentGateway
             self.paymentGatewayAccount = paymentGatewayAccount
@@ -338,7 +351,7 @@ private extension WCPayCardBrand {
     }
 
     func cardAccessibilityDescription(last4: String) -> NSAttributedString {
-        let localizedDescription = String(format: Localization.cardAccessibilityDescriptionFormat, cardBrandName(), last4)
+        let localizedDescription = String(format: Localization.cardAccessibilityDescriptionFormat, displayName, last4)
         let attributedLocalizedDescription = NSMutableAttributedString(string: localizedDescription)
 
         guard let last4Range = localizedDescription.range(of: last4) else {
@@ -349,33 +362,6 @@ private extension WCPayCardBrand {
         attributedLocalizedDescription.setAttributes([.accessibilitySpeechSpellOut: true], range: last4NSRange)
 
         return attributedLocalizedDescription
-    }
-
-    func cardBrandName() -> String {
-        switch self {
-        case .amex:
-            return "American Express"
-        case .diners:
-            return "Diners Club"
-        case .discover:
-            return "Discover"
-        case .eftposAu:
-            return "eftpos"
-        case .interac:
-            return "Interac"
-        case .jcb:
-            return "JCB"
-        case .mastercard:
-            return "Mastercard"
-        case .unionpay:
-            return "UnionPay"
-        case .visa:
-            return "Visa"
-        case .cartesBancaires:
-            return "Cartes Bancaires"
-        case .unknown:
-            return ""
-        }
     }
 
     enum Localization {

@@ -59,7 +59,7 @@ struct ConfigurableBundleItemView: View {
 
                     Button {
                         viewModel.createVariationSelectorViewModel()
-                        showsVariationSelector = true
+                        showsVariationSelector = viewModel.variationSelectorViewModel != nil
                     } label: {
                         HStack {
                             Text(viewModel.selectedVariation == nil ?
@@ -76,18 +76,31 @@ struct ConfigurableBundleItemView: View {
                 }
             }
             .renderedIf(viewModel.isVariable && viewModel.isIncludedInBundle && viewModel.quantity > 0)
-
-            if let variationSelectorViewModel = viewModel.variationSelectorViewModel {
-                LazyNavigationLink(destination: ProductVariationSelectorView(
-                    isPresented: $showsVariationSelector,
-                    viewModel: variationSelectorViewModel,
-                    onMultipleSelections: { _ in }),
-                                   isActive: $showsVariationSelector) {
-                    EmptyView()
-                }
-            }
         }
         .padding()
+        .navigationDestination(isPresented: showsVariationSelectorBinding) {
+            if let variationSelectorViewModel = viewModel.variationSelectorViewModel {
+                ProductVariationSelectorView(
+                    isPresented: showsVariationSelectorBinding,
+                    viewModel: variationSelectorViewModel,
+                    onMultipleSelections: { _ in }
+                )
+            }
+        }
+    }
+
+    private var showsVariationSelectorBinding: Binding<Bool> {
+        Binding(
+            get: {
+                showsVariationSelector && viewModel.variationSelectorViewModel != nil
+            },
+            set: { isPresented in
+                showsVariationSelector = isPresented && viewModel.variationSelectorViewModel != nil
+                if !isPresented {
+                    viewModel.clearVariationSelectorViewModel()
+                }
+            }
+        )
     }
 }
 

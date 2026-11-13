@@ -1,14 +1,29 @@
 import Foundation
+import Yosemite
+import class Networking.UserAgent
+import enum NetworkingCore.CookieNonceAuthenticationFailure
+import struct NetworkingCore.CookieNonceAuthenticationEndpoints
+import enum NetworkingCore.CookieNonceAuthenticationResponseStage
+import enum NetworkingCore.CookieNonceAuthenticationRules
+import protocol NetworkingCore.URLSessionProtocol
 
-protocol SiteCredentialLoginProtocol {
+@MainActor
+protocol SiteCredentialLoginProtocol: AnyObject {
+    var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)? { get set }
+    func cancel()
+
+    /// - Parameter onLoginFailure: called with the failure and whether the configured login entry was proven
+    ///   to render one eligible WordPress login form before the failure occurred, plus whether the failure
+    ///   came from the credential response and can plausibly be solved by browser authentication.
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
-                       onLoginFailure: @escaping (SiteCredentialLoginError) -> Void)
+                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool, Bool) -> Void)
 
     func handleLogin(username: String, password: String)
 }
 
 enum SiteCredentialLoginError: LocalizedError {
     static let errorDomain = "SiteCredentialLogin"
+    case unexpectedResponse(LoginUnexpectedResponseFailure)
     case invalidCredentials
     case basicAuthenticationRequired
     case loginFailed(message: String)
@@ -18,10 +33,19 @@ enum SiteCredentialLoginError: LocalizedError {
     case unacceptableStatusCode(code: Int)
     case genericFailure(underlyingError: Error)
 
+    /// Preserve the established presentation and recovery policy independently of analytics context.
+    var presentationError: SiteCredentialLoginError {
+        guard case .unexpectedResponse(let failure) = self else { return self }
+        guard failure.kind == .unacceptableStatusCode, let code = failure.statusCode else { return .invalidLoginResponse }
+        return .unacceptableStatusCode(code: code)
+    }
+
     /// Used for tracking error code
     ///
     var underlyingError: NSError {
         switch self {
+        case .unexpectedResponse:
+            return presentationError.underlyingError
         case .inaccessibleLoginPage,
              .inaccessibleAdminPage,
              .invalidLoginResponse,
@@ -37,6 +61,8 @@ enum SiteCredentialLoginError: LocalizedError {
 
     var errorCode: Int {
         switch self {
+        case .unexpectedResponse:
+            return presentationError.errorCode
         case .inaccessibleLoginPage, .inaccessibleAdminPage:
             return 404
         case .invalidLoginResponse:
@@ -56,6 +82,8 @@ enum SiteCredentialLoginError: LocalizedError {
 
     var errorMessage: String {
         switch self {
+        case .unexpectedResponse:
+            return presentationError.errorMessage
         case .inaccessibleLoginPage:
             return Localization.inaccessibleLoginPage
         case .inaccessibleAdminPage:
@@ -77,6 +105,24 @@ enum SiteCredentialLoginError: LocalizedError {
 
     var errorDescription: String? {
         underlyingError.localizedDescription
+    }
+
+    func offersBrowserAlternative(at stage: CookieNonceAuthenticationResponseStage) -> Bool {
+        guard stage == .credentials else {
+            return false
+        }
+        switch self {
+        case .unexpectedResponse:
+            return presentationError.offersBrowserAlternative(at: stage)
+        case .invalidCredentials, .invalidLoginResponse, .loginFailed:
+            return true
+        case .basicAuthenticationRequired,
+             .inaccessibleLoginPage,
+             .inaccessibleAdminPage,
+             .unacceptableStatusCode,
+             .genericFailure:
+            return false
+        }
     }
 
     private enum Localization {
@@ -111,53 +157,117 @@ enum SiteCredentialLoginError: LocalizedError {
 
 /// This use case handles site credential login without the need to use XMLRPC API.
 /// Steps for login:
-/// - Make a request to the site wp-login.php with a redirect to the nonce retrieval URL.
-/// - If the redirect succeeds with a nonce in the response, login is successful.
-/// - If the request does not redirect or the redirect fails, login fails.
+/// - Preflight the configured login entry and verify one eligible WordPress login form.
+/// - Post to that transaction's form action with the exact rest nonce endpoint as the redirect target.
+/// - Prevent the HTTP stack from automatically following that redirect.
+/// - Accept only the expected nonce or configured admin redirect as login-success evidence, but never follow it.
+/// - Optionally prove the admin dashboard from its independently derived URL.
+/// - Issue an explicit nonce GET using the same private session.
 /// Ref: pe5sF9-1iQ-p2
 ///
+@MainActor
 final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
-    private let siteURL: String
+    private let endpointConfiguration: Result<CookieNonceAuthenticationEndpoints, SiteCredentialLoginError>
     private let cookieJar: HTTPCookieStorage
+    private let session: URLSessionProtocol
+    private let loginSession: URLSessionProtocol
+    private let ownedTransactionSession: URLSession?
+    private let verifyAdminDashboard: Bool
+    private let logUnexpectedResponse: (String) -> Void
     private var successHandler: (() -> Void)?
-    private var errorHandler: ((SiteCredentialLoginError) -> Void)?
-    private lazy var session = URLSession(configuration: .default)
+    private var errorHandler: ((SiteCredentialLoginError, Bool, Bool) -> Void)?
+    var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)?
+    private var loginTask: Task<Void, Never>?
 
     init(siteURL: String,
-         cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
-        self.siteURL = siteURL
+         endpoints configuredEndpoints: CookieNonceAuthenticationEndpoints? = nil,
+         verifyAdminDashboard: Bool = false,
+         cookieJar: HTTPCookieStorage = SiteCredentialLoginUseCase.makePrivateCookieJar(),
+         session: URLSessionProtocol? = nil,
+         loginSession: URLSessionProtocol? = nil,
+         logUnexpectedResponse: @escaping (String) -> Void = { DDLogWarn($0) }) {
+        do {
+            guard let siteURL = URL(string: siteURL) else {
+                throw SiteCredentialLoginError.invalidLoginResponse
+            }
+            let defaultEndpoints = try CookieNonceAuthenticationEndpoints(siteURL: siteURL)
+            if let configuredEndpoints {
+                guard defaultEndpoints.siteURL == configuredEndpoints.siteURL else {
+                    throw SiteCredentialLoginError.invalidLoginResponse
+                }
+                self.endpointConfiguration = .success(configuredEndpoints)
+            } else {
+                self.endpointConfiguration = .success(defaultEndpoints)
+            }
+        } catch {
+            self.endpointConfiguration = .failure(.invalidLoginResponse)
+        }
         self.cookieJar = cookieJar
+        let transactionSession = session ?? Self.makeRedirectBlockingSession(cookieJar: cookieJar)
+        self.session = transactionSession
+        self.loginSession = loginSession ?? transactionSession
+        self.ownedTransactionSession = session == nil ? transactionSession as? URLSession : nil
+        self.verifyAdminDashboard = verifyAdminDashboard
+        self.logUnexpectedResponse = logUnexpectedResponse
         super.init()
     }
 
+    deinit {
+        loginTask?.cancel()
+        ownedTransactionSession?.invalidateAndCancel()
+    }
+
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
-                       onLoginFailure: @escaping (SiteCredentialLoginError) -> Void) {
+                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool, Bool) -> Void) {
         self.successHandler = onLoginSuccess
         self.errorHandler = onLoginFailure
     }
 
     func handleLogin(username: String, password: String) {
+        cancel()
         // Old cookies can make the login succeeds even with incorrect credentials
         // So we need to clear all cookies before login.
         clearAllCookies()
-        guard let loginRequest = buildLoginRequest(username: username, password: password) else {
-            DDLogError("⛔️ Error constructing login requests")
-            return
-        }
-        Task { @MainActor in
+        loginTask = Task { @MainActor in
+            var loginEntryVerified = false
+            var responseStage = CookieNonceAuthenticationResponseStage.preflight
             do {
-                try await startLogin(with: loginRequest)
+                let endpoints: CookieNonceAuthenticationEndpoints
+                switch endpointConfiguration {
+                case .success(let configuredEndpoints):
+                    endpoints = configuredEndpoints
+                case .failure(let error):
+                    DDLogError("⛔️ Error constructing or validating login requests")
+                    throw error
+                }
+                try await startLogin(
+                    username: username,
+                    password: password,
+                    endpoints: endpoints,
+                    onLoginEntryVerified: { loginEntryVerified = true },
+                    onResponseStageChanged: { responseStage = $0 }
+                )
+                guard !Task.isCancelled else { return }
                 successHandler?()
             } catch let error as SiteCredentialLoginError {
-                errorHandler?(error)
+                guard !Task.isCancelled else { return }
+                errorHandler?(error, loginEntryVerified, error.offersBrowserAlternative(at: responseStage))
             } catch {
-                errorHandler?(.genericFailure(underlyingError: error as NSError))
+                guard !Task.isCancelled else { return }
+                errorHandler?(.genericFailure(underlyingError: error as NSError), loginEntryVerified, false)
             }
         }
+    }
+
+    func cancel() {
+        loginTask?.cancel()
+        loginTask = nil
     }
 }
 
 private extension SiteCredentialLoginUseCase {
+    typealias LoginResponse = (data: Data, http: HTTPURLResponse, request: URLRequest)
+
     func clearAllCookies() {
         if let cookies = cookieJar.cookies {
             for cookie in cookies {
@@ -166,186 +276,286 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
-    func startLogin(with loginRequest: URLRequest) async throws {
-        try await detectBasicAuthProbe()
+    func startLogin(
+        username: String,
+        password: String,
+        endpoints: CookieNonceAuthenticationEndpoints,
+        onLoginEntryVerified: () -> Void,
+        onResponseStageChanged: (CookieNonceAuthenticationResponseStage) -> Void
+    ) async throws {
+        let submissionURL = try await preflight(endpoints: endpoints)
+        try Task.checkCancellation()
+        onStageSuccess?(.preflight)
+        onLoginEntryVerified()
+        let nonceURL = try endpointValue { try endpoints.nonceURL(afterLoginAt: submissionURL) }
+        let loginRequest = try credentialRequest(
+            username: username,
+            password: password,
+            submissionURL: submissionURL,
+            nonceURL: nonceURL
+        )
+        onResponseStageChanged(.credentials)
+        let loginResponse = try await load(loginRequest, using: loginSession, stage: .credentials)
+        try validate(loginResponse, stage: .credentials, endpoints: endpoints)
 
-        let (data, response): (Data, URLResponse) = try await session.data(for: loginRequest)
-
-        guard let response = response as? HTTPURLResponse else {
-            throw SiteCredentialLoginError.invalidLoginResponse
+        if CookieNonceAuthenticationRules.isRedirect(statusCode: loginResponse.http.statusCode) {
+            guard let location = loginResponse.http.value(forHTTPHeaderField: "Location"),
+                  let responseURL = loginResponse.http.url,
+                  endpoints.isExpectedCredentialRedirect(
+                    location: location,
+                    from: responseURL,
+                    afterLoginAt: submissionURL
+                  ) else {
+                throw unexpectedResponse(stage: .credentials, response: loginResponse)
+            }
+        } else {
+            let html = try decodedHTML(from: loginResponse, stage: .credentials)
+            throw responseError(
+                CookieNonceAuthenticationRules.credentialFailure(
+                    in: html,
+                    endpoints: endpoints
+                ), stage: .credentials, response: loginResponse
+            )
         }
 
-        if response.containsHTTPBasicAuthenticationChallenge {
-            throw SiteCredentialLoginError.basicAuthenticationRequired
+        try Task.checkCancellation()
+        onStageSuccess?(.credentials)
+        if verifyAdminDashboard {
+            onResponseStageChanged(.dashboard)
+            try await verifyDashboard(afterLoginAt: submissionURL, endpoints: endpoints)
+            try Task.checkCancellation()
+            onStageSuccess?(.dashboard)
         }
+        onResponseStageChanged(.nonce)
+        try await retrieveNonce(at: nonceURL, afterLoginAt: submissionURL, endpoints: endpoints)
+        try Task.checkCancellation()
+        onStageSuccess?(.nonce)
+    }
 
-        /// The login request comes with a redirect header to nonce retrieval URL.
-        /// If we get a response from this URL, that means the redirect is successful.
-        /// We need to check the result of this redirect first to determine if login is successful.
-        let isNonceUrl = response.url?.absoluteString.hasSuffix(Constants.wporgNoncePath) == true
-
-        switch (isNonceUrl, response.statusCode) {
-        case (true, 200):
-            if let nonceString = String(data: data, encoding: .utf8),
-               nonceString.isValidNonce() {
-                // success!
-                return
-            } else {
-                throw SiteCredentialLoginError.invalidLoginResponse
+    /// Fetches a document, following only same-site redirects and never more than the shared bound.
+    /// Returns the first non-redirect response, so callers only express their own terminal check.
+    func loadDocument(
+        from startURL: URL,
+        stage: CookieNonceAuthenticationResponseStage,
+        endpoints: CookieNonceAuthenticationEndpoints
+    ) async throws -> (url: URL, html: String, response: LoginResponse) {
+        var requestURL = startURL
+        var redirectCount = 0
+        while true {
+            let response = try await load(getRequest(url: requestURL), using: session, stage: stage)
+            try validate(response, stage: stage, endpoints: endpoints)
+            guard CookieNonceAuthenticationRules.isRedirect(statusCode: response.http.statusCode) else {
+                let html = try decodedHTML(from: response, stage: stage)
+                return (response.http.url ?? requestURL, html, response)
             }
-        case (true, 404):
-            throw SiteCredentialLoginError.inaccessibleAdminPage
-        case (false, 404):
-            throw SiteCredentialLoginError.inaccessibleLoginPage
-        case (false, 200):
-            // 200 for the login URL, which means a failure
-            guard let html = String(data: data, encoding: .utf8) else {
-                throw SiteCredentialLoginError.invalidLoginResponse
+            guard redirectCount < CookieNonceAuthenticationEndpoints.maximumRedirectCount,
+                  let location = response.http.value(forHTTPHeaderField: "Location") else {
+                throw unexpectedResponse(stage: stage, response: response)
             }
-
-            // Extracts error message from the HTML to determine whether there's an authentication issue
-            // otherwise we'll assume it's an invalid response
-            let errorMessage = html.findLoginErrorMessage() ?? ""
-
-            if html.hasInvalidCredentialsPattern(),
-               !errorMessage.lowercased().contains(Constants.captchaText) {
-                throw SiteCredentialLoginError.invalidCredentials
-            } else {
-                throw SiteCredentialLoginError.invalidLoginResponse
+            requestURL = try endpointValue(stage: stage, response: response) {
+                try endpoints.resolveRedirect(location: location, from: response.http.url ?? requestURL)
             }
-        default:
-            throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
+            redirectCount += 1
         }
     }
 
-    func buildLoginRequest(username: String, password: String) -> URLRequest? {
-        guard let loginURL = URL(string: siteURL + Constants.loginPath) else {
-            return nil
+    func preflight(endpoints: CookieNonceAuthenticationEndpoints) async throws -> URL {
+        let document = try await loadDocument(from: endpoints.loginEntryURL, stage: .preflight, endpoints: endpoints)
+        guard let submissionURL = try endpointValue(stage: .preflight, response: document.response, {
+            try endpoints.verifiedLoginFormSubmissionURL(in: document.html, documentURL: document.url)
+        }) else {
+            throw unexpectedResponse(stage: .preflight, response: document.response)
         }
+        return submissionURL
+    }
 
-        let nonceRetrievalPath = siteURL + Constants.adminPath + Constants.wporgNoncePath
-        var request = URLRequest(url: loginURL)
+    func retrieveNonce(
+        at nonceURL: URL,
+        afterLoginAt loginURL: URL,
+        endpoints: CookieNonceAuthenticationEndpoints
+    ) async throws {
+        let response = try await load(getRequest(url: nonceURL), using: session, stage: .nonce)
+        try validate(response, stage: .nonce, endpoints: endpoints)
+        guard let responseURL = response.http.url,
+              endpoints.isExpectedNonceURL(responseURL, afterLoginAt: loginURL),
+              CookieNonceAuthenticationRules.validatedNonce(from: response.data) != nil else {
+            throw unexpectedResponse(stage: .nonce, response: response)
+        }
+    }
 
+    func verifyDashboard(afterLoginAt loginURL: URL, endpoints: CookieNonceAuthenticationEndpoints) async throws {
+        let adminBaseURL = try endpointValue { try endpoints.derivedAdminBaseURL(afterLoginAt: loginURL) }
+        let document = try await loadDocument(from: adminBaseURL, stage: .dashboard, endpoints: endpoints)
+        guard endpoints.isExpectedAdminBaseURL(document.url, afterLoginAt: loginURL),
+              endpoints.isAuthenticatedDashboardHTML(document.html) else {
+            throw responseError(
+                CookieNonceAuthenticationRules.credentialFailure(
+                    in: document.html,
+                    endpoints: endpoints
+                ), stage: .dashboard, response: document.response
+            )
+        }
+    }
+
+    func load(_ request: URLRequest, using session: URLSessionProtocol,
+              stage: CookieNonceAuthenticationResponseStage) async throws -> LoginResponse {
+        try Task.checkCancellation()
+        let (data, response) = try await session.data(for: request)
+        guard let response = response as? HTTPURLResponse else {
+            throw unexpectedResponse(stage: stage, request: request)
+        }
+        return (data, response, request)
+    }
+
+    func validate(_ result: LoginResponse,
+                  stage: CookieNonceAuthenticationResponseStage,
+                  endpoints: CookieNonceAuthenticationEndpoints) throws {
+        let response = result.http
+        if let failure = CookieNonceAuthenticationRules.failure(
+            statusCode: response.statusCode,
+            authenticateHeader: response.value(forHTTPHeaderField: "WWW-Authenticate"),
+            locationHeader: response.value(forHTTPHeaderField: "Location"),
+            stage: stage
+        ) {
+            if case .unacceptableStatusCode = failure,
+               !isRecognizedContent(result.data, responseURL: response.url, stage: stage, endpoints: endpoints) {
+                throw unexpectedResponse(stage: stage, kind: .unacceptableStatusCode, response: result)
+            }
+            throw responseError(failure, stage: stage, response: result)
+        }
+    }
+
+    /// Status rejection must not turn a recognized credential error or an expected document into an unexpected response.
+    func isRecognizedContent(_ data: Data, responseURL: URL?, stage: CookieNonceAuthenticationResponseStage,
+                             endpoints: CookieNonceAuthenticationEndpoints) -> Bool {
+        // Rejected nonce responses are unexpected regardless of nonce-shaped text or login-page markers.
+        guard stage != .nonce, let html = String(data: data, encoding: .utf8) else { return false }
+        if CookieNonceAuthenticationRules.credentialFailure(in: html, endpoints: endpoints) != .invalidResponse {
+            return true
+        }
+        switch stage {
+        case .preflight:
+            guard let responseURL else { return false }
+            return (try? endpoints.verifiedLoginFormSubmissionURL(in: html, documentURL: responseURL)) != nil
+        case .dashboard:
+            return endpoints.isAuthenticatedDashboardHTML(html)
+        case .credentials, .nonce:
+            return false
+        }
+    }
+
+    func credentialRequest(username: String, password: String, submissionURL: URL, nonceURL: URL) throws -> URLRequest {
+        guard let body = CookieNonceAuthenticationRules.credentialBody(
+            username: username,
+            password: password,
+            redirectTo: nonceURL
+        ) else {
+            throw SiteCredentialLoginError.invalidLoginResponse
+        }
+        var request = URLRequest(url: submissionURL)
         request.httpMethod = "POST"
+        request.httpBody = body
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-
-        var parameters = [URLQueryItem]()
-        parameters.append(URLQueryItem(name: "log", value: username))
-        parameters.append(URLQueryItem(name: "pwd", value: password))
-        parameters.append(URLQueryItem(name: "redirect_to", value: nonceRetrievalPath))
-        var components = URLComponents()
-        components.queryItems = parameters
-
-        /// `percentEncodedQuery` creates a validly escaped URL query component, but
-        /// doesn't encode the '+'. Percent encodes '+' to avoid this ambiguity.
-        let characterSet = CharacterSet(charactersIn: "+").inverted
-        request.httpBody = components.percentEncodedQuery?.addingPercentEncoding(withAllowedCharacters: characterSet)?.data(using: .utf8)
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
         return request
     }
 
-    /// Issues a lightweight GET to detect Basic Auth without engaging URLSession auth challenge flow.
-    func detectBasicAuthProbe() async throws {
-        guard let loginURL = URL(string: siteURL + Constants.loginPath) else {
-            return
-        }
-        var request = URLRequest(
-            url: loginURL,
-            cachePolicy: .reloadIgnoringLocalCacheData,
-            timeoutInterval: 8
-        )
+    func getRequest(url: URL) -> URLRequest {
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
         request.httpMethod = "GET"
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
+        return request
+    }
 
-        let (_, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse else { return }
-        if http.containsHTTPBasicAuthenticationChallenge {
-            throw SiteCredentialLoginError.basicAuthenticationRequired
+    func decodedHTML(from response: LoginResponse, stage: CookieNonceAuthenticationResponseStage) throws -> String {
+        guard let html = String(data: response.data, encoding: .utf8) else {
+            throw unexpectedResponse(stage: stage, response: response)
         }
+        return html
+    }
+
+    func endpointValue<T>(stage: CookieNonceAuthenticationResponseStage? = nil, response: LoginResponse? = nil, _ operation: () throws -> T) throws -> T {
+        do {
+            return try operation()
+        } catch {
+            if let stage {
+                throw unexpectedResponse(stage: stage, response: response)
+            }
+            throw SiteCredentialLoginError.invalidLoginResponse
+        }
+    }
+
+    func responseError(_ failure: CookieNonceAuthenticationFailure, stage: CookieNonceAuthenticationResponseStage,
+                       response: LoginResponse) -> SiteCredentialLoginError {
+        switch failure {
+        case .basicAuthenticationRequired: .basicAuthenticationRequired
+        case .invalidCredentials: .invalidCredentials
+        case .loginFailed(let message): .loginFailed(message: message)
+        case .inaccessibleLoginPage: .inaccessibleLoginPage
+        case .inaccessibleAdminPage: .inaccessibleAdminPage
+        case .invalidResponse: unexpectedResponse(stage: stage, response: response)
+        case .unacceptableStatusCode(let code): .unacceptableStatusCode(code: code)
+        }
+    }
+
+    func unexpectedResponse(stage: CookieNonceAuthenticationResponseStage,
+                            kind: LoginUnexpectedResponseFailure.Kind = .unexpectedContent,
+                            response: LoginResponse? = nil, request: URLRequest? = nil) -> SiteCredentialLoginError {
+        // Successful and 5xx nonce responses can contain a secret; 4xx error bodies go through the shared sanitizer.
+        let body = response.flatMap { result -> Data? in
+            let statusCode = result.http.statusCode
+            if stage == .nonce, (200..<300).contains(statusCode) || (500..<600).contains(statusCode) {
+                return nil
+            }
+            return result.data
+        }
+        let error = UnexpectedStoreResponseError(kind: kind, statusCode: response?.http.statusCode, data: body,
+                                                contentType: response?.http.value(forHTTPHeaderField: "Content-Type"),
+                                                request: response?.request ?? request)
+        let failure = LoginUnexpectedResponseFailure(stage: stage, statusCode: error.statusCode, kind: kind, diagnostics: error.diagnostics)
+        logUnexpectedResponse("[Site credential login: \(failure.step.rawValue)] \(error.logMessage)")
+        return .unexpectedResponse(failure)
+    }
+
+    nonisolated static func makeRedirectBlockingSession(cookieJar: HTTPCookieStorage) -> URLSession {
+        return URLSession(configuration: makeSessionConfiguration(cookieJar: cookieJar),
+                          delegate: RedirectBlockingURLSessionDelegate(),
+                          delegateQueue: nil)
     }
 }
 
 extension SiteCredentialLoginUseCase {
+    nonisolated static func makePrivateCookieJar() -> HTTPCookieStorage {
+        if let cookieJar = URLSessionConfiguration.ephemeral.httpCookieStorage,
+           cookieJar !== HTTPCookieStorage.shared {
+            return cookieJar
+        }
+        return HTTPCookieStorage()
+    }
+
+    nonisolated static func makeSessionConfiguration(cookieJar: HTTPCookieStorage,
+                                                     baseConfiguration: URLSessionConfiguration = .ephemeral) -> URLSessionConfiguration {
+        let configuration = baseConfiguration
+        configuration.httpCookieStorage = cookieJar
+        configuration.httpShouldSetCookies = true
+        configuration.httpCookieAcceptPolicy = .always
+        // This login flow depends on handling the redirect itself and should not be intercepted by debug URLProtocol handlers.
+        configuration.protocolClasses = []
+        return configuration
+    }
+
     enum Constants {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin"
         static let wporgNoncePath = "/admin-ajax.php?action=rest-nonce"
-        static let captchaText = "captcha"
     }
 }
 
-extension HTTPURLResponse {
-    /// Detects whether the server requires HTTP Basic authentication.
-    ///
-    /// When a site is behind basic auth it responds with a 401 and a `WWW-Authenticate` header containing `Basic`.
-    /// That reliably distinguishes it from a normal WordPress login failure, which returns 200.
-    var containsHTTPBasicAuthenticationChallenge: Bool {
-        guard statusCode == 401 else {
-            return false
-        }
-        return value(forHTTPHeaderField: "WWW-Authenticate")?
-            .localizedCaseInsensitiveContains("basic") == true
-    }
-}
-
-private extension String {
-    /// Gets contents between HTML tags with regex.
-    ///
-    func findLoginErrorMessage() -> String? {
-        let pattern = "<div[^>]*id=\"login_error\"[^>]*>([\\s\\S]+?)</div>"
-        let urlPattern = "<a href=\".*\">[^~]*?</a>"
-        let regexOptions = NSRegularExpression.Options.caseInsensitive
-        let matchOptions = NSRegularExpression.MatchingOptions(rawValue: UInt(0))
-        do {
-            let regex = try NSRegularExpression(pattern: pattern, options: regexOptions)
-            guard let textCheckingResult = regex.firstMatch(in: self,
-                                                            options: matchOptions,
-                                                            range: NSMakeRange(0, count)) else {
-                return nil
-            }
-            let matchRange = textCheckingResult.range(at: 0)
-            let match = (self as NSString).substring(with: matchRange)
-
-            /// Removes any <a> tag
-            let urlRegex = try NSRegularExpression(pattern: urlPattern, options: regexOptions)
-            let results = urlRegex.matches(in: match,
-                                           options: matchOptions,
-                                           range: NSMakeRange(0, match.count))
-            var urlMatches: [String] = []
-            for result in results {
-                let range = result.range(at: 0)
-                let urlMatch = (match as NSString).substring(with: range)
-                urlMatches.append(urlMatch)
-            }
-            if urlMatches.isNotEmpty {
-                var updatedMatch = match
-                urlMatches.forEach { url in
-                    updatedMatch = updatedMatch.replacingOccurrences(of: url, with: "")
-                }
-                return updatedMatch.strippedHTML.trimmingCharacters(in: .whitespacesAndNewlines)
-            }
-            return match.strippedHTML.trimmingCharacters(in: .whitespacesAndNewlines)
-        } catch {
-            DDLogError("⚠️" + pattern + "<-- not found in string -->" + self )
-            return nil
-        }
-    }
-
-    /// When logging in with site credentials there is no way to properly tell if an error message is an invalid credentials error.
-    /// However, the server injects this `shake` pattern when an invalid credential error is found.
-    /// For the time being, we will use that pattern as a guess for an invalid credential error message.
-    /// ref: https://github.com/WordPress/WordPress/blob/master/wp-login.php#L65-L67
-    ///
-    func hasInvalidCredentialsPattern() -> Bool {
-        contains("document.querySelector('form').classList.add('shake')")
-    }
-
-    /// Validates if the string matches the expected nonce format.
-    /// A valid nonce should contain at least 2 alphanumeric characters.
-    ///
-    func isValidNonce() -> Bool {
-        guard let regex = try? Regex("^[0-9a-zA-Z]{2,}$") else {
-            DDLogError("⚠️ Invalid regex pattern")
-            return false
-        }
-        return wholeMatch(of: regex) != nil
+private final class RedirectBlockingURLSessionDelegate: NSObject, URLSessionTaskDelegate {
+    func urlSession(_ session: URLSession,
+                    task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse,
+                    newRequest request: URLRequest) async -> URLRequest? {
+        nil
     }
 }

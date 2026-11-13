@@ -49,17 +49,37 @@ public protocol SessionManagerProtocol {
     ///
     var defaultCredentials: Credentials? { get set}
 
+    /// Returns persisted cookie-nonce endpoints only for matching WordPress.org credentials.
+    ///
+    func cookieNonceAuthenticationEndpoints(for credentials: Credentials) -> CookieNonceAuthenticationEndpoints?
+
+    /// Persists non-secret cookie-nonce endpoints for WordPress.org credentials.
+    ///
+    func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
+                                                for credentials: Credentials)
+
+    /// Removes cookie-nonce endpoints only when they match the WordPress.org credentials.
+    ///
+    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials)
+
     /// Nukes all of the known Session's properties.
     ///
     func reset()
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool)
+    func deleteApplicationPassword(using credentials: Credentials?,
+                                   cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+                                   locally: Bool)
 }
 
 /// Helper methods
 public extension SessionManagerProtocol {
+    /// Deletes an application password using persisted cookie-nonce endpoints when available.
+    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool) {
+        deleteApplicationPassword(using: credentials, cookieNonceAuthenticationEndpoints: nil, locally: locally)
+    }
+
     /// Let the session manager figure out the credentials by itself
     func deleteApplicationPassword(locally: Bool) {
         deleteApplicationPassword(using: nil, locally: locally)

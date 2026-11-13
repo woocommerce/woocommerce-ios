@@ -1,12 +1,12 @@
 import Combine
 import Yosemite
-import Experiments
 import class WordPressShared.EmailFormatValidator
 import protocol Storage.StorageManagerType
 import SwiftUI
 
 /// Protocol to describe viewmodel of editable address
 ///
+@MainActor
 protocol AddressFormViewModelProtocol: AnyObject, Observable {
 
     /// Site ID
@@ -33,10 +33,6 @@ protocol AddressFormViewModelProtocol: AnyObject, Observable {
     /// Trigger to perform any one time setups.
     ///
     var onLoadTrigger: PassthroughSubject<Void, Never> { get }
-
-    /// Define if the view should show a search button to look for the addresses.
-    ///
-    var showSearchButton: Bool { get }
 
     /// Define if the view should show placeholders instead of the real elements.
     ///
@@ -92,7 +88,7 @@ protocol AddressFormViewModelProtocol: AnyObject, Observable {
 
     /// Save the address and invoke a completion block when finished
     ///
-    func saveAddress(onFinish: @escaping (Bool) -> Void)
+    func saveAddress(onFinish: @escaping @MainActor @Sendable (Bool) -> Void)
 
     /// Track the flow cancel scenario.
     ///
@@ -115,10 +111,6 @@ protocol AddressFormViewModelProtocol: AnyObject, Observable {
     /// Creates a view model to be used when selecting a state for secondary fields
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel
-
-    /// Triggers the logic to fill Customer Order details when a Customer is selected
-    ///
-    func customerSelectedFromSearch(customer: Customer)
 }
 
 /// Type to hold values from all the form fields
@@ -211,9 +203,20 @@ struct AddressFormFields {
             return
         }
 
+        // Keep the raw country and state values until the stored countries include the address country (e.g. while they sync),
+        // otherwise the `selectedCountry` setter clears the country value and the later refresh can't match it anymore.
+        guard let matchingCountry = allCountries.first(where: { $0.code == country }) else {
+            return
+        }
+
         let initialStateValue = state // storing initial state value because it will be cleared by selectedCountry setter
-        selectedCountry = allCountries.first { $0.code == country }
-        selectedState = selectedCountry?.states.first { $0.code == initialStateValue }
+        selectedCountry = matchingCountry
+
+        if let matchingState = matchingCountry.states.first(where: { $0.code == initialStateValue }) {
+            selectedState = matchingState
+        } else {
+            state = initialStateValue // Free-text or unknown state of the address country, not a leftover from a previous country.
+        }
     }
 }
 

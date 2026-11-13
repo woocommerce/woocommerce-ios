@@ -22,7 +22,8 @@ struct POSSettingsControllerTests {
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
                                                 isLocalCatalogEligible: true,
-                                                receiptSettingsAdminURL: "")
+                                                receiptSettingsAdminURL: "",
+                                                analytics: MockPOSAnalytics())
 
         // When
         let cardReader = sut.connectedCardReader
@@ -43,7 +44,8 @@ struct POSSettingsControllerTests {
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
                                                 isLocalCatalogEligible: true,
-                                                receiptSettingsAdminURL: "")
+                                                receiptSettingsAdminURL: "",
+                                                analytics: MockPOSAnalytics())
 
         // Initially nil
         #expect(sut.connectedCardReader == nil)
@@ -69,7 +71,8 @@ struct POSSettingsControllerTests {
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
                                                 isLocalCatalogEligible: true,
-                                                receiptSettingsAdminURL: "")
+                                                receiptSettingsAdminURL: "",
+                                                analytics: MockPOSAnalytics())
 
         // When
         let cardReader = CardPresentPaymentCardReader(name: "WisePad 3", batteryLevel: 0.75)
@@ -81,6 +84,7 @@ struct POSSettingsControllerTests {
     }
 }
 
+@MainActor
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     let siteID: Int64 = 123
     var retrievePointOfSaleSettingsWasCalled = false
@@ -105,6 +109,9 @@ final class MockPOSSettingsController: POSSettingsControllerProtocol {
                                                                               defaultSiteName: "Sample Store",
                                                                               siteSettings: [],
                                                                               receiptSettingsAdminURL: "")
+    var paymentsViewModel = POSSettingsPaymentsViewModel(paymentSettings: MockPOSPaymentSettingsService(),
+                                                         analytics: MockPOSAnalytics())
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
+    var printerConnectionController: POSPrinterConnectionController?
     var isLocalCatalogEligible = true
 }

@@ -17,11 +17,11 @@ struct POSCartScanToPayVerifier: POSScanToPayVerifying {
     /// pending fulfillment authorization.
     static func classify(order: Order) -> POSScanToPayVerificationResult {
         if order.datePaid != nil {
-            return .paid
+            return .paid(order)
         }
         switch order.status {
         case .processing, .completed, .onHold:
-            return .paid
+            return .paid(order)
         default:
             return .pending
         }

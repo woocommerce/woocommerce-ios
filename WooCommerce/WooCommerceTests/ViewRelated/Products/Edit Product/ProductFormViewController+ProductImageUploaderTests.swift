@@ -3,6 +3,7 @@ import XCTest
 
 @testable import WooCommerce
 
+@MainActor
 final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
@@ -31,7 +32,8 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
                                                     eventLogger: ProductFormEventLogger(),
                                                     productImageActionHandler: actionHandler,
                                                     presentationStyle: .navigationStack,
-                                                    productImageUploader: productImageUploader)
+                                                    productImageUploader: productImageUploader,
+                                                    onDuplicateCompletion: { _, _ in })
         productForm.viewDidLoad()
 
         // Then
@@ -50,7 +52,8 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
                                                     eventLogger: ProductFormEventLogger(),
                                                     productImageActionHandler: actionHandler,
                                                     presentationStyle: .navigationStack,
-                                                    productImageUploader: productImageUploader)
+                                                    productImageUploader: productImageUploader,
+                                                    onDuplicateCompletion: { _, _ in })
         let rootViewController = UIViewController()
         window.rootViewController = rootViewController
 
@@ -78,7 +81,8 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
                                                     eventLogger: ProductFormEventLogger(),
                                                     productImageActionHandler: actionHandler,
                                                     presentationStyle: .navigationStack,
-                                                    productImageUploader: productImageUploader)
+                                                    productImageUploader: productImageUploader,
+                                                    onDuplicateCompletion: { _, _ in })
         let rootNavigationController = MockNavigationController(rootViewController: .init())
         window.rootViewController = rootNavigationController
 

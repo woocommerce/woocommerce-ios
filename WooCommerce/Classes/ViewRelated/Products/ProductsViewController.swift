@@ -1,4 +1,3 @@
-import Experiments
 import UIKit
 import SwiftUI
 import WordPressUI
@@ -10,7 +9,7 @@ import class AutomatticTracks.CrashLogging
 /// Shows a list of products with pull to refresh and infinite scroll
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
-final class ProductsViewController: UIViewController, GhostableViewController {
+final class ProductsViewController: UIViewController {
     enum NavigationContentType {
         case productForm(product: Product)
         case addProduct(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool)
@@ -26,15 +25,18 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// Main TableView
     ///
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var contentStackTopConstraint: NSLayoutConstraint!
 
     private var barcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
-                                                                                                cellClass: ProductsTabProductTableViewCell.self,
-                                                                                                rowsPerSection: Constants.placeholderRowsPerSection,
-                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
-                                                                                                separatorStyle: .none,
-                                                                                                isScrollEnabled: false))
+    private let refreshUpdates = ListRefreshUpdates()
+    // Match UITableView's installed rows even while refresh updates change the backing store.
+    private var presentedProducts: [ProductListItem] = []
+    // The store's name sort can differ from the local sort, so keep products from later pages below earlier pages.
+    private var productPageOrder = ProductListPageOrder()
+    private var syncingPageNumber: Int?
+    private var isShowingLoadingRows = false
+    private lazy var emptyStateView = ListEmptyView()
 
     /// Pull To Refresh Support.
     ///
@@ -80,13 +82,37 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @IBOutlet private weak var toolbar: ToolbarView!
     @IBOutlet private weak var toolbarBottomSeparator: UIView!
+    @IBOutlet private weak var toolbarHeightConstraint: NSLayoutConstraint!
     @IBOutlet private weak var toolbarBottomSeparatorHeightConstraint: NSLayoutConstraint!
+
+    private var hasConfiguredLiquidGlassHeaderOverlay = false
+    private var liquidGlassHeaderBackgroundView: UIView?
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
     private lazy var filterButton = UIButton(frame: .zero)
+
+    private var usesLargeTitleWorkaround: Bool {
+        if #available(iOS 26.0, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    private var headerBackgroundColor: UIColor {
+        .listBackground
+    }
+
+    private var toolbarBackgroundColor: UIColor {
+        if #available(iOS 26.0, *) {
+            return .clear
+        } else {
+            return headerBackgroundColor
+        }
+    }
 
     /// The bulk edit CTA in the navbar.
     private lazy var bulkEditButton: UIBarButtonItem = {
@@ -109,30 +135,15 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
-        let resultsController = createResultsController(siteID: siteID)
+        let resultsController = providedResultsController ?? createResultsController(siteID: siteID)
         configureResultsController(resultsController, onReload: { [weak self] in
             guard let self else { return }
-            self.reloadTableAndView()
+            refreshUpdates.perform { self.reloadTableAndView() }
         })
         return resultsController
     }()
 
     private var selectedProductListener: EntityListener<Product>?
-
-    private var sortOrder: ProductsSortOrder = .default {
-        didSet {
-            if sortOrder != oldValue {
-                updateLocalProductSettings(sort: sortOrder,
-                                           filters: filters)
-                resultsController.updateSortOrder(sortOrder)
-
-                /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
-                tableView.reloadData()
-
-                paginationTracker.resync()
-            }
-        }
-    }
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
@@ -160,35 +171,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
     private let imageUploader = ServiceLocator.productImageUploader
+    private let pushNotesManager: PushNotesManager
     private var activeUploadIds: [Int64] = []
 
-    private var filters = FilterProductListViewModel.Filters() {
-        didSet {
-            Task { @MainActor in
-                if filters != oldValue ||
-                    categoryHasChangedRemotely {
-                    updateLocalProductSettings(sort: sortOrder,
-                                               filters: filters)
-                    updateFilterButtonTitle(filters: filters)
-
-                    await updatePredicate(filters: filters)
-
-                    /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-                    tableView.reloadData()
-
-                    paginationTracker.resync()
-                }
-            }
-        }
-    }
-
-    /// Set to `true` when a category is applied to the product filters and the value has changed after a remote sync.
-    private var categoryHasChangedRemotely: Bool = false
-
-    /// Set when an empty state view controller is displayed.
-    ///
-    private var emptyStateViewController: UIViewController?
-
+    private let providedResultsController: ResultsController<StorageProduct>?
     private let siteID: Int64
 
     /// Set when sync fails, and used to display an error loading data banner
@@ -197,13 +183,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    private var addProductCoordinator: AddProductCoordinator?
-
     /// Tracks if the swipe actions have been glanced to the user.
     ///
     private var swipeActionsGlanced = false
 
-    private let isSplitViewEnabled: Bool
     private let navigateToContent: (NavigationContentType) -> Void
     private let selectedProduct: AnyPublisher<Product?, Never>
     private let onTableViewEditingEnd: PassthroughSubject<Void, Never> = .init()
@@ -216,17 +199,20 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     // MARK: - View Lifecycle
 
     init(siteID: Int64,
+         resultsController: ResultsController<StorageProduct>? = nil,
          selectedProduct: AnyPublisher<Product?, Never>,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         navigateToContent: @escaping (NavigationContentType) -> Void) {
+         navigateToContent: @escaping (NavigationContentType) -> Void,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
+        self.providedResultsController = resultsController
+        self.pushNotesManager = pushNotesManager
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
         self.selectedProduct = selectedProduct
-        self.isSplitViewEnabled = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
         self.navigateToContent = navigateToContent
         self.paginationTracker = PaginationTracker()
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
+        configureTitle()
         configureTabBarItem()
     }
 
@@ -244,8 +230,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureTableView()
         configureHiddenScrollView()
         configureToolbar()
+        configureLiquidGlassTabBarUnderlap()
         configureScrollWatcher()
         configurePaginationTracker()
+        configureViewModel()
         registerTableViewCells()
 
         showTopBannerViewIfNeeded()
@@ -258,34 +246,69 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        // Stock pushes open this tab; without a reset their count keeps the app icon badge on.
+        pushNotesManager.resetBadgeCount(type: .storeStock)
+
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
         }
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
-        refreshControl.resetAnimation(in: tableView) { [unowned self] in
-            // ghost animation is also removed after switching tabs
-            // show make sure it's displayed again
-            self.removeGhostContent()
-            self.displayGhostContent(over: tableView)
+        refreshControl.resetAnimation(in: tableView) { [weak self] in
+            guard let self, isShowingLoadingRows else { return }
+            self.reloadProducts()
         }
 
-        navigationController?.navigationBar.removeShadow()
+        if #unavailable(iOS 26.0) {
+            navigationController?.navigationBar.removeShadow()
+        }
 
         reloadFavoriteProductsIfNeeded()
+    }
+
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+
+        if #available(iOS 26.0, *) {
+            // Initial layout can leave a large title in a compact-height bar.
+            // Recalculate its height before display, without changing the list's scroll position.
+            navigationController?.navigationBar.sizeToFit()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         finishBulkEditing()
+
+        // On iOS 26, keeping the native refresh control attached during a navigation transition can cause
+        // UINavigationController's refresh control host and content overlay updates to recursively trigger each other.
+        // Detach it while this screen is covered, then restore it once the products list is fully visible again.
+        if #available(iOS 26.0, *) {
+            uninstallRefreshControl()
+        }
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        refreshUpdates.cancel()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if #available(iOS 26.0, *) {
+            installRefreshControl()
+        }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         updateTableHeaderViewHeight()
+        updateLiquidGlassHeaderOverlayLayout()
+        updateEmptyStateHeight()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -294,21 +317,25 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
     func selectFirstProductIfAvailable() {
-        guard isViewLoaded else {
-            return
-        }
-        guard let firstProduct = resultsController.safeObject(at: IndexPath(row: 0, section: 0)) else {
+        loadViewIfNeeded()
+        guard let firstProduct = presentedProduct(at: IndexPath(row: 0, section: 0)) else {
             return
         }
         didSelectProduct(product: firstProduct)
+    }
+
+    func hasFirstProductAvailable() -> Bool {
+        loadViewIfNeeded()
+        return presentedProduct(at: IndexPath(row: 0, section: 0)) != nil
     }
 
     func startProductCreation() {
         addProduct(sourceBarButtonItem: addProductButton, isFirstProduct: false)
     }
 
+    /// Keeps the page order until the first page succeeds, so a failed sync does not reorder the list.
     func resync() {
-        tableView.reloadData()
+        reloadProducts()
         paginationTracker.resync()
     }
 }
@@ -350,6 +377,7 @@ private extension ProductsViewController {
                     self.trackScannedItemSearchFailure(error)
                     let errorNotice = BarcodeScannerErrorNoticeFactory.notice(for: error,
                                                                                  code: scannedBarcode,
+                                                                                 title: Localization.scannerErrorNoticeTitle,
                                                                                  actionHandler: {
                         self.scanProducts()
                     })
@@ -358,9 +386,14 @@ private extension ProductsViewController {
                 // Reset button state on finishing the task
                 self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
             }
-        }, onPermissionsDenied: {
+        }, onPermissionsDenied: { reason in
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList,
-                                                                                                           reason: .cameraAccessNotPermitted))
+                                                                                                           reason: reason))
+        }, onSettingsTapped: { reason in
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningPermissionSettingsTapped(from: .productList,
+                                                                                                                             reason: reason))
+        }, onSettingsOpened: {
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .productList))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
@@ -386,23 +419,6 @@ private extension ProductsViewController {
         guard let sourceView else {
             return
         }
-        guard isSplitViewEnabled else {
-            guard let navigationController else {
-                return
-            }
-
-            let source: AddProductCoordinator.Source = .productsTab
-            let coordinatingController = AddProductCoordinator(siteID: siteID,
-                                                               source: source,
-                                                               sourceView: sourceView,
-                                                               sourceNavigationController: navigationController,
-                                                               isFirstProduct: isFirstProduct)
-
-            coordinatingController.start()
-            self.addProductCoordinator = coordinatingController
-            return
-        }
-
         navigateToContent(.addProduct(sourceView: sourceView, isFirstProduct: isFirstProduct))
     }
 }
@@ -425,7 +441,7 @@ private extension ProductsViewController {
         tableView.setEditing(true, animated: true)
 
         // Disable pull-to-refresh while editing
-        refreshControl.removeFromSuperview()
+        uninstallRefreshControl()
 
         configureNavigationBarForEditing()
         showOrHideToolbar()
@@ -443,7 +459,7 @@ private extension ProductsViewController {
         bulkEditButton.isEnabled = false
 
         // Enable pull-to-refresh
-        tableView.addSubview(refreshControl)
+        installRefreshControl()
 
         configureNavigationBar()
         showOrHideToolbar()
@@ -457,7 +473,8 @@ private extension ProductsViewController {
     @objc func selectAllProducts() {
         ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateSelectAllTapped())
 
-        viewModel.selectProducts(resultsController.fetchedObjects)
+        let displayedIDs = Set(presentedProducts.map(\.productID))
+        viewModel.selectProducts(resultsController.fetchedObjects.filter { displayedIDs.contains($0.productID) })
         updatedSelectedItems()
         tableView.reloadRows(at: tableView.indexPathsForVisibleRows ?? [], with: .none)
     }
@@ -610,13 +627,16 @@ private extension ProductsViewController {
     /// Set the title.
     ///
     func configureNavigationBar() {
+        configureTitle()
+        configureNavigationBarLeftButtonItems()
+        configureNavigationBarRightButtonItems()
+    }
+
+    func configureTitle() {
         navigationItem.title = NSLocalizedString(
             "Products",
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
-
-        configureNavigationBarLeftButtonItems()
-        configureNavigationBarRightButtonItems()
     }
 
     func configureNavigationBarLeftButtonItems() {
@@ -710,16 +730,20 @@ private extension ProductsViewController {
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.accessibilityIdentifier = "products-table-view"
 
-        // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
-        // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
-        // If we do `tableView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
-        tableView.addSubview(refreshControl)
+        installRefreshControl()
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        if #available(iOS 26.0, *) {
+            headerContainer.backgroundColor = .clear
+        } else {
+            headerContainer.backgroundColor = headerBackgroundColor
+        }
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()
+        if #available(iOS 26.0, *) {
+            bottomBorderView.isHidden = true
+        }
         headerContainer.addSubview(bottomBorderView)
         NSLayoutConstraint.activate([
             bottomBorderView.constrainToSuperview(attribute: .leading),
@@ -732,7 +756,47 @@ private extension ProductsViewController {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
 
+    private func installRefreshControl() {
+        if #available(iOS 26.0, *) {
+            tableView.refreshControl = refreshControl
+        } else {
+            tableView.addSubview(refreshControl)
+        }
+    }
+
+    private func uninstallRefreshControl() {
+        if #available(iOS 26.0, *) {
+            tableView.refreshControl = nil
+        } else {
+            refreshControl.removeFromSuperview()
+        }
+    }
+
+    private func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        setContentScrollView(tableView, for: [.top, .bottom])
+        updateLiquidGlassHeaderVisibility()
+    }
+
+    private func updateToolbarOverscrollPosition(from scrollView: UIScrollView) {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        OrdersProductsListHeaderStyle.updateScrollPosition(backgroundView: liquidGlassHeaderBackgroundView,
+                                                           headerViews: [toolbar, toolbarBottomSeparator],
+                                                           scrollView: scrollView,
+                                                           isHeaderHidden: toolbar.isHidden)
+    }
+
     private func configureHiddenScrollView() {
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         // Configure large title using the `hiddenScrollView` trick.
         hiddenScrollView.configureForLargeTitleWorkaround()
         // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
@@ -747,6 +811,7 @@ private extension ProductsViewController {
     private func configureToolbar() {
         setupToolbar()
         showOrHideToolbar()
+        configureLiquidGlassHeaderOverlay()
     }
 
     private func setupToolbar() {
@@ -761,17 +826,118 @@ private extension ProductsViewController {
         filterButton.accessibilityIdentifier = "product-filter-button"
 
         [sortButton, filterButton].forEach {
-            $0.applyLinkButtonStyle()
-            var configuration = UIButton.Configuration.plain()
-            configuration.contentInsets = Constants.toolbarButtonInsets
-            $0.configuration = configuration
+            if #available(iOS 26.0, *) {
+                var configuration = UIButton.Configuration.glass()
+                configuration.buttonSize = .medium
+                configuration.baseForegroundColor = .label
+                OrdersProductsListHeaderStyle.configureButtonSizing($0)
+                $0.configuration = configuration
+                $0.setContentHuggingPriority(.required, for: .horizontal)
+            } else {
+                $0.applyLinkButtonStyle()
+                var configuration = UIButton.Configuration.plain()
+                configuration.contentInsets = Constants.toolbarButtonInsets
+                $0.configuration = configuration
+            }
         }
 
-        toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        toolbar.backgroundColor = toolbarBackgroundColor
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
-        toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        if #available(iOS 26.0, *) {
+            toolbarHeightConstraint.isActive = false
+            toolbar.setContentInsets(Constants.liquidGlassToolbarContentInsets, alignment: .center)
+            toolbarBottomSeparator.backgroundColor = .clear
+        } else {
+            toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        }
         toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
+    }
+
+    private func configureLiquidGlassHeaderOverlay() {
+        guard #available(iOS 26.0, *),
+              !hasConfiguredLiquidGlassHeaderOverlay,
+              let stackView = toolbar.superview as? UIStackView,
+              toolbarBottomSeparator.superview === stackView else {
+            return
+        }
+
+        hasConfiguredLiquidGlassHeaderOverlay = true
+
+        contentStackTopConstraint.isActive = false
+        stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+
+        stackView.removeArrangedSubview(toolbar)
+        toolbar.removeFromSuperview()
+        stackView.removeArrangedSubview(toolbarBottomSeparator)
+        toolbarBottomSeparator.removeFromSuperview()
+
+        let backgroundView = OrdersProductsListHeaderStyle.makeBackgroundView()
+        liquidGlassHeaderBackgroundView = backgroundView
+        view.addSubview(backgroundView)
+        view.addSubview(toolbar)
+        view.addSubview(toolbarBottomSeparator)
+
+        NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: toolbarBottomSeparator.bottomAnchor),
+            toolbar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            toolbarBottomSeparator.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
+            toolbarBottomSeparator.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
+            toolbarBottomSeparator.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor)
+        ])
+
+        updateLiquidGlassHeaderVisibility()
+        updateLiquidGlassHeaderOverlayLayout()
+    }
+
+    private func updateLiquidGlassHeaderOverlayLayout() {
+        guard #available(iOS 26.0, *),
+              hasConfiguredLiquidGlassHeaderOverlay else {
+            return
+        }
+
+        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        let toolbarHeight = toolbar.isHidden ? 0 : toolbar.systemLayoutSizeFitting(targetSize,
+                                                                                   withHorizontalFittingPriority: .required,
+                                                                                   verticalFittingPriority: .fittingSizeLevel).height
+        let separatorHeight = toolbar.isHidden ? 0 : toolbarBottomSeparatorHeightConstraint.constant
+        let height = toolbarHeight + separatorHeight
+
+        let previousTopInset = tableView.contentInset.top
+        if abs(previousTopInset - height) > 0.5 {
+            let previousContentOffset = tableView.contentOffset
+            var contentInset = tableView.contentInset
+            contentInset.top = height
+            tableView.contentInset = contentInset
+            if !tableView.isTracking && !tableView.isDragging && !tableView.isDecelerating {
+                // UIKit can adjust the offset when the inset changes. Use the original offset to avoid applying the change twice.
+                tableView.contentOffset.y = previousContentOffset.y - (height - previousTopInset)
+            }
+        }
+
+        var verticalScrollIndicatorInsets = tableView.verticalScrollIndicatorInsets
+        verticalScrollIndicatorInsets.top = height
+        tableView.verticalScrollIndicatorInsets = verticalScrollIndicatorInsets
+        updateToolbarOverscrollPosition(from: tableView)
+    }
+
+    private func updateLiquidGlassHeaderVisibility() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        toolbarBottomSeparator.isHidden = toolbar.isHidden
+
+        // Use UIKit's background when bulk editing or an empty list hides the toolbar.
+        OrdersProductsListHeaderStyle.configureNavigationAppearance(navigationItem: navigationItem,
+                                                                    scrollView: tableView,
+                                                                    isHeaderVisible: !toolbar.isHidden)
+        updateToolbarOverscrollPosition(from: tableView)
     }
 
     func configureScrollWatcher() {
@@ -781,7 +947,27 @@ private extension ProductsViewController {
     func configurePaginationTracker() {
         paginationTracker.delegate = self
         scrollWatcherSubscription = scrollWatcher.trigger.sink { [weak self] _ in
-            self?.paginationTracker.ensureNextPageIsSynced()
+            guard let self, !isShowingLoadingRows else { return }
+            paginationTracker.ensureNextPageIsSynced()
+        }
+    }
+
+    func configureViewModel() {
+        viewModel.onSortOrderChanged = { [weak self] sortOrder in
+            guard let self else { return }
+            resultsController.updateSortOrder(sortOrder)
+
+            /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
+            resyncWithNewSortOrFilters()
+        }
+        viewModel.onFiltersChanged = { [weak self] filters in
+            guard let self else { return }
+            updateFilterButtonTitle(filters: filters)
+
+            await updatePredicate(filters: filters)
+
+            /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+            resyncWithNewSortOrFilters()
         }
     }
 
@@ -789,6 +975,8 @@ private extension ProductsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+        // Loading cells never receive product content or accessibility identifiers.
+        tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: Constants.loadingCellIdentifier)
     }
 
     /// Show or hide the toolbar based on number of products
@@ -799,10 +987,14 @@ private extension ProductsViewController {
     func showOrHideToolbar() {
         guard !tableView.isEditing else {
             toolbar.isHidden = true
+            updateLiquidGlassHeaderVisibility()
+            updateLiquidGlassHeaderOverlayLayout()
             return
         }
 
-        toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
+        toolbar.isHidden = viewModel.filters.numberOfActiveFilters == 0 ? isEmpty : false
+        updateLiquidGlassHeaderVisibility()
+        updateLiquidGlassHeaderOverlayLayout()
     }
 }
 
@@ -828,33 +1020,12 @@ private extension ProductsViewController {
         }
     }
 
-    /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
-    /// To show a top banner, we can dispatch a loadFeedbackVisibility action from AppSettingsStore and update the top banner accordingly
-    /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/6682
-    ///
-    func requestAndShowNewTopBannerView(for bannerType: ProductsTopBannerFactory.BannerType) {
-        let isExpanded = topBannerView?.isExpanded ?? false
-        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
-                                           type: bannerType,
-                                           expandedStateChangeHandler: { [weak self] in
-            self?.updateTableHeaderViewHeight()
-        }, onGiveFeedbackButtonPressed: { [weak self] in
-            self?.presentProductsFeedback()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.hideTopBannerView()
-        }, onCompletion: { [weak self] topBannerView in
-            self?.topBannerContainerView.updateSubview(topBannerView)
-            self?.topBannerView = topBannerView
-            self?.updateTableHeaderViewHeight()
-        })
-    }
-
     /// Request a new error loading data banner from `ErrorTopBannerFactory` and display it in the table header
     ///
     func requestAndShowErrorTopBannerView(for error: Error) {
         let errorBanner = ErrorTopBannerFactory.createTopBanner(for: error,
             expandedStateChangeHandler: { [weak self] in
-                self?.tableView.updateHeaderHeight()
+                self?.view.setNeedsLayout()
             },
             onTroubleshootButtonPressed: { [weak self] in
                 guard let self else { return }
@@ -863,12 +1034,18 @@ private extension ProductsViewController {
             },
             onContactSupportButtonPressed: { [weak self] in
                 guard let self else { return }
-                let supportForm = SupportFormHostingController(viewModel: .init())
+                let supportForm = SupportFormHostingController(
+                    viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider())
+                )
                 supportForm.show(from: self)
             })
-        topBannerContainerView.updateSubview(errorBanner)
-        topBannerView = errorBanner
-        updateTableHeaderViewHeight()
+        // Resolve the new banner's initial layout without animating its content from zero-sized frames.
+        UIView.performWithoutAnimation {
+            topBannerContainerView.updateSubview(errorBanner)
+            topBannerView = errorBanner
+            updateTableHeaderViewHeight()
+            tableView.tableHeaderView?.layoutIfNeeded()
+        }
     }
 
     func hideTopBannerView() {
@@ -882,18 +1059,18 @@ private extension ProductsViewController {
     func updateTableHeaderViewHeight() {
         topStackView.spacing = topBannerContainerView.subviews.isNotEmpty ? Constants.headerViewSpacing : 0
         tableView.updateHeaderHeight()
+        updateEmptyStateHeight()
     }
 
     func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate.createProductPredicate(siteID: siteID,
-                                                           stockStatus: filters.stockStatus,
-                                                           productStatus: filters.productStatus,
-                                                           productType: filters.promotableProductType?.productType)
+                                                           stockStatus: viewModel.filters.stockStatus,
+                                                           productStatus: viewModel.filters.productStatus,
+                                                           productType: viewModel.filters.promotableProductType?.productType)
 
-        return ResultsController<StorageProduct>(storageManager: storageManager,
+        return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager,
                                                  matching: predicate,
-                                                 sortOrder: sortOrder)
+                                                 sortOrder: viewModel.sortOrder)
     }
 
     /// Configure resultController.
@@ -908,46 +1085,95 @@ private extension ProductsViewController {
             ServiceLocator.crashLogging.logError(error)
         }
 
-        guard let tableView else {
-            return
+        refreshUpdates.perform {
+            presentedProducts = presentableProducts(resultsController.listItems)
+            tableView?.reloadData()
         }
-        tableView.reloadData()
     }
 
     /// Set closure  to methods `onDidChangeContent` and `onDidResetContent
     ///
     func setClosuresToResultController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
-        resultsController.onDidChangeContent = {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.recordProductPages()
             onReload()
         }
 
-        resultsController.onDidResetContent = {
+        resultsController.onDidResetContent = { [weak self] in
+            self?.recordProductPages()
             onReload()
         }
+    }
+
+    func reloadProducts() {
+        refreshUpdates.perform {
+            presentedProducts = presentableProducts(resultsController.listItems)
+            tableView.reloadData()
+        }
+    }
+
+    /// Recorded pages belong to the previous sort or filters.
+    func resyncWithNewSortOrFilters() {
+        productPageOrder.reset()
+        resync()
+    }
+
+    /// Records pages on every storage change, even while a refresh defers presentation.
+    func recordProductPages() {
+        productPageOrder.record(resultsController.productNames, syncingPageNumber: syncingPageNumber)
+    }
+
+    /// Only the name sort can differ between the store and the device.
+    func presentableProducts(_ products: [ProductListItem]) -> [ProductListItem] {
+        switch viewModel.sortOrder {
+        case .nameAscending, .nameDescending:
+            return productPageOrder.ordered(products)
+        case .dateAscending, .dateDescending:
+            return products
+        }
+    }
+
+    /// Resolve actions by the displayed identity, not the store's potentially changed row index.
+    func presentedProduct(at indexPath: IndexPath) -> Product? {
+        guard presentedProducts.indices.contains(indexPath.row) else {
+            return nil
+        }
+        let productID = presentedProducts[indexPath.row].productID
+        if indexPath.row < resultsController.numberOfObjects,
+           resultsController.listItem(at: indexPath).productID == productID {
+            return resultsController.safeObject(at: indexPath)
+        }
+        guard let currentIndex = resultsController.indexPath(forObjectMatching: { $0.productID == productID }) else {
+            return nil
+        }
+        return resultsController.safeObject(at: currentIndex)
     }
 
     /// Manages view components and reload tableview
     ///
     func reloadTableAndView() {
-        guard let tableView else {
+        guard tableView != nil else {
             return
         }
+        // Search can populate the shared cache while the initial sync is still running.
+        // Install real rows before publishing updates that select or reload product indexes.
+        if !resultsController.isEmpty {
+            isShowingLoadingRows = false
+        }
         showOrHideToolbar()
-        addOrRemoveOverlay()
-        tableView.reloadData()
+        updateEmptyState()
+        reloadProducts()
         onDataReloaded.send(())
     }
 
-    /// Add or remove the overlay based on number of products
-    /// If there is 0 products, overlay will be added
-    /// if there is 1 or more products, toolbar will be removed
+    /// Updates the table footer based on the number of products.
     ///
-    func addOrRemoveOverlay() {
+    func updateEmptyState() {
         guard isEmpty else {
-            removeAllOverlays()
+            removeEmptyState()
             return
         }
-        displayNoResultsOverlay()
+        displayEmptyState()
     }
 
     /// We sync the local product settings for configuring local sorting and filtering.
@@ -956,7 +1182,7 @@ private extension ProductsViewController {
     /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
     ///
     func syncProductsSettings() {
-        syncLocalProductsSettings { [weak self] result in
+        viewModel.syncLocalProductsSettings { [weak self] result in
             guard let self else { return }
 
             if result.isFailure {
@@ -971,38 +1197,44 @@ private extension ProductsViewController {
     }
 
     func observeSelectedProductAndDataLoadedStateToUpdateSelectedRow() {
+        var presentedSelection: Product?
         Publishers.CombineLatest3(selectedProduct,
                                   // Giving it an initial value to enable the combined publisher from the beginning.
                                   onDataReloaded.merge(with: Just<Void>(())),
                                   // Giving it an initial value to enable the combined publisher from the beginning.
                                   onTableViewEditingEnd.merge(with: Just<Void>(())))
             .map { $0.0 }
-            .withPrevious()
-            .sink { [weak self] previousSelectedProduct, selectedProduct in
-                guard let self else { return }
+            .sink { [weak self] selectedProduct in
+                guard let self, !isShowingLoadingRows else { return }
 
-                let currentSelectedIndexPath = tableView.indexPathForSelectedRow
-                let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: {
-                    $0.productID == selectedProduct?.productID
-                }): nil
-                if let selectedIndexPath {
-                    guard currentSelectedIndexPath != selectedIndexPath else {
-                        return
+                refreshUpdates.perform {
+                    defer {
+                        presentedSelection = selectedProduct
                     }
-                    if let currentSelectedIndexPath {
-                        tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                    let currentSelectedIndexPath = self.tableView.indexPathForSelectedRow
+                    let selectedIndexPath = self.presentedProducts.firstIndex { $0.productID == selectedProduct?.productID }
+                        .map { IndexPath(row: $0, section: 0) }
+                    if let selectedIndexPath {
+                        guard currentSelectedIndexPath != selectedIndexPath else {
+                            return
+                        }
+                        if let currentSelectedIndexPath {
+                            self.tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                        }
+
+                        let scrollPosition: UITableView.ScrollPosition = {
+                            let hasSelectedProductChanged = (selectedProduct != presentedSelection)
+                            guard hasSelectedProductChanged else {
+                                return .none
+                            }
+                            let isSelectedIndexPathVisible = self.isIndexPathVisible(selectedIndexPath)
+                            return isSelectedIndexPathVisible ? .none : .middle
+                        }()
+
+                        self.tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
+                    } else if let currentSelectedIndexPath {
+                        self.tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                     }
-
-                    let scrollPosition: UITableView.ScrollPosition = {
-                        let hasSelectedProductChanged = (selectedProduct != previousSelectedProduct)
-                        guard hasSelectedProductChanged else { return .none }
-                        let isSelectedIndexPathVisible = self.isIndexPathVisible(selectedIndexPath)
-                        return isSelectedIndexPathVisible ? .none : .middle
-                    }()
-
-                    tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
-                } else if let currentSelectedIndexPath {
-                    tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                 }
             }
             .store(in: &subscriptions)
@@ -1025,14 +1257,15 @@ private extension ProductsViewController {
                     .filter { $0.siteID == self.siteID }
                     .map { $0.productOrVariationID.id }
 
+                guard !isShowingLoadingRows else { return }
                 var indexPathsToReload: [IndexPath] = []
-                for (index, object) in resultsController.listItems.enumerated() {
+                for (index, object) in presentedProducts.enumerated() {
                     if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {
                         indexPathsToReload.append(IndexPath(row: index, section: 0))
                     }
                 }
 
-                tableView.reloadRows(at: indexPathsToReload, with: .none)
+                refreshUpdates.perform { self.tableView.reloadRows(at: indexPathsToReload, with: .none) }
             }
             .store(in: &subscriptions)
     }
@@ -1045,7 +1278,7 @@ private extension ProductsViewController {
                   !isIndexPathVisible(selectedIndexPath) else {
                 return
             }
-            tableView.scrollToRow(at: selectedIndexPath, at: .middle, animated: false)
+            refreshUpdates.perform { self.tableView.scrollToRow(at: selectedIndexPath, at: .middle, animated: false) }
         }
     }
 
@@ -1061,7 +1294,7 @@ private extension ProductsViewController {
             guard let self else { return }
 
             // Reload only if favorite products filter is turned on
-            guard filters.favoriteProduct != nil else {
+            guard viewModel.filters.favoriteProduct != nil else {
                 return
             }
 
@@ -1073,12 +1306,10 @@ private extension ProductsViewController {
                 return
             }
 
-            await updatePredicate(filters: filters)
+            await updatePredicate(filters: viewModel.filters)
 
             /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-            tableView.reloadData()
-
-            paginationTracker.resync()
+            resyncWithNewSortOrFilters()
         }
     }
 
@@ -1100,23 +1331,40 @@ private extension ProductsViewController {
     }
 }
 
+extension ProductsViewController: ScrollToTopProviding {
+    var scrollToTopScrollView: UIScrollView? {
+        tableView
+    }
+}
+
 // MARK: - UITableViewDataSource Conformance
 //
 extension ProductsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        resultsController.sections.count
+        isShowingLoadingRows || !presentedProducts.isEmpty ? 1 : 0
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        resultsController.sections[section].numberOfObjects
+        isShowingLoadingRows ? Constants.placeholderRowCount : presentedProducts.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if isShowingLoadingRows {
+            let cell = tableView.dequeueReusableCell(withIdentifier: Constants.loadingCellIdentifier, for: indexPath)
+            cell.stopGhostAnimation()
+            cell.isUserInteractionEnabled = false
+            cell.accessibilityElementsHidden = true
+            return cell
+        }
+
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-        let product = resultsController.listItem(at: indexPath)
+        let product = presentedProducts[indexPath.row]
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
-        let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    hasPendingUploads: hasPendingUploads,
+                                                    isSKUShown: true,
+                                                    isPriceShown: true)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         return cell
@@ -1126,6 +1374,17 @@ extension ProductsViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension ProductsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        isShowingLoadingRows ? nil : indexPath
+    }
+
+    func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
+        !isShowingLoadingRows
+    }
+
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.stopGhostAnimation()
+    }
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return estimatedRowHeights[indexPath] ?? Constants.estimatedRowHeight
@@ -1136,37 +1395,46 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if (splitViewController?.isCollapsed == true || !isSplitViewEnabled) &&
+        guard !isShowingLoadingRows else { return }
+        if splitViewController?.isCollapsed == true &&
             !tableView.isEditing {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
-        let product = resultsController.object(at: indexPath)
+        guard let product = presentedProduct(at: indexPath) else {
+            return
+        }
 
         if tableView.isEditing {
             viewModel.selectProduct(product)
             updatedSelectedItems()
         } else {
             ServiceLocator.analytics.track(event:
-                    .Products.productListProductTapped(
-                        productType: product.productType,
-                        horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+                    .Products.productListProductTapped(productType: product.productType))
 
             didSelectProduct(product: product)
         }
     }
 
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard !isShowingLoadingRows else { return }
         guard tableView.isEditing else {
             return
         }
 
-        let product = resultsController.object(at: indexPath)
+        guard let product = presentedProduct(at: indexPath) else {
+            return
+        }
         viewModel.deselectProduct(product)
         updatedSelectedItems()
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if isShowingLoadingRows {
+            cell.layoutIfNeeded()
+            cell.startGhostAnimation(style: .wooDefaultGhostStyle)
+            return
+        }
         // Preserve the Cell Height
         // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
         // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
@@ -1176,7 +1444,9 @@ extension ProductsViewController: UITableViewDelegate {
 
         // Restore cell selection state
         if tableView.isEditing {
-            let product = resultsController.object(at: indexPath)
+            guard let product = presentedProduct(at: indexPath) else {
+                return
+            }
             if self.viewModel.productIsSelected(product) {
                 tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
             } else {
@@ -1190,13 +1460,22 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateToolbarOverscrollPosition(from: scrollView)
+
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 
     /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let product = resultsController.object(at: indexPath)
+        guard !isShowingLoadingRows else { return nil }
+        guard let product = presentedProduct(at: indexPath) else {
+            return nil
+        }
         guard ServiceLocator.stores.sessionManager.defaultSite?.visibility == .publicSite,
               product.productStatus == .published,
               let url = URL(string: product.permalink),
@@ -1228,12 +1507,6 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
-        guard isSplitViewEnabled else {
-            let viewController = ProductDetailNavigator.shared.makeDestination(product: product,
-                                                                               isReadOnly: false)
-            navigationController?.pushViewController(viewController, animated: true)
-            return
-        }
         navigateToContent(.productForm(product: product))
     }
 }
@@ -1242,14 +1515,22 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
-        Task { @MainActor in
+        refreshUpdates.beginRefreshing { [weak self] in
+            guard let self else { return }
+            transitionToResultsUpdatedState()
+            reloadTableAndView()
+            hideTopBannerView()
+            showTopBannerViewIfNeeded()
+        }
+        Task { @MainActor [weak self] in
+            guard let self else { return }
 
             ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-            await updatePredicate(filters: filters)
+            await self.updatePredicate(filters: self.viewModel.filters)
 
-            paginationTracker.resync {
-                sender.endRefreshing()
+            self.paginationTracker.resync { [weak self] in
+                self?.refreshUpdates.endRefreshing(sender)
             }
         }
     }
@@ -1259,12 +1540,12 @@ private extension ProductsViewController {
         let title = NSLocalizedString("Sort by",
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
-        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder) { [weak self] selectedSortOrder in
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: viewModel.sortOrder) { [weak self] selectedSortOrder in
             self?.dismiss(animated: true, completion: nil)
             guard let selectedSortOrder = selectedSortOrder as ProductsSortOrder? else {
                     return
                 }
-            self?.sortOrder = selectedSortOrder
+            self?.viewModel.sortOrder = selectedSortOrder
         }
         let sortOrderListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
                                                                       command: command)
@@ -1275,13 +1556,12 @@ private extension ProductsViewController {
     @objc func filterButtonTapped() {
         ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: .productsTab))
         let viewModel = FilterProductListViewModel(
-            filters: filters,
-            siteID: siteID,
-            site: ServiceLocator.stores.sessionManager.defaultSite
+            filters: self.viewModel.filters,
+            siteID: siteID
         )
         let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListShowProductsButtonTapped(source: .productsTab, filters: filters))
-            self?.filters = filters
+            self?.viewModel.filters = filters
         }, onClearAction: {
             ServiceLocator.analytics.track(.productFilterListClearMenuButtonTapped)
         }, onDismissAction: {
@@ -1292,14 +1572,7 @@ private extension ProductsViewController {
 
     func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
         ServiceLocator.analytics.track(.productListClearFiltersTapped)
-        filters = FilterProductListViewModel.Filters()
-    }
-
-    /// Presents productsFeedback survey.
-    ///
-    func presentProductsFeedback() {
-        let navigationController = SurveyCoordinatingController(survey: .productsFeedback)
-        present(navigationController, animated: true, completion: nil)
+        viewModel.filters = FilterProductListViewModel.Filters()
     }
 }
 
@@ -1307,98 +1580,66 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
 
-    /// Displays the overlay when there are no results.
+    /// Displays empty content in the table footer when there are no results.
     ///
-    func displayNoResultsOverlay() {
-        // Abort if we are already displaying this childController
-        guard emptyStateViewController?.parent == nil else {
-            return
-        }
-        let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config = createFilterConfig()
-        displayEmptyStateViewController(emptyStateViewController)
-        emptyStateViewController.configure(config)
+    func displayEmptyState() {
+        guard !isShowingLoadingRows else { return }
+        configureEmptyStateView()
+        emptyStateView.show(in: tableView)
     }
 
-    func createFilterConfig() ->  EmptyStateViewController.Config {
-        if filters.numberOfActiveFilters == 0 {
-            return createNoProductsConfig()
+    func configureEmptyStateView() {
+        if viewModel.filters.numberOfActiveFilters == 0 {
+            configureNoProductsView()
         } else {
-            return createNoProductsMatchFilterConfig()
+            configureNoProductsMatchFilterView()
         }
     }
 
-    /// Creates EmptyStateViewController.Config for no products empty view
+    /// Configures the empty view when the store has no products
     ///
-    func createNoProductsConfig() ->  EmptyStateViewController.Config {
+    func configureNoProductsView() {
         let message = NSLocalizedString("No products yet",
                                         comment: "The text on the placeholder overlay when there are no products on the Products tab")
         let details = NSLocalizedString("Start selling today by adding your first product to the store.",
                                         comment: "The details on the placeholder overlay when there are no products on the Products tab")
         let buttonTitle = NSLocalizedString("Add Product",
                                             comment: "Action to add product on the placeholder overlay when there are no products on the Products tab")
-        return EmptyStateViewController.Config.withButton(
+        emptyStateView.configure(
             message: .init(string: message),
             image: .productBlouseImage,
             details: details,
             buttonTitle: buttonTitle,
-            onTap: { [weak self] button in
+            onAction: { [weak self] button in
                 self?.addProduct(sourceView: button, isFirstProduct: true)
-            },
-            onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
             })
     }
 
-    /// Creates EmptyStateViewController.Config for no products match the filter empty view
+    /// Configures the empty view when no products match the filters
     ///
-    func createNoProductsMatchFilterConfig() ->  EmptyStateViewController.Config {
+    func configureNoProductsMatchFilterView() {
         let message = NSLocalizedString("No matching products found",
                                         comment: "The text on the placeholder overlay when no products match the filter on the Products tab")
         let buttonTitle = NSLocalizedString("Clear Filters",
                                             comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
-        return EmptyStateViewController.Config.withButton(
+        emptyStateView.configure(
             message: .init(string: message),
             image: .productBlouseImage,
             details: "",
             buttonTitle: buttonTitle,
-            onTap: { [weak self] button in
+            onAction: { [weak self] button in
                 self?.clearFilter(sourceView: button)
-            },
-            onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
             })
     }
 
-    /// Shows the EmptyStateViewController as a child view controller.
-    ///
-    func displayEmptyStateViewController(_ emptyStateViewController: UIViewController) {
-        self.emptyStateViewController = emptyStateViewController
-        addChild(emptyStateViewController)
-
-        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(emptyStateViewController.view)
-
-        NSLayoutConstraint.activate([
-            emptyStateViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emptyStateViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emptyStateViewController.view.topAnchor.constraint(equalTo: topStackView.bottomAnchor),
-            emptyStateViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-        emptyStateViewController.didMove(toParent: self)
+    func updateEmptyStateHeight() {
+        emptyStateView.updateHeight(in: tableView)
     }
 
-    /// Removes EmptyStateViewController child view controller if applicable.
-    ///
-    func removeAllOverlays() {
-        guard let emptyStateViewController, emptyStateViewController.parent == self else {
-            return
+    func removeEmptyState() {
+        if tableView.tableFooterView === emptyStateView {
+            tableView.tableFooterView = footerEmptyView
         }
-
-        emptyStateViewController.willMove(toParent: nil)
-        emptyStateViewController.view.removeFromSuperview()
-        emptyStateViewController.removeFromParent()
-        self.emptyStateViewController = nil
     }
 
     func configureLeftBarBarButtomItemAsScanningButtonIfApplicable() {
@@ -1436,19 +1677,20 @@ extension ProductsViewController: PaginationTrackerDelegate {
     /// Synchronizes the Products for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
-        transitionToSyncingState(pageNumber: pageNumber)
+        syncingPageNumber = pageNumber
+        refreshUpdates.perform { transitionToSyncingState(pageNumber: pageNumber) }
         dataLoadingError = nil
 
         let action = ProductAction
             .synchronizeProducts(siteID: siteID,
                                  pageNumber: pageNumber,
                                  pageSize: pageSize,
-                                 stockStatus: filters.stockStatus,
-                                 productStatus: filters.productStatus,
-                                 productType: filters.promotableProductType?.productType,
-                                 productCategory: filters.productCategory,
-                                 sortOrder: sortOrder,
-                                 productIDs: (filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
+                                 stockStatus: viewModel.filters.stockStatus,
+                                 productStatus: viewModel.filters.productStatus,
+                                 productType: viewModel.filters.promotableProductType?.productType,
+                                 productCategory: viewModel.filters.productCategory,
+                                 sortOrder: viewModel.sortOrder,
+                                 productIDs: (viewModel.filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
                                     guard let self else {
                                         return
                                     }
@@ -1467,96 +1709,21 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                         )
                                     }
 
-                                    self.transitionToResultsUpdatedState()
+                                    // Storage changes from this page are recorded before the completion runs.
+                                    if self.syncingPageNumber == pageNumber {
+                                        self.syncingPageNumber = nil
+                                    }
+                                    // A successful first page replaces the stored products (`shouldDeleteStoredProductsOnFirstPage`).
+                                    if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex, case .success = result {
+                                        let presentedProductIDs = self.presentedProducts.map(\.productID)
+                                        self.productPageOrder.reset()
+                                        self.recordProductPages()
+                                        if self.presentableProducts(self.resultsController.listItems).map(\.productID) != presentedProductIDs {
+                                            self.reloadProducts()
+                                        }
+                                    }
+                                    self.refreshUpdates.perform { self.transitionToResultsUpdatedState() }
                                     onCompletion?(result)
-        }
-
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Update local Products Settings (eg. sort order or filters stored in Products settings)
-    ///
-    private func updateLocalProductSettings(sort: ProductsSortOrder? = nil,
-                                            filters: FilterProductListViewModel.Filters) {
-        let action = AppSettingsAction.upsertProductsSettings(siteID: siteID,
-                                                              sort: sort?.rawValue,
-                                                              stockStatusFilter: filters.stockStatus,
-                                                              productStatusFilter: filters.productStatus,
-                                                              productTypeFilter: filters.promotableProductType?.productType,
-                                                              productCategoryFilter: filters.productCategory,
-                                                              favoriteProduct: filters.favoriteProduct != nil) { _ in
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Fetch local Products Settings (eg. sort order or filters stored in Products settings)
-    ///
-    private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
-        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success(let settings):
-                self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in
-                    guard let self else { return }
-                    if let sort = settings.sort {
-                        sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
-                    }
-
-                    let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
-                    filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
-                                                                 productStatus: settings.productStatusFilter,
-                                                                 promotableProductType: promotableProductType,
-                                                                 productCategory: settings.productCategoryFilter,
-                                                                 favoriteProduct: settings.favoriteProduct ? FavoriteProductsFilter() : nil,
-                                                                 numberOfActiveFilters: settings.numberOfActiveFilters())
-                    onCompletion(result)
-                }
-            case let .failure(error):
-                DDLogError("⛔️ Error loading product settings: \(error)")
-                onCompletion(result)
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Syncs the Product Category filter of settings remotely. This is necessary in case the category information was updated
-    /// or the category itself removed.
-    ///
-    private func syncProductCategoryFilterRemotely(from settings: StoredProductSettings.Setting,
-                                                   onCompletion: @escaping (StoredProductSettings.Setting) -> Void) {
-        categoryHasChangedRemotely = false
-        guard let productCategory = settings.productCategoryFilter else {
-            onCompletion(settings)
-            return
-        }
-
-        let action = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: productCategory.categoryID) { [weak self] result in
-            guard let self else { return }
-            var updatingProductCategory: ProductCategory? = productCategory
-
-            switch result {
-            case .success(let productCategory):
-                updatingProductCategory = productCategory
-            case .failure(let error):
-                if let error = error as? ProductCategoryActionError,
-                   case .categoryDoesNotExistRemotely = error {
-                    // The product category was removed
-                    updatingProductCategory = nil
-                }
-            }
-
-            var completionSettings = settings
-            if updatingProductCategory != productCategory {
-                categoryHasChangedRemotely = true
-                completionSettings = StoredProductSettings.Setting(siteID: settings.siteID,
-                                                                sort: settings.sort,
-                                                                stockStatusFilter: settings.stockStatusFilter,
-                                                                productStatusFilter: settings.productStatusFilter,
-                                                                productTypeFilter: settings.productTypeFilter,
-                                                                productCategoryFilter: updatingProductCategory,
-                                                                favoriteProduct: settings.favoriteProduct)
-            }
-
-            onCompletion(completionSettings)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -1570,11 +1737,13 @@ private extension ProductsViewController {
     func didEnter(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
-            displayNoResultsOverlay()
+            displayEmptyState()
         case .syncing(let pageNumber):
             let isFirstPage = pageNumber == SyncingCoordinator.Defaults.pageFirstIndex
             if isFirstPage && resultsController.isEmpty {
-                displayGhostContent(over: tableView)
+                removeEmptyState()
+                isShowingLoadingRows = true
+                reloadProducts()
             } else if !isFirstPage {
                 ensureFooterSpinnerIsStarted()
             }
@@ -1590,10 +1759,14 @@ private extension ProductsViewController {
     func didLeave(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
-            removeAllOverlays()
+            removeEmptyState()
         case .syncing:
             ensureFooterSpinnerIsStopped()
-            removeGhostContent()
+            if isShowingLoadingRows {
+                isShowingLoadingRows = false
+                reloadProducts()
+                onDataReloaded.send(())
+            }
             showTopBannerViewIfNeeded()
             showOrHideToolbar()
         case .results:
@@ -1654,10 +1827,12 @@ private extension ProductsViewController {
     enum Constants {
         static let headerViewSpacing = CGFloat(8)
         static let estimatedRowHeight = CGFloat(86)
-        static let placeholderRowsPerSection = [3]
+        static let loadingCellIdentifier = "ProductLoadingCell"
+        static let placeholderRowCount = 3
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets.zero
         static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+        static let liquidGlassToolbarContentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
     }
 
     enum Localization {
@@ -1707,6 +1882,11 @@ private extension ProductsViewController {
             comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
             "Reads like: 'Quantity updated: 2,345'"
         )
+        static let scannerErrorNoticeTitle = NSLocalizedString(
+            "productsViewController.scanProducts.errorNoticeTitle",
+            value: "Cannot load product.",
+            comment: "Title of the error notice shown on the products list when the product for a scanned barcode cannot be loaded."
+        )
     }
 }
 
@@ -1719,6 +1899,11 @@ extension ResultsController<StorageProduct> {
         controller.fetchedObjects?.compactMap { mutableObject in
             ProductListItem(storageProduct: mutableObject)
         } ?? []
+    }
+
+    /// Product IDs and names, without building full list items.
+    var productNames: [(productID: Int64, name: String)] {
+        controller.fetchedObjects?.map { ($0.productID, $0.name) } ?? []
     }
 
     func listItem(at indexPath: IndexPath) -> ProductListItem {

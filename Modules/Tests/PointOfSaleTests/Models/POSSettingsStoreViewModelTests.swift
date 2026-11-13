@@ -4,6 +4,7 @@ import Foundation
 @testable import Yosemite
 import Storage
 
+@MainActor
 struct POSSettingsStoreViewModelTests {
     private let mockSettingsService = MockPointOfSaleSettingsService()
     private let mockPluginService = MockPluginsService()
@@ -254,6 +255,7 @@ struct POSSettingsStoreViewModelTests {
     }
 }
 
+@MainActor
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     let siteID: Int64 = 123
     var retrievePointOfSaleSettingsWasCalled = false

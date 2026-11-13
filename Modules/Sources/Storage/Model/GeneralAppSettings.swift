@@ -72,6 +72,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var hasPOSBeenOpenedAtLeastOnce: Bool
 
+    /// Whether POS plays a sound when a payment completes. Set per device in POS Settings → Payments.
+    ///
+    public var isPOSPaymentSuccessSoundEnabled: Bool
+
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
@@ -86,7 +90,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 isCustomFieldsTopBannerDismissed: Bool,
                 isPOSSurveyPotentialMerchantNotificationScheduled: Bool,
                 isPOSSurveyCurrentMerchantNotificationScheduled: Bool,
-                hasPOSBeenOpenedAtLeastOnce: Bool) {
+                hasPOSBeenOpenedAtLeastOnce: Bool,
+                isPOSPaymentSuccessSoundEnabled: Bool = true) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -102,6 +107,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.isPOSSurveyPotentialMerchantNotificationScheduled = isPOSSurveyPotentialMerchantNotificationScheduled
         self.isPOSSurveyCurrentMerchantNotificationScheduled = isPOSSurveyCurrentMerchantNotificationScheduled
         self.hasPOSBeenOpenedAtLeastOnce = hasPOSBeenOpenedAtLeastOnce
+        self.isPOSPaymentSuccessSoundEnabled = isPOSPaymentSuccessSoundEnabled
     }
 
     public static var `default`: Self {
@@ -118,7 +124,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               isCustomFieldsTopBannerDismissed: false,
               isPOSSurveyPotentialMerchantNotificationScheduled: false,
               isPOSSurveyCurrentMerchantNotificationScheduled: false,
-              hasPOSBeenOpenedAtLeastOnce: false)
+              hasPOSBeenOpenedAtLeastOnce: false,
+              isPOSPaymentSuccessSoundEnabled: true)
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -152,7 +159,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
             isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
             isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
-            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce
+            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce,
+            isPOSPaymentSuccessSoundEnabled: isPOSPaymentSuccessSoundEnabled
         )
     }
 
@@ -177,7 +185,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             isCustomFieldsTopBannerDismissed: isCustomFieldsTopBannerDismissed,
             isPOSSurveyPotentialMerchantNotificationScheduled: isPOSSurveyPotentialMerchantNotificationScheduled,
             isPOSSurveyCurrentMerchantNotificationScheduled: isPOSSurveyCurrentMerchantNotificationScheduled,
-            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce
+            hasPOSBeenOpenedAtLeastOnce: hasPOSBeenOpenedAtLeastOnce,
+            isPOSPaymentSuccessSoundEnabled: isPOSPaymentSuccessSoundEnabled
         )
     }
 }
@@ -209,6 +218,7 @@ extension GeneralAppSettings {
         //swiftlint:disable:next line_length
         self.isPOSSurveyCurrentMerchantNotificationScheduled = try container.decodeIfPresent(Bool.self, forKey: .isPOSSurveyCurrentMerchantNotificationScheduled) ?? false
         self.hasPOSBeenOpenedAtLeastOnce = try container.decodeIfPresent(Bool.self, forKey: .hasPOSBeenOpenedAtLeastOnce) ?? false
+        self.isPOSPaymentSuccessSoundEnabled = try container.decodeIfPresent(Bool.self, forKey: .isPOSPaymentSuccessSoundEnabled) ?? true
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }
 }

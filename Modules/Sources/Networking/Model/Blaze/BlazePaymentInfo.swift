@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// Info for payments when creating Blaze campaigns.
-public struct BlazePaymentInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazePaymentInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
     /// List of saved payment methods for Blaze campaign creation
     public let paymentMethods: [BlazePaymentMethod]
@@ -13,7 +13,7 @@ public struct BlazePaymentInfo: Decodable, Equatable, GeneratedFakeable, Generat
 }
 
 /// Details for a payment method to be used for Blaze campaign creation.
-public struct BlazePaymentMethod: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Identifiable {
+public struct BlazePaymentMethod: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Identifiable, Sendable {
 
     /// ID of the payment method
     public let id: String
@@ -42,7 +42,7 @@ public struct BlazePaymentMethod: Decodable, Equatable, GeneratedFakeable, Gener
         self.info = info
     }
 
-    public enum PaymentMethodType: String {
+    public enum PaymentMethodType: String, Sendable {
         case creditCard = "credit_card"
         case unknown
     }
@@ -58,7 +58,7 @@ public struct BlazePaymentMethod: Decodable, Equatable, GeneratedFakeable, Gener
 public extension BlazePaymentMethod {
 
     /// Detailed info for a payment method to be used for Blaze campaign creation.
-    struct Info: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+    struct Info: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
         /// Last 4 digits of the card
         public let lastDigits: String
@@ -89,7 +89,7 @@ public extension BlazePaymentMethod {
     }
 
     /// Expiring info of a payment method to be used for Blaze campaign creation
-    struct ExpiringInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+    struct ExpiringInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Sendable {
 
         /// Expiring year of the payment method
         public let year: Int

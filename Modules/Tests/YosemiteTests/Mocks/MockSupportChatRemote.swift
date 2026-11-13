@@ -28,7 +28,7 @@ final class MockSupportChatRemote: SupportChatRemoteProtocol {
                      message: String,
                      chatID: Int64?,
                      sessionID: String?,
-                     context: [String: Any]?) async throws -> SupportChatResponse {
+                     context: RequestParameterDictionary?) async throws -> SupportChatResponse {
         sendMessageInvocations.append((botSlug, message, chatID))
         guard let result = sendMessageResult else {
             throw NetworkError.timeout()

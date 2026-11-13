@@ -6,11 +6,13 @@ final class MockTimer: Timer {
     var isCancelled = false
     weak var mockTimeProvider: MockTimeProvider?
     let timerInterval: TimeInterval
+    let scheduledFireDate: Date
     let target: Any
     let selector: Selector
     let repeats: Bool
 
     init(timeInterval: TimeInterval, target: Any, selector: Selector, mockTimeProvider: MockTimeProvider) {
+        self.scheduledFireDate = mockTimeProvider.now().addingTimeInterval(timeInterval)
         self.timerInterval = timeInterval
         self.target = target
         self.selector = selector
@@ -41,7 +43,7 @@ final class MockTimeProvider: TimeProvider {
         currentTime = currentTime.addingTimeInterval(interval)
 
         // Check and fire any timers that should have triggered during this time advancement
-        let timersToFire = activeTimers.filter { !$0.isCancelled && $0.timerInterval <= interval }
+        let timersToFire = activeTimers.filter { !$0.isCancelled && $0.scheduledFireDate <= currentTime }
         for timer in timersToFire {
             _ = (timer.target as AnyObject).perform(timer.selector, with: timer.userInfo)
             if !timer.repeats {

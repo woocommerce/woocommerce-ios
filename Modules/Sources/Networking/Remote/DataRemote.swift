@@ -1,7 +1,7 @@
 import Foundation
 
 /// Data Remote Endpoints.
-public final class DataRemote: Remote {
+public final class DataRemote: Remote, @unchecked Sendable {
 
     /// Loads all the countries.
     /// - Parameters:

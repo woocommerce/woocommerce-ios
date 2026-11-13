@@ -58,6 +58,7 @@ struct CashPaymentTenderView: View {
                     dismiss()
                 }
                 .buttonStyle(PrimaryButtonStyle())
+                .accessibilityIdentifier("cash-payment-mark-order-complete-button")
                 .disabled(!viewModel.tenderButtonIsEnabled)
                 .padding(insets: Layout.buttonPadding)
             }

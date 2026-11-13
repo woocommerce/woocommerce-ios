@@ -50,8 +50,8 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Se
 }
 
 public extension DashboardCard {
-    static var inAppFeedBackCard = DashboardCard(type: .inAppFeedback, availability: .dashboardOnly, enabled: true)
-    static var newCardsNoticeCard = DashboardCard(type: .newCardsNotice, availability: .dashboardOnly, enabled: true)
-    static var shareStoreCard = DashboardCard(type: .shareStore, availability: .dashboardOnly, enabled: true)
+    static let inAppFeedBackCard = DashboardCard(type: .inAppFeedback, availability: .dashboardOnly, enabled: true)
+    static let newCardsNoticeCard = DashboardCard(type: .newCardsNotice, availability: .dashboardOnly, enabled: true)
+    static let shareStoreCard = DashboardCard(type: .shareStore, availability: .dashboardOnly, enabled: true)
     static let connectWPCom = DashboardCard(type: .connectWPCom, availability: .dashboardOnly, enabled: true)
 }

@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 
 @testable import WooCommerce
@@ -6,19 +7,20 @@ import TestKit
 import Experiments
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class ProductFormViewModelTests: XCTestCase {
 
     private let siteID: Int64 = 123
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
-    private var sessionManager: SessionManager!
+    private var sessionManager: MockSessionManager!
     private var stores: StoresManager!
 
     override func setUp() {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        sessionManager = SessionManager.testingInstance
+        sessionManager = MockSessionManager()
         stores = MockStoresManager(sessionManager: sessionManager)
     }
 
@@ -355,7 +357,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_non_published_status_can_duplicate_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
+        let product = Product.fake().copy(productID: 123, name: "Test", statusKey: ProductStatus.pending.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -367,7 +369,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_published_status_can_duplicate_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
+        let product = Product.fake().copy(productID: 123, name: "Test", statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -375,6 +377,18 @@ final class ProductFormViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(canDuplicateProduct)
+    }
+
+    func test_edit_product_form_with_productID_zero_cannot_duplicate_product() {
+        // Given
+        let product = Product.fake().copy(productID: 0, statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        let canDuplicateProduct = viewModel.canDuplicateProduct()
+
+        // Then
+        XCTAssertFalse(canDuplicateProduct)
     }
 
     func test_update_variations_updates_original_product_while_maintaining_pending_changes() throws {
@@ -609,6 +623,103 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(actionButtons, [.publish, .more])
     }
 
+    func test_actionButtons_when_new_product_has_changes_on_store_connected_without_Jetpack_plugin_then_excludes_preview() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(url: "https://example.com",
+                                                      frameNonce: "abc123",
+                                                      isJetpackThePluginInstalled: false,
+                                                      isJetpackConnected: true,
+                                                      jetpackConnectionActivePlugins: ["woocommerce"],
+                                                      hasSSOEnabled: false)
+        sessionManager.defaultCredentials = .wpcom(username: "merchant",
+                                                   authToken: "token",
+                                                   siteAddress: "https://example.com")
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .more])
+    }
+
+    func test_actionButtons_when_new_product_has_changes_on_store_with_Jetpack_among_connected_plugins_then_includes_preview() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123",
+                                                      isJetpackThePluginInstalled: false,
+                                                      isJetpackConnected: true,
+                                                      jetpackConnectionActivePlugins: ["jetpack", "woocommerce"])
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_actionButtons_when_new_product_has_changes_and_site_credentials_then_includes_preview() throws {
+        // Given
+        sessionManager.defaultSite = Site.fake().copy(url: "https://example.com", frameNonce: "", hasSSOEnabled: false)
+        sessionManager.defaultCredentials = .wporg(username: "merchant",
+                                                   password: "password",
+                                                   siteAddress: "https://example.com")
+        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID))
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
+    }
+
+    func test_actionButtons_when_draft_has_permalink_then_checks_sign_in_against_permalink() {
+        // Given
+        sessionManager.defaultCredentials = .wpcom(username: "merchant",
+                                                   authToken: "token",
+                                                   siteAddress: "https://example.com")
+        sessionManager.defaultSite = Site.fake().copy(siteID: siteID,
+                                                      url: "https://example.com",
+                                                      frameNonce: "",
+                                                      hasSSOEnabled: false)
+        let draft = Product.fake().copy(productID: 123,
+                                        permalink: "https://wordpress.com/product/draft",
+                                        statusKey: ProductStatus.draft.rawValue)
+        let draftViewModel = createViewModel(product: draft, formType: .edit, stores: stores)
+
+        // When
+        let draftActionButtons = draftViewModel.actionButtons
+
+        // Then
+        XCTAssertTrue(draftActionButtons.contains(.preview))
+    }
+
+    func test_actionButtons_when_new_product_has_no_permalink_then_checks_sign_in_against_site_URL() throws {
+        // Given
+        sessionManager.defaultCredentials = .wpcom(username: "merchant",
+                                                   authToken: "token",
+                                                   siteAddress: "https://example.com")
+        sessionManager.defaultSite = Site.fake().copy(siteID: siteID,
+                                                      url: "https://wordpress.com/store",
+                                                      frameNonce: "",
+                                                      hasSSOEnabled: false)
+        let newProduct = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID))
+        let newProductViewModel = createViewModel(product: newProduct, formType: .add, stores: stores)
+        newProductViewModel.updateName("new name")
+
+        // When
+        let newProductActionButtons = newProductViewModel.actionButtons
+
+        // Then
+        XCTAssertTrue(newProductActionButtons.contains(.preview))
+    }
+
     func test_canPublishOption_is_true_when_creating_new_product_with_different_status() {
         // Given
         let product = Product.fake().copy(productID: 0, statusKey: ProductStatus.draft.rawValue)
@@ -806,6 +917,86 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originalProductModel.product.customFields, customFields)
     }
 
+
+    // MARK: `refreshProduct`
+
+    func test_refreshProduct_updates_product_from_remote_when_no_unsaved_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 22, name: "Album", averageRating: "0.00", ratingCount: 0)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .retrieveProduct(_, _, onCompletion) = action {
+                onCompletion(.success(product.copy(averageRating: "5.00", ratingCount: 1)))
+            }
+        }
+
+        // When
+        viewModel.refreshProduct()
+
+        // Then
+        waitUntil {
+            viewModel.productModel.product.ratingCount == 1
+        }
+        XCTAssertEqual(viewModel.productModel.product.averageRating, "5.00")
+        XCTAssertEqual(viewModel.originalProductModel.product.ratingCount, 1)
+    }
+
+    func test_refreshProduct_does_not_override_unsaved_local_edits() {
+        // Given
+        let product = Product.fake().copy(productID: 22, name: "Old name", ratingCount: 0)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .retrieveProduct(_, _, onCompletion) = action {
+                onCompletion(.success(product.copy(name: "Remote name", ratingCount: 1)))
+            }
+        }
+
+        // The refreshed product is applied a few async hops after the retrieval completes, so observe the
+        // product and fail if the remote product is ever applied over the local edits.
+        let remoteProductApplied = expectation(description: "Remote product must not override unsaved local edits")
+        remoteProductApplied.isInverted = true
+        let subscription = viewModel.observableProduct.sink { product in
+            if product.product.ratingCount == 1 {
+                remoteProductApplied.fulfill()
+            }
+        }
+
+        // When
+        viewModel.updateName("Locally edited name")
+        viewModel.refreshProduct()
+
+        // Then
+        wait(for: [remoteProductApplied], timeout: 1)
+        subscription.cancel()
+        XCTAssertEqual(viewModel.productModel.name, "Locally edited name")
+        XCTAssertEqual(viewModel.productModel.product.ratingCount, 0)
+        XCTAssertEqual(viewModel.originalProductModel.product.name, "Old name")
+    }
+
+    func test_refreshProduct_does_not_fetch_for_product_that_does_not_exist_remotely() {
+        // Given
+        let product = Product.fake().copy(productID: 0)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+
+        // The retrieval action is dispatched a few async hops after `refreshProduct` returns, so fail
+        // if it is ever received instead of asserting synchronously.
+        let retrieveDispatched = expectation(description: "Retrieval must not be dispatched for a product that does not exist remotely")
+        retrieveDispatched.isInverted = true
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case .retrieveProduct = action {
+                retrieveDispatched.fulfill()
+            }
+        }
+
+        // When
+        viewModel.refreshProduct()
+
+        // Then
+        wait(for: [retrieveDispatched], timeout: 1)
+    }
 
     // MARK: Subscription Free trial
 

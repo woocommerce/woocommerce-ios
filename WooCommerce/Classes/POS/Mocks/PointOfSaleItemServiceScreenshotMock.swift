@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-final class PointOfSaleItemServiceScreenshotMock: Yosemite.PointOfSaleItemServiceProtocol {
+nonisolated final class PointOfSaleItemServiceScreenshotMock: Yosemite.PointOfSaleItemServiceProtocol {
 
     func providePointOfSaleItems(pageNumber: Int,
                                  fetchStrategy: Yosemite.PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<Yosemite.POSItem> {

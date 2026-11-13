@@ -1,6 +1,7 @@
 import UITestsFoundation
 import XCTest
 
+@MainActor
 class LoginFlow {
 
     /// Attempts to log in with WPCom if the CTA is available, otherwise try site address login.
@@ -28,7 +29,7 @@ class LoginFlow {
     static func logInWithSiteAddress() throws -> MyStoreScreen {
         return try PrologueScreen()
             .tapLogIn()
-            .proceedWith(siteUrl: TestCredentials.siteUrl)
+            .proceedWith(siteUrl: TestCredentials.siteAddressLoginUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .enterValidPassword()
             .enterValidTwoFACode()

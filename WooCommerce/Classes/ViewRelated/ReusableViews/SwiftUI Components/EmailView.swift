@@ -9,7 +9,8 @@ struct EmailView: UIViewControllerRepresentable {
     /// Email address to set as recipient
     let emailAddress: String?
 
-    class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
+    @MainActor
+    class Coordinator: NSObject, @MainActor MFMailComposeViewControllerDelegate {
 
         func mailComposeController(_ controller: MFMailComposeViewController,
                                    didFinishWith result: MFMailComposeResult,

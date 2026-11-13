@@ -27,6 +27,7 @@ enum JetpackConnectionServiceError: Error, CustomNSError {
 /// Encapsulates the full Jetpack/WPCom connection decision tree:
 /// fetch data → decide native/webview → connect → verify.
 /// Ref: pe5sF9-401-p2
+@MainActor
 protocol JetpackConnectionServiceProtocol {
     /// Establish site-only connection - minimum requirement for self-driven push notifications.
     func establishSiteConnection(siteURL: String) async throws
@@ -45,8 +46,13 @@ protocol JetpackConnectionServiceProtocol {
 
     /// Fetches the current Jetpack connection data for the site.
     func fetchConnectionData() async throws -> JetpackConnectionData
+
+    /// Returns whether the site's Jetpack is currently in Offline Mode.
+    /// Best-effort: returns `false` if the status cannot be determined.
+    func isJetpackInOfflineMode() async -> Bool
 }
 
+@MainActor
 final class JetpackConnectionService: JetpackConnectionServiceProtocol {
     private let siteID: Int64
     private let stores: StoresManager
@@ -138,6 +144,18 @@ final class JetpackConnectionService: JetpackConnectionServiceProtocol {
             JetpackConnectionAction.fetchJetpackConnectionData(siteID: self.siteID, completion: completion)
         }
     }
+
+    func isJetpackInOfflineMode() async -> Bool {
+        do {
+            let status: JetpackConnectionStatus = try await dispatch { completion in
+                JetpackConnectionAction.fetchJetpackConnectionStatus(siteID: self.siteID, completion: completion)
+            }
+            return status.isInOfflineMode
+        } catch {
+            DDLogError("⛔️ Error fetching Jetpack connection status: \(error)")
+            return false
+        }
+    }
 }
 
 private extension JetpackConnectionService {
@@ -187,15 +205,12 @@ private extension JetpackConnectionService {
         }
     }
 
-    func dispatch<T>(_ actionBuilder: @escaping (@escaping (Result<T, Error>) -> Void) -> Action) async throws -> T {
-        let stores = self.stores
-        return try await withCheckedThrowingContinuation { continuation in
+    func dispatch<T>(_ actionBuilder: @escaping (@escaping @Sendable (Result<T, Error>) -> Void) -> Action) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
             let action = actionBuilder { result in
                 continuation.resume(with: result)
             }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+            stores.dispatch(action)
         }
     }
 }

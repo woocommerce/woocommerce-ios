@@ -3,7 +3,7 @@ import Codegen
 
 /// Encapsulates API Information for a given site
 ///
-public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
+public struct SiteAPI: Decodable, Equatable, Sendable, GeneratedFakeable {
 
     /// Site Identifier.
     ///
@@ -17,9 +17,9 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
     ///
     public let applicationPasswordAvailable: Bool
 
-    /// Available REST API routes.
+    /// Available REST API routes. Nil unless the request asked for routes.
     ///
-    public let routes: [String]
+    public let routes: [String]?
 
     /// Highest Woo API version installed on the site
     ///
@@ -63,14 +63,14 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
         let authentication = try? siteAPIContainer.decode(Authentication.self, forKey: .authentication)
         let applicationPasswordAvailable = authentication?.applicationPasswords?.endpoints?.authorization != nil
 
-        let routes = (try? siteAPIContainer.decodeIfPresent([String: AnyDecodable].self, forKey: .routes))?.keys.sorted() ?? []
+        let routes = (try? siteAPIContainer.decodeIfPresent([String: AnyDecodable].self, forKey: .routes))?.keys.sorted()
 
         self.init(siteID: siteID, namespaces: namespaces, applicationPasswordAvailable: applicationPasswordAvailable, routes: routes)
     }
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int64, namespaces: [String], applicationPasswordAvailable: Bool, routes: [String] = []) {
+    public init(siteID: Int64, namespaces: [String], applicationPasswordAvailable: Bool, routes: [String]? = nil) {
         self.siteID = siteID
         self.namespaces = namespaces
         self.applicationPasswordAvailable = applicationPasswordAvailable

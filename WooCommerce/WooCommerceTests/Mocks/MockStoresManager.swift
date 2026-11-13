@@ -23,9 +23,20 @@ final class MockStoresManager: DefaultStoresManager {
     ///
     var testPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
+    /// Optional test checker for POS local catalog eligibility
+    ///
+    var testPOSCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol?
+
+    private(set) var authenticatedCredentials: Credentials?
+    private(set) var authenticatedCookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?
+
     /// Accept a concrete implementation (in addition to the pre-existing Protocol-based initializer)
     ///
     init(sessionManager: SessionManager) {
+        super.init(sessionManager: sessionManager)
+    }
+
+    init(sessionManager: SessionManagerProtocol) {
         super.init(sessionManager: sessionManager)
     }
 
@@ -33,6 +44,11 @@ final class MockStoresManager: DefaultStoresManager {
 
     override var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
         testPOSCatalogSyncCoordinator
+    }
+
+    override var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? {
+        get { testPOSCatalogEligibilityChecker }
+        set { testPOSCatalogEligibilityChecker = newValue }
     }
 
     // MARK: - Overridden Methods
@@ -57,9 +73,20 @@ final class MockStoresManager: DefaultStoresManager {
     private func resolveDefaultIfNeeded(_ action: Action) {
         switch action {
         case let action as FeatureFlagAction:
-            // Mirror `FeatureFlagStore`: with no remote override configured, resolve to the local default.
-            if case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, completion) = action {
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, completion):
+                // Mirror `FeatureFlagStore`: with no remote override configured, resolve to the local default.
                 completion(defaultValue)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                // Mirror `FeatureFlagStore` before any fetch has succeeded.
+                completion(nil)
+            }
+        case let action as WooShippingAction:
+            switch action {
+            case let .checkEUProductIdentifiersRequirement(_, _, _, completion):
+                completion(.notRequired)
+            default:
+                break
             }
         default:
             break
@@ -68,6 +95,24 @@ final class MockStoresManager: DefaultStoresManager {
 
     override func listenToWPCOMInvalidWPCOMTokenNotification() {
         // Don't listen to WPCOM token expiry notification to avoid de-authenticating while running tests.
+    }
+
+    @discardableResult
+    override func authenticate(credentials: Credentials) -> StoresManager {
+        authenticatedCredentials = credentials
+        authenticatedCookieNonceAuthenticationEndpoints = nil
+        return super.authenticate(credentials: credentials, cookieNonceAuthenticationEndpoints: nil)
+    }
+
+    @discardableResult
+    override func authenticate(credentials: Credentials,
+                               cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        authenticatedCredentials = credentials
+        authenticatedCookieNonceAuthenticationEndpoints = cookieNonceAuthenticationEndpoints
+        return super.authenticate(
+            credentials: credentials,
+            cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints
+        )
     }
 
     // MARK: - Public Methods

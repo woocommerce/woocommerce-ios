@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import Networking
 import Testing
 import Yosemite
 import class Storage.ProductSearchResults

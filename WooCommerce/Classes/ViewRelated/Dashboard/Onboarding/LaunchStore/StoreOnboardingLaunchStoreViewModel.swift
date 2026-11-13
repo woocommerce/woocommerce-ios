@@ -2,6 +2,7 @@ import SwiftUI
 import Yosemite
 
 /// View model for `StoreOnboardingLaunchStoreView`.
+@MainActor
 final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
     /// UI state of the lauch store view.
     enum State {
@@ -64,7 +65,6 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
         self.onLearnMoreTapped = onLearnMoreTapped
     }
 
-    @MainActor
     func checkEligibilityToPublishStore() async {
         update(state: .checkingSitePlan)
         if await isFreeTrialPlan {
@@ -74,7 +74,6 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func launchStore() async {
         error = nil
         update(state: .launchingStore)
@@ -88,19 +87,16 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func didTapLearnMore() {
         onLearnMoreTapped()
     }
 }
 
 private extension StoreOnboardingLaunchStoreViewModel {
-    @MainActor
     func update(state: State) {
         self.state = state
     }
 
-    @MainActor
     var isFreeTrialPlan: Bool {
         get async {
             // Only fetch free trial information if the site is a WPCom site.
@@ -123,7 +119,6 @@ private extension StoreOnboardingLaunchStoreViewModel {
         }
     }
 
-    @MainActor
     func launchStoreRemotely() async -> Result<Void, SiteLaunchError> {
         await withCheckedContinuation { continuation in
             stores.dispatch(SiteAction.launchSite(siteID: siteID) { result in

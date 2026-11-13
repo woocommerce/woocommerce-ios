@@ -1,9 +1,10 @@
 import Combine
 import Foundation
 import Alamofire
+import os
 
 /// Helper type to observe selected site info
-public struct JetpackSite: Equatable {
+public struct JetpackSite: Equatable, Sendable {
     let siteID: Int64
     let siteAddress: String
     let applicationPasswordAvailable: Bool
@@ -15,7 +16,7 @@ public struct JetpackSite: Equatable {
     }
 }
 
-public enum RequestAuthenticationMode: String {
+public enum RequestAuthenticationMode: String, Sendable {
     case appPasswords = "app_passwords"
     case appPasswordsWithJetpack = "app_passwords_with_jetpack" // switching to app password for Jetpack sites
     case jetpackTunnel = "jetpack_tunnel"
@@ -27,12 +28,37 @@ extension Alamofire.MultipartFormData: MultipartFormData {
     }
 }
 
+// `@unchecked` for three stored values that are not `Sendable` but are safe here: `selectedSite` (an `AnyPublisher`,
+// only subscribed from `init` and the app password subscription), `userDefaults` (documented thread-safe), and the
+// subscriptions, kept in `subscriptions`. The state requests read is in `routing`.
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
-public class AlamofireNetwork: Network {
+public final class AlamofireNetwork: Network, @unchecked Sendable {
+
+    /// What the site and app password subscriptions change while requests read it from any thread.
+    ///
+    private struct Routing: Sendable {
+        var authenticationMode: RequestAuthenticationMode?
+
+        /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
+        ///
+        var requestConverter: RequestConverter
+    }
+
+    private struct Subscriptions {
+        var site: AnyCancellable?
+        var appPasswordSupport: AnyCancellable?
+    }
+
+    /// `OSAllocatedUnfairLock` rather than `Mutex`, which needs watchOS 11.
+    private let routing: OSAllocatedUnfairLock<Routing>
+
+    private let subscriptions = OSAllocatedUnfairLock(uncheckedState: Subscriptions())
 
     /// authentication mode for requests
-    public private(set) var authenticationMode: RequestAuthenticationMode?
+    public var authenticationMode: RequestAuthenticationMode? {
+        routing.withLock { $0.authenticationMode }
+    }
 
     /// Session manager used for Alamofire requests.
     private let alamofireSession: Alamofire.Session
@@ -43,9 +69,9 @@ public class AlamofireNetwork: Network {
 
     private let userDefaults: UserDefaults
 
-    /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
-    ///
-    private var requestConverter: RequestConverter
+    private var requestConverter: RequestConverter {
+        routing.withLock { $0.requestConverter }
+    }
 
     /// Authenticator to update requests authorization header if possible.
     ///
@@ -53,12 +79,8 @@ public class AlamofireNetwork: Network {
 
     public var session: URLSession { Session.default.session }
 
-    private var siteSubscription: AnyCancellable?
-
     /// Thread-safe error handler for failure tracking and retry logic
     private let errorHandler: AlamofireNetworkErrorHandler
-
-    private var appPasswordSupportSubscription: AnyCancellable?
 
     /// Background task that discovers the REST API root URL eagerly on init, so REST requests
     /// made immediately after authentication use the correct base path.
@@ -78,6 +100,7 @@ public class AlamofireNetwork: Network {
     public required init(credentials: Credentials?,
                          selectedSite: AnyPublisher<JetpackSite?, Never>?,
                          appPasswordSupportState: AnyPublisher<Bool, Never>?,
+                         cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
                          userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil,
                          discoveryHandler: ((String) async -> Void)? = nil) {
@@ -85,7 +108,7 @@ public class AlamofireNetwork: Network {
         self.selectedSite = selectedSite
         self.userDefaults = userDefaults
         self.errorHandler = AlamofireNetworkErrorHandler(credentials: credentials, userDefaults: userDefaults)
-        self.requestConverter = {
+        let requestConverter: RequestConverter = {
             let siteAddress: String? = {
                 switch credentials {
                 case let .wporg(_, _, siteAddress):
@@ -98,7 +121,11 @@ public class AlamofireNetwork: Network {
             }()
             return RequestConverter(siteAddress: siteAddress)
         }()
-        let requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
+        self.routing = OSAllocatedUnfairLock(initialState: Routing(authenticationMode: nil, requestConverter: requestConverter))
+        let requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(
+            credentials: credentials,
+            cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints
+        ))
         self.requestAuthenticator = requestAuthenticator
         if let sessionManager {
             self.alamofireSession = sessionManager
@@ -133,7 +160,7 @@ public class AlamofireNetwork: Network {
             guard sessionManager == nil else { return nil }
             return Task {
                 guard WordPressRESTAPIRootCache.shared.root(for: siteURL) == nil else { return }
-                _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteURL)
+                _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteURL)
             }
         }()
 
@@ -169,20 +196,21 @@ public class AlamofireNetwork: Network {
     ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        let convertedRequest = convertRequestIfNeeded(request)
+        let convertedRequest = convertRequestIfNeeded(request.originalResponseRequest)
         performAfterDiscovery(for: convertedRequest) { [weak self] in
             self?.alamofireSession.request(convertedRequest)
                 .validateIfRestRequest(for: convertedRequest)
                 .responseData { [weak self] response in
                     self?.errorHandler.handleFailureForDirectRequestIfNeeded(
-                        originalRequest: request,
+                        originalRequest: request.originalResponseRequest,
                         convertedRequest: convertedRequest,
                         failure: response.networkingError,
                         onRetry: {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
-                            completion(response.value, response.networkingError)
+                            let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
+                            completion(unexpectedError == nil ? response.value : nil, unexpectedError ?? response.networkingError)
                         }
                     )
                 }
@@ -199,20 +227,21 @@ public class AlamofireNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        let convertedRequest = convertRequestIfNeeded(request)
+        let convertedRequest = convertRequestIfNeeded(request.originalResponseRequest)
         performAfterDiscovery(for: convertedRequest) { [weak self] in
             self?.alamofireSession.request(convertedRequest)
                 .validateIfRestRequest(for: convertedRequest)
                 .responseData { [weak self] response in
                     self?.errorHandler.handleFailureForDirectRequestIfNeeded(
-                        originalRequest: request,
+                        originalRequest: request.originalResponseRequest,
                         convertedRequest: convertedRequest,
                         failure: response.networkingError,
                         onRetry: {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
-                            if let error = response.networkingError {
+                            let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
+                            if let error = unexpectedError ?? response.networkingError {
                                 completion(.failure(error))
                             } else {
                                 completion(response.result.mapError { $0 })
@@ -223,25 +252,27 @@ public class AlamofireNetwork: Network {
         }
     }
 
-    public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
-        let convertedRequest = convertRequestIfNeeded(request)
-        await withDiscoveryIfNeeded(for: convertedRequest)
+    public func responseDataAndHeaders(for request: URLRequestConvertible,
+                                       isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
+        let convertedRequest = convertRequestIfNeeded(request.originalResponseRequest)
+        await withDiscoveryIfNeeded(for: convertedRequest, isolation: isolation)
         let sessionRequest = alamofireSession.request(convertedRequest)
             .validateIfRestRequest(for: convertedRequest)
         let response = await sessionRequest.serializingData().response
         let failure = response.networkingError
 
         if errorHandler.shouldRetryJetpackRequest(
-            originalRequest: request,
+            originalRequest: request.originalResponseRequest,
             convertedRequest: convertedRequest,
             failure: failure
         ) {
-            return try await responseDataAndHeaders(for: request)
+            return try await responseDataAndHeaders(for: request, isolation: isolation)
         }
 
-        errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request, failure: failure)
+        errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request.originalResponseRequest, failure: failure)
+        let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
 
-        if let error = response.networkingError {
+        if let error = unexpectedError ?? response.networkingError {
             throw error
         }
         switch response.result {
@@ -250,6 +281,25 @@ public class AlamofireNetwork: Network {
             case .failure(let error):
                 throw error
         }
+    }
+
+    /// A Jetpack request that the converter leaves alone goes through the tunnel; one it turns into a
+    /// `RESTRequest` goes directly to the site with an application password.
+    ///
+    /// Answered from the converter's current state, which `Remote` consults once the response is in.
+    /// Two kinds of response are therefore reported as direct even though they came from the tunnel,
+    /// and are skipped by the recorder rather than misattributed: a direct request that failed and was
+    /// retried through the tunnel, because the retry marker is cleared before the response reaches the
+    /// caller; and a request in flight when the converter was swapped on a site change or on the site
+    /// being marked unsupported for application passwords. The first stops once that mark lands, which
+    /// is immediate for a 401, 403, 429 or an application-passwords-disabled code and takes ten such
+    /// fallbacks otherwise.
+    ///
+    public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        guard request.originalResponseRequest is JetpackRequest else {
+            return false
+        }
+        return !requestConverter.convertsToDirectRequest(request.originalResponseRequest)
     }
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
@@ -318,11 +368,12 @@ public class AlamofireNetwork: Network {
 private extension AlamofireNetwork {
 
     func observeAppPasswordSupportState(_ appPasswordSupportState: AnyPublisher<Bool, Never>) {
-        appPasswordSupportSubscription = appPasswordSupportState
+        let subscription = appPasswordSupportState
             .removeDuplicates()
             .sink { [weak self] enabled in
                 self?.updateAppPasswordSwitching(enabled: enabled)
             }
+        subscriptions.withLockUnchecked { $0.appPasswordSupport = subscription }
     }
 
     func updateAppPasswordSwitching(enabled: Bool) {
@@ -330,18 +381,18 @@ private extension AlamofireNetwork {
         if enabled, let selectedSite {
             observeSelectedSite(selectedSite)
         } else {
-            requestConverter = RequestConverter(siteAddress: nil)
+            setRequestConverter(RequestConverter(siteAddress: nil))
             requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
             requestAuthenticator.delegate = nil
             updateAuthenticationMode(.jetpackTunnel)
-            siteSubscription = nil
+            subscriptions.withLockUnchecked { $0.site = nil }
         }
     }
 
     /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
     ///
     func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
-        siteSubscription = selectedSite
+        let subscription = selectedSite
             .removeDuplicates()
             .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupportedList))
             .sink { [weak self] site, unsupportedList in
@@ -351,13 +402,13 @@ private extension AlamofireNetwork {
                         siteID: site.siteID,
                         unsupportedList: unsupportedList
                       ) == false else {
-                    requestConverter = RequestConverter(siteAddress: nil)
+                    setRequestConverter(RequestConverter(siteAddress: nil))
                     requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
                     requestAuthenticator.delegate = nil
                     updateAuthenticationMode(.jetpackTunnel)
                     return
                 }
-                requestConverter = RequestConverter(siteAddress: site.siteAddress)
+                setRequestConverter(RequestConverter(siteAddress: site.siteAddress))
                 requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
                     credentials: credentials,
                     selectedSite: site,
@@ -367,11 +418,16 @@ private extension AlamofireNetwork {
                 errorHandler.prepareAppPasswordSupport(for: site.siteID) // reset failure count
                 updateAuthenticationMode(.appPasswordsWithJetpack)
             }
+        subscriptions.withLockUnchecked { $0.site = subscription }
+    }
+
+    func setRequestConverter(_ requestConverter: RequestConverter) {
+        routing.withLock { $0.requestConverter = requestConverter }
     }
 
     func updateAuthenticationMode(_ mode: RequestAuthenticationMode?) {
         DispatchQueue.main.async { [weak self] in
-            self?.authenticationMode = mode
+            self?.routing.withLock { $0.authenticationMode = mode }
         }
     }
 }
@@ -399,7 +455,8 @@ private extension AlamofireNetwork {
 
     /// Awaits REST API discovery for REST requests. No-op for non-REST requests.
     ///
-    func withDiscoveryIfNeeded(for request: URLRequestConvertible) async {
+    func withDiscoveryIfNeeded(for request: URLRequestConvertible,
+                               isolation: isolated (any Actor)?) async {
         guard request is RESTRequest, let discoveryTask else { return }
         await discoveryTask.value
     }

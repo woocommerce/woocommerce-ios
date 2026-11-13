@@ -1,7 +1,7 @@
 import Foundation
 
 /// Generates the names of the named colors in the ColorPalette.xcasset
-public enum ColorStudioName: String, CustomStringConvertible {
+public enum ColorStudioName: String, CustomStringConvertible, Sendable {
     // MARK: - Base colors
     case blue
     case celadon
@@ -27,7 +27,7 @@ public enum ColorStudioName: String, CustomStringConvertible {
 ///
 /// Note: There are a finite number of acceptable values. Not just any Int works.
 ///       Also, enum cases cannot begin with a number, thus the `shade` prefix.
-public enum ColorStudioShade: Int, CustomStringConvertible {
+public enum ColorStudioShade: Int, CustomStringConvertible, Sendable {
     case shade0 = 0
     case shade5 = 5
     case shade10 = 10
@@ -52,7 +52,7 @@ extension ColorStudioShade: CaseIterable { }
 
 
 /// A specific color and shade from Color Studio
-public struct ColorStudio {
+public struct ColorStudio: Sendable {
     let name: ColorStudioName
     let shade: ColorStudioShade
 

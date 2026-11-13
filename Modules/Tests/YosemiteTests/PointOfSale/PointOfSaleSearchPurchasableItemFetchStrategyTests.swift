@@ -2,6 +2,7 @@ import Testing
 import Networking
 @testable import Yosemite
 
+@MainActor
 struct PointOfSaleSearchPurchasableItemFetchStrategyTests {
     private let siteID: Int64 = 123
     private let searchTerm = "test search"

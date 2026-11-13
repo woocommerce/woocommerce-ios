@@ -20,7 +20,6 @@ final class ProductListViewModelTests: XCTestCase {
 
     override func tearDown() {
         storesManager = nil
-        upsertedSettings = []
         super.tearDown()
     }
 

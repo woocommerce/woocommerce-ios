@@ -32,6 +32,21 @@ struct POSOtherPaymentMethodsSheet: View {
             }
             .padding(.bottom, metrics.padding.medium)
 
+            ViewThatFits(in: .vertical) {
+                rows
+                ScrollView {
+                    rows
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .if(horizontalSizeClass != .compact) {
+            $0.posModalSizing(fitsContentHeight: true)
+        }
+    }
+
+    private var rows: some View {
+        VStack(alignment: .leading, spacing: metrics.spacing.none) {
             if isTapToPayAvailable, let onTapToPay {
                 row(systemImage: "wave.3.right.circle",
                     title: Localization.tapToPayTitle,
@@ -73,10 +88,6 @@ struct POSOtherPaymentMethodsSheet: View {
                     onMarkOrderAsPaid()
                 }
             }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .if(horizontalSizeClass != .compact) {
-            $0.posModalSizing(fitsContentHeight: true)
         }
     }
 

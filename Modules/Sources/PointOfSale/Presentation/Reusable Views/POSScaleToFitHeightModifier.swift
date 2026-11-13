@@ -34,7 +34,7 @@ struct POSScaleToFitHeightModifier: ViewModifier {
         }
     }
 
-    static func scale(contentHeight: CGFloat, availableHeight: CGFloat) -> CGFloat {
+    nonisolated static func scale(contentHeight: CGFloat, availableHeight: CGFloat) -> CGFloat {
         guard contentHeight > availableHeight, contentHeight > 0 else {
             return 1
         }

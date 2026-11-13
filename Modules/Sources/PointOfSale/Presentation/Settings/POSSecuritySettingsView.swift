@@ -186,7 +186,7 @@ private struct POSSecurityPINEntryModal: View {
                     return result != .rejected
                 }
                 .id(setup.isConfirmingPIN)
-                if let error = controller.error {
+                if let error = setup.error ?? controller.error {
                     Text(error == .pinMatchesOtherRole ? Localization.distinctPINs : Localization.storageError)
                         .foregroundStyle(Color.posError).font(.posBodyMediumRegular())
                 }

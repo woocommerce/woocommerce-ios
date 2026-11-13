@@ -53,11 +53,11 @@ struct PercentageAddCustomAmountInputTypeViewModelAdapter: AddCustomAmountInputT
     let baseAmount: Decimal
 
     var amountPublisher: Published<String>.Publisher? {
-        viewModel?.percentageViewModel?.$percentageCalculatedAmount
+        viewModel?.percentageViewModel?.$amount
     }
 
     var amount: String? {
-        viewModel?.percentageViewModel?.percentageCalculatedAmount
+        viewModel?.percentageViewModel?.amount
     }
 
     func preset(with fee: OrderFeeLine) {
@@ -175,7 +175,9 @@ private extension AddCustomAmountViewModel {
         case .fixedAmount:
             formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         case .orderTotalPercentage(let baseAmount):
-            percentageViewModel = AddCustomAmountPercentageViewModel(baseAmountForPercentage: baseAmount, currencyFormatter: currencyFormatter)
+            percentageViewModel = AddCustomAmountPercentageViewModel(baseAmountForPercentage: baseAmount,
+                                                                     currencyFormatter: currencyFormatter,
+                                                                     fractionDigits: storeCurrencySettings.fractionDigits)
         }
     }
 

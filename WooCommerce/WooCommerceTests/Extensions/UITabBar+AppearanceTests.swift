@@ -31,6 +31,8 @@ struct UITabBarAppearanceTests {
             ] {
                 #expect(stateAppearance.iconColor == expectedItemColor)
                 #expect(stateAppearance.titleTextAttributes[.foregroundColor] as? UIColor == expectedItemColor)
+                // The paragraph style keeps iPad titles from truncating before iOS 26.
+                #expect(stateAppearance.titleTextAttributes[.paragraphStyle] is NSParagraphStyle)
             }
             for stateAppearance in [
                 itemAppearance.normal,

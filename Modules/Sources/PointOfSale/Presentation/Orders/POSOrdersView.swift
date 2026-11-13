@@ -86,19 +86,28 @@ struct POSOrdersView: View {
                 activeRefundSelectionOrderID = nil
                 selectOrder(nil)
             }
-            .alert(Localization.cancelRefundAlertTitle,
-                   isPresented: $isCancelRefundConfirmationPresented,
-                   presenting: pendingOrderSelection) { order in
-                Button(Localization.keepEditingRefundButton, role: .cancel) {
-                    pendingOrderSelection = nil
-                }
-                Button(Localization.cancelRefundButton, role: .destructive) {
-                    cancelActiveRefundSelectionAndSelect(order)
-                }
-            } message: { _ in
-                Text(Localization.cancelRefundAlertMessage)
+            .posDialog(isPresented: $isCancelRefundConfirmationPresented,
+                       onDismiss: { pendingOrderSelection = nil }) {
+                cancelRefundConfirmationDialog
             }
         }
+    }
+
+    /// The close button and a tap outside keep editing the refund.
+    private var cancelRefundConfirmationDialog: POSDialog {
+        POSDialog(title: Localization.cancelRefundAlertTitle,
+                  message: Localization.cancelRefundAlertMessage,
+                  primaryAction: .init(title: Localization.cancelRefundButton, action: {
+                      let order = pendingOrderSelection
+                      isCancelRefundConfirmationPresented = false
+                      if let order {
+                          cancelActiveRefundSelectionAndSelect(order)
+                      }
+                  }),
+                  closeAction: .init(accessibilityLabel: Localization.keepEditingRefundButton, action: {
+                      isCancelRefundConfirmationPresented = false
+                      pendingOrderSelection = nil
+                  }))
     }
 
     @ViewBuilder

@@ -4,13 +4,15 @@ if .buildkite/commands/should-skip-job.sh --job-type build; then
   exit 0
 fi
 
-"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
+"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh" --artifacts DerivedData/SourcePackages
 
 echo "--- :hammer_and_wrench: Building"
 # fastlane/logs feeds the warning count below; clear it so logs from a previous
 # build (or the screenshots lane) on a reused checkout can't leak into the report.
 rm -rf fastlane/logs || true
 bundle exec fastlane build_for_testing
+
+save_swiftpm_cache --package-resolved Modules/Package.resolved --artifacts DerivedData/SourcePackages
 
 # Count warnings here rather than in the comparison step: the build log contains
 # absolute paths rooted in this agent's checkout, so counting on another agent

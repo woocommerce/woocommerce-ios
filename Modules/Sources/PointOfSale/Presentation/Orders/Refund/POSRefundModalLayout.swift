@@ -29,19 +29,24 @@ struct POSRefundNavigationHeader: View {
     let title: String?
     let backAction: (() -> Void)?
     let backAccessibilityLabel: String
+    let backAccessibilityIdentifier: String?
 
     init(title: String? = nil,
          backAction: (() -> Void)?,
-         backAccessibilityLabel: String) {
+         backAccessibilityLabel: String,
+         backAccessibilityIdentifier: String? = nil) {
         self.title = title
         self.backAction = backAction
         self.backAccessibilityLabel = backAccessibilityLabel
+        self.backAccessibilityIdentifier = backAccessibilityIdentifier
     }
 
     var body: some View {
         HStack(alignment: horizontalSizeClass == .compact ? .center : .top, spacing: metrics.spacing.medium) {
             if let backAction {
-                POSPageHeaderBackButton(configuration: .init(state: .enabled, action: backAction))
+                POSPageHeaderBackButton(configuration: .init(state: .enabled,
+                                                             action: backAction,
+                                                             accessibilityIdentifier: backAccessibilityIdentifier))
                     .accessibilityLabel(backAccessibilityLabel)
             }
 

@@ -13,13 +13,24 @@ struct POSModalSizing: ViewModifier {
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
+
     let fullScreenWhenCompact: Bool
     let fitsContentHeight: Bool
 
+    @ViewBuilder
     func body(content: Content) -> some View {
-        content
-            .padding(metrics.padding.xxLarge)
-            .frame(width: frameWidth, height: fitsContentHeight ? nil : frameHeight)
+        if isFullScreenFlow {
+            // The flow header brings its own top spacing.
+            content
+                .padding(.horizontal, metrics.padding.xxLarge)
+                .padding(.bottom, metrics.padding.medium)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            content
+                .padding(metrics.padding.xxLarge)
+                .frame(width: frameWidth, height: fitsContentHeight ? nil : frameHeight)
+        }
     }
 }
 

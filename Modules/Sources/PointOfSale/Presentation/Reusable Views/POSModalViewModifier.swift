@@ -4,6 +4,14 @@ import SwiftUI
 enum POSModalCompactStyle: Equatable {
     case dialog
     case bottomSheet
+    case fullScreen(title: String)
+
+    var fullScreenTitle: String? {
+        guard case .fullScreen(let title) = self else {
+            return nil
+        }
+        return title
+    }
 }
 
 struct POSRootModalViewModifier: ViewModifier {
@@ -29,7 +37,18 @@ struct POSRootModalViewModifier: ViewModifier {
     }
 
     private func isCompactStyle(_ style: POSModalCompactStyle) -> Bool {
-        horizontalSizeClass == .compact && modalManager.compactStyle == style && !modalManager.isFullScreen
+        activeCompactStyle == style
+    }
+
+    private var activeCompactStyle: POSModalCompactStyle? {
+        horizontalSizeClass == .compact && !modalManager.isFullScreen ? modalManager.compactStyle : nil
+    }
+
+    private var dismissActionIfAllowed: (() -> Void)? {
+        guard modalManager.allowsInteractiveDismissal else {
+            return nil
+        }
+        return { modalManager.dismiss() }
     }
 
     func body(content: Content) -> some View {
@@ -67,6 +86,8 @@ struct POSRootModalViewModifier: ViewModifier {
                                         .environment(\.posModalParentSize, geometry.size)
                                         .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
                                         .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                                        .environment(\.posModalCompactStyle, activeCompactStyle)
+                                        .posFullScreenFlowHeader(style: activeCompactStyle, dismissAction: dismissActionIfAllowed)
                                         .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
                                         .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                                         .posShadow(isFullScreen ? .none : .large,
@@ -101,6 +122,7 @@ private extension POSRootModalViewModifier {
                 .environment(\.posModalParentSize, parentSize)
                 .environment(\.posHeaderTopPadding, nil)
                 .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                .environment(\.posModalCompactStyle, activeCompactStyle)
                 .padding(metrics.bottomSheetContentInsets)
                 // The home indicator area is already enough space under the content.
                 .padding(.bottom, bottomSafeArea > 0 ? metrics.padding.none : metrics.padding.xxLarge)
@@ -349,6 +371,23 @@ extension EnvironmentValues {
     var posModalParentSize: CGSize {
         get { self[POSModalParentSizeKey.self] }
         set { self[POSModalParentSizeKey.self] = newValue }
+    }
+}
+
+// MARK: - POS Modal Compact Style Environment
+
+private struct POSModalCompactStyleKey: EnvironmentKey {
+    static let defaultValue: POSModalCompactStyle? = nil
+}
+
+extension EnvironmentValues {
+    var posModalCompactStyle: POSModalCompactStyle? {
+        get { self[POSModalCompactStyleKey.self] }
+        set { self[POSModalCompactStyleKey.self] = newValue }
+    }
+
+    var isPOSModalFullScreenFlow: Bool {
+        posModalCompactStyle?.fullScreenTitle != nil
     }
 }
 

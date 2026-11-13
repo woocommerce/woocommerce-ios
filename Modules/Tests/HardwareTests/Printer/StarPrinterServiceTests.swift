@@ -136,7 +136,8 @@ struct StarPrinterServiceTests {
         }
     }
 
-    @Test func test_connect_when_retried_while_a_cancelled_open_is_in_flight_then_waits_and_connects_the_retried_printer() async throws {
+    @Test(arguments: [true, false])
+    func test_connect_when_retried_while_an_open_is_in_flight_then_waits_and_connects_the_retried_printer(cancelsFirstConnect: Bool) async throws {
         try await onCoordinator { coordinator in
             // Given
             let (statuses, statusContinuation) = observeStatuses(of: coordinator)
@@ -146,10 +147,18 @@ struct StarPrinterServiceTests {
             let cancelledConnect = Task {
                 try await coordinator.connect(to: Self.device, using: cancelledPrinter)
             }
+            var cancelledPrinterClosesWhenRetryOpened: Int?
+            retriedPrinter.onOpen = {
+                // As with a real printer, the superseded call finishes while the retried printer is still opening.
+                _ = await cancelledConnect.result
+                cancelledPrinterClosesWhenRetryOpened = cancelledPrinter.closeCallCount
+            }
             await firstValue(of: opening)
 
             // When
-            cancelledConnect.cancel()
+            if cancelsFirstConnect {
+                cancelledConnect.cancel()
+            }
             let (retryStarted, retryStartedContinuation) = AsyncStream.makeStream(of: Void.self)
             let retry = Task {
                 retryStartedContinuation.yield()
@@ -166,6 +175,7 @@ struct StarPrinterServiceTests {
             try await retry.value
             statusContinuation.finish()
             #expect(await collect(statuses) == [.idle, .connecting, .connecting, .connected(Self.retriedDevice)])
+            #expect(cancelledPrinterClosesWhenRetryOpened == 1)
             #expect(cancelledPrinter.closeCallCount == 1)
             #expect(cancelledPrinter.printerDelegate == nil)
             #expect(retriedPrinter.closeCallCount == 0)

@@ -105,16 +105,13 @@ actor StarPrinterCoordinator {
     // swiftlint:disable:next weak_delegate
     private var connectionDelegate: StarConnectionDelegate?
 
-    /// Whether a `connect(to:)` is opening a printer, so overlapping calls queue behind it and we stay the delegate
-    /// of at most one printer at a time. The check-and-set is atomic here because the actor admits no other call
-    /// between the loop's check and the assignment (there is no suspension point between them).
-    private var isConnecting = false
+    /// The newest `connect(to:)` attempt. Each attempt waits for the one before it, so we stay the delegate of at most
+    /// one printer at a time.
+    private var connectTask: Task<Void, any Error>?
 
-    /// Changes on every `connect(to:)` call, so an attempt that a newer call superseded knows not to publish its result.
-    private var connectAttempt = 0
-
-    /// Connect calls waiting for the in-flight attempt to settle.
-    private var connectWaiters: [CheckedContinuation<Void, Never>] = []
+    private var isConnecting: Bool {
+        connectTask != nil
+    }
 
     /// The latest connection status, replayed to each new observer so it never starts out of sync.
     private var connectionStatus: PrinterConnectionStatus = .idle
@@ -195,67 +192,33 @@ actor StarPrinterCoordinator {
     func connect(to device: PrinterDevice, using starPrinter: any StarPrinterConnection) async throws {
         // An already-cancelled call must not supersede, and so close, a connect that is still in flight.
         try Task.checkCancellation()
-        connectAttempt += 1
-        let attempt = connectAttempt
 
-        // StarIO10's `open()` ignores task cancellation and has no way to abort it, so a newer call waits for the
-        // in-flight attempt to settle. That attempt sees it was superseded and closes a late connection itself.
-        while isConnecting {
-            await withCheckedContinuation { connectWaiters.append($0) }
+        // StarIO10's `open()` ignores task cancellation and has no way to abort it, so a newer call cancels the
+        // in-flight attempt and waits for it to settle. That attempt closes a late connection itself.
+        let previous = connectTask
+        previous?.cancel()
+        let attempt = Task {
+            _ = await previous?.result
+            try Task.checkCancellation()
+            try await openConnection(to: device, using: starPrinter)
         }
-        guard attempt == connectAttempt, !Task.isCancelled else {
-            // The newest call reports status, so it settles what the attempt it superseded, or a `disconnect()` that
-            // deferred to the connect, left in progress.
-            if attempt == connectAttempt, [.connecting, .disconnecting].contains(connectionStatus) {
-                emit(.disconnected)
-            }
-            throw CancellationError()
-        }
-
-        isConnecting = true
+        connectTask = attempt
         defer {
-            isConnecting = false
-            let waiters = connectWaiters
-            connectWaiters = []
-            waiters.forEach { $0.resume() }
-        }
-
-        // Tear down any current connection to a different printer first, so we never leave a second printer
-        // open with us still set as its delegate.
-        if let existing = printer, existing !== starPrinter {
-            await teardown(existing)
-        }
-
-        emit(.connecting)
-        let delegate = StarConnectionDelegate { [weak self] delegate, error in
-            Task { await self?.handleCommunicationError(error, reportedBy: delegate) }
-        }
-        starPrinter.printerDelegate = delegate
-        do {
-            try await starPrinter.open()
-        } catch {
-            starPrinter.printerDelegate = nil
-            // A superseding call reports its own status.
-            if attempt == connectAttempt {
-                emit(.disconnected)
+            // The newest call reports status, so it settles what a failed or cancelled attempt, or a `disconnect()`
+            // that deferred to the connect, left in progress.
+            if connectTask == attempt {
+                connectTask = nil
+                if [.connecting, .disconnecting].contains(connectionStatus) {
+                    emit(.disconnected)
+                }
             }
-            DDLogError("🖨️ Printer connection failed: \(error.localizedDescription)")
-            throw error
         }
 
-        guard attempt == connectAttempt, !Task.isCancelled else {
-            DDLogInfo("🖨️ Closing printer \(device.id) opened by a cancelled or superseded connect")
-            starPrinter.printerDelegate = nil
-            await starPrinter.close()
-            if attempt == connectAttempt {
-                emit(.disconnected)
-            }
-            throw CancellationError()
+        try await withTaskCancellationHandler {
+            try await attempt.value
+        } onCancel: {
+            attempt.cancel()
         }
-        printer = starPrinter
-        connectionDelegate = delegate
-        emit(.connected(device))
-        DDLogInfo("🖨️ Connected to printer \(device.id)")
     }
 
     func disconnect() async {
@@ -328,6 +291,39 @@ actor StarPrinterCoordinator {
 private extension StarPrinterCoordinator {
     enum Constants {
         static let discoveryTimeInMilliseconds = 30000
+    }
+
+    /// Runs in a `connect(to:)` attempt's task, which a newer call cancels. Leaves failure status to the newest call.
+    func openConnection(to device: PrinterDevice, using starPrinter: any StarPrinterConnection) async throws {
+        // Tear down any current connection to a different printer first, so we never leave a second printer
+        // open with us still set as its delegate.
+        if let existing = printer, existing !== starPrinter {
+            await teardown(existing)
+        }
+
+        emit(.connecting)
+        let delegate = StarConnectionDelegate { [weak self] delegate, error in
+            Task { await self?.handleCommunicationError(error, reportedBy: delegate) }
+        }
+        starPrinter.printerDelegate = delegate
+        do {
+            try await starPrinter.open()
+        } catch {
+            starPrinter.printerDelegate = nil
+            DDLogError("🖨️ Printer connection failed: \(error.localizedDescription)")
+            throw error
+        }
+
+        guard !Task.isCancelled else {
+            DDLogInfo("🖨️ Closing printer \(device.id) opened by a cancelled or superseded connect")
+            starPrinter.printerDelegate = nil
+            await starPrinter.close()
+            throw CancellationError()
+        }
+        printer = starPrinter
+        connectionDelegate = delegate
+        emit(.connected(device))
+        DDLogInfo("🖨️ Connected to printer \(device.id)")
     }
 
     /// Records the new status and forwards it to every active observer, so subscribers and the replayed

@@ -3,8 +3,18 @@ import SwiftUI
 struct POSFlowButtonsView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     let configuration: PointOfSaleFlowButtonConfiguration
+
+    static func visibleConfiguration(for configuration: PointOfSaleFlowButtonConfiguration,
+                                     isFullScreenFlow: Bool) -> PointOfSaleFlowButtonConfiguration {
+        isFullScreenFlow ? configuration.removingBackButtons() : configuration
+    }
+
+    private var visibleConfiguration: PointOfSaleFlowButtonConfiguration {
+        Self.visibleConfiguration(for: configuration, isFullScreenFlow: isFullScreenFlow)
+    }
 
     static func usesStackedLayout(horizontalSizeClass: UserInterfaceSizeClass?) -> Bool {
         horizontalSizeClass == .compact
@@ -25,11 +35,16 @@ struct POSFlowButtonsView: View {
             }
         }
         .geometryGroup()
+        .posModalFlowBackAction(enabled: isFullScreenFlow && configuration.backButton != nil,
+                                actionEnabled: configuration.backButton?.isEnabled ?? true,
+                                accessibilityIdentifier: configuration.backButton?.accessibilityIdentifier) {
+            configuration.backButton?.action()
+        }
     }
 
     @ViewBuilder
     private var primaryButton: some View {
-        if let primaryButton = configuration.primaryButton {
+        if let primaryButton = visibleConfiguration.primaryButton {
             button(for: primaryButton)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
@@ -37,7 +52,7 @@ struct POSFlowButtonsView: View {
 
     @ViewBuilder
     private var secondaryButton: some View {
-        if let secondaryButton = configuration.secondaryButton {
+        if let secondaryButton = visibleConfiguration.secondaryButton {
             button(for: secondaryButton)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
@@ -67,19 +82,32 @@ struct PointOfSaleFlowButtonConfiguration {
         let title: String
         let isEnabled: Bool
         let accessibilityIdentifier: String?
+        /// In a phone full screen flow, the header back arrow replaces it.
+        let isBack: Bool
         let action: () -> Void
 
         init(
             title: String,
             isEnabled: Bool = true,
             accessibilityIdentifier: String? = nil,
+            isBack: Bool = false,
             action: @escaping () -> Void,
         ) {
             self.title = title
             self.isEnabled = isEnabled
             self.accessibilityIdentifier = accessibilityIdentifier
+            self.isBack = isBack
             self.action = action
         }
+    }
+
+    var backButton: ButtonConfig? {
+        [primaryButton, secondaryButton].compactMap { $0 }.first { $0.isBack }
+    }
+
+    func removingBackButtons() -> PointOfSaleFlowButtonConfiguration {
+        .init(primaryButton: primaryButton?.isBack == true ? nil : primaryButton,
+              secondaryButton: secondaryButton?.isBack == true ? nil : secondaryButton)
     }
 
     // MARK: - Convenience Initializers

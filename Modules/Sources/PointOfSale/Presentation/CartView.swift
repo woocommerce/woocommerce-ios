@@ -76,7 +76,7 @@ struct CartView: View {
                 // iPad path only — on phone the dashboard hosts the cover above the cart sheet via
                 // `onPresentBarcodeScannerSetup`, otherwise POSSheet's coverManager interaction would
                 // tear CartView down before the cover fully presents.
-                .posModal(isPresented: $showBarcodeScanningModal) {
+                .posModal(isPresented: $showBarcodeScanningModal, compactStyle: .barcodeScannerSetup) {
                     POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
                 }
                 // Cart-side edit only: the add path pushes from the products list and tracks

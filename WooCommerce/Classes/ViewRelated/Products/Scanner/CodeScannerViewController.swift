@@ -98,6 +98,24 @@ final class CodeScannerViewController: UIViewController {
         dismiss(animated: true)
     }
 
+    /// The scan area shrinks when the accessory needs more height than the dimmed area has.
+    func addBottomAccessoryView(_ accessoryView: UIView) {
+        loadViewIfNeeded()
+        accessoryView.translatesAutoresizingMaskIntoConstraints = false
+        accessoryView.setContentCompressionResistancePriority(.required, for: .vertical)
+        bottomDimmingView.addSubview(accessoryView)
+        let bottomToSafeArea = accessoryView.bottomAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.bottomAnchor)
+        bottomToSafeArea.priority = .defaultHigh
+        NSLayoutConstraint.activate([
+            accessoryView.topAnchor.constraint(equalTo: bottomDimmingView.topAnchor),
+            accessoryView.leadingAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.leadingAnchor),
+            accessoryView.trailingAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.trailingAnchor),
+            accessoryView.bottomAnchor.constraint(lessThanOrEqualTo: bottomDimmingView.bottomAnchor,
+                                                  constant: -Constants.bottomAccessoryMinimumBottomInset),
+            bottomToSafeArea
+        ])
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
@@ -386,6 +404,8 @@ private extension CodeScannerViewController {
     enum Constants {
         static let dimmingColor = UIColor(white: 0.0, alpha: 0.5)
         static let instructionTextInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
+        /// An iPad form sheet has no bottom safe area, so without this the accessory sits on its rounded bottom corners.
+        static let bottomAccessoryMinimumBottomInset: CGFloat = 8
     }
 
     enum Localization {

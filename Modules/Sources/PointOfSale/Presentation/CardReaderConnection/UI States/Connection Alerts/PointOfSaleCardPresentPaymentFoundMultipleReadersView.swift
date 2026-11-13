@@ -74,6 +74,8 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
             Spacer(minLength: metrics.spacing.none)
 
             scanningText()
+                .accessibilityElement(children: .combine)
+                .accessibilityFocused($isTitleFocused)
                 .padding(.bottom, metrics.padding.small)
 
             VStack(spacing: metrics.spacing.small) {

@@ -43,7 +43,8 @@ final class POSSecuritySettingsController {
     }
 
     func makePINSetupController(for role: POSLocalRole) -> POSPINSetupController {
-        POSPINSetupController { pin in await self.save(pin, for: role) }
+        POSPINSetupController(validatePIN: { pin in try await self.validatePIN(pin, for: role) },
+                              savePIN: { pin in await self.save(pin, for: role) })
     }
 
     func requestRemoval(for role: POSLocalRole) async {
@@ -77,6 +78,16 @@ final class POSSecuritySettingsController {
         guard removalRequestID == requestID, isVisible, !Task.isCancelled else { return false }
         let removed = await save(nil, for: .admin)
         return removed
+    }
+
+    private func validatePIN(_ pin: String, for role: POSLocalRole) async throws {
+        guard isVisible, !isSaving, roles != nil, !Task.isCancelled else { throw CancellationError() }
+        isSaving = true
+        defer { isSaving = false }
+        let store = store
+        let result = await Task.detached { try store.validatePIN(pin, for: role) }.result
+        guard isVisible, !Task.isCancelled else { throw CancellationError() }
+        try result.get()
     }
 
     private func save(_ pin: String?, for role: POSLocalRole) async -> Bool {

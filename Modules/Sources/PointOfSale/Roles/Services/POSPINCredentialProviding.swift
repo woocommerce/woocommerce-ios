@@ -14,6 +14,7 @@ protocol POSPINCredentialProviding: Sendable {
 
 protocol POSPINManaging: Sendable {
     func configuredRoles() throws(POSPINStoreError) -> Set<POSLocalRole>
+    func validatePIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError)
     func setPIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError)
     func removePIN(for role: POSLocalRole) throws(POSPINStoreError)
 }

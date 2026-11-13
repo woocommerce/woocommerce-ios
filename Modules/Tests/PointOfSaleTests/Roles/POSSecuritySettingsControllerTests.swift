@@ -9,6 +9,41 @@ struct POSSecuritySettingsControllerTests {
     private let storage = InMemoryPOSSecureStorage()
     private let defaultsScope = POSSecurityTestDefaults()
 
+    @Test func test_confirmation_when_other_role_changes_after_validation_then_final_save_still_rejects_duplicate() async throws {
+        // Given
+        let (controller, _, store) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        let setup = controller.makePINSetupController(for: .cashier)
+        #expect(await setup.submit("5678") == .confirmationRequired)
+        try store.setPIN("5678", for: .admin)
+
+        // When
+        let result = await setup.submit("5678")
+
+        // Then
+        #expect(result == .rejected)
+        #expect(controller.error == .pinMatchesOtherRole)
+        #expect(try store.configuredRoles() == [.admin])
+    }
+
+    @Test func test_first_entry_when_storage_is_unreadable_then_rejects_without_confirmation() async {
+        // Given
+        let (controller, _, _) = makeSUT()
+        controller.load()
+        let setup = controller.makePINSetupController(for: .admin)
+        storage.shouldFail = true
+
+        // When
+        let result = await setup.submit("1234")
+
+        // Then
+        #expect(result == .rejected)
+        #expect(setup.error == .storageFailure)
+        #expect(!setup.isConfirmingPIN)
+        #expect(storage.values.isEmpty)
+    }
+
     @Test func test_setup_when_admin_is_saved_then_enables_protection_and_keeps_admin_active() async {
         // Given
         let (controller, session, _) = makeSUT()
@@ -77,11 +112,13 @@ struct POSSecuritySettingsControllerTests {
         #expect(await save("5678", for: .cashier, using: controller))
 
         // When
-        let saved = await save("5678", for: .admin, using: controller)
+        let setup = controller.makePINSetupController(for: .admin)
+        let result = await setup.submit("5678")
 
         // Then
-        #expect(!saved)
-        #expect(controller.error == .pinMatchesOtherRole)
+        #expect(result == .rejected)
+        #expect(!setup.isConfirmingPIN)
+        #expect(setup.error == .pinMatchesOtherRole)
         #expect(controller.roles == [.admin, .cashier])
         #expect(session.currentStaff == POSLocalRole.admin.staff)
     }
@@ -109,11 +146,13 @@ struct POSSecuritySettingsControllerTests {
         #expect(await save("1234", for: .admin, using: controller))
 
         // When
-        let saved = await save("1234", for: .cashier, using: controller)
+        let setup = controller.makePINSetupController(for: .cashier)
+        let result = await setup.submit("1234")
 
         // Then
-        #expect(!saved)
-        #expect(controller.error == .pinMatchesOtherRole)
+        #expect(result == .rejected)
+        #expect(!setup.isConfirmingPIN)
+        #expect(setup.error == .pinMatchesOtherRole)
         #expect(controller.roles == [.admin])
         #expect(session.isPINProtectionEnabled)
     }
@@ -261,13 +300,12 @@ struct POSSecuritySettingsControllerTests {
         controller.load()
         #expect(await save("1234", for: .admin, using: controller))
         let setup = controller.makePINSetupController(for: .cashier)
-        #expect(await setup.submit("1234") == .confirmationRequired)
-
         // When
         #expect(await setup.submit("1234") == .rejected)
 
         // Then
-        #expect(controller.error == .pinMatchesOtherRole)
+        #expect(!setup.isConfirmingPIN)
+        #expect(setup.error == .pinMatchesOtherRole)
         #expect(controller.roles == [.admin])
         #expect(await setup.submit("5678") == .confirmationRequired)
         #expect(await setup.submit("5678") == .saved)
@@ -476,7 +514,7 @@ struct POSSecuritySettingsControllerTests {
 
     private func save(_ pin: String, for role: POSLocalRole, using controller: POSSecuritySettingsController) async -> Bool {
         let setup = controller.makePINSetupController(for: role)
-        #expect(await setup.submit(pin) == .confirmationRequired)
+        guard await setup.submit(pin) == .confirmationRequired else { return false }
         return await setup.submit(pin) == .saved
     }
 

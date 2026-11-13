@@ -724,7 +724,7 @@ private extension ProductStoreRequestHandler {
             return onCompletion(.failure(ProductLoadError.emptyIdentifier))
         }
 
-        Task {
+        Task { @MainActor in
             do {
                 let (products, source) = try await searchProductsByIdentifier(for: siteID, keyword: identifier)
 
@@ -816,7 +816,10 @@ private extension ProductStoreRequestHandler {
         }
     }
 
-    func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], onCompletion: @escaping @Sendable (Result<Product, ProductUpdateError>) -> Void) {
+    func updateProductImages(siteID: Int64,
+                             productID: Int64,
+                             images: [ProductImage],
+                             onCompletion: @escaping @Sendable (Result<Product, ProductUpdateError>) -> Void) {
         remote.updateProductImages(siteID: siteID, productID: productID, images: images) { [weak self] result in
             switch result {
             case .failure(let error):

@@ -7,7 +7,8 @@ final class POSSecuritySettingsController {
     private(set) var roles: Set<POSLocalRole>?
     private(set) var isSaving = false
     private(set) var error: POSPINStoreError?
-    private(set) var isConfirmingAdminRemoval = false
+    private var removalRequestID: UUID?
+    private var isVerifyingRemoval = false
     private let store: POSPINManaging
     private let session: POSAccessSession
 
@@ -28,6 +29,8 @@ final class POSSecuritySettingsController {
 
     var hasOnlyAdminPIN: Bool { roles == [.admin] }
 
+    var isApprovingProtectionRemoval: Bool { removalRequestID != nil }
+
     func load() {
         do {
             try session.refreshPINProtection()
@@ -44,26 +47,42 @@ final class POSSecuritySettingsController {
     }
 
     func requestRemoval(for role: POSLocalRole) async {
-        guard isVisible, !isSaving else { return }
-        if role == .admin {
-            isConfirmingAdminRemoval = true
-        } else {
-            _ = await save(nil, for: role)
-        }
+        guard role != .admin else { return }
+        _ = await save(nil, for: role)
+    }
+
+    func requestProtectionRemoval(using handler: POSManagerOverrideHandler, reason: String) {
+        guard isVisible, !isSaving, roles?.contains(.admin) == true else { return }
+        handler.requestApproval(for: .manageStoreSettings,
+                                reason: reason,
+                                submitPIN: approveProtectionRemoval,
+                                onCancel: cancelRemoval)
+        removalRequestID = UUID()
     }
 
     func cancelRemoval() {
-        isConfirmingAdminRemoval = false
+        removalRequestID = nil
     }
 
-    @discardableResult
-    func confirmAdminRemoval() -> Task<Bool, Never>? {
-        guard isConfirmingAdminRemoval else { return nil }
-        isConfirmingAdminRemoval = false
-        return Task { await save(nil, for: .admin) }
+    func approveProtectionRemoval(withPIN pin: String) async throws(POSAuthError) -> Bool {
+        guard let requestID = removalRequestID, isVisible, !isSaving, !isVerifyingRemoval, !Task.isCancelled else { return false }
+        isVerifyingRemoval = true
+        defer { isVerifyingRemoval = false }
+        do {
+            try await session.requestManagerApproval(withPIN: pin, for: .manageStoreSettings)
+        } catch {
+            guard removalRequestID == requestID, !Task.isCancelled else { return false }
+            throw error
+        }
+        guard removalRequestID == requestID, isVisible, !Task.isCancelled else { return false }
+        let removed = await save(nil, for: .admin)
+        if removed, removalRequestID == requestID {
+            cancelRemoval()
+        }
+        return removed
     }
 
-    func save(_ pin: String?, for role: POSLocalRole) async -> Bool {
+    private func save(_ pin: String?, for role: POSLocalRole) async -> Bool {
         guard isVisible, !isSaving, roles != nil else { return false }
         isSaving = true
         defer { isSaving = false }

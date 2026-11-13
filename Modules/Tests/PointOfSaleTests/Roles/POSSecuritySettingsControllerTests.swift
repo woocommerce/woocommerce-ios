@@ -16,7 +16,7 @@ struct POSSecuritySettingsControllerTests {
         #expect(controller.isVisible)
 
         // When
-        let saved = await controller.save("1234", for: .admin)
+        let saved = await save("1234", for: .admin, using: controller)
 
         // Then
         #expect(saved)
@@ -34,7 +34,7 @@ struct POSSecuritySettingsControllerTests {
         storage.shouldFailWrites = true
 
         // When
-        let saved = await controller.save("1234", for: .admin)
+        let saved = await save("1234", for: .admin, using: controller)
 
         // Then
         #expect(!saved)
@@ -53,16 +53,16 @@ struct POSSecuritySettingsControllerTests {
         #expect(!controller.isPINProtectionEnabled)
 
         // When
-        #expect(await controller.save("1234", for: .admin))
+        #expect(await save("1234", for: .admin, using: controller))
 
         // Then
         #expect(controller.offersCashierPINSetup)
         #expect(controller.hasOnlyAdminPIN)
         #expect(controller.isPINProtectionEnabled)
-        #expect(await controller.save("5678", for: .cashier))
+        #expect(await save("5678", for: .cashier, using: controller))
         #expect(controller.offersCashierPINSetup)
         #expect(!controller.hasOnlyAdminPIN)
-        #expect(await controller.save(nil, for: .admin))
+        #expect(await removeProtection(using: controller))
         #expect(!controller.offersCashierPINSetup)
         #expect(!controller.hasOnlyAdminPIN)
         #expect(!controller.isPINProtectionEnabled)
@@ -72,11 +72,11 @@ struct POSSecuritySettingsControllerTests {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
-        #expect(await controller.save("5678", for: .cashier))
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
 
         // When
-        let saved = await controller.save("5678", for: .admin)
+        let saved = await save("5678", for: .admin, using: controller)
 
         // Then
         #expect(!saved)
@@ -89,10 +89,10 @@ struct POSSecuritySettingsControllerTests {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
+        #expect(await save("1234", for: .admin, using: controller))
 
         // When
-        #expect(await controller.save("2468", for: .admin))
+        #expect(await save("2468", for: .admin, using: controller))
         session.lock()
 
         // Then
@@ -105,10 +105,10 @@ struct POSSecuritySettingsControllerTests {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
+        #expect(await save("1234", for: .admin, using: controller))
 
         // When
-        let saved = await controller.save("1234", for: .cashier)
+        let saved = await save("1234", for: .cashier, using: controller)
 
         // Then
         #expect(!saved)
@@ -121,11 +121,11 @@ struct POSSecuritySettingsControllerTests {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
-        #expect(await controller.save("5678", for: .cashier))
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
 
         // When
-        #expect(await controller.save(nil, for: .admin))
+        #expect(await removeProtection(using: controller))
 
         // Then
         #expect(controller.roles == [])
@@ -139,64 +139,113 @@ struct POSSecuritySettingsControllerTests {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
-        #expect(await controller.save("5678", for: .cashier))
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
 
         // When
-        await controller.requestRemoval(for: .admin)
-        #expect(controller.isConfirmingAdminRemoval)
+        let handler = removalHandler(for: controller)
+        #expect(controller.isApprovingProtectionRemoval)
         #expect(controller.roles == [.admin, .cashier])
-        controller.cancelRemoval()
+        handler.cancel()
 
         // Then
-        #expect(!controller.isConfirmingAdminRemoval)
+        #expect(!controller.isApprovingProtectionRemoval)
         #expect(controller.roles == [.admin, .cashier])
         #expect(session.isPINProtectionEnabled)
     }
 
-    @Test func test_admin_removal_when_confirmed_before_alert_dismisses_then_removes_both_pins() async throws {
+    @Test func test_admin_removal_when_approved_with_current_admin_pin_then_removes_both_pins() async {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
-        #expect(await controller.save("5678", for: .cashier))
-        await controller.requestRemoval(for: .admin)
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
+        #expect(session.currentStaff == POSLocalRole.admin.staff)
+        let handler = removalHandler(for: controller)
 
         // When
-        let removal = try #require(controller.confirmAdminRemoval())
-        controller.cancelRemoval()
+        let removed = await handler.submit(pin: "1234")
 
         // Then
-        #expect(await removal.value)
+        #expect(removed)
+        #expect(!controller.isApprovingProtectionRemoval)
+        #expect(handler.pinEntryState == .idle)
         #expect(controller.roles == [])
         #expect(!session.isPINProtectionEnabled)
+        #expect(!session.isLocked)
     }
 
-    @Test func test_admin_removal_when_not_requested_then_does_not_start_a_save() {
+    @Test(arguments: ["0000", "5678"])
+    func test_admin_removal_when_pin_is_not_the_admin_pin_then_preserves_both_pins(pin: String) async {
         // Given
-        let (controller, _, _) = makeSUT()
+        let (controller, session, _) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
+        let handler = removalHandler(for: controller)
+
+        // When
+        let removed = await handler.submit(pin: pin)
+
+        // Then
+        #expect(!removed)
+        #expect(controller.isApprovingProtectionRemoval)
+        #expect(handler.pinEntryState == .error(kind: .invalidPIN))
+        #expect(controller.roles == [.admin, .cashier])
+        #expect(session.isPINProtectionEnabled)
+    }
+
+    @Test func test_admin_removal_when_cancelled_during_pin_check_then_preserves_both_pins() async throws {
+        // Given
+        let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
+        try store.setPIN("1234", for: .admin)
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+        let controller = POSSecuritySettingsController(store: store, session: session)
+        controller.load()
+        let handler = removalHandler(for: controller)
+        session.onManagerApproval = { handler.cancel() }
+
+        // When
+        let removed = await handler.submit(pin: "1234")
+
+        // Then
+        #expect(!removed)
+        #expect(session.managerApprovalCapabilities == [.manageStoreSettings])
+        #expect(!controller.isApprovingProtectionRemoval)
+        #expect(handler.pinEntryState == .idle)
+        #expect(try store.configuredRoles() == [.admin])
+    }
+
+    @Test func test_admin_removal_when_not_requested_then_does_not_check_pin_or_remove() async throws {
+        // Given
+        let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
+        try store.setPIN("1234", for: .admin)
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+        let controller = POSSecuritySettingsController(store: store, session: session)
         controller.load()
 
         // When
-        let removal = controller.confirmAdminRemoval()
+        await controller.requestRemoval(for: .admin)
+        let removed = try await controller.approveProtectionRemoval(withPIN: "1234")
 
         // Then
-        #expect(removal == nil)
-        #expect(!controller.isSaving)
+        #expect(!removed)
+        #expect(session.managerApprovalPINs.isEmpty)
+        #expect(try store.configuredRoles() == [.admin])
     }
 
     @Test func test_cashier_removal_when_requested_then_removes_only_cashier_without_confirmation() async {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
-        #expect(await controller.save("5678", for: .cashier))
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
 
         // When
         await controller.requestRemoval(for: .cashier)
 
         // Then
-        #expect(!controller.isConfirmingAdminRemoval)
+        #expect(!controller.isApprovingProtectionRemoval)
         #expect(controller.roles == [.admin])
         #expect(session.isPINProtectionEnabled)
     }
@@ -205,7 +254,7 @@ struct POSSecuritySettingsControllerTests {
         // Given
         let (controller, _, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
+        #expect(await save("1234", for: .admin, using: controller))
         let setup = controller.makePINSetupController(for: .cashier)
         #expect(await setup.submit("1234") == .confirmationRequired)
 
@@ -224,7 +273,7 @@ struct POSSecuritySettingsControllerTests {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
+        #expect(await save("1234", for: .admin, using: controller))
         storage.shouldFail = true
 
         // When
@@ -243,11 +292,11 @@ struct POSSecuritySettingsControllerTests {
         // Given
         let (controller, session, _) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
+        #expect(await save("1234", for: .admin, using: controller))
         storage.shouldFailWrites = true
 
         // When
-        let removed = await controller.save(nil, for: .admin)
+        let removed = await removeProtection(using: controller)
 
         // Then
         #expect(!removed)
@@ -255,25 +304,26 @@ struct POSSecuritySettingsControllerTests {
         #expect(session.isPINProtectionEnabled)
         #expect(!session.isLocked)
         #expect(controller.roles == [.admin])
+        #expect(controller.isApprovingProtectionRemoval)
         storage.shouldFailWrites = false
-        controller.load()
-        #expect(controller.roles == [.admin])
+        #expect(await removeProtection(using: controller))
+        #expect(controller.roles == [])
     }
 
     @Test func test_save_when_locked_or_cashier_then_does_not_change_credentials() async throws {
         // Given
         let (controller, session, store) = makeSUT()
         controller.load()
-        #expect(await controller.save("1234", for: .admin))
-        #expect(await controller.save("5678", for: .cashier))
+        #expect(await save("1234", for: .admin, using: controller))
+        #expect(await save("5678", for: .cashier, using: controller))
         session.lock()
 
         // When / Then
         #expect(!controller.isVisible)
-        #expect(await controller.save(nil, for: .admin) == false)
+        #expect(await removeProtection(using: controller) == false)
         try await session.signIn(withPIN: "5678")
         #expect(!controller.isVisible)
-        #expect(await controller.save(nil, for: .admin) == false)
+        #expect(await removeProtection(using: controller) == false)
         #expect(try store.credentials().count == 2)
     }
 
@@ -290,6 +340,97 @@ struct POSSecuritySettingsControllerTests {
         #expect(!POSSecuritySettingsViewHelper.canManage(isProtected: true, isLocked: true, canManageSettings: true))
         #expect(!POSSecuritySettingsViewHelper.canManage(isProtected: true, isLocked: false, canManageSettings: false))
         #expect(!POSSecuritySettingsViewHelper.canManage(isProtected: false, isLocked: true, canManageSettings: true))
+    }
+
+    @Test func test_removal_when_already_admin_then_verifies_once_and_rejects_concurrent_submissions() async throws {
+        // Given
+        let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
+        try store.setPIN("1234", for: .admin)
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+        let controller = POSSecuritySettingsController(store: store, session: session)
+        controller.load()
+        let handler = removalHandler(for: controller)
+        session.onManagerApproval = {
+            #expect(await handler.submit(pin: "1234") == false)
+            #expect((try? await controller.approveProtectionRemoval(withPIN: "1234")) == false)
+        }
+
+        // When
+        #expect(await handler.submit(pin: "1234"))
+
+        // Then
+        #expect(session.managerApprovalPINs == ["1234"])
+        #expect(session.managerApprovalCapabilities == [.manageStoreSettings])
+        #expect(session.signInPINs.isEmpty)
+        #expect(handler.request == nil)
+    }
+
+    @Test(arguments: [0, 1, 2, 3])
+    func test_removal_when_approval_loses_admission_then_late_success_preserves_pins(change: Int) async throws {
+        // Given
+        let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
+        try store.setPIN("1234", for: .admin)
+        let session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
+        let controller = POSSecuritySettingsController(store: store, session: session)
+        controller.load()
+        let handler = removalHandler(for: controller)
+        session.onManagerApproval = {
+            switch change {
+            case 0: controller.requestProtectionRemoval(using: handler, reason: "Replacement")
+            case 1: session.lock()
+            case 2: session.currentStaff = POSLocalRole.cashier.staff
+            default: withUnsafeCurrentTask { $0?.cancel() }
+            }
+        }
+
+        // When
+        _ = await handler.submit(pin: "1234")
+
+        // Then
+        #expect(try store.configuredRoles() == [.admin])
+        #expect(session.managerApprovalPINs == ["1234"])
+    }
+
+    @Test func test_removal_when_shared_attempt_budget_is_exhausted_then_keeps_setup_and_requires_wait() async {
+        // Given
+        let (controller, session, _) = makeSUT()
+        controller.load()
+        #expect(await save("1234", for: .admin, using: controller))
+        let handler = removalHandler(for: controller)
+        for _ in 0..<4 { #expect(await handler.submit(pin: "0000") == false) }
+
+        // When / Then
+        do {
+            _ = try await controller.approveProtectionRemoval(withPIN: "0000")
+            Issue.record("Expected the shared wait after five wrong PINs")
+        } catch {
+            guard case .rateLimited = error else { Issue.record("Expected a rate-limited error"); return }
+        }
+        do {
+            try await session.signIn(withPIN: "1234")
+            Issue.record("Expected unlock to use the same wait")
+        } catch {
+            guard case .rateLimited = error else { Issue.record("Expected a rate-limited error"); return }
+        }
+        #expect(controller.roles == [.admin])
+        #expect(controller.isPINProtectionEnabled)
+        #expect(controller.isApprovingProtectionRemoval)
+    }
+
+    private func removalHandler(for controller: POSSecuritySettingsController) -> POSManagerOverrideHandler {
+        let handler = POSManagerOverrideHandler()
+        controller.requestProtectionRemoval(using: handler, reason: "Remove both PINs")
+        return handler
+    }
+
+    private func removeProtection(using controller: POSSecuritySettingsController) async -> Bool {
+        await removalHandler(for: controller).submit(pin: "1234")
+    }
+
+    private func save(_ pin: String, for role: POSLocalRole, using controller: POSSecuritySettingsController) async -> Bool {
+        let setup = controller.makePINSetupController(for: role)
+        #expect(await setup.submit(pin) == .confirmationRequired)
+        return await setup.submit(pin) == .saved
     }
 
     private func makeSUT() -> (POSSecuritySettingsController, DefaultPOSAccessSession, POSLocalPINStore) {

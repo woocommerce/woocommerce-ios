@@ -274,4 +274,45 @@ struct POSManagerOverrideHandlerTests {
         #expect(sut.request?.capability == .issueRefunds)
         #expect(sut.pinEntryState == .error(kind: .generic))
     }
+
+    @Test func test_custom_submission_when_save_fails_then_keeps_prompt_until_retry_succeeds() async {
+        // Given
+        let session = MockPOSAccessSession()
+        let sut = POSManagerOverrideHandler(session: session)
+        var saved = false
+        sut.requestApproval(for: .manageStoreSettings, reason: "Disable protection", submitPIN: { _ in
+            #expect(sut.request != nil)
+            #expect(sut.pinEntryState == .loading)
+            await Task.yield()
+            #expect(sut.pinEntryState == .loading)
+            return saved
+        })
+
+        // When
+        #expect(await sut.submit(pin: "1234") == false)
+
+        // Then
+        #expect(sut.request != nil)
+        #expect(sut.pinEntryState == .error(kind: .generic))
+        #expect(session.managerApprovalPINs.isEmpty)
+        saved = true
+        #expect(await sut.submit(pin: "1234"))
+        #expect(sut.request == nil)
+        #expect(sut.pinEntryState == .idle)
+    }
+
+    @Test func test_custom_submission_when_authentication_fails_then_keeps_prompt_with_inline_error() async {
+        // Given
+        let sut = POSManagerOverrideHandler()
+        sut.requestApproval(for: .manageStoreSettings, reason: "Disable protection", submitPIN: { _ throws(POSAuthError) in
+            throw .invalidPIN
+        })
+
+        // When
+        #expect(await sut.submit(pin: "0000") == false)
+
+        // Then
+        #expect(sut.request != nil)
+        #expect(sut.pinEntryState == .error(kind: .invalidPIN))
+    }
 }

@@ -13,29 +13,28 @@ struct POSLockScreenView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                Color.posSurfaceContainerLow.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: metrics.spacing.large) {
-                        Text(Localization.title)
-                            .font(.posHeadingBold)
-                            .foregroundStyle(Color.posOnSurface)
-                            .multilineTextAlignment(.center)
-                            .accessibilityAddTraits(.isHeader)
+        ZStack {
+            Color.posSurfaceContainerLow
+                .ignoresSafeArea()
 
-                        POSPINEntryView(
-                            state: model.pinEntryState,
-                            onComplete: { pin in await model.signIn(withPIN: pin) },
-                            onLockoutExpired: { model.lockoutExpired() }
-                        )
-                    }
-                    .frame(maxWidth: POSPINEntryView.contentWidth)
-                    .padding(metrics.padding.xxLarge)
-                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
-                }
-                .scrollBounceBehavior(.basedOnSize)
+            VStack(spacing: metrics.spacing.large) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+
+                POSPINEntryView(
+                    state: model.pinEntryState,
+                    onComplete: { pin in
+                        await model.signIn(withPIN: pin)
+                    },
+                    onLockoutExpired: { model.lockoutExpired() }
+                )
+                .frame(height: POSPINEntryView.preferredHeight)
             }
+            .frame(maxWidth: POSPINEntryView.contentWidth)
+            .padding(metrics.padding.xxLarge)
         }
     }
 }

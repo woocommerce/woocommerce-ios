@@ -16,7 +16,7 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
             .onAppear {
                 handler.configure(session: session)
             }
-            .posModal(item: requestBinding, presentationStyle: .card) { request in
+            .posModal(item: requestBinding) { request in
                 modalContent(for: request)
             }
     }
@@ -80,7 +80,10 @@ private extension POSManagerOverrideModalSizing {
     }
 
     var frameWidth: CGFloat? {
-        return min(parentSize.width, POSPINEntryView.contentWidth + horizontalPadding * 2)
+        guard !isCompactWidth else {
+            return nil
+        }
+        return min(parentSize.width, POSPINEntryView.contentWidth + metrics.padding.xxLarge * 2)
     }
 }
 

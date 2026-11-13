@@ -11,7 +11,7 @@ struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
-    @GestureState private var bottomSheetDragOffset: CGFloat = 0
+    @GestureState(resetTransaction: Transaction(animation: .interactiveSpring())) private var bottomSheetDragOffset: CGFloat = 0
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount

@@ -31,24 +31,14 @@ struct TopPerformersDashboardView: View {
                 UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)
             } else {
-                // Keep the range picker visible during load errors so the merchant can switch
-                // to a shorter range without having to leave the error state.
-                timeRangeBar
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.periodViewModel.redacted.header ? [.placeholder] : [])
-                    .shimmering(active: viewModel.periodViewModel.redacted.header)
-
-                Divider()
-
-                if viewModel.syncingError != nil {
-                    DashboardCardErrorView(onRetry: {
-                        ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
-                        Task {
-                            await viewModel.reloadDataIfNeeded(forceRefresh: true)
-                        }
-                    })
-                    .padding(.horizontal, Layout.padding)
-                } else {
+                DashboardCardRangedContent(cardType: .topPerformers,
+                                           hasError: viewModel.syncingError != nil,
+                                           reload: { await viewModel.reloadDataIfNeeded(forceRefresh: true) }) {
+                    timeRangeBar
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.periodViewModel.redacted.header ? [.placeholder] : [])
+                        .shimmering(active: viewModel.periodViewModel.redacted.header)
+                } content: {
                     topPerformersList
 
                     Divider()

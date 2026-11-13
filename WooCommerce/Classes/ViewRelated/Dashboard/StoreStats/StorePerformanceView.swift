@@ -39,19 +39,14 @@ struct StorePerformanceView: View {
                 .padding(.horizontal, Layout.padding)
 
             if viewModel.analyticsEnabled {
-                // Keep the range picker visible during load errors so the merchant can switch
-                // to a shorter range without having to leave the error state.
-                timeRangeBar
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
-
-                Divider()
-
-                if viewModel.loadingError != nil {
-                    errorStateView
+                DashboardCardRangedContent(cardType: .performance,
+                                           hasError: viewModel.loadingError != nil,
+                                           reload: { await viewModel.reloadDataIfNeeded(forceRefresh: true) }) {
+                    timeRangeBar
                         .padding(.horizontal, Layout.padding)
-                } else {
+                        .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                        .shimmering(active: viewModel.showRedactedState)
+                } content: {
                     revenueTypeSelector
                         .padding(.horizontal, Layout.padding)
                         .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
@@ -386,15 +381,6 @@ private extension StorePerformanceView {
             }
         }
         .disabled(viewModel.syncingData)
-    }
-
-    var errorStateView: some View {
-        DashboardCardErrorView(onRetry: {
-            ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .performance))
-            Task {
-                await viewModel.reloadDataIfNeeded(forceRefresh: true)
-            }
-        })
     }
 }
 

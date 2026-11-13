@@ -1,5 +1,7 @@
 import StoreDesignSystem
 import SwiftUI
+import protocol WooFoundation.Analytics
+import struct Yosemite.DashboardCard
 
 struct StoreDashboardCardErrorView: View {
     @State private var showingSupportForm = false
@@ -50,6 +52,48 @@ struct StoreDashboardCardErrorView: View {
 
     private enum Constants {
         static let contactSupportURL = "woocommerce://contact-support"
+    }
+}
+
+/// Lays out a dashboard card's date range header above its content, or above the error state when loading fails.
+/// The header stays visible on errors so merchants can recover by switching to another range.
+struct StoreDashboardRangedCardContent<RangeHeader: View, Content: View>: View {
+    private let cardType: DashboardCard.CardType
+    private let hasError: Bool
+    private let reload: @MainActor () async -> Void
+    private let analytics: Analytics
+    private let rangeHeader: RangeHeader
+    private let content: Content
+
+    init(cardType: DashboardCard.CardType,
+         hasError: Bool,
+         reload: @escaping @MainActor () async -> Void,
+         analytics: Analytics = ServiceLocator.analytics,
+         @ViewBuilder rangeHeader: () -> RangeHeader,
+         @ViewBuilder content: () -> Content) {
+        self.cardType = cardType
+        self.hasError = hasError
+        self.reload = reload
+        self.analytics = analytics
+        self.rangeHeader = rangeHeader()
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: StoreSpacing.s0) {
+            rangeHeader
+            StoreDivider()
+            if hasError {
+                StoreDashboardCardErrorView(retry: retry)
+            } else {
+                content
+            }
+        }
+    }
+
+    private func retry() {
+        analytics.track(event: .DynamicDashboard.cardRetryTapped(type: cardType))
+        Task { await reload() }
     }
 }
 

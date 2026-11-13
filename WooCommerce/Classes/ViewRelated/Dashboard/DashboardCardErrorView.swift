@@ -1,4 +1,6 @@
 import SwiftUI
+import protocol WooFoundation.Analytics
+import struct Yosemite.DashboardCard
 
 /// Shared error view for dashboard cards
 struct DashboardCardErrorView: View {
@@ -61,6 +63,50 @@ struct DashboardCardErrorView: View {
             }
         }
         .navigationViewStyle(.stack)
+    }
+}
+
+/// Lays out a dashboard card's time range bar above its content, or above the error view when loading fails.
+/// The bar stays visible on errors so merchants can recover by switching to another range.
+struct DashboardCardRangedContent<RangeBar: View, Content: View>: View {
+    private let cardType: DashboardCard.CardType
+    private let hasError: Bool
+    private let reload: @MainActor () async -> Void
+    private let analytics: Analytics
+    private let rangeBar: RangeBar
+    private let content: Content
+
+    init(cardType: DashboardCard.CardType,
+         hasError: Bool,
+         reload: @escaping @MainActor () async -> Void,
+         analytics: Analytics = ServiceLocator.analytics,
+         @ViewBuilder rangeBar: () -> RangeBar,
+         @ViewBuilder content: () -> Content) {
+        self.cardType = cardType
+        self.hasError = hasError
+        self.reload = reload
+        self.analytics = analytics
+        self.rangeBar = rangeBar()
+        self.content = content()
+    }
+
+    var body: some View {
+        // Group keeps these rows in the card's own stack, so its spacing still applies between them.
+        Group {
+            rangeBar
+            Divider()
+            if hasError {
+                DashboardCardErrorView(onRetry: retry)
+                    .padding(.horizontal, DashboardCardErrorView.Layout.padding)
+            } else {
+                content
+            }
+        }
+    }
+
+    private func retry() {
+        analytics.track(event: .DynamicDashboard.cardRetryTapped(type: cardType))
+        Task { await reload() }
     }
 }
 

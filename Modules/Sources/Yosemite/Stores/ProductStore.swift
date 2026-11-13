@@ -1190,7 +1190,7 @@ extension ProductStoreRequestHandler {
                                           onCompletion: @escaping @Sendable () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else {
-                return onCompletion()
+                return
             }
             if shouldDeleteExistingProducts {
                 storage.deleteProducts(siteID: siteID)

@@ -13,7 +13,7 @@ struct UITabBarAppearanceTests {
         let expectedBadgeTextColor = UIColor(Color.storeOnError)
 
         // When
-        let appearance = UITabBar.wooAppearance(usesStoreDesignSystem: true, colorsItemTitles: true)
+        let appearance = UITabBar.wooAppearance(usesStoreDesignSystem: true)
 
         // Then
         #expect(appearance.backgroundColor == nil)
@@ -31,6 +31,8 @@ struct UITabBarAppearanceTests {
             ] {
                 #expect(stateAppearance.iconColor == expectedItemColor)
                 #expect(stateAppearance.titleTextAttributes[.foregroundColor] as? UIColor == expectedItemColor)
+                // The paragraph style keeps iPad titles from truncating before iOS 26.
+                #expect(stateAppearance.titleTextAttributes[.paragraphStyle] is NSParagraphStyle)
             }
             for stateAppearance in [
                 itemAppearance.normal,
@@ -39,32 +41,6 @@ struct UITabBarAppearanceTests {
             ] {
                 #expect(stateAppearance.badgeBackgroundColor == expectedBadgeBackgroundColor)
                 #expect(stateAppearance.badgeTextAttributes[.foregroundColor] as? UIColor == expectedBadgeTextColor)
-            }
-        }
-    }
-
-    @Test func test_woo_appearance_when_item_titles_are_not_colored_then_keeps_store_design_system_icon_color_only() {
-        // Given
-        let expectedItemColor = UIColor(Color.storeOnSurface)
-        let defaultItemAppearance = UITabBarAppearance().stackedLayoutAppearance.normal
-
-        // When
-        let appearance = UITabBar.wooAppearance(usesStoreDesignSystem: true, colorsItemTitles: false)
-
-        // Then
-        for itemAppearance in [
-            appearance.inlineLayoutAppearance,
-            appearance.stackedLayoutAppearance,
-            appearance.compactInlineLayoutAppearance
-        ] {
-            for stateAppearance in [
-                itemAppearance.normal,
-                itemAppearance.selected,
-                itemAppearance.focused
-            ] {
-                #expect(stateAppearance.iconColor == expectedItemColor)
-                #expect(stateAppearance.titleTextAttributes[.foregroundColor] as? UIColor ==
-                        defaultItemAppearance.titleTextAttributes[.foregroundColor] as? UIColor)
             }
         }
     }

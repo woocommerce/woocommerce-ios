@@ -24,45 +24,35 @@ extension UITabBar {
 
     /// Creates an appearance object for a tabbar with the default WC style.
     ///
-    static func wooAppearance(usesStoreDesignSystem: Bool = ServiceLocator.featureFlagService.usesStoreDesignSystem,
-                              colorsItemTitles: Bool = colorsItemTitlesByDefault) -> UITabBarAppearance {
+    static func wooAppearance(usesStoreDesignSystem: Bool = ServiceLocator.featureFlagService.usesStoreDesignSystem) -> UITabBarAppearance {
         let standardAppearance = UITabBarAppearance()
         standardAppearance.configureWithDefaultBackground()
-        applyWooAppearance(to: standardAppearance.inlineLayoutAppearance, usesStoreDesignSystem: usesStoreDesignSystem, colorsItemTitles: colorsItemTitles)
-        applyWooAppearance(to: standardAppearance.stackedLayoutAppearance, usesStoreDesignSystem: usesStoreDesignSystem, colorsItemTitles: colorsItemTitles)
-        applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance, usesStoreDesignSystem: usesStoreDesignSystem, colorsItemTitles: colorsItemTitles)
+        applyWooAppearance(to: standardAppearance.inlineLayoutAppearance, usesStoreDesignSystem: usesStoreDesignSystem)
+        applyWooAppearance(to: standardAppearance.stackedLayoutAppearance, usesStoreDesignSystem: usesStoreDesignSystem)
+        applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance, usesStoreDesignSystem: usesStoreDesignSystem)
         return standardAppearance
-    }
-
-    /// On iPad before iOS 26, the tab titles are measured with the stacked layout font before the tab bar is shown,
-    /// and UIKit does not measure them again for the wider inline layout when title text attributes are set.
-    /// Long titles are then truncated (e.g. "Prod..."), so the titles keep the system colors there.
-    private static var colorsItemTitlesByDefault: Bool {
-        if #available(iOS 26.0, *) {
-            return true
-        }
-        return UIDevice.current.userInterfaceIdiom != .pad
     }
 
     /// Configures the appearance object for a tabbar's items with the default WC style.
     ///
-    private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance, usesStoreDesignSystem: Bool, colorsItemTitles: Bool) {
+    private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance, usesStoreDesignSystem: Bool) {
         let badgeTextColor = usesStoreDesignSystem ? UIColor(Color.storeOnError) : .white
         let badgeBackgroundColor = usesStoreDesignSystem ? UIColor(Color.storeAccentRed) : .primary
         let badgeTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: badgeTextColor]
 
         if usesStoreDesignSystem {
             let itemColor = UIColor(Color.storeOnSurface)
-            let titleTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: itemColor]
+            // Without a paragraph style, iPad before iOS 26 keeps the stacked-font title width and shows text cut-off.
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineBreakMode = .byTruncatingTail
+            let titleTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: itemColor, .paragraphStyle: paragraphStyle]
 
             tabBarItemAppearance.normal.iconColor = itemColor
+            tabBarItemAppearance.normal.titleTextAttributes = titleTextAttributes
             tabBarItemAppearance.selected.iconColor = itemColor
+            tabBarItemAppearance.selected.titleTextAttributes = titleTextAttributes
             tabBarItemAppearance.focused.iconColor = itemColor
-            if colorsItemTitles {
-                tabBarItemAppearance.normal.titleTextAttributes = titleTextAttributes
-                tabBarItemAppearance.selected.titleTextAttributes = titleTextAttributes
-                tabBarItemAppearance.focused.titleTextAttributes = titleTextAttributes
-            }
+            tabBarItemAppearance.focused.titleTextAttributes = titleTextAttributes
         }
 
         tabBarItemAppearance.normal.badgeTextAttributes = badgeTextAttributes

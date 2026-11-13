@@ -56,7 +56,7 @@ struct HardwareBarcodeScannerInfoContent: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, StorePadding.p7)
-        .padding(.top, StorePadding.p9)
+        .padding(.top, StorePadding.p7)
         .padding(.bottom, StorePadding.p5)
         .animation(.easeInOut(duration: StoreMotion.selectionDuration), value: testScanState)
     }
@@ -75,11 +75,12 @@ struct HardwareBarcodeScannerInfoContent: View {
                 .opacity(testScanState == .success ? 0 : 1)
             if testScanState == .success {
                 VStack(spacing: StoreSpacing.s5) {
-                    StoreIcon.Check.solid.image(size: .extraLarge)
-                        .scaleEffect(Layout.successCheckScale)
-                        .foregroundStyle(Color.storePaletteWhite)
-                        .padding(StorePadding.p4)
-                        .background(Color.storeAlertGreen, in: Circle())
+                    // A symbol, since the design system icons stop at 32pt and scaling them up blurs them.
+                    Image(systemName: "checkmark.circle.fill")
+                        .resizable()
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(Color.storePaletteWhite, Color.storeAlertGreen)
+                        .frame(width: Layout.successCheckSize, height: Layout.successCheckSize)
                     Text(Localization.testSuccess)
                         .storeTextStyle(.titleMedium)
                         .foregroundStyle(Color.storeOnSurface)
@@ -106,8 +107,7 @@ private extension HardwareBarcodeScannerInfoContent {
     enum Layout {
         /// Android's 88dp bars: scanners read the code at any height, taller bars only make the sheet taller.
         static let testBarcodeHeight: CGFloat = 88
-        /// The check glyph fills only half of its icon frame, so it is scaled up to read like Android's filled check circle.
-        static let successCheckScale: CGFloat = 2
+        static let successCheckSize: CGFloat = 72
     }
 
     enum Localization {

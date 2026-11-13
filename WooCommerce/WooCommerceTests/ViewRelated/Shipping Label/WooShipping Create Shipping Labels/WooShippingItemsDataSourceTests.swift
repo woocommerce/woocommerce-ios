@@ -4,13 +4,14 @@ import YosemiteTestHelpers
 import Yosemite
 import WooFoundation
 
+@MainActor
 final class WooShippingItemsDataSourceTests: XCTestCase {
 
     private var storageManager: MockStorageManager!
     private var stores: MockStoresManager!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .testingInstance)
     }

@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Storage
 
+@MainActor
 final class BundledProductsListViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 12345
@@ -16,15 +17,15 @@ final class BundledProductsListViewModelTests: XCTestCase {
     }
     private let stores = MockStoresManager(sessionManager: .testingInstance)
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
         stores.reset()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_view_model_prefills_bundle_item_data_correctly() throws {

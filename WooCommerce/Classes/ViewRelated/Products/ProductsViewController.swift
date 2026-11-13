@@ -29,6 +29,11 @@ final class ProductsViewController: UIViewController {
 
     private var barcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
+    private let hardwareBarcodeScanner: HardwareBarcodeScanner
+    private var hardwareBarcodeScannerToken: HardwareBarcodeScanner.ListenerToken?
+
+    private var isLookingUpScannedBarcode = false
+
     private let refreshUpdates = ListRefreshUpdates()
     // Match UITableView's installed rows even while refresh updates change the backing store.
     private var presentedProducts: [ProductListItem] = []
@@ -202,8 +207,10 @@ final class ProductsViewController: UIViewController {
          resultsController: ResultsController<StorageProduct>? = nil,
          selectedProduct: AnyPublisher<Product?, Never>,
          navigateToContent: @escaping (NavigationContentType) -> Void,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         hardwareBarcodeScanner: HardwareBarcodeScanner = .shared) {
         self.siteID = siteID
+        self.hardwareBarcodeScanner = hardwareBarcodeScanner
         self.providedResultsController = resultsController
         self.pushNotesManager = pushNotesManager
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
@@ -281,6 +288,7 @@ final class ProductsViewController: UIViewController {
         super.viewWillDisappear(animated)
 
         finishBulkEditing()
+        stopListeningForHardwareBarcodes()
 
         // On iOS 26, keeping the native refresh control attached during a navigation transition can cause
         // UINavigationController's refresh control host and content overlay updates to recursively trigger each other.
@@ -301,6 +309,7 @@ final class ProductsViewController: UIViewController {
         if #available(iOS 26.0, *) {
             installRefreshControl()
         }
+        startListeningForHardwareBarcodes()
     }
 
     override func viewDidLayoutSubviews() {
@@ -361,31 +370,7 @@ private extension ProductsViewController {
                                                                                   onBarcodeScanned: { [weak self] scannedBarcode in
             guard let self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
-
-            Task {
-                self.navigationItem.configureLeftBarButtonItemAsLoader()
-
-                do {
-                    let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
-                    self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
-                                                                                          siteID: self.viewModel.siteID,
-                                                                                          onUpdatedInventory: { newQuantity in
-                        let noticeMessage = String.localizedStringWithFormat(Localization.updateInventoryNotice, newQuantity)
-                        self.presentNotice(title: noticeMessage)
-                    })), animated: true)
-                } catch {
-                    self.trackScannedItemSearchFailure(error)
-                    let errorNotice = BarcodeScannerErrorNoticeFactory.notice(for: error,
-                                                                                 code: scannedBarcode,
-                                                                                 title: Localization.scannerErrorNoticeTitle,
-                                                                                 actionHandler: {
-                        self.scanProducts()
-                    })
-                    self.presentNotice(notice: errorNotice)
-                }
-                // Reset button state on finishing the task
-                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
-            }
+            presentInventoryUpdate(for: scannedBarcode)
         }, onPermissionsDenied: { reason in
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList,
                                                                                                            reason: reason))
@@ -397,6 +382,54 @@ private extension ProductsViewController {
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
+    }
+
+    func presentInventoryUpdate(for scannedBarcode: ScannedBarcode) {
+        isLookingUpScannedBarcode = true
+        Task {
+            self.navigationItem.configureLeftBarButtonItemAsLoader()
+
+            do {
+                let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
+                self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
+                                                                                      siteID: self.viewModel.siteID,
+                                                                                      onUpdatedInventory: { newQuantity in
+                    let noticeMessage = String.localizedStringWithFormat(Localization.updateInventoryNotice, newQuantity)
+                    self.presentNotice(title: noticeMessage)
+                })), animated: true)
+            } catch {
+                self.trackScannedItemSearchFailure(error)
+                let errorNotice = BarcodeScannerErrorNoticeFactory.notice(for: error,
+                                                                             code: scannedBarcode,
+                                                                             title: Localization.scannerErrorNoticeTitle,
+                                                                             actionHandler: {
+                    self.scanProducts()
+                })
+                self.presentNotice(notice: errorNotice)
+            }
+            self.isLookingUpScannedBarcode = false
+            self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+        }
+    }
+
+    func startListeningForHardwareBarcodes() {
+        guard hardwareBarcodeScannerToken == nil else { return }
+        hardwareBarcodeScannerToken = hardwareBarcodeScanner.startListening(source: .productList, isEnabled: { [weak self] in
+            guard let self else { return false }
+            return !isLookingUpScannedBarcode
+                && presentedViewController == nil
+                && view.window != nil
+                && tableView?.isEditing != true
+                && viewModel.isHardwareScanToUpdateInventoryAvailable
+        }, onScan: { [weak self] scannedBarcode in
+            self?.presentInventoryUpdate(for: scannedBarcode)
+        })
+    }
+
+    func stopListeningForHardwareBarcodes() {
+        guard let hardwareBarcodeScannerToken else { return }
+        hardwareBarcodeScanner.stopListening(hardwareBarcodeScannerToken)
+        self.hardwareBarcodeScannerToken = nil
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {

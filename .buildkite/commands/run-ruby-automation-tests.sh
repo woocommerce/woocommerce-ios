@@ -5,13 +5,13 @@
 # dependency, so they're cheap to run (<1s total) on the linter queue.
 #
 # Skip behavior:
-# - On PR builds: skip when no `fastlane/**` files have changed.
+# - On PR builds: skip when no `fastlane/**` or `.buildkite/commands/**` files have changed.
 # - On non-PR builds (trunk, release branches): always run, so the latest
 #   merged state is validated.
 
 if [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]]; then
-  if ! pr_changed_files --any-match 'fastlane/**'; then
-    echo "--- :fast_forward: Skipping — no fastlane/ changes in this PR"
+  if ! pr_changed_files --any-match 'fastlane/**' '.buildkite/commands/*'; then
+    echo "--- :fast_forward: Skipping — no fastlane/ or .buildkite/commands/ changes in this PR"
     exit 0
   fi
 fi

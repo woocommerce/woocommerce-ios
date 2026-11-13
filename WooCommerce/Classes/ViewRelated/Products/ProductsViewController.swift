@@ -377,6 +377,7 @@ private extension ProductsViewController {
                     self.trackScannedItemSearchFailure(error)
                     let errorNotice = BarcodeScannerErrorNoticeFactory.notice(for: error,
                                                                                  code: scannedBarcode,
+                                                                                 title: Localization.scannerErrorNoticeTitle,
                                                                                  actionHandler: {
                         self.scanProducts()
                     })
@@ -1880,6 +1881,11 @@ private extension ProductsViewController {
             value: "Quantity updated: %@",
             comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
             "Reads like: 'Quantity updated: 2,345'"
+        )
+        static let scannerErrorNoticeTitle = NSLocalizedString(
+            "productsViewController.scanProducts.errorNoticeTitle",
+            value: "Cannot load product.",
+            comment: "Title of the error notice shown on the products list when the product for a scanned barcode cannot be loaded."
         )
     }
 }

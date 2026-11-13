@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+26.2
+-----
+
+
 26.1
 -----
 - [*] POS: Buttons on error, empty and payment result screens now fill the width on iPhone and stay at the bottom of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18310]

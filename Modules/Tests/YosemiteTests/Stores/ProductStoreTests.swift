@@ -4174,6 +4174,7 @@ private extension ProductStoreTests {
 }
 
 private extension ProductStore {
+    @MainActor
     convenience init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,

@@ -61,6 +61,22 @@ class CountryListMapperTests: XCTestCase {
             "Trinidad & Tobago"
         ])
     }
+
+    func test_map_when_state_names_contain_HTML_entities_then_names_are_decoded() throws {
+        // Given
+        let response = Data("""
+        [
+            {"code": "AR", "name": "Argentina", "states": [{"code": "X", "name": "C&oacute;rdoba"}]},
+            {"code": "CO", "name": "Colombia", "states": [{"code": "CO-SAP", "name": "San Andrés & Providencia"}]}
+        ]
+        """.utf8)
+
+        // When
+        let countries = try CountryListMapper().map(response: response)
+
+        // Then
+        XCTAssertEqual(countries.flatMap(\.states).map(\.name), ["Córdoba", "San Andrés & Providencia"])
+    }
 }
 
 /// Private Helpers

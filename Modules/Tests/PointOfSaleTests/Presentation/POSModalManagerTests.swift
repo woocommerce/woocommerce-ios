@@ -16,15 +16,16 @@ struct POSModalManagerTests {
         #expect(sut.compactStyle == .dialog)
     }
 
-    @Test func test_present_when_compactStyle_is_nil_then_stores_nil() {
+    @Test func test_present_when_compactStyle_is_fullScreen_then_stores_its_title() {
         // Given
         let sut = POSModalManager()
 
         // When
-        sut.present(compactStyle: nil, onDismiss: {}) { EmptyView() }
+        sut.present(compactStyle: .fullScreen(title: "Card reader"), onDismiss: {}) { EmptyView() }
 
         // Then
-        #expect(sut.compactStyle == nil)
+        #expect(sut.compactStyle == .fullScreen(title: "Card reader"))
+        #expect(sut.compactStyle?.fullScreenTitle == "Card reader")
     }
 
     @Test func test_dismiss_when_dialog_was_presented_then_resets_compactStyle_and_calls_onDismiss() {

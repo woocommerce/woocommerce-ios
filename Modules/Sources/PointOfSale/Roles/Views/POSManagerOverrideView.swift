@@ -82,9 +82,9 @@ private extension POSManagerOverrideView {
     }
 
     var pinEntry: some View {
-        POSPINEntryView(state: handler.pinEntryState) { pin in
-            await handler.submit(pin: pin)
-        }
+        POSPINEntryView(state: handler.pinEntryState,
+                        onComplete: { pin in await handler.submit(pin: pin) },
+                        onLockoutExpired: { handler.lockoutExpired() })
     }
 
     enum Localization {

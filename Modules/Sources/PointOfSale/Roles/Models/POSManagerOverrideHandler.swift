@@ -4,11 +4,19 @@ import Observation
 @Observable
 @MainActor
 final class POSManagerOverrideHandler {
+    enum ApprovalResult: Equatable, Sendable {
+        case completed
+        /// Ending the request does not roll back an operation already admitted to persistence.
+        case cancelled
+    }
+
+    typealias PINOperation = @MainActor (String) async throws(POSAuthError) -> Bool
+
     @ObservationIgnored private var session: POSAccessSession?
-    @ObservationIgnored private var onApproved: (() -> Void)?
-    @ObservationIgnored private var submitPIN: (@MainActor (String) async throws(POSAuthError) -> Bool)?
-    @ObservationIgnored private var onCancel: (() -> Void)?
-    @ObservationIgnored private var submission: Task<Bool, Never>?
+    @ObservationIgnored private var requestTask: Task<ApprovalResult, Never>?
+    @ObservationIgnored private var pinInput: AsyncStream<String>.Continuation?
+    @ObservationIgnored private var pendingSubmission: CheckedContinuation<Bool, Never>?
+    @ObservationIgnored private var latestRequestID: UUID?
 
     private(set) var request: POSManagerOverrideRequest?
     private(set) var pinEntryState: POSPINEntryState = .idle
@@ -28,36 +36,40 @@ final class POSManagerOverrideHandler {
     #endif
 
     func configure(session: POSAccessSession) {
+        if let previous = self.session, previous !== session {
+            cancel()
+        }
         self.session = session
+        if request != nil, pinEntryState == .idle {
+            refreshLockoutState()
+        }
     }
 
+    /// Keep protected side effects inside `operation`; the returned result is not an authorization grant.
     func requestApproval(for capability: POSCapability,
                          reason: String,
-                         submitPIN: (@MainActor (String) async throws(POSAuthError) -> Bool)? = nil,
-                         onCancel: (() -> Void)? = nil,
-                         onApproved: (() -> Void)? = nil) {
-        cancel()
-        request = POSManagerOverrideRequest(capability: capability, reason: reason)
-        pinEntryState = .idle
-        self.onApproved = onApproved
-        self.submitPIN = submitPIN
-        self.onCancel = onCancel
+                         operation: PINOperation? = nil) async -> ApprovalResult {
+        guard !Task.isCancelled else { return .cancelled }
+        let (requestID, task) = startRequest(for: capability, reason: reason, operation: operation)
+        let result = await withTaskCancellationHandler {
+            await task.value
+        } onCancel: {
+            task.cancel()
+        }
+        guard latestRequestID == requestID, !Task.isCancelled else { return .cancelled }
+        return result
     }
 
-    /// Gates `capability`: runs `perform` immediately when the configured session already grants it —
-    /// including when POS roles are off, where an unrestricted session grants everything — otherwise
-    /// presents the override modal and runs `perform` once an authorized staff member approves.
-    /// `viaOverride` is `true` only on the approval path, so a caller can defer work that must wait for
-    /// the override modal to dismiss. No-ops until the handler has been configured with a session (the
-    /// override modal configures it on appear).
+    /// Runs immediately when the session grants the capability; otherwise waits for one approval.
+    /// `viaOverride` lets callers defer presentation until the approval modal has closed.
     func gate(_ capability: POSCapability, reason: String, perform: @escaping (_ viaOverride: Bool) -> Void) {
-        guard let session else {
-            return
-        }
+        guard let session else { return }
         if session.allows(capability) {
             perform(false)
         } else {
-            requestApproval(for: capability, reason: reason, onApproved: {
+            // Publish before returning so an immediate cancel cannot miss a queued presentation.
+            _ = startRequest(for: capability, reason: reason, onSuccess: {
+                guard self.session === session, !session.isLocked else { return }
                 perform(true)
             })
         }
@@ -65,80 +77,113 @@ final class POSManagerOverrideHandler {
 
     @discardableResult
     func submit(pin: String) async -> Bool {
-        guard submission == nil else { return false }
-        guard let request, submitPIN != nil || session != nil else {
+        guard pendingSubmission == nil else { return false }
+        guard let request, let task = requestTask, let pinInput else {
             pinEntryState = .error(kind: .generic)
             return false
         }
-
-        // Pin the in-flight request so a cancel or replacement mid-await can't leak into the resolving submit.
-        let activeRequestID = request.id
-        let activeOnApproved = onApproved
-        let activeSubmitPIN = submitPIN
-        pinEntryState = .loading
-        let task = Task {
-            defer {
-                if self.request?.id == activeRequestID {
-                    submission = nil
-                    if Task.isCancelled { cancel() }
-                }
-            }
-            guard self.request?.id == activeRequestID, !Task.isCancelled else { return activeSubmitPIN == nil }
-            do {
-                let succeeded: Bool
-                if let activeSubmitPIN {
-                    succeeded = try await activeSubmitPIN(pin)
-                } else if let session {
-                    try await session.requestManagerApproval(withPIN: pin, for: request.capability)
-                    succeeded = true
-                } else {
-                    succeeded = false
-                }
-                guard self.request?.id == activeRequestID, !Task.isCancelled else { return activeSubmitPIN == nil }
-                guard succeeded else {
-                    pinEntryState = .error(kind: .generic)
-                    return false
-                }
-                dismiss()
-                activeOnApproved?()
-                return true
-            } catch {
-                guard self.request?.id == activeRequestID, !Task.isCancelled else { return activeSubmitPIN == nil }
-                pinEntryState = state(for: (error as? POSAuthError) ?? .unknown)
-                return false
-            }
-        }
-        submission = task
         return await withTaskCancellationHandler {
-            await task.value
+            await withCheckedContinuation { continuation in
+                guard self.request?.id == request.id, !task.isCancelled, !Task.isCancelled else {
+                    continuation.resume(returning: true)
+                    return
+                }
+                pendingSubmission = continuation
+                pinEntryState = .loading
+                pinInput.yield(pin)
+            }
         } onCancel: {
             task.cancel()
         }
     }
 
     func cancel() {
-        let activeOnCancel = onCancel
+        requestTask?.cancel()
+        latestRequestID = nil
         dismiss()
-        activeOnCancel?()
+    }
+
+    func lockoutExpired() {
+        guard case .lockout = pinEntryState else { return }
+        refreshLockoutState()
     }
 }
 
 private extension POSManagerOverrideHandler {
-    func dismiss() {
-        submission?.cancel()
-        submission = nil
-        request = nil
-        pinEntryState = .idle
-        onApproved = nil
-        submitPIN = nil
-        onCancel = nil
+    func startRequest(for capability: POSCapability,
+                      reason: String,
+                      operation: PINOperation? = nil,
+                      onSuccess: (() -> Void)? = nil) -> (UUID, Task<ApprovalResult, Never>) {
+        cancel()
+        let request = POSManagerOverrideRequest(capability: capability, reason: reason)
+        latestRequestID = request.id
+        self.request = request
+        refreshLockoutState()
+        let (pins, input) = AsyncStream.makeStream(of: String.self, bufferingPolicy: .bufferingOldest(1))
+        pinInput = input
+        let submitPIN: PINOperation = operation ?? { pin throws(POSAuthError) in
+            guard let session = self.session else { throw .unknown }
+            try await session.requestManagerApproval(withPIN: pin, for: capability)
+            return true
+        }
+        let task = Task {
+            defer {
+                if self.request?.id == request.id { dismiss() }
+            }
+            for await pin in pins {
+                guard self.request?.id == request.id, !Task.isCancelled else { return ApprovalResult.cancelled }
+                do {
+                    let succeeded = try await submitPIN(pin)
+                    guard self.request?.id == request.id, !Task.isCancelled else { return .cancelled }
+                    if succeeded {
+                        dismiss()
+                        // Keep legacy effects contiguous with the session's final ownership check.
+                        onSuccess?()
+                        return .completed
+                    }
+                    pinEntryState = .error(kind: .generic)
+                } catch {
+                    guard self.request?.id == request.id, !Task.isCancelled else { return .cancelled }
+                    pinEntryState = state(for: (error as? POSAuthError) ?? .unknown)
+                }
+                resolveSubmission(false)
+            }
+            return .cancelled
+        }
+        requestTask = task
+        return (request.id, task)
     }
 
-    // TODO: route .rateLimited(until:) to a lockout state when the manager override flow is wired in.
+    func resolveSubmission(_ result: Bool) {
+        let continuation = pendingSubmission
+        pendingSubmission = nil
+        continuation?.resume(returning: result)
+    }
+
+    func dismiss() {
+        pinInput?.finish()
+        pinInput = nil
+        requestTask = nil
+        request = nil
+        pinEntryState = .idle
+        // Cancellation is not a rejected PIN and must not trigger keypad failure feedback.
+        resolveSubmission(true)
+    }
+
+    func refreshLockoutState() {
+        do {
+            try session?.checkLockoutState()
+            pinEntryState = .idle
+        } catch {
+            pinEntryState = state(for: error)
+        }
+    }
+
     func state(for error: POSAuthError) -> POSPINEntryState {
         switch error {
         case .invalidPIN: .error(kind: .invalidPIN)
-        case .rateLimited, .permanentlyLocked, .unknown: .error(kind: .generic)
+        case .rateLimited(let until): .lockout(until: until)
+        case .permanentlyLocked, .unknown: .error(kind: .generic)
         }
     }
 }

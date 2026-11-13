@@ -51,21 +51,21 @@ final class POSSecuritySettingsController {
         _ = await save(nil, for: role)
     }
 
-    func requestProtectionRemoval(using handler: POSManagerOverrideHandler, reason: String) {
-        guard isVisible, !isSaving, roles?.contains(.admin) == true else { return }
-        handler.requestApproval(for: .manageStoreSettings,
-                                reason: reason,
-                                submitPIN: approveProtectionRemoval,
-                                onCancel: cancelRemoval)
-        removalRequestID = UUID()
+    func requestProtectionRemoval(using handler: POSManagerOverrideHandler,
+                                  reason: String) async -> POSManagerOverrideHandler.ApprovalResult {
+        guard isVisible, !isSaving, roles?.contains(.admin) == true, !Task.isCancelled else { return .cancelled }
+        let requestID = UUID()
+        removalRequestID = requestID
+        defer {
+            if removalRequestID == requestID { removalRequestID = nil }
+        }
+        return await handler.requestApproval(for: .manageStoreSettings, reason: reason, operation: { pin throws(POSAuthError) in
+            try await self.approveProtectionRemoval(withPIN: pin, requestID: requestID)
+        })
     }
 
-    func cancelRemoval() {
-        removalRequestID = nil
-    }
-
-    func approveProtectionRemoval(withPIN pin: String) async throws(POSAuthError) -> Bool {
-        guard let requestID = removalRequestID, isVisible, !isSaving, !isVerifyingRemoval, !Task.isCancelled else { return false }
+    private func approveProtectionRemoval(withPIN pin: String, requestID: UUID) async throws(POSAuthError) -> Bool {
+        guard removalRequestID == requestID, isVisible, !isSaving, !isVerifyingRemoval, !Task.isCancelled else { return false }
         isVerifyingRemoval = true
         defer { isVerifyingRemoval = false }
         do {
@@ -76,9 +76,6 @@ final class POSSecuritySettingsController {
         }
         guard removalRequestID == requestID, isVisible, !Task.isCancelled else { return false }
         let removed = await save(nil, for: .admin)
-        if removed, removalRequestID == requestID {
-            cancelRemoval()
-        }
         return removed
     }
 

@@ -5,6 +5,8 @@
 #
 # Run:
 #   ruby fastlane/helpers/release_notes_ai_helper_test.rb
+#
+# DO NOT MERGE: throwaway edit to make a PR touch `fastlane/`.
 
 require 'minitest/autorun'
 require_relative 'release_notes_ai_helper'

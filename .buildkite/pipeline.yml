@@ -106,6 +106,8 @@ steps:
   - label: ":ruby: Ruby Automation Tests"
     key: ruby-automation-tests
     command: .buildkite/commands/run-ruby-automation-tests.sh
+    # Set in `shared-pipeline-vars`: false on PRs that don't touch `fastlane/`.
+    if: ${RUN_RUBY_AUTOMATION_TESTS:-true}
     plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:

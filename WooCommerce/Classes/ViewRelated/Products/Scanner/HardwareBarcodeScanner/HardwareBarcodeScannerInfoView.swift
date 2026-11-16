@@ -95,7 +95,7 @@ struct HardwareBarcodeScannerInfoContent: View {
     private var errorHint: String? {
         switch testScanState {
         case .missingEnterSuffix:
-            return Localization.missingEnterSuffix
+            return HardwareBarcodeScanner.Localization.missingEnterSuffix
         case .wrongValue:
             return Localization.wrongValue
         case .waiting, .success:
@@ -146,11 +146,6 @@ private extension HardwareBarcodeScannerInfoContent {
             "hardwareBarcodeScannerInfo.wrongValue",
             value: "The scanned code doesn't match. Set your scanner to the same keyboard layout as your device.",
             comment: "Shown when an external barcode scanner sends a different code than the test barcode."
-        )
-        static let missingEnterSuffix = NSLocalizedString(
-            "hardwareBarcodeScannerInfo.missingEnterSuffix",
-            value: "Scan not finished. Set your scanner to send Enter after each barcode.",
-            comment: "Shown when an external barcode scanner sends the test barcode without Enter at the end."
         )
         static let testBarcodeAccessibilityLabel = NSLocalizedString(
             "hardwareBarcodeScannerInfo.testBarcode.accessibilityLabel",

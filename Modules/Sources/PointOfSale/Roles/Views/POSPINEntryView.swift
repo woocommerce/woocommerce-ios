@@ -64,6 +64,10 @@ private extension POSPINEntryView {
         return false
     }
 
+    var animatesLoadingDots: Bool {
+        isLoading && lockScreenKeySize == nil
+    }
+
     var showsInvalidPINMessage: Bool {
         state == .error(kind: .invalidPIN) && attempt.pin.isEmpty
     }
@@ -110,7 +114,7 @@ private extension POSPINEntryView {
     }
 
     var dotsRow: some View {
-        TimelineView(.animation(paused: !isLoading)) { context in
+        TimelineView(.animation(paused: !animatesLoadingDots)) { context in
             HStack(spacing: dotSpacing) {
                 ForEach(0..<pinLength, id: \.self) { index in
                     dot(filled: isLoading || index < attempt.pin.count,
@@ -163,7 +167,7 @@ private extension POSPINEntryView {
     }
 
     func waveOffset(index: Int, date: Date) -> CGFloat {
-        guard isLoading else {
+        guard animatesLoadingDots else {
             return 0
         }
         let time = date.timeIntervalSinceReferenceDate
@@ -247,20 +251,17 @@ private extension POSPINEntryView {
 
     var lockScreenStatusRow: some View {
         let message = lockScreenStatusMessage
-        let slideDistance = reduceMotion ? 0 : LockScreenConstants.messageSlideDistance
         return ZStack {
             dotsRow
-                .offset(y: message == nil ? 0 : -slideDistance)
                 .opacity(message == nil ? 1 : 0)
                 .accessibilityHidden(message != nil)
             if let message {
                 lockScreenMessage(message)
-                    .transition(.opacity.combined(with: .offset(y: -slideDistance)))
+                    .transition(.opacity)
             }
         }
         .frame(minHeight: LockScreenConstants.statusRowHeight)
-        .animation(message == nil ? LockScreenConstants.hideMessageAnimation : LockScreenConstants.showMessageAnimation,
-                   value: message == nil)
+        .animation(LockScreenConstants.feedbackAnimation, value: message == nil)
     }
 
     func lockScreenMessage(_ message: POSPINStatusMessage) -> some View {
@@ -444,12 +445,10 @@ private extension POSPINEntryView {
         static let dotBorderWidth: CGFloat = 1
         static let dotPopScale: CGFloat = 1.2
         static let statusRowHeight: CGFloat = 24
-        static let messageSlideDistance: CGFloat = 12
         // Brings Body Small to the design's 24pt line height for the two-line lockout message.
         static let messageLineSpacing = POSMetrics.Scale.regular.xSmall
         static let dotPopAnimation: Animation = .spring(duration: 0.2)
-        static let showMessageAnimation: Animation = .easeOut(duration: 0.25).delay(0.1)
-        static let hideMessageAnimation: Animation = .easeOut(duration: 0.2)
+        static let feedbackAnimation: Animation = .easeOut(duration: 0.12)
     }
 }
 

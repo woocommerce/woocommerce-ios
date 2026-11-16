@@ -1,7 +1,17 @@
 {
   "images": [
     {
-      "filename": "pos-lock.svg",
+      "filename": "pos-lock-light.svg",
+      "idiom": "universal"
+    },
+    {
+      "appearances": [
+        {
+          "appearance": "luminosity",
+          "value": "dark"
+        }
+      ],
+      "filename": "pos-lock-dark.svg",
       "idiom": "universal"
     }
   ],

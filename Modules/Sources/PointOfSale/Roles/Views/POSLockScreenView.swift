@@ -4,7 +4,12 @@ struct POSLockScreenView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.posLayoutScale) private var layoutScale
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var model: POSLockScreenModel
+    @State private var illustrationFrame: CGRect = .zero
+    @State private var titleHeight: CGFloat = 0
+    @State private var keypadHeight: CGFloat = 0
+    @State private var intro = POSLockScreenIntro()
     private let animatesLock: Bool
     #if DEBUG
     private var previewEnteredPIN: String?
@@ -18,15 +23,26 @@ struct POSLockScreenView: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                content
+                content(viewportSize: geometry.size)
                     .padding(.horizontal, metrics.padding.xxLarge)
-                    .padding(.vertical, isCompactHeight ? metrics.padding.small : metrics.padding.xxLarge)
+                    .padding(.vertical, verticalPadding)
                     .frame(maxWidth: .infinity, minHeight: geometry.size.height)
             }
+            .coordinateSpace(name: Constants.coordinateSpace)
             .scrollBounceBehavior(.basedOnSize)
+            .scrollDisabled(isIntroActive)
+            .onChange(of: reduceMotion) { _, reduced in
+                if reduced { intro.cancel() }
+            }
+            .task(id: isLayoutMeasured) {
+                guard isLayoutMeasured else { return }
+                await intro.run(shouldAnimate: animatesLock && !reduceMotion
+                                && showsIllustration(availableHeight: geometry.size.height - verticalPadding * 2))
+            }
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
         .task { await model.observeWait() }
+        .onDisappear { intro.cancel() }
     }
 }
 
@@ -43,31 +59,85 @@ private extension POSLockScreenView {
         return layoutScale == .compact ? Constants.compactKeySize : Constants.regularKeySize
     }
 
+    var verticalPadding: CGFloat {
+        isCompactHeight ? metrics.padding.small : metrics.padding.xxLarge
+    }
+
+    func showsIllustration(availableHeight: CGFloat) -> Bool {
+        let headerHeight = illustrationFrame.height + metrics.spacing.xLarge + titleHeight
+        let contentHeight = isCompactHeight
+            ? max(headerHeight, keypadHeight)
+            : headerHeight + metrics.spacing.xLarge + keypadHeight
+        return contentHeight <= availableHeight
+    }
+
     /// One layout container keeps the PIN entry's identity, so rotating does not clear entered digits.
-    var content: some View {
+    func content(viewportSize: CGSize) -> some View {
         let layout = isCompactHeight
             ? AnyLayout(HStackLayout(spacing: metrics.spacing.xxLarge))
             : AnyLayout(VStackLayout(spacing: metrics.spacing.xLarge))
         return layout {
-            header
+            header(showsIllustration: showsIllustration(availableHeight: viewportSize.height - verticalPadding * 2),
+                   viewportSize: viewportSize)
                 .frame(maxWidth: isCompactHeight ? POSPINEntryView.contentWidth : nil)
+                .zIndex(1)
             pinEntry
                 .frame(width: isCompactHeight ? POSPINEntryView.lockScreenKeypadWidth(keySize: keySize, metrics: metrics) : nil)
                 .frame(maxWidth: isCompactHeight ? nil : POSPINEntryView.contentWidth)
-                .fixedSize(horizontal: false, vertical: isCompactHeight)
+                .fixedSize(horizontal: false, vertical: true)
+                .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { keypadHeight = $0 }
+                .opacity(showsContent ? 1 : 0)
+                .animation(Constants.contentFade, value: showsContent)
+                .allowsHitTesting(!isIntroActive)
+                .accessibilityHidden(isIntroActive)
         }
     }
 
-    var header: some View {
-        VStack(spacing: metrics.spacing.xLarge) {
-            POSLockIllustration(animatesClosing: animatesLock)
+    func header(showsIllustration: Bool, viewportSize: CGSize) -> some View {
+        VStack(spacing: metrics.spacing.none) {
+            ZStack {
+                // The stationary slot supplies geometry; measuring the moving icon would feed its offset back into itself.
+                Color.clear
+                    .frame(width: POSLockIllustration.size, height: POSLockIllustration.size)
+                    .onGeometryChange(for: CGRect.self, of: { $0.frame(in: .named(Constants.coordinateSpace)) }) {
+                        illustrationFrame = $0
+                    }
+                POSLockIllustration(isOpen: isIntroActive && intro.phase == .appearing)
+                    .offset(iconOffset(viewportSize: viewportSize))
+                    .opacity(!isIntroActive || isLayoutMeasured ? 1 : 0)
+            }
+                .padding(.bottom, metrics.spacing.xLarge)
+                .opacity(showsIllustration ? 1 : 0)
+                .frame(height: showsIllustration ? nil : 0)
             Text(Localization.title)
                 .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
+                .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { titleHeight = $0 }
+                .opacity(showsContent ? 1 : 0)
+                .animation(Constants.contentFade, value: showsContent)
+                .accessibilityHidden(isIntroActive)
         }
+    }
+
+    var isLayoutMeasured: Bool {
+        illustrationFrame.height > 0 && titleHeight > 0 && keypadHeight > 0
+    }
+
+    var isIntroActive: Bool {
+        animatesLock && !reduceMotion && intro.phase != .finished
+    }
+
+    var showsContent: Bool {
+        !isIntroActive || intro.phase == .revealing
+    }
+
+    func iconOffset(viewportSize: CGSize) -> CGSize {
+        guard isIntroActive, intro.phase != .revealing else { return .zero }
+        return CGSize(width: viewportSize.width / 2 - illustrationFrame.midX,
+                      height: viewportSize.height / 2 - illustrationFrame.midY)
     }
 
     var pinEntry: some View {
@@ -86,6 +156,8 @@ private extension POSLockScreenView {
         static let regularKeySize: CGFloat = 90
         static let compactKeySize: CGFloat = 72
         static let compactHeightKeySize: CGFloat = 60
+        static let coordinateSpace = "posLockScreen"
+        static let contentFade: Animation = .easeOut(duration: 0.12)
     }
 }
 

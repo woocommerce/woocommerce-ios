@@ -1,42 +1,27 @@
 import SwiftUI
 
-/// The padlock on the POS lock screen. It appears open and then closes to confirm that POS is locked.
-/// The lock screen is already fully shown underneath, so the animation never delays protection.
 struct POSLockIllustration: View {
+    static let size: CGFloat = 88
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var isClosed: Bool
-    private let animatesClosing: Bool
+    private let isOpen: Bool
 
-    init(animatesClosing: Bool = true) {
-        self.init(isClosed: !animatesClosing, animatesClosing: animatesClosing)
-    }
-
-    private init(isClosed: Bool, animatesClosing: Bool) {
-        self._isClosed = State(initialValue: isClosed)
-        self.animatesClosing = animatesClosing
+    init(isOpen: Bool = false) {
+        self.isOpen = isOpen
     }
 
     var body: some View {
         ZStack {
-            artwork
-                .mask(alignment: .top) {
-                    Rectangle().frame(height: Constants.shackleHeight)
-                }
-                .offset(y: isShowingClosed ? 0 : -Constants.openShackleOffset)
+            shackle
+                .rotationEffect(.degrees(isOpen && !reduceMotion ? Constants.openAngle : 0), anchor: Constants.hinge)
             artwork
                 .mask(alignment: .bottom) {
                     Rectangle().frame(height: Constants.artworkHeight - Constants.shackleHeight)
                 }
         }
         .frame(width: Constants.artworkWidth, height: Constants.artworkHeight)
-        .frame(width: Constants.size, height: Constants.size)
+        .frame(width: Self.size, height: Self.size)
         .accessibilityHidden(true)
-        .onAppear {
-            guard animatesClosing, !isClosed, !reduceMotion else { return }
-            withAnimation(Constants.closingAnimation) {
-                isClosed = true
-            }
-        }
     }
 }
 
@@ -45,19 +30,27 @@ private extension POSLockIllustration {
         PointOfSaleAssets.lock.decorativeImage.resizable().scaledToFit()
     }
 
-    var isShowingClosed: Bool {
-        isClosed || reduceMotion
+    var shackle: some View {
+        ZStack(alignment: .topLeading) {
+            PointOfSaleAssets.lockShackleFill.decorativeImage.resizable().scaledToFit()
+                .frame(width: Constants.fillSize.width, height: Constants.fillSize.height)
+                .offset(x: colorScheme == .dark ? 10.684540 : 10.684039, y: 0.9121)
+            PointOfSaleAssets.lockShackleStroke.decorativeImage.resizable().scaledToFit()
+                .frame(width: Constants.strokeSize.width, height: Constants.strokeSize.height)
+                .offset(x: colorScheme == .dark ? 9.772430 : 9.771987)
+        }
+        .frame(width: Constants.artworkWidth, height: Constants.artworkHeight, alignment: .topLeading)
     }
 
     enum Constants {
-        static let size: CGFloat = 88
-        static let artworkWidth: CGFloat = 60.4561
+        static let artworkWidth: CGFloat = 60.456
         static let artworkHeight: CGFloat = 80
-        // Split above the fixed hinge caps, preserving the unmodified Figma vector when closed.
+        // The complete source shackle rotates behind the fixed body and hinge caps.
         static let shackleHeight: CGFloat = 24.43
-        static let openShackleOffset: CGFloat = 12
-        // Long enough for the open lock to register before it closes.
-        static let closingAnimation: Animation = .spring(duration: 0.35, bounce: 0.35).delay(0.4)
+        static let fillSize = CGSize(width: 39.0879, height: 35.8306)
+        static let strokeSize = CGSize(width: 40.9121, height: 37.6547)
+        static let hinge = UnitPoint(x: 45.7003 / artworkWidth, y: 27.785 / artworkHeight)
+        static let openAngle: Double = 30
     }
 }
 
@@ -65,14 +58,14 @@ private extension POSLockIllustration {
 extension POSLockIllustration {
     /// The first frame of the closing animation, for previews and snapshots.
     static var open: POSLockIllustration {
-        POSLockIllustration(isClosed: false, animatesClosing: false)
+        POSLockIllustration(isOpen: true)
     }
 }
 
 #Preview("Open and closed") {
     HStack {
         POSLockIllustration.open
-        POSLockIllustration(animatesClosing: false)
+        POSLockIllustration()
     }
     .posPadding(\.medium)
 }

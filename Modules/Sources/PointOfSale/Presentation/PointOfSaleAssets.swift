@@ -26,6 +26,8 @@ enum PointOfSaleAssets: CaseIterable {
     case testEan13Barcode
     case noOrders
     case lock
+    case lockShackleFill
+    case lockShackleStroke
 
     var image: Image {
         Image(imageName, bundle: .module)
@@ -85,6 +87,10 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-no-orders"
         case .lock:
             "pos-lock"
+        case .lockShackleFill:
+            "pos-lock-shackle-fill"
+        case .lockShackleStroke:
+            "pos-lock-shackle-stroke"
         }
     }
 }

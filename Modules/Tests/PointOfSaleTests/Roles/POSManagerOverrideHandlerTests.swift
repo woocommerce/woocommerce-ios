@@ -38,13 +38,13 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_gate_when_session_grants_capability_then_performs_immediately_without_override() {
         // Given
         let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff))
-        var viaOverride: Bool?
+        var approved: Bool?
 
         // When
-        sut.gate(.manageStoreSettings, reason: "Settings") { viaOverride = $0 }
+        sut.gate(.manageStoreSettings, reason: "Settings") { approved = $0 }
 
         // Then
-        #expect(viaOverride == false)
+        #expect(approved == false)
         #expect(sut.request == nil)
     }
 
@@ -54,8 +54,8 @@ struct POSManagerOverrideHandlerTests {
         var count = 0
 
         // When
-        sut.gate(.exitPOS, reason: "Exit") { viaOverride in
-            #expect(!viaOverride)
+        sut.gate(.exitPOS, reason: "Exit") { approved in
+            #expect(!approved)
             count += 1
         }
 
@@ -85,8 +85,8 @@ struct POSManagerOverrideHandlerTests {
 
         // When
         await withCheckedContinuation { completion in
-            sut.gate(.issueRefunds, reason: "Refund") { viaOverride in
-                #expect(viaOverride)
+            sut.gate(.issueRefunds, reason: "Refund") { approved in
+                #expect(approved)
                 #expect(sut.request == nil)
                 count += 1
                 completion.resume()
@@ -127,9 +127,9 @@ struct POSManagerOverrideHandlerTests {
 
         // When
         await withCheckedContinuation { completion in
-            sut.gate(.issueRefunds, reason: "Refund") { viaOverride in
+            sut.gate(.issueRefunds, reason: "Refund") { approved in
                 // Then
-                #expect(viaOverride)
+                #expect(approved)
                 #expect(sut.request == nil)
                 withUnsafeCurrentTask { #expect($0?.hashValue == verificationTaskID) }
                 completion.resume()

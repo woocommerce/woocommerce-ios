@@ -5,6 +5,9 @@ protocol POSAccessSession: AnyObject, Sendable {
     /// Whether an Admin PIN protects POS for this store on this device. Stays `true` when the stored
     /// PINs can't be read, so POS remains locked instead of opening with every action allowed.
     var isPINProtectionEnabled: Bool { get }
+    /// Changes when the operator or PIN protection changes, including lock and session end, so an approval
+    /// requested before can't act after.
+    var accessScope: POSPINSessionTokens.Token { get }
 
     func refreshPINProtection() throws(POSPINStoreError)
     func beginPINChange() -> POSPINChangeRegistration

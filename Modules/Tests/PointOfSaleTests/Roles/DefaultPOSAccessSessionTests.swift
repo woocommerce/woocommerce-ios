@@ -87,6 +87,25 @@ struct DefaultPOSAccessSessionTests {
         try await sut.limiter.checkAllowed(token: sut.limiter.sessionTokens.current())
     }
 
+    @Test func test_accessScope_when_protection_reloads_unchanged_then_stays_until_lock_or_sign_in() async throws {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(makeStaff())))
+        try await sut.session.signIn(withPIN: "1234")
+        let signedInScope = sut.session.accessScope
+
+        // When
+        try sut.session.refreshPINProtection()
+        let reloadedScope = sut.session.accessScope
+        sut.session.lock()
+        let lockedScope = sut.session.accessScope
+        try await sut.session.signIn(withPIN: "1234")
+
+        // Then
+        #expect(reloadedScope == signedInScope)
+        #expect(lockedScope != signedInScope)
+        #expect(sut.session.accessScope != lockedScope)
+    }
+
     @Test func test_lock_when_called_then_removes_currentStaff_and_denies_access() async throws {
         // Given
         let staff = makeStaff()

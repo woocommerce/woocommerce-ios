@@ -54,17 +54,22 @@ final class POSSecuritySettingsController {
                                   reason: String) async -> POSManagerOverrideHandler.ApprovalResult {
         guard isVisible, !isSaving, roles?.contains(.admin) == true, !Task.isCancelled else { return .cancelled }
         let requestID = UUID()
+        let scope = session.accessScope
         removalRequestID = requestID
         defer {
             if removalRequestID == requestID { removalRequestID = nil }
         }
         return await handler.requestApproval(for: .manageStoreSettings, reason: reason, operation: { pin throws(POSAuthError) in
-            try await self.approveProtectionRemoval(withPIN: pin, requestID: requestID)
+            try await self.approveProtectionRemoval(withPIN: pin, requestID: requestID, scope: scope)
         })
     }
 
-    private func approveProtectionRemoval(withPIN pin: String, requestID: UUID) async throws(POSAuthError) -> Bool {
-        guard removalRequestID == requestID, isVisible, !isSaving, !isVerifyingRemoval, !Task.isCancelled else { return false }
+    private func approveProtectionRemoval(withPIN pin: String,
+                                          requestID: UUID,
+                                          scope: POSPINSessionTokens.Token) async throws(POSAuthError) -> Bool {
+        guard removalRequestID == requestID, session.accessScope == scope, isVisible, !isSaving, !isVerifyingRemoval, !Task.isCancelled else {
+            return false
+        }
         isVerifyingRemoval = true
         defer { isVerifyingRemoval = false }
         do {
@@ -73,7 +78,7 @@ final class POSSecuritySettingsController {
             guard removalRequestID == requestID, !Task.isCancelled else { return false }
             throw error
         }
-        guard removalRequestID == requestID, isVisible, !Task.isCancelled else { return false }
+        guard removalRequestID == requestID, session.accessScope == scope, isVisible, !Task.isCancelled else { return false }
         let removed = await save(nil, for: .admin)
         return removed
     }

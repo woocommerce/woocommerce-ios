@@ -8,6 +8,7 @@ final class MockPOSAccessSession: POSAccessSession {
     var currentStaff: POSStaff?
     var isLocked: Bool
     var isPINProtectionEnabled: Bool
+    var accessScope = POSPINSessionTokens.Token()
     var signInResult: Result<POSStaff, POSAuthError>
     var managerApprovalResult: Result<Void, POSAuthError>
     var checkLockoutResult: Result<Void, POSAuthError>
@@ -67,6 +68,7 @@ final class MockPOSAccessSession: POSAccessSession {
 
     func lock() {
         isLocked = true
+        accessScope = POSPINSessionTokens.Token()
         lockCallCount += 1
     }
 

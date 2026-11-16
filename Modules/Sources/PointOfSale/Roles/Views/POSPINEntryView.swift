@@ -43,6 +43,10 @@ private extension POSPINEntryView {
         return false
     }
 
+    var showsInvalidPINMessage: Bool {
+        state == .error(kind: .invalidPIN) && enteredPIN.isEmpty
+    }
+
     var content: some View {
         VStack(spacing: Self.contentSpacing) {
             statusRow
@@ -57,13 +61,13 @@ private extension POSPINEntryView {
     var statusRow: some View {
         switch state {
         case .waiting(let seconds):
-            lockoutMessage(helper.lockoutMessage(remainingSeconds: seconds))
+            statusMessage(helper.lockoutMessage(remainingSeconds: seconds))
         case .unavailable:
-            lockoutMessage(Localization.message(for: .generic))
-        case .error(kind: .invalidPIN) where enteredPIN.isEmpty:
-            lockoutMessage(Localization.message(for: .invalidPIN))
+            statusMessage(Localization.message(for: .generic))
+        case .error where showsInvalidPINMessage:
+            statusMessage(Localization.message(for: .invalidPIN))
                 .modifier(ShakeEffect(animatableData: shakeAmount))
-        case .idle, .checking, .loading, .error:
+        case .idle, .checkingLockout, .loading, .error:
             dotsRow
         }
     }
@@ -103,7 +107,7 @@ private extension POSPINEntryView {
         return sin(time * Constants.waveSpeed + Double(index) * Constants.wavePhase) * Constants.waveHeight
     }
 
-    func lockoutMessage(_ text: String) -> some View {
+    func statusMessage(_ text: String) -> some View {
         Text(text)
             .font(.posBodyMediumRegular())
             .foregroundColor(.posError)

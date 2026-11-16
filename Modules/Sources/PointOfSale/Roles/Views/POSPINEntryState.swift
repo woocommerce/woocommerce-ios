@@ -10,6 +10,6 @@ enum POSPINEntryState: Equatable {
     case error(kind: POSPINErrorKind)
     case waiting(remainingSeconds: Int)
     case unavailable
-    case checking
+    case checkingLockout
     case loading
 }

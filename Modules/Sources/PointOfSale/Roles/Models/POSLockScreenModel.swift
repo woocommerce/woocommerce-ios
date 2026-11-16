@@ -6,7 +6,7 @@ import Observation
 final class POSLockScreenModel {
     private let session: POSAccessSession
     private var isSigningIn = false
-    private(set) var pinEntryState: POSPINEntryState = .checking
+    private(set) var pinEntryState: POSPINEntryState = .checkingLockout
 
     var isLocked: Bool { session.isLocked }
 
@@ -42,7 +42,7 @@ final class POSLockScreenModel {
         do {
             try await session.checkLockoutState()
             switch pinEntryState {
-            case .checking, .loading, .waiting, .unavailable: pinEntryState = .idle
+            case .checkingLockout, .loading, .waiting, .unavailable: pinEntryState = .idle
             case .idle, .error: break
             }
         } catch {
@@ -60,7 +60,7 @@ final class POSLockScreenModel {
             do { try await Task.sleep(for: interval) } catch { return }
             switch pinEntryState {
             case .waiting, .unavailable: await refreshLockoutState()
-            case .idle, .error, .checking, .loading: break
+            case .idle, .error, .checkingLockout, .loading: break
             }
         }
     }

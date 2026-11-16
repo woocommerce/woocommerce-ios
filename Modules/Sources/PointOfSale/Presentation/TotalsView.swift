@@ -402,9 +402,7 @@ fileprivate extension View {
     func paymentViewPadding(layout: TotalsView.PaymentViewLayout) -> some View {
         modifier(TotalsView.PaymentViewPaddingModifier(layout: layout))
     }
-}
 
-extension View {
     /// Keeps the view at its own height up to `maxHeight`, and scrolls it inside `maxHeight` above that.
     func scrollVerticallyWhenTaller(than maxHeight: CGFloat) -> some View {
         MaxHeightProposalLayout(maxHeight: maxHeight) {

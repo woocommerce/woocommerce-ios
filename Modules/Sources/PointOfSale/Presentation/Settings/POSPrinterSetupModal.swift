@@ -24,8 +24,7 @@ struct POSPrinterSetupModal: View {
         // Size `modalCore` via these bounds so the outer frame and the setup session hooks keep one view
         // identity across size-class changes on iPad. `modalCore` itself is rebuilt when the flow style flips.
         modalCore
-            .frame(minWidth: modalMinWidth, maxWidth: modalMaxWidth,
-                   minHeight: modalMinHeight, maxHeight: modalMaxHeight)
+            .frame(maxWidth: modalMaxWidth, maxHeight: modalMaxHeight)
             .fixedSize(horizontal: false, vertical: !isCompactWidth)
             .onChange(of: controller.isConnected) { _, isConnected in
                 if isConnected {
@@ -41,19 +40,11 @@ struct POSPrinterSetupModal: View {
     }
 
     // In regular width the modal hugs its content up to a share of the parent.
-    private var modalMinWidth: CGFloat? {
-        isCompactWidth && !isFullScreenFlow ? parentSize.width : nil
-    }
-
     private var modalMaxWidth: CGFloat {
         if isFullScreenFlow {
             return .infinity
         }
         return isCompactWidth ? parentSize.width : parentSize.width * Constants.parentWidthRatio
-    }
-
-    private var modalMinHeight: CGFloat? {
-        isCompactWidth && !isFullScreenFlow ? parentSize.height : nil
     }
 
     private var modalMaxHeight: CGFloat {
@@ -378,16 +369,17 @@ private extension POSPrinterSetupModal {
     func setupButtons(primaryTitle: String) -> PointOfSaleFlowButtonConfiguration {
         // While the app's Bluetooth permission is off, discovery can't run, so Open Settings is the
         // only action worth offering.
+        let primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig
         if controller.bluetoothAuthorization == .denied {
-            return .init(primaryButton: .init(title: Localization.settingsButton, action: {
+            primaryButton = .init(title: Localization.settingsButton, action: {
                 openDeviceSettings()
-            }),
-                         secondaryButton: nil)
+            })
+        } else {
+            primaryButton = .init(title: primaryTitle, action: {
+                controller.startDiscovery()
+            })
         }
-        return .init(primaryButton: .init(title: primaryTitle, action: {
-            controller.startDiscovery()
-        }),
-                     secondaryButton: nil)
+        return .init(primaryButton: primaryButton, secondaryButton: nil)
     }
 
     func openDeviceSettings() {

@@ -2,17 +2,17 @@ import Foundation
 
 @MainActor
 final class POSPendingPINChanges {
-    private var count = 0
+    private var pendingChanges = 0
     private var waiters: [UUID: CheckedContinuation<Void, Never>] = [:]
 
     nonisolated init() {}
 
     var isEmpty: Bool {
-        count == 0
+        pendingChanges == 0
     }
 
     func begin() -> POSPINChangeRegistration {
-        count += 1
+        pendingChanges += 1
         return POSPINChangeRegistration { self.finish() }
     }
 
@@ -20,7 +20,7 @@ final class POSPendingPINChanges {
         let id = UUID()
         await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
-                guard count > 0, !Task.isCancelled else {
+                guard pendingChanges > 0, !Task.isCancelled else {
                     return continuation.resume()
                 }
                 waiters[id] = continuation
@@ -31,8 +31,8 @@ final class POSPendingPINChanges {
     }
 
     private func finish() {
-        count -= 1
-        guard count == 0 else {
+        pendingChanges -= 1
+        guard pendingChanges == 0 else {
             return
         }
         let waiting = waiters.values

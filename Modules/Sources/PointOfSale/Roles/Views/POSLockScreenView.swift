@@ -87,7 +87,7 @@ private extension POSLockScreenView {
                 .fixedSize(horizontal: false, vertical: true)
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { keypadHeight = $0 }
                 .opacity(showsContent ? 1 : 0)
-                .offset(y: showsContent ? 0 : viewportSize.height)
+                .offset(y: introOffset(viewportSize: viewportSize).height)
                 .allowsHitTesting(!isIntroActive)
                 .accessibilityHidden(isIntroActive)
         }
@@ -103,7 +103,7 @@ private extension POSLockScreenView {
                         illustrationFrame = $0
                     }
                 POSLockIllustration(isOpen: isIntroActive && intro.phase == .appearing)
-                    .offset(iconOffset(viewportSize: viewportSize))
+                    .offset(introOffset(viewportSize: viewportSize))
                     .opacity(!isIntroActive || isLayoutMeasured ? 1 : 0)
             }
                 .padding(.bottom, metrics.spacing.xLarge)
@@ -117,7 +117,7 @@ private extension POSLockScreenView {
                 .accessibilityAddTraits(.isHeader)
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { titleHeight = $0 }
                 .opacity(showsContent ? 1 : 0)
-                .offset(y: showsContent ? 0 : viewportSize.height)
+                .offset(y: introOffset(viewportSize: viewportSize).height)
                 .accessibilityHidden(isIntroActive)
         }
     }
@@ -134,7 +134,7 @@ private extension POSLockScreenView {
         !isIntroActive || intro.phase == .revealing
     }
 
-    func iconOffset(viewportSize: CGSize) -> CGSize {
+    func introOffset(viewportSize: CGSize) -> CGSize {
         guard isIntroActive, intro.phase != .revealing else { return .zero }
         return CGSize(width: viewportSize.width / 2 - illustrationFrame.midX,
                       height: viewportSize.height / 2 - illustrationFrame.midY)

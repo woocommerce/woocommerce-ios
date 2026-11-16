@@ -44,6 +44,10 @@ struct POSPrintReceiptCoordinator {
     /// the printer setup flow via the injected closure.
     func printButtonTapped(isPrinterConnected: Bool) async {
         analytics.track(.receiptPrintTapped)
+        await printOrPresentSetup(isPrinterConnected: isPrinterConnected)
+    }
+
+    private func printOrPresentSetup(isPrinterConnected: Bool) async {
         switch POSPrintReceiptFlowHelper.actionAfterPrintButtonTapped(isPrinterConnected: isPrinterConnected) {
         case .presentSetup:
             presentPrinterSetup()
@@ -69,7 +73,8 @@ struct POSPrintReceiptCoordinator {
     func failureActionSelected(_ action: POSPrintReceiptFailureAction, isPrinterConnected: Bool) async {
         switch action {
         case .retry:
-            await printButtonTapped(isPrinterConnected: isPrinterConnected)
+            analytics.track(.receiptPrintRetryTapped)
+            await printOrPresentSetup(isPrinterConnected: isPrinterConnected)
         case .emailReceipt:
             analytics.track(.receiptEmailTapped)
             presentEmailReceipt()

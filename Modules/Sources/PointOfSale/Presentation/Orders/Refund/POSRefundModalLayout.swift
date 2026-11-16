@@ -6,8 +6,7 @@ enum POSRefundModalLayout {
     static let cornerRadius: CGFloat = POSCornerRadiusStyle.extraLarge.value
     static let fullScreenContentMaxWidth: CGFloat = 520
     static let fullScreenSummaryContentMaxWidth: CGFloat = 640
-    static let fullScreenActionMaxWidth: CGFloat = 520
-    static let fullScreenCompletionActionMaxWidth: CGFloat = 420
+    static let fullScreenActionMaxWidth: CGFloat = POSStatusButtonsLayout.maxWidth
 
     /// Phone uses 0 horizontal padding so the modal can fill the narrow screen instead of
     /// shrinking the content to a thin strip with the iPad-tuned 148pt insets.

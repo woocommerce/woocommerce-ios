@@ -245,8 +245,8 @@ struct POSLocalPINStoreTests {
         // Given
         let retired = makeSUT()
         try retired.setPIN("1234", for: .admin)
-        try POSPINAttemptContext.clearAll(scopeID: storage.scopeID) { try storage.removeAll() }
-        let current = makeSUT()
+        try storage.removeAll()
+        let current = POSLocalPINStore(siteID: 123, storage: storage.reopened(), iterations: 1)
         try current.setPIN("2468", for: .admin)
         let before = storage.values
 
@@ -262,89 +262,67 @@ struct POSLocalPINStoreTests {
         #expect(try current.credentials().first?.pinHash.matches("2468") == true)
     }
 
-    @MainActor
-    @Test func test_logout_when_pin_write_has_entered_then_clear_completes_last() async throws {
+    @Test func test_logout_when_pin_write_is_in_progress_then_clear_waits_and_completes_last() async throws {
         // Given
         let storage = BlockingPINWriteStorage()
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
-        let epoch = POSPINAttemptContext.logoutEpoch(scopeID: storage.scopeID)
         let write = Task.detached { try store.setPIN("1234", for: .admin) }
         defer { storage.releaseWrite() }
+        try #require(await storage.waitUntilWriteEntered())
+
         // When
-        do {
-            let _: Void = try await withCheckedThrowingContinuation { continuation in
-                DispatchQueue.global().async {
-                    guard storage.waitUntilWriteEntered() else {
-                        storage.releaseWrite()
-                        continuation.resume(throwing: PINWriteRaceFailure.writeDidNotEnter)
-                        return
-                    }
-                    let result = Mutex<Result<Void, POSPINStoreError>?>(nil)
-                    let finished = DispatchSemaphore(value: 0)
-                    DispatchQueue.global().async {
-                        do {
-                            try POSPINAttemptContext.clearAll(scopeID: storage.scopeID) { try storage.removeAll() }
-                            result.withLock { $0 = .success(()) }
-                        } catch {
-                            result.withLock { $0 = .failure(.storageFailure) }
-                        }
-                        finished.signal()
-                    }
-                    // Other tests can synchronously wait on writes from MainActor. Release from an independent executor.
-                    let deadline = ContinuousClock.now.advanced(by: .seconds(30))
-                    while POSPINAttemptContext.logoutEpoch(scopeID: storage.scopeID) == epoch, ContinuousClock.now < deadline {
-                        Thread.sleep(forTimeInterval: 0.001)
-                    }
-                    let invalidated = POSPINAttemptContext.logoutEpoch(scopeID: storage.scopeID) != epoch
-                    storage.releaseWrite()
-                    guard finished.wait(timeout: .now() + 30) == .success else {
-                        continuation.resume(throwing: PINWriteRaceFailure.clearDidNotFinish)
-                        return
-                    }
-                    guard invalidated else {
-                        continuation.resume(throwing: PINWriteRaceFailure.logoutDidNotInvalidate)
-                        return
-                    }
-                    continuation.resume(with: result.withLock { $0 ?? .failure(.storageFailure) }.mapError { $0 as Error })
-                }
-            }
-        } catch {
-            storage.releaseWrite()
-            _ = await write.result
-            throw error
-        }
+        let clear = Task.detached { try storage.removeAll() }
+        try await Task.sleep(for: .milliseconds(50))
+        storage.releaseWrite()
         try await write.value
+        try await clear.value
 
         // Then
         #expect(try storage.data(forKey: "pins.123") == nil)
+        #expect(storage.isStale)
     }
 }
 
 private final class BlockingPINWriteStorage: POSSecureStorage, Sendable {
-    private let storage = InMemoryPOSSecureStorage()
+    private let service = UUID().uuidString
+    private let generation: UUID
+    private let values = Mutex<[String: Data]>([:])
     private let entered = DispatchSemaphore(value: 0)
     private let release = DispatchSemaphore(value: 0)
-    var scopeID: String { storage.scopeID }
 
-    func data(forKey key: String) throws -> Data? { try storage.data(forKey: key) }
-    func removeAll() throws { try storage.removeAll() }
-
-    func setData(_ data: Data?, forKey key: String) throws {
-        entered.signal()
-        guard release.wait(timeout: .now() + 30) == .success else { throw POSPINStoreError.storageFailure }
-        try storage.setData(data, forKey: key)
+    init() {
+        generation = POSSecureStorageFence.currentGeneration(of: service)
     }
 
-    func waitUntilWriteEntered() -> Bool { entered.wait(timeout: .now() + 30) == .success }
+    var isStale: Bool { !POSSecureStorageFence.isCurrent(generation, of: service) }
+
+    func data(forKey key: String) throws -> Data? { values.withLock { $0[key] } }
+
+    func removeAll() throws {
+        try POSSecureStorageFence.clear(service) {
+            values.withLock { $0 = [:] }
+        }
+    }
+
+    func setData(_ data: Data?, forKey key: String) throws {
+        try POSSecureStorageFence.write(generation, to: service) {
+            entered.signal()
+            guard release.wait(timeout: .now() + 30) == .success else { throw POSPINStoreError.storageFailure }
+            values.withLock { $0[key] = data }
+        }
+    }
+
+    func waitUntilWriteEntered() async -> Bool {
+        await Task.detached { self.blockUntilWriteEntered() }.value
+    }
+
+    private func blockUntilWriteEntered() -> Bool {
+        entered.wait(timeout: .now() + 30) == .success
+    }
 
     func releaseWrite() { release.signal() }
 }
 
-private enum PINWriteRaceFailure: Error {
-    case writeDidNotEnter
-    case logoutDidNotInvalidate
-    case clearDidNotFinish
-}
 
 private extension POSLocalPINStoreTests {
     func makeSUT(siteID: Int64 = 123) -> POSLocalPINStore {

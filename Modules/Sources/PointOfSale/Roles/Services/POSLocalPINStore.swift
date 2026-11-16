@@ -14,7 +14,6 @@ final class POSLocalPINStore: POSPINCredentialProviding, POSPINManaging {
     private let siteID: Int64
     private let storage: POSSecureStorage
     private let iterations: Int
-    private let logoutEpoch: UUID
 
     init(siteID: Int64,
          storage: POSSecureStorage = KeychainPOSSecureStorage(),
@@ -22,7 +21,6 @@ final class POSLocalPINStore: POSPINCredentialProviding, POSPINManaging {
         self.siteID = siteID
         self.storage = storage
         self.iterations = iterations
-        self.logoutEpoch = POSPINAttemptContext.logoutEpoch(scopeID: storage.scopeID)
     }
 
     func credentials() throws(POSPINStoreError) -> [POSPINCredential] {
@@ -106,11 +104,12 @@ private extension POSLocalPINStore {
 
     func savePINs(_ pins: [POSLocalRole: POSPINHash]) throws(POSPINStoreError) {
         do {
-            let stored = Dictionary(uniqueKeysWithValues: pins.map { ($0.key.rawValue, $0.value) })
-            let data = pins.isEmpty ? nil : try JSONEncoder().encode(stored)
-            try POSPINAttemptContext.withLogoutEpoch(scopeID: storage.scopeID, epoch: logoutEpoch) {
-                try storage.setData(data, forKey: key)
+            guard !pins.isEmpty else {
+                try storage.setData(nil, forKey: key)
+                return
             }
+            let stored = Dictionary(uniqueKeysWithValues: pins.map { ($0.key.rawValue, $0.value) })
+            try storage.setData(JSONEncoder().encode(stored), forKey: key)
         } catch {
             DDLogError("⛔️ POS local PINs: saving failed for site \(siteID): \(error)")
             throw .storageFailure
@@ -123,7 +122,7 @@ private extension POSLocalPINStore {
 }
 
 protocol POSSecureStorage: Sendable {
-    var scopeID: String { get }
+    var isStale: Bool { get }
     func data(forKey key: String) throws -> Data?
     /// Removes the entry when `data` is `nil`.
     func setData(_ data: Data?, forKey key: String) throws
@@ -134,10 +133,15 @@ struct KeychainPOSSecureStorage: POSSecureStorage {
     static let service = "com.automattic.woocommerce.pos.localPINs"
 
     private let service: String
-    var scopeID: String { service }
+    private let generation: UUID
 
     init(service: String = KeychainPOSSecureStorage.service) {
         self.service = service
+        self.generation = POSSecureStorageFence.currentGeneration(of: service)
+    }
+
+    var isStale: Bool {
+        !POSSecureStorageFence.isCurrent(generation, of: service)
     }
 
     func data(forKey key: String) throws -> Data? {
@@ -145,15 +149,19 @@ struct KeychainPOSSecureStorage: POSSecureStorage {
     }
 
     func setData(_ data: Data?, forKey key: String) throws {
-        if let data {
-            try keychain.set(data, key: key)
-        } else {
-            try keychain.remove(key)
+        try POSSecureStorageFence.write(generation, to: service) {
+            if let data {
+                try keychain.set(data, key: key)
+            } else {
+                try keychain.remove(key)
+            }
         }
     }
 
     func removeAll() throws {
-        try keychain.removeAll()
+        try POSSecureStorageFence.clear(service) {
+            try keychain.removeAll()
+        }
     }
 
     // `Keychain` isn't `Sendable`, so each call builds its own instead of storing one.

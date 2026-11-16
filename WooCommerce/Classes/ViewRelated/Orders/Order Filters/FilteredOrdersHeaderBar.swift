@@ -122,19 +122,17 @@ private extension FilteredOrdersHeaderBar {
     ///
     func configureLabels() {
         mainLabel.applyHeadlineStyle()
-        mainLabel.text = numberOfFilters == 0 ? Localization.noFiltersApplied : Localization.filtersApplied
+        mainLabel.text = numberOfFilters == 0 ? OrderListLocalization.allOrders : OrderListLocalization.filteredOrders
 
         lastUpdatedLabel.applySecondaryFootnoteStyle()
-        lastUpdatedLabel.text = Localization.lastUpdatedText(time: lastUpdatedText)
+        lastUpdatedLabel.text = OrderListLocalization.lastUpdated(time: lastUpdatedText)
         lastUpdatedLabel.isHidden = lastUpdatedText.isEmpty
     }
 
     /// Setup: Buttons
     ///
     func configureButtons() {
-        let title = numberOfFilters == 0 ?
-            Localization.buttonWithoutActiveFilters :
-            String.localizedStringWithFormat(Localization.buttonWithActiveFilters, numberOfFilters)
+        let title = OrderListLocalization.filterTitle(count: numberOfFilters)
 
         if #available(iOS 26.0, *) {
             var configuration = UIButton.Configuration.glass()
@@ -148,24 +146,5 @@ private extension FilteredOrdersHeaderBar {
         }
         filterButton.setTitle(title, for: .normal)
         filterButton.accessibilityIdentifier = "orders-filter-button"
-    }
-
-    enum Localization {
-        static let noFiltersApplied = NSLocalizedString("All Orders",
-                                                        comment: "Header bar label on top of order list when no filters are applied")
-        static let filtersApplied = NSLocalizedString("Filtered Orders",
-                                                      comment: "Header bar label on top of order list when filters are applied")
-        static let filters = NSLocalizedString("Filters",
-                                               comment: "Filters button text on header bar on top of order list")
-        static let buttonWithoutActiveFilters =
-            NSLocalizedString("Filter",
-                              comment: "Title of the toolbar button to filter orders without filters applied.")
-        static let buttonWithActiveFilters =
-            NSLocalizedString("Filter (%ld)",
-                              comment: "Title of the toolbar button to filter orders with filters applied.")
-        static func lastUpdatedText(time: String) -> String {
-            let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the orders were last updated")
-            return String.localizedStringWithFormat(format, time)
-        }
     }
 }

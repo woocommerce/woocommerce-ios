@@ -35,7 +35,7 @@ public final class OrdersScreen: ScreenObject {
 
     @discardableResult
     public func tapOrder(atIndex index: Int) throws -> SingleOrderScreen {
-        app.tables.cells.element(boundBy: index).tap()
+        orderRows.element(boundBy: index).tap()
         return try SingleOrderScreen()
     }
 
@@ -55,11 +55,29 @@ public final class OrdersScreen: ScreenObject {
 
     @discardableResult
     public func verifyOrdersList(orders: [OrderData]) throws -> Self {
-        let ordersTableView = app.tables.matching(identifier: "orders-table-view")
-        XCTAssertEqual(orders.count, ordersTableView.cells.count, "Expecting '\(orders.count)' orders, got '\(ordersTableView.cells.count)' instead!")
-        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].id), expectedCount: 1)
-        ordersTableView.element.assertTextVisibilityCount(textToFind: String(orders[0].total), expectedCount: 1)
-        ordersTableView.element.assertLabelContains(firstSubstring: String(orders[0].id), secondSubstring: orders[0].billing.first_name)
+        let ordersList = app.descendants(matching: .any)["orders-table-view"]
+        let storeOrderRows = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "order-row-"))
+
+        if storeOrderRows.firstMatch.exists {
+            let firstOrderRow = app.buttons["order-row-\(orders[0].id)"]
+            firstOrderRow.assertTextVisibilityCount(textToFind: String(orders[0].id), expectedCount: 1)
+            firstOrderRow.assertTextVisibilityCount(textToFind: String(orders[0].total), expectedCount: 1)
+            firstOrderRow.assertLabelContains(firstSubstring: String(orders[0].id), secondSubstring: orders[0].billing.first_name)
+
+            for order in orders {
+                let orderRow = app.buttons["order-row-\(order.id)"]
+                if orderRow.exists == false {
+                    ordersList.swipeUp()
+                }
+                XCTAssertTrue(orderRow.waitForExistence(timeout: 2), "Expected order '\(order.id)' to appear in the list")
+            }
+        } else {
+            let legacyRows = app.tables["orders-table-view"].cells
+            XCTAssertEqual(orders.count, legacyRows.count, "Expecting '\(orders.count)' orders, got '\(legacyRows.count)' instead!")
+            ordersList.assertTextVisibilityCount(textToFind: String(orders[0].id), expectedCount: 1)
+            ordersList.assertTextVisibilityCount(textToFind: String(orders[0].total), expectedCount: 1)
+            ordersList.assertLabelContains(firstSubstring: String(orders[0].id), secondSubstring: orders[0].billing.first_name)
+        }
 
         return self
     }
@@ -76,5 +94,10 @@ public final class OrdersScreen: ScreenObject {
     public func startOrderCreation() throws -> UnifiedOrderScreen {
         createButton.tap()
         return try UnifiedOrderScreen()
+    }
+
+    private var orderRows: XCUIElementQuery {
+        let storeOrderRows = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "order-row-"))
+        return storeOrderRows.firstMatch.exists ? storeOrderRows : app.tables["orders-table-view"].cells
     }
 }

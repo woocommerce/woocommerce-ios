@@ -405,8 +405,8 @@ extension OrderListViewController {
 
         /// Messages configuration
         let noticeConfiguration = OrderFulfillmentNoticePresenter.NoticeConfiguration(
-            successTitle: Localization.markCompletedNoticeTitle(orderID: orderDetailsViewModel.order.orderID),
-            errorTitle: Localization.markCompletedErrorNoticeTitle(orderID: orderDetailsViewModel.order.orderID))
+            successTitle: OrderListLocalization.markCompletedNoticeTitle(orderID: orderDetailsViewModel.order.orderID),
+            errorTitle: OrderListLocalization.markCompletedErrorNoticeTitle(orderID: orderDetailsViewModel.order.orderID))
 
         /// Fires fulfillment action, observes its result and enqueue the appropriate notices.
         let presenter = OrderFulfillmentNoticePresenter(noticeConfiguration: noticeConfiguration)
@@ -712,10 +712,10 @@ extension OrderListViewController {
 private extension OrderListViewController {
     func configureEmptyStateView() {
         guard let filters = viewModel.filters, filters.numberOfActiveFilters != 0 else {
-            emptyStateView.configure(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+            emptyStateView.configure(message: NSAttributedString(string: OrderListLocalization.allOrdersEmptyStateMessage),
                                      image: .boxesImage,
-                                     details: Localization.allOrdersEmptyStateDetail,
-                                     buttonTitle: Localization.learnMore) { [weak self] _ in
+                                     details: OrderListLocalization.allOrdersEmptyStateDetail,
+                                     buttonTitle: OrderListLocalization.learnMore) { [weak self] _ in
                 guard let self else { return }
                 WebviewHelper.launch(WooConstants.URLs.blog.asURL(), with: self)
             }
@@ -724,13 +724,13 @@ private extension OrderListViewController {
 
         let boldSearchKeyword = NSAttributedString(string: filters.readableString,
                                                    attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
-        let message = NSMutableAttributedString(string: Localization.filteredOrdersEmptyStateMessage)
+        let message = NSMutableAttributedString(string: OrderListLocalization.filteredOrdersEmptyStateMessage)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
         emptyStateView.configure(message: message,
                                  image: .magnifyingGlassNotFound,
                                  details: "",
-                                 buttonTitle: Localization.clearButton) { [weak self] _ in
+                                 buttonTitle: OrderListLocalization.clearFilters) { [weak self] _ in
             self?.delegate?.clearFilters()
         }
     }
@@ -838,7 +838,9 @@ extension OrderListViewController: UITableViewDelegate {
               cellViewModel.status != .completed else {
                   return nil
               }
-        let markAsCompletedAction = UIContextualAction(style: .normal, title: Localization.markCompleted, handler: { [weak self] _, _, completionHandler in
+        let markAsCompletedAction = UIContextualAction(style: .normal,
+                                                       title: OrderListLocalization.markCompleted,
+                                                       handler: { [weak self] _, _, completionHandler in
             self?.markOrderAsCompleted(resultID: objectID)
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })
@@ -967,11 +969,11 @@ private extension OrderListViewController {
     /// Sets the `topBannerView` property to a warning banner shown when the store currency couldn't be loaded.
     ///
     func setCurrencyUnavailableTopBanner() {
-        let retryAction = TopBannerViewModel.ActionButton(title: Localization.currencyUnavailableRetry) { [weak self] _ in
+        let retryAction = TopBannerViewModel.ActionButton(title: OrderListLocalization.currencyUnavailableRetry) { [weak self] _ in
             self?.viewModel.retryStoreCurrencySync()
         }
-        let bannerViewModel = TopBannerViewModel(title: Localization.currencyUnavailableTitle,
-                                                 infoText: Localization.currencyUnavailableInfo,
+        let bannerViewModel = TopBannerViewModel(title: OrderListLocalization.currencyUnavailableTitle,
+                                                 infoText: OrderListLocalization.currencyUnavailableInfo,
                                                  icon: .infoOutlineImage,
                                                  isExpanded: true,
                                                  shouldResizeInfo: false,
@@ -994,66 +996,6 @@ private extension OrderListViewController {
 // MARK: - Constants
 //
 private extension OrderListViewController {
-    enum Localization {
-        static let allOrdersEmptyStateMessage = NSLocalizedString("Waiting for your first order",
-                                                                  comment: "The message shown in the Orders → All Orders tab if the list is empty.")
-        static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales.",
-                                                                 comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
-        static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
-        static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
-                   comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
-        static let clearButton = NSLocalizedString("Clear Filters",
-                                 comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
-
-        static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
-
-        static let currencyUnavailableTitle = NSLocalizedString(
-            "orderList.currencyUnavailable.banner.title",
-            value: "Store currency unavailable",
-            comment: "Title of the banner shown on the Orders list when the store's currency couldn't be loaded."
-        )
-
-        static let currencyUnavailableInfo = NSLocalizedString(
-            "orderList.currencyUnavailable.banner.info",
-            value: "We couldn't load your store's currency, so order totals may be shown in the wrong currency.",
-            comment: "Message of the banner shown on the Orders list when the store's currency couldn't be loaded."
-        )
-
-        static let currencyUnavailableRetry = NSLocalizedString(
-            "orderList.currencyUnavailable.banner.retry",
-            value: "Retry",
-            comment: "Title of the button to retry loading the store's currency on the Orders list warning banner."
-        )
-
-        static let shareFeedbackButton = NSLocalizedString("Share feedback",
-                                                           comment: "Title of the feedback action button on the In-Person Payments feedback banner"
-        )
-
-        static let remindMeLater = NSLocalizedString("Remind me later",
-                                                     comment: "Title of the button shown when the In-Person Payments feedback banner is dismissed."
-        )
-
-        static let dontShowAgain = NSLocalizedString("Don't show again",
-                                                     comment: "Title of the button shown when the In-Person Payments feedback banner is dismissed."
-        )
-
-        static func markCompletedNoticeTitle(orderID: Int64) -> String {
-            let format = NSLocalizedString(
-                "Order #%1$d marked as completed",
-                comment: "Notice title when an order is marked as completed via a swipe action. Parameter: Order Number"
-            )
-            return String.localizedStringWithFormat(format, orderID)
-        }
-
-        static func markCompletedErrorNoticeTitle(orderID: Int64) -> String {
-            let format = NSLocalizedString(
-                "Error updating Order #%1$d",
-                comment: "Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number"
-            )
-            return String.localizedStringWithFormat(format, orderID)
-        }
-    }
-
     enum Constants {
         static let loadingCellIdentifier = "OrderLoadingCell"
         static let placeholderRowCount = 3

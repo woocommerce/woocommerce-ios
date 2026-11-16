@@ -16,12 +16,17 @@ final class OrdersRootViewController: UIViewController {
     // MARK: Child view controller
     private lazy var orderListViewModel = OrderListViewModel(siteID: siteID, filters: filters)
 
-    private lazy var ordersViewController = OrderListViewController(
-        siteID: siteID,
-        title: Localization.defaultOrderListTitle,
-        viewModel: orderListViewModel,
-        switchDetailsHandler: switchDetailsHandler
-    )
+    private(set) lazy var ordersViewController: OrderListPresenting = {
+        if featureFlagService.usesStoreDesignSystem {
+            return StoreOrderListHostingController(siteID: siteID,
+                                                   viewModel: orderListViewModel,
+                                                   switchDetailsHandler: switchDetailsHandler)
+        }
+        return OrderListViewController(siteID: siteID,
+                                       title: Localization.defaultOrderListTitle,
+                                       viewModel: orderListViewModel,
+                                       switchDetailsHandler: switchDetailsHandler)
+    }()
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
@@ -57,7 +62,12 @@ final class OrdersRootViewController: UIViewController {
         didSet {
             if filters != oldValue {
                 updateLocalOrdersSettings(filters: filters)
-                filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
+                if featureFlagService.usesStoreDesignSystem {
+                    ordersViewController.updateFilters(count: filters.numberOfActiveFilters,
+                                                        readableDescription: filters.readableString)
+                } else {
+                    filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
+                }
                 orderListViewModel.updateFilters(filters: filters)
             }
         }
@@ -91,10 +101,11 @@ final class OrdersRootViewController: UIViewController {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
-        self.featureFlagService = ServiceLocator.featureFlagService
+        self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.switchDetailsHandler = switchDetailsHandler
@@ -201,7 +212,7 @@ final class OrdersRootViewController: UIViewController {
     /// selected in the order list.
     /// - Parameter orderID: ID of the order to be selected in the order list.
     func onOrderSelected(id orderID: Int64) {
-        ordersViewController.onOrderSelected(id: orderID)
+        ordersViewController.onOrderSelected(id: orderID, shouldScrollIfNeeded: false)
     }
 
     /// Selects and scrolls to an order shown outside of the order list when the list contains it.
@@ -405,6 +416,9 @@ private extension OrdersRootViewController {
     }
 
     func configureFiltersBar() {
+        guard !featureFlagService.usesStoreDesignSystem else {
+            return
+        }
         if #available(iOS 26.0, *) {
             configureLiquidGlassHeaderOverlay()
         } else {
@@ -418,7 +432,7 @@ private extension OrdersRootViewController {
     }
 
     func configureLiquidGlassHeaderOverlay() {
-        guard #available(iOS 26.0, *) else {
+        guard !featureFlagService.usesStoreDesignSystem, #available(iOS 26.0, *) else {
             return
         }
 
@@ -441,7 +455,7 @@ private extension OrdersRootViewController {
     }
 
     func updateLiquidGlassHeaderOverlayLayout() {
-        guard #available(iOS 26.0, *) else {
+        guard !featureFlagService.usesStoreDesignSystem, #available(iOS 26.0, *) else {
             return
         }
 
@@ -454,7 +468,7 @@ private extension OrdersRootViewController {
             return
         }
 
-        guard let tableView = ordersViewController.tableView else {
+        guard let tableView = ordersViewController.contentScrollView else {
             return
         }
 
@@ -483,12 +497,14 @@ private extension OrdersRootViewController {
             return
         }
 
-        // The list table lives in a child controller, so register it from the root
+        // The list scroll view lives in a child controller, so register it from the root
         // controller that owns the navigation item for native large title tracking.
-        setContentScrollView(ordersViewController.tableView, for: [.top, .bottom])
-
-        OrdersProductsListHeaderStyle.configureNavigationAppearance(navigationItem: navigationItem,
-                                                                    scrollView: ordersViewController.tableView)
+        ordersViewController.observeContentScrollView { [weak self] scrollView in
+            guard let self else { return }
+            self.setContentScrollView(scrollView, for: [.top, .bottom])
+            OrdersProductsListHeaderStyle.configureNavigationAppearance(navigationItem: self.navigationItem,
+                                                                        scrollView: scrollView)
+        }
 
         stackViewTopConstraint.isActive = false
         stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -506,12 +522,16 @@ private extension OrdersRootViewController {
             view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
         }
         ordersViewController.delegate = self
+        ordersViewController.onFilterTapped = { [weak self] in
+            self?.filterButtonTapped()
+        }
 
         // Add contentView to stackview
-        let contentView = ordersViewController.view!
-        addChild(ordersViewController)
+        let childViewController = ordersViewController.viewController
+        let contentView = childViewController.view!
+        addChild(childViewController)
         stackView.addArrangedSubview(contentView)
-        ordersViewController.didMove(toParent: self)
+        childViewController.didMove(toParent: self)
     }
 
     /// Connect hooks on `ResultsController` and query cached data.
@@ -547,7 +567,7 @@ private extension OrdersRootViewController {
 
 extension OrdersRootViewController: ScrollToTopProviding {
     var scrollToTopScrollView: UIScrollView? {
-        ordersViewController.tableView
+        ordersViewController.contentScrollView
     }
 }
 
@@ -583,12 +603,17 @@ extension OrdersRootViewController: @MainActor OrderListViewControllerDelegate {
         }
 
         let dateFormatter = syncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
-        filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
+        let time = dateFormatter.string(from: syncTimestamp)
+        if featureFlagService.usesStoreDesignSystem {
+            ordersViewController.updateLastSyncTime(time)
+        } else {
+            filtersBar.setLastUpdatedTime(time)
+        }
     }
 
     /// Mirrors the list's top overscroll so the overlaid filters bar and header background stay visually attached to the orders content.
     private func updateFiltersBarOverscrollPosition(from scrollView: UIScrollView) {
-        guard #available(iOS 26.0, *) else {
+        guard !featureFlagService.usesStoreDesignSystem, #available(iOS 26.0, *) else {
             return
         }
 

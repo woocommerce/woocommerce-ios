@@ -7,7 +7,7 @@ final class UnrestrictedPOSAccessSession: POSAccessSession {
     var isPINProtectionEnabled: Bool { false }
 
     func refreshPINProtection() throws(POSPINStoreError) {}
-    func beginPINChange() throws(POSPINStoreError) -> POSPINChangeRegistration { POSPINChangeRegistration {} }
+    func beginPINChange() -> POSPINChangeRegistration { POSPINChangeRegistration {} }
 
     func allows(_ capability: POSCapability) -> Bool { true }
     func signIn(withPIN pin: String) async throws(POSAuthError) {}

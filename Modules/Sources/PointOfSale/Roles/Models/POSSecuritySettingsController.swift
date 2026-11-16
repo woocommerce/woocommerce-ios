@@ -90,13 +90,7 @@ final class POSSecuritySettingsController {
 
     private func save(_ pin: String?, for role: POSLocalRole) async -> Bool {
         guard isVisible, !isSaving, roles != nil else { return false }
-        let change: POSPINChangeRegistration
-        do {
-            change = try session.beginPINChange()
-        } catch {
-            self.error = error
-            return false
-        }
+        let change = session.beginPINChange()
         isSaving = true
         defer {
             change.finish()

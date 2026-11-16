@@ -73,9 +73,8 @@ final class DefaultPOSAccessSession: POSAccessSession {
         return currentStaff?.hasCapability(capability) == true
     }
 
-    func beginPINChange() throws(POSPINStoreError) -> POSPINChangeRegistration {
-        guard !isLocked, allows(.manageStoreSettings) else { throw .storageFailure }
-        return rateLimiter.pendingPINChanges.begin()
+    func beginPINChange() -> POSPINChangeRegistration {
+        rateLimiter.pendingPINChanges.begin()
     }
 
     func signIn(withPIN pin: String) async throws(POSAuthError) {

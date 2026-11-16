@@ -11,7 +11,7 @@ extension View {
     ///
     /// - Parameters:
     ///   - isPresented: Binding to control when the full screen cover is shown
-    ///   - onDismiss: Called on dismissal, including lock cleanup. Keep payment cancellation with the operation owner.
+    ///   - onDismiss: Optional closure called when the cover is dismissed
     ///   - content: Content to show in full screen
     /// - Returns: a modified view that shows full screen content with automatic modal hierarchy
     // periphery:ignore
@@ -31,7 +31,7 @@ extension View {
 
     /// - Parameters:
     ///   - item: Binding to control when the full screen cover is shown
-    ///   - onDismiss: Called on dismissal, including lock cleanup. Keep payment cancellation with the operation owner.
+    ///   - onDismiss: Optional closure called when the cover is dismissed
     ///   - content: Content to show in full screen
     /// - Returns: a modified view that shows full screen content with automatic modal hierarchy
     // periphery:ignore
@@ -62,7 +62,6 @@ final class POSFullScreenCoverManager: ObservableObject {
 // periphery:ignore
 struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.posAccessSession) private var session
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
     let coverContent: () -> CoverContent
@@ -76,10 +75,7 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .fullScreenCover(isPresented: Binding(get: { isPresented && !session.isLocked }, set: { isPresented = $0 }), onDismiss: {
-                modalManager.onDisappear()
-                onDismiss?()
-            }, content: {
+            .fullScreenCover(isPresented: $isPresented, onDismiss: onDismiss, content: {
                 coverContent()
                     .onAppear { parentCoverManager.isPresented = true }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
@@ -89,16 +85,14 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
                     .environmentObject(sheetManager)
                     .environmentObject(coverManager)
             })
-            .modifier(POSDismissPresentationOnLock(value: $isPresented, dismissedValue: false))
             .onChange(of: isPresented) { _, newValue in
-                parentCoverManager.isPresented = newValue && !session.isLocked
+                parentCoverManager.isPresented = newValue
             }
     }
 }
 // periphery:ignore
 struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverContent: View>: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.posAccessSession) private var session
     @Binding var item: Item?
     let onDismiss: (() -> Void)?
     let coverContent: (Item) -> CoverContent
@@ -112,10 +106,7 @@ struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverCo
 
     func body(content: Content) -> some View {
         content
-            .fullScreenCover(item: Binding(get: { session.isLocked ? nil : item }, set: { item = $0 }), onDismiss: {
-                modalManager.onDisappear()
-                onDismiss?()
-            }, content: {
+            .fullScreenCover(item: $item, onDismiss: onDismiss, content: {
                 coverContent($0)
                     .onAppear { parentCoverManager.isPresented = true }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
@@ -125,9 +116,8 @@ struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverCo
                     .environmentObject(sheetManager)
                     .environmentObject(coverManager)
             })
-            .modifier(POSDismissPresentationOnLock(value: $item, dismissedValue: nil))
             .onChange(of: item) { _, newValue in
-                parentCoverManager.isPresented = newValue != nil && !session.isLocked
+                parentCoverManager.isPresented = newValue != nil
             }
     }
 }

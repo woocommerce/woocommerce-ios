@@ -32,7 +32,6 @@ final class POSSheetManager: ObservableObject {
 
 struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.posAccessSession) private var session
     @EnvironmentObject var sheetManager: POSSheetManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
@@ -44,7 +43,7 @@ struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
     private var sheetIsPresented: Binding<Bool> {
         Binding<Bool>(get: {
             // Don't show a sheet if a full screen overlay is presented on top
-            return self.$isPresented.wrappedValue && !coverManager.isPresented && !session.isLocked
+            return self.$isPresented.wrappedValue && !coverManager.isPresented
         }, set: {
             self.$isPresented.wrappedValue = $0
         })
@@ -59,7 +58,6 @@ struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
                     .onAppear { sheetManager.registerSheetPresented(id: sheetId) }
                     .onDisappear { sheetManager.registerSheetDismissed(id: sheetId) }
             }
-            .modifier(POSDismissPresentationOnLock(value: $isPresented, dismissedValue: false))
             .onChange(of: isPresented) { _, newValue in
                 if newValue {
                     sheetManager.registerSheetPresented(id: sheetId)
@@ -72,7 +70,6 @@ struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
 
 struct POSSheetViewModifierForItem<Item: Identifiable & Equatable, SheetContent: View>: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.posAccessSession) private var session
     @EnvironmentObject var sheetManager: POSSheetManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
@@ -84,7 +81,7 @@ struct POSSheetViewModifierForItem<Item: Identifiable & Equatable, SheetContent:
     private var sheetItem: Binding<Item?> {
         Binding<Item?>(get: {
             // Don't show a sheet if a full screen overlay is presented on top
-            guard !coverManager.isPresented, !session.isLocked else { return nil }
+            guard !coverManager.isPresented else { return nil }
             return self.$item.wrappedValue
         }, set: {
             self.$item.wrappedValue = $0
@@ -100,7 +97,6 @@ struct POSSheetViewModifierForItem<Item: Identifiable & Equatable, SheetContent:
                     .onAppear { sheetManager.registerSheetPresented(id: sheetId) }
                     .onDisappear { sheetManager.registerSheetDismissed(id: sheetId) }
             }
-            .modifier(POSDismissPresentationOnLock(value: $item, dismissedValue: nil))
             .onChange(of: sheetItem.wrappedValue) { _, newItem in
                 let newValue = newItem != nil
                 if newValue {
@@ -124,7 +120,7 @@ extension View {
     ///
     /// - Parameters:
     ///   - isPresented: Binding to control when the sheet is shown.
-    ///   - onDismiss: Called on dismissal, including lock cleanup. Keep payment cancellation with the operation owner.
+    ///   - onDismiss: Optional closure executed when the sheet is dismissed.
     ///   - content: Content to show in the sheet
     /// - Returns: a modified view which can show the sheet content specified, when applicable.
     func posSheet<SheetContent: View>(
@@ -150,7 +146,7 @@ extension View {
     ///
     /// - Parameters:
     ///   - item: Binding to control when the sheet is shown. When non-nil, the item is used to build the content.
-    ///   - onDismiss: Called on dismissal, including lock cleanup. Keep payment cancellation with the operation owner.
+    ///   - onDismiss: Optional closure executed when the sheet is dismissed.
     ///   - content: Content to show in the sheet
     /// - Returns: a modified view which can show the sheet content specified, when applicable.
     func posSheet<Item: Identifiable & Equatable, SheetContent: View>(

@@ -2,12 +2,7 @@ import Observation
 import SwiftUI
 import Testing
 import UIKit
-import Combine
-import struct Yosemite.Order
-import enum Yosemite.PaymentChannel
-import enum Yosemite.CardReaderSoftwareUpdateState
 @testable import PointOfSale
-@testable import WooCommerce
 
 @MainActor
 @Suite(.serialized, .timeLimit(.minutes(5)))
@@ -16,130 +11,84 @@ final class POSLockPresentationTests {
     private weak var previousKeyWindow: UIWindow?
 
     @Test(arguments: [false, true])
-    func test_reader_publisher_when_prompt_is_dismissed_after_host_transfer_then_reopened_cover_has_no_stale_prompt(_ locks: Bool) async throws {
-        // Given - use the production presenter, event mapper and rendered Dismiss action.
-        let events = ReaderEventFixture()
-        let aggregate = POSPreviewHelpers.makePreviewAggregateModel(cardPresentPaymentService: events)
-        let state = PresentationState()
-        state.readerModel = aggregate.paymentModel
+    func test_initial_entry_when_lock_state_is_known_then_only_locked_entry_installs_gate(_ locked: Bool) async throws {
+        // Given
+        let state = WindowPresentationState()
+        state.session.isLocked = locked
         let source = try await mount(state)
         defer { unmount() }
-        state.cover = true
-        try await waitUntil { state.coverVisible }
-        events.presenter.present(viewModel: .scanningForReaders(endSearch: {}))
-        try await waitUntil { state.readerRendered["cover"] != nil }
-        var endSearchCalls = 0
-        events.presenter.present(viewModel: .scanningFailed(error: NSError(domain: "Reader", code: 1),
-                                                           endSearch: { endSearchCalls += 1 }))
-        try await waitUntil { state.readerActions["cover"] != nil }
 
-        // When
-        if locks {
-            state.session.lock()
-            try await waitUntil { source.rootViewController?.presentedViewController == nil && state.readerActions["root"] != nil }
-            #expect(endSearchCalls == 0)
-            state.session.isLocked = false
-            try await waitUntil { self.pinWindow(in: source) == nil }
+        // Then
+        #expect((pinWindow(in: source) != nil) == locked)
+        #expect(source.accessibilityElementsHidden == locked)
+        if let gate = pinWindow(in: source) {
+            #expect(gate.windowScene === source.windowScene)
+            #expect(gate.isKeyWindow)
+            #expect(gate.rootViewController?.view.accessibilityViewIsModal == true)
+            #expect(gate.rootViewController?.view.backgroundColor?.cgColor.alpha == 1)
+        } else {
+            #expect(source.isKeyWindow)
         }
-        let dismiss = try #require(state.readerActions[locks ? "root" : "cover"])
-        dismiss()
-        try await waitUntil { aggregate.paymentModel.cardPresentPaymentAlertViewModel == nil }
-        #expect(endSearchCalls == 1)
-        state.cover = false
-        try await waitUntil { source.rootViewController?.presentedViewController == nil && !state.coverVisible }
-        state.cover = true
-        try await waitUntil { state.coverVisible }
-
-        // Then - the removed host must not replay content after its model has cleared.
-        let coverManager = try #require(state.coverModals)
-        #expect(!coverManager.isPresented)
-        #expect(state.readerRendered["cover"] == nil)
-        events.presenter.present(viewModel: .scanningFailed(error: NSError(domain: "New reader", code: 2),
-                                                           endSearch: { endSearchCalls += 1 }))
-        try await waitUntil {
-            guard let current = aggregate.paymentModel.cardPresentPaymentAlertViewModel else { return false }
-            return state.readerRendered["cover"] == current
-        }
-        let nextDismiss = try #require(state.readerActions["cover"])
-        nextDismiss()
-        try await waitUntil { aggregate.paymentModel.cardPresentPaymentAlertViewModel == nil && !coverManager.isPresented }
-        #expect(endSearchCalls == 2)
     }
 
-    @Test func test_lock_when_native_sheet_is_open_then_discards_presentation() async throws {
+    enum NativePresentation: CaseIterable, Sendable { case sheet, cover }
+
+    @Test(arguments: NativePresentation.allCases)
+    func test_lock_when_native_presentation_exists_then_keeps_it_below_gate_and_restores_source_on_unlock(_ kind: NativePresentation) async throws {
         // Given
-        let state = PresentationState()
-        let window = try await mount(state)
+        let state = WindowPresentationState()
+        let source = try await mount(state)
         defer { unmount() }
-        state.sheet = true
-        try await waitUntil { window.rootViewController?.presentedViewController != nil }
+        state.present(kind)
+        try await waitUntil { source.rootViewController?.presentedViewController != nil }
+        let presented = try #require(source.rootViewController?.presentedViewController)
 
         // When
         state.session.lock()
-        try await waitUntil { !state.sheet }
-        try await waitUntil { window.rootViewController?.presentedViewController == nil }
+        try await waitUntil { self.pinWindow(in: source)?.isKeyWindow == true }
 
-        // Then
-        #expect(state.session.isLocked)
-        #expect(!state.sheet)
-        let gate = try #require(pinWindow(in: window))
-        #expect(gate.windowScene === window.windowScene)
-        #expect(gate.windowLevel > window.windowLevel)
-        #expect(gate.isKeyWindow)
-        #expect(window.accessibilityElementsHidden)
-        #expect(gate.rootViewController?.view.accessibilityViewIsModal == true)
-    }
-
-    enum PresentationKind: CaseIterable, Sendable { case sheet, sheetItem, cover, coverItem }
-
-    @Test(arguments: [PresentationKind.sheetItem, .cover, .coverItem])
-    func test_lock_when_native_presentation_is_open_then_discards_binding(_ kind: PresentationKind) async throws {
-        // Given
-        let state = PresentationState()
-        let window = try await mount(state)
-        defer { unmount() }
-        state.present(kind)
-        try await waitUntil { window.rootViewController?.presentedViewController != nil }
-
-        // When
-        state.session.lock()
-        try await waitUntil { !state.isPresented(kind) && window.rootViewController?.presentedViewController == nil }
-
-        // Then
-        #expect(pinWindow(in: window) != nil)
+        // Then - this foundation does not discard presentation state.
+        let gate = try #require(pinWindow(in: source))
+        #expect(gate.windowLevel > source.windowLevel)
+        #expect(source.accessibilityElementsHidden)
+        #expect(source.rootViewController?.presentedViewController === presented)
+        #expect(state.isPresented(kind))
         state.session.isLocked = false
-        try await waitUntil { self.pinWindow(in: window) == nil }
-        #expect(!state.isPresented(kind))
-    }
-
-    @Test(arguments: PresentationKind.allCases)
-    func test_late_presentation_when_locked_then_discards_request_without_restoring_on_unlock(_ kind: PresentationKind) async throws {
-        // Given
-        let state = PresentationState()
-        state.session.isLocked = true
-        let window = try await mount(state)
-        defer { unmount() }
-        try await waitUntil { self.pinWindow(in: window) != nil }
-
-        // When
-        state.present(kind)
-        try await waitUntil { !state.isPresented(kind) }
-        state.session.isLocked = false
-        try await waitUntil { self.pinWindow(in: window) == nil }
-
-        // Then
-        #expect(window.rootViewController?.presentedViewController == nil)
-        #expect(!window.accessibilityElementsHidden)
-        state.present(kind)
-        try await waitUntil { window.rootViewController?.presentedViewController != nil }
-        try await waitUntil { window.rootViewController?.presentedViewController?.transitionCoordinator == nil }
+        try await waitUntil { self.pinWindow(in: source) == nil && source.isKeyWindow }
+        #expect(source.rootViewController?.presentedViewController === presented)
+        #expect(!source.accessibilityElementsHidden)
         state.dismiss(kind)
-        try await waitUntil { window.rootViewController?.presentedViewController == nil }
+        try await waitUntil { source.rootViewController?.presentedViewController == nil }
+    }
+
+    @Test func test_late_native_controller_when_locked_then_cannot_take_pin_window_or_accessibility() async throws {
+        // Given
+        let state = WindowPresentationState()
+        state.session.isLocked = true
+        let source = try await mount(state)
+        defer { unmount() }
+        let gate = try #require(pinWindow(in: source))
+        let root = try #require(source.rootViewController)
+        let controller = UIViewController()
+        controller.modalPresentationStyle = .fullScreen
+
+        // When
+        root.present(controller, animated: false)
+        try await waitUntil { root.presentedViewController === controller && gate.isKeyWindow }
+
+        // Then
+        #expect(pinWindow(in: source) === gate)
+        #expect(gate.windowLevel > source.windowLevel)
+        #expect(source.accessibilityElementsHidden)
+        #expect(gate.rootViewController?.view.accessibilityViewIsModal == true)
+        try await waitUntil { root.presentedViewController?.transitionCoordinator == nil }
+        controller.dismiss(animated: false)
+        try await waitUntil { root.presentedViewController == nil }
     }
 
     @Test func test_lock_when_keyboard_has_focus_then_restores_source_key_window_on_unlock() async throws {
         // Given
-        let state = PresentationState()
+        let state = WindowPresentationState()
         let window = try await mount(state)
         defer { unmount() }
         let field = state.field
@@ -160,7 +109,7 @@ final class POSLockPresentationTests {
 
     @Test func test_lock_when_native_controller_is_presented_then_preserves_it_below_pin() async throws {
         // Given
-        let state = PresentationState()
+        let state = WindowPresentationState()
         let window = try await mount(state)
         defer { unmount() }
         let nativeController = UIViewController()
@@ -187,7 +136,7 @@ final class POSLockPresentationTests {
 
     @Test func test_source_movement_when_locked_then_restores_each_source_and_detaches_gate() async throws {
         // Given
-        let state = PresentationState()
+        let state = WindowPresentationState()
         let source = try await mount(state)
         let scene = try #require(source.windowScene)
         let nextSource = UIWindow(windowScene: scene)
@@ -217,7 +166,7 @@ final class POSLockPresentationTests {
 
     @Test func test_scene_notifications_when_locked_then_retains_gate_and_recreates_after_disconnect() async throws {
         // Given
-        let state = PresentationState()
+        let state = WindowPresentationState()
         state.session.isLocked = true
         let source = try await mount(state)
         defer { unmount() }
@@ -244,7 +193,7 @@ final class POSLockPresentationTests {
 
     @Test func test_unlock_when_prior_key_window_is_removed_then_restores_source() async throws {
         // Given
-        let source = try await mount(PresentationState())
+        let source = try await mount(WindowPresentationState())
         let scene = try #require(source.windowScene)
         let prior = UIWindow(windowScene: scene)
         prior.rootViewController = UIViewController()
@@ -266,150 +215,9 @@ final class POSLockPresentationTests {
         #expect(!source.accessibilityElementsHidden)
     }
 
-    @Test(arguments: [false, true])
-    func test_custom_modal_when_locked_then_discards_ui_without_calling_payment_cancel(_ usesItem: Bool) async throws {
-        // Given
-        let state = PresentationState()
-        let source = try await mount(state)
-        defer { unmount() }
-        state.presentCustomModal(usesItem: usesItem)
-        try await waitUntil { state.modals.isPresented }
-
-        // When
-        state.session.lock()
-        try await waitUntil { !state.customModalIsPresented(usesItem: usesItem) && !state.modals.isPresented }
-
-        // Then
-        #expect(state.dismissCalls == 0)
-        state.session.isLocked = false
-        try await waitUntil { self.pinWindow(in: source) == nil }
-        #expect(!state.modals.isPresented)
-        state.presentCustomModal(usesItem: usesItem)
-        try await waitUntil { state.modals.isPresented }
-        state.modals.dismiss()
-        #expect(state.dismissCalls == 1)
-    }
-
-    @Test(arguments: [false, true])
-    func test_late_custom_modal_when_locked_then_discards_request_without_restoring_on_unlock(_ usesItem: Bool) async throws {
-        // Given
-        let state = PresentationState()
-        state.session.isLocked = true
-        let source = try await mount(state)
-        defer { unmount() }
-        try await waitUntil { self.pinWindow(in: source) != nil }
-
-        // When
-        state.presentCustomModal(usesItem: usesItem)
-        try await waitUntil { !state.customModalIsPresented(usesItem: usesItem) && !state.modals.isPresented }
-        state.session.isLocked = false
-        try await waitUntil { self.pinWindow(in: source) == nil }
-
-        // Then
-        #expect(!state.modals.isPresented)
-        #expect(state.dismissCalls == 0)
-    }
-
-    @Test(arguments: [false, true])
-    func test_payment_modal_when_locked_then_retains_owner_and_latest_state_without_dismissal(_ usesItem: Bool) async throws {
-        // Given
-        let state = PresentationState()
-        state.dismissCustomOnLock = false
-        let source = try await mount(state)
-        defer { unmount() }
-        state.presentCustomModal(usesItem: usesItem)
-        try await waitUntil { state.modals.isPresented }
-
-        // When
-        state.session.lock()
-        try await waitUntil { self.pinWindow(in: source)?.isKeyWindow == true }
-        if usesItem { state.modalItem = PresentationState.Item() }
-        let latest = state.modalItem
-        if usesItem { try await waitUntil { state.renderedItems["root"] == latest?.id } }
-        state.modals.dismissForLock()
-
-        // Then - the payment owner can update under PIN; lock invokes no cancellation callback.
-        #expect(state.modals.isPresented)
-        #expect(state.customModalIsPresented(usesItem: usesItem))
-        #expect(state.dismissCalls == 0)
-        #expect(source.accessibilityElementsHidden)
-        state.session.isLocked = false
-        try await waitUntil { self.pinWindow(in: source) == nil && source.isKeyWindow }
-        #expect(state.modals.isPresented)
-        #expect(state.modalItem == latest)
-    }
-
-    @Test func test_late_payment_modal_when_ordinary_cover_closes_on_lock_then_moves_current_prompt_to_root() async throws {
-        // Given
-        let state = PresentationState()
-        state.dismissCustomOnLock = false
-        let source = try await mount(state)
-        defer { unmount() }
-        state.cover = true
-        state.includeCoverPaymentHost = true
-        try await waitUntil { source.rootViewController?.presentedViewController != nil && state.coverVisible }
-        state.modalItem = PresentationState.Item()
-        let latest = state.modalItem
-        try await waitUntil { state.renderedItems["cover"] == latest?.id }
-        try #require(!state.modals.isPresented)
-
-        // When
-        state.session.lock()
-        try await waitUntil { !state.cover && state.modals.isPresented && self.pinWindow(in: source)?.isKeyWindow == true }
-
-        // Then
-        #expect(state.modalItem == latest)
-        #expect(state.dismissCalls == 0)
-        state.modalItem = PresentationState.Item()
-        let current = state.modalItem
-        try await waitUntil { state.renderedItems["root"] == current?.id }
-        state.session.isLocked = false
-        try await waitUntil { self.pinWindow(in: source) == nil && source.rootViewController?.presentedViewController == nil }
-        #expect(state.modalItem == current)
-        #expect(state.modals.isPresented)
-        let action = try #require(state.renderedActions["root"])
-        action()
-        #expect(state.actedOnItem == current?.id)
-        try await waitUntil { !state.modals.isPresented }
-        state.modalItem = PresentationState.Item()
-        try await waitUntil { state.modals.isPresented && state.renderedItems["root"] == state.modalItem?.id }
-        let callsBeforeDismiss = state.dismissCalls
-        state.modals.dismiss()
-        #expect(state.dismissCalls == callsBeforeDismiss + 1)
-    }
-
-    @Test func test_payment_prompt_when_first_delivered_and_completed_while_locked_then_tracks_current_owner() async throws {
-        // Given
-        let state = PresentationState()
-        state.dismissCustomOnLock = false
-        state.session.isLocked = true
-        let source = try await mount(state)
-        defer { unmount() }
-
-        // When
-        state.modalItem = PresentationState.Item()
-        try await waitUntil { state.modals.isPresented && state.renderedItems["root"] == state.modalItem?.id }
-        #expect(state.dismissCalls == 0)
-        state.modalItem = nil
-        try await waitUntil { !state.modals.isPresented }
-        state.modalItem = PresentationState.Item()
-        let current = state.modalItem
-        try await waitUntil { state.modals.isPresented && state.renderedItems["root"] == current?.id }
-
-        // Then
-        #expect(pinWindow(in: source)?.isKeyWindow == true)
-        #expect(source.accessibilityElementsHidden)
-        state.session.isLocked = false
-        try await waitUntil { self.pinWindow(in: source) == nil }
-        let action = try #require(state.renderedActions["root"])
-        action()
-        #expect(state.actedOnItem == current?.id)
-        try await waitUntil { !state.modals.isPresented }
-    }
-
     @Test func test_replacing_and_removing_session_when_locked_then_keeps_one_current_gate_and_cleans_up() async throws {
         // Given
-        let state = PresentationState()
+        let state = WindowPresentationState()
         state.session.isLocked = true
         let oldSession = state.session
         let window = try await mount(state)
@@ -434,46 +242,9 @@ final class POSLockPresentationTests {
         #expect(window.isKeyWindow)
     }
 
-    @Test func test_lock_when_presenting_child_is_removed_then_owner_discards_modal_without_callback() async throws {
-        // Given
-        let state = PresentationState()
-        let source = try await mount(state)
-        defer { unmount() }
-        state.modals.present(onDismiss: { state.dismissCalls += 1 }) { Text("Removed child") }
-        state.presentingChild = false
-
-        // When
-        state.session.lock()
-        try await waitUntil { self.pinWindow(in: source) != nil && !state.modals.isPresented }
-
-        // Then
-        #expect(state.dismissCalls == 0)
-        #expect(state.lockCleanupCalls == 1)
-        state.session.isLocked = false
-        try await waitUntil { self.pinWindow(in: source) == nil }
-        state.session.lock()
-        try await waitUntil { state.lockCleanupCalls == 2 }
-    }
-
-    @Test func test_owner_cleanup_when_host_detaches_before_next_turn_then_discards_pending_callback() async {
-        // Given
-        let coordinator = POSLockPresentationCoordinator()
-        let session = MockPOSAccessSession(isLocked: true)
-        var calls = 0
-        coordinator.update(session: session, content: AnyView(EmptyView()), onLock: { calls += 1 })
-        #expect(calls == 0)
-
-        // When
-        coordinator.detach()
-        await Task.yield()
-
-        // Then
-        #expect(calls == 0)
-    }
-
     @Test func test_lock_when_swiftui_field_has_focus_then_allows_focus_again_after_unlock() async throws {
         // Given
-        let state = PresentationState()
+        let state = WindowPresentationState()
         state.showsSwiftUIField = true
         let source = try await mount(state)
         defer { unmount() }
@@ -499,7 +270,13 @@ final class POSLockPresentationTests {
         source.windowScene?.windows.first { $0.accessibilityIdentifier == "pos-lock-window" && !$0.isHidden }
     }
 
-    private func mount(_ state: PresentationState) async throws -> UIWindow {
+    private func mount(_ state: WindowPresentationState) async throws -> UIWindow {
+        let source = try await mountView(WindowPresentationFixture(state: state))
+        if state.session.isLocked { try await waitUntil { self.pinWindow(in: source) != nil } }
+        return source
+    }
+
+    private func mountView<Content: View>(_ content: Content) async throws -> UIWindow {
         try await waitUntil {
             UIApplication.shared.connectedScenes.contains { $0 is UIWindowScene && $0.activationState != .unattached }
         }
@@ -507,13 +284,12 @@ final class POSLockPresentationTests {
             .first { $0.activationState != .unattached })
         try await waitUntil { !scene.windows.contains { $0.accessibilityIdentifier == "pos-lock-window" } }
         previousKeyWindow = scene.keyWindow
-        let window = UIWindow(windowScene: scene)
-        window.rootViewController = UIHostingController(rootView: PresentationFixture(state: state))
-        self.window = window
-        window.makeKeyAndVisible()
-        try await waitUntil { self.findWindowAttachment(in: window.rootViewController?.view) }
-        if state.session.isLocked { try await waitUntil { self.pinWindow(in: window) != nil } }
-        return window
+        let source = UIWindow(windowScene: scene)
+        source.rootViewController = UIHostingController(rootView: content)
+        window = source
+        source.makeKeyAndVisible()
+        try await waitUntil { self.findWindowAttachment(in: source.rootViewController?.view) }
+        return source
     }
 
     private func findWindowAttachment(in view: UIView?) -> Bool {
@@ -540,216 +316,54 @@ final class POSLockPresentationTests {
 
 @MainActor
 @Observable
-private final class PresentationState {
+private final class WindowPresentationState {
     var session = MockPOSAccessSession(currentStaff: POSLocalRole.admin.staff)
     var mounted = true
     let field = UITextField()
     var sheet = false
-    var sheetItem: Item?
     var cover = false
-    var coverVisible = false
-    var includeCoverPaymentHost = false
-    var readerModel: POSPaymentModel?
-    var coverModals: POSModalManager?
-    var readerRendered: [String: PointOfSaleCardPresentPaymentAlertType] = [:]
-    @ObservationIgnored var readerActions: [String: () -> Void] = [:]
-    var coverItem: Item?
-    var modal = false
-    var modalItem: Item?
-    var presentingChild = true
-    var lockCleanupCalls = 0
     var showsSwiftUIField = false
     var swiftUIFocusRequested = false
     var swiftUIHasFocus = false
     var swiftUIFocusRequestsHandled = 0
     var text = ""
-    var dismissCalls = 0
-    var dismissCustomOnLock = true
-    var renderedItems: [String: UUID] = [:]
-    var actedOnItem: UUID?
-    @ObservationIgnored var renderedActions: [String: () -> Void] = [:]
-    let modals = POSModalManager()
 
-    struct Item: Identifiable, Equatable { let id = UUID() }
-
-    func present(_ kind: POSLockPresentationTests.PresentationKind) {
-        switch kind {
-        case .sheet: sheet = true
-        case .sheetItem: sheetItem = Item()
-        case .cover: cover = true
-        case .coverItem: coverItem = Item()
-        }
+    func present(_ kind: POSLockPresentationTests.NativePresentation) {
+        if kind == .sheet { sheet = true } else { cover = true }
     }
 
-    func isPresented(_ kind: POSLockPresentationTests.PresentationKind) -> Bool {
-        switch kind {
-        case .sheet: sheet
-        case .sheetItem: sheetItem != nil
-        case .cover: cover
-        case .coverItem: coverItem != nil
-        }
+    func isPresented(_ kind: POSLockPresentationTests.NativePresentation) -> Bool {
+        kind == .sheet ? sheet : cover
     }
 
-    func dismiss(_ kind: POSLockPresentationTests.PresentationKind) {
-        switch kind {
-        case .sheet: sheet = false
-        case .sheetItem: sheetItem = nil
-        case .cover: cover = false
-        case .coverItem: coverItem = nil
-        }
-    }
-
-    func presentCustomModal(usesItem: Bool) {
-        if usesItem { modalItem = Item() } else { modal = true }
-    }
-
-    func customModalIsPresented(usesItem: Bool) -> Bool {
-        usesItem ? modalItem != nil : modal
+    func dismiss(_ kind: POSLockPresentationTests.NativePresentation) {
+        if kind == .sheet { sheet = false } else { cover = false }
     }
 }
 
-private struct PresentationFixture: View {
-    let state: PresentationState
-    @StateObject private var sheets = POSSheetManager()
-    @StateObject private var covers = POSFullScreenCoverManager()
+private struct WindowPresentationFixture: View {
+    let state: WindowPresentationState
 
     var body: some View {
         @Bindable var state = state
         Group {
             if state.mounted {
                 Color.clear
-                    .overlay { TextFieldFixture(field: state.field).frame(height: 40) }
+                    .overlay { WindowTextFieldFixture(field: state.field).frame(height: 40) }
                     .overlay {
-                        if state.showsSwiftUIField { SwiftUIFocusFixture(state: state) }
+                        if state.showsSwiftUIField { WindowFocusFixture(state: state) }
                     }
-                    .posSheet(isPresented: $state.sheet) { Text("Native sheet") }
-                    .posSheet(item: $state.sheetItem) { _ in Text("Native item sheet") }
-                    .posFullScreenCover(isPresented: $state.cover) {
-                        NativeCoverFixture(state: state)
-                            .onAppear { state.coverVisible = true }
-                            .onDisappear { state.coverVisible = false }
-                    }
-                    .posFullScreenCover(item: $state.coverItem) { _ in Text("Native item cover") }
-                    .overlay {
-                        if let model = state.readerModel { ReaderModalFixture(state: state, model: model, host: "root") }
-                    }
-                    .overlay {
-                        if state.presentingChild {
-                            Color.clear
-                                .posModal(isPresented: $state.modal, dismissOnLock: state.dismissCustomOnLock,
-                                          onDismiss: { state.dismissCalls += 1 }) { Text("Custom modal") }
-                                .posModal(item: $state.modalItem, dismissOnLock: state.dismissCustomOnLock,
-                                          onDismiss: { state.dismissCalls += 1 }) { item in
-                                    ItemModalFixture(state: state, item: item, host: "root")
-                                }
-                        }
-                    }
-                    .posRootModal()
-                    .posLockScreenOverlay {
-                        state.lockCleanupCalls += 1
-                        state.modals.dismissForLock()
-                    }
+                    .sheet(isPresented: $state.sheet) { Text("Native sheet") }
+                    .fullScreenCover(isPresented: $state.cover) { Text("Native cover") }
+                    .posLockScreenOverlay()
             }
         }
-            .environment(\.posAccessSession, state.session)
-            .environmentObject(sheets)
-            .environmentObject(covers)
-            .environmentObject(state.modals)
+        .environment(\.posAccessSession, state.session)
     }
 }
 
-private struct NativeCoverFixture: View {
-    @Bindable var state: PresentationState
-    @EnvironmentObject private var modals: POSModalManager
-
-    var body: some View {
-        Text("Native cover")
-            .overlay {
-                if let model = state.readerModel { ReaderModalFixture(state: state, model: model, host: "cover") }
-            }
-            .onAppear { state.coverModals = modals }
-            .overlay {
-                if state.includeCoverPaymentHost {
-                    Color.clear.posModal(item: $state.modalItem, dismissOnLock: false,
-                                         onDismiss: { state.dismissCalls += 1 }) { item in
-                        ItemModalFixture(state: state, item: item, host: "cover")
-                    }
-                }
-            }
-    }
-}
-
-private struct ReaderModalFixture: View {
-    let state: PresentationState
-    @Bindable var model: POSPaymentModel
-    let host: String
-
-    var body: some View {
-        Color.clear.posModal(item: $model.cardPresentPaymentAlertViewModel, dismissOnLock: false,
-                             onDismiss: { model.cardPresentPaymentAlertViewModel?.onDismiss?() }) { alert in
-            PointOfSaleCardPresentPaymentAlert(alertType: alert)
-                .onChange(of: alert, initial: true) {
-                    state.readerRendered[host] = alert
-                    if case let .scanningFailed(viewModel) = alert {
-                        state.readerActions[host] = viewModel.buttonViewModel.actionHandler
-                    }
-                }
-        }
-        .onDisappear {
-            state.readerRendered.removeValue(forKey: host)
-            state.readerActions.removeValue(forKey: host)
-        }
-    }
-}
-
-@MainActor
-private final class ReaderEventFixture: CardPresentPaymentFacade {
-    let presenter = CardPresentPaymentsAlertPresenterAdaptor()
-    var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {
-        presenter.paymentEventPublisher.receive(on: DispatchQueue.main).eraseToAnyPublisher()
-    }
-    var readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> {
-        Just(.disconnected).eraseToAnyPublisher()
-    }
-    var cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never> { Just(.none).eraseToAnyPublisher() }
-    func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult { .canceled }
-    func disconnectReader() async {}
-    func updateCardReaderSoftware() async throws {}
-    func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod, channel: PaymentChannel) async throws -> CardPresentPaymentResult {
-        .cancellation
-    }
-    func cancelPayment() {}
-    func cancelPayment() async throws {}
-    func cancelReconnection() async {}
-}
-
-private struct ItemModalFixture: View {
-    let state: PresentationState
-    let item: PresentationState.Item
-    let host: String
-
-    private var action: () -> Void {
-        let id = item.id
-        return { [weak state] in
-            state?.actedOnItem = id
-            state?.modalItem = nil
-        }
-    }
-
-    var body: some View {
-        VStack {
-            Text(item.id.uuidString)
-            Button("Use current prompt", action: action)
-        }
-        .onChange(of: item, initial: true) {
-            state.renderedItems[host] = item.id
-            state.renderedActions[host] = action
-        }
-    }
-}
-
-private struct SwiftUIFocusFixture: View {
-    @Bindable var state: PresentationState
+private struct WindowFocusFixture: View {
+    @Bindable var state: WindowPresentationState
     @FocusState private var focused: Bool
 
     var body: some View {
@@ -763,7 +377,7 @@ private struct SwiftUIFocusFixture: View {
     }
 }
 
-private struct TextFieldFixture: UIViewRepresentable {
+private struct WindowTextFieldFixture: UIViewRepresentable {
     let field: UITextField
     func makeUIView(context: Context) -> UITextField { field }
     func updateUIView(_ uiView: UITextField, context: Context) {}

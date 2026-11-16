@@ -5,7 +5,6 @@ import Observation
 struct POSLockPresentationHost<LockContent: View>: UIViewRepresentable {
     let session: POSAccessSession
     let lockContent: LockContent
-    var onLock: @MainActor () -> Void = {}
 
     func makeCoordinator() -> POSLockPresentationCoordinator { POSLockPresentationCoordinator() }
 
@@ -27,7 +26,7 @@ struct POSLockPresentationHost<LockContent: View>: UIViewRepresentable {
             .environment(\.dynamicTypeSize, environment.dynamicTypeSize)
             .environment(\.colorScheme, environment.colorScheme)
             .environment(\.layoutDirection, environment.layoutDirection)
-        context.coordinator.update(session: session, content: AnyView(content), onLock: onLock)
+        context.coordinator.update(session: session, content: AnyView(content))
     }
 
     static func dismantleUIView(_ view: WindowFinderView, coordinator: POSLockPresentationCoordinator) {
@@ -45,8 +44,6 @@ final class POSLockPresentationCoordinator: NSObject {
     private var session: POSAccessSession?
     private var observationID = UUID()
     private var content = AnyView(EmptyView())
-    private var onLock: @MainActor () -> Void = {}
-    private var handledLock = false
     private var synchronizationTask: Task<Void, Never>?
 
     override init() {
@@ -64,14 +61,12 @@ final class POSLockPresentationCoordinator: NSObject {
         synchronize()
     }
 
-    func update(session: POSAccessSession, content: AnyView, onLock: @escaping @MainActor () -> Void = {}) {
+    func update(session: POSAccessSession, content: AnyView) {
         let sessionChanged = self.session !== session
         self.session = session
         self.content = content
-        self.onLock = onLock
         if sessionChanged {
             synchronizationTask?.cancel()
-            handledLock = false
             observeLock()
         }
         synchronize()
@@ -100,14 +95,13 @@ final class POSLockPresentationCoordinator: NSObject {
         sourceWindow = nil
         session = nil
         content = AnyView(EmptyView())
-        onLock = {}
         observationID = UUID()
         NotificationCenter.default.removeObserver(self)
     }
 
     private func synchronize() {
         synchronizationTask?.cancel()
-        // Window focus and owner cleanup can change SwiftUI state; wait until updateUIView returns.
+        // Window focus can change SwiftUI state; wait until updateUIView returns.
         synchronizationTask = Task { @MainActor [weak self] in
             guard !Task.isCancelled else { return }
             self?.synchronizeWindow()
@@ -115,10 +109,6 @@ final class POSLockPresentationCoordinator: NSObject {
     }
 
     private func synchronizeWindow() {
-        let isLocked = session?.isLocked == true
-        let needsCleanup = isLocked && !handledLock
-        handledLock = isLocked
-        if needsCleanup { onLock() }
         guard session?.isLocked == true, let sourceWindow, let scene = sourceWindow.windowScene,
               scene.activationState != .unattached else {
             removeLock()

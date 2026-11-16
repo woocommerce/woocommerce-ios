@@ -3,6 +3,7 @@ import Foundation
 
 actor POSLocalRateLimiter {
     nonisolated let sessionTokens: POSPINSessionTokens
+    nonisolated let pendingPINChanges = POSPendingPINChanges()
     private let key: String
     private let storage: POSSecureStorage
     private let clock: POSPINClock

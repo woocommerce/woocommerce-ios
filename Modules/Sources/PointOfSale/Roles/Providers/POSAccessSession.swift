@@ -7,6 +7,7 @@ protocol POSAccessSession: AnyObject, Sendable {
     var isPINProtectionEnabled: Bool { get }
 
     func refreshPINProtection() throws(POSPINStoreError)
+    func beginPINChange() -> POSPINChangeRegistration
 
     func allows(_ capability: POSCapability) -> Bool
     func signIn(withPIN pin: String) async throws(POSAuthError)
@@ -14,6 +15,7 @@ protocol POSAccessSession: AnyObject, Sendable {
     /// invalid or the holder lacks it.
     func requestManagerApproval(withPIN pin: String, for requiredCapability: POSCapability) async throws(POSAuthError)
     func lock()
+    func endSession()
     func saveElapsedTime() async
     func checkLockoutState() async throws(POSAuthError)
 }

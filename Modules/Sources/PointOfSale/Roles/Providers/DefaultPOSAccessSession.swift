@@ -73,6 +73,10 @@ final class DefaultPOSAccessSession: POSAccessSession {
         return currentStaff?.hasCapability(capability) == true
     }
 
+    func beginPINChange() -> POSPINChangeRegistration {
+        rateLimiter.pendingPINChanges.begin()
+    }
+
     func signIn(withPIN pin: String) async throws(POSAuthError) {
         let request = generation
         let staff = try await rateLimiter.authenticate(pin: pin, using: authenticator, token: request)
@@ -95,6 +99,11 @@ final class DefaultPOSAccessSession: POSAccessSession {
         guard let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else { return }
         generation = request
         persistLockState(true)
+    }
+
+    func endSession() {
+        currentStaff = nil
+        _ = rateLimiter.sessionTokens.invalidate(ifCurrent: generation)
     }
 
     func checkLockoutState() async throws(POSAuthError) {

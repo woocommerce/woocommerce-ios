@@ -43,6 +43,10 @@ private extension POSPINEntryView {
         return false
     }
 
+    var showsInvalidPINMessage: Bool {
+        state == .error(kind: .invalidPIN) && enteredPIN.isEmpty
+    }
+
     var content: some View {
         VStack(spacing: Self.contentSpacing) {
             statusRow
@@ -57,10 +61,13 @@ private extension POSPINEntryView {
     var statusRow: some View {
         switch state {
         case .waiting(let seconds):
-            lockoutMessage(helper.lockoutMessage(remainingSeconds: seconds))
+            statusMessage(helper.lockoutMessage(remainingSeconds: seconds))
         case .unavailable:
-            lockoutMessage(Localization.message(for: .generic))
-        case .idle, .loading, .error:
+            statusMessage(Localization.message(for: .generic))
+        case .error where showsInvalidPINMessage:
+            statusMessage(Localization.message(for: .invalidPIN))
+                .modifier(ShakeEffect(animatableData: shakeAmount))
+        case .idle, .checkingLockout, .loading, .error:
             dotsRow
         }
     }
@@ -100,7 +107,7 @@ private extension POSPINEntryView {
         return sin(time * Constants.waveSpeed + Double(index) * Constants.wavePhase) * Constants.waveHeight
     }
 
-    func lockoutMessage(_ text: String) -> some View {
+    func statusMessage(_ text: String) -> some View {
         Text(text)
             .font(.posBodyMediumRegular())
             .foregroundColor(.posError)
@@ -274,7 +281,7 @@ private extension POSPINEntryView {
         static let invalidPINMessage = NSLocalizedString(
             "pos.pinEntry.error.invalidPIN",
             value: "Incorrect PIN. Try again.",
-            comment: "VoiceOver announcement when an entered POS PIN is incorrect."
+            comment: "Error message and VoiceOver announcement when an entered POS PIN is incorrect."
         )
         static let genericErrorMessage = NSLocalizedString(
             "pos.pinEntry.error.generic",

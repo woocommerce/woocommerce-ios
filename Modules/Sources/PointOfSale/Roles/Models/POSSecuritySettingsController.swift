@@ -18,9 +18,7 @@ final class POSSecuritySettingsController {
     }
 
     var isVisible: Bool {
-        POSSecuritySettingsViewHelper.canManage(isProtected: session.isPINProtectionEnabled,
-                                               isLocked: session.isLocked,
-                                               canManageSettings: session.currentStaff?.hasCapability(.manageStoreSettings) == true)
+        !session.isLocked && session.allows(.manageStoreSettings)
     }
 
     var isPINProtectionEnabled: Bool { session.isPINProtectionEnabled }

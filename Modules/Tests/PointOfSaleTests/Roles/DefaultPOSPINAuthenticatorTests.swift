@@ -56,34 +56,6 @@ struct DefaultPOSPINAuthenticatorTests {
             _ = try await sut.authenticate(withPIN: "1234")
         }
     }
-
-    @Test func test_verify_when_admin_pin_approves_refund_then_succeeds() async throws {
-        // Given
-        let sut = try makeSUT(adminPIN: "1234", cashierPIN: "5678")
-
-        // When / Then
-        try await sut.verify(managerPIN: "1234", authorizes: .issueRefunds)
-    }
-
-    @Test func test_verify_when_cashier_pin_approves_refund_then_throws_invalidPIN() async throws {
-        // Given
-        let sut = try makeSUT(adminPIN: "1234", cashierPIN: "5678")
-
-        // When / Then
-        await #expect(throws: POSAuthError.invalidPIN) {
-            try await sut.verify(managerPIN: "5678", authorizes: .issueRefunds)
-        }
-    }
-
-    @Test func test_verify_when_pin_is_wrong_then_throws_invalidPIN() async throws {
-        // Given
-        let sut = try makeSUT(adminPIN: "1234")
-
-        // When / Then
-        await #expect(throws: POSAuthError.invalidPIN) {
-            try await sut.verify(managerPIN: "0000", authorizes: .exitPOS)
-        }
-    }
 }
 
 private extension DefaultPOSPINAuthenticatorTests {

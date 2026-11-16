@@ -35,7 +35,7 @@ final class MockPOSAccessSession: POSAccessSession {
     func refreshPINProtection() throws(POSPINStoreError) {}
 
     func allows(_ capability: POSCapability) -> Bool {
-        currentStaff?.hasCapability(capability) == true
+        !isPINProtectionEnabled || currentStaff?.hasCapability(capability) == true
     }
 
     func signIn(withPIN pin: String) async throws(POSAuthError) {

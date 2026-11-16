@@ -731,6 +731,7 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
+    /// Every way out of POS needs the exit capability, including dead-end loading, error and ineligible screens.
     func requestExit(confirmingFirst: Bool) {
         overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { approved in
             switch PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: confirmingFirst, approved: approved) {

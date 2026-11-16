@@ -79,7 +79,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<URL?, Error> = try await waitForCompletion { completion in
+        let result: Result<ApplicationPasswordAuthorization?, Error> = try await waitForCompletion { completion in
             let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL, completion: completion)
             store.onAction(action)
         }
@@ -91,21 +91,94 @@ final class WordPressSiteStoreTests: XCTestCase {
     }
 
     @MainActor
-    func test_fetchApplicationPasswordAuthorizationURL_returns_correct_authorization_url_if_available() async throws {
+    func test_fetchApplicationPasswordAuthorizationURL_when_approval_page_is_on_same_host_then_returns_it_without_approval_site() async throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info-with-auth-url")
-        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+        network.simulateResponse(requestUrlSuffix: "//example.com/wp-json/", filename: "wordpress-site-info-with-auth-url")
+        let store = makeStore()
 
         // When
-        let result: Result<URL?, Error> = try await waitForCompletion { completion in
-            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL, completion: completion)
-            store.onAction(action)
-        }
+        let result = try await fetchAuthorization(siteURL: "https://example.com", store: store)
 
         // Then
-        XCTAssertTrue(result.isSuccess)
-        let url = try result.get()
-        XCTAssertEqual(url?.absoluteString, "https://example.com/wp-admin/authorize-application.php")
+        let authorization = try result.get()
+        XCTAssertEqual(authorization?.url.absoluteString, "https://example.com/wp-admin/authorize-application.php")
+        XCTAssertNil(authorization?.approvalSiteURL)
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
+    }
+
+    @MainActor
+    func test_fetchApplicationPasswordAuthorizationURL_when_store_is_in_subfolder_then_returns_it_without_approval_site() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "//test.com/shop/wp-json/", filename: "wordpress-site-info-with-subfolder-auth-url")
+        let store = makeStore()
+
+        // When
+        let result = try await fetchAuthorization(siteURL: "https://test.com/shop", store: store)
+
+        // Then
+        let authorization = try result.get()
+        XCTAssertEqual(authorization?.url.absoluteString, "https://test.com/shop/wp-admin/authorize-application.php")
+        XCTAssertNil(authorization?.approvalSiteURL)
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
+    }
+
+    @MainActor
+    func test_fetchApplicationPasswordAuthorizationURL_when_other_host_reports_store_as_home_then_returns_it_with_approval_site() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "//test.com/wp-json/", filename: "wordpress-site-info-with-foreign-auth-url")
+        network.simulateResponse(requestUrlSuffix: "//wp.test.com/wp-json/", filename: "wordpress-site-info")
+        let store = makeStore()
+
+        // When
+        let result = try await fetchAuthorization(siteURL: sampleSiteURL, store: store)
+
+        // Then
+        let authorization = try result.get()
+        XCTAssertEqual(authorization?.url.absoluteString, "https://wp.test.com/wp-admin/authorize-application.php")
+        XCTAssertEqual(authorization?.approvalSiteURL, "https://wp.test.com")
+        XCTAssertEqual(network.requestsForResponseData.count, 2)
+    }
+
+    @MainActor
+    func test_fetchApplicationPasswordAuthorizationURL_when_other_host_reports_another_home_then_fails_with_site_mismatch() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "//test.com/wp-json/", filename: "wordpress-site-info-with-foreign-auth-url")
+        network.simulateResponse(requestUrlSuffix: "//wp.test.com/wp-json/", filename: "wordpress-site-info-with-auth-url")
+        let store = makeStore()
+
+        // When
+        let result = try await fetchAuthorization(siteURL: sampleSiteURL, store: store)
+
+        // Then
+        XCTAssertEqual(result.failure as? ApplicationPasswordAuthorizationError, .siteMismatch)
+    }
+
+    @MainActor
+    func test_fetchApplicationPasswordAuthorizationURL_when_other_host_home_fetch_fails_then_relays_the_fetch_error() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "//test.com/wp-json/", filename: "wordpress-site-info-with-foreign-auth-url")
+        network.simulateError(requestUrlSuffix: "//wp.test.com/wp-json/", error: NetworkError.notFound())
+        let store = makeStore()
+
+        // When
+        let result = try await fetchAuthorization(siteURL: sampleSiteURL, store: store)
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, .notFound())
+    }
+
+    @MainActor
+    func test_fetchApplicationPasswordAuthorizationURL_when_listed_url_is_not_an_approval_page_then_fails_with_site_mismatch() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "//test.com/wp-json/", filename: "wordpress-site-info-with-non-approval-auth-url")
+        let store = makeStore()
+
+        // When
+        let result = try await fetchAuthorization(siteURL: sampleSiteURL, store: store)
+
+        // Then
+        XCTAssertEqual(result.failure as? ApplicationPasswordAuthorizationError, .siteMismatch)
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
     }
 
     @MainActor
@@ -115,7 +188,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<URL?, Error> = try await waitForCompletion { completion in
+        let result: Result<ApplicationPasswordAuthorization?, Error> = try await waitForCompletion { completion in
             let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL, completion: completion)
             store.onAction(action)
         }
@@ -162,5 +235,20 @@ final class WordPressSiteStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(result.failure is NetworkError)
+    }
+}
+
+private extension WordPressSiteStoreTests {
+    /// Skips REST API discovery, so each site is fetched at its default `wp-json` root.
+    func makeStore() -> WordPressSiteStore {
+        let remote = WordPressSiteRemote(network: network, apiRootCache: WordPressRESTAPIRootCache.shared, discoverRESTAPIRoot: { _ in nil })
+        return WordPressSiteStore(remote: remote, dispatcher: dispatcher)
+    }
+
+    @MainActor
+    func fetchAuthorization(siteURL: String, store: WordPressSiteStore) async throws -> Result<ApplicationPasswordAuthorization?, Error> {
+        try await waitForCompletion { completion in
+            store.onAction(WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: siteURL, completion: completion))
+        }
     }
 }

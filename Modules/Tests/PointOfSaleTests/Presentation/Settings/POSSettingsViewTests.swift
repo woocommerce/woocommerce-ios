@@ -7,7 +7,7 @@ struct POSSettingsViewTests {
         let categories = POSSettingsView.SidebarNavigation.allCases
 
         // Then
-        #expect(categories == [.store, .hardware, .payments, .localCatalog, .help])
+        #expect(categories == [.store, .hardware, .payments, .localCatalog, .help, .security])
     }
 
     @Test func trackSelection_when_payments_is_selected_then_tracks_settings_payments_tapped() throws {

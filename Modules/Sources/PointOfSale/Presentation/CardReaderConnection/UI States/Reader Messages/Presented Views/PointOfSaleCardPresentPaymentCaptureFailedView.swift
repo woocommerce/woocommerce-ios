@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.posModalCompactStyle) private var compactStyle
     @Binding var isPresented: Bool
 
     var body: some View {
@@ -35,7 +36,8 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
             .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .multilineTextAlignment(.center)
-        .padding(metrics.padding.xxLarge)
+        // The phone bottom sheet pads its content itself.
+        .padding(compactStyle == .bottomSheet ? metrics.padding.none : metrics.padding.xxLarge)
         .frame(maxWidth: Layout.maxWidth)
     }
 }

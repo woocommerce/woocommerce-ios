@@ -3,6 +3,7 @@ import SwiftUI
 struct POSManagerOverrideView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     let handler: POSManagerOverrideHandler
     let request: POSManagerOverrideRequest
@@ -16,6 +17,13 @@ struct POSManagerOverrideView: View {
             }
         }
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        .task(id: request.id) { await handler.observeWait() }
+    }
+}
+
+extension POSModalCompactStyle {
+    static var managerApproval: POSModalCompactStyle {
+        .fullScreen(title: POSManagerOverrideView.Localization.title)
     }
 }
 
@@ -39,7 +47,12 @@ private extension POSManagerOverrideView {
 
     var compactContent: some View {
         VStack(spacing: metrics.spacing.large) {
-            header(spacing: metrics.spacing.small)
+            // The flow header already shows the title.
+            if isFullScreenFlow {
+                reason
+            } else {
+                header(spacing: metrics.spacing.small)
+            }
 
             pinEntry
                 .frame(height: POSPINEntryView.preferredHeight)
@@ -48,9 +61,9 @@ private extension POSManagerOverrideView {
         .padding(.horizontal, metrics.padding.large)
         .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
         .padding(metrics.padding.large)
-        // Size to content and let the modal center it, like the lock screen and the iPad layout. Filling
-        // the screen pushed the close button under the status bar (status-bar overlap, untappable).
-        .fixedSize(horizontal: false, vertical: true)
+        // Outside the full-screen flow, size to content and let the modal center it.
+        .frame(maxHeight: isFullScreenFlow ? .infinity : nil)
+        .fixedSize(horizontal: false, vertical: !isFullScreenFlow)
     }
 
     func header(spacing: CGFloat) -> some View {
@@ -82,9 +95,8 @@ private extension POSManagerOverrideView {
     }
 
     var pinEntry: some View {
-        POSPINEntryView(state: handler.pinEntryState) { pin in
-            await handler.submit(pin: pin)
-        }
+        POSPINEntryView(state: handler.pinEntryState,
+                        onComplete: { pin in await handler.submit(pin: pin) })
     }
 
     enum Localization {

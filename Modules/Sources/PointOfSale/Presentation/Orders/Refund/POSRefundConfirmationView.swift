@@ -205,7 +205,7 @@ private extension POSRefundConfirmationView {
     func cardPresentMessageView(_ messageType: POSRefundCardPresentMessageType) -> some View {
         POSRefundCardPresentMessageView(messageType: messageType,
                                         animation: .init(namespace: paymentMessageNamespace))
-        .padding(metrics.padding.xLarge)
+        .padding(messageType.isStatusScreen ? metrics.padding.none : metrics.padding.xLarge)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(messageType.usesPrimaryBackground ? Color.posPrimary : Color.clear)
     }

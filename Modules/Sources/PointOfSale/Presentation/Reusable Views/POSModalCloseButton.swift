@@ -86,6 +86,7 @@ struct POSModalCloseButtonModifier: ViewModifier {
 
             Spacer()
         }
+        .preference(key: POSModalFlowCloseAccessibilityIdentifierKey.self, value: accessibilityIdentifier)
     }
 }
 

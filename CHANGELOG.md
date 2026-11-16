@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 26.1
+Point of Sale is now available on iPhone in the US, Canada, Australia, and Puerto Rico, as well as on iOS 18 and later. Card reader reconnections, clearer checkout and payment screens, and easier coupon removal make selling smoother. App icon badge now clears as you review orders and products.
+
 ## 26.0
 You can now add and edit attributes on every product type. Camera barcode scanning is more accurate. Product search in Point of Sale is faster for large catalogs. Carrier outage notices appear while you create shipping labels. Give this update a try and let us know what you think.
 

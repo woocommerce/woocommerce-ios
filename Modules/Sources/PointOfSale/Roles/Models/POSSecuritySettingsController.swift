@@ -18,9 +18,7 @@ final class POSSecuritySettingsController {
     }
 
     var isVisible: Bool {
-        POSSecuritySettingsViewHelper.canManage(isProtected: session.isPINProtectionEnabled,
-                                               isLocked: session.isLocked,
-                                               canManageSettings: session.currentStaff?.hasCapability(.manageStoreSettings) == true)
+        !session.isLocked && session.allows(.manageStoreSettings)
     }
 
     var isPINProtectionEnabled: Bool { session.isPINProtectionEnabled }
@@ -92,8 +90,12 @@ final class POSSecuritySettingsController {
 
     private func save(_ pin: String?, for role: POSLocalRole) async -> Bool {
         guard isVisible, !isSaving, roles != nil else { return false }
+        let change = session.beginPINChange()
         isSaving = true
-        defer { isSaving = false }
+        defer {
+            change.finish()
+            isSaving = false
+        }
         do {
             let store = store
             try await Task.detached {

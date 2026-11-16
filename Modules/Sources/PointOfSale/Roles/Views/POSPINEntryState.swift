@@ -8,6 +8,8 @@ enum POSPINErrorKind: Equatable {
 enum POSPINEntryState: Equatable {
     case idle
     case error(kind: POSPINErrorKind)
-    case lockout(until: Date)
+    case waiting(remainingSeconds: Int)
+    case unavailable
+    case checkingLockout
     case loading
 }

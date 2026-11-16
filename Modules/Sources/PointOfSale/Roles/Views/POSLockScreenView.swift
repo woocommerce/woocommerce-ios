@@ -8,10 +8,6 @@ struct POSLockScreenView: View {
         self._model = State(initialValue: POSLockScreenModel(session: session))
     }
 
-    init(model: POSLockScreenModel) {
-        self._model = State(initialValue: model)
-    }
-
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -54,6 +50,12 @@ private extension POSLockScreenView {
 // MARK: - Preview
 
 #if DEBUG
+extension POSLockScreenView {
+    init(model: POSLockScreenModel) {
+        self._model = State(initialValue: model)
+    }
+}
+
 #Preview("Locked") {
     POSLockScreenView(session: MockPOSAccessSession(isLocked: true))
 }

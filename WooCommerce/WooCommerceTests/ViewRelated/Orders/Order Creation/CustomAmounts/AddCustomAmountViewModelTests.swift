@@ -250,6 +250,21 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertEqual(enteredAmount, "1234.50")
     }
 
+    func test_doneButtonPressed_when_fixed_amount_has_a_numeral_that_is_not_a_decimal_digit_then_does_not_convert_it() {
+        // Given
+        var enteredAmount: String?
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount,
+                                                 storeCurrencySettings: CurrencySettings(),
+                                                 onCustomAmountEntered: { amount, _, _, _ in enteredAmount = amount })
+        viewModel.formattableAmountTextFieldViewModel?.updateAmount("Ⅻ")
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(enteredAmount, "Ⅻ")
+    }
+
     func test_clearInputFocus_when_fixed_amount_then_clears_focused_field() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })

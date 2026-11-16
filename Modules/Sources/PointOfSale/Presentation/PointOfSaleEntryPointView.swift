@@ -228,7 +228,6 @@ public struct PointOfSaleEntryPointView: View {
                 session = try await POSAccessSessionFactory.make(siteID: siteID, featureFlags: services.featureFlags,
                                                                  shouldCreate: { posModel == nil })
             } catch {
-                // Cancellation or a superseding entry must not mount another session.
                 return
             }
             guard !Task.isCancelled, posModel == nil else {

@@ -101,8 +101,7 @@ struct POSSettingsStoreDetailView: View {
 
                 Spacer()
 
-                // The web view signs in with the store account, so only operators who manage store settings see it.
-                if !viewModel.receiptSettingsAdminURL.isEmpty, session.allows(.manageStoreSettings) {
+                if viewModel.showsReceiptEditButton(for: session) {
                     Button {
                         analytics.track(.pointOfSaleEditReceiptTapped)
                         showingWebView = true

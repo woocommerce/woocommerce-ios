@@ -5,11 +5,11 @@ import SwiftUI
 /// Shows the specific reason why POS is ineligible and provides a button to re-check eligibility.
 struct POSIneligibleView: View {
     @Environment(\.posMetrics) private var metrics
+    @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.posAnalytics) private var analytics
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
     let onExit: () -> Void
-    @Environment(\.sizeCategory) private var sizeCategory
-    @Environment(\.posAnalytics) private var analytics
     @State private var isLoading: Bool = false
     @State private var scrollViewHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0

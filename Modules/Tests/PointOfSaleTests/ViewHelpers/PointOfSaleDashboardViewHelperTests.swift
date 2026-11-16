@@ -274,7 +274,6 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == false)
     }
 
-
     // MARK: - Exit Decision Tests
 
     @Test func exitDecision_when_confirming_first_and_not_approved_then_shows_confirmation() {

@@ -55,21 +55,38 @@ private extension WordPressSiteStore {
 
     func fetchApplicationPasswordAuthorizationURL(for siteURL: String,
                                                   detectUnexpectedResponses: Bool,
-                                                  completion: @escaping @Sendable (Result<URL?, Error>) -> Void) {
+                                                  completion: @escaping @Sendable (Result<ApplicationPasswordAuthorization?, Error>) -> Void) {
         let remote = remote
         Task { @MainActor in
             do {
                 let wpSite = try await remote.fetchSiteInfo(for: siteURL, detectUnexpectedResponses: detectUnexpectedResponses)
-                if let path = wpSite.applicationPasswordAuthorizationURL,
-                   let url = URL(string: path) {
-                    completion(.success(url))
-                } else {
+                guard let path = wpSite.applicationPasswordAuthorizationURL,
+                      let url = URL(string: path) else {
                     completion(.success(nil))
+                    return
                 }
+                let authorization = try await Self.checkedAuthorization(url: url, siteURL: siteURL, remote: remote)
+                completion(.success(authorization))
             } catch {
                 completion(.failure(error))
             }
         }
+    }
+
+    /// The store's REST index picks the approval page, so a lookalike store could list another site's page.
+    /// A page on another host is accepted only when that host's WordPress reports the store as its home.
+    static func checkedAuthorization(url: URL, siteURL: String, remote: WordPressSiteRemote) async throws -> ApplicationPasswordAuthorization {
+        guard let approvalSiteURL = ApplicationPasswordSiteMatcher.approvalSiteURL(for: url.absoluteString) else {
+            throw ApplicationPasswordAuthorizationError.siteMismatch
+        }
+        if ApplicationPasswordSiteMatcher.isWithinSite(siteURL: siteURL, candidateURL: approvalSiteURL) {
+            return ApplicationPasswordAuthorization(url: url, approvalSiteURL: nil)
+        }
+        let approvalSiteHome = try await remote.fetchSiteInfo(for: approvalSiteURL).home
+        guard ApplicationPasswordSiteMatcher.isSameSiteAddress(siteURL, approvalSiteHome) else {
+            throw ApplicationPasswordAuthorizationError.siteMismatch
+        }
+        return ApplicationPasswordAuthorization(url: url, approvalSiteURL: approvalSiteURL)
     }
 
     func fetchPageList(siteURL: String, completion: @escaping @Sendable (Result<[WordPressPage], Error>) -> Void) {

@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 import struct Networking.ApplicationPassword
 import enum Networking.ApplicationPasswordUseCaseError
 import enum Networking.RequestAuthenticatorError
+import enum Yosemite.ApplicationPasswordAuthorizationError
 
 /// View with embedded web view to authorize application password for a site.
 ///
@@ -59,6 +60,7 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     private var subscriptions: Set<AnyCancellable> = []
     private var webViewInitialLoad = true
     private var authorizationURL: String?
+    private var siteMismatchHandled = false
 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
          previousViewController: UIViewController?,
@@ -194,9 +196,9 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             activityIndicator.startAnimating()
             defer { if authorizationRequestID == id { activityIndicator.stopAnimating() } }
             do {
-                let url = try await viewModel.fetchAuthURL()
+                let authorization = try await viewModel.fetchAuthURL()
                 guard authorizationRequestID == id, !Task.isCancelled else { return }
-                guard let url else {
+                guard let authorization else {
                     onRetryResult?(false)
                     DDLogError("⛔️ No authorization URL found for application passwords")
                     analytics.track(.applicationPasswordAuthorizationURLNotAvailable)
@@ -204,10 +206,13 @@ private extension ApplicationPasswordAuthorizationWebViewController {
                     return
                 }
                 onRetryResult?(true)
-                loadAuthorizationPage(url: url)
+                loadAuthorizationPage(url: authorization.url)
             } catch {
                 guard authorizationRequestID == id, !Task.isCancelled else { return }
                 onRetryResult?(false)
+                if (error as? ApplicationPasswordAuthorizationError) == .siteMismatch {
+                    return handleSiteMismatch(.beforeApproval)
+                }
                 DDLogError("⛔️ Error fetching authorization URL for application passwords \(error)")
                 analytics.track(.applicationPasswordAuthorizationURLFetchFailed, withError: error)
                 if (error as? Networking.RequestAuthenticatorError) == .applicationPasswordNotAvailable ||
@@ -251,7 +256,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         let parameters: [URLQueryItem] = [
             URLQueryItem(name: Constants.Query.appName, value: appName),
             URLQueryItem(name: Constants.Query.appID, value: appID),
-            URLQueryItem(name: Constants.Query.successURL, value: Constants.successURL)
+            URLQueryItem(name: Constants.Query.successURL, value: ApplicationPasswordAuthorizationViewModel.successURL)
         ]
         var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         components?.queryItems = parameters
@@ -267,6 +272,11 @@ private extension ApplicationPasswordAuthorizationWebViewController {
     func handleWebViewURL(_ url: URL?) {
         guard let url else {
             return
+        }
+        // Backs up `decidePolicyFor`, in case a navigation reaches a foreign approval page without asking it.
+        if viewModel.decision(for: url) == .siteMismatch(.duringApproval) {
+            webView.stopLoading()
+            return handleSiteMismatch(.duringApproval)
         }
 
         /// We need to track the web view steps based on these assumptions:
@@ -304,6 +314,29 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         alertPresenter(self, alertController) {}
     }
 
+    func handleSiteMismatch(_ step: ApplicationPasswordAuthorizationViewModel.SiteMismatchStep) {
+        guard !siteMismatchHandled else {
+            return
+        }
+        siteMismatchHandled = true
+        DDLogError("⛔️ Application password approval page belongs to another site, step: \(step.rawValue)")
+        analytics.track(event: .ApplicationPasswordAuthorization.siteMismatch(step: step))
+        webView.isHidden = true
+        activityIndicator.stopAnimating()
+
+        let alertController = UIAlertController(title: nil, message: Localization.siteMismatch, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: Localization.contactSupport, style: .default) { [weak self] _ in
+            guard let self else { return }
+            let presenter = navigationController ?? self
+            restorePreviousViewController(animated: false)
+            LoginUnexpectedResponsePresenter.showPreLoginSupport(from: presenter, siteURL: viewModel.siteURL)
+        })
+        alertController.addAction(UIAlertAction(title: Localization.cancel, style: .cancel) { [weak self] _ in
+            self?.restorePreviousViewController(animated: true)
+        })
+        alertPresenter(self, alertController) {}
+    }
+
     /// The error screen to be displayed when the user tries to log in with site credentials
     /// with application password disabled.
     ///
@@ -318,39 +351,37 @@ extension ApplicationPasswordAuthorizationWebViewController: WKNavigationDelegat
         guard let url = navigationAction.request.url else {
             return .allow
         }
-        /// Callback handling
-        guard url.absoluteString.hasPrefix(Constants.successURL) else {
+        // Sub-frames are checked too, so an approval page can't be loaded inside a frame.
+        switch viewModel.decision(for: url) {
+        case .allow:
             return .allow
-        }
-        let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        guard let queryItems = components?.queryItems,
-              let username = queryItems.first(where: { $0.name == Constants.Query.username })?.value,
-              let password = queryItems.first(where: { $0.name == Constants.Query.password })?.value else {
+        case .siteMismatch(let step):
+            handleSiteMismatch(step)
+        case .rejected:
             DDLogError("⛔️ Authorization rejected for application passwords")
             analytics.track(.applicationPasswordAuthorizationRejected)
             showErrorAlert(message: Localization.authorizationRejected)
-            return .cancel
+        case .missingCredentials:
+            DDLogError("⛔️ Application password approval returned no credentials")
+            showErrorAlert(message: SiteCredentialLoginViewModel.Localization.genericFailure)
+        case let .approved(username, password):
+            // hide content and show loading indicator
+            webView.isHidden = true
+            progressBar.setProgress(0, animated: false)
+            activityIndicator.startAnimating()
+
+            analytics.track(.applicationPasswordAuthorizationApproved)
+            let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
+            onSuccess(applicationPassword, navigationController)
+            DDLogInfo("✅ Application password authorized")
         }
-
-        // hide content and show loading indicator
-        webView.isHidden = true
-        progressBar.setProgress(0, animated: false)
-        activityIndicator.startAnimating()
-
-        analytics.track(.applicationPasswordAuthorizationApproved)
-        let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
-        onSuccess(applicationPassword, navigationController)
-        DDLogInfo("✅ Application password authorized")
         return .cancel
     }
 }
 
 private extension ApplicationPasswordAuthorizationWebViewController {
     enum Constants {
-        static let successURL = "woocommerce://application-password"
         enum Query {
-            static let username = "user_login"
-            static let password = "password"
             static let appName = "app_name"
             static let appID = "app_id"
             static let successURL = "success_url"
@@ -376,6 +407,16 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         static let errorFetchingAuthURL = NSLocalizedString(
             "Failed to fetch the authorization URL for application passwords. Please try again.",
             comment: "Error message displayed when failed to fetch application password authorization URL during login"
+        )
+        static let siteMismatch = NSLocalizedString(
+            "login.applicationPassword.siteMismatch",
+            value: "This approval page belongs to a different site. For your safety, we stopped the login.",
+            comment: "Error message when the application password approval page belongs to a different site than the store being logged into"
+        )
+        static let contactSupport = NSLocalizedString(
+            "login.applicationPassword.siteMismatch.contactSupport",
+            value: "Contact Support",
+            comment: "Button to contact support from the alert shown when the application password approval page belongs to a different site"
         )
     }
 }

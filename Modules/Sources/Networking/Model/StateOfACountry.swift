@@ -24,7 +24,8 @@ public struct StateOfACountry: Decodable, Equatable, Hashable, GeneratedFakeable
         let code = container.failsafeDecodeIfPresent(targetType: String.self,
                                                          forKey: .code,
                                                          alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""
-        let name = try container.decode(String.self, forKey: .name)
+        // WooCommerce before 5.0 sends state names HTML-encoded, e.g. `C&oacute;rdoba`.
+        let name = try container.decode(String.self, forKey: .name).strippedHTML
 
         self.init(code: code, name: name)
     }

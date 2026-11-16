@@ -52,15 +52,10 @@ private extension POSLockScreenView {
             header
                 .frame(maxWidth: isCompactHeight ? POSPINEntryView.contentWidth : nil)
             pinEntry
-                .frame(width: isCompactHeight ? compactHeightKeypadWidth : nil)
+                .frame(width: isCompactHeight ? POSPINEntryView.lockScreenKeypadWidth(keySize: keySize, metrics: metrics) : nil)
                 .frame(maxWidth: isCompactHeight ? nil : POSPINEntryView.contentWidth)
                 .fixedSize(horizontal: false, vertical: isCompactHeight)
         }
-    }
-
-    /// Messages beside the keypad wrap to its width instead of growing past the screen edge.
-    var compactHeightKeypadWidth: CGFloat {
-        keySize * 3 + metrics.spacing.small * 2
     }
 
     var header: some View {

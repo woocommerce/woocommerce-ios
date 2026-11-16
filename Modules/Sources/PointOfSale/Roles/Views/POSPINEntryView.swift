@@ -16,11 +16,8 @@ struct POSPINEntryView: View {
     private let style: Style
     private let onComplete: (String) async -> Bool
 
-    @State private var enteredPIN = ""
+    @State private var attempt: POSPINAttempt
     @State private var shakeAmount: CGFloat = 0
-    /// Lock screen only: holds back a failure message until the dots have finished shaking.
-    @State private var isMessageDeferred = false
-    @State private var inputGeneration = 0
     #if DEBUG
     private var previewEnteredPIN: String?
     #endif
@@ -36,6 +33,7 @@ struct POSPINEntryView: View {
         self.pinLength = pinLength
         self.style = style
         self.onComplete = onComplete
+        self._attempt = State(initialValue: POSPINAttempt(defersFailureMessage: style != .standard))
     }
 
     var body: some View {
@@ -43,7 +41,7 @@ struct POSPINEntryView: View {
         .onAppear {
             handleStateChange(state)
             #if DEBUG
-            if let previewEnteredPIN { enteredPIN = previewEnteredPIN }
+            if let previewEnteredPIN { attempt = POSPINAttempt(pin: previewEnteredPIN, defersFailureMessage: style != .standard) }
             #endif
         }
         .onChange(of: state) { _, newState in
@@ -67,7 +65,7 @@ private extension POSPINEntryView {
     }
 
     var showsInvalidPINMessage: Bool {
-        state == .error(kind: .invalidPIN) && enteredPIN.isEmpty
+        state == .error(kind: .invalidPIN) && attempt.pin.isEmpty
     }
 
     var lockScreenKeySize: CGFloat? {
@@ -115,14 +113,14 @@ private extension POSPINEntryView {
         TimelineView(.animation(paused: !isLoading)) { context in
             HStack(spacing: dotSpacing) {
                 ForEach(0..<pinLength, id: \.self) { index in
-                    dot(filled: isLoading || index < enteredPIN.count,
+                    dot(filled: isLoading || index < attempt.pin.count,
                         yOffset: waveOffset(index: index, date: context.date))
                 }
             }
             .modifier(ShakeEffect(animatableData: shakeAmount))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Localization.dotsAccessibilityLabel)
-            .accessibilityValue(Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength))
+            .accessibilityValue(Localization.dotsAccessibilityValue(entered: attempt.pin.count, total: pinLength))
         }
         .frame(height: statusRowHeight)
     }
@@ -136,7 +134,10 @@ private extension POSPINEntryView {
                     if filled {
                         Circle()
                             .fill(Color.posOnSurface)
-                            .transition(reduceMotion ? .opacity : .scale(scale: LockScreenConstants.dotPopScale).combined(with: .opacity))
+                            .transition(reduceMotion ? .identity : .asymmetric(
+                                insertion: .scale(scale: LockScreenConstants.dotPopScale).animation(LockScreenConstants.dotPopAnimation),
+                                removal: .opacity
+                            ))
                     }
                 }
                 .frame(width: LockScreenConstants.dotSize, height: LockScreenConstants.dotSize)
@@ -193,7 +194,7 @@ private extension POSPINEntryView {
     }
 
     var keySpacing: CGFloat {
-        lockScreenKeySize == nil ? Constants.keySpacing : metrics.spacing.small
+        lockScreenKeySize == nil ? Constants.keySpacing : Self.lockScreenKeySpacing(metrics)
     }
 
     @ViewBuilder
@@ -208,7 +209,7 @@ private extension POSPINEntryView {
                     .font(.posHeadingBold)
             }
             .accessibilityLabel(Localization.deleteAccessibilityLabel)
-            .disabled(!isInputEnabled || enteredPIN.isEmpty)
+            .disabled(!isInputEnabled || attempt.pin.isEmpty)
         default:
             keyContainer(action: { handleDigit(key) }) {
                 Text(key)
@@ -241,7 +242,7 @@ private extension POSPINEntryView {
 
 private extension POSPINEntryView {
     var lockScreenStatusMessage: POSPINStatusMessage? {
-        isMessageDeferred ? nil : helper.statusMessage(for: state, enteredPIN: enteredPIN)
+        attempt.isMessageDeferred ? nil : helper.statusMessage(for: state, enteredPIN: attempt.pin)
     }
 
     var lockScreenStatusRow: some View {
@@ -300,27 +301,26 @@ private extension POSPINEntryView {
         guard isInputEnabled, let digit = key.first else {
             return
         }
-        let result = helper.acceptingDigit(digit, currentPIN: enteredPIN, length: pinLength)
+        let submittedGeneration: Int?
         if lockScreenKeySize != nil {
-            inputGeneration += 1
-            withAnimation(reduceMotion ? nil : LockScreenConstants.dotPopAnimation) {
-                enteredPIN = result.pin
-                isMessageDeferred = result.shouldSubmit
+            submittedGeneration = withAnimation(reduceMotion ? nil : LockScreenConstants.dotPopAnimation) {
+                attempt.enter(digit, length: pinLength)
             }
         } else {
-            enteredPIN = result.pin
+            submittedGeneration = attempt.enter(digit, length: pinLength)
         }
         haptics.digitEntered()
-        if result.shouldSubmit {
-            let submittedGeneration = inputGeneration
-            Task {
-                let succeeded = await onComplete(result.pin)
-                guard lockScreenKeySize == nil || inputGeneration == submittedGeneration else { return }
-                if succeeded {
-                    isMessageDeferred = false
-                } else {
-                    handleFailedAttempt(generation: submittedGeneration)
-                }
+        guard let submittedGeneration else {
+            return
+        }
+        let pin = attempt.pin
+        Task {
+            let succeeded = await onComplete(pin)
+            guard lockScreenKeySize == nil || attempt.isCurrent(submittedGeneration) else { return }
+            if succeeded {
+                attempt.succeed(generation: submittedGeneration)
+            } else {
+                handleFailedAttempt(generation: submittedGeneration)
             }
         }
     }
@@ -329,17 +329,12 @@ private extension POSPINEntryView {
         guard isInputEnabled else {
             return
         }
-        enteredPIN = helper.removingLastDigit(from: enteredPIN,
-                                             discardingSubmittedPIN: lockScreenKeySize != nil && isMessageDeferred)
-        if lockScreenKeySize != nil {
-            inputGeneration += 1
-            isMessageDeferred = false
-        }
+        attempt.delete()
     }
 
     func handleStateChange(_ newState: POSPINEntryState) {
         if case .idle = newState {
-            enteredPIN = ""
+            attempt.clear()
         }
     }
 
@@ -347,29 +342,22 @@ private extension POSPINEntryView {
         haptics.attemptFailed()
         announceFailure()
         guard lockScreenKeySize != nil else {
-            enteredPIN = ""
+            attempt.clear()
             withAnimation(.linear(duration: Constants.shakeDuration)) {
                 shakeAmount += 1
             }
             return
         }
         guard !reduceMotion else {
-            revealFailure(generation: generation)
+            attempt.revealFailure(generation: generation)
             return
         }
         // The filled dots shake first; the message then replaces them.
         withAnimation(.linear(duration: Constants.shakeDuration)) {
             shakeAmount += 1
         } completion: {
-            revealFailure(generation: generation)
+            attempt.revealFailure(generation: generation)
         }
-    }
-
-    func revealFailure(generation: Int) {
-        // A previous shake must not clear input or release feedback for a newer attempt.
-        guard inputGeneration == generation else { return }
-        enteredPIN = ""
-        isMessageDeferred = false
     }
 
     func announceFailure() {
@@ -452,13 +440,13 @@ private extension POSPINEntryView {
 
     enum LockScreenConstants {
         static let dotSize: CGFloat = 20
-        static let dotSpacing: CGFloat = 12
+        static let dotSpacing = POSMetrics.Scale.compact.medium
         static let dotBorderWidth: CGFloat = 1
         static let dotPopScale: CGFloat = 1.2
         static let statusRowHeight: CGFloat = 24
         static let messageSlideDistance: CGFloat = 12
         // Brings Body Small to the design's 24pt line height for the two-line lockout message.
-        static let messageLineSpacing: CGFloat = 4
+        static let messageLineSpacing = POSMetrics.Scale.regular.xSmall
         static let dotPopAnimation: Animation = .spring(duration: 0.2)
         static let showMessageAnimation: Animation = .easeOut(duration: 0.25).delay(0.1)
         static let hideMessageAnimation: Animation = .easeOut(duration: 0.2)
@@ -515,6 +503,15 @@ extension POSPINEntryView {
     static let contentWidth: CGFloat = 420
     static let contentSpacing: CGFloat = POSMetrics.Scale.regular.xLarge
 
+    static func lockScreenKeypadWidth(keySize: CGFloat, metrics: POSMetrics) -> CGFloat {
+        let columns = CGFloat(Constants.rows[0].count)
+        return keySize * columns + lockScreenKeySpacing(metrics) * (columns - 1)
+    }
+
+    private static func lockScreenKeySpacing(_ metrics: POSMetrics) -> CGFloat {
+        metrics.spacing.small
+    }
+
     static var preferredHeight: CGFloat {
         Constants.statusRowHeight + contentSpacing + Constants.keypadHeight
     }
@@ -528,7 +525,7 @@ extension POSPINEntryView {
     func previewing(enteredPIN: String) -> Self {
         var view = self
         view.previewEnteredPIN = enteredPIN
-        view._enteredPIN = State(initialValue: enteredPIN)
+        view._attempt = State(initialValue: POSPINAttempt(pin: enteredPIN, defersFailureMessage: style != .standard))
         return view
     }
 }

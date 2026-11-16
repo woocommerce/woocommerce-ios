@@ -10,7 +10,7 @@ enum POSPINStoreError: Error, Equatable {
 }
 
 /// Stores the local Admin and optional Cashier PIN of one store, on this device only.
-final class POSLocalPINStore: POSPINCredentialProviding {
+final class POSLocalPINStore: POSPINCredentialProviding, POSPINManaging {
     private let siteID: Int64
     private let storage: POSSecureStorage
     private let iterations: Int
@@ -34,19 +34,18 @@ final class POSLocalPINStore: POSPINCredentialProviding {
         }
     }
 
+    func configuredRoles() throws(POSPINStoreError) -> Set<POSLocalRole> {
+        let pins = try loadPINs()
+        return pins[.admin] == nil ? [] : Set(pins.keys)
+    }
+
+    func validatePIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) {
+        _ = try validatedPINs(for: pin, role: role)
+    }
+
     /// Runs up to two PBKDF2 derivations, so call it off the main actor.
     func setPIN(_ pin: String, for role: POSLocalRole) throws(POSPINStoreError) {
-        guard Self.isValidPIN(pin) else {
-            throw .invalidPINFormat
-        }
-        var pins = try loadPINs()
-        if role != .admin, pins[.admin] == nil {
-            throw .adminPINRequired
-        }
-        // Each PIN must identify one role.
-        if pins.contains(where: { $0.key != role && $0.value.matches(pin) }) {
-            throw .pinMatchesOtherRole
-        }
+        var pins = try validatedPINs(for: pin, role: role)
         guard let hash = POSPINHash(pin: pin, iterations: iterations) else {
             throw .storageFailure
         }
@@ -72,6 +71,14 @@ final class POSLocalPINStore: POSPINCredentialProviding {
 }
 
 private extension POSLocalPINStore {
+    func validatedPINs(for pin: String, role: POSLocalRole) throws(POSPINStoreError) -> [POSLocalRole: POSPINHash] {
+        guard Self.isValidPIN(pin) else { throw .invalidPINFormat }
+        let pins = try loadPINs()
+        if role != .admin, pins[.admin] == nil { throw .adminPINRequired }
+        if pins.contains(where: { $0.key != role && $0.value.matches(pin) }) { throw .pinMatchesOtherRole }
+        return pins
+    }
+
     var key: String {
         "pins.\(siteID)"
     }

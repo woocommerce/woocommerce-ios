@@ -6,8 +6,9 @@ import Observation
 final class DefaultPOSAccessSession: POSAccessSession {
     private(set) var currentStaff: POSStaff?
     private(set) var isLocked: Bool
-    let isPINProtectionEnabled: Bool
+    private(set) var isPINProtectionEnabled: Bool
 
+    @ObservationIgnored private let credentialProvider: POSPINCredentialProviding
     @ObservationIgnored private let siteID: Int64
     @ObservationIgnored private let authenticator: POSPINAuthenticating
     @ObservationIgnored private let rateLimiter: POSLocalRateLimiter
@@ -18,6 +19,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
          rateLimiter: POSLocalRateLimiter,
          credentialProvider: POSPINCredentialProviding,
          userDefaults: UserDefaults = .standard) {
+        self.credentialProvider = credentialProvider
         self.siteID = siteID
         self.authenticator = authenticator
         self.rateLimiter = rateLimiter
@@ -29,6 +31,26 @@ final class DefaultPOSAccessSession: POSAccessSession {
         // An unreadable store keeps this session locked but doesn't make the app reopen POS on launch,
         // so a lasting read failure can't trap the device behind a lock that no PIN opens.
         persistLockState(hasCredentials ?? false)
+    }
+
+    func refreshPINProtection() throws(POSPINStoreError) {
+        do {
+            let isProtected = try !credentialProvider.credentials().isEmpty
+            let isEnablingPINProtection = isProtected && !isPINProtectionEnabled
+            if isEnablingPINProtection && !isLocked {
+                currentStaff = POSLocalRole.admin.staff
+            } else if !isProtected {
+                currentStaff = nil
+                isLocked = false
+            }
+            isPINProtectionEnabled = isProtected
+            persistLockState(isLocked)
+        } catch {
+            isPINProtectionEnabled = true
+            currentStaff = nil
+            isLocked = true
+            throw error
+        }
     }
 
     func allows(_ capability: POSCapability) -> Bool {

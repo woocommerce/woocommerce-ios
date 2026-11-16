@@ -5,6 +5,7 @@
 -----
 - [*] POS: On iPhone, Exit POS is now a small dialog in the center of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/18315]
 - [*] POS: On iPhone, "Why can't I see my products?" and Other payment methods are now bottom sheets as tall as their content. [https://github.com/woocommerce/woocommerce-ios/pull/18316]
+- [*] POS: On iPhone, card reader connection now opens as a full screen page with a header, the close button at the top left and the buttons at the bottom. [https://github.com/woocommerce/woocommerce-ios/pull/18317]
 - [*] Orders: the list no longer fails to load when a tax plugin returns a non-numeric line item tax id. [https://github.com/woocommerce/woocommerce-ios/pull/18334]
 - [*] Order creation: A custom amount of 1,000 or more entered as a percentage of the order total no longer briefly shows a much smaller amount after adding it. [https://github.com/woocommerce/woocommerce-ios/pull/18318]
 - [*] Orders: Country names like Curaçao no longer show HTML codes in the address country picker. [https://github.com/woocommerce/woocommerce-ios/pull/18359]

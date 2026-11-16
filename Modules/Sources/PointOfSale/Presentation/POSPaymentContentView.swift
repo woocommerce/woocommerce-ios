@@ -61,7 +61,7 @@ struct POSPaymentContentView: View {
         .overlay(alignment: .topTrailing) {
             closeButton
         }
-        .posModal(item: $paymentModel.cardPresentPaymentAlertViewModel, onDismiss: {
+        .posModal(item: $paymentModel.cardPresentPaymentAlertViewModel, compactStyle: .cardReaderConnection, onDismiss: {
             paymentModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)

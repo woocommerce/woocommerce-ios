@@ -174,6 +174,7 @@ struct PointOfSaleDashboardView: View {
             paymentsOnboardingView(from: factory)
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+                  compactStyle: .cardReaderConnection,
                   onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in

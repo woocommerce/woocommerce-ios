@@ -3,6 +3,7 @@ import enum Yosemite.POSCatalogSyncProgress
 
 struct POSSettingsLocalCatalogDetailView: View {
     @Environment(\.posMetrics) private var metrics
+    @State private var cellularSyncApproval = POSManagerOverrideHandler()
     private let viewModel: POSSettingsLocalCatalogViewModel
 
     init(viewModel: POSSettingsLocalCatalogViewModel) {
@@ -33,6 +34,7 @@ struct POSSettingsLocalCatalogDetailView: View {
         .posModal(item: $viewModel.catalogRefreshError) { error in
             errorView(errorState: error.errorState)
         }
+        .posManagerOverrideModal(handler: cellularSyncApproval)
     }
 }
 
@@ -62,14 +64,16 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     var managingDataUsage: some View {
-        @Bindable var viewModel = viewModel
         VStack(spacing: metrics.spacing.none) {
             POSInformationCard {
                 POSInformationCardFieldRowWithToggle(
                     label: Localization.managingDataUsage,
                     value: Localization.allowSyncOnCellular,
                     showSeparator: false,
-                    isOn: $viewModel.allowFullSyncOnCellular
+                    isOn: Binding(
+                        get: { viewModel.allowFullSyncOnCellular },
+                        set: { viewModel.setAllowFullSyncOnCellular($0, approvalHandler: cellularSyncApproval) }
+                    )
                 )
             }
         }

@@ -219,6 +219,24 @@ final class POSLockPresentationTests {
         #expect(host.presentingViewController == nil)
     }
 
+    @Test func test_replacing_window_root_while_pos_is_retained_and_locked_then_removes_pin_window() async throws {
+        // Given
+        let state = WindowPresentationState()
+        defer { unmount() }
+        let source = try await mount(state)
+        let retainedHost = try #require(source.rootViewController)
+        state.session.lock()
+        try await waitUntil { self.pinWindow(in: source)?.isKeyWindow == true }
+
+        // When
+        source.rootViewController = UIViewController()
+
+        // Then
+        try await waitUntil { self.pinWindow(in: source) == nil && source.isKeyWindow }
+        #expect(!source.accessibilityElementsHidden)
+        #expect(retainedHost.viewIfLoaded?.window == nil)
+    }
+
     @Test func test_source_movement_when_locked_then_restores_each_source_and_detaches_gate() async throws {
         // Given
         let state = WindowPresentationState()

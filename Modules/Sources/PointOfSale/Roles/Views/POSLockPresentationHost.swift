@@ -12,8 +12,9 @@ struct POSLockPresentationHost<LockContent: View>: UIViewControllerRepresentable
 
     func makeUIViewController(context: Context) -> POSLockPresentationController {
         let controller = POSLockPresentationController()
-        controller.windowFinder.onWindowChanged = { [weak coordinator = context.coordinator] window in
+        controller.windowFinder.onWindowChanged = { [weak controller, weak coordinator = context.coordinator] window in
             if let window {
+                controller?.sourceWindow = window
                 coordinator?.attach(to: window)
             }
         }
@@ -44,6 +45,7 @@ struct POSLockPresentationHost<LockContent: View>: UIViewControllerRepresentable
 
 final class POSLockPresentationController: UIViewController {
     let windowFinder = WindowFinderView()
+    weak var sourceWindow: UIWindow?
     var onDismiss: (() -> Void)?
 
     override func loadView() {
@@ -53,10 +55,12 @@ final class POSLockPresentationController: UIViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        // A covering controller may hide POS without ending it; only actual dismissal releases the gate.
+        // A covering controller may hide POS; dismissal or a detached root ends its ownership.
         var controller: UIViewController? = self
         while let current = controller {
-            if current.isBeingDismissed {
+            if current.isBeingDismissed ||
+                (current.parent == nil && current.presentingViewController == nil &&
+                 current.viewIfLoaded?.window == nil && sourceWindow?.rootViewController !== current) {
                 onDismiss?()
                 return
             }

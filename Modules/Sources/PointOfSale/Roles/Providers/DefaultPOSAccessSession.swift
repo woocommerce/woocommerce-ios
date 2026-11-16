@@ -14,6 +14,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     @ObservationIgnored private let rateLimiter: POSLocalRateLimiter
     @ObservationIgnored private let userDefaults: UserDefaults
     @ObservationIgnored private var generation: POSPINSessionTokens.Token
+    @ObservationIgnored private var isActive = true
     @ObservationIgnored private var hasKnownProtection: Bool
 
     init(siteID: Int64,
@@ -36,7 +37,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func refreshPINProtection() throws(POSPINStoreError) {
-        guard let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else {
+        guard isActive, let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else {
             currentStaff = nil
             isPINProtectionEnabled = true
             isLocked = true
@@ -65,7 +66,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func allows(_ capability: POSCapability) -> Bool {
-        guard rateLimiter.sessionTokens.isCurrent(generation) else { return false }
+        guard isActive, rateLimiter.sessionTokens.isCurrent(generation) else { return false }
         // Without an Admin PIN there is nobody to sign in or approve, so every action is allowed.
         guard isPINProtectionEnabled else {
             return true
@@ -73,28 +74,41 @@ final class DefaultPOSAccessSession: POSAccessSession {
         return currentStaff?.hasCapability(capability) == true
     }
 
+    func beginPINChange() throws(POSPINStoreError) -> POSPINChangeRegistration {
+        guard !isLocked, allows(.manageStoreSettings) else { throw .storageFailure }
+        return rateLimiter.pendingPINChanges.begin()
+    }
+
     func signIn(withPIN pin: String) async throws(POSAuthError) {
+        guard isActive else { throw .unknown }
         let request = generation
         let staff = try await rateLimiter.authenticate(pin: pin, using: authenticator, token: request)
-        guard rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled else { throw .unknown }
+        guard isActive, rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled else { throw .unknown }
         currentStaff = staff
         isLocked = false
         persistLockState(false)
     }
 
     func requestManagerApproval(withPIN pin: String, for requiredCapability: POSCapability) async throws(POSAuthError) {
+        guard isActive else { throw .unknown }
         let request = generation
         _ = try await rateLimiter.authenticate(pin: pin, using: authenticator, capability: requiredCapability, token: request)
-        guard rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled else { throw .unknown }
+        guard isActive, rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled else { throw .unknown }
     }
 
     func lock() {
         guard isPINProtectionEnabled else { return }
         currentStaff = nil
         isLocked = true
-        guard let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else { return }
+        guard isActive, let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else { return }
         generation = request
         persistLockState(true)
+    }
+
+    func endSession() {
+        isActive = false
+        currentStaff = nil
+        _ = rateLimiter.sessionTokens.invalidate(ifCurrent: generation)
     }
 
     func checkLockoutState() async throws(POSAuthError) {

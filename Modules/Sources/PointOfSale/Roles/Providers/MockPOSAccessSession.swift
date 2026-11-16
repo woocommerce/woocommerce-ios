@@ -33,6 +33,7 @@ final class MockPOSAccessSession: POSAccessSession {
     }
 
     func refreshPINProtection() throws(POSPINStoreError) {}
+    func beginPINChange() throws(POSPINStoreError) -> POSPINChangeRegistration { POSPINChangeRegistration {} }
 
     func allows(_ capability: POSCapability) -> Bool {
         !isPINProtectionEnabled || currentStaff?.hasCapability(capability) == true
@@ -69,6 +70,7 @@ final class MockPOSAccessSession: POSAccessSession {
         lockCallCount += 1
     }
 
+    func endSession() {}
     func saveElapsedTime() async {}
 
     func checkLockoutState() async throws(POSAuthError) {

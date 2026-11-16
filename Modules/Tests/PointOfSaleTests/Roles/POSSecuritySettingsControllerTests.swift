@@ -378,8 +378,8 @@ struct POSSecuritySettingsControllerTests {
         #expect(role.displayName == (role == .admin ? "Admin" : "Cashier"))
     }
 
-    @Test(arguments: [false, true])
-    func test_save_when_session_is_replaced_then_cannot_mutate_pins(wasProtected: Bool) async throws {
+    @Test(arguments: [false, true], [false, true])
+    func test_save_when_session_is_replaced_or_ended_then_cannot_mutate_pins(wasProtected: Bool, endOnly: Bool) async throws {
         // Given
         let store = POSLocalPINStore(siteID: 123, storage: storage, iterations: 1)
         let limiter = POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
@@ -389,17 +389,25 @@ struct POSSecuritySettingsControllerTests {
         controller.load()
         if wasProtected { #expect(await save("1234", for: .admin, using: controller)) }
         let before = storage.values
+        let replacement: DefaultPOSAccessSession?
 
         // When
-        let replacement = DefaultPOSAccessSession(siteID: 123, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
+        if endOnly {
+            session.endSession()
+            replacement = nil
+        } else {
+            replacement = DefaultPOSAccessSession(siteID: 123, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
                                                   rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
+        }
 
         // Then
         #expect(controller.isVisible == false)
         #expect(await save("2468", for: .admin, using: controller) == false)
         #expect(storage.values == before)
-        if wasProtected { try await replacement.signIn(withPIN: "1234") }
-        #expect(replacement.allows(.manageStoreSettings))
+        if let replacement {
+            if wasProtected { try await replacement.signIn(withPIN: "1234") }
+            #expect(replacement.allows(.manageStoreSettings))
+        }
     }
 
     @Test func test_removal_when_already_admin_then_verifies_once_and_rejects_concurrent_submissions() async throws {

@@ -2,7 +2,7 @@ import Foundation
 @preconcurrency import StarIO10
 
 extension PrinterError {
-    /// Classifies an error thrown by `StarPrinter.print(command:)`.
+    /// Classifies an error thrown by `StarPrinter.print(command:)` or reported by the printer's status monitor.
     init(printFailure error: any Error) {
         let detail = String(describing: error)
         switch error as? StarIO10Error {

@@ -66,12 +66,24 @@ public final class StarPrinterService: PrinterDiscoveryService {
     }
 }
 
+/// The parts of `StarPrinter` the coordinator drives to connect and print, so the connection lifecycle doesn't depend on
+/// the SDK class. `nonisolated(nonsending)` lets the actor call them without sending the printer it owns to another
+/// isolation domain.
+protocol StarPrinterConnection: AnyObject {
+    var printerDelegate: (any PrinterDelegate)? { get set }
+    nonisolated(nonsending) func open() async throws
+    nonisolated(nonsending) func close() async
+    nonisolated(nonsending) func print(command: String) async throws
+}
+
+extension StarPrinter: StarPrinterConnection {}
+
 /// Owns every StarIO10 object and all mutable connection/discovery state.
 ///
 /// Being an actor, it serializes all access on a single executor, so the discovery callbacks (funnelled
 /// in via `StarDiscoveryEvent`) and the `connect`/`disconnect`/`stopDiscovery` calls never interleave on
 /// shared state. This is what lets the rest of the file stay lock-free.
-private actor StarPrinterCoordinator {
+actor StarPrinterCoordinator {
     /// The in-flight discovery, if any. Compared by identity (`===`) so a superseded discovery that is
     /// still unwinding never mistakes itself for the current one once a newer discovery has replaced it.
     private var activeSession: DiscoverySession?
@@ -80,7 +92,7 @@ private actor StarPrinterCoordinator {
     /// so we can connect by `PrinterDevice` without exposing StarIO10 types.
     private var discoveredPrinters: [String: StarPrinter] = [:]
 
-    private var printer: StarPrinter? {
+    private var printer: (any StarPrinterConnection)? {
         didSet { connectionGeneration += 1 }
     }
 
@@ -93,10 +105,13 @@ private actor StarPrinterCoordinator {
     // swiftlint:disable:next weak_delegate
     private var connectionDelegate: StarConnectionDelegate?
 
-    /// Whether a `connect(to:)` is in flight, so overlapping calls are rejected and we stay the delegate of at
-    /// most one printer at a time. The check-and-set is atomic here because the actor admits no other call
-    /// between the guard and the assignment below (there is no suspension point between them).
-    private var isConnecting = false
+    /// The newest `connect(to:)` attempt. Each attempt waits for the one before it, so we stay the delegate of at most
+    /// one printer at a time.
+    private var connectTask: Task<Void, any Error>?
+
+    private var isConnecting: Bool {
+        connectTask != nil
+    }
 
     /// The latest connection status, replayed to each new observer so it never starts out of sync.
     private var connectionStatus: PrinterConnectionStatus = .idle
@@ -167,38 +182,42 @@ private actor StarPrinterCoordinator {
     }
 
     func connect(to device: PrinterDevice) async throws {
-        guard !isConnecting else {
-            DDLogError("🖨️ A connection is already in progress; ignoring connect for \(device.id)")
-            throw PrinterError.connectionInProgress
-        }
         guard let starPrinter = discoveredPrinters[device.id] else {
             DDLogError("🖨️ No discovered printer matches device id \(device.id)")
             throw PrinterError.printerNotFound
         }
+        try await connect(to: device, using: starPrinter)
+    }
 
-        isConnecting = true
-        defer { isConnecting = false }
+    func connect(to device: PrinterDevice, using starPrinter: any StarPrinterConnection) async throws {
+        // An already-cancelled call must not supersede, and so close, a connect that is still in flight.
+        try Task.checkCancellation()
 
-        // Tear down any current connection to a different printer first, so we never leave a second printer
-        // open with us still set as its delegate.
-        if let existing = printer, existing !== starPrinter {
-            await teardown(existing)
+        // StarIO10's `open()` ignores task cancellation and has no way to abort it, so a newer call cancels the
+        // in-flight attempt and waits for it to settle. That attempt closes a late connection itself.
+        let previous = connectTask
+        previous?.cancel()
+        let attempt = Task {
+            _ = await previous?.result
+            try Task.checkCancellation()
+            try await openConnection(to: device, using: starPrinter)
+        }
+        connectTask = attempt
+        defer {
+            // The newest call reports status, so it settles what a failed or cancelled attempt, or a `disconnect()`
+            // that deferred to the connect, left in progress.
+            if connectTask == attempt {
+                connectTask = nil
+                if [.connecting, .disconnecting].contains(connectionStatus) {
+                    emit(.disconnected)
+                }
+            }
         }
 
-        emit(.connecting)
-        let delegate = StarConnectionDelegate()
-        starPrinter.printerDelegate = delegate
-        do {
-            try await starPrinter.open()
-            printer = starPrinter
-            connectionDelegate = delegate
-            emit(.connected(device))
-            DDLogInfo("🖨️ Connected to printer \(device.id)")
-        } catch {
-            starPrinter.printerDelegate = nil
-            emit(.disconnected)
-            DDLogError("🖨️ Printer connection failed: \(error.localizedDescription)")
-            throw error
+        try await withTaskCancellationHandler {
+            try await attempt.value
+        } onCancel: {
+            attempt.cancel()
         }
     }
 
@@ -238,11 +257,73 @@ private actor StarPrinterCoordinator {
             throw printerError
         }
     }
+
+    /// StarIO10 has no disconnect callback: a printer that is turned off, goes out of range, or loses Bluetooth
+    /// only shows up as a communication error from the status monitor of the open connection.
+    func handleCommunicationError(_ error: any Error, reportedBy delegate: StarConnectionDelegate) async {
+        guard Self.isConnectionLoss(error,
+                                    reportedBy: delegate,
+                                    activeDelegate: connectionDelegate,
+                                    isConnecting: isConnecting) else {
+            return
+        }
+        DDLogInfo("🖨️ Printer connection lost")
+        await disconnect()
+    }
+
+    /// Each connection gets its own delegate, even a reconnect to the same `StarPrinter`, so the delegate identifies
+    /// the connection that reported the error. Reports from a replaced connection, repeats after `disconnect()` has
+    /// released the delegate, and reports during a `connect(to:)` (which drives its own status) are ignored.
+    static func isConnectionLoss(_ error: any Error,
+                                 reportedBy delegate: StarConnectionDelegate,
+                                 activeDelegate: StarConnectionDelegate?,
+                                 isConnecting: Bool) -> Bool {
+        guard delegate === activeDelegate, !isConnecting else {
+            return false
+        }
+        if case .connectionLost = PrinterError(printFailure: error) {
+            return true
+        }
+        return false
+    }
 }
 
 private extension StarPrinterCoordinator {
     enum Constants {
         static let discoveryTimeInMilliseconds = 30000
+    }
+
+    /// Runs in a `connect(to:)` attempt's task, which a newer call cancels. Leaves failure status to the newest call.
+    func openConnection(to device: PrinterDevice, using starPrinter: any StarPrinterConnection) async throws {
+        // Tear down any current connection to a different printer first, so we never leave a second printer
+        // open with us still set as its delegate.
+        if let existing = printer, existing !== starPrinter {
+            await teardown(existing)
+        }
+
+        emit(.connecting)
+        let delegate = StarConnectionDelegate { [weak self] delegate, error in
+            Task { await self?.handleCommunicationError(error, reportedBy: delegate) }
+        }
+        starPrinter.printerDelegate = delegate
+        do {
+            try await starPrinter.open()
+        } catch {
+            starPrinter.printerDelegate = nil
+            DDLogError("🖨️ Printer connection failed: \(error.localizedDescription)")
+            throw error
+        }
+
+        guard !Task.isCancelled else {
+            DDLogInfo("🖨️ Closing printer \(device.id) opened by a cancelled or superseded connect")
+            starPrinter.printerDelegate = nil
+            await starPrinter.close()
+            throw CancellationError()
+        }
+        printer = starPrinter
+        connectionDelegate = delegate
+        emit(.connected(device))
+        DDLogInfo("🖨️ Connected to printer \(device.id)")
     }
 
     /// Records the new status and forwards it to every active observer, so subscribers and the replayed
@@ -256,7 +337,7 @@ private extension StarPrinterCoordinator {
 
     /// Closes `existing` and drops it as the active printer, releasing its delegate. Used while switching to a
     /// new printer, so it stays quiet about connection status, which the in-flight `connect(to:)` then drives.
-    func teardown(_ existing: StarPrinter) async {
+    func teardown(_ existing: any StarPrinterConnection) async {
         existing.printerDelegate = nil
         await existing.close()
         if printer === existing {
@@ -340,10 +421,18 @@ private final class StarDiscoveryDelegate: NSObject, StarDeviceDiscoveryManagerD
     }
 }
 
-/// Receives StarIO10 printer-status callbacks for a connected printer. Stateless: logs only.
-private final class StarConnectionDelegate: NSObject, PrinterDelegate {
+/// Receives StarIO10 printer-status callbacks for a connected printer. Logs them, and forwards communication errors
+/// so the coordinator can detect a dropped connection.
+final class StarConnectionDelegate: NSObject, PrinterDelegate {
+    private let onCommunicationError: @Sendable (StarConnectionDelegate, any Error) -> Void
+
+    init(onCommunicationError: @escaping @Sendable (StarConnectionDelegate, any Error) -> Void) {
+        self.onCommunicationError = onCommunicationError
+    }
+
     func printer(_ printer: StarPrinter, communicationErrorDidOccur error: any Error) {
         DDLogError("🖨️ Printer communication error: \(error.localizedDescription)")
+        onCommunicationError(self, error)
     }
 
     func printerIsReady(_ printer: StarPrinter) {

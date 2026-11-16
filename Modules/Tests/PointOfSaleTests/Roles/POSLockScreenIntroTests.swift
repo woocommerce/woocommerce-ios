@@ -182,7 +182,7 @@ struct POSLockScreenIntroTests {
 
 private extension POSLockScreenIntroTests {
     func expectSleep(_ duration: Duration, from iterator: inout AsyncStream<Duration>.Iterator) async throws {
-        let next = await iterator.next()
+        let next = await iterator.next(isolation: MainActor.shared)
         let actual = try #require(next)
         try #require(actual == duration)
     }

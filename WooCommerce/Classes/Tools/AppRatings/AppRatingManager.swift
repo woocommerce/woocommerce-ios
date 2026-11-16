@@ -21,10 +21,13 @@ public class AppRatingManager {
     private let defaults: UserDefaults
     private var sections = [String: Section]()
 
-    /// Don't prompt for reviews for internal builds
+    /// Don't prompt for reviews during UI tests or for internal builds.
     /// http://stackoverflow.com/questions/26081543/how-to-tell-at-runtime-whether-an-ios-app-is-running-through-a-testflight-beta-i?noredirect=1&lq=1
     ///
     private var promptingDisabledLocal: Bool = {
+        if CommandLine.arguments.contains("-ui_testing") {
+            return true
+        }
         guard let path = Bundle.main.appStoreReceiptURL?.path else {
             return false
         }

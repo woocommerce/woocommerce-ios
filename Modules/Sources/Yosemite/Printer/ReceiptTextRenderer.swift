@@ -154,9 +154,12 @@ private extension ReceiptTextRenderer {
     /// two-line store address) are laid out one printed line at a time, so centering and alignment
     /// are computed per line instead of across the embedded newline. Always returns at least one
     /// (possibly empty) line.
+    ///
+    /// Splits on any newline, not just `\n`: store settings saved from a wp-admin textarea use CRLF,
+    /// and Swift treats `\r\n` as a single `Character` that a `"\n"` separator never matches.
     func wrap(_ text: String) -> [String] {
         let wrapped = text
-            .split(separator: "\n", omittingEmptySubsequences: true)
+            .split(omittingEmptySubsequences: true, whereSeparator: \.isNewline)
             .flatMap { wrapLine(String($0)) }
         return wrapped.isEmpty ? [""] : wrapped
     }

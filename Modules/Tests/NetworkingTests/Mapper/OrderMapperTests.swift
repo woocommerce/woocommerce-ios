@@ -454,6 +454,9 @@ final class OrderMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(order.shippingLines.first?.taxes.first?.taxID, 1)
         XCTAssertEqual(order.items.first?.sku, "123")
+        XCTAssertEqual(order.items.first?.taxes.first?.taxID, 0)
+        XCTAssertEqual(order.items.last?.taxes.first?.taxID, 1)
+        XCTAssertEqual(order.fees.first?.taxes.first?.taxID, 0)
     }
 
     func test_order_line_item_addons_without_ID_are_parsed_correctly() throws {

@@ -45,7 +45,7 @@ final class POSAutoLockActivityController {
     }
 
     func handleTimerFire() {
-        guard session.hasAnyPINs, session.currentStaff != nil else {
+        guard session.isPINProtectionEnabled, session.currentStaff != nil else {
             stop()
             return
         }

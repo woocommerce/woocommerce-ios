@@ -115,6 +115,7 @@ struct POSRefundModalContentView: View {
 
             content
                 .environment(\.posRefundPresentationStyle, .fullScreen)
+                .environment(\.floatingControlAreaSize, .zero)
         }
             .posModal(item: $cardPresentAlertItem, compactStyle: .cardReaderConnection, onDismiss: {
                 cardPresentAlertItem?.alertType.onDismiss?()

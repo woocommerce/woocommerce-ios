@@ -14,6 +14,6 @@ protocol POSAccessSession: AnyObject, Sendable {
     /// invalid or the holder lacks it.
     func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError)
     func lock()
-    func checkpoint() async
+    func saveElapsedTime() async
     func checkLockoutState() async throws(POSAuthError)
 }

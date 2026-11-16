@@ -1,195 +1,222 @@
 import CocoaLumberjackSwift
 import Foundation
 
-/// The session factory retains one actor per store for both unlock and approval.
 actor POSLocalRateLimiter {
+    nonisolated let sessionTokens: POSPINSessionTokens
     private let key: String
     private let storage: POSSecureStorage
     private let clock: POSPINClock
-    nonisolated let context: POSPINAttemptContext
+    private var record: AttemptRecord?
+    private var lastTick: TimeInterval?
     private var isAuthenticating = false
-    private var cached: State?
-    private var sample: TimeInterval?
-    private var checkpoint: TimeInterval?
-    private var logout: UUID?
 
     init(siteID: Int64,
          storage: POSSecureStorage = KeychainPOSSecureStorage(),
          clock: POSPINClock = SystemPOSPINClock()) {
         self.key = "attempts.\(siteID)"
         self.storage = storage
-        self.context = POSPINAttemptContext(scopeID: storage.scopeID)
         self.clock = clock
+        self.sessionTokens = POSPINSessionTokens(storage: storage)
     }
 
-    func checkAllowed(token: POSPINAttemptContext.Token, checkpoint: Bool = false) throws(POSAuthError) {
+    nonisolated var isRetired: Bool {
+        storage.isStale
+    }
+
+    func checkAllowed(token: POSPINSessionTokens.Token) throws(POSAuthError) {
         guard !isAuthenticating else { throw .unknown }
+        try requireCurrent(token)
+        try throwIfWaiting(try advancedRecord())
+    }
+
+    func saveElapsedTime(token: POSPINSessionTokens.Token) {
+        guard !isAuthenticating, sessionTokens.isCurrent(token) else { return }
         do {
-            try context.withCurrent(token) {
-                let state = try current(logout: token.logout, forceCheckpoint: checkpoint)
-                if state.wait > 0 { throw POSAuthError.rateLimited(remainingSeconds: Int(state.wait.rounded(.up))) }
+            let record = try advancedRecord()
+            if record.hasProgress {
+                try save(record)
             }
-        } catch let error as POSAuthError {
-            throw error
         } catch {
-            throw .unknown
+            DDLogError("POS PIN attempt elapsed time could not be saved (error: \(error))")
         }
     }
 
     func authenticate(pin: String,
                       using authenticator: POSPINAuthenticating,
                       capability: POSCapability? = nil,
-                      token: POSPINAttemptContext.Token) async throws(POSAuthError) -> POSStaff {
+                      token: POSPINSessionTokens.Token) async throws(POSAuthError) -> POSStaff {
         guard !isAuthenticating, !Task.isCancelled else { throw .unknown }
         isAuthenticating = true
         defer { isAuthenticating = false }
+
+        try requireCurrent(token)
+        let previous = try advancedRecord()
+        try throwIfWaiting(previous)
+        try recordFailureBeforeComparing(previous)
+
+        let staff: POSStaff
         do {
-            let previous = try context.withCurrent(token) {
-                let state = try current(logout: token.logout)
-                if state.wait > 0 { throw POSAuthError.rateLimited(remainingSeconds: Int(state.wait.rounded(.up))) }
-                // Persist before comparing: a process kill must not create an uncounted PIN oracle.
-                try replace(state.failed(), at: try time())
-                return state
-            }
-            let staff: POSStaff
-            do {
-                staff = try await authenticator.authenticate(withPIN: pin)
-            } catch {
-                guard context.isCurrent(token), !Task.isCancelled else { throw POSAuthError.unknown }
-                if error == .unknown {
-                    // The credential provider failed before comparing a PIN. It produced no guess result.
-                    try context.withCurrent(token) { try replace(previous, at: try time()) }
-                }
-                if error == .invalidPIN {
-                    throw cachedWaitError(fallback: .invalidPIN)
-                }
+            staff = try await authenticator.authenticate(withPIN: pin)
+        } catch {
+            try requireCurrentAndNotCancelled(token)
+            switch error {
+            case .unknown:
+                try replace(with: previous)
+                throw error
+            case .invalidPIN:
+                throw waitError(fallback: .invalidPIN)
+            default:
                 throw error
             }
-            guard !Task.isCancelled else { throw POSAuthError.unknown }
-            return try context.withCurrent(token) {
-                if let capability, !staff.hasCapability(capability) { throw cachedWaitError(fallback: .invalidPIN) }
-                // Authority comes from the verified credential's capabilities, never its display name.
-                try replace(staff.hasCapability(.manageStoreSettings) ? State() : previous, at: try time())
-                return staff
-            }
-        } catch let error as POSAuthError {
-            throw error
-        } catch {
-            throw .unknown
         }
+
+        try requireCurrentAndNotCancelled(token)
+        if let capability, !staff.hasCapability(capability) {
+            throw waitError(fallback: .invalidPIN)
+        }
+        try replace(with: staff.hasCapability(.manageStoreSettings) ? AttemptRecord() : previous)
+        return staff
     }
 }
 
 private extension POSLocalRateLimiter {
-    struct State: Codable, Sendable {
+    struct AttemptRecord: Codable, Sendable {
+        static let longestWait: TimeInterval = 3600
+        static let quietResetPeriod: TimeInterval = 86400
+
         var failures = 0
         var wait: TimeInterval = 0
         var quiet: TimeInterval = 0
 
-        func failed() -> State {
-            let count = failures + 1
-            let duration: TimeInterval = switch count {
+        var isValid: Bool {
+            failures >= 0 && (0...Self.longestWait).contains(wait) && (0...Self.quietResetPeriod).contains(quiet)
+        }
+
+        var hasProgress: Bool {
+            failures > 0 || wait > 0
+        }
+
+        func addingFailure() -> AttemptRecord {
+            let failures = failures < .max ? failures + 1 : failures
+            return AttemptRecord(failures: failures, wait: Self.wait(afterFailures: failures))
+        }
+
+        func advanced(by elapsed: TimeInterval) -> AttemptRecord {
+            var next = self
+            next.wait = max(0, wait - elapsed)
+            guard failures > 0 else {
+                return next
+            }
+            next.quiet = min(Self.quietResetPeriod, quiet + elapsed)
+            return next.quiet < Self.quietResetPeriod ? next : AttemptRecord()
+        }
+
+        private static func wait(afterFailures failures: Int) -> TimeInterval {
+            switch failures {
             case 5: 30
             case 10: 300
             case 15: 1800
-            case let count where count.isMultiple(of: 5): 3600
+            case let failures where failures.isMultiple(of: 5): longestWait
             default: 0
             }
-            return State(failures: count, wait: duration)
-        }
-
-        var isValid: Bool {
-            (0...1_000_000).contains(failures) && wait.isFinite && (0...3600).contains(wait)
-                && quiet.isFinite && (0...86400).contains(quiet)
         }
     }
 
-    func current(logout: UUID, forceCheckpoint: Bool = false) throws -> State {
-        if self.logout != logout {
-            cached = nil
-            sample = nil
-            checkpoint = nil
-            self.logout = logout
+    func requireCurrent(_ token: POSPINSessionTokens.Token) throws(POSAuthError) {
+        guard sessionTokens.isCurrent(token) else { throw .unknown }
+    }
+
+    func requireCurrentAndNotCancelled(_ token: POSPINSessionTokens.Token) throws(POSAuthError) {
+        guard sessionTokens.isCurrent(token), !Task.isCancelled else { throw .unknown }
+    }
+
+    func throwIfWaiting(_ record: AttemptRecord) throws(POSAuthError) {
+        if record.wait > 0 {
+            throw .rateLimited(remainingSeconds: Int(record.wait.rounded(.up)))
         }
-        if cached == nil {
-            let state = try load()
-            // A new service has no trusted interval. Preserve saved credit and grant zero for the unknown gap.
-            let now = try time()
-            cached = state
-            sample = now
-            checkpoint = now
-        }
-        guard var state = cached, let sample, let checkpoint else { throw POSAuthError.unknown }
+    }
+
+    func waitError(fallback: POSAuthError) -> POSAuthError {
+        guard let wait = record?.wait, wait > 0 else { return fallback }
+        return .rateLimited(remainingSeconds: Int(wait.rounded(.up)))
+    }
+
+    func recordFailureBeforeComparing(_ record: AttemptRecord) throws(POSAuthError) {
+        try replace(with: record.addingFailure())
+    }
+
+    func advancedRecord() throws(POSAuthError) -> AttemptRecord {
         let now = try time()
-        let elapsed = min(86400, now - sample)
-        let previousWait = state.wait
-        state.wait = max(0, state.wait - elapsed)
-        if state.failures > 0 { state.quiet = min(86400, state.quiet + elapsed) }
-        let quietExpired = state.failures > 0 && state.quiet >= 86400
-        if quietExpired { state = State() }
-        let hasProgress = state.failures > 0 || state.wait > 0
-        let shouldCheckpoint = (forceCheckpoint && hasProgress) || quietExpired || (previousWait > 0 && (state.wait == 0 || now - checkpoint >= 5))
-        if shouldCheckpoint {
-            try save(state)
-            self.checkpoint = now
+        guard let record, let lastTick else {
+            let loaded = try load()
+            self.record = loaded
+            self.lastTick = now
+            return loaded
         }
-        cached = state
-        self.sample = now
-        return state
+        let advanced = record.advanced(by: now - lastTick)
+        let waitEnded = record.wait > 0 && advanced.wait == 0
+        let quietPeriodEnded = record.failures > 0 && advanced.failures == 0
+        if waitEnded || quietPeriodEnded {
+            try save(advanced)
+        }
+        self.record = advanced
+        self.lastTick = now
+        return advanced
     }
 
-    func time() throws -> TimeInterval {
-        let now = try clock.now()
-        guard now.isFinite, now >= 0, sample.map({ now >= $0 }) ?? true else { throw POSAuthError.unknown }
+    func replace(with record: AttemptRecord) throws(POSAuthError) {
+        let now = try time()
+        try save(record)
+        self.record = record
+        self.lastTick = now
+    }
+
+    func time() throws(POSAuthError) -> TimeInterval {
+        let now: TimeInterval
+        do {
+            now = try clock.now()
+        } catch {
+            throw .unknown
+        }
+        guard now.isFinite, now >= 0, now >= (lastTick ?? 0) else {
+            throw .unknown
+        }
         return now
     }
 
-    func replace(_ state: State, at time: TimeInterval) throws {
-        try save(state)
-        cached = state
-        sample = time
-        checkpoint = time
-    }
-
-    func save(_ state: State) throws {
+    func save(_ record: AttemptRecord) throws(POSAuthError) {
         do {
-            try storage.setData(JSONEncoder().encode(state), forKey: key)
+            try storage.setData(JSONEncoder().encode(record), forKey: key)
         } catch {
-            // The stored record is unknown after a failed write. Never overwrite it from an older cache.
-            cached = nil
-            sample = nil
-            checkpoint = nil
+            self.record = nil
+            self.lastTick = nil
             DDLogError("POS PIN attempt state could not be saved (error type: \(type(of: error)))")
-            throw error
+            throw .unknown
         }
     }
 
-    func load() throws -> State {
+    func load() throws(POSAuthError) -> AttemptRecord {
         let data: Data?
         do {
             data = try storage.data(forKey: key)
         } catch {
             DDLogError("POS PIN attempt state could not be read (error type: \(type(of: error)))")
-            throw error
+            throw .unknown
         }
-        guard let data else { return State() }
-        // Keep an unreadable record and stay blocked: rewriting it could reset or shorten a wait.
-        let state: State
+        guard let data else {
+            return AttemptRecord()
+        }
+        let record: AttemptRecord
         do {
-            state = try JSONDecoder().decode(State.self, from: data)
+            record = try JSONDecoder().decode(AttemptRecord.self, from: data)
         } catch {
             DDLogError("POS PIN attempt state could not be decoded (error type: \(type(of: error)))")
-            throw error
+            throw .unknown
         }
-        guard state.isValid else {
+        guard record.isValid else {
             DDLogError("POS PIN attempt state is out of range")
-            throw POSAuthError.unknown
+            throw .unknown
         }
-        return state
-    }
-
-    func cachedWaitError(fallback: POSAuthError) -> POSAuthError {
-        guard let wait = cached?.wait, wait > 0 else { return fallback }
-        return .rateLimited(remainingSeconds: Int(wait.rounded(.up)))
+        return record
     }
 }

@@ -295,7 +295,7 @@ public struct PointOfSaleEntryPointView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             let session = accessSession
-            Task { await session.checkpoint() }
+            Task { await session.saveElapsedTime() }
         }
     }
 

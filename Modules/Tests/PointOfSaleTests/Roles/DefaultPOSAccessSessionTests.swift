@@ -17,7 +17,7 @@ struct DefaultPOSAccessSessionTests {
         // Then
         #expect(sut.session.currentStaff == staff)
         #expect(sut.session.isLocked == false)
-        try await sut.limiter.checkAllowed(token: sut.limiter.context.current())
+        try await sut.limiter.checkAllowed(token: sut.limiter.sessionTokens.current())
     }
 
     @Test func test_signIn_when_pin_is_invalid_then_throws_invalidPIN_and_records_failure() async {
@@ -84,7 +84,7 @@ struct DefaultPOSAccessSessionTests {
             try await sut.session.signIn(withPIN: "0000")
         }
 
-        try await sut.limiter.checkAllowed(token: sut.limiter.context.current())
+        try await sut.limiter.checkAllowed(token: sut.limiter.sessionTokens.current())
     }
 
     @Test func test_lock_when_called_then_removes_currentStaff_and_denies_access() async throws {
@@ -290,7 +290,7 @@ struct DefaultPOSAccessSessionTests {
                                                   credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
                                                   userDefaults: sut.scope.defaults)
         if unlockFirst { try await replacement.signIn(withPIN: "1234") }
-        let token = sut.limiter.context.current()
+        let token = sut.limiter.sessionTokens.current()
         #expect(sut.session.allows(.manageStoreSettings) == false)
 
         // When
@@ -300,7 +300,7 @@ struct DefaultPOSAccessSessionTests {
         }
 
         // Then
-        #expect(sut.limiter.context.isCurrent(token))
+        #expect(sut.limiter.sessionTokens.isCurrent(token))
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == !unlockFirst)
         try await replacement.checkLockoutState()
         try await replacement.signIn(withPIN: "1234")
@@ -315,14 +315,14 @@ struct DefaultPOSAccessSessionTests {
                                                   credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
                                                   userDefaults: sut.scope.defaults)
         try await replacement.signIn(withPIN: "1234")
-        let token = sut.limiter.context.current()
+        let token = sut.limiter.sessionTokens.current()
 
         // When / Then
         #expect(sut.session.allows(.processSales) == false)
         #expect(throws: POSPINStoreError.storageFailure) { try sut.session.refreshPINProtection() }
         #expect(sut.session.isLocked)
         #expect(sut.session.isPINProtectionEnabled)
-        #expect(sut.limiter.context.isCurrent(token))
+        #expect(sut.limiter.sessionTokens.isCurrent(token))
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
         #expect(replacement.allows(.manageStoreSettings))
     }
@@ -336,9 +336,8 @@ struct DefaultPOSAccessSessionTests {
                                               credentialProvider: MockPOSPINCredentialProvider(credentialsResult: .success([makeAdminCredential()])),
                                               userDefaults: scope.defaults)
         try await session.signIn(withPIN: "1234")
-        try POSPINAttemptContext.clearAll(scopeID: storage.scopeID) { try storage.removeAll() }
+        try storage.removeAll()
         scope.defaults.removeObject(forKey: POSLockStateKey.key(for: 123))
-        let token = limiter.context.current()
 
         // When / Then
         #expect(session.allows(.manageStoreSettings) == false)
@@ -347,7 +346,7 @@ struct DefaultPOSAccessSessionTests {
         #expect(session.currentStaff == nil)
         #expect(throws: POSPINStoreError.storageFailure) { try session.refreshPINProtection() }
         session.lock()
-        #expect(limiter.context.isCurrent(token))
+        #expect(limiter.isRetired)
         #expect(scope.defaults.object(forKey: POSLockStateKey.key(for: 123)) == nil)
     }
 
@@ -419,7 +418,7 @@ private extension DefaultPOSAccessSessionTests {
     }
 
     func seedFailures(_ count: Int, sut: SUT) async {
-        let token = sut.limiter.context.current()
+        let token = sut.limiter.sessionTokens.current()
         let wrong = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))
         for _ in 0..<count { _ = try? await sut.limiter.authenticate(pin: "0000", using: wrong, token: token) }
         try? sut.session.refreshPINProtection()

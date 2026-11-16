@@ -13,7 +13,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     @ObservationIgnored private let authenticator: POSPINAuthenticating
     @ObservationIgnored private let rateLimiter: POSLocalRateLimiter
     @ObservationIgnored private let userDefaults: UserDefaults
-    @ObservationIgnored private var generation: POSPINAttemptContext.Token
+    @ObservationIgnored private var generation: POSPINSessionTokens.Token
     @ObservationIgnored private var hasKnownProtection: Bool
 
     init(siteID: Int64,
@@ -25,20 +25,18 @@ final class DefaultPOSAccessSession: POSAccessSession {
         self.siteID = siteID
         self.authenticator = authenticator
         self.rateLimiter = rateLimiter
-        self.generation = rateLimiter.context.invalidate()
+        self.generation = rateLimiter.sessionTokens.invalidate()
         self.userDefaults = userDefaults
         let hasCredentials = try? !credentialProvider.credentials().isEmpty
         self.hasKnownProtection = hasCredentials == true
         let isProtected = hasCredentials ?? true
         self.isPINProtectionEnabled = isProtected
         self.isLocked = isProtected
-        // A read failure must not erase a known locked store's relaunch marker.
-        // Without an existing marker, an unreadable store does not create a new cold-launch route.
         if let hasCredentials { persistLockState(hasCredentials) }
     }
 
     func refreshPINProtection() throws(POSPINStoreError) {
-        guard let request = rateLimiter.context.invalidate(ifCurrent: generation) else {
+        guard let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else {
             currentStaff = nil
             isPINProtectionEnabled = true
             isLocked = true
@@ -67,7 +65,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func allows(_ capability: POSCapability) -> Bool {
-        guard rateLimiter.context.isCurrent(generation) else { return false }
+        guard rateLimiter.sessionTokens.isCurrent(generation) else { return false }
         // Without an Admin PIN there is nobody to sign in or approve, so every action is allowed.
         guard isPINProtectionEnabled else {
             return true
@@ -78,7 +76,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
     func signIn(withPIN pin: String) async throws(POSAuthError) {
         let request = generation
         let staff = try await rateLimiter.authenticate(pin: pin, using: authenticator, token: request)
-        guard rateLimiter.context.isCurrent(request), !Task.isCancelled else { throw .unknown }
+        guard rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled else { throw .unknown }
         currentStaff = staff
         isLocked = false
         persistLockState(false)
@@ -87,14 +85,14 @@ final class DefaultPOSAccessSession: POSAccessSession {
     func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
         let request = generation
         _ = try await rateLimiter.authenticate(pin: pin, using: authenticator, capability: capability, token: request)
-        guard rateLimiter.context.isCurrent(request), !Task.isCancelled else { throw .unknown }
+        guard rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled else { throw .unknown }
     }
 
     func lock() {
         guard isPINProtectionEnabled else { return }
         currentStaff = nil
         isLocked = true
-        guard let request = rateLimiter.context.invalidate(ifCurrent: generation) else { return }
+        guard let request = rateLimiter.sessionTokens.invalidate(ifCurrent: generation) else { return }
         generation = request
         persistLockState(true)
     }
@@ -103,9 +101,8 @@ final class DefaultPOSAccessSession: POSAccessSession {
         try await rateLimiter.checkAllowed(token: generation)
     }
 
-    func checkpoint() async {
-        // Wait, busy and stale-token results are expected; the limiter logs storage failures.
-        try? await rateLimiter.checkAllowed(token: generation, checkpoint: true)
+    func saveElapsedTime() async {
+        await rateLimiter.saveElapsedTime(token: generation)
     }
 }
 

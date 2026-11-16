@@ -10,7 +10,7 @@ enum POSAccessSessionFactory {
             return UnrestrictedPOSAccessSession()
         }
         let credentialProvider = POSLocalPINStore(siteID: siteID)
-        let limiter = rateLimiters[siteID] ?? POSLocalRateLimiter(siteID: siteID)
+        let limiter = rateLimiters[siteID].flatMap { $0.isRetired ? nil : $0 } ?? POSLocalRateLimiter(siteID: siteID)
         rateLimiters[siteID] = limiter
         return DefaultPOSAccessSession(
             siteID: siteID,

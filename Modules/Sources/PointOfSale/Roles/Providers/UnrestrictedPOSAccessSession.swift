@@ -12,7 +12,7 @@ final class UnrestrictedPOSAccessSession: POSAccessSession {
     func signIn(withPIN pin: String) async throws(POSAuthError) {}
     func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {}
     func lock() {}
-    func checkpoint() async {}
+    func saveElapsedTime() async {}
 
     func checkLockoutState() async throws(POSAuthError) {}
 }

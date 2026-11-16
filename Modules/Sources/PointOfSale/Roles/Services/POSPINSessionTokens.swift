@@ -1,78 +1,40 @@
 import Foundation
 import Synchronization
 
-/// Invalidates authentication synchronously while storage work remains on the limiter's actor.
-final class POSPINAttemptContext: Sendable {
+final class POSPINSessionTokens: Sendable {
     struct Token: Equatable, Sendable {
-        let session: UUID
-        let logout: UUID
+        fileprivate let id = UUID()
     }
 
-    private static let logout = Mutex<[String: UUID]>([:])
-    private let scopeID: String
+    private let storage: POSSecureStorage
+    private let latest = Mutex(Token())
 
-    init(scopeID: String) { self.scopeID = scopeID }
-    private static let writes = Mutex(())
-    private let session = Mutex(UUID())
+    init(storage: POSSecureStorage) {
+        self.storage = storage
+    }
+
     func current() -> Token {
-        Self.logout.withLock { logout in
-            let epoch = logout[scopeID] ?? UUID()
-            logout[scopeID] = epoch
-            return session.withLock { Token(session: $0, logout: epoch) }
-        }
+        latest.withLock { $0 }
     }
 
     func invalidate() -> Token {
-        Self.logout.withLock { logout in
-            session.withLock {
-                $0 = UUID()
-                let epoch = logout[scopeID] ?? UUID()
-                logout[scopeID] = epoch
-                return Token(session: $0, logout: epoch)
-            }
-        }
-    }
-
-    func isCurrent(_ token: Token) -> Bool {
-        Self.logout.withLock { logout in
-            session.withLock { token.logout == logout[scopeID] && token.session == $0 }
+        latest.withLock { latest in
+            latest = Token()
+            return latest
         }
     }
 
     func invalidate(ifCurrent token: Token) -> Token? {
-        Self.logout.withLock { logout in
-            session.withLock {
-                guard token.logout == logout[scopeID], token.session == $0 else { return nil }
-                $0 = UUID()
-                return Token(session: $0, logout: token.logout)
+        latest.withLock { latest in
+            guard token == latest, !storage.isStale else {
+                return nil
             }
+            latest = Token()
+            return latest
         }
     }
 
-    func withCurrent<T>(_ token: Token, operation: () throws -> T) throws -> T {
-        try Self.writes.withLock { _ in
-            guard isCurrent(token) else { throw POSAuthError.unknown }
-            return try operation()
-        }
-    }
-
-    static func logoutEpoch(scopeID: String) -> UUID {
-        logout.withLock {
-            let epoch = $0[scopeID] ?? UUID()
-            $0[scopeID] = epoch
-            return epoch
-        }
-    }
-
-    static func withLogoutEpoch<T>(scopeID: String, epoch: UUID, operation: () throws -> T) throws -> T {
-        try writes.withLock { _ in
-            guard logout.withLock({ $0[scopeID] == epoch }) else { throw POSPINStoreError.storageFailure }
-            return try operation()
-        }
-    }
-
-    static func clearAll(scopeID: String, operation: () throws -> Void) throws {
-        logout.withLock { $0[scopeID] = UUID() }
-        try writes.withLock { _ in try operation() }
+    func isCurrent(_ token: Token) -> Bool {
+        latest.withLock { $0 == token } && !storage.isStale
     }
 }

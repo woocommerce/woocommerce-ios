@@ -183,34 +183,38 @@ private extension POSFloatingControlView {
         static let size: CGFloat = 80
         static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
     }
-}
 
-extension POSFloatingControlView {
     enum Localization {
+        static let orders = NSLocalizedString(
+            "pointOfSale.floatingButtons.orders.button.title",
+            value: "Orders",
+            comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
+        )
+
         static let lockPOS = NSLocalizedString(
             "pointOfSale.floatingButtons.lock.button.title",
             value: "Lock POS",
             comment: "The title of the menu button to lock Point of Sale, requiring PIN entry to continue."
         )
 
-        fileprivate static let orders = NSLocalizedString(
-            "pointOfSale.floatingButtons.orders.button.title",
-            value: "Orders",
-            comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
-        )
-
-        fileprivate static let exitPointOfSale = NSLocalizedString(
+        static let exitPointOfSale = NSLocalizedString(
             "pointOfSale.floatingButtons.exit.button.title",
             value: "Exit POS",
             comment: "The title of the menu button to exit Point of Sale, shown in a popover menu." +
             "The action is confirmed in a modal."
         )
 
-        fileprivate static let settings = NSLocalizedString(
+        static let settings = NSLocalizedString(
             "pointOfSale.floatingButtons.settings.button.title",
             value: "Settings",
             comment: "The title of the menu button to access Point of Sale settings."
         )
+    }
+}
+
+extension POSFloatingControlView {
+    static var lockPOSTitle: String {
+        Localization.lockPOS
     }
 }
 

@@ -436,7 +436,7 @@ struct PointOfSaleDashboardView: View {
                 Button {
                     session.lock()
                 } label: {
-                    Label(POSFloatingControlView.Localization.lockPOS, systemImage: "lock")
+                    Label(POSFloatingControlView.lockPOSTitle, systemImage: "lock")
                 }
                 .accessibilityIdentifier("pos-lock-menu-item")
             }

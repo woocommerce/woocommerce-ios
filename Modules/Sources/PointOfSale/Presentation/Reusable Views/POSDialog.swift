@@ -72,7 +72,6 @@ struct POSDialogView: View {
                                     accessibilityIdentifier: closeAction.accessibilityIdentifier,
                                     fontStyle: .posButtonSymbolLarge,
                                     closeAction: closeAction.action)
-                .padding([.top, .trailing], metrics.padding.small)
             }
 
             switch dialog.icon {

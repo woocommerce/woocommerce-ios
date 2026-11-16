@@ -21,6 +21,7 @@ struct HardwareBarcodeScannerInfoView: View {
 
 struct HardwareBarcodeScannerInfoContent: View {
     let testScanState: HardwareBarcodeScannerInfoViewModel.TestScanState
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
@@ -58,7 +59,7 @@ struct HardwareBarcodeScannerInfoContent: View {
         .padding(.horizontal, StorePadding.p7)
         .padding(.top, StorePadding.p7)
         .padding(.bottom, StorePadding.p5)
-        .animation(.easeInOut(duration: StoreMotion.selectionDuration), value: testScanState)
+        .animation(reduceMotion ? nil : .easeInOut(duration: StoreMotion.selectionDuration), value: testScanState)
     }
 
     /// The success message takes the place of the barcode, so the sheet keeps its height.
@@ -85,7 +86,7 @@ struct HardwareBarcodeScannerInfoContent: View {
                         .storeTextStyle(.titleMedium)
                         .foregroundStyle(Color.storeOnSurface)
                 }
-                .transition(.scale.combined(with: .opacity))
+                .transition(reduceMotion ? .opacity : .scale.combined(with: .opacity))
                 .accessibilityElement(children: .combine)
             }
         }

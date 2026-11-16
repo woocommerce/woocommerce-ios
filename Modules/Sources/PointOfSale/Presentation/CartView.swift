@@ -1,12 +1,10 @@
 import SwiftUI
 import class WooFoundation.KeyboardObserver
-import struct Yosemite.POSCustomAmount
 
 struct CartView: View {
     @Environment(\.posMetrics) private var metrics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.keyboardObserver) private var keyboardObserver
     private let viewHelper = CartViewHelper()
@@ -38,7 +36,6 @@ struct CartView: View {
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
-        @Bindable var posModel = posModel
         GeometryReader { geometry in
             ZStack {
                 VStack(spacing: 0) {
@@ -78,29 +75,6 @@ struct CartView: View {
                 // tear CartView down before the cover fully presents.
                 .posModal(isPresented: $showBarcodeScanningModal) {
                     POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
-                }
-                // Cart-side edit only: the add path pushes from the products list and tracks
-                // its own `mode: .add` analytics inline in `ItemListView`.
-                //
-                // iPad-only here. On phone the cart is presented as a sheet; presenting a
-                // .posFullScreenCover from inside it triggers POSSheet's coverManager check
-                // and the sheet dismisses CartView along with the cover. The dashboard hosts
-                // the same cover for compact width via `posModel.editingCustomAmount` directly.
-                .if(horizontalSizeClass != .compact) { view in
-                    view.posFullScreenCover(item: $posModel.editingCustomAmount) { customAmount in
-                        AddCustomAmountView(
-                            currencySettings: currencyProvider.currencySettings,
-                            editing: customAmount,
-                            backButtonStyle: .close,
-                            // Explicit-dismiss path (back button + post-submit). System-driven dismissal
-                            // already nils the `item` binding; this closure handles the user-driven cases
-                            // where `submit()` calls `onDismiss()` to close the cover.
-                            onDismiss: { posModel.editingCustomAmount = nil },
-                            onSubmit: { updated in
-                                posModel.upsertCustomAmount(updated, mode: .edit)
-                            }
-                        )
-                    }
                 }
                 .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
                 .frame(maxWidth: .infinity)
@@ -474,7 +448,7 @@ private struct CustomAmountsCartSection: View {
                 CustomAmountRowView(
                     customAmount: customAmount,
                     showsDiscountNotAppliedNote: showsDiscountNotAppliedNote,
-                    onEdit: isInteractive ? { posModel.editingCustomAmount = customAmount } : nil,
+                    onEdit: isInteractive ? { posModel.customAmountFlow = .edit(customAmount) } : nil,
                     onRemove: isInteractive ? {
                         analytics.track(
                             event: .PointOfSale.itemRemovedFromCart(

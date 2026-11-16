@@ -85,7 +85,13 @@
                 "amount": "125.5",
                 "total": "125.50",
                 "total_tax": "0.00",
-                "taxes": [],
+                "taxes": [
+                    {
+                        "id": "AVATAX-TX-STATE-TAX",
+                        "total": "0.00",
+                        "subtotal": ""
+                    }
+                ],
                 "meta_data": []
             }
         ],
@@ -121,7 +127,7 @@
                        "total_tax": "1.20",
                        "taxes": [
                                  {
-                                 "id": 1,
+                                 "id": "AVATAX-TX-STATE-TAX",
                                  "total": "1.2",
                                  "subtotal": "2"
                                  }
@@ -143,7 +149,7 @@
                        "total_tax": "0.00",
                        "taxes": [
                            {
-                               "id": 1,
+                               "id": "1",
                                "total": "0",
                                "subtotal": "0.4"
                            }

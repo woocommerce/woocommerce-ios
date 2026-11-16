@@ -43,6 +43,23 @@ class SiteAPIRemoteTests: XCTestCase {
         XCTAssertEqual(siteAPI.routes, ["/wc/v3/payments/orders/(?P<order_id>\\w+)/prepare_terminal_payment"])
 
         let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+        XCTAssertEqual(request.parameters["_fields"] as? String, "authentication,namespaces")
+    }
+
+    func test_loadAPIInformation_when_includeRoutes_is_true_then_requests_routes_field() throws {
+        // Given
+        let remote = SiteAPIRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "", filename: "site-api")
+
+        // When
+        let _: Result<SiteAPI, Error> = waitFor { promise in
+            remote.loadAPIInformation(for: self.sampleSiteID, includeRoutes: true) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
         XCTAssertEqual(request.parameters["_fields"] as? String, "authentication,namespaces,routes")
     }
 

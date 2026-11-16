@@ -46,6 +46,7 @@ final class MockPOSAccessSession: POSAccessSession {
 
         switch signInResult {
         case .success(let signedInStaff):
+            accessScope = POSPINSessionTokens.Token()
             currentStaff = signedInStaff
             isLocked = false
         case .failure(let error):
@@ -72,7 +73,10 @@ final class MockPOSAccessSession: POSAccessSession {
         lockCallCount += 1
     }
 
-    func endSession() {}
+    func endSession() {
+        accessScope = POSPINSessionTokens.Token()
+    }
+
     func saveElapsedTime() async {}
 
     func checkLockoutState() async throws(POSAuthError) {

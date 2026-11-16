@@ -120,7 +120,7 @@ private extension POSCapabilityApprovalTests {
     struct SUT {
         let session: DefaultPOSAccessSession
         let handler: POSManagerOverrideHandler
-        let defaults: UserDefaults
+        let defaultsScope: CapabilityApprovalTestDefaults
     }
 
     func makeSUT(operator operatorStaff: POSStaff, approver: POSStaff? = nil) async throws -> SUT {
@@ -129,19 +129,26 @@ private extension POSCapabilityApprovalTests {
             credentials.append(try credential(approver, pin: Constants.approverPIN))
         }
         let provider = MockPOSPINCredentialProvider(credentialsResult: .success(credentials))
-        let defaults = try #require(UserDefaults(suiteName: "POSCapabilityApprovalTests.\(UUID().uuidString)"))
+        let defaultsScope = CapabilityApprovalTestDefaults()
         let session = DefaultPOSAccessSession(
             siteID: 123,
             authenticator: DefaultPOSPINAuthenticator(credentialProvider: provider),
             rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
             credentialProvider: provider,
-            userDefaults: defaults
+            userDefaults: defaultsScope.defaults
         )
         try await session.signIn(withPIN: Constants.operatorPIN)
-        return SUT(session: session, handler: POSManagerOverrideHandler(session: session), defaults: defaults)
+        return SUT(session: session, handler: POSManagerOverrideHandler(session: session), defaultsScope: defaultsScope)
     }
 
     func credential(_ staff: POSStaff, pin: String) throws -> POSPINCredential {
         POSPINCredential(staff: staff, pinHash: try #require(POSPINHash(pin: pin, iterations: 1)))
     }
+}
+
+private final class CapabilityApprovalTestDefaults {
+    let defaults: UserDefaults
+    private let name = "POSCapabilityApprovalTests.\(UUID().uuidString)"
+    init() { defaults = UserDefaults(suiteName: name)! }
+    deinit { defaults.removePersistentDomain(forName: name) }
 }

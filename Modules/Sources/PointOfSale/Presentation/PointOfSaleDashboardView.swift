@@ -724,17 +724,17 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
-    /// The approval prompt already confirms the exit, so an approved exit leaves POS without the confirmation.
     func requestExit(confirmingFirst: Bool) {
         overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { approved in
-            guard approved || !confirmingFirst else {
+            switch PointOfSaleDashboardViewHelper.exitDecision(confirmingFirst: confirmingFirst, approved: approved) {
+            case .showConfirmation:
                 showExitPOSModal = true
-                return
+            case .leave(let tracksConfirmation):
+                if tracksConfirmation {
+                    analytics.track(.pointOfSaleExitConfirmed)
+                }
+                dismiss()
             }
-            if confirmingFirst {
-                analytics.track(.pointOfSaleExitConfirmed)
-            }
-            dismiss()
         }
     }
 }

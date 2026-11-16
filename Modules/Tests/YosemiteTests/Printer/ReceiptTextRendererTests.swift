@@ -238,11 +238,12 @@ struct ReceiptTextRendererTests {
         }
     }
 
-    @Test func test_makeReceiptText_when_store_address_is_multiline_then_each_line_is_centered_independently() {
+    @Test(arguments: ["\n", "\r\n", "\r"])
+    func test_makeReceiptText_when_store_address_is_multiline_then_each_line_is_centered_independently(lineBreak: String) {
         // Given
         let renderer = ReceiptTextRenderer(lineWidth: 20)
         let storeInformation = ReceiptStoreInformation(storeName: nil,
-                                                       storeAddress: "AB\nCDEFGH",
+                                                       storeAddress: "AB" + lineBreak + "CDEFGH",
                                                        phone: nil,
                                                        email: nil,
                                                        refundReturnsPolicy: nil)
@@ -253,9 +254,36 @@ struct ReceiptTextRendererTests {
 
         // Then — each address line is centered on its own, not laid out across the embedded newline
         // (the second line previously printed flush-left).
-        let lines = receipt.components(separatedBy: "\n")
+        let lines = receipt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
         #expect(lines.contains(String(repeating: " ", count: 9) + "AB"))
         #expect(lines.contains(String(repeating: " ", count: 7) + "CDEFGH"))
+    }
+
+    @Test func test_makeReceiptText_when_store_address_uses_CRLF_at_default_lineWidth_then_header_lines_are_balanced() {
+        // Given — store details shaped like the WOOMOB-3454 report, with the CRLF address a wp-admin textarea saves.
+        let storeInformation = ReceiptStoreInformation(
+            storeName: "Everyday Pay",
+            storeAddress: "12345 Example Street S\r\nSpringfield Heights, CA 90000",
+            phone: "05555 465 5556",
+            email: "shop@everyday-pay.example",
+            refundReturnsPolicy: "365 days to return in saleable condition, just bring it back with the receipt and we'll sort you out.")
+        let content = makeContent(lineItems: [], cartTotals: [])
+
+        // When
+        let receipt = builder.makeReceiptText(content: content, storeInformation: storeInformation, cardDetails: nil)
+
+        // Then — previously the CRLF stayed inside one wrapped line, leaving the postcode alone on its own line.
+        let separator = String(repeating: "-", count: ReceiptTextRenderer.Constants.defaultLineWidth)
+        let header = receipt.split(separator: "\n", omittingEmptySubsequences: false)
+            .map(String.init)
+            .prefix { $0 != separator }
+        #expect(Array(header) == [
+            String(repeating: " ", count: 18) + "Everyday Pay",
+            String(repeating: " ", count: 13) + "12345 Example Street S",
+            String(repeating: " ", count: 9) + "Springfield Heights, CA 90000",
+            String(repeating: " ", count: 17) + "05555 465 5556",
+            String(repeating: " ", count: 11) + "shop@everyday-pay.example"
+        ])
     }
 }
 

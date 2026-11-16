@@ -68,14 +68,17 @@ struct POSModalCloseButtonModifier: ViewModifier {
     let accessibilityIdentifier: String?
     let fontStyle: POSFontStyle
     let foregroundColor: Color
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
     func body(content: Content) -> some View {
         VStack(spacing: 0) {
-            POSModalCloseButton(accessibilityLabel: accessibilityLabel,
-                                accessibilityIdentifier: accessibilityIdentifier,
-                                fontStyle: fontStyle,
-                                foregroundColor: foregroundColor,
-                                closeAction: closeAction)
+            if !isFullScreenFlow {
+                POSModalCloseButton(accessibilityLabel: accessibilityLabel,
+                                    accessibilityIdentifier: accessibilityIdentifier,
+                                    fontStyle: fontStyle,
+                                    foregroundColor: foregroundColor,
+                                    closeAction: closeAction)
+            }
 
             Spacer()
 
@@ -83,6 +86,7 @@ struct POSModalCloseButtonModifier: ViewModifier {
 
             Spacer()
         }
+        .preference(key: POSModalFlowCloseAccessibilityIdentifierKey.self, value: accessibilityIdentifier)
     }
 }
 

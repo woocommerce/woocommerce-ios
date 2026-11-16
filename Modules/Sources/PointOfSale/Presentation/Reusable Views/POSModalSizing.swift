@@ -2,8 +2,8 @@ import SwiftUI
 
 extension View {
     /// Sets the frame size and applies a padding to a modal in POS.
-    func posModalSizing(fullScreenWhenCompact: Bool = false) -> some View {
-        self.modifier(POSModalSizing(fullScreenWhenCompact: fullScreenWhenCompact))
+    func posModalSizing(fullScreenWhenCompact: Bool = false, fitsContentHeight: Bool = false) -> some View {
+        self.modifier(POSModalSizing(fullScreenWhenCompact: fullScreenWhenCompact, fitsContentHeight: fitsContentHeight))
     }
 }
 
@@ -13,12 +13,24 @@ struct POSModalSizing: ViewModifier {
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    let fullScreenWhenCompact: Bool
+    @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
 
+    let fullScreenWhenCompact: Bool
+    let fitsContentHeight: Bool
+
+    @ViewBuilder
     func body(content: Content) -> some View {
-        content
-            .padding(metrics.padding.xxLarge)
-            .frame(width: frameWidth, height: frameHeight)
+        if isFullScreenFlow {
+            // The flow header brings its own top spacing.
+            content
+                .padding(.horizontal, metrics.padding.xxLarge)
+                .padding(.bottom, metrics.padding.medium)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            content
+                .padding(metrics.padding.xxLarge)
+                .frame(width: frameWidth, height: fitsContentHeight ? nil : frameHeight)
+        }
     }
 }
 

@@ -174,15 +174,20 @@ struct PointOfSaleDashboardView: View {
             paymentsOnboardingView(from: factory)
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+                  compactStyle: .cardReaderConnection,
                   onDismiss: {
             posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
-        .posModal(isPresented: $showExitPOSModal) {
-            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
-            .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
+        .posDialog(isPresented: $showExitPOSModal) {
+            .exitPOS(exit: {
+                analytics.track(.pointOfSaleExitConfirmed)
+                dismiss()
+            }, close: {
+                showExitPOSModal = false
+            })
         }
         .posRootModal()
         .posManagerOverrideModal(handler: overrideHandler)
@@ -357,7 +362,9 @@ struct PointOfSaleDashboardView: View {
                     GeometryReader { proxy in
                         POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
                             .environment(\.posModalParentSize, proxy.size)
+                            .posFullScreenFlowHeader(style: .barcodeScannerSetup, dismissAction: { phoneShowingBarcodeScannerSetup = false })
                     }
+                    .background(Color.posSurfaceBright.ignoresSafeArea())
                 }
         }
         .background(Color.posSurface.ignoresSafeArea())
@@ -761,7 +768,6 @@ private extension PointOfSaleDashboardView {
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
         static let floatingControlVerticalOffset: CGFloat = 0
-        static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let cartButtonAppearanceDuration: TimeInterval = 0.25
         static let supportTag = "origin:point-of-sale"
     }

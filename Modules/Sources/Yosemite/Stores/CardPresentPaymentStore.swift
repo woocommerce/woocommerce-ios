@@ -39,6 +39,7 @@ public final class CardPresentPaymentStore: Store {
 
     private let remote: WCPayRemote
     private let stripeRemote: StripeRemote
+    private let ordersRemote: OrdersRemote
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -59,6 +60,7 @@ public final class CardPresentPaymentStore: Store {
         self.commonReaderConfigProvider = cardReaderConfigProvider
         self.remote = WCPayRemote(network: network)
         self.stripeRemote = StripeRemote(network: network)
+        self.ordersRemote = OrdersRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -77,6 +79,14 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
+        case let .checkOrderCashPaymentEligibility(siteID, orderID, onCompletion):
+            Task { @MainActor in
+                do {
+                    onCompletion(.success(try await checkOrderCashPaymentEligibility(siteID: siteID, orderID: orderID)))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
         case .use(let account):
             use(paymentGatewayAccount: account)
         case .selectedPaymentGatewayAccount(let completion):
@@ -174,6 +184,30 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
+    func checkOrderCashPaymentEligibility(siteID: Int64, orderID: Int64) async throws -> OrderCashPaymentEligibility {
+        let details = try await ordersRemote.loadPaymentDetails(for: siteID, orderID: orderID)
+        guard details.orderID == orderID else { return .unresolvedCardPayment }
+        guard !details.isPaid else { return .alreadyPaid }
+        guard let intentID = details.wooPaymentsIntentID, !intentID.isEmpty else { return .eligible }
+        guard intentID.hasPrefix("pi_"), intentID.allSatisfy({ $0.isASCII && ($0.isLetter || $0.isNumber || $0 == "_") }) else {
+            return .unresolvedCardPayment
+        }
+
+        // Use the order's intent, not the reader's current attempt, which may be cleared or belong to another order.
+        let intent = try await remote.retrievePaymentIntent(for: siteID, paymentIntentID: intentID)
+        guard intent.id == intentID else { return .unresolvedCardPayment }
+        switch intent.status {
+        case .canceled:
+            return .eligible
+        case .requiresCapture:
+            return .authorizedCardPayment
+        case .succeeded:
+            return .alreadyPaid
+        default:
+            return .unresolvedCardPayment
+        }
+    }
+
     func checkDeviceSupport(siteID: Int64,
                             cardReaderType: CardReaderType,
                             discoveryMethod: CardReaderDiscoveryMethod,

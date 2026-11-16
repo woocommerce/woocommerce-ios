@@ -34,6 +34,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// Currently set while marking the order as complete
     ///
     @Published private(set) var showLoadingIndicator = false
+    @Published var cashPaymentErrorMessage: String?
 
     /// Stores the payment link for the order.
     ///
@@ -212,18 +213,43 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 
     @MainActor
-    func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?) async {
+    func prepareForCashPayment() async -> Bool {
+        guard !showLoadingIndicator else { return false }
         showLoadingIndicator = true
+        defer { showLoadingIndicator = false }
         do {
+            try await checkCashPaymentEligibility()
+            trackCollectByCash()
+            return true
+        } catch {
+            cashPaymentErrorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    @discardableResult
+    @MainActor
+    func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?) async -> Bool {
+        guard !showLoadingIndicator else { return false }
+        showLoadingIndicator = true
+        defer { showLoadingIndicator = false }
+        do {
+            // Recheck at submission because payment can finish while the cash screen is open.
+            try await checkCashPaymentEligibility()
             try await markOrderCompletedWithCashOnDelivery()
             updateOrderAsynchronously()
             if let info, info.addNoteWithChangeData {
                 await addPaidByCashNoteToOrder(with: info)
             }
             finishOrderPaidByCashFlow()
+            return true
         } catch {
-            presentNoticeSubject.send(.error(Localization.markAsPaidError))
+            cashPaymentErrorMessage = (error as? CashPaymentError)?.errorDescription ?? Localization.markAsPaidError
+            if !(error is CashPaymentError) {
+                presentNoticeSubject.send(.error(Localization.markAsPaidError))
+            }
             trackFlowFailed()
+            return false
         }
     }
 
@@ -388,6 +414,25 @@ final class PaymentMethodsViewModel: ObservableObject {
 // MARK: - Cash Payment
 
 private extension PaymentMethodsViewModel {
+    @MainActor
+    func checkCashPaymentEligibility() async throws {
+        let eligibility: OrderCashPaymentEligibility = try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(CardPresentPaymentAction.checkOrderCashPaymentEligibility(siteID: siteID, orderID: orderID) { result in
+                continuation.resume(with: result.mapError { _ in CashPaymentError.verificationFailed })
+            })
+        }
+        switch eligibility {
+        case .eligible:
+            return
+        case .authorizedCardPayment:
+            throw CashPaymentError.authorizedCardPayment
+        case .alreadyPaid:
+            throw CashPaymentError.alreadyPaid
+        case .unresolvedCardPayment:
+            throw CashPaymentError.unresolvedCardPayment
+        }
+    }
+
     /// Mark an order as Completed with Cash on Delivery payment method
     ///
     @MainActor
@@ -436,7 +481,6 @@ private extension PaymentMethodsViewModel {
     }
 
     func finishOrderPaidByCashFlow() {
-        showLoadingIndicator = false
         presentNoticeSubject.send(.completed)
         trackFlowCompleted(method: .cash, cardReaderType: .none)
     }
@@ -640,6 +684,22 @@ private extension PaymentMethodsViewModel {
 
 private extension PaymentMethodsViewModel {
     enum Localization {
+        static let authorizedCardPayment = NSLocalizedString(
+            "paymentMethods.cash.authorizedCardPayment",
+            value: "This order has an authorized card payment. Review the payment in WooPayments before taking cash.",
+            comment: "Explains why cash is blocked while a card authorization remains open.")
+        static let alreadyPaid = NSLocalizedString(
+            "paymentMethods.cash.alreadyPaid",
+            value: "This order has already been paid. Refresh the order before taking another payment.",
+            comment: "Explains why an already paid order cannot be marked as paid by cash.")
+        static let unresolvedCardPayment = NSLocalizedString(
+            "paymentMethods.cash.unresolvedCardPayment",
+            value: "The previous card payment has not been resolved. Check its status in WooPayments before taking cash.",
+            comment: "Explains why cash is blocked when the previous card payment is still processing or has an unknown status.")
+        static let paymentVerificationFailed = NSLocalizedString(
+            "paymentMethods.cash.verificationFailed",
+            value: "Couldn’t check this order’s payment status. Please try again before taking cash.",
+            comment: "Shown when payment status cannot be verified before recording a cash payment.")
         static let unsupportedOrderCurrency = NSLocalizedString(
             "paymentMethods.cardPaymentsUnavailableForOrderCurrency",
             value: "Card payments aren’t available for this order’s currency (%1$@).",
@@ -682,6 +742,21 @@ enum PaymentMethodsNotice: Equatable {
 
 enum PaymentMethodsError: Error {
     case orderNotFound
+}
+
+private extension PaymentMethodsViewModel {
+    enum CashPaymentError: LocalizedError {
+        case authorizedCardPayment, alreadyPaid, unresolvedCardPayment, verificationFailed
+
+        var errorDescription: String? {
+            switch self {
+            case .authorizedCardPayment: Localization.authorizedCardPayment
+            case .alreadyPaid: Localization.alreadyPaid
+            case .unresolvedCardPayment: Localization.unresolvedCardPayment
+            case .verificationFailed: Localization.paymentVerificationFailed
+            }
+        }
+    }
 }
 
 private extension CardReaderDiscoveryMethod {

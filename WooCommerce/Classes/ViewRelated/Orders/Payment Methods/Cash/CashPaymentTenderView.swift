@@ -55,7 +55,6 @@ struct CashPaymentTenderView: View {
 
                 Button(Localization.markOrderAsCompleteButtonTitle) {
                     viewModel.onMarkOrderAsCompleteButtonTapped()
-                    dismiss()
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .accessibilityIdentifier("cash-payment-mark-order-complete-button")

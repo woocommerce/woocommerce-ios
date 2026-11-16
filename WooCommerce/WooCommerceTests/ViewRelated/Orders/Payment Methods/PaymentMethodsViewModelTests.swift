@@ -23,6 +23,11 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .testingInstance)
         storage = MockStorageManager()
         subscriptions = Set<AnyCancellable>()
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .checkOrderCashPaymentEligibility(_, _, completion) = action {
+                completion(.success(.eligible))
+            }
+        }
     }
 
     override func tearDown() {
@@ -30,6 +35,125 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         stores = nil
         storage = nil
+    }
+
+    func test_mark_order_as_paid_by_cash_when_card_authorized_then_does_not_update_order() async {
+        // Given
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .checkOrderCashPaymentEligibility(_, _, completion) = action {
+                completion(.success(.authorizedCardPayment))
+            }
+        }
+        var didUpdateOrder = false
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .updateOrder(_, _, _, _, _, completion) = action {
+                didUpdateOrder = true
+                completion(.success(.fake()))
+            }
+        }
+        let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderPayment,
+                                                channel: .storeManagement, dependencies: Dependencies(stores: stores, storage: storage))
+
+        // When
+        await viewModel.markOrderAsPaidByCash(with: nil)
+
+        // Then
+        XCTAssertFalse(didUpdateOrder, "Saving completed/COD can capture the outstanding card authorization.")
+    }
+
+    func test_prepare_cash_when_previous_payment_is_not_safe_then_shows_error_and_stays_on_payment_methods() async {
+        for eligibility in [OrderCashPaymentEligibility.authorizedCardPayment, .alreadyPaid, .unresolvedCardPayment] {
+            // Given
+            stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+                if case let .checkOrderCashPaymentEligibility(_, _, completion) = action {
+                    completion(.success(eligibility))
+                }
+            }
+            let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderPayment,
+                                                    channel: .storeManagement, dependencies: Dependencies(stores: stores, storage: storage))
+
+            // When
+            let canOpenCash = await viewModel.prepareForCashPayment()
+
+            // Then
+            XCTAssertFalse(canOpenCash)
+            XCTAssertNotNil(viewModel.cashPaymentErrorMessage)
+            XCTAssertFalse(viewModel.disableViewActions)
+        }
+    }
+
+    func test_mark_cash_when_payment_check_fails_then_does_not_save_or_complete() async {
+        // Given
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .checkOrderCashPaymentEligibility(_, _, completion) = action {
+                completion(.failure(NSError(domain: "test", code: 1)))
+            }
+        }
+        stores.whenReceivingAction(ofType: OrderAction.self) { _ in XCTFail("Must not update the order when verification fails.") }
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { _ in XCTFail("Must not add a cash note when verification fails.") }
+        let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderPayment,
+                                                channel: .storeManagement, dependencies: Dependencies(stores: stores, storage: storage))
+        var didComplete = false
+        viewModel.notice.sink { if $0 == .completed { didComplete = true } }.store(in: &subscriptions)
+
+        // When
+        let succeeded = await viewModel.markOrderAsPaidByCash(with: nil)
+
+        // Then
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(didComplete)
+        XCTAssertNotNil(viewModel.cashPaymentErrorMessage)
+        XCTAssertFalse(viewModel.disableViewActions)
+    }
+
+    func test_mark_cash_when_card_authorizes_after_opening_cash_then_rechecks_and_blocks_save() async {
+        // Given
+        var checks = 0
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .checkOrderCashPaymentEligibility(_, _, completion) = action {
+                checks += 1
+                completion(.success(checks == 1 ? .eligible : .authorizedCardPayment))
+            }
+        }
+        stores.whenReceivingAction(ofType: OrderAction.self) { _ in XCTFail("Must not save cash after the card authorizes.") }
+        let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderPayment,
+                                                channel: .storeManagement, dependencies: Dependencies(stores: stores, storage: storage))
+
+        // When
+        let canOpenCash = await viewModel.prepareForCashPayment()
+        let succeeded = await viewModel.markOrderAsPaidByCash(with: nil)
+
+        // Then
+        XCTAssertTrue(canOpenCash)
+        XCTAssertFalse(succeeded)
+        XCTAssertEqual(checks, 2)
+    }
+
+    func test_mark_cash_when_verification_is_in_progress_then_blocks_another_submission() async {
+        // Given
+        let checking = expectation(description: "Checking payment")
+        var completeCheck: (@Sendable (Result<OrderCashPaymentEligibility, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .checkOrderCashPaymentEligibility(_, _, completion) = action {
+                completeCheck = completion
+                checking.fulfill()
+            }
+        }
+        let viewModel = PaymentMethodsViewModel(total: "12", formattedTotal: "$12.00", flow: .orderPayment,
+                                                channel: .storeManagement, dependencies: Dependencies(stores: stores, storage: storage))
+        let firstSubmission = Task { await viewModel.markOrderAsPaidByCash(with: nil) }
+        await fulfillment(of: [checking], timeout: Constants.expectationTimeout)
+
+        // When
+        let secondSubmission = await viewModel.markOrderAsPaidByCash(with: nil)
+        completeCheck?(.success(.authorizedCardPayment))
+        let firstResult = await firstSubmission.value
+
+        // Then
+        XCTAssertFalse(secondSubmission)
+        XCTAssertFalse(firstResult)
+        XCTAssertFalse(viewModel.disableViewActions)
     }
 
     func test_loading_is_enabled_while_marking_order_as_paid() async {

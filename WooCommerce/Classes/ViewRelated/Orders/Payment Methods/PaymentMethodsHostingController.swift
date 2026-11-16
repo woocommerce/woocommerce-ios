@@ -46,9 +46,21 @@ struct HostedPaymentMethodsView: View {
 
     /// ViewModel to render the view content.
     ///
-    var viewModel: PaymentMethodsViewModel
+    @ObservedObject var viewModel: PaymentMethodsViewModel
 
     var body: some View {
+        navigationContent
+            .alert(PaymentMethodsView.Localization.cashUnavailable,
+                   isPresented: Binding(get: { viewModel.cashPaymentErrorMessage != nil },
+                                        set: { if !$0 { viewModel.cashPaymentErrorMessage = nil } })) {
+                Button(PaymentMethodsView.Localization.dismissCashError, role: .cancel) {}
+            } message: {
+                Text(viewModel.cashPaymentErrorMessage ?? "")
+            }
+    }
+
+    @ViewBuilder
+    private var navigationContent: some View {
         if #available(iOS 16.0, *) {
             NavigationStack {
                 paymentMethodsView

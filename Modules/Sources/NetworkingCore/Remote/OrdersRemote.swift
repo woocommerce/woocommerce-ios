@@ -120,6 +120,16 @@ public class OrdersRemote: Remote, BookingOrdersRemoteProtocol, @unchecked Senda
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    public func loadPaymentDetails(for siteID: Int64, orderID: Int64) async throws -> OrderPaymentDetails {
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: "\(Constants.ordersPath)/\(orderID)",
+                                     parameters: [ParameterKeys.fields: "id,date_paid,meta_data"],
+                                     availableAsRESTRequest: true)
+        return try await enqueue(request, mapper: OrderPaymentDetailsMapper())
+    }
+
     /// Retrieves specific `Order`s for the Bookings feature.
     ///
     /// `meta_data` in the response is limited to `_payment_status` — the only metadata key Bookings

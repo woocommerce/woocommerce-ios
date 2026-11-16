@@ -62,8 +62,9 @@ struct PaymentMethodsView: View {
                                   title: Localization.cash,
                                   accessibilityID: Accessibility.cashMethod,
                                   safeAreaInsets: safeAreaInsets) {
-                            showingCashAlert = true
-                            viewModel.trackCollectByCash()
+                            Task { @MainActor in
+                                showingCashAlert = await viewModel.prepareForCashPayment()
+                            }
                         }
 
                         if viewModel.showPayWithCardRow {
@@ -168,10 +169,12 @@ struct PaymentMethodsView: View {
             CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(total: viewModel.total,
                                                                         formattedTotal: viewModel.formattedTotal) { info in
                 Task { @MainActor in
-                    await viewModel.markOrderAsPaidByCash(with: info)
-                    dismiss()
+                    if await viewModel.markOrderAsPaidByCash(with: info) {
+                        dismiss()
+                    }
                 }
             })
+            .disabled(viewModel.disableViewActions)
         }
         .onAppear {
             viewModel.countryRecovery.recoverIfNeeded()
@@ -259,6 +262,12 @@ private struct MethodRow: View {
 // MARK: Constants
 extension PaymentMethodsView {
     enum Localization {
+        static let cashUnavailable = NSLocalizedString("paymentMethods.cash.unavailable.title",
+                                                       value: "Cash payment unavailable",
+                                                       comment: "Title when a previous payment prevents recording a cash payment.")
+        static let dismissCashError = NSLocalizedString("paymentMethods.cash.unavailable.dismiss",
+                                                        value: "OK",
+                                                        comment: "Dismisses the cash payment error.")
         static let header = NSLocalizedString("Choose your payment method", comment: "Heading text on the select payment method screen")
         static let cash = NSLocalizedString("Cash", comment: "Cash method title on the select payment method screen")
         static let card = NSLocalizedString("Card Reader",

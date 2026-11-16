@@ -4,6 +4,16 @@ import Foundation
 /// WCPay: Remote Endpoints
 ///
 public class WCPayRemote: Remote, @unchecked Sendable {
+    public func retrievePaymentIntent(for siteID: Int64, paymentIntentID: String) async throws -> RemotePaymentIntent {
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: "payments/payment_intents/\(paymentIntentID)",
+                                     parameters: [TerminalPaymentIntentParameterKeys.fields: "id,status"],
+                                     availableAsRESTRequest: true)
+        return try await enqueue(request, mapper: RemotePaymentIntentMapper())
+    }
+
     /// Loads a WCPay account for a given site ID and parses the response
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the WCPay account info.

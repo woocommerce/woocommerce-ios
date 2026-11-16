@@ -1,0 +1,10 @@
+{
+    "data": {
+        "id": 560,
+        "date_paid": null,
+        "meta_data": [
+            {"id": 1, "key": "_intent_id", "value": "pi_123456789012345678901234"},
+            {"id": 2, "key": "_intention_status", "value": "requires_capture"}
+        ]
+    }
+}

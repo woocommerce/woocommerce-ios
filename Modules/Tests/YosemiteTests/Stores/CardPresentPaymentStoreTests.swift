@@ -92,6 +92,97 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     // MARK: - CardPresentPaymentAction.startCardReaderDiscovery
 
+    func test_cash_eligibility_when_order_has_no_linked_intent_then_allows_cash() async throws {
+        // Given / When
+        let result = await checkCashEligibility(orderFixture: "order-payment-details-unpaid")
+
+        // Then
+        XCTAssertEqual(try result.get(), .eligible)
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
+    }
+
+    func test_cash_eligibility_when_order_is_paid_then_blocks_cash() async throws {
+        // Given / When
+        let result = await checkCashEligibility(orderFixture: "order-payment-details-paid")
+
+        // Then
+        XCTAssertEqual(try result.get(), .alreadyPaid)
+    }
+
+    func test_cash_eligibility_when_authorization_remains_after_capture_failure_then_blocks_cash() async throws {
+        // Given / When
+        let result = await checkCashEligibility(intentFixture: "wcpay-payment-intent-requires-capture")
+
+        // Then
+        XCTAssertEqual(try result.get(), .authorizedCardPayment)
+        XCTAssertEqual(network.requestsForResponseData.count, 2)
+    }
+
+    func test_cash_eligibility_when_cached_authorization_was_canceled_then_allows_cash() async throws {
+        // Given / When
+        let result = await checkCashEligibility(intentFixture: "wcpay-payment-intent-canceled")
+
+        // Then
+        XCTAssertEqual(try result.get(), .eligible)
+    }
+
+    func test_cash_eligibility_when_card_was_captured_then_blocks_cash() async throws {
+        // Given / When
+        let result = await checkCashEligibility(intentFixture: "wcpay-payment-intent-succeeded")
+
+        // Then
+        XCTAssertEqual(try result.get(), .alreadyPaid)
+    }
+
+    func test_cash_eligibility_when_intent_is_processing_or_unknown_then_blocks_cash() async throws {
+        for fixture in ["wcpay-payment-intent-processing", "wcpay-payment-intent-unknown-status"] {
+            // Given / When
+            let result = await checkCashEligibility(intentFixture: fixture)
+
+            // Then
+            XCTAssertEqual(try result.get(), .unresolvedCardPayment)
+        }
+    }
+
+    func test_cash_eligibility_when_intent_lookup_fails_then_returns_failure() async {
+        // Given / When
+        let result = await checkCashEligibility()
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_cash_eligibility_when_order_response_is_incomplete_then_returns_failure() async {
+        // Given / When
+        let result = await checkCashEligibility(orderFixture: "order-payment-details-incomplete")
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_cash_eligibility_when_order_response_is_for_another_order_then_blocks_cash() async throws {
+        // Given / When
+        let result = await checkCashEligibility(orderFixture: "order-payment-details-unpaid", orderID: 999)
+
+        // Then
+        XCTAssertEqual(try result.get(), .unresolvedCardPayment)
+    }
+
+    private func checkCashEligibility(orderFixture: String = "order-payment-details-authorized",
+                                      intentFixture: String? = nil,
+                                      orderID: Int64 = 560) async -> Result<OrderCashPaymentEligibility, Error> {
+        network.simulateResponse(requestUrlSuffix: "orders/\(orderID)", filename: orderFixture)
+        if let intentFixture {
+            network.simulateResponse(requestUrlSuffix: "payments/payment_intents/pi_123456789012345678901234", filename: intentFixture)
+        }
+        return await withCheckedContinuation { continuation in
+            cardPresentStore.onAction(CardPresentPaymentAction.checkOrderCashPaymentEligibility(siteID: sampleSiteID,
+                                                                                                orderID: orderID) {
+                continuation.resume(returning: $0)
+            })
+        }
+    }
+
     func test_retrievePaymentIntent_action_returns_refreshed_intent_from_service() throws {
         // Given
         let clientSecret = "pi_client_secret"

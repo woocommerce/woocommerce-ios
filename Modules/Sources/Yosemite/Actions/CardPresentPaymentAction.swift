@@ -89,6 +89,11 @@ public enum CardPresentPaymentAction: Action {
     /// Retrieves the latest state of a PaymentIntent from Stripe using its client secret.
     case retrievePaymentIntent(clientSecret: String, onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
+    /// Checks the order and its WooPayments intent remotely before replacing its payment method with cash.
+    case checkOrderCashPaymentEligibility(siteID: Int64,
+                                          orderID: Int64,
+                                          onCompletion: @Sendable (Result<OrderCashPaymentEligibility, Error>) -> Void)
+
     /// Refund payment of an order, client side. Only for use on Interac payments
     ///
     case refundPayment(parameters: RefundParameters, onCardReaderMessage: (CardReaderEvent) -> Void, onCompletion: ((Result<Void, Error>) -> Void)?)

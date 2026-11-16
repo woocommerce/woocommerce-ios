@@ -61,17 +61,17 @@ struct POSAccessSessionFactoryTests {
         #expect(session.allows(.manageStoreSettings))
     }
 
-    @Test(arguments: ["setup", "remove", "failure"])
-    func test_make_when_pin_mutation_is_pending_then_waits_for_committed_protection(operation: String) async throws {
+    @Test(arguments: PendingPINChange.allCases)
+    func test_make_when_pin_mutation_is_pending_then_waits_for_committed_protection(change: PendingPINChange) async throws {
         // Given
-        let sut = makeSUT(fails: operation == "failure")
-        if operation == "remove" {
+        let sut = makeSUT(fails: change.fails)
+        if change == .removal {
             try sut.store.setPIN("1234", for: .admin)
             try sut.session.refreshPINProtection()
             try await sut.session.signIn(withPIN: "1234")
         }
         sut.controller.load()
-        let save = Task { await changePIN(using: sut, removing: operation == "remove") }
+        let save = Task { await changePIN(using: sut, removing: change == .removal) }
         defer { sut.blocking.releaseMutation() }
         try await sut.blocking.waitUntilEntered()
         #expect(!sut.limiter.pendingPINChanges.isEmpty)
@@ -87,15 +87,15 @@ struct POSAccessSessionFactoryTests {
         }
         while !started { await Task.yield() }
 
-        // Then: an unrelated store is not blocked by this store's mutation.
+        // Then
         #expect(constructed == false)
-        let other = makeSUT(siteID: 124)
-        #expect(try await makeReplacement(other).isPINProtectionEnabled == false)
+        let unrelatedStore = makeSUT(siteID: 124)
+        #expect(try await makeReplacement(unrelatedStore).isPINProtectionEnabled == false)
         sut.blocking.releaseMutation()
-        #expect(await save.value == (operation != "failure"))
+        #expect(await save.value == !change.fails)
         let current = try await replacement.value
-        #expect(current.isPINProtectionEnabled == (operation == "setup"))
-        #expect(current.isLocked == (operation == "setup"))
+        #expect(current.isPINProtectionEnabled == change.leavesProtection)
+        #expect(current.isLocked == change.leavesProtection)
         #expect(sut.limiter.pendingPINChanges.isEmpty)
     }
 
@@ -107,7 +107,7 @@ struct POSAccessSessionFactoryTests {
         defer { sut.blocking.releaseMutation() }
         try await sut.blocking.waitUntilEntered()
         let token = sut.limiter.sessionTokens.current()
-        let marker = sut.defaults.defaults.object(forKey: POSLockStateKey.key(for: 123)) as? Bool
+        let marker = sut.defaultsScope.defaults.object(forKey: POSLockStateKey.key(for: 123)) as? Bool
         var started = false
         let replacement = Task {
             started = true
@@ -123,7 +123,7 @@ struct POSAccessSessionFactoryTests {
         // Then
         #expect(!sut.limiter.pendingPINChanges.isEmpty)
         #expect(sut.limiter.sessionTokens.isCurrent(token))
-        #expect(sut.defaults.defaults.object(forKey: POSLockStateKey.key(for: 123)) as? Bool == marker)
+        #expect(sut.defaultsScope.defaults.object(forKey: POSLockStateKey.key(for: 123)) as? Bool == marker)
         sut.blocking.releaseMutation()
         #expect(await save.value)
         #expect(sut.limiter.pendingPINChanges.isEmpty)
@@ -134,14 +134,14 @@ struct POSAccessSessionFactoryTests {
         // Given
         let sut = makeSUT()
         let token = sut.limiter.sessionTokens.current()
-        let marker = sut.defaults.defaults.object(forKey: POSLockStateKey.key(for: 123)) as? Bool
+        let marker = sut.defaultsScope.defaults.object(forKey: POSLockStateKey.key(for: 123)) as? Bool
         let task = Task { try await makeReplacement(sut) }
         task.cancel()
 
         // When / Then
         await #expect(throws: CancellationError.self) { try await task.value }
         #expect(sut.limiter.sessionTokens.isCurrent(token))
-        #expect(sut.defaults.defaults.object(forKey: POSLockStateKey.key(for: 123)) as? Bool == marker)
+        #expect(sut.defaultsScope.defaults.object(forKey: POSLockStateKey.key(for: 123)) as? Bool == marker)
     }
 
     @Test func test_two_entrants_when_pending_change_finishes_then_only_needed_entry_can_claim_owner() async throws {
@@ -178,6 +178,28 @@ struct POSAccessSessionFactoryTests {
     }
 }
 
+extension POSAccessSessionFactoryTests {
+    enum PendingPINChange: CaseIterable {
+        case setup
+        case removal
+        case failure
+
+        var fails: Bool {
+            switch self {
+            case .setup, .removal: false
+            case .failure: true
+            }
+        }
+
+        var leavesProtection: Bool {
+            switch self {
+            case .setup: true
+            case .removal, .failure: false
+            }
+        }
+    }
+}
+
 private extension POSAccessSessionFactoryTests {
     func changePIN(using sut: SUT, removing: Bool = false) async -> Bool {
         if removing {
@@ -203,23 +225,23 @@ private extension POSAccessSessionFactoryTests {
         let limiter: POSLocalRateLimiter
         let session: DefaultPOSAccessSession
         let controller: POSSecuritySettingsController
-        let defaults: FactoryTestDefaults
+        let defaultsScope: FactoryTestDefaults
     }
 
     func makeSUT(fails: Bool = false, siteID: Int64 = 123, blocksValidation: Bool = false) -> SUT {
         let store = POSLocalPINStore(siteID: siteID, storage: InMemoryPOSSecureStorage(), iterations: 1)
         let blocking = MockBlockingPOSPINStore(store: store, fails: fails, blocksValidation: blocksValidation)
         let limiter = POSLocalRateLimiter(siteID: siteID, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock())
-        let defaults = FactoryTestDefaults()
+        let defaultsScope = FactoryTestDefaults()
         let session = DefaultPOSAccessSession(siteID: siteID, authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
-                                              rateLimiter: limiter, credentialProvider: store, userDefaults: defaults.defaults)
+                                              rateLimiter: limiter, credentialProvider: store, userDefaults: defaultsScope.defaults)
         return SUT(siteID: siteID, store: store, blocking: blocking, limiter: limiter, session: session,
-                   controller: POSSecuritySettingsController(store: blocking, session: session), defaults: defaults)
+                   controller: POSSecuritySettingsController(store: blocking, session: session), defaultsScope: defaultsScope)
     }
 
     func makeReplacement(_ sut: SUT, shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
         try await POSAccessSessionFactory.make(siteID: sut.siteID, featureFlags: StubPOSFeatureFlagProviding(enabledFlags: [.pointOfSaleRoles]),
-                                               credentialProvider: sut.store, rateLimiter: sut.limiter, userDefaults: sut.defaults.defaults,
+                                               credentialProvider: sut.store, rateLimiter: sut.limiter, userDefaults: sut.defaultsScope.defaults,
                                                shouldCreate: shouldCreate)
     }
 }
@@ -234,6 +256,11 @@ private final class FactoryTestDefaults {
 private final class StubPOSFeatureFlagProviding: POSFeatureFlagProviding {
     let enabledFlags: Set<FeatureFlag>
 
-    init(enabledFlags: Set<FeatureFlag>) { self.enabledFlags = enabledFlags }
-    func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool { enabledFlags.contains(flag) }
+    init(enabledFlags: Set<FeatureFlag>) {
+        self.enabledFlags = enabledFlags
+    }
+
+    func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool {
+        enabledFlags.contains(flag)
+    }
 }

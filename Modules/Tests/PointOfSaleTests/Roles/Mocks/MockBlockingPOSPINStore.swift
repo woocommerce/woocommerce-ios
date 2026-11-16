@@ -34,7 +34,7 @@ final class MockBlockingPOSPINStore: POSPINManaging, Sendable {
     func waitUntilEntered() async throws {
         let _: Void = try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global().async { [entered] in
-                guard entered.wait(timeout: .now() + Self.timeout) == .success else {
+                guard entered.wait(timeout: .now() + Self.stuckMutationTimeout) == .success else {
                     continuation.resume(throwing: Failure.mutationDidNotStart)
                     return
                 }
@@ -44,13 +44,12 @@ final class MockBlockingPOSPINStore: POSPINManaging, Sendable {
     }
 
     private enum Failure: Error { case mutationDidNotStart }
-    /// Generous so a loaded CI host only fails a genuinely stuck mutation; the suite time limit still applies.
-    private static let timeout: DispatchTimeInterval = .seconds(30)
+    private static let stuckMutationTimeout: DispatchTimeInterval = .seconds(30)
 
     func releaseMutation() { release.signal() }
 
     private func waitForRelease() throws(POSPINStoreError) {
         entered.signal()
-        guard release.wait(timeout: .now() + Self.timeout) == .success, !fails else { throw .storageFailure }
+        guard release.wait(timeout: .now() + Self.stuckMutationTimeout) == .success, !fails else { throw .storageFailure }
     }
 }

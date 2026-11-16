@@ -293,8 +293,9 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)))
     }
 
-    @Test(arguments: ["end", "lock", "refresh", "endThenRefresh"], [false, true])
-    func test_old_session_when_callbacks_arrive_after_replacement_then_cannot_invalidate_new_owner(operation: String, unlockFirst: Bool) async throws {
+    @Test(arguments: OldSessionCallback.allCases, [false, true])
+    func test_old_session_when_callbacks_arrive_after_replacement_then_cannot_invalidate_new_owner(callback: OldSessionCallback,
+                                                                                                   unlockFirst: Bool) async throws {
         // Given
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
         try await sut.session.signIn(withPIN: "1234")
@@ -306,13 +307,15 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.allows(.manageStoreSettings) == false)
 
         // When
-        switch operation {
-        case "end":
+        switch callback {
+        case .end:
             sut.session.endSession()
             sut.session.endSession()
-        case "lock": sut.session.lock()
-        case "refresh": #expect(throws: POSPINStoreError.storageFailure) { try sut.session.refreshPINProtection() }
-        default:
+        case .lock:
+            sut.session.lock()
+        case .refresh:
+            #expect(throws: POSPINStoreError.storageFailure) { try sut.session.refreshPINProtection() }
+        case .endThenRefresh:
             sut.session.endSession()
             #expect(throws: POSPINStoreError.storageFailure) { try sut.session.refreshPINProtection() }
         }
@@ -412,6 +415,15 @@ struct DefaultPOSAccessSessionTests {
         #expect(throws: POSPINStoreError.storageFailure) { try sut.session.refreshPINProtection() }
         #expect(sut.session.isLocked)
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
+    }
+}
+
+extension DefaultPOSAccessSessionTests {
+    enum OldSessionCallback: CaseIterable {
+        case end
+        case lock
+        case refresh
+        case endThenRefresh
     }
 }
 

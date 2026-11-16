@@ -124,22 +124,12 @@ struct POSPINEntryViewHelperTests {
         #expect(helper.isInputEnabled(for: .error(kind: .invalidPIN)) == true)
     }
 
-    @Test func test_isInputEnabled_when_waiting_or_loading_then_false() {
+    @Test func test_isInputEnabled_when_waiting_unavailable_checking_or_loading_then_false() {
         // Given / When / Then
         #expect(helper.isInputEnabled(for: .waiting(remainingSeconds: 30)) == false)
-        #expect(helper.isInputEnabled(for: .checking) == false)
+        #expect(helper.isInputEnabled(for: .unavailable) == false)
+        #expect(helper.isInputEnabled(for: .checkingLockout) == false)
         #expect(helper.isInputEnabled(for: .loading) == false)
-    }
-
-    @Test func test_lockoutMessage_when_given_seconds_then_includes_count() {
-        // Given
-        let seconds = 30
-
-        // When
-        let message = helper.lockoutMessage(remainingSeconds: seconds)
-
-        // Then
-        #expect(message.contains("30"))
     }
 
     @Test(arguments: [(-1, "0:00"), (0, "0:00"), (30, "0:30"), (300, "5:00"), (1800, "30:00"), (3600, "60:00")])

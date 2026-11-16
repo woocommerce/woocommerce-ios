@@ -173,17 +173,19 @@ private extension POSLocalRateLimiter {
             throw error
         }
         guard let data else { return State() }
+        // Keep an unreadable record and stay blocked: rewriting it could reset or shorten a wait.
+        let state: State
         do {
-            let state = try JSONDecoder().decode(State.self, from: data)
-            if state.isValid { return state }
-            DDLogError("POS PIN attempt state is out of range")
+            state = try JSONDecoder().decode(State.self, from: data)
         } catch {
             DDLogError("POS PIN attempt state could not be decoded (error type: \(type(of: error)))")
+            throw error
         }
-        // An unreadable record must neither reset the count nor lock POS forever: apply the longest wait.
-        let penalty = State(failures: 20, wait: 3600)
-        try save(penalty)
-        return penalty
+        guard state.isValid else {
+            DDLogError("POS PIN attempt state is out of range")
+            throw POSAuthError.unknown
+        }
+        return state
     }
 
     func cachedWaitError(fallback: POSAuthError) -> POSAuthError {

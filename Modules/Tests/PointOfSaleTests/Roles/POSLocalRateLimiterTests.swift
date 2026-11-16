@@ -170,20 +170,51 @@ struct POSLocalRateLimiterTests {
         #expect(storage.values.isEmpty)
     }
 
-    @Test(arguments: [Data([0]), Data(#"{"failures":-1,"wait":0,"quiet":0}"#.utf8)])
-    func test_corrupt_state_when_record_is_unreadable_then_applies_maximum_wait_without_authenticating(data: Data) async throws {
+    @Test(arguments: [
+        Data([0]),
+        Data(#"{"failures":3,"wait":0"#.utf8),
+        Data(#"{"failures":-1,"wait":0,"quiet":0}"#.utf8),
+        Data(#"{"failures":5,"wait":-1,"quiet":0}"#.utf8),
+        Data(#"{"failures":5,"wait":3601,"quiet":0}"#.utf8),
+        Data(#"{"failures":5,"wait":0,"quiet":86401}"#.utf8),
+        Data(#"{"attempts":5}"#.utf8),
+        Data(#"{"failures":"5","wait":0,"quiet":0}"#.utf8)
+    ])
+    func test_corrupt_state_when_record_is_malformed_then_stays_unavailable_without_changing_it(data: Data) async throws {
         // Given
         try storage.setData(data, forKey: "attempts.123")
+        let writes = storage.writeCount
         let limiter = makeLimiter()
         let authenticator = MockPOSPINAuthenticator()
+        let token = limiter.context.invalidate()
 
         // When / Then
-        await #expect(throws: POSAuthError.rateLimited(remainingSeconds: 3600)) {
-            try await limiter.authenticate(pin: "1234", using: authenticator, token: limiter.context.invalidate())
+        await #expect(throws: POSAuthError.unknown) { try await limiter.checkAllowed(token: token) }
+        await #expect(throws: POSAuthError.unknown) {
+            try await limiter.authenticate(pin: "1234", using: authenticator, token: token)
         }
         #expect(authenticator.authenticatedPINs.isEmpty)
-        #expect(try failures() == 20)
-        #expect(try record()["wait"] == 3600)
+        #expect(storage.values["attempts.123"] == data)
+        #expect(storage.writeCount == writes)
+    }
+
+    @Test func test_storage_write_failure_when_record_exists_then_stays_blocked_without_erasing_it() async throws {
+        // Given
+        let existing = Data(#"{"failures":3,"wait":0,"quiet":0}"#.utf8)
+        try storage.setData(existing, forKey: "attempts.123")
+        storage.shouldFailWrites = true
+        let limiter = makeLimiter()
+        let authenticator = MockPOSPINAuthenticator()
+        let token = limiter.context.invalidate()
+
+        // When / Then
+        for _ in 0..<2 {
+            await #expect(throws: POSAuthError.unknown) {
+                try await limiter.authenticate(pin: "1234", using: authenticator, token: token)
+            }
+        }
+        #expect(authenticator.authenticatedPINs.isEmpty)
+        #expect(storage.values["attempts.123"] == existing)
     }
 
     @Test func test_corrupt_state_when_storage_read_fails_then_stays_unavailable() async throws {

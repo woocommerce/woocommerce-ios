@@ -2793,6 +2793,28 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.autodismissableNotice)
     }
 
+    func test_addHardwareScannedProductToOrder_when_order_is_not_editable_then_ignores_the_scan() {
+        // Given
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, isEditable: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager)
+        var lookupCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case .retrieveFirstPurchasableItemMatchFromIdentifier = action {
+                lookupCount += 1
+            }
+        })
+
+        // When
+        viewModel.addHardwareScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "sku", symbology: .code128))
+
+        // Then
+        XCTAssertFalse(viewModel.canAddHardwareScannedProduct)
+        XCTAssertEqual(lookupCount, 0)
+    }
+
     func test_order_creation_when_withinitialItem_is_nil_then_currentOrderItems_are_zero() {
         // Given, When
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialItem: nil)

@@ -21,6 +21,7 @@ struct HardwareBarcodeScannerInfoView: View {
 
 struct HardwareBarcodeScannerInfoContent: View {
     let testScanState: HardwareBarcodeScannerInfoViewModel.TestScanState
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
@@ -58,7 +59,7 @@ struct HardwareBarcodeScannerInfoContent: View {
         .padding(.horizontal, StorePadding.p7)
         .padding(.top, StorePadding.p7)
         .padding(.bottom, StorePadding.p5)
-        .animation(.easeInOut(duration: StoreMotion.selectionDuration), value: testScanState)
+        .animation(reduceMotion ? nil : .easeInOut(duration: StoreMotion.selectionDuration), value: testScanState)
     }
 
     /// The success message takes the place of the barcode, so the sheet keeps its height.
@@ -85,7 +86,7 @@ struct HardwareBarcodeScannerInfoContent: View {
                         .storeTextStyle(.titleMedium)
                         .foregroundStyle(Color.storeOnSurface)
                 }
-                .transition(.scale.combined(with: .opacity))
+                .transition(reduceMotion ? .opacity : .scale.combined(with: .opacity))
                 .accessibilityElement(children: .combine)
             }
         }
@@ -94,7 +95,7 @@ struct HardwareBarcodeScannerInfoContent: View {
     private var errorHint: String? {
         switch testScanState {
         case .missingEnterSuffix:
-            return Localization.missingEnterSuffix
+            return HardwareBarcodeScanner.Localization.missingEnterSuffix
         case .wrongValue:
             return Localization.wrongValue
         case .waiting, .success:
@@ -145,11 +146,6 @@ private extension HardwareBarcodeScannerInfoContent {
             "hardwareBarcodeScannerInfo.wrongValue",
             value: "The scanned code doesn't match. Set your scanner to the same keyboard layout as your device.",
             comment: "Shown when an external barcode scanner sends a different code than the test barcode."
-        )
-        static let missingEnterSuffix = NSLocalizedString(
-            "hardwareBarcodeScannerInfo.missingEnterSuffix",
-            value: "Scan not finished. Set your scanner to send Enter after each barcode.",
-            comment: "Shown when an external barcode scanner sends the test barcode without Enter at the end."
         )
         static let testBarcodeAccessibilityLabel = NSLocalizedString(
             "hardwareBarcodeScannerInfo.testBarcode.accessibilityLabel",

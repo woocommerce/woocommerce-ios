@@ -196,8 +196,13 @@ private extension POSPINEntryView {
         withAnimation(.linear(duration: Constants.shakeDuration)) {
             shakeAmount += 1
         }
-        if case .error(let kind) = state {
+        switch state {
+        case .error(let kind):
             AccessibilityNotification.Announcement(Localization.message(for: kind)).post()
+        case .unavailable:
+            AccessibilityNotification.Announcement(Localization.message(for: .generic)).post()
+        default:
+            break
         }
     }
 }

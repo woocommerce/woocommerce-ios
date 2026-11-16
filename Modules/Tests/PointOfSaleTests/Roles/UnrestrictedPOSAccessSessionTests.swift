@@ -19,7 +19,7 @@ struct UnrestrictedPOSAccessSessionTests {
 
         // When / Then
         #expect(sut.isLocked == false)
-        #expect(sut.hasAnyPINs == false)
+        #expect(sut.isPINProtectionEnabled == false)
         #expect(sut.currentStaff == nil)
     }
 
@@ -31,7 +31,6 @@ struct UnrestrictedPOSAccessSessionTests {
         try await sut.signIn(withPIN: "1234")
         try await sut.requestManagerApproval(withPIN: "1234", for: .issueRefunds)
         sut.lock()
-        await sut.refreshPINStatus()
 
         // Then
         #expect(sut.isLocked == false)

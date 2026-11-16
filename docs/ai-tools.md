@@ -53,6 +53,6 @@ Shared task definitions live in `.agents/agents/`. Read the relevant definition 
 | Name | What it does | When to use | Example | Owner | Availability |
 |---|---|---|---|---|---|
 | [Module test guide](../Modules/Tests/AGENTS.md) | Shared test conventions and async patterns | Writing or updating module tests | Read before editing module tests | Woo Mobile | Repo |
-| [`AGENTS.md`](../AGENTS.md) | Shared repository instructions | Changing repository agent guidance | Edit the shared instructions | Woo Mobile | Repo |
+| [`AGENTS.md`](../AGENTS.md) | Shared repository instructions, including Design System migration localization and dual-path UI test rules | Changing repository agent guidance | Edit the shared instructions | Woo Mobile | Repo |
 | [`.claude/settings.json`](../.claude/settings.json) | Team Claude Code command permissions | Changing permitted local commands | Update `permissions.allow` or `permissions.deny` | Woo Mobile | Repo. Claude Code |
 | [`.agents/rules/`](../.agents/rules/) | Shared architecture, testing, and setup guidance | Looking up detailed repository conventions | Read the rule relevant to the task | Woo Mobile | Repo. Follow the pointers in `AGENTS.md` or read the relevant rule |

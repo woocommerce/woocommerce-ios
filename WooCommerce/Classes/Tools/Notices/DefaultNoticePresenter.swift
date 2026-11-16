@@ -217,8 +217,10 @@ private extension DefaultNoticePresenter {
 
         let view: UIView = presentingViewController.view
         let baselineAnchor: NSLayoutYAxisAnchor
+        // UIKit can detach the tab bar; a constraint to a view outside the hierarchy cannot be activated.
         if let tabBarController = presentingViewController as? UITabBarController,
-           !tabBarController.tabBar.isHidden {
+           !tabBarController.tabBar.isHidden,
+           tabBarController.tabBar.isDescendant(of: tabBarController.view) {
             baselineAnchor = tabBarController.tabBar.topAnchor
             // Used instead of the tab bar baseline while the tab bar is a vertical side bar.
             let safeAreaConstraint = container.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)

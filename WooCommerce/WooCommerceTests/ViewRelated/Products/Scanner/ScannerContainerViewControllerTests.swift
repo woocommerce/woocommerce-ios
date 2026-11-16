@@ -255,6 +255,53 @@ struct ScannerContainerViewControllerTests {
         #expect(scannedBarcodes == [barcode])
     }
 
+    @Test
+    func test_hardware_scan_when_screen_offers_the_scanner_and_is_visible_then_delivers_it() {
+        // Given
+        let observerFactory = MockObserverFactory()
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "",
+                                                 instructionText: "",
+                                                 offersHardwareScanner: true,
+                                                 hardwareBarcodeScanner: makeHardwareBarcodeScanner(observerFactory)) { scannedBarcodes.append($0) }
+
+        // When
+        sut.viewDidAppear(false)
+        observerFactory.send(.success(barcode: "SKU-1", scanDurationMs: 50))
+
+        // Then
+        #expect(scannedBarcodes == [ScannedBarcode(hardwareScannerInput: "SKU-1")])
+        #expect(observerFactory.acceptsInput() == false)
+    }
+
+    @Test(arguments: [false, true])
+    func test_hardware_scan_when_screen_disappeared_or_does_not_offer_the_scanner_then_is_not_delivered(offersHardwareScanner: Bool) {
+        // Given
+        let observerFactory = MockObserverFactory()
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "",
+                                                 instructionText: "",
+                                                 offersHardwareScanner: offersHardwareScanner,
+                                                 hardwareBarcodeScanner: makeHardwareBarcodeScanner(observerFactory)) { scannedBarcodes.append($0) }
+        sut.viewDidAppear(false)
+
+        // When
+        sut.viewWillDisappear(false)
+        observerFactory.send(.success(barcode: "SKU-1", scanDurationMs: 50))
+
+        // Then
+        #expect(scannedBarcodes.isEmpty)
+        #expect(observerFactory.acceptsInput() == false)
+    }
+
+    private func makeHardwareBarcodeScanner(_ observerFactory: MockObserverFactory) -> HardwareBarcodeScanner {
+        let noticePresenter = MockNoticePresenter()
+        return HardwareBarcodeScanner(analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                      noticePresenter: { noticePresenter },
+                                      isTextInputActive: { false },
+                                      makeObserver: observerFactory.make)
+    }
+
     private enum DetectionError: Error {
         case failed
     }

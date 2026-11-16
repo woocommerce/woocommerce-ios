@@ -178,7 +178,7 @@ extension ScannedBarcode {
 }
 
 @MainActor
-private final class MockObserverFactory {
+final class MockObserverFactory {
     private(set) var createdObserverCount = 0
     var lastObserver: AnyObject?
     private var acceptsInputHandler: () -> Bool = { false }

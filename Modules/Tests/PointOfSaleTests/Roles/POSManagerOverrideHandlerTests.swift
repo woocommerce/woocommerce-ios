@@ -469,7 +469,7 @@ struct POSManagerOverrideHandlerTests {
     }
 
     private func waitUntilReady(_ sut: POSManagerOverrideHandler) async {
-        guard sut.pinEntryState == .loading else { return }
+        guard sut.pinEntryState == .checking else { return }
         await withCheckedContinuation { ready in
             withObservationTracking { _ = sut.pinEntryState } onChange: {
                 Task { @MainActor in ready.resume() }

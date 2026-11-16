@@ -45,7 +45,7 @@ final class POSManagerOverrideHandler {
         }
         self.session = session
         if let request, pinEntryState == .idle || pinEntryState == .unavailable {
-            pinEntryState = .loading
+            pinEntryState = .checking
             Task { await refreshLockoutState(for: request.id) }
         }
     }
@@ -111,7 +111,7 @@ final class POSManagerOverrideHandler {
         guard let request else { return }
         switch pinEntryState {
         case .waiting, .unavailable: await refreshLockoutState(for: request.id)
-        case .idle, .loading, .error: break
+        case .idle, .checking, .loading, .error: break
         }
     }
 
@@ -135,7 +135,7 @@ private extension POSManagerOverrideHandler {
         let request = POSManagerOverrideRequest(capability: capability, reason: reason)
         latestRequestID = request.id
         self.request = request
-        pinEntryState = .loading
+        pinEntryState = .checking
         let (pins, input) = AsyncStream.makeStream(of: String.self, bufferingPolicy: .bufferingOldest(1))
         pinInput = input
         let submitPIN: PINOperation

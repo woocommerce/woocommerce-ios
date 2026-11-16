@@ -13,27 +13,27 @@ struct POSLockScreenView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color.posSurfaceContainerLow
-                .ignoresSafeArea()
+        GeometryReader { geometry in
+            ZStack {
+                Color.posSurfaceContainerLow.ignoresSafeArea()
+                ScrollView {
+                    VStack(spacing: metrics.spacing.large) {
+                        Text(Localization.title)
+                            .font(.posHeadingBold)
+                            .foregroundStyle(Color.posOnSurface)
+                            .multilineTextAlignment(.center)
+                            .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: metrics.spacing.large) {
-                Text(Localization.title)
-                    .font(.posHeadingBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-
-                POSPINEntryView(
-                    state: model.pinEntryState,
-                    onComplete: { pin in
-                        await model.signIn(withPIN: pin)
+                        POSPINEntryView(state: model.pinEntryState, onComplete: { pin in
+                            await model.signIn(withPIN: pin)
+                        })
                     }
-                )
-                .frame(height: POSPINEntryView.preferredHeight)
+                    .frame(maxWidth: POSPINEntryView.contentWidth)
+                    .padding(metrics.padding.xxLarge)
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                }
+                .scrollBounceBehavior(.basedOnSize)
             }
-            .frame(maxWidth: POSPINEntryView.contentWidth)
-            .padding(metrics.padding.xxLarge)
         }
         .task { await model.observeWait() }
     }
@@ -44,8 +44,8 @@ struct POSLockScreenView: View {
 private extension POSLockScreenView {
     enum Localization {
         static let title = NSLocalizedString(
-            "pos.lockScreen.enterYourPIN.title",
-            value: "Enter your PIN",
+            "pos.lockScreen.unlockPOS.title",
+            value: "Enter your PIN to unlock POS",
             comment: "Title shown on the POS lock screen."
         )
     }

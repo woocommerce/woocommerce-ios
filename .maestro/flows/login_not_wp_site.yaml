@@ -11,6 +11,7 @@ tags:
     clearKeychain: true
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 - runFlow:
     file: ../subflows/open_site_address_login.yaml
 - tapOn:

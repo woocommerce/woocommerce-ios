@@ -324,7 +324,7 @@ private extension POSSettingsHardwareDetailView {
             }
         }
         .posModal(isPresented: $showPrinterSetupModal) {
-            POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
+            POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .settings)
         }
     }
 
@@ -341,6 +341,7 @@ private extension POSSettingsHardwareDetailView {
             Spacer()
 
             Button(Localization.printerDisconnectTitle) {
+                analytics.track(.pointOfSaleReceiptPrinterDisconnectTapped)
                 Task {
                     await controller.disconnect()
                 }

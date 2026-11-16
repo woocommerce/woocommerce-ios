@@ -19,7 +19,7 @@ struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
-    @GestureState(resetTransaction: Transaction(animation: .interactiveSpring())) private var bottomSheetDragOffset: CGFloat = 0
+    @State private var bottomSheetDragOffset: CGFloat = 0
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -109,6 +109,11 @@ struct POSRootModalViewModifier: ViewModifier {
                 .ignoresSafeArea(.container, edges: isFullScreen || isCompactBottomSheet ? [] : .bottom)
             }
             .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+            .onChange(of: modalManager.isPresented) { _, isPresented in
+                if isPresented {
+                    bottomSheetDragOffset = 0
+                }
+            }
             .posIgnoresHiddenKeyboardSafeArea()
     }
 }
@@ -159,13 +164,18 @@ private extension POSRootModalViewModifier {
 
     var bottomSheetDismissGesture: some Gesture {
         DragGesture()
-            .updating($bottomSheetDragOffset) { value, offset, _ in
+            .onChanged { value in
                 guard modalManager.allowsInteractiveDismissal else { return }
-                offset = max(0, value.translation.height)
+                bottomSheetDragOffset = max(0, value.translation.height)
             }
             .onEnded { value in
                 guard modalManager.allowsInteractiveDismissal,
-                      value.translation.height > Constants.bottomSheetDismissDistance else { return }
+                      value.translation.height > Constants.bottomSheetDismissDistance else {
+                    withAnimation(.interactiveSpring()) {
+                        bottomSheetDragOffset = 0
+                    }
+                    return
+                }
                 modalManager.dismiss()
             }
     }

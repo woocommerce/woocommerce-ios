@@ -68,11 +68,9 @@ protocol PointOfSaleAggregateModelProtocol {
         didSet { rebuildCartProductObservation() }
     }
 
-    /// The custom amount currently being edited via the cart pencil button.
-    /// Setting this to a non-`nil` value presents the edit modal; assigning `nil` dismisses it.
-    /// Adding a new custom amount (entry row in the products list) is handled separately
-    /// by the items list view as a navigation push and doesn't go through this state.
-    var editingCustomAmount: POSCustomAmount?
+    /// Presents the full-screen custom amount flow over both panes; assigning `nil` dismisses it.
+    /// Lives on the model because add starts in the products pane and edit starts in the cart.
+    var customAmountFlow: POSCustomAmountFlow?
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 

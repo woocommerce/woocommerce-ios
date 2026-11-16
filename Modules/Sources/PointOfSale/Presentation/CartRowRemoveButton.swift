@@ -1,10 +1,17 @@
 import SwiftUI
 
 struct CartRowRemoveButton: View {
+    let accessibilityIdentifier: String?
     let action: () -> Void
 
+    init(accessibilityIdentifier: String? = nil, action: @escaping () -> Void) {
+        self.accessibilityIdentifier = accessibilityIdentifier
+        self.action = action
+    }
+
+    @ViewBuilder
     var body: some View {
-        Button(action: {
+        let button = Button(action: {
             action()
         }, label: {
             Text(Image(systemName: "trash"))
@@ -12,6 +19,12 @@ struct CartRowRemoveButton: View {
         })
         .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
         .foregroundColor(Color.posOnSurfaceVariantHighest)
+
+        if let accessibilityIdentifier {
+            button.accessibilityIdentifier(accessibilityIdentifier)
+        } else {
+            button
+        }
     }
 
     private enum Localization {

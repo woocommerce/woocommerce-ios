@@ -5,20 +5,13 @@ import Observation
 @MainActor
 final class POSLockScreenModel {
     private let session: POSAccessSession
+    private var isSigningIn = false
+    private(set) var pinEntryState: POSPINEntryState = .checkingLockout
 
-    private(set) var pinEntryState: POSPINEntryState = .idle
-
-    var isLocked: Bool {
-        session.isLocked
-    }
+    var isLocked: Bool { session.isLocked }
 
     init(session: POSAccessSession) {
         self.session = session
-        do {
-            try session.checkLockoutState()
-        } catch {
-            pinEntryState = state(for: error)
-        }
     }
 
     #if DEBUG
@@ -30,8 +23,10 @@ final class POSLockScreenModel {
 
     @discardableResult
     func signIn(withPIN pin: String) async -> Bool {
+        guard !isSigningIn else { return false }
+        isSigningIn = true
         pinEntryState = .loading
-
+        defer { isSigningIn = false }
         do {
             try await session.signIn(withPIN: pin)
             pinEntryState = .idle
@@ -42,9 +37,32 @@ final class POSLockScreenModel {
         }
     }
 
-    func lockoutExpired() {
-        guard case .lockout = pinEntryState else { return }
-        pinEntryState = .idle
+    func refreshLockoutState() async {
+        guard !isSigningIn else { return }
+        do {
+            try await session.checkLockoutState()
+            switch pinEntryState {
+            case .checkingLockout, .loading, .waiting, .unavailable: pinEntryState = .idle
+            case .idle, .error: break
+            }
+        } catch {
+            pinEntryState = state(for: error)
+        }
+    }
+
+    func observeWait() async {
+        await refreshLockoutState()
+        while !Task.isCancelled && isLocked {
+            let interval: Duration = switch pinEntryState {
+            case .unavailable: .seconds(5)
+            default: .seconds(1)
+            }
+            do { try await Task.sleep(for: interval) } catch { return }
+            switch pinEntryState {
+            case .waiting, .unavailable: await refreshLockoutState()
+            case .idle, .error, .checkingLockout, .loading: break
+            }
+        }
     }
 }
 
@@ -52,8 +70,8 @@ private extension POSLockScreenModel {
     func state(for error: POSAuthError) -> POSPINEntryState {
         switch error {
         case .invalidPIN: .error(kind: .invalidPIN)
-        case .rateLimited(let until): .lockout(until: until)
-        case .permanentlyLocked, .unknown, .staffFetchFailed: .error(kind: .generic)
+        case .rateLimited(let seconds): .waiting(remainingSeconds: seconds)
+        case .unknown: .unavailable
         }
     }
 }

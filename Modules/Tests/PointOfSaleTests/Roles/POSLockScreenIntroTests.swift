@@ -36,14 +36,14 @@ struct POSLockScreenIntroTests {
         try await expectSleep(.seconds(0.2), from: &sleeps)
         #expect(sut.phase == .closing)
         sleeper.resumeNext()
-        try await expectSleep(.seconds(0.22), from: &sleeps)
+        try await expectSleep(.seconds(0.28), from: &sleeps)
         #expect(sut.phase == .revealing)
         sleeper.resumeNext()
         for caller in callers {
             await caller.value
         }
         #expect(sut.phase == .finished)
-        #expect(sleeper.durations == [.milliseconds(80), .seconds(0.2), .seconds(0.22)])
+        #expect(sleeper.durations == [.milliseconds(80), .seconds(0.2), .seconds(0.28)])
     }
 
     @Test func test_run_when_one_caller_is_cancelled_then_shared_sequence_continues() async throws {
@@ -76,7 +76,7 @@ struct POSLockScreenIntroTests {
         try await expectSleep(.seconds(0.2), from: &sleeps)
         #expect(sut.phase == .closing)
         sleeper.resumeNext()
-        try await expectSleep(.seconds(0.22), from: &sleeps)
+        try await expectSleep(.seconds(0.28), from: &sleeps)
         #expect(sut.phase == .revealing)
         sleeper.resumeNext()
         await first.value
@@ -103,7 +103,7 @@ struct POSLockScreenIntroTests {
         }
         if phase == .revealing {
             sleeper.resumeNext()
-            try await expectSleep(.seconds(0.22), from: &sleeps)
+            try await expectSleep(.seconds(0.28), from: &sleeps)
         }
         try #require(sut.phase == phase)
         let countBeforeCancellation = sleeper.durations.count
@@ -165,7 +165,7 @@ struct POSLockScreenIntroTests {
         }
         var sleeps = sleeper.calls.makeAsyncIterator()
         let caller = Task { await sut.run(shouldAnimate: true) }
-        for duration: Duration in [.milliseconds(80), .seconds(0.2), .seconds(0.22)] {
+        for duration: Duration in [.milliseconds(80), .seconds(0.2), .seconds(0.28)] {
             try await expectSleep(duration, from: &sleeps)
             sleeper.resumeNext()
         }

@@ -87,7 +87,7 @@ private extension POSLockScreenView {
                 .fixedSize(horizontal: false, vertical: true)
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { keypadHeight = $0 }
                 .opacity(showsContent ? 1 : 0)
-                .animation(Constants.contentFade, value: showsContent)
+                .offset(y: showsContent ? 0 : viewportSize.height)
                 .allowsHitTesting(!isIntroActive)
                 .accessibilityHidden(isIntroActive)
         }
@@ -117,7 +117,7 @@ private extension POSLockScreenView {
                 .accessibilityAddTraits(.isHeader)
                 .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { titleHeight = $0 }
                 .opacity(showsContent ? 1 : 0)
-                .animation(Constants.contentFade, value: showsContent)
+                .offset(y: showsContent ? 0 : viewportSize.height)
                 .accessibilityHidden(isIntroActive)
         }
     }
@@ -157,7 +157,6 @@ private extension POSLockScreenView {
         static let compactKeySize: CGFloat = 72
         static let compactHeightKeySize: CGFloat = 60
         static let coordinateSpace = "posLockScreen"
-        static let contentFade: Animation = .easeOut(duration: 0.12)
     }
 }
 

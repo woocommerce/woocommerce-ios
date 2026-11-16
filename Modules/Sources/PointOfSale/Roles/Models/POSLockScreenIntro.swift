@@ -37,7 +37,7 @@ final class POSLockScreenIntro {
                 }
                 try await sleep(.seconds(Constants.closingDuration))
                 try Task.checkCancellation()
-                withAnimation(.easeInOut(duration: Constants.movementDuration)) {
+                withAnimation(.smooth(duration: Constants.movementDuration)) {
                     phase = .revealing
                 }
                 try await sleep(.seconds(Constants.movementDuration))
@@ -56,6 +56,6 @@ final class POSLockScreenIntro {
 
     private enum Constants {
         static let closingDuration: TimeInterval = 0.2
-        static let movementDuration: TimeInterval = 0.22
+        static let movementDuration: TimeInterval = 0.28
     }
 }

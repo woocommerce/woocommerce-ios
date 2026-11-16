@@ -16,7 +16,14 @@ final class POSPendingPINChanges {
         return POSPINChangeRegistration { self.finish() }
     }
 
-    func waitUntilEmpty() async {
+    func waitUntilEmpty() async throws {
+        while pendingChanges > 0 {
+            await waitForNextFinish()
+            try Task.checkCancellation()
+        }
+    }
+
+    private func waitForNextFinish() async {
         let id = UUID()
         await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in

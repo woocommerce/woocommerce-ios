@@ -12,8 +12,6 @@ enum POSAccessSessionFactory {
                      userDefaults: UserDefaults = .standard,
                      shouldCreate: @MainActor () -> Bool = { true }) async throws -> POSAccessSession {
         guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) else {
-            try Task.checkCancellation()
-            guard shouldCreate() else { throw CancellationError() }
             return UnrestrictedPOSAccessSession()
         }
         let credentialProvider = credentialProvider ?? POSLocalPINStore(siteID: siteID)
@@ -24,10 +22,7 @@ enum POSAccessSessionFactory {
             limiter = rateLimiters[siteID].flatMap { $0.isRetired ? nil : $0 } ?? POSLocalRateLimiter(siteID: siteID)
             rateLimiters[siteID] = limiter
         }
-        while !limiter.pendingPINChanges.isEmpty {
-            await limiter.pendingPINChanges.waitUntilEmpty()
-            try Task.checkCancellation()
-        }
+        try await limiter.pendingPINChanges.waitUntilEmpty()
         try Task.checkCancellation()
         guard shouldCreate() else { throw CancellationError() }
         return DefaultPOSAccessSession(

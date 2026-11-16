@@ -43,7 +43,7 @@ actor POSLocalRateLimiter {
 
     func authenticate(pin: String,
                       using authenticator: POSPINAuthenticating,
-                      capability: POSCapability? = nil,
+                      capability requiredCapability: POSCapability? = nil,
                       token: POSPINSessionTokens.Token) async throws(POSAuthError) -> POSStaff {
         guard !isAuthenticating, !Task.isCancelled else { throw .unknown }
         isAuthenticating = true
@@ -71,7 +71,7 @@ actor POSLocalRateLimiter {
         }
 
         try requireCurrentAndNotCancelled(token)
-        if let capability, !staff.hasCapability(capability) {
+        if let requiredCapability, !staff.hasCapability(requiredCapability) {
             throw waitError(fallback: .invalidPIN)
         }
         try replace(with: staff.hasCapability(.manageStoreSettings) ? AttemptRecord() : previous)

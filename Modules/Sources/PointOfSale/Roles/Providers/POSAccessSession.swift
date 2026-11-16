@@ -12,7 +12,7 @@ protocol POSAccessSession: AnyObject, Sendable {
     func signIn(withPIN pin: String) async throws(POSAuthError)
     /// Verifies the manager PIN and confirms the approver holds `capability`; throws if the PIN is
     /// invalid or the holder lacks it.
-    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError)
+    func requestManagerApproval(withPIN pin: String, for requiredCapability: POSCapability) async throws(POSAuthError)
     func lock()
     func saveElapsedTime() async
     func checkLockoutState() async throws(POSAuthError)

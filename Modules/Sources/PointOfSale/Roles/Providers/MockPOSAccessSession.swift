@@ -51,9 +51,9 @@ final class MockPOSAccessSession: POSAccessSession {
         }
     }
 
-    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
+    func requestManagerApproval(withPIN pin: String, for requiredCapability: POSCapability) async throws(POSAuthError) {
         managerApprovalPINs.append(pin)
-        managerApprovalCapabilities.append(capability)
+        managerApprovalCapabilities.append(requiredCapability)
         await onManagerApproval?()
 
         switch managerApprovalResult {

@@ -82,9 +82,9 @@ final class DefaultPOSAccessSession: POSAccessSession {
         persistLockState(false)
     }
 
-    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
+    func requestManagerApproval(withPIN pin: String, for requiredCapability: POSCapability) async throws(POSAuthError) {
         let request = generation
-        _ = try await rateLimiter.authenticate(pin: pin, using: authenticator, capability: capability, token: request)
+        _ = try await rateLimiter.authenticate(pin: pin, using: authenticator, capability: requiredCapability, token: request)
         guard rateLimiter.sessionTokens.isCurrent(request), !Task.isCancelled else { throw .unknown }
     }
 

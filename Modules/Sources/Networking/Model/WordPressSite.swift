@@ -16,6 +16,10 @@ public struct WordPressSite: Decodable, Equatable, Sendable {
     ///
     public let url: String
 
+    /// Site's home address, as WordPress reports it.
+    ///
+    public let home: String?
+
     /// Time zone identifier of the site (TZ database name).
     ///
     public let timezone: String
@@ -41,6 +45,7 @@ public struct WordPressSite: Decodable, Equatable, Sendable {
     public init(name: String,
                 description: String,
                 url: String,
+                home: String? = nil,
                 timezone: String,
                 gmtOffset: String,
                 namespaces: [String],
@@ -48,6 +53,7 @@ public struct WordPressSite: Decodable, Equatable, Sendable {
         self.name = name
         self.description = description
         self.url = url
+        self.home = home
         self.timezone = timezone
         self.gmtOffset = gmtOffset
         self.namespaces = namespaces
@@ -61,6 +67,8 @@ public struct WordPressSite: Decodable, Equatable, Sendable {
         let name = try container.decode(String.self, forKey: .name)
         let description = try container.decode(String.self, forKey: .description)
         let url = try container.decode(String.self, forKey: .url)
+        // Optional and only used to confirm an approval host, so a malformed value must not fail login.
+        let home = try? container.decode(String.self, forKey: .home)
         let timezone = try container.decode(String.self, forKey: .timezone)
         let gmtOffset: String = try {
             do {
@@ -77,6 +85,7 @@ public struct WordPressSite: Decodable, Equatable, Sendable {
         self.init(name: name,
                   description: description,
                   url: url,
+                  home: home,
                   timezone: timezone,
                   gmtOffset: gmtOffset,
                   namespaces: namespaces,
@@ -138,6 +147,7 @@ private extension WordPressSite {
         case name
         case description
         case url
+        case home
         case timezone = "timezone_string"
         case gmtOffset = "gmt_offset"
         case namespaces

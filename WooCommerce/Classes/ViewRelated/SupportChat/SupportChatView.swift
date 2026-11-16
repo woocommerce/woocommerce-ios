@@ -85,6 +85,10 @@ struct SupportChatView: View {
 
     private var chatView: some View {
         VStack(spacing: 0) {
+            aiDisclosure
+
+            Divider()
+
             messageList
 
             if viewModel.hasCreatedTicket {
@@ -102,6 +106,19 @@ struct SupportChatView: View {
         .task {
             await viewModel.startIfNeeded()
         }
+    }
+
+    // MARK: - AI Disclosure
+
+    private var aiDisclosure: some View {
+        Text(Localization.aiDisclosure)
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(Color(.text))
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal)
+            .padding(.vertical, Layout.disclosureVerticalPadding)
+            .background(Color(.systemBackground))
     }
 
     // MARK: - Message List
@@ -440,6 +457,7 @@ private extension SupportChatView {
         static let progressSpacing: CGFloat = 8
         static let resultsSpacing: CGFloat = 12
         static let resultIconSpacing: CGFloat = 6
+        static let disclosureVerticalPadding: CGFloat = 8
     }
 
     enum Colors {
@@ -451,6 +469,11 @@ private extension SupportChatView {
 
 private extension SupportChatView {
     enum Localization {
+        static let aiDisclosure = NSLocalizedString(
+            "supportChatView.aiDisclosure",
+            value: "You’re chatting with AI from Woo Support.",
+            comment: "Line fixed at the top of the AI support chat that tells the merchant the replies come from an AI acting for Woo Support"
+        )
         static let placeholder = NSLocalizedString(
             "supportChatView.placeholder",
             value: "Type a message...",

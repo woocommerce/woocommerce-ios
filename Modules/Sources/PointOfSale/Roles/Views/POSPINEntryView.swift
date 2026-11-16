@@ -5,7 +5,6 @@ struct POSPINEntryView: View {
     private let state: POSPINEntryState
     private let pinLength: Int
     private let onComplete: (String) async -> Bool
-    private let onLockoutExpired: (() -> Void)?
 
     @State private var enteredPIN = ""
     @State private var shakeAmount: CGFloat = 0
@@ -15,12 +14,10 @@ struct POSPINEntryView: View {
 
     init(state: POSPINEntryState,
          pinLength: Int = 4,
-         onComplete: @escaping (String) async -> Bool,
-         onLockoutExpired: (() -> Void)? = nil) {
+         onComplete: @escaping (String) async -> Bool) {
         self.state = state
         self.pinLength = pinLength
         self.onComplete = onComplete
-        self.onLockoutExpired = onLockoutExpired
     }
 
     var body: some View {
@@ -46,6 +43,10 @@ private extension POSPINEntryView {
         return false
     }
 
+    var showsInvalidPINMessage: Bool {
+        state == .error(kind: .invalidPIN) && enteredPIN.isEmpty
+    }
+
     var content: some View {
         VStack(spacing: Self.contentSpacing) {
             statusRow
@@ -59,9 +60,14 @@ private extension POSPINEntryView {
     @ViewBuilder
     var statusRow: some View {
         switch state {
-        case .lockout(let until):
-            lockoutCountdown(until: until)
-        case .idle, .loading, .error:
+        case .waiting(let seconds):
+            statusMessage(helper.lockoutMessage(remainingSeconds: seconds))
+        case .unavailable:
+            statusMessage(Localization.message(for: .generic))
+        case .error where showsInvalidPINMessage:
+            statusMessage(Localization.message(for: .invalidPIN))
+                .modifier(ShakeEffect(animatableData: shakeAmount))
+        case .idle, .checkingLockout, .loading, .error:
             dotsRow
         }
     }
@@ -101,25 +107,13 @@ private extension POSPINEntryView {
         return sin(time * Constants.waveSpeed + Double(index) * Constants.wavePhase) * Constants.waveHeight
     }
 
-    func lockoutMessage(_ text: String) -> some View {
+    func statusMessage(_ text: String) -> some View {
         Text(text)
             .font(.posBodyMediumRegular())
             .foregroundColor(.posError)
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)
             .frame(minHeight: Constants.statusRowHeight)
-    }
-
-    func lockoutCountdown(until date: Date) -> some View {
-        TimelineView(.periodic(from: .now, by: 1)) { context in
-            let remaining = helper.remainingLockoutSeconds(until: date, now: context.date)
-            lockoutMessage(helper.lockoutMessage(remainingSeconds: remaining))
-                .onChange(of: remaining <= 0) { _, expired in
-                    if expired {
-                        onLockoutExpired?()
-                    }
-                }
-        }
     }
 
     var numpad: some View {
@@ -209,8 +203,13 @@ private extension POSPINEntryView {
         withAnimation(.linear(duration: Constants.shakeDuration)) {
             shakeAmount += 1
         }
-        if case .error(let kind) = state {
+        switch state {
+        case .error(let kind):
             AccessibilityNotification.Announcement(Localization.message(for: kind)).post()
+        case .unavailable:
+            AccessibilityNotification.Announcement(Localization.message(for: .generic)).post()
+        default:
+            break
         }
     }
 }
@@ -282,12 +281,12 @@ private extension POSPINEntryView {
         static let invalidPINMessage = NSLocalizedString(
             "pos.pinEntry.error.invalidPIN",
             value: "Incorrect PIN. Try again.",
-            comment: "VoiceOver announcement when an entered POS PIN is incorrect."
+            comment: "Error message and VoiceOver announcement when an entered POS PIN is incorrect."
         )
         static let genericErrorMessage = NSLocalizedString(
             "pos.pinEntry.error.generic",
             value: "Something went wrong. Try again.",
-            comment: "VoiceOver announcement when validating the entered POS PIN fails unexpectedly."
+            comment: "Error message and VoiceOver announcement when validating the entered POS PIN fails unexpectedly."
         )
         static func message(for kind: POSPINErrorKind) -> String {
             switch kind {
@@ -322,8 +321,8 @@ extension POSPINEntryView {
         .background(Color.posSurfaceContainerLow)
 }
 
-#Preview("Lockout") {
-    POSPINEntryView(state: .lockout(until: Date().addingTimeInterval(30)), onComplete: { _ in true })
+#Preview("Waiting") {
+    POSPINEntryView(state: .waiting(remainingSeconds: 30), onComplete: { _ in true })
         .posPadding(\.medium)
         .background(Color.posSurfaceContainerLow)
 }

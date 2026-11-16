@@ -29,6 +29,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
     @State private var dismissHandler = POSModalFlowAction.Handler()
     @State private var backAction: POSModalFlowAction?
     @State private var contentTitle: String?
+    @State private var closeAccessibilityIdentifier: String?
 
     @ViewBuilder
     func body(content: Content) -> some View {
@@ -37,6 +38,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
                 .environment(\.posModalCompactStyle, style)
                 .onPreferenceChange(POSModalFlowBackActionKey.self) { backAction = $0 }
                 .onPreferenceChange(POSModalFlowHeaderTitleKey.self) { contentTitle = $0 }
+                .onPreferenceChange(POSModalFlowCloseAccessibilityIdentifierKey.self) { closeAccessibilityIdentifier = $0 }
                 .safeAreaInset(edge: .top, spacing: metrics.spacing.none) {
                     POSFullScreenFlowHeader(title: contentTitle ?? title,
                                             buttons: .init(backAction: backAction, closeAction: closeAction))
@@ -54,7 +56,7 @@ private struct POSFullScreenFlowHeaderModifier: ViewModifier {
         return POSModalFlowAction(handler: dismissHandler,
                                   isEnabled: true,
                                   accessibilityLabel: POSFullScreenFlowHeaderLocalization.closeAccessibilityLabel,
-                                  accessibilityIdentifier: nil)
+                                  accessibilityIdentifier: closeAccessibilityIdentifier)
     }
 }
 
@@ -214,6 +216,14 @@ struct POSModalFlowBackActionKey: PreferenceKey {
     static let defaultValue: POSModalFlowAction? = nil
 
     static func reduce(value: inout POSModalFlowAction?, nextValue: () -> POSModalFlowAction?) {
+        value = value ?? nextValue()
+    }
+}
+
+struct POSModalFlowCloseAccessibilityIdentifierKey: PreferenceKey {
+    static let defaultValue: String? = nil
+
+    static func reduce(value: inout String?, nextValue: () -> String?) {
         value = value ?? nextValue()
     }
 }

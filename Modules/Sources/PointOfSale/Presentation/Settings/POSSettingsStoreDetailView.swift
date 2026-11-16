@@ -9,7 +9,7 @@ struct POSSettingsStoreDetailView: View {
     @Environment(\.posAnalytics) private var analytics
 
     let viewModel: POSSettingsStoreViewModel
-    /// Gates an edit action on `editPOSSettings`. Defaults to running it directly (previews / no host gate).
+    /// Gates an edit action on `manageStoreSettings`. Defaults to running it directly (previews / no host gate).
     private let requestEditPermission: POSPermissionRequest
 
     init(viewModel: POSSettingsStoreViewModel,

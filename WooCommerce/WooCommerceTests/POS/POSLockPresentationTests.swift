@@ -15,8 +15,8 @@ final class POSLockPresentationTests {
         // Given
         let state = WindowPresentationState()
         state.session.isLocked = locked
-        let source = try await mount(state)
         defer { unmount() }
+        let source = try await mount(state)
 
         // Then
         #expect((pinWindow(in: source) != nil) == locked)
@@ -37,8 +37,8 @@ final class POSLockPresentationTests {
     func test_lock_when_native_presentation_exists_then_keeps_it_below_gate_and_restores_source_on_unlock(_ kind: NativePresentation) async throws {
         // Given
         let state = WindowPresentationState()
-        let source = try await mount(state)
         defer { unmount() }
+        let source = try await mount(state)
         state.present(kind)
         try await waitUntil { source.rootViewController?.presentedViewController != nil }
         let presented = try #require(source.rootViewController?.presentedViewController)
@@ -65,8 +65,8 @@ final class POSLockPresentationTests {
         // Given
         let state = WindowPresentationState()
         state.session.isLocked = true
-        let source = try await mount(state)
         defer { unmount() }
+        let source = try await mount(state)
         let gate = try #require(pinWindow(in: source))
         let root = try #require(source.rootViewController)
         let controller = UIViewController()
@@ -89,8 +89,8 @@ final class POSLockPresentationTests {
     @Test func test_lock_when_keyboard_has_focus_then_restores_source_key_window_on_unlock() async throws {
         // Given
         let state = WindowPresentationState()
-        let window = try await mount(state)
         defer { unmount() }
+        let window = try await mount(state)
         let field = state.field
         try #require(field.becomeFirstResponder())
 
@@ -110,8 +110,8 @@ final class POSLockPresentationTests {
     @Test func test_lock_when_native_controller_is_presented_then_preserves_it_below_pin() async throws {
         // Given
         let state = WindowPresentationState()
-        let window = try await mount(state)
         defer { unmount() }
+        let window = try await mount(state)
         let nativeController = UIViewController()
         nativeController.modalPresentationStyle = .fullScreen
         await withCheckedContinuation { continuation in
@@ -134,15 +134,101 @@ final class POSLockPresentationTests {
         }
     }
 
+    @Test func test_source_requests_keyboard_while_locked_then_returns_focus_to_pin() async throws {
+        // Given
+        let state = WindowPresentationState()
+        defer { unmount() }
+        let source = try await mount(state)
+        let presenter = try #require(source.rootViewController)
+        let nativeController = UIViewController()
+        let field = UITextField(frame: CGRect(x: 0, y: 0, width: 200, height: 40))
+        nativeController.view.addSubview(field)
+        nativeController.modalPresentationStyle = .fullScreen
+        await withCheckedContinuation { continuation in
+            presenter.present(nativeController, animated: false) { continuation.resume() }
+        }
+        try #require(field.becomeFirstResponder())
+        state.session.lock()
+        try await waitUntil { self.pinWindow(in: source)?.isKeyWindow == true && !field.isFirstResponder }
+        let gate = try #require(pinWindow(in: source))
+
+        // When
+        source.makeKey()
+        try #require(field.becomeFirstResponder())
+
+        // Then
+        try await waitUntil { gate.isKeyWindow && !field.isFirstResponder }
+        #expect(pinWindow(in: source) === gate)
+        #expect(source.accessibilityElementsHidden)
+        await withCheckedContinuation { continuation in
+            presenter.dismiss(animated: false) { continuation.resume() }
+        }
+    }
+
+    @Test func test_replaced_session_unlocks_while_current_session_is_locked_then_keeps_pin() async throws {
+        // Given
+        defer { unmount() }
+        let source = try await mount(WindowPresentationState())
+        let oldSession = MockPOSAccessSession(isLocked: true)
+        let currentSession = MockPOSAccessSession(isLocked: true)
+        let coordinator = POSLockPresentationCoordinator()
+        defer { coordinator.detach() }
+        coordinator.update(session: oldSession, content: AnyView(Color.clear))
+        coordinator.attach(to: source)
+        try await waitUntil { self.pinWindow(in: source)?.isKeyWindow == true }
+        let gate = try #require(pinWindow(in: source))
+
+        // When
+        coordinator.update(session: currentSession, content: AnyView(Color.clear))
+        oldSession.isLocked = false
+        source.makeKey()
+
+        // Then
+        try await waitUntil { gate.isKeyWindow }
+        #expect(pinWindow(in: source) === gate)
+        #expect(currentSession.isLocked)
+        #expect(source.accessibilityElementsHidden)
+        currentSession.isLocked = false
+        try await waitUntil { self.pinWindow(in: source) == nil && source.isKeyWindow }
+        #expect(!source.accessibilityElementsHidden)
+    }
+
+    @Test func test_dismissing_pos_hosting_controller_while_locked_then_removes_pin_window() async throws {
+        // Given
+        defer { unmount() }
+        let source = try await mount(WindowPresentationState())
+        let presenter = try #require(source.rootViewController)
+        let state = WindowPresentationState()
+        let host = UIHostingController(rootView: WindowPresentationFixture(state: state))
+        host.modalPresentationStyle = .fullScreen
+        defer { state.mounted = false }
+        await withCheckedContinuation { continuation in
+            presenter.present(host, animated: false) { continuation.resume() }
+        }
+        state.session.lock()
+        try await waitUntil { self.pinWindow(in: source)?.isKeyWindow == true }
+
+        // When
+        await withCheckedContinuation { continuation in
+            presenter.dismiss(animated: false) { continuation.resume() }
+        }
+
+        // Then
+        try await waitUntil { self.pinWindow(in: source) == nil && source.isKeyWindow }
+        #expect(!source.accessibilityElementsHidden)
+        #expect(host.presentingViewController == nil)
+    }
+
     @Test func test_source_movement_when_locked_then_restores_each_source_and_detaches_gate() async throws {
         // Given
         let state = WindowPresentationState()
+        defer { unmount() }
         let source = try await mount(state)
         let scene = try #require(source.windowScene)
         let nextSource = UIWindow(windowScene: scene)
         nextSource.rootViewController = UIViewController()
         let coordinator = POSLockPresentationHost<EmptyView>.Coordinator()
-        defer { coordinator.detach(); nextSource.isHidden = true; unmount() }
+        defer { coordinator.detach(); nextSource.isHidden = true }
         coordinator.update(session: MockPOSAccessSession(isLocked: true), content: AnyView(Color.clear))
         coordinator.attach(to: source)
         try await waitUntil { self.pinWindow(in: source) != nil }
@@ -168,8 +254,8 @@ final class POSLockPresentationTests {
         // Given
         let state = WindowPresentationState()
         state.session.isLocked = true
-        let source = try await mount(state)
         defer { unmount() }
+        let source = try await mount(state)
         let scene = try #require(source.windowScene)
         let gate = try #require(pinWindow(in: source))
 
@@ -193,6 +279,7 @@ final class POSLockPresentationTests {
 
     @Test func test_unlock_when_prior_key_window_is_removed_then_restores_source() async throws {
         // Given
+        defer { unmount() }
         let source = try await mount(WindowPresentationState())
         let scene = try #require(source.windowScene)
         let prior = UIWindow(windowScene: scene)
@@ -200,7 +287,7 @@ final class POSLockPresentationTests {
         prior.makeKeyAndVisible()
         let session = MockPOSAccessSession(isLocked: true)
         let coordinator = POSLockPresentationCoordinator()
-        defer { coordinator.detach(); prior.isHidden = true; unmount() }
+        defer { coordinator.detach(); prior.isHidden = true }
         coordinator.update(session: session, content: AnyView(Color.clear))
         coordinator.attach(to: source)
         try await waitUntil { self.pinWindow(in: source) != nil }
@@ -220,8 +307,8 @@ final class POSLockPresentationTests {
         let state = WindowPresentationState()
         state.session.isLocked = true
         let oldSession = state.session
-        let window = try await mount(state)
         defer { unmount() }
+        let window = try await mount(state)
         try await waitUntil { self.pinWindow(in: window) != nil }
 
         // When
@@ -246,8 +333,8 @@ final class POSLockPresentationTests {
         // Given
         let state = WindowPresentationState()
         state.showsSwiftUIField = true
-        let source = try await mount(state)
         defer { unmount() }
+        let source = try await mount(state)
         state.swiftUIFocusRequested = true
         try await waitUntil { state.swiftUIHasFocus }
 

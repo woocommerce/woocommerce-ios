@@ -2,22 +2,28 @@ import SwiftUI
 import UIKit
 import Observation
 
-struct POSLockPresentationHost<LockContent: View>: UIViewRepresentable {
+struct POSLockPresentationHost<LockContent: View>: UIViewControllerRepresentable {
     let session: POSAccessSession
     let lockContent: LockContent
 
-    func makeCoordinator() -> POSLockPresentationCoordinator { POSLockPresentationCoordinator() }
-
-    func makeUIView(context: Context) -> WindowFinderView {
-        let view = WindowFinderView()
-        view.isUserInteractionEnabled = false
-        view.onWindowChanged = { [weak coordinator = context.coordinator] window in
-            if let window { coordinator?.attach(to: window) }
-        }
-        return view
+    func makeCoordinator() -> POSLockPresentationCoordinator {
+        POSLockPresentationCoordinator()
     }
 
-    func updateUIView(_ view: WindowFinderView, context: Context) {
+    func makeUIViewController(context: Context) -> POSLockPresentationController {
+        let controller = POSLockPresentationController()
+        controller.windowFinder.onWindowChanged = { [weak coordinator = context.coordinator] window in
+            if let window {
+                coordinator?.attach(to: window)
+            }
+        }
+        controller.onDismiss = { [weak coordinator = context.coordinator] in
+            coordinator?.detach()
+        }
+        return controller
+    }
+
+    func updateUIViewController(_ controller: POSLockPresentationController, context: Context) {
         let environment = context.environment
         // Do not copy the source's disabled/accessibility-hidden environment into the PIN UI.
         let content = lockContent
@@ -29,9 +35,33 @@ struct POSLockPresentationHost<LockContent: View>: UIViewRepresentable {
         context.coordinator.update(session: session, content: AnyView(content))
     }
 
-    static func dismantleUIView(_ view: WindowFinderView, coordinator: POSLockPresentationCoordinator) {
-        view.onWindowChanged = nil
+    static func dismantleUIViewController(_ controller: POSLockPresentationController, coordinator: POSLockPresentationCoordinator) {
+        controller.windowFinder.onWindowChanged = nil
+        controller.onDismiss = nil
         coordinator.detach()
+    }
+}
+
+final class POSLockPresentationController: UIViewController {
+    let windowFinder = WindowFinderView()
+    var onDismiss: (() -> Void)?
+
+    override func loadView() {
+        windowFinder.isUserInteractionEnabled = false
+        view = windowFinder
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        // A covering controller may hide POS without ending it; only actual dismissal releases the gate.
+        var controller: UIViewController? = self
+        while let current = controller {
+            if current.isBeingDismissed {
+                onDismiss?()
+                return
+            }
+            controller = current.parent
+        }
     }
 }
 
@@ -101,7 +131,7 @@ final class POSLockPresentationCoordinator: NSObject {
 
     private func synchronize() {
         synchronizationTask?.cancel()
-        // Window focus can change SwiftUI state; wait until updateUIView returns.
+        // Window focus can change SwiftUI state; wait until the representable update returns.
         synchronizationTask = Task { @MainActor [weak self] in
             guard !Task.isCancelled else { return }
             self?.synchronizeWindow()
@@ -118,7 +148,9 @@ final class POSLockPresentationCoordinator: NSObject {
         if let hostingController = lockWindow?.rootViewController as? UIHostingController<AnyView> {
             hostingController.rootView = content
             lockWindow?.frame = sourceWindow.frame
-            if sourceWindow.isKeyWindow { lockWindow?.makeKey() }
+            if sourceWindow.isKeyWindow {
+                lockWindow?.makeKey()
+            }
             return
         }
         previousKeyWindow = scene.keyWindow
@@ -148,7 +180,9 @@ final class POSLockPresentationCoordinator: NSObject {
         window.windowScene = nil
         if wasKey, let scene, scene.activationState != .unattached {
             let target = previousKeyWindow.flatMap { !$0.isHidden && $0.windowScene === scene ? $0 : nil } ?? sourceWindow
-            if let target, !target.isHidden, target.windowScene === scene { target.makeKey() }
+            if let target, !target.isHidden, target.windowScene === scene {
+                target.makeKey()
+            }
         }
         previousKeyWindow = nil
     }

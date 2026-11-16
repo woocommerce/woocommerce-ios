@@ -12,12 +12,6 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
     func authenticate(withPIN pin: String) async throws(POSAuthError) -> POSStaff {
         try await findMatch(pin: pin).staff
     }
-
-    func verify(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) {
-        guard try await findMatch(pin: pin).staff.hasCapability(capability) else {
-            throw .invalidPIN
-        }
-    }
 }
 
 private extension DefaultPOSPINAuthenticator {

@@ -35,7 +35,7 @@ final class MockPOSAccessSession: POSAccessSession {
     func refreshPINProtection() throws(POSPINStoreError) {}
 
     func allows(_ capability: POSCapability) -> Bool {
-        currentStaff?.hasCapability(capability) == true
+        !isPINProtectionEnabled || currentStaff?.hasCapability(capability) == true
     }
 
     func signIn(withPIN pin: String) async throws(POSAuthError) {
@@ -51,9 +51,9 @@ final class MockPOSAccessSession: POSAccessSession {
         }
     }
 
-    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
+    func requestManagerApproval(withPIN pin: String, for requiredCapability: POSCapability) async throws(POSAuthError) {
         managerApprovalPINs.append(pin)
-        managerApprovalCapabilities.append(capability)
+        managerApprovalCapabilities.append(requiredCapability)
         await onManagerApproval?()
 
         switch managerApprovalResult {
@@ -69,7 +69,9 @@ final class MockPOSAccessSession: POSAccessSession {
         lockCallCount += 1
     }
 
-    func checkLockoutState() throws(POSAuthError) {
+    func saveElapsedTime() async {}
+
+    func checkLockoutState() async throws(POSAuthError) {
         switch checkLockoutResult {
         case .success:
             break

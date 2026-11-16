@@ -122,6 +122,7 @@ private extension POSLocalPINStore {
 }
 
 protocol POSSecureStorage: Sendable {
+    var isStale: Bool { get }
     func data(forKey key: String) throws -> Data?
     /// Removes the entry when `data` is `nil`.
     func setData(_ data: Data?, forKey key: String) throws
@@ -132,9 +133,15 @@ struct KeychainPOSSecureStorage: POSSecureStorage {
     static let service = "com.automattic.woocommerce.pos.localPINs"
 
     private let service: String
+    private let generation: UUID
 
     init(service: String = KeychainPOSSecureStorage.service) {
         self.service = service
+        self.generation = POSSecureStorageFence.currentGeneration(of: service)
+    }
+
+    var isStale: Bool {
+        !POSSecureStorageFence.isCurrent(generation, of: service)
     }
 
     func data(forKey key: String) throws -> Data? {
@@ -142,15 +149,19 @@ struct KeychainPOSSecureStorage: POSSecureStorage {
     }
 
     func setData(_ data: Data?, forKey key: String) throws {
-        if let data {
-            try keychain.set(data, key: key)
-        } else {
-            try keychain.remove(key)
+        try POSSecureStorageFence.write(generation, to: service) {
+            if let data {
+                try keychain.set(data, key: key)
+            } else {
+                try keychain.remove(key)
+            }
         }
     }
 
     func removeAll() throws {
-        try keychain.removeAll()
+        try POSSecureStorageFence.clear(service) {
+            try keychain.removeAll()
+        }
     }
 
     // `Keychain` isn't `Sendable`, so each call builds its own instead of storing one.

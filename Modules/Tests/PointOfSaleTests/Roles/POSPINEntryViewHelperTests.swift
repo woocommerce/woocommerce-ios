@@ -124,34 +124,11 @@ struct POSPINEntryViewHelperTests {
         #expect(helper.isInputEnabled(for: .error(kind: .invalidPIN)) == true)
     }
 
-    @Test func test_isInputEnabled_when_lockout_or_loading_then_false() {
+    @Test func test_isInputEnabled_when_waiting_unavailable_or_loading_then_false() {
         // Given / When / Then
-        #expect(helper.isInputEnabled(for: .lockout(until: Date())) == false)
+        #expect(helper.isInputEnabled(for: .waiting(remainingSeconds: 30)) == false)
+        #expect(helper.isInputEnabled(for: .unavailable) == false)
         #expect(helper.isInputEnabled(for: .loading) == false)
-    }
-
-    @Test func test_remainingLockoutSeconds_when_future_then_returns_positive() {
-        // Given
-        let now = Date(timeIntervalSinceReferenceDate: 0)
-        let until = now.addingTimeInterval(30)
-
-        // When
-        let seconds = helper.remainingLockoutSeconds(until: until, now: now)
-
-        // Then
-        #expect(seconds == 30)
-    }
-
-    @Test func test_remainingLockoutSeconds_when_past_then_clamps_to_zero() {
-        // Given
-        let now = Date(timeIntervalSinceReferenceDate: 0)
-        let until = now.addingTimeInterval(-5)
-
-        // When
-        let seconds = helper.remainingLockoutSeconds(until: until, now: now)
-
-        // Then
-        #expect(seconds == 0)
     }
 
     @Test func test_lockoutMessage_when_given_seconds_then_includes_count() {

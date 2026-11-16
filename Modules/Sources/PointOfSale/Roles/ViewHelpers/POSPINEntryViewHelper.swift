@@ -26,13 +26,9 @@ struct POSPINEntryViewHelper {
         switch state {
         case .idle, .error:
             return true
-        case .lockout, .loading:
+        case .waiting, .unavailable, .loading:
             return false
         }
-    }
-
-    func remainingLockoutSeconds(until date: Date, now: Date = Date()) -> Int {
-        max(0, Int(date.timeIntervalSince(now).rounded(.up)))
     }
 
     func lockoutMessage(remainingSeconds: Int) -> String {

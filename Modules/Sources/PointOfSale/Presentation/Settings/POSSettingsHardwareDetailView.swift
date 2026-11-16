@@ -121,7 +121,7 @@ struct POSSettingsHardwareDetailView: View {
             supportForm
                 .interactiveDismissDisabled(true)
         }
-        .posModal(isPresented: $showBarcodeScanningSetupModal) {
+        .posModal(isPresented: $showBarcodeScanningSetupModal, compactStyle: .barcodeScannerSetup) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
         }
         .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {

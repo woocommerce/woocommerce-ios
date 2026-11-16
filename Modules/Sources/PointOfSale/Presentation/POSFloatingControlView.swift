@@ -65,7 +65,7 @@ struct POSFloatingControlView: View {
         .posModal(isPresented: $showProductRestrictionsModal, compactStyle: .bottomSheet) {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
-        .posModal(isPresented: $showBarcodeScanningModal) {
+        .posModal(isPresented: $showBarcodeScanningModal, compactStyle: .barcodeScannerSetup) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
         }
         .frame(height: Constants.size)

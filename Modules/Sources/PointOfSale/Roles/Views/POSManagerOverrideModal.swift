@@ -17,7 +17,7 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
                 handler.configure(session: session)
             }
             .onDisappear { handler.cancel() }
-            .posModal(item: requestBinding) { request in
+            .posModal(item: requestBinding, compactStyle: .managerApproval) { request in
                 modalContent(for: request)
             }
     }

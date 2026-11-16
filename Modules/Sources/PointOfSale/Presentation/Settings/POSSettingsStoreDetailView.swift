@@ -4,19 +4,12 @@ struct POSSettingsStoreDetailView: View {
     @Environment(\.posMetrics) private var metrics
     @State private var isLoading: Bool = false
     @State private var showingWebView: Bool = false
+    @State private var webViewApproval = POSManagerOverrideHandler()
 
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.posAnalytics) private var analytics
 
     let viewModel: POSSettingsStoreViewModel
-    /// Gates an edit action on `manageStoreSettings`. Defaults to running it directly (previews / no host gate).
-    private let requestEditPermission: POSPermissionRequest
-
-    init(viewModel: POSSettingsStoreViewModel,
-         requestEditPermission: @escaping POSPermissionRequest = { $0() }) {
-        self.viewModel = viewModel
-        self.requestEditPermission = requestEditPermission
-    }
 
     private var backgroundColor: Color {
         Color.posSurface
@@ -95,6 +88,7 @@ struct POSSettingsStoreDetailView: View {
                     }
             }
         }
+        .posManagerOverrideModal(handler: webViewApproval)
     }
 
     @ViewBuilder
@@ -111,7 +105,10 @@ struct POSSettingsStoreDetailView: View {
                 if !viewModel.receiptSettingsAdminURL.isEmpty {
                     Button {
                         analytics.track(.pointOfSaleEditReceiptTapped)
-                        requestEditPermission { showingWebView = true }
+                        // The web view signs in with the store account, which takes the operator out of POS.
+                        webViewApproval.gate(.exitPOS, reason: Localization.editReceiptApprovalReason) { _ in
+                            showingWebView = true
+                        }
                     } label: {
                         Image(systemName: "square.and.pencil")
                             .font(.posBodyLargeBold)
@@ -235,6 +232,12 @@ private extension POSSettingsStoreDetailView {
             "pointOfSaleSettingsStoreDetailView.editReceiptWebViewTitle",
             value: "Receipt Settings",
             comment: "Navigation title for the web view used to edit POS receipt information."
+        )
+        static let editReceiptApprovalReason = NSLocalizedString(
+            "pointOfSaleSettingsStoreDetailView.editReceiptApprovalReason",
+            value: "Editing receipt settings in WP Admin requires approval",
+            comment: "Message shown in the POS approval prompt when a staff member without the exit permission "
+                + "tries to open receipt settings in WP Admin."
         )
     }
 }

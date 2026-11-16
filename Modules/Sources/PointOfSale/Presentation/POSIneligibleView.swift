@@ -7,7 +7,7 @@ struct POSIneligibleView: View {
     @Environment(\.posMetrics) private var metrics
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
-    @Environment(\.dismiss) private var dismiss
+    let onExit: () -> Void
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.posAnalytics) private var analytics
     @State private var isLoading: Bool = false
@@ -78,7 +78,7 @@ struct POSIneligibleView: View {
                         .accessibilityIdentifier("pos-ineligible-refresh-button")
 
                         Button {
-                            dismiss()
+                            onExit()
                         } label: {
                             Text(Localization.dismiss)
                         }
@@ -223,42 +223,48 @@ private extension POSIneligibleReason {
 #Preview("No internet connection") {
     POSIneligibleView(
         reason: .noInternetConnection,
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("Unsupported currency") {
     POSIneligibleView(
         reason: .unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD]),
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("WooCommerce plugin not found") {
     POSIneligibleView(
         reason: .wooCommercePluginNotFound,
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("Feature switch disabled") {
     POSIneligibleView(
         reason: .featureSwitchDisabled,
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("Site settings unavailable") {
     POSIneligibleView(
         reason: .siteSettingsNotAvailable,
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 
 #Preview("Unsupported WooCommerce version") {
     POSIneligibleView(
         reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
-        onRefresh: {}
+        onRefresh: {},
+        onExit: {}
     )
 }
 

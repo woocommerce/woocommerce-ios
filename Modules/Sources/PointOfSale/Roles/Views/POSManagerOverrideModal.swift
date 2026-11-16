@@ -1,11 +1,5 @@
 import SwiftUI
 
-/// A view-facing request to perform a capability-gated action. Called with the action to run, it either
-/// runs it immediately (the operator holds the capability) or presents the manager-override modal and runs
-/// it once an authorized staff member approves. Views default it to running the action directly, which keeps
-/// previews and ungated hosts working without a real gate.
-typealias POSPermissionRequest = (_ perform: @escaping () -> Void) -> Void
-
 private struct POSManagerOverrideModalModifier: ViewModifier {
     @Environment(\.posAccessSession) private var session
 
@@ -17,6 +11,9 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
                 handler.configure(session: session)
             }
             .onDisappear { handler.cancel() }
+            .onChange(of: session.isLocked) { _, isLocked in
+                if isLocked { handler.cancel() }
+            }
             .posModal(item: requestBinding) { request in
                 modalContent(for: request)
             }

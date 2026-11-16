@@ -184,6 +184,7 @@ final class IssueRefundViewModel {
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
+    @MainActor
     func createRefundConfirmationViewModel(onCompletion: @escaping ((RefundConfirmationViewModel) -> Void)) {
         let selection = currentSelection()
         let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { [weak self] paymentGatewayAccount in

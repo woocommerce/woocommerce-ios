@@ -77,7 +77,7 @@ struct IssueRefundViewModelServerRefundTests {
         sut.toggleRefundShipping()
 
         // When
-        let confirmation = await confirmation(from: sut)
+        let confirmation = try await confirmation(from: sut)
         await submit(confirmation)
 
         // Then
@@ -92,7 +92,7 @@ struct IssueRefundViewModelServerRefundTests {
         })
     }
 
-    @Test func createRefundConfirmationViewModel_when_store_is_below_minimum_version_then_uses_local_total_without_preview() async {
+    @Test func createRefundConfirmationViewModel_when_store_is_below_minimum_version_then_uses_local_total_without_preview() async throws {
         // Given
         let service = MockRefundService()
         let (sut, _) = makeSUT(service: service, wooVersion: "11.0.9")
@@ -100,7 +100,7 @@ struct IssueRefundViewModelServerRefundTests {
         sut.toggleRefundShipping()
 
         // When
-        let confirmation = await confirmation(from: sut)
+        let confirmation = try await confirmation(from: sut)
 
         // Then
         #expect(confirmation.refundAmount == "$30.80")
@@ -186,10 +186,11 @@ private extension IssueRefundViewModelServerRefundTests {
         return (sut, stores)
     }
 
-    func confirmation(from sut: IssueRefundViewModel) async -> RefundConfirmationViewModel {
-        await withCheckedContinuation { continuation in
-            sut.createRefundConfirmationViewModel { continuation.resume(returning: $0) }
-        }
+    func confirmation(from sut: IssueRefundViewModel) async throws -> RefundConfirmationViewModel {
+        var confirmation: RefundConfirmationViewModel?
+        sut.createRefundConfirmationViewModel { confirmation = $0 }
+        await waitUntil { confirmation != nil }
+        return try #require(confirmation)
     }
 
     func submit(_ confirmation: RefundConfirmationViewModel) async {

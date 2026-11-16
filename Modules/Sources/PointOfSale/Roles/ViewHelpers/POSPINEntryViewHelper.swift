@@ -8,8 +8,8 @@ struct POSPINEntryViewHelper {
         return pin + String(digit)
     }
 
-    func removingLastDigit(from pin: String) -> String {
-        String(pin.dropLast())
+    func removingLastDigit(from pin: String, discardingSubmittedPIN: Bool = false) -> String {
+        discardingSubmittedPIN ? "" : String(pin.dropLast())
     }
 
     func isComplete(_ pin: String, length: Int) -> Bool {
@@ -31,10 +31,43 @@ struct POSPINEntryViewHelper {
         }
     }
 
-    func lockoutMessage(remainingSeconds: Int) -> String {
-        let duration = Duration.seconds(max(0, remainingSeconds)).formatted(.time(pattern: .minuteSecond))
-        return String.localizedStringWithFormat(Localization.lockoutFormat, duration)
+    /// Keys that can't be used for a while look disabled. Brief checks keep their normal look so the keypad doesn't flicker.
+    func showsDisabledKeys(for state: POSPINEntryState) -> Bool {
+        switch state {
+        case .waiting, .unavailable:
+            return true
+        case .idle, .error, .checkingLockout, .loading:
+            return false
+        }
     }
+
+    /// The message that replaces the PIN dots. An invalid PIN message goes away once a new digit is entered.
+    func statusMessage(for state: POSPINEntryState, enteredPIN: String) -> POSPINStatusMessage? {
+        switch state {
+        case .waiting(let remainingSeconds):
+            return .lockout(remainingSeconds: remainingSeconds)
+        case .unavailable:
+            return .unavailable
+        case .error(let kind):
+            return enteredPIN.isEmpty ? .error(kind) : nil
+        case .idle, .checkingLockout, .loading:
+            return nil
+        }
+    }
+
+    func lockoutDuration(remainingSeconds: Int) -> String {
+        Duration.seconds(max(0, remainingSeconds)).formatted(.time(pattern: .minuteSecond))
+    }
+
+    func lockoutMessage(remainingSeconds: Int) -> String {
+        String.localizedStringWithFormat(Localization.lockoutFormat, lockoutDuration(remainingSeconds: remainingSeconds))
+    }
+}
+
+enum POSPINStatusMessage: Equatable {
+    case error(POSPINErrorKind)
+    case lockout(remainingSeconds: Int)
+    case unavailable
 }
 
 private extension POSPINEntryViewHelper {

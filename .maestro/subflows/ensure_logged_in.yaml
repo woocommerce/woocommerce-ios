@@ -6,6 +6,7 @@ appId: ${APP_ID}
     clearState: false
     arguments:
       "-ui_testing": true
+      "-AppleLocale": "en_US"
 
 - extendedWaitUntil:
     visible: "Manage Privacy|My store|Log In|Skip"
@@ -37,6 +38,7 @@ appId: ${APP_ID}
             - launchApp:
                 arguments:
                   "-ui_testing": true
+                  "-AppleLocale": "en_US"
 
 - extendedWaitUntil:
     visible:

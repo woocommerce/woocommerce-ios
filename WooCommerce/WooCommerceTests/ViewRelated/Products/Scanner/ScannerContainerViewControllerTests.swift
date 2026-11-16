@@ -235,6 +235,26 @@ struct ScannerContainerViewControllerTests {
         #expect(scannedBarcodes == [barcode])
     }
 
+    @Test
+    func test_detection_when_scanner_info_was_shown_then_requires_three_fresh_matches() {
+        // Given
+        var scannedBarcodes: [ScannedBarcode] = []
+        let sut = ScannerContainerViewController(navigationTitle: "", instructionText: "") { scannedBarcodes.append($0) }
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+
+        // When
+        sut.setShowingHardwareScannerInfo(true)
+        sut.setShowingHardwareScannerInfo(false)
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+
+        // Then
+        #expect(scannedBarcodes.isEmpty)
+        sut.handleBarcodeDetectionResult(.success([barcode]))
+        #expect(scannedBarcodes == [barcode])
+    }
+
     private enum DetectionError: Error {
         case failed
     }

@@ -67,8 +67,7 @@ final class ScannerContainerViewController: UIViewController {
     func handleBarcodeDetectionResult(_ result: Result<[ScannedBarcode], Error>) {
         guard !hasDetectedBarcode, !isShowingHardwareScannerInfo else { return }
         guard case let .success(barcodes) = result, let firstBarcode = barcodes.first else {
-            candidateBarcode = nil
-            consecutiveDetectionCount = 0
+            restartDetectionConfirmation()
             return
         }
 
@@ -90,9 +89,19 @@ final class ScannerContainerViewController: UIViewController {
         hasDetectedBarcode = true
         onBarcodeScanned(barcode)
     }
+
+    func setShowingHardwareScannerInfo(_ isShowing: Bool) {
+        isShowingHardwareScannerInfo = isShowing
+        restartDetectionConfirmation()
+    }
 }
 
 private extension ScannerContainerViewController {
+    func restartDetectionConfirmation() {
+        candidateBarcode = nil
+        consecutiveDetectionCount = 0
+    }
+
     func configureNavigation() {
         title = navigationTitle
     }
@@ -114,7 +123,7 @@ private extension ScannerContainerViewController {
         let offerViewController = UIHostingController(rootView: HardwareBarcodeScannerOfferView(
             source: .barcodeScanner,
             onInfoVisibilityChange: { [weak self] isShowing in
-                self?.isShowingHardwareScannerInfo = isShowing
+                self?.setShowingHardwareScannerInfo(isShowing)
             }
         ))
         offerViewController.view.backgroundColor = .clear

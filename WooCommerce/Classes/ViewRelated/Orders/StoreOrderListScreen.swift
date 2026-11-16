@@ -6,52 +6,52 @@ struct StoreOrderListScreen: View {
 
     var body: some View {
         ScrollViewReader { proxy in
-            VStack(spacing: StoreSpacing.s0) {
+            List {
                 StoreOrderListBrowsingRow(filterCount: adapter.filterCount,
                                           lastUpdatedText: adapter.lastUpdatedText,
                                           onFilterTapped: adapter.filterTapped)
+                    .id(Constants.topID)
+                    .storeListRow()
 
-                List {
-                    if adapter.topBanner != .none {
-                        StoreOrderListBanner(banner: adapter.topBanner,
-                                             onRetryCurrency: adapter.retryCurrencyTapped,
-                                             onTroubleshoot: adapter.troubleshootTapped,
-                                             onContactSupport: adapter.contactSupportTapped)
-                            .storeListRow()
-                    }
+                if adapter.topBanner != .none {
+                    StoreOrderListBanner(banner: adapter.topBanner,
+                                         onRetryCurrency: adapter.retryCurrencyTapped,
+                                         onTroubleshoot: adapter.troubleshootTapped,
+                                         onContactSupport: adapter.contactSupportTapped)
+                        .storeListRow()
+                }
 
-                    content
+                content
 
-                    if adapter.isLoadingNextPage {
-                        ProgressView()
-                            .tint(.storePrimary)
-                            .frame(maxWidth: .infinity)
-                            .padding(StorePadding.p5)
-                            .storeListRow(background: .storeSurface)
-                    }
+                if adapter.isLoadingNextPage {
+                    ProgressView()
+                        .tint(.storePrimary)
+                        .frame(maxWidth: .infinity)
+                        .padding(StorePadding.p5)
+                        .storeListRow(background: .storeSurface)
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .background(.storeSectionBackground)
-                .accessibilityIdentifier("orders-table-view")
-                .refreshable {
-                    await adapter.refresh()
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(.storeSectionBackground)
+            .accessibilityIdentifier("orders-table-view")
+            .refreshable {
+                await adapter.refresh()
+            }
+            .background {
+                StoreOrderListScrollViewReader(onResolve: adapter.contentScrollViewResolved)
+            }
+            .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                geometry.contentOffset.y
+            } action: { _, _ in
+                adapter.didScroll()
+            }
+            .onChange(of: adapter.scrollTargetOrderID) { _, orderID in
+                guard let orderID else { return }
+                withAnimation {
+                    proxy.scrollTo(orderID, anchor: .center)
                 }
-                .background {
-                    StoreOrderListScrollViewReader(onResolve: adapter.contentScrollViewResolved)
-                }
-                .onScrollGeometryChange(for: CGFloat.self) { geometry in
-                    geometry.contentOffset.y
-                } action: { _, _ in
-                    adapter.didScroll()
-                }
-                .onChange(of: adapter.scrollTargetOrderID) { _, orderID in
-                    guard let orderID else { return }
-                    withAnimation {
-                        proxy.scrollTo(orderID, anchor: .center)
-                    }
-                    adapter.consumeScrollTarget()
-                }
+                adapter.consumeScrollTarget()
             }
         }
     }
@@ -125,6 +125,7 @@ private extension View {
 
 private extension StoreOrderListScreen {
     enum Constants {
+        static let topID = "store-order-list-top"
         static let placeholderCount = 3
     }
 }

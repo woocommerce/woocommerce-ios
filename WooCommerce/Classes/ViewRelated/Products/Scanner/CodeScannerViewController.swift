@@ -102,7 +102,7 @@ final class CodeScannerViewController: UIViewController {
     func addBottomAccessoryView(_ accessoryView: UIView) {
         loadViewIfNeeded()
         accessoryView.translatesAutoresizingMaskIntoConstraints = false
-        accessoryView.setContentCompressionResistancePriority(.required, for: .vertical)
+        accessoryView.setContentCompressionResistancePriority(Constants.bottomAccessoryPriorityAboveScanAreaHeight, for: .vertical)
         bottomDimmingView.addSubview(accessoryView)
         let bottomToSafeArea = accessoryView.bottomAnchor.constraint(equalTo: bottomDimmingView.safeAreaLayoutGuide.bottomAnchor)
         bottomToSafeArea.priority = .defaultHigh
@@ -406,6 +406,7 @@ private extension CodeScannerViewController {
         static let instructionTextInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
         /// An iPad form sheet has no bottom safe area, so without this the accessory sits on its rounded bottom corners.
         static let bottomAccessoryMinimumBottomInset: CGFloat = 8
+        static let bottomAccessoryPriorityAboveScanAreaHeight = UILayoutPriority(UILayoutPriority.defaultHigh.rawValue + 1)
     }
 
     enum Localization {

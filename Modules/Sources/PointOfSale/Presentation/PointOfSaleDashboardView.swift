@@ -432,6 +432,14 @@ struct PointOfSaleDashboardView: View {
             } label: {
                 Label(Localization.phoneMenuOrders, systemImage: "text.document")
             }
+            if session.isPINProtectionEnabled {
+                Button {
+                    session.lock()
+                } label: {
+                    Label(POSFloatingControlView.Localization.lockPOS, systemImage: "lock")
+                }
+                .accessibilityIdentifier("pos-lock-menu-item")
+            }
             Button {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
                 requestExitPermission()

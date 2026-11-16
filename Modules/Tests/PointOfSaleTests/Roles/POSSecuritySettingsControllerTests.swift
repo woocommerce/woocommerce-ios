@@ -469,7 +469,7 @@ struct POSSecuritySettingsControllerTests {
         for _ in 0..<5 { #expect(await handler.submit(pin: "0000") == false) }
 
         // When / Then
-        guard case .lockout = handler.pinEntryState else { Issue.record("Expected the approval countdown"); return }
+        guard case .waiting = handler.pinEntryState else { Issue.record("Expected the approval countdown"); return }
         #expect(POSPINEntryViewHelper().isInputEnabled(for: handler.pinEntryState) == false)
         #expect(await handler.submit(pin: "1234") == false)
         #expect(handler.request != nil)
@@ -523,7 +523,7 @@ struct POSSecuritySettingsControllerTests {
         let defaults = defaultsScope.defaults
         let session = DefaultPOSAccessSession(siteID: 123,
                                              authenticator: DefaultPOSPINAuthenticator(credentialProvider: store),
-                                             rateLimiter: POSLocalRateLimiter(siteID: 123, userDefaults: defaults),
+                                             rateLimiter: POSLocalRateLimiter(siteID: 123, storage: InMemoryPOSSecureStorage(), clock: MockPOSPINClock()),
                                              credentialProvider: store,
                                              userDefaults: defaults)
         return (POSSecuritySettingsController(store: store, session: session), session, store)

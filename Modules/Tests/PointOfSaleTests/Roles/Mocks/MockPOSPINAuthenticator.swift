@@ -5,6 +5,7 @@ import Foundation
 final class MockPOSPINAuthenticator: POSPINAuthenticating {
     var authenticateResult: Result<POSStaff, POSAuthError>
     var verifyResult: Result<Void, POSAuthError>
+    var onAuthenticate: (@MainActor () async -> Void)?
 
     private(set) var authenticatedPINs: [String] = []
     private(set) var verifyCallCount: Int = 0
@@ -17,6 +18,7 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
 
     func authenticate(withPIN pin: String) async throws(POSAuthError) -> POSStaff {
         authenticatedPINs.append(pin)
+        await onAuthenticate?()
         return try authenticateResult.get()
     }
 

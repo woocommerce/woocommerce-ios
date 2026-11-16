@@ -293,6 +293,10 @@ public struct PointOfSaleEntryPointView: View {
             guard accessSession.isPINProtectionEnabled, accessSession.currentStaff != nil else { return }
             accessSession.lock()
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            let session = accessSession
+            Task { await session.checkpoint() }
+        }
     }
 
     private enum Constants {

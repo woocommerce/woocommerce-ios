@@ -69,7 +69,9 @@ final class MockPOSAccessSession: POSAccessSession {
         lockCallCount += 1
     }
 
-    func checkLockoutState() throws(POSAuthError) {
+    func checkpoint() async {}
+
+    func checkLockoutState() async throws(POSAuthError) {
         switch checkLockoutResult {
         case .success:
             break

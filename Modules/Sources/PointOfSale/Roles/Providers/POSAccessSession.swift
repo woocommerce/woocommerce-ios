@@ -1,5 +1,5 @@
 @MainActor
-protocol POSAccessSession: AnyObject {
+protocol POSAccessSession: AnyObject, Sendable {
     var currentStaff: POSStaff? { get }
     var isLocked: Bool { get }
     /// Whether an Admin PIN protects POS for this store on this device. Stays `true` when the stored
@@ -14,5 +14,6 @@ protocol POSAccessSession: AnyObject {
     /// invalid or the holder lacks it.
     func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError)
     func lock()
-    func checkLockoutState() throws(POSAuthError)
+    func checkpoint() async
+    func checkLockoutState() async throws(POSAuthError)
 }

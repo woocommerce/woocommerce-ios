@@ -29,7 +29,7 @@ struct AddCustomAmountPercentageView: View {
             }
 
             LabeledContent {
-                Text(viewModel.percentageCalculatedAmount)
+                Text(viewModel.formattedAmount)
                     .font(.subheadline)
                     .foregroundColor(Color(.textSubtle))
             } label: {

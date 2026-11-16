@@ -41,10 +41,27 @@ final class WordPressSiteMapperTests: XCTestCase {
         XCTAssertEqual(site.name, "My WordPress Site")
         XCTAssertEqual(site.description, "Just another WordPress site")
         XCTAssertEqual(site.url, "https://test.com")
+        XCTAssertEqual(site.home, "https://test.com")
         XCTAssertEqual(site.gmtOffset, "0")
         XCTAssertEqual(site.timezone, "")
         XCTAssertFalse(site.namespaces.isEmpty)
         XCTAssertFalse(site.isWooCommerceActive)
+    }
+
+    func test_home_when_missing_or_not_a_string_then_is_nil() throws {
+        // Given
+        let response = try XCTUnwrap(Loader.contentsOf("wordpress-site-info"))
+        var json = try XCTUnwrap(JSONSerialization.jsonObject(with: response) as? [String: Any])
+        for home: Any? in [nil, 42] {
+            json["home"] = home
+            let data = try JSONSerialization.data(withJSONObject: json)
+
+            // When
+            let site = try WordPressSiteMapper().map(response: data)
+
+            // Then
+            XCTAssertNil(site.home)
+        }
     }
 
     func test_asSite_normalizes_http_url_and_records_that_normalization_was_required() {

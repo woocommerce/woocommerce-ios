@@ -10,6 +10,7 @@ struct POSPrinterSetupModal: View {
     @Environment(\.posMetrics) private var metrics
     @Binding var isPresented: Bool
     let controller: POSPrinterConnectionController
+    let source: POSPrinterSetupSource
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.isPOSModalFullScreenFlow) private var isFullScreenFlow
@@ -32,7 +33,7 @@ struct POSPrinterSetupModal: View {
                 }
             }
             .onAppear {
-                controller.startSetup(sessionID: setupSessionID)
+                controller.startSetup(sessionID: setupSessionID, source: source)
             }
             .onDisappear {
                 controller.cancelSetup(sessionID: setupSessionID)
@@ -450,7 +451,9 @@ private extension POSPrinterSetupModal {
 #if DEBUG
 #Preview {
     POSPrinterSetupModal(isPresented: .constant(true),
-                         controller: POSPrinterConnectionController(service: POSReceiptPrinterPreviewService()))
+                         controller: POSPrinterConnectionController(service: POSReceiptPrinterPreviewService(),
+                                                                    analytics: EmptyPOSAnalytics()),
+                         source: .settings)
         .posPreviewModalParentSize()
 }
 
@@ -459,7 +462,9 @@ private extension POSPrinterSetupModal {
         isPresented: .constant(true),
         controller: POSPrinterConnectionController(
             service: POSReceiptPrinterPreviewService(),
-            bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .denied))
+            analytics: EmptyPOSAnalytics(),
+            bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .denied)),
+        source: .settings
     )
     .posPreviewModalParentSize()
 }
@@ -469,24 +474,27 @@ private extension POSPrinterSetupModal {
         service: POSReceiptPrinterPreviewService(
             devices: [PrinterDevice(id: "1", name: "Star TSP100")],
             keepDiscovering: true),
+        analytics: EmptyPOSAnalytics(),
         bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
-    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
         .posPreviewModalParentSize()
 }
 
 #Preview("Discovery error") {
     let controller = POSPrinterConnectionController(
         service: POSReceiptPrinterPreviewService(failsDiscovery: true),
+        analytics: EmptyPOSAnalytics(),
         bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
-    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
         .posPreviewModalParentSize()
 }
 
 #Preview("Failed to connect") {
     let device = PrinterDevice(id: "1", name: "Star TSP100")
     let controller = POSPrinterConnectionController(
-        service: POSReceiptPrinterPreviewService(devices: [device], failsToConnect: true))
-    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+        service: POSReceiptPrinterPreviewService(devices: [device], failsToConnect: true),
+        analytics: EmptyPOSAnalytics())
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
         .posPreviewModalParentSize()
         .task {
             controller.connect(to: device)
@@ -499,8 +507,9 @@ private extension POSPrinterSetupModal {
             devices: [PrinterDevice(id: "1", name: "Star TSP100"),
                       PrinterDevice(id: "2", name: "Star mC-Print3")],
             keepDiscovering: true),
+        analytics: EmptyPOSAnalytics(),
         bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .allowed))
-    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller, source: .settings)
         .posPreviewModalParentSize()
 }
 

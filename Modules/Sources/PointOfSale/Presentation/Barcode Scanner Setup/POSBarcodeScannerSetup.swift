@@ -7,6 +7,7 @@ struct POSBarcodeScannerSetup: View {
     @Environment(\.posModalParentSize) var parentSize
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posModalDismissAction) private var dismissModal
 
     init(isPresented: Binding<Bool>, analytics: POSAnalyticsProviding) {
         self._isPresented = isPresented
@@ -22,11 +23,20 @@ struct POSBarcodeScannerSetup: View {
         modalBody
             .onAppear {
                 analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
+                flowManager.onDismiss = close
             }
             .onDisappear {
                 flowManager.onDisappear()
             }
             .maximumScreenBrightness()
+    }
+
+    private func close() {
+        if let dismissModal {
+            dismissModal()
+        } else {
+            isPresented = false
+        }
     }
 
     @ViewBuilder
@@ -45,9 +55,7 @@ struct POSBarcodeScannerSetup: View {
             id: flowManager.currentStepKey
         ) {
             modalContent
-                .posModalCloseButton(action: {
-                    isPresented = false
-                })
+                .posModalCloseButton(action: close)
                 .padding(metrics.padding.xLarge)
                 .background(Color.posSurfaceBright)
         }
@@ -65,9 +73,7 @@ struct POSBarcodeScannerSetup: View {
 
             flowButtons
         }
-        .posModalCloseButton(action: {
-            isPresented = false
-        }, accessibilityLabel: Localization.closeButtonAccessibilityLabel)
+        .posModalCloseButton(action: close, accessibilityLabel: Localization.closeButtonAccessibilityLabel)
         .posModalSizing()
         .background(Color.posSurfaceBright)
     }

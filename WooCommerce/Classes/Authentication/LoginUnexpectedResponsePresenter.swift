@@ -112,9 +112,13 @@ final class LoginUnexpectedResponsePresenter {
         if let support {
             return support(controller, context)
         }
+        Self.showPreLoginSupport(from: controller, siteURL: context.siteURL, initialMessage: context.initialMessage)
+    }
+
+    static func showPreLoginSupport(from controller: UIViewController, siteURL: String?, initialMessage: String? = nil) {
         let chatController = SupportChatHostingController.makeForPreLogin(
-            siteAddress: context.siteURL,
-            initialMessage: context.initialMessage,
+            siteAddress: siteURL,
+            initialMessage: initialMessage,
             excludeStoreResponseExcerptsFromLogs: true
         )
         chatController.show(from: (controller as? UINavigationController)?.topViewController ?? controller)

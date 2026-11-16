@@ -42,7 +42,10 @@ extension UITabBar {
 
         if usesStoreDesignSystem {
             let itemColor = UIColor(Color.storeOnSurface)
-            let titleTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: itemColor]
+            // Without a paragraph style, iPad before iOS 26 keeps the stacked-font title width and shows text cut-off.
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineBreakMode = .byTruncatingTail
+            let titleTextAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: itemColor, .paragraphStyle: paragraphStyle]
 
             tabBarItemAppearance.normal.iconColor = itemColor
             tabBarItemAppearance.normal.titleTextAttributes = titleTextAttributes

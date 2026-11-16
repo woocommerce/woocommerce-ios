@@ -130,38 +130,35 @@ private struct POSRefundCardPresentActionContent: View {
     let secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel?
     let animation: POSCardPresentPaymentInLineMessageAnimation
     @AccessibilityFocusState private var isTitleFocused: Bool
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var width: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .center, spacing: metrics.spacing.none) {
-            Spacer()
+        POSStatusScreenLayout(buttonsWidth: .capped) {
+            VStack(alignment: .center, spacing: metrics.spacing.none) {
+                POSErrorXMark()
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-            POSErrorXMark()
-                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                Spacer()
+                    .frame(height: metrics.spacing.large)
 
-            Spacer()
-                .frame(height: metrics.spacing.large)
-
-            VStack(alignment: .center, spacing: metrics.spacing.small) {
-                Text(title)
-                    .foregroundStyle(Color.posOnSurface)
-                    .font(.posHeadingBold)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityFocused($isTitleFocused)
-                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
-
-                if let message {
-                    Text(message)
-                        .font(.posBodyLargeRegular())
+                VStack(alignment: .center, spacing: metrics.spacing.small) {
+                    Text(title)
                         .foregroundStyle(Color.posOnSurface)
-                        .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                        .font(.posHeadingBold)
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($isTitleFocused)
+                        .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+
+                    if let message {
+                        Text(message)
+                            .font(.posBodyLargeRegular())
+                            .foregroundStyle(Color.posOnSurface)
+                            .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                    }
                 }
+                .dynamicWidthScaling(containerWidth: width)
             }
-            .dynamicWidthScaling(containerWidth: width)
-
-            Spacer()
-
+        } buttons: {
             VStack(spacing: metrics.spacing.large) {
                 if let primaryButtonViewModel {
                     Button(primaryButtonViewModel.title,
@@ -175,10 +172,8 @@ private struct POSRefundCardPresentActionContent: View {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
-            .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .measureWidth { containerWidth in
             width = containerWidth
         }

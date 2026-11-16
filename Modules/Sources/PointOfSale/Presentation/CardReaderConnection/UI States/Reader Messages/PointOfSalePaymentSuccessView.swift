@@ -196,4 +196,19 @@ private extension PointOfSalePaymentSuccessView {
     )
     .environment(model)
 }
+
+#Preview("iPhone SE", traits: .sizeThatFitsLayout) {
+    let model = POSPreviewHelpers.makePreviewAggregateModel(
+        receiptPrinter: POSReceiptPrinterPreviewService()
+    )
+    PointOfSalePaymentSuccessView(
+        viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$1,234.56",
+                                                      paymentMethod: .card),
+        customerEmail: "a.long.customer.address@example.com",
+        successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
+        onSuccessScreenBarcodeScanned: nil
+    )
+    .environment(model)
+    .posPreviewSmallestPhone()
+}
 #endif

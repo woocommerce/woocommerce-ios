@@ -156,7 +156,9 @@ struct POSMenuButton<Label: View>: View {
                 return
             }
             didSelect = true
-            presentation.wrappedValue = false
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            presentation.transaction(transaction).wrappedValue = false
         } label: {
             label()
                 .frame(maxWidth: .infinity, alignment: .leading)

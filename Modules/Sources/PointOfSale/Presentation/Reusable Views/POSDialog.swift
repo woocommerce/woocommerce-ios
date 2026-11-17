@@ -72,7 +72,6 @@ struct POSDialogView: View {
                                     accessibilityIdentifier: closeAction.accessibilityIdentifier,
                                     fontStyle: .posButtonSymbolLarge,
                                     closeAction: closeAction.action)
-                .padding([.top, .trailing], metrics.padding.small)
             }
 
             switch dialog.icon {
@@ -84,21 +83,31 @@ struct POSDialogView: View {
                 EmptyView()
             }
 
-            VStack(spacing: metrics.spacing.xLarge) {
-                Text(dialog.title)
-                    .font(.posHeadingBold)
-                    .accessibilityAddTraits(.isHeader)
-                Text(dialog.message)
-                    .font(.posBodyLargeRegular())
+            ViewThatFits(in: .vertical) {
+                texts
+                ScrollView(.vertical) {
+                    texts
+                }
             }
-            .foregroundStyle(Color.posOnSurface)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
 
             POSFlowButtonsView(configuration: .init(primaryButton: dialog.primaryAction, secondaryButton: dialog.secondaryAction))
         }
         .padding(metrics.padding.medium)
         .frame(maxWidth: metrics.dialogMaxWidth)
+    }
+
+    private var texts: some View {
+        VStack(spacing: metrics.spacing.xLarge) {
+            Text(dialog.title)
+                .font(.posHeadingBold)
+                .accessibilityAddTraits(.isHeader)
+            Text(dialog.message)
+                .font(.posBodyLargeRegular())
+        }
+        .foregroundStyle(Color.posOnSurface)
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity)
     }
 }
 

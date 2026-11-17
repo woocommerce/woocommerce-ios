@@ -112,7 +112,7 @@ struct POSSettingsHardwareDetailView: View {
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         })
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, compactStyle: .cardPaymentsOnboarding, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }, content: { viewContainer in
             paymentsOnboardingView(from: viewContainer)
@@ -323,7 +323,7 @@ private extension POSSettingsHardwareDetailView {
                                 action: { showPrinterSetupModal = true })
             }
         }
-        .posModal(isPresented: $showPrinterSetupModal) {
+        .posModal(isPresented: $showPrinterSetupModal, compactStyle: .receiptPrinterSetup) {
             POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller, source: .settings)
         }
     }

@@ -8,7 +8,7 @@ class POSModalManager: ObservableObject {
     private var contentBuilder: (() -> AnyView)?
     private var onDismiss: (() -> Void)?
 
-    func present<Content: View>(compactStyle: POSModalCompactStyle?,
+    func present<Content: View>(compactStyle: POSModalCompactStyle,
                                 onDismiss: @escaping () -> Void,
                                 content: @escaping () -> Content) {
         self.compactStyle = compactStyle

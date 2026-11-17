@@ -28,10 +28,14 @@ struct StorePerformanceDashboardCard: View {
         StoreDashboardCardSurface {
             VStack(alignment: .leading, spacing: StoreSpacing.s0) {
                 header
-                if viewModel.loadingError != nil {
-                    errorState
-                } else if viewModel.analyticsEnabled {
-                    performanceContent
+                if viewModel.analyticsEnabled {
+                    StoreDashboardRangedCardContent(cardType: .performance,
+                                                    hasError: viewModel.loadingError != nil,
+                                                    reload: { await viewModel.reloadDataIfNeeded(forceRefresh: true) }) {
+                        dateRangeHeader
+                    } content: {
+                        performanceContent
+                    }
                 } else {
                     StoreDashboardUnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                 }
@@ -62,19 +66,23 @@ private extension StorePerformanceDashboardCard {
         }
     }
 
+    var dateRangeHeader: some View {
+        StoreDashboardDateRangeHeader(
+            timeRange: viewModel.timeRange,
+            dateText: displayedDateText,
+            customTitle: Localization.custom,
+            isDisabled: viewModel.syncingData,
+            accessibilityPrefix: "performance",
+            onSelect: selectTimeRange,
+            onEditCustom: editCustomRange
+        )
+        .padding(.horizontal, StorePadding.p5)
+        .redacted(reason: viewModel.showRedactedState ? .placeholder : [])
+        .shimmering(active: viewModel.showRedactedState)
+    }
+
     var performanceContent: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s0) {
-            StoreDashboardDateRangeHeader(
-                timeRange: viewModel.timeRange,
-                dateText: displayedDateText,
-                customTitle: Localization.custom,
-                isDisabled: viewModel.syncingData,
-                accessibilityPrefix: "performance",
-                onSelect: selectTimeRange,
-                onEditCustom: editCustomRange
-            )
-            .padding(.horizontal, StorePadding.p5)
-            StoreDivider()
             revenueTypeSelector
                 .padding(.horizontal, StorePadding.p5)
                 .padding(.top, StorePadding.p4)
@@ -237,13 +245,6 @@ private extension StorePerformanceDashboardCard {
             }
         } else if !viewModel.hasRevenue {
             emptyStats
-        }
-    }
-
-    var errorState: some View {
-        StoreDashboardCardErrorView {
-            ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .performance))
-            Task { await viewModel.reloadDataIfNeeded(forceRefresh: true) }
         }
     }
 

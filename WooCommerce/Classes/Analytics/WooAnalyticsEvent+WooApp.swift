@@ -252,25 +252,49 @@ extension WooAnalyticsEvent {
             case amount = "AMOUNT"
         }
 
-        static func createRefund(orderID: Int64, fullyRefunded: Bool, method: RefundMethod, gateway: String, amount: String) -> WooAnalyticsEvent {
+        static func createRefund(orderID: Int64,
+                                 fullyRefunded: Bool,
+                                 method: RefundMethod,
+                                 gateway: String,
+                                 amount: String,
+                                 flow: RefundFlow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .refundCreate, properties: [
                 "order_id": "\(orderID)",
                 "is_full": "\(fullyRefunded)",
                 "method": method.rawValue,
                 "gateway": gateway,
-                "amount": amount
+                "amount": amount,
+                Keys.refundFlow: refundFlowValue(flow)
             ])
         }
 
-        static func createRefundSuccess(orderID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .refundCreateSuccess, properties: ["order_id": "\(orderID)"])
+        static func createRefundSuccess(orderID: Int64, flow: RefundFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .refundCreateSuccess, properties: [
+                "order_id": "\(orderID)",
+                Keys.refundFlow: refundFlowValue(flow)
+            ])
         }
 
-        static func createRefundFailed(orderID: Int64, error: Error) -> WooAnalyticsEvent {
+        static func createRefundFailed(orderID: Int64, error: Error, flow: RefundFlow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .refundCreateFailed, properties: [
                 "order_id": "\(orderID)",
                 "error_description": error.localizedDescription,
+                Keys.refundFlow: refundFlowValue(flow)
             ])
+        }
+
+        /// Same property name and values as the POS refund events, so both funnels split by calculation path alike.
+        private static func refundFlowValue(_ flow: RefundFlow) -> String {
+            switch flow {
+            case .serverComputed:
+                return "server_computed"
+            case .localComputed:
+                return "local"
+            }
+        }
+
+        private enum Keys {
+            static let refundFlow = "refund_flow"
         }
 
         static func selectAllButtonTapped(orderID: Int64) -> WooAnalyticsEvent {

@@ -76,7 +76,7 @@ struct POSAdminPINOnboardingView: View {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .posModalFlowHeaderTitle(title)
+        .posModalFlowHeaderTitle(title, centersTitle: true)
         .posModalFlowBackAction(enabled: isFullScreenFlow && onboarding.canGoBack) { onboarding.goBack() }
         .posModalSizing()
         .posInteractiveDismissDisabled(onboarding.step == .saving || onboarding.isBusy)
@@ -92,17 +92,17 @@ struct POSAdminPINOnboardingView: View {
 }
 
 private extension POSAdminPINOnboardingView {
-    var title: String? {
+    var title: String {
         switch onboarding.step {
         case .choose: Localization.chooseTitle
         case .confirm: Localization.confirmTitle
-        case .saving, .saved, .guidedAccessOffer: nil
+        case .saving, .saved, .guidedAccessOffer: ""
         }
     }
 
     var header: some View {
         ZStack {
-            if let title {
+            if !title.isEmpty {
                 Text(title)
                     .font(.posBodyXLargeBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -159,14 +159,22 @@ private extension POSAdminPINOnboardingView {
     var pinEntry: some View {
         GeometryReader { geometry in
             let keySize = keySize(fitting: geometry.size)
-            ScrollView {
-                POSPINEntryView(state: onboarding.pinEntryState,
-                                style: .setup(keySize: keySize, page: page, feedback: onboarding.feedback.map(message(for:))),
-                                onComplete: { pin in await onboarding.submit(pin) })
-                    .frame(width: POSPINEntryView.lockScreenKeypadWidth(keySize: keySize, metrics: metrics))
-                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    POSPINEntryView(state: onboarding.pinEntryState,
+                                    style: .setup(keySize: keySize, page: page, feedback: onboarding.feedback.map(message(for:))),
+                                    onComplete: { pin in await onboarding.submit(pin) })
+                        .frame(width: POSPINEntryViewHelper.lockScreenKeypadSize(keySize: keySize, metrics: metrics).width)
+                        .frame(maxWidth: .infinity, minHeight: max(0, geometry.size.height - 2 * metrics.padding.xLarge))
+                        .id(Constants.pinEntryTopID)
+                }
+                .contentMargins(.vertical, metrics.padding.xLarge, for: .scrollContent)
+                .scrollBounceBehavior(.basedOnSize)
+                .onChange(of: onboarding.pageID) { proxy.scrollTo(Constants.pinEntryTopID, anchor: .top) }
+                .onChange(of: onboarding.feedback) { _, feedback in
+                    if feedback != nil { proxy.scrollTo(Constants.pinEntryTopID, anchor: .top) }
+                }
             }
-            .scrollBounceBehavior(.basedOnSize)
         }
         .clipped()
     }
@@ -225,6 +233,7 @@ private extension POSAdminPINOnboardingView {
     }
 
     enum Constants {
+        static let pinEntryTopID = "admin-pin-entry-top"
         static let regularKeySize: CGFloat = 90
         static let compactKeySize: CGFloat = 72
         static let checkSize: CGFloat = 80

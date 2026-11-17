@@ -301,7 +301,7 @@ private extension POSPINEntryView {
         // One stable element keeps VoiceOver focus in place while the dots and messages swap.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Localization.dotsAccessibilityLabel)
-        .accessibilityValue(message.map(accessibilityText(for:)) ?? entryCountText)
+        .accessibilityValue(setupFeedback ?? message.map(accessibilityText(for:)) ?? entryCountText)
         // The countdown changes every second; VoiceOver should read it on request rather than on each change.
         .accessibilityAddTraits(isWaiting ? .updatesFrequently : [])
     }
@@ -319,7 +319,7 @@ private extension POSPINEntryView {
     }
 
     var entryCountText: String {
-        Localization.dotsAccessibilityValue(entered: attempt.pin.count, total: pinLength)
+        Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength)
     }
 
     func accessibilityText(for message: POSPINStatusMessage) -> String {

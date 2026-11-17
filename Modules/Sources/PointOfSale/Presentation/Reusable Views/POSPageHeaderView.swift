@@ -51,6 +51,7 @@ struct POSPageHeaderItem: Identifiable {
 struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomContent: View>: View {
     private let items: [POSPageHeaderItem]
     private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
+    private let centersTitle: Bool
     private let leadingContent: LeadingContent
     private let trailingContent: TrailingContent
     private let bottomContent: BottomContent
@@ -91,12 +92,14 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         subtitle: String? = nil,
         isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
+        centersTitle: Bool = false,
         @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = [.init(title: title, subtitle: subtitle, isSelected: true, isLoading: isLoading)]
         self.backButtonConfiguration = backButtonConfiguration
+        self.centersTitle = centersTitle
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
@@ -111,6 +114,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     ) {
         self.items = items
         self.backButtonConfiguration = backButtonConfiguration
+        self.centersTitle = false
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
@@ -118,6 +122,32 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            navigationRow
+
+            bottomContent
+        }
+        .frame(minHeight: POSHeaderLayoutConstants.minHeight)
+        .posContentPadding(.horizontal, metrics.padding.medium)
+        .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? metrics.padding.medium : metrics.padding.large))
+        .padding(.bottom, metrics.padding.large)
+    }
+
+    @ViewBuilder
+    private var navigationRow: some View {
+        if centersTitle {
+            ZStack {
+                itemsContent
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, POSHeaderLayoutConstants.compactBackButtonSize)
+                HStack(spacing: metrics.spacing.medium) {
+                    leadingContent
+                    Spacer(minLength: metrics.spacing.none)
+                    trailingContent
+                        .frame(minHeight: navigationRowMinHeight)
+                }
+            }
+        } else {
             HStack(alignment: hStackAlignment, spacing: metrics.spacing.medium) {
                 leadingContent
 
@@ -132,13 +162,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                 trailingContent
                     .frame(minHeight: navigationRowMinHeight)
             }
-
-            bottomContent
         }
-        .frame(minHeight: POSHeaderLayoutConstants.minHeight)
-        .posContentPadding(.horizontal, metrics.padding.medium)
-        .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? metrics.padding.medium : metrics.padding.large))
-        .padding(.bottom, metrics.padding.large)
     }
 
     /// Try full-size tabs, then smaller tabs, before allowing horizontal scrolling.

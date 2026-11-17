@@ -37,6 +37,15 @@ struct POSFullScreenFlowHeaderTests {
         #expect(buttons.trailingClose == nil)
     }
 
+    @Test func test_buttons_when_centered_flow_only_offers_close_then_close_stays_trailing() {
+        // When
+        let buttons = POSFullScreenFlowHeaderButtons(backAction: nil, closeAction: closeAction, placesCloseOnTrailingEdge: true)
+
+        // Then
+        #expect(buttons.leading == nil)
+        #expect(buttons.trailingClose == closeAction)
+    }
+
     @Test func test_buttons_when_back_and_close_are_offered_then_back_is_leading_and_close_is_trailing() {
         // When
         let buttons = POSFullScreenFlowHeaderButtons(backAction: backAction, closeAction: closeAction)
